@@ -324,8 +324,13 @@ describeWithEnvironment('TimelinePanel', function() {
         timeline.dispatchEventToListeners(Timeline.TimelinePanel.Events.RECORDING_COMPLETED, {traceIndex: 0});
       });
 
-      const {response} = await Timeline.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
-      assert.include(response, '# Trace recording results');
+      const generator = Timeline.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
+      let externalRequestResponse = await generator.next();
+      while (!externalRequestResponse.done) {
+        externalRequestResponse = await generator.next();
+      }
+      const {message} = externalRequestResponse.value;
+      assert.include(message, '# Trace recording results');
       const EXPECTED_INSIGHT_TITLES = [
         'LCP breakdown',
         'LCP request discovery',
@@ -333,10 +338,10 @@ describeWithEnvironment('TimelinePanel', function() {
         'Document request latency',
       ];
       for (const title of EXPECTED_INSIGHT_TITLES) {
-        assert.include(response, `### Insight Title: ${title}`);
+        assert.include(message, `### Insight Title: ${title}`);
       }
 
-      assert.include(response, `- Time to first byte: 7.94 ms (6.1% of total LCP time)
+      assert.include(message, `- Time to first byte: 7.94 ms (6.1% of total LCP time)
 - Resource load delay: 33.16 ms (25.7% of total LCP time)
 - Resource load duration: 14.70 ms (11.4% of total LCP time)
 - Element render delay: 73.41 ms (56.8% of total LCP time)`);
@@ -353,16 +358,21 @@ describeWithEnvironment('TimelinePanel', function() {
         timeline.dispatchEventToListeners(Timeline.TimelinePanel.Events.RECORDING_COMPLETED, {traceIndex: 0});
       });
 
-      const {response} = await Timeline.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
-      assert.include(response, '# Trace recording results');
+      const generator = Timeline.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
+      let externalRequestResponse = await generator.next();
+      while (!externalRequestResponse.done) {
+        externalRequestResponse = await generator.next();
+      }
+      const {message} = externalRequestResponse.value;
+      assert.include(message, '# Trace recording results');
 
-      assert.include(response, '## Non-passing insights:');
+      assert.include(message, '## Non-passing insights:');
       const EXPECTED_INSIGHT_TITLES = [
         'INP breakdown',
         'Layout shift culprits',
       ];
       for (const title of EXPECTED_INSIGHT_TITLES) {
-        assert.include(response, `### Insight Title: ${title}`);
+        assert.include(message, `### Insight Title: ${title}`);
       }
     });
   });

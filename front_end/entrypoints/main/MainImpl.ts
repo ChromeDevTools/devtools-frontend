@@ -41,6 +41,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
@@ -1043,22 +1044,44 @@ type ExternalRequestInput = {
   args: {requestUrl: string, prompt: string},
 };
 
-interface ExternalRequestResponse {
-  response: string;
-  devToolsLogs: object[];
+// For backwards-compatibility we iterate over the generator and drop the
+// intermediate results. The final response is transformed to its legacy type.
+// Instead of sending responses of type error, errors are throws.
+export async function handleExternalRequest(input: ExternalRequestInput):
+    Promise<{response: string, devToolsLogs: object[]}> {
+  const generator = await handleExternalRequestGenerator(input);
+  let result: IteratorResult<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse>;
+  do {
+    result = await generator.next();
+  } while (!result.done);
+  const response = result.value;
+  if (response.type === AiAssistanceModel.ExternalRequestResponseType.ERROR) {
+    throw new Error(response.message);
+  }
+  if (response.type === AiAssistanceModel.ExternalRequestResponseType.ANSWER) {
+    return {
+      response: response.message,
+      devToolsLogs: response.devToolsLogs,
+    };
+  }
+  throw new Error('Received no response of type answer or type error');
 }
 
-export async function handleExternalRequest(input: ExternalRequestInput): Promise<ExternalRequestResponse> {
+// @ts-expect-error
+globalThis.handleExternalRequest = handleExternalRequest;
+
+export async function handleExternalRequestGenerator(input: ExternalRequestInput):
+    Promise<AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse>> {
   switch (input.kind) {
     case 'PERFORMANCE_RELOAD_GATHER_INSIGHTS': {
       const TimelinePanel = await import('../../panels/timeline/timeline.js');
-      return await TimelinePanel.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
+      return TimelinePanel.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
     }
     case 'PERFORMANCE_ANALYZE_INSIGHT': {
       const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
       const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-      return await panelInstance.handleExternalRequest({
+      return panelInstance.handleExternalRequest({
         conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT,
         prompt: input.args.prompt,
         insightTitle: input.args.insightTitle,
@@ -1068,7 +1091,7 @@ export async function handleExternalRequest(input: ExternalRequestInput): Promis
       const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
       const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-      return await panelInstance.handleExternalRequest({
+      return panelInstance.handleExternalRequest({
         conversationType: AiAssistanceModel.ConversationType.NETWORK,
         prompt: input.args.prompt,
         requestUrl: input.args.requestUrl,
@@ -1078,16 +1101,23 @@ export async function handleExternalRequest(input: ExternalRequestInput): Promis
       const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
       const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-      return await panelInstance.handleExternalRequest({
+      return panelInstance.handleExternalRequest({
         conversationType: AiAssistanceModel.ConversationType.STYLING,
         prompt: input.args.prompt,
         selector: input.args.selector,
       });
     }
   }
-  // @ts-expect-error
-  throw new Error(`Debugging with an agent of type '${input.kind}' is not implemented yet.`);
+  // eslint-disable-next-line require-yield
+  return (async function*
+          (): AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
+            return {
+              type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+              // @ts-expect-error
+              message: `Debugging with an agent of type '${input.kind}' is not implemented yet.`,
+            };
+          })();
 }
 
 // @ts-expect-error
-globalThis.handleExternalRequest = handleExternalRequest;
+globalThis.handleExternalRequestGenerator = handleExternalRequestGenerator;

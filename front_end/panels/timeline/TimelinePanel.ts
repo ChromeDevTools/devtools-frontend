@@ -2890,7 +2890,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.#setActiveInsight({model: insightModel, insightSetKey}, {highlightInsight: true});
   }
 
-  static async handleExternalRecordRequest(): Promise<{response: string, devToolsLogs: object[]}> {
+  static async *
+      handleExternalRecordRequest():
+          AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
+    yield {
+      type: AiAssistanceModel.ExternalRequestResponseType.NOTIFICATION,
+      message: 'Recording performance trace',
+    };
     void VisualLogging.logFunctionCall('timeline.record-reload', 'external');
     Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
 
@@ -2900,35 +2906,35 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     await UI.ViewManager.ViewManager.instance().showView('timeline');
 
     function onRecordingCompleted(eventData: EventTypes[Events.RECORDING_COMPLETED]):
-        {response: string, devToolsLogs: object[]} {
+        AiAssistanceModel.ExternalRequestResponse {
       if ('errorText' in eventData) {
         return {
-          response: `Error running the trace: ${eventData.errorText}`,
-          devToolsLogs: [],
+          type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+          message: `Error running the trace: ${eventData.errorText}`,
         };
       }
       const parsedTrace = panelInstance.model.parsedTrace(eventData.traceIndex);
       const insights = panelInstance.model.traceInsights(eventData.traceIndex);
       if (!parsedTrace || !insights || insights.size === 0) {
         return {
-          response: 'The trace was loaded successfully but no Insights were detected.',
-          devToolsLogs: [],
+          type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+          message: 'The trace was loaded successfully but no Insights were detected.',
         };
       }
 
       const navigationId = Array.from(insights.keys()).find(k => k !== 'NO_NAVIGATION');
       if (!navigationId) {
         return {
-          response: 'The trace was loaded successfully but no navigation was detected.',
-          devToolsLogs: [],
+          type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+          message: 'The trace was loaded successfully but no navigation was detected.',
         };
       }
 
       const insightsForNav = insights.get(navigationId);
       if (!insightsForNav) {
         return {
-          response: 'The trace was loaded successfully but no Insights were detected.',
-          devToolsLogs: [],
+          type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+          message: 'The trace was loaded successfully but no Insights were detected.',
         };
       }
 
@@ -2971,7 +2977,8 @@ These insights are passing, which means they are not considered to highlight con
 ${responseTextForPassedInsights}`;
 
       return {
-        response: finalText,
+        type: AiAssistanceModel.ExternalRequestResponseType.ANSWER,
+        message: finalText,
         devToolsLogs: [],
       };
     }

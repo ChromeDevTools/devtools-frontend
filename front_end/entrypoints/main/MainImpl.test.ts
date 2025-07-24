@@ -61,28 +61,28 @@ describeWithMockConnection('MainMenuItem', () => {
   });
 
   describe('handleExternalRequest', () => {
-    const {handleExternalRequest} = Main.MainImpl;
+    const {handleExternalRequestGenerator} = Main.MainImpl;
 
     it('calls into the AiAssistance Panel for LIVE_STYLE_DEBUGGER', async () => {
       const panel = sinon.createStubInstance(AiAssistance.AiAssistancePanel);
       sinon.stub(AiAssistance.AiAssistancePanel, 'instance').callsFake(() => Promise.resolve(panel));
 
-      await handleExternalRequest({kind: 'LIVE_STYLE_DEBUGGER', args: {prompt: 'test', selector: '#test'}});
+      await handleExternalRequestGenerator({kind: 'LIVE_STYLE_DEBUGGER', args: {prompt: 'test', selector: '#test'}});
       sinon.assert.calledWith(
           panel.handleExternalRequest,
           {prompt: 'test', conversationType: AiAssistanceModel.ConversationType.STYLING, selector: '#test'});
     });
 
-    it('throws an error for file assistance requests', async () => {
+    it('returns an error for file assistance requests', async () => {
       const panel = sinon.createStubInstance(AiAssistance.AiAssistancePanel);
       sinon.stub(AiAssistance.AiAssistancePanel, 'instance').callsFake(() => Promise.resolve(panel));
-      try {
-        // @ts-expect-error
-        await handleExternalRequest({kind: 'FILE_DEBUGGER', args: {prompt: 'test'}});
-        assert.fail('Expected `handleExternalRequest` to throw');
-      } catch (err) {
-        assert.strictEqual(err.message, 'Debugging with an agent of type \'FILE_DEBUGGER\' is not implemented yet.');
-      }
+
+      // @ts-expect-error
+      const generator = await handleExternalRequestGenerator({kind: 'FILE_DEBUGGER', args: {prompt: 'test'}});
+      const iteratorResponse = await generator.next();
+      assert.strictEqual(iteratorResponse.value.type, 'error');
+      assert.strictEqual(
+          iteratorResponse.value.message, 'Debugging with an agent of type \'FILE_DEBUGGER\' is not implemented yet.');
     });
   });
 });

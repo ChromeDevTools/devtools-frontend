@@ -1680,10 +1680,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
    * Performance Insights it is the name of the Insight that forms the
    * context of the conversation.
    */
-  async handleExternalRequest(
+  handleExternalRequest(
       parameters: ExternalStylingRequestParameters|ExternalNetworkRequestParameters|
       ExternalPerformanceInsightsRequestParameters,
-      ): Promise<{response: string, devToolsLogs: object[]}> {
+      ): AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
+    // eslint-disable-next-line require-yield
+    async function*
+        generateErrorResponse(message: string):
+            AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
+      return {
+        type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+        message,
+      };
+    }
+
     try {
       Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
       const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
@@ -1692,35 +1702,32 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         disabledReasons.push(lockedString(UIStringsNotTranslate.enableInSettings));
       }
       if (disabledReasons.length > 0) {
-        throw new Error(disabledReasons.join(' '));
+        return generateErrorResponse(disabledReasons.join(' '));
       }
 
       void VisualLogging.logFunctionCall(`start-conversation-${parameters.conversationType}`, 'external');
       switch (parameters.conversationType) {
         case AiAssistanceModel.ConversationType.STYLING:
-          return await this.handleExternalStylingRequest(parameters.prompt, parameters.selector);
+          return this.handleExternalStylingRequest(parameters.prompt, parameters.selector);
         case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
           if (!parameters.insightTitle) {
-            throw new Error('The insightTitle parameter is required for debugging a Performance Insight.');
+            return generateErrorResponse('The insightTitle parameter is required for debugging a Performance Insight.');
           }
-          return await this.handleExternalPerformanceInsightsRequest(parameters.prompt, parameters.insightTitle);
+          return this.handleExternalPerformanceInsightsRequest(parameters.prompt, parameters.insightTitle);
         case AiAssistanceModel.ConversationType.NETWORK:
           if (!parameters.requestUrl) {
-            throw new Error('The url is required for debugging a network request.');
+            return generateErrorResponse('The url is required for debugging a network request.');
           }
-          return await this.handleExternalNetworkRequest(parameters.prompt, parameters.requestUrl);
+          return this.handleExternalNetworkRequest(parameters.prompt, parameters.requestUrl);
       }
     } catch (error) {
-      // Puppeteer would append the stack trace to the error message. Callers of
-      // `handleExternalRequest` have no use for the stack trace.
-      console.error(error);
-      error.stack = '';
-      throw error;
+      return generateErrorResponse(error.message);
     }
   }
 
-  async handleExternalPerformanceInsightsRequest(prompt: string, insightTitle: string):
-      Promise<{response: string, devToolsLogs: object[]}> {
+  async *
+      handleExternalPerformanceInsightsRequest(prompt: string, insightTitle: string):
+          AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
     const insightsAgent = this.#createAgent(AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
     const externalConversation = new AiAssistanceModel.Conversation(
         agentToConversationType(insightsAgent),
@@ -1739,8 +1746,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     );
     if ('error' in focusOrError) {
       return {
-        response: focusOrError.error,
-        devToolsLogs: [],
+        type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+        message: focusOrError.error,
       };
     }
 
@@ -1755,14 +1762,28 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         devToolsLogs.push(data);
       }
       if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
-        return {response: data.text, devToolsLogs};
+        return {
+          type: AiAssistanceModel.ExternalRequestResponseType.ANSWER,
+          message: data.text,
+          devToolsLogs,
+        };
+      }
+      if (data.type === AiAssistanceModel.ResponseType.CONTEXT || data.type === AiAssistanceModel.ResponseType.TITLE) {
+        yield {
+          type: AiAssistanceModel.ExternalRequestResponseType.NOTIFICATION,
+          message: data.title,
+        };
       }
     }
-    throw new Error('Something went wrong. No answer was generated.');
+    return {
+      type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+      message: 'Something went wrong. No answer was generated.',
+    };
   }
 
-  async handleExternalStylingRequest(prompt: string, selector = 'body'):
-      Promise<{response: string, devToolsLogs: object[]}> {
+  async *
+      handleExternalStylingRequest(prompt: string, selector = 'body'):
+          AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
     const stylingAgent = this.#createAgent(AiAssistanceModel.ConversationType.STYLING);
     const externalConversation = new AiAssistanceModel.Conversation(
         agentToConversationType(stylingAgent),
@@ -1790,18 +1811,32 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         void externalConversation.addHistoryItem(data);
         devToolsLogs.push(data);
       }
+      if (data.type === AiAssistanceModel.ResponseType.CONTEXT || data.type === AiAssistanceModel.ResponseType.TITLE) {
+        yield {
+          type: AiAssistanceModel.ExternalRequestResponseType.NOTIFICATION,
+          message: data.title,
+        };
+      }
       if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
         data.confirm(true);
       }
       if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
-        return {response: data.text, devToolsLogs};
+        return {
+          type: AiAssistanceModel.ExternalRequestResponseType.ANSWER,
+          message: data.text,
+          devToolsLogs,
+        };
       }
     }
-    throw new Error('Something went wrong. No answer was generated.');
+    return {
+      type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+      message: 'Something went wrong. No answer was generated.',
+    };
   }
 
-  async handleExternalNetworkRequest(prompt: string, requestUrl: string):
-      Promise<{response: string, devToolsLogs: object[]}> {
+  async *
+      handleExternalNetworkRequest(prompt: string, requestUrl: string):
+          AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
     const networkAgent =
         this.#createAgent(AiAssistanceModel.ConversationType.NETWORK) as AiAssistanceModel.NetworkAgent;
     const externalConversation = new AiAssistanceModel.Conversation(
@@ -1815,7 +1850,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     const request = await inspectNetworkRequestByUrl(requestUrl);
     if (!request) {
-      throw new Error(`Can't find request with the given selector ${requestUrl}`);
+      return {
+        type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+        message: `Can't find request with the given selector ${requestUrl}`,
+      };
     }
     const runner = networkAgent.run(
         prompt,
@@ -1830,14 +1868,27 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         void externalConversation.addHistoryItem(data);
         devToolsLogs.push(data);
       }
+      if (data.type === AiAssistanceModel.ResponseType.CONTEXT || data.type === AiAssistanceModel.ResponseType.TITLE) {
+        yield {
+          type: AiAssistanceModel.ExternalRequestResponseType.NOTIFICATION,
+          message: data.title,
+        };
+      }
       if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
         data.confirm(true);
       }
       if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
-        return {response: data.text, devToolsLogs};
+        return {
+          type: AiAssistanceModel.ExternalRequestResponseType.ANSWER,
+          message: data.text,
+          devToolsLogs,
+        };
       }
     }
-    throw new Error('Something went wrong. No answer was generated.');
+    return {
+      type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
+      message: 'Something went wrong. No answer was generated.',
+    };
   }
 }
 

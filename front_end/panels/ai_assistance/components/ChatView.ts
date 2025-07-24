@@ -1483,7 +1483,7 @@ function renderChatInput({
         @keydown=${onTextAreaKeyDown}
         @input=${(event: KeyboardEvent) => onTextInputChange((event.target as HTMLInputElement).value)}
         placeholder=${inputPlaceholder}
-        jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
+        jslog=${VisualLogging.textField('query').track({change: true, keydown: 'Enter'})}
         aria-description=${i18nString(UIStrings.inputTextAriaDescription)}
       ></textarea>
       <div class="chat-input-actions">

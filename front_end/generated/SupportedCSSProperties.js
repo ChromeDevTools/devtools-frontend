@@ -5,6 +5,13 @@
 /* eslint-disable @stylistic/quotes, @stylistic/quote-props */
 export const generatedProperties = [
  {
+  "longhands": [
+   "max-lines",
+   "continue"
+  ],
+  "name": "-alternative-webkit-line-clamp"
+ },
+ {
   "inherited": true,
   "name": "-webkit-border-horizontal-spacing"
  },
@@ -427,6 +434,7 @@ export const generatedProperties = [
    "container-type",
    "content",
    "content-visibility",
+   "continue",
    "corner-bottom-left-shape",
    "corner-bottom-right-shape",
    "corner-end-end-shape",
@@ -521,7 +529,6 @@ export const generatedProperties = [
    "letter-spacing",
    "lighting-color",
    "line-break",
-   "line-clamp",
    "line-gap-override",
    "line-height",
    "list-style-image",
@@ -554,6 +561,7 @@ export const generatedProperties = [
    "max-block-size",
    "max-height",
    "max-inline-size",
+   "max-lines",
    "max-width",
    "min-block-size",
    "min-height",
@@ -1825,6 +1833,14 @@ export const generatedProperties = [
   "name": "content-visibility"
  },
  {
+  "keywords": [
+   "auto",
+   "collapse",
+   "-webkit-legacy"
+  ],
+  "name": "continue"
+ },
+ {
   "longhands": [
    "corner-end-start-shape",
    "corner-end-end-shape"
@@ -2794,9 +2810,9 @@ export const generatedProperties = [
   "name": "line-break"
  },
  {
-  "keywords": [
-   "none",
-   "auto"
+  "longhands": [
+   "max-lines",
+   "continue"
   ],
   "name": "line-clamp"
  },
@@ -3077,6 +3093,12 @@ export const generatedProperties = [
    "none"
   ],
   "name": "max-inline-size"
+ },
+ {
+  "keywords": [
+   "none"
+  ],
+  "name": "max-lines"
  },
  {
   "keywords": [
@@ -5349,6 +5371,13 @@ export const generatedPropertyValues = {
    "hidden"
   ]
  },
+ "continue": {
+  "values": [
+   "auto",
+   "collapse",
+   "-webkit-legacy"
+  ]
+ },
  "corner-bottom-left-shape": {
   "values": [
    "notch",
@@ -5909,12 +5938,6 @@ export const generatedPropertyValues = {
    "anywhere"
   ]
  },
- "line-clamp": {
-  "values": [
-   "none",
-   "auto"
-  ]
- },
  "line-height": {
   "values": [
    "normal"
@@ -6055,6 +6078,11 @@ export const generatedPropertyValues = {
   ]
  },
  "max-inline-size": {
+  "values": [
+   "none"
+  ]
+ },
+ "max-lines": {
   "values": [
    "none"
   ]

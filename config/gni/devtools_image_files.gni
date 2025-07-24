@@ -72,6 +72,7 @@ devtools_svg_sources = [
   "brush-2.svg",
   "brush-filled.svg",
   "brush.svg",
+  "bucket.svg",
   "bug.svg",
   "bundle.svg",
   "button-magic.svg",

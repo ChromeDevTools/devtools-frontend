@@ -761,32 +761,22 @@ export class EntryLabelOverlay extends HTMLElement {
     // clang-format on
   }
 
-  #handleFocusOutEvent(): void {
+  #handleFocusOutEvent(event: FocusEvent): void {
     /**
      * Usually when the text box loses focus, we want to stop the edit mode and
      * just display the annotation. However, if the user tabs from the text box
      * to focus the GenerateAI button, we need to ensure that we do not exit
      * edit mode. The only reliable method is to listen to the focusout event
      * (which bubbles, unlike `blur`) on the parent.
-     * This means we get any updates on the focus state of anything inside this component.
-     * Once we get the event, we check to see if focus is still within this
-     * component (which means either the input, or the button, or the disclaimer popup).
-     * If it is, we do nothing, but if we have lost focus,  we can then exit editable mode.
-     *
-     * If you are thinking "why not `blur` on the span" it's because blur does
-     * not propagate; the span itself never blurs, but the elements inside it
-     * do as the span is not focusable.
-     *
-     * The reason we do it inside a rAF is because on the first run the values
-     * for `this.hasFocus()` are not accurate. I'm not quite sure why, but by
-     * letting the browser have a frame to update, it then accurately reports
-     * the up to date values for `this.hasFocus()`
      */
-    requestAnimationFrame(() => {
-      if (!this.hasFocus()) {
-        this.setLabelEditabilityAndRemoveEmptyLabel(false);
-      }
-    });
+    const relatedTarget = event.relatedTarget as Node | null;
+    // If the related target is null, it means the focus has left the browser
+    // window. If it's not null, we check if the new focused element is a
+    // descendant of this component's shadow root. If it is, we don't do anything.
+    if (relatedTarget && this.#shadow.contains(relatedTarget)) {
+      return;
+    }
+    this.setLabelEditabilityAndRemoveEmptyLabel(false);
   }
 
   #render(): void {

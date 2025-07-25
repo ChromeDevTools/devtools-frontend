@@ -8,7 +8,6 @@ import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js'
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   $,
-  click,
   goToResource,
   setCheckBox,
   waitFor,
@@ -111,8 +110,9 @@ export async function waitForSelectedRequestChange(initialRequestName: string|nu
   });
 }
 
-export async function setPersistLog(persist: boolean) {
-  await setCheckBox('[title="Do not clear log on page reload / navigation"]', persist);
+export async function setPersistLog(
+    persist: boolean, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.setCheckBox('[title="Do not clear log on page reload / navigation"]', persist);
 }
 
 export async function setCacheDisabled(
@@ -142,19 +142,21 @@ export async function setTextFilter(
   await devToolsPage.typeText(text);
 }
 
-export async function getTextFilterContent(): Promise<string> {
-  const toolbarHandle = await waitFor('.text-filter');
-  const textFilterContent = toolbarHandle.evaluate(toolbar => {
+export async function getTextFilterContent(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<string> {
+  const toolbarHandle = await devToolsPage.waitFor('.text-filter');
+  const textFilterContent = await toolbarHandle.evaluate(toolbar => {
     return toolbar.querySelector('[aria-label="Filter"]')?.textContent ?? '';
   });
-  return await textFilterContent;
+  return textFilterContent;
 }
 
-export async function clearTextFilter(): Promise<void> {
-  const textFilterContent = await getTextFilterContent();
+export async function clearTextFilter(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<void> {
+  const textFilterContent = await getTextFilterContent(devToolsPage);
   if (textFilterContent) {
-    const toolbarHandle = await waitFor('.text-filter');
-    await click('[aria-label="Clear"]', {root: toolbarHandle});
+    const toolbarHandle = await devToolsPage.waitFor('.text-filter');
+    await devToolsPage.click('[aria-label="Clear"]', {root: toolbarHandle});
   }
 }
 

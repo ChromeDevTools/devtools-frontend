@@ -1,0 +1,46 @@
+# Hover action test
+id: "hover-001"
+name: "Hover to Reveal Menu"
+description: "Test hovering over an element to reveal hidden content"
+enabled: true
+
+target:
+  url: "https://the-internet.herokuapp.com/hovers"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Hover over the first user avatar image to reveal the hidden caption"
+  reasoning: "Testing hover interaction to reveal dynamic content"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the first user avatar image"
+      - "Used appropriate hover action method"
+      - "Successfully triggered the hover state"
+      - "Hidden caption became visible after hover"
+      - "Handled mouse interaction correctly"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Compare screenshots to verify hover revealed hidden content"
+        - "Check that caption or overlay appeared over the first avatar"
+        - "Confirm the hover state is visually active on the image"
+        - "Verify user information or caption text is now visible"
+
+metadata:
+  tags: ["action", "hover", "mouse", "dynamic", "reveal"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

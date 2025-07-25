@@ -1,0 +1,46 @@
+# Table column sorting test
+id: "tablesort-001"
+name: "Sort Table Column"
+description: "Test clicking table column header to sort data"
+enabled: true
+
+target:
+  url: "https://datatables.net/examples/basic_init/zero_configuration.html"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Click on the \"Name\" column header to sort the table by name"
+  reasoning: "Testing table column sorting interaction"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the Name column header"
+      - "Successfully clicked the column header"
+      - "Table data reordered by name alphabetically"
+      - "Sort indicator appeared on the Name column"
+      - "Table sorting completed without errors"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify table rows are now sorted alphabetically by name"
+        - "Check if sort arrow/indicator appears on Name column"
+        - "Confirm the data order changed from before to after"
+        - "Ensure table structure remained intact after sorting"
+
+metadata:
+  tags: ["action", "table", "sort", "column", "data"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

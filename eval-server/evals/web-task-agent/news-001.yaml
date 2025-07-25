@@ -1,0 +1,64 @@
+# News Article Aggregation - Web Task Agent
+id: "news-001"
+name: "News Article Aggregation"
+description: "Test aggregating news headlines and summaries from news sites"
+enabled: true
+
+target:
+  url: "https://news.ycombinator.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Extract the top 10 Hacker News stories with titles, scores, and first few comments"
+  reasoning: "Users want automated news monitoring for research and awareness"
+  extraction_schema:
+    type: "object"
+    properties:
+      articles:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+            score:
+              type: "number"
+            comments_count:
+              type: "number"
+            url:
+              type: "string"
+            top_comment:
+              type: "string"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully extracted 10 Hacker News stories as requested"
+      - "Each story includes title, score, and comment count"
+      - "URLs are provided for each story"
+      - "Stories appear to be from the current top/front page"
+      - "Results are presented in clear, numbered text format (1-10), not JSON"
+      - "All required fields are present and properly formatted in readable text"
+      - "Each story is clearly separated and easy to read"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Hacker News stories are visible with scores"
+        - "Check that story titles and comment counts are shown"
+        - "Confirm top stories section is properly displayed"
+        - "Ensure story metadata is accessible for extraction"
+
+metadata:
+  tags: ["web-task", "news", "hackernews", "aggregation", "popular"]
+  priority: "high"
+  owner: "devtools-team"

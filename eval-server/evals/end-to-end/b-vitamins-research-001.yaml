@@ -1,0 +1,35 @@
+# B-Vitamins Research - End-to-End Test
+id: "vitamins-research-001"
+name: "B-Vitamins Supplementation Research"
+description: "End-to-end test for comprehensive B-vitamins research using chat interface"
+enabled: true
+
+tool: "chat"
+timeout: 600000
+
+input:
+  message: "Research everything on the supplementation of B-vitamins for adults. I need: types of vitamins, available forms and their advantages, dosage and safety"
+  reasoning: "End-to-end test validating complete user workflow with dynamic tool usage for health research"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Covers all B-vitamin types (B1, B2, B3, B5, B6, B7, B9, B12) comprehensively"
+      - "Explains different forms of each vitamin and their advantages"
+      - "Provides appropriate dosage recommendations for adults"
+      - "Discusses safety considerations and potential side effects"
+      - "Information is accurate and from reliable health sources"
+      - "Response is well-organized and easy to understand"
+      - "Demonstrates intelligent tool selection for health research"
+      - "Shows complete workflow from request to comprehensive result"
+
+metadata:
+  tags: ["end-to-end", "chat", "health", "vitamins", "research", "user-workflow"]
+  priority: "medium"
+  timeout: 300000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

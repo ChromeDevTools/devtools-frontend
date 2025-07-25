@@ -4,7 +4,7 @@
 
 import { createLogger } from '../core/Logger.js';
 import { WebSocketRPCClient } from './WebSocketRPCClient.js';
-import { createAndConnectEvaluationAgent, getEvaluationAgent, disconnectEvaluationAgent } from '../evaluation/EvaluationAgent.js';
+import { createAndConnectEvaluationAgent, getEvaluationAgent, disconnectEvaluationAgent } from '../evaluation/remote/EvaluationAgent.js';
 
 const logger = createLogger('EvaluationConfig');
 

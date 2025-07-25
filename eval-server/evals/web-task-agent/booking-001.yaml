@@ -1,0 +1,45 @@
+# Hotel Search Workflow - Web Task Agent
+id: "booking-001"
+name: "Hotel Search Workflow"
+description: "Test web task agent orchestrating complex multi-step booking search"
+enabled: true
+
+target:
+  url: "https://www.booking.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Search for hotels in San Francisco for 2 adults, check-in March 15, check-out March 17"
+  reasoning: "Customer is looking for travel booking"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully searched for hotels in San Francisco"
+      - "Results show hotels available for March 15-17 dates"
+      - "Guest count of 2 adults is reflected in the search results"
+      - "Returned multiple hotel options with relevant details"
+      - "Each hotel includes essential information (name, price, location)"
+      - "Results are presented in a clear, readable format"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify hotel search results are displayed for San Francisco"
+        - "Check that dates March 15-17 are correctly selected"
+        - "Confirm guest count shows 2 adults"
+        - "Ensure search results show hotels with availability for specified dates"
+
+metadata:
+  tags: ["web-task", "booking", "workflow", "multi-step", "travel", "complex"]
+  priority: "high"
+  owner: "devtools-team"

@@ -1,0 +1,53 @@
+# E-commerce web task evaluation (matches DevTools test case)
+id: "ecommerce-001"
+name: "E-commerce Product Search"
+description: "Test web task agent handling product search on shopping site"
+enabled: true
+
+target:
+  url: "https://www.amazon.com"
+
+tool: "web_task_agent"
+timeout: 90000
+
+input:
+  task: "Search Amazon for \"wireless headphones\" and find products under $100"
+  reasoning: "Testing e-commerce search workflow with price filtering"
+  context: "User wants to find wireless headphones with specific price constraint"
+  extraction_schema:
+    type: "object"
+    properties:
+      products:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            price:
+              type: "string"
+            rating:
+              type: "string"
+            url:
+              type: "string"
+
+
+validation:
+  type: "hybrid"
+  llm_judge:
+    model: "gpt-4o"
+    criteria:
+      - "Successfully navigated to product search"
+      - "Applied appropriate filters correctly"
+      - "Extracted product details accurately"
+      - "Provided meaningful comparison of features"
+      - "Stayed within specified price range"
+  snapshot:
+    structure_only: true
+    exclude_paths:
+      - "timestamp"
+      - "sessionId"
+
+metadata:
+  tags: ["web-task", "multi-step", "ecommerce", "search"]
+  priority: "high"

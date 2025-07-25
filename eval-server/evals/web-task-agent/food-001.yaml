@@ -1,0 +1,68 @@
+# Restaurant Search and Menu Extraction - Web Task Agent
+id: "food-001"
+name: "Restaurant Search and Menu Extraction"
+description: "Test searching restaurants and extracting menu information"
+enabled: true
+
+target:
+  url: "https://www.yelp.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Search for \"Italian restaurants near me\" in San Francisco and extract restaurant details"
+  reasoning: "Users want to quickly compare restaurants, menus, and reviews"
+  extraction_schema:
+    type: "object"
+    properties:
+      restaurants:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            rating:
+              type: "string"
+            price_range:
+              type: "string"
+            cuisine:
+              type: "string"
+            address:
+              type: "string"
+            phone:
+              type: "string"
+            hours:
+              type: "string"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully found Italian restaurants in San Francisco"
+      - "Each restaurant includes name, rating, and price range"
+      - "Location/address information is provided for each restaurant"
+      - "Contact details (phone/hours) included when available"
+      - "All restaurants listed serve Italian cuisine"
+      - "Results are presented in clear, structured text format (not JSON)"
+      - "Restaurants are numbered or organized clearly for easy comparison"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Yelp search results for Italian restaurants"
+        - "Check that restaurants show ratings and price ranges"
+        - "Confirm location filter shows San Francisco results"
+        - "Ensure restaurant listings include contact information"
+
+metadata:
+  tags: ["web-task", "restaurants", "yelp", "food", "local-search", "popular"]
+  priority: "high"
+  owner: "devtools-team"

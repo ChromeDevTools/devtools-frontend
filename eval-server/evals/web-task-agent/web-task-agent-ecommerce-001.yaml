@@ -31,8 +31,6 @@ input:
             url:
               type: "string"
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "hybrid"

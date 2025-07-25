@@ -1,0 +1,11 @@
+# model:
+#   main_model: "deepseek-r1:14b"
+#   mini_model: "deepseek-r1:14b"
+#   nano_model: "deepseek-r1:14b"
+#   provider: "litellm"
+
+model:
+  main_model: "gpt-4.1"
+  mini_model: "gpt-4.1-mini"
+  nano_model: "gpt-4.1-nano"
+  provider: "openai"

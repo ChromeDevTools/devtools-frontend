@@ -1,0 +1,61 @@
+# News Article Progressive Loading - Web Task Agent
+id: "scroll-003"
+name: "News Article Progressive Loading"
+description: "Test scrolling through news sites that load articles progressively"
+enabled: true
+
+target:
+  url: "https://medium.com/topic/technology"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Scroll down to load more technology articles and extract titles and authors for at least 15 articles"
+  reasoning: "Testing progressive content loading on news/blog platforms"
+  extraction_schema:
+    type: "object"
+    properties:
+      articles:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+            author:
+              type: "string"
+            reading_time:
+              type: "string"
+            preview:
+              type: "string"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Used scroll_page tool multiple times to load content"
+      - "Successfully loaded at least 15 articles through scrolling"
+      - "Extracted article titles and author information"
+      - "Handled Medium's progressive loading mechanism"
+      - "Articles are from technology topic as requested"
+      - "Results presented in clear, numbered format"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Medium technology page is loaded"
+        - "Check that initial articles are visible"
+        - "Confirm scrolling loaded additional articles"
+        - "Ensure at least 15 articles are visible after scrolling"
+
+metadata:
+  tags: ["web-task", "scrolling", "progressive-loading", "medium", "articles"]
+  priority: "high"
+  owner: "devtools-team"

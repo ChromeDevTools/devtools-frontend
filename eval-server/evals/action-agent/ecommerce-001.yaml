@@ -1,0 +1,46 @@
+# E-commerce action test
+id: "ecommerce-001"
+name: "Add Product to Cart"
+description: "Test clicking \"Add to Cart\" button on an e-commerce product page"
+enabled: true
+
+target:
+  url: "https://www.homedepot.com/p/Husky-20-Gal-Professional-Duty-Waterproof-Storage-Container-with-Hinged-Lid-in-Red-249160/313799634"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 180000
+
+input:
+  objective: "Click the \"Add to Cart\" button for this storage container"
+  reasoning: "Testing e-commerce interaction with product cart functionality"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the Add to Cart button on the product page"
+      - "Successfully clicked the button"
+      - "Handled any popups or confirmations that appeared"
+      - "Verified the item was added (cart count changed or confirmation shown)"
+      - "Dealt with page dynamics after clicking"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Compare screenshots to verify the Add to Cart button was clicked"
+        - "Check if cart count indicator increased or shows the item was added"
+        - "Look for any confirmation popup or notification about the item being added"
+        - "Verify the button state changed (e.g., to \"Added to Cart\" or disabled)"
+
+metadata:
+  tags: ["action", "ecommerce", "click", "homedepot", "cart"]
+  priority: "high"
+  timeout: 180000
+  retries: 3
+  flaky: true
+  owner: "devtools-team"

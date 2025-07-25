@@ -1,0 +1,61 @@
+# Search Results Infinite Scroll - Web Task Agent
+id: "scroll-004"
+name: "Search Results Infinite Scroll"
+description: "Test handling search results that use infinite scroll instead of pagination"
+enabled: true
+
+target:
+  url: "https://www.pinterest.com/search/pins/?q=web%20design"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Search for \"web design\" pins and scroll to load at least 30 results, then extract pin details"
+  reasoning: "Testing infinite scroll on visual search platforms"
+  extraction_schema:
+    type: "object"
+    properties:
+      pins:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+            description:
+              type: "string"
+            saves:
+              type: "string"
+            source:
+              type: "string"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully performed search for \"web design\" pins"
+      - "Used scroll_page tool to trigger infinite scroll loading"
+      - "Loaded at least 30 pins through scrolling actions"
+      - "Extracted pin titles and metadata"
+      - "Handled Pinterest's masonry layout and lazy loading"
+      - "Results are well-organized and readable"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Pinterest search results for web design"
+        - "Check initial pins are displayed"
+        - "Confirm scrolling loaded many more pins"
+        - "Ensure grid layout shows 30+ pins after scrolling"
+
+metadata:
+  tags: ["web-task", "scrolling", "infinite-scroll", "pinterest", "visual-search"]
+  priority: "high"
+  owner: "devtools-team"

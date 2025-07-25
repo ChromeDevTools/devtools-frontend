@@ -20,7 +20,7 @@ export const CONFIG = {
   },
   
   rpc: {
-    timeout: parseInt(process.env.RPC_TIMEOUT) || 30000,
+    timeout: parseInt(process.env.RPC_TIMEOUT) || 1500000, // 25 minutes default
     maxConcurrentEvaluations: parseInt(process.env.MAX_CONCURRENT_EVALUATIONS) || 10
   }
 };

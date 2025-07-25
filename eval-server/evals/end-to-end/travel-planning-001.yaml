@@ -1,0 +1,40 @@
+# Barcelona Travel Planning - End-to-End Test
+id: "travel-planning-001"
+name: "Barcelona Trip Planning"
+description: "End-to-end test for comprehensive travel planning using chat interface"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "chat"
+timeout: 300000
+
+input:
+  message: "Help me plan a 3-day trip to Barcelona. I need flight options from New York, hotel recommendations in the city center, and top 5 attractions to visit."
+  reasoning: "End-to-end test validating complete travel planning workflow with dynamic tool usage"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Provides realistic flight options from New York to Barcelona"
+      - "Recommends hotels in Barcelona city center with details"
+      - "Lists top 5 attractions in Barcelona with descriptions"
+      - "Information is current and practically useful for trip planning"
+      - "Includes relevant details like prices, locations, or booking info"
+      - "Response is well-organized into clear sections"
+      - "Demonstrates multi-tool usage for comprehensive planning"
+      - "Shows complete workflow from request to actionable itinerary"
+
+metadata:
+  tags: ["end-to-end", "chat", "travel", "planning", "barcelona", "user-workflow"]
+  priority: "medium"
+  timeout: 300000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

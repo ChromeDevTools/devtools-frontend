@@ -1,0 +1,69 @@
+# Online Course Search - Web Task Agent
+id: "learning-001"
+name: "Online Course Search"
+description: "Test searching and extracting course information from learning platforms"
+enabled: true
+
+target:
+  url: "https://www.coursera.org"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Search for \"Machine Learning\" courses and extract details for top 5 results"
+  reasoning: "Users want to compare courses across platforms for learning decisions"
+  extraction_schema:
+    type: "object"
+    properties:
+      courses:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+            instructor:
+              type: "string"
+            university:
+              type: "string"
+            rating:
+              type: "string"
+            duration:
+              type: "string"
+            price:
+              type: "string"
+            description:
+              type: "string"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully found Machine Learning courses on Coursera"
+      - "Returned details for top 5 courses as requested"
+      - "Each course includes title, instructor, university, and rating"
+      - "Duration and pricing information included for each course"
+      - "Course descriptions or key topics are provided"
+      - "Results are presented in structured text format (not JSON)"
+      - "Courses are numbered (1-5) and well-organized for easy comparison"
+      - "Each course entry is clearly formatted and readable"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Coursera search results for Machine Learning"
+        - "Check that courses show titles, instructors, and ratings"
+        - "Confirm course details include duration and pricing"
+        - "Ensure search results are relevant to Machine Learning"
+
+metadata:
+  tags: ["web-task", "education", "coursera", "courses", "learning", "popular"]
+  priority: "high"
+  owner: "devtools-team"

@@ -41,8 +41,6 @@ evaluations:
             type: "string"
             description: "Main content"
     
-    schedule:
-      type: "on_demand"
     
     validation:
       type: "llm-judge"

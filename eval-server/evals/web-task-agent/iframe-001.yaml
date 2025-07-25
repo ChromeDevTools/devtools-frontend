@@ -1,0 +1,83 @@
+# ANA Airlines Iframe Content Extraction - Web Task Agent
+id: "iframe-001"
+name: "ANA Airlines Iframe Content Extraction"
+description: "Test web task agent handling iframe-heavy airline booking sites like ANA Airlines"
+enabled: true
+
+target:
+  url: "https://aswbe.ana.co.jp/webapps/reservation/flight-search?CONNECTION_KIND=SEA&LANG=en&hiddenSearchMode=ROUND_TRIP&departureDate:field=20260320&returnDate:field=20260330&departureAirportCode:field=SEA&arrivalAirportCode:field=NRT&adultCount=1&youngAdultCount=0&childCount=0&infantCount=0&boardingClass=INTY001&searchFlag=1"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Navigate the ANA Airlines flight search page and extract available flight options from Seattle (SEA) to Tokyo Narita (NRT) for March 20-30, 2026. Handle any iframe content and booking interface elements."
+  reasoning: "Testing iframe content extraction and complex airline booking site navigation"
+  extraction_schema:
+    type: "object"
+    properties:
+      flights:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            flight_number:
+              type: "string"
+            airline:
+              type: "string"
+            departure_time:
+              type: "string"
+            arrival_time:
+              type: "string"
+            departure_date:
+              type: "string"
+            arrival_date:
+              type: "string"
+            duration:
+              type: "string"
+            aircraft:
+              type: "string"
+            price:
+              type: "string"
+            cabin_class:
+              type: "string"
+            stops:
+              type: "string"
+      booking_interface_status:
+        type: "string"
+      iframe_content_found:
+        type: "boolean"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully navigated ANA Airlines booking interface"
+      - "Handled iframe content correctly (iframe_content_found should be true if iframes detected)"
+      - "Extracted flight information from ANA flight search results"
+      - "Flight details include ANA flight numbers and accurate route (SEA to NRT)"
+      - "Extracted pricing information in appropriate currency"
+      - "Handled any booking interface elements, popups, or navigation flows"
+      - "Results show flights for the correct dates (March 20-30, 2026)"
+      - "Successfully demonstrated iframe content extraction capabilities"
+      - "Booking interface status indicates successful page interaction"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify ANA Airlines flight search page loaded correctly"
+        - "Check that search parameters show SEA to NRT route"
+        - "Confirm flight results are displayed (may be in iframes)"
+        - "Ensure booking interface elements are functional"
+        - "Verify flight information is accessible and extractable"
+
+metadata:
+  tags: ["web-task", "iframe", "ana-airlines", "complex-booking", "international-flight", "airline-specific"]
+  priority: "high"
+  owner: "devtools-team"

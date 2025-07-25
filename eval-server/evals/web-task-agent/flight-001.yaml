@@ -1,0 +1,45 @@
+# Complex Flight Search - Web Task Agent
+id: "flight-001"
+name: "Complex Flight Search"
+description: "Test web task agent handling complex flight search with multiple criteria"
+enabled: true
+
+target:
+  url: "https://www.kayak.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Search for round-trip flights from Seattle (SEA) to Tokyo (NRT) departing March 20, returning March 30"
+  reasoning: "Customer is looking for finding the best flight options"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully found round-trip flights from Seattle (SEA) to Tokyo (NRT)"
+      - "Flight results show March 20 departure date"
+      - "Flight results show March 30 return date"
+      - "Returned multiple flight options with airlines and prices"
+      - "Each flight includes essential details (times, airlines, prices)"
+      - "Results clearly distinguish between outbound and return flights"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify flight search results are displayed"
+        - "Check SEA to NRT route is correctly selected"
+        - "Confirm dates March 20 departure and March 30 return"
+        - "Ensure flight options are showing with prices and airlines"
+
+metadata:
+  tags: ["web-task", "flight", "travel", "multi-step", "kayak", "round-trip"]
+  priority: "high"
+  owner: "devtools-team"

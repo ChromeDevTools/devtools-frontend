@@ -15,8 +15,6 @@ input:
   reasoning: "Testing visual verification workflow with before/after screenshot comparison"
   hint: "Use take_screenshot tool before and after performing the search input action"
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "llm-judge"

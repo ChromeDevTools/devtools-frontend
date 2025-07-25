@@ -1,0 +1,39 @@
+# Basic research test - stable topic with clear sources
+id: "basic-001"
+name: "Research Chrome DevTools History"
+description: "Research the history and development of Chrome DevTools"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "research_agent"
+timeout: 180000
+
+input:
+  query: "History and development of Chrome DevTools browser developer tools"
+  reasoning: "Testing basic research capabilities on a well-documented technical topic"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0
+    criteria:
+      - "Research covers the origins and early development of Chrome DevTools"
+      - "Information includes key milestones and major feature additions"
+      - "Sources include official documentation or reliable technical sources"
+      - "At least 3-5 different sources were consulted"
+      - "Information is factually accurate and up-to-date"
+      - "Research demonstrates understanding of the topic evolution"
+      - "Handoff to content_writer_agent occurred with comprehensive data"
+
+metadata:
+  tags: ["basic", "technical", "stable", "documentation"]
+  priority: "high"
+  timeout: 180000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

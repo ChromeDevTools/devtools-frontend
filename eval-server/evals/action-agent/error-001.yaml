@@ -1,0 +1,47 @@
+# Error recovery test
+id: "error-001"
+name: "Handle Missing Element"
+description: "Test agent behavior when target element is not found"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Click the \"Sign Up\" button"
+  reasoning: "Testing error handling when element does not exist"
+  hint: "There is no Sign Up button on Google homepage - agent should handle gracefully"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Attempted to find the requested element"
+      - "Recognized that the element does not exist"
+      - "Provided clear error message or explanation"
+      - "Did not crash or produce confusing output"
+      - "Suggested alternatives or explained the issue"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the page remains in a stable state despite the missing element"
+        - "Confirm no error dialogs or broken UI elements appeared"
+        - "Check that the agent handled the missing element gracefully"
+        - "Ensure the page was properly analyzed even though the target was not found"
+
+metadata:
+  tags: ["action", "error-handling", "missing-element", "recovery", "edge-case"]
+  priority: "high"
+  timeout: 60000
+  retries: 1
+  flaky: false
+  owner: "devtools-team"

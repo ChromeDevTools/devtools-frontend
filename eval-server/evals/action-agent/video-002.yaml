@@ -1,0 +1,47 @@
+# Video play button specific targeting test
+id: "video-002"
+name: "Click Video Play Button Specifically"
+description: "Test clicking the specific play button (not the video element)"
+enabled: true
+
+target:
+  url: "https://www.w3schools.com/html/html5_video.asp"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Find and click the button that has name=\"play\" (not the Video element itself)"
+  reasoning: "Testing specific targeting of the play button element"
+  hint: "Target the button element with text or label \"play\", do not click the Video element"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Found a button element (not Video element) with \"play\" in the name"
+      - "Successfully clicked the play button specifically"
+      - "Did not click on the Video element itself"
+      - "Play button click was executed correctly"
+      - "Video responded to the button click"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the play button (not video element) was clicked"
+        - "Check if video started playing after button click"
+        - "Confirm the target was the button, not the video container"
+        - "Look for changes in video player state"
+
+metadata:
+  tags: ["action", "video", "button", "specific-targeting"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

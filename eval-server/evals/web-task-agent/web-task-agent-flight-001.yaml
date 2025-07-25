@@ -16,8 +16,6 @@ input:
   task: "Search for round-trip flights from Seattle (SEA) to Tokyo (NRT) departing March 20, returning March 30"
   reasoning: "Customer is looking for finding the best flight options"
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "llm_judge"

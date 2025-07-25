@@ -15,8 +15,6 @@ input:
   reasoning: "Testing basic site-specific search workflow orchestration"
   context: "Need to demonstrate web_task_agent can coordinate multiple action_agent calls for a complete search workflow"
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "llm-judge"

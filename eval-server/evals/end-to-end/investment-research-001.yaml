@@ -1,0 +1,35 @@
+# Renewable Energy Stocks Research - End-to-End Test
+id: "investment-research-001"
+name: "Renewable Energy Stocks Research"
+description: "End-to-end test for investment research using chat interface"
+enabled: true
+
+tool: "chat"
+timeout: 600000
+
+input:
+  message: "Research renewable energy stocks for potential investment. Focus on solar and wind companies with market cap over $1B."
+  reasoning: "End-to-end test validating financial research workflow with dynamic tool usage"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Identifies specific solar and wind energy companies"
+      - "Confirms companies have market cap over $1 billion"
+      - "Provides relevant financial metrics and data"
+      - "Includes business descriptions and growth prospects"
+      - "Discusses investment considerations and risks"
+      - "Information appears current and from reliable sources"
+      - "Demonstrates intelligent financial research tool usage"
+      - "Shows complete workflow from request to investment analysis"
+
+metadata:
+  tags: ["end-to-end", "chat", "investment", "stocks", "renewable-energy", "financial", "user-workflow"]
+  priority: "medium"
+  timeout: 300000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

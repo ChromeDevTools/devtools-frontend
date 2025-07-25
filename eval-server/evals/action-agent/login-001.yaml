@@ -1,0 +1,47 @@
+# Login form test
+id: "login-001"
+name: "Fill Login Credentials"
+description: "Test filling username and password fields in a login form"
+enabled: true
+
+target:
+  url: "https://the-internet.herokuapp.com/login"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Fill the username field with \"tomsmith\" and password field with \"SuperSecretPassword!\""
+  reasoning: "Testing form fill with multiple fields including password type"
+  input_data: "<username>tomsmith</username><password>SuperSecretPassword!</password>"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Identified both username and password fields"
+      - "Filled username field with correct value"
+      - "Filled password field with correct value"
+      - "Handled password field type appropriately"
+      - "Used the provided input_data XML format correctly"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the username field shows \"tomsmith\" entered"
+        - "Confirm the password field has dots/asterisks indicating password entry"
+        - "Check that both fields are properly filled before submission"
+        - "Ensure no validation errors are shown for the filled fields"
+
+metadata:
+  tags: ["action", "login", "form-fill", "authentication", "multi-field"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

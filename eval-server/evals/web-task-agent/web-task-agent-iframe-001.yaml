@@ -50,8 +50,6 @@ input:
       iframe_content_found:
         type: "boolean"
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "llm_judge"

@@ -13,8 +13,6 @@ timeout: 30000
 input:
   fullPage: false
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "llm-judge"

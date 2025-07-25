@@ -18,8 +18,8 @@ import { createLogger } from './Logger.js';
 import {type AgentState, createInitialState, createUserMessage} from './State.js';
 import type {CompiledGraph} from './Types.js';
 import { LLMClient } from '../LLM/LLMClient.js';
-import { createTracingProvider } from '../tracing/TracingConfig.js';
-import type { TracingProvider } from '../tracing/TracingProvider.js';
+import { createTracingProvider, getCurrentTracingContext } from '../tracing/TracingConfig.js';
+import type { TracingProvider, TracingContext } from '../tracing/TracingProvider.js';
 
 const logger = createLogger('AgentService');
 
@@ -96,15 +96,14 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
     
     const providers = [];
     
-    // Add OpenAI if it's the selected provider and has an API key
+    // Only add the selected provider
     if (provider === 'openai' && openaiKey) {
       providers.push({ 
         provider: 'openai' as const, 
         apiKey: openaiKey 
       });
     }
-    
-    // Add LiteLLM if it's the selected provider and has configuration
+      
     if (provider === 'litellm' && litellmEndpoint) {
       providers.push({ 
         provider: 'litellm' as const, 
@@ -112,16 +111,14 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
         providerURL: litellmEndpoint 
       });
     }
-    
-    // Add Groq if it's the selected provider and has an API key
+      
     if (provider === 'groq' && groqKey) {
       providers.push({ 
         provider: 'groq' as const, 
         apiKey: groqKey 
       });
     }
-    
-    // Add OpenRouter if it's the selected provider and has an API key
+      
     if (provider === 'openrouter' && openrouterKey) {
       providers.push({ 
         provider: 'openrouter' as const, 
@@ -142,7 +139,11 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
     }
     
     await llm.initialize({ providers });
-    logger.info('LLM client initialized successfully');
+    logger.info('LLM client initialized successfully', {
+      selectedProvider: provider,
+      providersRegistered: providers.map(p => p.provider),
+      providersCount: providers.length
+    });
   }
 
   /**
@@ -281,35 +282,56 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
     const currentPageUrl = await this.#getCurrentPageUrl();
     const currentPageTitle = await this.#getCurrentPageTitle();
 
-    // Create trace for this interaction
-    const traceId = this.generateTraceId();
-    logger.debug('Creating trace for user message', {
-      traceId,
-      sessionId: this.#sessionId,
-      tracingEnabled: this.#tracingProvider.isEnabled()
-    });
+    // Check if there's an existing tracing context (e.g., from evaluation)
+    const existingContext = getCurrentTracingContext() as TracingContext | null;
     
-    await this.#tracingProvider.createTrace(
-      traceId,
-      this.#sessionId,
-      'User Message',
-      { text, imageInput },
-      {
-        selectedAgentType,
-        currentPageUrl,
-        currentPageTitle
-      },
-      undefined, // userId
-      [selectedAgentType || 'default'].filter(Boolean)
-    );
+    let traceId: string;
+    let parentObservationId: string | undefined;
+    
+    if (existingContext?.traceId) {
+      // Use the existing trace from evaluation context
+      traceId = existingContext.traceId;
+      parentObservationId = existingContext.parentObservationId;
+      
+      logger.debug('Using existing trace context from evaluation', {
+        traceId,
+        sessionId: existingContext.sessionId,
+        parentObservationId,
+        tracingEnabled: this.#tracingProvider.isEnabled()
+      });
+    } else {
+      // Create a new trace for this interaction
+      traceId = this.generateTraceId();
+      
+      logger.debug('Creating new trace for user message', {
+        traceId,
+        sessionId: this.#sessionId,
+        tracingEnabled: this.#tracingProvider.isEnabled()
+      });
+      
+      await this.#tracingProvider.createTrace(
+        traceId,
+        this.#sessionId,
+        'User Message',
+        { text, imageInput },
+        {
+          selectedAgentType,
+          currentPageUrl,
+          currentPageTitle
+        },
+        undefined, // userId
+        [selectedAgentType || 'default'].filter(Boolean)
+      );
+    }
 
-    console.warn('Trace created for user message', {
+    console.warn('Trace context for user message', {
       traceId,
-      sessionId: this.#sessionId,
+      sessionId: existingContext?.sessionId || this.#sessionId,
       selectedAgentType,
       currentPageUrl,
       currentPageTitle,
-      messageCount: this.#state.messages.length
+      messageCount: this.#state.messages.length,
+      isExistingTrace: !!existingContext
     });
 
     // Create user input event
@@ -328,8 +350,10 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
         selectedAgentType,
         currentPageUrl,
         currentPageTitle,
-        messageCount: this.#state.messages.length
-      }
+        messageCount: this.#state.messages.length,
+        isEvaluationContext: !!existingContext
+      },
+      ...(parentObservationId && { parentObservationId })
     }, traceId);
 
     try {
@@ -338,9 +362,9 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
         messages: this.#state.messages,
         context: {
           tracingContext: {
-            sessionId: this.#sessionId,
+            sessionId: existingContext?.sessionId || this.#sessionId,
             traceId,
-            parentObservationId: undefined
+            parentObservationId: parentObservationId
           }
         },
         selectedAgentType: selectedAgentType ?? null, // Set the agent type for this run
@@ -401,12 +425,14 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
         }
       }, traceId);
 
-      // Finalize trace with the final output
-      await this.#tracingProvider.finalizeTrace(
-        traceId,
-        finalMessage,
-        { status: 'success' }
-      );
+      // Only finalize trace if we created a new one (not using existing evaluation trace)
+      if (!existingContext) {
+        await this.#tracingProvider.finalizeTrace(
+          traceId,
+          finalMessage,
+          { status: 'success' }
+        );
+      }
 
       // Return the most recent message (could be final answer, tool call, or error)
       return finalMessage;
@@ -442,12 +468,14 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
         }
       }, traceId);
 
-      // Finalize trace with error
-      await this.#tracingProvider.finalizeTrace(
-        traceId,
-        errorMessage,
-        { status: 'error', error: error instanceof Error ? error.message : String(error) }
-      );
+      // Only finalize trace if we created a new one (not using existing evaluation trace)
+      if (!existingContext) {
+        await this.#tracingProvider.finalizeTrace(
+          traceId,
+          errorMessage,
+          { status: 'error', error: error instanceof Error ? error.message : String(error) }
+        );
+      }
 
       return errorMessage;
     }

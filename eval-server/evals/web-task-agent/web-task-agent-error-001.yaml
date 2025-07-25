@@ -16,8 +16,6 @@ input:
   task: "Search for \"nonexistent test query 12345\" and handle any issues that arise"
   reasoning: "Customer is asking for this response"
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "llm_judge"

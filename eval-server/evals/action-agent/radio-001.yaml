@@ -1,0 +1,47 @@
+# Radio button selection test
+id: "radio-001"
+name: "Select Radio Button Option"
+description: "Test selecting a specific radio button option using click method"
+enabled: true
+
+target:
+  url: "https://httpbin.org/forms/post"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 45000
+
+input:
+  objective: "Select the \"Medium\" pizza size from the Pizza Size radio button group"
+  reasoning: "Testing radio button selection functionality"
+  hint: "Look for the Medium radio button in the Pizza Size section and click it to select"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the Medium radio button in the Pizza Size section"
+      - "Successfully clicked the Medium radio button"
+      - "Radio button became selected (checked state)"
+      - "Other radio buttons in the same group became unselected"
+      - "Form maintained its structure after radio button selection"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the Medium radio button is now selected (shows filled circle)"
+        - "Check that other pizza size options (Small, Large) are no longer selected"
+        - "Confirm the form structure remained intact"
+        - "Ensure the Medium pizza size radio button was specifically targeted"
+
+metadata:
+  tags: ["action", "radio", "click", "form", "httpbin"]
+  priority: "high"
+  timeout: 45000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

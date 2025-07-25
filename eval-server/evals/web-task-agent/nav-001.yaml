@@ -1,0 +1,46 @@
+# Site Navigation Workflow - Web Task Agent
+id: "nav-001"
+name: "Site Navigation Workflow"
+description: "Test web task agent orchestrating navigation between different sections of a site"
+enabled: true
+
+target:
+  url: "https://www.wikipedia.org"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 90000
+
+input:
+  task: "Navigate to the Wikipedia homepage, search for \"artificial intelligence\", and find information about machine learning"
+  reasoning: "User is looking to explore Wikipedia content through structured navigation"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Orchestrated Wikipedia search via action_agent calls"
+      - "Navigated to artificial intelligence article through action_agent"
+      - "Located machine learning section via action_agent coordination"
+      - "Extracted relevant information about machine learning"
+      - "Demonstrated multi-step navigation workflow"
+      - "Maintained orchestration pattern throughout navigation"
+      - "Provided structured summary of found information"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify navigation reached artificial intelligence Wikipedia page"
+        - "Check that machine learning section or content is visible"
+        - "Confirm successful navigation through multiple page sections"
+        - "Ensure content related to machine learning is displayed"
+
+metadata:
+  tags: ["web-task", "navigation", "multi-step", "wikipedia", "content-exploration"]
+  priority: "high"
+  owner: "devtools-team"

@@ -176,7 +176,7 @@ class EvaluationCLI {
 
   listClients() {
     const clients = this.server.getClientManager().getAllClients();
-    console.log('\\n👥 Registered Clients:');
+    console.log('\n👥 Registered Clients:');
     
     if (clients.length === 0) {
       console.log('  No clients registered');
@@ -184,17 +184,32 @@ class EvaluationCLI {
     }
     
     clients.forEach(client => {
-      console.log(`\\n  📋 ${client.name} (${client.id})`);
+      console.log(`\n  📋 ${client.name} (${client.id})`);
       console.log(`     Description: ${client.description || 'N/A'}`);
       console.log(`     Secret Key: ${client.secretKey ? '***' : 'None'}`);
       
       const evaluations = this.server.getClientManager().getClientEvaluations(client.id);
       console.log(`     Evaluations: ${evaluations.length}`);
       
+      // Group evaluations by category
+      const evaluationsByCategory = {};
       evaluations.forEach(evaluation => {
-        const status = evaluation.status || 'pending';
-        const statusIcon = status === 'completed' ? '✅' : status === 'running' ? '🔄' : status === 'failed' ? '❌' : '⏳';
-        console.log(`       ${statusIcon} ${evaluation.id}: ${evaluation.name}`);
+        const category = evaluation.category || 'uncategorized';
+        if (!evaluationsByCategory[category]) {
+          evaluationsByCategory[category] = [];
+        }
+        evaluationsByCategory[category].push(evaluation);
+      });
+      
+      // Display evaluations grouped by category
+      Object.keys(evaluationsByCategory).sort().forEach(category => {
+        const categoryEvals = evaluationsByCategory[category];
+        console.log(`\n       📁 ${category} (${categoryEvals.length})`);
+        categoryEvals.forEach(evaluation => {
+          const status = evaluation.status || 'pending';
+          const statusIcon = status === 'completed' ? '✅' : status === 'running' ? '🔄' : status === 'failed' ? '❌' : '⏳';
+          console.log(`         ${statusIcon} ${evaluation.id}: ${evaluation.name}`);
+        });
       });
     });
     console.log('');

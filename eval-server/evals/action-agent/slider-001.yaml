@@ -1,0 +1,46 @@
+# Range slider test
+id: "slider-001"
+name: "Adjust Range Slider"
+description: "Test moving slider to set a specific value"
+enabled: true
+
+target:
+  url: "https://jqueryui.com/slider/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Move the slider to set the value to 75"
+  reasoning: "Testing slider/range input manipulation"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the slider control element"
+      - "Successfully moved the slider handle"
+      - "Set the slider value to approximately 75"
+      - "Slider position reflects the target value"
+      - "Any associated display shows the correct value"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify slider handle moved to represent value 75"
+        - "Check if value display shows 75 or close to it"
+        - "Confirm slider position visually matches target"
+        - "Ensure slider interaction was smooth and successful"
+
+metadata:
+  tags: ["action", "slider", "range", "form", "drag"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

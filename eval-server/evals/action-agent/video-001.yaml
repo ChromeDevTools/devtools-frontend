@@ -1,0 +1,47 @@
+# Video playback controls test
+id: "video-001"
+name: "Control Video Playback"
+description: "Test starting video playback using click + spacebar"
+enabled: true
+
+target:
+  url: "https://www.w3schools.com/html/html5_video.asp"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 90000
+
+input:
+  objective: "Click the video element to focus it, then press spacebar to start playback"
+  reasoning: "Testing video control using standard keyboard interaction (click to focus + spacebar to play)"
+  hint: "First click the Video element to focus it, then use keyboard input to press the spacebar key to start playback"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the Video element in the accessibility tree"
+      - "Successfully clicked the Video element to focus it"
+      - "Used keyboard input to press spacebar"
+      - "Video playback started after spacebar press"
+      - "No errors occurred during the interaction sequence"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify video player is visible on the page"
+        - "Check if the play button was clicked (may show pause button after)"
+        - "Look for visual indicators that video started playing"
+        - "Ensure no error messages appeared during video interaction"
+
+metadata:
+  tags: ["action", "video", "media", "controls", "playback"]
+  priority: "high"
+  timeout: 90000
+  retries: 3
+  flaky: true
+  owner: "devtools-team"

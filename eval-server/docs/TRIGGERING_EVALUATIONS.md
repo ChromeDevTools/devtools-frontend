@@ -98,36 +98,8 @@ curl -X POST http://localhost:8081/evaluate \\
   }'
 ```
 
-## Method 3: Automatic Scheduling (YAML Configuration)
 
-Evaluations can be configured to run automatically based on their schedule in the YAML file.
-
-### Schedule Types
-
-#### On-Demand (Manual Only)
-```yaml
-schedule:
-  type: "on_demand"
-```
-Only runs when manually triggered.
-
-#### Periodic (Automatic)
-```yaml
-schedule:
-  type: "periodic"
-  interval: 86400000  # Run every 24 hours (in milliseconds)
-```
-Runs automatically at the specified interval.
-
-#### One-Time (Automatic)
-```yaml
-schedule:
-  type: "once"
-  run_at: "2024-12-25T09:00:00Z"  # Run once at specific time
-```
-Runs once at the specified time.
-
-## Method 4: Programmatic Integration
+## Method 3: Programmatic Integration
 
 You can integrate the evaluation system into your own applications:
 
@@ -186,7 +158,7 @@ result = trigger_evaluation(
 print(json.dumps(result, indent=2))
 ```
 
-## Method 5: Webhook Integration
+## Method 4: Webhook Integration
 
 You can set up webhooks to trigger evaluations from external systems:
 
@@ -299,7 +271,7 @@ WebSocket connection failed
 
 ## Best Practices
 
-1. **Start Simple**: Begin with on-demand evaluations before setting up automation
+1. **Start Simple**: Begin with manual evaluations before setting up automation
 2. **Monitor Logs**: Always monitor logs when running evaluations
 3. **Test Connections**: Use the `status` command to verify everything is connected
 4. **Gradual Rollout**: Test individual evaluations before running batch operations

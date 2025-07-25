@@ -1,0 +1,73 @@
+# Google Flights Scroll and Show More - Web Task Agent
+id: "scroll-005"
+name: "Google Flights Scroll and Show More"
+description: "Test scrolling and clicking \"Show more flights\" button on Google Flights to load additional flight options"
+enabled: true
+
+target:
+  url: "https://www.google.com/travel/flights?sca_esv=646eedf97dcc8cf2&source=flun&uitype=cuAA&hl=en&gl=us&curr=USD&tfs=CAEQAhoeEgoyMDI2LTAzLTIwagcIARIDU0VBcgcIARIDTlJUGh4SCjIwMjYtMDMtMzBqBwgBEgNOUlRyBwgBEgNTRUF6aENqUklhVFJJTVVwVlZVOXpNakJCUTJodGVFRkNSeTB0TFMwdExTMHRjR3BpYjI4eE0wRkJRVUZCUjJoc1lsWlZRV2RYUlZsQkVnTmpTMFVhQ3dqUXNnVVFBaG9EVlZORU9EQncwTElG"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Extract the initial flight results, then scroll down and click \"Show more flights\" button to load additional flights. Extract at least 20 total flight options from Seattle to Tokyo."
+  reasoning: "Testing combination of scrolling and button clicking to load more flight results on Google Flights"
+  extraction_schema:
+    type: "object"
+    properties:
+      flights:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            airline:
+              type: "string"
+            departure_time:
+              type: "string"
+            arrival_time:
+              type: "string"
+            duration:
+              type: "string"
+            stops:
+              type: "string"
+            price:
+              type: "string"
+            aircraft:
+              type: "string"
+      total_flights_found:
+        type: "number"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully extracted initial flight results from Google Flights"
+      - "Used scroll_page tool to scroll down the flight results list"
+      - "Located and clicked \"Show more flights\" button using action_agent"
+      - "Loaded additional flight options beyond the initial set"
+      - "Extracted at least 20 total flights from Seattle (SEA) to Tokyo (NRT)"
+      - "Each flight includes airline, times, duration, stops, and price"
+      - "Flights are for the correct dates (March 20-30, 2026)"
+      - "Results are presented in clear, numbered format"
+      - "Successfully combined scrolling and clicking actions to load more content"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Google Flights page shows SEA to NRT flights"
+        - "Check that initial flight results are displayed"
+        - "Confirm scrolling occurred and \"Show more flights\" button was visible"
+        - "Ensure additional flights loaded after clicking the button"
+        - "Verify at least 20 flight options are now visible"
+
+metadata:
+  tags: ["web-task", "scrolling", "google-flights", "click-action", "load-more", "travel"]
+  priority: "high"
+  owner: "devtools-team"

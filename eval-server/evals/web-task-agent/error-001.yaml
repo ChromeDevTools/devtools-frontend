@@ -1,0 +1,45 @@
+# Error Recovery Workflow - Web Task Agent
+id: "error-001"
+name: "Error Recovery Workflow"
+description: "Test web task agent handling action_agent failures and retry logic"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Search for \"nonexistent test query 12345\" and handle any issues that arise"
+  reasoning: "Customer is asking for this response"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Attempted to search for the unusual query \"nonexistent test query 12345\""
+      - "Either found some results OR provided clear explanation why no results were found"
+      - "Response handles the edge case gracefully without errors"
+      - "If no results found, suggested alternative actions or explanations"
+      - "Maintained professional tone despite unusual request"
+      - "Final output is coherent and helpful to the user"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Check if search was attempted despite unusual query"
+        - "Verify error handling did not break the page interaction"
+        - "Confirm agent attempted to complete the task or provided clear error info"
+        - "Ensure page is still functional after error recovery attempts"
+
+metadata:
+  tags: ["web-task", "error-recovery", "retry", "orchestration", "robustness"]
+  priority: "high"
+  owner: "devtools-team"

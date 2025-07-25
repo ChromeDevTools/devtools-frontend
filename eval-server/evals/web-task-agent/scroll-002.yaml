@@ -1,0 +1,65 @@
+# Product Review Scrolling - Web Task Agent
+id: "scroll-002"
+name: "Product Review Scrolling"
+description: "Test scrolling to load more product reviews on e-commerce sites"
+enabled: true
+
+target:
+  url: "https://www.amazon.com/dp/B09B8V1LZ3"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Scroll down to the reviews section and load more reviews by scrolling, then extract review details"
+  reasoning: "Users need to see multiple reviews beyond initial visible ones"
+  extraction_schema:
+    type: "object"
+    properties:
+      reviews:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            rating:
+              type: "string"
+            title:
+              type: "string"
+            author:
+              type: "string"
+            date:
+              type: "string"
+            verified:
+              type: "boolean"
+            content:
+              type: "string"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Used scroll_page tool to navigate to reviews section"
+      - "Scrolled within reviews area to load additional reviews"
+      - "Extracted multiple product reviews with ratings"
+      - "Each review includes rating, author, and content"
+      - "Successfully handled lazy-loaded review content"
+      - "Presented reviews in structured, readable format"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Amazon product page is loaded"
+        - "Check that page scrolled to reviews section"
+        - "Confirm additional reviews loaded after scrolling"
+        - "Ensure review content is fully visible"
+
+metadata:
+  tags: ["web-task", "scrolling", "reviews", "amazon", "e-commerce"]
+  priority: "high"
+  owner: "devtools-team"

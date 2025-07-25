@@ -1,0 +1,46 @@
+# Modal dialog test
+id: "modal-001"
+name: "Open and Close Modal"
+description: "Test opening modal dialog and closing it with X button"
+enabled: true
+
+target:
+  url: "https://getbootstrap.com/docs/5.0/components/modal/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Click to open the modal dialog, then close it using the X button"
+  reasoning: "Testing modal dialog interaction patterns"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located and clicked the modal trigger button"
+      - "Modal dialog opened successfully"
+      - "Modal content was visible and accessible"
+      - "Found and clicked the close (X) button"
+      - "Modal closed and page returned to normal state"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify modal opened with visible content"
+        - "Check if modal overlay appeared correctly"
+        - "Confirm modal was closed after clicking X"
+        - "Ensure page background is accessible again"
+
+metadata:
+  tags: ["action", "modal", "dialog", "popup", "overlay"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

@@ -1,0 +1,61 @@
+# Infinite Scroll Content Loading - Web Task Agent
+id: "scroll-001"
+name: "Infinite Scroll Content Loading"
+description: "Test web task agent handling infinite scroll pages to load more content"
+enabled: true
+
+target:
+  url: "https://twitter.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Scroll down the Twitter feed to load at least 20 tweets and extract their content"
+  reasoning: "Testing infinite scroll functionality for dynamic content loading"
+  extraction_schema:
+    type: "object"
+    properties:
+      tweets:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            author:
+              type: "string"
+            content:
+              type: "string"
+            likes:
+              type: "string"
+            retweets:
+              type: "string"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully used scroll_page tool to scroll down the page"
+      - "Loaded additional content through scrolling actions"
+      - "Extracted at least 20 tweets from the feed"
+      - "Each tweet includes author and content information"
+      - "Demonstrated proper handling of dynamically loaded content"
+      - "Results are presented in clear, numbered text format"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify initial Twitter feed is loaded"
+        - "Check that scrolling action loaded additional tweets"
+        - "Confirm at least 20 tweets are visible after scrolling"
+        - "Ensure page scrolled down significantly from initial position"
+
+metadata:
+  tags: ["web-task", "scrolling", "infinite-scroll", "dynamic-content", "twitter"]
+  priority: "high"
+  owner: "devtools-team"

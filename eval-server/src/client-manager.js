@@ -10,6 +10,7 @@ class ClientManager {
     this.evalsDir = path.resolve(evalsDir);
     this.clients = new Map();
     this.evaluations = new Map(); // clientId -> evaluations array
+    this.configDefaults = null; // Config.yaml defaults for model precedence
     
     // Ensure directories exist
     if (!fs.existsSync(this.clientsDir)) {
@@ -19,8 +20,59 @@ class ClientManager {
       fs.mkdirSync(this.evalsDir, { recursive: true });
     }
     
+    this.loadConfigDefaults();
     this.loadAllClients();
     this.loadAllEvaluations();
+  }
+
+  /**
+   * Load default model configuration from config.yaml
+   */
+  loadConfigDefaults() {
+    try {
+      const configPath = path.resolve(this.evalsDir, 'config.yaml');
+      if (fs.existsSync(configPath)) {
+        const configContent = fs.readFileSync(configPath, 'utf8');
+        this.configDefaults = yaml.load(configContent);
+        logger.info('Loaded config.yaml defaults:', this.configDefaults);
+      } else {
+        logger.warn('config.yaml not found, no global defaults will be applied');
+        this.configDefaults = null;
+      }
+    } catch (error) {
+      logger.error('Failed to load config.yaml:', error);
+      this.configDefaults = null;
+    }
+  }
+
+  /**
+   * Apply model precedence: API calls OR test YAML models override config.yaml fallback
+   * Precedence logic:
+   * 1. API calls OR individual test YAML models (highest priority - either overrides everything)
+   * 2. config.yaml defaults (fallback only when neither API nor test YAML specify models)
+   */
+  applyModelPrecedence(evaluation, apiModelOverride = null) {
+    // Check if API override is provided
+    if (apiModelOverride) {
+      // API model override takes precedence over everything
+      return {
+        ...(this.configDefaults?.model || {}), // Use config as base
+        ...apiModelOverride // API overrides everything
+      };
+    }
+    
+    // Check if evaluation has its own model config from YAML
+    const testModel = evaluation.model;
+    if (testModel && Object.keys(testModel).length > 0) {
+      // Test YAML model takes precedence, use config.yaml only for missing fields
+      return {
+        ...(this.configDefaults?.model || {}), // Config as fallback base
+        ...testModel // Test YAML overrides config
+      };
+    }
+    
+    // Neither API nor test YAML specified models, use config.yaml defaults only
+    return this.configDefaults?.model || {};
   }
 
   /**
@@ -107,12 +159,16 @@ class ClientManager {
             const evaluation = yaml.load(yamlContent);
             
             if (evaluation.enabled !== false) {
+              // Apply model precedence: config.yaml overrides individual test models
+              const resolvedModel = this.applyModelPrecedence(evaluation);
+              
               // Add evaluation to all clients for now
               // In the future, you might want to have client-specific evaluation assignments
               for (const [clientId] of this.clients) {
                 const clientEvals = this.evaluations.get(clientId) || [];
                 clientEvals.push({
                   ...evaluation,
+                  model: resolvedModel, // Use resolved model with precedence applied
                   clientId,
                   status: 'pending',
                   category,

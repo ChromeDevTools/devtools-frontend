@@ -16,8 +16,6 @@ input:
   task: "Search for hotels in San Francisco for 2 adults, check-in March 15, check-out March 17"
   reasoning: "Customer is looking for travel booking"
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "llm_judge"

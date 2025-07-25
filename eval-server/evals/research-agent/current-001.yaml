@@ -1,0 +1,40 @@
+# Current events research test
+id: "current-001"
+name: "Research Latest AI Development Trends"
+description: "Research recent developments in AI and machine learning (last 6 months)"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "research_agent"
+timeout: 240000
+
+input:
+  query: "Latest AI artificial intelligence developments breakthroughs 2024 2025"
+  reasoning: "Testing research on current events and rapidly evolving topics"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    include_url: true
+    criteria:
+      - "Research focuses on recent developments (within last 6 months)"
+      - "Covers multiple aspects of AI development (models, applications, research)"
+      - "Sources are current and from reputable news or research outlets"
+      - "Information includes specific examples or case studies"
+      - "Demonstrates ability to identify current trends vs older information"
+      - "Successfully gathered information from diverse source types"
+      - "Data is properly organized for content writer handoff"
+
+metadata:
+  tags: ["current-events", "ai", "dynamic", "trends"]
+  priority: "high"
+  timeout: 240000
+  retries: 1
+  flaky: true
+  owner: "devtools-team"

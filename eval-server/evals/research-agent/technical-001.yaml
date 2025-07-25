@@ -1,0 +1,39 @@
+# Deep technical research test
+id: "technical-001"
+name: "Research WebAssembly Performance"
+description: "Deep dive research into WebAssembly performance characteristics and use cases"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "research_agent"
+timeout: 900000
+
+input:
+  query: "WebAssembly WASM performance benchmarks use cases implementation details"
+  reasoning: "Testing deep technical research requiring specialized knowledge synthesis"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Research covers technical details of WebAssembly architecture"
+      - "Includes performance benchmarks and comparison data"
+      - "Discusses practical use cases and implementation scenarios"
+      - "Sources include technical specifications, benchmarks, and expert analysis"
+      - "Information demonstrates deep understanding of the technology"
+      - "Research addresses both benefits and limitations"
+      - "Technical accuracy is maintained throughout"
+
+metadata:
+  tags: ["technical", "deep-dive", "performance", "webassembly"]
+  priority: "high"
+  timeout: 900000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

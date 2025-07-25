@@ -1,0 +1,46 @@
+# Date range picker test
+id: "daterange-001"
+name: "Select Date Range"
+description: "Test selecting a date range with start and end dates"
+enabled: true
+
+target:
+  url: "https://www.daterangepicker.com/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Select a date range from February 1, 2024 to February 28, 2024"
+  reasoning: "Testing complex date range selection with start and end dates"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Opened the date range picker interface"
+      - "Selected the start date (February 1, 2024)"
+      - "Selected the end date (February 28, 2024)"
+      - "Date range was properly applied"
+      - "Input field shows the complete date range"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify both start and end dates are displayed in the input"
+        - "Check if the date range picker shows the selected range"
+        - "Confirm the format matches expected date range display"
+        - "Ensure both dates were selected in sequence"
+
+metadata:
+  tags: ["action", "daterange", "date-picker", "form", "complex"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

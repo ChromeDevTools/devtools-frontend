@@ -1,0 +1,40 @@
+# Healthy Recipe Search - End-to-End Test
+id: "recipe-nutrition-001"
+name: "Healthy Family Dinner Recipes"
+description: "End-to-end test for recipe search with nutrition criteria using chat interface"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "chat"
+timeout: 300000
+
+input:
+  message: "Find me 3 healthy dinner recipes for a family of 4 that are under 500 calories per serving and take less than 30 minutes to prepare."
+  reasoning: "End-to-end test validating recipe search workflow with specific nutritional and time criteria"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Provides exactly 3 dinner recipes suitable for family of 4"
+      - "Each recipe is under 500 calories per serving"
+      - "All recipes can be prepared in under 30 minutes"
+      - "Includes ingredient lists and cooking instructions"
+      - "Nutritional information is provided or estimated"
+      - "Recipes are practical and family-friendly"
+      - "Demonstrates intelligent recipe search and analysis"
+      - "Shows complete workflow from request to actionable meal plan"
+
+metadata:
+  tags: ["end-to-end", "chat", "recipes", "nutrition", "healthy", "family", "user-workflow"]
+  priority: "medium"
+  timeout: 300000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

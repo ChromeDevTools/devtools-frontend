@@ -34,6 +34,26 @@ A WebSocket-based evaluation server for LLM agents using LLM-as-a-judge methodol
 - 🖥️ Interactive CLI for testing and management
 - ⚡ Support for concurrent agent evaluations
 
+## OpenAI Compatible API
+
+The server provides an OpenAI-compatible `/v1/responses` endpoint for direct API access:
+
+```bash
+curl -X POST 'http://localhost:8081/v1/responses' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "input": "What is 2+2?",
+    "main_model": "gpt-4.1",
+    "mini_model": "gpt-4.1-nano", 
+    "nano_model": "gpt-4.1-nano",
+    "provider": "openai"
+  }'
+```
+
+**Model Precedence:**
+1. **API calls** OR **individual test YAML models** (highest priority)
+2. **config.yaml defaults** (fallback when neither API nor test specify models)
+
 ## Agent Protocol
 
 Your agent needs to:

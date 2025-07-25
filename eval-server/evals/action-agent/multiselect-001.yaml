@@ -1,0 +1,46 @@
+# Multi-select dropdown test
+id: "multiselect-001"
+name: "Select Multiple Options"
+description: "Test selecting multiple options from a multi-select dropdown"
+enabled: true
+
+target:
+  url: "https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select_multiple"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Select both \"Volvo\" and \"Audi\" from the multi-select dropdown"
+  reasoning: "Testing multiple selection in select elements"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the multi-select dropdown element"
+      - "Successfully selected Volvo option"
+      - "Successfully selected Audi option"
+      - "Both options remain selected simultaneously"
+      - "Used appropriate multi-select interaction method"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify both Volvo and Audi appear selected"
+        - "Check if both options are highlighted/marked"
+        - "Confirm multi-select functionality worked correctly"
+        - "Ensure no other options were accidentally selected"
+
+metadata:
+  tags: ["action", "multi-select", "dropdown", "form", "multiple"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

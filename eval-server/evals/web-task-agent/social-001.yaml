@@ -1,0 +1,60 @@
+# Social Media Content Extraction - Web Task Agent
+id: "social-001"
+name: "Social Media Content Extraction"
+description: "Test extracting trending topics and posts from social media"
+enabled: true
+
+target:
+  url: "https://twitter.com/explore"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Extract the top 5 trending topics from Twitter/X explore page"
+  reasoning: "User wants to stay updated on current trends"
+  extraction_schema:
+    type: "object"
+    properties:
+      trends:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            topic:
+              type: "string"
+            posts_count:
+              type: "string"
+            category:
+              type: "string"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully accessed Twitter/X explore page and found trending topics"
+      - "Returned exactly 5 trending topics as requested"
+      - "Each topic includes the trend name/hashtag"
+      - "Post counts or metrics are included when available"
+      - "Topics are current/recent trends (not outdated)"
+      - "Results are presented in clear, numbered text format (not JSON)"
+      - "Each trend is properly numbered (1., 2., 3., etc.) for readability"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Twitter/X explore page is loaded"
+        - "Check that trending topics section is visible"
+        - "Confirm trending topics show names and post counts"
+        - "Ensure page shows current trending content"
+
+metadata:
+  tags: ["web-task", "social-media", "twitter", "trends", "extraction", "popular"]
+  priority: "high"
+  owner: "devtools-team"

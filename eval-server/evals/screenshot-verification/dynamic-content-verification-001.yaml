@@ -15,8 +15,6 @@ input:
   reasoning: "Testing visual verification of dynamic content changes using screenshot comparison"
   hint: "Use take_screenshot before clicking Start, then again after the dynamic content loads"
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "llm-judge"

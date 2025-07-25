@@ -99,7 +99,7 @@ export class GroqProvider extends LLMBaseProvider {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: { message: 'Unknown error' } }));
-        logger.error('Groq API error:', errorData);
+        logger.error('Groq API error:', JSON.stringify(errorData, null, 2));
         throw new Error(`Groq API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
       }
 
@@ -265,7 +265,7 @@ export class GroqProvider extends LLMBaseProvider {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: { message: 'Unknown error' } }));
-        logger.error('Groq models API error:', errorData);
+        logger.error('Groq models API error:', JSON.stringify(errorData, null, 2));
         throw new Error(`Groq models API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
       }
 

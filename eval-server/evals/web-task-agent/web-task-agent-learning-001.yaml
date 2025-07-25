@@ -38,8 +38,6 @@ input:
             description:
               type: "string"
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "llm_judge"

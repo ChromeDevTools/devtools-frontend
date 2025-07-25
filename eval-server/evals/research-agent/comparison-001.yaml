@@ -1,0 +1,39 @@
+# Comparative research test
+id: "comparison-001"
+name: "Compare JavaScript vs TypeScript"
+description: "Research and compare JavaScript and TypeScript for web development"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "research_agent"
+timeout: 200000
+
+input:
+  query: "JavaScript vs TypeScript comparison web development pros cons differences"
+  reasoning: "Testing comparative research requiring balanced analysis of multiple options"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Research covers both JavaScript and TypeScript comprehensively"
+      - "Includes clear comparison points (syntax, features, ecosystem)"
+      - "Presents advantages and disadvantages of each language"
+      - "Sources include technical documentation and developer resources"
+      - "Information is balanced and objective, not biased toward one option"
+      - "Demonstrates understanding of use cases for each language"
+      - "Research data is well-organized for comparative analysis"
+
+metadata:
+  tags: ["comparison", "technical", "programming", "balanced"]
+  priority: "high"
+  timeout: 200000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

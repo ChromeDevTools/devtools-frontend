@@ -148,44 +148,6 @@
           "type": "object",
           "description": "Tool-specific input parameters"
         },
-        "schedule": {
-          "type": "object",
-          "required": ["type"],
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": ["on_demand", "periodic", "once"]
-            },
-            "interval": {
-              "type": "integer",
-              "minimum": 60000,
-              "description": "Interval in milliseconds for periodic schedules"
-            },
-            "run_at": {
-              "type": "string",
-              "format": "date-time",
-              "description": "ISO timestamp for one-time schedules"
-            }
-          },
-          "if": {
-            "properties": {
-              "type": { "const": "periodic" }
-            }
-          },
-          "then": {
-            "required": ["interval"]
-          },
-          "else": {
-            "if": {
-              "properties": {
-                "type": { "const": "once" }
-              }
-            },
-            "then": {
-              "required": ["run_at"]
-            }
-          }
-        },
         "validation": {
           "type": "object",
           "required": ["type"],

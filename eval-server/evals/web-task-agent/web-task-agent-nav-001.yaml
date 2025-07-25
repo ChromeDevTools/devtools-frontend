@@ -16,8 +16,6 @@ input:
   task: "Navigate to the Wikipedia homepage, search for \"artificial intelligence\", and find information about machine learning"
   reasoning: "User is looking to explore Wikipedia content through structured navigation"
 
-schedule:
-  type: "on_demand"
 
 validation:
   type: "llm_judge"

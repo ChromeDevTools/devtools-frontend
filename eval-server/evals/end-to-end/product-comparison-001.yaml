@@ -1,0 +1,40 @@
+# Headphones Comparison - End-to-End Test
+id: "product-comparison-001"
+name: "Noise-Canceling Headphones Comparison"
+description: "End-to-end test for product research and comparison using chat interface"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "chat"
+timeout: 300000
+
+input:
+  message: "Compare the top 3 noise-canceling headphones under $300. Include features, pros/cons, and where to buy them."
+  reasoning: "End-to-end test validating product comparison workflow with dynamic tool usage"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Identifies 3 specific noise-canceling headphones under $300"
+      - "Provides detailed feature comparison for each model"
+      - "Lists pros and cons for each headphone clearly"
+      - "Includes pricing information and purchase locations"
+      - "Comparison is fair and based on objective criteria"
+      - "Information appears current and accurate"
+      - "Demonstrates intelligent research and extraction tool usage"
+      - "Shows complete workflow from request to actionable buying guide"
+
+metadata:
+  tags: ["end-to-end", "chat", "product", "comparison", "headphones", "shopping", "user-workflow"]
+  priority: "medium"
+  timeout: 300000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

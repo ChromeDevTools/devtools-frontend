@@ -1,0 +1,60 @@
+# Structured Data Extraction - Web Task Agent
+id: "extract-001"
+name: "Structured Data Extraction"
+description: "Test web task agent extracting structured data from search results"
+enabled: true
+
+target:
+  url: "https://news.ycombinator.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Extract the top 5 Hacker News stories with their titles, scores, and comment counts"
+  reasoning: "User is looking to understand the top stories on Hacker News"
+  extraction_schema:
+    type: "object"
+    properties:
+      stories:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+            score:
+              type: "number"
+            comments:
+              type: "number"
+            url:
+              type: "string"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully returned exactly 5 Hacker News stories in structured text format"
+      - "Each story is numbered (1., 2., 3., 4., 5.) with title, score, comments, and URL"
+      - "Results are presented in readable text format similar to the example provided"
+      - "Response includes all required fields: title, score, comments count, URL"
+      - "Maintained proper orchestration pattern throughout the extraction process"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Hacker News homepage is loaded and displaying stories"
+        - "Check that top stories are visible with scores and comment counts"
+        - "Confirm story titles and metadata are clearly displayed"
+        - "Ensure page structure allows for data extraction"
+
+metadata:
+  tags: ["web-task", "data-extraction", "structured-data", "hackernews", "schema"]
+  priority: "high"
+  owner: "devtools-team"

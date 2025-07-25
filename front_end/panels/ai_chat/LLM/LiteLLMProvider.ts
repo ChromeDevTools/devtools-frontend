@@ -103,7 +103,7 @@ export class LiteLLMProvider extends LLMBaseProvider {
 
       if (!response.ok) {
         const errorData = await response.json();
-        logger.error('LiteLLM API error:', errorData);
+        logger.error('LiteLLM API error:', JSON.stringify(errorData, null, 2));
         throw new Error(`LiteLLM API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
       }
 
@@ -268,7 +268,7 @@ export class LiteLLMProvider extends LLMBaseProvider {
 
       if (!response.ok) {
         const errorData = await response.json();
-        logger.error('LiteLLM models API error:', errorData);
+        logger.error('LiteLLM models API error:', JSON.stringify(errorData, null, 2));
         throw new Error(`LiteLLM models API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
       }
 

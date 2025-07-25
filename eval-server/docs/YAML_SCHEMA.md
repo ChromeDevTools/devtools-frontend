@@ -73,13 +73,6 @@ Each evaluation in the `evaluations` array follows this structure:
         summary:
           type: "string"
     
-  # Scheduling configuration
-  schedule:
-    type: "on_demand"          # on_demand|periodic|once
-    # For periodic:
-    interval: 3600000          # Interval in milliseconds
-    # For once:
-    run_at: "2024-01-01T00:00:00Z"  # ISO timestamp
   
   # Validation configuration
   validation:
@@ -233,9 +226,6 @@ evaluations:
           lastModified:
             type: "string"
     
-    schedule:
-      type: "periodic"
-      interval: 86400000  # Daily
     
     validation:
       type: "hybrid"
@@ -275,8 +265,6 @@ evaluations:
       include_sources: true
       depth: "moderate"
     
-    schedule:
-      type: "on_demand"
     
     validation:
       type: "llm-judge"
@@ -301,7 +289,6 @@ evaluations:
 3. **Tool names**: Must match registered tools in the client
 4. **URLs**: Must be valid HTTP/HTTPS URLs
 5. **Timeouts**: Must be positive integers (milliseconds)
-6. **Schedule intervals**: Must be at least 60000ms (1 minute)
 
 ## YAML Best Practices
 

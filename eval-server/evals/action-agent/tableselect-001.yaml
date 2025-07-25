@@ -1,0 +1,46 @@
+# Table row selection test
+id: "tableselect-001"
+name: "Select Table Row"
+description: "Test clicking to select a table row"
+enabled: true
+
+target:
+  url: "https://datatables.net/examples/api/select_single_row.html"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Click on the first row to select it"
+  reasoning: "Testing table row selection patterns"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the first table row"
+      - "Successfully clicked the row"
+      - "Row became highlighted/selected"
+      - "Selection state is visually apparent"
+      - "Only one row is selected at a time"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the first row is now highlighted/selected"
+        - "Check if row selection visual feedback is clear"
+        - "Confirm only the clicked row is selected"
+        - "Ensure row selection styling is properly applied"
+
+metadata:
+  tags: ["action", "table", "select", "row", "highlight"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

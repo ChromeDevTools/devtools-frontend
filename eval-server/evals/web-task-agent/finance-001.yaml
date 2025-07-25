@@ -1,0 +1,68 @@
+# Stock Information Research - Web Task Agent
+id: "finance-001"
+name: "Stock Information Research"
+description: "Test extracting stock prices and financial information"
+enabled: true
+
+target:
+  url: "https://finance.yahoo.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Search for Apple (AAPL) stock information and extract current price, market cap, and recent performance"
+  reasoning: "Users need automated financial data collection for investment decisions"
+  extraction_schema:
+    type: "object"
+    properties:
+      stock_info:
+        type: "object"
+        properties:
+          symbol:
+            type: "string"
+          company_name:
+            type: "string"
+          current_price:
+            type: "string"
+          change:
+            type: "string"
+          change_percent:
+            type: "string"
+          market_cap:
+            type: "string"
+          pe_ratio:
+            type: "string"
+          volume:
+            type: "string"
+
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully found Apple (AAPL) stock information"
+      - "Current stock price is clearly stated"
+      - "Market cap information is included"
+      - "Price change and percentage change are provided"
+      - "Additional metrics (PE ratio, volume) included when available"
+      - "Financial data is current and presented in readable text format (not JSON)"
+      - "Stock information is well-organized and easy to understand"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Yahoo Finance shows Apple (AAPL) stock page"
+        - "Check that current stock price and change are visible"
+        - "Confirm market cap and trading volume are displayed"
+        - "Ensure financial metrics and charts are shown"
+
+metadata:
+  tags: ["web-task", "finance", "stocks", "yahoo-finance", "investment", "popular"]
+  priority: "high"
+  owner: "devtools-team"

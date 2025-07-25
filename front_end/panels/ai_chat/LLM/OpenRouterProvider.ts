@@ -122,7 +122,7 @@ export class OpenRouterProvider extends LLMBaseProvider {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: { message: 'Unknown error' } }));
-        logger.error('OpenRouter API error:', errorData);
+        logger.error('OpenRouter API error:', JSON.stringify(errorData, null, 2));
         throw new Error(`OpenRouter API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
       }
 
@@ -288,7 +288,7 @@ export class OpenRouterProvider extends LLMBaseProvider {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: { message: 'Unknown error' } }));
-        logger.error('OpenRouter models API error:', errorData);
+        logger.error('OpenRouter models API error:', JSON.stringify(errorData, null, 2));
         throw new Error(`OpenRouter models API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
       }
 

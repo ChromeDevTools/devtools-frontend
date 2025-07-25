@@ -1,0 +1,46 @@
+# Form fill action test
+id: "form-001"
+name: "Fill Search Query"
+description: "Test filling a search input field with specific text"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 45000
+
+input:
+  objective: "Fill the search box with \"Chrome DevTools automation testing\""
+  reasoning: "Testing form input capability with a specific search query"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully identified the search input field"
+      - "Used perform_action with fill method"
+      - "Correctly filled the field with the specified text"
+      - "Verified the field accepted the input"
+      - "No formatting or encoding issues with the text"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Compare screenshots to confirm text was entered in the search field"
+        - "Verify the exact text \"Chrome DevTools automation testing\" is visible"
+        - "Check if search suggestions or autocomplete dropdown appeared"
+        - "Ensure no input validation errors are shown"
+
+metadata:
+  tags: ["action", "form-fill", "input", "google", "basic"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

@@ -1,0 +1,41 @@
+# Basic web task search evaluation (matches DevTools test case)
+id: "search-001"
+name: "Site-Specific Search Task"
+description: "Test web task agent orchestrating a search workflow on a specific site"
+enabled: true
+
+target:
+  url: "chrome://new-tab-page"
+
+tool: "web_task_agent"
+timeout: 60000
+
+input:
+  task: "Search Google for \"Chrome DevTools automation\" and extract the top 3 search results"
+  reasoning: "Testing basic site-specific search workflow orchestration"
+  context: "Need to demonstrate web_task_agent can coordinate multiple action_agent calls for a complete search workflow"
+
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4o"
+    criteria:
+      - "Successfully returned exactly 3 search results in structured text format"
+      - "Each result is numbered (1., 2., 3.) and contains a title related to \"Chrome DevTools automation\""
+      - "Each result includes a URL in the format \"URL: [link]\""
+      - "Results are presented in a clear, readable text format (not JSON)"
+      - "Response includes a brief summary or conclusion statement"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify search was completed and results page is showing"
+        - "Check that search results are related to \"Chrome DevTools automation\""
+        - "Confirm at least 3 search results are visible on the page"
+        - "Ensure the search workflow was completed successfully"
+
+metadata:
+  tags: ["web-task", "orchestration", "search", "workflow", "google", "basic"]
+  priority: "normal"

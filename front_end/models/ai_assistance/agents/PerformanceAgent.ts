@@ -378,7 +378,7 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
         return [{title: 'How do I make sure my page is optimized for mobile viewing?'}];
       case 'ModernHTTP':
         return [
-          {title: 'Is my site being served using the recommended HTTP best practices?'},
+          {title: 'Is my site using the best HTTP practices?'},
           {title: 'Which resources are not using a modern HTTP protocol?'},
         ];
       case 'LegacyJavaScript':

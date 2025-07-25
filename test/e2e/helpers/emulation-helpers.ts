@@ -165,10 +165,11 @@ export const clickDevicePosture =
   await waitForNotExpanded(DEVICE_POSTURE_DROPDOWN_SELECTOR, devToolsPage);
 };
 
-export const getDevicePostureDropDown = async () => {
+export const getDevicePostureDropDown =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   // dropdown menu for the posture selection.
-  const dropdown = await $(DEVICE_POSTURE_DROPDOWN_SELECTOR) as puppeteer.ElementHandle<HTMLButtonElement>;
-  return dropdown;
+  const dropdown = await devToolsPage.$(DEVICE_POSTURE_DROPDOWN_SELECTOR);
+  return dropdown as puppeteer.ElementHandle<HTMLButtonElement>| null;
 };
 
 export const clickToggleButton = async () => {

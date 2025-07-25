@@ -5,11 +5,6 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {
-  $,
-  clickElement,
-  goToResource,
-} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {
@@ -73,8 +68,7 @@ export const showMediaQueryInspector =
 export const startEmulationWithDualScreenPage = async (
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
     inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) => {
-  await reloadDockableFrontEnd();
-  await goToResource('emulation/dual-screen-inspector.html');
+  await inspectedPage.goToResource('emulation/dual-screen-inspector.html');
   await devToolsPage.waitFor('.tabbed-pane-left-toolbar');
   await openDeviceToolbar(devToolsPage, inspectedPage);
 };
@@ -106,9 +100,9 @@ export const clickWidthInput = async (devToolsPage: DevToolsPage = getBrowserAnd
   await devToolsPage.click(SCREEN_DIM_INPUT_SELECTOR, {root: toolbar});
 };
 
-export const selectToggleButton = async () => {
+export const selectToggleButton = async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   // button that toggles between single and double screen.
-  const toggleButton = await $(DUAL_SCREEN_BUTTON_SELECTOR) as puppeteer.ElementHandle<HTMLButtonElement>;
+  const toggleButton = await devToolsPage.$(DUAL_SCREEN_BUTTON_SELECTOR) as puppeteer.ElementHandle<HTMLButtonElement>;
   return toggleButton;
 };
 
@@ -172,10 +166,9 @@ export const getDevicePostureDropDown =
   return dropdown as puppeteer.ElementHandle<HTMLButtonElement>| null;
 };
 
-export const clickToggleButton = async () => {
+export const clickToggleButton = async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   // make sure the toggle button is clickable.
-  const toggleButton = await selectToggleButton();
-  await clickElement(toggleButton);
+  await devToolsPage.click(DUAL_SCREEN_BUTTON_SELECTOR);
 };
 
 export const getWidthOfDevice = async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {

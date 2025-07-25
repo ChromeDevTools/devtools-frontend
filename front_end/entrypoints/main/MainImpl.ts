@@ -360,11 +360,6 @@ export class MainImpl {
         'Performance panel: show postMessage dispatch and handling flows',
     );
 
-    Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
-        'Performance panel: enable experimental performance insights',
-    );
-
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
       Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,

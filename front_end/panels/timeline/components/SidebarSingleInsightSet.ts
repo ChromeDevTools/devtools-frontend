@@ -5,7 +5,6 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -81,13 +80,6 @@ export interface SidebarSingleInsightSetData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   traceMetadata: Trace.Types.File.MetaData|null;
 }
-
-/**
- * These are WIP Insights that are only shown if the user has turned on the
- * "enable experimental performance insights" experiment. This is used to enable
- * us to ship incrementally without turning insights on by default for all
- * users. */
-const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([]);
 
 type InsightNameToComponentMapping =
     Record<string, typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>>;
@@ -379,10 +371,6 @@ export class SidebarSingleInsightSet extends HTMLElement {
       insightSetKey: string,
       activeCategory: Trace.Insights.Types.InsightCategory,
       ): {shownInsights: CategorizedInsightData[], passedInsights: CategorizedInsightData[]} {
-    const includeExperimental = Root.Runtime.experiments.isEnabled(
-        Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
-    );
-
     const insightSet = insightSets?.get(insightSetKey);
     if (!insightSet) {
       return {shownInsights: [], passedInsights: []};
@@ -394,10 +382,6 @@ export class SidebarSingleInsightSet extends HTMLElement {
     for (const [name, model] of Object.entries(insightSet.model)) {
       const componentClass = INSIGHT_NAME_TO_COMPONENT[name as keyof Trace.Insights.Types.InsightModels];
       if (!componentClass) {
-        continue;
-      }
-
-      if (!includeExperimental && EXPERIMENTAL_INSIGHTS.has(name)) {
         continue;
       }
 

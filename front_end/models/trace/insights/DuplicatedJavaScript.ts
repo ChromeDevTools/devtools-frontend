@@ -60,6 +60,10 @@ function finalize(partialModel: PartialInsightModel<DuplicatedJavaScriptInsightM
   };
 }
 
+export function isDuplicatedJavaScript(model: InsightModel): model is DuplicatedJavaScriptInsightModel {
+  return model.insightKey === InsightKeys.DUPLICATE_JAVASCRIPT;
+}
+
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DuplicatedJavaScriptInsightModel {
   const scripts = parsedTrace.Scripts.scripts.filter(script => {

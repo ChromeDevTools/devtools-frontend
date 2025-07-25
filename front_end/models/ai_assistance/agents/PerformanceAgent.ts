@@ -314,7 +314,10 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
       case 'DOMSize':
         return [{title: 'How can I reduce the size of my DOM?'}];
       case 'DuplicatedJavaScript':
-        return [{title: 'How do I deduplicate the identified scripts in my bundle?'}];
+        return [
+          {title: 'How do I deduplicate the identified scripts in my bundle?'},
+          {title: 'Which duplicated JavaScript modules are the most problematic?'}
+        ];
       case 'FontDisplay':
         return [
           {title: 'How can I update my CSS to avoid layout shifts caused by incorrect `font-display` properties?'}

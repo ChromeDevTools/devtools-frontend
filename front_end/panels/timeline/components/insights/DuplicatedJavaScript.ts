@@ -33,6 +33,10 @@ export class DuplicatedJavaScript extends BaseInsightComponent<DuplicatedJavaScr
     return this.model.scripts.some(script => !!script.url);
   }
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   #openTreemap(): void {
     if (!this.model) {
       return;

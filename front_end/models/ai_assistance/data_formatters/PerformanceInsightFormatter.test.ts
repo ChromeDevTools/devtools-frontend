@@ -592,4 +592,92 @@ Response headers
           'headers');
     });
   });
+
+  describe('Duplicated javascript', () => {
+    it('serializes the correct details', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'dupe-js.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('DuplicatedJavaScript', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+
+      const expected = `## Insight Title: Duplicated JavaScript
+
+## Insight Summary:
+This insight identifies large, duplicated JavaScript modules that are present in your application and create redundant code.
+  This wastes network bandwidth and slows down your page, as the user's browser must download and process the same code multiple times.
+
+## Detailed analysis:
+Total wasted bytes: 615821 bytes.
+
+Duplication grouped by Node modules: - Source: node_modules/filestack-js - Duplicated bytes: 345779 bytes
+- Source: node_modules/@headlessui/react - Duplicated bytes: 46023 bytes
+- Source: node_modules/react-query - Duplicated bytes: 32976 bytes
+- Source: node_modules/@floating-ui/react-dom-interactions - Duplicated bytes: 26253 bytes
+- Source: node_modules/yup - Duplicated bytes: 22581 bytes
+- Source: node_modules/lodash - Duplicated bytes: 21453 bytes
+- Source: node_modules/@formatjs/icu-messageformat-parser - Duplicated bytes: 20835 bytes
+- Source: node_modules/react-hook-form - Duplicated bytes: 17328 bytes
+- Source: node_modules/@popperjs/core - Duplicated bytes: 15900 bytes
+- Source: node_modules/downshift - Duplicated bytes: 14925 bytes
+- Source: node_modules/axios - Duplicated bytes: 14079 bytes
+- Source: node_modules/react-dropzone - Duplicated bytes: 12180 bytes
+- Source: node_modules/@formatjs/intl - Duplicated bytes: 10839 bytes
+- Source: node_modules/qs - Duplicated bytes: 9210 bytes
+- Source: node_modules/object-inspect - Duplicated bytes: 7254 bytes
+- Source: node_modules/history - Duplicated bytes: 6870 bytes
+- Source: node_modules/@heroicons/react - Duplicated bytes: 6624 bytes
+- Source: node_modules/react-intl - Duplicated bytes: 6534 bytes
+- Source: node_modules/get-intrinsic - Duplicated bytes: 6411 bytes
+- Source: node_modules/@floating-ui/dom - Duplicated bytes: 6147 bytes
+- Source: node_modules/@formatjs/icu-skeleton-parser - Duplicated bytes: 5736 bytes
+- Source: webpack://ssi/src/components/Autocomplete/Autocomplete.tsx - Duplicated bytes: 5721 bytes
+- Source: node_modules/@floating-ui/core - Duplicated bytes: 5661 bytes
+- Source: node_modules/intl-messageformat - Duplicated bytes: 5583 bytes
+- Source: node_modules/@loadable/component - Duplicated bytes: 4482 bytes
+- Source: node_modules/file-selector - Duplicated bytes: 4374 bytes
+- Source: node_modules/universal-cookie - Duplicated bytes: 4191 bytes
+- Source: node_modules/tabbable - Duplicated bytes: 4146 bytes
+- Source: webpack://ssi/src/components/Button/Button.tsx - Duplicated bytes: 3711 bytes
+- Source: node_modules/path-to-regexp - Duplicated bytes: 2865 bytes
+- Source: webpack://ssi/src/components/Link/Link.tsx - Duplicated bytes: 2766 bytes
+- Source: node_modules/isomorphic-style-loader - Duplicated bytes: 2520 bytes
+- Source: webpack://ssi/src/components/Menu/MenuBase.tsx - Duplicated bytes: 2415 bytes
+- Source: node_modules/tslib - Duplicated bytes: 2376 bytes
+- Source: node_modules/compute-scroll-into-view - Duplicated bytes: 2166 bytes
+- Source: node_modules/react-router-dom - Duplicated bytes: 2154 bytes
+- Source: node_modules/react-fast-compare - Duplicated bytes: 1935 bytes
+- Source: node_modules/react-is - Duplicated bytes: 1845 bytes
+- Source: node_modules/react-router - Duplicated bytes: 1788 bytes
+- Source: node_modules/css-loader - Duplicated bytes: 1608 bytes
+- Source: node_modules/mini-create-react-context - Duplicated bytes: 1563 bytes
+
+## External resources:
+`;
+      assertStringEquals(output, expected);
+    });
+
+    it('serializes no details if there is no duplicate javascript', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('DuplicatedJavaScript', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+
+      const expected = `## Insight Title: Duplicated JavaScript
+
+## Insight Summary:
+This insight identifies large, duplicated JavaScript modules that are present in your application and create redundant code.
+  This wastes network bandwidth and slows down your page, as the user's browser must download and process the same code multiple times.
+
+## Detailed analysis:
+There is no duplicated JavaScript in the page modules
+
+## External resources:
+`;
+      assertStringEquals(output, expected);
+    });
+  });
 });

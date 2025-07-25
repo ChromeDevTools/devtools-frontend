@@ -279,6 +279,26 @@ ${shiftsFormatted.join('\n')}`;
 ${requestSummary}`;
     }
 
+    if (Trace.Insights.Models.DuplicatedJavaScript.isDuplicatedJavaScript(this.#insight)) {
+      const totalWastedBytes = this.#insight.wastedBytes;
+      const duplicatedScriptsByModule = this.#insight.duplicationGroupedByNodeModules;
+
+      if (duplicatedScriptsByModule.size === 0) {
+        return 'There is no duplicated JavaScript in the page modules';
+      }
+
+      const filesFormatted =
+          Array.from(duplicatedScriptsByModule)
+              .map(
+                  ([module, duplication]) =>
+                      `- Source: ${module} - Duplicated bytes: ${duplication.estimatedDuplicateBytes} bytes`)
+              .join('\n');
+
+      return `Total wasted bytes: ${totalWastedBytes} bytes.
+
+Duplication grouped by Node modules: ${filesFormatted}`;
+    }
+
     return '';
   }
 
@@ -345,7 +365,8 @@ ${requestSummary}`;
       case 'DOMSize':
         return '';
       case 'DuplicatedJavaScript':
-        return '';
+        return `This insight identifies large, duplicated JavaScript modules that are present in your application and create redundant code.
+  This wastes network bandwidth and slows down your page, as the user's browser must download and process the same code multiple times.`;
       case 'FontDisplay':
         return '';
       case 'ForcedReflow':

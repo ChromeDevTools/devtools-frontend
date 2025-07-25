@@ -71,6 +71,13 @@ export class OpenRouterProvider extends LLMBaseProvider {
   }
 
   /**
+   * Get the models endpoint URL with tool support filter
+   */
+  private getToolSupportingModelsEndpoint(): string {
+    return `${OpenRouterProvider.API_BASE_URL}${OpenRouterProvider.MODELS_PATH}?supported_parameters=tools`;
+  }
+
+  /**
    * Converts LLMMessage format to OpenRouter/OpenAI format
    */
   private convertMessagesToOpenRouter(messages: LLMMessage[]): any[] {
@@ -266,13 +273,13 @@ export class OpenRouterProvider extends LLMBaseProvider {
   }
 
   /**
-   * Fetch available models from OpenRouter API
+   * Fetch available models from OpenRouter API that support tool calls
    */
   async fetchModels(): Promise<OpenRouterModel[]> {
-    logger.debug('Fetching available OpenRouter models...');
+    logger.debug('Fetching available OpenRouter models that support tool calls...');
 
     try {
-      const response = await fetch(this.getModelsEndpoint(), {
+      const response = await fetch(this.getToolSupportingModelsEndpoint(), {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
@@ -330,17 +337,9 @@ export class OpenRouterProvider extends LLMBaseProvider {
    * Check if a model supports function calling based on its metadata
    */
   private modelSupportsFunctionCalling(model: OpenRouterModel): boolean {
-    // Most modern models on OpenRouter support function calling
-    // We can be more specific based on known models
-    const functionCallingModels = [
-      'gpt-4', 'gpt-3.5-turbo', 'claude-3', 'claude-2',
-      'mistral', 'mixtral', 'llama-3', 'gemini'
-    ];
-    
-    return functionCallingModels.some(modelType => 
-      model.id.toLowerCase().includes(modelType) || 
-      model.name?.toLowerCase().includes(modelType)
-    );
+    // Since we now fetch models with supported_parameters=tools filter,
+    // all returned models support function calling
+    return true;
   }
 
   /**

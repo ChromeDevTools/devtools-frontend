@@ -31,10 +31,27 @@ export class RevealAnnotation extends Event {
     super(RevealAnnotation.eventName, {bubbles: true, composed: true});
   }
 }
+export class HoverAnnotation extends Event {
+  static readonly eventName = 'hoverannotation';
+
+  constructor(public annotation: Trace.Types.File.Annotation) {
+    super(HoverAnnotation.eventName, {bubbles: true, composed: true});
+  }
+}
+
+export class AnnotationHoverOut extends Event {
+  static readonly eventName = 'annotationhoverout';
+
+  constructor() {
+    super(AnnotationHoverOut.eventName, {bubbles: true, composed: true});
+  }
+}
 
 declare global {
   interface GlobalEventHandlersEventMap {
     [RevealAnnotation.eventName]: RevealAnnotation;
+    [HoverAnnotation.eventName]: HoverAnnotation;
+    [AnnotationHoverOut.eventName]: AnnotationHoverOut;
   }
 }
 

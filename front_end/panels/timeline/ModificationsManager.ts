@@ -288,6 +288,10 @@ export class ModificationsManager extends EventTarget {
     return null;
   }
 
+  getOverlaybyAnnotation(annotation: Trace.Types.File.Annotation): Trace.Types.Overlays.Overlay|null {
+    return this.#overlayForAnnotation.get(annotation) || null;
+  }
+
   getAnnotations(): Trace.Types.File.Annotation[] {
     return [...this.#overlayForAnnotation.keys()];
   }

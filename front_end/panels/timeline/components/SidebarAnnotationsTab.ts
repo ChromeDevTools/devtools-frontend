@@ -14,7 +14,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Utils from '../utils/utils.js';
 
-import {RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
+import {AnnotationHoverOut, HoverAnnotation, RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
 import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
 
 const {html, render} = Lit;
@@ -97,6 +97,8 @@ export interface SidebarAnnotationsTabViewInput {
   annotationsHiddenSetting: Common.Settings.Setting<boolean>;
   annotationEntryToColorMap: ReadonlyMap<Trace.Types.Events.Event|Trace.Types.Events.LegacyTimelineFrame, string>;
   onAnnotationClick: (annotation: Trace.Types.File.Annotation) => void;
+  onAnnotationHover: (annotation: Trace.Types.File.Annotation) => void;
+  onAnnotationHoverOut: () => void;
   onAnnotationDelete: (annotation: Trace.Types.File.Annotation) => void;
 }
 
@@ -206,6 +208,12 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
       annotationEntryToColorMap: this.#annotationEntryToColorMap,
       onAnnotationClick: (annotation: Trace.Types.File.Annotation) => {
         this.contentElement.dispatchEvent(new RevealAnnotation(annotation));
+      },
+      onAnnotationHover: (annotation: Trace.Types.File.Annotation) => {
+        this.contentElement.dispatchEvent(new HoverAnnotation(annotation));
+      },
+      onAnnotationHoverOut: () => {
+        this.contentElement.dispatchEvent(new AnnotationHoverOut());
       },
       onAnnotationDelete: (annotation: Trace.Types.File.Annotation) => {
         this.contentElement.dispatchEvent(new RemoveAnnotation(annotation));
@@ -417,6 +425,8 @@ export const DEFAULT_VIEW: (input: SidebarAnnotationsTabViewInput, output: objec
               return html`
                 <div class="annotation-container"
                   @click=${() => input.onAnnotationClick(annotation)}
+                  @mouseover=${() => (annotation.type === 'ENTRY_LABEL') ? input.onAnnotationHover(annotation): null}
+                  @mouseout=${() => (annotation.type === 'ENTRY_LABEL') ? input.onAnnotationHoverOut() : null}
                   aria-label=${label}
                   tabindex="0"
                   jslog=${VisualLogging.item(`timeline.annotation-sidebar.annotation-${jslogForAnnotation(annotation)}`).track({click: true})}

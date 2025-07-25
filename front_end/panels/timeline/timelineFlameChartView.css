@@ -22,6 +22,7 @@
 .overlay-type-ENTRY_LABEL {
   /* keep these above the selected entry overline, else they can become hard to read */
   z-index: 2;
+  transition: opacity 0.2s;
 
   /* if an overlay is being edited, keep it above the rest so the user is not obstructed */
   /* also bump the z-index if the label is being hovered, to ensure it appears above any other labels that might obstruct it */

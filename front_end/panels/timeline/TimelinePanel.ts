@@ -616,6 +616,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.flameChart.revealAnnotation(event.annotation);
     });
 
+    this.#sideBar.element.addEventListener(TimelineComponents.Sidebar.HoverAnnotation.eventName, event => {
+      this.flameChart.hoverAnnotationInSidebar(event.annotation);
+    });
+
+    this.#sideBar.element.addEventListener(TimelineComponents.Sidebar.AnnotationHoverOut.eventName, () => {
+      this.flameChart.sidebarAnnotationHoverOut();
+    });
+
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightSetHovered.eventName, event => {
       if (event.bounds) {
         this.#minimapComponent.highlightBounds(event.bounds, /* withBracket */ true);

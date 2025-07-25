@@ -99,6 +99,8 @@ export class Conversation {
   }
 
   async addHistoryItem(item: ResponseData): Promise<void> {
+    this.history.push(item);
+    await AiHistoryStorage.instance().upsertHistoryEntry(this.serialize());
     if (item.type === ResponseType.USER_QUERY) {
       if (item.imageId && item.imageInput && 'inlineData' in item.imageInput) {
         const inlineData = item.imageInput.inlineData;
@@ -106,8 +108,6 @@ export class Conversation {
             {id: item.imageId, data: inlineData.data, mimeType: inlineData.mimeType});
       }
     }
-    this.history.push(item);
-    await AiHistoryStorage.instance().upsertHistoryEntry(this.serialize());
   }
 
   serialize(): SerializedConversation {

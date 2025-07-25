@@ -11,7 +11,6 @@ import {
   $,
   $$,
   click,
-  clickElement,
   clickMoreTabsButton,
   drainFrontendTaskQueue,
   getTextContent,
@@ -20,7 +19,6 @@ import {
   summonSearchBox,
   typeText,
   waitFor,
-  waitForAria,
   waitForFunction,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
@@ -1050,26 +1048,31 @@ export const assertSelectedNodeClasses =
   }
 };
 
-export const toggleAccessibilityPane = async () => {
-  let a11yPane = await $('Accessibility', undefined, 'aria');
+export const toggleAccessibilityPane = async (devToolsPage: DevToolsPage) => {
+  let a11yPane = await devToolsPage.$('Accessibility', undefined, 'aria');
   if (!a11yPane) {
-    const elementsPanel = await waitForAria('Elements panel');
-    await clickMoreTabsButton(elementsPanel);
-    a11yPane = await waitForAria('Accessibility');
-    await expectVeEvents([
-      veClick('Panel: elements > Toolbar: sidebar > DropDown: more-tabs'),
-      veImpressionsUnder(
-          'Panel: elements > Toolbar: sidebar > DropDown: more-tabs',
-          [veImpression('Menu', undefined, [veImpression('Action', 'accessibility.view')])]),
-    ]);
+    const elementsPanel = await devToolsPage.waitForAria('Elements panel');
+    await devToolsPage.clickMoreTabsButton(elementsPanel);
+    a11yPane = await devToolsPage.waitForAria('Accessibility');
+    await expectVeEvents(
+        [
+          veClick('Panel: elements > Toolbar: sidebar > DropDown: more-tabs'),
+          veImpressionsUnder(
+              'Panel: elements > Toolbar: sidebar > DropDown: more-tabs',
+              [veImpression('Menu', undefined, [veImpression('Action', 'accessibility.view')])]),
+        ],
+        undefined, devToolsPage);
   }
-  await clickElement(a11yPane);
-  await waitFor('.source-order-checkbox');
-  await expectVeEvents([
-    veClick('Panel: elements > Toolbar: sidebar > DropDown: more-tabs > Menu > Action: accessibility.view'),
-    veImpressionsUnder('Panel: elements > Toolbar: sidebar', [veImpression('PanelTabHeader', 'accessibility.view')]),
-    veImpressionForAccessibilityPane(),
-  ]);
+  await devToolsPage.click('aria/Accessibility');
+  await devToolsPage.waitFor('.source-order-checkbox');
+  await expectVeEvents(
+      [
+        veClick('Panel: elements > Toolbar: sidebar > DropDown: more-tabs > Menu > Action: accessibility.view'),
+        veImpressionsUnder(
+            'Panel: elements > Toolbar: sidebar', [veImpression('PanelTabHeader', 'accessibility.view')]),
+        veImpressionForAccessibilityPane(),
+      ],
+      undefined, devToolsPage);
 };
 
 function veImpressionForAccessibilityPane() {

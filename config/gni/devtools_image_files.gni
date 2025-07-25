@@ -276,6 +276,7 @@ devtools_svg_sources = [
   "sync.svg",
   "table.svg",
   "terminal.svg",
+  "text-analysis.svg",
   "thumb-down-filled.svg",
   "thumb-down.svg",
   "thumb-up-filled.svg",

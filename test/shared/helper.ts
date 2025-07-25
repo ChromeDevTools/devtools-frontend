@@ -389,8 +389,7 @@ export const closePanelTab =
   return await devToolsPage.closePanelTab(panelTabSelector);
 };
 
-export const closeAllCloseableTabs = async () => {
-  const {devToolsPage} = getBrowserAndPagesWrappers();
+export const closeAllCloseableTabs = async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   return await devToolsPage.closeAllCloseableTabs();
 };
 

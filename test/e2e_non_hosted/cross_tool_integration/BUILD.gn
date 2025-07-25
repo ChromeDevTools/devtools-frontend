@@ -1,14 +1,15 @@
-# Copyright 2020 The Chromium Authors. All rights reserved.
+# Copyright 2025 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("cross_tool_integration") {
-  sources = [ "workflow_test.ts" ]
+ts_e2e_library("cross_tool_integration") {
+  sources = [ "browser_test.ts" ]
 
   deps = [
+    "../../e2e/helpers",
     "../../shared",
-    "../helpers",
+    "../shared",
   ]
 }

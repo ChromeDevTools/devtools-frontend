@@ -64,6 +64,7 @@ export class Launcher {
       executablePath,
       dumpio: !headless || Boolean(process.env['LUCI_CONTEXT']),
       protocolTimeout,
+      networkEnabled: false,
     };
 
     TestConfig.configureChrome(executablePath);

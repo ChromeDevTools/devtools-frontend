@@ -732,5 +732,41 @@ Help me understand?`;
 `;
       assert.deepEqual(networkFormatDescriptionFact.text, expectedFormatDescription);
     });
+
+    it('sends main thread activity description text as a fact when `getMainThreadActivity` is called',
+       async function() {
+         const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+         assert.isOk(insights);
+         const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
+         const insightSet = getInsightSetOrError(insights, firstNav);
+         const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
+         const agent = createAgentForInsightConversation({
+           aidaClient: mockAidaClient([
+             [{explanation: '', functionCalls: [{name: 'getMainThreadActivity', args: {}}]}],
+           ]),
+         });
+         const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown, insightSet.bounds);
+         await Array.fromAsync(agent.run('test 1', {selected: context}));
+         assert.strictEqual(agent.currentFacts().size, 1);
+         const mainThreadActivityDescriptionFact = Array.from(agent.currentFacts()).at(0);
+         assert.exists(mainThreadActivityDescriptionFact);
+
+         const expectedFormatDescription =
+             `The tree is represented as a call frame with a root task and a series of children.
+  The format of each callframe is:
+
+    'id;name;duration;selfTime;urlIndex;childRange;[S]'
+
+  The fields are:
+
+  * id: A unique numerical identifier for the call frame.
+  * name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
+  * duration: The total execution time of the call frame, including its children.
+  * selfTime: The time spent directly within the call frame, excluding its children's execution.
+  * urlIndex: Index referencing the "All URLs" list. Empty if no specific script URL is associated.
+  * childRange: Specifies the direct children of this node using their IDs. If empty ('' or 'S' at the end), the node has no children. If a single number (e.g., '4'), the node has one child with that ID. If in the format 'firstId-lastId' (e.g., '4-5'), it indicates a consecutive range of child IDs from 'firstId' to 'lastId', inclusive.
+  * S: **Optional marker.** The letter 'S' appears at the end of the line **only** for the single call frame selected by the user.`;
+         assert.deepEqual(mainThreadActivityDescriptionFact.text, expectedFormatDescription);
+       });
   });
 });

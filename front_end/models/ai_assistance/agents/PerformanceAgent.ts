@@ -196,6 +196,22 @@ const networkDataFormatDescription = `The format is as follows:
     The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
 `;
 
+const mainThreadActivityFormatDescription =
+    `The tree is represented as a call frame with a root task and a series of children.
+  The format of each callframe is:
+
+    'id;name;duration;selfTime;urlIndex;childRange;[S]'
+
+  The fields are:
+
+  * id: A unique numerical identifier for the call frame.
+  * name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
+  * duration: The total execution time of the call frame, including its children.
+  * selfTime: The time spent directly within the call frame, excluding its children's execution.
+  * urlIndex: Index referencing the "All URLs" list. Empty if no specific script URL is associated.
+  * childRange: Specifies the direct children of this node using their IDs. If empty ('' or 'S' at the end), the node has no children. If a single number (e.g., '4'), the node has one child with that ID. If in the format 'firstId-lastId' (e.g., '4-5'), it indicates a consecutive range of child IDs from 'firstId' to 'lastId', inclusive.
+  * S: **Optional marker.** The letter 'S' appears at the end of the line **only** for the single call frame selected by the user.`;
+
 function serializeFocus(focus: TimelineUtils.AIContext.AgentFocus): string {
   if (focus.data.type === 'call-tree') {
     return focus.data.callTree.serialize();
@@ -408,9 +424,11 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
   }>();
 
   /*
-  * Since don't know for sure if the model will request the network requests information,
-  * add the format description to facts once the network requests need to be sent.
+  * Since don't know for sure if the model will request the main thread or network requests information,
+  * add the formats description to facts once the main thread activity or network requests need to be sent.
   */
+  #mainThreadActivityDescriptionFact:
+      Host.AidaClient.RequestFact = {text: mainThreadActivityFormatDescription, metadata: {source: 'devtools'}};
   #networkDataDescriptionFact:
       Host.AidaClient.RequestFact = {text: networkDataFormatDescription, metadata: {source: 'devtools'}};
 
@@ -685,22 +703,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     });
 
     this.declareFunction<Record<never, unknown>, {activity: string}>('getMainThreadActivity', {
-      description: `Returns the main thread activity for the selected insight.
-  
-  The tree is represented as a call frame with a root task and a series of children.
-  The format of each callframe is:
-  
-    'id;name;duration;selfTime;urlIndex;childRange;[S]'
-  
-  The fields are:
-  
-  * id: A unique numerical identifier for the call frame.
-  * name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
-  * duration: The total execution time of the call frame, including its children.
-  * selfTime: The time spent directly within the call frame, excluding its children's execution.
-  * urlIndex: Index referencing the "All URLs" list. Empty if no specific script URL is associated.
-  * childRange: Specifies the direct children of this node using their IDs. If empty ('' or 'S' at the end), the node has no children. If a single number (e.g., '4'), the node has one child with that ID. If in the format 'firstId-lastId' (e.g., '4-5'), it indicates a consecutive range of child IDs from 'firstId' to 'lastId', inclusive.
-  * S: **Optional marker.** The letter 'S' appears at the end of the line **only** for the single call frame selected by the user.`,
+      description: 'Returns the main thread activity for the selected insight.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',
@@ -743,6 +746,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
         cacheForInsight.getMainThreadActivity = activityFact;
         this.#functionCallCache.set(insight, cacheForInsight);
 
+        this.addFact(this.#mainThreadActivityDescriptionFact);
         return {result: {activity}};
       },
 

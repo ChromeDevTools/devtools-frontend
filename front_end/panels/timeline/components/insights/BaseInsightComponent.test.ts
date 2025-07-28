@@ -241,6 +241,9 @@ describeWithEnvironment('BaseInsightComponent', () => {
 
     it('renders the "Ask AI" button when perf insights AI is enabled and the Insight supports it', async () => {
       updateHostConfig({
+        aidaAvailability: {
+          enabled: true,
+        },
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
           insightsEnabled: true,
@@ -252,8 +255,24 @@ describeWithEnvironment('BaseInsightComponent', () => {
       assert.isOk(button);
     });
 
+    it('does not render the "Ask AI" button when AI is disabled', async () => {
+      updateHostConfig({
+        devToolsAiAssistancePerformanceAgent: {
+          enabled: true,
+          insightsEnabled: true,
+        }
+      });
+      const component = await renderComponent({insightHasAISupport: true});
+      assert.isOk(component.shadowRoot);
+      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
+      assert.isNotOk(button);
+    });
+
     it('adds a descriptive aria label to the button', async () => {
       updateHostConfig({
+        aidaAvailability: {
+          enabled: true,
+        },
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
           insightsEnabled: true,
@@ -297,6 +316,9 @@ describeWithEnvironment('BaseInsightComponent', () => {
 
     it('sets the context when the user clicks the button', async () => {
       updateHostConfig({
+        aidaAvailability: {
+          enabled: true,
+        },
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
           insightsEnabled: true,

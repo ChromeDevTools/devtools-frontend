@@ -368,10 +368,11 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   }
 
   #canShowAskAI(): boolean {
-    const aiDisabledByEnterprisePolicy = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
-        Root.Runtime.GenAiEnterprisePolicyValue.DISABLE;
+    const aiAvailable = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !==
+            Root.Runtime.GenAiEnterprisePolicyValue.DISABLE &&
+        this.#insightsAskAiEnabled && Root.Runtime.hostConfig.aidaAvailability?.enabled === true;
 
-    return !aiDisabledByEnterprisePolicy && this.#insightsAskAiEnabled && this.hasAskAiSupport();
+    return aiAvailable && this.hasAskAiSupport();
   }
 
   #renderInsightContent(insightModel: T): Lit.LitTemplate {

@@ -18,6 +18,9 @@ describeWithEnvironment('INP breakdown component', () => {
     // test the presence of the button being conditional on the insight
     // having a longest interaction event.
     updateHostConfig({
+      aidaAvailability: {
+        enabled: true,
+      },
       devToolsAiAssistancePerformanceAgent: {
         enabled: true,
         insightsEnabled: true,

@@ -368,6 +368,7 @@ export interface HostConfigFreestyler {
   multimodal?: boolean;
   multimodalUploadInput?: boolean;
   functionCalling?: boolean;
+  featureName?: string;
 }
 
 export interface HostConfigAiAssistanceNetworkAgent {
@@ -375,6 +376,7 @@ export interface HostConfigAiAssistanceNetworkAgent {
   temperature: number;
   enabled: boolean;
   userTier: string;
+  featureName?: string;
 }
 
 export interface HostConfigAiAssistancePerformanceAgent {
@@ -384,6 +386,7 @@ export interface HostConfigAiAssistancePerformanceAgent {
   userTier: string;
   // Introduced in crrev.com/c/6243415
   insightsEnabled?: boolean;
+  featureName?: string;
 }
 
 export interface HostConfigAiAssistanceFileAgent {
@@ -391,6 +394,7 @@ export interface HostConfigAiAssistanceFileAgent {
   temperature: number;
   enabled: boolean;
   userTier: string;
+  featureName?: string;
 }
 
 export interface HostConfigAiCodeCompletion {
@@ -444,6 +448,10 @@ interface AllowPopoverForcing {
   enabled: boolean;
 }
 
+interface AiSubmenuPrompts {
+  enabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -480,6 +488,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   thirdPartyCookieControls: HostConfigThirdPartyCookieControls,
   devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels,
   devToolsAllowPopoverForcing: AllowPopoverForcing,
+  devToolsAiSubmenuPrompts: AiSubmenuPrompts,
 }>;
 
 /**

@@ -10,6 +10,7 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "aiCodeCompletionSummaryToolbar.css",
     "aiCodeCompletionTeaser.css",
     "common.css",
     "freDialog.css",
@@ -18,6 +19,7 @@ generate_css("css_files") {
 
 devtools_module("common") {
   sources = [
+    "AiCodeCompletionSummaryToolbar.ts",
     "AiCodeCompletionTeaser.ts",
     "FreDialog.ts",
   ]
@@ -29,6 +31,7 @@ devtools_module("common") {
     "../../core/platform:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/snackbars:bundle",
+    "../../ui/components/tooltips:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
@@ -57,7 +60,10 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "AiCodeCompletionTeaser.test.ts" ]
+  sources = [
+    "AiCodeCompletionSummaryToolbar.test.ts",
+    "AiCodeCompletionTeaser.test.ts",
+  ]
 
   deps = [
     ":bundle",

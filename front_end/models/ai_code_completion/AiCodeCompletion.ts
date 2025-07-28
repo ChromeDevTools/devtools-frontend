@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import type {AgentOptions, RequestOptions} from '../ai_assistance/ai_assistance.js';
 
-export class AiCodeCompletion {
+export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #aidaRequestThrottler: Common.Throttler.Throttler;
   #editor: TextEditor.TextEditor.TextEditor;
 
@@ -17,6 +17,7 @@ export class AiCodeCompletion {
   readonly #serverSideLoggingEnabled: boolean;
 
   constructor(opts: AgentOptions, editor: TextEditor.TextEditor.TextEditor, throttler: Common.Throttler.Throttler) {
+    super();
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
     this.#editor = editor;
@@ -56,6 +57,10 @@ export class AiCodeCompletion {
       this.#editor.dispatch({
         effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(response.generatedSamples[0].generationString),
       });
+      const citations = response.generatedSamples[0].attributionMetadata?.citations;
+      if (citations) {
+        this.dispatchEventToListeners(Events.CITATIONS_UPDATED, {citations});
+      }
     }
   }
 
@@ -76,4 +81,16 @@ export class AiCodeCompletion {
   onTextChanged(prefix: string, suffix: string): void {
     void this.#aidaRequestThrottler.schedule(() => this.#requestAidaSuggestion(this.#buildRequest(prefix, suffix)));
   }
+}
+
+export const enum Events {
+  CITATIONS_UPDATED = 'CitationsUpdated',
+}
+
+export interface CitationsUpdatedEvent {
+  citations: Host.AidaClient.Citation[];
+}
+
+export interface EventTypes {
+  [Events.CITATIONS_UPDATED]: CitationsUpdatedEvent;
 }

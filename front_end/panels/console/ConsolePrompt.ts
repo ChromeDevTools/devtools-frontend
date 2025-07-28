@@ -492,6 +492,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.aiCodeCompletionThrottler = new Common.Throttler.Throttler(3000);
     this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: this.aidaClient}, this.editor, this.aiCodeCompletionThrottler);
+    this.aiCodeCompletion.addEventListener(
+        AiCodeCompletion.AiCodeCompletion.Events.CITATIONS_UPDATED,
+        event => this.dispatchEventToListeners(Events.CITATIONS_UPDATED, event.data));
   }
 
   private onAiCodeCompletionSettingChanged(): void {
@@ -516,8 +519,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
 export const enum Events {
   TEXT_CHANGED = 'TextChanged',
+  CITATIONS_UPDATED = 'CitationsUpdated',
 }
 
 export interface EventTypes {
   [Events.TEXT_CHANGED]: void;
+  [Events.CITATIONS_UPDATED]: AiCodeCompletion.AiCodeCompletion.CitationsUpdatedEvent;
 }

@@ -41,6 +41,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
@@ -53,6 +54,7 @@ import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import {AiCodeCompletionSummaryToolbar} from '../common/common.js';
 
 import {ConsoleContextSelector} from './ConsoleContextSelector.js';
 import {ConsoleFilter, FilterType, type LevelsMask} from './ConsoleFilter.js';
@@ -267,6 +269,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let consoleViewInstance: ConsoleView;
 
 const MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING = 5;
+const DISCLAIMER_TOOLTIP_ID = 'console-ai-code-completion-disclaimer-tooltip';
+const CITATIONS_TOOLTIP_ID = 'console-ai-code-completion-citations-tooltip';
 
 export class ConsoleView extends UI.Widget.VBox implements
     UI.SearchableView.Searchable, ConsoleViewportProvider,
@@ -328,6 +332,10 @@ export class ConsoleView extends UI.Widget.VBox implements
   private issueResolver = new IssuesManager.IssueResolver.IssueResolver();
   #isDetached = false;
   #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
+  private aiCodeCompletionSetting =
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-fre-completed', false);
+  private aiCodeCompletionSummaryToolbarContainer?: HTMLElement;
+  private aiCodeCompletionSummaryToolbar?: AiCodeCompletionSummaryToolbar;
 
   constructor(viewportThrottlerTimeout: number) {
     super();
@@ -546,6 +554,13 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.prompt.element.addEventListener('keydown', this.promptKeyDown.bind(this), true);
     this.prompt.addEventListener(ConsolePromptEvents.TEXT_CHANGED, this.promptTextChanged, this);
 
+    if (this.isAiCodeCompletionEnabled()) {
+      this.aiCodeCompletionSetting.addChangeListener(this.onAiCodeCompletionSettingChanged.bind(this));
+      this.onAiCodeCompletionSettingChanged();
+      this.prompt.addEventListener(
+          ConsolePromptEvents.CITATIONS_UPDATED, this.#onAiCodeCompletionCitationsUpdated, this);
+    }
+
     this.messagesElement.addEventListener('keydown', this.messagesKeyDown.bind(this), false);
     this.prompt.element.addEventListener('focusin', () => {
       if (this.isScrolledToBottom()) {
@@ -600,6 +615,28 @@ export class ConsoleView extends UI.Widget.VBox implements
       consoleViewInstance = new ConsoleView(opts?.viewportThrottlerTimeout ?? 50);
     }
     return consoleViewInstance;
+  }
+
+  createAiCodeCompletionSummaryToolbar(): void {
+    this.aiCodeCompletionSummaryToolbar =
+        new AiCodeCompletionSummaryToolbar(DISCLAIMER_TOOLTIP_ID, CITATIONS_TOOLTIP_ID, 'console');
+    this.aiCodeCompletionSummaryToolbarContainer = this.element.createChild('div');
+    this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, undefined, true);
+  }
+
+  #onAiCodeCompletionCitationsUpdated(
+      event: Common.EventTarget.EventTargetEvent<AiCodeCompletion.AiCodeCompletion.CitationsUpdatedEvent>): void {
+    if (!this.aiCodeCompletionSummaryToolbar) {
+      return;
+    }
+    const citations: string[] = [];
+    event.data.citations.forEach(citation => {
+      const uri = citation.uri;
+      if (uri) {
+        citations.push(uri);
+      }
+    });
+    this.aiCodeCompletionSummaryToolbar?.updateCitations(citations);
   }
 
   static clearConsole(): void {
@@ -1096,6 +1133,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.filter.clear();
     this.requestResolver.clear();
     this.consoleGroupStarts = [];
+    this.aiCodeCompletionSummaryToolbar?.clearCitations();
     if (hadFocus) {
       this.prompt.focus();
     }
@@ -1616,6 +1654,20 @@ export class ConsoleView extends UI.Widget.VBox implements
     const distanceToPromptEditorBottom = this.messagesElement.scrollHeight - this.messagesElement.scrollTop -
         this.messagesElement.clientHeight - (this.prompt.belowEditorElement() as HTMLElement).offsetHeight;
     return distanceToPromptEditorBottom <= 2;
+  }
+
+  private onAiCodeCompletionSettingChanged(): void {
+    if (this.aiCodeCompletionSetting.get() && this.isAiCodeCompletionEnabled()) {
+      this.createAiCodeCompletionSummaryToolbar();
+    } else if (this.aiCodeCompletionSummaryToolbarContainer) {
+      this.aiCodeCompletionSummaryToolbarContainer.remove();
+      this.aiCodeCompletionSummaryToolbarContainer = undefined;
+      this.aiCodeCompletionSummaryToolbar = undefined;
+    }
+  }
+
+  private isAiCodeCompletionEnabled(): boolean {
+    return Boolean(Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
   }
 }
 

@@ -852,6 +852,8 @@ export const knownContextValues = new Set([
   'console-user-activation-eval',
   'console-user-activation-eval-false',
   'console-view',
+  'console.ai-code-completion-citations',
+  'console.ai-code-completion-disclaimer',
   'console.clear',
   'console.clear.history',
   'console.create-pin',

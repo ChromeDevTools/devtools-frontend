@@ -299,6 +299,26 @@ ${requestSummary}`;
 Duplication grouped by Node modules: ${filesFormatted}`;
     }
 
+    if (Trace.Insights.Models.LegacyJavaScript.isLegacyJavaScript(this.#insight)) {
+      const legacyJavaScriptResults = this.#insight.legacyJavaScriptResults;
+
+      if (legacyJavaScriptResults.size === 0) {
+        return 'There is no significant amount of legacy JavaScript on the page.';
+      }
+
+      const filesFormatted =
+          Array.from(legacyJavaScriptResults)
+              .map(([script, result]) => `\n- Script: ${script.url} - Wasted bytes: ${result.estimatedByteSavings} bytes
+Matches:
+${result.matches.map(match => `Line: ${match.line}, Column: ${match.column}, Name: ${match.name}`).join('\n')}`)
+              .join('\n');
+
+      return `Total legacy JavaScript: ${legacyJavaScriptResults.size} files.
+
+Legacy JavaScript by file:
+${filesFormatted}`;
+    }
+
     return '';
   }
 
@@ -346,7 +366,8 @@ Duplication grouped by Node modules: ${filesFormatted}`;
       case 'ModernHTTP':
         return '- https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2';
       case 'LegacyJavaScript':
-        return '';
+        return `- https://web.dev/articles/baseline-and-polyfills
+- https://philipwalton.com/articles/the-state-of-es5-on-the-web/`;
     }
   }
 
@@ -416,7 +437,9 @@ We apply a conservative approach when flagging HTTP/1.1 usage. This insight will
 
 To pass this insight, ensure your server supports and prioritizes a modern HTTP protocol (like HTTP/2) for static assets, especially when serving a substantial number of them.`;
       case 'LegacyJavaScript':
-        return '';
+        return `This insight identified legacy JavaScript in your application's modules that may be creating unnecessary code.
+
+Polyfills and transforms enable older browsers to use new JavaScript features. However, many are not necessary for modern browsers. Consider modifying your JavaScript build process to not transpile Baseline features, unless you know you must support older browsers.`;
     }
   }
 }
@@ -593,9 +616,9 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
       requests: readonly Trace.Types.Events.SyntheticNetworkRequest[],
       parsedTrace: Trace.Handlers.Types.ParsedTrace): string {
     const networkDataString = `
-    Network requests data:
+Network requests data:
 
-    `;
+`;
     const urlIdToIndex = new Map<string, number>();
     const allRequestsText = requests
                                 .map(request => {

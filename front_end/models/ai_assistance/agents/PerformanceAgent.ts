@@ -382,7 +382,10 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
           {title: 'Which resources are not using a modern HTTP protocol?'},
         ];
       case 'LegacyJavaScript':
-        return [{title: 'Is my site polyfilling modern JavaScript features?'}];
+        return [
+          {title: 'Is my site polyfilling modern JavaScript features?'},
+          {title: 'How can I reduce the amount of legacy JavaScript on my page?'},
+        ];
       default:
         Platform.assertNever(focus.insight.insightKey, 'Unknown insight key');
     }

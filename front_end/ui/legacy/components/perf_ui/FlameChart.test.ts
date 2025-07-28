@@ -15,6 +15,7 @@ import {
   renderFlameChartWithFakeProvider,
 } from '../../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 import * as PerfUI from './perf_ui.js';
 
@@ -75,6 +76,15 @@ describeWithEnvironment('FlameChart', () => {
       });
     }
   }
+  it('adds JSLog context to the canvas element', async () => {
+    const provider = new FakeProvider();
+    const delegate = new MockFlameChartDelegate();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate, {canvasVELogContext: 'testing-flamechart'});
+    renderChart(chartInstance);
+    const expected = VisualLogging.canvas('testing-flamechart').track({hover: true}).toString();
+    const canvas = chartInstance.contentElement.querySelector('canvas');
+    assert.strictEqual(canvas?.getAttribute('jslog'), expected);
+  });
 
   it('notifies the delegate when the window has changed', async () => {
     const provider = new FakeProvider();

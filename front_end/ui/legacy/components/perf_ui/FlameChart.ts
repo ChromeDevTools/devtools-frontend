@@ -215,6 +215,11 @@ export interface OptionalFlameChartConfig {
    * Used to disable the cursor element in ChartViewport and instead use the new overlays system.
    */
   useOverlaysForCursorRuler?: boolean;
+
+  /**
+   * If provided, this will add a VE Logging context to the canvas to log visibility and hovers.
+   */
+  canvasVELogContext?: string;
 }
 
 export const enum FilterAction {
@@ -362,6 +367,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.viewportElement = this.chartViewport.viewportElement;
     this.canvas = this.viewportElement.createChild('canvas', 'fill');
+    if (optionalConfig.canvasVELogContext) {
+      const context = VisualLogging.canvas(optionalConfig.canvasVELogContext).track({
+        hover: true,
+      });
+      this.canvas.setAttribute('jslog', `${context}`);
+    }
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     this.candyStripePattern = this.candyStripePatternGray = null;
 

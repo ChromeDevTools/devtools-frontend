@@ -239,6 +239,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       selectedElementOutline: false,
       tooltipElement: this.#tooltipElement,
       useOverlaysForCursorRuler: true,
+      canvasVELogContext: 'timeline.flamechart.main'
     });
     this.mainFlameChart.alwaysShowVerticalScroll();
     this.mainFlameChart.enableRuler(false);
@@ -256,6 +257,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       selectedElementOutline: false,
       tooltipElement: this.#tooltipElement,
       useOverlaysForCursorRuler: true,
+      canvasVELogContext: 'timeline.flamechart.network'
     });
     this.networkFlameChart.alwaysShowVerticalScroll();
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.LATEST_DRAW_DIMENSIONS, dimensions => {

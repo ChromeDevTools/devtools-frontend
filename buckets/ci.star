@@ -74,6 +74,7 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
                 "perf_benchmarks": True,
                 "coverage": False,
             },
+            use_siso = SISO.CHROMIUM_TRUSTED,
         ),
         builder_descriptor(
             name = "Stand-alone Shuffled Linux",
@@ -82,6 +83,7 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
             properties = {
                 "coverage": False,
             },
+            use_siso = SISO.CHROMIUM_TRUSTED,
         ),
         builder_descriptor(
             name = "Stand-alone Win",
@@ -91,6 +93,7 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
             properties = {
                 "coverage": False,
             },
+            use_siso = SISO.CHROMIUM_TRUSTED,
         ),
         builder_descriptor(
             name = "Linux Compile Debug",
@@ -100,6 +103,7 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
                 "builder_config": "Debug",
                 "coverage": False,
             },
+            use_siso = SISO.CHROMIUM_TRUSTED,
         ),
         builder_descriptor(
             name = "Linux Compile Debug Fastbuild",
@@ -110,6 +114,7 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
                 "devtools_skip_typecheck": True,
                 "coverage": False,
             },
+            use_siso = SISO.CHROMIUM_TRUSTED,
             description_html = """
 This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/ci/Linux%20Compile%20Debug">
 Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
@@ -122,6 +127,7 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
                 "clobber": True,
                 "coverage": False,
             },
+            use_siso = SISO.CHROMIUM_TRUSTED,
         ),
         builder_descriptor(
             name = "Stand-alone Mac-arm64",
@@ -131,6 +137,7 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
             properties = {
                 "coverage": False,
             },
+            use_siso = SISO.CHROMIUM_TRUSTED,
         ),
         builder_descriptor(
             name = "Linux Official",
@@ -141,6 +148,7 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
                 "coverage": False,
             },
             notification_muted = True,
+            use_siso = SISO.CHROMIUM_TRUSTED,
         ),
     ],
 )

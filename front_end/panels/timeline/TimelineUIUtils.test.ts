@@ -783,10 +783,11 @@ describeWithMockConnection('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details).slice(0, 3);
+      const rowData = getRowDataForDetailsElement(details).slice(0, 4);
       assert.deepEqual(
           rowData,
           [
+            {title: 'Timestamp', value: '1,614.0 ms'},
             {title: 'Duration', value: '1.00\xA0s (self 400.50\xA0ms)'},
             {
               title: 'Description',
@@ -826,6 +827,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.deepEqual(
           rowData,
           [
+            {title: 'Timestamp', value: '1,614.0 ms'},
             {title: 'Duration', value: '1.00\xA0s'},
             {title: 'key', value: 'null'},
           ],
@@ -847,13 +849,19 @@ describeWithMockConnection('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details)[0];
+      const rowData = getRowDataForDetailsElement(details).slice(0, 2);
       assert.deepEqual(
           rowData,
-          {
-            title: 'Description',
-            value: 'This marks the start of a task',
-          },
+          [
+            {
+              title: 'Timestamp',
+              value: '1,614.0\xA0ms',
+            },
+            {
+              title: 'Description',
+              value: 'This marks the start of a task',
+            }
+          ],
       );
     });
 

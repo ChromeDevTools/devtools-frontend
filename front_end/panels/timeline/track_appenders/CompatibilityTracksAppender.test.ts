@@ -126,10 +126,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
   describe('popoverInfo', () => {
     it('shows the correct warning for a long task when hovered', async function() {
       await initTrackAppender(this, 'simple-js-program.json.gz');
-      const events = parsedTrace.Renderer?.allTraceEntries;
-      if (!events) {
-        throw new Error('Could not find renderer events');
-      }
+      const events = parsedTrace.Renderer.allTraceEntries;
       const longTask = events.find(e => (e.dur || 0) > 1_000_000);
       if (!longTask) {
         throw new Error('Could not find long task');
@@ -185,10 +182,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
 
     it('shows the correct warning for slow idle callbacks', async function() {
       await initTrackAppender(this, 'idle-callback.json.gz');
-      const events = parsedTrace.Renderer?.allTraceEntries;
-      if (!events) {
-        throw new Error('Could not find renderer events');
-      }
+      const events = parsedTrace.Renderer.allTraceEntries;
       const idleCallback = events.find(event => {
         const {duration} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
         if (!Trace.Types.Events.isFireIdleCallback(event)) {
@@ -209,6 +203,17 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
         throw new Error('Found unexpected warning');
       }
       assert.strictEqual(warning?.innerText, 'Idle callback execution extended beyond deadline by 79.56\u00A0ms');
+    });
+
+    it('includes the timestamp when hovering over a perf extensibility marker', async () => {
+      await initTrackAppender(this, 'extension-tracks-and-marks.json.gz');
+      const markEvent = parsedTrace.ExtensionTraceData.extensionMarkers.find(m => {
+        return m.name === 'Custom mark';
+      });
+      assert.isOk(markEvent);
+      const info = tracksAppender.popoverInfo(markEvent, 2);
+      assert.deepEqual(
+          info, {title: 'A mark', formattedTime: '1.61 s', warningElements: [], additionalElements: [], url: null});
     });
   });
 

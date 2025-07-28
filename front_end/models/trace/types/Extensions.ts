@@ -81,7 +81,7 @@ export interface SyntheticExtensionTrackEntry extends
 /**
  * Synthetic events created for extension marks.
  */
-export interface SyntheticExtensionMarker extends SyntheticBased<Phase.COMPLETE, PerformanceMark> {
+export interface SyntheticExtensionMarker extends SyntheticBased<Phase.INSTANT, PerformanceMark> {
   args: Args&ExtensionMarkerPayload;
 }
 

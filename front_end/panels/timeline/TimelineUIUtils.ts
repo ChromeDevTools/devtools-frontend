@@ -948,8 +948,9 @@ export class TimelineUIUtils {
       }
     }
 
-    // Add timestamp to user timings.
-    if (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.UserTiming)) {
+    // Add timestamp to user timings, including custom extensibility markers
+    if (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.UserTiming) ||
+        Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
       const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(
           event,
           parsedTrace,

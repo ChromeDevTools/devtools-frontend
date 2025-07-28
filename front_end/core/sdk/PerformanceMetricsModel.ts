@@ -24,8 +24,18 @@ export class PerformanceMetricsModel extends SDKModel {
     this.metricModes = new Map([
       ['TaskDuration', MetricMode.CumulativeTime],
       ['ScriptDuration', MetricMode.CumulativeTime],
-      ['LayoutDuration', MetricMode.CumulativeTime],
-      ['RecalcStyleDuration', MetricMode.CumulativeTime],
+      // COHERENT BEGIN: Do not consider LayoutDuration/RecalcStyleDuration as CumulativeTime
+      // NOTE: CumulativeTime is kind of useless, maybe that's why by default Chrome doesn't
+      // visualize any duration metric in the Performance Monitor.
+      // It basically measures what fraction does an event take between 2 polls.
+      // For example, if we have a 600ms poll interval and a 30ms frame, 5ms Layout per frame,
+      // we'll see the number 0.16 (5*20 frames between the polls / 600ms poll interval) for LayoutDuration,
+      // which is totally meaningless.
+      // What we want to see is the 5ms - the average time a Layout takes between polls.
+      // We'll get that by sending metrics of Default mode (NOT CumulativeTime) that are being reset between polls.
+      //['LayoutDuration', MetricMode.CumulativeTime],
+      //['RecalcStyleDuration', MetricMode.CumulativeTime],
+      // COHERENT END
       ['LayoutCount', MetricMode.CumulativeCount],
       ['RecalcStyleCount', MetricMode.CumulativeCount],
     ]);

@@ -53,6 +53,14 @@ const UIStrings = {
   *@description Text in Performance Monitor of the Performance monitor tab
   */
   styleRecalcsSec: 'Style recalcs / sec',
+  // COHERENT BEGIN: Add new counter names
+  advanceDur: 'Advance ms',
+  stylingDur: 'Styling ms',
+  layoutDur: 'Layout ms',
+  recordRenderingDur: 'Record rendering ms',
+  paintFrontendDur: 'Paint frontend ms',
+  paintBackendDur: 'Paint backend ms',
+  // COHERENT END
 };
 const str_ = i18n.i18n.registerUIStrings('panels/performance_monitor/PerformanceMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -450,8 +458,13 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
     super();
     this.element = parent.createChild('div', 'perfmon-control-pane');
 
+    // COHERENT BEGIN: Change the defaults for enabled charts
+//    this.enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
+//        'perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
     this.enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
-        'perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
+        'perfmonActiveIndicators2', ['AdvanceDuration', 'StylingDuration', 'LayoutDuration',
+          'RecordRenderingDuration', 'PaintFrontendDuration', 'PaintBackendDuration', 'JSHeapTotalSize', 'Nodes']);
+    // COHERENT END
     this.enabledCharts = new Set(this.enabledChartsSetting.get());
 
     const defaults = {
@@ -463,6 +476,8 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
       stacked: undefined,
     };
 
+    // COHERENT BEGIN: Make new charts relevant to Gameface
+    /*
     this.chartsInfo = [
       {
         ...defaults,
@@ -502,6 +517,35 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
         metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}],
       },
     ];
+    */
+    this.chartsInfo = [
+      {...defaults, title: i18nString(UIStrings.advanceDur), metrics: [{name: 'AdvanceDuration', color: 'darkkhaki'}]},
+      {...defaults, title: i18nString(UIStrings.stylingDur), metrics: [{name: 'StylingDuration', color: 'gold'}]},
+      {...defaults, title: i18nString(UIStrings.layoutDur), metrics: [{name: 'LayoutDuration', color: 'indianred'}]},
+      {...defaults, title: i18nString(UIStrings.recordRenderingDur), metrics: [{name: 'RecordRenderingDuration', color: 'lightsalmon'}]},
+      {...defaults, title: i18nString(UIStrings.paintFrontendDur), metrics: [{name: 'PaintFrontendDuration', color: 'darkblue'}]},
+      {...defaults, title: i18nString(UIStrings.paintBackendDur), metrics: [{name: 'PaintBackendDuration', color: 'darkcyan'}]},
+      {
+        ...defaults,
+        title: i18nString(UIStrings.jsHeapSize),
+        metrics: [{name: 'JSHeapTotalSize', color: '#99f'}, {name: 'JSHeapUsedSize', color: 'blue'}],
+        format: Format.Bytes,
+        color: 'blue',
+      },
+      {...defaults, title: i18nString(UIStrings.domNodes), metrics: [{name: 'Nodes', color: 'green'}]},
+      {
+        ...defaults,
+        title: i18nString(UIStrings.jsEventListeners),
+        metrics: [{name: 'JSEventListeners', color: 'yellowgreen'}],
+      },
+      {...defaults, title: i18nString(UIStrings.layoutsSec), metrics: [{name: 'LayoutCount', color: 'hotpink'}]},
+      {
+        ...defaults,
+        title: i18nString(UIStrings.styleRecalcsSec),
+        metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}],
+      },
+    ];
+    // COHERENT END
     for (const info of this.chartsInfo) {
       if (info.color) {
         info.color = ThemeSupport.ThemeSupport.instance().patchColorText(

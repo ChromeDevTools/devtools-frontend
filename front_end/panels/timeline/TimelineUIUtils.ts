@@ -2407,9 +2407,11 @@ export class TimelineDetailsContentHelper {
     }
     const stackTraceElement =
         this.tableElement.createChild('div', 'timeline-details-view-row timeline-details-stack-values');
-    const callFrameContents = LegacyComponents.JSPresentationUtils.buildStackTracePreviewContents(
-        this.target, this.linkifierInternal, {stackTrace: resolvedStackTrace, tabStops: true, showColumnNumber: true});
-    stackTraceElement.appendChild(callFrameContents.element);
+    const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(
+        undefined, this.target ?? undefined, this.linkifierInternal,
+        {stackTrace: resolvedStackTrace, tabStops: true, showColumnNumber: true});
+    callFrameContents.markAsRoot();
+    callFrameContents.show(stackTraceElement);
   }
 }
 

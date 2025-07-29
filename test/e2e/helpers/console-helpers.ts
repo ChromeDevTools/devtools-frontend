@@ -228,7 +228,7 @@ export async function getStructuredConsoleMessages(devToolsPage?: DevToolsPage) 
       const source = wrapper.querySelector('.devtools-link')?.textContent;
       const consoleMessage = wrapper.querySelector('.console-message');
       const repeatCount = wrapper.querySelector('.console-message-repeat-count');
-      const stackPreviewRoot = wrapper.querySelector('.hidden-stack-trace > span');
+      const stackPreviewRoot = wrapper.querySelector('.hidden-stack-trace > div');
       const stackPreview = stackPreviewRoot?.shadowRoot?.querySelectorAll('tbody') ?? null;
       return {
         message,

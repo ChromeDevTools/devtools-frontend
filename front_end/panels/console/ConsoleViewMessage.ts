@@ -705,10 +705,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     clickableElement.tabIndex = -1;
     clickableElement.appendChild(messageElement);
     const stackTraceElement = contentElement.createChild('div');
-    const stackTracePreview = Components.JSPresentationUtils.buildStackTracePreviewContents(
-        target, this.linkifier, {stackTrace, tabStops: undefined, widthConstrained: true});
-    stackTraceElement.appendChild(stackTracePreview.element);
-    for (const linkElement of stackTracePreview.links) {
+    const stackTracePreview = new Components.JSPresentationUtils.StackTracePreviewContent(
+        undefined, target ?? undefined, this.linkifier, {stackTrace, widthConstrained: true});
+    stackTracePreview.markAsRoot();
+    stackTracePreview.show(stackTraceElement);
+    for (const linkElement of stackTracePreview.linkElements) {
       this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
     }
     stackTraceElement.classList.add('hidden-stack-trace');

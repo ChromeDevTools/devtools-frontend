@@ -6,7 +6,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("issues") {
   sources = [
-    "cors-private-network-issues_test.ts",
     "hidden-issues-row_test.ts",
     "low-text-contrast-issues_test.ts",
     "quota-issues_test.ts",

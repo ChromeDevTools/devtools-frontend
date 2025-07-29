@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -12,17 +11,13 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../helpers/issues-helpers.js';
+} from '../../e2e/helpers/issues-helpers.js';
 
 describe('Cors Private Network issue', () => {
-  beforeEach(async () => {
-    await goToResource('empty.html');
-  });
-
-  it('should display correct information for insecure contexts', async () => {
-    await navigateToIssuesTab();
-    const {frontend} = getBrowserAndPages();
-    await frontend.evaluate(() => {
+  it('should display correct information for insecure contexts', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('empty.html');
+    await navigateToIssuesTab(devToolsPage);
+    await devToolsPage.evaluate(() => {
       const issue = {
         code: 'CorsIssue',
         details: {
@@ -61,11 +56,13 @@ describe('Cors Private Network issue', () => {
       window.addIssueForTest(issue2);
     });
 
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Ensure private network requests are made from secure contexts');
+    await expandIssue(devToolsPage);
+    const issueElement =
+        await getIssueByTitle('Ensure private network requests are made from secure contexts', devToolsPage);
     assert.isOk(issueElement);
-    const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
-    await ensureResourceSectionIsExpanded(section);
+    const section =
+        await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+    await ensureResourceSectionIsExpanded(section, devToolsPage);
 
     const expectedTableRows = [
       [
@@ -90,13 +87,13 @@ describe('Cors Private Network issue', () => {
         'insecure',
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
   });
 
-  it('should display correct information for secure contexts', async () => {
-    await navigateToIssuesTab();
-    const {frontend} = getBrowserAndPages();
-    await frontend.evaluate(() => {
+  it('should display correct information for secure contexts', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('empty.html');
+    await navigateToIssuesTab(devToolsPage);
+    await devToolsPage.evaluate(() => {
       const issue = {
         code: 'CorsIssue',
         details: {
@@ -135,11 +132,13 @@ describe('Cors Private Network issue', () => {
       window.addIssueForTest(issue2);
     });
 
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Ensure private network requests are made from secure contexts');
+    await expandIssue(devToolsPage);
+    const issueElement =
+        await getIssueByTitle('Ensure private network requests are made from secure contexts', devToolsPage);
     assert.isOk(issueElement);
-    const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
-    await ensureResourceSectionIsExpanded(section);
+    const section =
+        await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+    await ensureResourceSectionIsExpanded(section, devToolsPage);
     const expectedTableRows = [
       [
         'Request',
@@ -163,13 +162,13 @@ describe('Cors Private Network issue', () => {
         'secure',
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
   });
 
-  it('should display correct information for preflight request errors', async () => {
-    await navigateToIssuesTab();
-    const {frontend} = getBrowserAndPages();
-    await frontend.evaluate(() => {
+  it('should display correct information for preflight request errors', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('empty.html');
+    await navigateToIssuesTab(devToolsPage);
+    await devToolsPage.evaluate(() => {
       const issue = {
         code: 'CorsIssue',
         details: {
@@ -208,12 +207,13 @@ describe('Cors Private Network issue', () => {
       window.addIssueForTest(issue2);
     });
 
-    await expandIssue();
-    const issueElement =
-        await getIssueByTitle('Ensure private network requests are only made to resources that allow them');
+    await expandIssue(devToolsPage);
+    const issueElement = await getIssueByTitle(
+        'Ensure private network requests are only made to resources that allow them', devToolsPage);
     assert.isOk(issueElement);
-    const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
-    await ensureResourceSectionIsExpanded(section);
+    const section =
+        await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+    await ensureResourceSectionIsExpanded(section, devToolsPage);
     const expectedTableRows = [
       [
         'Request',
@@ -240,13 +240,13 @@ describe('Cors Private Network issue', () => {
         'secure',
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
   });
 
-  it('should display correct information for failed preflight requests', async () => {
-    await navigateToIssuesTab();
-    const {frontend} = getBrowserAndPages();
-    await frontend.evaluate(() => {
+  it('should display correct information for failed preflight requests', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('empty.html');
+    await navigateToIssuesTab(devToolsPage);
+    await devToolsPage.evaluate(() => {
       const issue = {
         code: 'CorsIssue',
         details: {
@@ -267,11 +267,12 @@ describe('Cors Private Network issue', () => {
       window.addIssueForTest(issue);
     });
 
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Ensure preflight responses are valid');
+    await expandIssue(devToolsPage);
+    const issueElement = await getIssueByTitle('Ensure preflight responses are valid', devToolsPage);
     assert.isOk(issueElement);
-    const section = await getResourcesElement('1 request', issueElement, '.cors-issue-affected-resource-label');
-    await ensureResourceSectionIsExpanded(section);
+    const section =
+        await getResourcesElement('1 request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
+    await ensureResourceSectionIsExpanded(section, devToolsPage);
     const expectedTableRows = [
       [
         'Request',
@@ -286,6 +287,6 @@ describe('Cors Private Network issue', () => {
         'Failed Request',
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
   });
 });

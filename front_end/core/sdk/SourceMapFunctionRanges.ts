@@ -5,7 +5,6 @@
 import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 
 import {TokenIterator} from './SourceMap.js';
-import {comparePositions} from './SourceMapScopes.js';
 
 export interface NamedFunctionRange {
   start: ScopesCodec.Position;
@@ -149,4 +148,9 @@ export function decodePastaRanges(encodedRanges: string, names: string[]): Named
   }
 
   return result;
+}
+
+/** @returns 0 if both positions are equal, a negative number if a < b and a positive number if a > b */
+function comparePositions(a: ScopesCodec.Position, b: ScopesCodec.Position): number {
+  return a.line - b.line || a.column - b.column;
 }

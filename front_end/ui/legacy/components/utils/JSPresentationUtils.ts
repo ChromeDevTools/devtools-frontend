@@ -157,30 +157,6 @@ export function buildStackTraceRows(
   return stackTraceRows;
 }
 
-/** @deprecated Use {@link StackTracePreviewContent} widget instead. */
-export function buildStackTracePreviewContents(
-    target: SDK.Target.Target|null, linkifier: Linkifier, options: Options = {
-      widthConstrained: false,
-      stackTrace: undefined,
-      tabStops: undefined,
-    }): {element: HTMLElement, links: HTMLElement[]} {
-  const {stackTrace, tabStops} = options;
-  const element = document.createElement('span');
-  element.classList.add('monospace');
-  element.classList.add('stack-preview-container');
-  element.classList.toggle('width-constrained', options.widthConstrained);
-  element.style.display = 'inline-block';
-  const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: jsUtilsStyles});
-  const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
-  contentElement.classList.toggle('width-constrained', options.widthConstrained);
-
-  const updateCallback = renderStackTraceTable.bind(null, contentElement, element);
-  const stackTraceRows = buildStackTraceRows(
-      stackTrace ?? {callFrames: []}, target, linkifier, tabStops, updateCallback, options.showColumnNumber);
-  const links = renderStackTraceTable(contentElement, element, stackTraceRows);
-  return {element, links};
-}
-
 function renderStackTraceTable(
     container: Element, parent: Element,
     stackTraceRows: Array<StackTraceRegularRow|StackTraceAsyncRow>): HTMLElement[] {
@@ -310,5 +286,20 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
 
   get linkElements(): readonly HTMLElement[] {
     return this.#links;
+  }
+
+  set target(target: SDK.Target.Target|undefined) {
+    this.#target = target;
+    this.requestUpdate();
+  }
+
+  set linkifier(linkifier: Linkifier) {
+    this.#linkifier = linkifier;
+    this.requestUpdate();
+  }
+
+  set options(options: Options) {
+    this.#options = options;
+    this.requestUpdate();
   }
 }

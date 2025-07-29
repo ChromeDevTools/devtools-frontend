@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Trace from '../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 
 export class EventsSerializer {
   #modifiedProfileCallByKey = new Map<Trace.Types.File.ProfileCallKeyValues, Trace.Types.Events.SyntheticProfileCall>();

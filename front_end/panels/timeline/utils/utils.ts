@@ -8,6 +8,7 @@ import * as EntityMapper from './EntityMapper.js';
 import * as EntryName from './EntryName.js';
 import * as EntryNodes from './EntryNodes.js';
 import * as EntryStyles from './EntryStyles.js';
+import * as EventsSerializer from './EventsSerializer.js';
 import * as Helpers from './Helpers.js';
 import * as IgnoreList from './IgnoreList.js';
 import * as ImageCache from './ImageCache.js';
@@ -22,6 +23,7 @@ export {
   EntryName,
   EntryNodes,
   EntryStyles,
+  EventsSerializer,
   Helpers,
   IgnoreList,
   ImageCache,

@@ -70,7 +70,7 @@ describeWithEnvironment('AICallTree', () => {
     const expectedData = '\n' +
         `
 
-# All URL #s:
+# All URLs:
 
   * 0: node:internal/main/run_main_module
   * 1: node:internal/modules/run_main
@@ -104,7 +104,7 @@ describeWithEnvironment('AICallTree', () => {
     const expectedData = '\n' +
         `
 
-# All URL #s:
+# All URLs:
 
   * 0: https://www.gstatic.com/devrel-devsite/prod/vafe2e13ca17bb026e70df42a2ead1c8192750e86a12923a88eda839025dabf95/js/devsite_app_module.js
 
@@ -242,7 +242,7 @@ describeWithEnvironment('AICallTree', () => {
 
     // Entry Format: `id;name;duration;selfTime;urlIndex;childRange;[S]
     const expectedData = `
-# All URL #s:
+# All URLs:
 
   * 0: https://www.gstatic.com/devrel-devsite/prod/vafe2e13ca17bb026e70df42a2ead1c8192750e86a12923a88eda839025dabf95/js/devsite_app_module.js
 
@@ -269,7 +269,7 @@ describeWithEnvironment('AICallTree', () => {
 
     // Entry Format: `id;name;duration;selfTime;urlIndex;childRange;[S]
     const expectedData = `
-# All URL #s:
+# All URLs:
 
   * 0: https://www.gstatic.com/firebasejs/6.6.1/firebase-performance.js
 

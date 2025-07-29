@@ -249,7 +249,7 @@ export class AICallTree {
     let output = '';
     if (allUrls.length) {
       // Output lookup table of URLs within this tree
-      output += '\n# All URL #s:\n\n' + allUrls.map((url, index) => `  * ${index}: ${url}`).join('\n');
+      output += '\n# All URLs:\n\n' + allUrls.map((url, index) => `  * ${index}: ${url}`).join('\n');
     }
     output += '\n\n# Call tree:\n' + nodesStr;
     return output;

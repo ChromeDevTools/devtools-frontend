@@ -32,7 +32,8 @@ describeWithMockConnection('JSPresentationUtils', () => {
     const callFrame = {scriptId: 'scriptId', functionName: 'func', url, lineNumber: 0, columnNumber: 0};
     const stackTrace = {callFrames: [callFrame]};
     const options = {tabStops: false, stackTrace} as Components.JSPresentationUtils.Options;
-    const {links} = Components.JSPresentationUtils.buildStackTracePreviewContents(target, linkifier, options);
+    const {linkElements: links} =
+        new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target, linkifier, options);
     assert.lengthOf(links, 1);
     assert.strictEqual(links[0].textContent, expectedLinkContent);
   }

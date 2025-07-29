@@ -36,6 +36,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
@@ -156,6 +157,7 @@ export function buildStackTraceRows(
   return stackTraceRows;
 }
 
+/** @deprecated Use {@link StackTracePreviewContent} widget instead. */
 export function buildStackTracePreviewContents(
     target: SDK.Target.Target|null, linkifier: Linkifier, options: Options = {
       widthConstrained: false,
@@ -245,8 +247,8 @@ function renderStackTraceTable(
 }
 
 export interface Options {
-  stackTrace: Protocol.Runtime.StackTrace|undefined;
-  tabStops: boolean|undefined;
+  stackTrace?: Protocol.Runtime.StackTrace;
+  tabStops?: boolean;
   // Whether the width of stack trace preview
   // is constrained to its container or whether
   // it can grow the container.
@@ -261,4 +263,52 @@ export interface StackTraceRegularRow {
 
 export interface StackTraceAsyncRow {
   asyncDescription: string;
+}
+
+export class StackTracePreviewContent extends UI.Widget.Widget {
+  #target?: SDK.Target.Target;
+  #linkifier?: Linkifier;
+  #options: Options;
+  #links: HTMLElement[] = [];
+
+  readonly #table: HTMLElement;
+
+  constructor(element?: HTMLElement, target?: SDK.Target.Target, linkifier?: Linkifier, options?: Options) {
+    super(true, undefined, element);
+
+    this.#target = target;
+    this.#linkifier = linkifier;
+    this.#options = options || {
+      widthConstrained: false,
+    };
+
+    this.element.classList.add('monospace');
+    this.element.classList.add('stack-preview-container');
+    this.element.classList.toggle('width-constrained', this.#options.widthConstrained ?? false);
+    this.element.style.display = 'inline-block';
+
+    Platform.DOMUtilities.appendStyle(this.element.shadowRoot as ShadowRoot, jsUtilsStyles);
+
+    this.#table = this.contentElement.createChild('table', 'stack-preview-container');
+    this.#table.classList.toggle('width-constrained', this.#options.widthConstrained ?? false);
+
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    if (!this.#linkifier) {
+      return;
+    }
+
+    const {stackTrace, tabStops} = this.#options;
+    const updateCallback = renderStackTraceTable.bind(null, this.#table, this.element);
+    const stackTraceRows = buildStackTraceRows(
+        stackTrace ?? {callFrames: []}, this.#target ?? null, this.#linkifier, tabStops, updateCallback,
+        this.#options.showColumnNumber);
+    this.#links = renderStackTraceTable(this.#table, this.element, stackTraceRows);
+  }
+
+  get linkElements(): readonly HTMLElement[] {
+    return this.#links;
+  }
 }

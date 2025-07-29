@@ -48,19 +48,16 @@ export class RequestInitiatorView extends UI.Widget.VBox {
   }
 
   static createStackTracePreview(
-      request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean): {
-    element: Element,
-    links: Element[],
-  }|null {
+      request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier,
+      focusableLink?: boolean): Components.JSPresentationUtils.StackTracePreviewContent|null {
     const initiator = request.initiator();
     if (!initiator?.stack) {
       return null;
     }
     const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
-    const target = networkManager ? networkManager.target() : null;
-    const stackTrace = Components.JSPresentationUtils.buildStackTracePreviewContents(
-        target, linkifier, {stackTrace: initiator.stack, tabStops: focusableLink});
-    return stackTrace;
+    const target = networkManager ? networkManager.target() : undefined;
+    return new Components.JSPresentationUtils.StackTracePreviewContent(
+        undefined, target, linkifier, {stackTrace: initiator.stack, tabStops: focusableLink});
   }
 
   private createTree(): UI.TreeOutline.TreeOutlineInShadow {
@@ -124,7 +121,9 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     }
   }
 
-  private buildStackTraceSection(content: Element, title: string, tree: UI.TreeOutline.TreeOutlineInShadow): void {
+  private buildStackTraceSection(
+      stackTracePreview: Components.JSPresentationUtils.StackTracePreviewContent, title: string,
+      tree: UI.TreeOutline.TreeOutlineInShadow): void {
     const root = new UI.TreeOutline.TreeElement(title);
     tree.appendChild(root);
 
@@ -132,8 +131,10 @@ export class RequestInitiatorView extends UI.Widget.VBox {
       root.titleElement.classList.add('request-initiator-view-section-title');
     }
 
-    const contentElement = new UI.TreeOutline.TreeElement(content, false);
+    const contentElement = new UI.TreeOutline.TreeElement(undefined, false);
     contentElement.selectable = false;
+    stackTracePreview.markAsRoot();
+    stackTracePreview.show(contentElement.listItemElement);
 
     root.appendChild(contentElement);
     root.expand();
@@ -151,7 +152,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
 
     if (stackTracePreview) {
       initiatorDataPresent = true;
-      this.buildStackTraceSection(stackTracePreview.element, i18nString(UIStrings.requestCallStack), containerTree);
+      this.buildStackTraceSection(stackTracePreview, i18nString(UIStrings.requestCallStack), containerTree);
     }
 
     const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);

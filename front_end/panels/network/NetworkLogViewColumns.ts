@@ -889,7 +889,7 @@ export class NetworkLogViewColumns {
         if (!content) {
           return false;
         }
-        popover.contentElement.appendChild(content.element);
+        content.show(popover.contentElement);
         return true;
       },
       hide: this.popupLinkifier.reset.bind(this.popupLinkifier),

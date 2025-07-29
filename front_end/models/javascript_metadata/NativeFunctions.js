@@ -700,6 +700,11 @@ export const NativeFunctions = [
   },
   {
     name: "parse",
+    signatures: [["serializedOrigin"]],
+    receivers: ["Origin"]
+  },
+  {
+    name: "parse",
     signatures: [["url","?base"]],
     receivers: ["URL"]
   },
@@ -7290,6 +7295,18 @@ export const NativeFunctions = [
   {
     name: "compareComponent",
     signatures: [["component","left","right"]]
+  },
+  {
+    name: "Origin",
+    signatures: [["?serializedOrigin"]]
+  },
+  {
+    name: "isSameOrigin",
+    signatures: [["other"]]
+  },
+  {
+    name: "isSameSite",
+    signatures: [["other"]]
   },
   {
     name: "URLSearchParams",

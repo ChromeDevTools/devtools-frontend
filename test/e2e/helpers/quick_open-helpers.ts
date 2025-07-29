@@ -70,9 +70,9 @@ export const openFileWithQuickOpen =
       SourceFileEvents.SOURCE_FILE_LOADED,
       files => files.some(f => f.endsWith(sourceFile)),
       async () => {
-        await openFileQuickOpen();
-        await typeIntoQuickOpen(sourceFile);
-        const firstItem = await getMenuItemAtPosition(filePosition);
+        await openFileQuickOpen(devtoolsPage);
+        await typeIntoQuickOpen(sourceFile, undefined, devtoolsPage);
+        const firstItem = await getMenuItemAtPosition(filePosition, devtoolsPage);
         await firstItem.click();
       },
       devtoolsPage,

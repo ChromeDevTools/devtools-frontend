@@ -12,7 +12,6 @@ node_ts_library("sources") {
     "can-disable-auto-sources-focus_test.ts",
     "header-overrides_test.ts",
     "ignore-list_test.ts",
-    "navigator-view_test.ts",
     "overrides_test.ts",
     "syntax-highlighting_test.ts",
     "watch-expressions_test.ts",

@@ -161,6 +161,23 @@ describeWithEnvironment('ContextMenu', () => {
 
     assert.strictEqual(showContextMenuAtPoint.args[0][2][0].featureName, 'mockFeature');
   });
+
+  it('can register a submenu item with a new badge', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+
+    const showContextMenuAtPoint =
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showContextMenuAtPoint');
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const subMenu = contextMenu.defaultSection().appendSubMenuItem('mockLabel', false, undefined, 'mockFeature');
+    subMenu.defaultSection().appendItem('subMenuLabel', () => {});
+    await contextMenu.show();
+    sinon.assert.calledOnce(showContextMenuAtPoint);
+    assert.strictEqual(showContextMenuAtPoint.args[0][2][0].featureName, 'mockFeature');
+    assert.strictEqual(showContextMenuAtPoint.args[0][2][0].type, 'subMenu');
+  });
 });
 
 describeWithEnvironment('MenuButton', function() {

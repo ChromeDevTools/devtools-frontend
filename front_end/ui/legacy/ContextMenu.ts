@@ -248,8 +248,8 @@ export class Section {
     }
   }
 
-  appendSubMenuItem(label: string, disabled?: boolean, jslogContext?: string): SubMenu {
-    const item = new SubMenu(this.contextMenu, label, disabled, jslogContext);
+  appendSubMenuItem(label: string, disabled?: boolean, jslogContext?: string, featureName?: string): SubMenu {
+    const item = new SubMenu(this.contextMenu, label, disabled, jslogContext, featureName);
     item.init();
     this.items.push(item);
     return item;
@@ -282,8 +282,10 @@ export class SubMenu extends Item {
   readonly sections: Map<string, Section>;
   private readonly sectionList: Section[];
 
-  constructor(contextMenu: ContextMenu|null, label?: string, disabled?: boolean, jslogContext?: string) {
-    super(contextMenu, 'subMenu', label, undefined, disabled, undefined, undefined, undefined, jslogContext);
+  constructor(
+      contextMenu: ContextMenu|null, label?: string, disabled?: boolean, jslogContext?: string, featureName?: string) {
+    super(
+        contextMenu, 'subMenu', label, undefined, disabled, undefined, undefined, undefined, jslogContext, featureName);
     this.sections = new Map();
     this.sectionList = [];
   }
@@ -369,6 +371,7 @@ export class SubMenu extends Item {
       id: undefined,
       checked: undefined,
       jslogContext: this.jslogContext,
+      featureName: this.featureName,
     };
 
     const nonEmptySections = this.sectionList.filter(section => Boolean(section.items.length));

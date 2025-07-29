@@ -111,11 +111,16 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format on
 };
 
+export interface AiCodeCompletionTeaserConfig {
+  onDetach: () => void;
+}
+
 export class AiCodeCompletionTeaser extends UI.Widget.Widget {
   readonly #view: View;
 
   #aidaAvailability = Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL;
   #boundOnAidaAvailabilityChange: () => Promise<void>;
+  #onDetach: () => void;
 
   // Whether the user completed first run experience dialog or not.
   #aiCodeCompletionFreCompletedSetting =
@@ -126,8 +131,9 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
 
   #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
 
-  constructor(view?: View) {
+  constructor(config: AiCodeCompletionTeaserConfig, view?: View) {
     super();
+    this.#onDetach = config.onDetach;
     this.#view = view ?? DEFAULT_VIEW;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
@@ -207,8 +213,10 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
 
     if (result) {
       this.#aiCodeCompletionFreCompletedSetting.set(true);
+      this.detach();
+    } else {
+      this.requestUpdate();
     }
-    this.requestUpdate();
   };
 
   onDismiss = (event: Event): void => {
@@ -219,10 +227,6 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
   };
 
   override performUpdate(): void {
-    if (this.#aiCodeCompletionFreCompletedSetting.get() || this.#aiCodeCompletionTeaserDismissedSetting.get()) {
-      this.detach();
-      return;
-    }
     const output = {};
     this.#view(
         {
@@ -245,5 +249,9 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     document.body.removeEventListener('keydown', this.#onKeyDown);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+  }
+
+  override onDetach(): void {
+    this.#onDetach();
   }
 }

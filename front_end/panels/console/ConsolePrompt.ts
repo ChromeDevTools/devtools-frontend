@@ -42,6 +42,9 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePrompt.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const AI_CODE_COMPLETION_CHARACTER_LIMIT = 20_000;
+
 export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
     UI.Widget.Widget) {
   private addCompletionsFromHistory: boolean;
@@ -153,19 +156,23 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.#javaScriptCompletionCompartment.of(this.#getJavaScriptCompletionExtensions()),
     ];
 
-    if (this.isAiCodeCompletionEnabled()) {
-      this.teaserContainer = document.createElement('div');
-      const teaser = new AiCodeCompletionTeaser();
-      teaser.show(this.teaserContainer, undefined, true);
-      extensions.push(
-          TextEditor.Config.aiAutoCompleteSuggestion,
-          this.placeholderCompartment.of(CodeMirror.placeholder(this.teaserContainer)));
-    }
-
     const doc = this.initialText;
     const editorState = CodeMirror.EditorState.create({doc, extensions});
 
     this.editor = new TextEditor.TextEditor.TextEditor(editorState);
+
+    if (this.isAiCodeCompletionEnabled()) {
+      const aiCodeCompletionTeaserDismissedSetting =
+          Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
+      if (!this.aiCodeCompletionSetting.get() && !aiCodeCompletionTeaserDismissedSetting.get()) {
+        this.teaserContainer = document.createElement('div');
+        const teaser = new AiCodeCompletionTeaser({onDetach: this.detachAiCodeCompletionTeaser.bind(this)});
+        teaser.show(this.teaserContainer, undefined, true);
+        extensions.push(this.placeholderCompartment.of(CodeMirror.placeholder(this.teaserContainer)));
+      }
+      extensions.push(TextEditor.Config.aiAutoCompleteSuggestion);
+    }
+
     this.editor.addEventListener('keydown', event => {
       if (event.defaultPrevented) {
         event.stopPropagation();
@@ -248,6 +255,12 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     let suffix = query.substring(cursor);
     if (suffix === '') {
       suffix = '\n';
+    }
+    if (prefix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
+      prefix = prefix.substring(prefix.length - AI_CODE_COMPLETION_CHARACTER_LIMIT);
+    }
+    if (suffix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
+      suffix = suffix.substring(0, AI_CODE_COMPLETION_CHARACTER_LIMIT);
     }
     this.aiCodeCompletion?.onTextChanged(prefix, suffix);
   }
@@ -415,10 +428,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         scrollIntoView: true,
       });
       if (this.teaserContainer) {
-        this.editor.dispatch({
-          effects: this.placeholderCompartment.reconfigure([]),
-        });
-        this.teaserContainer = undefined;
+        this.detachAiCodeCompletionTeaser();
       }
     } else if (this.editor.state.doc.length) {
       CodeMirror.insertNewlineAndIndent(this.editor.editor);
@@ -503,6 +513,13 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     } else if (this.aiCodeCompletion) {
       this.aiCodeCompletion = undefined;
     }
+  }
+
+  private detachAiCodeCompletionTeaser(): void {
+    this.editor.dispatch({
+      effects: this.placeholderCompartment.reconfigure([]),
+    });
+    this.teaserContainer = undefined;
   }
 
   private isAiCodeCompletionEnabled(): boolean {

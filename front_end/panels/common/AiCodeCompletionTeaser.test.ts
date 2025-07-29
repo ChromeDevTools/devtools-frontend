@@ -26,7 +26,7 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
 
   async function createTeaser() {
     const view = createViewFunctionStub(AiCodeCompletionTeaser.AiCodeCompletionTeaser);
-    const widget = new AiCodeCompletionTeaser.AiCodeCompletionTeaser(view);
+    const widget = new AiCodeCompletionTeaser.AiCodeCompletionTeaser({onDetach: sinon.stub()}, view);
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     await view.nextInput;
@@ -46,10 +46,11 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
     assert.isTrue(widget.isShowing());
     assertNotNullOrUndefined(view.input.onDismiss);
     view.input.onDismiss(new Event('click'));
+    await widget.updateComplete;
 
     sinon.assert.calledOnce(showSnackbar);
+    assert.isTrue(Common.Settings.Settings.instance().settingForTest('ai-code-completion-teaser-dismissed').get());
     assert.isFalse(widget.isShowing());
-    widget.detach();
   });
 
   it('should open settings on snackbar action click', async () => {
@@ -122,10 +123,10 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
     const event = Host.Platform.isMac() ? new KeyboardEvent('keydown', {key: 'x', metaKey: true}) :
                                           new KeyboardEvent('keydown', {key: 'x', ctrlKey: true});
     document.body.dispatchEvent(event);
+    await widget.updateComplete;
 
     sinon.assert.calledOnce(onDismissSpy);
     sinon.assert.calledOnce(showSnackbar);
     assert.isFalse(widget.isShowing());
-    widget.detach();
   });
 });

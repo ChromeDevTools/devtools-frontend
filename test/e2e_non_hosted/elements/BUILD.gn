@@ -9,6 +9,7 @@ ts_e2e_library("elements") {
     "accessibility-pane_test.ts",
     "accessibility-tree_test.ts",
     "adornment_test.ts",
+    "at-property-sections_test.ts",
     "classes-pane_test.ts",
     "color-picker_test.ts",
     "computed-pane-properties_test.ts",

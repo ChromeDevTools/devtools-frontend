@@ -452,6 +452,10 @@ interface AiSubmenuPrompts {
   enabled: boolean;
 }
 
+interface IpProtectionInDevTools {
+  enabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -489,6 +493,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels,
   devToolsAllowPopoverForcing: AllowPopoverForcing,
   devToolsAiSubmenuPrompts: AiSubmenuPrompts,
+  devToolsIpProtectionInDevTools: IpProtectionInDevTools,
 }>;
 
 /**

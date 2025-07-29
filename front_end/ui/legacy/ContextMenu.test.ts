@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import type * as Platform from '../../core/platform/platform.js';
 import {dispatchMouseUpEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as Lit from '../lit/lit.js';
@@ -134,6 +135,31 @@ describeWithEnvironment('ContextMenu', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
     sinon.assert.calledOnce(recordClick);
     await VisualLogging.stopLogging();
+  });
+
+  it('can register an action menu item with a new badge', async () => {
+    UI.ActionRegistration.registerActionExtension({
+      actionId: 'test-action',
+      category: UI.ActionRegistration.ActionCategory.GLOBAL,
+      title: () => 'mock' as Platform.UIString.LocalizedString,
+      toggleable: true,
+    });
+
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+
+    const showContextMenuAtPoint =
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showContextMenuAtPoint');
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    contextMenu.defaultSection().appendAction('test-action', 'mockLabel', false, 'mockFeature');
+    await contextMenu.show();
+    sinon.assert.calledOnce(showContextMenuAtPoint);
+
+    assert.strictEqual(showContextMenuAtPoint.args[0][2][0].featureName, 'mockFeature');
   });
 });
 

@@ -650,6 +650,8 @@ export interface SoftContextMenuDescriptor {
   shortcut?: string;
   tooltip?: Platform.UIString.LocalizedString;
   jslogContext?: string;
+  /** A no-op. For native context menus, feature name will request showing a new badge. */
+  featureName?: string;
 }
 interface ElementMenuDetails {
   customElement?: HTMLElement;

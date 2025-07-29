@@ -46,6 +46,7 @@ export class Item {
   private readonly typeInternal: string;
   protected readonly label: string|undefined;
   protected accelerator?: Host.InspectorFrontendHostAPI.AcceleratorDescriptor;
+  protected featureName?: string;
   protected readonly previewFeature: boolean;
   protected disabled: boolean|undefined;
   private readonly checked: boolean|undefined;
@@ -61,7 +62,7 @@ export class Item {
       contextMenu: ContextMenu|null, type: 'checkbox'|'item'|'separator'|'subMenu', label?: string,
       isPreviewFeature?: boolean, disabled?: boolean, checked?: boolean,
       accelerator?: Host.InspectorFrontendHostAPI.AcceleratorDescriptor, tooltip?: Platform.UIString.LocalizedString,
-      jslogContext?: string) {
+      jslogContext?: string, featureName?: string) {
     this.typeInternal = type;
     this.label = label;
     this.previewFeature = Boolean(isPreviewFeature);
@@ -76,6 +77,7 @@ export class Item {
       this.idInternal = contextMenu ? contextMenu.nextId() : 0;
     }
     this.jslogContext = jslogContext;
+    this.featureName = featureName;
   }
 
   id(): number {
@@ -114,6 +116,7 @@ export class Item {
           subItems: undefined,
           tooltip: this.#tooltip,
           jslogContext: this.jslogContext,
+          featureName: this.featureName,
         };
         if (this.customElement) {
           result.element = this.customElement;
@@ -193,10 +196,11 @@ export class Section {
     additionalElement?: Element,
     tooltip?: Platform.UIString.LocalizedString,
     jslogContext?: string,
+    featureName?: string,
   }): Item {
     const item = new Item(
         this.contextMenu, 'item', label, options?.isPreviewFeature, options?.disabled, undefined, options?.accelerator,
-        options?.tooltip, options?.jslogContext);
+        options?.tooltip, options?.jslogContext, options?.featureName);
     if (options?.additionalElement) {
       item.customElement = options?.additionalElement;
     }
@@ -221,7 +225,7 @@ export class Section {
     return item;
   }
 
-  appendAction(actionId: string, label?: string, optional?: boolean): void {
+  appendAction(actionId: string, label?: string, optional?: boolean, feature?: string): void {
     if (optional && !ActionRegistry.instance().hasAction(actionId)) {
       return;
     }
@@ -232,6 +236,7 @@ export class Section {
     const result = this.appendItem(label, action.execute.bind(action), {
       disabled: !action.enabled(),
       jslogContext: actionId,
+      featureName: feature,
     });
     const shortcut = ShortcutRegistry.instance().shortcutTitleForAction(actionId);
     const keyAndModifier = ShortcutRegistry.instance().keyAndModifiersForAction(actionId);
@@ -257,10 +262,11 @@ export class Section {
     additionalElement?: Element,
     tooltip?: Platform.UIString.LocalizedString,
     jslogContext?: string,
+    featureName?: string,
   }): Item {
     const item = new Item(
         this.contextMenu, 'checkbox', label, options?.experimental, options?.disabled, options?.checked, undefined,
-        options?.tooltip, options?.jslogContext);
+        options?.tooltip, options?.jslogContext, options?.featureName);
     this.items.push(item);
     if (this.contextMenu) {
       this.contextMenu.setHandler(item.id(), handler);

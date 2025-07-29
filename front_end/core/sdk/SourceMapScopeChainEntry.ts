@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as Protocol from '../../generated/protocol.js';
+import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as i18n from '../i18n/i18n.js';
 
 import type {CallFrame, LocationRange, ScopeChainEntry} from './DebuggerModel.js';
 import {type GetPropertiesResult, type RemoteObject, RemoteObjectImpl, RemoteObjectProperty} from './RemoteObject.js';
-import type {GeneratedRange, OriginalScope} from './SourceMapScopes.js';
 import {contains} from './SourceMapScopesInfo.js';
 
 const UIStrings = {
@@ -37,8 +37,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SourceMapScopeChainEntry implements ScopeChainEntry {
   readonly #callFrame: CallFrame;
-  readonly #scope: OriginalScope;
-  readonly #range?: GeneratedRange;
+  readonly #scope: ScopesCodec.OriginalScope;
+  readonly #range?: ScopesCodec.GeneratedRange;
   readonly #isInnerMostFunction: boolean;
   readonly #returnValue?: RemoteObject;
 
@@ -47,8 +47,8 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
    * scope of the paused function 'Local', while other outer 'function' scopes are named 'Closure'.
    */
   constructor(
-      callFrame: CallFrame, scope: OriginalScope, range: GeneratedRange|undefined, isInnerMostFunction: boolean,
-      returnValue: RemoteObject|undefined) {
+      callFrame: CallFrame, scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange|undefined,
+      isInnerMostFunction: boolean, returnValue: RemoteObject|undefined) {
     this.#callFrame = callFrame;
     this.#scope = scope;
     this.#range = range;
@@ -116,10 +116,10 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
 
 class SourceMapScopeRemoteObject extends RemoteObjectImpl {
   readonly #callFrame: CallFrame;
-  readonly #scope: OriginalScope;
-  readonly #range?: GeneratedRange;
+  readonly #scope: ScopesCodec.OriginalScope;
+  readonly #range?: ScopesCodec.GeneratedRange;
 
-  constructor(callFrame: CallFrame, scope: OriginalScope, range: GeneratedRange|undefined) {
+  constructor(callFrame: CallFrame, scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange|undefined) {
     super(
         callFrame.debuggerModel.runtimeModel(), /* objectId */ undefined, 'object', /* sub type */ undefined,
         /* value */ null);

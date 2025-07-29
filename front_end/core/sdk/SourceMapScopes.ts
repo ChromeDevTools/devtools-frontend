@@ -16,19 +16,16 @@ import type * as Codec from '../../third_party/source-map-scopes-codec/source-ma
 
 import {type SourceMapV3Object, TokenIterator} from './SourceMap.js';
 
-export type OriginalScope = Codec.OriginalScope;
-export type GeneratedRange = Codec.GeneratedRange;
-export type Position = Codec.Position;
+type OriginalScope = Codec.OriginalScope;
+type GeneratedRange = Codec.GeneratedRange;
+type Position = Codec.Position;
 // For compatibility with the old type.
-export type BindingRange = Codec.SubRangeBinding;
-export type ScopeInfo = Codec.ScopeInfo;
+type BindingRange = Codec.SubRangeBinding;
 
 /** @returns 0 if both positions are equal, a negative number if a < b and a positive number if a > b */
 export function comparePositions(a: Position, b: Position): number {
   return a.line - b.line || a.column - b.column;
 }
-
-export type OriginalPosition = Codec.OriginalPosition;
 
 interface OriginalScopeTree {
   readonly root: OriginalScope;

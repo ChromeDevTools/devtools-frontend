@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
+
 import {TokenIterator} from './SourceMap.js';
-import {comparePositions, type OriginalScope, type Position} from './SourceMapScopes.js';
+import {comparePositions} from './SourceMapScopes.js';
 
 export interface NamedFunctionRange {
-  start: Position;
-  end: Position;
+  start: ScopesCodec.Position;
+  end: ScopesCodec.Position;
   name: string;
 }
 
@@ -24,7 +26,7 @@ export interface NamedFunctionRange {
  * @throws if the ranges are not nested properly. Concretely: start < end for each range, and no
  * "straddling" (i.e. partially overlapping ranges).
  */
-export function buildOriginalScopes(ranges: NamedFunctionRange[]): OriginalScope {
+export function buildOriginalScopes(ranges: NamedFunctionRange[]): ScopesCodec.OriginalScope {
   validateStartBeforeEnd(ranges);
 
   // 1. Sort ranges by ascending start position.
@@ -32,7 +34,7 @@ export function buildOriginalScopes(ranges: NamedFunctionRange[]): OriginalScope
   //    with the higher end position first, because it's the parent.
   ranges.sort((a, b) => comparePositions(a.start, b.start) || comparePositions(b.end, a.end));
 
-  const root: OriginalScope = {
+  const root: ScopesCodec.OriginalScope = {
     start: {line: 0, column: 0},
     end: {line: Number.POSITIVE_INFINITY, column: Number.POSITIVE_INFINITY},
     kind: 'Global',
@@ -42,14 +44,14 @@ export function buildOriginalScopes(ranges: NamedFunctionRange[]): OriginalScope
   };
 
   // 2. Build the tree from the ranges.
-  const stack: OriginalScope[] = [root];
+  const stack: ScopesCodec.OriginalScope[] = [root];
   for (const range of ranges) {
     // Pop all scopes that precede the current entry (to find the right parent).
-    let stackTop = stack.at(-1) as OriginalScope;
+    let stackTop = stack.at(-1) as ScopesCodec.OriginalScope;
     while (true) {
       if (comparePositions(stackTop.end, range.start) <= 0) {
         stack.pop();
-        stackTop = stack.at(-1) as OriginalScope;
+        stackTop = stack.at(-1) as ScopesCodec.OriginalScope;
       } else {
         break;
       }
@@ -91,7 +93,7 @@ function validateStartBeforeEnd(ranges: NamedFunctionRange[]): void {
   }
 }
 
-function createScopeFrom(range: NamedFunctionRange): OriginalScope {
+function createScopeFrom(range: NamedFunctionRange): ScopesCodec.OriginalScope {
   return {
     ...range,
     kind: 'Function',

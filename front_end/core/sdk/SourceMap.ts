@@ -40,7 +40,6 @@ import * as Root from '../root/root.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
-import type {OriginalScope, Position as GeneratedPosition} from './SourceMapScopes.js';
 import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
 /**
@@ -578,7 +577,7 @@ export class SourceMap {
     }
   }
 
-  private parseBloombergScopes(map: SourceMapV3Object): Array<OriginalScope|null> {
+  private parseBloombergScopes(map: SourceMapV3Object): Array<ScopesCodec.OriginalScope|null> {
     const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
     if (!scopeList) {
       throw new Error('Cant decode pasta scopes without x_com_bloomberg_sourcesFunctionMappings field');
@@ -768,7 +767,7 @@ export class SourceMap {
     return this.#scopesInfo.resolveMappedScopeChain(frame);
   }
 
-  findOriginalFunctionName(position: GeneratedPosition): string|null {
+  findOriginalFunctionName(position: ScopesCodec.Position): string|null {
     this.#ensureMappingsProcessed();
     return this.#scopesInfo?.findOriginalFunctionName(position) ?? null;
   }

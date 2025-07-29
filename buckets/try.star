@@ -120,7 +120,6 @@ def try_pair(
         recipe_name = "devtools/compilator",
         dimensions = compiler_dimensions,
         build_numbers = True,
-        use_siso = SISO.CHROMIUM_UNTRUSTED,
         properties = properties,
     )
 

@@ -58,6 +58,8 @@ We can break this time down into the 4 phases that combine to make the LCP time:
 - Resource load duration: 14.70 ms (11.4% of total LCP time)
 - Element render delay: 73.41 ms (56.8% of total LCP time)
 
+## Estimated savings: none
+
 ## External resources:
 - https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
@@ -85,6 +87,8 @@ We can break this time down into the 2 phases that combine to make the LCP time:
 
 - Time to first byte: 6.12 ms (5.7% of total LCP time)
 - Element render delay: 100.37 ms (94.3% of total LCP time)
+
+## Estimated savings: none
 
 ## External resources:
 - https://web.dev/articles/lcp
@@ -131,6 +135,8 @@ This insight identifies network requests that were render blocking. Render block
 ## Detailed analysis:
 There are no network requests that are render blocking.
 
+## Estimated savings: FCP 0 ms, LCP 0 ms
+
 ## External resources:
 - https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
@@ -163,6 +169,8 @@ allUrls = [0: https://code.jquery.com/jquery-3.7.1.js, 1: http://localhost:8000/
 0;581.40 ms;584.53 ms;1,942.70 ms;1,944.05 ms;1,362.65 ms;775.53 ms;1.35 ms;200;application/javascript;High;High;High;t;h2;f;1;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]
 2;581.60 ms;583.11 ms;1,192.93 ms;1,193.16 ms;611.56 ms;0.19 ms;0.23 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
 3;581.56 ms;583.25 ms;1,176.60 ms;1,177.86 ms;596.30 ms;0.36 ms;1.27 ms;200;text/javascript;High;High;High;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+
+## Estimated savings: FCP 2015 ms, LCP 0 ms
 
 ## External resources:
 - https://web.dev/articles/lcp
@@ -205,6 +213,8 @@ The result of the checks for this insight are:
 - lazy load not applied: PASSED
 - Request is discoverable in initial document: PASSED
 
+## Estimated savings: none
+
 ## External resources:
 - https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
@@ -246,6 +256,8 @@ The result of the checks for this insight are:
 - The request was not redirected: FAILED
 - Server responded quickly: FAILED
 - Compression was applied: FAILED
+
+## Estimated savings: FCP 3428 ms, LCP 3428 ms
 
 ## External resources:
 - https://web.dev/articles/optimize-ttfb`;
@@ -300,6 +312,8 @@ Layout shifts in this cluster:
 - Score: 0.3396
 - No potential root causes identified
 
+## Estimated savings: none
+
 ## External resources:
 - https://wdeb.dev/articles/cls
 - https://web.dev/articles/optimize-cls`;
@@ -339,6 +353,8 @@ The longest interaction on the page was a \`click\` which had a total duration o
 2. Processing duration: 977.00 ms
 3. Presentation delay: 1.97 ms.
 
+## Estimated savings: none
+
 ## External resources:
 - https://web.dev/articles/inp
 - https://web.dev/explore/how-to-optimize-inp
@@ -372,6 +388,8 @@ To pass this insight, ensure your server supports and prioritizes a modern HTTP 
 
 ## Detailed analysis:
 There are no requests that were served over a legacy HTTP protocol.
+
+## Estimated savings: none
 
 ## External resources:
 - https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2`;
@@ -413,6 +431,8 @@ allUrls = [0: https://ads.jetpackdigital.com/sites/_uploads/1742278386bg_opt_640
 5;8.40 ms;12.86 ms;24.74 ms;25.02 ms;16.62 ms;1.28 ms;0.28 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:18 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
 6;8.43 ms;24.40 ms;38.53 ms;38.71 ms;30.28 ms;0.10 ms;0.18 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
 7;8.44 ms;24.87 ms;37.75 ms;38.00 ms;29.56 ms;0.23 ms;0.25 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+
+## Estimated savings: FCP 0 ms, LCP 0 ms
 
 ## External resources:
 - https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2`;
@@ -674,6 +694,8 @@ Duplication grouped by Node modules: - Source: node_modules/filestack-js - Dupli
 - Source: node_modules/css-loader - Duplicated bytes: 1608 bytes
 - Source: node_modules/mini-create-react-context - Duplicated bytes: 1563 bytes
 
+## Estimated savings: FCP 100 ms, LCP 100 ms
+
 ## External resources:
 `;
       assertStringEquals(output, expected);
@@ -695,6 +717,8 @@ This insight identifies large, duplicated JavaScript modules that are present in
 
 ## Detailed analysis:
 There is no duplicated JavaScript in the page modules
+
+## Estimated savings: none
 
 ## External resources:
 `;
@@ -720,6 +744,8 @@ Polyfills and transforms enable older browsers to use new JavaScript features. H
 
 ## Detailed analysis:
 There is no significant amount of legacy JavaScript on the page.
+
+## Estimated savings: none
 
 ## External resources:
 - https://web.dev/articles/baseline-and-polyfills
@@ -791,6 +817,8 @@ Line: 0, Column: 108358, Name: String.prototype.includes
 Matches:
 Line: 0, Column: 390544, Name: Object.entries
 Line: 0, Column: 390688, Name: Object.values
+
+## Estimated savings: FCP 0 ms, LCP 0 ms
 
 ## External resources:
 - https://web.dev/articles/baseline-and-polyfills

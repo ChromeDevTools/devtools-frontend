@@ -118,6 +118,8 @@ ${this.#description()}
 ${header} Detailed analysis:
 ${this.#details()}
 
+${header} Estimated savings: ${this.#estimatedSavings() || 'none'}
+
 ${header} External resources:
 ${this.#links()}`;
   }
@@ -320,6 +322,17 @@ ${filesFormatted}`;
     }
 
     return '';
+  }
+
+  #estimatedSavings(): string {
+    return Object.entries(this.#insight.metricSavings ?? {})
+        .map(([k, v]) => {
+          if (k === 'CLS') {
+            return `${k} ${v}`;
+          }
+          return `${k} ${v} ms`;
+        })
+        .join(', ');
   }
 
   #links(): string {

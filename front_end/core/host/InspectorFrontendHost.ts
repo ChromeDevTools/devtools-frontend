@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -89,8 +86,14 @@ const OVERRIDES_FILE_SYSTEM_PATH = '/overrides' as Platform.DevToolsPath.RawPath
  */
 export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   readonly #urlsBeingSaved = new Map<Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, string[]>();
-  events!: Common.EventTarget.EventTarget<EventTypes>;
   #fileSystem: FileSystem|null = null;
+  /**
+   * Injected bellow in both stub and normal runs via:
+   * ```ts
+   * InspectorFrontendHostInstance.events = new Common.ObjectWrapper.ObjectWrapper();
+   * ```
+   */
+  declare events: Common.EventTarget.EventTarget<EventTypes>;
 
   recordedCountHistograms:
       Array<{histogramName: string, sample: number, min: number, exclusiveMax: number, bucketSize: number}> = [];
@@ -224,7 +227,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
       try {
         const trimmed = Platform.StringUtilities.trimURL(url);
         fileName = Platform.StringUtilities.removeURLFragment(trimmed);
-      } catch (error) {
+      } catch {
         // If url is not a valid URL, it is probably a filename.
         fileName = url;
       }
@@ -593,19 +596,15 @@ class InspectorFrontendAPIImpl {
 (function(): void {
 
 function initializeInspectorFrontendHost(): void {
-  let proto;
   if (!InspectorFrontendHostInstance) {
     // Instantiate stub for web-hosted mode if necessary.
     // @ts-expect-error Global injected by devtools_compatibility.js
     globalThis.InspectorFrontendHost = InspectorFrontendHostInstance = new InspectorFrontendHostStub();
   } else {
     // Otherwise add stubs for missing methods that are declared in the interface.
-    proto = InspectorFrontendHostStub.prototype;
-    for (const name of Object.getOwnPropertyNames(proto)) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // @ts-expect-error
+    const proto = InspectorFrontendHostStub.prototype;
+    for (const name of (Object.getOwnPropertyNames(proto) as Array<keyof InspectorFrontendHostAPI>)) {
       const stub = proto[name];
-      // @ts-expect-error Global injected by devtools_compatibility.js
       if (typeof stub !== 'function' || InspectorFrontendHostInstance[name]) {
         continue;
       }

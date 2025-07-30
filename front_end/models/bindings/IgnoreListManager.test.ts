@@ -137,9 +137,13 @@ describeWithMockConnection('IgnoreListManager', () => {
     SDK.PageResourceLoader.PageResourceLoader.instance({forceNew, maxConcurrentLoads: 1, loadOverride: null});
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const debuggerWorkspaceBinding =
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({forceNew, resourceMapping, targetManager});
-    ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew, debuggerWorkspaceBinding});
+    ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+    });
 
     // Inject the HTML document resource.
     createResource(getMainFrame(target), url, 'text/html', '');

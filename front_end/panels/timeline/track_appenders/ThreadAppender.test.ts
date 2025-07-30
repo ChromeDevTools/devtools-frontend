@@ -382,14 +382,12 @@ describeWithEnvironment('ThreadAppender', function() {
       const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
       const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
       const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
         forceNew: true,
         resourceMapping,
         targetManager,
-      });
-      ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({
-        forceNew: true,
-        debuggerWorkspaceBinding,
+        ignoreListManager,
       });
     });
     afterEach(() => {
@@ -495,14 +493,12 @@ describeWithEnvironment('ThreadAppender', function() {
       const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
       const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
       const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
         forceNew: true,
         resourceMapping,
         targetManager,
-      });
-      Bindings.IgnoreListManager.IgnoreListManager.instance({
-        forceNew: true,
-        debuggerWorkspaceBinding,
+        ignoreListManager,
       });
     });
     afterEach(() => {
@@ -542,14 +538,12 @@ describeWithEnvironment('ThreadAppender', function() {
       const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
       const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
       const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
         forceNew: true,
         resourceMapping,
         targetManager,
-      });
-      Bindings.IgnoreListManager.IgnoreListManager.instance({
-        forceNew: true,
-        debuggerWorkspaceBinding,
+        ignoreListManager,
       });
     });
 

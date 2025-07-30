@@ -8,8 +8,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import type {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
-
 const UIStrings = {
   /**
    *@description Text to stop preventing the debugger from stepping into library code
@@ -48,14 +46,14 @@ export interface IgnoreListGeneralRules {
   isCurrentlyIgnoreListed?: boolean;
 }
 
-export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
-  readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
+export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
+    SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly #listeners: Set<() => void>;
   readonly #isIgnoreListedURLCache: Map<string, boolean>;
   readonly #contentScriptExecutionContexts: Set<string>;
 
-  private constructor(debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
-    this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+  private constructor() {
+    super();
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
@@ -91,15 +89,10 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
 
   static instance(opts: {
     forceNew: boolean|null,
-    debuggerWorkspaceBinding: DebuggerWorkspaceBinding|null,
-  } = {forceNew: null, debuggerWorkspaceBinding: null}): IgnoreListManager {
-    const {forceNew, debuggerWorkspaceBinding} = opts;
+  } = {forceNew: null}): IgnoreListManager {
+    const {forceNew} = opts;
     if (!ignoreListManagerInstance || forceNew) {
-      if (!debuggerWorkspaceBinding) {
-        throw new Error(`Unable to create settings: debuggerWorkspaceBinding must be provided: ${new Error().stack}`);
-      }
-
-      ignoreListManagerInstance = new IgnoreListManager(debuggerWorkspaceBinding);
+      ignoreListManagerInstance = new IgnoreListManager();
     }
 
     return ignoreListManagerInstance;
@@ -277,7 +270,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
       if (scriptToRange.get(script) && await script.setBlackboxedRanges([])) {
         scriptToRange.delete(script);
       }
-      await this.#debuggerWorkspaceBinding.updateLocations(script);
+      this.dispatchEventToListeners(Events.IGNORED_SCRIPT_RANGES_UPDATED, script);
       return;
     }
 
@@ -296,7 +289,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     if (!isEqual(oldRanges, newRanges) && await script.setBlackboxedRanges(newRanges)) {
       scriptToRange.set(script, newRanges);
     }
-    void this.#debuggerWorkspaceBinding.updateLocations(script);
+    this.dispatchEventToListeners(Events.IGNORED_SCRIPT_RANGES_UPDATED, script);
 
     function isEqual(rangesA: SourceRange[], rangesB: SourceRange[]): boolean {
       if (rangesA.length !== rangesB.length) {
@@ -623,3 +616,11 @@ export interface SourceRange {
 }
 
 const scriptToRange = new WeakMap<SDK.Script.Script, SourceRange[]>();
+
+export const enum Events {
+  IGNORED_SCRIPT_RANGES_UPDATED = 'IGNORED_SCRIPT_RANGES_UPDATED',
+}
+
+export interface EventTypes {
+  [Events.IGNORED_SCRIPT_RANGES_UPDATED]: SDK.Script.Script;
+}

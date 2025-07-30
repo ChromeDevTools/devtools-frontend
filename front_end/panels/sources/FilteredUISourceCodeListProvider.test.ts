@@ -15,8 +15,8 @@ import * as Sources from './sources.js';
 const {urlString} = Platform.DevToolsPath;
 const setUpEnvironmentWithUISourceCode =
     (url: string, resourceType: Common.ResourceType.ResourceType, project?: Workspace.Workspace.Project) => {
-      const {workspace, debuggerWorkspaceBinding} = setUpEnvironment();
-      Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: false, debuggerWorkspaceBinding});
+      const {workspace} = setUpEnvironment();
+      Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: false});
 
       if (!project) {
         project = {id: () => url, type: () => Workspace.Workspace.projectTypes.Network} as Workspace.Workspace.Project;

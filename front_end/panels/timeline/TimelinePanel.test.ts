@@ -40,14 +40,12 @@ describeWithEnvironment('TimelinePanel', function() {
         SDK.TargetManager.TargetManager.instance(),
         Workspace.Workspace.WorkspaceImpl.instance(),
     );
+    const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
       targetManager: SDK.TargetManager.TargetManager.instance(),
-    });
-    Bindings.IgnoreListManager.IgnoreListManager.instance({
-      forceNew: true,
-      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+      ignoreListManager,
     });
     traceModel = Trace.TraceModel.Model.createWithAllHandlers();
     timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: false, traceModel});

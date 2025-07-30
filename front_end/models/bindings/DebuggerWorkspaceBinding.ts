@@ -12,7 +12,7 @@ import * as Workspace from '../workspace/workspace.js';
 import {CompilerScriptMapping} from './CompilerScriptMapping.js';
 import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
-import {IgnoreListManager} from './IgnoreListManager.js';
+import {Events, IgnoreListManager} from './IgnoreListManager.js';
 import {type LiveLocation, type LiveLocationPool, LiveLocationWithPool} from './LiveLocation.js';
 import {NetworkProject} from './NetworkProject.js';
 import type {ResourceMapping} from './ResourceMapping.js';
@@ -26,7 +26,9 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   readonly #liveLocationPromises: Set<Promise<void|Location|StackTraceTopFrameLocation|null>>;
   readonly pluginManager: DebuggerLanguagePluginManager;
 
-  private constructor(resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager) {
+  private constructor(
+      resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager,
+      ignoreListManager: IgnoreListManager) {
     this.resourceMapping = resourceMapping;
 
     this.#debuggerModelToData = new Map();
@@ -35,6 +37,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     targetManager.addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
+    ignoreListManager.addEventListener(Events.IGNORED_SCRIPT_RANGES_UPDATED, event => this.updateLocations(event.data));
 
     this.#liveLocationPromises = new Set();
 
@@ -53,16 +56,18 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     forceNew: boolean|null,
     resourceMapping: ResourceMapping|null,
     targetManager: SDK.TargetManager.TargetManager|null,
-  } = {forceNew: null, resourceMapping: null, targetManager: null}): DebuggerWorkspaceBinding {
-    const {forceNew, resourceMapping, targetManager} = opts;
+    ignoreListManager: IgnoreListManager|null,
+  } = {forceNew: null, resourceMapping: null, targetManager: null, ignoreListManager: null}): DebuggerWorkspaceBinding {
+    const {forceNew, resourceMapping, targetManager, ignoreListManager} = opts;
     if (!debuggerWorkspaceBindingInstance || forceNew) {
-      if (!resourceMapping || !targetManager) {
+      if (!resourceMapping || !targetManager || !ignoreListManager) {
         throw new Error(
-            `Unable to create DebuggerWorkspaceBinding: resourceMapping and targetManager must be provided: ${
+            `Unable to create DebuggerWorkspaceBinding: resourceMapping, targetManager and IgnoreLIstManager must be provided: ${
                 new Error().stack}`);
       }
 
-      debuggerWorkspaceBindingInstance = new DebuggerWorkspaceBinding(resourceMapping, targetManager);
+      debuggerWorkspaceBindingInstance =
+          new DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager);
     }
 
     return debuggerWorkspaceBindingInstance;

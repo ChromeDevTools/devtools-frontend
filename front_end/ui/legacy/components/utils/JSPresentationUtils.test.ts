@@ -15,15 +15,15 @@ describeWithMockConnection('JSPresentationUtils', () => {
     const linkifier = new Components.Linkifier.Linkifier(100, false);
     linkifier.targetAdded(target);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const forceNew = true;
     const targetManager = target.targetManager();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew,
+    const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
       resourceMapping,
       targetManager,
+      ignoreListManager,
     });
-    Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew, debuggerWorkspaceBinding});
     return {target, linkifier};
   }
 

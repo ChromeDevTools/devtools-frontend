@@ -1058,6 +1058,21 @@ export class TimelineModelImpl {
       case RecordType.Coherent_DrawSubLayerWithShaderFilter:
       case RecordType.Coherent_DrawStackingContext:
       case RecordType.Coherent_SynchronizeNode:
+      case RecordType.Coherent_DataBindBackgroundImageURLUpdate:
+      case RecordType.Coherent_DataBindClassUpdate:
+      case RecordType.Coherent_DataBindClassToggleUpdate:
+      case RecordType.Coherent_DataBindInnerHTMLUpdate:
+      case RecordType.Coherent_DataBindStyleUpdate:
+      case RecordType.Coherent_DataBindStyleTransformRotateUpdate:
+      case RecordType.Coherent_DataBindStyleTransform2DUpdate:
+      case RecordType.Coherent_DataBindValueUpdate:
+      case RecordType.Coherent_DataBindForUpdate:
+      case RecordType.Coherent_DataBindVirtualListUpdate:
+      case RecordType.Coherent_DataBindPreciseUpdateCollection:
+      case RecordType.Coherent_DataBindIfUpdate:
+      case RecordType.Coherent_CustomBindingAttributeInitialization:
+      case RecordType.Coherent_CustomBindingAttributeUpdate:
+      case RecordType.Coherent_CustomBindingAttributeDeinitialization:
       case RecordType.Coherent_ResolveNodeStyles: {
         if (parseInt(event.args['int0']) > 0) {
           timelineData.backendNodeIds.push(event.args['int0']);
@@ -1783,6 +1798,21 @@ export enum RecordType {
   Coherent_TickAnimations = 'Coherent_IterateTickAnimations',
   Coherent_SynchronizeLayoutToMain = 'Coherent_SynchronizeLayoutToMain',
   Coherent_SynchronizeNode = 'Coherent_SynchronizeNode',
+  Coherent_DataBindBackgroundImageURLUpdate = 'Coherent_DataBindBackgroundImageURLUpdate',
+  Coherent_DataBindClassUpdate = 'Coherent_DataBindClassUpdate',
+  Coherent_DataBindClassToggleUpdate = 'Coherent_DataBindClassToggleUpdate',
+  Coherent_DataBindInnerHTMLUpdate = 'Coherent_DataBindInnerHTMLUpdate',
+  Coherent_DataBindStyleUpdate = 'Coherent_DataBindStyleUpdate',
+  Coherent_DataBindStyleTransformRotateUpdate = 'Coherent_DataBindStyleTransformRotateUpdate',
+  Coherent_DataBindStyleTransform2DUpdate = 'Coherent_DataBindStyleTransform2DUpdate',
+  Coherent_DataBindValueUpdate = 'Coherent_DataBindValueUpdate',
+  Coherent_DataBindForUpdate = 'Coherent_DataBindForUpdate',
+  Coherent_DataBindVirtualListUpdate = 'Coherent_DataBindVirtualListUpdate',
+  Coherent_DataBindPreciseUpdateCollection = 'Coherent_DataBindPreciseUpdateCollection',
+  Coherent_CustomBindingAttributeInitialization = 'Coherent_CustomBindingAttributeInitialization',
+  Coherent_CustomBindingAttributeUpdate = 'Coherent_CustomBindingAttributeUpdate',
+  Coherent_CustomBindingAttributeDeinitialization = 'Coherent_CustomBindingAttributeDeinitialization',
+  Coherent_DataBindIfUpdate = 'Coherent_DataBindIfUpdate',
 
   Coherent_ProcessClientBuffer = 'Coherent_ProcessClientBuffer',
   Coherent_FetchTessellatedPath = 'Coherent_FetchTessellatedPath',

@@ -31,6 +31,8 @@ button.view-trace {
 
 .lighthouse-settings-pane {
   flex: none;
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .lighthouse-settings-pane devtools-toolbar {

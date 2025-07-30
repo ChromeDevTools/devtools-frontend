@@ -1449,30 +1449,61 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     metadata.enhancedTraceVersion =
         savingEnhancedTrace ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
 
-    const fileName = (isCpuProfile ? `CPU-${isoDate}.cpuprofile` :
-                          savingEnhancedTrace ? `EnhancedTraces-${isoDate}.json` :
-                                                `Trace-${isoDate}.json`) as Platform.DevToolsPath.RawPathString;
+    let fileName = (isCpuProfile ? `CPU-${isoDate}.cpuprofile` :
+                        savingEnhancedTrace ? `EnhancedTrace-${isoDate}.json` :
+                                              `Trace-${isoDate}.json`) as Platform.DevToolsPath.RawPathString;
 
-    let traceAsString;
+    let blobParts: string[] = [];
     if (isCpuProfile) {
       const profile = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.extractCpuProfileFromFakeTrace(traceEvents);
-      traceAsString = JSON.stringify(profile);
+      blobParts = [JSON.stringify(profile)];
     } else {
       const formattedTraceIter = traceJsonGenerator(traceEvents, {
         ...metadata,
         sourceMaps: savingEnhancedTrace ? metadata.sourceMaps : undefined,
       });
-      // If this string is larger than 536MB (2**29 - 23), V8 will throw RangeError here
-      traceAsString = Array.from(formattedTraceIter).join('');
+      blobParts = Array.from(formattedTraceIter);
     }
 
-    if (!traceAsString.length) {
+    if (!blobParts.length) {
       throw new Error('Trace content empty');
     }
-    await Workspace.FileManager.FileManager.instance().save(
-        fileName, new TextUtils.ContentData.ContentData(traceAsString, /* isBase64=*/ false, 'application/json'),
-        /* forceSaveAs=*/ true);
-    Workspace.FileManager.FileManager.instance().close(fileName);
+
+    let blob = new Blob(blobParts, {type: 'application/json'});
+
+    // TODO: Enable by default and connect with upcoming SaveDialog
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ)) {
+      fileName = `${fileName}.gz` as Platform.DevToolsPath.RawPathString;
+      const gzStream = Common.Gzip.compressStream(blob.stream());
+      blob = await new Response(gzStream, {
+               headers: {'Content-Type': 'application/gzip'},
+             }).blob();
+
+      // At this point this should be true:
+      //  blobParts.join('') === (await gzBlob.arrayBuffer().then(bytes => Common.Gzip.arrayBufferToString(bytes)))
+    }
+
+    let bytesAsB64 = '';
+    try {
+      // The maximum string length in v8 is `2 ** 29 - 23`, aka 538 MB.
+      // If the gzipped&base64-encoded trace is larger than that, this'll throw a RangeError.
+      bytesAsB64 = await Common.Base64.encode(blob);
+    } catch {
+    }
+
+    if (bytesAsB64.length) {
+      const contentData = new TextUtils.ContentData.ContentData(bytesAsB64, /* isBase64=*/ true, blob.type);
+      await Workspace.FileManager.FileManager.instance().save(fileName, contentData, /* forceSaveAs=*/ true);
+      Workspace.FileManager.FileManager.instance().close(fileName);
+    } else {
+      // Fallback scenario used in edge case where trace.gz.base64 is larger than 538 MB.
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
   }
 
   #showExportTraceErrorDialog(error: Error): void {

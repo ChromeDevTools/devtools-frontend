@@ -85,7 +85,8 @@ const OVERRIDES_FILE_SYSTEM_PATH = '/overrides' as Platform.DevToolsPath.RawPath
  * The native implementations live in devtools_ui_bindings.cc: https://source.chromium.org/chromium/chromium/src/+/main:chrome/browser/devtools/devtools_ui_bindings.cc
  */
 export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
-  readonly #urlsBeingSaved = new Map<Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, string[]>();
+  readonly #urlsBeingSaved = new Map<
+      Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, {isBase64: boolean, buffer: string[]}>();
   #fileSystem: FileSystem|null = null;
   /**
    * Injected bellow in both stub and normal runs via:
@@ -198,20 +199,22 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         'Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect');
   }
 
+  // Reminder: the methods in this class belong to InspectorFrontendHostStub and are typically not executed.
+  // InspectorFrontendHostStub is ONLY used in the uncommon case of devtools not being embedded. For example: trace.cafe or http://localhost:9222/devtools/inspector.html?ws=localhost:9222/devtools/page/xTARGET_IDx
   save(
       url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string, _forceSaveAs: boolean,
-      _isBase64: boolean): void {
-    let buffer = this.#urlsBeingSaved.get(url);
+      isBase64: boolean): void {
+    let buffer = this.#urlsBeingSaved.get(url)?.buffer;
     if (!buffer) {
       buffer = [];
-      this.#urlsBeingSaved.set(url, buffer);
+      this.#urlsBeingSaved.set(url, {isBase64, buffer});
     }
     buffer.push(content);
     this.events.dispatchEventToListeners(Events.SavedURL, {url, fileSystemPath: url});
   }
 
   append(url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string): void {
-    const buffer = this.#urlsBeingSaved.get(url);
+    const buffer = this.#urlsBeingSaved.get(url)?.buffer;
     if (buffer) {
       buffer.push(content);
       this.events.dispatchEventToListeners(Events.AppendedToURL, url);
@@ -219,7 +222,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   close(url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString): void {
-    const buffer = this.#urlsBeingSaved.get(url) || [];
+    const {isBase64, buffer} = this.#urlsBeingSaved.get(url) || {isBase64: false, buffer: []};
     this.#urlsBeingSaved.delete(url);
     let fileName = '';
 
@@ -236,7 +239,13 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     /* eslint-disable-next-line rulesdir/no-imperative-dom-api */
     const link = document.createElement('a');
     link.download = fileName;
-    const blob = new Blob([buffer.join('')], {type: 'text/plain'});
+    let blob;
+    if (isBase64) {
+      const bytes = Common.Base64.decode(buffer.join(''));
+      blob = new Blob([bytes], {type: 'application/gzip'});
+    } else {
+      blob = new Blob(buffer, {type: 'text/plain'});
+    }
     const blobUrl = URL.createObjectURL(blob);
     link.href = blobUrl;
     link.click();

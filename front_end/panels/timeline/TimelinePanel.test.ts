@@ -3,9 +3,11 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -17,6 +19,16 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
+
+async function contentDataToFile(contentData: TextUtils.ContentData.ContentData): Promise<Trace.Types.File.TraceFile> {
+  if (contentData.isTextContent) {
+    return JSON.parse(contentData.text) as Trace.Types.File.TraceFile;
+  }
+
+  const decoded = Common.Base64.decode(contentData.base64);
+  const text = await Common.Gzip.arrayBufferToString(decoded.buffer);
+  return JSON.parse(text) as Trace.Types.File.TraceFile;
+}
 
 describeWithEnvironment('TimelinePanel', function() {
   let timeline: Timeline.TimelinePanel.TimelinePanel;
@@ -182,6 +194,7 @@ describeWithEnvironment('TimelinePanel', function() {
     assert.isNull(context.flavor(AIContext.AgentFocus));
   });
 
+  // These next few tests can move into the saveToFile describe block below.
   it('saves visual track config metadata to disk if the user has modified it', async function() {
     const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
     await timeline.loadingComplete(events, null, null);
@@ -211,13 +224,12 @@ describeWithEnvironment('TimelinePanel', function() {
     sinon.assert.calledOnce(saveSpy);
     sinon.assert.calledOnce(closeSpy);
 
-    const [fileName, traceAsString] = saveSpy.getCall(0).args;
+    const [fileName, contentData] = saveSpy.getCall(0).args;
     // Matches Trace-20250613T132120.json
     assert.match(fileName, /Trace-[\d|T]+\.json$/);
 
-    // easier to assert on the data if we parse it back
-    const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
-    assert.deepEqual(parsedData.metadata.visualTrackConfig, FAKE_METADATA);
+    const file = await contentDataToFile(contentData);
+    assert.deepEqual(file.metadata.visualTrackConfig, FAKE_METADATA);
   });
 
   it('does not save visual track config if the user does not save with modifications', async function() {
@@ -248,11 +260,10 @@ describeWithEnvironment('TimelinePanel', function() {
 
     sinon.assert.calledOnce(saveSpy);
 
-    const [, traceAsString] = saveSpy.getCall(0).args;
+    const [, contentData] = saveSpy.getCall(0).args;
 
-    // easier to assert on the data if we parse it back
-    const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
-    assert.isUndefined(parsedData.metadata.visualTrackConfig);
+    const file = await contentDataToFile(contentData);
+    assert.isUndefined(file.metadata.visualTrackConfig);
   });
 
   it('does not save visual track config if the user has not made any', async function() {
@@ -275,11 +286,10 @@ describeWithEnvironment('TimelinePanel', function() {
     });
     sinon.assert.calledOnce(saveSpy);
 
-    const [, traceAsString] = saveSpy.getCall(0).args;
+    const [, contentData] = saveSpy.getCall(0).args;
 
-    // easier to assert on the data if we parse it back
-    const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
-    assert.isUndefined(parsedData.metadata.visualTrackConfig);
+    const file = await contentDataToFile(contentData);
+    assert.isUndefined(file.metadata.visualTrackConfig);
   });
 
   it('includes the trace metadata when saving to a file', async function() {
@@ -299,16 +309,16 @@ describeWithEnvironment('TimelinePanel', function() {
 
     sinon.assert.calledOnce(saveSpy);
 
-    const [, traceAsContentData] = saveSpy.getCall(0).args;
+    const [, contentData] = saveSpy.getCall(0).args;
 
     // Assert that each value in the metadata of the JSON matches the metadata in memory.
     // We can't do a simple deepEqual() on the two objects as the in-memory
     // contains values that are `undefined` which do not exist in the JSON
     // version.
-    const parsedData = JSON.parse(traceAsContentData.text) as Trace.Types.File.TraceFile;
-    for (const k in parsedData) {
+    const file = await contentDataToFile(contentData);
+    for (const k in file) {
       const key = k as keyof Trace.Types.File.MetaData;
-      assert.deepEqual(parsedData.metadata[key], metadata[key]);
+      assert.deepEqual(file.metadata[key], metadata[key]);
     }
   });
 
@@ -390,90 +400,120 @@ describeWithEnvironment('TimelinePanel', function() {
       closeSpy = sinon.stub(fileManager, 'close');
     });
 
-    it('saves a regular trace file', async function() {
-      const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
-      await timeline.innerSaveToFile(traceEvents, metadata, {
-        savingEnhancedTrace: false,
-        addModifications: false,
+    describe('with gz', function() {
+      this.beforeAll(() => {
+        Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ);
       });
 
-      sinon.assert.calledOnce(saveSpy);
-      sinon.assert.calledOnce(closeSpy);
+      this.afterAll(() => {
+        Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ);
+      });
 
-      const [fileName, traceAsString] = saveSpy.getCall(0).args;
-      assert.match(fileName, /Trace-[\d|T]+\.json$/);
+      it('saves a regular trace file', async function() {
+        const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
+        await timeline.innerSaveToFile(traceEvents, metadata, {
+          savingEnhancedTrace: false,
+          addModifications: false,
+        });
 
-      const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
-      assert.isUndefined(parsedData.metadata.enhancedTraceVersion);
-      assert.deepEqual(parsedData.traceEvents, traceEvents);
+        sinon.assert.calledOnce(saveSpy);
+        sinon.assert.calledOnce(closeSpy);
+
+        const [fileName, contentData] = saveSpy.getCall(0).args;
+        assert.match(fileName, /Trace-[\d|T]+\.json.gz$/);
+
+        const file = await contentDataToFile(contentData);
+        assert.isUndefined(file.metadata.enhancedTraceVersion);
+        assert.deepEqual(file.traceEvents, traceEvents);
+      });
+
+      it('saves a CPU profile trace file', async function() {
+        const profile = await TraceLoader.rawCPUProfile(this, 'node-fibonacci-website.cpuprofile.gz');
+        const file = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
+            profile, Trace.Types.Events.ThreadID(1));
+        const {traceEvents, metadata} = file;
+
+        await timeline.innerSaveToFile(traceEvents, metadata, {
+          savingEnhancedTrace: false,
+          addModifications: false,
+        });
+
+        sinon.assert.calledOnce(saveSpy);
+        sinon.assert.calledOnce(closeSpy);
+
+        const [fileName, contentData] = saveSpy.getCall(0).args;
+        assert.match(fileName, /CPU-[\d|T]+\.cpuprofile.gz$/);
+
+        const traceFile = await contentDataToFile(contentData);
+        const cpuFile = traceFile as unknown as Protocol.Profiler.Profile;
+        const profile2 = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.extractCpuProfileFromFakeTrace(traceEvents);
+        assert.deepEqual(cpuFile, profile2);
+      });
+
+      it('saves an enhanced trace file', async function() {
+        const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'enhanced-traces.json.gz');
+        await timeline.innerSaveToFile(traceEvents, metadata, {
+          savingEnhancedTrace: true,
+          addModifications: false,
+        });
+
+        sinon.assert.calledOnce(saveSpy);
+        sinon.assert.calledOnce(closeSpy);
+
+        const [fileName, contentData] = saveSpy.getCall(0).args;
+        assert.match(fileName, /EnhancedTrace-[\d|T]+\.json\.gz$/);
+
+        const file = await contentDataToFile(contentData);
+        assert.isDefined(file.metadata.enhancedTraceVersion);
+      });
+
+      it('saves a trace file with modifications', async function() {
+        const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
+        // Load to initialize modification manager
+        await timeline.loadingComplete(traceEvents as Trace.Types.Events.Event[], null, metadata);
+        const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+        assert.isOk(modificationsManager);
+
+        modificationsManager.createAnnotation({
+          bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+              Trace.Types.Timing.Micro(1), Trace.Types.Timing.Micro(2)),
+          type: 'TIME_RANGE',
+          label: 'Test Annotation',
+        });
+
+        await timeline.saveToFile({
+          savingEnhancedTrace: false,
+          addModifications: true,
+        });
+
+        sinon.assert.calledOnce(saveSpy);
+        sinon.assert.calledOnce(closeSpy);
+
+        const [, contentData] = saveSpy.getCall(0).args;
+        const file = await contentDataToFile(contentData);
+        assert.isDefined(file.metadata.modifications);
+        assert.lengthOf(file.metadata.modifications.annotations.labelledTimeRanges, 1);
+        assert.strictEqual(file.metadata.modifications.annotations.labelledTimeRanges[0].label, 'Test Annotation');
+      });
     });
+    describe('without gz', function() {
+      it('saves a regular trace file', async function() {
+        const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
+        await timeline.innerSaveToFile(traceEvents, metadata, {
+          savingEnhancedTrace: false,
+          addModifications: false,
+        });
 
-    it('saves a CPU profile trace file', async function() {
-      const profile = await TraceLoader.rawCPUProfile(this, 'node-fibonacci-website.cpuprofile.gz');
-      const file = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
-          profile, Trace.Types.Events.ThreadID(1));
-      const {traceEvents, metadata} = file;
+        sinon.assert.calledOnce(saveSpy);
+        sinon.assert.calledOnce(closeSpy);
 
-      await timeline.innerSaveToFile(traceEvents, metadata, {
-        savingEnhancedTrace: false,
-        addModifications: false,
+        const [fileName, contentData] = saveSpy.getCall(0).args;
+        assert.match(fileName, /Trace-[\d|T]+\.json$/);
+
+        const file = await contentDataToFile(contentData);
+        assert.isUndefined(file.metadata.enhancedTraceVersion);
+        assert.deepEqual(file.traceEvents, traceEvents);
       });
-
-      sinon.assert.calledOnce(saveSpy);
-      sinon.assert.calledOnce(closeSpy);
-
-      const [fileName, traceAsString] = saveSpy.getCall(0).args;
-      assert.match(fileName, /CPU-[\d|T]+\.cpuprofile$/);
-
-      const parsedData = JSON.parse(traceAsString.text) as Protocol.Profiler.Profile;
-      const profile2 = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.extractCpuProfileFromFakeTrace(traceEvents);
-      assert.deepEqual(parsedData, profile2);
-    });
-
-    it('saves an enhanced trace file', async function() {
-      const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'enhanced-traces.json.gz');
-      await timeline.innerSaveToFile(traceEvents, metadata, {
-        savingEnhancedTrace: true,
-        addModifications: false,
-      });
-
-      sinon.assert.calledOnce(saveSpy);
-      sinon.assert.calledOnce(closeSpy);
-
-      const [fileName, traceAsString] = saveSpy.getCall(0).args;
-      assert.match(fileName, /EnhancedTraces-[\d|T]+\.json$/);
-
-      const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
-      assert.isDefined(parsedData.metadata.enhancedTraceVersion);
-    });
-
-    it('saves a trace file with modifications', async function() {
-      const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
-      // Load to initialize modification manager
-      await timeline.loadingComplete(traceEvents as Trace.Types.Events.Event[], null, metadata);
-      const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
-      assert.isOk(modificationsManager);
-
-      modificationsManager.createAnnotation({
-        bounds:
-            Trace.Helpers.Timing.traceWindowFromMicroSeconds(Trace.Types.Timing.Micro(1), Trace.Types.Timing.Micro(2)),
-        type: 'TIME_RANGE',
-        label: 'Test Annotation',
-      });
-
-      await timeline.saveToFile({
-        savingEnhancedTrace: false,
-        addModifications: true,
-      });
-
-      sinon.assert.calledOnce(saveSpy);
-      sinon.assert.calledOnce(closeSpy);
-
-      const [, traceAsString] = saveSpy.getCall(0).args;
-      const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
-      assert.isDefined(parsedData.metadata.modifications);
-      assert.lengthOf(parsedData.metadata.modifications.annotations.labelledTimeRanges, 1);
-      assert.strictEqual(parsedData.metadata.modifications.annotations.labelledTimeRanges[0].label, 'Test Annotation');
     });
   });
 });

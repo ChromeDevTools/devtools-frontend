@@ -360,6 +360,8 @@ export class MainImpl {
         Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,
         'Performance panel: show postMessage dispatch and handling flows',
     );
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ, 'Performance panel: enable saving traces as .gz');
 
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,

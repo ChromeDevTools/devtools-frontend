@@ -480,17 +480,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     }
     const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation) {
-      if (liveLocation instanceof Bindings.CSSWorkspaceBinding.LiveLocation) {
-        const header = (liveLocation).header();
-        if (header?.ownerNode) {
-          anchor.addEventListener('click', event => {
-            event.consume(true);
-            void Common.Revealer.reveal(header.ownerNode || null);
-          }, false);
-          Linkifier.setTrimmedText(anchor, '<style>');
-        }
-      }
-
       anchor.classList.add('invalid-link');
       anchor.removeAttribute('role');
       return;

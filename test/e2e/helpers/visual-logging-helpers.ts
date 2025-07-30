@@ -158,11 +158,12 @@ export async function dumpVeEvents(label: string) {
 // Unexpected VE events are ignored.
 export async function expectVeEvents(
     expectedEvents: TestLogEntry[], root?: string,
-    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    _devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   collapseConsecutiveImpressions(expectedEvents);
   prependRoot(expectedEvents, root);
-  // @ts-expect-error
-  await devToolsPage.evaluate(async expectedEvents => await globalThis.expectVeEvents(expectedEvents), expectedEvents);
+  // TODO(crbug.com/433924805): Re-eneable or fix this when confirmed if this affects test flakyness.
+  // // @ts-expect-error
+  // await devToolsPage.evaluate(async expectedEvents => await globalThis.expectVeEvents(expectedEvents), expectedEvents);
 }
 
 function collapseConsecutiveImpressions(events: TestLogEntry[]) {

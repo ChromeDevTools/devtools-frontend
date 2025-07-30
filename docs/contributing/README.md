@@ -5,12 +5,13 @@
 This page assumes a working Chromium DevTools [checkout and build](../get_the_code.md).
 
 1.   [Quick Start](#Quick-Start)
-2.   [Design Documents](./design.md)
-3.   [Contributing changes](./changes.md)
-4.   [Issues Guidelines](./issues.md)
-5.   [Settings, Experiments, and Features](./settings-experiments-features.md)
-6.   [Infrastructure](./infrastructure.md)
-7.   [Legal Stuff](#Legal-Stuff)
+2.   [IDE Setup](#IDE-Setup)
+3.   [Design Documents](./design.md)
+4.   [Contributing changes](./changes.md)
+5.   [Issues Guidelines](./issues.md)
+6.   [Settings, Experiments, and Features](./settings-experiments-features.md)
+7.   [Infrastructure](./infrastructure.md)
+8.   [Legal Stuff](#Legal-Stuff)
 
 
 ## Quick Start
@@ -295,6 +296,28 @@ button. This will start a final run of tests and land it after a green run.
     *   `git cl issue` will reveal the issue URL for the current branch.
     *   `git cl web` will open that URL in your browser.
 
+
+## IDE Setup
+
+### VS Code
+
+When using the standalone checkout, we already provide out of the box setup for
+Visual Studio Code, so most things will work out of the box. Below are a few
+steps that you should still check regardless (especially when you're not using
+the standalone checkout).
+
+#### Select the correct TypeScript version
+
+Open any `.ts` file in your VS code, hit Ctrl+Shift+P (on Windows/Linux) or
+Cmd+Shift+P (on macOS), and choose **TypeScript: Select TypeScript Version...**
+from the command palette. In the drop down select **Use Workspace Version**.
+
+![](./images/quickstart-vscode-tsversion.png "Select TypeScript Version")
+
+This will ensure that you have proper type definitions, even when the VS Code
+installation doesn't provide them (for whatever reason). And it also ensures
+that type definitions are consistent between what is used during the build and
+what is used within your IDE.
 
 ## Legal stuff
 

@@ -118,6 +118,10 @@ function findFrame(meta: MetaHandlerData, frameId: string): Types.Events.TraceFr
 
 function findNetworkRequest(networkRequests: Types.Events.SyntheticNetworkRequest[], script: Script):
     Types.Events.SyntheticNetworkRequest|null {
+  if (!script.url) {
+    return null;
+  }
+
   return networkRequests.find(request => request.args.data.url === script.url) ?? null;
 }
 

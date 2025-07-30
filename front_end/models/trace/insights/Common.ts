@@ -315,6 +315,30 @@ export function isRequestCompressed(request: Types.Events.SyntheticNetworkReques
       header => patterns.some(p => header.name.match(p)) && compressionTypes.includes(header.value));
 }
 
+export function isRequestServedFromBrowserCache(request: Types.Events.SyntheticNetworkRequest): boolean {
+  if (!request.args.data.responseHeaders || request.args.data.failed) {
+    return false;
+  }
+
+  // Not Modified?
+  if (request.args.data.statusCode === 304) {
+    return true;
+  }
+
+  // TODO: for some reason ResourceReceiveResponse events never show a 304 status
+  // code, so the above is never gonna work. For now, fall back to a dirty check of
+  // looking at the ratio of transfer size and resource size. If it's really small,
+  // we certainly did not use the network to fetch it.
+
+  const {transferSize, resourceSize} = getRequestSizes(request);
+  const ratio = resourceSize ? transferSize / resourceSize : 0;
+  if (ratio < 0.01) {
+    return true;
+  }
+
+  return false;
+}
+
 function getRequestSizes(request: Types.Events.SyntheticNetworkRequest): {resourceSize: number, transferSize: number} {
   const resourceSize = request.args.data.decodedBodyLength;
   const transferSize = request.args.data.encodedDataLength;
@@ -331,7 +355,7 @@ function getRequestSizes(request: Types.Events.SyntheticNetworkRequest): {resour
 export function estimateCompressedContentSize(
     request: Types.Events.SyntheticNetworkRequest|undefined, totalBytes: number,
     resourceType: Protocol.Network.ResourceType): number {
-  if (!request) {
+  if (!request || isRequestServedFromBrowserCache(request)) {
     // We don't know how many bytes this asset used on the network, but we can guess it was
     // roughly the size of the content gzipped.
     // See https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/optimize-encoding-and-transfer for specific CSS/Script examples

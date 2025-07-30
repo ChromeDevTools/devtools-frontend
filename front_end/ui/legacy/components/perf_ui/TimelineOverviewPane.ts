@@ -56,6 +56,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   private windowStartTime = Trace.Types.Timing.Milli(0);
   private windowEndTime = Trace.Types.Timing.Milli(Infinity);
   private muteOnWindowChanged = false;
+  private hasPointer = false;
   #dimHighlightSVG: Element;
   readonly #boundOnThemeChanged = this.#onThemeChanged.bind(this);
 
@@ -70,8 +71,11 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.element.appendChild(this.overviewGrid.element);
     this.cursorArea = this.overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
     this.cursorElement = this.overviewGrid.element.createChild('div', 'overview-grid-cursor-position');
-    this.cursorArea.addEventListener('mousemove', this.onMouseMove.bind(this), true);
-    this.cursorArea.addEventListener('mouseleave', this.hideCursor.bind(this), true);
+    this.cursorArea.addEventListener('pointerdown', this.onMouseDown.bind(this), true);
+    this.cursorArea.addEventListener('pointerup', this.onMouseCancel.bind(this), true);
+    this.cursorArea.addEventListener('pointercancel', this.onMouseCancel.bind(this), true);
+    this.cursorArea.addEventListener('pointermove', this.onMouseMove.bind(this), true);
+    this.cursorArea.addEventListener('pointerleave', this.hideCursor.bind(this), true);
 
     this.overviewGrid.setResizeEnabled(false);
     this.overviewGrid.addEventListener(OverviewGridEvents.WINDOW_CHANGED_WITH_POSITION, this.onWindowChanged, this);
@@ -86,8 +90,31 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
 
   enableCreateBreadcrumbsButton(): void {
     const breadcrumbsElement = this.overviewGrid.enableCreateBreadcrumbsButton();
-    breadcrumbsElement.addEventListener('mousemove', this.onMouseMove.bind(this), true);
-    breadcrumbsElement.addEventListener('mouseleave', this.hideCursor.bind(this), true);
+    breadcrumbsElement.addEventListener('pointerdown', this.onMouseDown.bind(this), true);
+    breadcrumbsElement.addEventListener('pointerup', this.onMouseCancel.bind(this), true);
+    breadcrumbsElement.addEventListener('pointercancel', this.onMouseCancel.bind(this), true);
+    breadcrumbsElement.addEventListener('pointermove', this.onMouseMove.bind(this), true);
+    breadcrumbsElement.addEventListener('pointerleave', this.hideCursor.bind(this), true);
+  }
+
+  private onMouseDown(event: PointerEvent): void {
+    if (!(event.target instanceof HTMLElement)) {
+      return;
+    }
+
+    event.target.setPointerCapture(event.pointerId);
+    this.overviewInfo.hide();
+    this.hasPointer = true;
+  }
+
+  private onMouseCancel(event: PointerEvent): void {
+    if (!(event.target instanceof HTMLElement)) {
+      return;
+    }
+
+    event.target.releasePointerCapture(event.pointerId);
+    this.overviewInfo.show();
+    this.hasPointer = false;
   }
 
   private onMouseMove(event: Event): void {
@@ -114,7 +141,9 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
       this.dispatchEventToListeners(Events.OVERVIEW_PANE_MOUSE_LEAVE);
     }
 
-    void this.overviewInfo.setContent(this.buildOverviewInfo());
+    if (!this.hasPointer) {
+      void this.overviewInfo.setContent(this.buildOverviewInfo());
+    }
   }
 
   private async buildOverviewInfo(): Promise<DocumentFragment> {
@@ -563,5 +592,10 @@ export class OverviewInfo {
   hide(): void {
     this.visible = false;
     this.glassPane.hide();
+  }
+
+  show(): void {
+    this.visible = true;
+    this.glassPane.show(window.document);
   }
 }

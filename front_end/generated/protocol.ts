@@ -2947,6 +2947,10 @@ export namespace CSS {
      * true if the query contains scroll-state() queries.
      */
     queriesScrollState?: boolean;
+    /**
+     * true if the query contains anchored() queries.
+     */
+    queriesAnchored?: boolean;
   }
 
   /**
@@ -5222,6 +5226,7 @@ export namespace DOM {
     physicalAxes?: PhysicalAxes;
     logicalAxes?: LogicalAxes;
     queriesScrollState?: boolean;
+    queriesAnchored?: boolean;
   }
 
   export interface GetContainerForNodeResponse extends ProtocolResponseWithError {
@@ -18397,6 +18402,7 @@ export namespace Preload {
     V8OptimizerDisabled = 'V8OptimizerDisabled',
     PrerenderFailedDuringPrefetch = 'PrerenderFailedDuringPrefetch',
     BrowsingDataRemoved = 'BrowsingDataRemoved',
+    PrerenderHostReused = 'PrerenderHostReused',
   }
 
   /**

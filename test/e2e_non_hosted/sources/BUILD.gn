@@ -18,6 +18,7 @@ ts_e2e_library("sources") {
     "debugger-sidebar_test.ts",
     "eval_test.ts",
     "icon-row-bucket_test.ts",
+    "ignore-list_test.ts",
     "inline-breakpoint_test.ts",
     "inline-scripts_test.ts",
     "inline-variable_test.ts",

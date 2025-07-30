@@ -17,11 +17,8 @@ import {
   getBrowserAndPages,
   platform,
   pressKey,
-  setCheckBox,
   typeText,
   waitFor,
-  waitForAria,
-  waitForVisible,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -423,20 +420,21 @@ export async function waitForStackTopMatch(matcher: RegExp, devToolsPage = getBr
   return stepLocation;
 }
 
-export async function setEventListenerBreakpoint(groupName: string, eventName: string) {
-  const {frontend} = getBrowserAndPages();
-  const eventListenerBreakpointsSection = await waitForAria('Event Listener Breakpoints');
+export async function setEventListenerBreakpoint(
+    groupName: string, eventName: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const eventListenerBreakpointsSection = await devToolsPage.waitForAria('Event Listener Breakpoints');
   const expanded = await eventListenerBreakpointsSection.evaluate(el => el.getAttribute('aria-expanded'));
   if (expanded !== 'true') {
-    await click('[aria-label="Event Listener Breakpoints"]');
-    await waitFor('[aria-label="Event Listener Breakpoints"][aria-expanded="true"]');
+    await devToolsPage.click('[aria-label="Event Listener Breakpoints"]');
+    await devToolsPage.waitFor('[aria-label="Event Listener Breakpoints"][aria-expanded="true"]');
   }
 
   const eventSelector = `input[type="checkbox"][title="${eventName}"]`;
   const groupSelector = `input[type="checkbox"][title="${groupName}"]`;
-  const groupCheckbox = await waitFor(groupSelector);
-  await waitForVisible(groupSelector);
-  const eventCheckbox = await waitFor(eventSelector);
+  const groupCheckbox = await devToolsPage.waitFor(groupSelector);
+  await devToolsPage.scrollElementIntoView(groupSelector);
+  await devToolsPage.waitForVisible(groupSelector);
+  const eventCheckbox = await devToolsPage.waitFor(eventSelector);
   if (!(await eventCheckbox.evaluate(x => x.checkVisibility()))) {
     // Unfortunately the shadow DOM makes it hard to find the expander element
     // we are attempting to click on, so we click to the left of the checkbox
@@ -446,11 +444,11 @@ export async function setEventListenerBreakpoint(groupName: string, eventName: s
       return {left, top, width, height};
     });
 
-    await frontend.mouse.click(rectData.left - 10, rectData.top + rectData.height * .5);
-    await waitForVisible(eventSelector);
+    await devToolsPage.page.mouse.click(rectData.left - 10, rectData.top + rectData.height * .5);
+    await devToolsPage.waitForVisible(eventSelector);
   }
 
-  await setCheckBox(eventSelector, true);
+  await devToolsPage.setCheckBox(eventSelector, true);
 }
 
 declare global {
@@ -589,15 +587,17 @@ export async function expandFileTree(
   return await devToolsPage.waitFor(selectors.fileSelector);
 }
 
-export async function readSourcesTreeView(): Promise<string[]> {
-  const items = await $$('.navigator-folder-tree-item,.navigator-file-tree-item');
+export async function readSourcesTreeView(devToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<string[]> {
+  const items = await devToolsPage.$$('.navigator-folder-tree-item,.navigator-file-tree-item');
   const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
   const results = await Promise.all(promises);
   return results.map(item => item.replace(/localhost:[0-9]+/, 'localhost:XXXX'));
 }
 
-export async function readIgnoreListedSources(): Promise<string[]> {
-  const items = await $$('.navigator-folder-tree-item.is-ignore-listed,.navigator-file-tree-item.is-ignore-listed');
+export async function readIgnoreListedSources(devToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<string[]> {
+  const items =
+      await devToolsPage.$$('.navigator-folder-tree-item.is-ignore-listed,.navigator-file-tree-item.is-ignore-listed');
   const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
   const results = await Promise.all(promises);
   return results.map(item => item.replace(/localhost:[0-9]+/, 'localhost:XXXX'));

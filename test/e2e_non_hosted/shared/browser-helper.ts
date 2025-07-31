@@ -53,7 +53,7 @@ export class Launcher {
       '--auto-open-devtools-for-tabs',
       `--custom-devtools-frontend=${frontEndDirectory}`,
     ];
-    const headless = !TestConfig.debug || TestConfig.headless;
+    const headless = TestConfig.headless;
     // CDP commands in e2e and interaction should not generally take
     // more than 20 seconds.
     const protocolTimeout = TestConfig.debug ? 0 : 20_000;

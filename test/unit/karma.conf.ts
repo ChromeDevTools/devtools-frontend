@@ -43,7 +43,7 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
   this._execCommand = async function(_cmd: string, args: string[]) {
     const url = args.pop()!;
     const browser = await puppeteer.launch({
-      headless: !TestConfig.debug || TestConfig.headless,
+      headless: TestConfig.headless,
       executablePath: TestConfig.chromeBinary,
       defaultViewport: null,
       dumpio: true,

@@ -36,7 +36,7 @@ const viewportHeight = 720;
 const windowWidth = viewportWidth + 50;
 const windowHeight = viewportHeight + 200;
 
-const headless = !TestConfig.debug || TestConfig.headless;
+const headless = TestConfig.headless;
 // CDP commands in e2e and interaction should not generally take
 // more than 20 seconds.
 const protocolTimeout = TestConfig.debug ? 0 : 20_000;

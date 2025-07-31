@@ -368,7 +368,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState)) {
       return true;
     }
-    if (this.aiCodeCompletion && TextEditor.Config.setAiAutoCompleteSuggestion) {
+    if (this.aiCodeCompletion && TextEditor.Config.hasActiveAiSuggestion(this.editor.state)) {
       this.editor.dispatch({
         effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(null),
       });

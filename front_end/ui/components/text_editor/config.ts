@@ -526,6 +526,10 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
   },
 });
 
+export function hasActiveAiSuggestion(state: CM.EditorState): boolean {
+  return state.field(aiAutoCompleteSuggestionState) !== null;
+}
+
 export function acceptAiAutoCompleteSuggestion(view: CM.EditorView): boolean {
   const suggestion = view.state.field(aiAutoCompleteSuggestionState);
   if (!suggestion) {

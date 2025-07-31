@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type {DevToolsFrontendReloadOptions} from '../../conductor/frontend_tab.js';
-import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {reloadDevTools as baseReloadDevTools, waitFor} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
@@ -57,14 +56,16 @@ export const checkIfTabExistsInDrawer =
   return Boolean(tab);
 };
 
-export async function reloadDevTools(options?: DevToolsFrontendReloadOptions&{
-  expectClosedPanels?: string[],
-  enableExperiments?: string[],
-  disableExperiments?: string[],
-  removeBackendState?: boolean,
-}) {
-  const {frontend, target} = getBrowserAndPages();
-  await frontend.evaluate(() => {
+export async function reloadDevTools(
+    options?: DevToolsFrontendReloadOptions&{
+      expectClosedPanels?: string[],
+      enableExperiments?: string[],
+      disableExperiments?: string[],
+      removeBackendState?: boolean,
+    },
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  await devToolsPage.evaluate(() => {
     // Prevent the Performance panel shortcuts dialog, that is automatically shown the first
     // time the performance panel is opened, from opening in tests.
     localStorage.setItem('hide-shortcuts-dialog-for-test', 'true');
@@ -72,7 +73,7 @@ export async function reloadDevTools(options?: DevToolsFrontendReloadOptions&{
   const enableExperiments = options?.enableExperiments || [];
   const disableExperiments = options?.disableExperiments || [];
   if (enableExperiments.length || disableExperiments.length) {
-    await frontend.evaluate(`(async () => {
+    await devToolsPage.evaluate(`(async () => {
       const Root = await import('./core/root/root.js');
       for (const experiment of ${JSON.stringify(enableExperiments)}) {
         Root.Runtime.experiments.setEnabled(experiment, true);
@@ -84,7 +85,7 @@ export async function reloadDevTools(options?: DevToolsFrontendReloadOptions&{
   }
   if (options?.removeBackendState) {
     // Navigate to a different site to make sure that back-end state will be removed.
-    await target.goto('about:blank');
+    await inspectedPage.page.goto('about:blank');
   }
   await baseReloadDevTools(options);
   const selectedPanel = options?.selectedPanel?.name || options?.queryParams?.panel || 'elements';
@@ -116,5 +117,5 @@ export async function reloadDevTools(options?: DevToolsFrontendReloadOptions&{
       veImpressionForConsolePanel(),
     ]));
   }
-  await expectVeEvents(expectedVeEvents);
+  await expectVeEvents(expectedVeEvents, undefined, devToolsPage);
 }

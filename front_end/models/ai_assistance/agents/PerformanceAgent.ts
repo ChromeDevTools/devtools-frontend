@@ -344,7 +344,8 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
         ];
       case 'ImageDelivery':
         return [
-          {title: 'What should I do to improve and optimize the time taken to fetch and display images on the page?'}
+          {title: 'What should I do to improve and optimize the time taken to fetch and display images on the page?'},
+          {title: 'Are all images on my site optimized?'},
         ];
       case 'INPBreakdown':
         return [

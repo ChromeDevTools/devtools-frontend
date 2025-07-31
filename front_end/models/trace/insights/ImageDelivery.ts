@@ -131,7 +131,12 @@ export interface OptimizableImage {
 export type ImageDeliveryInsightModel = InsightModel<typeof UIStrings, {
   /** Sorted by potential byte savings, then by size of image. */
   optimizableImages: OptimizableImage[],
+  wastedBytes: number,
 }>;
+
+export function isImageDelivery(model: InsightModel): model is ImageDeliveryInsightModel {
+  return model.insightKey === 'ImageDelivery';
+}
 
 export function getOptimizationMessage(optimization: ImageOptimization): string {
   switch (optimization.type) {

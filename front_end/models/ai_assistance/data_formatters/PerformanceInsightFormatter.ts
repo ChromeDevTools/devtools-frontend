@@ -125,6 +125,36 @@ ${this.#links()}`;
   }
 
   #details(): string {
+    if (Trace.Insights.Models.ImageDelivery.isImageDelivery(this.#insight)) {
+      const optimizableImages = this.#insight.optimizableImages;
+      if (optimizableImages.length === 0) {
+        return 'There are no unoptimized images on this page.';
+      }
+
+      const imageDetails =
+          optimizableImages
+              .map(image => {
+                // List potential optimizations for the image
+                const optimizations =
+                    image.optimizations
+                        .map(optimization => {
+                          const message = Trace.Insights.Models.ImageDelivery.getOptimizationMessage(optimization);
+                          const byteSavings = i18n.ByteUtilities.bytesToString(optimization.byteSavings);
+                          return `${message} (Est ${byteSavings})`;
+                        })
+                        .join('\n');
+
+                return `### ${image.request.args.data.url}
+- Potential savings: ${i18n.ByteUtilities.bytesToString(image.byteSavings)}
+- Optimizations:\n${optimizations}`;
+              })
+              .join('\n\n');
+
+      return `Total potential savings: ${i18n.ByteUtilities.bytesToString(this.#insight.wastedBytes)}
+
+The following images could be optimized:\n\n${imageDetails}`;
+    }
+
     if (Trace.Insights.Models.LCPBreakdown.isLCPBreakdown(this.#insight)) {
       const {subparts, lcpMs} = this.#insight;
       if (!lcpMs || !subparts) {
@@ -351,7 +381,7 @@ ${filesFormatted}`;
       case 'ForcedReflow':
         return '';
       case 'ImageDelivery':
-        return '';
+        return '- https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/';
       case 'INPBreakdown':
         return `- https://web.dev/articles/inp
 - https://web.dev/explore/how-to-optimize-inp
@@ -406,7 +436,7 @@ ${filesFormatted}`;
       case 'ForcedReflow':
         return '';
       case 'ImageDelivery':
-        return '';
+        return 'This insight identifies unoptimized images that are downloaded at a much higher resolution than they are displayed. Properly sizing and compressing these assets will decrease their download time, directly improving the perceived page load time and LCP';
       case 'INPBreakdown':
         return `Interaction to Next Paint (INP) is a metric that tracks the responsiveness of the page when the user interacts with it. INP is a Core Web Vital and the thresholds for how we categorize a score are:
 - Good: 200 milliseconds or less.

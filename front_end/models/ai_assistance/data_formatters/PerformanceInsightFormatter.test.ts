@@ -827,4 +827,79 @@ Line: 0, Column: 390688, Name: Object.values
     });
   });
 
+  describe('ImageDelivery', () => {
+    it('serializes the correct details when there are no optimizable images', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ImageDelivery', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+
+      const expected = `## Insight Title: Improve image delivery
+
+## Insight Summary:
+This insight identifies unoptimized images that are downloaded at a much higher resolution than they are displayed. Properly sizing and compressing these assets will decrease their download time, directly improving the perceived page load time and LCP
+
+## Detailed analysis:
+There are no unoptimized images on this page.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/`;
+      assertStringEquals(output, expected);
+    });
+
+    it('serializes the correct details when there are images that can be optimized', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'image-delivery.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ImageDelivery', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+
+      const expected = `## Insight Title: Improve image delivery
+
+## Insight Summary:
+This insight identifies unoptimized images that are downloaded at a much higher resolution than they are displayed. Properly sizing and compressing these assets will decrease their download time, directly improving the perceived page load time and LCP
+
+## Detailed analysis:
+Total potential savings: 2.0 MB
+
+The following images could be optimized:
+
+### https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg
+- Potential savings: 1.1 MB
+- Optimizations:
+Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size. (Est 1.1 MB)
+
+### https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/dobetterweb/lighthouse-rotating.gif
+- Potential savings: 682 kB
+- Optimizations:
+Using video formats instead of GIFs can improve the download size of animated content. (Est 682 kB)
+
+### https://onlinepngtools.com/images/examples-onlinepngtools/elephant-hd-quality.png
+- Potential savings: 176 kB
+- Optimizations:
+Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size. (Est 134 kB)
+This image file is larger than it needs to be (640x436) for its displayed dimensions (200x136). Use responsive images to reduce the image download size. (Est 163 kB)
+
+### https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg?fm=webp
+- Potential savings: 49.8 kB
+- Optimizations:
+Increasing the image compression factor could improve this image's download size. (Est 49.8 kB)
+
+### https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/byte-efficiency/lighthouse-2048x1356.webp
+- Potential savings: 41.4 kB
+- Optimizations:
+This image file is larger than it needs to be (2048x1356) for its displayed dimensions (200x132). Use responsive images to reduce the image download size. (Est 41.4 kB)
+
+## Estimated savings: FCP 0 ms, LCP 100 ms
+
+## External resources:
+- https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/`;
+      assertStringEquals(output, expected);
+    });
+  });
 });

@@ -904,6 +904,13 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       contextMenu.discard();
     }
 
+    const aiPreregisteredView = UI.ViewManager.getRegisteredViewExtensionForID('freestyler');
+    if (aiPreregisteredView) {
+      contextMenu.defaultSection().appendItem(aiPreregisteredView.title(), () => {
+        void UI.ViewManager.ViewManager.instance().showView('freestyler', true, false);
+      }, {jslogContext: 'freestyler'});
+    }
+
     if (dockController.dockSide() === UI.DockController.DockState.UNDOCKED) {
       const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       if (mainTarget && mainTarget.type() === SDK.Target.Type.FRAME) {
@@ -943,6 +950,10 @@ export class MainMenuItem implements UI.Toolbar.Provider {
         continue;
       }
       if (location !== 'drawer-view' && location !== 'panel') {
+        continue;
+      }
+      // Skip AI Assistance because we already show it in the main menu
+      if (id === 'freestyler') {
         continue;
       }
 

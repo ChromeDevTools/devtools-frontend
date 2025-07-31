@@ -6594,6 +6594,18 @@ export const NativeFunctions = [
     signatures: [["node","child"]]
   },
   {
+    name: "patchBetween",
+    signatures: [["prev_child","next_child"]]
+  },
+  {
+    name: "patchAfter",
+    signatures: [["ref"]]
+  },
+  {
+    name: "patchBefore",
+    signatures: [["ref"]]
+  },
+  {
     name: "QuotaExceededError",
     signatures: [["?message","?options"]]
   },

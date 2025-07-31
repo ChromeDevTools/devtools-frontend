@@ -510,7 +510,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       }
     }
     UI.Tooltip.Tooltip.install(anchor, titleText);
-    anchor.classList.toggle('ignore-list-link', await liveLocation.isIgnoreListed());
+    const isIgnoreListed = Boolean(uiLocation?.isIgnoreListed());
+    anchor.classList.toggle('ignore-list-link', isIgnoreListed);
     Linkifier.updateLinkDecorations(anchor);
   }
 

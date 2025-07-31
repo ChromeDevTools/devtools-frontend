@@ -573,15 +573,6 @@ export class Location extends LiveLocationWithPool {
     super.dispose();
     this.#binding.removeLiveLocation(this);
   }
-
-  override async isIgnoreListed(): Promise<boolean> {
-    const uiLocation = await this.uiLocation();
-    if (!uiLocation) {
-      return false;
-    }
-    return Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
-        uiLocation.uiSourceCode);
-  }
 }
 
 class StackTraceTopFrameLocation extends LiveLocationWithPool {
@@ -609,10 +600,6 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
 
   override async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
     return this.#current ? await this.#current.uiLocation() : null;
-  }
-
-  override async isIgnoreListed(): Promise<boolean> {
-    return this.#current ? await this.#current.isIgnoreListed() : false;
   }
 
   override dispose(): void {
@@ -644,7 +631,8 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
 
     this.#current = this.#locations[0];
     for (const location of this.#locations) {
-      if (!(await location.isIgnoreListed())) {
+      const uiLocation = await location.uiLocation();
+      if (!uiLocation?.isIgnoreListed()) {
         this.#current = location;
         break;
       }

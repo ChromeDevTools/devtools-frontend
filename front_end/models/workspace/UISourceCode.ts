@@ -35,6 +35,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
+import {IgnoreListManager} from './IgnoreListManager.js';
 import {Events as WorkspaceImplEvents, type Project} from './WorkspaceImpl.js';
 
 const UIStrings = {
@@ -532,6 +533,10 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   editDisabled(): boolean {
     return this.#disableEdit;
   }
+
+  isIgnoreListed(): boolean {
+    return IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(this);
+  }
 }
 
 export enum Events {
@@ -632,6 +637,10 @@ export class UILocation {
       return 1;
     }
     return this.columnNumber - other.columnNumber;
+  }
+
+  isIgnoreListed(): boolean {
+    return this.uiSourceCode.isIgnoreListed();
   }
 }
 

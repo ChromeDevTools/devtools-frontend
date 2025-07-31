@@ -1208,6 +1208,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#responseCookies;
   }
 
+  set responseCookies(responseCookies: Cookie[]) {
+    this.#responseCookies = responseCookies;
+  }
+
   responseLastModified(): string|undefined {
     return this.responseHeaderValue('last-modified');
   }
@@ -1650,12 +1654,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   addExtraRequestInfo(extraRequestInfo: ExtraRequestInfo): void {
     this.#blockedRequestCookies = extraRequestInfo.blockedRequestCookies;
-    this.#includedRequestCookies = extraRequestInfo.includedRequestCookies;
+    this.setIncludedRequestCookies(extraRequestInfo.includedRequestCookies);
     this.setRequestHeaders(extraRequestInfo.requestHeaders);
     this.#hasExtraRequestInfo = true;
     this.setRequestHeadersText('');  // Mark request headers as non-provisional
     this.#clientSecurityState = extraRequestInfo.clientSecurityState;
-    this.setConnectTimingFromExtraInfo(extraRequestInfo.connectTiming);
+    if (extraRequestInfo.connectTiming) {
+      this.setConnectTimingFromExtraInfo(extraRequestInfo.connectTiming);
+    }
     this.#siteHasCookieInOtherPartition = extraRequestInfo.siteHasCookieInOtherPartition ?? false;
 
     this.#hasThirdPartyCookiePhaseoutIssue = this.#blockedRequestCookies.some(
@@ -1671,6 +1677,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   blockedRequestCookies(): BlockedCookieWithReason[] {
     return this.#blockedRequestCookies;
+  }
+
+  setIncludedRequestCookies(includedRequestCookies: IncludedCookieWithReason[]): void {
+    this.#includedRequestCookies = includedRequestCookies;
   }
 
   includedRequestCookies(): IncludedCookieWithReason[] {

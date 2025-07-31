@@ -1623,9 +1623,10 @@ export class DOMModel extends SDKModel<EventTypes> {
 
   async getContainerForNode(
       nodeId: Protocol.DOM.NodeId, containerName?: string, physicalAxes?: Protocol.DOM.PhysicalAxes,
-      logicalAxes?: Protocol.DOM.LogicalAxes, queriesScrollState?: boolean): Promise<DOMNode|null> {
+      logicalAxes?: Protocol.DOM.LogicalAxes, queriesScrollState?: boolean,
+      queriesAnchored?: boolean): Promise<DOMNode|null> {
     const {nodeId: containerNodeId} = await this.agent.invoke_getContainerForNode(
-        {nodeId, containerName, physicalAxes, logicalAxes, queriesScrollState});
+        {nodeId, containerName, physicalAxes, logicalAxes, queriesScrollState, queriesAnchored});
     if (!containerNodeId) {
       return null;
     }

@@ -80,7 +80,7 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
   const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
   const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
   const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-  const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+  const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
   Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
     forceNew: true,
     resourceMapping,
@@ -860,12 +860,12 @@ export function getEventOfType<T extends Trace.Types.Events.Event>(
  * errors.
  */
 export function setupIgnoreListManagerEnvironment(): {
-  ignoreListManager: Bindings.IgnoreListManager.IgnoreListManager,
+  ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager,
 } {
   const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
   const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
   const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-  const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+  const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
   Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
     forceNew: true,
     resourceMapping,

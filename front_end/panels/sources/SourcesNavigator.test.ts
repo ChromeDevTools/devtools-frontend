@@ -36,7 +36,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
@@ -455,7 +455,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
     beforeEach(() => {
       target = createTarget();
-      Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(() => {
+      Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(() => {
         if (resolveFn) {
           resolveFn();
           resolveFn = null;

@@ -6,7 +6,9 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Workspace from '../workspace/workspace.js';
+
+import type {UISourceCode} from './UISourceCode.js';
+import {projectTypes} from './WorkspaceImpl.js';
 
 const UIStrings = {
   /**
@@ -35,7 +37,7 @@ const UIStrings = {
   addAllAnonymousScriptsToIgnoreList: 'Add all anonymous scripts to ignore list',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('models/bindings/IgnoreListManager.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/workspace/IgnoreListManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let ignoreListManagerInstance: IgnoreListManager|undefined;
@@ -181,14 +183,14 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
         this.skipContentScripts ? Array.from(this.#contentScriptExecutionContexts) : []);
   }
 
-  private getGeneralRulesForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): IgnoreListGeneralRules {
+  private getGeneralRulesForUISourceCode(uiSourceCode: UISourceCode): IgnoreListGeneralRules {
     const projectType = uiSourceCode.project().type();
-    const isContentScript = projectType === Workspace.Workspace.projectTypes.ContentScripts;
+    const isContentScript = projectType === projectTypes.ContentScripts;
     const isKnownThirdParty = uiSourceCode.isKnownThirdParty();
     return {isContentScript, isKnownThirdParty};
   }
 
-  isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+  isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode: UISourceCode): boolean {
     if (uiSourceCode.isUnconditionallyIgnoreListed()) {
       return true;
     }
@@ -304,23 +306,23 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     }
   }
 
-  private uiSourceCodeURL(uiSourceCode: Workspace.UISourceCode.UISourceCode): Platform.DevToolsPath.UrlString|null {
-    return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Debugger ? null : uiSourceCode.url();
+  private uiSourceCodeURL(uiSourceCode: UISourceCode): Platform.DevToolsPath.UrlString|null {
+    return uiSourceCode.project().type() === projectTypes.Debugger ? null : uiSourceCode.url();
   }
 
-  canIgnoreListUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+  canIgnoreListUISourceCode(uiSourceCode: UISourceCode): boolean {
     const url = this.uiSourceCodeURL(uiSourceCode);
     return url ? Boolean(this.urlToRegExpString(url)) : false;
   }
 
-  ignoreListUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+  ignoreListUISourceCode(uiSourceCode: UISourceCode): void {
     const url = this.uiSourceCodeURL(uiSourceCode);
     if (url) {
       this.ignoreListURL(url);
     }
   }
 
-  unIgnoreListUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+  unIgnoreListUISourceCode(uiSourceCode: UISourceCode): void {
     this.unIgnoreListURL(this.uiSourceCodeURL(uiSourceCode), this.getGeneralRulesForUISourceCode(uiSourceCode));
   }
 
@@ -517,9 +519,9 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     return prefix + Platform.StringUtilities.escapeForRegExp(name) + (url.endsWith(name) ? '$' : '\\b');
   }
 
-  getIgnoreListURLContextMenuItems(uiSourceCode: Workspace.UISourceCode.UISourceCode):
+  getIgnoreListURLContextMenuItems(uiSourceCode: UISourceCode):
       Array<{text: string, callback: () => void, jslogContext: string}> {
-    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
+    if (uiSourceCode.project().type() === projectTypes.FileSystem) {
       return [];
     }
 

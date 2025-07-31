@@ -91,7 +91,7 @@ describeWithMockConnection('BreakpointManager', () => {
     workspace = Workspace.Workspace.WorkspaceImpl.instance();
     targetManager = SDK.TargetManager.TargetManager.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,

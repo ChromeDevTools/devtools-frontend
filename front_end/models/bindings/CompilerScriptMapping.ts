@@ -36,7 +36,6 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import type {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
-import {IgnoreListManager} from './IgnoreListManager.js';
 import {NetworkProject} from './NetworkProject.js';
 
 /**
@@ -329,7 +328,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     // Create stub UISourceCode for the time source mapping is being loaded.
     this.addStubUISourceCode(script);
     void this.#debuggerWorkspaceBinding.updateLocations(script);
-    if (IgnoreListManager.instance().isUserIgnoreListedURL(
+    if (Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(
             script.sourceURL, {isContentScript: script.isContentScript()})) {
       this.#sourceMapManager.cancelAttachSourceMap(script);
     }

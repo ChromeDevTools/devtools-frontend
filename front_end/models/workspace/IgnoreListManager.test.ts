@@ -9,9 +9,9 @@ import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
-import * as Workspace from '../workspace/workspace.js';
+import * as Bindings from '../bindings/bindings.js';
 
-import * as Bindings from './bindings.js';
+import * as Workspace from './workspace.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -50,7 +50,7 @@ function notNull<T>(val: T|null|undefined): T {
 
 describeWithMockConnection('IgnoreListManager', () => {
   let debuggerModel: SDK.DebuggerModel.DebuggerModel;
-  let ignoreListManager: Bindings.IgnoreListManager.IgnoreListManager;
+  let ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
 
   let uiSourceCode: Workspace.UISourceCode.UISourceCode;
   let webpackUiSourceCode: Workspace.UISourceCode.UISourceCode;
@@ -137,7 +137,7 @@ describeWithMockConnection('IgnoreListManager', () => {
     SDK.PageResourceLoader.PageResourceLoader.instance({forceNew, maxConcurrentLoads: 1, loadOverride: null});
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
@@ -200,7 +200,7 @@ describeWithMockConnection('IgnoreListManager', () => {
     const items: string[] = [];
     const callbacks = new Map<string, () => void>();
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const options: Bindings.IgnoreListManager.IgnoreListGeneralRules = {
+    const options: Workspace.IgnoreListManager.IgnoreListGeneralRules = {
       isContentScript: url === contentScriptFolderUrl,
       isKnownThirdParty: url === sourceMapThirdPartyFolderUrl,
       isCurrentlyIgnoreListed: ALL_URLS.every(

@@ -39,7 +39,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
-import * as Bindings from '../../../../models/bindings/bindings.js';
+import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -76,17 +76,18 @@ function populateContextMenu(link: Element, event: Event): void {
   event.consume(true);
   const uiLocation = Linkifier.uiLocation(link);
   if (uiLocation &&
-      Bindings.IgnoreListManager.IgnoreListManager.instance().canIgnoreListUISourceCode(uiLocation.uiSourceCode)) {
-    if (Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiLocation.uiSourceCode.url())) {
+      Workspace.IgnoreListManager.IgnoreListManager.instance().canIgnoreListUISourceCode(uiLocation.uiSourceCode)) {
+    if (Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiLocation.uiSourceCode.url())) {
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.removeFromIgnore),
-          () =>
-              Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiLocation.uiSourceCode),
+          () => Workspace.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(
+              uiLocation.uiSourceCode),
           {jslogContext: 'remove-from-ignore-list'});
     } else {
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.addToIgnore),
-          () => Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiLocation.uiSourceCode),
+          () =>
+              Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiLocation.uiSourceCode),
           {jslogContext: 'add-to-ignore-list'});
     }
   }

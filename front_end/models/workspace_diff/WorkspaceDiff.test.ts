@@ -17,7 +17,7 @@ const {urlString} = Platform.DevToolsPath;
 describeWithEnvironment('UISourceCodeDiff', () => {
   function setup() {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-    const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       targetManager: SDK.TargetManager.TargetManager.instance(),

@@ -43,7 +43,7 @@ describeWithMockConnection('CoverageDeocrationManager', () => {
     workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     debuggerBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,

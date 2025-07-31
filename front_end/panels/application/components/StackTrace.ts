@@ -8,7 +8,7 @@ import '../../../ui/components/expandable_list/expandable_list.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
+import * as Workspace from '../../../models/workspace/workspace.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -171,7 +171,7 @@ export class StackTrace extends HTMLElement {
       if ('link' in item && item.link) {
         const uiLocation = Components.Linkifier.Linkifier.uiLocation(item.link);
         if (uiLocation &&
-            Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+            Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
                 uiLocation.uiSourceCode)) {
           ignoreListHide = true;
         }

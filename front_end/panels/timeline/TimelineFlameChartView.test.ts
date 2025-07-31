@@ -4,8 +4,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {assertScreenshot, dispatchClickEvent, doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -1049,7 +1049,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
              // Let's find the first entry with URL.
              return Trace.Types.Events.isProfileCall(entry) && Boolean(entry.callFrame.url);
            });
-           Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(
+           Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(
                urlString`${(entryWithIgnoredUrl as Trace.Types.Events.SyntheticProfileCall).callFrame.url}`);
 
            generateContextMenuForNode(entryWithIgnoredUrl);

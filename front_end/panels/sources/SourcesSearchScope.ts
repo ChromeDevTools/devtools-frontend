@@ -152,7 +152,7 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
       if (!uiSourceCode.contentType().isTextType()) {
         continue;
       }
-      if (Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+      if (Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
               uiSourceCode)) {
         continue;
       }

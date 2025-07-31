@@ -37,7 +37,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
-import type * as Workspace from '../../models/workspace/workspace.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -480,7 +480,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       return;
     }
 
-    for (const {text, callback, jslogContext} of Bindings.IgnoreListManager.IgnoreListManager.instance()
+    for (const {text, callback, jslogContext} of Workspace.IgnoreListManager.IgnoreListManager.instance()
              .getIgnoreListURLContextMenuItems(uiSourceCode)) {
       menuSection.appendItem(text, callback, {jslogContext});
     }

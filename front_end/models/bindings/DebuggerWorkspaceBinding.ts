@@ -12,7 +12,6 @@ import * as Workspace from '../workspace/workspace.js';
 import {CompilerScriptMapping} from './CompilerScriptMapping.js';
 import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
-import {Events, IgnoreListManager} from './IgnoreListManager.js';
 import {type LiveLocation, type LiveLocationPool, LiveLocationWithPool} from './LiveLocation.js';
 import {NetworkProject} from './NetworkProject.js';
 import type {ResourceMapping} from './ResourceMapping.js';
@@ -28,7 +27,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
 
   private constructor(
       resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager,
-      ignoreListManager: IgnoreListManager) {
+      ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager) {
     this.resourceMapping = resourceMapping;
 
     this.#debuggerModelToData = new Map();
@@ -37,7 +36,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     targetManager.addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
-    ignoreListManager.addEventListener(Events.IGNORED_SCRIPT_RANGES_UPDATED, event => this.updateLocations(event.data));
+    ignoreListManager.addEventListener(
+        Workspace.IgnoreListManager.Events.IGNORED_SCRIPT_RANGES_UPDATED, event => this.updateLocations(event.data));
 
     this.#liveLocationPromises = new Set();
 
@@ -56,7 +56,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     forceNew: boolean|null,
     resourceMapping: ResourceMapping|null,
     targetManager: SDK.TargetManager.TargetManager|null,
-    ignoreListManager: IgnoreListManager|null,
+    ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager|null,
   } = {forceNew: null, resourceMapping: null, targetManager: null, ignoreListManager: null}): DebuggerWorkspaceBinding {
     const {forceNew, resourceMapping, targetManager, ignoreListManager} = opts;
     if (!debuggerWorkspaceBindingInstance || forceNew) {
@@ -579,7 +579,8 @@ export class Location extends LiveLocationWithPool {
     if (!uiLocation) {
       return false;
     }
-    return IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiLocation.uiSourceCode);
+    return Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+        uiLocation.uiSourceCode);
   }
 }
 

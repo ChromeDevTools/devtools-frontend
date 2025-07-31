@@ -377,12 +377,12 @@ describeWithEnvironment('ThreadAppender', function() {
   });
 
   describe('ignore listing', () => {
-    let ignoreListManager: Bindings.IgnoreListManager.IgnoreListManager;
+    let ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
     beforeEach(() => {
       const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
       const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
       const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
         forceNew: true,
         resourceMapping,
@@ -394,7 +394,7 @@ describeWithEnvironment('ThreadAppender', function() {
       SDK.TargetManager.TargetManager.removeInstance();
       Workspace.Workspace.WorkspaceImpl.removeInstance();
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
-      Bindings.IgnoreListManager.IgnoreListManager.removeInstance();
+      Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
     });
     it('removes entries from the data that match the ignored URL', async function() {
       const initialTimelineData = await renderThreadAppendersFromTrace(this, 'react-hello-world.json.gz');
@@ -493,7 +493,7 @@ describeWithEnvironment('ThreadAppender', function() {
       const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
       const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
       const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
         forceNew: true,
         resourceMapping,
@@ -505,7 +505,7 @@ describeWithEnvironment('ThreadAppender', function() {
       SDK.TargetManager.TargetManager.removeInstance();
       Workspace.Workspace.WorkspaceImpl.removeInstance();
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
-      Bindings.IgnoreListManager.IgnoreListManager.removeInstance();
+      Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
     });
     it('appends unknown events to the flame chart data only when the experiment is enabled', async function() {
       const fileName = 'react-hello-world.json.gz';
@@ -538,7 +538,7 @@ describeWithEnvironment('ThreadAppender', function() {
       const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
       const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
       const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
         forceNew: true,
         resourceMapping,
@@ -551,7 +551,7 @@ describeWithEnvironment('ThreadAppender', function() {
       SDK.TargetManager.TargetManager.removeInstance();
       Workspace.Workspace.WorkspaceImpl.removeInstance();
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
-      Bindings.IgnoreListManager.IgnoreListManager.removeInstance();
+      Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
     });
 
     it('finds all the worklet threads', async function() {

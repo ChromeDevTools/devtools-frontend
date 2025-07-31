@@ -65,6 +65,7 @@ devtools_module("components") {
     "../../../models/crux-manager:bundle",
     "../../../models/live-metrics:bundle",
     "../../../models/trace:bundle",
+    "../../../models/workspace:bundle",
     "../../../services/trace_bounds:bundle",
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/dialogs:bundle",

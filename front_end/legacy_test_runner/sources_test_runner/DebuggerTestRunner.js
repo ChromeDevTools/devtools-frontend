@@ -285,9 +285,9 @@ export const captureStackTraceIntoString = async function(callFrames, asyncStack
       const script = location.script();
       const uiLocation =
           await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(location);
-      const isFramework = uiLocation ?
-          Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiLocation.uiSourceCode.url()) :
-          false;
+      const isFramework = uiLocation ? Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(
+                                           uiLocation.uiSourceCode.url()) :
+                                       false;
 
       if (options.dropFrameworkCallFrames && isFramework) {
         continue;

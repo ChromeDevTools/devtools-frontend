@@ -271,7 +271,7 @@ export class DebuggerPlugin extends Plugin {
         SDK.PageResourceLoader.Events.UPDATE, this.showSourceMapInfobarIfNeeded.bind(this), this);
 
     this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
-    Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
+    Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
     this.liveLocationPool = new Bindings.LiveLocation.LiveLocationPool();
@@ -412,7 +412,7 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
 
-    if (!Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+    if (!Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
             uiSourceCode)) {
       this.hideIgnoreListInfobar();
       return;
@@ -423,7 +423,7 @@ export class DebuggerPlugin extends Plugin {
     }
 
     function unIgnoreList(): void {
-      Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiSourceCode);
+      Workspace.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiSourceCode);
     }
 
     const infobar = new UI.Infobar.Infobar(
@@ -587,7 +587,7 @@ export class DebuggerPlugin extends Plugin {
 
     if (this.uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
         Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get() &&
-        !Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(this.uiSourceCode.url())) {
+        !Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(this.uiSourceCode.url())) {
       if (this.scriptFileForDebuggerModel.size) {
         const scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile =
             this.scriptFileForDebuggerModel.values().next().value as Bindings.ResourceScriptMapping.ResourceScriptFile;
@@ -1739,7 +1739,7 @@ export class DebuggerPlugin extends Plugin {
     this.uiSourceCode.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
 
-    Bindings.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.ignoreListCallback);
+    Workspace.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.ignoreListCallback);
 
     debuggerPluginForUISourceCode.delete(this.uiSourceCode);
     super.dispose();

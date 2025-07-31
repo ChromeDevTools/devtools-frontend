@@ -97,7 +97,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
       const targetManager = target.targetManager();
       const resourceMapping =
           new Bindings.ResourceMapping.ResourceMapping(targetManager, Workspace.Workspace.WorkspaceImpl.instance());
-      const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
         forceNew: true,
         resourceMapping,
@@ -899,7 +899,7 @@ describeWithDevtoolsExtension('Wasm extension API', {}, context => {
     const targetManager = target.targetManager();
     const resourceMapping =
         new Bindings.ResourceMapping.ResourceMapping(targetManager, Workspace.Workspace.WorkspaceImpl.instance());
-    const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
@@ -1033,7 +1033,7 @@ for (const allowFileAccess of [true, false]) {
           const workspace = Workspace.Workspace.WorkspaceImpl.instance();
           const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
           target.setInspectedURL(urlString`http://example.com`);
-          const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+          const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
           Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
             forceNew: true,
             resourceMapping,
@@ -1100,7 +1100,7 @@ describeWithDevtoolsExtension('validate attachSourceMapURL ', {}, context => {
     const targetManager = target.targetManager();
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,

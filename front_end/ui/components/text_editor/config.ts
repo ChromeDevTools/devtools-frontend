@@ -484,7 +484,7 @@ export function contentIncludingHint(view: CM.EditorView): string {
   return content;
 }
 
-export const setAiAutoCompleteSuggestion = CM.StateEffect.define<string|null>();
+export const setAiAutoCompleteSuggestion = CM.StateEffect.define<ActiveSuggestion|null>();
 
 interface ActiveSuggestion {
   text: string;
@@ -497,7 +497,7 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
     for (const effect of tr.effects) {
       if (effect.is(setAiAutoCompleteSuggestion)) {
         if (effect.value) {
-          return {text: effect.value, from: tr.state.selection.main.head};
+          return effect.value;
         }
         return null;
       }

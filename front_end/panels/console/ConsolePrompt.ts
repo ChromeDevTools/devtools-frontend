@@ -74,7 +74,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
   private placeholderCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
   private teaserContainer?: HTMLDivElement;
-  private aiCodeCompletionThrottler?: Common.Throttler.Throttler;
   private aiCodeCompletionSetting =
       Common.Settings.Settings.instance().createSetting('ai-code-completion-fre-completed', false);
 
@@ -262,7 +261,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (suffix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
       suffix = suffix.substring(0, AI_CODE_COMPLETION_CHARACTER_LIMIT);
     }
-    this.aiCodeCompletion?.onTextChanged(prefix, suffix);
+    this.aiCodeCompletion?.onTextChanged(prefix, suffix, cursor);
   }
 
   private async requestPreview(): Promise<void> {
@@ -499,9 +498,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (!this.aidaClient) {
       this.aidaClient = new Host.AidaClient.AidaClient();
     }
-    this.aiCodeCompletionThrottler = new Common.Throttler.Throttler(3000);
-    this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
-        {aidaClient: this.aidaClient}, this.editor, this.aiCodeCompletionThrottler);
+    this.aiCodeCompletion =
+        new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({aidaClient: this.aidaClient}, this.editor);
     this.aiCodeCompletion.addEventListener(
         AiCodeCompletion.AiCodeCompletion.Events.CITATIONS_UPDATED,
         event => this.dispatchEventToListeners(Events.CITATIONS_UPDATED, event.data));

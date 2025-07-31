@@ -207,7 +207,7 @@ describeWithEnvironment('TextEditor', () => {
 
       const text = 'hello';
       editor.dispatch({
-        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(text),
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({text, from: 0}),
       });
 
       const actualSuggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
@@ -221,7 +221,7 @@ describeWithEnvironment('TextEditor', () => {
       renderElementIntoDOM(editor);
 
       editor.dispatch({
-        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of('hello'),
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({text: 'hello', from: 0}),
       });
       assert.isOk(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
 
@@ -238,7 +238,7 @@ describeWithEnvironment('TextEditor', () => {
       renderElementIntoDOM(editor);
 
       editor.dispatch({
-        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of('hello'),
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({text: 'hello', from: 0}),
       });
       assert.isOk(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
 
@@ -252,7 +252,7 @@ describeWithEnvironment('TextEditor', () => {
       renderElementIntoDOM(editor);
       const text = 'hello';
       editor.dispatch({
-        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(text),
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({text, from: 0}),
       });
 
       const accepted = TextEditor.Config.acceptAiAutoCompleteSuggestion(editor.editor);

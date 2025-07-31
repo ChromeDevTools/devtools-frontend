@@ -8,20 +8,36 @@ import * as Root from '../../core/root/root.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import type {AgentOptions, RequestOptions} from '../ai_assistance/ai_assistance.js';
 
+export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
+export const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
+
+/**
+ * The AiCodeCompletion class is responsible for fetching code completion suggestions
+ * from the AIDA backend and displaying them in the text editor.
+ *
+ * 1. **Debouncing requests:** As the user types, we don't want to send a request
+ *    for every keystroke. Instead, we use debouncing to schedule a request
+ *    only after the user has paused typing for a short period
+ *    (AIDA_REQUEST_THROTTLER_TIMEOUT_MS). This prevents spamming the backend with
+ *    requests for intermediate typing states.
+ *
+ * 2. **Delaying suggestions:** When a suggestion is received from the AIDA
+ *    backend, we don't show it immediately. There is a minimum delay
+ *    (DELAY_BEFORE_SHOWING_RESPONSE_MS) from when the request was sent to when
+ *    the suggestion is displayed.
+ */
 export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  #aidaRequestThrottler: Common.Throttler.Throttler;
   #editor: TextEditor.TextEditor.TextEditor;
 
   readonly #sessionId: string = crypto.randomUUID();
   readonly #aidaClient: Host.AidaClient.AidaClient;
   readonly #serverSideLoggingEnabled: boolean;
 
-  constructor(opts: AgentOptions, editor: TextEditor.TextEditor.TextEditor, throttler: Common.Throttler.Throttler) {
+  constructor(opts: AgentOptions, editor: TextEditor.TextEditor.TextEditor) {
     super();
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
     this.#editor = editor;
-    this.#aidaRequestThrottler = throttler;
   }
 
   #buildRequest(
@@ -51,16 +67,29 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     };
   }
 
-  async #requestAidaSuggestion(request: Host.AidaClient.CompletionRequest): Promise<void> {
+  async #requestAidaSuggestion(request: Host.AidaClient.CompletionRequest, cursor: number): Promise<void> {
+    const startTime = performance.now();
     const response = await this.#aidaClient.completeCode(request);
+
     if (response && response.generatedSamples.length > 0 && response.generatedSamples[0].generationString) {
-      this.#editor.dispatch({
-        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(response.generatedSamples[0].generationString),
-      });
-      const citations = response.generatedSamples[0].attributionMetadata?.citations;
-      if (citations) {
-        this.dispatchEventToListeners(Events.CITATIONS_UPDATED, {citations});
-      }
+      const remainderDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
+      // Delays the rendering of the Code completion
+      setTimeout(() => {
+        // We are not cancelling the previous responses even when there are more recent responses
+        // from the LLM as:
+        // In case the user kept typing characters that are prefix of the previous suggestion, it
+        // is a valid suggestion and we should display it to the user.
+        // In case the user typed a different character, the config for AI auto complete suggestion
+        // will set the suggestion to null.
+        this.#editor.dispatch({
+          effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
+              {text: response.generatedSamples[0].generationString, from: cursor}),
+        });
+        const citations = response.generatedSamples[0].attributionMetadata?.citations;
+        if (citations) {
+          this.dispatchEventToListeners(Events.CITATIONS_UPDATED, {citations});
+        }
+      }, remainderDelay);
     }
   }
 
@@ -78,9 +107,9 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     };
   }
 
-  onTextChanged(prefix: string, suffix: string): void {
-    void this.#aidaRequestThrottler.schedule(() => this.#requestAidaSuggestion(this.#buildRequest(prefix, suffix)));
-  }
+  onTextChanged = Common.Debouncer.debounce((prefix: string, suffix: string, cursor: number) => {
+    void this.#requestAidaSuggestion(this.#buildRequest(prefix, suffix), cursor);
+  }, AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
 }
 
 export const enum Events {

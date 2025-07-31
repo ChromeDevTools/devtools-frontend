@@ -187,6 +187,6 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     consolePrompt.triggerAiCodeCompletion();
 
     sinon.assert.calledOnce(onTextChangedSpy);
-    assert.deepEqual(onTextChangedSpy.firstCall.args, ['let x = 1;\n\nconsole.log(', ');']);
+    assert.deepEqual(onTextChangedSpy.firstCall.args, ['let x = 1;\n\nconsole.log(', ');', 12]);
   });
 });

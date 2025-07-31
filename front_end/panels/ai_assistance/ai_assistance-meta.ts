@@ -110,6 +110,7 @@ UI.ViewManager.registerViewExtension({
   title: i18nLazyString(UIStrings.aiAssistance),
   order: 10,
   isPreviewFeature: true,
+  promoteFeature: true,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   hasToolbar: false,
   condition: config => isAnyFeatureAvailable(config) && !isPolicyRestricted(config),

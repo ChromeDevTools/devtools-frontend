@@ -684,38 +684,44 @@ Network requests data:
   }
 
   /**
+   * Network requests format description that is sent to the model as a fact.
+   */
+  static networkDataFormatDescription = `The format is as follows:
+\`urlIndex;queuedTime;requestSentTime;downloadCompleteTime;processingCompleteTime;totalDuration;downloadDuration;mainThreadProcessingDuration;statusCode;mimeType;priority;initialPriority;finalPriority;renderBlocking;protocol;fromServiceWorker;initiators;redirects:[[redirectUrlIndex|startTime|duration]];responseHeaders:[header1Value|header2Value|...]\`
+
+- \`urlIndex\`: Numerical index for the request's URL, referencing the "All URLs" list.
+Timings (all in milliseconds, relative to navigation start):
+- \`queuedTime\`: When the request was queued.
+- \`requestSentTime\`: When the request was sent.
+- \`downloadCompleteTime\`: When the download completed.
+- \`processingCompleteTime\`: When main thread processing finished.
+Durations (all in milliseconds):
+- \`totalDuration\`: Total time from the request being queued until its main thread processing completed.
+- \`downloadDuration\`: Time spent actively downloading the resource.
+- \`mainThreadProcessingDuration\`: Time spent on the main thread after the download completed.
+- \`statusCode\`: The HTTP status code of the response (e.g., 200, 404).
+- \`mimeType\`: The MIME type of the resource (e.g., "text/html", "application/javascript").
+- \`priority\`: The final network request priority (e.g., "VeryHigh", "Low").
+- \`initialPriority\`: The initial network request priority.
+- \`finalPriority\`: The final network request priority (redundant if \`priority\` is always final, but kept for clarity if \`initialPriority\` and \`priority\` differ).
+- \`renderBlocking\`: 't' if the request was render-blocking, 'f' otherwise.
+- \`protocol\`: The network protocol used (e.g., "h2", "http/1.1").
+- \`fromServiceWorker\`: 't' if the request was served from a service worker, 'f' otherwise.
+- \`initiators\`: A list (separated by ,) of URL indices for the initiator chain of this request. Listed in order starting from the root request to the request that directly loaded this one. This represents the network dependencies necessary to load this request. If there is no initiator, this is empty.
+- \`redirects\`: A comma-separated list of redirects, enclosed in square brackets. Each redirect is formatted as
+\`[redirectUrlIndex|startTime|duration]\`, where: \`redirectUrlIndex\`: Numerical index for the redirect's URL. \`startTime\`: The start time of the redirect in milliseconds, relative to navigation start. \`duration\`: The duration of the redirect in milliseconds.
+- \`responseHeaders\`: A list (separated by '|') of values for specific, pre-defined response headers, enclosed in square brackets.
+The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
+`;
+
+  /**
    *
-   * This is the network request data passed to a the Performance Insights agent.
+   * This is the network request data passed to the Performance agent.
    *
    * The `urlIdToIndex` Map is used to map URLs to numerical indices in order to not need to pass whole url every time it's mentioned.
    * The map content is passed in the response together will all the requests data.
    *
-   * The format is as follows:
-   * `urlIndex;queuedTime;requestSentTime;downloadCompleteTime;processingCompleteTime;totalDuration;downloadDuration;mainThreadProcessingDuration;statusCode;mimeType;priority;initialPriority;finalPriority;renderBlocking;protocol;fromServiceWorker;initiatorUrlIndex;redirects:[[redirectUrlIndex|startTime|duration]];responseHeaders:[header1Value,header2Value,...]`
-   *
-   * - `urlIndex`: Numerical index for the request's URL, referencing the 'All URLs' list.
-   * Timings (all in milliseconds, relative to navigation start):
-   * - `queuedTime`: When the request was queued.
-   * - `requestSentTime`: When the request was sent.
-   * - `downloadCompleteTime`: When the download completed.
-   * - `processingCompleteTime`: When main thread processing finished.
-   * Durations (all in milliseconds):
-   * - `totalDuration`: Total time from the request being queued until its main thread processing completed.
-   * - `downloadDuration`: Time spent actively downloading the resource.
-   * - `mainThreadProcessingDuration`: Time spent on the main thread after the download completed.
-   * - `statusCode`: The HTTP status code of the response (e.g., 200, 404).
-   * - `mimeType`: The MIME type of the resource (e.g., "text/html", "application/javascript").
-   * - `priority`: The final network request priority (e.g., "VeryHigh", "Low").
-   * - `initialPriority`: The initial network request priority.
-   * - `finalPriority`: The final network request priority (redundant if `priority` is always final, but kept for clarity if `initialPriority` and `priority` differ).
-   * - `renderBlocking`: 't' if the request was render-blocking, 'f' otherwise.
-   * - `protocol`: The network protocol used (e.g., "h2", "http/1.1").
-   * - `fromServiceWorker`: 't' if the request was served from a service worker, 'f' otherwise.
-   * - `initiatorUrlIndex`: Numerical index for the URL of the resource that initiated this request, or empty string if no initiator.
-   * - `redirects`: A comma-separated list of redirects, enclosed in square brackets. Each redirect is formatted as
-   * `[redirectUrlIndex|startTime|duration]`, where: `redirectUrlIndex`: Numerical index for the redirect's URL. `startTime`: The start time of the redirect in milliseconds, relative to navigation start. `duration`: The duration of the redirect in milliseconds.
-   * - `responseHeaders`: A list separated by '|' of values for specific, pre-defined response headers, enclosed in square brackets.
-   * The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
+   * See `networkDataFormatDescription` above for specifics.
    */
   static #networkRequestCompressedFormat(
       urlIndex: number, request: Trace.Types.Events.SyntheticNetworkRequest,
@@ -762,9 +768,9 @@ Network requests data:
                           })
                           .join(',');
 
-    const initiator = parsedTrace.NetworkRequests.eventToInitiator.get(request);
-    const initiatorUrlIndex =
-        initiator ? TraceEventFormatter.#getOrAssignUrlIndex(urlIdToIndex, initiator.args.data.url) : '';
+    const initiators = this.#getInitiatorChain(parsedTrace, request);
+    const initiatorUrlIndices =
+        initiators.map(initiator => TraceEventFormatter.#getOrAssignUrlIndex(urlIdToIndex, initiator.args.data.url));
 
     const parts = [
       urlIndex,
@@ -783,10 +789,33 @@ Network requests data:
       renderBlocking,
       protocol,
       fromServiceWorker ? 't' : 'f',
-      initiatorUrlIndex,
+      initiatorUrlIndices.join(','),
       `[${redirects}]`,
       `[${headerValues ?? ''}]`,
     ];
     return parts.join(';');
+  }
+
+  static #getInitiatorChain(
+      parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      request: Trace.Types.Events.SyntheticNetworkRequest): Trace.Types.Events.SyntheticNetworkRequest[] {
+    const initiators: Trace.Types.Events.SyntheticNetworkRequest[] = [];
+
+    let cur: Trace.Types.Events.SyntheticNetworkRequest|undefined = request;
+    while (cur) {
+      const initiator = parsedTrace.NetworkRequests.eventToInitiator.get(cur);
+      if (initiator) {
+        // Should never happen, but if it did that would be an infinite loop.
+        if (initiators.includes(initiator)) {
+          return [];
+        }
+
+        initiators.unshift(initiator);
+      }
+
+      cur = initiator;
+    }
+
+    return initiators;
   }
 }

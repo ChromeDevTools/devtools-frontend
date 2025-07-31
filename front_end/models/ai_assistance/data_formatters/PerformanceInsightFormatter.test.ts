@@ -582,7 +582,7 @@ Response headers
       assert.strictEqual(fields[13], 'f', 'renderBlocking');
       assert.strictEqual(fields[14], 'http/1.1', 'protocol');
       assert.strictEqual(fields[15], 'f', 'fromServiceWorker');
-      assert.strictEqual(fields[16], '', 'initiatorUrlIndex');
+      assert.strictEqual(fields[16], '', 'initiators');
       assert.strictEqual(
           fields[17], '[[1|3.04 ms|512.02 ms],[2|515.06 ms|505.67 ms],[3|1,020.73 ms|507.09 ms]]', 'redirects');
       assert.strictEqual(
@@ -625,13 +625,35 @@ Response headers
       assert.strictEqual(fields[13], 't', 'renderBlocking');
       assert.strictEqual(fields[14], 'unknown', 'protocol');
       assert.strictEqual(fields[15], 'f', 'fromServiceWorker');
-      assert.strictEqual(fields[16], '0', 'initiatorUrlIndex');
+      assert.strictEqual(fields[16], '0', 'initiators');
       assert.strictEqual(fields[17], '[]', 'redirects');
       assert.strictEqual(
           fields[18],
           '[date: Thu, 07 Mar 2024 21:17:02 GMT|content-encoding: gzip|x-content-type-options: nosniff|last-modified: Thu, 07 Mar 2024 21:17:02 GMT|server: ESF|cross-origin-opener-policy: <redacted>|x-frame-options: SAMEORIGIN|content-type: text/css; charset=utf-8|access-control-allow-origin: *|cache-control: private, max-age=86400, stale-while-revalidate=604800|cross-origin-resource-policy: <redacted>|timing-allow-origin: *|link: <https://fonts.gstatic.com>; rel=preconnect; crossorigin|x-xss-protection: 0|expires: Thu, 07 Mar 2024 21:17:02 GMT]',
           'headers');
     });
+
+    it('getNetworkRequestsNewFormat correctly formats an initiator chain for network-requests-initiators trace',
+       async function() {
+         const {parsedTrace} = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
+         const request = parsedTrace.NetworkRequests.byTime;
+         assert.isOk(request);
+         const output = TraceEventFormatter.networkRequests(request, parsedTrace);
+         const urlMapIndex = output.indexOf('allUrls = ');
+         assert.isAbove(urlMapIndex, -1, 'Could not find url map in output');
+         const dataWithUrlMap = output.substring(urlMapIndex);
+         const [urlMapString, requestData] = dataWithUrlMap.split('\n\n');
+         assert.strictEqual(
+             urlMapString,
+             'allUrls = [0: https://www.youtube.com/, 1: https://i.ytimg.com/generate_204, 2: https://www.youtube.com/s/desktop/28bb7000/jsbin/desktop_polymer.vflset/desktop_polymer.js, 3: https://www.youtube.com/s/desktop/28bb7000/jsbin/web-animations-next-lite.min.vflset/web-animations-next-lite.min.js, 4: https://www.youtube.com/s/desktop/28bb7000/jsbin/custom-elements-es5-adapter.vflset/custom-elements-es5-adapter.js, 5: https://www.youtube.com/s/desktop/28bb7000/jsbin/webcomponents-sd.vflset/webcomponents-sd.js, 6: https://www.youtube.com/s/desktop/28bb7000/jsbin/intersection-observer.min.vflset/intersection-observer.min.js, 7: https://www.youtube.com/s/desktop/28bb7000/jsbin/scheduler.vflset/scheduler.js, 8: https://www.youtube.com/s/desktop/28bb7000/jsbin/www-i18n-constants-en_US.vflset/www-i18n-constants.js, 9: https://www.youtube.com/s/desktop/28bb7000/jsbin/www-tampering.vflset/www-tampering.js, 10: https://www.youtube.com/s/desktop/28bb7000/jsbin/spf.vflset/spf.js, 11: https://www.youtube.com/s/desktop/28bb7000/jsbin/network.vflset/network.js, 12: https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=YouTube+Sans:wght@300..900&display=swap, 13: https://www.youtube.com/s/desktop/28bb7000/cssbin/www-main-desktop-home-page-skeleton.css, 14: https://www.youtube.com/s/desktop/28bb7000/cssbin/www-onepick.css, 15: https://www.youtube.com/s/_/ytmainappweb/_/ss/k=ytmainappweb.kevlar_base.YzCM3q0siy4.L.B1.O/am=ADA7AQ/d=0/br=1/rs=AGKMywG7cU8b38Gfv3WYn4_os7hoqR-TIw, 16: https://googleads.g.doubleclick.net/pagead/id?slf_rd=1, 17: https://googleads.g.doubleclick.net/pagead/id, 18: https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2, 19: https://www.youtube.com/s/search/audio/failure.mp3, 20: https://www.youtube.com/s/search/audio/no_input.mp3, 21: https://www.youtube.com/s/search/audio/open.mp3, 22: https://www.youtube.com/s/search/audio/success.mp3, 23: https://www.youtube.com/s/desktop/28bb7000/cssbin/www-main-desktop-watch-page-skeleton.css, 24: https://www.youtube.com/youtubei/v1/att/get?prettyPrint=false, 25: https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4.woff2, 26: https://fonts.gstatic.com/s/youtubesans/v30/Qw38ZQNGEDjaO2m6tqIqX5E-AVS5_rSejo46_PCTRspJ0OosolrBEJL3HO_T7fE.woff2, 27: https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmEU9fBBc4.woff2, 28: https://www.youtube.com/youtubei/v1/feedback?prettyPrint=false, 29: https://www.google.com/js/th/EirmVnnNlSgqRyHN1YLvHhRw11SWUqUPb76JYHphonQ.js, 30: https://www.youtube.com/manifest.webmanifest, 31: https://www.youtube.com/s/desktop/28bb7000/img/favicon.ico, 32: https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png, 33: https://www.youtube.com/s/player/5b22937f/player_ias.vflset/en_US/base.js, 34: https://www.youtube.com/s/player/5b22937f/www-player.css]');
+
+         const allRequests = requestData.split('\n');
+         const parts = allRequests[24].split(';');
+         // Join the last field because it is a list of headers that might contain a semicolon
+         const fields = [...parts.slice(0, 18), parts.slice(18).join(';')];
+
+         assert.strictEqual(fields[16], '0,12', 'initiators');
+       });
   });
 
   describe('Duplicated javascript', () => {

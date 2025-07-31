@@ -26,7 +26,7 @@ describe('View', () => {
         });
       });
       viewManager = UI.ViewManager.ViewManager.instance({forceNew: true});
-      tabbedLocation = viewManager.createTabbedLocation(undefined, 'mock-location', true, true);
+      tabbedLocation = viewManager.createTabbedLocation(() => {}, 'mock-location', true, true);
     });
 
     it('Creates an empty tabbed location', () => {

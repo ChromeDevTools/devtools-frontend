@@ -532,6 +532,11 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.selectTab(effectiveTab.id);
     }
     this.updateTabElements();
+    this.dispatchEventToListeners(Events.PaneVisibilityChanged, {isVisible: true});
+  }
+
+  override wasHidden(): void {
+    this.dispatchEventToListeners(Events.PaneVisibilityChanged, {isVisible: false});
   }
 
   makeTabSlider(): void {
@@ -1018,6 +1023,7 @@ export enum Events {
   TabSelected = 'TabSelected',
   TabClosed = 'TabClosed',
   TabOrderChanged = 'TabOrderChanged',
+  PaneVisibilityChanged = 'PaneVisibilityChanged',
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -1026,6 +1032,7 @@ export interface EventTypes {
   [Events.TabSelected]: EventData;
   [Events.TabClosed]: EventData;
   [Events.TabOrderChanged]: EventData;
+  [Events.PaneVisibilityChanged]: {isVisible: boolean};
 }
 
 export class TabbedPaneTab {

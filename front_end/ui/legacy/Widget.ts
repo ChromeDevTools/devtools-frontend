@@ -374,6 +374,7 @@ export class Widget {
 
   private processWasHidden(): void {
     this.callOnVisibleChildren(this.processWasHidden);
+    this.notify(this.wasHidden);
   }
 
   private processOnResize(): void {
@@ -400,6 +401,9 @@ export class Widget {
   }
 
   willHide(): void {
+  }
+
+  wasHidden(): void {
   }
 
   onResize(): void {

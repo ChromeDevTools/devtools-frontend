@@ -89,6 +89,7 @@ export interface ViewLocation {
   appendView(view: View, insertBefore?: View|null): void;
   showView(view: View, insertBefore?: View|null, userGesture?: boolean): Promise<void>;
   removeView(view: View): void;
+  isViewVisible(view: View): boolean;
   widget(): Widget;
 }
 

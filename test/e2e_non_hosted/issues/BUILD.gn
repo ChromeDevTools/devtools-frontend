@@ -18,6 +18,7 @@ ts_e2e_library("issues") {
     "group-by-categories_test.ts",
     "group-by-kind_test.ts",
     "heavy-ad-issues_test.ts",
+    "hidden-issues-row_test.ts",
     "hide-issues-menu_test.ts",
     "issue-links_test.ts",
     "issue-view-caching_test.ts",

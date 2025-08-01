@@ -1253,6 +1253,25 @@ describeWithMockConnection('AI Assistance Panel', () => {
           });
     }
 
+    it('should refresh its state when moved', async () => {
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+      viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
+      const {panel, view} = await createAiAssistancePanel();
+
+      assert.strictEqual(view.input.conversationType, AiAssistanceModel.ConversationType.STYLING);
+
+      // Simulate ViewManager.moveView() that hides panel, updates locations and other panel visibility, then shows moved view
+      panel.willHide();
+      viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'console');
+      panel.wasShown();
+
+      assert.isUndefined((await view.nextInput).conversationType);
+    });
+
     describe('Performance Insight agent', () => {
       it('should select the PERFORMANCE_INSIGHT agent when the performance panel is open and insights are enabled and an insight is expanded',
          async () => {

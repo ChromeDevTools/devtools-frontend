@@ -76,7 +76,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
   constructor(
       content: TextUtils.StreamingContentData.StreamingContentData, contentUrl: Platform.DevToolsPath.UrlString,
       resourceType: Common.ResourceType.ResourceType, element?: HTMLElement) {
-    super(undefined, undefined, element);
+    super(element);
     this.registerRequiredCSS(binaryResourceViewStyles);
 
     this.binaryResourceViewFactory =

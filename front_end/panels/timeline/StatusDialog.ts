@@ -68,7 +68,7 @@ export class StatusDialog extends UI.Widget.VBox {
         buttonText?: string,
       },
       onButtonClickCallback: () => (Promise<void>| void)) {
-    super(true);
+    super({useShadowDom: true});
 
     this.contentElement.classList.add('timeline-status-dialog');
     this.contentElement.setAttribute('jslog', `${VisualLogging.dialog('timeline-status').track({resize: true})}`);

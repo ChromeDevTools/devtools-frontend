@@ -691,7 +691,7 @@ class SummaryView extends UI.Widget.Widget {
   traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
 
   constructor(element?: HTMLElement, view = SUMMARY_DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.#view = view;
   }
 

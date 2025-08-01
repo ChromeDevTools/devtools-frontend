@@ -210,7 +210,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
   private transformController: LayerViewer.TransformController.TransformController;
   private maskRectangle?: Protocol.DOM.Rect|null;
   constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(timelinePaintProfilerStyles);
 
     this.contentElement.classList.add('fill', 'paint-profiler-image-view');

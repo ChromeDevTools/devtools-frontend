@@ -120,7 +120,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
   private editor?: UI.ListWidget.Editor<LocationDescription>;
 
   constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(locationsSettingsTabStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('emulation-locations')}`);

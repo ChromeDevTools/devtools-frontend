@@ -108,7 +108,7 @@ export class StorageItemsToolbar extends
   #mainToolbarItems: UI.Toolbar.ToolbarItem[] = [];
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.#view = view;
     this.filterRegex = null;
   }

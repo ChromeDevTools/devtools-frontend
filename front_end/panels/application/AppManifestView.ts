@@ -486,7 +486,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   constructor(
       emptyView: UI.EmptyWidget.EmptyWidget, reportView: UI.ReportView.ReportView,
       throttler: Common.Throttler.Throttler) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(appManifestViewStyles);
 
     this.contentElement.classList.add('manifest-container');

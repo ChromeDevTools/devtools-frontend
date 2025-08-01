@@ -53,7 +53,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
   private currentlySelectedEntry: Element|null;
 
   constructor(mainContainer: MainView) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(playerListViewStyles);
 
     this.playerEntryFragments = new Map();

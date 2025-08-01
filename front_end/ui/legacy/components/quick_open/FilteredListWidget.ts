@@ -61,7 +61,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
   private readonly queryChangedCallback?: (arg0: string) => void;
 
   constructor(provider: Provider|null, promptHistory?: string[], queryChangedCallback?: ((arg0: string) => void)) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(filteredListWidgetStyles);
     this.promptHistory = promptHistory || [];
 

@@ -37,7 +37,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
   constructor(
       getWidthCallback: () => number, setWidthCallback: (arg0: number) => void,
       mediaThrottler: Common.Throttler.Throttler) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(mediaQueryInspectorStyles);
     this.contentElement.classList.add('media-inspector-view');
     this.contentElement.setAttribute('jslog', `${VisualLogging.mediaInspectorView().track({click: true})}`);

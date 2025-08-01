@@ -69,7 +69,7 @@ let networkConfigViewInstance: NetworkConfigView;
 
 export class NetworkConfigView extends UI.Widget.VBox {
   constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(networkConfigViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel('network-conditions').track({resize: true})}`);

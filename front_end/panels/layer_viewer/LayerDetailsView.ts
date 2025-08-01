@@ -183,7 +183,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
   private selection: Selection|null;
 
   constructor(layerViewHost: LayerViewHost) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(layerDetailsViewStyles);
     this.element.setAttribute('jslog', `${VisualLogging.pane('layers-details')}`);
     this.contentElement.classList.add('layer-details-container');

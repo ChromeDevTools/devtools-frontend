@@ -67,7 +67,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
   readonly totalTrendDiv: HTMLElement;
 
   constructor() {
-    super(false);
+    super();
 
     this.items = new UI.ListModel.ListModel();
     this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);

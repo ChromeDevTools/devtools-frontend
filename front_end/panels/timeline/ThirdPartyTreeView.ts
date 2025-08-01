@@ -264,7 +264,7 @@ export class ThirdPartyTreeElement extends UI.Widget.WidgetElement<UI.Widget.Wid
   }
 
   override createWidget(): UI.Widget.Widget {
-    const containerWidget = new UI.Widget.Widget(false, undefined, this);
+    const containerWidget = new UI.Widget.Widget(this);
     containerWidget.contentElement.style.display = 'contents';
     if (this.#treeView) {
       this.#treeView.show(containerWidget.contentElement);

@@ -111,7 +111,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
   private canvasOrigin!: UI.Geometry.Point;
   private changedElement?: HTMLInputElement|null;
   constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(cssShadowEditorStyles);
     this.contentElement.tabIndex = 0;
     this.contentElement.setAttribute(

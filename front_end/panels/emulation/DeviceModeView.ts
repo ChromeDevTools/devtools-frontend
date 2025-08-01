@@ -95,7 +95,7 @@ export class DeviceModeView extends UI.Widget.VBox {
   private handleHeight?: number;
 
   constructor() {
-    super(true);
+    super({useShadowDom: true});
 
     this.blockElementToWidth = new WeakMap();
 

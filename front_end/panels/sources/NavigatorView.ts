@@ -212,7 +212,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private groupByDomain?: boolean;
   private groupByFolder?: boolean;
   constructor(jslogContext: string, enableAuthoredGrouping?: boolean) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(navigatorViewStyles);
 
     this.placeholder = null;

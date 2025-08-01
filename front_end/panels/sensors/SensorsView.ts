@@ -212,7 +212,7 @@ export class SensorsView extends UI.Widget.VBox {
   private originalBoxMatrix?: DOMMatrix;
 
   constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(sensorsStyles);
     this.element.setAttribute('jslog', `${VisualLogging.panel('sensors').track({resize: true})}`);
     this.contentElement.classList.add('sensors-view');

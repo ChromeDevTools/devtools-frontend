@@ -28,7 +28,7 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
   private searchConfig: UI.SearchableView.SearchConfig|null = null;
 
   constructor(parsedXML: Document) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(xmlViewStyles);
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
     this.treeOutline.registerRequiredCSS(xmlTreeStyles);

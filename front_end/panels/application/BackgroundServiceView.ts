@@ -178,7 +178,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   }
 
   constructor(serviceName: Protocol.BackgroundService.ServiceName, model: BackgroundServiceModel) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(emptyWidgetStyles, backgroundServiceViewStyles);
 
     this.serviceName = serviceName;

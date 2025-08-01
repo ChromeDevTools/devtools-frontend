@@ -683,7 +683,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
       )}
       </div>
     `;
-    // clang-format on
+        // clang-format on
 }
 
 function renderHeader(input: ViewInput): Lit.LitTemplate {
@@ -928,7 +928,7 @@ export class RecordingView extends UI.Widget.Widget {
   #viewOutput: ViewOutput = {};
 
   constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
-    super(true, false, element);
+    super(element, {useShadowDom: true});
     this.#view = view || DEFAULT_VIEW;
   }
 

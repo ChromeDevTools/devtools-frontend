@@ -108,7 +108,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   private editingRow: ShortcutListItem|null;
 
   constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(keybindsSettingsTabStyles, settingsScreenStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('keybinds')}`);

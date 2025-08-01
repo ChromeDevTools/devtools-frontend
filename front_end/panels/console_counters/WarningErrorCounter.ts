@@ -126,7 +126,7 @@ export class WarningErrorCounterWidget extends UI.Widget.Widget {
   constructor(
       element: HTMLElement, private readonly setVisibility: (visible: boolean) => void,
       private readonly view: View = DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.throttler = new Common.Throttler.Throttler(100);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(

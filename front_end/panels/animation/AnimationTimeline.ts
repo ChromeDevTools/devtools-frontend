@@ -265,7 +265,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   #playbackRateButtonsDisabled = false;
 
   constructor(toolbarView: ToolbarView = DEFAULT_TOOLBAR_VIEW) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(animationTimelineStyles);
 
     this.#toolbarView = toolbarView;

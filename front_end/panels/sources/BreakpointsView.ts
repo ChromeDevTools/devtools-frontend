@@ -681,7 +681,7 @@ export class BreakpointsView extends UI.Widget.VBox {
 
   constructor(element: HTMLElement|undefined, view: View = DEFAULT_VIEW) {
     // TODO(crbug.com/407751705): Scope CSS via naming/nesting and remove the shadow root.
-    super(/* useShadowDom */ true, undefined, element);
+    super(element, {useShadowDom: true});
     this.#view = view;
     this.#controller = BreakpointsSidebarController.instance();
     void this.#controller.update();

@@ -251,7 +251,7 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
   readonly #table: HTMLElement;
 
   constructor(element?: HTMLElement, target?: SDK.Target.Target, linkifier?: Linkifier, options?: Options) {
-    super(true, undefined, element);
+    super(element, {useShadowDom: true});
 
     this.#target = target;
     this.#linkifier = linkifier;

@@ -29,7 +29,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private debouncedStartPreviewAnimation: () => void;
 
   constructor(model: AnimationTimingModel) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(bezierEditorStyles);
 
     this.model = model;

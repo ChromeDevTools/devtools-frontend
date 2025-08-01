@@ -59,7 +59,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly treeElements: FilterTreeElement[];
 
   constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.setMinimumSize(125, 0);
 
     this.tree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);

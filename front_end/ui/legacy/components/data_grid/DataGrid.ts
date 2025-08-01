@@ -2510,7 +2510,7 @@ export class CreationDataGridNode<T> extends DataGridNode<T> {
 export class DataGridWidget<T> extends UI.Widget.VBox {
   readonly dataGrid: DataGridImpl<T>;
   constructor(dataGrid: DataGridImpl<T>, element?: HTMLElement) {
-    super(undefined, undefined, element);
+    super(element);
     this.dataGrid = dataGrid;
     this.element.appendChild(dataGrid.element);
     this.setDefaultFocusedElement(dataGrid.element);

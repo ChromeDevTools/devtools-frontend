@@ -173,7 +173,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
   readonly #view: View;
   #filters: TextUtils.TextUtils.ParsedFilter[] = [];
   constructor(element: HTMLElement, view = DEFAULT_VIEW) {
-    super(true, undefined, element);
+    super(element, {useShadowDom: true});
     this.#view = view;
   }
 

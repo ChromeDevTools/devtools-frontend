@@ -36,7 +36,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 export class TargetCrashedScreen extends VBox {
   private readonly hideCallback: () => void;
   constructor(hideCallback: () => void, view = DEFAULT_VIEW) {
-    super(true);
+    super({useShadowDom: true});
     view({}, {}, this.contentElement);
     this.hideCallback = hideCallback;
   }

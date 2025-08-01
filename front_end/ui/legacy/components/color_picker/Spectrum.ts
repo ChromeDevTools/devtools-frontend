@@ -271,7 +271,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   // actual variable string.
   private colorStringInternal?: string;
   constructor(contrastInfo?: ContrastInfo|null) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(spectrumStyles);
 
     this.contentElement.tabIndex = 0;

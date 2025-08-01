@@ -76,7 +76,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   private pollTimer?: number;
 
   constructor(pollIntervalMs = 500) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(performanceMonitorStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel('performance.monitor').track({resize: true})}`);

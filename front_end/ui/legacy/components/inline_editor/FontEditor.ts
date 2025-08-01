@@ -126,7 +126,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private fontsList: Array<Map<string, string[]>>|null;
 
   constructor(propertyMap: Map<string, string>) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(fontEditorStyles);
     this.propertyMap = propertyMap;
     this.contentElement.tabIndex = 0;

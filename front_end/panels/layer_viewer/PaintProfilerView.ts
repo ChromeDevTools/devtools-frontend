@@ -99,7 +99,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
   private updateImageTimer?: number;
 
   constructor(showImageCallback: (arg0?: string|undefined) => void) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(paintProfilerStyles);
 
     this.contentElement.classList.add('paint-profiler-overview');

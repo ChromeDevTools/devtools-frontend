@@ -121,7 +121,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private automaticReorder?: boolean;
 
   constructor(element?: HTMLElement) {
-    super(true, undefined, element);
+    super(element, {useShadowDom: true});
     this.registerRequiredCSS(tabbedPaneStyles);
     this.element.classList.add('tabbed-pane');
     this.contentElement.classList.add('tabbed-pane-shadow');

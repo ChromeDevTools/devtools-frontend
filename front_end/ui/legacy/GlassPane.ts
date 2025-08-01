@@ -8,7 +8,7 @@ import {deepElementFromEvent, measuredScrollbarWidth} from './UIUtils.js';
 import {Widget} from './Widget.js';
 
 export class GlassPane {
-  private readonly widgetInternal = new Widget(true);
+  private readonly widgetInternal = new Widget({useShadowDom: true});
 
   element: typeof Widget.prototype.element;
   contentElement: typeof Widget.prototype.contentElement;

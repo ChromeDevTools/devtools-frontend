@@ -62,7 +62,7 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
   private constructor(
       label: Platform.UIString.LocalizedString, jslogContext: string,
       callback: (arg0: Platform.DevToolsPath.UrlString) => void, view = DEFAULT_VIEW) {
-    super(/* useShadowDom */ true);
+    super({useShadowDom: true});
 
     const viewInput = {
       label,

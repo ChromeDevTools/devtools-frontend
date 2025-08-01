@@ -464,7 +464,7 @@ class ExpandableContainerWidget extends VBox {
   private materializePromise?: Promise<void>;
 
   constructor(view: View) {
-    super(true);
+    super({useShadowDom: true});
     this.element.classList.add('flex-none');
     this.registerRequiredCSS(viewContainersStyles);
 

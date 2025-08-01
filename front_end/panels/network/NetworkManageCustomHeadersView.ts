@@ -52,7 +52,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
       addHeaderColumnCallback: (arg0: string) => boolean,
       changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean,
       removeHeaderColumnCallback: (arg0: string) => boolean) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(networkManageCustomHeadersViewStyles);
 
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.manageHeaderColumns);

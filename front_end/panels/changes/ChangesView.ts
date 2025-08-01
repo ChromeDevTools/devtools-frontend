@@ -40,7 +40,7 @@ export class ChangesView extends UI.Widget.VBox {
   private readonly combinedDiffView: CombinedDiffView.CombinedDiffView;
 
   constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(changesViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel('changes').track({resize: true})}`);

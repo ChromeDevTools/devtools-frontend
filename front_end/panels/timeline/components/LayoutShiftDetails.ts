@@ -98,7 +98,7 @@ export class LayoutShiftDetails extends UI.Widget.Widget {
   #isFreshRecording = false;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.#view = view;
   }
 

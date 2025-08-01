@@ -212,7 +212,7 @@ export class DirectSocketConnectionView extends UI.Widget.Widget {
   #view: View;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
-    super(true);
+    super({useShadowDom: true});
     this.#request = request;
     this.#view = view;
 

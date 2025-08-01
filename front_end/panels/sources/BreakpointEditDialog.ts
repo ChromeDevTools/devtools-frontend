@@ -86,7 +86,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   constructor(
       editorLineNumber: number, oldCondition: string, isLogpoint: boolean,
       onFinish: (result: BreakpointEditDialogResult) => void) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(breakpointEditDialogStyles);
 
     const editorConfig = [

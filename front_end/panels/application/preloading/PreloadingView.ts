@@ -204,7 +204,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
   private shouldPrettyPrint = Common.Settings.Settings.instance().moduleSetting('auto-pretty-print-minified').get();
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
-    super(/* isWebComponent */ true, /* delegatesFocus */ false);
+    super({useShadowDom: true});
     this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
     this.model = model;
@@ -355,7 +355,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   private readonly ruleSetSelector: PreloadingRuleSetSelector;
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
-    super(/* isWebComponent */ true, /* delegatesFocus */ false);
+    super({useShadowDom: true});
     this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('preloading-speculations')}`);
@@ -512,7 +512,7 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
   private readonly usedPreloading = new PreloadingComponents.UsedPreloadingView.UsedPreloadingView();
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
-    super(/* isWebComponent */ true, /* delegatesFocus */ false);
+    super({useShadowDom: true});
     this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('speculative-loads')}`);
@@ -711,7 +711,7 @@ export class PreloadingWarningsView extends UI.Widget.VBox {
   private readonly infobar = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
 
   constructor() {
-    super(/* isWebComponent */ false, /* delegatesFocus */ false);
+    super();
     this.registerRequiredCSS(emptyWidgetStyles);
   }
 

@@ -29,7 +29,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
   private selectedModel: SDK.DebuggerModel.DebuggerModel|null;
 
   constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(threadsSidebarPaneStyles);
 
     this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.threads')}`);

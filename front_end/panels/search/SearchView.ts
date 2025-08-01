@@ -156,7 +156,7 @@ export class SearchView extends UI.Widget.VBox {
   #emptyStartView: UI.EmptyWidget.EmptyWidget;
 
   constructor(settingKey: string, throttler: Common.Throttler.Throttler) {
-    super(true);
+    super({useShadowDom: true});
     this.setMinimumSize(0, 40);
     this.registerRequiredCSS(searchViewStyles);
 

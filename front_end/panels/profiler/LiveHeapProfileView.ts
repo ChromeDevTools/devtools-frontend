@@ -68,7 +68,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
   currentPollId: number;
 
   private constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.gridNodeByUrl = new Map();
     this.registerRequiredCSS(liveHeapProfileStyles);
 

@@ -142,7 +142,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private mouseDownY?: number;
 
   constructor(layerViewHost: LayerViewHost) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(layers3DViewStyles);
     this.element.setAttribute('jslog', `${VisualLogging.pane('layers-3d-view')}`);
 

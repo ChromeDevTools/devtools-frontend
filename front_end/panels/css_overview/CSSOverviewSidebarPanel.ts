@@ -95,7 +95,7 @@ export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
   #onReset = (): void => {};
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
-    super(true, true, element);
+    super(element, {useShadowDom: true, delegatesFocus: true});
     this.#view = view;
   }
 

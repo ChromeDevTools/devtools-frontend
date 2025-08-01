@@ -40,7 +40,7 @@ export class LinearMemoryInspectorPane extends Common.ObjectWrapper.eventMixin<E
   readonly #tabbedPane: UI.TabbedPane.TabbedPane;
 
   constructor() {
-    super(false);
+    super();
     this.element.setAttribute('jslog', `${VisualLogging.panel('linear-memory-inspector').track({resize: true})}`);
     this.#tabbedPane = new UI.TabbedPane.TabbedPane();
     this.#tabbedPane.setPlaceholderElement(this.createPlaceholder());
@@ -131,7 +131,7 @@ export class LinearMemoryInspectorView extends UI.Widget.VBox {
 
   constructor(
       memoryWrapper: LazyUint8Array, address: number|undefined = 0, tabId: string, hideValueInspector?: boolean) {
-    super(false);
+    super();
 
     if (address < 0 || address >= memoryWrapper.length()) {
       throw new Error('Requested address is out of bounds.');

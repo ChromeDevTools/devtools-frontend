@@ -166,7 +166,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
             target, {host: input});
       };
     }
-    super(false);
+    super();
     this.metadataView = metadataView;
     this.#editable = editable;
     this.#view = view;

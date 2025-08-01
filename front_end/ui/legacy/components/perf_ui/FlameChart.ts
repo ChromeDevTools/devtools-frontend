@@ -338,7 +338,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   constructor(
       dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
       optionalConfig: OptionalFlameChartConfig = {}) {
-    super(true);
+    super({useShadowDom: true});
     this.#font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
     this.#subtitleFont = `${SUBTITLE_FONT_SIZE_AND_STYLE} ${getFontFamilyForCanvas()}`;
     this.registerRequiredCSS(flameChartStyles);

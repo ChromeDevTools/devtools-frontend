@@ -69,7 +69,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 
 export class RemoteDebuggingTerminatedScreen extends VBox {
   constructor(reason: string, view: View = DEFAULT_VIEW) {
-    super(true);
+    super({useShadowDom: true});
     const input = {
       reason,
       onReconnect: () => {

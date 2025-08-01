@@ -136,7 +136,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
   readonly #view: View;
 
   constructor(element: HTMLElement|undefined, view: View = DEFAULT_VIEW) {
-    super(undefined, undefined, element);
+    super(element);
     this.#view = view;
   }
 

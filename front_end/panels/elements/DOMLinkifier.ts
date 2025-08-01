@@ -81,7 +81,7 @@ export class DOMNodeLink extends UI.Widget.Widget {
   #view: View;
 
   constructor(element?: HTMLElement, node?: SDK.DOMModel.DOMNode, options?: Options, view = DEFAULT_VIEW) {
-    super(true, undefined, element);
+    super(element, {useShadowDom: true});
     this.element.classList.remove('vbox');
     this.#node = node;
     this.#options = options;
@@ -212,7 +212,7 @@ export class DeferredDOMNodeLink extends UI.Widget.Widget {
   constructor(
       element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options,
       view: DeferredView = DEFERRED_DEFAULT_VIEW) {
-    super(true, undefined, element);
+    super(element, {useShadowDom: true});
     this.element.classList.remove('vbox');
     this.#deferredNode = deferredNode;
     this.#options = options;

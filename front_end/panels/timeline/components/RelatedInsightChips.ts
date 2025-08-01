@@ -50,7 +50,7 @@ export class RelatedInsightChips extends UI.Widget.Widget {
   #eventToInsightsMap: EventToRelatedInsightsMap = new Map();
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.#view = view;
   }
 

@@ -134,7 +134,7 @@ export class CoverageListView extends UI.Widget.VBox {
   private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<GridNode>;
 
   constructor(isVisibleFilter: (arg0: URLCoverageInfo) => boolean) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(coverageListViewStyles);
     this.nodeForCoverageInfo = new Map();
     this.isVisibleFilter = isVisibleFilter;

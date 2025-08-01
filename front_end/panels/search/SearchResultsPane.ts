@@ -42,7 +42,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
   private matchesExpandedCount: number;
 
   constructor(searchConfig: Workspace.SearchConfig.SearchConfig) {
-    super(true);
+    super({useShadowDom: true});
     this.searchConfig = searchConfig;
 
     this.searchResults = [];

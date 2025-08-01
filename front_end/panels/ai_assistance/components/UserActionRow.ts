@@ -282,7 +282,7 @@ export class UserActionRow extends UI.Widget.Widget implements UserActionRowWidg
   #viewOutput: ViewOutput = {};
 
   constructor(element?: HTMLElement, view?: View) {
-    super(false, false, element);
+    super(element);
     this.#view = view ?? DEFAULT_VIEW;
   }
 

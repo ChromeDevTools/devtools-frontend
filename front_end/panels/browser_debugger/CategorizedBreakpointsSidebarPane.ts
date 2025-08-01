@@ -157,7 +157,7 @@ export class FilterToolbar extends Common.ObjectWrapper.eventMixin<FilterToolbar
   readonly #view: View;
   #filterText: string|null = null;
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.#view = view;
 
     this.performUpdate();
@@ -198,7 +198,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   constructor(
       breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[], viewId: string,
       detailsPausedReason: Protocol.Debugger.PausedEventReason) {
-    super(true);
+    super({useShadowDom: true});
     this.filterToolbar = new FilterToolbar();
     this.filterToolbar.addEventListener(FilterToolbar.Events.FILTER_CHANGED, this.#onFilterChanged.bind(this));
     this.filterToolbar.show(this.contentElement);

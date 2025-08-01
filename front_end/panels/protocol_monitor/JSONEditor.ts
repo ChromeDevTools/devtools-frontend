@@ -178,7 +178,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #view: View;
 
   constructor(element: HTMLElement, view = DEFAULT_VIEW) {
-    super(/* useShadowDom=*/ true, undefined, element);
+    super(element, {useShadowDom: true});
     this.#view = view;
     this.registerRequiredCSS(editorWidgetStyles);
   }

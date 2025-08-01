@@ -874,7 +874,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   private explanations: Array<Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation>|null;
   private securityState: Protocol.Security.SecurityState|null;
   constructor(element?: HTMLElement) {
-    super(undefined, undefined, element);
+    super(element);
     this.registerRequiredCSS(lockIconStyles, mainViewStyles);
     this.element.setAttribute('jslog', `${VisualLogging.pane('security.main-view')}`);
 

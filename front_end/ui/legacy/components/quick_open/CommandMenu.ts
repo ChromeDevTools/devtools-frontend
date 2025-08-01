@@ -82,6 +82,7 @@ export class CommandMenu {
       handler = () => {
         Host.userMetrics.actionTaken(actionCode);
         executeHandler();
+        // not here
       };
     }
     return new Command(
@@ -172,6 +173,9 @@ export class CommandMenu {
     const executeHandler = (): Promise<void> => {
       if (id === 'issues-pane') {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.COMMAND_MENU);
+      }
+      if (featurePromotionId) {
+        UI.UIUtils.PromotionManager.instance().recordFeatureInteraction(featurePromotionId);
       }
       return UI.ViewManager.ViewManager.instance().showView(id, /* userGesture */ true);
     };
@@ -345,7 +349,7 @@ export class CommandMenuProvider extends Provider {
     FilteredListWidget.highlightRanges(titleElement, query, true);
 
     if (command.featurePromotionId) {
-      const badge = UI.UIUtils.maybeCreateNewBadge('ai-asisstance');
+      const badge = UI.UIUtils.maybeCreateNewBadge(command.featurePromotionId);
       if (badge) {
         titleElement.parentElement?.insertBefore(badge, subtitleElement);
       }

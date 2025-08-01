@@ -906,10 +906,16 @@ export class MainMenuItem implements UI.Toolbar.Provider {
 
     const aiPreregisteredView = UI.ViewManager.getRegisteredViewExtensionForID('freestyler');
     if (aiPreregisteredView) {
-      const additionalElement = UI.UIUtils.maybeCreateNewBadge('ai-asisstance');
+      let additionalElement = undefined;
+      const promotionId = aiPreregisteredView.featurePromotionId();
+      if (promotionId) {
+        additionalElement = UI.UIUtils.maybeCreateNewBadge(promotionId);
+      }
       contextMenu.defaultSection().appendItem(aiPreregisteredView.title(), () => {
         void UI.ViewManager.ViewManager.instance().showView('freestyler', true, false);
-        UI.UIUtils.PromotionManager.instance().recordFeatureInteraction('ai-asisstance');
+        if (promotionId) {
+          UI.UIUtils.PromotionManager.instance().recordFeatureInteraction(promotionId);
+        }
       }, {additionalElement, jslogContext: 'freestyler'});
     }
 

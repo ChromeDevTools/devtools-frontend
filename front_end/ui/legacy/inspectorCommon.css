@@ -526,6 +526,19 @@ dt-icon-label {
   background-color: var(--sys-color-purple-bright);
 }
 
+.new-badge {
+  width: fit-content;
+  height: var(--sys-size-7);
+  line-height: var(--sys-size-7);
+  border-radius: var(--sys-shape-corner-extra-small);
+  padding: 0 var(--sys-size-3);
+  background-color: var(--sys-color-primary);
+  color: var(--sys-color-on-primary);
+  font-weight: var(--ref-typeface-weight-bold);
+  font-size: 9px;
+  text-align: center;
+}
+
 .expandable-inline-button {
   background-color: var(--sys-color-cdt-base-container);
   color: var(--sys-color-on-surface);

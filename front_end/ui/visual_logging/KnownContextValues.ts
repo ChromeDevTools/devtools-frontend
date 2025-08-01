@@ -2570,6 +2570,7 @@ export const knownContextValues = new Set([
   'never-pause-here',
   'new-attribute',
   'new-authenticator',
+  'new-badge',
   'new-file',
   'next',
   'next-page',

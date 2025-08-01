@@ -115,6 +115,10 @@ const UIStrings = {
    *@description Text to cancel something
    */
   cancel: 'Cancel',
+  /**
+   *@description Text for the new badge appearing next to some menu items
+   */
+  new: 'NEW',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/UIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -2118,4 +2122,29 @@ export class PromotionManager {
     }
     return false;
   }
+}
+
+/**
+ * Creates a `<div>` element with the localized text NEW.
+ *
+ * The element is automatically styled correctly, as long as the core styles (in particular
+ * `inspectorCommon.css` is injected into the current document / shadow root). The lit
+ * equivalent of calling this method is:
+ *
+ * ```js
+ * const jslog = VisualLogging.badge('new-badge');
+ * html`<div class='new-badge' jsog=${jslog}>i18nString(UIStrings.new)</div>`
+ *
+ * @returns the newly created `HTMLDivElement` for the new badge.
+ */
+export function maybeCreateNewBadge(promotionId: string): HTMLDivElement|undefined {
+  const promotionManager = PromotionManager.instance();
+  if (promotionManager.maybeShowPromotion(promotionId)) {
+    const badge = document.createElement('div');
+    badge.className = 'new-badge';
+    badge.textContent = i18nString(UIStrings.new);
+    badge.setAttribute('jslog', `${VisualLogging.badge('new-badge')}`);
+    return badge;
+  }
+  return undefined;
 }

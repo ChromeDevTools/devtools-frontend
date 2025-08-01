@@ -344,6 +344,13 @@ export class CommandMenuProvider extends Provider {
     UI.UIUtils.createTextChild(titleElement, command.title);
     FilteredListWidget.highlightRanges(titleElement, query, true);
 
+    if (command.promoteFeature) {
+      const badge = UI.UIUtils.maybeCreateNewBadge('ai-asisstance');
+      if (badge) {
+        titleElement.parentElement?.insertBefore(badge, subtitleElement);
+      }
+    }
+
     subtitleElement.textContent = command.shortcut;
 
     const deprecationWarning = command.deprecationWarning;

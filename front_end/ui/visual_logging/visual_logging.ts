@@ -57,6 +57,7 @@ export function setHighlightedVe(veKey: string|null): void {
 export const action = LoggingConfig.makeConfigStringBuilder.bind(null, 'Action');
 export const adorner = LoggingConfig.makeConfigStringBuilder.bind(null, 'Adorner');
 export const animationClip = LoggingConfig.makeConfigStringBuilder.bind(null, 'AnimationClip');
+export const badge = LoggingConfig.makeConfigStringBuilder.bind(null, 'Badge');
 export const bezierCurveEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierCurveEditor');
 export const bezierPresetCategory = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierPresetCategory');
 export const breakpointMarker = LoggingConfig.makeConfigStringBuilder.bind(null, 'BreakpointMarker');

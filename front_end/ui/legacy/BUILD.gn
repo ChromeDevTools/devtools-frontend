@@ -162,6 +162,10 @@ devtools_entrypoint("bundle") {
     # Required for x-link
     "../components/panel_feedback/*",
     "../components/text_editor/*",
+
+    # Required for correct button styling in the Computed tab
+    # (http://crbug.com/435601104).
+    "../components/tree_outline:*",
   ]
 
   visibility += devtools_ui_legacy_visibility

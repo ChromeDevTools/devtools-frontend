@@ -118,6 +118,7 @@ export class StateProvider {
   }
 
   async closeBrowsers() {
+    this.#settingToBrowser.values().next().value?.copyCrahsDumps();
     await Promise.allSettled([...this.#settingToBrowser.values()].map(async browser => {
       await browser.browser.close();
     }));

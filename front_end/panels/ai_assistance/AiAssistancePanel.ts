@@ -18,10 +18,7 @@ import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as ElementsPanel from '../elements/elements.js';
 import * as NetworkForward from '../network/forward/forward.js';
-import * as NetworkPanel from '../network/network.js';
-import * as SourcesPanel from '../sources/sources.js';
 import * as TimelinePanel from '../timeline/timeline.js';
 import * as TimelineUtils from '../timeline/utils/utils.js';
 
@@ -690,12 +687,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
     const {hostConfig} = Root.Runtime;
-    const isElementsPanelVisible =
-        Boolean(UI.Context.Context.instance().flavor(ElementsPanel.ElementsPanel.ElementsPanel));
-    const isNetworkPanelVisible = Boolean(UI.Context.Context.instance().flavor(NetworkPanel.NetworkPanel.NetworkPanel));
-    const isSourcesPanelVisible = Boolean(UI.Context.Context.instance().flavor(SourcesPanel.SourcesPanel.SourcesPanel));
-    const isPerformancePanelVisible =
-        Boolean(UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel));
+    const viewManager = UI.ViewManager.ViewManager.instance();
+    const isElementsPanelVisible = viewManager.isViewVisible('elements');
+    const isNetworkPanelVisible = viewManager.isViewVisible('network');
+    const isSourcesPanelVisible = viewManager.isViewVisible('sources');
+    const isPerformancePanelVisible = viewManager.isViewVisible('timeline');
 
     // Check if the user has an insight expanded in the performance panel sidebar.
     // If they have, we default to the Insights agent; otherwise we fallback to
@@ -803,14 +799,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.Context.Context.instance().addFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
 
-    UI.Context.Context.instance().addFlavorChangeListener(
-        ElementsPanel.ElementsPanel.ElementsPanel, this.#selectDefaultAgentIfNeeded, this);
-    UI.Context.Context.instance().addFlavorChangeListener(
-        NetworkPanel.NetworkPanel.NetworkPanel, this.#selectDefaultAgentIfNeeded, this);
-    UI.Context.Context.instance().addFlavorChangeListener(
-        SourcesPanel.SourcesPanel.SourcesPanel, this.#selectDefaultAgentIfNeeded, this);
-    UI.Context.Context.instance().addFlavorChangeListener(
-        TimelinePanel.TimelinePanel.TimelinePanel, this.#selectDefaultAgentIfNeeded, this);
+    UI.ViewManager.ViewManager.instance().addEventListener(
+        UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED, this.#selectDefaultAgentIfNeeded, this);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
@@ -844,14 +834,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         TimelineUtils.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-    UI.Context.Context.instance().removeFlavorChangeListener(
-        ElementsPanel.ElementsPanel.ElementsPanel, this.#selectDefaultAgentIfNeeded, this);
-    UI.Context.Context.instance().removeFlavorChangeListener(
-        NetworkPanel.NetworkPanel.NetworkPanel, this.#selectDefaultAgentIfNeeded, this);
-    UI.Context.Context.instance().removeFlavorChangeListener(
-        SourcesPanel.SourcesPanel.SourcesPanel, this.#selectDefaultAgentIfNeeded, this);
-    UI.Context.Context.instance().removeFlavorChangeListener(
-        TimelinePanel.TimelinePanel.TimelinePanel, this.#selectDefaultAgentIfNeeded, this);
+    UI.ViewManager.ViewManager.instance().removeEventListener(
+        UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED, this.#selectDefaultAgentIfNeeded, this);
     UI.Context.Context.instance().removeFlavorChangeListener(
         TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(

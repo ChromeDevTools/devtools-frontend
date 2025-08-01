@@ -75,8 +75,8 @@ export class PreRegisteredView implements View {
     return Boolean(this.viewRegistration.isPreviewFeature);
   }
 
-  promoteFeature(): boolean {
-    return Boolean(this.viewRegistration.promoteFeature);
+  featurePromotionId(): string|undefined {
+    return this.viewRegistration.featurePromotionId;
   }
 
   iconName(): string|undefined {

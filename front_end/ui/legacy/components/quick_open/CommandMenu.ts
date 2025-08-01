@@ -73,7 +73,7 @@ export class CommandMenu {
       userActionCode,
       deprecationWarning,
       isPanelOrDrawer,
-      promoteFeature,
+      featurePromotionId,
     } = options;
 
     let handler = executeHandler;
@@ -86,7 +86,7 @@ export class CommandMenu {
     }
     return new Command(
         category, title, keys, shortcut, jslogContext, handler, availableHandler, deprecationWarning, isPanelOrDrawer,
-        promoteFeature);
+        featurePromotionId);
   }
 
   static createSettingCommand<V>(setting: Common.Settings.Setting<V>, title: Common.UIString.LocalizedString, value: V):
@@ -158,7 +158,7 @@ export class CommandMenu {
   }
 
   static createRevealViewCommand(options: RevealViewCommandOptions): Command {
-    const {title, tags, category, userActionCode, id, promoteFeature} = options;
+    const {title, tags, category, userActionCode, id, featurePromotionId} = options;
     if (!category) {
       throw new Error(`Creating '${title}' reveal view command failed. Reveal view has no category.`);
     }
@@ -186,7 +186,7 @@ export class CommandMenu {
       userActionCode,
       availableHandler: undefined,
       isPanelOrDrawer: panelOrDrawer,
-      promoteFeature,
+      featurePromotionId,
     });
   }
 
@@ -210,7 +210,7 @@ export class CommandMenu {
         tags: view.tags() || '',
         category,
         id: view.viewId(),
-        promoteFeature: view.promoteFeature(),
+        featurePromotionId: view.featurePromotionId(),
       };
       this.commandsInternal.push(CommandMenu.createRevealViewCommand(options));
     }
@@ -243,7 +243,7 @@ export interface RevealViewCommandOptions {
   tags: string;
   category: UI.ViewManager.ViewLocationCategory;
   userActionCode?: number;
-  promoteFeature?: boolean;
+  featurePromotionId?: string;
 }
 
 export interface CreateCommandOptions {
@@ -257,7 +257,7 @@ export interface CreateCommandOptions {
   userActionCode?: number;
   deprecationWarning?: Platform.UIString.LocalizedString;
   isPanelOrDrawer?: PanelOrDrawer;
-  promoteFeature?: boolean;
+  featurePromotionId?: string;
 }
 
 export const enum PanelOrDrawer {
@@ -320,7 +320,7 @@ export class CommandMenuProvider extends Provider {
     const command = this.commands[itemIndex];
     let score = Diff.Diff.DiffWrapper.characterScore(query.toLowerCase(), command.title.toLowerCase());
     // Increase score of promoted items so that these appear on top of the list
-    if (command.promoteFeature) {
+    if (command.featurePromotionId) {
       score = Number.MAX_VALUE;
       return score;
     }
@@ -344,7 +344,7 @@ export class CommandMenuProvider extends Provider {
     UI.UIUtils.createTextChild(titleElement, command.title);
     FilteredListWidget.highlightRanges(titleElement, query, true);
 
-    if (command.promoteFeature) {
+    if (command.featurePromotionId) {
       const badge = UI.UIUtils.maybeCreateNewBadge('ai-asisstance');
       if (badge) {
         titleElement.parentElement?.insertBefore(badge, subtitleElement);
@@ -416,7 +416,7 @@ export class Command {
   readonly jslogContext: string;
   readonly deprecationWarning?: Platform.UIString.LocalizedString;
   readonly isPanelOrDrawer?: PanelOrDrawer;
-  readonly promoteFeature?: boolean;
+  readonly featurePromotionId?: string;
 
   readonly #executeHandler: () => unknown;
   readonly #availableHandler?: () => boolean;
@@ -425,7 +425,7 @@ export class Command {
       category: Common.UIString.LocalizedString, title: Common.UIString.LocalizedString, key: string, shortcut: string,
       jslogContext: string, executeHandler: () => unknown, availableHandler?: () => boolean,
       deprecationWarning?: Platform.UIString.LocalizedString, isPanelOrDrawer?: PanelOrDrawer,
-      promoteFeature?: boolean) {
+      featurePromotionId?: string) {
     this.category = category;
     this.title = title;
     this.key = category + '\0' + title + '\0' + key;
@@ -435,7 +435,7 @@ export class Command {
     this.#availableHandler = availableHandler;
     this.deprecationWarning = deprecationWarning;
     this.isPanelOrDrawer = isPanelOrDrawer;
-    this.promoteFeature = promoteFeature;
+    this.featurePromotionId = featurePromotionId;
   }
 
   available(): boolean {

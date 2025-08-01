@@ -157,7 +157,7 @@ export interface ViewRegistration {
   /**
    * Whether a view needs to be promoted. A new badge is shown next to the menu items then.
    */
-  promoteFeature?: boolean;
+  featurePromotionId?: string;
 }
 
 const viewIdSet = new Set<string>();

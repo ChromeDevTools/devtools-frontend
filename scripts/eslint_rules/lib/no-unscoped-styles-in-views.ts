@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview Rule to identify `<style>` usages without wrapping them in `UI.Widget.widgetScoped` in view functions.
+ * @file Rule to identify `<style>` usages without wrapping them in `UI.Widget.widgetScoped` in view functions.
  */
 import type {TSESTree} from '@typescript-eslint/utils';
 

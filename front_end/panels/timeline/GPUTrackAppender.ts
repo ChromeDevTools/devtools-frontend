@@ -37,9 +37,9 @@ export class GPUTrackAppender implements TrackAppender {
   /**
    * Appends into the flame chart data the data corresponding to the
    * GPU track.
-   * @param trackStartLevel the horizontal level of the flame chart events where
+   * @param trackStartLevel - the horizontal level of the flame chart events where
    * the track's events will start being appended.
-   * @param expanded wether the track should be rendered expanded.
+   * @param expanded - wether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
@@ -58,9 +58,9 @@ export class GPUTrackAppender implements TrackAppender {
    * flame chart data. A group has a predefined style and a reference
    * to the definition of the legacy track (which should be removed
    * in the future).
-   * @param currentLevel the flame chart level at which the header is
+   * @param currentLevel - the flame chart level at which the header is
    * appended.
-   * @param expanded wether the track should be rendered expanded.
+   * @param expanded - wether the track should be rendered expanded.
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const style = buildGroupStyle({collapsible: false});

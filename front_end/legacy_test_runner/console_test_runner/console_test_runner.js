@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 
 export const ConsoleTestRunner = {};
@@ -20,9 +20,9 @@ export const ConsoleTestRunner = {};
 ConsoleTestRunner.Formatter;
 
 /**
- * @param {boolean=} printOriginatingCommand
- * @param {boolean=} dumpClassNames
- * @param {!ConsoleTestRunner.Formatter=} formatter
+ * @param printOriginatingCommand
+ * @param dumpClassNames
+ * @param formatter
  */
 ConsoleTestRunner.dumpConsoleMessages = async function(printOriginatingCommand, dumpClassNames, formatter) {
   TestRunner.addResults(
@@ -30,10 +30,10 @@ ConsoleTestRunner.dumpConsoleMessages = async function(printOriginatingCommand, 
 };
 
 /**
- * @param {boolean=} printOriginatingCommand
- * @param {boolean=} dumpClassNames
- * @param {!ConsoleTestRunner.Formatter=} formatter
- * @return {!Promise<!Array<string>>}
+ * @param printOriginatingCommand
+ * @param dumpClassNames
+ * @param formatter
+ * @returns
  */
 ConsoleTestRunner.dumpConsoleMessagesIntoArray = async function(printOriginatingCommand, dumpClassNames, formatter) {
   formatter = formatter || ConsoleTestRunner.prepareConsoleMessageText;
@@ -97,8 +97,8 @@ ConsoleTestRunner.dumpConsoleMessagesIntoArray = async function(printOriginating
 };
 
 /**
- * @param {!Element} messageElement
- * @return {string}
+ * @param messageElement
+ * @returns
  */
 ConsoleTestRunner.prepareConsoleMessageText = function(messageElement) {
   let messageText = messageElement.deepTextContent().replace(/\u200b/g, '');
@@ -117,18 +117,18 @@ ConsoleTestRunner.prepareConsoleMessageText = function(messageElement) {
 };
 
 /**
- * @param {!Element} messageElement
- * @return {string}
+ * @param messageElement
+ * @returns
  */
 ConsoleTestRunner.prepareConsoleMessageTextTrimmed = function(messageElement) {
   return ConsoleTestRunner.prepareConsoleMessageText(messageElement).replace(/[ ]+/g, ' ');
 };
 
 /**
- * @param {!Console.ConsoleViewMessage.ConsoleViewMessage} viewMessage
- * @param {boolean} forceInvalidate
- * @param {!Array<string>} results
- * @return {boolean}
+ * @param viewMessage
+ * @param forceInvalidate
+ * @param results
+ * @returns
  */
 ConsoleTestRunner.dumpConsoleTableMessage = function(viewMessage, forceInvalidate, results) {
   if (forceInvalidate) {
@@ -167,7 +167,7 @@ ConsoleTestRunner.dumpConsoleTableMessage = function(viewMessage, forceInvalidat
   }
 
   /**
-   * @param {string} x
+   * @param x
    */
   function addResult(x) {
     if (results) {
@@ -185,8 +185,8 @@ ConsoleTestRunner.disableConsoleViewport = function() {
 };
 
 /**
- * @param {number} width
- * @param {number} height
+ * @param width
+ * @param height
  */
 ConsoleTestRunner.fixConsoleViewportDimensions = function(width, height) {
   const viewport = Console.ConsoleView.ConsoleView.instance().viewport;
@@ -207,9 +207,9 @@ ConsoleTestRunner.selectMainExecutionContext = function() {
 };
 
 /**
- * @param {string} code
- * @param {!Function=} callback
- * @param {boolean=} dontForceMainContext
+ * @param code
+ * @param callback
+ * @param dontForceMainContext
  */
 ConsoleTestRunner.evaluateInConsole = function(code, callback, dontForceMainContext) {
   if (!dontForceMainContext) {
@@ -235,17 +235,17 @@ ConsoleTestRunner.evaluateInConsole = function(code, callback, dontForceMainCont
 };
 
 /**
- * @param {string} code
- * @param {boolean=} dontForceMainContext
- * @return {!Promise}
+ * @param code
+ * @param dontForceMainContext
+ * @returns
  */
 ConsoleTestRunner.evaluateInConsolePromise = function(code, dontForceMainContext) {
   return new Promise(fulfill => ConsoleTestRunner.evaluateInConsole(code, fulfill, dontForceMainContext));
 };
 
 /**
- * @param {!Function} override
- * @param {boolean=} opt_sticky
+ * @param override
+ * @param opt_sticky
  */
 ConsoleTestRunner.addConsoleViewSniffer = function(override, opt_sticky) {
   TestRunner.addSniffer(Console.ConsoleView.ConsoleView.prototype, 'consoleMessageAddedForTest', override, opt_sticky);
@@ -257,14 +257,14 @@ ConsoleTestRunner.waitForPendingViewportUpdates = async function() {
 };
 
 /**
- * @param {string} code
- * @param {!Function=} callback
- * @param {boolean=} dontForceMainContext
+ * @param code
+ * @param callback
+ * @param dontForceMainContext
  */
 ConsoleTestRunner.evaluateInConsoleAndDump = function(code, callback, dontForceMainContext) {
   callback = TestRunner.safeWrap(callback);
   /**
-   * @param {string} text
+   * @param text
    */
   function mycallback(text) {
     text = text.replace(/\bVM\d+/g, 'VM');
@@ -275,16 +275,16 @@ ConsoleTestRunner.evaluateInConsoleAndDump = function(code, callback, dontForceM
 };
 
 /**
- * @param {string} code
- * @param {boolean=} dontForceMainContext
- * @return {!Promise}
+ * @param code
+ * @param dontForceMainContext
+ * @returns
  */
 ConsoleTestRunner.evaluateInConsoleAndDumpPromise = function(code, dontForceMainContext) {
   return new Promise(fulfill => ConsoleTestRunner.evaluateInConsoleAndDump(code, fulfill, dontForceMainContext));
 };
 
 /**
- * @return {number}
+ * @returns
  */
 ConsoleTestRunner.consoleMessagesCount = function() {
   const consoleView = Console.ConsoleView.ConsoleView.instance();
@@ -292,20 +292,20 @@ ConsoleTestRunner.consoleMessagesCount = function() {
 };
 
 /**
- * @param {function(!Element):string|undefined} messageFormatter
- * @param {!Element} node
- * @return {string}
+ * @param messageFormatter
+ * @param node
+ * @returns
  */
 ConsoleTestRunner.formatterIgnoreStackFrameUrls = function(messageFormatter, node) {
   /**
-   * @param {string} string
+   * @param string
    */
   function isNotEmptyLine(string) {
     return string.trim().length > 0;
   }
 
   /**
-   * @param {string} string
+   * @param string
    */
   function ignoreStackFrameAndMutableData(string) {
     let buffer = string.replace(/\u200b/g, '');
@@ -319,18 +319,18 @@ ConsoleTestRunner.formatterIgnoreStackFrameUrls = function(messageFormatter, nod
 };
 
 /**
- * @param {!Element} element
- * @param {!SDK.ConsoleModel.ConsoleMessage} message
- * @return {string}
+ * @param element
+ * @param message
+ * @returns
  */
 ConsoleTestRunner.simpleFormatter = function(element, message) {
   return message.messageText + ':' + message.line + ':' + message.column;
 };
 
 /**
- * @param {boolean=} printOriginatingCommand
- * @param {boolean=} dumpClassNames
- * @param {!ConsoleTestRunner.Formatter=} messageFormatter
+ * @param printOriginatingCommand
+ * @param dumpClassNames
+ * @param messageFormatter
  */
 ConsoleTestRunner.dumpConsoleMessagesIgnoreErrorStackFrames =
     async function(printOriginatingCommand, dumpClassNames, messageFormatter) {
@@ -353,8 +353,8 @@ ConsoleTestRunner.dumpConsoleMessagesWithStyles = function() {
 };
 
 /**
- * @param {boolean=} sortMessages
- * @param {boolean=} trimMessages
+ * @param sortMessages
+ * @param trimMessages
  */
 ConsoleTestRunner.dumpConsoleMessagesWithClasses = async function(sortMessages, trimMessages) {
   const result = [];
@@ -398,9 +398,9 @@ ConsoleTestRunner.dumpConsoleCounters = async function() {
 };
 
 /**
- * @param {!Function} callback
- * @param {function(!Element):boolean} deepFilter
- * @param {function(!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection):boolean} sectionFilter
+ * @param callback
+ * @param deepFilter
+ * @param sectionFilter
  */
 ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, sectionFilter) {
   Console.ConsoleView.ConsoleView.instance().invalidateViewport();
@@ -451,16 +451,16 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
 };
 
 /**
- * @param {function(!Element):boolean} deepFilter
- * @param {function(!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection):boolean} sectionFilter
- * @return {!Promise}
+ * @param deepFilter
+ * @param sectionFilter
+ * @returns
  */
 ConsoleTestRunner.expandConsoleMessagesPromise = function(deepFilter, sectionFilter) {
   return new Promise(fulfill => ConsoleTestRunner.expandConsoleMessages(fulfill, deepFilter, sectionFilter));
 };
 
 /**
- * @param {!Function} callback
+ * @param callback
  */
 ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
   const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
@@ -496,7 +496,7 @@ ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
 };
 
 /**
- * @param {!Function} callback
+ * @param callback
  */
 ConsoleTestRunner.expandConsoleMessagesErrorParameters = function(callback) {
   const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
@@ -508,7 +508,7 @@ ConsoleTestRunner.expandConsoleMessagesErrorParameters = function(callback) {
 };
 
 /**
- * @param {!Function} callback
+ * @param callback
  */
 ConsoleTestRunner.waitForRemoteObjectsConsoleMessages = function(callback) {
   const messages = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
@@ -519,14 +519,14 @@ ConsoleTestRunner.waitForRemoteObjectsConsoleMessages = function(callback) {
 };
 
 /**
- * @return {!Promise}
+ * @returns
  */
 ConsoleTestRunner.waitForRemoteObjectsConsoleMessagesPromise = function() {
   return new Promise(resolve => ConsoleTestRunner.waitForRemoteObjectsConsoleMessages(resolve));
 };
 
 /**
- * @return {!Promise}
+ * @returns
  */
 ConsoleTestRunner.waitUntilConsoleEditorLoaded = function() {
   let fulfill;
@@ -544,22 +544,22 @@ ConsoleTestRunner.waitUntilConsoleEditorLoaded = function() {
 };
 
 /**
- * @param {!Function} callback
+ * @param callback
  */
 ConsoleTestRunner.waitUntilMessageReceived = function(callback) {
   TestRunner.addSniffer(SDK.ConsoleModel.ConsoleModel.prototype, 'addMessage', callback, false);
 };
 
 /**
- * @return {!Promise}
+ * @returns
  */
 ConsoleTestRunner.waitUntilMessageReceivedPromise = function() {
   return new Promise(fulfill => ConsoleTestRunner.waitUntilMessageReceived(fulfill));
 };
 
 /**
- * @param {number} count
- * @param {!Function} callback
+ * @param count
+ * @param callback
  */
 ConsoleTestRunner.waitUntilNthMessageReceived = function(count, callback) {
   function override() {
@@ -573,15 +573,15 @@ ConsoleTestRunner.waitUntilNthMessageReceived = function(count, callback) {
 };
 
 /**
- * @param {number} count
- * @return {!Promise}
+ * @param count
+ * @returns
  */
 ConsoleTestRunner.waitUntilNthMessageReceivedPromise = function(count) {
   return new Promise(fulfill => ConsoleTestRunner.waitUntilNthMessageReceived(count, fulfill));
 };
 
 /**
- * @param {string} namePrefix
+ * @param namePrefix
  */
 ConsoleTestRunner.changeExecutionContext = function(namePrefix) {
   const selector = Console.ConsoleView.ConsoleView.instance().consoleContextSelector;
@@ -595,8 +595,8 @@ ConsoleTestRunner.changeExecutionContext = function(namePrefix) {
 };
 
 /**
- * @param {number} expectedCount
- * @param {!Function} callback
+ * @param expectedCount
+ * @param callback
  */
 ConsoleTestRunner.waitForConsoleMessages = function(expectedCount, callback) {
   const consoleView = Console.ConsoleView.ConsoleView.instance();
@@ -613,8 +613,8 @@ ConsoleTestRunner.waitForConsoleMessages = function(expectedCount, callback) {
 };
 
 /**
- * @param {number} expectedCount
- * @return {!Promise}
+ * @param expectedCount
+ * @returns
  */
 ConsoleTestRunner.waitForConsoleMessagesPromise = async function(expectedCount) {
   await new Promise(fulfill => ConsoleTestRunner.waitForConsoleMessages(expectedCount, fulfill));
@@ -623,10 +623,10 @@ ConsoleTestRunner.waitForConsoleMessagesPromise = async function(expectedCount) 
 };
 
 /**
- * @param {number} fromMessage
- * @param {number} fromTextOffset
- * @param {number} toMessage
- * @param {number} toTextOffset
+ * @param fromMessage
+ * @param fromTextOffset
+ * @param toMessage
+ * @param toTextOffset
  */
 ConsoleTestRunner.selectConsoleMessages = async function(fromMessage, fromTextOffset, toMessage, toTextOffset) {
   const consoleView = Console.ConsoleView.ConsoleView.instance();
@@ -638,9 +638,9 @@ ConsoleTestRunner.selectConsoleMessages = async function(fromMessage, fromTextOf
   window.getSelection().setBaseAndExtent(from.container, from.offset, to.container, to.offset);
 
   /**
-   * @param {!Node} container
-   * @param {number} offset
-   * @return {?{container: !Node, offset: number}}
+   * @param container
+   * @param offset
+   * @returns
    */
   function selectionContainerAndOffset(container, offset) {
     /** @type {?Node} */
@@ -663,16 +663,16 @@ ConsoleTestRunner.selectConsoleMessages = async function(fromMessage, fromTextOf
 };
 
 /**
- * @param {!Function} override
- * @param {boolean=} opt_sticky
+ * @param override
+ * @param opt_sticky
  */
 ConsoleTestRunner.addConsoleSniffer = function(override, opt_sticky) {
   TestRunner.addSniffer(SDK.ConsoleModel.ConsoleModel.prototype, 'addMessage', override, opt_sticky);
 };
 
 /**
- * @param {!Function} func
- * @return {!Function}
+ * @param func
+ * @returns
  */
 ConsoleTestRunner.wrapListener = function(func) {
   /**
@@ -705,7 +705,7 @@ ConsoleTestRunner.dumpStackTraces = function() {
 };
 
 /**
- * @return {!{first: number, last: number, count: number}}
+ * @returns
  */
 ConsoleTestRunner.visibleIndices = function() {
   const consoleView = Console.ConsoleView.ConsoleView.instance();

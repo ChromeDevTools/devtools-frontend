@@ -106,16 +106,16 @@ class Logger {
 
   /**
    * Logs a header message to the console.
-   * @param {string} text The header text to log.
+   * @param text - The header text to log.
    */
   head(text: string) {
     this.log('head', -1, `${text}\n`);
   }
 
   /**
-   * @param {string} id
-   * @param {number} index
-   * @param {string} text
+   * @param id
+   * @param index
+   * @param text
    */
   log(id: string, index: number, text: string) {
     this.#updateElapsedTime();

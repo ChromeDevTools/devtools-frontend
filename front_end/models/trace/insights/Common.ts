@@ -350,7 +350,7 @@ function getRequestSizes(request: Types.Events.SyntheticNetworkRequest): {resour
  * uncompressed size (totalBytes). Uses the actual transfer size from the network record if applicable,
  * minus the size of the response headers.
  *
- * @param totalBytes Uncompressed size of the resource
+ * @param totalBytes - Uncompressed size of the resource
  */
 export function estimateCompressedContentSize(
     request: Types.Events.SyntheticNetworkRequest|undefined, totalBytes: number,

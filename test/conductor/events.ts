@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Functions and state to tie error reporting and console output of
+ * @file Functions and state to tie error reporting and console output of
  * the browser process and frontend pages together.
  */
 

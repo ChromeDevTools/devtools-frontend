@@ -181,11 +181,11 @@ export interface NumberWithUnitString {
  *
  * As of this writing, our only locale where the unit comes before the number is `sw`, ex: `Sek {PH1}`.
  *
-    new Intl.NumberFormat('sw', {
-      style: 'unit',
-      unit: 'millisecond',
-      unitDisplay: 'narrow'
-    }).format(10); // 'ms 10'
+ * new Intl.NumberFormat('sw', {
+ * style: 'unit',
+ * unit: 'millisecond',
+ * unitDisplay: 'narrow'
+ * }).format(10); // 'ms 10'
  *
  */
 export namespace NumberWithUnit {

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Local debugging utilities.
+ * @file Local debugging utilities.
  */
 
 export function isDebugMode(): boolean {

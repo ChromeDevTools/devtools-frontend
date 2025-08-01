@@ -269,7 +269,7 @@ export class SamplesIntegrator {
    * returned stack (last position), meaning that any other frames that
    * were effectively above it are omitted.
    * @param profileCall
-   * @param overrideTimeStamp a custom timestamp to use for the returned
+   * @param overrideTimeStamp - a custom timestamp to use for the returned
    * profile calls. If not defined, the timestamp of the input
    * profileCall is used instead. This param is useful for example when
    * creating the profile calls for a sample with a trace id, since the
@@ -408,10 +408,10 @@ export class SamplesIntegrator {
    * setting the ending time of its call frames and removing the top
    * call frames that aren't shared with the new call stack. This way,
    * we can update the tracked stack with the new call frames on top.
-   * @param depth the amount of call frames from bottom to top that
+   * @param depth - the amount of call frames from bottom to top that
    * should be kept in the tracking stack trace. AKA amount of shared
    * call frames between two stacks.
-   * @param time the new end of the call frames in the stack.
+   * @param time - the new end of the call frames in the stack.
    */
   #truncateJSStack(depth: number, time: Types.Timing.Micro): void {
     if (this.#lockedJsStackDepth.length) {

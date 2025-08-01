@@ -6,7 +6,7 @@ import type {TSESTree} from '@typescript-eslint/utils';
 
 /**
  * @param node - a TaggedTemplateExpression node from the AST of the parsed code.
- * @returns {boolean} - `true` if the code matches Lit.html`` or html``, and false otherwise.
+ * @returns - `true` if the code matches Lit.html`` or html``, and false otherwise.
  */
 export function isLitHtmlTemplateCall(node: TSESTree.Node): node is TSESTree.TaggedTemplateExpression {
   if (node.type !== 'TaggedTemplateExpression') {
@@ -33,7 +33,7 @@ export function isLitHtmlTemplateCall(node: TSESTree.Node): node is TSESTree.Tag
 
 /**
  * @param node - a CallExpression node from the AST of the parsed code.
- * @returns {boolean} - `true` if the code matches Lit.render() or render(), and false otherwise.
+ * @returns - `true` if the code matches Lit.render() or render(), and false otherwise.
  */
 export function isLitHtmlRenderCall(node: TSESTree.Node): node is TSESTree.CallExpression {
   if (node.type !== 'CallExpression') {
@@ -56,7 +56,7 @@ export function isLitHtmlRenderCall(node: TSESTree.Node): node is TSESTree.CallE
  * Determines if a given AST function node matches the "view function" signature.
  * A view function is expected to have three parameters, with names conventionally
  * ending in 'input', 'output', and 'target'.
- * @param node The function-like AST node to inspect.
+ * @param node - The function-like AST node to inspect.
  * @returns True if the node is a view function, false otherwise.
  */
 export function isViewFunction(node: TSESTree.Node): boolean {

@@ -291,8 +291,8 @@ async function checkFileExists(filePath) {
 }
 
 /**
- * @param {http.IncomingMessage} request
- * @param {http.ServerResponse} response
+ * @param request
+ * @param response
  */
 async function requestHandler(request, response) {
   const filePath = parseURL(request.url).pathname;
@@ -549,9 +549,9 @@ function createTracesIndexFile(traceFilenames) {
 }
 
 /**
- * @param {http.IncomingMessage} request
- * @param {http.ServerResponse} response
- * @param {string|null} filePath
+ * @param request
+ * @param response
+ * @param filePath
  */
 async function handleTracesModeRequest(request, response, filePath) {
   const traceFolder = path.resolve(

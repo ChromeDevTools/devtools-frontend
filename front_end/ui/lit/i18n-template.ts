@@ -9,7 +9,7 @@ import * as Lit from '../../third_party/lit/lit.js';
 const {html} = Lit.StaticHtml;
 
 /**
- * @param placeholders placeholders must not contain localized strings or other localized templates as that is
+ * @param placeholders - placeholders must not contain localized strings or other localized templates as that is
  * incompatible with languages using a different sentence structure or ordering (e.g., RTL).
  */
 export function i18nTemplate(

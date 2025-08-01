@@ -94,7 +94,7 @@ const UIStrings = {
   drawFrame: 'Draw frame',
   /**
    *@description Noun for an event in the Performance panel. This marks time
-    spent in an operation that only happens when the profiler is active.
+   * spent in an operation that only happens when the profiler is active.
    */
   profilingOverhead: 'Profiling overhead',
   /**

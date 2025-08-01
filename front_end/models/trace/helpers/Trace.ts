@@ -229,12 +229,12 @@ export function activeURLForFrameAtTime(
 }
 
 /**
- * @param node the node attached to the profile call. Here a node represents a function in the call tree.
- * @param profileId the profile ID that the sample came from that backs this call.
- * @param sampleIndex the index of the sample in the given profile that this call was created from
- * @param ts the timestamp of the profile call
- * @param pid the process ID of the profile call
- * @param tid the thread ID of the profile call
+ * @param node - the node attached to the profile call. Here a node represents a function in the call tree.
+ * @param profileId - the profile ID that the sample came from that backs this call.
+ * @param sampleIndex - the index of the sample in the given profile that this call was created from
+ * @param ts - the timestamp of the profile call
+ * @param pid - the process ID of the profile call
+ * @param tid - the thread ID of the profile call
  *
  * See `panels/timeline/docs/profile_calls.md` for more context on how these events are created.
  */
@@ -263,7 +263,7 @@ export function makeProfileCall(
  * if provided, though currently only coming from Animations. Traces may contain multiple instant events so we need to
  * account for that.
  *
- * @returns {Map<string, MatchingPairableAsyncEvents>} Map of the animation's ID to it's matching events.
+ * @returns Map of the animation's ID to it's matching events.
  */
 export function matchEvents(unpairedEvents: Types.Events.PairableAsync[]): Map<string, MatchingPairableAsyncEvents> {
   // map to store begin and end of the event

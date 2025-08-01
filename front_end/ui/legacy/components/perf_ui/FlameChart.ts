@@ -48,7 +48,7 @@ import {type Calculator, TimelineGrid} from './TimelineGrid.js';
 /**
  * Set as the `details` value on the fake context menu event we dispatch to
  * trigger a context menu on an event on a keyboard space key press.
- {@see onContextMenu} for more details and explanation.
+ * {@see onContextMenu} for more details and explanation.
  */
 const KEYBOARD_FAKED_CONTEXT_MENU_DETAIL = -1;
 
@@ -2677,7 +2677,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * And will draw the move up/down, hide and save button if user enter the editing mode.
    * @param width
    * @param height
-   * @param hoveredGroupIndex This is used to show the edit icon for hovered group. If it is undefined or -1, it means
+   * @param hoveredGroupIndex - This is used to show the edit icon for hovered group. If it is undefined or -1, it means
    * there is no group being hovered.
    */
   private drawGroupHeaders(width: number, height: number): void {
@@ -3002,15 +3002,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   /**
    * @callback GroupCallback
-   * @param groupTop pixels between group top and the top of the flame chart.
+   * @param groupTop - pixels between group top and the top of the flame chart.
    * @param groupIndex
    * @param group
-   * @param isFirstGroup if the group is the first one of this nesting level.
-   * @param height pixels of height of this group
+   * @param isFirstGroup - if the group is the first one of this nesting level.
+   * @param height - pixels of height of this group
    */
   /**
    * Process the pixels of start and end, and other data of each group, which are used in drawing the group.
-   * @param {GroupCallback} callback
+   * @param callback
    */
   private forEachGroup(
       callback: (groupTop: number, groupIndex: number, group: Group, isFirstGroup: boolean, height: number) => void):
@@ -3109,7 +3109,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * |ICON_WIDTH|expansionArrowIndent * (nestingLevel + 1)|
    * |headerLeftPadding|EDIT  ICON|                    |Arrow|LabelXPadding|Title|LabelXPadding|
    *                              |<--                      labelWidth                      -->|
-   * @param context canvas context
+   * @param context - canvas context
    * @param group
    * @returns the width of the label of the group.
    */
@@ -3524,8 +3524,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   /**
    * Builds a tree node for a group. For each group the start level is inclusive and the end level is exclusive.
    * @param group
-   * @param index index of the group in the |FlameChartTimelineData.groups[]|
-   * @param endLevel The end level of this group, which is also the start level of the next group or the end of all
+   * @param index - index of the group in the |FlameChartTimelineData.groups[]|
+   * @param endLevel - The end level of this group, which is also the start level of the next group or the end of all
    * groups
    * @returns the tree node for the group
    */
@@ -3552,7 +3552,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    *          / \    / | \
    *         1   2  5  6  7
    * This function is public for test purpose.
-   * @param groups the array of all groups, it should be the one from FlameChartTimelineData
+   * @param groups - the array of all groups, it should be the one from FlameChartTimelineData
    * @returns the root of the Group tree. The root is the fake one we added, which represent the parent for all groups
    */
   buildGroupTree(groups: Group[]): GroupTreeNode {
@@ -3597,7 +3597,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * So we can keep the order that user manually set.
    * To do this, we go through the tree, and update the start and end level of each group.
    * This function is public for test purpose.
-   * @param groups the array of all groups, it should be the one from FlameChartTimelineData
+   * @param groups - the array of all groups, it should be the one from FlameChartTimelineData
    * @returns the root of the Group tree. The root is the fake one we added, which represent the parent for all groups
    */
   updateGroupTree(groups: Group[], root: GroupTreeNode): void {
@@ -3644,9 +3644,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    *          / \    / | \
    *         1   2  5  6  7
    * The traverse order will be: -1, 0, 1, 2, 3, 4, 5, 6, 7.
-   * @param groupNode TreeNode for current group
+   * @param groupNode - TreeNode for current group
    * @param currentOffset
-   * @param parentGroupIsVisible used to determine if current group's header and its levels are visible
+   * @param parentGroupIsVisible - used to determine if current group's header and its levels are visible
    * @returns the offset (in pixels) after processing current group
    */
   #traverseGroupTreeAndUpdateLevelPositionsForTheGroup(

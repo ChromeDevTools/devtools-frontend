@@ -98,7 +98,7 @@ export type SourceMapV3 = SourceMapV3Object|{
  * Parses the {@link content} as JSON, ignoring BOM markers in the beginning, and
  * also handling the CORB bypass prefix correctly.
  *
- * @param content the string representation of a sourcemap.
+ * @param content - the string representation of a sourcemap.
  * @returns the {@link SourceMapV3} representation of the {@link content}.
  */
 export function parseSourceMap(content: string): SourceMapV3 {
@@ -604,8 +604,8 @@ export class SourceMap {
    * source entity identified by the `url`. If the `url` does not have any reverse mappings
    * within this source map, an empty array is returned.
    *
-   * @param url the URL of the source entity to query.
-   * @param textRange the range of text within the entity to check, considered `[start,end[`.
+   * @param url - the URL of the source entity to query.
+   * @param textRange - the range of text within the entity to check, considered `[start,end[`.
    * @returns the list of ranges in the generated file that map to locations overlapping the
    *          {@link textRange} in the source file identified by the {@link url}, or `[]`
    *          if the {@link url} does not identify an entity in this source map.
@@ -737,8 +737,8 @@ export class SourceMap {
    * Determines whether this and the {@link other} `SourceMap` agree on content and ignore-list hint
    * with respect to the {@link sourceURL}.
    *
-   * @param sourceURL the URL to test for (might not be provided by either of the sourcemaps).
-   * @param other the other `SourceMap` to check.
+   * @param sourceURL - the URL to test for (might not be provided by either of the sourcemaps).
+   * @param other - the other `SourceMap` to check.
    * @returns `true` if both this and the {@link other} `SourceMap` either both have the ignore-list
    *          hint for {@link sourceURL} or neither, and if both of them either provide the same
    *          content for the {@link sourceURL} inline or both provide no `sourcesContent` entry

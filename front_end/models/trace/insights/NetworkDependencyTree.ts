@@ -420,7 +420,7 @@ function handleLinkResponseHeaderPart(trimmedPart: string): {url: string, header
  * Parses an HTTP Link header string into an array of url and related header text.
  *
  * Export the function for test purpose.
- * @param linkHeaderValue The value of the HTTP Link header (e.g., '</style.css>; rel=preload; as=style, <https://example.com>; rel="preconnect"').
+ * @param linkHeaderValue - The value of the HTTP Link header (e.g., '</style.css>; rel=preload; as=style, <https://example.com>; rel="preconnect"').
  * @returns An array of url and header text objects if it contains `rel=preconnect`.
  */
 export function handleLinkResponseHeader(linkHeaderValue: string): Array<{url: string, headerText: string}> {

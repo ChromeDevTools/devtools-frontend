@@ -299,7 +299,7 @@ export class CalibrationController {
  *  - 800+ is a high-end Android phone, Galaxy S8, low-end Chromebook, etc
  *  - 125+ is a mid-tier Android phone, Moto G4, etc
  *  - <125 is a budget Android phone, Alcatel Ideal, Galaxy J2, etc
- * @return {number}
+ * @returns
  */
 function computeBenchmarkIndex(duration = 1000): number {
   const halfTime = duration / 2;

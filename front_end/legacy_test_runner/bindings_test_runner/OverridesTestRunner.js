@@ -9,8 +9,8 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {TestFileSystem} from './IsolatedFilesystemTestRunner.js';
 
 /**
- * @param {string} folderPath
- * @return {!Promise<!{isolatedFileSystem: !Persistence.IsolatedFileSystem.IsolatedFileSystem, project: !Workspace.Workspace.Project, testFileSystem: !BindingsTestRunner.TestFileSystem}>}
+ * @param folderPath
+ * @returns
  */
 export const createOverrideProject = async function(folderPath) {
   const testFileSystem = new TestFileSystem(folderPath);
@@ -23,7 +23,7 @@ export const createOverrideProject = async function(folderPath) {
 };
 
 /**
- * @param {boolean} enabled
+ * @param enabled
  */
 export const setOverridesEnabled = function(enabled) {
   Common.Settings.moduleSetting('persistence-network-overrides-enabled').set(enabled);

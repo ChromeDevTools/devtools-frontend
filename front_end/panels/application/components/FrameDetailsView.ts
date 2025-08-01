@@ -59,7 +59,7 @@ const UIStrings = {
    */
   url: 'URL',
   /**
-  /**
+   * /**
    *@description Title for a link to the Sources panel
    */
   clickToOpenInSourcesPanel: 'Click to open in Sources panel',
@@ -81,7 +81,7 @@ const UIStrings = {
    */
   origin: 'Origin',
   /**
-  /**
+   * /**
    *@description Related node label in Timeline UIUtils of the Performance panel
    */
   ownerElement: 'Owner Element',

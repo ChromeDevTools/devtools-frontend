@@ -122,7 +122,7 @@ export class Event {
   /**
    * set an event to be "live" where it's ended time is always the chart maximum
    * or to be a fixed time.
-   * @param {number} time
+   * @param time
    */
   set endTime(time: number) {
     // Setting end time to -1 signals that an event becomes live

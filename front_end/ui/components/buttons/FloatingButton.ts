@@ -34,8 +34,8 @@ const {html} = Lit;
  * @attr jslogcontext - The context for the `jslog` attribute. A `jslog`
  *                      attribute is generated automatically with the
  *                      provided context.
- * @prop {String} iconName - The `"icon-name"` attribute is reflected as a property.
- * @prop {String} jslogContext - The `"jslogcontext"` attribute is reflected as a property.
+ * @property iconName - The `"icon-name"` attribute is reflected as a property.
+ * @property jslogContext - The `"jslogcontext"` attribute is reflected as a property.
  */
 export class FloatingButton extends HTMLElement {
   static readonly observedAttributes = ['icon-name', 'jslogcontext'];
@@ -61,7 +61,7 @@ export class FloatingButton extends HTMLElement {
    * If you pass `null`, the `"icon-name"` attribute will be removed from this
    * element.
    *
-   * @param the new icon name or `null` to unset.
+   * @param the - new icon name or `null` to unset.
    */
   set iconName(iconName: string|null) {
     if (iconName === null) {
@@ -117,9 +117,9 @@ export class FloatingButton extends HTMLElement {
  * Helper function to programmatically create a `FloatingButton` instance with a
  * given `iconName` and `title`.
  *
- * @param iconName the name of the icon to use
- * @param title the tooltip for the `FloatingButton`
- * @param jslogContext the context string for the `jslog` attribute
+ * @param iconName - the name of the icon to use
+ * @param title - the tooltip for the `FloatingButton`
+ * @param jslogContext - the context string for the `jslog` attribute
  * @returns the newly created `FloatingButton` instance.
  */
 export const create = (iconName: string, title: string, jslogContext?: string): FloatingButton => {

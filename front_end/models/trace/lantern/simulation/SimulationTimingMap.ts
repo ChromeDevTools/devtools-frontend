@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview
+ * @file
  *
  * This class encapsulates the type-related validation logic for moving timing information for nodes
  * through the different simulation phases. Methods here ensure that the invariants of simulation hold

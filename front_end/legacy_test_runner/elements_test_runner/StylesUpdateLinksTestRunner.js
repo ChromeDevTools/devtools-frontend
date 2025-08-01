@@ -6,7 +6,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Elements from '../../panels/elements/elements.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 self.ElementsTestRunner = self.ElementsTestRunner || {};
 

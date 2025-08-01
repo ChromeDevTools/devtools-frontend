@@ -28,10 +28,10 @@ export type PathSubstitutions = readonly PathSubstitution[];
  * LLDB frontend in `PathMappingList::RemapPath()` inside `Target/PathMappingList.cpp`
  * (http://cs/github/llvm/llvm-project/lldb/source/Target/PathMappingList.cpp?l=157-185).
  *
- * @param pathSubstitutions possible substitutions to apply to the {@param sourcePath}, applies the first match.
- * @param sourcePath the source path as found in the debugging information.
- * @param baseURL the URL of the WebAssembly module, which is used to resolve relative source paths.
- * @return an absolute `file:`-URI or a URL relative to the {@param baseURL}.
+ * @param pathSubstitutions - possible substitutions to apply to the {@param sourcePath}, applies the first match.
+ * @param sourcePath - the source path as found in the debugging information.
+ * @param baseURL - the URL of the WebAssembly module, which is used to resolve relative source paths.
+ * @returns an absolute `file:`-URI or a URL relative to the {@param baseURL}.
  */
 export function resolveSourcePathToURL(pathSubstitutions: PathSubstitutions, sourcePath: string, baseURL: URL): URL {
   // Normalize '\' to '/' in sourcePath first.
@@ -91,9 +91,9 @@ export type ModuleConfigurations = readonly ModuleConfiguration[];
 /**
  * Locate the configuration for a given `something.wasm` module file name.
  *
- * @param moduleConfigurations list of module configurations to scan.
- * @param moduleName the URL of the module to lookup.
- * @return the matching module configuration or the default fallback.
+ * @param moduleConfigurations - list of module configurations to scan.
+ * @param moduleName - the URL of the module to lookup.
+ * @returns the matching module configuration or the default fallback.
  */
 export function findModuleConfiguration(
     moduleConfigurations: ModuleConfigurations, moduleURL: URL): ModuleConfiguration {

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Rule to check ES import usage
+ * @file Rule to check ES import usage
  * @author Tim van der Lippe
  */
 

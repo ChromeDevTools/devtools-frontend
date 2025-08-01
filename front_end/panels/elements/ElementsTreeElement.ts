@@ -2226,7 +2226,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   * @param adornerType optional type of adorner to remove. If not provided, remove all adorners.
+   * @param adornerType - optional type of adorner to remove. If not provided, remove all adorners.
    */
   removeAdornersByType(adornerType?: ElementsComponents.AdornerManager.RegisteredAdorners): void {
     if (!isOpeningTag(this.tagTypeContext)) {

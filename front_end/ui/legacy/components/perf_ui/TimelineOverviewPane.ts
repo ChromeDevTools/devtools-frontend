@@ -249,7 +249,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   /**
    * Dim the time marker outside the highlight time bounds.
    *
-   * @param highlightBounds the time bounds to highlight, if it is empty, it means to highlight everything.
+   * @param highlightBounds - the time bounds to highlight, if it is empty, it means to highlight everything.
    */
   #dimMarkers(highlightBounds?: Trace.Types.Timing.TraceWindowMicro): void {
     for (const time of this.markers.keys()) {

@@ -306,7 +306,7 @@ declare global {
  * Returns if a new regex string is valid to be added to the ignore list.
  * Note that things like duplicates are handled by the IgnoreList for us.
  *
- * @param inputValue the text input from the user we need to validate.
+ * @param inputValue - the text input from the user we need to validate.
  */
 export function regexInputIsValid(inputValue: string): boolean {
   const pattern = inputValue.trim();

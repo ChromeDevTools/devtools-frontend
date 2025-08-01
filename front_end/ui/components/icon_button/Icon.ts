@@ -63,8 +63,8 @@ export type IconData = IconWithName|{
  * @attr name - The basename of the icon file (not including the `.svg` suffix). For
  *              backwards compatibility we also support a full URL here, but that
  *              should not be used in newly written code.
- * @prop {String} name - The `"name"` attribute is reflected as property.
- * @prop {IconData} data - Deprecated way to set dimensions, color and name at once.
+ * @property name - The `"name"` attribute is reflected as property.
+ * @property data - Deprecated way to set dimensions, color and name at once.
  */
 export class Icon extends HTMLElement {
   static readonly observedAttributes = ['name'];
@@ -123,7 +123,7 @@ export class Icon extends HTMLElement {
    * Changes the value of the `"name"` attribute of this `Icon`. If you pass
    * `null` the `"name"` attribute will be removed from this element.
    *
-   * @param name the new icon name or `null` to unset.
+   * @param name - the new icon name or `null` to unset.
    */
   set name(name: string|null) {
     if (name === null) {
@@ -155,9 +155,9 @@ export class Icon extends HTMLElement {
  * Helper function to programmatically create an `Icon` isntance with a given
  * `name` and an optional CSS `className`.
  *
- * @param name the name of the icon to use.
- * @param className optional CSS class name(s) to put onto the element.
- * @return the newly created `Icon` instance.
+ * @param name - the name of the icon to use.
+ * @param className - optional CSS class name(s) to put onto the element.
+ * @returns the newly created `Icon` instance.
  */
 export const create = (name: string, className?: string): Icon => {
   const icon = new Icon();

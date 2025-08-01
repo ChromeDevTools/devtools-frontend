@@ -44,9 +44,9 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   private readonly controlPanelToolbar: UI.Toolbar.Toolbar;
   private readonly modeButtons: Record<string, UI.Toolbar.ToolbarToggle>;
   /**
-   * @param element The HTML element to apply transformations to.
-   * @param disableRotate Optional. If true, pan and rotate will be disabled. Defaults to false.
-   * @param preventDefaultOnMousedown Optional. If true, mousedown events will be prevented from their default behavior (including focus). Defaults to true.
+   * @param element - The HTML element to apply transformations to.
+   * @param disableRotate - Optional. If true, pan and rotate will be disabled. Defaults to false.
+   * @param preventDefaultOnMousedown - Optional. If true, mousedown events will be prevented from their default behavior (including focus). Defaults to true.
    */
   constructor(element: HTMLElement, disableRotate?: boolean, preventDefaultOnMouseDown = true) {
     super();
@@ -231,9 +231,9 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 
   private onMouseWheel(event: Event): void {
-    /** @const */
+    /** @constant */
     const zoomFactor = 1.1;
-    /** @const */
+    /** @constant */
     const wheelZoomSpeed = 1 / 53;
     const mouseEvent = event as WheelEvent;
     const scaleFactor = Math.pow(zoomFactor, -mouseEvent.deltaY * wheelZoomSpeed);

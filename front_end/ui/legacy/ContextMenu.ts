@@ -691,7 +691,7 @@ export class ContextMenu extends SubMenu {
    * will be loaded when showing the context menu. If the `target` was already appended
    * before, it just ignores this call.
    *
-   * @param target an object for which we can have registered menu item providers.
+   * @param target - an object for which we can have registered menu item providers.
    */
   appendApplicableItems(target: unknown): void {
     if (this.pendingTargets.includes(target)) {
@@ -722,11 +722,11 @@ export class ContextMenu extends SubMenu {
  * @attr disabled - Whether the menu button is disabled
  * @attr jslogContext - The jslog context for the button.
  *
- * @prop {Function} populateMenuCall - Callback function to populate the menu.
- * @prop {Boolean} softMenu - Reflects the `"soft-menu"` attribute.
- * @prop {Boolean} keepOpen -Reflects the `"keep-open"` attribute.
- * @prop {String} iconName - Reflects the `"icon-name"` attribute.
- * @prop {Boolean} disabled - Reflects the `"disabled"` attribute.
+ * @property populateMenuCall - Callback function to populate the menu.
+ * @property softMenu - Reflects the `"soft-menu"` attribute.
+ * @property keepOpen -Reflects the `"keep-open"` attribute.
+ * @property iconName - Reflects the `"icon-name"` attribute.
+ * @property disabled - Reflects the `"disabled"` attribute.
  * @prop {String} jslogContext - Reflects the `"jslogContext"` attribute.
  */
 export class MenuButton extends HTMLElement {
@@ -737,7 +737,7 @@ export class MenuButton extends HTMLElement {
 
   /**
    * Sets the callback function used to populate the context menu when the button is clicked.
-   * @param {Function} populateCall - A function that takes a `ContextMenu` instance and adds items to it.
+   * @param populateCall - A function that takes a `ContextMenu` instance and adds items to it.
    */
   set populateMenuCall(populateCall: (arg0: ContextMenu) => void) {
     this.#populateMenuCall = populateCall;
@@ -805,7 +805,7 @@ export class MenuButton extends HTMLElement {
    * Creates and shows the `ContextMenu`. It calls the `populateMenuCall`
    * callback to fill the menu with items before displaying it relative to the button.
    * Manages the `aria-expanded` state.
-   * @param {Event} event - The event that triggered the menu
+   * @param event - The event that triggered the menu
    */
   #openMenu(event: Event): void {
     this.#triggerTimeoutId = undefined;
@@ -830,7 +830,7 @@ export class MenuButton extends HTMLElement {
   /**
    * Handles the click event on the button. It clears any pending trigger timeout
    * and immediately calls the `openMenu` method to show the context menu.
-   * @param {Event} event - The click event.
+   * @param event - The click event.
    */
   #triggerContextMenu(event: MouseEvent): void {
     const triggerTimeout = 50;

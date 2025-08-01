@@ -81,8 +81,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  *                  to `false`.
  * @attr wrappable - If present the toolbar items will wrap to a new row and the
  *                   toolbar height increases.
- * @prop {boolean} floating - The `"floating"` attribute is reflected as property.
- * @prop {boolean} wrappable - The `"wrappable"` attribute is reflected as property.
+ * @property floating - The `"floating"` attribute is reflected as property.
+ * @property wrappable - The `"wrappable"` attribute is reflected as property.
  */
 export class Toolbar extends HTMLElement {
   #shadowRoot = this.attachShadow({mode: 'open'});
@@ -142,7 +142,7 @@ export class Toolbar extends HTMLElement {
   /**
    * Returns whether this toolbar is floating.
    *
-   * @return `true` if the `"floating"` attribute is present on this toolbar,
+   * @returns `true` if the `"floating"` attribute is present on this toolbar,
    *         otherwise `false`.
    */
   get floating(): boolean {
@@ -152,7 +152,7 @@ export class Toolbar extends HTMLElement {
   /**
    * Changes the value of the `"floating"` attribute on this toolbar.
    *
-   * @param floating `true` to make the toolbar floating.
+   * @param floating - `true` to make the toolbar floating.
    */
   set floating(floating: boolean) {
     this.toggleAttribute('floating', floating);
@@ -161,7 +161,7 @@ export class Toolbar extends HTMLElement {
   /**
    * Returns whether this toolbar is wrappable.
    *
-   * @return `true` if the `"wrappable"` attribute is present on this toolbar,
+   * @returns `true` if the `"wrappable"` attribute is present on this toolbar,
    *         otherwise `false`.
    */
   get wrappable(): boolean {
@@ -171,7 +171,7 @@ export class Toolbar extends HTMLElement {
   /**
    * Changes the value of the `"wrappable"` attribute on this toolbar.
    *
-   * @param wrappable `true` to make the toolbar items wrap to a new row and
+   * @param wrappable - `true` to make the toolbar items wrap to a new row and
    *                  have the toolbar height adjust.
    */
   set wrappable(wrappable: boolean) {

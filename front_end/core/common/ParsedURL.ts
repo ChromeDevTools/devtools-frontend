@@ -184,7 +184,7 @@ export class ParsedURL {
   }
 
   /**
-   * @param name Must not be encoded
+   * @param name - Must not be encoded
    */
   static encodedFromParentPathAndName(parentPath: Platform.DevToolsPath.EncodedPathString, name: string):
       Platform.DevToolsPath.EncodedPathString {
@@ -192,7 +192,7 @@ export class ParsedURL {
   }
 
   /**
-   * @param name Must not be encoded
+   * @param name - Must not be encoded
    */
   static urlFromParentUrlAndName(parentUrl: Platform.DevToolsPath.UrlString, name: string):
       Platform.DevToolsPath.UrlString {

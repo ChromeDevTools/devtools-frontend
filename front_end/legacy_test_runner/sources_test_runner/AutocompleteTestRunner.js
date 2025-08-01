@@ -8,7 +8,7 @@ import {TestRunner} from '../test_runner/test_runner.js';
 import {dumpTextWithSelection} from './EditorTestRunner.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 
 export const dumpSuggestions = function(textEditor, lines) {

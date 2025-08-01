@@ -644,10 +644,10 @@ export function getGapQuads(
  *
  * @param quad1
  * @param quad2
- * @param size The size of the gap between the 2 quads
- * @param vertically whether the 2 quads are stacked vertically (quad1 above quad2), or horizontally (quad1 left of
+ * @param size - The size of the gap between the 2 quads
+ * @param vertically - whether the 2 quads are stacked vertically (quad1 above quad2), or horizontally (quad1 left of
  * quad2)
- * @param isReverse whether the direction is reversed (quad1 below quad2 or quad1 right of quad2)
+ * @param isReverse - whether the direction is reversed (quad1 below quad2 or quad1 right of quad2)
  */
 export function getGapQuadBetweenQuads(
     quad1: Quad, quad2: Quad, size: number, vertically: boolean, isReverse?: boolean) {
@@ -735,7 +735,7 @@ function segmentToPath(segment: [Position, Position]): PathCommands {
 /**
  * Transform a path array (as returned by the backend) that corresponds to a rectangle into a quad.
  * @param commands
- * @return The quad object
+ * @returns The quad object
  */
 function rectPathToQuad(commands: PathCommands): Quad {
   return {
@@ -822,7 +822,7 @@ export function uniteQuads(quad1: Quad, quad2: Quad, isHorizontalFlow: boolean, 
  * flush aginst the outer one.
  * @param innerQuad
  * @param outerQuad
- * @param horizontally The direction to grow the inner quad along
+ * @param horizontally - The direction to grow the inner quad along
  */
 export function growQuadToEdgesOf(innerQuad: Quad, outerQuad: Quad, horizontally: boolean): Quad {
   return {
@@ -841,7 +841,7 @@ export function growQuadToEdgesOf(innerQuad: Quad, outerQuad: Quad, horizontally
  * Return the x/y intersection of the 2 segments
  * @param segment1
  * @param segment2
- * @return the point where the segments intersect
+ * @returns the point where the segments intersect
  */
 export function intersectSegments([p1, p2]: Position[], [p3, p4]: Position[]): Position {
   const x = (((p1.x * p2.y - p1.y * p2.x) * (p3.x - p4.x)) - ((p1.x - p2.x) * (p3.x * p4.y - p3.y * p4.x))) /

@@ -10,7 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 export const HeapProfilerTestRunner = {};
 
@@ -677,7 +677,7 @@ HeapProfilerTestRunner.takeAndOpenSnapshot = async function(generator, callback)
 };
 
 /**
- * @return {!Promise<!Profiler.HeapSnapshotView.HeapProfileHeader>}
+ * @returns
  */
 HeapProfilerTestRunner.takeSnapshotPromise = function() {
   return new Promise(resolve => {

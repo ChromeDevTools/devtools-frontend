@@ -7,7 +7,7 @@ import type {TSESTree} from '@typescript-eslint/utils';
 import {createRule} from './utils/ruleCreator.ts';
 
 /**
- * @fileoverview Disallow usage of `assert.deepStrictEqual`.
+ * @file Disallow usage of `assert.deepStrictEqual`.
  *
  * In chai, `deepStrictEqual` is an alias for `deepEqual`, and we want to
  * consistently use the latter to not leave developers wondering what's

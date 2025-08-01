@@ -249,8 +249,8 @@ export class DevToolsPage extends PageWrapper {
   /**
    * Search for all elements based on their textContent
    *
-   * @param textContent The text content to search for.
-   * @param root The root of the search.
+   * @param textContent - The text content to search for.
+   * @param root - The root of the search.
    */
   async $$textContent(textContent: string, root?: puppeteer.ElementHandle) {
     return await this.$$(textContent, root, 'pierceShadowText');
@@ -316,8 +316,8 @@ export class DevToolsPage extends PageWrapper {
   /**
    * Search for an element based on its textContent.
    *
-   * @param textContent The text content to search for.
-   * @param root The root of the search.
+   * @param textContent - The text content to search for.
+   * @param root - The root of the search.
    */
   async $textContent(textContent: string, root?: puppeteer.ElementHandle) {
     return await this.$(textContent, root, 'pierceShadowText');
@@ -338,7 +338,7 @@ export class DevToolsPage extends PageWrapper {
    * Match multiple elements based on a selector and return their textContents, but only for those
    * elements that are visible.
    *
-   * @param selector jquery selector to match
+   * @param selector - jquery selector to match
    * @returns array containing text contents from visible elements
    */
   async getVisibleTextContents(selector: string) {
@@ -607,7 +607,7 @@ export const DEFAULT_DEVTOOLS_SETTINGS: DevtoolsSettings = {
 };
 
 /**
- * @internal This should not be use outside setup
+ * @internal
  */
 async function setDevToolsSettings(devToolsPata: DevToolsPage, settings: Record<string, string|boolean>) {
   if (!Object.keys(settings).length) {
@@ -630,7 +630,7 @@ async function setDevToolsSettings(devToolsPata: DevToolsPage, settings: Record<
 }
 
 /**
- * @internal This should not be use outside setup
+ * @internal
  */
 async function setDevToolsExperiments(devToolsPage: DevToolsPage, experiments: string[]) {
   if (!experiments.length) {
@@ -652,7 +652,7 @@ async function disableAnimations(devToolsPage: DevToolsPage) {
 }
 
 /**
- * @internal This should not be use outside setup
+ * @internal
  */
 async function setDockingSide(devToolsPage: DevToolsPage, side: string) {
   await devToolsPage.evaluate(`

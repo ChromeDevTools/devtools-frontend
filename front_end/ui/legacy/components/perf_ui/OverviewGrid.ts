@@ -472,7 +472,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   /**
    * This function will return the raw value of the give slider.
    * Since the OverviewGrid is used in Performance panel or Memory panel, the raw value can be in milliseconds or bytes.
-   * @param leftSlider if this slider is the left one
+   * @param leftSlider - if this slider is the left one
    * @returns the value in milliseconds or bytes
    */
   private getRawSliderValue(leftSlider?: boolean): number {

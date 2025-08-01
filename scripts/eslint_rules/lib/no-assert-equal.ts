@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Rule to ban usage of assert.equal
+ * @file Rule to ban usage of assert.equal
  * @author Jack Franklin
  */
 

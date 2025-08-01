@@ -35,7 +35,7 @@
  */
 
 /**
- * @fileoverview Allows a local ESLint rules directory to be used without a command-line flag
+ * @file Allows a local ESLint rules directory to be used without a command-line flag
  * @author Teddy Katz
  */
 

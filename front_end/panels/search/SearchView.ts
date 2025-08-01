@@ -519,7 +519,7 @@ export class SearchView extends UI.Widget.VBox {
    * on previous panel prints `[` character. So, if we use `event.key` and check
    * whether it is `[`, we break the shortcut in Turkish - Q keyboard layout.
    *
-   * @param event KeyboardEvent
+   * @param event - KeyboardEvent
    */
   private onKeyDownOnPanel(event: KeyboardEvent): void {
     const isMac = Host.Platform.isMac();

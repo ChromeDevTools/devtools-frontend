@@ -41,7 +41,7 @@ const UIStrings = {
   request: 'Request',
   /**
    *@description Title of a cell content in protocol monitor. A Network response refers to the act of acknowledging a
-  network request. Should not be confused with answer.
+   * network request. Should not be confused with answer.
    */
   response: 'Response',
   /**

@@ -165,11 +165,11 @@ export interface TooltipProperties {
  * @attr use-hotkey - If present, the tooltip will be shown on hover but not when receiving focus.
  *                    Requires a hotkey to open when fosed (Alt-down). When `"use-click"` is present
  *                    as well, use-click takes precedence.
- * @prop {String} id - reflects the `"id"` attribute.
- * @prop {Number} hoverDelay - reflects the `"hover-delay"` attribute.
- * @prop {String} variant - reflects the `"variant"` attribute.
- * @prop {Boolean} padding - reflects the `"padding"` attribute.
- * @prop {Boolean} useClick - reflects the `"click"` attribute.
+ * @property id - reflects the `"id"` attribute.
+ * @property hoverDelay - reflects the `"hover-delay"` attribute.
+ * @property variant - reflects the `"variant"` attribute.
+ * @property padding - reflects the `"padding"` attribute.
+ * @property useClick - reflects the `"click"` attribute.
  * @prop {Boolean} useHotkey - reflects the `"use-hotkey"` attribute.
  */
 export class Tooltip extends HTMLElement {

@@ -295,7 +295,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
         i18nString(UIStrings.noEffectSelected), i18nString(UIStrings.selectAnEffectAboveToInspectAnd));
     noEffectSelectedPlaceholder.show(timelineHint);
 
-    /** @const */ this.#defaultDuration = 100;
+    /** @constant */ this.#defaultDuration = 100;
     this.#durationInternal = this.#defaultDuration;
     this.#nodesMap = new Map();
     this.#uiAnimations = [];

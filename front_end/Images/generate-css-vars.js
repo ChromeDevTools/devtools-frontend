@@ -7,7 +7,7 @@ const {writeIfChanged} = require('../../scripts/build/ninja/write-if-changed.js'
 const [, , buildTimestamp, targetGenDir, targetName, ...imageSources] = process.argv;
 
 /**
- * @param {string} fileName
+ * @param fileName
  */
 function generateCSSVariableDefinition(fileName) {
   // The `style` referenced here is the `:root` style rule in the constructed stylesheet down below

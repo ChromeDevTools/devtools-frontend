@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview A library to identify and templatize manually constructed Toolbars.
+ * @file A library to identify and templatize manually constructed Toolbars.
  */
 
 import type {TSESTree} from '@typescript-eslint/utils';

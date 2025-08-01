@@ -38,7 +38,7 @@ const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least o
  *
  * @attr striped
  * @attr displayName
- * @prop filters
+ * @property filters
  */
 class DataGridElement extends HTMLElement {
   static readonly observedAttributes = ['striped', 'name', 'inline'];

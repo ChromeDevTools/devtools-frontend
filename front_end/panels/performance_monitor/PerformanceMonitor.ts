@@ -83,13 +83,13 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
     this.contentElement.classList.add('perfmon-pane');
     this.metricsBuffer = [];
-    /** @const */
+    /** @constant */
     this.pixelsPerMs = 10 / 1000;
-    /** @const */
+    /** @constant */
     this.pollIntervalMs = pollIntervalMs;
-    /** @const */
+    /** @constant */
     this.scaleHeight = 16;
-    /** @const */
+    /** @constant */
     this.graphHeight = 90;
     this.gridColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--divider-line');
     this.controlPane = new ControlPane(this.contentElement);

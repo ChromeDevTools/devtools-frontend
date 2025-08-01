@@ -58,8 +58,8 @@ export class FilePathScoreFunction {
    * The score of a match is also influenced by the number of consecutive
    * matches. The more consecutive matches there are, the higher the score.
    *
-   * @param data The data string to score.
-   * @param matchIndexes An optional array to store the indexes of matching
+   * @param data - The data string to score.
+   * @param matchIndexes - An optional array to store the indexes of matching
    * characters. If provided, it will be filled with the indexes of the matching
    * characters in the data string.
    * @returns The score of the data string.

@@ -31,8 +31,8 @@ const path = require('path');
  *
  * Now, the first path does *not* start with the second one, as expected.
  *
- * @param {string} file
- * @return {string}
+ * @param file
+ * @returns
  */
 function dirnameWithSeparator(file) {
   return path.dirname(file) + path.sep;

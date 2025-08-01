@@ -43,7 +43,7 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
   readonly #returnValue?: RemoteObject;
 
   /**
-   * @param isInnerMostFunction If `scope` is the innermost 'function' scope. Only used for labeling as we name the
+   * @param isInnerMostFunction - If `scope` is the innermost 'function' scope. Only used for labeling as we name the
    * scope of the paused function 'Local', while other outer 'function' scopes are named 'Closure'.
    */
   constructor(

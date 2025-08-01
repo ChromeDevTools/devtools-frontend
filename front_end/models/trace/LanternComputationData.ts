@@ -200,7 +200,7 @@ function createLanternRequest(
 }
 
 /**
- * @param request The request to find the initiator of
+ * @param request - The request to find the initiator of
  */
 function chooseInitiatorRequest(request: NetworkRequest, requestsByURL: Map<string, NetworkRequest[]>): NetworkRequest|
     null {

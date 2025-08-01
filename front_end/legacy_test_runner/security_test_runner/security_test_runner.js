@@ -7,7 +7,7 @@ import * as Security from '../../panels/security/security.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 export const SecurityTestRunner = {};
 

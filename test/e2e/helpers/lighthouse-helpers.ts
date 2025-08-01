@@ -71,7 +71,7 @@ type CheckboxLabel = Element&{checked: boolean};
 
 /**
  * Set the category checkboxes
- * @param selectedCategoryIds One of 'performance'|'accessibility'|'best-practices'|'seo'|'pwa'
+ * @param selectedCategoryIds - One of 'performance'|'accessibility'|'best-practices'|'seo'|'pwa'
  */
 export async function selectCategories(
     selectedCategoryIds: string[], devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

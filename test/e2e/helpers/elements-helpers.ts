@@ -828,11 +828,11 @@ export const focusCSSPropertyValue =
 
 /**
  * Edit a CSS property value in a given rule
- * @param selector The selector of the rule to be updated. Note that because of the way the Styles populates, it is
+ * @param selector - The selector of the rule to be updated. Note that because of the way the Styles populates, it is
  * important to provide a rule selector that is unique here, to avoid editing a property in the wrong rule.
- * @param propertyName The name of the property to be found and edited. If several properties have the same names, the
+ * @param propertyName - The name of the property to be found and edited. If several properties have the same names, the
  * first one is edited.
- * @param newValue The new value to be used.
+ * @param newValue - The new value to be used.
  */
 export async function editCSSProperty(
     selector: string, propertyName: string, newValue: string,

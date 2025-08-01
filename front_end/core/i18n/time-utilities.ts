@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Uses Intl.NumberFormat.
+ * @file Uses Intl.NumberFormat.
  * @see go/cpq:i18n-units-design
  */
 
@@ -96,7 +96,7 @@ export function formatMicroSecondsAsMillisFixedExpanded(time: Platform.Timing.Mi
 }
 
 /**
- * @param higherResolution if true, the output may show as microsends or as milliseconds with a fractional component
+ * @param higherResolution - if true, the output may show as microsends or as milliseconds with a fractional component
  */
 export function millisToString(ms: number, higherResolution?: boolean): string {
   if (!isFinite(ms)) {

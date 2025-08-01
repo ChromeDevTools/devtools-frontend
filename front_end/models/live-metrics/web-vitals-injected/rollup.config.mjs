@@ -6,7 +6,7 @@ import terser from '@rollup/plugin-terser';
 
 /**
  * Checks if an env variable is true.
- * @param {string|undefined} envVar
+ * @param envVar
  * @returns Whether the flag is 'true' or not.
  */
 function isEnvVarTrue(envVar) {

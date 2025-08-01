@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview Rule to identify Lit render calls that are not inside of a
+ * @file Rule to identify Lit render calls that are not inside of a
  * view function.
  */
 import type {TSESTree} from '@typescript-eslint/utils';

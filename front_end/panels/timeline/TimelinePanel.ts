@@ -243,7 +243,7 @@ const UIStrings = {
    */
   showDataAddedByExtensions: 'Show data added by extensions of the Performance panel',
   /**
-   Label for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
+   * Label for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
    */
   showCustomtracks: 'Show custom tracks',
 

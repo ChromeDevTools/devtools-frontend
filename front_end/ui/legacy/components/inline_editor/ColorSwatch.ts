@@ -97,7 +97,7 @@ export class ColorSwatch extends HTMLElement {
 
   /**
    * Render this swatch given a color object or text to be parsed as a color.
-   * @param color The color object or string to use for this swatch.
+   * @param color - The color object or string to use for this swatch.
    */
   renderColor(color: Common.Color.Color): void {
     this.color = color;

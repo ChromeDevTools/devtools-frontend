@@ -409,7 +409,7 @@ export class LiveAnnouncer {
    * if a dialog is showing, otherwise defaults to an element associated with the document body.
    * Messages longer than 10000 characters will be trimmed.
    *
-   * @param message The message to be announced.
+   * @param message - The message to be announced.
    */
   static #announce(message: string, role: AnnouncerRole): void {
     const dialog = Dialog.getInstance();

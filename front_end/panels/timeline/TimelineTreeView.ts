@@ -134,7 +134,7 @@ const UIStrings = {
    */
   timelineStack: 'Timeline stack',
   /**
-  /*@description Text to search by matching case of the input button
+   * /*@description Text to search by matching case of the input button
    */
   matchCase: 'Match case',
   /**

@@ -10,7 +10,7 @@ import * as Tracing from '../../services/tracing/tracing.js';
 import * as TestRunner from './TestRunner.js';
 
 /**
- * @param {!SDK.Target.Target} target
+ * @param target
  */
 function _setupTestHelpers(target) {
   self.TestRunner.BrowserAgent = target.browserAgent();
@@ -79,7 +79,7 @@ let _startedTest = false;
  */
 export class _TestObserver {
   /**
-   * @param {!SDK.Target.Target} target
+   * @param target
    * @override
    */
   targetAdded(target) {
@@ -102,7 +102,7 @@ export class _TestObserver {
   }
 
   /**
-   * @param {!SDK.Target.Target} target
+   * @param target
    * @override
    */
   targetRemoved(target) {

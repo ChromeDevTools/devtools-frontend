@@ -42,7 +42,7 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
   /**
    * Yields the current `AutomaticFileSystem` (if any).
    *
-   * @return the current automatic file system or `null`.
+   * @returns the current automatic file system or `null`.
    */
   get automaticFileSystem(): Readonly<AutomaticFileSystem>|null {
     return this.#automaticFileSystem;
@@ -56,7 +56,7 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
    * providing a `com.chrome.devtools.json` or not, and whether or not that file
    * (if it exists) provides workspace information.
    *
-   * @return `'available'` if the feature is available and the project settings
+   * @returns `'available'` if the feature is available and the project settings
    *         feature is also available, otherwise `'unavailable'`.
    */
   get availability(): AutomaticFileSystemAvailability {
@@ -173,7 +173,7 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
   /**
    * Attempt to connect the automatic workspace folder (if any).
    *
-   * @param addIfMissing if `false` (the default), this will only try to connect
+   * @param addIfMissing - if `false` (the default), this will only try to connect
    *                     to a previously connected automatic workspace folder.
    *                     If the folder was never connected before and `true` is
    *                     specified, the user will be asked to grant permission

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Rule to enforce that operations on Trace.Types.Timing numeric values are type-safe.
+ * @file Rule to enforce that operations on Trace.Types.Timing numeric values are type-safe.
  * @author Connor Clark
  */
 

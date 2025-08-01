@@ -30,7 +30,7 @@ const UIStrings = {
   /**
    *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to some other property.
    *@example {flex-wrap} PROPERTY_NAME
-    @example {nowrap} PROPERTY_VALUE
+   * @example {nowrap} PROPERTY_VALUE
    */
   ruleViolatedBySameElementRuleFix: 'Try setting {PROPERTY_NAME} to something other than {PROPERTY_VALUE}.',
   /**

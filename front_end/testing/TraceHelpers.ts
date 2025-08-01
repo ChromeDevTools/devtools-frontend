@@ -144,9 +144,9 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
 /**
  * Draws the network track in the flame chart using the legacy system.
  *
- * @param traceFileName The name of the trace file to be loaded to the flame
+ * @param traceFileName - The name of the trace file to be loaded to the flame
  * chart.
- * @param expanded if the track is expanded
+ * @param expanded - if the track is expanded
  * @returns a flame chart element and its corresponding data provider.
  */
 export async function getNetworkFlameChart(traceFileName: string, expanded: boolean): Promise<{

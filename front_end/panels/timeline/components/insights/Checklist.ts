@@ -4,7 +4,7 @@
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 /**
- * @fileoverview A list of pass/fail conditions for an insight.
+ * @file A list of pass/fail conditions for an insight.
  */
 
 import '../../../../ui/components/icon_button/icon_button.js';

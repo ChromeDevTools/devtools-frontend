@@ -176,7 +176,7 @@ export interface ConfigStringBuilder {
    * Specifies an optional context for the visual element. For string contexts
    * the convention is to use kebap case (e.g. `foo-bar`).
    *
-   * @param value Optional context, which can be either a string or a number.
+   * @param value - Optional context, which can be either a string or a number.
    * @returns The builder itself.
    */
   context: (value: string|number|undefined) => ConfigStringBuilder;
@@ -184,7 +184,7 @@ export interface ConfigStringBuilder {
   /**
    * Speficies the name of a `ParentProvider` used to lookup the parent visual element.
    *
-   * @param value The name of a previously registered `ParentProvider`.
+   * @param value - The name of a previously registered `ParentProvider`.
    * @returns The builder itself.
    */
   parent: (value: string) => ConfigStringBuilder;
@@ -192,7 +192,7 @@ export interface ConfigStringBuilder {
   /**
    * Specifies which DOM events to track for this visual element.
    *
-   * @param options The set of DOM events to track.
+   * @param options - The set of DOM events to track.
    * @returns The builder itself.
    */
   track: (options: TrackConfig) => ConfigStringBuilder;

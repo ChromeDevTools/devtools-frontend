@@ -4,7 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 self.ElementsTestRunner = self.ElementsTestRunner || {};
 

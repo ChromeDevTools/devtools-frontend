@@ -131,20 +131,20 @@ export class TraceLoader {
   /**
    * Executes only the new trace engine on the fixture and returns the resulting parsed data.
    *
-   * @param context The Mocha test context. Processing a trace can easily
+   * @param context - The Mocha test context. Processing a trace can easily
    * takes up longer than the default Mocha timeout, which is 2s. So we have to
    * increase this test's timeout. It might be null when we only render a
    * component example. See TraceLoader.setTestTimeout.
    *
-   * @param file The name of the trace file to be loaded.
+   * @param file - The name of the trace file to be loaded.
    * The trace file should be in ../panels/timeline/fixtures/traces folder.
    *
-   * @param options Additional trace options.
-   * @param options.initTraceBounds (defaults to `true`) after the trace is
+   * @param options - Additional trace options.
+   * @param options.initTraceBounds - (defaults to `true`) after the trace is
    * loaded, the TraceBounds manager will automatically be initialised using
    * the bounds from the trace.
    *
-   * @param config The config the new trace engine should run with. Optional,
+   * @param config - The config the new trace engine should run with. Optional,
    * will fall back to the Default config if not provided.
    */
   static async traceEngine(
@@ -309,9 +309,9 @@ export async function fetchFileAsText(url: URL): Promise<string> {
  * Wraps an async Promise with a timeout. We use this to break down and
  * instrument `TraceLoader` to understand on CQ where timeouts occur.
  *
- * @param asyncPromise The Promise representing the async operation to be timed.
- * @param timeoutMs The timeout in milliseconds.
- * @param stepName An identifier for the step (for logging).
+ * @param asyncPromise - The Promise representing the async operation to be timed.
+ * @param timeoutMs - The timeout in milliseconds.
+ * @param stepName - An identifier for the step (for logging).
  * @returns A promise that resolves with the operation's result, or rejects if it times out.
  */
 async function wrapInTimeout<T>(

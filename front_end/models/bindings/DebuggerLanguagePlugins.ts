@@ -75,7 +75,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * to uniquely identify the debugging data for a script on
  * the responsible language #plugin.
  *
- * @param script the unique raw module ID for the script.
+ * @param script - the unique raw module ID for the script.
  */
 function rawModuleIdForScript(script: SDK.Script.Script): string {
   return `${script.sourceURL}@${script.hash}`;

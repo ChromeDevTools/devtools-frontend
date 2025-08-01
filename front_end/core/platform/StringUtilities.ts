@@ -94,8 +94,8 @@ export const formatAsJSLiteral = (content: string): string => {
  * understands the %m$d notation to select the m-th parameter for this substitution,
  * as well as the optional precision for %s, %f, and %d.
  *
- * @param fmt format string.
- * @param args parameters to the format string.
+ * @param fmt - format string.
+ * @param args - parameters to the format string.
  * @returns the formatted output string.
  */
 export const sprintf = (fmt: string, ...args: unknown[]): string => {
@@ -258,8 +258,8 @@ const EXTENDED_KEBAB_CASE_REGEXP = /^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[
  * For example, it will yield `true` for `'my.amazing-string.literal'`, but `false`
  * for `'Another.AmazingLiteral'` or '`another_amazing_literal'`.
  *
- * @param inputStr the input string to test.
- * @return `true` if the `inputStr` follows the extended Kebab Case convention.
+ * @param inputStr - the input string to test.
+ * @returns `true` if the `inputStr` follows the extended Kebab Case convention.
  */
 export const isExtendedKebabCase = (inputStr: string): boolean => {
   return EXTENDED_KEBAB_CASE_REGEXP.test(inputStr);

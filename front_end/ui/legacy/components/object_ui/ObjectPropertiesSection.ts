@@ -581,7 +581,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   }
 }
 
-/** @const */
+/** @constant */
 const ARRAY_LOAD_THRESHOLD = 100;
 
 const maxRenderableStringLength = 10000;

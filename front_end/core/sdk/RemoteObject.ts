@@ -1177,8 +1177,8 @@ export class LinearMemoryInspectable {
   /**
    * Wrap `object` and `expression` into a reveable structure.
    *
-   * @param object A linear memory inspectable {@link RemoteObject}.
-   * @param expression An optional name of the field or variable holding the `object`.
+   * @param object - A linear memory inspectable {@link RemoteObject}.
+   * @param expression - An optional name of the field or variable holding the `object`.
    */
   constructor(object: RemoteObject, expression?: string) {
     if (!object.isLinearMemoryInspectable()) {

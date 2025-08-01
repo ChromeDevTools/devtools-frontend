@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview The sources panel (via DebuggerPausedMessage) and the
+ * @file The sources panel (via DebuggerPausedMessage) and the
  * "browser_debugger" module both require localized CategorizedBreakpoint
  * names. We put them "upstream" into "panels/sources" so they are
  * available to both.

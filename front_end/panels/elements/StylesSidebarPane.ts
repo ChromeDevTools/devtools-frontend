@@ -78,7 +78,7 @@ const UIStrings = {
    */
   noMatchingSelectorOrStyle: 'No matching selector or style',
   /**
-  /**
+   * /**
    *@description Text to announce the result of the filter input in the Styles Sidebar Pane of the Elements panel
    */
   visibleSelectors: '{n, plural, =1 {# visible selector listed below} other {# visible selectors listed below}}',

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Disallow customized built-in elements.
+ * @file Disallow customized built-in elements.
  *
  * Cusomized built-in elements are not supported in Safari and will likely never
  * be supported in Safari ever, which has already caused problems for example

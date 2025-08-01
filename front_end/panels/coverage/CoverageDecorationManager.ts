@@ -63,8 +63,8 @@ export class CoverageDecorationManager {
    * Returns the coverage per line of the provided uiSourceCode. The resulting array has the same length
    * as the provided `lines` array.
    *
-   * @param uiSourceCode The UISourceCode for which to get the coverage info.
-   * @param lineMappings The caller might have applied formatting to the UISourceCode. Each entry
+   * @param uiSourceCode - The UISourceCode for which to get the coverage info.
+   * @param lineMappings - The caller might have applied formatting to the UISourceCode. Each entry
    *                     in this array represents one line and the range specifies where it's found in
    *                     the original content.
    */

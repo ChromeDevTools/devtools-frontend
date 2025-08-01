@@ -33,7 +33,7 @@ export class FeatureSet {
   /**
    * Disables the given `feature`.
    *
-   * @param {string} feature the name of the feature to disable.
+   * @param feature - the name of the feature to disable.
    */
   disable(feature) {
     this.#disabled.add(feature);
@@ -48,8 +48,8 @@ export class FeatureSet {
    * ```
    * The parameters are additive.
    *
-   * @param {string} feature the name of the feature to enable.
-   * @param {object} parameters the additional parameters to pass to it, in
+   * @param feature - the name of the feature to enable.
+   * @param parameters - the additional parameters to pass to it, in
    *                            the form of key/value pairs.
    */
   enable(feature, parameters = {}) {
@@ -65,7 +65,7 @@ export class FeatureSet {
   /**
    * Merge the other `featureSet` into this.
    *
-   * @param featureSet the other `FeatureSet` to apply.
+   * @param featureSet - the other `FeatureSet` to apply.
    */
   merge(featureSet) {
     for (const feature of featureSet.#disabled) {
@@ -132,10 +132,10 @@ export class FeatureSet {
 /**
  * Constructs a human readable error message for the given build `error`.
  *
- * @param {Error} error the `Error` from the failed `autoninja` invocation.
- * @param {string} outDir the absolute path to the `target` out directory.
- * @param {string} target the target relative to `//out`.
- * @return {string} the human readable error message.
+ * @param error - the `Error` from the failed `autoninja` invocation.
+ * @param outDir - the absolute path to the `target` out directory.
+ * @param target - the target relative to `//out`.
+ * @returns the human readable error message.
  */
 function buildErrorMessageForNinja(error, outDir, target) {
   const {message, stderr, stdout} = error;
@@ -187,11 +187,11 @@ export class BuildError extends Error {
   /**
    * Constructs a new `BuildError` with the given parameters.
    *
-   * @param {BuildStep} step the build step that failed.
-   * @param {Object} options additional options for the `BuildError`.
-   * @param {Error} options.cause the actual cause for the build error.
-   * @param {string} options.outDir the absolute path to the `target` out directory.
-   * @param {string} options.target the target relative to `//out`.
+   * @param step - the build step that failed.
+   * @param options - additional options for the `BuildError`.
+   * @param options.cause - the actual cause for the build error.
+   * @param options.outDir - the absolute path to the `target` out directory.
+   * @param options.target - the target relative to `//out`.
    */
   constructor(step, options) {
     const {cause, outDir, target} = options;
@@ -212,8 +212,8 @@ export class BuildError extends Error {
  */
 
 /**
- * @param {string} target the target relative to `//out`.
- * @return {Promise<Map<string, string>>} the GN args for the `target`.
+ * @param target - the target relative to `//out`.
+ * @returns the GN args for the `target`.
  */
 export async function prepareBuild(target) {
   const outDir = path.join(rootPath(), 'out', target);
@@ -309,10 +309,10 @@ async function computeBuildTargetsForFiles(target, filenames) {
 }
 
 /**
- * @param {string} target
- * @param {AbortSignal=} signal
- * @param {Array<string>=} filenames
- * @return {Promise<BuildResult>} a `BuildResult` with statistics for the build.
+ * @param target
+ * @param signal
+ * @param filenames
+ * @returns a `BuildResult` with statistics for the build.
  */
 export async function build(target, signal, filenames) {
   const startTime = performance.now();

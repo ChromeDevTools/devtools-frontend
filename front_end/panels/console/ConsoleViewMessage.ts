@@ -233,8 +233,8 @@ export const getMessageForElement = (element: Element): ConsoleViewMessage|undef
  * Combines the error description (essentially the `Error#stack` property value)
  * with the `issueSummary`.
  *
- * @param description the `description` property of the `Error` remote object.
- * @param issueSummary the optional `issueSummary` of the `exceptionMetaData`.
+ * @param description - the `description` property of the `Error` remote object.
+ * @param issueSummary - the optional `issueSummary` of the `exceptionMetaData`.
  * @returns the enriched description.
  * @see https://goo.gle/devtools-reduce-network-noise-design
  */
@@ -2267,12 +2267,12 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
 
 /**
  * The maximum length before strings are considered too long for syntax highlighting.
- * @const
+ * @constant
  */
 const MaxLengthToIgnoreHighlighter = 10000;
 
 /**
- * @const
+ * @constant
  */
 export const MaxLengthForLinks = 40;
 

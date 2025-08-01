@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Rule to ban usage of `adoptedStyleSheets`.
+ * @file Rule to ban usage of `adoptedStyleSheets`.
  * @author Benedikt Meurer
  * @see https://web.dev/articles/constructable-stylesheets
  */

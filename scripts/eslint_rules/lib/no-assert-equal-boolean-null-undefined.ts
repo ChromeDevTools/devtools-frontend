@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Don't use assert equality on `boolean`, `null` or `undefined`.
+ * @file Don't use assert equality on `boolean`, `null` or `undefined`.
  *
  * Prefer the more specific `assert.isTrue`, `assert.notIsTrue`, `assert.isFalse`,
  * `assert.isNotFalse`, `assert.isNull`, `assert.isNotNull`, `assert.isDefined`,

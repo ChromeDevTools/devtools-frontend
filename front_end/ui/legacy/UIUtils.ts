@@ -1277,9 +1277,9 @@ export function createIconLabel(
  * html`<label><input type="radio" name=${name} jslog=${jslog}>${title}</label>`
  * ```
  *
- * @param name the name of the radio group.
- * @param title the label text for the radio button.
- * @param jslogContext the context string for the `jslog` attribute.
+ * @param name - the name of the radio group.
+ * @param title - the label text for the radio button.
+ * @param jslogContext - the context string for the `jslog` attribute.
  * @returns the pair of `HTMLLabelElement` and `HTMLInputElement`.
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio
  */
@@ -1306,9 +1306,9 @@ export function createRadioButton(
  * html`<input type="range" min=${min} max=${max} tabindex=${tabIndex}>`
  * ```
  *
- * @param min the minimum allowed value.
- * @param max the maximum allowed value.
- * @param tabIndex the value for the `tabindex` attribute.
+ * @param min - the minimum allowed value.
+ * @param max - the maximum allowed value.
+ * @param tabIndex - the value for the `tabindex` attribute.
  * @returns the newly created `HTMLInputElement` for the slider.
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range
  */
@@ -1963,8 +1963,8 @@ function focusChanged(event: Event): void {
  * Creates a new shadow DOM tree with the core styles and an optional list of
  * additional styles, and attaches it to the specified `element`.
  *
- * @param element the `Element` to attach the shadow DOM tree to.
- * @param options optional additional style sheets and options for `Element#attachShadow()`.
+ * @param element - the `Element` to attach the shadow DOM tree to.
+ * @param options - optional additional style sheets and options for `Element#attachShadow()`.
  * @returns the newly created `ShadowRoot`.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
  */
@@ -2027,7 +2027,7 @@ export function measuredScrollbarWidth(document?: Document|null): number {
  *   the search parameters, with `<channel>` being the release channel of
  *   Chrome ("stable", "beta", "dev", or "canary").
  *
- * @param url the URL to open in a new tab.
+ * @param url - the URL to open in a new tab.
  * @throws TypeError if `url` is not a valid URL.
  * @see https://en.wikipedia.org/wiki/UTM_parameters
  */

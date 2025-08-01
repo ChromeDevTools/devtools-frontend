@@ -318,7 +318,7 @@ const UIStrings = {
   copyAllURLs: 'Copy all URLs',
   /**
    *@description A context menu command in the Network panel, for copying the URLs of all requestes
-   (after applying the Network filter) to the clipboard.
+   * (after applying the Network filter) to the clipboard.
    */
   copyAllListedURLs: 'Copy all listed URLs',
   /**

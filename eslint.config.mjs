@@ -193,7 +193,7 @@ export default defineConfig([
       radix: 'error',
       'valid-typeof': 'error',
       'no-return-assign': ['error', 'always'],
-      'no-implicit-coercion': ['error', { allow: ['!!'] }],
+      'no-implicit-coercion': ['error', {allow: ['!!']}],
 
       'no-array-constructor': 'error',
 
@@ -287,10 +287,14 @@ export default defineConfig([
       'rulesdir/no-commented-out-import': 'error',
       'rulesdir/check-license-header': 'error',
       /**
-       * Ensures that JS Doc comments are properly aligned - all the starting
-       * `*` are in the right place.
+       * Enforce some consistency and usefulness of JSDoc comments, to make sure
+       * we actually benefit from them.
        */
       'jsdoc/check-alignment': 'error',
+      'jsdoc/empty-tags': 'error',
+      'jsdoc/require-asterisk-prefix': 'error',
+      'jsdoc/require-param-name': 'error',
+      'jsdoc/require-hyphen-before-param-description': 'error',
     },
   },
   {
@@ -305,11 +309,11 @@ export default defineConfig([
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-          import.meta.dirname,
-          'config',
-          'typescript',
-          'tsconfig.eslint.json',
-        ),
+            import.meta.dirname,
+            'config',
+            'typescript',
+            'tsconfig.eslint.json',
+            ),
       },
     },
 
@@ -554,12 +558,12 @@ export default defineConfig([
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-            import.meta.dirname,
-            'front_end',
-            'models',
-            'trace',
-            'trace.js',
-          ),
+              import.meta.dirname,
+              'front_end',
+              'models',
+              'trace',
+              'trace.js',
+              ),
           importName: 'Trace',
         },
       ],
@@ -802,12 +806,12 @@ export default defineConfig([
           bannedImportPaths: [
             {
               bannedPath: join(
-                import.meta.dirname,
-                'front_end',
-                'core',
-                'sdk',
-                'sdk.js',
-              ),
+                  import.meta.dirname,
+                  'front_end',
+                  'core',
+                  'sdk',
+                  'sdk.js',
+                  ),
               allowTypeImports: true,
             },
           ],

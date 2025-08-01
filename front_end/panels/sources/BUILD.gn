@@ -160,6 +160,7 @@ ts_library("unittests") {
     "OutlineQuickOpen.test.ts",
     "ResourceOriginPlugin.test.ts",
     "SourcesNavigator.test.ts",
+    "SourcesPanel.test.ts",
     "SourcesView.test.ts",
     "TabbedEditorContainer.test.ts",
     "UISourceCodeFrame.test.ts",

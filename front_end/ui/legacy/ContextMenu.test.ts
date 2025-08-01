@@ -155,7 +155,7 @@ describeWithEnvironment('ContextMenu', () => {
     const event = new Event('contextmenu');
     sinon.stub(event, 'target').value(document);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendAction('test-action', 'mockLabel', false, 'mockFeature');
+    contextMenu.defaultSection().appendAction('test-action', 'mockLabel', false, undefined, 'mockFeature');
     await contextMenu.show();
     sinon.assert.calledOnce(showContextMenuAtPoint);
 

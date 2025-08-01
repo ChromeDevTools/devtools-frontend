@@ -99,7 +99,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/ActionRegistration.ts', UISt
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ActionDelegate {
-  handleAction(context: Context, actionId: string): boolean;
+  handleAction(context: Context, actionId: string, opts?: Record<string, unknown>): boolean;
 }
 
 export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -115,13 +115,13 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     return this.actionRegistration.actionId;
   }
 
-  async execute(): Promise<boolean> {
+  async execute(opts?: Record<string, unknown>): Promise<boolean> {
     if (!this.actionRegistration.loadActionDelegate) {
       return false;
     }
     const delegate = await this.actionRegistration.loadActionDelegate();
     const actionId = this.id();
-    return delegate.handleAction(Context.instance(), actionId);
+    return delegate.handleAction(Context.instance(), actionId, opts);
   }
 
   icon(): string|undefined {

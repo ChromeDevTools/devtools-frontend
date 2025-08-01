@@ -167,6 +167,27 @@ const UIStrings = {
    *@description Text in Sources Panel of the Sources panel
    */
   openInSourcesPanel: 'Open in Sources panel',
+  /**
+   *@description Context menu text in Sources Panel to that opens a submenu with AI prompts.
+   */
+  debugWithAi: 'Debug with AI',
+  /**
+   *@description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
+   */
+  startAChat: 'Start a chat',
+  /**
+   *@description Text of a context menu item to redirect to the AI assistance panel and directly execute
+   * a prompt to assess the performance of a script.
+   */
+  assessPerformance: 'Assess performance',
+  /**
+   *@description Context menu item in Sources panel to explain a script via AI.
+   */
+  explainThisScript: 'Explain this script',
+  /**
+   *@description Context menu item in Sources panel to explain input handling in a script via AI.
+   */
+  explainInputHandling: 'Explain input handling',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -945,11 +966,28 @@ export class SourcesPanel extends UI.Panel.Panel implements
           });
     }
 
-    if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-panel-context')) {
+    const openAiAssistanceId = 'drjones.sources-panel-context';
+    if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
       const editorElement = this.element.querySelector('devtools-text-editor');
       if (!eventTarget.isSelfOrDescendant(editorElement) && uiSourceCode.contentType().isTextType()) {
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
-        contextMenu.footerSection().appendAction('drjones.sources-panel-context');
+        if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
+          const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+          const submenu = contextMenu.footerSection().appendSubMenuItem(
+              i18nString(UIStrings.debugWithAi), false, openAiAssistanceId);
+          submenu.defaultSection().appendAction('drjones.sources-panel-context', i18nString(UIStrings.startAChat));
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.assessPerformance), 'Is this script optimized for performance?',
+              openAiAssistanceId + '.performance');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.explainThisScript), 'What does this script do?',
+              openAiAssistanceId + '.script');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.explainInputHandling), 'Does the script handle user input safely',
+              openAiAssistanceId + '.input');
+        } else {
+          contextMenu.footerSection().appendAction(openAiAssistanceId);
+        }
       }
     }
 
@@ -959,6 +997,13 @@ export class SourcesPanel extends UI.Panel.Panel implements
             .scriptsForUISourceCode(uiSourceCode)
             .every(script => script.isJavaScript())) {
       this.callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
+    }
+
+    function appendSubmenuPromptAction(
+        submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action, label: Common.UIString.LocalizedString,
+        prompt: string, jslogContext: string): void {
+      submenu.defaultSection().appendItem(
+          label, () => action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
     }
   }
 

@@ -225,7 +225,7 @@ export class Section {
     return item;
   }
 
-  appendAction(actionId: string, label?: string, optional?: boolean, feature?: string): void {
+  appendAction(actionId: string, label?: string, optional?: boolean, jslogContext?: string, feature?: string): void {
     if (optional && !ActionRegistry.instance().hasAction(actionId)) {
       return;
     }
@@ -235,7 +235,7 @@ export class Section {
     }
     const result = this.appendItem(label, action.execute.bind(action), {
       disabled: !action.enabled(),
-      jslogContext: actionId,
+      jslogContext: jslogContext ?? actionId,
       featureName: feature,
     });
     const shortcut = ShortcutRegistry.instance().shortcutTitleForAction(actionId);

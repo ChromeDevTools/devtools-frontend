@@ -654,7 +654,40 @@ describeWithMockConnection('AI Assistance Panel', () => {
       ]);
     });
 
+    it('runs action-triggered prompts', async () => {
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+
+      const {panel, view} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient(
+            [
+              [{explanation: 'test'}],
+            ],
+            ),
+      });
+
+      panel.handleAction('freestyler.element-panel-context', {prompt: 'Tell me more'});
+      assert.deepEqual((await view.nextInput).messages, [
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'Tell me more',
+          imageInput: undefined,
+        },
+        {
+          answer: 'test',
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+    });
+
     it('should not save partial responses to conversation history', async () => {
+
       updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
@@ -993,6 +1026,33 @@ describeWithMockConnection('AI Assistance Panel', () => {
          assert.isTrue((await view.nextInput).blockedByCrossOrigin);
          assert.strictEqual(view.input.selectedContext?.getItem(), networkRequest2);
        });
+
+    it('starts a new chat when a predefined prompt for a cross origin request is sent', async () => {
+      const networkRequest = createNetworkRequest({
+        url: urlString`https://a.test`,
+      });
+      UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
+
+      const {panel, view} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([
+          [{explanation: 'test'}],
+        ])
+      });
+      panel.handleAction('drjones.network-floating-button', {prompt: 'Tell me more'});
+      assert.isFalse((await view.nextInput).blockedByCrossOrigin);
+
+      // Change context to https://b.test.
+      const networkRequest2 = createNetworkRequest({
+        url: urlString`https://b.test`,
+      });
+      UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest2);
+
+      // A predefined prompt from the user on a different origin has been initiated.
+      // This should automatically start a new chat, to allow for the prompt to be executed.
+      panel.handleAction('drjones.network-floating-button', {prompt: 'Tell me more about another one'});
+      const input = await view.nextInput;
+      assert.isFalse(input.blockedByCrossOrigin);
+    });
   });
 
   describe('auto agent selection for panels', () => {

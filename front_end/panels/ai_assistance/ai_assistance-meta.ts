@@ -35,6 +35,11 @@ const UIStrings = {
    */
   askAi: 'Ask AI',
   /**
+   *@description Text of a context menu item to redirect to the AI assistance panel with
+   * the current context
+   */
+  debugWithAi: 'Debug with AI',
+  /**
    * @description Message shown to the user if the DevTools locale is not
    * supported.
    */
@@ -258,7 +263,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.askAi),
+  title: i18nLazyString(UIStrings.debugWithAi),
   async loadActionDelegate() {
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();

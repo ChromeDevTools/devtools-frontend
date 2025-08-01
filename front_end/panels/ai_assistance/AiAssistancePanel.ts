@@ -1163,7 +1163,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     // Node picker is using linkifier.
   }
 
-  handleAction(actionId: string): void {
+  handleAction(actionId: string, opts?: Record<string, unknown>): void {
     if (this.#isLoading) {
       // If running some queries already, focus the input with the abort
       // button and do nothing.
@@ -1227,7 +1227,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       agent = this.#createAgent(targetConversationType);
     }
     this.#updateConversationState(agent);
-    this.#viewOutput.chatView?.focusTextInput();
+    const predefinedPrompt = opts?.['prompt'];
+    if (predefinedPrompt && typeof predefinedPrompt === 'string') {
+      this.#imageInput = undefined;
+      this.#isTextInputEmpty = true;
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
+      if (this.#blockedByCrossOrigin) {
+        this.#handleNewChatRequest();
+      }
+      void this.#startConversation(predefinedPrompt);
+    } else {
+      this.#viewOutput.chatView?.focusTextInput();
+    }
   }
 
   #populateHistoryMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
@@ -1877,10 +1888,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(
-      _context: UI.Context.Context,
-      actionId: string,
-      ): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string, opts?: Record<string, unknown>): boolean {
     switch (actionId) {
       case 'freestyler.elements-floating-button':
       case 'freestyler.element-panel-context':
@@ -1911,7 +1919,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
           }
 
           const widget = (await view.widget()) as AiAssistancePanel;
-          widget.handleAction(actionId);
+          widget.handleAction(actionId, opts);
         })();
         return true;
       }

@@ -1966,7 +1966,7 @@ export interface Layout extends Complete {
   };
 }
 export function isLayout(event: Event): event is Layout {
-  return event.name === Name.LAYOUT;
+  return event.name === Name.LAYOUT && Boolean(event.args && 'beginData' in event.args);
 }
 export interface InvalidateLayout extends Instant {
   name: Name.INVALIDATE_LAYOUT;

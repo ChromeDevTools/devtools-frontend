@@ -2040,3 +2040,82 @@ export function openInNewTab(url: URL|string): void {
   }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform.DevToolsPath.urlString`${url}`);
 }
+
+export interface PromotionDisplayState {
+  displayCount: number;
+  firstRegistered: number;
+  featureInteractionCount: number;
+}
+
+const MAX_DISPLAY_COUNT = 10;
+// 60 days in ms
+const MAX_DURATION = 60 * 24 * 60 * 60 * 1000;
+const MAX_INTERACTION_COUNT = 2;
+
+export class PromotionManager {
+  static #instance?: PromotionManager;
+
+  static instance(): PromotionManager {
+    if (!PromotionManager.#instance) {
+      PromotionManager.#instance = new PromotionManager();
+    }
+    return PromotionManager.#instance;
+  }
+
+  private getPromotionDisplayState(id: string): PromotionDisplayState|null {
+    const displayStateString = localStorage.getItem(id);
+    return displayStateString ? JSON.parse(displayStateString) : null;
+  }
+
+  private setPromotionDisplayState(id: string, promotionDisplayState: PromotionDisplayState): void {
+    localStorage.setItem(id, JSON.stringify(promotionDisplayState));
+  }
+
+  private registerPromotion(id: string): void {
+    this.setPromotionDisplayState(id, {
+      displayCount: 0,
+      firstRegistered: Date.now(),
+      featureInteractionCount: 0,
+    });
+  }
+
+  private recordPromotionShown(id: string): void {
+    const displayState = this.getPromotionDisplayState(id);
+    if (!displayState) {
+      throw new Error(`Cannot record promotion shown for unregistered promotion ${id}`);
+    }
+    this.setPromotionDisplayState(id, {
+      ...displayState,
+      displayCount: displayState.displayCount + 1,
+    });
+  }
+
+  private canShowPromotion(id: string): boolean {
+    const displayState = this.getPromotionDisplayState(id);
+    if (!displayState) {
+      this.registerPromotion(id);
+      return true;
+    }
+    return displayState.displayCount < MAX_DISPLAY_COUNT && Date.now() - displayState.firstRegistered < MAX_DURATION &&
+        displayState.featureInteractionCount < MAX_INTERACTION_COUNT;
+  }
+
+  recordFeatureInteraction(id: string): void {
+    const displayState = this.getPromotionDisplayState(id);
+    if (!displayState) {
+      throw new Error(`Cannot record feature interaction for unregistered promotion ${id}`);
+    }
+    this.setPromotionDisplayState(id, {
+      ...displayState,
+      featureInteractionCount: displayState.featureInteractionCount + 1,
+    });
+  }
+
+  maybeShowPromotion(id: string): boolean {
+    if (this.canShowPromotion(id)) {
+      this.recordPromotionShown(id);
+      return true;
+    }
+    return false;
+  }
+}

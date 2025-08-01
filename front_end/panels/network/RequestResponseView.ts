@@ -105,7 +105,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target:
     // clang-format on
   }
 
-  render(widget, target, {host: input});
+  render(widget, target);
 };
 
 export class RequestResponseView extends UI.Widget.VBox {

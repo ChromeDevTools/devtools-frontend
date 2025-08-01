@@ -126,7 +126,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         </devtools-data-grid>
         ${input.excludedFolderPaths.filter(({status}) => status !== ExcludedFolderStatus.VALID).map(({status}) =>
           html`<span class="excluded-folder-error">${statusString(status)}</span>`)}
-    </div>`, target, {host: input});
+    </div>`, target);
   // clang-format on
 };
 

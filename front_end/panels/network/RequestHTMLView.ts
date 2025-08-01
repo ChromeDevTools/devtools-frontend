@@ -52,7 +52,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           csp="default-src 'none';img-src data:;style-src 'unsafe-inline'" src=${input.dataURL}
           tabindex="-1" role="presentation"></iframe>` : nothing}
     </div>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 

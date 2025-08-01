@@ -38,7 +38,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                 .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, {target: sdkTarget, linkifier, options})}>
               </devtools-widget>` :
          html`<div class="gray-info-message">${i18nString(UIStrings.noStackTraceAvailable)}</div>`}`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 

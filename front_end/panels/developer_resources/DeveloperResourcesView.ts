@@ -113,7 +113,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               i18nString(UIStrings.resources, {n: input.numResources})}
          </div>
       </div>
-    </div>`, target, {host: input});
+    </div>`, target);
   // clang-format on
 };
 

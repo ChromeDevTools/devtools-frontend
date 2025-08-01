@@ -120,8 +120,8 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
                 ${viewSourcesTooltip}
             </div>
         </div>
-        `, target, {host: input});
-  // clang-format on
+        `, target);
+    // clang-format on
 };
 
 export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {

@@ -63,7 +63,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             .variant=${Buttons.Button.Variant.OUTLINED}>${i18nString(UIStrings.reconnectDevtools)}</devtools-button>
       </div>
     </div>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 

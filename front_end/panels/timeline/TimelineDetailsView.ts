@@ -678,7 +678,7 @@ const SUMMARY_DEFAULT_VIEW: View = (input, _output, target) => {
             eventToInsightsMap: input.eventToRelatedInsightsMap,
           })}></devtools-widget>
       `,
-      target, {host: input});
+      target);
   // clang-format on
 };
 

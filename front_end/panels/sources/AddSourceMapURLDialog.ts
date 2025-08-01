@@ -51,7 +51,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         @keydown=${input.onKeyDown} ${ref(e => { output.input = e as HTMLInputElement; })}>
     <devtools-button @click=${input.apply} .jslogContext=${'add'}
         .variant=${Buttons.Button.Variant.OUTLINED}>${i18nString(UIStrings.add)}</devtools-button>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 

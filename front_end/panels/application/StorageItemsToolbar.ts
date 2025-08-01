@@ -90,7 +90,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElem
       </devtools-toolbar>
       ${input.metadataView}`,
       // clang-format on
-      target, {host: input});
+      target);
 };
 
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;

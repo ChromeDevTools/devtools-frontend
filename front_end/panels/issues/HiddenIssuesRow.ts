@@ -59,7 +59,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: ViewOutput, target: HTMLE
                      @click=${input.onUnhideAllIssues}
                      @keydown=${stopPropagationForEnter}
                      .variant=${Buttons.Button.Variant.OUTLINED}>${i18nString(UIStrings.unhideAll)}</devtools-button>
-  </div>`, target, {host: input});
+  </div>`, target);
   // clang-format on
 };
 

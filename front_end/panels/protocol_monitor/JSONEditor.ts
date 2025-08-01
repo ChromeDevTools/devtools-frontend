@@ -1270,6 +1270,6 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                         .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
                         @click=${input.onCommandSend}></devtools-button>
       </devtools-toolbar>
-    </div>`, target, {host: input});
+    </div>`, target);
   // clang-format on
 };

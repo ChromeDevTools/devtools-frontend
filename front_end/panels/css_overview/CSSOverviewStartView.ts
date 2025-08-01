@@ -85,7 +85,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
         }}>
       </devtools-feedback-button>
     </div>`,
-    target, { host: input });
+    target);
   // clang-format on
 };
 

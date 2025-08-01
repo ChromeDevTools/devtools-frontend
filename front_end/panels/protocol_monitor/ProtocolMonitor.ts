@@ -354,8 +354,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               ${widgetRef(JSONEditor, e => {output.editorWidget = e;})}>
           </devtools-widget>
         </devtools-split-view>`,
-        target,
-        {host: input}
+        target
     );
   // clang-format on
 };

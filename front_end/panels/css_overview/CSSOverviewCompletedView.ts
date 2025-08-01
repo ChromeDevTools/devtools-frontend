@@ -346,7 +346,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           </devtools-widget>
         </devtools-split-view>
       </devtools-split-view>`,
-      target, {host: input});
+      target);
   // clang-format on
 };
 
@@ -922,7 +922,7 @@ export const ELEMENT_DETAILS_DEFAULT_VIEW: ElementDetailsViewFunction = (input, 
         </table>
       </devtools-data-grid>
     </div>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 

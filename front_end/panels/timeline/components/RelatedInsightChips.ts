@@ -86,7 +86,7 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
       const {activeEvent, eventToInsightsMap} = input;
       const relatedInsights = activeEvent ? eventToInsightsMap.get(activeEvent) ?? [] : [];
       if (!activeEvent || eventToInsightsMap.size === 0 || relatedInsights.length === 0) {
-        render(html``, target, {host: input});
+        render(html``, target);
         return;
       }
 
@@ -131,6 +131,6 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
       render(html`<style>${relatedInsightsStyles}</style>
         <ul>${insightMessages}</ul>
         <ul>${insightChips}</ul>`,
-      target, {host: input});
+      target);
       // clang-format on
     };

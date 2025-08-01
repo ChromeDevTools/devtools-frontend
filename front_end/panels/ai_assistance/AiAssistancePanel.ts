@@ -399,7 +399,6 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
       </div>
     `,
     target,
-    { host: input },
   );
   // clang-format on
 }

@@ -522,7 +522,7 @@ export const DEFAULT_VIEW: ViewFunction = (input, output, target) => {
       ${renderNewAuthenticatorSection(
           input.newAuthenticatorOptions, input.internalTransportAvailable,  input.updateNewAuthenticatorOptions, input.addAuthenticator)}
     </div>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 

@@ -149,7 +149,7 @@ const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): v
         ></devtools-toolbar-input>
     </devtools-toolbar>`,
       // clang-format on
-      target, {host: input});
+      target);
 };
 
 export class FilterToolbar extends Common.ObjectWrapper.eventMixin<FilterToolbar.EventTypes, typeof UI.Widget.VBox>(

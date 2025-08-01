@@ -132,7 +132,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               .map(state => createElementStateCheckbox(state))}
         </div>
       </details>
-    </div>`, target, {host: input});
+    </div>`, target);
   // clang-format on
 };
 

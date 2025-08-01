@@ -107,7 +107,7 @@ export class ReleaseNoteView extends UI.Panel.Panel {
           </div>
         </div>
       </div>
-    `, target, {host: input});
+    `, target);
     // clang-format on
   }) {
     super('whats-new', true);

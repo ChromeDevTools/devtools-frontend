@@ -29,7 +29,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     <style>${targetCrashedScreenStyles}</style>
     <div class="message">${i18nString(UIStrings.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString(UIStrings.oncePageIsReloadedDevtoolsWill)}</div>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 

@@ -80,7 +80,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
         `
       }
     </div>
-  `, target, {host: input});
+  `, target);
   // clang-format on
 };
 

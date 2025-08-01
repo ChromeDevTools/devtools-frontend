@@ -359,7 +359,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
         : ''}
       </div>`,
       // clang-format on
-      target, {host: input});
+      target);
 };
 
 type View = (input: ViewInput, output: object, element: HTMLElement) => void;

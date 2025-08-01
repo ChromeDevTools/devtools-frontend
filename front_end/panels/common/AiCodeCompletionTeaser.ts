@@ -85,7 +85,7 @@ export type View = (input: ViewInput, output: object, target: HTMLElement) => vo
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   if (input.aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
-    render(nothing, target, {host: input});
+    render(nothing, target);
     return;
   }
   const cmdOrCtrl =
@@ -106,7 +106,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                 ${lockedString(UIStringsNotTranslate.dontShowAgain)}
             </span>
           </div>
-        `, target, {host: input}
+        `, target
       );
   // clang-format on
 };

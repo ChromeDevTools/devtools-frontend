@@ -83,7 +83,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             </div>`;
         })}
       </div>`,
-      target, {host: input});
+      target);
   // clang-format on
 };
 

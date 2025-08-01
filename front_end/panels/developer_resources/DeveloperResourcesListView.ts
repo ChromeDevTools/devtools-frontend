@@ -162,7 +162,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
           })}
           </table>
         </devtools-data-grid>`,
-        target, {host: input});
+        target);
   // clang-format on
 };
 

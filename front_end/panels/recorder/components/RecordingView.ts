@@ -862,7 +862,6 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     </div>
   `,
     target,
-    { host: input },
   );
   // clang-format on
 };

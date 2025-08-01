@@ -114,7 +114,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
         click: true
       })}
          ></devtools-issue-counter></div>`,
-      target, {host: input});
+      target);
 };
 
 export class WarningErrorCounterWidget extends UI.Widget.Widget {

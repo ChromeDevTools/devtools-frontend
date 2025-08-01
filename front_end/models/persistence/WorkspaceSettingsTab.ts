@@ -92,7 +92,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             @click=${input.onAddClicked}>${i18nString(UIStrings.addFolder)}</devtools-button>
         </div>
       </div>
-    </div>`, target, {host: input});
+    </div>`, target);
   // clang-format on
 };
 

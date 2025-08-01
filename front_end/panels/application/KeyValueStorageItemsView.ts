@@ -163,7 +163,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
               </devtools-widget>
             </devtools-split-view>`,
             // clang-format on
-            target, {host: input});
+            target);
       };
     }
     super();

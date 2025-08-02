@@ -474,6 +474,30 @@ const UIStrings = {
    * @description Text for the Show only/Hide requests dropdown button of the filterbar
    */
   moreFilters: 'More filters',
+  /**
+   *@description Context menu text in Network Panel to that opens a submenu with AI prompts.
+   */
+  debugWithAi: 'Debug with AI',
+  /**
+   *@description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
+   */
+  startAChat: 'Start a chat',
+  /**
+   *@description Context menu item in Network panel to explain the purpose of a request via AI.
+   */
+  explainPurpose: 'Explain purpose',
+  /**
+   *@description Context menu item in Network panel to explain why a request is slow via AI.
+   */
+  explainSlowness: 'Explain slowness',
+  /**
+   *@description Context menu item in Network panel to explain why a request is failing via AI.
+   */
+  explainFailures: 'Explain failures',
+  /**
+   *@description Context menu item in Network panel to assess security headers of a request via AI.
+   */
+  assessSecurityHeaders: 'Assess security headers',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1687,11 +1711,36 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const filtered = this.filterBar.hasActiveFilter();
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString(UIStrings.copy), false, 'copy');
     if (request) {
-      if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.network-panel-context')) {
+      const openAiAssistanceId = 'drjones.network-panel-context';
+      if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+        function appendSubmenuPromptAction(
+            submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action,
+            label: Common.UIString.LocalizedString, prompt: string, jslogContext: string): void {
+          submenu.defaultSection().appendItem(
+              label, async () => await action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
+        }
+
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, request);
-        contextMenu.footerSection().appendAction(
-            'drjones.network-panel-context',
-        );
+        if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
+          const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+          const submenu = contextMenu.footerSection().appendSubMenuItem(
+              i18nString(UIStrings.debugWithAi), false, openAiAssistanceId);
+          submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.explainPurpose), 'What is the purpose of this request?',
+              openAiAssistanceId + '.purpose');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.explainSlowness), 'Why is this request taking so long?',
+              openAiAssistanceId + '.slowness');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.explainFailures), 'Why is the request failing?',
+              openAiAssistanceId + '.failures');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.assessSecurityHeaders), 'Are there any security headers present?',
+              openAiAssistanceId + '.security');
+        } else {
+          contextMenu.footerSection().appendAction(openAiAssistanceId);
+        }
       }
       copyMenu.defaultSection().appendItem(
           i18nString(UIStrings.copyURL),

@@ -20,7 +20,8 @@ import {
   createTarget,
   describeWithEnvironment,
   registerNoopActions,
-  stubNoopSettings
+  stubNoopSettings,
+  updateHostConfig
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
@@ -993,6 +994,46 @@ describeWithEnvironment('NetworkLogView', () => {
     } catch {
       assert.fail('Creating the network view without registering the actions shouldn\'t fail.');
     }
+  });
+
+  it('shows Debug with AI menu and submenu items when the flag is on', () => {
+    updateHostConfig({
+      devToolsAiSubmenuPrompts: {
+        enabled: true,
+      },
+    });
+    stubNoopSettings();
+    UI.ActionRegistration.registerActionExtension({
+      actionId: 'drjones.network-panel-context',
+      title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
+      category: UI.ActionRegistration.ActionCategory.GLOBAL,
+    });
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+
+    const filterBar = new UI.FilterBar.FilterBar('network-test');
+    const progressBarContainer = document.createElement('div');
+    const setting = Common.Settings.Settings.instance().createSetting('network-log-large-rows', false);
+    const networkLogView = new Network.NetworkLogView.NetworkLogView(filterBar, progressBarContainer, setting);
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/script.js`,
+        Platform.DevToolsPath.urlString``, null, null, null);
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+
+    networkLogView.handleContextMenuForRequest(contextMenu, request);
+
+    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
+    assert.exists(debugWithAiItem);
+    assert.deepEqual(
+        debugWithAiItem?.subItems?.map(item => item.label),
+        ['Start a chat', 'Explain purpose', 'Explain slowness', 'Explain failures', 'Assess security headers']);
+
+    // Cleanup
+    UI.ActionRegistry.ActionRegistry.reset();
+    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
   });
 });
 

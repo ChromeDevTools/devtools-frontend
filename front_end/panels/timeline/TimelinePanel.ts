@@ -509,7 +509,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.panelToolbar.wrappable = true;
     this.panelRightToolbar = timelineToolbarContainer.createChild('devtools-toolbar');
     this.panelRightToolbar.role = 'presentation';
-    if (!isNode && this.hasPrimaryTarget()) {
+    if (!isNode && this.canRecord()) {
       this.createSettingsPane();
       this.updateShowSettingsToolbarButton();
     }
@@ -1045,17 +1045,18 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    * not possible, like an enhanced trace (which opens a new devtools window) or
    * trace.cafe.
    */
-  private hasPrimaryTarget(): boolean {
-    return Boolean(SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.sessionId);
+  private canRecord(): boolean {
+    // TODO(paulirish) Determine a more robust method as checking `primaryPageTarget()?.sessionId` isn't accurate.
+    return true;
   }
 
   private populateToolbar(): void {
-    const hasPrimaryTarget = this.hasPrimaryTarget();
+    const canRecord = this.canRecord();
 
-    if (hasPrimaryTarget || isNode) {
+    if (canRecord || isNode) {
       this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
     }
-    if (hasPrimaryTarget) {
+    if (canRecord) {
       this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.recordReloadAction));
     }
 
@@ -1100,7 +1101,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.panelToolbar.appendToolbarItem(this.loadButton);
     this.panelToolbar.appendToolbarItem(this.saveButton);
 
-    if (hasPrimaryTarget) {
+    if (canRecord) {
       this.panelToolbar.appendSeparator();
 
       if (!isNode) {
@@ -1129,7 +1130,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.showMemoryToolbarCheckbox =
         this.createSettingCheckbox(this.showMemorySetting, i18nString(UIStrings.showMemoryTimeline));
 
-    if (hasPrimaryTarget) {
+    if (canRecord) {
       // GC
       this.panelToolbar.appendToolbarItem(this.showMemoryToolbarCheckbox);
       this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('components.collect-garbage'));
@@ -1155,7 +1156,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     // Settings
-    if (!isNode && hasPrimaryTarget) {
+    if (!isNode && canRecord) {
       this.panelRightToolbar.appendSeparator();
       this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
     }
@@ -1659,7 +1660,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private updateSettingsPaneVisibility(): void {
-    if (isNode || !this.hasPrimaryTarget()) {
+    if (isNode || !this.canRecord()) {
       return;
     }
     if (this.showSettingsPaneSetting.get()) {
@@ -1945,7 +1946,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.toggleRecordAction.setToggled(this.state === State.RECORDING);
     this.toggleRecordAction.setEnabled(this.state === State.RECORDING || this.state === State.IDLE);
 
-    if (!this.hasPrimaryTarget()) {
+    if (!this.canRecord()) {
       return;
     }
 

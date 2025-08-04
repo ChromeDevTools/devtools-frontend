@@ -86,10 +86,8 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
   private editor?: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>;
 
   constructor() {
-    super();
+    super({jslog: `${VisualLogging.pane('devices')}`});
     this.registerRequiredCSS(devicesSettingsTabStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.pane('devices')}`);
 
     this.containerElement =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');

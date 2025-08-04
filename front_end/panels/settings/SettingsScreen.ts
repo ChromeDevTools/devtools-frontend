@@ -252,13 +252,12 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
   #updateSyncSectionTimerId = -1;
 
   constructor() {
-    super();
+    super({jslog: `${VisualLogging.pane('preferences')}`});
     this.element.classList.add('settings-tab-container');
     this.element.id = 'preferences-tab-content';
     this.containerElement =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane('preferences')}`);
     this.containerElement.classList.add('settings-multicolumn-card-container');
 
     // AI, GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
@@ -408,13 +407,12 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTa
   private readonly containerElement: HTMLElement;
 
   constructor() {
-    super();
+    super({jslog: `${VisualLogging.pane('experiments')}`});
     this.element.classList.add('settings-tab-container');
     this.element.id = 'experiments-tab-content';
     this.containerElement =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
     this.containerElement.classList.add('settings-card-container');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('experiments')}`);
 
     const filterSection = this.containerElement.createChild('div');
     filterSection.classList.add('experiments-filter');

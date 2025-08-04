@@ -1,7 +1,7 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import '../../ui/components/linkifier/linkifier.js';
@@ -213,11 +213,10 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       </devtools-data-grid>`,
         target, {host: this});
   }) {
-    super();
+    super({jslog: `${VisualLogging.pane('selector-stats').track({resize: true})}`});
     this.registerRequiredCSS(timelineSelectorStatsViewStyles);
 
     this.#view = view;
-    this.element.setAttribute('jslog', `${VisualLogging.pane('selector-stats').track({resize: true})}`);
     this.#selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
     this.#parsedTrace = parsedTrace;
 

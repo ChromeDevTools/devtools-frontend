@@ -193,7 +193,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   #mainPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedConfigPerTrace>;
 
   constructor(delegate: TimelineModeViewDelegate) {
-    super();
+    super({jslog: `${VisualLogging.section('timeline.flame-chart-view')}`});
     this.registerRequiredCSS(timelineFlameChartViewStyles);
     this.element.classList.add('timeline-flamechart');
 
@@ -358,8 +358,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
        */
       this.focus();
     });
-
-    this.element.setAttribute('jslog', `${VisualLogging.section('timeline.flame-chart-view')}`);
 
     this.networkPane = new UI.Widget.VBox();
     this.networkPane.setMinimumSize(23, 23);

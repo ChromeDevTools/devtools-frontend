@@ -1475,9 +1475,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 export class QuickSourceView extends UI.Widget.VBox {
   private readonly view: SourcesView;
   constructor() {
-    super();
+    super({jslog: `${VisualLogging.panel('sources.quick').track({resize: true})}`});
     this.element.classList.add('sources-view-wrapper');
-    this.element.setAttribute('jslog', `${VisualLogging.panel('sources.quick').track({resize: true})}`);
     this.view = SourcesPanel.instance().sourcesView();
   }
 

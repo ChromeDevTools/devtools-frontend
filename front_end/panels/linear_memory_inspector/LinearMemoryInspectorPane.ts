@@ -40,8 +40,7 @@ export class LinearMemoryInspectorPane extends Common.ObjectWrapper.eventMixin<E
   readonly #tabbedPane: UI.TabbedPane.TabbedPane;
 
   constructor() {
-    super();
-    this.element.setAttribute('jslog', `${VisualLogging.panel('linear-memory-inspector').track({resize: true})}`);
+    super({jslog: `${VisualLogging.panel('linear-memory-inspector').track({resize: true})}`});
     this.#tabbedPane = new UI.TabbedPane.TabbedPane();
     this.#tabbedPane.setPlaceholderElement(this.createPlaceholder());
     this.#tabbedPane.setCloseableTabs(true);

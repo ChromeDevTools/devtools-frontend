@@ -112,11 +112,10 @@ export class RequestCookiesView extends UI.Widget.Widget {
   private readonly malformedResponseCookiesList: HTMLElement;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    super();
+    super({jslog: `${VisualLogging.pane('cookies').track({resize: true})}`});
     this.registerRequiredCSS(requestCookiesViewStyles);
 
     this.element.classList.add('request-cookies-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('cookies').track({resize: true})}`);
 
     this.request = request;
     this.showFilteredOutCookiesSetting = Common.Settings.Settings.instance().createSetting(

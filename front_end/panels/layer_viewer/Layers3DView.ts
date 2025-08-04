@@ -142,9 +142,11 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private mouseDownY?: number;
 
   constructor(layerViewHost: LayerViewHost) {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane('layers-3d-view')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(layers3DViewStyles);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('layers-3d-view')}`);
 
     this.contentElement.classList.add('layers-3d-view');
     this.failBanner = new UI.EmptyWidget.EmptyWidget(

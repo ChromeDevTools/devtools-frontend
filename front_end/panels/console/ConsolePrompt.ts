@@ -98,7 +98,12 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   constructor() {
-    super();
+    super({
+      jslog: `${VisualLogging.textField('console-prompt').track({
+        change: true,
+        keydown: 'Enter|ArrowUp|ArrowDown|PageUp',
+      })}`,
+    });
     this.registerRequiredCSS(consolePromptStyles);
     this.addCompletionsFromHistory = true;
     this.historyInternal = new TextEditor.AutocompleteHistory.AutocompleteHistory(
@@ -190,10 +195,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // Record the console tool load time after the console prompt constructor is complete.
     Host.userMetrics.panelLoaded('console', 'DevTools.Launch.Console');
 
-    this.element.setAttribute('jslog', `${VisualLogging.textField('console-prompt').track({
-                                change: true,
-                                keydown: 'Enter|ArrowUp|ArrowDown|PageUp',
-                              })}`);
     if (this.isAiCodeCompletionEnabled()) {
       this.aiCodeCompletionSetting.addChangeListener(this.onAiCodeCompletionSettingChanged.bind(this));
       this.onAiCodeCompletionSettingChanged();

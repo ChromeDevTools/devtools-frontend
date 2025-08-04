@@ -76,10 +76,8 @@ export class PlayerEventsView extends UI.Widget.VBox {
   private firstEventTime: number;
 
   constructor() {
-    super();
+    super({jslog: `${VisualLogging.pane('events')}`});
     this.registerRequiredCSS(eventDisplayTableStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.pane('events')}`);
 
     // Set up element styles.
 

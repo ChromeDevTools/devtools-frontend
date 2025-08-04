@@ -86,7 +86,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   constructor(
       editorLineNumber: number, oldCondition: string, isLogpoint: boolean,
       onFinish: (result: BreakpointEditDialogResult) => void) {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.dialog('edit-breakpoint')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(breakpointEditDialogStyles);
 
     const editorConfig = [
@@ -109,7 +112,6 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.element.tabIndex = -1;
 
     this.element.classList.add('sources-edit-breakpoint-dialog');
-    this.element.setAttribute('jslog', `${VisualLogging.dialog('edit-breakpoint')}`);
     const header = this.contentElement.createChild('div', 'dialog-header');
     const toolbar = header.createChild('devtools-toolbar', 'source-frame-breakpoint-toolbar');
     toolbar.appendText(`Line ${editorLineNumber + 1}:`);

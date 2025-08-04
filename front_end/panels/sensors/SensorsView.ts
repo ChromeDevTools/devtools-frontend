@@ -212,9 +212,11 @@ export class SensorsView extends UI.Widget.VBox {
   private originalBoxMatrix?: DOMMatrix;
 
   constructor() {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.panel('sensors').track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(sensorsStyles);
-    this.element.setAttribute('jslog', `${VisualLogging.panel('sensors').track({resize: true})}`);
     this.contentElement.classList.add('sensors-view');
 
     this.#locationSetting = Common.Settings.Settings.instance().createSetting('emulation.location-override', '');

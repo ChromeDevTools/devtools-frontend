@@ -178,12 +178,13 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   }
 
   constructor(serviceName: Protocol.BackgroundService.ServiceName, model: BackgroundServiceModel) {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane().context(Platform.StringUtilities.toKebabCase(serviceName))}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(emptyWidgetStyles, backgroundServiceViewStyles);
 
     this.serviceName = serviceName;
-    const kebabName = Platform.StringUtilities.toKebabCase(serviceName);
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context(kebabName)}`);
 
     this.model = model;
     this.model.addEventListener(Events.RecordingStateChanged, this.onRecordingStateChanged, this);

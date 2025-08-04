@@ -40,10 +40,11 @@ export class ChangesView extends UI.Widget.VBox {
   private readonly combinedDiffView: CombinedDiffView.CombinedDiffView;
 
   constructor() {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.panel('changes').track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(changesViewStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.panel('changes').track({resize: true})}`);
 
     const splitWidget = new UI.SplitWidget.SplitWidget(true /* vertical */, false /* sidebar on left */);
     const mainWidget = new UI.Widget.VBox();

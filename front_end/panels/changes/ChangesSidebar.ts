@@ -30,7 +30,8 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly treeElements: Map<Workspace.UISourceCode.UISourceCode, UISourceCodeTreeElement>;
   private readonly workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   constructor(workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl) {
-    super();
+    super({jslog: `${VisualLogging.pane('sidebar').track({resize: true})}`});
+
     this.treeoutline = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.treeoutline.registerRequiredCSS(changesSidebarStyles);
     this.treeoutline.setFocusable(false);
@@ -39,7 +40,6 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     UI.ARIAUtils.markAsTablist(this.treeoutline.contentElement);
 
     this.element.appendChild(this.treeoutline.element);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
 
     this.treeElements = new Map();
     this.workspaceDiff = workspaceDiff;

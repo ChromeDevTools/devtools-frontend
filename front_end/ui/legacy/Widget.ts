@@ -256,6 +256,12 @@ export interface WidgetOptions {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
    */
   delegatesFocus?: boolean;
+
+  /**
+   * The Visual Logging configuration to put onto the `element` of the resulting
+   * `Widget`.
+   */
+  jslog?: string;
 }
 export class Widget {
   readonly element: HTMLElement;
@@ -308,6 +314,9 @@ export class Widget {
       }
     }
     this.#shadowRoot = this.element.shadowRoot;
+    if (options?.jslog) {
+      this.element.setAttribute('jslog', options.jslog);
+    }
     if (options?.useShadowDom && !this.#shadowRoot) {
       this.element.classList.add('vbox');
       this.element.classList.add('flex-auto');

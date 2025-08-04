@@ -112,10 +112,9 @@ export class RequestPayloadView extends UI.Widget.VBox {
   private requestPayloadCategory: Category;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    super();
+    super({jslog: `${VisualLogging.pane('payload').track({resize: true})}`});
     this.registerRequiredCSS(requestPayloadViewStyles);
     this.element.classList.add('request-payload-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('payload').track({resize: true})}`);
 
     this.request = request;
     this.decodeRequestParameters = true;

@@ -445,10 +445,8 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   private textTracksTabs: GenericTrackMenu|NoTracksPlaceholderMenu|null;
 
   constructor() {
-    super();
+    super({jslog: `${VisualLogging.pane('properties')}`});
     this.registerRequiredCSS(playerPropertiesViewStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.pane('properties')}`);
 
     this.contentElement.classList.add('media-properties-frame');
 

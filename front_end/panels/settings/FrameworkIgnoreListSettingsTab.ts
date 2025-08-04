@@ -97,9 +97,11 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
   private editor?: UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>;
 
   constructor() {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane('blackbox')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(frameworkIgnoreListSettingsTabStyles, settingsScreenStyles);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('blackbox')}`);
 
     const settingsContent =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');

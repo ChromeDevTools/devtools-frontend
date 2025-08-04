@@ -255,10 +255,8 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   private messageLevelSelector?: MessageLevelSelector;
 
   constructor() {
-    super();
+    super({jslog: `${VisualLogging.pane('messages')}`});
     this.registerRequiredCSS(playerMessagesViewStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.pane('messages')}`);
 
     this.headerPanel = this.contentElement.createChild('div', 'media-messages-header');
     this.bodyPanel = this.contentElement.createChild('div', 'media-messages-body');

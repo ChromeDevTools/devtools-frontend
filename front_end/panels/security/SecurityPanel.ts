@@ -874,9 +874,8 @@ export class SecurityMainView extends UI.Widget.VBox {
   private explanations: Array<Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation>|null;
   private securityState: Protocol.Security.SecurityState|null;
   constructor(element?: HTMLElement) {
-    super(element);
+    super(element, {jslog: `${VisualLogging.pane('security.main-view')}`});
     this.registerRequiredCSS(lockIconStyles, mainViewStyles);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('security.main-view')}`);
 
     this.setMinimumSize(200, 100);
 
@@ -1323,9 +1322,8 @@ export class SecurityMainView extends UI.Widget.VBox {
 export class SecurityOriginView extends UI.Widget.VBox {
   private readonly originLockIcon: HTMLElement;
   constructor(origin: Platform.DevToolsPath.UrlString, originState: OriginState) {
-    super();
+    super({jslog: `${VisualLogging.pane('security.origin-view')}`});
     this.registerRequiredCSS(originViewStyles, lockIconStyles);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('security.origin-view')}`);
     this.setMinimumSize(200, 100);
 
     this.element.classList.add('security-origin-view');

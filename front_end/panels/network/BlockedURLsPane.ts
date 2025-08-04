@@ -80,10 +80,11 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   private blockedCountForUrl: Map<string, number>;
 
   constructor() {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.panel('network.blocked-urls').track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(blockedURLsPaneStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.panel('network.blocked-urls').track({resize: true})}`);
 
     this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
     this.manager.addEventListener(

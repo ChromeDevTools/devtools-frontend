@@ -108,10 +108,11 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   private editingRow: ShortcutListItem|null;
 
   constructor() {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane('keybinds')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(keybindsSettingsTabStyles, settingsScreenStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.pane('keybinds')}`);
 
     const settingsContent =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');

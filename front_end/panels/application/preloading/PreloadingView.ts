@@ -355,10 +355,12 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   private readonly ruleSetSelector: PreloadingRuleSetSelector;
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane('preloading-speculations')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane('preloading-speculations')}`);
     this.model = model;
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -512,10 +514,12 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
   private readonly usedPreloading = new PreloadingComponents.UsedPreloadingView.UsedPreloadingView();
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane('speculative-loads')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane('speculative-loads')}`);
     this.model = model;
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
     SDK.TargetManager.TargetManager.instance().addModelListener(

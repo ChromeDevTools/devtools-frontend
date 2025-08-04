@@ -63,11 +63,10 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
       Common.Settings.Settings.instance().createSetting('network-event-source-message-filter', '');
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    super();
+    super({jslog: `${VisualLogging.pane('event-stream').track({resize: true})}`});
     this.registerRequiredCSS(eventSourceMessagesViewStyles);
 
     this.element.classList.add('event-source-messages-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('event-stream').track({resize: true})}`);
     this.request = request;
 
     this.mainToolbar = this.element.createChild('devtools-toolbar');

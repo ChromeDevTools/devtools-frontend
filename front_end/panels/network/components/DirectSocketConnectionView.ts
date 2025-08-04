@@ -1,7 +1,7 @@
 // Copyright 2025 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import * as Common from '../../../core/common/common.js';
@@ -212,11 +212,13 @@ export class DirectSocketConnectionView extends UI.Widget.Widget {
   #view: View;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane('connection-info').track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.#request = request;
     this.#view = view;
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane('connection-info').track({resize: true})}`);
     this.performUpdate();
   }
 

@@ -68,7 +68,11 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
   // clang-format off
     const recitationNotice = input.citations && input.citations.length > 0 ?
         html`<div class="ai-code-completion-recitation-notice">${lockedString(UIStrings.generatedCodeMayBeSubjectToALicense)}
-                <span class="link" role="link" aria-details=${input.citationsTooltipId}>
+                <span class="link"
+                    role="link"
+                    aria-details=${input.citationsTooltipId}
+                    aria-describedby=${input.citationsTooltipId}
+                    tabIndex="0">
                   ${lockedString(UIStrings.viewSources)}&nbsp;${lockedString('(' + input.citations.length + ')')}</span>
                 <devtools-tooltip
                     id=${input.citationsTooltipId}
@@ -76,6 +80,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
                     jslogContext=${input.panelName + '.ai-code-completion-citations'}
                 ><div class="citations-tooltip-container">
                     ${Directives.repeat(input.citations, citation => html`<x-link
+                        tabIndex="0"
                         href=${citation}
                         jslog=${VisualLogging.link(input.panelName + '.ai-code-completion-citations.citation-link').track({
                             click: true
@@ -97,12 +102,14 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
                     }
                   })}></devtools-spinner>
                 <span
+                    tabIndex="0"
                     class="link"
                     role="link"
                     jslog=${VisualLogging.link('open-ai-settings').track({
                         click: true,
                     })}
                     aria-details=${input.disclaimerTooltipId}
+                    aria-describedby=${input.disclaimerTooltipId}
                     @click=${() => {
                         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
                     }}
@@ -122,14 +129,14 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
                     <div class="tooltip-text">
                       ${input.noLogging ? lockedString(UIStrings.tooltipDisclaimerTextForAiCodeCompletionNoLogging) : lockedString(UIStrings.tooltipDisclaimerTextForAiCodeCompletion)}
                     </div>
-                    <div
+                    <span
                         class="link"
                         role="link"
                         jslog=${VisualLogging.link('open-ai-settings').track({
                             click: true,
                         })}
                         @click=${input.onManageInSettingsTooltipClick}
-                    >${lockedString(UIStrings.manageInSettings)}</div></div></devtools-tooltip>
+                    >${lockedString(UIStrings.manageInSettings)}</span></div></devtools-tooltip>
             </div>
             ${recitationNotice}
         </div>

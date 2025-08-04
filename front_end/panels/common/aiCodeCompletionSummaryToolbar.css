@@ -16,6 +16,12 @@
 
   span.link {
     color: var(--sys-color-on-surface-subtle);
+
+    &:focus-visible {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: 0;
+      border-radius: var(--sys-shape-corner-extra-small);
+    }
   }
 
   .ai-code-completion-disclaimer {
@@ -55,6 +61,12 @@
         x-link {
             color: var(--sys-color-primary);
             text-decoration: underline;
+
+            &:focus-visible {
+              outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+              outline-offset: 0;
+              border-radius: var(--sys-shape-corner-extra-small);
+            }
         }
     }
 
@@ -70,7 +82,8 @@
       }
 
       .link {
-        padding: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
+        margin: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
+        display: inline-block;
       }
     }
   }

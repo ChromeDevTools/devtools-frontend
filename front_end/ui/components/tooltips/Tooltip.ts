@@ -448,6 +448,7 @@ export class Tooltip extends HTMLElement {
         this.#anchor.addEventListener('blur', this.hideTooltip);
         this.#anchor.addEventListener('mouseleave', this.hideTooltip);
         this.addEventListener('mouseleave', this.hideTooltip);
+        this.addEventListener('focusout', this.hideTooltip);
       }
     }
     // Prevent interaction with the parent element.

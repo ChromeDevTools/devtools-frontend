@@ -3,22 +3,22 @@
 // found in the LICENSE file.
 
 /**
- * @file using private properties isn't a Closure violation in tests.
+ * @fileoverview using private properties isn't a Closure violation in tests.
  */
 
 import * as Sources from '../../panels/sources/sources.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
- * @param navigatorView
- * @param dumpIcons
+ * @param {!Sources.NavigatorView.NavigatorView} navigatorView
+ * @param {boolean=} dumpIcons
  */
 export const dumpNavigatorView = function(navigatorView, dumpIcons) {
   dumpNavigatorTreeOutline(navigatorView.scriptsTree);
 
   /**
-   * @param prefix
-   * @param treeElement
+   * @param {string} prefix
+   * @param {!UI.TreeElement} treeElement
    */
   function dumpNavigatorTreeElement(prefix, treeElement) {
     let titleText = '';
@@ -47,7 +47,7 @@ export const dumpNavigatorView = function(navigatorView, dumpIcons) {
   }
 
   /**
-   * @param treeOutline
+   * @param {!UI.TreeOutline} treeOutline
    */
   function dumpNavigatorTreeOutline(treeOutline) {
     const children = treeOutline.rootElement().children();
@@ -58,7 +58,7 @@ export const dumpNavigatorView = function(navigatorView, dumpIcons) {
 };
 
 /**
- * @param view
+ * @param {!Sources.NavigatorView.NavigatorView} view
  */
 export const dumpNavigatorViewInAllModes = function(view) {
   ['frame', 'frame/domain', 'frame/domain/folder', 'domain', 'domain/folder'].forEach(
@@ -66,8 +66,8 @@ export const dumpNavigatorViewInAllModes = function(view) {
 };
 
 /**
- * @param view
- * @param mode
+ * @param {!Sources.NavigatorView.NavigatorView} view
+ * @param {string} mode
  */
 export const dumpNavigatorViewInMode = function(view, mode) {
   TestRunner.addResult(view instanceof Sources.SourcesNavigator.NetworkNavigatorView ? 'Sources:' : 'Content Scripts:');
@@ -80,11 +80,11 @@ export const dumpNavigatorViewInMode = function(view, mode) {
 };
 
 /**
- * @param url
- * @param content
- * @param isContentScript
- * @param worldId
- * @returns
+ * @param {string} url
+ * @param {string} content
+ * @param {boolean=} isContentScript
+ * @param {number=} worldId
+ * @return {!Promise}
  */
 export const addScriptUISourceCode = function(url, content, isContentScript, worldId) {
   content += '\n//# sourceURL=' + url;

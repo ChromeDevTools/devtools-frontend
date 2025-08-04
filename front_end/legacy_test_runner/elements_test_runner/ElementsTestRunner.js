@@ -12,13 +12,13 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 /**
- * @file using private properties isn't a Closure violation in tests.
+ * @fileoverview using private properties isn't a Closure violation in tests.
  */
 self.ElementsTestRunner = self.ElementsTestRunner || {};
 
 /**
- * @param idValue
- * @param callback
+ * @param {string} idValue
+ * @param {!Function} callback
  */
 ElementsTestRunner.selectNodeWithId = function(idValue, callback) {
   callback = TestRunner.safeWrap(callback);
@@ -29,32 +29,32 @@ ElementsTestRunner.selectNodeWithId = function(idValue, callback) {
 };
 
 /**
- * @param node
- * @returns
+ * @param {!Object} node
+ * @return {!Promise.<undefined>}
  */
 ElementsTestRunner.selectNode = function(node) {
   return Common.Revealer.reveal(node);
 };
 
 /**
- * @param idValue
- * @param callback
+ * @param {string} idValue
+ * @param {!Function} callback
  */
 ElementsTestRunner.nodeWithId = function(idValue, callback) {
   ElementsTestRunner.findNode(node => node.getAttribute('id') === idValue, callback);
 };
 
 /**
- * @param idValue
- * @param callback
+ * @param {string} idValue
+ * @param {!Function} callback
  */
 ElementsTestRunner.nodeWithIdPromise = function(idValue) {
   return new Promise(resolve => ElementsTestRunner.findNode(node => node.getAttribute('id') === idValue, resolve));
 };
 
 /**
- * @param matchFunction
- * @param callback
+ * @param {function(!Element): boolean} matchFunction
+ * @param {!Function} callback
  */
 ElementsTestRunner.findNode = async function(matchFunction, callback) {
   callback = TestRunner.safeWrap(callback);
@@ -104,14 +104,15 @@ ElementsTestRunner.findNode = async function(matchFunction, callback) {
 };
 
 /**
- * @param matchFunction
+ * @param {function(!Element): boolean} matchFunction
+ * @returns {!Promise}
  */
 ElementsTestRunner.findNodePromise = function(matchFunction) {
   return new Promise(resolve => ElementsTestRunner.findNode(matchFunction, resolve));
 };
 
 /**
- * @param treeElement
+ * @param {!UI.TreeOutline.TreeElement} treeElement
  */
 function dumpObjectPropertyTreeElement(treeElement) {
   const expandedSubstring = treeElement.expanded ? '[expanded]' : '[collapsed]';
@@ -126,9 +127,9 @@ function dumpObjectPropertyTreeElement(treeElement) {
 }
 
 /**
- * @param eventListenersView
- * @param callback
- * @param force
+ * @param {!EventListeners.EventListenersView.EventListenersView} eventListenersView
+ * @param {function():void} callback
+ * @param {boolean=} force
  */
 ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, callback, force) {
   function listenersArrived() {
@@ -171,9 +172,9 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
 };
 
 /**
- * @param eventListenersView
- * @param force
- * @returns
+ * @param {!EventListeners.EventListenersView.EventListenersView} eventListenersView
+ * @param {boolean=} force
+ * @return {!Promise}
  */
 ElementsTestRunner.expandAndDumpEventListenersPromise = function(eventListenersView, force) {
   return new Promise(resolve => ElementsTestRunner.expandAndDumpEventListeners(eventListenersView, resolve, force));
@@ -598,7 +599,7 @@ ElementsTestRunner.showEventListenersWidget = function() {
 };
 
 /**
- * @returns
+ * @return {Promise}
  */
 ElementsTestRunner.showComputedStyles = function() {
   Elements.ElementsPanel.ElementsPanel.instance().sidebarPaneView.tabbedPane().selectTab('computed', true);
@@ -1230,9 +1231,9 @@ function onBlankSection(selector, callback) {
  * To dump all highlight properties: dumpInspectorHighlightJSON(idValue, callback).
  * To pick which properties to dump: dumpInspectorHighlightJSON(idValue, ['prop'], callback).
  *
- * @param idValue
- * @param attributes - List of top-level property names to include in the result
- * @param maybeCallback
+ * @param {string} idValue
+ * @param {?Array<string>} attributes - List of top-level property names to include in the result
+ * @param {?Function=} maybeCallback
  */
 ElementsTestRunner.dumpInspectorHighlightJSON = function(idValue, attributes, maybeCallback) {
   const callback = arguments.length === 3 ? maybeCallback : attributes;

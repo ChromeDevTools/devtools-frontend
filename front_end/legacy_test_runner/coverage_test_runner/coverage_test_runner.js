@@ -14,7 +14,7 @@ export const CoverageTestRunner = {};
 
 /**
  * @param jsCoveragePerBlock - Collect per Block coverage if `true`, per function coverage otherwise.
- * @returns
+ * @return {!Promise}
  */
 CoverageTestRunner.startCoverage = async function(jsCoveragePerBlock) {
   UI.ViewManager.ViewManager.instance().showView('coverage');
@@ -23,7 +23,7 @@ CoverageTestRunner.startCoverage = async function(jsCoveragePerBlock) {
 };
 
 /**
- * @returns
+ * @return {!Promise}
  */
 CoverageTestRunner.stopCoverage = function() {
   const coverageView = Coverage.CoverageView.CoverageView.instance();
@@ -31,7 +31,7 @@ CoverageTestRunner.stopCoverage = function() {
 };
 
 /**
- * @returns
+ * @return {!Promise}
  */
 CoverageTestRunner.suspendCoverageModel = async function() {
   const coverageView = Coverage.CoverageView.CoverageView.instance();
@@ -40,7 +40,7 @@ CoverageTestRunner.suspendCoverageModel = async function() {
 };
 
 /**
- * @returns
+ * @return {!Promise}
  */
 CoverageTestRunner.resumeCoverageModel = async function() {
   const coverageView = Coverage.CoverageView.CoverageView.instance();
@@ -49,7 +49,7 @@ CoverageTestRunner.resumeCoverageModel = async function() {
 };
 
 /**
- * @returns
+ * @return {!Promise}
  */
 CoverageTestRunner.pollCoverage = async function() {
   const coverageView = Coverage.CoverageView.CoverageView.instance();
@@ -59,7 +59,7 @@ CoverageTestRunner.pollCoverage = async function() {
 };
 
 /**
- * @returns
+ * @return {!Promise<Coverage.CoverageModel.CoverageModel>}
  */
 CoverageTestRunner.getCoverageModel = function() {
   const coverageView = Coverage.CoverageView.CoverageView.instance();
@@ -67,7 +67,7 @@ CoverageTestRunner.getCoverageModel = function() {
 };
 
 /**
- * @returns
+ * @return {!Promise<string>}
  */
 CoverageTestRunner.exportReport = async function() {
   const coverageView = Coverage.CoverageView.CoverageView.instance();
@@ -82,7 +82,7 @@ CoverageTestRunner.exportReport = async function() {
 };
 
 /**
- * @returns
+ * @return {!Promise<!SourceFrame.SourceFrame>}
  */
 CoverageTestRunner.sourceDecorated = async function(source) {
   await UI.InspectorView.InspectorView.instance().showPanel('sources');
@@ -98,7 +98,7 @@ CoverageTestRunner.dumpDecorations = async function(source) {
 };
 
 /**
- * @returns
+ * @return {?DataGrid.DataGridNode}
  */
 CoverageTestRunner.findCoverageNodeForURL = function(url) {
   const coverageListView = Coverage.CoverageView.CoverageView.instance().listView;

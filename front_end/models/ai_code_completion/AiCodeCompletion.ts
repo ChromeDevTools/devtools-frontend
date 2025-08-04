@@ -69,27 +69,32 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   async #requestAidaSuggestion(request: Host.AidaClient.CompletionRequest, cursor: number): Promise<void> {
     const startTime = performance.now();
-    const response = await this.#aidaClient.completeCode(request);
+    this.dispatchEventToListeners(Events.REQUEST_TRIGGERED, {});
 
-    if (response && response.generatedSamples.length > 0 && response.generatedSamples[0].generationString) {
-      const remainderDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
-      // Delays the rendering of the Code completion
-      setTimeout(() => {
-        // We are not cancelling the previous responses even when there are more recent responses
-        // from the LLM as:
-        // In case the user kept typing characters that are prefix of the previous suggestion, it
-        // is a valid suggestion and we should display it to the user.
-        // In case the user typed a different character, the config for AI auto complete suggestion
-        // will set the suggestion to null.
-        this.#editor.dispatch({
-          effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-              {text: response.generatedSamples[0].generationString, from: cursor}),
-        });
-        const citations = response.generatedSamples[0].attributionMetadata?.citations;
-        if (citations) {
-          this.dispatchEventToListeners(Events.CITATIONS_UPDATED, {citations});
-        }
-      }, remainderDelay);
+    try {
+      const response = await this.#aidaClient.completeCode(request);
+      if (response && response.generatedSamples.length > 0 && response.generatedSamples[0].generationString) {
+        const remainderDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
+        // Delays the rendering of the Code completion
+        setTimeout(() => {
+          // We are not cancelling the previous responses even when there are more recent responses
+          // from the LLM as:
+          // In case the user kept typing characters that are prefix of the previous suggestion, it
+          // is a valid suggestion and we should display it to the user.
+          // In case the user typed a different character, the config for AI auto complete suggestion
+          // will set the suggestion to null.
+          this.#editor.dispatch({
+            effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
+                {text: response.generatedSamples[0].generationString, from: cursor}),
+          });
+          const citations = response.generatedSamples[0].attributionMetadata?.citations;
+          this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {citations});
+        }, remainderDelay);
+      } else {
+        this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {});
+      }
+    } catch {
+      this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {});
     }
   }
 
@@ -113,13 +118,16 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
 }
 
 export const enum Events {
-  CITATIONS_UPDATED = 'CitationsUpdated',
+  RESPONSE_RECEIVED = 'ResponseReceived',
+  REQUEST_TRIGGERED = 'RequestTriggered',
 }
 
-export interface CitationsUpdatedEvent {
-  citations: Host.AidaClient.Citation[];
+export interface ResponseReceivedEvent {
+  citations?: Host.AidaClient.Citation[];
 }
 
 export interface EventTypes {
-  [Events.CITATIONS_UPDATED]: CitationsUpdatedEvent;
+  [Events.RESPONSE_RECEIVED]: ResponseReceivedEvent;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  [Events.REQUEST_TRIGGERED]: {};
 }

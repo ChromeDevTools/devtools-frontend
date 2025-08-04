@@ -507,13 +507,21 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
       return value;
     }
 
-    const from = tr.changes.mapPos(value.from);
-    const {head} = tr.state.selection.main;
-
-    // If deletion occurs, set to null.
-    if (from === head && tr.docChanged && tr.state.doc.length < tr.startState.doc.length) {
+    // A suggestion from an effect can be stale if the document was changed
+    // between when the request was sent and the response was received.
+    // We check if the position is still valid before trying to map it.
+    if (value.from > tr.startState.doc.length) {
       return null;
     }
+
+    // If deletion occurs, set to null. Otherwise, the mapping might fail if
+    // the position is inside the deleted range.
+    if (tr.docChanged && tr.state.doc.length < tr.startState.doc.length) {
+      return null;
+    }
+
+    const from = tr.changes.mapPos(value.from);
+    const {head} = tr.state.selection.main;
 
     // If a change happened before the position from which suggestion was generated, set to null.
     if (tr.changes.touchesRange(0, from - 1) || head < from) {

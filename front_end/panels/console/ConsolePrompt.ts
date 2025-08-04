@@ -76,6 +76,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private teaserContainer?: HTMLDivElement;
   private aiCodeCompletionSetting =
       Common.Settings.Settings.instance().createSetting('ai-code-completion-fre-completed', false);
+  private aiCodeCompletionCitations?: Host.AidaClient.Citation[] = [];
 
   #getJavaScriptCompletionExtensions(): CodeMirror.Extension {
     if (this.#selfXssWarningShown) {
@@ -357,7 +358,12 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       keymap.push({
         key: 'Tab',
         run: (): boolean => {
-          return TextEditor.Config.acceptAiAutoCompleteSuggestion(this.editor.editor);
+          const accepted = TextEditor.Config.acceptAiAutoCompleteSuggestion(this.editor.editor);
+          if (accepted) {
+            this.dispatchEventToListeners(
+                Events.AI_CODE_COMPLETION_SUGGESTION_ACCEPTED, {citations: this.aiCodeCompletionCitations});
+          }
+          return accepted;
         },
       });
     }
@@ -495,15 +501,21 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.editor.focus();
   }
 
+  // TODO(b/435654172): Refactor and move aiCodeCompletion model one level up to avoid
+  // defining additional listeners and events.
   private setAiCodeCompletion(): void {
     if (!this.aidaClient) {
       this.aidaClient = new Host.AidaClient.AidaClient();
     }
     this.aiCodeCompletion =
         new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({aidaClient: this.aidaClient}, this.editor);
-    this.aiCodeCompletion.addEventListener(
-        AiCodeCompletion.AiCodeCompletion.Events.CITATIONS_UPDATED,
-        event => this.dispatchEventToListeners(Events.CITATIONS_UPDATED, event.data));
+    this.aiCodeCompletion.addEventListener(AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED, event => {
+      this.aiCodeCompletionCitations = event.data.citations;
+      this.dispatchEventToListeners(Events.AI_CODE_COMPLETION_RESPONSE_RECEIVED, event.data);
+    });
+    this.aiCodeCompletion.addEventListener(AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED, event => {
+      this.dispatchEventToListeners(Events.AI_CODE_COMPLETION_REQUEST_TRIGGERED, event.data);
+    });
   }
 
   private onAiCodeCompletionSettingChanged(): void {
@@ -535,10 +547,15 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
 export const enum Events {
   TEXT_CHANGED = 'TextChanged',
-  CITATIONS_UPDATED = 'CitationsUpdated',
+  AI_CODE_COMPLETION_SUGGESTION_ACCEPTED = 'AiCodeCompletionSuggestionAccepted',
+  AI_CODE_COMPLETION_RESPONSE_RECEIVED = 'AiCodeCompletionResponseReceived',
+  AI_CODE_COMPLETION_REQUEST_TRIGGERED = 'AiCodeCompletionRequestTriggered'
 }
 
 export interface EventTypes {
   [Events.TEXT_CHANGED]: void;
-  [Events.CITATIONS_UPDATED]: AiCodeCompletion.AiCodeCompletion.CitationsUpdatedEvent;
+  [Events.AI_CODE_COMPLETION_SUGGESTION_ACCEPTED]: AiCodeCompletion.AiCodeCompletion.ResponseReceivedEvent;
+  [Events.AI_CODE_COMPLETION_RESPONSE_RECEIVED]: AiCodeCompletion.AiCodeCompletion.ResponseReceivedEvent;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  [Events.AI_CODE_COMPLETION_REQUEST_TRIGGERED]: {};
 }

@@ -558,7 +558,11 @@ export class ConsoleView extends UI.Widget.VBox implements
       this.aiCodeCompletionSetting.addChangeListener(this.onAiCodeCompletionSettingChanged.bind(this));
       this.onAiCodeCompletionSettingChanged();
       this.prompt.addEventListener(
-          ConsolePromptEvents.CITATIONS_UPDATED, this.#onAiCodeCompletionCitationsUpdated, this);
+          ConsolePromptEvents.AI_CODE_COMPLETION_SUGGESTION_ACCEPTED, this.#onAiCodeCompletionSuggestionAccepted, this);
+      this.prompt.addEventListener(
+          ConsolePromptEvents.AI_CODE_COMPLETION_REQUEST_TRIGGERED, this.#onAiCodeCompletionRequestTriggered, this);
+      this.prompt.addEventListener(
+          ConsolePromptEvents.AI_CODE_COMPLETION_RESPONSE_RECEIVED, this.#onAiCodeCompletionResponseReceived, this);
     }
 
     this.messagesElement.addEventListener('keydown', this.messagesKeyDown.bind(this), false);
@@ -624,9 +628,9 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, undefined, true);
   }
 
-  #onAiCodeCompletionCitationsUpdated(
-      event: Common.EventTarget.EventTargetEvent<AiCodeCompletion.AiCodeCompletion.CitationsUpdatedEvent>): void {
-    if (!this.aiCodeCompletionSummaryToolbar) {
+  #onAiCodeCompletionSuggestionAccepted(
+      event: Common.EventTarget.EventTargetEvent<AiCodeCompletion.AiCodeCompletion.ResponseReceivedEvent>): void {
+    if (!this.aiCodeCompletionSummaryToolbar || !event.data.citations || event.data.citations.length === 0) {
       return;
     }
     const citations: string[] = [];
@@ -636,7 +640,15 @@ export class ConsoleView extends UI.Widget.VBox implements
         citations.push(uri);
       }
     });
-    this.aiCodeCompletionSummaryToolbar?.updateCitations(citations);
+    this.aiCodeCompletionSummaryToolbar.updateCitations(citations);
+  }
+
+  #onAiCodeCompletionRequestTriggered(): void {
+    this.aiCodeCompletionSummaryToolbar?.setLoading(true);
+  }
+
+  #onAiCodeCompletionResponseReceived(): void {
+    this.aiCodeCompletionSummaryToolbar?.setLoading(false);
   }
 
   static clearConsole(): void {

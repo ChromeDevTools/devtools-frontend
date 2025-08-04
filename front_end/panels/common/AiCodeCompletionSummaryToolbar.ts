@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
@@ -57,14 +58,13 @@ export interface ViewInput {
 }
 
 export interface ViewOutput {
-  tooltipRef?: Directives.Ref<HTMLElement>;
+  hideTooltip?: () => void;
+  setLoading?: (isLoading: boolean) => void;
 }
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
-  output.tooltipRef = output.tooltipRef ?? Directives.createRef<HTMLElement>();
-
   // clang-format off
     const viewSourcesSpan = input.citations && input.citations.length > 0 ?
         html`<span class="link" role="link" aria-details=${input.citationsTooltipId}>
@@ -86,6 +86,15 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
         <style>${styles}</style>
         <div class="ai-code-completion-summary-toolbar">
             <div class="ai-code-completion-disclaimer">
+                <devtools-spinner
+                  .active=${false}
+                  ${Directives.ref(el => {
+                    if (el instanceof HTMLElement) {
+                      output.setLoading = (isLoading: boolean) => {
+                        el.toggleAttribute('active', isLoading);
+                      };
+                    }
+                  })}></devtools-spinner>
                 <span
                     class="link"
                     role="link"
@@ -96,12 +105,18 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
                     @click=${() => {
                         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
                     }}
-                >${lockedString(UIStrings.relevantData)}</span>&nbsp;${lockedString(UIStrings.isSentToGoogle)}
+                >${lockedString(UIStrings.relevantData)}</span>${lockedString(UIStrings.isSentToGoogle)}
                 <devtools-tooltip
                     id=${input.disclaimerTooltipId}
                     variant=${'rich'}
                     jslogContext=${input.panelName + '.ai-code-completion-disclaimer'}
-                    ${Directives.ref(output.tooltipRef)}
+                    ${Directives.ref(el => {
+                      if (el instanceof HTMLElement) {
+                        output.hideTooltip = () => {
+                          el.hidePopover();
+                        };
+                      }
+                    })}
                 ><div class="disclaimer-tooltip-container">
                     <div class="tooltip-text">
                       ${input.noLogging ? lockedString(UIStrings.tooltipDisclaimerTextForAiCodeCompletionNoLogging) : lockedString(UIStrings.tooltipDisclaimerTextForAiCodeCompletion)}
@@ -124,6 +139,8 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
     // clang-format on
 };
 
+const MINIMUM_LOADING_STATE_TIMEOUT = 1000;
+
 export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
   readonly #view: View;
   #viewOutput: ViewOutput = {};
@@ -132,8 +149,10 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
   #citationsTooltipId: string;
   #panelName: string;
   #citations: string[] = [];
-
   #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
+  #loading = false;
+  #loadingStartTime = 0;
+  #spinnerLoadingTimeout: number|undefined;
 
   constructor(disclaimerTooltipId: string, citationsTooltipId: string, panelName: string, view?: View) {
     super();
@@ -147,8 +166,34 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
   }
 
   #onManageInSettingsTooltipClick(): void {
-    this.#viewOutput.tooltipRef?.value?.hidePopover();
+    this.#viewOutput.hideTooltip?.();
     void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+  }
+
+  setLoading(loading: boolean): void {
+    if (!loading && !this.#loading) {
+      return;
+    }
+
+    if (loading) {
+      if (!this.#loading) {
+        this.#viewOutput.setLoading?.(true);
+      }
+      if (this.#spinnerLoadingTimeout) {
+        clearTimeout(this.#spinnerLoadingTimeout);
+        this.#spinnerLoadingTimeout = undefined;
+      }
+      this.#loadingStartTime = performance.now();
+      this.#loading = true;
+    } else {
+      this.#loading = false;
+      const duration = performance.now() - this.#loadingStartTime;
+      const remainingTime = Math.max(MINIMUM_LOADING_STATE_TIMEOUT - duration, 0);
+      this.#spinnerLoadingTimeout = window.setTimeout(() => {
+        this.#viewOutput.setLoading?.(false);
+        this.#spinnerLoadingTimeout = undefined;
+      }, remainingTime);
+    }
   }
 
   updateCitations(citations: string[]): void {

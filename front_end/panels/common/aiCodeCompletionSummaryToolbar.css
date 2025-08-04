@@ -21,6 +21,15 @@
   .ai-code-completion-disclaimer {
     border-right: var(--sys-size-1) solid var(--sys-color-divider);
     padding-right: var(--sys-size-5);
+    gap: 5px;
+    display: flex;
+
+    devtools-spinner {
+      margin-top: var(--sys-size-2);
+      padding: var(--sys-size-1);
+      height: var(--sys-size-6);
+      width: var(--sys-size-6);
+    }
   }
 
   .ai-code-completion-recitation-notice {

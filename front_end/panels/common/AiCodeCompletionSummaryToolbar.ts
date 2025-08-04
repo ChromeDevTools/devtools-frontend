@@ -66,20 +66,21 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 
 export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
   // clang-format off
-    const viewSourcesSpan = input.citations && input.citations.length > 0 ?
-        html`<span class="link" role="link" aria-details=${input.citationsTooltipId}>
-            ${lockedString(UIStrings.viewSources)}&nbsp;${lockedString('(' + input.citations.length + ')')}</span>` : nothing;
-    const viewSourcesTooltip = input.citations && input.citations.length > 0 ?
-        html`<devtools-tooltip
-                id=${input.citationsTooltipId}
-                variant=${'rich'}
-                jslogContext=${input.panelName + '.ai-code-completion-citations'}
-            ><div class="citations-tooltip-container">
-                ${Directives.repeat(input.citations, citation => html`<x-link
-                    href=${citation}
-                    jslog=${VisualLogging.link(input.panelName + '.ai-code-completion-citations.citation-link').track({
-                        click: true
-                    })}>${citation}</x-link>`)}</div></devtools-tooltip>` : nothing;
+    const recitationNotice = input.citations && input.citations.length > 0 ?
+        html`<div class="ai-code-completion-recitation-notice">${lockedString(UIStrings.generatedCodeMayBeSubjectToALicense)}
+                <span class="link" role="link" aria-details=${input.citationsTooltipId}>
+                  ${lockedString(UIStrings.viewSources)}&nbsp;${lockedString('(' + input.citations.length + ')')}</span>
+                <devtools-tooltip
+                    id=${input.citationsTooltipId}
+                    variant=${'rich'}
+                    jslogContext=${input.panelName + '.ai-code-completion-citations'}
+                ><div class="citations-tooltip-container">
+                    ${Directives.repeat(input.citations, citation => html`<x-link
+                        href=${citation}
+                        jslog=${VisualLogging.link(input.panelName + '.ai-code-completion-citations.citation-link').track({
+                            click: true
+                        })}>${citation}</x-link>`)}</div></devtools-tooltip>
+            </div>` : nothing;
 
     render(
         html`
@@ -130,13 +131,10 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
                         @click=${input.onManageInSettingsTooltipClick}
                     >${lockedString(UIStrings.manageInSettings)}</div></div></devtools-tooltip>
             </div>
-            <div class="ai-code-completion-recitation-notice">${lockedString(UIStrings.generatedCodeMayBeSubjectToALicense)}
-                ${viewSourcesSpan}
-                ${viewSourcesTooltip}
-            </div>
+            ${recitationNotice}
         </div>
         `, target);
-    // clang-format on
+  // clang-format on
 };
 
 const MINIMUM_LOADING_STATE_TIMEOUT = 1000;

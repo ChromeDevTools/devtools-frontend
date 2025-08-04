@@ -74,6 +74,12 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     try {
       const response = await this.#aidaClient.completeCode(request);
       if (response && response.generatedSamples.length > 0 && response.generatedSamples[0].generationString) {
+        if (response.generatedSamples[0].attributionMetadata?.attributionAction ===
+            Host.AidaClient.RecitationAction.BLOCK) {
+          this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {});
+          return;
+        }
+
         const remainderDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
         // Delays the rendering of the Code completion
         setTimeout(() => {

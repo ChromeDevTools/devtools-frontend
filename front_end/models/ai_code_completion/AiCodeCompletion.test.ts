@@ -100,4 +100,67 @@ describeWithEnvironment('AiCodeCompletion', () => {
     sinon.assert.calledOnce(mockAidaClient.completeCode);
     assert.strictEqual(mockAidaClient.completeCode.firstCall.args[0].prefix, 'pre');
   });
+
+  it('does not dispatch suggestion or citation if recitation action is BLOCK', async () => {
+    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
+      completeCode: Promise.resolve({
+        generatedSamples: [{
+          generationString: 'suggestion',
+          sampleId: 1,
+          score: 1,
+          attributionMetadata: {
+            attributionAction: Host.AidaClient.RecitationAction.BLOCK,
+            citations: [{uri: 'https://www.example.com'}],
+          }
+        }],
+        metadata: {},
+      }),
+    });
+    const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
+        {aidaClient: mockAidaClient},
+        editor,
+    );
+    const dispatchSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
+
+    aiCodeCompletion.onTextChanged('prefix', '\n', 1);
+
+    await clock.tickAsync(AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
+    sinon.assert.calledOnce(mockAidaClient.completeCode);
+    await clock.tickAsync(AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
+    sinon.assert.notCalled(editor.dispatch);
+    sinon.assert.calledWith(dispatchSpy, sinon.match(AiCodeCompletion.Events.RESPONSE_RECEIVED), sinon.match({}));
+  });
+
+  it('dispatches response received event with citations', async () => {
+    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const citations = [{uri: 'https://example.com'}];
+    const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
+      completeCode: Promise.resolve({
+        generatedSamples: [{
+          generationString: 'suggestion',
+          sampleId: 1,
+          score: 1,
+          attributionMetadata: {
+            attributionAction: Host.AidaClient.RecitationAction.CITE,
+            citations,
+          },
+        }],
+        metadata: {},
+      }),
+    });
+    const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
+        {aidaClient: mockAidaClient},
+        editor,
+    );
+    const dispatchSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
+
+    aiCodeCompletion.onTextChanged('prefix', '\n', 1);
+
+    await clock.tickAsync(AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
+    await clock.tickAsync(AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
+
+    sinon.assert.calledWith(
+        dispatchSpy, sinon.match(AiCodeCompletion.Events.RESPONSE_RECEIVED), sinon.match({citations}));
+  });
 });

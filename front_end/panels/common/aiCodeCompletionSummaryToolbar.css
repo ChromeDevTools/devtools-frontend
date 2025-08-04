@@ -19,7 +19,6 @@
   }
 
   .ai-code-completion-disclaimer {
-    border-right: var(--sys-size-1) solid var(--sys-color-divider);
     padding-right: var(--sys-size-5);
     gap: 5px;
     display: flex;
@@ -33,6 +32,8 @@
   }
 
   .ai-code-completion-recitation-notice {
+    border-left: var(--sys-size-1) solid var(--sys-color-divider);
+
     span.link {
       padding-left: var(--sys-size-3);
     }

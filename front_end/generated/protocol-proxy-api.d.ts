@@ -3159,8 +3159,7 @@ declare namespace ProtocolProxyApi {
     windowOpen(params: Protocol.Page.WindowOpenEvent): void;
 
     /**
-     * Issued for every compilation cache generated. Is only available
-     * if Page.setGenerateCompilationCache is enabled.
+     * Issued for every compilation cache generated.
      */
     compilationCacheProduced(params: Protocol.Page.CompilationCacheProducedEvent): void;
 
@@ -3685,6 +3684,11 @@ declare namespace ProtocolProxyApi {
      * `true`.
      */
     invoke_setRemoteLocations(params: Protocol.Target.SetRemoteLocationsRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Opens a DevTools window for the target.
+     */
+    invoke_openDevTools(params: Protocol.Target.OpenDevToolsRequest): Promise<Protocol.Target.OpenDevToolsResponse>;
 
   }
   export interface TargetDispatcher {

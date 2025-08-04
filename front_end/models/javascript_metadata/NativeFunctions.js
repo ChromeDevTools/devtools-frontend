@@ -7313,6 +7313,10 @@ export const NativeFunctions = [
     signatures: [["?serializedOrigin"]]
   },
   {
+    name: "fromURL",
+    signatures: [["serializedURL"]]
+  },
+  {
     name: "isSameOrigin",
     signatures: [["other"]]
   },

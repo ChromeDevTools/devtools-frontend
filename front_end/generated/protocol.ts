@@ -1102,6 +1102,13 @@ export namespace Audits {
     ValidationFailedIntegrityMismatch = 'ValidationFailedIntegrityMismatch',
   }
 
+  export const enum UnencodedDigestError {
+    MalformedDictionary = 'MalformedDictionary',
+    UnknownAlgorithm = 'UnknownAlgorithm',
+    IncorrectDigestType = 'IncorrectDigestType',
+    IncorrectDigestLength = 'IncorrectDigestLength',
+  }
+
   /**
    * Details for issues around "Attribution Reporting API" usage.
    * Explainer: https://github.com/WICG/attribution-reporting-api
@@ -1143,6 +1150,11 @@ export namespace Audits {
     error: SRIMessageSignatureError;
     signatureBase: string;
     integrityAssertions: string[];
+    request: AffectedRequest;
+  }
+
+  export interface UnencodedDigestIssueDetails {
+    error: UnencodedDigestError;
     request: AffectedRequest;
   }
 
@@ -1450,6 +1462,7 @@ export namespace Audits {
     SharedDictionaryIssue = 'SharedDictionaryIssue',
     ElementAccessibilityIssue = 'ElementAccessibilityIssue',
     SRIMessageSignatureIssue = 'SRIMessageSignatureIssue',
+    UnencodedDigestIssue = 'UnencodedDigestIssue',
     UserReidentificationIssue = 'UserReidentificationIssue',
   }
 
@@ -1483,6 +1496,7 @@ export namespace Audits {
     sharedDictionaryIssueDetails?: SharedDictionaryIssueDetails;
     elementAccessibilityIssueDetails?: ElementAccessibilityIssueDetails;
     sriMessageSignatureIssueDetails?: SRIMessageSignatureIssueDetails;
+    unencodedDigestIssueDetails?: UnencodedDigestIssueDetails;
     userReidentificationIssueDetails?: UserReidentificationIssueDetails;
   }
 
@@ -14510,8 +14524,7 @@ export namespace Page {
   }
 
   /**
-   * Issued for every compilation cache generated. Is only available
-   * if Page.setGenerateCompilationCache is enabled.
+   * Issued for every compilation cache generated.
    */
   export interface CompilationCacheProducedEvent {
     url: string;
@@ -16817,6 +16830,20 @@ export namespace Target {
      * List of remote locations.
      */
     locations: RemoteLocation[];
+  }
+
+  export interface OpenDevToolsRequest {
+    /**
+     * This can be the page or tab target ID.
+     */
+    targetId: TargetID;
+  }
+
+  export interface OpenDevToolsResponse extends ProtocolResponseWithError {
+    /**
+     * The targetId of DevTools page target.
+     */
+    targetId: TargetID;
   }
 
   /**

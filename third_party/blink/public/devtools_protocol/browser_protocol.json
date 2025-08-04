@@ -1588,6 +1588,16 @@
                     ]
                 },
                 {
+                    "id": "UnencodedDigestError",
+                    "type": "string",
+                    "enum": [
+                        "MalformedDictionary",
+                        "UnknownAlgorithm",
+                        "IncorrectDigestType",
+                        "IncorrectDigestLength"
+                    ]
+                },
+                {
                     "id": "AttributionReportingIssueDetails",
                     "description": "Details for issues around \"Attribution Reporting API\" usage.\nExplainer: https://github.com/WICG/attribution-reporting-api",
                     "type": "object",
@@ -1689,6 +1699,20 @@
                             "items": {
                                 "type": "string"
                             }
+                        },
+                        {
+                            "name": "request",
+                            "$ref": "AffectedRequest"
+                        }
+                    ]
+                },
+                {
+                    "id": "UnencodedDigestIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "error",
+                            "$ref": "UnencodedDigestError"
                         },
                         {
                             "name": "request",
@@ -2114,6 +2138,7 @@
                         "SharedDictionaryIssue",
                         "ElementAccessibilityIssue",
                         "SRIMessageSignatureIssue",
+                        "UnencodedDigestIssue",
                         "UserReidentificationIssue"
                     ]
                 },
@@ -2242,6 +2267,11 @@
                             "name": "sriMessageSignatureIssueDetails",
                             "optional": true,
                             "$ref": "SRIMessageSignatureIssueDetails"
+                        },
+                        {
+                            "name": "unencodedDigestIssueDetails",
+                            "optional": true,
+                            "$ref": "UnencodedDigestIssueDetails"
                         },
                         {
                             "name": "userReidentificationIssueDetails",
@@ -21711,7 +21741,7 @@
                 },
                 {
                     "name": "compilationCacheProduced",
-                    "description": "Issued for every compilation cache generated. Is only available\nif Page.setGenerateCompilationCache is enabled.",
+                    "description": "Issued for every compilation cache generated.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -25602,6 +25632,25 @@
                             "items": {
                                 "$ref": "RemoteLocation"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "openDevTools",
+                    "description": "Opens a DevTools window for the target.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "targetId",
+                            "description": "This can be the page or tab target ID.",
+                            "$ref": "TargetID"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "targetId",
+                            "description": "The targetId of DevTools page target.",
+                            "$ref": "TargetID"
                         }
                     ]
                 }

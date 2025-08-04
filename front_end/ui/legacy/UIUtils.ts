@@ -2094,7 +2094,7 @@ export class PromotionManager {
     });
   }
 
-  private canShowPromotion(id: string): boolean {
+  canShowPromotion(id: string): boolean {
     const displayState = this.getPromotionDisplayState(id);
     if (!displayState) {
       this.registerPromotion(id);

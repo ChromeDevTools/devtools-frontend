@@ -324,7 +324,8 @@ export class CommandMenuProvider extends Provider {
     const command = this.commands[itemIndex];
     let score = Diff.Diff.DiffWrapper.characterScore(query.toLowerCase(), command.title.toLowerCase());
     // Increase score of promoted items so that these appear on top of the list
-    if (command.featurePromotionId) {
+    const promotionId = command.featurePromotionId;
+    if (promotionId && UI.UIUtils.PromotionManager.instance().canShowPromotion(promotionId)) {
       score = Number.MAX_VALUE;
       return score;
     }

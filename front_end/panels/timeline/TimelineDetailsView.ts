@@ -91,7 +91,6 @@ export class TimelineDetailsPane extends
   #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #filmStrip: Trace.Extras.FilmStrip.Data|null = null;
-  #networkRequestDetails: TimelineComponents.NetworkRequestDetails.NetworkRequestDetails;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #thirdPartyTree = new ThirdPartyTreeViewWidget();
   #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
@@ -164,9 +163,6 @@ export class TimelineDetailsPane extends
       this.dispatchEventToListeners(
           TimelineTreeView.Events.TREE_ROW_CLICKED, {node: node.data.node, events: node.data.events ?? undefined});
     });
-
-    this.#networkRequestDetails =
-        new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(this.detailsLinkifier);
 
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
 
@@ -299,6 +295,7 @@ export class TimelineDetailsPane extends
     this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
     this.#summaryContent.traceInsightsSets = this.#traceInsightsSets;
     this.#summaryContent.parsedTrace = this.#parsedTrace;
+    this.#summaryContent.entityMapper = this.#entityMapper;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
       view.setModelWithEvents(data.selectedEvents, data.parsedTrace, data.entityMapper);
@@ -425,18 +422,6 @@ export class TimelineDetailsPane extends
     }
   }
 
-  async #setSelectionForNetworkEvent(networkRequest: Trace.Types.Events.SyntheticNetworkRequest): Promise<void> {
-    if (!this.#parsedTrace) {
-      return;
-    }
-    const maybeTarget = targetForEvent(this.#parsedTrace, networkRequest);
-    await this.#networkRequestDetails.setData(this.#parsedTrace, networkRequest, maybeTarget, this.#entityMapper);
-
-    this.#summaryContent.selectedEvent = networkRequest;
-    this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
-    await this.setSummaryContent(this.#networkRequestDetails);
-  }
-
   async #setSelectionForTraceEvent(event: Trace.Types.Events.Event): Promise<void> {
     if (!this.#parsedTrace) {
       return;
@@ -444,12 +429,20 @@ export class TimelineDetailsPane extends
 
     this.#summaryContent.selectedEvent = event;
     this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
+    this.#summaryContent.linkifier = this.detailsLinkifier;
+    this.#summaryContent.target = targetForEvent(this.#parsedTrace, event);
     this.#summaryContent.requestUpdate();
 
-    // Special case: if the user selects a layout shift or a layout shift cluster,
-    // That component is rendered within the summary content component, so we don't have to do anything.
-    // TODO: once we push more of the rendering into the Summary component, this special case can be removed.
-    if (Trace.Types.Events.isSyntheticLayoutShift(event) || Trace.Types.Events.isSyntheticLayoutShiftCluster(event)) {
+    // Special case: if the user selects one of:
+    // 1. A layout shift
+    // 2. A layout shift cluster
+    // 3. A network request
+    // That UI is rendered within the summary content component, so we don't have to do anything.
+    // TODO: once we push more of the rendering into the Summary component (and
+    // migrate this entire file to the UI Eng Vision) this special casing can
+    // be removed.
+    if (Trace.Types.Events.isSyntheticLayoutShift(event) || Trace.Types.Events.isSyntheticLayoutShiftCluster(event) ||
+        Trace.Types.Events.isSyntheticNetworkRequest(event)) {
       return await this.setSummaryContent();
     }
 
@@ -478,9 +471,7 @@ export class TimelineDetailsPane extends
       // Cancel any pending debounced range stats update
       this.updateContentsScheduled = false;
 
-      if (Trace.Types.Events.isSyntheticNetworkRequest(selection.event)) {
-        await this.#setSelectionForNetworkEvent(selection.event);
-      } else if (Trace.Types.Events.isLegacyTimelineFrame(selection.event)) {
+      if (Trace.Types.Events.isLegacyTimelineFrame(selection.event)) {
         this.#setSelectionForTimelineFrame(selection.event);
       } else {
         await this.#setSelectionForTraceEvent(selection.event);
@@ -644,6 +635,9 @@ interface SummaryViewInput {
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null;
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null;
+  entityMapper: Utils.EntityMapper.EntityMapper|null;
+  target: SDK.Target.Target|null;
+  linkifier: Components.Linkifier.Linkifier|null;
 }
 
 function eventIsLayoutShiftRelated(e: Trace.Types.Events.Event|null): e is Trace.Types.Events.SyntheticLayoutShift|
@@ -672,6 +666,16 @@ const SUMMARY_DEFAULT_VIEW: View = (input, _output, target) => {
               isFreshRecording: traceRecordingIsFresh,
             })}></devtools-widget>
           ` : nothing}
+        ${input.selectedEvent && Trace.Types.Events.isSyntheticNetworkRequest(input.selectedEvent) ? html`
+          <devtools-widget data-network-request-details .widgetConfig=${
+            UI.Widget.widgetConfig(TimelineComponents.NetworkRequestDetails.NetworkRequestDetails, {
+              request: input.selectedEvent,
+              entityMapper: input.entityMapper,
+              target: input.target,
+              linkifier: input.linkifier,
+              parsedTrace: input.parsedTrace,
+            })}></devtools-widget>
+          ` : nothing}
         <devtools-widget data-related-insight-chips .widgetConfig=${
           UI.Widget.widgetConfig(TimelineComponents.RelatedInsightChips.RelatedInsightChips, {
             activeEvent: input.selectedEvent,
@@ -689,6 +693,9 @@ class SummaryView extends UI.Widget.Widget {
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
+  entityMapper: Utils.EntityMapper.EntityMapper|null = null;
+  target: SDK.Target.Target|null = null;
+  linkifier: Components.Linkifier.Linkifier|null = null;
 
   constructor(element?: HTMLElement, view = SUMMARY_DEFAULT_VIEW) {
     super(element);
@@ -703,6 +710,9 @@ class SummaryView extends UI.Widget.Widget {
           eventToRelatedInsightsMap: this.eventToRelatedInsightsMap,
           parsedTrace: this.parsedTrace,
           traceInsightsSets: this.traceInsightsSets,
+          entityMapper: this.entityMapper,
+          target: this.target,
+          linkifier: this.linkifier,
         },
         {}, this.contentElement);
   }

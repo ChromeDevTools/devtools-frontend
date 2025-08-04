@@ -54,28 +54,31 @@ devtools-icon.priority {
 
 .indicator {
   display: inline-block;
-  width: 10px;
-  height: 4px;
+  width: 12px;
+  height: 6px;
   margin-right: 5px;
   border: 1px solid var(--sys-color-on-surface-subtle);
+  box-sizing: border-box;
 }
 
 .whisker-left {
   align-self: center;
   display: inline-flex;
-  width: 10px;
+  width: 11px;
   height: 6px;
   margin-right: 5px;
   border-left: 1px solid var(--sys-color-on-surface-subtle);
+  box-sizing: border-box;
 }
 
 .whisker-right {
   align-self: center;
   display: inline-flex;
-  width: 10px;
+  width: 11px;
   height: 6px;
   margin-right: 5px;
   border-right: 1px solid var(--sys-color-on-surface-subtle);
+  box-sizing: border-box;
 }
 
 .horizontal {

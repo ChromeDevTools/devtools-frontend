@@ -7,7 +7,7 @@ import {doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js'
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
-import * as Components from './components/components.js';
+import type * as Components from './components/components.js';
 import * as Timeline from './timeline.js';
 
 class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
@@ -56,10 +56,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
     await raf();
 
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
-    assert.instanceOf(
-        detailsContentElement.querySelector('devtools-performance-network-request-details'),
-        Components.NetworkRequestDetails.NetworkRequestDetails);
-    assert.instanceOf(detailsContentElement.querySelector('.insight-label'), HTMLElement);
+    assert.isNotNull(detailsContentElement.querySelector('[data-network-request-details]'));
   });
 
   it('displays the details for a frame correctly', async function() {

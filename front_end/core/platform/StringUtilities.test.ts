@@ -673,4 +673,22 @@ describe('StringUtilities', () => {
       assert.strictEqual(toKebabCase('CamelCase_with.DOTS123'), 'camel-case-with.dots-123');
     });
   });
+
+  describe('toKebabCaseKeys', () => {
+    const {toKebabCaseKeys} = Platform.StringUtilities;
+
+    it('converts dictionaries with numeric values', () => {
+      assert.deepEqual(
+          toKebabCaseKeys({['FOO_BAR']: 1, ['FOO_BAZ']: 2}),
+          {['foo-bar']: 1, ['foo-baz']: 2},
+      );
+    });
+
+    it('converts dictionaries with mixed values', () => {
+      assert.deepEqual(
+          toKebabCaseKeys({['FOO_BAR']: 1, ['FOO_BAZ']: 'test'}),
+          {['foo-bar']: 1, ['foo-baz']: 'test'},
+      );
+    });
+  });
 });

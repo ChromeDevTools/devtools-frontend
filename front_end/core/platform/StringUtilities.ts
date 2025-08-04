@@ -517,15 +517,9 @@ export const toKebabCase = function(input: string): Lowercase<string> {
       Lowercase<string>;
 };
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export function toKebabCaseKeys(settingValue: Record<string, any>): Record<string, any> {
-  const result: Record<string, any> = {};
-  for (const [key, value] of Object.entries(settingValue)) {
-    result[toKebabCase(key)] = value;
-  }
-  return result;
+export function toKebabCaseKeys<T>(settingValue: Record<string, T>): Record<string, T> {
+  return Object.fromEntries(Object.entries(settingValue).map(([key, value]) => [toKebabCase(key), value]));
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 // Replaces the last ocurrence of parameter `search` with parameter `replacement` in `input`
 export const replaceLast = function(input: string, search: string, replacement: string): string {

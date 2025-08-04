@@ -238,6 +238,7 @@ def custom_locationsfilters(builder):
         cq.location_filter(path_regexp = ".+\\.md", exclude = True),
         cq.location_filter(path_regexp = "\\.github/.+", exclude = True),
         cq.location_filter(path_regexp = "scripts/ai_assistance/.+", exclude = True),
+        cq.location_filter(path_regexp = ".gemini/.+", exclude = True),
     ]
 
 luci.cq_group(

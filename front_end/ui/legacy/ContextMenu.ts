@@ -727,7 +727,7 @@ export class ContextMenu extends SubMenu {
  * @property keepOpen -Reflects the `"keep-open"` attribute.
  * @property iconName - Reflects the `"icon-name"` attribute.
  * @property disabled - Reflects the `"disabled"` attribute.
- * @prop {String} jslogContext - Reflects the `"jslogContext"` attribute.
+ * @prop jslogContext - Reflects the `"jslogContext"` attribute.
  */
 export class MenuButton extends HTMLElement {
   static readonly observedAttributes = ['icon-name', 'disabled'];

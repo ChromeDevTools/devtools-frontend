@@ -50,7 +50,7 @@ const LONG_ACTION_THRESHOLD = 15;
  * @property closable - reflects the `"closable"` attribute.
  * @property actionButtonLabel - reflects the `"action-button-label"` attribute.
  * @property actionButtonTitle - reflects the `"action-button-title"` attribute.
- * @prop {Function} actionButtonClickHandler - Function to be triggered when action button is clicked.
+ * @prop actionButtonClickHandler - Function to be triggered when action button is clicked.
  */
 export class Snackbar extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});

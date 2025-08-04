@@ -170,7 +170,7 @@ export interface TooltipProperties {
  * @property variant - reflects the `"variant"` attribute.
  * @property padding - reflects the `"padding"` attribute.
  * @property useClick - reflects the `"click"` attribute.
- * @prop {Boolean} useHotkey - reflects the `"use-hotkey"` attribute.
+ * @prop useHotkey - reflects the `"use-hotkey"` attribute.
  */
 export class Tooltip extends HTMLElement {
   static readonly observedAttributes = ['id', 'variant', 'jslogcontext'];

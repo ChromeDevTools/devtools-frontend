@@ -569,6 +569,10 @@ export default defineConfig([
       ],
 
       'rulesdir/validate-timing-types': 'error',
+
+      // Disallow redundant (and potentially conflicting) type information
+      // within JSDoc comments.
+      'jsdoc/no-types': 'error',
     },
   },
   {

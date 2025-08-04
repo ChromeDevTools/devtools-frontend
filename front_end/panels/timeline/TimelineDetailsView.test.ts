@@ -132,6 +132,32 @@ describeWithEnvironment('TimelineDetailsView', function() {
     assert.isNotNull(layoutShiftDetails);
   });
 
+  it('renders information for a generic event on the main thread', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+    renderElementIntoDOM(detailsView);
+    const evalScriptEvent = parsedTrace.Renderer.allTraceEntries.find(event => {
+      return event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.dur && event.dur > 2000;
+    });
+    assert.isOk(evalScriptEvent);
+    await detailsView.setModel({
+      parsedTrace,
+      selectedEvents: null,
+      traceInsightsSets: null,
+      eventToRelatedInsightsMap: null,
+      entityMapper: null
+    });
+    const selection = Timeline.TimelineSelection.selectionFromEvent(evalScriptEvent);
+    await detailsView.setSelection(selection);
+    const detailsContentElement = detailsView.getDetailsContentElementForTest();
+
+    assert.strictEqual(
+        detailsContentElement.querySelector<HTMLElement>('.timeline-details-chip-title')?.innerText, 'Evaluate script');
+
+    // Ensure we show the pie chart time breakdown
+    assert.isTrue(detailsContentElement.innerText.includes('Aggregated time'));
+  });
+
   it('updates the range details when the user has a range selected', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);

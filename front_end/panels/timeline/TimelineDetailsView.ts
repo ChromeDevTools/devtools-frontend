@@ -11,7 +11,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as TimelineComponents from './components/components.js';
@@ -308,7 +308,14 @@ export class TimelineDetailsPane extends
     await this.setSelection(null);
   }
 
-  private async setSummaryContent(node?: Node): Promise<void> {
+  /**
+   * Updates the UI shown in the Summary tab, and updates the UI to select the
+   * summary tab.
+   * @param node - this is passed as an additional piece of DOM that will be
+   *     rendered in the summary view. This is a temporary ability to allow
+   *     incremental migration to the UI Eng vision.
+   */
+  private async updateSummaryAndSelectTab(node: Node|null): Promise<void> {
     const allTabs = this.tabbedPane.otherTabs(Tab.Details);
     for (let i = 0; i < allTabs.length; ++i) {
       if (!this.rangeDetailViews.has(allTabs[i])) {
@@ -360,7 +367,7 @@ export class TimelineDetailsPane extends
    */
   private scheduleUpdateContentsFromWindow(forceImmediateUpdate = false): void {
     if (!this.#parsedTrace) {
-      void this.setSummaryContent(UI.Fragment.html`<div/>`);
+      void this.updateSummaryAndSelectTab(null);
       return;
     }
     if (forceImmediateUpdate) {
@@ -409,7 +416,7 @@ export class TimelineDetailsPane extends
 
   #setSelectionForTimelineFrame(frame: Trace.Types.Events.LegacyTimelineFrame): void {
     const matchedFilmStripFrame = this.#getFilmStripFrame(frame);
-    void this.setSummaryContent(
+    void this.updateSummaryAndSelectTab(
         TimelineUIUtils.generateDetailsContentForFrame(frame, this.#filmStrip, matchedFilmStripFrame));
     const target = SDK.TargetManager.TargetManager.instance().rootTarget();
     if (frame.layerTree && target) {
@@ -431,25 +438,8 @@ export class TimelineDetailsPane extends
     this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
     this.#summaryContent.linkifier = this.detailsLinkifier;
     this.#summaryContent.target = targetForEvent(this.#parsedTrace, event);
-    this.#summaryContent.requestUpdate();
-
-    // Special case: if the user selects one of:
-    // 1. A layout shift
-    // 2. A layout shift cluster
-    // 3. A network request
-    // That UI is rendered within the summary content component, so we don't have to do anything.
-    // TODO: once we push more of the rendering into the Summary component (and
-    // migrate this entire file to the UI Eng Vision) this special casing can
-    // be removed.
-    if (Trace.Types.Events.isSyntheticLayoutShift(event) || Trace.Types.Events.isSyntheticLayoutShiftCluster(event) ||
-        Trace.Types.Events.isSyntheticNetworkRequest(event)) {
-      return await this.setSummaryContent();
-    }
-
-    // Otherwise, build the generic trace event details UI.
-    const traceEventDetails = await TimelineUIUtils.buildTraceEventDetails(
-        this.#parsedTrace, event, this.detailsLinkifier, true, this.#entityMapper);
-    this.appendDetailsTabsForTraceEventAndShowDetails(event, traceEventDetails);
+    await this.updateSummaryAndSelectTab(null);
+    this.appendExtraDetailsTabsForTraceEvent(event);
   }
 
   async setSelection(selection: TimelineSelection|null): Promise<void> {
@@ -537,8 +527,12 @@ export class TimelineDetailsPane extends
     }
   }
 
-  private appendDetailsTabsForTraceEventAndShowDetails(event: Trace.Types.Events.Event, content: Node): void {
-    void this.setSummaryContent(content);
+  /**
+   * When some events are selected, we show extra tabs. E.g. paint events get
+   * the Paint Profiler, and layout events might get CSS Selector Stats if
+   * they are available in the trace.
+   */
+  private appendExtraDetailsTabsForTraceEvent(event: Trace.Types.Events.Event): void {
     if (Trace.Types.Events.isPaint(event) || Trace.Types.Events.isRasterTask(event)) {
       this.showEventInPaintProfiler(event);
     }
@@ -587,7 +581,7 @@ export class TimelineDetailsPane extends
     // (so the 3P Tree View is attached to the DOM) and then we tell it to
     // update.
     // This will be fixed once we migrate this component fully to the new vision (b/407751379)
-    void this.setSummaryContent(summaryDetailElem).then(() => {
+    void this.updateSummaryAndSelectTab(summaryDetailElem).then(() => {
       this.#thirdPartyTree.updateContents(this.selection || selectionFromRangeMilliSeconds(startTime, endTime));
     });
 
@@ -619,17 +613,14 @@ export enum Tab {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-/**
- * This code renders the contents of the summary view.
- * To assist with the migration to the UI Eng vision, its primary job is to
- * render a given Node (which is usually a DocumentFragmetn). These are what get
- * build via TimelineUIUtils depending on what sort of event or range is
- * selected. In time once this is migrated we can remove the "render this node"
- * functionality.
- */
-
 interface SummaryViewInput {
-  // A helper as we migrate to the new eng vision: this is arbitrary DOM that we want to render within the summary.
+  // This is a helper to allow an incremental migration to the new UI Eng vision.
+  // Currently, this is used in two scenarios:
+  // 1. When the user selects a TimelineFrame (screenshot).
+  // 2. When no trace event is selected, and the user is looking at a range.
+  // Both of these scenarios need to be updated to use the new UI Eng Vision,
+  // and then we can remove the ability for this UI to take an arbitrary DOM
+  // Node to render.
   node: Node|null;
   selectedEvent: Trace.Types.Events.Event|null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null;
@@ -640,42 +631,14 @@ interface SummaryViewInput {
   linkifier: Components.Linkifier.Linkifier|null;
 }
 
-function eventIsLayoutShiftRelated(e: Trace.Types.Events.Event|null): e is Trace.Types.Events.SyntheticLayoutShift|
-    Trace.Types.Events.SyntheticLayoutShiftCluster {
-  if (e === null) {
-    return false;
-  }
-  return Trace.Types.Events.isSyntheticLayoutShift(e) || Trace.Types.Events.isSyntheticLayoutShiftCluster(e);
-}
-
 type View = (input: SummaryViewInput, output: object, target: HTMLElement) => void;
 const SUMMARY_DEFAULT_VIEW: View = (input, _output, target) => {
-  const traceRecordingIsFresh = input.parsedTrace ? Tracker.instance().recordingIsFresh(input.parsedTrace) : false;
-
   // clang-format off
   render(
       html`
         <style>${detailsViewStyles}</style>
         ${input.node ?? nothing}
-        ${eventIsLayoutShiftRelated(input.selectedEvent) ? html`
-          <devtools-widget data-layout-shift-details .widgetConfig=${
-            UI.Widget.widgetConfig(TimelineComponents.LayoutShiftDetails.LayoutShiftDetails, {
-              event: input.selectedEvent,
-              traceInsightsSets: input.traceInsightsSets,
-              parsedTrace: input.parsedTrace,
-              isFreshRecording: traceRecordingIsFresh,
-            })}></devtools-widget>
-          ` : nothing}
-        ${input.selectedEvent && Trace.Types.Events.isSyntheticNetworkRequest(input.selectedEvent) ? html`
-          <devtools-widget data-network-request-details .widgetConfig=${
-            UI.Widget.widgetConfig(TimelineComponents.NetworkRequestDetails.NetworkRequestDetails, {
-              request: input.selectedEvent,
-              entityMapper: input.entityMapper,
-              target: input.target,
-              linkifier: input.linkifier,
-              parsedTrace: input.parsedTrace,
-            })}></devtools-widget>
-          ` : nothing}
+        ${Directives.until(renderSelectedEventDetails(input))}
         <devtools-widget data-related-insight-chips .widgetConfig=${
           UI.Widget.widgetConfig(TimelineComponents.RelatedInsightChips.RelatedInsightChips, {
             activeEvent: input.selectedEvent,
@@ -716,4 +679,51 @@ class SummaryView extends UI.Widget.Widget {
         },
         {}, this.contentElement);
   }
+}
+
+async function renderSelectedEventDetails(
+    input: SummaryViewInput,
+    ): Promise<LitTemplate> {
+  const {selectedEvent, parsedTrace, linkifier} = input;
+  if (!selectedEvent || !parsedTrace || !linkifier) {
+    return nothing;
+  }
+  const traceRecordingIsFresh = parsedTrace ? Tracker.instance().recordingIsFresh(parsedTrace) : false;
+
+  if (Trace.Types.Events.isSyntheticLayoutShift(selectedEvent) ||
+      Trace.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {
+    // clang-format off
+    return html`
+      <devtools-widget data-layout-shift-details .widgetConfig=${
+        UI.Widget.widgetConfig(TimelineComponents.LayoutShiftDetails.LayoutShiftDetails, {
+          event: selectedEvent,
+          traceInsightsSets: input.traceInsightsSets,
+          parsedTrace: input.parsedTrace,
+          isFreshRecording: traceRecordingIsFresh,
+        })}
+      ></devtools-widget>`;
+    // clang-format on
+  }
+
+  if (Trace.Types.Events.isSyntheticNetworkRequest(selectedEvent)) {
+    // clang-format off
+    return html`
+      <devtools-widget data-network-request-details .widgetConfig=${
+        UI.Widget.widgetConfig(TimelineComponents.NetworkRequestDetails.NetworkRequestDetails, {
+          request: selectedEvent,
+          entityMapper: input.entityMapper,
+          target: input.target,
+          linkifier: input.linkifier,
+          parsedTrace: input.parsedTrace,
+        })}
+      ></devtools-widget>
+    `;
+    // clang-format on
+  }
+
+  // Fall back to the default trace event details. Long term this needs to use
+  // the UI Eng Vision.
+  const traceEventDetails =
+      await TimelineUIUtils.buildTraceEventDetails(parsedTrace, selectedEvent, linkifier, true, input.entityMapper);
+  return html`${traceEventDetails}`;
 }

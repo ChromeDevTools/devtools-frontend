@@ -102,6 +102,30 @@ const UIStrings = {
    *@description Text for an action that shows all of the hidden entries of the Flame Chart
    */
   resetTrace: 'Reset trace',
+  /**
+   *@description Context menu text in Performance Panel to that opens a submenu with AI prompts.
+   */
+  debugWithAi: 'Debug with AI',
+  /**
+   *@description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
+   */
+  startAChat: 'Start a chat',
+  /**
+   *@description Context menu item in Performance panel to label an entry.
+   */
+  labelEntry: 'Label entry',
+  /**
+   *@description Context menu item in Performance panel to assess the purpose of an entry via AI.
+   */
+  assessThePurpose: 'Assess the purpose',
+  /**
+   *@description Context menu item in Performance panel to identify time spent in a call tree via AI.
+   */
+  identifyTimeSpent: 'Identify time spent',
+  /**
+   *@description Context menu item in Performance panel to find improvements for a call tree via AI.
+   */
+  findImprovements: 'Find improvements',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -258,16 +282,40 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const aiCallTree = Utils.AICallTree.AICallTree.fromEvent(entry, this.parsedTrace);
       if (aiCallTree) {
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(PERF_AI_ACTION_ID);
-        contextMenu.footerSection().appendItem(action.title(), () => {
-          const event = this.eventByIndex(entryIndex);
-          if (!event || !this.parsedTrace) {
-            return;
+        // The other side of setFlavor is handleTraceEntryNodeFlavorChange() in FreestylerPanel
+        const context = Utils.AIContext.AgentFocus.fromCallTree(aiCallTree);
+        UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
+
+        if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
+          function appendSubmenuPromptAction(
+              submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action,
+              label: Common.UIString.LocalizedString, prompt: string, jslogContext: string): void {
+            submenu.defaultSection().appendItem(
+                label, async () => await action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
           }
-          // The other side of setFlavor is handleTraceEntryNodeFlavorChange() in FreestylerPanel
-          const context = Utils.AIContext.AgentFocus.fromCallTree(aiCallTree);
+
+          const submenu = contextMenu.footerSection().appendSubMenuItem(
+              i18nString(UIStrings.debugWithAi), false, PERF_AI_ACTION_ID);
+          submenu.defaultSection().appendAction(PERF_AI_ACTION_ID, i18nString(UIStrings.startAChat));
+          submenu.defaultSection().appendItem(i18nString(UIStrings.labelEntry), () => {
+            this.dispatchEventToListeners(
+                Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex, withLinkCreationButton: false});
+          }, {
+            jslogContext: 'timeline.annotations.create-entry-label',
+          });
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.assessThePurpose), 'What\'s the purpose of this entry?',
+              PERF_AI_ACTION_ID + '.purpose');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.identifyTimeSpent),
+              'Where is most time being spent in this call tree?', PERF_AI_ACTION_ID + '.time-spent');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.findImprovements), 'How can I reduce the time of this call tree?',
+              PERF_AI_ACTION_ID + '.improvements');
+        } else {
+          contextMenu.footerSection().appendAction(PERF_AI_ACTION_ID);
+        }
           UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
-          return action.execute();
-        }, {jslogContext: PERF_AI_ACTION_ID});
       }
     }
 
@@ -1367,11 +1415,16 @@ export const InstantEventVisibleDurationMs = Trace.Types.Timing.Milli(0.001);
 export const enum Events {
   DATA_CHANGED = 'DataChanged',
   FLAME_CHART_ITEM_HOVERED = 'FlameChartItemHovered',
+  ENTRY_LABEL_ANNOTATION_ADDED = 'EntryLabelAnnotationAdded'
 }
 
 export interface EventTypes {
   [Events.DATA_CHANGED]: void;
   [Events.FLAME_CHART_ITEM_HOVERED]: Trace.Types.Events.Event|null;
+  [Events.ENTRY_LABEL_ANNOTATION_ADDED]: {
+    entryIndex: number,
+    withLinkCreationButton: boolean,
+  };
 }
 
 // an entry is a trace event, they are classified into "entry types"

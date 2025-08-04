@@ -291,6 +291,23 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     assert.deepEqual(metadataInSetting, {main: null, network: [USER_VISUAL_CONFIG_NETWORK]});
   });
 
+  it('creates an entry label annotation when the data provider sends an entry label annotation created event',
+     async function() {
+       const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-modifications.json.gz');
+       const mockViewDelegate = new MockViewDelegate();
+
+       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+       flameChartView.setModel(parsedTrace, metadata);
+       const modifications = Timeline.ModificationsManager.ModificationsManager.activeManager();
+       assert.exists(modifications);
+       const stub = sinon.stub(modifications, 'createAnnotation');
+
+       flameChartView.getMainDataProvider().dispatchEventToListeners(
+           Timeline.TimelineFlameChartDataProvider.Events.ENTRY_LABEL_ANNOTATION_ADDED,
+           {entryIndex: 0, withLinkCreationButton: false});
+       sinon.assert.calledOnce(stub);
+     });
+
   it('fires an event when an entry label overlay is clicked', async function() {
     const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-modifications.json.gz');
     const mockViewDelegate = new MockViewDelegate();

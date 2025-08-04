@@ -394,6 +394,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         this.onEntriesLinkAnnotationCreate(this.networkDataProvider, event.data.entryFromIndex);
     this.mainFlameChart.addEventListener(
         PerfUI.FlameChart.Events.ENTRY_LABEL_ANNOTATION_ADDED, this.onMainAddEntryLabelAnnotation, this);
+    this.mainDataProvider.addEventListener(
+        TimelineFlameChartDataProviderEvents.ENTRY_LABEL_ANNOTATION_ADDED, this.onMainAddEntryLabelAnnotation, this);
     this.networkFlameChart.addEventListener(
         PerfUI.FlameChart.Events.ENTRY_LABEL_ANNOTATION_ADDED, this.onNetworkAddEntryLabelAnnotation, this);
 

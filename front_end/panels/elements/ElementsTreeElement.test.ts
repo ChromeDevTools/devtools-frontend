@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../../../front_end/ui/legacy/legacy.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -115,5 +117,114 @@ describeWithMockConnection('ElementsTreeElement', () => {
     await toggleStub;
     assert.isTrue(adorner1.isActive());
     assert.isFalse(adorner2.isActive());
+  });
+});
+
+describeWithMockConnection('ElementsTreeElement ', () => {
+  const DEFAULT_LAYOUT_PROPERTIES = {
+    isFlex: false,
+    isGrid: false,
+    isSubgrid: false,
+    isContainer: false,
+    hasScroll: false,
+  };
+
+  beforeEach(() => {
+    updateHostConfig({
+      devToolsAiSubmenuPrompts: {
+        enabled: true,
+      },
+    });
+    UI.ActionRegistration.registerActionExtension({
+      actionId: 'freestyler.element-panel-context',
+      title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
+      category: UI.ActionRegistration.ActionCategory.GLOBAL,
+    });
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+  });
+
+  afterEach(() => {
+    UI.ActionRegistry.ActionRegistry.reset();
+    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+  });
+
+  async function getContextMenuForElementWithLayoutProperties(layoutProperties: SDK.CSSModel.LayoutProperties|null):
+      Promise<UI.ContextMenu.ContextMenu> {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
+    assert.exists(domModel);
+    assert.exists(cssModel);
+
+    sinon.stub(cssModel, 'getLayoutPropertiesFromComputedStyle').resolves(layoutProperties);
+
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
+    treeElement.treeOutline = treeOutline;
+
+    const event = new Event('contextmenu');
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    await treeElement.populateNodeContextMenu(contextMenu);
+    return contextMenu;
+  }
+
+  it('shows default submenu items', async () => {
+    const contextMenu = await getContextMenuForElementWithLayoutProperties(null);
+    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
+    assert.exists(debugWithAiItem);
+    assert.deepEqual(
+        debugWithAiItem?.subItems?.map(item => item.label), ['Start a chat', 'Assess visibility', 'Center element']);
+  });
+
+  it('shows flexbox submenu items', async () => {
+    const contextMenu =
+        await getContextMenuForElementWithLayoutProperties({...DEFAULT_LAYOUT_PROPERTIES, isFlex: true});
+    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
+    assert.exists(debugWithAiItem);
+    assert.deepEqual(
+        debugWithAiItem?.subItems?.map(item => item.label),
+        ['Start a chat', 'Wrap these items', 'Distribute items evenly', 'Explain flexbox']);
+  });
+
+  it('shows grid submenu items', async () => {
+    const contextMenu =
+        await getContextMenuForElementWithLayoutProperties({...DEFAULT_LAYOUT_PROPERTIES, isGrid: true});
+    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
+    assert.exists(debugWithAiItem);
+    assert.deepEqual(
+        debugWithAiItem?.subItems?.map(item => item.label),
+        ['Start a chat', 'Align items', 'Add padding', 'Explain grid layout']);
+  });
+
+  it('shows subgrid submenu items', async () => {
+    const contextMenu =
+        await getContextMenuForElementWithLayoutProperties({...DEFAULT_LAYOUT_PROPERTIES, isSubgrid: true});
+    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
+    assert.exists(debugWithAiItem);
+    assert.deepEqual(
+        debugWithAiItem?.subItems?.map(item => item.label),
+        ['Start a chat', 'Find grid definition', 'Change parent properties', 'Explain subgrids']);
+  });
+
+  it('shows scroll submenu items', async () => {
+    const contextMenu =
+        await getContextMenuForElementWithLayoutProperties({...DEFAULT_LAYOUT_PROPERTIES, hasScroll: true});
+    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
+    assert.exists(debugWithAiItem);
+    assert.deepEqual(
+        debugWithAiItem?.subItems?.map(item => item.label),
+        ['Start a chat', 'Remove scrollbars', 'Style scrollbars', 'Explain scrollbars']);
+  });
+
+  it('shows container submenu items', async () => {
+    const contextMenu =
+        await getContextMenuForElementWithLayoutProperties({...DEFAULT_LAYOUT_PROPERTIES, isContainer: true});
+    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
+    assert.exists(debugWithAiItem);
+    assert.deepEqual(
+        debugWithAiItem?.subItems?.map(item => item.label),
+        ['Start a chat', 'Explain container queries', 'Explain container types', 'Explain container context']);
   });
 });

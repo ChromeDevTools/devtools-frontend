@@ -331,7 +331,10 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   currentSearchResultIndex = -1;
   currentQuery?: HeapSnapshotModel.HeapSnapshotModel.SearchConfig;
   constructor(dataDisplayDelegate: DataDisplayDelegate, profile: HeapProfileHeader) {
-    super(i18nString(UIStrings.heapSnapshot));
+    super({
+      title: i18nString(UIStrings.heapSnapshot),
+      viewId: 'heap-snapshot',
+    });
 
     this.searchResults = [];
 

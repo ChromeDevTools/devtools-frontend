@@ -166,7 +166,7 @@ describe('StringUtilities', () => {
     });
   });
 
-  describe('isExtendedKebab', () => {
+  describe('isExtendedKebabCase', () => {
     const {isExtendedKebabCase} = Platform.StringUtilities;
 
     it('yields `true` for kebab case strings', () => {

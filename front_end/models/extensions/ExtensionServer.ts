@@ -1577,7 +1577,12 @@ class ExtensionServerPanelView extends UI.View.SimpleView {
   private readonly panel: UI.Panel.Panel;
 
   constructor(name: string, title: Platform.UIString.LocalizedString, panel: UI.Panel.Panel) {
-    super(title);
+    // The `viewId` here is to satisfy the `SimpleView` constructor needs, but isn't actually
+    // used anywhere, since we override the `viewId()` method below.  Ideally we'd pass the
+    // `name` as `viewId` to the constructor, but that doesn't work, since the `name` is not
+    // necessarily in Kebab case.
+    const viewId = Platform.StringUtilities.toKebabCase(title);
+    super({title, viewId});
     this.name = name;
     this.panel = panel;
   }

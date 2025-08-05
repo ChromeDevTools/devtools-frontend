@@ -265,7 +265,10 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   #playbackRateButtonsDisabled = false;
 
   constructor(toolbarView: ToolbarView = DEFAULT_TOOLBAR_VIEW) {
-    super({jslog: `${VisualLogging.panel('animations').track({resize: true})}`, useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.panel('animations').track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(animationTimelineStyles);
 
     this.#toolbarView = toolbarView;

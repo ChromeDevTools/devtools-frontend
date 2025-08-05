@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
-import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 // eslint-disable-next-line rulesdir/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
@@ -15,8 +14,9 @@ import accessibilityPropertiesStyles from './accessibilityProperties.css.js';
 export class AccessibilitySubPane extends UI.View.SimpleView {
   axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   protected nodeInternal?: SDK.DOMModel.DOMNode|null;
-  constructor(name: Platform.UIString.LocalizedString) {
-    super(name);
+
+  constructor(options: UI.View.SimpleViewOptions) {
+    super(options);
     this.registerRequiredCSS(accessibilityPropertiesStyles);
 
     this.axNode = null;

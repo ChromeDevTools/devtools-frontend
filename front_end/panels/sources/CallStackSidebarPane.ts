@@ -109,7 +109,11 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private lastDebuggerModel: SDK.DebuggerModel.DebuggerModel|null = null;
 
   private constructor() {
-    super(i18nString(UIStrings.callStack), true, 'sources.callstack');
+    super({
+      title: i18nString(UIStrings.callStack),
+      viewId: 'sources.callstack',
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(callStackSidebarPaneStyles);
 
     this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.callstack')}`);

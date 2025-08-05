@@ -181,7 +181,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   constructor(
       lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>,
       private readonly options: SourceFrameOptions = {}) {
-    super(i18nString(UIStrings.source));
+    super({
+      title: i18nString(UIStrings.source),
+      viewId: 'source',
+    });
 
     this.lazyContent = lazyContent;
 

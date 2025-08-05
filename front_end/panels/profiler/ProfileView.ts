@@ -127,7 +127,10 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   searchableElement?: ProfileDataGridTree|ProfileFlameChart;
   profileDataGridTree?: ProfileDataGridTree;
   constructor() {
-    super(i18nString(UIStrings.profile));
+    super({
+      title: i18nString(UIStrings.profile),
+      viewId: 'profile',
+    });
 
     this.profileInternal = null;
 

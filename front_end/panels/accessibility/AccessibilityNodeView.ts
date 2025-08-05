@@ -125,13 +125,16 @@ export class AXNodeSubPane extends AccessibilitySubPane {
   private readonly treeOutline: UI.TreeOutline.TreeOutline;
   private readonly ignoredReasonsTree: UI.TreeOutline.TreeOutline;
   constructor() {
-    super(i18nString(UIStrings.computedProperties));
+    super({
+      title: i18nString(UIStrings.computedProperties),
+      viewId: 'computed-properties',
+      jslog: `${VisualLogging.section('computed-properties')}`,
+    });
     this.registerRequiredCSS(accessibilityNodeStyles);
 
     this.axNode = null;
 
     this.contentElement.classList.add('ax-subpane');
-    this.contentElement.setAttribute('jslog', `${VisualLogging.section('computed-properties')}`);
 
     this.noNodeInfo = this.createInfo(i18nString(UIStrings.noAccessibilityNode));
     this.ignoredInfo = this.createInfo(i18nString(UIStrings.accessibilityNodeNotExposed), 'ax-ignored-info hidden');

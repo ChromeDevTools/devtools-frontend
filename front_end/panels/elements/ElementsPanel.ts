@@ -1093,14 +1093,18 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     UI.ARIAUtils.markAsComplementary(contentElement);
     UI.ARIAUtils.setLabel(contentElement, i18nString(UIStrings.sidePanelContent));
 
-    const stylesView = new UI.View.SimpleView(
-        i18nString(UIStrings.styles), /* useShadowDom */ undefined, SidebarPaneTabId.STYLES as Lowercase<string>);
+    const stylesView = new UI.View.SimpleView({
+      title: i18nString(UIStrings.styles),
+      viewId: SidebarPaneTabId.STYLES as Lowercase<string>,
+    });
     this.sidebarPaneView.appendView(stylesView);
     stylesView.element.classList.add('flex-auto');
     stylesSplitWidget.show(stylesView.element);
 
-    const computedView = new UI.View.SimpleView(
-        i18nString(UIStrings.computed), /* useShadowDom */ undefined, SidebarPaneTabId.COMPUTED as Lowercase<string>);
+    const computedView = new UI.View.SimpleView({
+      title: i18nString(UIStrings.computed),
+      viewId: SidebarPaneTabId.COMPUTED as Lowercase<string>,
+    });
     computedView.element.classList.add('composite', 'fill');
 
     tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, tabSelected, this);

@@ -54,32 +54,30 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
 
   // clang-format off
   render(html`
-    <div jslog=${VisualLogging.section('source-order-viewer')}>
-      ${input.showSourceOrder === undefined
+    ${input.showSourceOrder === undefined
+      ? html`
+        <div class="gray-info-message info-message-overflow">
+          ${i18nString(UIStrings.noSourceOrderInformation)}
+        </div>
+      `
+      : html`
+      ${input.childCount >= MAX_CHILD_ELEMENTS_THRESHOLD
         ? html`
-          <div class="gray-info-message info-message-overflow">
-            ${i18nString(UIStrings.noSourceOrderInformation)}
+          <div class="gray-info-message info-message-overflow"
+                id="source-order-warning">
+            ${i18nString(UIStrings.thereMayBeADelayInDisplaying)}
           </div>
         `
-        : html`
-        ${input.childCount >= MAX_CHILD_ELEMENTS_THRESHOLD
-          ? html`
-            <div class="gray-info-message info-message-overflow"
-                 id="source-order-warning">
-              ${i18nString(UIStrings.thereMayBeADelayInDisplaying)}
-            </div>
-          `
-          : nothing
-        }
-        <devtools-checkbox class="source-order-checkbox"
-                           jslog=${VisualLogging.toggle().track({click: true})}
-                           ?checked=${input.showSourceOrder}
-                           @change=${onShowSourceOrderChanged}>
-          ${i18nString(UIStrings.showSourceOrder)}
-        </devtools-checkbox>
-        `
+        : nothing
       }
-    </div>
+      <devtools-checkbox class="source-order-checkbox"
+                          jslog=${VisualLogging.toggle().track({click: true})}
+                          ?checked=${input.showSourceOrder}
+                          @change=${onShowSourceOrderChanged}>
+        ${i18nString(UIStrings.showSourceOrder)}
+      </devtools-checkbox>
+      `
+    }
   `, target);
   // clang-format on
 };
@@ -88,8 +86,13 @@ export class SourceOrderPane extends AccessibilitySubPane {
   #childCount = 0;
   #showSourceOrder: boolean|undefined = undefined;
   readonly #view: View;
+
   constructor(view: View = DEFAULT_VIEW) {
-    super(i18nString(UIStrings.sourceOrderViewer));
+    super({
+      title: i18nString(UIStrings.sourceOrderViewer),
+      viewId: 'source-order-viewer',
+      jslog: `${VisualLogging.section('source-order-viewer')}`,
+    });
     this.#view = view;
   }
 

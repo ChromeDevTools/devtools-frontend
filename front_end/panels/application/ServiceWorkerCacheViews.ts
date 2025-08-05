@@ -104,7 +104,11 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   private readonly metadataView = new ApplicationComponents.StorageMetadataView.StorageMetadataView();
 
   constructor(model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache) {
-    super(i18nString(UIStrings.cache));
+    super({
+      title: i18nString(UIStrings.cache),
+      viewId: 'cache',
+      jslog: `${VisualLogging.pane('cache-storage-data')}`,
+    });
     this.registerRequiredCSS(serviceWorkerCacheViewsStyles);
 
     this.model = model;
@@ -112,7 +116,6 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
     this.element.classList.add('service-worker-cache-data-view');
     this.element.classList.add('storage-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('cache-storage-data')}`);
 
     const editorToolbar = this.element.createChild('devtools-toolbar', 'data-view-toolbar');
     editorToolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);

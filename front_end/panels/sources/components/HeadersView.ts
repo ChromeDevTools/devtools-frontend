@@ -64,8 +64,11 @@ export class HeadersView extends UI.View.SimpleView {
   #uiSourceCode: Workspace.UISourceCode.UISourceCode;
 
   constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
-    super(i18n.i18n.lockedString('HeadersView'));
-    this.element.setAttribute('jslog', `${VisualLogging.pane('headers-view')}`);
+    super({
+      title: i18n.i18n.lockedString('HeadersView'),
+      viewId: 'headers-view',
+      jslog: `${VisualLogging.pane('headers-view')}`,
+    });
     this.#uiSourceCode = uiSourceCode;
     this.#uiSourceCode.addEventListener(
         Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);

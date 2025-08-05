@@ -55,12 +55,15 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
   #legacyTreeDisabled = false;
 
   constructor(axSidebarView: AccessibilitySidebarView) {
-    super(i18nString(UIStrings.accessibilityTree));
+    super({
+      title: i18nString(UIStrings.accessibilityTree),
+      viewId: 'accessibility-tree',
+      jslog: `${VisualLogging.section('accessibility-tree')}`,
+    });
     this.registerRequiredCSS(axBreadcrumbsStyles);
 
     this.element.classList.add('ax-subpane');
     this.element.tabIndex = -1;
-    this.element.setAttribute('jslog', `${VisualLogging.section('accessibility-tree')}`);
 
     this.axSidebarView = axSidebarView;
     this.preselectedBreadcrumb = null;

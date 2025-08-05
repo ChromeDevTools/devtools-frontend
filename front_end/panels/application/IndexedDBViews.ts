@@ -289,7 +289,11 @@ export class IDBDataView extends UI.View.SimpleView {
   constructor(
       model: IndexedDBModel, databaseId: DatabaseId, objectStore: ObjectStore, index: Index|null,
       refreshObjectStoreCallback: () => void) {
-    super(i18nString(UIStrings.idb));
+    super({
+      title: i18nString(UIStrings.idb),
+      viewId: 'idb',
+      jslog: `${VisualLogging.pane('indexed-db-data-view')}`,
+    });
     this.registerRequiredCSS(indexedDBViewsStyles);
 
     this.model = model;
@@ -298,7 +302,6 @@ export class IDBDataView extends UI.View.SimpleView {
     this.refreshObjectStoreCallback = refreshObjectStoreCallback;
 
     this.element.classList.add('indexed-db-data-view', 'storage-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('indexed-db-data-view')}`);
 
     this.refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh');
     this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.refreshButtonClicked, this);

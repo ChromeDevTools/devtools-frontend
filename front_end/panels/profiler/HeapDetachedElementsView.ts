@@ -48,7 +48,10 @@ export class DetachedElementsProfileView extends UI.View.SimpleView implements D
   readonly parentDataDisplayDelegate: DataDisplayDelegate;
 
   constructor(dataDisplayDelegate: DataDisplayDelegate, profile: DetachedElementsProfileHeader) {
-    super(i18nString(UIStrings.detachedElementsTitle));
+    super({
+      title: i18nString(UIStrings.detachedElementsTitle),
+      viewId: 'detached-elements',
+    });
     this.element.classList.add('detached-elements-view');
     this.profile = profile;
     this.parentDataDisplayDelegate = dataDisplayDelegate;

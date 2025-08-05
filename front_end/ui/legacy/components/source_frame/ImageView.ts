@@ -99,11 +99,14 @@ export class ImageView extends UI.View.SimpleView {
   private imagePreviewElement: HTMLImageElement;
   private cachedContent?: TextUtils.ContentData.ContentData;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
-    super(i18nString(UIStrings.image));
+    super({
+      title: i18nString(UIStrings.image),
+      viewId: 'image',
+      jslog: `${VisualLogging.pane('image-view')}}`,
+    });
     this.registerRequiredCSS(imageViewStyles);
     this.element.tabIndex = -1;
     this.element.classList.add('image-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('image-view')}`);
     this.url = contentProvider.contentURL();
     this.parsedURL = new Common.ParsedURL.ParsedURL(this.url);
     this.contentProvider = contentProvider;

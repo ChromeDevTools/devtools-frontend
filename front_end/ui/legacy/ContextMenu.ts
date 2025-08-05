@@ -716,17 +716,17 @@ export class ContextMenu extends SubMenu {
 
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 /**
- * @prop jslogContext - Reflects the `"jslogContext"` attribute.
+ * @property jslogContext - Reflects the `"jslogContext"` attribute.
  * @property populateMenuCall - Callback function to populate the menu.
  * @property softMenu - Reflects the `"soft-menu"` attribute.
  * @property keepOpen -Reflects the `"keep-open"` attribute.
  * @property iconName - Reflects the `"icon-name"` attribute.
  * @property disabled - Reflects the `"disabled"` attribute.
- * @attr soft-menu - Whether to use the soft menu implementation.
- * @attr keep-open - Whether the menu should stay open after an item is clicked.
- * @attr icon-name - Name of the icon to display on the button.
- * @attr disabled - Whether the menu button is disabled
- * @attr jslogContext - The jslog context for the button.
+ * @attribute soft-menu - Whether to use the soft menu implementation.
+ * @attribute keep-open - Whether the menu should stay open after an item is clicked.
+ * @attribute icon-name - Name of the icon to display on the button.
+ * @attribute disabled - Whether the menu button is disabled
+ * @attribute jslogContext - The jslog context for the button.
  *
  */
 export class MenuButton extends HTMLElement {

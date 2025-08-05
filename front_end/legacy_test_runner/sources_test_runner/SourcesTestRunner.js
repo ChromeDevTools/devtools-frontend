@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 
 import * as Sources from '../../panels/sources/sources.js';
@@ -84,7 +84,7 @@ export const dumpNavigatorViewInMode = function(view, mode) {
  * @param {string} content
  * @param {boolean=} isContentScript
  * @param {number=} worldId
- * @return {!Promise}
+ * @returns {!Promise}
  */
 export const addScriptUISourceCode = function(url, content, isContentScript, worldId) {
   content += '\n//# sourceURL=' + url;

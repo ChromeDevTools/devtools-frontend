@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import stylisticPlugin from '@stylistic/eslint-plugin';
-import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import mochaPlugin from 'eslint-plugin-mocha';
+import {defineConfig, globalIgnores} from 'eslint/config';
 import globals from 'globals';
-import { join } from 'path';
+import {join} from 'path';
 import typescriptEslint from 'typescript-eslint';
 
 import rulesdirPlugin from './scripts/eslint_rules/rules-dir.mjs';
@@ -291,6 +291,14 @@ export default defineConfig([
        * we actually benefit from them.
        */
       'jsdoc/check-alignment': 'error',
+      'jsdoc/check-tag-names': [
+        'error', {
+          definedTags: [
+            'attribute',  // @attribute is used by lit-analyzer (through web-component-analyzer)
+            'meaning',    // @meaning is used by localization
+          ],
+        }
+      ],
       'jsdoc/empty-tags': 'error',
       'jsdoc/require-asterisk-prefix': 'error',
       'jsdoc/require-param-name': 'error',

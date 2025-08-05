@@ -36,7 +36,7 @@ const UIStrings = {
   onIgnoreList: 'On ignore list ({rule})',
   /**
    * @description Refers to the "Main frame", meaning the top level frame. See https://www.w3.org/TR/html401/present/frames.html
-   * @example{example.com} PH1
+   * @example {example.com} PH1
    */
   mainS: 'Main — {PH1}',
   /**

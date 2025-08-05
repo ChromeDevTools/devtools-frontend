@@ -39,17 +39,17 @@ export const DEFAULT_AUTO_DISMISS_MS = 5000;
 const LONG_ACTION_THRESHOLD = 15;
 
 /**
- * @prop actionButtonClickHandler - Function to be triggered when action button is clicked.
+ * @property actionButtonClickHandler - Function to be triggered when action button is clicked.
  * @property dismissTimeout - reflects the `"dismiss-timeout"` attribute.
  * @property message - reflects the `"message"` attribute.
  * @property closable - reflects the `"closable"` attribute.
  * @property actionButtonLabel - reflects the `"action-button-label"` attribute.
  * @property actionButtonTitle - reflects the `"action-button-title"` attribute.
- * @attr dismiss-timeout - Timeout in ms after which the snackbar is dismissed (if closable is false).
- * @attr message - The message to display in the snackbar.
- * @attr closable - If true, the snackbar will have a dismiss button. This cancels the auto dismiss behavior.
- * @attr action-button-label - The text for the action button.
- * @attr action-button-title - The title for the action button.
+ * @attribute dismiss-timeout - Timeout in ms after which the snackbar is dismissed (if closable is false).
+ * @attribute message - The message to display in the snackbar.
+ * @attribute closable - If true, the snackbar will have a dismiss button. This cancels the auto dismiss behavior.
+ * @attribute action-button-label - The text for the action button.
+ * @attribute action-button-title - The title for the action button.
  *
  */
 export class Snackbar extends HTMLElement {

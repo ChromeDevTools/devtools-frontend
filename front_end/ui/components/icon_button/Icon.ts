@@ -62,7 +62,7 @@ export type IconData = IconWithName|{
  *
  * @property name - The `"name"` attribute is reflected as property.
  * @property data - Deprecated way to set dimensions, color and name at once.
- * @attr name - The basename of the icon file (not including the `.svg` suffix). For
+ * @attribute name - The basename of the icon file (not including the `.svg` suffix). For
  *              backwards compatibility we also support a full URL here, but that
  *              should not be used in newly written code.
  */

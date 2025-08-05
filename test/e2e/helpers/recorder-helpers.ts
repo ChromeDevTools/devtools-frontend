@@ -170,7 +170,7 @@ interface RecordingSnapshotOptions {
    */
   offsets?: boolean;
   /**
-   * @defaul true
+   * @default true
    */
   expectCommon?: boolean;
   resource?: string;

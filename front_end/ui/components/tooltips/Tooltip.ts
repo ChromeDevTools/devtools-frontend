@@ -156,19 +156,19 @@ export interface TooltipProperties {
 }
 
 /**
- * @prop useHotkey - reflects the `"use-hotkey"` attribute.
+ * @property useHotkey - reflects the `"use-hotkey"` attribute.
  * @property id - reflects the `"id"` attribute.
  * @property hoverDelay - reflects the `"hover-delay"` attribute.
  * @property variant - reflects the `"variant"` attribute.
  * @property padding - reflects the `"padding"` attribute.
  * @property useClick - reflects the `"click"` attribute.
- * @attr id - Id of the tooltip. Used for searching an anchor element with aria-describedby.
- * @attr hover-delay - Hover length in ms before the tooltip is shown and hidden.
- * @attr variant - Variant of the tooltip, `"simple"` for strings only, inverted background,
+ * @attribute id - Id of the tooltip. Used for searching an anchor element with aria-describedby.
+ * @attribute hover-delay - Hover length in ms before the tooltip is shown and hidden.
+ * @attribute variant - Variant of the tooltip, `"simple"` for strings only, inverted background,
  *                 `"rich"` for interactive content, background according to theme's surface.
- * @attr padding - Which padding to use, defaults to `"small"`. Use `"large"` for richer content.
- * @attr use-click - If present, the tooltip will be shown on click instead of on hover.
- * @attr use-hotkey - If present, the tooltip will be shown on hover but not when receiving focus.
+ * @attribute padding - Which padding to use, defaults to `"small"`. Use `"large"` for richer content.
+ * @attribute use-click - If present, the tooltip will be shown on click instead of on hover.
+ * @attribute use-hotkey - If present, the tooltip will be shown on hover but not when receiving focus.
  *                    Requires a hotkey to open when fosed (Alt-down). When `"use-click"` is present
  *                    as well, use-click takes precedence.
  */

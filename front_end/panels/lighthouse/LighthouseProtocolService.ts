@@ -10,7 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 
 /**
- * @overview
+ * @file
  *                                                   ┌────────────┐
  *                                                   │CDP Backend │
  *                                                   └────────────┘

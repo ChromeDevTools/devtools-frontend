@@ -31,9 +31,9 @@ const {html} = Lit;
  *
  * @property iconName - The `"icon-name"` attribute is reflected as a property.
  * @property jslogContext - The `"jslogcontext"` attribute is reflected as a property.
- * @attr icon-name - The basename of the icon file (not including the `.svg`
+ * @attribute icon-name - The basename of the icon file (not including the `.svg`
  *                   suffix).
- * @attr jslogcontext - The context for the `jslog` attribute. A `jslog`
+ * @attribute jslogcontext - The context for the `jslog` attribute. A `jslog`
  *                      attribute is generated automatically with the
  *                      provided context.
  */

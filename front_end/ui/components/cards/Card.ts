@@ -41,7 +41,7 @@ import cardStyles from './card.css.js';
  * ```
  *
  * @property heading - The `"heading"` attribute is reflect as property.
- * @attr heading - The heading text.
+ * @attribute heading - The heading text.
  */
 export class Card extends HTMLElement {
   static readonly observedAttributes = ['heading'];

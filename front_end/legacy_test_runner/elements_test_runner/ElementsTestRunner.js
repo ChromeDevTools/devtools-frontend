@@ -12,7 +12,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 self.ElementsTestRunner = self.ElementsTestRunner || {};
 
@@ -30,7 +30,7 @@ ElementsTestRunner.selectNodeWithId = function(idValue, callback) {
 
 /**
  * @param {!Object} node
- * @return {!Promise.<undefined>}
+ * @returns {!Promise.<undefined>}
  */
 ElementsTestRunner.selectNode = function(node) {
   return Common.Revealer.reveal(node);
@@ -174,7 +174,7 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
 /**
  * @param {!EventListeners.EventListenersView.EventListenersView} eventListenersView
  * @param {boolean=} force
- * @return {!Promise}
+ * @returns {!Promise}
  */
 ElementsTestRunner.expandAndDumpEventListenersPromise = function(eventListenersView, force) {
   return new Promise(resolve => ElementsTestRunner.expandAndDumpEventListeners(eventListenersView, resolve, force));
@@ -599,7 +599,7 @@ ElementsTestRunner.showEventListenersWidget = function() {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  */
 ElementsTestRunner.showComputedStyles = function() {
   Elements.ElementsPanel.ElementsPanel.instance().sidebarPaneView.tabbedPane().selectTab('computed', true);

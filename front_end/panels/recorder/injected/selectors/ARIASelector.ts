@@ -177,10 +177,10 @@ class ARIASelectorComputer {
 /**
  * Computes the ARIA selector for a node.
  *
+ * @internal
  * @param node - The node to compute.
  * @returns The computed CSS selector.
  *
- * @internal
  */
 export const computeARIASelector = (
     node: Node,

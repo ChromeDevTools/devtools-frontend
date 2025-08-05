@@ -283,6 +283,7 @@ export class CalibrationController {
  * Lifted from Lighthouse.
  *
  * Computes a memory/CPU performance benchmark index to determine rough device class.
+ * @returns
  * @see https://github.com/GoogleChrome/lighthouse/issues/9085
  * @see https://docs.google.com/spreadsheets/d/1E0gZwKsxegudkjJl8Fki_sOwHKpqgXwt8aBAfuUaB8A/edit?usp=sharing
  *
@@ -299,7 +300,6 @@ export class CalibrationController {
  *  - 800+ is a high-end Android phone, Galaxy S8, low-end Chromebook, etc
  *  - 125+ is a mid-tier Android phone, Moto G4, etc
  *  - <125 is a budget Android phone, Alcatel Ideal, Galaxy J2, etc
- * @returns
  */
 function computeBenchmarkIndex(duration = 1000): number {
   const halfTime = duration / 2;

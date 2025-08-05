@@ -36,9 +36,9 @@ const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least o
  * Under the hood it uses SortableDataGrid, which extends ViewportDataGrid so only
  * visible rows are layed out and sorting is provided out of the box.
  *
+ * @property filters
  * @attr striped
  * @attr displayName
- * @property filters
  */
 class DataGridElement extends HTMLElement {
   static readonly observedAttributes = ['striped', 'name', 'inline'];

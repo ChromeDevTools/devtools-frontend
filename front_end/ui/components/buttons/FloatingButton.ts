@@ -29,13 +29,13 @@ const {html} = Lit;
  * `;
  * ```
  *
+ * @property iconName - The `"icon-name"` attribute is reflected as a property.
+ * @property jslogContext - The `"jslogcontext"` attribute is reflected as a property.
  * @attr icon-name - The basename of the icon file (not including the `.svg`
  *                   suffix).
  * @attr jslogcontext - The context for the `jslog` attribute. A `jslog`
  *                      attribute is generated automatically with the
  *                      provided context.
- * @property iconName - The `"icon-name"` attribute is reflected as a property.
- * @property jslogContext - The `"jslogcontext"` attribute is reflected as a property.
  */
 export class FloatingButton extends HTMLElement {
   static readonly observedAttributes = ['icon-name', 'jslogcontext'];

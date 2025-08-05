@@ -124,7 +124,6 @@ const UIStrings = {
   /**
    *@description Text in Background Service View of the Application panel to instruct the user on how to start a recording for
    * background services.
-   *
    *@example {Start recording events} PH1
    *@example {Ctrl + E} PH2
    */

@@ -4,8 +4,8 @@
 
 /**
  * @file Rule to ban usage of `adoptedStyleSheets`.
- * @author Benedikt Meurer
  * @see https://web.dev/articles/constructable-stylesheets
+ * @author Benedikt Meurer
  */
 
 import {createRule} from './utils/ruleCreator.ts';

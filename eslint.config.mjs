@@ -295,6 +295,7 @@ export default defineConfig([
       'jsdoc/require-asterisk-prefix': 'error',
       'jsdoc/require-param-name': 'error',
       'jsdoc/require-hyphen-before-param-description': 'error',
+      'jsdoc/sort-tags': 'error',
     },
   },
   {

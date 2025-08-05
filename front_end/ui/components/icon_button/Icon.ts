@@ -60,11 +60,11 @@ export type IconData = IconWithName|{
  * the default dimensions are 14px times 14px, and the default `vertical-align` is
  * `baseline` (instead of `sub`).
  *
+ * @property name - The `"name"` attribute is reflected as property.
+ * @property data - Deprecated way to set dimensions, color and name at once.
  * @attr name - The basename of the icon file (not including the `.svg` suffix). For
  *              backwards compatibility we also support a full URL here, but that
  *              should not be used in newly written code.
- * @property name - The `"name"` attribute is reflected as property.
- * @property data - Deprecated way to set dimensions, color and name at once.
  */
 export class Icon extends HTMLElement {
   static readonly observedAttributes = ['name'];

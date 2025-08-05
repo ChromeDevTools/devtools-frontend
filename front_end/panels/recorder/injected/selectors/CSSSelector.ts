@@ -251,10 +251,10 @@ export class SelectorRangeOps implements RangeOps<QueryableNode, string> {
 /**
  * Computes the CSS selector for a node.
  *
+ * @internal
  * @param node - The node to compute.
  * @returns The computed CSS selector.
  *
- * @internal
  */
 export const computeCSSSelector = (
     node: Node,

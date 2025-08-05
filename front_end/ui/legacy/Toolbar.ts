@@ -75,14 +75,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * Custom element for toolbars.
  *
+ * @property floating - The `"floating"` attribute is reflected as property.
+ * @property wrappable - The `"wrappable"` attribute is reflected as property.
  * @attr floating - If present the toolbar is rendered in columns, with a border
  *                  around it, and a non-transparent background. This is used to
  *                  build vertical toolbars that open with long-click. Defaults
  *                  to `false`.
  * @attr wrappable - If present the toolbar items will wrap to a new row and the
  *                   toolbar height increases.
- * @property floating - The `"floating"` attribute is reflected as property.
- * @property wrappable - The `"wrappable"` attribute is reflected as property.
  */
 export class Toolbar extends HTMLElement {
   #shadowRoot = this.attachShadow({mode: 'open'});

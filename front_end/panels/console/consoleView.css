@@ -395,20 +395,25 @@
     word-break: break-all;
   }
 
-  .formatted-stack-frame:has(.ignore-list-link) {
-    display: var(--display-ignored-formatted-stack-frame);
-    opacity: 60%;
+  .formatted-stack-frame {
+    display: var(--display-formatted-stack-frame-default);
 
-    /* Subsequent builtin stack frames are also treated as ignored */
-    & + .formatted-builtin-stack-frame {
+    &:has(.ignore-list-link) {
       display: var(--display-ignored-formatted-stack-frame);
       opacity: 60%;
+
+      /* Subsequent builtin stack frames are also treated as ignored */
+      & + .formatted-builtin-stack-frame {
+        display: var(--display-ignored-formatted-stack-frame);
+        opacity: 60%;
+      }
     }
   }
 }
 
 .console-message-stack-trace-wrapper {
   --override-display-stack-preview-toggle-link: none;
+  --display-formatted-stack-frame-default: block;
 
   flex: 1 1 auto;
   display: flex;
@@ -416,7 +421,7 @@
   align-items: stretch;
 
   &:has(div > .stack-preview-container.show-hidden-rows) {
-    --display-ignored-formatted-stack-frame: inherit;
+    --display-ignored-formatted-stack-frame: var(--display-formatted-stack-frame-default);
   }
 
   &:has(.formatted-stack-frame .ignore-list-link):has(.formatted-stack-frame .devtools-link:not(.ignore-list-link)) {

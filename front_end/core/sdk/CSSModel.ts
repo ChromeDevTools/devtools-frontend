@@ -63,6 +63,14 @@ export const enum ColorScheme {
   DARK = 'dark',
 }
 
+export interface LayoutProperties {
+  isFlex: boolean;
+  isGrid: boolean;
+  isSubgrid: boolean;
+  isContainer: boolean;
+  hasScroll: boolean;
+}
+
 export class CSSModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.CSSApi;
   readonly #domModel: DOMModel;
@@ -400,13 +408,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     return await this.#styleLoader.computedStylePromise(nodeId);
   }
 
-  async getLayoutPropertiesFromComputedStyle(nodeId: Protocol.DOM.NodeId): Promise<{
-    isFlex: boolean,
-    isGrid: boolean,
-    isSubgrid: boolean,
-    isContainer: boolean,
-    hasScroll: boolean,
-  }|null> {
+  async getLayoutPropertiesFromComputedStyle(nodeId: Protocol.DOM.NodeId): Promise<LayoutProperties|null> {
     const styles = await this.getComputedStyle(nodeId);
     if (!styles) {
       return null;

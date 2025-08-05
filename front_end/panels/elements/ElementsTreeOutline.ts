@@ -863,13 +863,18 @@ export class ElementsTreeOutline extends
   }
 
   private contextMenuEventFired(event: MouseEvent): void {
+    // The context menu construction may be async. In order to
+    // make sure that no other (default) context menu shows up, we need
+    // to stop propagating and prevent the default action.
+    event.stopPropagation();
+    event.preventDefault();
     const treeElement = this.treeElementFromEventInternal(event);
     if (treeElement instanceof ElementsTreeElement) {
-      this.showContextMenu(treeElement, event);
+      void this.showContextMenu(treeElement, event);
     }
   }
 
-  showContextMenu(treeElement: ElementsTreeElement, event: Event): void {
+  async showContextMenu(treeElement: ElementsTreeElement, event: Event): Promise<void> {
     if (UI.UIUtils.isEditing()) {
       return;
     }
@@ -890,11 +895,11 @@ export class ElementsTreeOutline extends
         i18nString(UIStrings.storeAsGlobalVariable), this.saveNodeToTempVariable.bind(this, treeElement.node()),
         {jslogContext: 'store-as-global-variable'});
     if (textNode) {
-      treeElement.populateTextContextMenu(contextMenu, textNode);
+      await treeElement.populateTextContextMenu(contextMenu, textNode);
     } else if (isTag) {
-      treeElement.populateTagContextMenu(contextMenu, event);
+      await treeElement.populateTagContextMenu(contextMenu, event);
     } else if (commentNode) {
-      treeElement.populateNodeContextMenu(contextMenu);
+      await treeElement.populateNodeContextMenu(contextMenu);
     } else if (isPseudoElement) {
       treeElement.populatePseudoElementContextMenu(contextMenu);
     }

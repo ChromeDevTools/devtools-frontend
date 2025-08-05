@@ -1484,15 +1484,16 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       //  blobParts.join('') === (await gzBlob.arrayBuffer().then(bytes => Common.Gzip.arrayBufferToString(bytes)))
     }
 
-    let bytesAsB64 = '';
+    // In some cases Base64.encode() can return undefined; see crbug.com/436482118 for details.
+    // TODO(crbug.com/436482118): understand this edge case and fix the Base64.encode method to not just return undefined.
+    let bytesAsB64: string|null = null;
     try {
       // The maximum string length in v8 is `2 ** 29 - 23`, aka 538 MB.
       // If the gzipped&base64-encoded trace is larger than that, this'll throw a RangeError.
       bytesAsB64 = await Common.Base64.encode(blob);
     } catch {
     }
-
-    if (bytesAsB64.length) {
+    if (bytesAsB64?.length) {
       const contentData = new TextUtils.ContentData.ContentData(bytesAsB64, /* isBase64=*/ true, blob.type);
       await Workspace.FileManager.FileManager.instance().save(fileName, contentData, /* forceSaveAs=*/ true);
       Workspace.FileManager.FileManager.instance().close(fileName);

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import type {EventTargetEvent} from '../../core/common/EventTarget.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -174,5 +175,61 @@ describeWithEnvironment('ViewManager', () => {
     assert.strictEqual(events[0].data.location, UI.ViewManager.ViewLocationValues.PANEL);
     assert.strictEqual(events[0].data.revealedViewId, 'view-1');
     assert.isUndefined(events[0].data.hiddenViewId);
+  });
+
+  describe('createTabbedLocation', () => {
+    it('remembers closeable views in the `closeable-tabs` setting', async () => {
+      const tabbedLocation = viewManager.createTabbedLocation(() => {}, '');
+
+      const closeableView = new UI.View.SimpleView({
+        title: i18n.i18n.lockedString('Closable view'),
+        viewId: 'closeable-view',
+      });
+      sinon.stub(closeableView, 'isCloseable').returns(true);
+      await tabbedLocation.showView(closeableView);
+
+      assert.propertyVal(
+          Common.Settings.Settings.instance().settingForTest('closeable-tabs').get(),
+          'closeable-view',
+          true,
+          'Closeable views must be recorded in `closeable-tabs` while they are shown',
+      );
+    });
+
+    it('removes closeable views from the `closeable-tabs` setting when they are closed', async () => {
+      const tabbedLocation = viewManager.createTabbedLocation(() => {}, '');
+
+      const closeableView = new UI.View.SimpleView({
+        title: i18n.i18n.lockedString('Closable view'),
+        viewId: 'closeable-view',
+      });
+      sinon.stub(closeableView, 'isCloseable').returns(true);
+      await tabbedLocation.showView(closeableView);
+      tabbedLocation.removeView(closeableView);
+
+      assert.notPropertyVal(
+          Common.Settings.Settings.instance().settingForTest('closeable-tabs').get(),
+          'closeable-view',
+          true,
+          'Closeable views must be removed from `closeable-tabs` when they are closed',
+      );
+    });
+
+    it('does not include transient views in the `closeable-tabs` setting', async () => {
+      const tabbedLocation = viewManager.createTabbedLocation(() => {}, '');
+
+      const closeableView = new UI.View.SimpleView({
+        title: i18n.i18n.lockedString('Transient view'),
+        viewId: 'transient-view',
+      });
+      sinon.stub(closeableView, 'isTransient').returns(true);
+      await tabbedLocation.showView(closeableView);
+
+      assert.notProperty(
+          Common.Settings.Settings.instance().settingForTest('closeable-tabs').get(),
+          'transient-view',
+          'Transient views must never be included in `closeable-tabs`',
+      );
+    });
   });
 });

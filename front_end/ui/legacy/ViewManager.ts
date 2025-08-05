@@ -899,10 +899,6 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     this.tabOrderSetting.set(tabOrders);
   }
 
-  getCloseableTabSetting(): CloseableTabSetting {
-    return this.closeableTabSetting.get();
-  }
-
   static orderStep = 10;  // Keep in sync with descriptors.
 }
 

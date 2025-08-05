@@ -98,3 +98,7 @@ ts_library("unittests") {
     "../trace:bundle",
   ]
 }
+
+copy_to_gen("snapshots") {
+  sources = [ "data_formatters/PerformanceInsightFormatter.snapshot.txt" ]
+}

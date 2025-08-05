@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../scripts/build/ninja/copy.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
 ts_library("testing") {
@@ -34,6 +35,8 @@ ts_library("testing") {
     "PersistenceHelpers.ts",
     "PropertyParser.ts",
     "ResourceTreeHelpers.ts",
+    "SnapshotTester.test.ts",
+    "SnapshotTester.ts",
     "SourceMapEncoder.test.ts",
     "SourceMapEncoder.ts",
     "SourceMapHelpers.ts",
@@ -81,4 +84,8 @@ ts_library("testing") {
     "../ui/lit:bundle",
     "../ui/visual_logging:testing",
   ]
+}
+
+copy_to_gen("snapshots") {
+  sources = [ "SnapshotTester.snapshot.txt" ]
 }

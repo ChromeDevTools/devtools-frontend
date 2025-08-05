@@ -77,7 +77,6 @@ export class TraceLoader {
     if (cached) {
       return cached;
     }
-    // Required URLs differ across the component server and the unit tests, so try both.
     const urlForTest = new URL(`../panels/timeline/fixtures/traces/${name}`, import.meta.url);
 
     const contents = await TraceLoader.loadTraceFileFromURL(urlForTest);

@@ -1,0 +1,9 @@
+Title: SnapshotTester example snapshot
+Content:
+hello world
+=== end content
+
+Title: SnapshotTester only one snapshot assert allowed
+Content:
+hello world 1
+=== end content

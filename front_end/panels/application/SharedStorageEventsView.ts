@@ -47,19 +47,15 @@ export class SharedStorageEventsView extends UI.SplitWidget.SplitWidget {
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('shared-storage-events')}`);
 
-    const topPanel = new UI.Widget.VBox();
     this.#noDisplayView =
         new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noEventSelected), i18nString(UIStrings.clickToDisplayBody));
-
-    topPanel.setMinimumSize(0, 80);
-    this.setMainWidget(topPanel);
     this.#noDisplayView.setMinimumSize(0, 40);
+    this.#sharedStorageEventGrid.setMinimumSize(0, 80);
+    this.#sharedStorageEventGrid.onSelect = this.#onFocus.bind(this);
+
+    this.setMainWidget(this.#sharedStorageEventGrid);
     this.setSidebarWidget(this.#noDisplayView);
     this.hideSidebar();
-
-    topPanel.contentElement.appendChild(this.#sharedStorageEventGrid);
-    this.#sharedStorageEventGrid.addEventListener('select', this.#onFocus.bind(this));
-    this.#sharedStorageEventGrid.setAttribute('jslog', `${VisualLogging.section('events-table')}`);
 
     this.#getMainFrameResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.clearEvents, this);
@@ -102,24 +98,18 @@ export class SharedStorageEventsView extends UI.SplitWidget.SplitWidget {
     }
 
     this.#events.push(event);
-    this.#sharedStorageEventGrid.data = this.#events;
+    this.#sharedStorageEventGrid.events = this.#events;
   }
 
   clearEvents(): void {
     this.#events = [];
-    this.#sharedStorageEventGrid.data = this.#events;
+    this.#sharedStorageEventGrid.events = this.#events;
     this.setSidebarWidget(this.#noDisplayView);
     this.hideSidebar();
   }
 
-  async #onFocus(event: Event): Promise<void> {
-    const focusedEvent = event as CustomEvent<HTMLElement>;
-    const datastore = focusedEvent.detail;
-    if (!datastore) {
-      return;
-    }
-
-    const jsonView = SourceFrame.JSONView.JSONView.createViewSync(datastore);
+  #onFocus(event: Protocol.Storage.SharedStorageAccessedEvent): void {
+    const jsonView = SourceFrame.JSONView.JSONView.createViewSync(event);
     jsonView.setMinimumSize(0, 40);
     this.setSidebarWidget(jsonView);
   }

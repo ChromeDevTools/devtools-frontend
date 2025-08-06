@@ -1,7 +1,6 @@
 // Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import '../../../ui/legacy/components/data_grid/data_grid.js';
 
@@ -83,32 +82,17 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/SharedStorageAccessGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class SharedStorageAccessGrid extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #datastores: Protocol.Storage.SharedStorageAccessedEvent[] = [];
-
-  connectedCallback(): void {
-    this.#render();
-  }
-
-  // eslint-disable-next-line rulesdir/set-data-type-reference
-  set data(data: Protocol.Storage.SharedStorageAccessedEvent[]) {
-    this.#datastores = data.sort((a, b) => a.accessTime - b.accessTime);
-    this.#render();
-  }
-
-  #render(): void {
-    // clang-format off
-    render(html`
-      <style>${sharedStorageAccessGridStyles}</style>
-      <style>${UI.inspectorCommonStyles}</style>
-      ${this.#renderGridOrNoDataMessage()}`, this.#shadow, {host: this});
-    // clang-format on
-  }
-
-  #renderGridOrNoDataMessage(): Lit.TemplateResult {
-    if (this.#datastores.length === 0) {
-      return html`
+export interface ViewInput {
+  events: Protocol.Storage.SharedStorageAccessedEvent[];
+  onSelect: (event: CustomEvent<HTMLElement>) => void;
+}
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <style>${sharedStorageAccessGridStyles}</style>
+    ${input.events.length === 0
+      ? html`
         <div class="empty-state" jslog=${VisualLogging.section().context('empty-view')}>
           <div class="empty-state-header">${i18nString(UIStrings.noEvents)}</div>
           <div class="empty-state-description">
@@ -117,74 +101,97 @@ export class SharedStorageAccessGrid extends HTMLElement {
           UI.XLink.XLink.create(
               SHARED_STORAGE_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
           </div>
-        </div>
-      `;
-    }
-    // clang-format off
-    return html`
-      <div>
-        <span class="heading">${i18nString(UIStrings.sharedStorage)}</span>
-        <devtools-icon class="info-icon"
-                        title=${i18nString(UIStrings.allSharedStorageEvents)}
-                        .data=${{iconName: 'info', color: 'var(--icon-default)', width: '16px'}}>
-        </devtools-icon>
-        <devtools-data-grid striped inline @select=${this.#onSelect}>
-          <table>
-            <tr>
-              <th id="event-time" weight="10" sortable>
-                ${i18nString(UIStrings.eventTime)}
-              </th>
-              <th id="event-scope" weight="10" sortable>
-                ${i18nString(UIStrings.eventScope)}
-              </th>
-              <th id="event-method" weight="10" sortable>
-                ${i18nString(UIStrings.eventMethod)}
-              </th>
-              <th id="event-owner-origin" weight="10" sortable>
-                ${i18nString(UIStrings.ownerOrigin)}
-              </th>
-              <th id="event-owner-site" weight="10" sortable>
-                ${i18nString(UIStrings.ownerSite)}
-              </th>
-              <th id="event-params" weight="10" sortable>
-                ${i18nString(UIStrings.eventParams)}
-              </th>
-            </tr>
-            ${
-        this.#datastores.map((event, index) => html`
-              <tr data-index=${index}>
-                <td data-value=${event.accessTime}>
-                  ${
-            new Date(1e3 * event.accessTime)
-                .toLocaleString()}
-                </td>
-                <td>${event.scope}</td>
-                <td>${event.method}</td>
-                <td>${event.ownerOrigin}</td>
-                <td>${event.ownerSite}</td>
-                <td>${JSON.stringify(event.params)}</td>
-              </tr>
-            `)}
-          </table>
-        </devtools-data-grid>
-      </div>
-    `;
-    // clang-format on
+        </div>`
+      : html`
+        <div jslog=${VisualLogging.section('events-table')}>
+          <span class="heading">${i18nString(UIStrings.sharedStorage)}</span>
+          <devtools-icon class="info-icon"
+                          title=${i18nString(UIStrings.allSharedStorageEvents)}
+                          .data=${{iconName: 'info', color: 'var(--icon-default)', width: '16px'}}>
+          </devtools-icon>
+          <devtools-data-grid striped inline @select=${input.onSelect}>
+            <table>
+              <thead>
+                <tr>
+                  <th id="event-time" weight="10" sortable>
+                    ${i18nString(UIStrings.eventTime)}
+                  </th>
+                  <th id="event-scope" weight="10" sortable>
+                    ${i18nString(UIStrings.eventScope)}
+                  </th>
+                  <th id="event-method" weight="10" sortable>
+                    ${i18nString(UIStrings.eventMethod)}
+                  </th>
+                  <th id="event-owner-origin" weight="10" sortable>
+                    ${i18nString(UIStrings.ownerOrigin)}
+                  </th>
+                  <th id="event-owner-site" weight="10" sortable>
+                    ${i18nString(UIStrings.ownerSite)}
+                  </th>
+                  <th id="event-params" weight="10" sortable>
+                    ${i18nString(UIStrings.eventParams)}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                ${input.events.map((event, index) => html`
+                  <tr data-index=${index}>
+                    <td data-value=${event.accessTime}>
+                      ${new Date(1e3 * event.accessTime).toLocaleString()}
+                    </td>
+                    <td>${event.scope}</td>
+                    <td>${event.method}</td>
+                    <td>${event.ownerOrigin}</td>
+                    <td>${event.ownerSite}</td>
+                    <td>${JSON.stringify(event.params)}</td>
+                  </tr>
+                `)}
+              </tbody>
+            </table>
+          </devtools-data-grid>
+        </div>`}`, target);
+  // clang-format on
+};
+
+export class SharedStorageAccessGrid extends UI.Widget.Widget {
+  readonly #view: View;
+  #events: Protocol.Storage.SharedStorageAccessedEvent[] = [];
+  #onSelect: (event: Protocol.Storage.SharedStorageAccessedEvent) => void = () => {};
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
+    this.performUpdate();
   }
 
-  #onSelect(event: CustomEvent<HTMLElement>): void {
-    const index = parseInt(event.detail.dataset.index || '', 10);
-    const datastore = isNaN(index) ? undefined : this.#datastores[index];
+  set events(events: Protocol.Storage.SharedStorageAccessedEvent[]) {
+    this.#events = events;
+    this.performUpdate();
+  }
+
+  set onSelect(onSelect: (event: Protocol.Storage.SharedStorageAccessedEvent) => unknown) {
+    this.#onSelect = onSelect;
+    this.performUpdate();
+  }
+
+  get onSelect(): (event: Protocol.Storage.SharedStorageAccessedEvent) => unknown {
+    return this.#onSelect;
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          events: this.#events,
+          onSelect: this.#onSelectEvent.bind(this),
+        },
+        {}, this.contentElement);
+  }
+
+  #onSelectEvent(event: CustomEvent<HTMLElement>): void {
+    const index = parseInt(event.detail?.dataset.index || '', 10);
+    const datastore = isNaN(index) ? undefined : this.#events[index];
     if (datastore) {
-      this.dispatchEvent(new CustomEvent('select', {detail: datastore}));
+      this.#onSelect(datastore);
     }
-  }
-}
-
-customElements.define('devtools-shared-storage-access-grid', SharedStorageAccessGrid);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-shared-storage-access-grid': SharedStorageAccessGrid;
   }
 }

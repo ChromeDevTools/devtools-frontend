@@ -16,19 +16,19 @@ import * as ApplicationComponents from './components/components.js';
 
 const UIStrings = {
   /**
-   *@description Text to refresh the page
+   * @description Text to refresh the page
    */
   refresh: 'Refresh',
   /**
-   *@description Text to clear everything
+   * @description Text to clear everything
    */
   clearAll: 'Clear All',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
+   * @description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
    */
   deleteSelected: 'Delete Selected',
   /**
-   *@description Text that informs screen reader users that the storage table has been refreshed
+   * @description Text that informs screen reader users that the storage table has been refreshed
    */
   refreshedStatus: 'Table refreshed',
 } as const;

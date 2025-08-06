@@ -21,12 +21,12 @@ import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
 
 const UIStrings = {
   /**
-   *@description Text in Web Audio View if there is nothing to show.
+   * @description Text in Web Audio View if there is nothing to show.
    * Web Audio API is an API for controlling audio on the web.
    */
   noWebAudio: 'No Web Audio API usage detected',
   /**
-   *@description Text in Web Audio View
+   * @description Text in Web Audio View
    */
   openAPageThatUsesWebAudioApiTo: 'Open a page that uses Web Audio API to start monitoring.',
 } as const;

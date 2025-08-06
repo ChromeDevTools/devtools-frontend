@@ -63,27 +63,27 @@ export class AffectedElementsWithLowContrastView extends AffectedElementsView {
 
 const UIStrings = {
   /**
-   *@description Column title for the element column in the low contrast issue view
+   * @description Column title for the element column in the low contrast issue view
    */
   element: 'Element',
   /**
-   *@description Column title for the contrast ratio column in the low contrast issue view
+   * @description Column title for the contrast ratio column in the low contrast issue view
    */
   contrastRatio: 'Contrast ratio',
   /**
-   *@description Column title for the minimum AA contrast ratio column in the low contrast issue view
+   * @description Column title for the minimum AA contrast ratio column in the low contrast issue view
    */
   minimumAA: 'Minimum AA ratio',
   /**
-   *@description Column title for the minimum AAA contrast ratio column in the low contrast issue view
+   * @description Column title for the minimum AAA contrast ratio column in the low contrast issue view
    */
   minimumAAA: 'Minimum AAA ratio',
   /**
-   *@description Column title for the text size column in the low contrast issue view
+   * @description Column title for the text size column in the low contrast issue view
    */
   textSize: 'Text size',
   /**
-   *@description Column title for the text weight column in the low contrast issue view
+   * @description Column title for the text weight column in the low contrast issue view
    */
   textWeight: 'Text weight',
 } as const;

@@ -27,8 +27,8 @@ export type FormatToken = {
  * are only concerned with performing the actual substitutions and dealing
  * with generic and optimal object formatting as well as styling.
  *
- * @param fmt - the format string.
- * @param args - the substitution arguments for `fmt`.
+ * @param fmt the format string.
+ * @param args the substitution arguments for `fmt`.
  * @returns a list of `FormatToken`s as well as the unused arguments.
  */
 export const format = (fmt: string, args: SDK.RemoteObject.RemoteObject[]): {

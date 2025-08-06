@@ -13,7 +13,7 @@ import {TestRunner} from '../test_runner/test_runner.js';
 export const CoverageTestRunner = {};
 
 /**
- * @param jsCoveragePerBlock - Collect per Block coverage if `true`, per function coverage otherwise.
+ * @param jsCoveragePerBlock Collect per Block coverage if `true`, per function coverage otherwise.
  * @returns {!Promise}
  */
 CoverageTestRunner.startCoverage = async function(jsCoveragePerBlock) {

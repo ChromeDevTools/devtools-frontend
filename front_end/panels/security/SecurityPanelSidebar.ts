@@ -26,43 +26,43 @@ import sidebarStyles from './sidebar.css.js';
 
 const UIStrings = {
   /**
-   *@description Section title for the the Security Panel's sidebar
+   * @description Section title for the the Security Panel's sidebar
    */
   security: 'Security',
   /**
-   *@description Section title for the the Security Panel's sidebar
+   * @description Section title for the the Security Panel's sidebar
    */
   privacy: 'Privacy',
   /**
-   *@description Sidebar element text in the Security panel
+   * @description Sidebar element text in the Security panel
    */
   cookieReport: 'Third-party cookies',
   /**
-   *@description Sidebar element text in the Security panel
+   * @description Sidebar element text in the Security panel
    */
   flagControls: 'Controls',
   /**
-   *@description Text in Security Panel of the Security panel
+   * @description Text in Security Panel of the Security panel
    */
   mainOrigin: 'Main origin',
   /**
-   *@description Text in Security Panel of the Security panel
+   * @description Text in Security Panel of the Security panel
    */
   nonsecureOrigins: 'Non-secure origins',
   /**
-   *@description Text in Security Panel of the Security panel
+   * @description Text in Security Panel of the Security panel
    */
   secureOrigins: 'Secure origins',
   /**
-   *@description Text in Security Panel of the Security panel
+   * @description Text in Security Panel of the Security panel
    */
   unknownCanceled: 'Unknown / canceled',
   /**
-   *@description Title text content in Security Panel of the Security panel
+   * @description Title text content in Security Panel of the Security panel
    */
   overview: 'Overview',
   /**
-   *@description Text in Security Panel of the Security panel
+   * @description Text in Security Panel of the Security panel
    */
   reloadToViewDetails: 'Reload to view details',
 } as const;

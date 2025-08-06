@@ -18,13 +18,13 @@ import checklistStyles from './checklist.css.js';
 
 const UIStrings = {
   /**
-   *@description Text for a screen-reader label to tell the user that the icon represents a successful insight check
-   *@example {Server response time} PH1
+   * @description Text for a screen-reader label to tell the user that the icon represents a successful insight check
+   * @example {Server response time} PH1
    */
   successAriaLabel: 'Insight check passed: {PH1}',
   /**
-   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
-   *@example {Server response time} PH1
+   * @description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
+   * @example {Server response time} PH1
    */
   failedAriaLabel: 'Insight check failed: {PH1}',
 } as const;

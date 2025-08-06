@@ -174,8 +174,8 @@ export const enum ColorChannel {
  * Some percentage values can be negative
  * though their ranges don't change depending on the sign
  * (for now, according to spec).
- * @param percent - % value of the number. 42 for 42%.
- * @param range - Range of [min, max]. Including `min` and `max`.
+ * @param percent % value of the number. 42 for 42%.
+ * @param range Range of [min, max]. Including `min` and `max`.
  */
 function mapPercentToRange(percent: number, range: [number, number]): number {
   const sign = Math.sign(percent);
@@ -345,8 +345,8 @@ function parseAlpha(value: string|undefined): number|null {
 
 /**
  *
- * @param value - Text value to be parsed in the form of 'number|percentage'.
- * @param range - Range to map the percentage.
+ * @param value Text value to be parsed in the form of 'number|percentage'.
+ * @param range Range to map the percentage.
  * @returns If it is not percentage, returns number directly; otherwise,
  * maps the percentage to the range. For example:
  * - 30% in range [0, 100] is 30
@@ -1466,8 +1466,8 @@ export class ColorFunction implements Color {
    *
    * Instead of making `splitColorFunctionParameters` work for this case too
    * I've decided to implement it specifically.
-   * @param authoredText - Original definition of the color with `color`
-   * @param parametersText - Inside of the `color()` function. ex, `display-p3 0.1 0.2 0.3 / 0%`
+   * @param authoredText Original definition of the color with `color`
+   * @param parametersText Inside of the `color()` function. ex, `display-p3 0.1 0.2 0.3 / 0%`
    * @returns `Color` object
    */
   static fromSpec(authoredText: string, parametersWithAlphaText: string): ColorFunction|null {

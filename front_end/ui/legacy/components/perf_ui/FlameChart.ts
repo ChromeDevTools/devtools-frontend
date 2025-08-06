@@ -59,50 +59,50 @@ const SUBTITLE_FONT_SIZE_AND_STYLE = 'italic 10px';
 
 const UIStrings = {
   /**
-   *@description Aria alert used to notify the user when an event has been selected because they tabbed into a group.
-   *@example {Paint} PH1
-   *@example {Main thread} PH2
+   * @description Aria alert used to notify the user when an event has been selected because they tabbed into a group.
+   * @example {Paint} PH1
+   * @example {Main thread} PH2
    *
    */
   eventSelectedFromGroup: 'Selected a {PH1} event within {PH2}. Press "enter" to focus this event.',
   /**
-   *@description Aria accessible name in Flame Chart of the Performance panel
+   * @description Aria accessible name in Flame Chart of the Performance panel
    */
   flameChart: 'Flame Chart',
   /**
-   *@description Text for the screen reader to announce a hovered group
-   *@example {Network} PH1
+   * @description Text for the screen reader to announce a hovered group
+   * @example {Network} PH1
    */
   sHovered: '{PH1} hovered',
   /**
-   *@description Text for screen reader to announce a selected group.
-   *@example {Network} PH1
+   * @description Text for screen reader to announce a selected group.
+   * @example {Network} PH1
    */
   sSelected: '{PH1} selected',
   /**
-   *@description Text for screen reader to announce an expanded group
-   *@example {Network} PH1
+   * @description Text for screen reader to announce an expanded group
+   * @example {Network} PH1
    */
   sExpanded: '{PH1} expanded',
   /**
-   *@description Text for screen reader to announce a collapsed group
-   *@example {Network} PH1
+   * @description Text for screen reader to announce a collapsed group
+   * @example {Network} PH1
    */
   sCollapsed: '{PH1} collapsed',
   /**
-   *@description Text for an action that adds a label annotation to an entry in the Flame Chart
+   * @description Text for an action that adds a label annotation to an entry in the Flame Chart
    */
   labelEntry: 'Label entry',
   /**
-   *@description Text for an action that adds link annotation between entries in the Flame Chart
+   * @description Text for an action that adds link annotation between entries in the Flame Chart
    */
   linkEntries: 'Link entries',
   /**
-   *@description Shown in the context menu when right clicking on a track header to enable the user to enter the track configuration mode.
+   * @description Shown in the context menu when right clicking on a track header to enable the user to enter the track configuration mode.
    */
   enterTrackConfigurationMode: 'Configure tracks',
   /**
-   *@description Shown in the context menu when right clicking on a track header to allow the user to exit track configuration mode.
+   * @description Shown in the context menu when right clicking on a track header to allow the user to exit track configuration mode.
    */
   exitTrackConfigurationMode: 'Finish configuring tracks',
 } as const;
@@ -1186,7 +1186,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   /**
    * Toggle a group's expanded state.
-   * @param groupIndex - the index of this group in the timelineData.groups
+   * @param groupIndex the index of this group in the timelineData.groups
    * array. Note that this is the array index, and not the startLevel of the
    * group.
    */
@@ -2677,7 +2677,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * And will draw the move up/down, hide and save button if user enter the editing mode.
    * @param width
    * @param height
-   * @param hoveredGroupIndex - This is used to show the edit icon for hovered group. If it is undefined or -1, it means
+   * @param hoveredGroupIndex This is used to show the edit icon for hovered group. If it is undefined or -1, it means
    * there is no group being hovered.
    */
   private drawGroupHeaders(width: number, height: number): void {
@@ -3002,11 +3002,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   /**
    * @callback GroupCallback
-   * @param groupTop - pixels between group top and the top of the flame chart.
+   * @param groupTop pixels between group top and the top of the flame chart.
    * @param groupIndex
    * @param group
-   * @param isFirstGroup - if the group is the first one of this nesting level.
-   * @param height - pixels of height of this group
+   * @param isFirstGroup if the group is the first one of this nesting level.
+   * @param height pixels of height of this group
    */
   /**
    * Process the pixels of start and end, and other data of each group, which are used in drawing the group.
@@ -3109,7 +3109,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * |ICON_WIDTH|expansionArrowIndent * (nestingLevel + 1)|
    * |headerLeftPadding|EDIT  ICON|                    |Arrow|LabelXPadding|Title|LabelXPadding|
    *                              |<--                      labelWidth                      -->|
-   * @param context - canvas context
+   * @param context canvas context
    * @param group
    * @returns the width of the label of the group.
    */
@@ -3524,8 +3524,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   /**
    * Builds a tree node for a group. For each group the start level is inclusive and the end level is exclusive.
    * @param group
-   * @param index - index of the group in the |FlameChartTimelineData.groups[]|
-   * @param endLevel - The end level of this group, which is also the start level of the next group or the end of all
+   * @param index index of the group in the |FlameChartTimelineData.groups[]|
+   * @param endLevel The end level of this group, which is also the start level of the next group or the end of all
    * groups
    * @returns the tree node for the group
    */
@@ -3552,7 +3552,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    *          / \    / | \
    *         1   2  5  6  7
    * This function is public for test purpose.
-   * @param groups - the array of all groups, it should be the one from FlameChartTimelineData
+   * @param groups the array of all groups, it should be the one from FlameChartTimelineData
    * @returns the root of the Group tree. The root is the fake one we added, which represent the parent for all groups
    */
   buildGroupTree(groups: Group[]): GroupTreeNode {
@@ -3597,7 +3597,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * So we can keep the order that user manually set.
    * To do this, we go through the tree, and update the start and end level of each group.
    * This function is public for test purpose.
-   * @param groups - the array of all groups, it should be the one from FlameChartTimelineData
+   * @param groups the array of all groups, it should be the one from FlameChartTimelineData
    * @returns the root of the Group tree. The root is the fake one we added, which represent the parent for all groups
    */
   updateGroupTree(groups: Group[], root: GroupTreeNode): void {
@@ -3644,9 +3644,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    *          / \    / | \
    *         1   2  5  6  7
    * The traverse order will be: -1, 0, 1, 2, 3, 4, 5, 6, 7.
-   * @param groupNode - TreeNode for current group
+   * @param groupNode TreeNode for current group
    * @param currentOffset
-   * @param parentGroupIsVisible - used to determine if current group's header and its levels are visible
+   * @param parentGroupIsVisible used to determine if current group's header and its levels are visible
    * @returns the offset (in pixels) after processing current group
    */
   #traverseGroupTreeAndUpdateLevelPositionsForTheGroup(
@@ -4126,8 +4126,10 @@ export const enum FlameChartDecorationType {
  **/
 export type FlameChartDecoration = {
   type: FlameChartDecorationType.CANDY,
-  /** Relative to entry's ts. We often only want to highlight problem parts of events, so this time sets the minimum
-   * time at which the candystriping will start. If you want to candystripe the entire event, set this to 0. */
+  /**
+   * Relative to entry's ts. We often only want to highlight problem parts of events, so this time sets the minimum
+   * time at which the candystriping will start. If you want to candystripe the entire event, set this to 0.
+   */
   startAtTime: Trace.Types.Timing.Micro,
 }|{
   type: FlameChartDecorationType.WARNING_TRIANGLE,
@@ -4407,8 +4409,10 @@ export interface GroupStyle {
   collapsible: boolean;
   /** The color of the group title text. */
   color: string;
-  /** The background color of the group title when the track is collapsed,
-   * and this is usually around same length as the title text. */
+  /**
+   * The background color of the group title when the track is collapsed,
+   * and this is usually around same length as the title text.
+   */
   backgroundColor: string;
   nestingLevel: number;
   itemsHeight?: number;

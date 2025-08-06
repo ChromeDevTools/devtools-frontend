@@ -126,8 +126,8 @@ export function rangeOfWord(
  * Appends the list of `styles` as individual `<style>` elements to the
  * given `node`.
  *
- * @param node - the `Node` to append the `<style>` elements to.
- * @param styles - an optional list of styles to append to the `node`.
+ * @param node the `Node` to append the `<style>` elements to.
+ * @param styles an optional list of styles to append to the `node`.
  */
 export function appendStyle(node: Node, ...styles: CSSInJS[]): void {
   for (const cssText of styles) {

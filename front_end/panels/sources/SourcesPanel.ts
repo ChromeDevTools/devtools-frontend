@@ -58,11 +58,11 @@ import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {
   /**
-   *@description Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel
+   * @description Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel
    */
   dropWorkspaceFolderHere: 'Drop workspace folder here',
   /**
-   *@description Text to show more options
+   * @description Text to show more options
    */
   moreOptions: 'More options',
   /**
@@ -102,90 +102,90 @@ const UIStrings = {
    */
   hideDebugger: 'Hide debugger',
   /**
-   *@description Text in Sources Panel of the Sources panel
+   * @description Text in Sources Panel of the Sources panel
    */
   groupByFolder: 'Group by folder',
   /**
-   *@description Text in Sources Panel of the Sources panel
+   * @description Text in Sources Panel of the Sources panel
    */
   groupByAuthored: 'Group by Authored/Deployed',
   /**
-   *@description Text in Sources Panel of the Sources panel
+   * @description Text in Sources Panel of the Sources panel
    */
   hideIgnoreListed: 'Hide ignore-listed sources',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel
+   * @description Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel
    */
   resumeWithAllPausesBlockedForMs: 'Resume with all pauses blocked for 500 ms',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon terminate execution button in the Sources Panel of the Sources panel
+   * @description Tooltip text that appears when hovering over the largeicon terminate execution button in the Sources Panel of the Sources panel
    */
   terminateCurrentJavascriptCall: 'Terminate current JavaScript call',
   /**
-   *@description Text in Sources Panel of the Sources panel
+   * @description Text in Sources Panel of the Sources panel
    */
   pauseOnCaughtExceptions: 'Pause on caught exceptions',
   /**
-   *@description A context menu item in the Sources Panel of the Sources panel
+   * @description A context menu item in the Sources Panel of the Sources panel
    */
   revealInSidebar: 'Reveal in navigator sidebar',
   /**
-   *@description A context menu item in the Sources Panel of the Sources panel when debugging JS code.
+   * @description A context menu item in the Sources Panel of the Sources panel when debugging JS code.
    * When clicked, the execution is resumed until it reaches the line specified by the right-click that
    * opened the context menu.
    */
   continueToHere: 'Continue to here',
   /**
-   *@description A context menu item in the Console that stores selection as a temporary global variable
+   * @description A context menu item in the Console that stores selection as a temporary global variable
    */
   storeAsGlobalVariable: 'Store as global variable',
   /**
-   *@description A context menu item in the Console, Sources, and Network panel
-   *@example {string} PH1
+   * @description A context menu item in the Console, Sources, and Network panel
+   * @example {string} PH1
    */
   copyS: 'Copy {PH1}',
   /**
-   *@description A context menu item for strings in the Console, Sources, and Network panel.
+   * @description A context menu item for strings in the Console, Sources, and Network panel.
    * When clicked, the raw contents of the string is copied to the clipboard.
    */
   copyStringContents: 'Copy string contents',
   /**
-   *@description A context menu item for strings in the Console, Sources, and Network panel.
+   * @description A context menu item for strings in the Console, Sources, and Network panel.
    * When clicked, the string is copied to the clipboard as a valid JavaScript literal.
    */
   copyStringAsJSLiteral: 'Copy string as JavaScript literal',
   /**
-   *@description A context menu item for strings in the Console, Sources, and Network panel.
+   * @description A context menu item for strings in the Console, Sources, and Network panel.
    * When clicked, the string is copied to the clipboard as a valid JSON literal.
    */
   copyStringAsJSONLiteral: 'Copy string as JSON literal',
   /**
-   *@description A context menu item in the Sources Panel of the Sources panel
+   * @description A context menu item in the Sources Panel of the Sources panel
    */
   showFunctionDefinition: 'Show function definition',
   /**
-   *@description Text in Sources Panel of the Sources panel
+   * @description Text in Sources Panel of the Sources panel
    */
   openInSourcesPanel: 'Open in Sources panel',
   /**
-   *@description Context menu text in Sources Panel to that opens a submenu with AI prompts.
+   * @description Context menu text in Sources Panel to that opens a submenu with AI prompts.
    */
   debugWithAi: 'Debug with AI',
   /**
-   *@description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
+   * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
    */
   startAChat: 'Start a chat',
   /**
-   *@description Text of a context menu item to redirect to the AI assistance panel and directly execute
+   * @description Text of a context menu item to redirect to the AI assistance panel and directly execute
    * a prompt to assess the performance of a script.
    */
   assessPerformance: 'Assess performance',
   /**
-   *@description Context menu item in Sources panel to explain a script via AI.
+   * @description Context menu item in Sources panel to explain a script via AI.
    */
   explainThisScript: 'Explain this script',
   /**
-   *@description Context menu item in Sources panel to explain input handling in a script via AI.
+   * @description Context menu item in Sources panel to explain input handling in a script via AI.
    */
   explainInputHandling: 'Explain input handling',
 } as const;

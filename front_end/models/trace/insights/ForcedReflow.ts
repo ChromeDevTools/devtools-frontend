@@ -20,7 +20,7 @@ import {
 
 export const UIStrings = {
   /**
-   *@description Title of an insight that provides details about Forced reflow.
+   * @description Title of an insight that provides details about Forced reflow.
    */
   title: 'Forced reflow',
   /**
@@ -29,11 +29,11 @@ export const UIStrings = {
   description:
       'A forced reflow occurs when JavaScript queries geometric properties (such as `offsetWidth`) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) and possible mitigations.',
   /**
-   *@description Title of a list to provide related stack trace data
+   * @description Title of a list to provide related stack trace data
    */
   relatedStackTrace: 'Stack trace',
   /**
-   *@description Text to describe the top time-consuming function call
+   * @description Text to describe the top time-consuming function call
    */
   topTimeConsumingFunctionCall: 'Top function call',
   /**

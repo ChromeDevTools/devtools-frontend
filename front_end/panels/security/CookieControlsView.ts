@@ -26,72 +26,72 @@ const {render, html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Title in the view's header for the controls tool in the Privacy & Security panel
+   * @description Title in the view's header for the controls tool in the Privacy & Security panel
    */
   viewTitle: 'Controls',
   /**
-   *@description Explanation in the view's header about the purpose of this controls tool
+   * @description Explanation in the view's header about the purpose of this controls tool
    */
   viewExplanation: 'Test how this site will perform if third-party cookies are limited in Chrome',
   /**
-   *@description Title in the card within the controls tool
+   * @description Title in the card within the controls tool
    */
   cardTitle: 'Temporarily limit third-party cookies',
   /**
-   *@description Disclaimer beneath the card title to tell the user that the controls will only persist while devtools is open
+   * @description Disclaimer beneath the card title to tell the user that the controls will only persist while devtools is open
    */
   cardDisclaimer: 'Only when DevTools is open',
   /**
-   *@description Message as part of the banner that prompts the user to reload the page to see the changes take effect. This appears when the user makes any change within the tool
+   * @description Message as part of the banner that prompts the user to reload the page to see the changes take effect. This appears when the user makes any change within the tool
    */
   siteReloadMessage: 'To apply your updated controls, reload the page',
   /**
-   *@description Title of controls section. These are exceptions that the user will be able to override to test their site
+   * @description Title of controls section. These are exceptions that the user will be able to override to test their site
    */
   exceptions: 'Exceptions',
   /**
-   *@description Explanation of what exceptions are in this context
+   * @description Explanation of what exceptions are in this context
    */
   exceptionsExplanation: 'Scenarios that grant access to third-party cookies',
   /**
-   *@description Title for the grace period exception control
+   * @description Title for the grace period exception control
    */
   gracePeriodTitle: 'Third-party cookie grace period',
   /**
-   *@description Explanation of the grace period and a link to learn more
-   *@example {grace period} PH1
+   * @description Explanation of the grace period and a link to learn more
+   * @example {grace period} PH1
    */
   gracePeriodExplanation:
       'If this site or a site embedded on it is enrolled in the {PH1}, then the site can access third-party cookies',
   /**
-   *@description Text shown when a site and its embedded resources are not enrolled in a grace period.
-   *@example {grace period} PH1
+   * @description Text shown when a site and its embedded resources are not enrolled in a grace period.
+   * @example {grace period} PH1
    */
   enrollGracePeriod: 'To use this, enroll this site or sites embedded on it in the {PH1}',
   /**
-   *@description Text used for link within gracePeriodExplanation and enrollGracePeriod to let the user learn more about the grace period
+   * @description Text used for link within gracePeriodExplanation and enrollGracePeriod to let the user learn more about the grace period
    */
   gracePeriod: 'grace period',
   /**
-   *@description Title for the heuristic exception control
+   * @description Title for the heuristic exception control
    */
   heuristicTitle: 'Heuristics based exception',
   /**
-   *@description Explanation of the heuristics with a link to learn more about the scenarios in which they apply
-   *@example {predefined scenarios} PH1
+   * @description Explanation of the heuristics with a link to learn more about the scenarios in which they apply
+   * @example {predefined scenarios} PH1
    */
   heuristicExplanation:
       'In {PH1} like pop-ups or redirects, a site embedded on this site can access third-party cookies',
   /**
-   *@description Text used for link within the heuristicExplanation to let the user learn more about the heuristic exception
+   * @description Text used for link within the heuristicExplanation to let the user learn more about the heuristic exception
    */
   scenarios: 'predefined scenarios',
   /**
-   *@description Note at the bottom of the controls tool telling the user that their organization has an enterprise policy that controls cookies. This may disable the tool
+   * @description Note at the bottom of the controls tool telling the user that their organization has an enterprise policy that controls cookies. This may disable the tool
    */
   enterpriseDisclaimer: 'Your organization manages third-party cookie access for this site',
   /**
-   *@description Tooltip that appears when the user hovers over the card's enterprise icon
+   * @description Tooltip that appears when the user hovers over the card's enterprise icon
    */
   enterpriseTooltip: 'This setting is managed by your organization',
   /**
@@ -99,16 +99,16 @@ const UIStrings = {
    */
   viewDetails: 'View details',
   /**
-   *@description Text shown when the Third-party Cookie Metadata Grants flag or Third-party Cookie Heuristics Grants flag is disabled with a link to the flag in chrome://flags/.
-   *@example {#tpcd-heuristics-grants} PH1
+   * @description Text shown when the Third-party Cookie Metadata Grants flag or Third-party Cookie Heuristics Grants flag is disabled with a link to the flag in chrome://flags/.
+   * @example {#tpcd-heuristics-grants} PH1
    */
   enableFlag: 'To use this, set {PH1} to Default',
   /**
-   *@description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Metadata Grants flag.
+   * @description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Metadata Grants flag.
    */
   tpcdMetadataGrants: '#tpcd-metadata-grants',
   /**
-   *@description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Heuristics Grants flag.
+   * @description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Heuristics Grants flag.
    */
   tpcdHeuristicsGrants: '#tpcd-heuristics-grants',
 } as const;

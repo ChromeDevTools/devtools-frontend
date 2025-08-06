@@ -9,31 +9,31 @@ import type * as Coverage from './coverage.js';
 
 const UIStrings = {
   /**
-   *@description Title of the 'Coverage' tool in the bottom drawer
+   * @description Title of the 'Coverage' tool in the bottom drawer
    */
   coverage: 'Coverage',
   /**
-   *@description Command for showing the 'Coverage' tool in the bottom drawer
+   * @description Command for showing the 'Coverage' tool in the bottom drawer
    */
   showCoverage: 'Show Coverage',
   /**
-   *@description Title of an action under the Performance category that can be invoked through the Command Menu
+   * @description Title of an action under the Performance category that can be invoked through the Command Menu
    */
   instrumentCoverage: 'Instrument coverage',
   /**
-   *@description Title of an action under the Performance category that can be invoked through the Command Menu
+   * @description Title of an action under the Performance category that can be invoked through the Command Menu
    */
   stopInstrumentingCoverageAndShow: 'Stop instrumenting coverage and show results',
   /**
-   *@description Title of an action in the coverage tool to start with reload
+   * @description Title of an action in the coverage tool to start with reload
    */
   startInstrumentingCoverageAnd: 'Start instrumenting coverage and reload page',
   /**
-   *@description Title of an action in the Coverage tool to clear all data.
+   * @description Title of an action in the Coverage tool to clear all data.
    */
   clearCoverage: 'Clear coverage',
   /**
-   *@description Title of an action in the Coverage tool to export the data.
+   * @description Title of an action in the Coverage tool to export the data.
    */
   exportCoverage: 'Export coverage',
 } as const;

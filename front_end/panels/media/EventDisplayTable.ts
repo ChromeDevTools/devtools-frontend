@@ -14,19 +14,19 @@ import type {PlayerEvent} from './MediaModel.js';
 
 const UIStrings = {
   /**
-   *@description Text for timestamps of items
+   * @description Text for timestamps of items
    */
   timestamp: 'Timestamp',
   /**
-   *@description The column header for event names.
+   * @description The column header for event names.
    */
   eventName: 'Event name',
   /**
-   *@description Text for the value of something
+   * @description Text for the value of something
    */
   value: 'Value',
   /**
-   *@description The accessible name of a table that displays information about events that occurred
+   * @description The accessible name of a table that displays information about events that occurred
    * while a video/media player was present on the page.
    */
   eventDisplay: 'Event display',

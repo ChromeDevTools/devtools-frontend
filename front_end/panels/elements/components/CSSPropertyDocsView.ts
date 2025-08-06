@@ -15,43 +15,43 @@ import CSSPropertyDocsViewStyles from './cssPropertyDocsView.css.js';
 
 const UIStrings = {
   /**
-   *@description Text for button that redirects to CSS property documentation.
+   * @description Text for button that redirects to CSS property documentation.
    */
   learnMore: 'Learn more',
   /**
-   *@description Text for a checkbox to turn off the CSS property documentation.
+   * @description Text for a checkbox to turn off the CSS property documentation.
    */
   dontShow: 'Don\'t show',
   /**
-   *@description Text indicating that the CSS property has limited availability across major browsers.
+   * @description Text indicating that the CSS property has limited availability across major browsers.
    */
   limitedAvailability: 'Limited availability across major browsers',
   /**
-   *@description Text indicating that the CSS property has limited availability across major browsers, with a list of unsupported browsers.
-   *@example {Firefox} PH1
-   *@example {Safari on iOS} PH1
-   *@example {Chrome, Firefox on Android, or Safari} PH1
+   * @description Text indicating that the CSS property has limited availability across major browsers, with a list of unsupported browsers.
+   * @example {Firefox} PH1
+   * @example {Safari on iOS} PH1
+   * @example {Chrome, Firefox on Android, or Safari} PH1
    */
   limitedAvailabilityInBrowsers: 'Limited availability across major browsers (not fully implemented in {PH1})',
   /**
-   *@description Text to display a combination of browser name and platform name.
-   *@example {Safari} PH1
-   *@example {iOS} PH2
+   * @description Text to display a combination of browser name and platform name.
+   * @example {Safari} PH1
+   * @example {iOS} PH2
    */
   browserOnPlatform: '{PH1} on {PH2}',
   /**
-   *@description Text indicating that the CSS property is newly available across major browsers since a certain time.
-   *@example {September 2015} PH1
+   * @description Text indicating that the CSS property is newly available across major browsers since a certain time.
+   * @example {September 2015} PH1
    */
   newlyAvailableSince: 'Newly available across major browsers (`Baseline` since {PH1})',
   /**
-   *@description Text indicating that the CSS property is widely available across major browsers since a certain time.
-   *@example {September 2015} PH1
-   *@example {an unknown date} PH1
+   * @description Text indicating that the CSS property is widely available across major browsers since a certain time.
+   * @example {September 2015} PH1
+   * @example {an unknown date} PH1
    */
   widelyAvailableSince: 'Widely available across major browsers (`Baseline` since {PH1})',
   /**
-   *@description Text indicating that a specific date is not known.
+   * @description Text indicating that a specific date is not known.
    */
   unknownDate: 'an unknown date',
 } as const;

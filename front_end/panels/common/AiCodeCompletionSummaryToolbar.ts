@@ -15,7 +15,7 @@ import styles from './aiCodeCompletionSummaryToolbar.css.js';
 
 const UIStrings = {
   /**
-   *@description Disclaimer text for AI code completion
+   * @description Disclaimer text for AI code completion
    */
   relevantData: 'Relevant data',
   /**
@@ -23,25 +23,25 @@ const UIStrings = {
    */
   isSentToGoogle: 'is sent to Google',
   /**
-   *@description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
    */
   tooltipDisclaimerTextForAiCodeCompletion:
       'To generate code suggestions, your console input and the history of your current console session are shared with Google. This data may be seen by human reviewers to improve this feature.',
   /**
-   *@description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
    */
   tooltipDisclaimerTextForAiCodeCompletionNoLogging:
       'To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google’s AI models.',
   /**
-   *@description Text for tooltip button which redirects to AI settings
+   * @description Text for tooltip button which redirects to AI settings
    */
   manageInSettings: 'Manage in settings',
   /**
-   *@description Text for recitation notice
+   * @description Text for recitation notice
    */
   generatedCodeMayBeSubjectToALicense: 'Generated code may be subject to a license.',
   /**
-   *@description Text for citations
+   * @description Text for citations
    */
   viewSources: 'View Sources',
 } as const;

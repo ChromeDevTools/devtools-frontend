@@ -14,11 +14,11 @@ import commonStyles from './common.css.js';
 
 const UIStrings = {
   /**
-   *@description Text for the cancel button in the dialog.
+   * @description Text for the cancel button in the dialog.
    */
   cancel: 'Cancel',
   /**
-   *@description Text for the allow button in the "type to allow" dialog.
+   * @description Text for the allow button in the "type to allow" dialog.
    */
   allow: 'Allow',
 } as const;

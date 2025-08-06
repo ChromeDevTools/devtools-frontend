@@ -49,9 +49,9 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text in Timeline Flame Chart View of the Performance panel
-   *@example {Frame} PH1
-   *@example {10ms} PH2
+   * @description Text in Timeline Flame Chart View of the Performance panel
+   * @example {Frame} PH1
+   * @example {10ms} PH2
    */
   sAtS: '{PH1} at {PH2}',
 } as const;
@@ -1132,8 +1132,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   }
 
   /**
-   * @param startTime - the start time of the selection in MilliSeconds
-   * @param endTime - the end time of the selection in MilliSeconds
+   * @param startTime the start time of the selection in MilliSeconds
+   * @param endTime the end time of the selection in MilliSeconds
    * TODO(crbug.com/346312365): update the type definitions in ChartViewport.ts
    */
   updateRangeSelection(startTime: number, endTime: number): void {

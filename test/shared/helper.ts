@@ -119,8 +119,8 @@ export const $$ = async<ElementType extends Element|null = null, Selector extend
 /**
  * Search for an element based on its textContent.
  *
- * @param textContent - The text content to search for.
- * @param root - The root of the search.
+ * @param textContent The text content to search for.
+ * @param root The root of the search.
  */
 export const $textContent = async (textContent: string, root?: puppeteer.ElementHandle) => {
   const {devToolsPage} = getBrowserAndPagesWrappers();
@@ -130,8 +130,8 @@ export const $textContent = async (textContent: string, root?: puppeteer.Element
 /**
  * Search for all elements based on their textContent
  *
- * @param textContent - The text content to search for.
- * @param root - The root of the search.
+ * @param textContent The text content to search for.
+ * @param root The root of the search.
  */
 export const $$textContent = async (textContent: string, root?: puppeteer.ElementHandle) => {
   const {devToolsPage} = getBrowserAndPagesWrappers();
@@ -158,7 +158,7 @@ export const getAllTextContents =
  * Match multiple elements based on a selector and return their textContents, but only for those
  * elements that are visible.
  *
- * @param selector - jquery selector to match
+ * @param selector jquery selector to match
  * @returns array containing text contents from visible elements
  */
 export const getVisibleTextContents =

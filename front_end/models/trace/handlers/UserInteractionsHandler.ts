@@ -33,11 +33,13 @@ export interface UserInteractionsData {
   beginCommitCompositorFrameEvents: readonly Types.Events.BeginCommitCompositorFrame[];
   /** All the ParseMetaViewport events we found in the trace */
   parseMetaViewportEvents: readonly Types.Events.ParseMetaViewport[];
-  /** All the interaction events we found in the trace that had an
+  /**
+   * All the interaction events we found in the trace that had an
    * interactionId and a duration > 0
    **/
   interactionEvents: readonly Types.Events.SyntheticInteractionPair[];
-  /** If the user rapidly generates interaction events (think typing into a
+  /**
+   * If the user rapidly generates interaction events (think typing into a
    * text box), in the UI we only really want to show the user the longest
    * interaction in that set.
    * For example picture interactions like this:

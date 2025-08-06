@@ -20,23 +20,23 @@ import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
 
 const UIStrings = {
   /**
-   *@description Text to download the trace file after an error
+   * @description Text to download the trace file after an error
    */
   downloadAfterError: 'Download trace',
   /**
-   *@description Text for the status of something
+   * @description Text for the status of something
    */
   status: 'Status',
   /**
-   *@description Text that refers to the time
+   * @description Text that refers to the time
    */
   time: 'Time',
   /**
-   *@description Text for the description of something
+   * @description Text for the description of something
    */
   description: 'Description',
   /**
-   *@description Text of an item that stops the running task
+   * @description Text of an item that stops the running task
    */
   stop: 'Stop',
 

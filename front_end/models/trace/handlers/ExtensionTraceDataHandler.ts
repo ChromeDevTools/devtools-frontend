@@ -168,7 +168,7 @@ export function extractConsoleAPIExtensionEntries(): void {
  * extension data are processed. Other `performance.mark` and
  * `performance.measure` events are ignored.
  *
- * @param timings - An array of `SyntheticUserTimingPair` or
+ * @param timings An array of `SyntheticUserTimingPair` or
  *                `PerformanceMark` events, typically obtained from the
  *                `UserTimingsHandler`.
  */
@@ -275,7 +275,7 @@ export function extensionDataInPerformanceTiming(
  * against a predefined palette (see
  * `ExtensionUI::extensionEntryColor`).
  *
- * @param timeStamp - The `ConsoleTimeStamp` event to extract data from.
+ * @param timeStamp The `ConsoleTimeStamp` event to extract data from.
  * @returns An `ExtensionTrackEntryPayload` object if the event contains
  *         valid extension data for a track entry, or `null` otherwise.
  */

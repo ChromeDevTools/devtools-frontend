@@ -13,15 +13,15 @@ import dialogStyles from './dialog.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in Add Source Map URLDialog of the Sources panel
+   * @description Text in Add Source Map URLDialog of the Sources panel
    */
   sourceMapUrl: 'Source map URL: ',
   /**
-   *@description Text in Add Debug Info URL Dialog of the Sources panel
+   * @description Text in Add Debug Info URL Dialog of the Sources panel
    */
   debugInfoUrl: 'DWARF symbols URL: ',
   /**
-   *@description Text to add something
+   * @description Text to add something
    */
   add: 'Add',
 } as const;

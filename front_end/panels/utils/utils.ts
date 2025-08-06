@@ -19,19 +19,19 @@ const {ref, styleMap, ifDefined} = Directives;
 
 const UIStrings = {
   /**
-   *@description Tooltip to explain the resource's overridden status
+   * @description Tooltip to explain the resource's overridden status
    */
   requestContentHeadersOverridden: 'Both request content and headers are overridden',
   /**
-   *@description Tooltip to explain the resource's overridden status
+   * @description Tooltip to explain the resource's overridden status
    */
   requestContentOverridden: 'Request content is overridden',
   /**
-   *@description Tooltip to explain the resource's overridden status
+   * @description Tooltip to explain the resource's overridden status
    */
   requestHeadersOverridden: 'Request headers are overridden',
   /**
-   *@description Tooltip to explain why the request has warning icon
+   * @description Tooltip to explain why the request has warning icon
    */
   thirdPartyPhaseout:
       'Cookies for this request are blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.',

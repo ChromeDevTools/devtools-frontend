@@ -173,7 +173,7 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
   /**
    * Attempt to connect the automatic workspace folder (if any).
    *
-   * @param addIfMissing - if `false` (the default), this will only try to connect
+   * @param addIfMissing if `false` (the default), this will only try to connect
    *                     to a previously connected automatic workspace folder.
    *                     If the folder was never connected before and `true` is
    *                     specified, the user will be asked to grant permission

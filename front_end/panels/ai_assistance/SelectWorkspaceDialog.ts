@@ -22,27 +22,27 @@ import selectWorkspaceDialogStyles from './selectWorkspaceDialog.css.js';
 */
 const UIStringsNotTranslate = {
   /**
-   *@description Heading of dialog box which asks user to select a workspace folder.
+   * @description Heading of dialog box which asks user to select a workspace folder.
    */
   selectFolder: 'Select folder',
   /**
-   *@description Heading of dialog box which asks user to select a workspace folder for a11y clients.
+   * @description Heading of dialog box which asks user to select a workspace folder for a11y clients.
    */
   selectFolderAccessibleLabel: 'Select a folder to apply changes',
   /**
-   *@description Button text for canceling workspace selection.
+   * @description Button text for canceling workspace selection.
    */
   cancel: 'Cancel',
   /**
-   *@description Button text for confirming the selected workspace folder.
+   * @description Button text for confirming the selected workspace folder.
    */
   select: 'Select',
-  /*
-   *@description Button text for adding a workspace folder.
+  /**
+   * @description Button text for adding a workspace folder.
    */
   addFolder: 'Add folder',
-  /*
-   *@description Explanation for selecting the correct workspace folder.
+  /**
+   * @description Explanation for selecting the correct workspace folder.
    */
   selectProjectRoot:
       'To save patches directly to your project, select the project root folder containing the source files of the inspected page. Relevant code snippets will be sent to Google to generate code suggestions.',

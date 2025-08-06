@@ -19,7 +19,7 @@ import {
 
 const UIStrings = {
   /**
-   *@description A context menu item in the Custom Preview Component
+   * @description A context menu item in the Custom Preview Component
    */
   showAsJavascriptObject: 'Show as JavaScript object',
 } as const;

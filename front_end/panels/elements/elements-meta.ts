@@ -88,7 +88,7 @@ const UIStrings = {
    */
   selectAnElementInThePageTo: 'Select an element in the page to inspect it',
   /**
-   *@description Title/tooltip of an action in the elements panel to add a new style rule.
+   * @description Title/tooltip of an action in the elements panel to add a new style rule.
    */
   newStyleRule: 'New Style Rule',
   /**

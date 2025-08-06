@@ -19,11 +19,11 @@ import {
 
 const UIStrings = {
   /**
-   *@description Label for the link for SameSiteCookies Issues
+   * @description Label for the link for SameSiteCookies Issues
    */
   samesiteCookiesExplained: 'SameSite cookies explained',
   /**
-   *@description Label for the link for Schemeful Same-Site Issues
+   * @description Label for the link for Schemeful Same-Site Issues
    */
   howSchemefulSamesiteWorks: 'How Schemeful Same-Site Works',
   /**

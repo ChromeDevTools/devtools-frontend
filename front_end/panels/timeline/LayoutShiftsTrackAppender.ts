@@ -23,15 +23,15 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   layoutShifts: 'Layout shifts',
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   layoutShiftCluster: 'Layout shift cluster',
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   layoutShift: 'Layout shift',
 } as const;
@@ -61,9 +61,9 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   /**
    * Appends into the flame chart data the data corresponding to the
    * layout shifts track.
-   * @param trackStartLevel - the horizontal level of the flame chart events where
+   * @param trackStartLevel the horizontal level of the flame chart events where
    * the track's events will start being appended.
-   * @param expanded - wether the track should be rendered expanded.
+   * @param expanded wether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
@@ -81,7 +81,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * flame chart data. A group has a predefined style and a reference
    * to the definition of the legacy track (which should be removed
    * in the future).
-   * @param currentLevel - the flame chart level at which the header is
+   * @param currentLevel the flame chart level at which the header is
    * appended.
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
@@ -95,7 +95,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   /**
    * Adds into the flame chart data all the layout shifts. These are taken from
    * the clusters that are collected in the LayoutShiftsHandler.
-   * @param currentLevel - the flame chart level from which layout shifts will
+   * @param currentLevel the flame chart level from which layout shifts will
    * be appended.
    * @returns the next level after the last occupied by the appended
    * layout shifts (the first available level to append more data).
@@ -240,7 +240,8 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
       return;
     }
 
-    /** 1 of 3 scaling factors.
+    /**
+     * 1 of 3 scaling factors.
      * The Layout Instability API in Blink, which reports the LayoutShift trace events, is not based on CSS pixels but
      * physical pixels. As such the values in the impacted_nodes field need to be normalized to CSS units in order to
      * map them to the viewport dimensions, which we get in CSS pixels. We do that by dividing the values by the devicePixelRatio.

@@ -1540,7 +1540,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
    * DevTools might not be being run from a native origin and we still want to lock down this specific
    * origin from DevTools extensions.
    *
-   * @param parsedURL - The URL to check
+   * @param parsedURL The URL to check
    * @returns `true` if the URL corresponds to the Chrome web store; otherwise `false`
    */
   static #isUrlFromChromeWebStore(parsedURL: URL): boolean {

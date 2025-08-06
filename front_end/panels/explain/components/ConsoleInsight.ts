@@ -146,7 +146,7 @@ const UIStrings = {
    */
   timedOut: 'Generating a response took too long. Please try again.',
   /**
-   *@description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
+   * @description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
    */
   notAvailableInIncognitoMode: 'AI assistance is not available in Incognito mode or Guest mode',
 } as const;

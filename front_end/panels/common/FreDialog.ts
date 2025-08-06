@@ -15,19 +15,19 @@ const {html, Directives: {ifDefined}} = Lit;
 
 const UIStrings = {
   /**
-   *@description Header text for the feature reminder dialog.
+   * @description Header text for the feature reminder dialog.
    */
   thingsToConsider: 'Things to consider',
   /**
-   *@description Text for the learn more button in the feature reminder dialog.
+   * @description Text for the learn more button in the feature reminder dialog.
    */
   learnMore: 'Learn more',
   /**
-   *@description Text for the cancel button in the feature reminder dialog.
+   * @description Text for the cancel button in the feature reminder dialog.
    */
   cancel: 'Cancel',
   /**
-   *@description Text for the got it button in the feature reminder dialog.
+   * @description Text for the got it button in the feature reminder dialog.
    */
   gotIt: 'Got it',
 } as const;

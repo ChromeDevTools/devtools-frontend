@@ -19,54 +19,54 @@ const {render, html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Text in Shared Storage Events View of the Application panel
+   * @description Text in Shared Storage Events View of the Application panel
    */
   sharedStorage: 'Shared storage',
   /**
-   *@description Hover text for an info icon in the Shared Storage Events panel
+   * @description Hover text for an info icon in the Shared Storage Events panel
    */
   allSharedStorageEvents: 'All shared storage events for this page.',
   /**
-   *@description Text in Shared Storage Events View of the Application panel
+   * @description Text in Shared Storage Events View of the Application panel
    * Date and time of an Shared Storage event in a locale-
    * dependent format.
    */
   eventTime: 'Event Time',
   /**
-   *@description Text in Shared Storage Events View of the Application panel
+   * @description Text in Shared Storage Events View of the Application panel
    * Scope of shared storage event such as 'window', 'sharedStorageWorklet',
    * 'protectedAudienceWorklet', or 'header'.
    */
   eventScope: 'Access Scope',
   /**
-   *@description Text in Shared Storage Events View of the Application panel
+   * @description Text in Shared Storage Events View of the Application panel
    * Method of shared storage event such as 'addModule', 'run', 'set', 'delete',
    * or 'get'.
    */
   eventMethod: 'Access Method',
   /**
-   *@description Text in Shared Storage Events View of the Application panel
+   * @description Text in Shared Storage Events View of the Application panel
    * Owner origin of the shared storage for this access event.
    */
   ownerOrigin: 'Owner Origin',
   /**
-   *@description Text in Shared Storage Events View of the Application panel
+   * @description Text in Shared Storage Events View of the Application panel
    * Owner site of the shared storage for this access event.
    */
   ownerSite: 'Owner Site',
   /**
-   *@description Text in Shared Storage Events View of the Application panel
+   * @description Text in Shared Storage Events View of the Application panel
    * Event parameters whose presence/absence depend on the access type.
    */
   eventParams: 'Optional Event Params',
   /**
-   *@description Text shown when no shared storage event is shown.
+   * @description Text shown when no shared storage event is shown.
    * Shared storage allows to store and access data that can be shared across different sites.
    * A shared storage event is for example an access from a site to that storage.
    */
   noEvents: 'No shared storage events detected',
   /**
-   *@description Text shown when no shared storage event is shown. It explains the shared storage event page.
+   * @description Text shown when no shared storage event is shown. It explains the shared storage event page.
    * Shared storage allows to store and access data that can be shared across different sites.
    * A shared storage event is for example an access from a site to that storage.
    */

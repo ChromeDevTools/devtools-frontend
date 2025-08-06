@@ -106,7 +106,7 @@ class Logger {
 
   /**
    * Logs a header message to the console.
-   * @param text - The header text to log.
+   * @param text The header text to log.
    */
   head(text: string) {
     this.log('head', -1, `${text}\n`);

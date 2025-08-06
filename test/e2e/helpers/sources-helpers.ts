@@ -280,8 +280,8 @@ export async function isBreakpointSet(
 }
 
 /**
- * @param lineNumber - 1-based line number
- * @param index - 1-based index of the inline breakpoint in the given line
+ * @param lineNumber 1-based line number
+ * @param index 1-based index of the inline breakpoint in the given line
  */
 export async function enableInlineBreakpointForLine(
     line: number, index: number, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -293,9 +293,9 @@ export async function enableInlineBreakpointForLine(
 }
 
 /**
- * @param lineNumber - 1-based line number
- * @param index - 1-based index of the inline breakpoint in the given line
- * @param expectNoBreakpoint - If we should wait for the line to not have any inline breakpoints after
+ * @param lineNumber 1-based line number
+ * @param index 1-based index of the inline breakpoint in the given line
+ * @param expectNoBreakpoint If we should wait for the line to not have any inline breakpoints after
  *                           the click instead of a disabled one.
  */
 export async function disableInlineBreakpointForLine(

@@ -23,15 +23,15 @@ import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
-   *@description Text in Object Properties Section
+   * @description Text in Object Properties Section
    */
   unknown: 'unknown',
   /**
-   *@description Tooltip for button linking to the Elements panel
+   * @description Tooltip for button linking to the Elements panel
    */
   clickToRevealTheFramesDomNodeIn: 'Click to reveal the frame\'s DOM node in the Elements panel',
   /**
-   *@description Replacement text for a link to an HTML element which is not available (anymore).
+   * @description Replacement text for a link to an HTML element which is not available (anymore).
    */
   unavailable: 'unavailable',
 } as const;

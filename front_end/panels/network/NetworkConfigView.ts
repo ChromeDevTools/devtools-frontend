@@ -17,35 +17,35 @@ import networkConfigViewStyles from './networkConfigView.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in the Network conditions panel shown in the dropdown where the user chooses the user agent.
+   * @description Text in the Network conditions panel shown in the dropdown where the user chooses the user agent.
    */
   custom: 'Custom…',
   /**
-   *@description Placeholder text shown in the input box where a user is expected to add a custom user agent.
+   * @description Placeholder text shown in the input box where a user is expected to add a custom user agent.
    */
   enterACustomUserAgent: 'Enter a custom user agent',
   /**
-   *@description Error message when the custom user agent field is empty.
+   * @description Error message when the custom user agent field is empty.
    */
   customUserAgentFieldIsRequired: 'Custom user agent field is required',
   /**
-   *@description Header for the caching settings within the network conditions panel.
+   * @description Header for the caching settings within the network conditions panel.
    */
   caching: 'Caching',
   /**
-   *@description Option in the network conditions panel to disable the cache.
+   * @description Option in the network conditions panel to disable the cache.
    */
   disableCache: 'Disable cache',
   /**
-   *@description Header in Network conditions panel for the network throttling and emulation settings.
+   * @description Header in Network conditions panel for the network throttling and emulation settings.
    */
   networkThrottling: 'Network',
   /**
-   *@description Header in the network conditions panel for the user agent settings.
+   * @description Header in the network conditions panel for the user agent settings.
    */
   userAgent: 'User agent',
   /**
-   *@description User agent setting in the network conditions panel to use the browser's default value.
+   * @description User agent setting in the network conditions panel to use the browser's default value.
    */
   selectAutomatically: 'Use browser default',
   /**

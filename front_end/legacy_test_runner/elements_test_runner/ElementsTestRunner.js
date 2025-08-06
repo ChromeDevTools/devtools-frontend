@@ -1232,7 +1232,7 @@ function onBlankSection(selector, callback) {
  * To pick which properties to dump: dumpInspectorHighlightJSON(idValue, ['prop'], callback).
  *
  * @param {string} idValue
- * @param {?Array<string>} attributes - List of top-level property names to include in the result
+ * @param {?Array<string>} attributes List of top-level property names to include in the result
  * @param {?Function=} maybeCallback
  */
 ElementsTestRunner.dumpInspectorHighlightJSON = function(idValue, attributes, maybeCallback) {

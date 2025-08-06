@@ -30,7 +30,7 @@ const UIStrings = {
    */
   clickToShowIssueWithTitle: 'Click to open the issue tab and show issue: {title}',
   /**
-   *@description Title for an link to show an issue that is unavailable because the issue couldn't be resolved
+   * @description Title for an link to show an issue that is unavailable because the issue couldn't be resolved
    */
   issueUnavailable: 'Issue unavailable at this time',
 } as const;

@@ -67,7 +67,8 @@ const UIStrings = {
    * grouped together or not. In Computed Style Widget of the Elements panel.
    */
   group: 'Group',
-  /** [
+  /**
+   * [
    * @description Text shown to the user when a filter is applied to the computed CSS properties, but
    * no properties matched the filter and thus no results were returned.
    */

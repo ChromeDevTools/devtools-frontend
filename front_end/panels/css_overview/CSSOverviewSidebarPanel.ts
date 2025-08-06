@@ -16,7 +16,7 @@ const {classMap} = Directives;
 
 const UIStrings = {
   /**
-   *@description Label for the 'Clear overview' button in the CSS overview report
+   * @description Label for the 'Clear overview' button in the CSS overview report
    */
   clearOverview: 'Clear overview',
   /**

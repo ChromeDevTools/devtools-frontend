@@ -144,9 +144,9 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
 /**
  * Draws the network track in the flame chart using the legacy system.
  *
- * @param traceFileName - The name of the trace file to be loaded to the flame
+ * @param traceFileName The name of the trace file to be loaded to the flame
  * chart.
- * @param expanded - if the track is expanded
+ * @param expanded if the track is expanded
  * @returns a flame chart element and its corresponding data provider.
  */
 export async function getNetworkFlameChart(traceFileName: string, expanded: boolean): Promise<{
@@ -601,8 +601,8 @@ export interface FlameChartWithFakeProviderOptions {
 
 /**
  * Renders a flame chart using a fake provider and mock delegate.
- * @param provider - The fake flame chart provider.
- * @param options - Optional parameters.  Includes windowTimes, an array specifying the minimum and maximum window times. Defaults to [0, 100].
+ * @param provider The fake flame chart provider.
+ * @param options Optional parameters.  Includes windowTimes, an array specifying the minimum and maximum window times. Defaults to [0, 100].
  * @returns A promise that resolves when the flame chart is rendered.
  */
 export async function renderFlameChartWithFakeProvider(

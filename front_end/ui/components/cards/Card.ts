@@ -67,7 +67,7 @@ export class Card extends HTMLElement {
    * Changes the value of the `"heading"` attribute of this `Card`. If you pass
    * `null`, the `"heading"` attribute will be removed from this element.
    *
-   * @param heading - the new heading of `null` to unset.
+   * @param heading the new heading of `null` to unset.
    */
   set heading(heading: string|null) {
     if (heading) {

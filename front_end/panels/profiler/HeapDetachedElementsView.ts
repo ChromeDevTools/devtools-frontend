@@ -21,20 +21,20 @@ import {WritableProfileHeader} from './ProfileView.js';
 
 const UIStrings = {
   /**
-   *@description Button text to obtain the detached elements retained by JS
+   * @description Button text to obtain the detached elements retained by JS
    */
   startDetachedElements: 'Obtain detached elements',
   /**
-   *@description The title for the collection of profiles that are gathered from various snapshots of the heap, using a sampling (e.g. every 1/100) technique.
+   * @description The title for the collection of profiles that are gathered from various snapshots of the heap, using a sampling (e.g. every 1/100) technique.
    */
   detachedElementsTitle: 'Detached elements',
   /**
-   *@description Description in Heap Profile View of a profiler tool
+   * @description Description in Heap Profile View of a profiler tool
    */
   detachedElementsDescription: 'Detached elements shows objects that are retained by a JS reference.',
   /**
-   *@description Name of a profile
-   *@example {2} PH1
+   * @description Name of a profile
+   * @example {2} PH1
    */
   detachedElementProfile: 'Detached elements {PH1}',
 } as const;

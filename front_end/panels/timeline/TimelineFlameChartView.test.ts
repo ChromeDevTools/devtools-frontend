@@ -727,7 +727,8 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
       it('When an entry has no children, correctly make only Hide Entry enabled in the Context Menu action',
          async function() {
-           /** Part of this stack looks roughly like so (with some events omitted):
+           /**
+            * Part of this stack looks roughly like so (with some events omitted):
             * =============== foo ===============
             * =============== foo ===============
             * =============== foo ===============
@@ -786,7 +787,8 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
       it('When an entry has children, correctly make only Hide Entry and Hide Children enabled in the Context Menu action',
          async function() {
-           /** Part of this stack looks roughly like so (with some events omitted):
+           /**
+            * Part of this stack looks roughly like so (with some events omitted):
             * =============== foo ===============
             * =============== foo ===============
             * =============== foo ===============
@@ -851,7 +853,8 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
       it('When an entry has repeating children, correctly make only Hide Entry, Hide Children and Hide repeating children enabled in the Context Menu action',
          async function() {
-           /** Part of this stack looks roughly like so (with some events omitted):
+           /**
+            * Part of this stack looks roughly like so (with some events omitted):
             * =============== foo ===============
             * =============== foo ===============
             * =============== foo ===============
@@ -919,7 +922,8 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
       it('When an entry has no parent and has children, correctly make only Hide Children enabled in the Context Menu action',
          async function() {
-           /** Part of this stack looks roughly like so (with some events omitted):
+           /**
+            * Part of this stack looks roughly like so (with some events omitted):
             * =============== Task ==============
             * =============== foo ===============
             * =============== foo ===============
@@ -990,7 +994,8 @@ describeWithEnvironment('TimelineFlameChartView', function() {
          });
 
       it('Reset Trace Context Menu action is disabled before some action has been applied', async function() {
-        /** Part of this stack looks roughly like so (with some events omitted):
+        /**
+         * Part of this stack looks roughly like so (with some events omitted):
          * =============== Task ==============
          * =============== foo ===============
          * =============== foo ===============

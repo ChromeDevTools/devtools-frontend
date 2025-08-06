@@ -20,11 +20,11 @@ const UIStrings = {
    */
   sourceOrderViewer: 'Source Order Viewer',
   /**
-   *@description Text in Source Order Viewer of the Accessibility panel shown when the selected node has no child elements
+   * @description Text in Source Order Viewer of the Accessibility panel shown when the selected node has no child elements
    */
   noSourceOrderInformation: 'No source order information available',
   /**
-   *@description Text in Source Order Viewer of the Accessibility panel shown when the selected node has many child elements
+   * @description Text in Source Order Viewer of the Accessibility panel shown when the selected node has many child elements
    */
   thereMayBeADelayInDisplaying: 'There may be a delay in displaying source order for elements with many children',
   /**

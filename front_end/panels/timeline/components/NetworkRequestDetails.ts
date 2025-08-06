@@ -25,75 +25,75 @@ const MAX_URL_LENGTH = 100;
 
 const UIStrings = {
   /**
-   *@description Text that refers to the network request method
+   * @description Text that refers to the network request method
    */
   requestMethod: 'Request method',
   /**
-   *@description Text that refers to the network request protocol
+   * @description Text that refers to the network request protocol
    */
   protocol: 'Protocol',
   /**
-   *@description Text to show the priority of an item
+   * @description Text to show the priority of an item
    */
   priority: 'Priority',
   /**
-   *@description Text used when referring to the data sent in a network request that is encoded as a particular file format.
+   * @description Text used when referring to the data sent in a network request that is encoded as a particular file format.
    */
   encodedData: 'Encoded data',
   /**
-   *@description Text used to refer to the data sent in a network request that has been decoded.
+   * @description Text used to refer to the data sent in a network request that has been decoded.
    */
   decodedBody: 'Decoded body',
   /**
-   *@description Text in Timeline indicating that input has happened recently
+   * @description Text in Timeline indicating that input has happened recently
    */
   yes: 'Yes',
   /**
-   *@description Text in Timeline indicating that input has not happened recently
+   * @description Text in Timeline indicating that input has not happened recently
    */
   no: 'No',
   /**
-   *@description Text to indicate to the user they are viewing an event representing a network request.
+   * @description Text to indicate to the user they are viewing an event representing a network request.
    */
   networkRequest: 'Network request',
   /**
-   *@description Text for the data source of a network request.
+   * @description Text for the data source of a network request.
    */
   fromCache: 'From cache',
   /**
-   *@description Text used to show the mime-type of the data transferred with a network request (e.g. "application/json").
+   * @description Text used to show the mime-type of the data transferred with a network request (e.g. "application/json").
    */
   mimeType: 'MIME type',
   /**
-   *@description Text used to show the user that a request was served from the browser's in-memory cache.
+   * @description Text used to show the user that a request was served from the browser's in-memory cache.
    */
   FromMemoryCache: ' (from memory cache)',
   /**
-   *@description Text used to show the user that a request was served from the browser's file cache.
+   * @description Text used to show the user that a request was served from the browser's file cache.
    */
   FromCache: ' (from cache)',
   /**
-   *@description Label for a network request indicating that it was a HTTP2 server push instead of a regular network request, in the Performance panel
+   * @description Label for a network request indicating that it was a HTTP2 server push instead of a regular network request, in the Performance panel
    */
   FromPush: ' (from push)',
   /**
-   *@description Text used to show a user that a request was served from an installed, active service worker.
+   * @description Text used to show a user that a request was served from an installed, active service worker.
    */
   FromServiceWorker: ' (from `service worker`)',
   /**
-   *@description Text for the event initiated by another one
+   * @description Text for the event initiated by another one
    */
   initiatedBy: 'Initiated by',
   /**
-   *@description Text that refers to if the network request is blocking
+   * @description Text that refers to if the network request is blocking
    */
   blocking: 'Blocking',
   /**
-   *@description Text that refers to if the network request is in-body parser render blocking
+   * @description Text that refers to if the network request is in-body parser render blocking
    */
   inBodyParserBlocking: 'In-body parser blocking',
   /**
-   *@description Text that refers to if the network request is render blocking
+   * @description Text that refers to if the network request is render blocking
    */
   renderBlocking: 'Render blocking',
   /**

@@ -49,12 +49,12 @@ import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {
   /**
-   *@description Text in Tabbed Editor Container of the Sources panel
-   *@example {example.file} PH1
+   * @description Text in Tabbed Editor Container of the Sources panel
+   * @example {example.file} PH1
    */
   areYouSureYouWantToCloseUnsaved: 'Are you sure you want to close unsaved file: {PH1}?',
   /**
-   *@description Error message for tooltip showing that a file in Sources could not be loaded
+   * @description Error message for tooltip showing that a file in Sources could not be loaded
    */
   unableToLoadThisContent: 'Unable to load this content.',
   /**

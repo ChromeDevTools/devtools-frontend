@@ -27,25 +27,25 @@ export const UIStrings = {
    */
   title: 'INP breakdown',
   /**
-   *@description Label used for the subpart/component/stage/section of a larger duration.
+   * @description Label used for the subpart/component/stage/section of a larger duration.
    */
   subpart: 'Subpart',
   /**
-   *@description Label used for a time duration.
+   * @description Label used for a time duration.
    */
   duration: 'Duration',
 
   // TODO: these are repeated in InteractionBreakdown. Add a place for common strings?
   /**
-   *@description Text shown next to the interaction event's input delay time in the detail view.
+   * @description Text shown next to the interaction event's input delay time in the detail view.
    */
   inputDelay: 'Input delay',
   /**
-   *@description Text shown next to the interaction event's thread processing duration in the detail view.
+   * @description Text shown next to the interaction event's thread processing duration in the detail view.
    */
   processingDuration: 'Processing duration',
   /**
-   *@description Text shown next to the interaction event's presentation delay time in the detail view.
+   * @description Text shown next to the interaction event's presentation delay time in the detail view.
    */
   presentationDelay: 'Presentation delay',
   /**

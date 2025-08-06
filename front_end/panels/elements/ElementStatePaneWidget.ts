@@ -40,7 +40,7 @@ const UIStrings = {
    */
   forceElementSpecificStates: 'Force specific element state',
   /**
-   *@description Text that is usually a hyperlink to more documentation
+   * @description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
 } as const;

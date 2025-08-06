@@ -43,15 +43,15 @@ const {html, render} = Lit;
 
 const UIStrings = {
   /**
-   *@description Text in Request Response View of the Network panel if no preview can be shown
+   * @description Text in Request Response View of the Network panel if no preview can be shown
    */
   noPreview: 'Nothing to preview',
   /**
-   *@description Text in Request Response View of the Network panel
+   * @description Text in Request Response View of the Network panel
    */
   thisRequestHasNoResponseData: 'This request has no response data available',
   /**
-   *@description Text in Request Preview View of the Network panel
+   * @description Text in Request Preview View of the Network panel
    */
   failedToLoadResponseData: 'Failed to load response data',
 } as const;

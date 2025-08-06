@@ -16,8 +16,8 @@ import changesSidebarStyles from './changesSidebar.css.js';
 
 const UIStrings = {
   /**
-   *@description Name of an item from source map
-   *@example {compile.html} PH1
+   * @description Name of an item from source map
+   * @example {compile.html} PH1
    */
   sFromSourceMap: '{PH1} (from source map)',
 } as const;

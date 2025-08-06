@@ -34,54 +34,54 @@ export interface NetworkThrottlingSelectorWrapper {
 
 const UIStrings = {
   /**
-   *@description Text with two placeholders separated by a colon
-   *@example {Node removed} PH1
-   *@example {div#id1} PH2
+   * @description Text with two placeholders separated by a colon
+   * @example {Node removed} PH1
+   * @example {div#id1} PH2
    */
   sS: '{PH1}: {PH2}',
   /**
-   *@description Text in Throttling Manager of the Network panel
+   * @description Text in Throttling Manager of the Network panel
    */
   add: 'Add…',
   /**
-   *@description Accessibility label for custom add network throttling option
-   *@example {Custom} PH1
+   * @description Accessibility label for custom add network throttling option
+   * @example {Custom} PH1
    */
   addS: 'Add {PH1}',
   /**
-   *@description Text to indicate the network connectivity is offline
+   * @description Text to indicate the network connectivity is offline
    */
   offline: 'Offline',
   /**
-   *@description Text in Throttling Manager of the Network panel
+   * @description Text in Throttling Manager of the Network panel
    */
   forceDisconnectedFromNetwork: 'Force disconnected from network',
   /**
-   *@description Text for throttling the network
+   * @description Text for throttling the network
    */
   throttling: 'Throttling',
   /**
-   *@description Icon title in Throttling Manager of the Network panel
+   * @description Icon title in Throttling Manager of the Network panel
    */
   cpuThrottlingIsEnabled: 'CPU throttling is enabled',
   /**
-   *@description Screen reader label for a select box that chooses the CPU throttling speed in the Performance panel
+   * @description Screen reader label for a select box that chooses the CPU throttling speed in the Performance panel
    */
   cpuThrottling: 'CPU throttling',
   /**
-   *@description Tooltip text in Throttling Manager of the Performance panel
+   * @description Tooltip text in Throttling Manager of the Performance panel
    */
   excessConcurrency: 'Exceeding the default value may degrade system performance.',
   /**
-   *@description Tooltip text in Throttling Manager of the Performance panel
+   * @description Tooltip text in Throttling Manager of the Performance panel
    */
   resetConcurrency: 'Reset to the default value',
   /**
-   *@description Label for an check box that neables overriding navigator.hardwareConcurrency
+   * @description Label for an check box that neables overriding navigator.hardwareConcurrency
    */
   hardwareConcurrency: 'Hardware concurrency',
   /**
-   *@description Tooltip text for an input box that overrides navigator.hardwareConcurrency on the page
+   * @description Tooltip text for an input box that overrides navigator.hardwareConcurrency on the page
    */
   hardwareConcurrencySettingLabel: 'Override the value reported by navigator.hardwareConcurrency',
   /**
@@ -99,19 +99,19 @@ const UIStrings = {
    */
   recalibrate: 'Recalibrate…',
   /**
-   *@description Text to indicate Save-Data override is not set.
+   * @description Text to indicate Save-Data override is not set.
    */
   noSaveDataOverride: '\'Save-Data\': default',
   /**
-   *@description Text to indicate Save-Data override is set to Enabled.
+   * @description Text to indicate Save-Data override is set to Enabled.
    */
   saveDataOn: '\'Save-Data\': force on',
   /**
-   *@description Text to indicate Save-Data override is set to Disabled.
+   * @description Text to indicate Save-Data override is set to Disabled.
    */
   saveDataOff: '\'Save-Data\': force off',
   /**
-   *@description Tooltip text for an select element that overrides navigator.connection.saveData on the page
+   * @description Tooltip text for an select element that overrides navigator.connection.saveData on the page
    */
   saveDataSettingTooltip: 'Override the value reported by navigator.connection.saveData on the page',
 } as const;

@@ -43,8 +43,8 @@ export async function navigateToNetworkTab(
 
 /**
  * Wait until a certain number of requests are shown in the request list.
- * @param numberOfRequests - The expected number of requests to wait for.
- * @param selector - Optional. The selector to use to get the list of requests.
+ * @param numberOfRequests The expected number of requests to wait for.
+ * @param selector Optional. The selector to use to get the list of requests.
  */
 export async function waitForSomeRequestsToAppear(
     numberOfRequests: number, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

@@ -15,7 +15,7 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Icon element title in Color Swatch of the inline editor in the Styles tab
+   * @description Icon element title in Color Swatch of the inline editor in the Styles tab
    */
   shiftclickToChangeColorFormat: 'Shift-click to change color format',
 } as const;
@@ -97,7 +97,7 @@ export class ColorSwatch extends HTMLElement {
 
   /**
    * Render this swatch given a color object or text to be parsed as a color.
-   * @param color - The color object or string to use for this swatch.
+   * @param color The color object or string to use for this swatch.
    */
   renderColor(color: Common.Color.Color): void {
     this.color = color;

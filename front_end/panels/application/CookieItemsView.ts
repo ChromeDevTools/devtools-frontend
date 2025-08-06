@@ -45,36 +45,36 @@ import {StorageItemsToolbar} from './StorageItemsToolbar.js';
 
 const UIStrings = {
   /**
-   *@description Label for checkbox to show URL-decoded cookie values
+   * @description Label for checkbox to show URL-decoded cookie values
    */
   showUrlDecoded: 'Show URL-decoded',
   /**
-   *@description Text in Cookie Items View of the Application panel to indicate that no cookie has been selected for preview
+   * @description Text in Cookie Items View of the Application panel to indicate that no cookie has been selected for preview
    */
   noCookieSelected: 'No cookie selected',
   /**
-   *@description Text in Cookie Items View of the Application panel
+   * @description Text in Cookie Items View of the Application panel
    */
   selectACookieToPreviewItsValue: 'Select a cookie to preview its value',
   /**
-   *@description Text for filter in Cookies View of the Application panel
+   * @description Text for filter in Cookies View of the Application panel
    */
   onlyShowCookiesWithAnIssue: 'Only show cookies with an issue',
   /**
-   *@description Title for filter in the Cookies View of the Application panel
+   * @description Title for filter in the Cookies View of the Application panel
    */
   onlyShowCookiesWhichHaveAn: 'Only show cookies that have an associated issue',
   /**
-   *@description Label to only delete the cookies that are visible after filtering
+   * @description Label to only delete the cookies that are visible after filtering
    */
   clearFilteredCookies: 'Clear filtered cookies',
   /**
-   *@description Label to delete all cookies
+   * @description Label to delete all cookies
    */
   clearAllCookies: 'Clear all cookies',
   /**
-   *@description Alert message for screen reader to announce # of cookies in the table
-   *@example {5} PH1
+   * @description Alert message for screen reader to announce # of cookies in the table
+   * @example {5} PH1
    */
   numberOfCookiesShownInTableS: 'Number of cookies shown in table: {PH1}',
 } as const;

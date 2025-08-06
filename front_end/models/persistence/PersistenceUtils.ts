@@ -17,13 +17,13 @@ import {Events, type PersistenceBinding, PersistenceImpl} from './PersistenceImp
 
 const UIStrings = {
   /**
-   *@description Text in Persistence Utils of the Workspace settings in Settings
-   *@example {example.url} PH1
+   * @description Text in Persistence Utils of the Workspace settings in Settings
+   * @example {example.url} PH1
    */
   linkedToSourceMapS: 'Linked to source map: {PH1}',
   /**
-   *@description Text to show something is linked to another
-   *@example {example.url} PH1
+   * @description Text to show something is linked to another
+   * @example {example.url} PH1
    */
   linkedToS: 'Linked to {PH1}',
 } as const;

@@ -9,15 +9,15 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-   *@description The current state of an item
+   * @description The current state of an item
    */
   state: 'State',
   /**
-   *@description Text in Audio Context Content Builder
+   * @description Text in Audio Context Content Builder
    */
   sampleRate: 'Sample Rate',
   /**
-   *@description Text in Audio Context Content Builder
+   * @description Text in Audio Context Content Builder
    */
   callbackBufferSize: 'Callback Buffer Size',
   /**
@@ -26,15 +26,15 @@ const UIStrings = {
    */
   maxOutputChannels: 'Max Output Channels',
   /**
-   *@description Text in Audio Context Content Builder
+   * @description Text in Audio Context Content Builder
    */
   currentTime: 'Current Time',
   /**
-   *@description Text in Audio Context Content Builder
+   * @description Text in Audio Context Content Builder
    */
   callbackInterval: 'Callback Interval',
   /**
-   *@description Text in Audio Context Content Builder
+   * @description Text in Audio Context Content Builder
    */
   renderCapacity: 'Render Capacity',
 } as const;

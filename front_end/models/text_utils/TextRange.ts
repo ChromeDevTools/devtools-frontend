@@ -225,8 +225,8 @@ export class TextRange {
    * for this comparison, meaning that for example a range `(0,1)-(1,4)` contains the
    * location `(0,1)` but does not contain the location `(1,4)`.
    *
-   * @param lineNumber - the location's line offset.
-   * @param columnNumber - the location's column offset.
+   * @param lineNumber the location's line offset.
+   * @param columnNumber the location's column offset.
    * @returns `true` if the location identified by {@link lineNumber} and {@link columnNumber}
    *          is contained within this text range.
    */
@@ -260,7 +260,7 @@ export class TextRange {
    * ranges is considered exclusive for the intersection, meaning that for example intersecting
    * `(0,1)-(1,4)` and `(1,4)-(1,6)` yields an empty range.
    *
-   * @param that - the other text range.
+   * @param that the other text range.
    * @returns the intersection of this and `that` text range, which might be empty if their don't
    *          overlap.
    */

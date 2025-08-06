@@ -26,17 +26,17 @@ const {Direction} = TextEditor.TextEditorHistory;
 
 const UIStrings = {
   /**
-   *@description Text in Console Prompt of the Console panel
+   * @description Text in Console Prompt of the Console panel
    */
   consolePrompt: 'Console prompt',
   /**
-   *@description Warning shown to users when pasting text into the DevTools console.
-   *@example {allow pasting} PH1
+   * @description Warning shown to users when pasting text into the DevTools console.
+   * @example {allow pasting} PH1
    */
   selfXssWarning:
       'Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type ‘{PH1}’ below and press Enter to allow pasting.',
   /**
-   *@description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
   allowPasting: 'allow pasting',
 } as const;

@@ -15,13 +15,13 @@ import sharedStorageEventsViewStyles from './sharedStorageEventsView.css.js';
 
 const UIStrings = {
   /**
-   *@description Placeholder text if no shared storage event has been selected.
+   * @description Placeholder text if no shared storage event has been selected.
    * Shared storage allows to store and access data that can be shared across different sites.
    * A shared storage event is for example an access from a site to that storage.
    */
   noEventSelected: 'No shared storage event selected',
   /**
-   *@description Placeholder text instructing the user how to display shared
+   * @description Placeholder text instructing the user how to display shared
    * storage event details.
    * Shared storage allows to store and access data that can be shared across different sites.
    * A shared storage event is for example an access from a site to that storage.

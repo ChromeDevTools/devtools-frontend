@@ -30,12 +30,12 @@ const UIStrings = {
    */
   enableAiAssistance: 'Enable AI assistance',
   /**
-   *@description Text of a tooltip to redirect to the AI assistance panel with
+   * @description Text of a tooltip to redirect to the AI assistance panel with
    * the current element as context
    */
   askAi: 'Ask AI',
   /**
-   *@description Text of a context menu item to redirect to the AI assistance panel with
+   * @description Text of a context menu item to redirect to the AI assistance panel with
    * the current context
    */
   debugWithAi: 'Debug with AI',

@@ -15,9 +15,9 @@ const BLOCKING_TIME_THRESHOLD = 50;
  *
  * TTI is picked as `endTimeMs` because we want a well defined end point for page load.
  *
- * @param startTimeMs - Should be FCP in navigation mode and the trace start time in timespan mode
- * @param endTimeMs - Should be TTI in navigation mode and the trace end time in timespan mode
- * @param topLevelEvent - Leave unset if `event` is top level. Has no effect if `event` has the same duration as `topLevelEvent`.
+ * @param startTimeMs Should be FCP in navigation mode and the trace start time in timespan mode
+ * @param endTimeMs Should be TTI in navigation mode and the trace end time in timespan mode
+ * @param topLevelEvent Leave unset if `event` is top level. Has no effect if `event` has the same duration as `topLevelEvent`.
  */
 function calculateTbtImpactForEvent(
     event: {start: number, end: number, duration: number}, startTimeMs: number, endTimeMs: number,

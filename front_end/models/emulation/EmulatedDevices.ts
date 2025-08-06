@@ -14,15 +14,15 @@ import {Insets, MaxDeviceSize, MinDeviceSize} from './DeviceModeModel.js';
 
 const UIStrings = {
   /**
-   *@description Title of the Laptop with touch device
+   * @description Title of the Laptop with touch device
    */
   laptopWithTouch: 'Laptop with touch',
   /**
-   *@description Title of the Laptop with HiDPI screen device
+   * @description Title of the Laptop with HiDPI screen device
    */
   laptopWithHiDPIScreen: 'Laptop with HiDPI screen',
   /**
-   *@description Title of the Laptop with MDPI screen device
+   * @description Title of the Laptop with MDPI screen device
    */
   laptopWithMDPIScreen: 'Laptop with MDPI screen',
 } as const;

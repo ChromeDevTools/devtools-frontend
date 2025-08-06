@@ -71,20 +71,20 @@ const UIStrings = {
   deleteButton: 'Delete annotation: {PH1}',
   /**
    * @description label used to describe an annotation on an entry
-   *@example {Paint} PH1
-   *@example {"Hello world"} PH2
+   * @example {Paint} PH1
+   * @example {"Hello world"} PH2
    */
   entryLabelDescriptionLabel: 'A "{PH1}" event annotated with the text "{PH2}"',
   /**
    * @description label used to describe a time range annotation
-   *@example {2.5 milliseconds} PH1
-   *@example {13.5 milliseconds} PH2
+   * @example {2.5 milliseconds} PH1
+   * @example {13.5 milliseconds} PH2
    */
   timeRangeDescriptionLabel: 'A time range starting at {PH1} and ending at {PH2}',
   /**
    * @description label used to describe a link from one entry to another.
-   *@example {Paint} PH1
-   *@example {Recalculate styles} PH2
+   * @example {Paint} PH1
+   * @example {Recalculate styles} PH2
    */
   entryLinkDescriptionLabel: 'A link between a "{PH1}" event and a "{PH2}" event',
 } as const;

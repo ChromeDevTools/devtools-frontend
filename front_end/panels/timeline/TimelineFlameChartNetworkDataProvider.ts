@@ -227,7 +227,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    *    |----------------[ (URL text)    waiting time   |   request  ]--------|
    *    ^start           ^sendStart                     ^headersEnd  ^Finish  ^end
    * @param request
-   * @param unclippedBarX - The start pixel of the request. It is calculated with request.beginTime() in FlameChart.
+   * @param unclippedBarX The start pixel of the request. It is calculated with request.beginTime() in FlameChart.
    * @param timeToPixelRatio
    * @returns the pixels to draw waiting time and left and right whiskers and url text
    */
@@ -254,11 +254,11 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    * Decorates the entry depends on the type of the event:
    * @param index
    * @param context
-   * @param barX - The x pixel of the visible part request
-   * @param barY - The y pixel of the visible part request
-   * @param barWidth - The width of the visible part request
-   * @param barHeight - The height of the visible part request
-   * @param unclippedBarX - The start pixel of the request compare to the visible area. It is calculated with request.beginTime() in FlameChart.
+   * @param barX The x pixel of the visible part request
+   * @param barY The y pixel of the visible part request
+   * @param barWidth The width of the visible part request
+   * @param barHeight The height of the visible part request
+   * @param unclippedBarX The start pixel of the request compare to the visible area. It is calculated with request.beginTime() in FlameChart.
    * @param timeToPixelRatio
    * @returns if the entry needs to be decorate, which is alway true if the request has "timing" field
    */

@@ -123,7 +123,7 @@ export class Icon extends HTMLElement {
    * Changes the value of the `"name"` attribute of this `Icon`. If you pass
    * `null` the `"name"` attribute will be removed from this element.
    *
-   * @param name - the new icon name or `null` to unset.
+   * @param name the new icon name or `null` to unset.
    */
   set name(name: string|null) {
     if (name === null) {
@@ -155,8 +155,8 @@ export class Icon extends HTMLElement {
  * Helper function to programmatically create an `Icon` isntance with a given
  * `name` and an optional CSS `className`.
  *
- * @param name - the name of the icon to use.
- * @param className - optional CSS class name(s) to put onto the element.
+ * @param name the name of the icon to use.
+ * @param className optional CSS class name(s) to put onto the element.
  * @returns the newly created `Icon` instance.
  */
 export const create = (name: string, className?: string): Icon => {

@@ -65,124 +65,124 @@ import {getRegisteredDecorators, type MarkerDecorator, type MarkerDecoratorRegis
 
 const UIStrings = {
   /**
-   *@description Title for Ad adorner. This iframe is marked as advertisement frame.
+   * @description Title for Ad adorner. This iframe is marked as advertisement frame.
    */
   thisFrameWasIdentifiedAsAnAd: 'This frame was identified as an ad frame',
   /**
-   *@description A context menu item in the Elements panel. Force is used as a verb, indicating intention to make the state change.
+   * @description A context menu item in the Elements panel. Force is used as a verb, indicating intention to make the state change.
    */
   forceState: 'Force state',
   /**
-   *@description Hint element title in Elements Tree Element of the Elements panel
-   *@example {0} PH1
+   * @description Hint element title in Elements Tree Element of the Elements panel
+   * @example {0} PH1
    */
   useSInTheConsoleToReferToThis: 'Use {PH1} in the console to refer to this element.',
   /**
-   *@description A context menu item in the Elements Tree Element of the Elements panel
+   * @description A context menu item in the Elements Tree Element of the Elements panel
    */
   addAttribute: 'Add attribute',
   /**
-   *@description Text to modify the attribute of an item
+   * @description Text to modify the attribute of an item
    */
   editAttribute: 'Edit attribute',
   /**
-   *@description Text to focus on something
+   * @description Text to focus on something
    */
   focus: 'Focus',
   /**
-   *@description Text to scroll the displayed content into view
+   * @description Text to scroll the displayed content into view
    */
   scrollIntoView: 'Scroll into view',
   /**
-   *@description A context menu item in the Elements Tree Element of the Elements panel
+   * @description A context menu item in the Elements Tree Element of the Elements panel
    */
   editText: 'Edit text',
   /**
-   *@description A context menu item in the Elements Tree Element of the Elements panel
+   * @description A context menu item in the Elements Tree Element of the Elements panel
    */
   editAsHtml: 'Edit as HTML',
   /**
-   *@description Text to cut an element, cut should be used as a verb
+   * @description Text to cut an element, cut should be used as a verb
    */
   cut: 'Cut',
   /**
-   *@description Text for copying, copy should be used as a verb
+   * @description Text for copying, copy should be used as a verb
    */
   copy: 'Copy',
   /**
-   *@description Text to paste an element, paste should be used as a verb
+   * @description Text to paste an element, paste should be used as a verb
    */
   paste: 'Paste',
   /**
-   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
    */
   copyOuterhtml: 'Copy outerHTML',
   /**
-   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
    */
   copySelector: 'Copy `selector`',
   /**
-   *@description Text in Elements Tree Element of the Elements panel
+   * @description Text in Elements Tree Element of the Elements panel
    */
   copyJsPath: 'Copy JS path',
   /**
-   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
    */
   copyStyles: 'Copy styles',
   /**
-   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
    */
   copyXpath: 'Copy XPath',
   /**
-   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
    */
   copyFullXpath: 'Copy full XPath',
   /**
-   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
    */
   copyElement: 'Copy element',
   /**
-   *@description A context menu item in the Elements Tree Element of the Elements panel
+   * @description A context menu item in the Elements Tree Element of the Elements panel
    */
   duplicateElement: 'Duplicate element',
   /**
-   *@description Text to hide an element
+   * @description Text to hide an element
    */
   hideElement: 'Hide element',
   /**
-   *@description A context menu item in the Elements Tree Element of the Elements panel
+   * @description A context menu item in the Elements Tree Element of the Elements panel
    */
   deleteElement: 'Delete element',
   /**
-   *@description Text to expand something recursively
+   * @description Text to expand something recursively
    */
   expandRecursively: 'Expand recursively',
   /**
-   *@description Text to collapse children of a parent group
+   * @description Text to collapse children of a parent group
    */
   collapseChildren: 'Collapse children',
   /**
-   *@description Title of an action in the emulation tool to capture node screenshot
+   * @description Title of an action in the emulation tool to capture node screenshot
    */
   captureNodeScreenshot: 'Capture node screenshot',
   /**
-   *@description Title of a context menu item. When clicked DevTools goes to the Application panel and shows this specific iframe's details
+   * @description Title of a context menu item. When clicked DevTools goes to the Application panel and shows this specific iframe's details
    */
   showFrameDetails: 'Show `iframe` details',
   /**
-   *@description Text in Elements Tree Element of the Elements panel
+   * @description Text in Elements Tree Element of the Elements panel
    */
   valueIsTooLargeToEdit: '<value is too large to edit>',
   /**
-   *@description Element text content in Elements Tree Element of the Elements panel
+   * @description Element text content in Elements Tree Element of the Elements panel
    */
   children: 'Children:',
   /**
-   *@description ARIA label for Elements Tree adorners
+   * @description ARIA label for Elements Tree adorners
    */
   enableGridMode: 'Enable grid mode',
   /**
-   *@description ARIA label for Elements Tree adorners
+   * @description ARIA label for Elements Tree adorners
    */
   disableGridMode: 'Disable grid mode',
   /**
@@ -194,118 +194,118 @@ const UIStrings = {
    */
   stopForceOpenPopover: 'Stop keeping this popover open',
   /**
-   *@description Label of the adorner for flex elements in the Elements panel
+   * @description Label of the adorner for flex elements in the Elements panel
    */
   enableFlexMode: 'Enable flex mode',
   /**
-   *@description Label of the adorner for flex elements in the Elements panel
+   * @description Label of the adorner for flex elements in the Elements panel
    */
   disableFlexMode: 'Disable flex mode',
   /**
-   *@description Label of an adorner in the Elements panel. When clicked, it enables
+   * @description Label of an adorner in the Elements panel. When clicked, it enables
    * the overlay showing CSS scroll snapping for the current element.
    */
   enableScrollSnap: 'Enable scroll-snap overlay',
   /**
-   *@description Label of an adorner in the Elements panel. When clicked, it disables
+   * @description Label of an adorner in the Elements panel. When clicked, it disables
    * the overlay showing CSS scroll snapping for the current element.
    */
   disableScrollSnap: 'Disable scroll-snap overlay',
   /**
-   *@description Label of an adorner in the Elements panel. When clicked, it redirects
+   * @description Label of an adorner in the Elements panel. When clicked, it redirects
    * to the Media Panel.
    */
   openMediaPanel: 'Jump to Media panel',
   /**
-   *@description Text of a tooltip to redirect to another element in the Elements panel
+   * @description Text of a tooltip to redirect to another element in the Elements panel
    */
   showPopoverTarget: 'Show element associated with the `popovertarget` attribute',
   /**
-   *@description Text of a tooltip to redirect to another element in the Elements panel, associated with the `interesttarget` attribute
+   * @description Text of a tooltip to redirect to another element in the Elements panel, associated with the `interesttarget` attribute
    */
   showInterestTarget: 'Show element associated with the `interesttarget` attribute',
   /**
-   *@description Text of a tooltip to redirect to another element in the Elements panel, associated with the `commandfor` attribute
+   * @description Text of a tooltip to redirect to another element in the Elements panel, associated with the `commandfor` attribute
    */
   showCommandForTarget: 'Show element associated with the `commandfor` attribute',
   /**
-   *@description Text of the tooltip for scroll adorner.
+   * @description Text of the tooltip for scroll adorner.
    */
   elementHasScrollableOverflow: 'This element has a scrollable overflow',
   /**
-   *@description Context menu text in Elements Panel to that opens a submenu with AI prompts.
+   * @description Context menu text in Elements Panel to that opens a submenu with AI prompts.
    */
   debugWithAi: 'Debug with AI',
   /**
-   *@description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
+   * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
    */
   startAChat: 'Start a chat',
   /**
-   *@description Context menu item in Elements panel to assess visibility of an element via AI.
+   * @description Context menu item in Elements panel to assess visibility of an element via AI.
    */
   assessVisibility: 'Assess visibility',
   /**
-   *@description Context menu item in Elements panel to center an element via AI.
+   * @description Context menu item in Elements panel to center an element via AI.
    */
   centerElement: 'Center element',
   /**
-   *@description Context menu item in Elements panel to wrap flex items via AI.
+   * @description Context menu item in Elements panel to wrap flex items via AI.
    */
   wrapTheseItems: 'Wrap these items',
   /**
-   *@description Context menu item in Elements panel to distribute flex items evenly via AI.
+   * @description Context menu item in Elements panel to distribute flex items evenly via AI.
    */
   distributeItemsEvenly: 'Distribute items evenly',
   /**
-   *@description Context menu item in Elements panel to explain flexbox via AI.
+   * @description Context menu item in Elements panel to explain flexbox via AI.
    */
   explainFlexbox: 'Explain flexbox',
   /**
-   *@description Context menu item in Elements panel to align grid items via AI.
+   * @description Context menu item in Elements panel to align grid items via AI.
    */
   alignItems: 'Align items',
   /**
-   *@description Context menu item in Elements panel to add padding/gap to grid via AI.
+   * @description Context menu item in Elements panel to add padding/gap to grid via AI.
    */
   addPadding: 'Add padding',
   /**
-   *@description Context menu item in Elements panel to explain grid layout via AI.
+   * @description Context menu item in Elements panel to explain grid layout via AI.
    */
   explainGridLayout: 'Explain grid layout',
   /**
-   *@description Context menu item in Elements panel to find grid definition for a subgrid item via AI.
+   * @description Context menu item in Elements panel to find grid definition for a subgrid item via AI.
    */
   findGridDefinition: 'Find grid definition',
   /**
-   *@description Context menu item in Elements panel to change parent grid properties for a subgrid item via AI.
+   * @description Context menu item in Elements panel to change parent grid properties for a subgrid item via AI.
    */
   changeParentProperties: 'Change parent properties',
   /**
-   *@description Context menu item in Elements panel to explain subgrids via AI.
+   * @description Context menu item in Elements panel to explain subgrids via AI.
    */
   explainSubgrids: 'Explain subgrids',
   /**
-   *@description Context menu item in Elements panel to remove scrollbars via AI.
+   * @description Context menu item in Elements panel to remove scrollbars via AI.
    */
   removeScrollbars: 'Remove scrollbars',
   /**
-   *@description Context menu item in Elements panel to style scrollbars via AI.
+   * @description Context menu item in Elements panel to style scrollbars via AI.
    */
   styleScrollbars: 'Style scrollbars',
   /**
-   *@description Context menu item in Elements panel to explain scrollbars via AI.
+   * @description Context menu item in Elements panel to explain scrollbars via AI.
    */
   explainScrollbars: 'Explain scrollbars',
   /**
-   *@description Context menu item in Elements panel to explain container queries via AI.
+   * @description Context menu item in Elements panel to explain container queries via AI.
    */
   explainContainerQueries: 'Explain container queries',
   /**
-   *@description Context menu item in Elements panel to explain container types via AI.
+   * @description Context menu item in Elements panel to explain container types via AI.
    */
   explainContainerTypes: 'Explain container types',
   /**
-   *@description Context menu item in Elements panel to explain container context via AI.
+   * @description Context menu item in Elements panel to explain container context via AI.
    */
   explainContainerContext: 'Explain container context',
 } as const;
@@ -2445,7 +2445,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   * @param adornerType - optional type of adorner to remove. If not provided, remove all adorners.
+   * @param adornerType optional type of adorner to remove. If not provided, remove all adorners.
    */
   removeAdornersByType(adornerType?: ElementsComponents.AdornerManager.RegisteredAdorners): void {
     if (!isOpeningTag(this.tagTypeContext)) {

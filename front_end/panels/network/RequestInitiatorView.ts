@@ -15,15 +15,15 @@ import requestInitiatorViewTreeStyles from './requestInitiatorViewTree.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in Request Initiator View of the Network panel if the request has no initiator data
+   * @description Text in Request Initiator View of the Network panel if the request has no initiator data
    */
   noInitiator: 'No initiator data',
   /**
-   *@description Title of a section in Request Initiator view of the Network Panel
+   * @description Title of a section in Request Initiator view of the Network Panel
    */
   requestCallStack: 'Request call stack',
   /**
-   *@description Title of a section in Request Initiator view of the Network Panel
+   * @description Title of a section in Request Initiator view of the Network Panel
    */
   requestInitiatorChain: 'Request initiator chain',
 } as const;

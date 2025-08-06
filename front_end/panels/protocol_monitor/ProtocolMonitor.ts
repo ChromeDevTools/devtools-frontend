@@ -26,7 +26,7 @@ const {styleMap} = Directives;
 const {widgetConfig, widgetRef} = UI.Widget;
 const UIStrings = {
   /**
-   *@description Text for one or a group of functions
+   * @description Text for one or a group of functions
    */
   method: 'Method',
   /**
@@ -40,65 +40,65 @@ const UIStrings = {
    */
   request: 'Request',
   /**
-   *@description Title of a cell content in protocol monitor. A Network response refers to the act of acknowledging a
+   * @description Title of a cell content in protocol monitor. A Network response refers to the act of acknowledging a
    * network request. Should not be confused with answer.
    */
   response: 'Response',
   /**
-   *@description Text for timestamps of items
+   * @description Text for timestamps of items
    */
   timestamp: 'Timestamp',
   /**
-   *@description Title of a cell content in protocol monitor. It describes the time between sending a request and receiving a response.
+   * @description Title of a cell content in protocol monitor. It describes the time between sending a request and receiving a response.
    */
   elapsedTime: 'Elapsed time',
   /**
-   *@description Text in Protocol Monitor of the Protocol Monitor tab
+   * @description Text in Protocol Monitor of the Protocol Monitor tab
    */
   target: 'Target',
   /**
-   *@description Text to record a series of actions for analysis
+   * @description Text to record a series of actions for analysis
    */
   record: 'Record',
   /**
-   *@description Text to clear everything
+   * @description Text to clear everything
    */
   clearAll: 'Clear all',
   /**
-   *@description Text to filter result items
+   * @description Text to filter result items
    */
   filter: 'Filter',
   /**
-   *@description Text for the documentation of something
+   * @description Text for the documentation of something
    */
   documentation: 'Documentation',
   /**
-   *@description Text to open the CDP editor with the selected command
+   * @description Text to open the CDP editor with the selected command
    */
   editAndResend: 'Edit and resend',
   /**
-   *@description Cell text content in Protocol Monitor of the Protocol Monitor tab
-   *@example {30} PH1
+   * @description Cell text content in Protocol Monitor of the Protocol Monitor tab
+   * @example {30} PH1
    */
   sMs: '{PH1} ms',
   /**
-   *@description Text in Protocol Monitor of the Protocol Monitor tab
+   * @description Text in Protocol Monitor of the Protocol Monitor tab
    */
   noMessageSelected: 'No message selected',
   /**
-   *@description Text in Protocol Monitor of the Protocol Monitor tab if no message is selected
+   * @description Text in Protocol Monitor of the Protocol Monitor tab if no message is selected
    */
   selectAMessageToView: 'Select a message to see its details',
   /**
-   *@description Text in Protocol Monitor for the save button
+   * @description Text in Protocol Monitor for the save button
    */
   save: 'Save',
   /**
-   *@description Text in Protocol Monitor to describe the sessions column
+   * @description Text in Protocol Monitor to describe the sessions column
    */
   session: 'Session',
   /**
-   *@description A placeholder for an input in Protocol Monitor. The input accepts commands that are sent to the backend on Enter. CDP stands for Chrome DevTools Protocol.
+   * @description A placeholder for an input in Protocol Monitor. The input accepts commands that are sent to the backend on Enter. CDP stands for Chrome DevTools Protocol.
    */
   sendRawCDPCommand: 'Send a raw `CDP` command',
   /**

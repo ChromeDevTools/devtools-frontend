@@ -46,43 +46,43 @@ const JPEG_MIME_TYPE = 'image/jpeg';
 
 const UIStrings = {
   /**
-   *@description AI assistance UI text creating a new chat.
+   * @description AI assistance UI text creating a new chat.
    */
   newChat: 'New chat',
   /**
-   *@description AI assistance UI tooltip text for the help button.
+   * @description AI assistance UI tooltip text for the help button.
    */
   help: 'Help',
   /**
-   *@description AI assistant UI tooltip text for the settings button (gear icon).
+   * @description AI assistant UI tooltip text for the settings button (gear icon).
    */
   settings: 'Settings',
   /**
-   *@description AI assistant UI tooltip sending feedback.
+   * @description AI assistant UI tooltip sending feedback.
    */
   sendFeedback: 'Send feedback',
   /**
-   *@description Announcement text for screen readers when a new chat is created.
+   * @description Announcement text for screen readers when a new chat is created.
    */
   newChatCreated: 'New chat created',
   /**
-   *@description Announcement text for screen readers when the chat is deleted.
+   * @description Announcement text for screen readers when the chat is deleted.
    */
   chatDeleted: 'Chat deleted',
   /**
-   *@description AI assistance UI text creating selecting a history entry.
+   * @description AI assistance UI text creating selecting a history entry.
    */
   history: 'History',
   /**
-   *@description AI assistance UI text deleting the current chat session from local history.
+   * @description AI assistance UI text deleting the current chat session from local history.
    */
   deleteChat: 'Delete local chat',
   /**
-   *@description AI assistance UI text that deletes all local history entries.
+   * @description AI assistance UI text that deletes all local history entries.
    */
   clearChatHistory: 'Clear local chats',
   /**
-   *@description AI assistance UI text explains that he user had no pas conversations.
+   * @description AI assistance UI text explains that he user had no pas conversations.
    */
   noPastConversations: 'No past conversations',
   /**
@@ -90,11 +90,11 @@ const UIStrings = {
    */
   followTheSteps: 'Follow the steps above to ask a question',
   /**
-   *@description Disclaimer text right after the chat input.
+   * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
   /**
-   *@description Notification shown to the user whenever DevTools receives an external request.
+   * @description Notification shown to the user whenever DevTools receives an external request.
    */
   externalRequestReceived: '`DevTools` received an external request',
 } as const;
@@ -104,11 +104,11 @@ const UIStrings = {
 */
 const UIStringsNotTranslate = {
   /**
-   *@description Announcement text for screen readers when the conversation starts.
+   * @description Announcement text for screen readers when the conversation starts.
    */
   answerLoading: 'Answer loading',
   /**
-   *@description Announcement text for screen readers when the answer comes.
+   * @description Announcement text for screen readers when the answer comes.
    */
   answerReady: 'Answer ready',
   /**
@@ -116,86 +116,86 @@ const UIStringsNotTranslate = {
    */
   crossOriginError: 'To talk about data from another origin, start a new chat',
   /**
-   *@description Placeholder text for the chat UI input.
+   * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForStyling: 'Ask a question about the selected element',
   /**
-   *@description Placeholder text for the chat UI input.
+   * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForNetwork: 'Ask a question about the selected network request',
   /**
-   *@description Placeholder text for the chat UI input.
+   * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForFile: 'Ask a question about the selected file',
   /**
-   *@description Placeholder text for the chat UI input.
+   * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForPerformance: 'Ask a question about the selected item and its call tree',
   /**
-   *@description Placeholder text for the chat UI input.
+   * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForPerformanceWithNoRecording: 'Record a performance trace and select an item to ask a question',
   /**
-   *@description Placeholder text for the chat UI input when there is no context selected.
+   * @description Placeholder text for the chat UI input when there is no context selected.
    */
   inputPlaceholderForStylingNoContext: 'Select an element to ask a question',
   /**
-   *@description Placeholder text for the chat UI input when there is no context selected.
+   * @description Placeholder text for the chat UI input when there is no context selected.
    */
   inputPlaceholderForNetworkNoContext: 'Select a network request to ask a question',
   /**
-   *@description Placeholder text for the chat UI input when there is no context selected.
+   * @description Placeholder text for the chat UI input when there is no context selected.
    */
   inputPlaceholderForFileNoContext: 'Select a file to ask a question',
   /**
-   *@description Placeholder text for the chat UI input when there is no context selected.
+   * @description Placeholder text for the chat UI input when there is no context selected.
    */
   inputPlaceholderForPerformanceNoContext: 'Select an item to ask a question',
   /**
-   *@description Placeholder text for the chat UI input.
+   * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForPerformanceInsights: 'Ask a question about the selected performance insight',
   /**
-   *@description Placeholder text for the chat UI input.
+   * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForPerformanceInsightsNoContext: 'Select a performance insight to ask a question',
   /**
-   *@description Disclaimer text right after the chat input.
+   * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForStyling:
       'Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
   /**
-   *@description Disclaimer text right after the chat input.
+   * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForStylingEnterpriseNoLogging:
       'Chat messages and any data the inspected page can access via Web APIs are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right.',
   /**
-   *@description Disclaimer text right after the chat input.
+   * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForNetwork:
       'Chat messages and the selected network request are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
   /**
-   *@description Disclaimer text right after the chat input.
+   * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForNetworkEnterpriseNoLogging:
       'Chat messages and the selected network request are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right.',
   /**
-   *@description Disclaimer text right after the chat input.
+   * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForFile:
       'Chat messages and the selected file are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
   /**
-   *@description Disclaimer text right after the chat input.
+   * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForFileEnterpriseNoLogging:
       'Chat messages and the selected file are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right.',
   /**
-   *@description Disclaimer text right after the chat input.
+   * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForPerformance:
       'Chat messages and trace data from your performance trace are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
   /**
-   *@description Disclaimer text right after the chat input.
+   * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForPerformanceEnterpriseNoLogging:
       'Chat messages and data from your performance trace are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right.',

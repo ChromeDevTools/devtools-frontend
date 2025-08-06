@@ -19,20 +19,20 @@ import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in Throttling Settings Tab of the Network panel
+   * @description Text in Throttling Settings Tab of the Network panel
    */
   networkThrottlingProfiles: 'Network throttling profiles',
   /**
-   *@description Text of add conditions button in Throttling Settings Tab of the Network panel
+   * @description Text of add conditions button in Throttling Settings Tab of the Network panel
    */
   addCustomProfile: 'Add profile',
   /**
-   *@description A value in milliseconds
-   *@example {3} PH1
+   * @description A value in milliseconds
+   * @example {3} PH1
    */
   dms: '{PH1} `ms`',
   /**
-   *@description Text in Throttling Settings Tab of the Network panel
+   * @description Text in Throttling Settings Tab of the Network panel
    */
   profileName: 'Profile Name',
   /**
@@ -66,35 +66,35 @@ const UIStrings = {
    */
   packet: 'packet',
   /**
-   *@description Text in Throttling Settings Tab of the Network panel
+   * @description Text in Throttling Settings Tab of the Network panel
    */
   optional: 'optional',
   /**
-   *@description Error message for Profile Name input in Throtting pane of the Settings
-   *@example {49} PH1
+   * @description Error message for Profile Name input in Throtting pane of the Settings
+   * @example {49} PH1
    */
   profileNameCharactersLengthMust: 'Profile Name characters length must be between 1 to {PH1} inclusive',
   /**
-   *@description Error message for Download and Upload inputs in Throttling pane of the Settings
-   *@example {Download} PH1
-   *@example {0} PH2
-   *@example {10000000} PH3
+   * @description Error message for Download and Upload inputs in Throttling pane of the Settings
+   * @example {Download} PH1
+   * @example {0} PH2
+   * @example {10000000} PH3
    */
   sMustBeANumberBetweenSkbsToSkbs: '{PH1} must be a number between {PH2} `kbit/s` to {PH3} `kbit/s` inclusive',
   /**
-   *@description Error message for Latency input in Throttling pane of the Settings
-   *@example {0} PH1
-   *@example {1000000} PH2
+   * @description Error message for Latency input in Throttling pane of the Settings
+   * @example {0} PH1
+   * @example {1000000} PH2
    */
   latencyMustBeAnIntegerBetweenSms: 'Latency must be an integer between {PH1} `ms` to {PH2} `ms` inclusive',
   /**
-   *@description Error message for Packet Loss input in Throttling pane of the Settings
-   *@example {0} PH1
-   *@example {100} PH2
+   * @description Error message for Packet Loss input in Throttling pane of the Settings
+   * @example {0} PH1
+   * @example {100} PH2
    */
   packetLossMustBeAnIntegerBetweenSpct: 'Packet Loss must be a number between {PH1} `%` to {PH2} `%` inclusive',
   /**
-   *@description Error message for Packet Queue Length input in Throttling pane of the Settings
+   * @description Error message for Packet Queue Length input in Throttling pane of the Settings
    */
   packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero: 'Packet Queue Length must be greater or equal to 0',
   /**
@@ -119,7 +119,7 @@ const UIStrings = {
   off: 'Off',
 
   /**
-   *@description Text in Throttling Settings Tab of the Settings panel
+   * @description Text in Throttling Settings Tab of the Settings panel
    */
   cpuThrottlingPresets: 'CPU throttling presets',
   /**
@@ -143,30 +143,30 @@ const UIStrings = {
    */
   needsCalibration: 'Needs calibration',
   /**
-   *@description Text to explain why the user should run the CPU calibration process.
+   * @description Text to explain why the user should run the CPU calibration process.
    */
   calibrationCTA:
       'To use the CPU throttling presets, run the calibration process to determine the ideal throttling rate for your device.',
   /**
-   *@description Text to explain what CPU throttling presets are.
+   * @description Text to explain what CPU throttling presets are.
    */
   cpuCalibrationDescription:
       'These presets throttle your CPU to approximate the performance of typical low or mid-tier mobile devices.',
   /**
-   *@description Text to explain how the CPU calibration process will work.
+   * @description Text to explain how the CPU calibration process will work.
    */
   calibrationConfirmationPrompt:
       'Calibration will take ~5 seconds, and temporarily navigate away from your current page. Do you wish to continue?',
   /**
-   *@description Text to explain an issue that may impact the CPU calibration process.
+   * @description Text to explain an issue that may impact the CPU calibration process.
    */
   calibrationWarningHighCPU: 'CPU utilization is too high',
   /**
-   *@description Text to explain an issue that may impact the CPU calibration process.
+   * @description Text to explain an issue that may impact the CPU calibration process.
    */
   calibrationWarningRunningOnBattery: 'Device is running on battery, please plug in charger for best results',
   /**
-   *@description Text to explain an issue that may impact the CPU calibration process.
+   * @description Text to explain an issue that may impact the CPU calibration process.
    */
   calibrationWarningLowBattery: 'Device battery is low (<20%), results may be impacted by CPU throttling',
   /**

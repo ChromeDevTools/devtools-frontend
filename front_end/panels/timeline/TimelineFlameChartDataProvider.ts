@@ -55,75 +55,75 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text for rendering frames
+   * @description Text for rendering frames
    */
   frames: 'Frames',
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   idleFrame: 'Idle frame',
   /**
-   *@description Text in Timeline Frame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Frame Chart Data Provider of the Performance panel
    */
   droppedFrame: 'Dropped frame',
   /**
-   *@description Text in Timeline Frame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Frame Chart Data Provider of the Performance panel
    */
   partiallyPresentedFrame: 'Partially-presented frame',
   /**
-   *@description Text for a rendering frame
+   * @description Text for a rendering frame
    */
   frame: 'Frame',
   /**
-   *@description Text for Hiding a function from the Flame Chart
+   * @description Text for Hiding a function from the Flame Chart
    */
   hideFunction: 'Hide function',
   /**
-   *@description Text for Hiding all children of a function from the Flame Chart
+   * @description Text for Hiding all children of a function from the Flame Chart
    */
   hideChildren: 'Hide children',
   /**
-   *@description Text for Hiding all child entries that are identical to the selected entry from the Flame Chart
+   * @description Text for Hiding all child entries that are identical to the selected entry from the Flame Chart
    */
   hideRepeatingChildren: 'Hide repeating children',
   /**
-   *@description Text for remove script from ignore list from the Flame Chart
+   * @description Text for remove script from ignore list from the Flame Chart
    */
   removeScriptFromIgnoreList: 'Remove script from ignore list',
   /**
-   *@description Text for add script to ignore list from the Flame Chart
+   * @description Text for add script to ignore list from the Flame Chart
    */
   addScriptToIgnoreList: 'Add script to ignore list',
   /**
-   *@description Text for an action that shows all of the hidden children of an entry
+   * @description Text for an action that shows all of the hidden children of an entry
    */
   resetChildren: 'Reset children',
   /**
-   *@description Text for an action that shows all of the hidden entries of the Flame Chart
+   * @description Text for an action that shows all of the hidden entries of the Flame Chart
    */
   resetTrace: 'Reset trace',
   /**
-   *@description Context menu text in Performance Panel to that opens a submenu with AI prompts.
+   * @description Context menu text in Performance Panel to that opens a submenu with AI prompts.
    */
   debugWithAi: 'Debug with AI',
   /**
-   *@description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
+   * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
    */
   startAChat: 'Start a chat',
   /**
-   *@description Context menu item in Performance panel to label an entry.
+   * @description Context menu item in Performance panel to label an entry.
    */
   labelEntry: 'Label entry',
   /**
-   *@description Context menu item in Performance panel to assess the purpose of an entry via AI.
+   * @description Context menu item in Performance panel to assess the purpose of an entry via AI.
    */
   assessThePurpose: 'Assess the purpose',
   /**
-   *@description Context menu item in Performance panel to identify time spent in a call tree via AI.
+   * @description Context menu item in Performance panel to identify time spent in a call tree via AI.
    */
   identifyTimeSpent: 'Identify time spent',
   /**
-   *@description Context menu item in Performance panel to find improvements for a call tree via AI.
+   * @description Context menu item in Performance panel to find improvements for a call tree via AI.
    */
   findImprovements: 'Find improvements',
 } as const;
@@ -1082,16 +1082,16 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   /**
    * Draws the left and right whiskers around an interaction in the timeline.
-   * @param context - the canvas that will be drawn onto
+   * @param context the canvas that will be drawn onto
    * @param entryIndex
-   * @param entryTitle - the title of the entry
-   * @param entry - the entry itself
-   * @param barX - the starting X pixel position of the bar representing this event. This is clipped: if the bar is off the left side of the screen, this value will be 0
-   * @param barY - the starting Y pixel position of the bar representing this event.
-   * @param unclippedBarXStartPixel - the starting X pixel position of the bar representing this event, not clipped. This means if the bar is off the left of the screen this will be a negative number.
-   * @param barWidth - the width of the full bar in pixels
-   * @param barHeight - the height of the full bar in pixels
-   * @param timeToPixelRatio - the ratio required to convert a millisecond time to a pixel value.
+   * @param entryTitle the title of the entry
+   * @param entry the entry itself
+   * @param barX the starting X pixel position of the bar representing this event. This is clipped: if the bar is off the left side of the screen, this value will be 0
+   * @param barY the starting Y pixel position of the bar representing this event.
+   * @param unclippedBarXStartPixel the starting X pixel position of the bar representing this event, not clipped. This means if the bar is off the left of the screen this will be a negative number.
+   * @param barWidth the width of the full bar in pixels
+   * @param barHeight the height of the full bar in pixels
+   * @param timeToPixelRatio the ratio required to convert a millisecond time to a pixel value.
    **/
   #drawInteractionEventWithWhiskers(
       context: CanvasRenderingContext2D, entryIndex: number, entryTitle: string|null,

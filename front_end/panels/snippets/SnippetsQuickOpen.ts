@@ -11,19 +11,19 @@ import {evaluateScriptSnippet, findSnippetsProject} from './ScriptSnippetFileSys
 
 const UIStrings = {
   /**
-   *@description Text in Snippets Quick Open of the Sources panel when opening snippets
+   * @description Text in Snippets Quick Open of the Sources panel when opening snippets
    */
   noSnippetsFound: 'No snippets found.',
   /**
-   *@description Text for command prefix of run a code snippet
+   * @description Text for command prefix of run a code snippet
    */
   run: 'Run',
   /**
-   *@description Text for suggestion of run a code snippet
+   * @description Text for suggestion of run a code snippet
    */
   snippet: 'Snippet',
   /**
-   *@description Text for help title of run code snippet menu
+   * @description Text for help title of run code snippet menu
    */
   runSnippet: 'Run snippet',
 } as const;

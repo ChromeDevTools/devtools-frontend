@@ -32,23 +32,23 @@ import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCo
 
 const UIStrings = {
   /**
-   *@description Text to open a file
+   * @description Text to open a file
    */
   openFile: 'Open file',
   /**
-   *@description Text to run commands
+   * @description Text to run commands
    */
   runCommand: 'Run command',
   /**
-   *@description Text in Sources View of the Sources panel. This sentence follows by a list of actions.
+   * @description Text in Sources View of the Sources panel. This sentence follows by a list of actions.
    */
   workspaceDropInAFolderToSyncSources: 'To sync edits to the workspace, drop a folder with your sources here or',
   /**
-   *@description Text in Sources View of the Sources panel.
+   * @description Text in Sources View of the Sources panel.
    */
   selectFolder: 'Select folder',
   /**
-   *@description Accessible label for Sources placeholder view actions list
+   * @description Accessible label for Sources placeholder view actions list
    */
   sourceViewActions: 'Source View Actions',
 

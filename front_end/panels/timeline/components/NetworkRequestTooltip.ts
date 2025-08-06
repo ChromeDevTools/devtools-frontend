@@ -21,31 +21,31 @@ const MAX_URL_LENGTH = 60;
 
 const UIStrings = {
   /**
-   *@description Text that refers to the priority of network request
+   * @description Text that refers to the priority of network request
    */
   priority: 'Priority',
   /**
-   *@description Text for the duration of a network request
+   * @description Text for the duration of a network request
    */
   duration: 'Duration',
   /**
-   *@description Text that refers to the queueing and connecting time of a network request
+   * @description Text that refers to the queueing and connecting time of a network request
    */
   queuingAndConnecting: 'Queuing and connecting',
   /**
-   *@description Text that refers to the request sent and waiting time of a network request
+   * @description Text that refers to the request sent and waiting time of a network request
    */
   requestSentAndWaiting: 'Request sent and waiting',
   /**
-   *@description Text that refers to the content downloading time of a network request
+   * @description Text that refers to the content downloading time of a network request
    */
   contentDownloading: 'Content downloading',
   /**
-   *@description Text that refers to the waiting on main thread time of a network request
+   * @description Text that refers to the waiting on main thread time of a network request
    */
   waitingOnMainThread: 'Waiting on main thread',
   /**
-   *@description Text that refers to a network request is render blocking
+   * @description Text that refers to a network request is render blocking
    */
   renderBlocking: 'Render blocking',
   /**

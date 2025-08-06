@@ -295,8 +295,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
    * This method returns an empty array if this {@link uiSourceCode} is not provided by any of the
    * mappings for this instance.
    *
-   * @param uiSourceCode - the {@link UISourceCode} to which the {@link textRange} belongs.
-   * @param textRange - the text range in terms of the UI.
+   * @param uiSourceCode the {@link UISourceCode} to which the {@link textRange} belongs.
+   * @param textRange the text range in terms of the UI.
    * @returns the list of raw location ranges that intersect with the text range or `[]` if
    *          the {@link uiSourceCode} does not belong to this instance.
    */
@@ -334,7 +334,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
    * computed or all the lines in the {@link uiSourceCode} correspond to lines in a script, `null`
    * is returned here.
    *
-   * @param uiSourceCode - the source entity.
+   * @param uiSourceCode the source entity.
    * @returns a set of known mapped lines for {@link uiSourceCode} or `null` if it's impossible to
    *          determine the set or the {@link uiSourceCode} does not map to or include any scripts.
    */

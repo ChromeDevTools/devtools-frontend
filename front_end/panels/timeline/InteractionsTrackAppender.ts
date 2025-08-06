@@ -19,7 +19,7 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   interactions: 'Interactions',
 } as const;
@@ -45,9 +45,9 @@ export class InteractionsTrackAppender implements TrackAppender {
   /**
    * Appends into the flame chart data the data corresponding to the
    * interactions track.
-   * @param trackStartLevel - the horizontal level of the flame chart events where
+   * @param trackStartLevel the horizontal level of the flame chart events where
    * the track's events will start being appended.
-   * @param expanded - wether the track should be rendered expanded.
+   * @param expanded wether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
@@ -65,7 +65,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    * flame chart data. A group has a predefined style and a reference
    * to the definition of the legacy track (which should be removed
    * in the future).
-   * @param currentLevel - the flame chart level at which the header is
+   * @param currentLevel the flame chart level at which the header is
    * appended.
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
@@ -81,7 +81,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    * Adds into the flame chart data the trace events dispatched by the
    * performance.measure API. These events are taken from the UserInteractions
    * handler.
-   * @param currentLevel - the flame chart level from which interactions will
+   * @param currentLevel the flame chart level from which interactions will
    * be appended.
    * @returns the next level after the last occupied by the appended
    * interactions (the first available level to append more data).

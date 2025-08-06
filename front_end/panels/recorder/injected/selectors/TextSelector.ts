@@ -30,7 +30,7 @@ const collect = <T>(iter: Iterable<T>, max = Infinity): T[] => {
  * Computes the text selector for a node.
  *
  * @internal
- * @param node - The node to compute.
+ * @param node The node to compute.
  * @returns The computed text selector.
  *
  */

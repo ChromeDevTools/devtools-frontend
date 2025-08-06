@@ -58,44 +58,44 @@ const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
 
 const UIStrings = {
   /**
-   *@description Text in Color Swatch Popover Icon of the Elements panel
+   * @description Text in Color Swatch Popover Icon of the Elements panel
    */
   shiftClickToChangeColorFormat: 'Shift + Click to change color format.',
   /**
-   *@description Swatch icon element title in Color Swatch Popover Icon of the Elements panel
-   *@example {Shift + Click to change color format.} PH1
+   * @description Swatch icon element title in Color Swatch Popover Icon of the Elements panel
+   * @example {Shift + Click to change color format.} PH1
    */
   openColorPickerS: 'Open color picker. {PH1}',
   /**
-   *@description Context menu item for style property in edit mode
+   * @description Context menu item for style property in edit mode
    */
   togglePropertyAndContinueEditing: 'Toggle property and continue editing',
   /**
-   *@description Context menu item for style property in edit mode
+   * @description Context menu item for style property in edit mode
    */
   openInSourcesPanel: 'Open in Sources panel',
   /**
-   *@description A context menu item in Styles panel to copy CSS declaration
+   * @description A context menu item in Styles panel to copy CSS declaration
    */
   copyDeclaration: 'Copy declaration',
   /**
-   *@description A context menu item in Styles panel to copy CSS property
+   * @description A context menu item in Styles panel to copy CSS property
    */
   copyProperty: 'Copy property',
   /**
-   *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
    */
   copyValue: 'Copy value',
   /**
-   *@description A context menu item in Styles panel to copy CSS rule
+   * @description A context menu item in Styles panel to copy CSS rule
    */
   copyRule: 'Copy rule',
   /**
-   *@description A context menu item in Styles panel to copy all CSS declarations
+   * @description A context menu item in Styles panel to copy all CSS declarations
    */
   copyAllDeclarations: 'Copy all declarations',
   /**
-   *@description A context menu item in Styles panel to view the computed CSS property value.
+   * @description A context menu item in Styles panel to view the computed CSS property value.
    */
   viewComputedValue: 'View computed value',
   /**
@@ -107,40 +107,40 @@ const UIStrings = {
    */
   gridEditorButton: 'Open `grid` editor',
   /**
-   *@description A context menu item in Styles panel to copy CSS declaration as JavaScript property.
+   * @description A context menu item in Styles panel to copy CSS declaration as JavaScript property.
    */
   copyCssDeclarationAsJs: 'Copy declaration as JS',
   /**
-   *@description A context menu item in Styles panel to copy all declarations of CSS rule as JavaScript properties.
+   * @description A context menu item in Styles panel to copy all declarations of CSS rule as JavaScript properties.
    */
   copyAllCssDeclarationsAsJs: 'Copy all declarations as JS',
   /**
-   *@description Title of the link in Styles panel to jump to the Animations panel.
+   * @description Title of the link in Styles panel to jump to the Animations panel.
    */
   jumpToAnimationsPanel: 'Jump to Animations panel',
   /**
-   *@description Text displayed in a tooltip shown when hovering over a CSS property value references a name that's not
+   * @description Text displayed in a tooltip shown when hovering over a CSS property value references a name that's not
    *             defined and can't be linked to.
-   *@example {--my-linkable-name} PH1
+   * @example {--my-linkable-name} PH1
    */
   sIsNotDefined: '{PH1} is not defined',
   /**
-   *@description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in Styles Sidebar Pane of the Elements panel
    */
   invalidPropertyValue: 'Invalid property value',
   /**
-   *@description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in Styles Sidebar Pane of the Elements panel
    */
   unknownPropertyName: 'Unknown property name',
   /**
-   *@description Announcement string for invalid properties.
-   *@example {Invalid property value} PH1
-   *@example {font-size} PH2
-   *@example {invalidValue} PH3
+   * @description Announcement string for invalid properties.
+   * @example {Invalid property value} PH1
+   * @example {font-size} PH2
+   * @example {invalidValue} PH3
    */
   invalidString: '{PH1}, property name: {PH2}, property value: {PH3}',
   /**
-   *@description Title in the styles tab for the icon button for jumping to the anchor node.
+   * @description Title in the styles tab for the icon button for jumping to the anchor node.
    */
   jumpToAnchorNode: 'Jump to anchor node',
 } as const;

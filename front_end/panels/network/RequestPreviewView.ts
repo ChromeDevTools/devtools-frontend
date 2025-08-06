@@ -45,11 +45,11 @@ import {SignedExchangeInfoView} from './SignedExchangeInfoView.js';
 
 const UIStrings = {
   /**
-   *@description Text in Request Preview View of the Network panel
+   * @description Text in Request Preview View of the Network panel
    */
   failedToLoadResponseData: 'Failed to load response data',
   /**
-   *@description Text in Request Preview View of the Network panel
+   * @description Text in Request Preview View of the Network panel
    */
   previewNotAvailable: 'Preview not available',
 } as const;

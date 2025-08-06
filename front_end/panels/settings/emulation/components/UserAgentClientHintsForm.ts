@@ -167,7 +167,7 @@ const UIStrings = {
    */
   update: 'Update',
   /**
-   *@description Field Error message in the Device settings pane that shows that the entered value has characters that can't be represented in the corresponding User Agent Client Hints
+   * @description Field Error message in the Device settings pane that shows that the entered value has characters that can't be represented in the corresponding User Agent Client Hints
    */
   notRepresentable: 'Not representable as structured headers string.',
   /**
@@ -186,7 +186,7 @@ const UIStrings = {
    */
   deletedBrand: 'Deleted brand row',
   /**
-   *@description Text that is usually a hyperlink to more documentation
+   * @description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
 } as const;

@@ -18,49 +18,49 @@ import blockedURLsPaneStyles from './blockedURLsPane.css.js';
 
 const UIStrings = {
   /**
-   *@description Text to enable blocking of network requests
+   * @description Text to enable blocking of network requests
    */
   enableNetworkRequestBlocking: 'Enable network request blocking',
   /**
-   *@description Tooltip text that appears when hovering over the plus button in the Blocked URLs Pane of the Network panel
+   * @description Tooltip text that appears when hovering over the plus button in the Blocked URLs Pane of the Network panel
    */
   addPattern: 'Add pattern',
   /**
-   *@description Accessible label for the button to add request blocking patterns in the network request blocking tool
+   * @description Accessible label for the button to add request blocking patterns in the network request blocking tool
    */
   addNetworkRequestBlockingPattern: 'Add network request blocking pattern',
   /**
-   *@description Text that shows in the network request blocking panel if no pattern has yet been added.
+   * @description Text that shows in the network request blocking panel if no pattern has yet been added.
    */
   noNetworkRequestsBlocked: 'No blocked network requests',
   /**
-   *@description Text that shows  in the network request blocking panel if no pattern has yet been added.
-   *@example {Add pattern} PH1
+   * @description Text that shows  in the network request blocking panel if no pattern has yet been added.
+   * @example {Add pattern} PH1
    */
   addPatternToBlock: 'Add a pattern to block network requests by clicking on the "{PH1}" button.',
   /**
-   *@description Text in Blocked URLs Pane of the Network panel
-   *@example {4} PH1
+   * @description Text in Blocked URLs Pane of the Network panel
+   * @example {4} PH1
    */
   dBlocked: '{PH1} blocked',
   /**
-   *@description Text in Blocked URLs Pane of the Network panel
+   * @description Text in Blocked URLs Pane of the Network panel
    */
   textPatternToBlockMatching: 'Text pattern to block matching requests; use * for wildcard',
   /**
-   *@description Error text for empty list widget input in Request Blocking tool
+   * @description Error text for empty list widget input in Request Blocking tool
    */
   patternInputCannotBeEmpty: 'Pattern input cannot be empty.',
   /**
-   *@description Error text for duplicate list widget input in Request Blocking tool
+   * @description Error text for duplicate list widget input in Request Blocking tool
    */
   patternAlreadyExists: 'Pattern already exists.',
   /**
-   *@description Message to be announced for a when list item is removed from list widget
+   * @description Message to be announced for a when list item is removed from list widget
    */
   itemDeleted: 'Item successfully deleted',
   /**
-   *@description Message to be announced for a when list item is removed from list widget
+   * @description Message to be announced for a when list item is removed from list widget
    */
   learnMore: 'Learn more',
 } as const;

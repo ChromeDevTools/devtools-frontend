@@ -22,19 +22,19 @@ const {PreloadingStatus} = SDK.PreloadingModel;
 
 const UIStrings = {
   /**
-   *@description Column header: Action of preloading (prefetch/prerender)
+   * @description Column header: Action of preloading (prefetch/prerender)
    */
   action: 'Action',
   /**
-   *@description Column header: A rule set of preloading
+   * @description Column header: A rule set of preloading
    */
   ruleSet: 'Rule set',
   /**
-   *@description Column header: Status of preloading attempt
+   * @description Column header: Status of preloading attempt
    */
   status: 'Status',
   /**
-   *@description Status: Prerender failed, but prefetch is available
+   * @description Status: Prerender failed, but prefetch is available
    */
   prefetchFallbackReady: 'Prefetch fallback ready',
 } as const;

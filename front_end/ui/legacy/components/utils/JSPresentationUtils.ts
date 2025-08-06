@@ -48,11 +48,11 @@ import {Events as LinkifierEvents, Linkifier} from './Linkifier.js';
 
 const UIStrings = {
   /**
-   *@description Text to stop preventing the debugger from stepping into library code
+   * @description Text to stop preventing the debugger from stepping into library code
    */
   removeFromIgnore: 'Remove from ignore list',
   /**
-   *@description Text for scripts that should not be stepped into when debugging
+   * @description Text for scripts that should not be stepped into when debugging
    */
   addToIgnore: 'Add script to ignore list',
   /**
@@ -64,7 +64,7 @@ const UIStrings = {
    */
   showLess: 'Show less',
   /**
-   *@description Text indicating that source url of a link is currently unknown
+   * @description Text indicating that source url of a link is currently unknown
    */
   unknownSource: 'unknown',
 } as const;

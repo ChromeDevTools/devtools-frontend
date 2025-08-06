@@ -11,7 +11,8 @@ let runtimePlatform = '';
 let runtimeInstance: Runtime|undefined;
 let isNode: boolean|undefined;
 
-/** Returns the base URL (similar to `<base>`).
+/**
+ * Returns the base URL (similar to `<base>`).
  * Used to resolve the relative URLs of any additional DevTools files (locale strings, etc) needed.
  * See: https://cs.chromium.org/remoteBase+f:devtools_window
  */

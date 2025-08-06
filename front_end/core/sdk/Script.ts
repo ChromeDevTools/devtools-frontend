@@ -49,11 +49,11 @@ import type {Target} from './Target.js';
 
 const UIStrings = {
   /**
-   *@description Error message for when a script can't be loaded which had been previously
+   * @description Error message for when a script can't be loaded which had been previously
    */
   scriptRemovedOrDeleted: 'Script removed or deleted.',
   /**
-   *@description Error message when failing to load a script source text
+   * @description Error message when failing to load a script source text
    */
   unableToFetchScriptSource: 'Unable to fetch script source.',
 } as const;
@@ -432,7 +432,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
    * content is subtracted to make the location within the script independent of the
    * location of the `<script>` tag within the surrounding document.
    *
-   * @param rawLocation - the raw location in terms of what V8 understands.
+   * @param rawLocation the raw location in terms of what V8 understands.
    * @returns the script relative line and column number for the {@link rawLocation}.
    */
   rawLocationToRelativeLocation(rawLocation: {lineNumber: number, columnNumber: number}):
@@ -458,7 +458,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
    * of the script content is added to make the location relative to the start of the
    * surrounding document.
    *
-   * @param relativeLocation - the script relative location.
+   * @param relativeLocation the script relative location.
    * @returns the raw location in terms of what V8 understands for the {@link relativeLocation}.
    */
   relativeLocationToRawLocation(relativeLocation: {lineNumber: number, columnNumber: number}):

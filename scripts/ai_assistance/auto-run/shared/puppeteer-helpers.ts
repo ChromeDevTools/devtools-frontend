@@ -14,9 +14,9 @@ const DEFAULT_FOLLOW_UP_QUERY = 'Fix the issue using JavaScript code execution.'
 
 /**
  * Waits for an element to have a clientHeight greater than the specified height.
- * @param elem - The Puppeteer element handle.
- * @param height - The minimum height.
- * @param tries - The number of tries so far.
+ * @param elem The Puppeteer element handle.
+ * @param height The minimum height.
+ * @param tries The number of tries so far.
  * @returns True if the element reaches the height, false otherwise.
  */
 export async function waitForElementToHaveHeight(
@@ -36,13 +36,13 @@ export async function waitForElementToHaveHeight(
 /**
  * Executes a single prompt cycle in the AI Assistant.
  * This includes typing the query, handling auto-accept evaluations, and retrieving results.
- * @param devtoolsPage - The Puppeteer page object for the DevTools frontend.
- * @param query - The query to send to the AI Assistant.
- * @param inputSelector - The CSS selector for the prompt input field.
- * @param exampleId - The ID of the current example, used for tagging results.
- * @param isMultimodal - Whether the current test target is multimodal (e.g., requires a screenshot).
- * @param randomize - Whether to add a random suffix.
- * @param commonLog - A logging function.
+ * @param devtoolsPage The Puppeteer page object for the DevTools frontend.
+ * @param query The query to send to the AI Assistant.
+ * @param inputSelector The CSS selector for the prompt input field.
+ * @param exampleId The ID of the current example, used for tagging results.
+ * @param isMultimodal Whether the current test target is multimodal (e.g., requires a screenshot).
+ * @param randomize Whether to add a random suffix.
+ * @param commonLog A logging function.
  * @returns A promise that resolves to an array of prompt responses.
  */
 export async function executePromptCycle(
@@ -116,7 +116,7 @@ export async function executePromptCycle(
 /**
  * Retrieves all comment strings from the page and stores comment elements globally.
  * This function evaluates code in the browser context.
- * @param page - The Puppeteer page object.
+ * @param page The Puppeteer page object.
  * @returns A promise that resolves to an array of comment strings.
  */
 export async function getCommentStringsFromPage(page: Page): Promise<string[]> {

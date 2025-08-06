@@ -19,8 +19,8 @@ const UIStrings = {
    */
   debuggingConnectionWasClosed: 'Debugging connection was closed',
   /**
-   *@description Text in a dialog box in DevTools stating the reason for remote debugging being terminated.
-   *@example {target_closed} PH1
+   * @description Text in a dialog box in DevTools stating the reason for remote debugging being terminated.
+   * @example {target_closed} PH1
    */
   connectionClosedReason: 'Reason: {PH1}.',
   /**

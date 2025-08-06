@@ -11,7 +11,7 @@ import cssOverviewProcessingViewStyles from './cssOverviewProcessingView.css.js'
 
 const UIStrings = {
   /**
-   *@description Text to cancel something
+   * @description Text to cancel something
    */
   cancel: 'Cancel',
 } as const;

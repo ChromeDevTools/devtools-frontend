@@ -92,119 +92,119 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text that appears when user drag and drop something (for example, a file) in Timeline Panel of the Performance panel
+   * @description Text that appears when user drag and drop something (for example, a file) in Timeline Panel of the Performance panel
    */
   dropTimelineFileOrUrlHere: 'Drop trace file or URL here',
   /**
-   *@description Title of capture layers and pictures setting in timeline panel of the performance panel
+   * @description Title of capture layers and pictures setting in timeline panel of the performance panel
    */
   enableAdvancedPaint: 'Enable advanced paint instrumentation (slow)',
   /**
-   *@description Title of CSS selector stats setting in timeline panel of the performance panel
+   * @description Title of CSS selector stats setting in timeline panel of the performance panel
    */
   enableSelectorStats: 'Enable CSS selector stats (slow)',
   /**
-   *@description Title of show screenshots setting in timeline panel of the performance panel
+   * @description Title of show screenshots setting in timeline panel of the performance panel
    */
   screenshots: 'Screenshots',
   /**
-   *@description Text for the memory of the page
+   * @description Text for the memory of the page
    */
   memory: 'Memory',
   /**
-   *@description Text to clear content
+   * @description Text to clear content
    */
   clear: 'Clear',
   /**
-   *@description A label for a button that fixes something.
+   * @description A label for a button that fixes something.
    */
   fixMe: 'Fix me',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon load button
+   * @description Tooltip text that appears when hovering over the largeicon load button
    */
   loadTrace: 'Load trace…',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon download button
+   * @description Tooltip text that appears when hovering over the largeicon download button
    */
   saveTrace: 'Save trace…',
   /**
-   *@description An option to save trace with annotations that appears in the menu of the toolbar download button. This is the expected default option, therefore it does not mention annotations.
+   * @description An option to save trace with annotations that appears in the menu of the toolbar download button. This is the expected default option, therefore it does not mention annotations.
    */
   saveTraceWithAnnotationsMenuOption: 'Save trace',
   /**
-   *@description An option to save trace without annotations that appears in the menu of the toolbar download button
+   * @description An option to save trace without annotations that appears in the menu of the toolbar download button
    */
   saveTraceWithoutAnnotationsMenuOption: 'Save trace without annotations',
   /**
-   *@description Text to take screenshots
+   * @description Text to take screenshots
    */
   captureScreenshots: 'Capture screenshots',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   showMemoryTimeline: 'Show memory timeline',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in timeline panel of the performance panel
+   * @description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in timeline panel of the performance panel
    */
   captureSettings: 'Capture settings',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   capturesAdvancedPaint: 'Captures advanced paint instrumentation, introduces significant performance overhead',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   capturesSelectorStats: 'Captures CSS selector statistics',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   network: 'Network:',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   cpu: 'CPU:',
   /**
-   *@description Title of the 'Network conditions' tool in the bottom drawer
+   * @description Title of the 'Network conditions' tool in the bottom drawer
    */
   networkConditions: 'Network conditions',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   CpuThrottlingIsEnabled: '- CPU throttling is enabled',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   NetworkThrottlingIsEnabled: '- Network throttling is enabled',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   SignificantOverheadDueToPaint: '- Significant overhead due to paint instrumentation',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   SelectorStatsEnabled: '- Selector stats is enabled',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   stoppingTimeline: 'Stopping timeline…',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   received: 'Received',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   processed: 'Processed',
   /**
-   *@description Text to close something
+   * @description Text to close something
    */
   close: 'Close',
   /**
-   *@description Status text to indicate the recording has failed in the Performance panel
+   * @description Status text to indicate the recording has failed in the Performance panel
    */
   recordingFailed: 'Recording failed',
   /**
-   *@description Status text to indicate that exporting the trace has failed
+   * @description Status text to indicate that exporting the trace has failed
    */
   exportingFailed: 'Exporting the trace failed',
   /**
@@ -213,19 +213,19 @@ const UIStrings = {
    */
   tracing: 'Tracing…',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   bufferUsage: 'Buffer usage',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   loadingTrace: 'Loading trace…',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   processingTrace: 'Processing trace…',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Text in Timeline Panel of the Performance panel
    */
   initializingTracing: 'Initializing tracing…',
   /**
@@ -239,7 +239,7 @@ const UIStrings = {
    */
   exportEnhancedTraces: 'Enhanced performance traces',
   /**
-   *@description Tooltip description for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
+   * @description Tooltip description for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
    */
   showDataAddedByExtensions: 'Show data added by extensions of the Performance panel',
   /**
@@ -277,7 +277,7 @@ const UIStrings = {
    */
   eventSelected: 'Event {PH1} selected',
   /**
-   *@description Text of a hyperlink to documentation.
+   * @description Text of a hyperlink to documentation.
    */
   learnMore: 'Learn more',
   /**
@@ -689,7 +689,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   /**
    * This disables the 3P checkbox in the toolbar.
-   * If the checkbox was checked, we flip it to indeterminiate to communicate it doesn't currently apply. */
+   * If the checkbox was checked, we flip it to indeterminiate to communicate it doesn't currently apply.
+   */
   set3PCheckboxDisabled(disabled: boolean): void {
     this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
     if (this.#dimThirdPartiesSetting?.get()) {

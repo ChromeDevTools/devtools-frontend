@@ -43,31 +43,31 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text for the summary view
+   * @description Text for the summary view
    */
   summary: 'Summary',
   /**
-   *@description Text in Timeline Details View of the Performance panel
+   * @description Text in Timeline Details View of the Performance panel
    */
   bottomup: 'Bottom-up',
   /**
-   *@description Text in Timeline Details View of the Performance panel
+   * @description Text in Timeline Details View of the Performance panel
    */
   callTree: 'Call tree',
   /**
-   *@description Text in Timeline Details View of the Performance panel
+   * @description Text in Timeline Details View of the Performance panel
    */
   eventLog: 'Event log',
   /**
-   *@description Title of the paint profiler, old name of the performance pane
+   * @description Title of the paint profiler, old name of the performance pane
    */
   paintProfiler: 'Paint profiler',
   /**
-   *@description Title of the Layers tool
+   * @description Title of the Layers tool
    */
   layers: 'Layers',
   /**
-   *@description Title of the selector stats tab
+   * @description Title of the selector stats tab
    */
   selectorStats: 'Selector stats',
 } as const;
@@ -311,7 +311,7 @@ export class TimelineDetailsPane extends
   /**
    * Updates the UI shown in the Summary tab, and updates the UI to select the
    * summary tab.
-   * @param node - this is passed as an additional piece of DOM that will be
+   * @param node this is passed as an additional piece of DOM that will be
    *     rendered in the summary view. This is a temporary ability to allow
    *     incremental migration to the UI Eng vision.
    */

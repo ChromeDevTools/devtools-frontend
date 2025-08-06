@@ -11,12 +11,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-   *@description Text that shows there is no recording
+   * @description Text that shows there is no recording
    */
   noRecordings: '(no recordings)',
   /**
-   *@description Label prefix for an audio context selection
-   *@example {realtime (1e03ec)} PH1
+   * @description Label prefix for an audio context selection
+   * @example {realtime (1e03ec)} PH1
    */
   audioContextS: 'Audio context: {PH1}',
 } as const;

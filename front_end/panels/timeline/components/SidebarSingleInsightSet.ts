@@ -24,15 +24,15 @@ const {html} = Lit.StaticHtml;
 
 const UIStrings = {
   /**
-   *@description title used for a metric value to tell the user about its score classification
-   *@example {INP} PH1
-   *@example {1.2s} PH2
-   *@example {poor} PH3
+   * @description title used for a metric value to tell the user about its score classification
+   * @example {INP} PH1
+   * @example {1.2s} PH2
+   * @example {poor} PH3
    */
   metricScore: '{PH1}: {PH2} {PH3} score',
   /**
-   *@description title used for a metric value to tell the user that the data is unavailable
-   *@example {INP} PH1
+   * @description title used for a metric value to tell the user that the data is unavailable
+   * @example {INP} PH1
    */
   metricScoreUnavailable: '{PH1}: unavailable',
   /**

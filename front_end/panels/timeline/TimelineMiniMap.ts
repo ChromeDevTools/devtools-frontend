@@ -221,8 +221,8 @@ export class TimelineMiniMap extends
 
   /**
    * Activates a given breadcrumb.
-   * @param options.removeChildBreadcrumbs - if true, any child breadcrumbs will be removed.
-   * @param options.updateVisibleWindow - if true, the visible window will be updated to match the bounds of the breadcrumb
+   * @param options.removeChildBreadcrumbs if true, any child breadcrumbs will be removed.
+   * @param options.updateVisibleWindow if true, the visible window will be updated to match the bounds of the breadcrumb
    */
   #activateBreadcrumb(
       breadcrumb: Trace.Types.File.Breadcrumb,

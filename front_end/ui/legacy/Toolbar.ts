@@ -53,19 +53,19 @@ import {CheckboxLabel, LongClickController} from './UIUtils.js';
 
 const UIStrings = {
   /**
-   *@description Announced screen reader message for ToolbarSettingToggle when the setting is toggled on.
+   * @description Announced screen reader message for ToolbarSettingToggle when the setting is toggled on.
    */
   pressed: 'pressed',
   /**
-   *@description Announced screen reader message for ToolbarSettingToggle when the setting is toggled off.
+   * @description Announced screen reader message for ToolbarSettingToggle when the setting is toggled off.
    */
   notPressed: 'not pressed',
   /**
-   *@description Tooltip shown when the user hovers over the clear icon to empty the text input.
+   * @description Tooltip shown when the user hovers over the clear icon to empty the text input.
    */
   clearInput: 'Clear',
   /**
-   *@description Placeholder for filter bars that shows before the user types in a filter keyword.
+   * @description Placeholder for filter bars that shows before the user types in a filter keyword.
    */
   filter: 'Filter',
 } as const;
@@ -152,7 +152,7 @@ export class Toolbar extends HTMLElement {
   /**
    * Changes the value of the `"floating"` attribute on this toolbar.
    *
-   * @param floating - `true` to make the toolbar floating.
+   * @param floating `true` to make the toolbar floating.
    */
   set floating(floating: boolean) {
     this.toggleAttribute('floating', floating);
@@ -171,7 +171,7 @@ export class Toolbar extends HTMLElement {
   /**
    * Changes the value of the `"wrappable"` attribute on this toolbar.
    *
-   * @param wrappable - `true` to make the toolbar items wrap to a new row and
+   * @param wrappable `true` to make the toolbar items wrap to a new row and
    *                  have the toolbar height adjust.
    */
   set wrappable(wrappable: boolean) {

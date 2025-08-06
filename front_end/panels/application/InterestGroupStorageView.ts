@@ -14,7 +14,7 @@ import interestGroupStorageViewStyles from './interestGroupStorageView.css.js';
 
 const UIStrings = {
   /**
-   *@description Placeholder text shown when nothing has been selected for display
+   * @description Placeholder text shown when nothing has been selected for display
    *details.
    * An interest group is an ad targeting group stored on the browser that can
    * be used to show a certain set of advertisements in the future as the
@@ -22,7 +22,7 @@ const UIStrings = {
    */
   noValueSelected: 'No interest group selected',
   /**
-   *@description Placeholder text instructing the user how to display interest group
+   * @description Placeholder text instructing the user how to display interest group
    *details.
    * An interest group is an ad targeting group stored on the browser that can
    * be used to show a certain set of advertisements in the future as the
@@ -30,12 +30,12 @@ const UIStrings = {
    */
   clickToDisplayBody: 'Select any interest group event to display the group\'s current state',
   /**
-   *@description Placeholder text telling the user no details are available for
+   * @description Placeholder text telling the user no details are available for
    *the selected interest group.
    */
   noDataAvailable: 'No details available',
   /**
-   *@description Placeholder text explaining to the user a potential reason for not having details on
+   * @description Placeholder text explaining to the user a potential reason for not having details on
    * the interest groups.
    * An interest group is an ad targeting group stored on the browser that can
    * be used to show a certain set of advertisements in the future as the

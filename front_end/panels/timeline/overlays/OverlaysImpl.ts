@@ -1093,8 +1093,8 @@ export class Overlays extends EventTarget {
   }
 
   /**
-   * @param overlay - the EntrySelected overlay that we need to position.
-   * @param element - the DOM element representing the overlay
+   * @param overlay the EntrySelected overlay that we need to position.
+   * @param element the DOM element representing the overlay
    */
   #positionEntryLabelOverlay(overlay: Trace.Types.Overlays.EntryLabel, element: HTMLElement): number|null {
     // Because the entry outline is a common Overlay pattern, get the wrapper of the entry
@@ -1207,8 +1207,8 @@ export class Overlays extends EventTarget {
    * Draw and position borders around an entry. Multiple overlays either fully consist
    * of a border around an entry of have an entry border as a part of the overlay.
    * Positions an EntrySelected or EntryOutline overlay and a part of the Trace.Types.Overlays.EntryLabel.
-   * @param overlay - the EntrySelected/EntryOutline/Trace.Types.Overlays.EntryLabel overlay that we need to position.
-   * @param element - the DOM element representing the overlay
+   * @param overlay the EntrySelected/EntryOutline/Trace.Types.Overlays.EntryLabel overlay that we need to position.
+   * @param element the DOM element representing the overlay
    */
   #positionEntryBorderOutlineType(entry: Trace.Types.Overlays.OverlayEntry, element: HTMLElement):
       {entryHeight: number, entryWidth: number, cutOffHeight: number, x: number, y: number}|null {
@@ -1776,10 +1776,10 @@ export class Overlays extends EventTarget {
 
   /**
    * Calculate the X pixel position for an event start on the timeline.
-   * @param chartName - the chart that the event is on. It is expected that both
+   * @param chartName the chart that the event is on. It is expected that both
    * charts have the same width so this doesn't make a difference - but it might
    * in the future if the UI changes, hence asking for it.
-   * @param event - the trace event you want to get the pixel position of
+   * @param event the trace event you want to get the pixel position of
    */
   xPixelForEventStartOnChart(event: Trace.Types.Overlays.OverlayEntry): number|null {
     const chartName = chartForEntry(event);
@@ -1789,10 +1789,10 @@ export class Overlays extends EventTarget {
 
   /**
    * Calculate the X pixel position for an event end on the timeline.
-   * @param chartName - the chart that the event is on. It is expected that both
+   * @param chartName the chart that the event is on. It is expected that both
    * charts have the same width so this doesn't make a difference - but it might
    * in the future if the UI changes, hence asking for it.
-   * @param event - the trace event you want to get the pixel position of
+   * @param event the trace event you want to get the pixel position of
    */
   xPixelForEventEndOnChart(event: Trace.Types.Overlays.OverlayEntry): number|null {
     const chartName = chartForEntry(event);

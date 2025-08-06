@@ -26,7 +26,8 @@ export interface Script {
   url?: string;
   sourceUrl?: string;
   content?: string;
-  /** Note: this is the literal text given as the sourceMappingURL value. It has not been resolved relative to the script url.
+  /**
+   * Note: this is the literal text given as the sourceMappingURL value. It has not been resolved relative to the script url.
    * Since M138, data urls are never set here.
    */
   sourceMapUrl?: string;

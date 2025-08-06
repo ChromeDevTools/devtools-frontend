@@ -14,17 +14,17 @@ import type {CompareRating} from './MetricCompareStrings.js';
 
 const UIStrings = {
   /**
-   *@description ms is the short form of milli-seconds and the placeholder is a decimal number.
+   * @description ms is the short form of milli-seconds and the placeholder is a decimal number.
    * The shortest form or abbreviation of milliseconds should be used, as there is
    * limited room in this UI.
-   *@example {2.14} PH1
+   * @example {2.14} PH1
    */
   fms: '{PH1}[ms]()',
   /**
-   *@description s is short for seconds and the placeholder is a decimal number
+   * @description s is short for seconds and the placeholder is a decimal number
    * The shortest form or abbreviation of seconds should be used, as there is
    * limited room in this UI.
-   *@example {2.14} PH1
+   * @example {2.14} PH1
    */
   fs: '{PH1}[s]()',
 } as const;

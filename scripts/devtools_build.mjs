@@ -23,9 +23,9 @@ class SpawnError extends Error {
   /**
    * Constructor for errors generated from `spawn()`.
    *
-   * @param {string} message - The actual error message.
-   * @param {string} stderr - The child process' error output.
-   * @param {string} stdout - The child process' regular output.
+   * @param {string} message The actual error message.
+   * @param {string} stderr The child process' error output.
+   * @param {string} stdout The child process' regular output.
    */
   constructor(message, stderr, stdout) {
     super(message);
@@ -41,9 +41,9 @@ class SpawnError extends Error {
  * set the `shell` option to `true`, to ensure that on Windows we can correctly
  * invoke `.bat` files (necessary for the Python3 wrapper script).
  *
- * @param {string} command - The command to run.
- * @param {Array<string>} args - List of string arguments to pass to the `command`.
- * @param {Object} options - Passed directly to `child_process.spawn()`.
+ * @param {string} command The command to run.
+ * @param {Array<string>} args List of string arguments to pass to the `command`.
+ * @param {Object} options Passed directly to `child_process.spawn()`.
  * @returns {Promise<{stdout: string, stderr: string}>}
  */
 function spawn(command, args, options = {}) {
@@ -90,7 +90,7 @@ export class FeatureSet {
   /**
    * Disables the given `feature`.
    *
-   * @param feature - the name of the feature to disable.
+   * @param feature the name of the feature to disable.
    */
   disable(feature) {
     this.#disabled.add(feature);
@@ -105,8 +105,8 @@ export class FeatureSet {
    * ```
    * The parameters are additive.
    *
-   * @param feature - the name of the feature to enable.
-   * @param parameters - the additional parameters to pass to it, in
+   * @param feature the name of the feature to enable.
+   * @param parameters the additional parameters to pass to it, in
    *                            the form of key/value pairs.
    */
   enable(feature, parameters = {}) {
@@ -122,7 +122,7 @@ export class FeatureSet {
   /**
    * Merge the other `featureSet` into this.
    *
-   * @param featureSet - the other `FeatureSet` to apply.
+   * @param featureSet the other `FeatureSet` to apply.
    */
   merge(featureSet) {
     for (const feature of featureSet.#disabled) {
@@ -189,9 +189,9 @@ export class FeatureSet {
 /**
  * Constructs a human readable error message for the given build `error`.
  *
- * @param error - the `Error` from the failed `autoninja` invocation.
- * @param outDir - the absolute path to the `target` out directory.
- * @param target - the target relative to `//out`.
+ * @param error the `Error` from the failed `autoninja` invocation.
+ * @param outDir the absolute path to the `target` out directory.
+ * @param target the target relative to `//out`.
  * @returns the human readable error message.
  */
 function buildErrorMessageForNinja(error, outDir, target) {
@@ -244,11 +244,11 @@ export class BuildError extends Error {
   /**
    * Constructs a new `BuildError` with the given parameters.
    *
-   * @param step - the build step that failed.
-   * @param {object} options - additional options for the `BuildError`.
-   * @param options.cause - the actual cause for the build error.
-   * @param options.outDir - the absolute path to the `target` out directory.
-   * @param options.target - the target relative to `//out`.
+   * @param step the build step that failed.
+   * @param {object} options additional options for the `BuildError`.
+   * @param options.cause the actual cause for the build error.
+   * @param options.outDir the absolute path to the `target` out directory.
+   * @param options.target the target relative to `//out`.
    */
   constructor(step, options) {
     const {cause, outDir, target} = options;
@@ -269,7 +269,7 @@ export class BuildError extends Error {
  */
 
 /**
- * @param target - the target relative to `//out`.
+ * @param target the target relative to `//out`.
  * @returns the GN args for the `target`.
  */
 export async function prepareBuild(target) {

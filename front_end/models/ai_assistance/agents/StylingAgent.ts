@@ -35,11 +35,11 @@ import {
 */
 const UIStringsNotTranslate = {
   /**
-   *@description Title for context details for Freestyler.
+   * @description Title for context details for Freestyler.
    */
   analyzingThePrompt: 'Analyzing the prompt',
   /**
-   *@description Heading text for context details of Freestyler agent.
+   * @description Heading text for context details of Freestyler agent.
    */
   dataUsed: 'Data used',
 } as const;

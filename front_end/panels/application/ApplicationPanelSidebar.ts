@@ -92,178 +92,178 @@ import {TrustTokensTreeElement} from './TrustTokensTreeElement.js';
 
 const UIStrings = {
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   application: 'Application',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   storage: 'Storage',
   /**
-   *@description Text in Application Panelthat shows if no local storage
+   * @description Text in Application Panelthat shows if no local storage
    *             can be shown.
    */
   noLocalStorage: 'No local storage detected',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   localStorage: 'Local storage',
   /**
-   *@description Text in the Application panel describing the local storage tab.
+   * @description Text in the Application panel describing the local storage tab.
    */
   localStorageDescription: 'On this page you can view, add, edit, and delete local storage key-value pairs.',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   sessionStorage: 'Session storage',
   /**
-   *@description Text in Application Panel if no session storage can be shown.
+   * @description Text in Application Panel if no session storage can be shown.
    */
   noSessionStorage: 'No session storage detected',
   /**
-   *@description Text in the Application panel describing the session storage tab.
+   * @description Text in the Application panel describing the session storage tab.
    */
   sessionStorageDescription: 'On this page you can view, add, edit, and delete session storage key-value pairs.',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   extensionStorage: 'Extension storage',
   /**
-   *@description Text in Application Panel if no extension storage can be shown
+   * @description Text in Application Panel if no extension storage can be shown
    */
   noExtensionStorage: 'No extension storage detected',
   /**
-   *@description Text in the Application panel describing the extension storage tab.
+   * @description Text in the Application panel describing the extension storage tab.
    */
   extensionStorageDescription: 'On this page you can view, add, edit, and delete extension storage key-value pairs.',
   /**
-   *@description Text for extension session storage in Application panel
+   * @description Text for extension session storage in Application panel
    */
   extensionSessionStorage: 'Session',
   /**
-   *@description Text for extension local storage in Application panel
+   * @description Text for extension local storage in Application panel
    */
   extensionLocalStorage: 'Local',
   /**
-   *@description Text for extension sync storage in Application panel
+   * @description Text for extension sync storage in Application panel
    */
   extensionSyncStorage: 'Sync',
   /**
-   *@description Text for extension managed storage in Application panel
+   * @description Text for extension managed storage in Application panel
    */
   extensionManagedStorage: 'Managed',
   /**
-   *@description Text for web cookies
+   * @description Text for web cookies
    */
   cookies: 'Cookies',
   /**
-   *@description Text in the Application Panel if no cookies are set
+   * @description Text in the Application Panel if no cookies are set
    */
   noCookies: 'No cookies set',
   /**
-   *@description Text for web cookies
+   * @description Text for web cookies
    */
   cookiesDescription: 'On this page you can view, add, edit, and delete cookies.',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   backgroundServices: 'Background services',
   /**
-   *@description Text for rendering frames
+   * @description Text for rendering frames
    */
   frames: 'Frames',
   /**
-   *@description Text that appears on a button for the manifest resource type filter.
+   * @description Text that appears on a button for the manifest resource type filter.
    */
   manifest: 'Manifest',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   noManifestDetected: 'No manifest detected',
   /**
-   *@description Description text on manifests in App Manifest View of the Application panel which describes the app manifest view tab
+   * @description Description text on manifests in App Manifest View of the Application panel which describes the app manifest view tab
    */
   manifestDescription:
       'A manifest defines how your app appears on phone’s home screens and what the app looks like on launch.',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   appManifest: 'Manifest',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   indexeddb: 'IndexedDB',
   /**
-   *@description Text in Application Panel if no indexedDB is detected
+   * @description Text in Application Panel if no indexedDB is detected
    */
   noIndexeddb: 'No indexedDB detected',
   /**
-   *@description Text in the Application panel describing the extension storage tab.
+   * @description Text in the Application panel describing the extension storage tab.
    */
   indexeddbDescription: 'On this page you can view and delete indexedDB key-value pairs and databases.',
   /**
-   *@description A context menu item in the Application Panel Sidebar of the Application panel
+   * @description A context menu item in the Application Panel Sidebar of the Application panel
    */
   refreshIndexeddb: 'Refresh IndexedDB',
   /**
-   *@description Tooltip in Application Panel Sidebar of the Application panel
-   *@example {1.0} PH1
+   * @description Tooltip in Application Panel Sidebar of the Application panel
+   * @example {1.0} PH1
    */
   versionSEmpty: 'Version: {PH1} (empty)',
   /**
-   *@description Tooltip in Application Panel Sidebar of the Application panel
-   *@example {1.0} PH1
+   * @description Tooltip in Application Panel Sidebar of the Application panel
+   * @example {1.0} PH1
    */
   versionS: 'Version: {PH1}',
   /**
-   *@description Text to clear content
+   * @description Text to clear content
    */
   clear: 'Clear',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
-   *@example {"key path"} PH1
+   * @description Text in Application Panel Sidebar of the Application panel
+   * @example {"key path"} PH1
    */
   keyPathS: 'Key path: {PH1}',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   localFiles: 'Local Files',
   /**
-   *@description Tooltip in Application Panel Sidebar of the Application panel
-   *@example {https://example.com} PH1
+   * @description Tooltip in Application Panel Sidebar of the Application panel
+   * @example {https://example.com} PH1
    */
   cookiesUsedByFramesFromS: 'Cookies used by frames from {PH1}',
   /**
-   *@description Text in Frames View of the Application panel
+   * @description Text in Frames View of the Application panel
    */
   openedWindows: 'Opened Windows',
   /**
-   *@description Text in Frames View of the Application panel
+   * @description Text in Frames View of the Application panel
    */
   openedWindowsDescription: 'On this page you can view windows opened via window\.open\(\).',
   /**
-   *@description Label for plural of worker type: web workers
+   * @description Label for plural of worker type: web workers
    */
   webWorkers: 'Web Workers',
   /**
-   *@description Label in frame tree for unavailable document
+   * @description Label in frame tree for unavailable document
    */
   documentNotAvailable: 'No document detected',
   /**
-   *@description Description of content of unavailable document in Application panel
+   * @description Description of content of unavailable document in Application panel
    */
   theContentOfThisDocumentHasBeen:
       'The content of this document has been generated dynamically via \'document.write()\'.',
   /**
-   *@description Text in Frames View of the Application panel
+   * @description Text in Frames View of the Application panel
    */
   windowWithoutTitle: 'Window without title',
   /**
-   *@description Default name for worker
+   * @description Default name for worker
    */
   worker: 'worker',
   /**
-   *@description Description text for describing the dedicated worker tab.
+   * @description Description text for describing the dedicated worker tab.
    */
   workerDescription: 'On this page you can view dedicated workers that are created by the parent frame.',
   /**
@@ -285,8 +285,8 @@ const UIStrings = {
    */
   applicationSidebarPanel: 'Application panel sidebar',
   /**
-   *@description Tooltip in Application Panel Sidebar of the Application panel
-   *@example {https://example.com} PH1
+   * @description Tooltip in Application Panel Sidebar of the Application panel
+   * @example {https://example.com} PH1
    */
   thirdPartyPhaseout: 'Cookies from {PH1} may have been blocked due to third-party cookie phaseout.',
   /**

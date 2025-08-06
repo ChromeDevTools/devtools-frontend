@@ -15,23 +15,23 @@ const UIStrings = {
    */
   sensors: 'Sensors',
   /**
-   *@description A tag of Sensors tool that can be searched in the command menu
+   * @description A tag of Sensors tool that can be searched in the command menu
    */
   geolocation: 'geolocation',
   /**
-   *@description A tag of Sensors tool that can be searched in the command menu
+   * @description A tag of Sensors tool that can be searched in the command menu
    */
   timezones: 'timezones',
   /**
-   *@description Text in Sensors View of the Device Toolbar
+   * @description Text in Sensors View of the Device Toolbar
    */
   locale: 'locale',
   /**
-   *@description A tag of Sensors tool that can be searched in the command menu
+   * @description A tag of Sensors tool that can be searched in the command menu
    */
   locales: 'locales',
   /**
-   *@description A tag of Sensors tool that can be searched in the command menu
+   * @description A tag of Sensors tool that can be searched in the command menu
    */
   accelerometer: 'accelerometer',
   /**
@@ -40,7 +40,7 @@ const UIStrings = {
    */
   deviceOrientation: 'device orientation',
   /**
-   *@description Title of Locations settings. Refers to geographic locations for GPS.
+   * @description Title of Locations settings. Refers to geographic locations for GPS.
    */
   locations: 'Locations',
   /**
@@ -49,39 +49,39 @@ const UIStrings = {
    */
   touch: 'Touch',
   /**
-   *@description Text in Sensors View of the Device Toolbar. Refers to device-based touch input,
+   * @description Text in Sensors View of the Device Toolbar. Refers to device-based touch input,
    *which means the input type will be 'touch' only if the device normally has touch input e.g. a
    *phone or tablet.
    */
   devicebased: 'Device-based',
   /**
-   *@description Text in Sensors View of the Device Toolbar. Means that touch input will be forced
+   * @description Text in Sensors View of the Device Toolbar. Means that touch input will be forced
    *on, even if the device type e.g. desktop computer does not normally have touch input.
    */
   forceEnabled: 'Force enabled',
   /**
-   *@description Title of a section option in Sensors tab for idle emulation. This is a command, to
+   * @description Title of a section option in Sensors tab for idle emulation. This is a command, to
    *emulate the state of the 'Idle Detector'.
    */
   emulateIdleDetectorState: 'Emulate Idle Detector state',
   /**
-   *@description Title of an option in Sensors tab idle emulation drop-down. Turns off emulation of idle state.
+   * @description Title of an option in Sensors tab idle emulation drop-down. Turns off emulation of idle state.
    */
   noIdleEmulation: 'No idle emulation',
   /**
-   *@description Title of an option in Sensors tab idle emulation drop-down.
+   * @description Title of an option in Sensors tab idle emulation drop-down.
    */
   userActiveScreenUnlocked: 'User active, screen unlocked',
   /**
-   *@description Title of an option in Sensors tab idle emulation drop-down.
+   * @description Title of an option in Sensors tab idle emulation drop-down.
    */
   userActiveScreenLocked: 'User active, screen locked',
   /**
-   *@description Title of an option in Sensors tab idle emulation drop-down.
+   * @description Title of an option in Sensors tab idle emulation drop-down.
    */
   userIdleScreenUnlocked: 'User idle, screen unlocked',
   /**
-   *@description Title of an option in Sensors tab idle emulation drop-down.
+   * @description Title of an option in Sensors tab idle emulation drop-down.
    */
   userIdleScreenLocked: 'User idle, screen locked',
   /**
@@ -90,7 +90,7 @@ const UIStrings = {
    */
   showSensors: 'Show Sensors',
   /**
-   *@description Command that shows geographic locations.
+   * @description Command that shows geographic locations.
    */
   showLocations: 'Show Locations',
   /**
@@ -98,23 +98,23 @@ const UIStrings = {
    */
   cpuPressure: 'CPU Pressure',
   /**
-   *@description Title of an option in Sensors tab cpu pressure emulation drop-down. Turns off emulation of cpu pressure state.
+   * @description Title of an option in Sensors tab cpu pressure emulation drop-down. Turns off emulation of cpu pressure state.
    */
   noPressureEmulation: 'No override',
   /**
-   *@description An option that appears in a drop-down that represents the nominal state.
+   * @description An option that appears in a drop-down that represents the nominal state.
    */
   nominal: 'Nominal',
   /**
-   *@description An option that appears in a drop-down that represents the fair state.
+   * @description An option that appears in a drop-down that represents the fair state.
    */
   fair: 'Fair',
   /**
-   *@description An option that appears in a drop-down that represents the serious state.
+   * @description An option that appears in a drop-down that represents the serious state.
    */
   serious: 'Serious',
   /**
-   *@description An option that appears in a drop-down that represents the critical state.
+   * @description An option that appears in a drop-down that represents the critical state.
    */
   critical: 'Critical',
 } as const;

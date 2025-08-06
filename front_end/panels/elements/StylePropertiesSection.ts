@@ -59,58 +59,58 @@ import {StylesSidebarPane} from './StylesSidebarPane.js';
 
 const UIStrings = {
   /**
-   *@description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
+   * @description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
    */
   insertStyleRuleBelow: 'Insert style rule below',
   /**
-   *@description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in Styles Sidebar Pane of the Elements panel
    */
   constructedStylesheet: 'constructed stylesheet',
   /**
-   *@description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in Styles Sidebar Pane of the Elements panel
    */
   userAgentStylesheet: 'user agent stylesheet',
   /**
-   *@description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in Styles Sidebar Pane of the Elements panel
    */
   injectedStylesheet: 'injected stylesheet',
   /**
-   *@description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in Styles Sidebar Pane of the Elements panel
    */
   viaInspector: 'via inspector',
   /**
-   *@description Text in Styles Sidebar Pane of the Elements panel
+   * @description Text in Styles Sidebar Pane of the Elements panel
    */
   styleAttribute: '`style` attribute',
   /**
-   *@description Text in Styles Sidebar Pane of the Elements panel
-   *@example {html} PH1
+   * @description Text in Styles Sidebar Pane of the Elements panel
+   * @example {html} PH1
    */
   sattributesStyle: '{PH1}[Attributes Style]',
   /**
-   *@description Show all button text content in Styles Sidebar Pane of the Elements panel
-   *@example {3} PH1
+   * @description Show all button text content in Styles Sidebar Pane of the Elements panel
+   * @example {3} PH1
    */
   showAllPropertiesSMore: 'Show all properties ({PH1} more)',
   /**
-   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   * @description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
    */
   copySelector: 'Copy `selector`',
   /**
-   *@description A context menu item in Styles panel to copy CSS rule
+   * @description A context menu item in Styles panel to copy CSS rule
    */
   copyRule: 'Copy rule',
   /**
-   *@description A context menu item in Styles panel to copy all CSS declarations
+   * @description A context menu item in Styles panel to copy all CSS declarations
    */
   copyAllDeclarations: 'Copy all declarations',
   /**
-   *@description Text that is announced by the screen reader when the user focuses on an input field for editing the name of a CSS selector in the Styles panel
+   * @description Text that is announced by the screen reader when the user focuses on an input field for editing the name of a CSS selector in the Styles panel
    */
   cssSelector: '`CSS` selector',
   /**
-   *@description Text displayed in tooltip that shows specificity information.
-   *@example {(0,0,1)} PH1
+   * @description Text displayed in tooltip that shows specificity information.
+   * @example {(0,0,1)} PH1
    */
   specificity: 'Specificity: {PH1}',
 } as const;

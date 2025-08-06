@@ -19,7 +19,7 @@ import {
 
 export const UIStrings = {
   /**
-   *@description Title of an insight that provides details about the LCP metric, broken down by parts.
+   * @description Title of an insight that provides details about the LCP metric, broken down by parts.
    */
   title: 'LCP breakdown',
   /**
@@ -29,23 +29,23 @@ export const UIStrings = {
   description:
       'Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.',
   /**
-   *@description Time to first byte title for the Largest Contentful Paint's subparts timespan breakdown.
+   * @description Time to first byte title for the Largest Contentful Paint's subparts timespan breakdown.
    */
   timeToFirstByte: 'Time to first byte',
   /**
-   *@description Resource load delay title for the Largest Contentful Paint subparts timespan breakdown.
+   * @description Resource load delay title for the Largest Contentful Paint subparts timespan breakdown.
    */
   resourceLoadDelay: 'Resource load delay',
   /**
-   *@description Resource load duration title for the Largest Contentful Paint subparts timespan breakdown.
+   * @description Resource load duration title for the Largest Contentful Paint subparts timespan breakdown.
    */
   resourceLoadDuration: 'Resource load duration',
   /**
-   *@description Element render delay title for the Largest Contentful Paint subparts timespan breakdown.
+   * @description Element render delay title for the Largest Contentful Paint subparts timespan breakdown.
    */
   elementRenderDelay: 'Element render delay',
   /**
-   *@description Label used for the subpart (section) of a larger duration.
+   * @description Label used for the subpart (section) of a larger duration.
    */
   subpart: 'Subpart',
   /**
@@ -132,7 +132,8 @@ function determineSubparts(
 
   // If the LCP is text, we don't have a request, so just 2 subparts.
   if (!lcpRequest) {
-    /** Text LCP. 2 subparts, thus 3 timestamps
+    /**
+     * Text LCP. 2 subparts, thus 3 timestamps
      *
      *       |          ttfb           |             renderDelay              |
      *                                                                        ^ lcpEvent.ts
@@ -145,7 +146,8 @@ function determineSubparts(
     return {ttfb, renderDelay};
   }
 
-  /** Image LCP. 4 subparts means 5 timestamps
+  /**
+   * Image LCP. 4 subparts means 5 timestamps
    *
    *       |  ttfb   |    loadDelay     |     loadTime    |    renderDelay    |
    *                                                                          ^ lcpEvent.ts

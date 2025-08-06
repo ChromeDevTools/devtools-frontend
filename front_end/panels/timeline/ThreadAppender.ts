@@ -49,83 +49,83 @@ const UIStrings = {
    */
   frameS: 'Frame — {PH1}',
   /**
-   *@description A web worker in the page. See https://developer.mozilla.org/en-US/docs/Web/API/Worker
-   *@example {https://google.com} PH1
+   * @description A web worker in the page. See https://developer.mozilla.org/en-US/docs/Web/API/Worker
+   * @example {https://google.com} PH1
    */
   workerS: '`Worker` — {PH1}',
   /**
-   *@description A web worker in the page. See https://developer.mozilla.org/en-US/docs/Web/API/Worker
-   *@example {FormatterWorker} PH1
-   *@example {https://google.com} PH2
+   * @description A web worker in the page. See https://developer.mozilla.org/en-US/docs/Web/API/Worker
+   * @example {FormatterWorker} PH1
+   * @example {https://google.com} PH2
    */
   workerSS: '`Worker`: {PH1} — {PH2}',
   /**
-   *@description Label for a web worker exclusively allocated for a purpose.
+   * @description Label for a web worker exclusively allocated for a purpose.
    */
   dedicatedWorker: 'Dedicated `Worker`',
   /**
-   *@description A generic name given for a thread running in the browser (sequence of programmed instructions).
+   * @description A generic name given for a thread running in the browser (sequence of programmed instructions).
    * The placeholder is an enumeration given to the thread.
-   *@example {1} PH1
+   * @example {1} PH1
    */
   threadS: 'Thread {PH1}',
   /**
-   *@description Rasterization in computer graphics.
+   * @description Rasterization in computer graphics.
    */
   raster: 'Raster',
   /**
-   *@description Threads used for background tasks.
+   * @description Threads used for background tasks.
    */
   threadPool: 'Thread pool',
   /**
-   *@description Name for a thread that rasterizes graphics in a website.
-   *@example {2} PH1
+   * @description Name for a thread that rasterizes graphics in a website.
+   * @example {2} PH1
    */
   rasterizerThreadS: 'Rasterizer thread {PH1}',
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-   *@example {2} PH1
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @example {2} PH1
    */
   threadPoolThreadS: 'Thread pool worker {PH1}',
   /**
-   *@description Title of a bidder auction worklet with known URL in the timeline flame chart of the Performance panel
-   *@example {https://google.com} PH1
+   * @description Title of a bidder auction worklet with known URL in the timeline flame chart of the Performance panel
+   * @example {https://google.com} PH1
    */
   bidderWorkletS: 'Bidder Worklet — {PH1}',
   /**
-   *@description Title of a bidder auction worklet in the timeline flame chart of the Performance panel with an unknown URL
+   * @description Title of a bidder auction worklet in the timeline flame chart of the Performance panel with an unknown URL
    */
   bidderWorklet: 'Bidder Worklet',
 
   /**
-   *@description Title of a seller auction worklet in the timeline flame chart of the Performance panel with an unknown URL
+   * @description Title of a seller auction worklet in the timeline flame chart of the Performance panel with an unknown URL
    */
   sellerWorklet: 'Seller Worklet',
 
   /**
-   *@description Title of an auction worklet in the timeline flame chart of the Performance panel with an unknown URL
+   * @description Title of an auction worklet in the timeline flame chart of the Performance panel with an unknown URL
    */
   unknownWorklet: 'Auction Worklet',
 
   /**
-   *@description Title of control thread of a service process for an auction worklet in the timeline flame chart of the Performance panel with an unknown URL
+   * @description Title of control thread of a service process for an auction worklet in the timeline flame chart of the Performance panel with an unknown URL
    */
   workletService: 'Auction Worklet service',
 
   /**
-   *@description Title of a seller auction worklet with known URL in the timeline flame chart of the Performance panel
-   *@example {https://google.com} PH1
+   * @description Title of a seller auction worklet with known URL in the timeline flame chart of the Performance panel
+   * @example {https://google.com} PH1
    */
   sellerWorkletS: 'Seller Worklet — {PH1}',
 
   /**
-   *@description Title of an auction worklet with known URL in the timeline flame chart of the Performance panel
-   *@example {https://google.com} PH1
+   * @description Title of an auction worklet with known URL in the timeline flame chart of the Performance panel
+   * @example {https://google.com} PH1
    */
   unknownWorkletS: 'Auction Worklet — {PH1}',
 
   /**
-   *@description Title of control thread of a service process for an auction worklet with known URL in the timeline flame chart of the Performance panel
+   * @description Title of control thread of a service process for an auction worklet with known URL in the timeline flame chart of the Performance panel
    * @example {https://google.com} PH1
    */
   workletServiceS: 'Auction Worklet service — {PH1}',
@@ -206,9 +206,9 @@ export class ThreadAppender implements TrackAppender {
   /**
    * Appends into the flame chart data the data corresponding to the
    * this thread.
-   * @param trackStartLevel - the horizontal level of the flame chart events where
+   * @param trackStartLevel the horizontal level of the flame chart events where
    * the track's events will start being appended.
-   * @param expanded - wether the track should be rendered expanded.
+   * @param expanded wether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
@@ -256,7 +256,7 @@ export class ThreadAppender implements TrackAppender {
    * chart data. A group has a predefined style and a reference to the
    * definition of the legacy track (which should be removed in the
    * future).
-   * @param currentLevel - the flame chart level at which the header is
+   * @param currentLevel the flame chart level at which the header is
    * appended.
    */
   #appendTrackHeaderAtLevel(currentLevel: number): void {
@@ -440,7 +440,7 @@ export class ThreadAppender implements TrackAppender {
   /**
    * Adds into the flame chart data the entries of this thread, which
    * includes trace events and JS calls.
-   * @param currentLevel - the flame chart level from which entries will
+   * @param currentLevel the flame chart level from which entries will
    * be appended.
    * @returns the next level after the last occupied by the appended
    * entries (the first available level to append more data).

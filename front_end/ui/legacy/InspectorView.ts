@@ -60,31 +60,31 @@ import {VBox, type Widget, WidgetFocusRestorer} from './Widget.js';
 
 const UIStrings = {
   /**
-   *@description Title of more tabs button in inspector view
+   * @description Title of more tabs button in inspector view
    */
   moreTools: 'More Tools',
   /**
-   *@description Text that appears when hovor over the close button on the drawer view
+   * @description Text that appears when hovor over the close button on the drawer view
    */
   closeDrawer: 'Close drawer',
   /**
-   *@description The aria label for main tabbed pane that contains Panels
+   * @description The aria label for main tabbed pane that contains Panels
    */
   panels: 'Panels',
   /**
-   *@description Title of an action that reloads the tab currently being debugged by DevTools
+   * @description Title of an action that reloads the tab currently being debugged by DevTools
    */
   reloadDebuggedTab: 'Reload page',
   /**
-   *@description Title of an action that reloads the DevTools
+   * @description Title of an action that reloads the DevTools
    */
   reloadDevtools: 'Reload DevTools',
   /**
-   *@description Text for context menu action to move a tab to the main panel
+   * @description Text for context menu action to move a tab to the main panel
    */
   moveToTop: 'Move to top',
   /**
-   *@description Text for context menu action to move a tab to the drawer
+   * @description Text for context menu action to move a tab to the drawer
    */
   moveToBottom: 'Move to bottom',
   /**
@@ -108,19 +108,19 @@ const UIStrings = {
    */
   setToSpecificLanguage: 'Switch DevTools to {PH1}',
   /**
-   *@description The aria label for main toolbar
+   * @description The aria label for main toolbar
    */
   mainToolbar: 'Main toolbar',
   /**
-   *@description The aria label for the drawer.
+   * @description The aria label for the drawer.
    */
   drawer: 'Tool drawer',
   /**
-   *@description The aria label for the drawer shown.
+   * @description The aria label for the drawer shown.
    */
   drawerShown: 'Drawer shown',
   /**
-   *@description The aria label for the drawer hidden.
+   * @description The aria label for the drawer hidden.
    */
   drawerHidden: 'Drawer hidden',
   /**
@@ -129,11 +129,11 @@ const UIStrings = {
    */
   selectOverrideFolder: 'Select a folder to store override files in',
   /**
-   *@description Label for a button which opens a file picker.
+   * @description Label for a button which opens a file picker.
    */
   selectFolder: 'Select folder',
   /**
-   *@description Text that appears when hover the toggle orientation button
+   * @description Text that appears when hover the toggle orientation button
    */
   toggleDrawerOrientation: 'Toggle drawer orientation',
 } as const;

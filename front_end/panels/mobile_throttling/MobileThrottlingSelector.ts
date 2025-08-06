@@ -15,17 +15,17 @@ import {
 
 const UIStrings = {
   /**
-   *@description Mobile throttling is disabled. The user can select this option to run mobile
+   * @description Mobile throttling is disabled. The user can select this option to run mobile
    *emulation at a normal speed instead of throttled.
    */
   disabled: 'Disabled',
   /**
-   *@description Title for a group of pre-decided configuration options for mobile throttling. These
+   * @description Title for a group of pre-decided configuration options for mobile throttling. These
    *are useful default options that users might want.
    */
   presets: 'Presets',
   /**
-   *@description Title for a group of advanced configuration options for mobile throttling, which
+   * @description Title for a group of advanced configuration options for mobile throttling, which
    *might not be applicable to every user or situation.
    */
   advanced: 'Advanced',

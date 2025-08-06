@@ -36,79 +36,79 @@ const {render, html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Text in Request Headers View of the Network panel
+   * @description Text in Request Headers View of the Network panel
    */
   fromDiskCache: '(from disk cache)',
   /**
-   *@description Text in Request Headers View of the Network panel
+   * @description Text in Request Headers View of the Network panel
    */
   fromMemoryCache: '(from memory cache)',
   /**
-   *@description Text in Request Headers View of the Network panel
+   * @description Text in Request Headers View of the Network panel
    */
   fromEarlyHints: '(from early hints)',
   /**
-   *@description Text in Request Headers View of the Network panel
+   * @description Text in Request Headers View of the Network panel
    */
   fromPrefetchCache: '(from prefetch cache)',
   /**
-   *@description Text in Request Headers View of the Network panel
+   * @description Text in Request Headers View of the Network panel
    */
   fromServiceWorker: '(from `service worker`)',
   /**
-   *@description Text in Request Headers View of the Network panel
+   * @description Text in Request Headers View of the Network panel
    */
   fromSignedexchange: '(from signed-exchange)',
   /**
-   *@description Text in Request Headers View of the Network panel
+   * @description Text in Request Headers View of the Network panel
    */
   fromWebBundle: '(from Web Bundle)',
   /**
-   *@description Section header for a list of the main aspects of a http request
+   * @description Section header for a list of the main aspects of a http request
    */
   general: 'General',
   /**
-   *@description Label for a checkbox to switch between raw and parsed headers
+   * @description Label for a checkbox to switch between raw and parsed headers
    */
   raw: 'Raw',
   /**
-   *@description Text in Request Headers View of the Network panel
+   * @description Text in Request Headers View of the Network panel
    */
   referrerPolicy: 'Referrer Policy',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   remoteAddress: 'Remote Address',
   /**
-   *@description Text in Request Headers View of the Network panel
+   * @description Text in Request Headers View of the Network panel
    */
   requestHeaders: 'Request Headers',
   /**
-   *@description The HTTP method of a request
+   * @description The HTTP method of a request
    */
   requestMethod: 'Request Method',
   /**
-   *@description The URL of a request
+   * @description The URL of a request
    */
   requestUrl: 'Request URL',
   /**
-   *@description A context menu item in the Network Log View Columns of the Network panel
+   * @description A context menu item in the Network Log View Columns of the Network panel
    */
   responseHeaders: 'Response Headers',
   /**
-   *@description A context menu item in the Network Log View Columns of the Network panel
+   * @description A context menu item in the Network Log View Columns of the Network panel
    */
   earlyHintsHeaders: 'Early Hints Headers',
   /**
-   *@description Title text for a link to the Sources panel to the file containing the header override definitions
+   * @description Title text for a link to the Sources panel to the file containing the header override definitions
    */
   revealHeaderOverrides: 'Reveal header override definitions',
   /**
-   *@description Text to show more content
+   * @description Text to show more content
    */
   showMore: 'Show more',
   /**
-   *@description HTTP response code
+   * @description HTTP response code
    */
   statusCode: 'Status Code',
 } as const;

@@ -14,17 +14,17 @@ import {type LazyUint8Array, LinearMemoryInspectorController} from './LinearMemo
 
 const UIStrings = {
   /**
-   *@description Label in the Linear Memory inspector tool that serves as a placeholder if no inspections are open (i.e. nothing to see here).
+   * @description Label in the Linear Memory inspector tool that serves as a placeholder if no inspections are open (i.e. nothing to see here).
    *             Inspection hereby refers to viewing, navigating and understanding the memory through this tool.
    */
   noOpenInspections: 'No open inspections',
   /**
-   *@description Label in the Linear Memory inspector tool that serves as a placeholder if no inspections are open (i.e. nothing to see here).
+   * @description Label in the Linear Memory inspector tool that serves as a placeholder if no inspections are open (i.e. nothing to see here).
    *             Inspection hereby refers to viewing, navigating and understanding the memory through this tool.
    */
   memoryInspectorExplanation: 'On this page you can inspect binary data.',
   /**
-   *@description Label in the Linear Memory inspector tool for a link.
+   * @description Label in the Linear Memory inspector tool for a link.
    */
   learnMore: 'Learn more',
 } as const;

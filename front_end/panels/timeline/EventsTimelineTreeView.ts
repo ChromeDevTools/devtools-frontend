@@ -19,15 +19,15 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text for the start time of an activity
+   * @description Text for the start time of an activity
    */
   startTime: 'Start time',
   /**
-   *@description Screen reader label for a select box that filters the Performance panel Event Log by duration.
+   * @description Screen reader label for a select box that filters the Performance panel Event Log by duration.
    */
   durationFilter: 'Duration filter',
   /**
-   *@description Text for everything
+   * @description Text for everything
    */
   all: 'All',
 } as const;

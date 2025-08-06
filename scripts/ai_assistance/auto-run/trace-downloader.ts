@@ -36,7 +36,7 @@ export class TraceDownloader {
    * 1. The file does not exist at the expected location.
    * 2. The file exists, but its last modification time was more than an hour ago.
    *
-   * @param filename - The name of the file to check.
+   * @param filename The name of the file to check.
    * @returns True if the file should be downloaded, false otherwise.
    */
   static shouldDownloadFile(filename: string): boolean {

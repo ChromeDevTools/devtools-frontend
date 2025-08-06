@@ -19,7 +19,7 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description The title of the page that contains a list of saved recordings that the user has..
+   * @description The title of the page that contains a list of saved recordings that the user has..
    */
   savedRecordings: 'Saved recordings',
   /**

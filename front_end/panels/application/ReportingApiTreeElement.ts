@@ -14,7 +14,7 @@ import type {ResourcesPanel} from './ResourcesPanel.js';
 
 const UIStrings = {
   /**
-   *@description Label for an item in the Application Panel Sidebar of the Application panel
+   * @description Label for an item in the Application Panel Sidebar of the Application panel
    */
   reportingApi: 'Reporting API',
 } as const;

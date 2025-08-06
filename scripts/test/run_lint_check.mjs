@@ -149,7 +149,7 @@ async function runStylelint(files) {
  * The configuration for the `lit-analyzer` is parsed from the options for
  * the "ts-lit-plugin" from the toplevel `tsconfig.json` file.
  *
- * @param files - the input files to analyze.
+ * @param files the input files to analyze.
  */
 async function runLitAnalyzer(files) {
   debugLogging('[lint]: Running LitAnalyzer...');

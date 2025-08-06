@@ -415,7 +415,7 @@ const gridBackgroundColor = 'rgba(255, 255, 255, 0.8)';
 
 /**
  * Determine the layout type of the highlighted element based on the config.
- * @param elementInfo - The element information, part of the config object passed to drawHighlight
+ * @param elementInfo The element information, part of the config object passed to drawHighlight
  * @returns The layout type of the object, or null if none was found
  */
 function getElementLayoutType(elementInfo: ElementInfo): string|null {
@@ -592,7 +592,7 @@ export function createElementDescription(elementInfo: ElementInfo, colorFormat: 
 }
 
 /**
- * @param elementInfo - The highlight config object passed to drawHighlight
+ * @param elementInfo The highlight config object passed to drawHighlight
  * @param colorFormat
  * @param bounds
  * @param canvasWidth

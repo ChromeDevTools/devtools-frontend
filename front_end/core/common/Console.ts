@@ -32,10 +32,10 @@ export class Console extends ObjectWrapper<EventTypes> {
   /**
    * Add a message to the Console panel.
    *
-   * @param text - the message text.
-   * @param level - the message level.
-   * @param show - whether to show the Console panel (if it's not already shown).
-   * @param source - the message source.
+   * @param text the message text.
+   * @param level the message level.
+   * @param show whether to show the Console panel (if it's not already shown).
+   * @param source the message source.
    */
   addMessage(text: string, level = MessageLevel.INFO, show = false, source?: FrontendMessageSource): void {
     const message = new Message(text, level, Date.now(), show, source);
@@ -54,8 +54,8 @@ export class Console extends ObjectWrapper<EventTypes> {
   /**
    * Adds an error message to the Console panel.
    *
-   * @param text - the message text.
-   * @param show - whether to show the Console panel (if it's not already shown).
+   * @param text the message text.
+   * @param show whether to show the Console panel (if it's not already shown).
    */
   error(text: string, show = true): void {
     this.addMessage(text, MessageLevel.ERROR, show);

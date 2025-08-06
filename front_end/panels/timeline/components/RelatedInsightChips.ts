@@ -13,7 +13,7 @@ const {html, render} = Lit;
 
 const UIStrings = {
   /**
-   *@description prefix shown next to related insight chips
+   * @description prefix shown next to related insight chips
    */
   insightKeyword: 'Insight',
   /**

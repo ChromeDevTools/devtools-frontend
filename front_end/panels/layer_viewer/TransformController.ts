@@ -13,15 +13,15 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
-   *@description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
+   * @description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
    */
   panModeX: 'Pan mode (X)',
   /**
-   *@description Tooltip text that appears when hovering over largeicon rotate button in Transform Controller of the Layers panel
+   * @description Tooltip text that appears when hovering over largeicon rotate button in Transform Controller of the Layers panel
    */
   rotateModeV: 'Rotate mode (V)',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon center button in the Transform Controller of the Layers panel
+   * @description Tooltip text that appears when hovering over the largeicon center button in the Transform Controller of the Layers panel
    */
   resetTransform: 'Reset transform (0)',
 } as const;
@@ -44,9 +44,9 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   private readonly controlPanelToolbar: UI.Toolbar.Toolbar;
   private readonly modeButtons: Record<string, UI.Toolbar.ToolbarToggle>;
   /**
-   * @param element - The HTML element to apply transformations to.
-   * @param disableRotate - Optional. If true, pan and rotate will be disabled. Defaults to false.
-   * @param preventDefaultOnMousedown - Optional. If true, mousedown events will be prevented from their default behavior (including focus). Defaults to true.
+   * @param element The HTML element to apply transformations to.
+   * @param disableRotate Optional. If true, pan and rotate will be disabled. Defaults to false.
+   * @param preventDefaultOnMousedown Optional. If true, mousedown events will be prevented from their default behavior (including focus). Defaults to true.
    */
   constructor(element: HTMLElement, disableRotate?: boolean, preventDefaultOnMouseDown = true) {
     super();

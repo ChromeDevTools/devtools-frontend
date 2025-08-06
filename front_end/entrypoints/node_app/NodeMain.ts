@@ -14,17 +14,17 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text that refers to the main target
+   * @description Text that refers to the main target
    */
   main: 'Main',
   /**
-   *@description Text in Node Main of the Sources panel when debugging a Node.js app
-   *@example {example.com} PH1
+   * @description Text in Node Main of the Sources panel when debugging a Node.js app
+   * @example {example.com} PH1
    */
   nodejsS: 'Node.js: {PH1}',
   /**
-   *@description Text in DevTools window title when debugging a Node.js app
-   *@example {example.com} PH1
+   * @description Text in DevTools window title when debugging a Node.js app
+   * @example {example.com} PH1
    */
   NodejsTitleS: 'DevTools - Node.js: {PH1}',
 } as const;

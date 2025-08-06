@@ -6,7 +6,7 @@ import type {TSESTree} from '@typescript-eslint/utils';
 
 /**
  * Checks if an expression node is a call to `UI.Widget.widgetScoped(...)`.
- * @param expression - The expression AST node to check.
+ * @param expression The expression AST node to check.
  * @returns True if the expression is the specific widgetScoped call.
  */
 export function isWidgetScopedCall(expression: TSESTree.Expression): boolean {

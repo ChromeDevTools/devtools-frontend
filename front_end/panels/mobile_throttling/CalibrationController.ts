@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 
 const UIStrings = {
   /**
-   *@description Text to display to user while a calibration process is running.
+   * @description Text to display to user while a calibration process is running.
    */
   runningCalibration: 'Running CPU calibration, please do not leave this tab or close DevTools.',
 } as const;

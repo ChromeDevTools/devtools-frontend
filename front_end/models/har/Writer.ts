@@ -42,11 +42,11 @@ import {type BuildOptions, type EntryDTO, Log} from './Log.js';
 
 const UIStrings = {
   /**
-   *@description Title of progress in harwriter of the network panel
+   * @description Title of progress in harwriter of the network panel
    */
   collectingContent: 'Collecting content…',
   /**
-   *@description Text to indicate DevTools is writing to a file
+   * @description Text to indicate DevTools is writing to a file
    */
   writingFile: 'Writing file…',
 } as const;

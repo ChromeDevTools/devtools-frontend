@@ -19,19 +19,19 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Error message stating that something went wrong when trying to render stack trace
+   * @description Error message stating that something went wrong when trying to render stack trace
    */
   cannotRenderStackTrace: 'Cannot render stack trace',
   /**
-   *@description A link to show more frames in the stack trace if more are available. Never 0.
+   * @description A link to show more frames in the stack trace if more are available. Never 0.
    */
   showSMoreFrames: '{n, plural, =1 {Show # more frame} other {Show # more frames}}',
   /**
-   *@description A link to rehide frames that are by default hidden.
+   * @description A link to rehide frames that are by default hidden.
    */
   showLess: 'Show less',
   /**
-   *@description Label for a stack trace. If a frame is created programmatically (i.e. via JavaScript), there is a
+   * @description Label for a stack trace. If a frame is created programmatically (i.e. via JavaScript), there is a
    * stack trace for the line of code which caused the creation of the iframe. This is the stack trace we are showing here.
    */
   creationStackTrace: 'Frame Creation `Stack Trace`',

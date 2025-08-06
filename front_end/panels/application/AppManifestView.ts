@@ -21,272 +21,272 @@ import * as ApplicationComponents from './components/components.js';
 
 const UIStrings = {
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   errorsAndWarnings: 'Errors and warnings',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   installability: 'Installability',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   identity: 'Identity',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   presentation: 'Presentation',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   protocolHandlers: 'Protocol Handlers',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   icons: 'Icons',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   windowControlsOverlay: 'Window Controls Overlay',
   /**
-   *@description Label in the App Manifest View for the "name" property of web app or shortcut item
+   * @description Label in the App Manifest View for the "name" property of web app or shortcut item
    */
   name: 'Name',
   /**
-   *@description Label in the App Manifest View for the "short_name" property of web app or shortcut item
+   * @description Label in the App Manifest View for the "short_name" property of web app or shortcut item
    */
   shortName: 'Short name',
   /**
-   *@description Label in the App Manifest View for the "url" property of shortcut item
+   * @description Label in the App Manifest View for the "url" property of shortcut item
    */
   url: 'URL',
   /**
-   *@description Label in the App Manifest View for the Computed App Id
+   * @description Label in the App Manifest View for the Computed App Id
    */
   computedAppId: 'Computed App ID',
   /**
-   *@description Popup-text explaining what the App Id is used for.
+   * @description Popup-text explaining what the App Id is used for.
    */
   appIdExplainer:
       'This is used by the browser to know whether the manifest should be updating an existing application, or whether it refers to a new web app that can be installed.',
   /**
-   *@description Text which is a hyperlink to more documentation
+   * @description Text which is a hyperlink to more documentation
    */
   learnMore: 'Learn more',
   /**
-   *@description Explanation why it is advisable to specify an 'id' field in the manifest.
-   *@example {/index.html} PH1
-   *@example {(button for copying suggested value into clipboard)} PH2
+   * @description Explanation why it is advisable to specify an 'id' field in the manifest.
+   * @example {/index.html} PH1
+   * @example {(button for copying suggested value into clipboard)} PH2
    */
   appIdNote:
       'Note: `id` is not specified in the manifest, `start_url` is used instead. To specify an App ID that matches the current identity, set the `id` field to {PH1} {PH2}.',
 
   /**
-   *@description Tooltip text that appears when hovering over a button which copies the previous text to the clipboard.
+   * @description Tooltip text that appears when hovering over a button which copies the previous text to the clipboard.
    */
   copyToClipboard: 'Copy suggested ID to clipboard',
   /**
-   *@description Screen reader announcement string when the user clicks the copy to clipboard button.
-   *@example {/index.html} PH1
+   * @description Screen reader announcement string when the user clicks the copy to clipboard button.
+   * @example {/index.html} PH1
    */
   copiedToClipboard: 'Copied suggested ID {PH1} to clipboard',
   /**
-   *@description Label in the App Manifest View for the "description" property of web app or shortcut item
+   * @description Label in the App Manifest View for the "description" property of web app or shortcut item
    */
   description: 'Description',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   startUrl: 'Start URL',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   themeColor: 'Theme color',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   backgroundColor: 'Background color',
   /**
-   *@description Text for the orientation of something
+   * @description Text for the orientation of something
    */
   orientation: 'Orientation',
   /**
-   *@description Title of the display attribute in App Manifest View of the Application panel
+   * @description Title of the display attribute in App Manifest View of the Application panel
    * The display attribute defines the preferred display mode for the app such fullscreen or
    * standalone.
    * For more details see https://www.w3.org/TR/appmanifest/#display-member.
    */
   display: 'Display',
   /**
-   *@description Title of the new_note_url attribute in the Application panel
+   * @description Title of the new_note_url attribute in the Application panel
    */
   newNoteUrl: 'New note URL',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   descriptionMayBeTruncated: 'Description may be truncated.',
   /**
-   *@description Warning text about too many shortcuts
+   * @description Warning text about too many shortcuts
    */
   shortcutsMayBeNotAvailable:
       'The maximum number of shortcuts is platform dependent. Some shortcuts may be not available.',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   showOnlyTheMinimumSafeAreaFor: 'Show only the minimum safe area for maskable icons',
   /**
-   *@description Link text for more information on maskable icons in App Manifest view of the Application panel
+   * @description Link text for more information on maskable icons in App Manifest view of the Application panel
    */
   documentationOnMaskableIcons: 'documentation on maskable icons',
   /**
-   *@description Text wrapping a link pointing to more information on maskable icons in App Manifest view of the Application panel
-   *@example {https://web.dev/maskable-icon/} PH1
+   * @description Text wrapping a link pointing to more information on maskable icons in App Manifest view of the Application panel
+   * @example {https://web.dev/maskable-icon/} PH1
    */
   needHelpReadOurS: 'Need help? Read the {PH1}.',
   /**
-   *@description Text in App Manifest View of the Application panel
-   *@example {1} PH1
+   * @description Text in App Manifest View of the Application panel
+   * @example {1} PH1
    */
   shortcutS: 'Shortcut #{PH1}',
   /**
-   *@description Text in App Manifest View of the Application panel
-   *@example {1} PH1
+   * @description Text in App Manifest View of the Application panel
+   * @example {1} PH1
    */
   shortcutSShouldIncludeAXPixel: 'Shortcut #{PH1} should include a 96×96 pixel icon',
   /**
-   *@description Text in App Manifest View of the Application panel
-   *@example {1} PH1
+   * @description Text in App Manifest View of the Application panel
+   * @example {1} PH1
    */
   screenshotS: 'Screenshot #{PH1}',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   pageIsNotLoadedInTheMainFrame: 'Page is not loaded in the main frame',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   pageIsNotServedFromASecureOrigin: 'Page is not served from a secure origin',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   pageHasNoManifestLinkUrl: 'Page has no manifest <link> `URL`',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   manifestCouldNotBeFetchedIsEmpty: 'Manifest could not be fetched, is empty, or could not be parsed',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   manifestStartUrlIsNotValid: 'Manifest \'`start_url`\' is not valid',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   manifestDoesNotContainANameOr: 'Manifest does not contain a \'`name`\' or \'`short_name`\' field',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   manifestDisplayPropertyMustBeOne:
       'Manifest \'`display`\' property must be one of \'`standalone`\', \'`fullscreen`\', or \'`minimal-ui`\'',
   /**
-   *@description Manifest installability error in the Application panel
-   *@example {100} PH1
+   * @description Manifest installability error in the Application panel
+   * @example {100} PH1
    */
   manifestDoesNotContainASuitable:
       'Manifest does not contain a suitable icon—PNG, SVG, or WebP format of at least {PH1}px is required, the \'`sizes`\' attribute must be set, and the \'`purpose`\' attribute, if set, must include \'`any`\'.',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   avoidPurposeAnyAndMaskable:
       'Declaring an icon with \'`purpose`\' of \'`any maskable`\' is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding.',
   /**
-   *@description Manifest installability error in the Application panel
-   *@example {100} PH1
+   * @description Manifest installability error in the Application panel
+   * @example {100} PH1
    */
   noSuppliedIconIsAtLeastSpxSquare:
       'No supplied icon is at least {PH1} pixels square in `PNG`, `SVG`, or `WebP` format, with the purpose attribute unset or set to \'`any`\'.',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   couldNotDownloadARequiredIcon: 'Could not download a required icon from the manifest',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   downloadedIconWasEmptyOr: 'Downloaded icon was empty or corrupted',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   theSpecifiedApplicationPlatform: 'The specified application platform is not supported on Android',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   noPlayStoreIdProvided: 'No Play store ID provided',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   thePlayStoreAppUrlAndPlayStoreId: 'The Play Store app URL and Play Store ID do not match',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   theAppIsAlreadyInstalled: 'The app is already installed',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   aUrlInTheManifestContainsA: 'A URL in the manifest contains a username, password, or port',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   pageIsLoadedInAnIncognitoWindow: 'Page is loaded in an incognito window',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   pageDoesNotWorkOffline: 'Page does not work offline',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   couldNotCheckServiceWorker: 'Could not check `service worker` without a \'`start_url`\' field in the manifest',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   manifestSpecifies: 'Manifest specifies \'`prefer_related_applications`: true\'',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   preferrelatedapplicationsIsOnly:
       '\'`prefer_related_applications`\' is only supported on `Chrome` Beta and Stable channels on `Android`.',
   /**
-   *@description Manifest installability error in the Application panel
+   * @description Manifest installability error in the Application panel
    */
   manifestContainsDisplayoverride:
       'Manifest contains \'`display_override`\' field, and the first supported display mode must be one of \'`standalone`\', \'`fullscreen`\', or \'`minimal-ui`\'',
   /**
-   *@description Warning message for offline capability check
-   *@example {https://developer.chrome.com/blog/improved-pwa-offline-detection} PH1
+   * @description Warning message for offline capability check
+   * @example {https://developer.chrome.com/blog/improved-pwa-offline-detection} PH1
    */
   pageDoesNotWorkOfflineThePage:
       'Page does not work offline. Starting in Chrome 93, the installability criteria are changing, and this site will not be installable. See {PH1} for more information.',
   /**
-   *@description Text to indicate the source of an image
-   *@example {example.com} PH1
+   * @description Text to indicate the source of an image
+   * @example {example.com} PH1
    */
   imageFromS: 'Image from {PH1}',
   /**
-   *@description Text for one or a group of screenshots
+   * @description Text for one or a group of screenshots
    */
   screenshot: 'Screenshot',
   /**
-   *@description Label in the App Manifest View for the "form_factor" property of screenshot
+   * @description Label in the App Manifest View for the "form_factor" property of screenshot
    */
   formFactor: 'Form factor',
   /**
-   *@description Label in the App Manifest View for the "label" property of screenshot
+   * @description Label in the App Manifest View for the "label" property of screenshot
    */
   label: 'Label',
   /**
-   *@description Label in the App Manifest View for the "platform" property of screenshot
+   * @description Label in the App Manifest View for the "platform" property of screenshot
    */
   platform: 'Platform',
   /**
-   *@description Text in App Manifest View of the Application panel
+   * @description Text in App Manifest View of the Application panel
    */
   icon: 'Icon',
   /**
@@ -297,138 +297,138 @@ const UIStrings = {
    */
   sSrcIsNotSet: '{PH1} \'`src`\' is not set',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {Screenshot} PH1
-   *@example {https://example.com/image.png} PH2
+   * @description Warning message for image resources from the manifest
+   * @example {Screenshot} PH1
+   * @example {https://example.com/image.png} PH2
    */
   sUrlSFailedToParse: '{PH1} URL \'\'{PH2}\'\' failed to parse',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {Image} PH1
-   *@example {https://example.com/image.png} PH2
+   * @description Warning message for image resources from the manifest
+   * @example {Image} PH1
+   * @example {https://example.com/image.png} PH2
    */
   sSFailedToLoad: '{PH1} {PH2} failed to load',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {Image} PH1
-   *@example {https://example.com/image.png} PH2
+   * @description Warning message for image resources from the manifest
+   * @example {Image} PH1
+   * @example {https://example.com/image.png} PH2
    */
   sSDoesNotSpecifyItsSizeInThe: '{PH1} {PH2} does not specify its size in the manifest',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {Image} PH1
-   *@example {https://example.com/image.png} PH2
+   * @description Warning message for image resources from the manifest
+   * @example {Image} PH1
+   * @example {https://example.com/image.png} PH2
    */
   sSShouldSpecifyItsSizeAs: '{PH1} {PH2} should specify its size as `[width]x[height]`',
   /**
-   *@description Warning message for image resources from the manifest
+   * @description Warning message for image resources from the manifest
    */
   sSShouldHaveSquareIcon:
       'Most operating systems require square icons. Please include at least one square icon in the array.',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {100} PH1
-   *@example {100} PH2
-   *@example {Image} PH3
-   *@example {https://example.com/image.png} PH4
-   *@example {200} PH5
-   *@example {200} PH6
+   * @description Warning message for image resources from the manifest
+   * @example {100} PH1
+   * @example {100} PH2
+   * @example {Image} PH3
+   * @example {https://example.com/image.png} PH4
+   * @example {200} PH5
+   * @example {200} PH6
    */
   actualSizeSspxOfSSDoesNotMatch:
       'Actual size ({PH1}×{PH2})px of {PH3} {PH4} does not match specified size ({PH5}×{PH6}px)',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {100} PH1
-   *@example {Image} PH2
-   *@example {https://example.com/image.png} PH3
-   *@example {200} PH4
+   * @description Warning message for image resources from the manifest
+   * @example {100} PH1
+   * @example {Image} PH2
+   * @example {https://example.com/image.png} PH3
+   * @example {200} PH4
    */
   actualWidthSpxOfSSDoesNotMatch: 'Actual width ({PH1}px) of {PH2} {PH3} does not match specified width ({PH4}px)',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {100} PH1
-   *@example {Image} PH2
-   *@example {https://example.com/image.png} PH3
-   *@example {100} PH4
+   * @description Warning message for image resources from the manifest
+   * @example {100} PH1
+   * @example {Image} PH2
+   * @example {https://example.com/image.png} PH3
+   * @example {100} PH4
    */
   actualHeightSpxOfSSDoesNotMatch: 'Actual height ({PH1}px) of {PH2} {PH3} does not match specified height ({PH4}px)',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {Image} PH1
-   *@example {https://example.com/image.png} PH2
+   * @description Warning message for image resources from the manifest
+   * @example {Image} PH1
+   * @example {https://example.com/image.png} PH2
    */
   sSSizeShouldBeAtLeast320: '{PH1} {PH2} size should be at least 320×320',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {Image} PH1
-   *@example {https://example.com/image.png} PH2
+   * @description Warning message for image resources from the manifest
+   * @example {Image} PH1
+   * @example {https://example.com/image.png} PH2
    */
   sSSizeShouldBeAtMost3840: '{PH1} {PH2} size should be at most 3840×3840',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {Image} PH1
-   *@example {https://example.com/image.png} PH2
+   * @description Warning message for image resources from the manifest
+   * @example {Image} PH1
+   * @example {https://example.com/image.png} PH2
    */
   sSWidthDoesNotComplyWithRatioRequirement: '{PH1} {PH2} width can\'t be more than 2.3 times as long as the height',
   /**
-   *@description Warning message for image resources from the manifest
-   *@example {Image} PH1
-   *@example {https://example.com/image.png} PH2
+   * @description Warning message for image resources from the manifest
+   * @example {Image} PH1
+   * @example {https://example.com/image.png} PH2
    */
   sSHeightDoesNotComplyWithRatioRequirement: '{PH1} {PH2} height can\'t be more than 2.3 times as long as the width',
   /**
-   *@description Manifest installability error in the Application panel
-   *@example {https://example.com/image.png} url
+   * @description Manifest installability error in the Application panel
+   * @example {https://example.com/image.png} url
    */
   screenshotPixelSize:
       'Screenshot {url} should specify a pixel size `[width]x[height]` instead of `any` as first size.',
   /**
-   *@description Warning text about screenshots for Richer PWA Install UI on desktop
+   * @description Warning text about screenshots for Richer PWA Install UI on desktop
    */
   noScreenshotsForRicherPWAInstallOnDesktop:
       'Richer PWA Install UI won’t be available on desktop. Please add at least one screenshot with the `form_factor` set to `wide`.',
   /**
-   *@description Warning text about screenshots for Richer PWA Install UI on mobile
+   * @description Warning text about screenshots for Richer PWA Install UI on mobile
    */
   noScreenshotsForRicherPWAInstallOnMobile:
       'Richer PWA Install UI won’t be available on mobile. Please add at least one screenshot for which `form_factor` is not set or set to a value other than `wide`.',
   /**
-   *@description Warning text about too many screenshots for desktop
+   * @description Warning text about too many screenshots for desktop
    */
   tooManyScreenshotsForDesktop: 'No more than 8 screenshots will be displayed on desktop. The rest will be ignored.',
   /**
-   *@description Warning text about too many screenshots for mobile
+   * @description Warning text about too many screenshots for mobile
    */
   tooManyScreenshotsForMobile: 'No more than 5 screenshots will be displayed on mobile. The rest will be ignored.',
   /**
-   *@description Warning text about not all screenshots matching the appropriate form factor have the same aspect ratio
+   * @description Warning text about not all screenshots matching the appropriate form factor have the same aspect ratio
    */
   screenshotsMustHaveSameAspectRatio:
       'All screenshots with the same `form_factor` must have the same aspect ratio as the first screenshot with that `form_factor`. Some screenshots will be ignored.',
   /**
-   *@description Message for Window Controls Overlay value succsessfully found with links to documnetation
-   *@example {window-controls-overlay} PH1
-   *@example {https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override} PH2
-   *@example {https://developer.mozilla.org/en-US/docs/Web/Manifest} PH3
+   * @description Message for Window Controls Overlay value succsessfully found with links to documnetation
+   * @example {window-controls-overlay} PH1
+   * @example {https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override} PH2
+   * @example {https://developer.mozilla.org/en-US/docs/Web/Manifest} PH3
    */
   wcoFound: 'Chrome has successfully found the {PH1} value for the {PH2} field in the {PH3}.',
   /**
-   *@description Message for Windows Control Overlay value not found with link to documentation
-   *@example {https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override} PH1
+   * @description Message for Windows Control Overlay value not found with link to documentation
+   * @example {https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override} PH1
    */
   wcoNotFound:
       'Define {PH1} in the manifest to use the Window Controls Overlay API and customize your app\'s title bar.',
   /**
-   *@description Link text for more information on customizing Window Controls Overlay title bar in the Application panel
+   * @description Link text for more information on customizing Window Controls Overlay title bar in the Application panel
    */
   customizePwaTitleBar: 'Customize the window controls overlay of your PWA\'s title bar',
   /**
-   *@description Text wrapping link to documentation on how to customize WCO title bar
-   *@example {https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay} PH1
+   * @description Text wrapping link to documentation on how to customize WCO title bar
+   * @example {https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay} PH1
    */
   wcoNeedHelpReadMore: 'Need help? Read {PH1}.',
   /**
-   *@description Text for emulation OS selection dropdown
+   * @description Text for emulation OS selection dropdown
    */
   selectWindowControlsOverlayEmulationOs: 'Emulate the Window Controls Overlay on',
 } as const;

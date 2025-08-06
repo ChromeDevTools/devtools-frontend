@@ -452,7 +452,8 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
     return this.timelineDataInternal;
   }
 
-  /** time in milliseconds
+  /**
+   * time in milliseconds
    */
   minimumBoundary(): number {
     return this.bounds.low;

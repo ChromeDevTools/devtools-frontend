@@ -42,7 +42,7 @@ import requestCookiesViewStyles from './requestCookiesView.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in Request Cookies View of the Network panel
+   * @description Text in Request Cookies View of the Network panel
    */
   thisRequestHasNoCookies: 'This request has no cookies.',
   /**
@@ -51,28 +51,28 @@ const UIStrings = {
    */
   requestCookies: 'Request Cookies',
   /**
-   *@description Tooltip to explain what request cookies are
+   * @description Tooltip to explain what request cookies are
    */
   cookiesThatWereSentToTheServerIn: 'Cookies that were sent to the server in the \'cookie\' header of the request',
   /**
-   *@description Label for showing request cookies that were not actually sent
+   * @description Label for showing request cookies that were not actually sent
    */
   showFilteredOutRequestCookies: 'show filtered out request cookies',
   /**
-   *@description Text in Request Headers View of the Network Panel
+   * @description Text in Request Headers View of the Network Panel
    */
   noRequestCookiesWereSent: 'No request cookies were sent.',
   /**
-   *@description Text in Request Cookies View of the Network panel
+   * @description Text in Request Cookies View of the Network panel
    */
   responseCookies: 'Response Cookies',
   /**
-   *@description Tooltip to explain what response cookies are
+   * @description Tooltip to explain what response cookies are
    */
   cookiesThatWereReceivedFromThe:
       'Cookies that were received from the server in the \'`set-cookie`\' header of the response',
   /**
-   *@description Label for response cookies with invalid syntax
+   * @description Label for response cookies with invalid syntax
    */
   malformedResponseCookies: 'Malformed Response Cookies',
   /**

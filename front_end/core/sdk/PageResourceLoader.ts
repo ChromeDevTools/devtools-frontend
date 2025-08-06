@@ -22,7 +22,7 @@ import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {
   /**
-   *@description Error message for canceled source map loads
+   * @description Error message for canceled source map loads
    */
   loadCanceledDueToReloadOf: 'Load canceled due to reload of inspected page',
 } as const;

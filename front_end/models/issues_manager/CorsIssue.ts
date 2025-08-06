@@ -11,15 +11,15 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
-   *@description Label for the link for CORS Local Network Access issues
+   * @description Label for the link for CORS Local Network Access issues
    */
   corsLocalNetworkAccess: 'Local Network Access',
   /**
-   *@description Label for the link for CORS private network issues
+   * @description Label for the link for CORS private network issues
    */
   corsPrivateNetworkAccess: 'Private Network Access',
   /**
-   *@description Label for the link for CORS network issues
+   * @description Label for the link for CORS network issues
    */
   CORS: 'Cross-Origin Resource Sharing (`CORS`)',
 } as const;

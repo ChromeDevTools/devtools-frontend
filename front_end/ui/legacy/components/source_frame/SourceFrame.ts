@@ -46,15 +46,15 @@ import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-   *@description Text for the source of something
+   * @description Text for the source of something
    */
   source: 'Source',
   /**
-   *@description Text to pretty print a file
+   * @description Text to pretty print a file
    */
   prettyPrint: 'Pretty print',
   /**
-   *@description Text when something is loading
+   * @description Text when something is loading
    */
   loading: 'Loading…',
   /**
@@ -70,39 +70,39 @@ const UIStrings = {
    */
   bytecodePositionXs: 'Bytecode position `0x`{PH1}',
   /**
-   *@description Text in Source Frame of the Sources panel
-   *@example {2} PH1
-   *@example {2} PH2
+   * @description Text in Source Frame of the Sources panel
+   * @example {2} PH1
+   * @example {2} PH2
    */
   lineSColumnS: 'Line {PH1}, Column {PH2}',
   /**
-   *@description Text in Source Frame of the Sources panel
-   *@example {2} PH1
+   * @description Text in Source Frame of the Sources panel
+   * @example {2} PH1
    */
   dCharactersSelected: '{PH1} characters selected',
   /**
-   *@description Text in Source Frame of the Sources panel
-   *@example {2} PH1
-   *@example {2} PH2
+   * @description Text in Source Frame of the Sources panel
+   * @example {2} PH1
+   * @example {2} PH2
    */
   dLinesDCharactersSelected: '{PH1} lines, {PH2} characters selected',
   /**
-   *@description Headline of warning shown to users when pasting text/code into DevTools.
+   * @description Headline of warning shown to users when pasting text/code into DevTools.
    */
   doYouTrustThisCode: 'Do you trust this code?',
   /**
-   *@description Warning shown to users when pasting text/code into DevTools.
-   *@example {allow pasting} PH1
+   * @description Warning shown to users when pasting text/code into DevTools.
+   * @example {allow pasting} PH1
    */
   doNotPaste:
       'Don\'t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \'\'{PH1}\'\' below to allow pasting.',
   /**
-   *@description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
   allowPasting: 'allow pasting',
   /**
-   *@description Input box placeholder which instructs the user to type 'allow pasting' into the input box.
-   *@example {allow pasting} PH1
+   * @description Input box placeholder which instructs the user to type 'allow pasting' into the input box.
+   * @example {allow pasting} PH1
    */
   typeAllowPasting: 'Type \'\'{PH1}\'\'',
   /**

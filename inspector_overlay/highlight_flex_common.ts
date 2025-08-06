@@ -644,10 +644,10 @@ export function getGapQuads(
  *
  * @param quad1
  * @param quad2
- * @param size - The size of the gap between the 2 quads
- * @param vertically - whether the 2 quads are stacked vertically (quad1 above quad2), or horizontally (quad1 left of
+ * @param size The size of the gap between the 2 quads
+ * @param vertically whether the 2 quads are stacked vertically (quad1 above quad2), or horizontally (quad1 left of
  * quad2)
- * @param isReverse - whether the direction is reversed (quad1 below quad2 or quad1 right of quad2)
+ * @param isReverse whether the direction is reversed (quad1 below quad2 or quad1 right of quad2)
  */
 export function getGapQuadBetweenQuads(
     quad1: Quad, quad2: Quad, size: number, vertically: boolean, isReverse?: boolean) {
@@ -822,7 +822,7 @@ export function uniteQuads(quad1: Quad, quad2: Quad, isHorizontalFlow: boolean, 
  * flush aginst the outer one.
  * @param innerQuad
  * @param outerQuad
- * @param horizontally - The direction to grow the inner quad along
+ * @param horizontally The direction to grow the inner quad along
  */
 export function growQuadToEdgesOf(innerQuad: Quad, outerQuad: Quad, horizontally: boolean): Quad {
   return {

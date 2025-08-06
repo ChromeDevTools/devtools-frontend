@@ -14,7 +14,7 @@ import threadsSidebarPaneStyles from './threadsSidebarPane.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in Threads Sidebar Pane of the Sources panel
+   * @description Text in Threads Sidebar Pane of the Sources panel
    */
   paused: 'paused',
 } as const;

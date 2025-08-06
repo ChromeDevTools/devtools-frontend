@@ -11,87 +11,87 @@ import {Context} from './Context.js';
 
 const UIStrings = {
   /**
-   *@description Title of the keybind category 'Elements' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Elements' in Settings' Shortcuts pannel.
    */
   elements: 'Elements',
   /**
-   *@description Title of the keybind category 'Screenshot' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Screenshot' in Settings' Shortcuts pannel.
    */
   screenshot: 'Screenshot',
   /**
-   *@description Title of the keybind category 'Network' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Network' in Settings' Shortcuts pannel.
    */
   network: 'Network',
   /**
-   *@description Title of the keybind category 'Memory' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Memory' in Settings' Shortcuts pannel.
    */
   memory: 'Memory',
   /**
-   *@description Title of the keybind category 'JavaScript Profiler' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'JavaScript Profiler' in Settings' Shortcuts pannel.
    */
   javascript_profiler: 'JavaScript Profiler',
   /**
-   *@description Title of the keybind category 'Console' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Console' in Settings' Shortcuts pannel.
    */
   console: 'Console',
   /**
-   *@description Title of the keybind category 'Performance' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Performance' in Settings' Shortcuts pannel.
    */
   performance: 'Performance',
   /**
-   *@description Title of the keybind category 'Mobile' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Mobile' in Settings' Shortcuts pannel.
    */
   mobile: 'Mobile',
   /**
-   *@description Title of the keybind category 'Help' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Help' in Settings' Shortcuts pannel.
    */
   help: 'Help',
   /**
-   *@description Title of the keybind category 'Layers' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Layers' in Settings' Shortcuts pannel.
    */
   layers: 'Layers',
   /**
-   *@description Title of the keybind category 'Navigation' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Navigation' in Settings' Shortcuts pannel.
    */
   navigation: 'Navigation',
   /**
-   *@description Title of the keybind category 'Drawer' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Drawer' in Settings' Shortcuts pannel.
    */
   drawer: 'Drawer',
   /**
-   *@description Title of the keybind category 'Global' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Global' in Settings' Shortcuts pannel.
    */
   global: 'Global',
   /**
-   *@description Title of the keybind category 'Resources' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Resources' in Settings' Shortcuts pannel.
    */
   resources: 'Resources',
   /**
-   *@description Title of the keybind category 'Background Services' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Background Services' in Settings' Shortcuts pannel.
    */
   background_services: 'Background Services',
   /**
-   *@description Title of the keybind category 'Settings' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Settings' in Settings' Shortcuts pannel.
    */
   settings: 'Settings',
   /**
-   *@description Title of the keybind category 'Debugger' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Debugger' in Settings' Shortcuts pannel.
    */
   debugger: 'Debugger',
   /**
-   *@description Title of the keybind category 'Sources' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Sources' in Settings' Shortcuts pannel.
    */
   sources: 'Sources',
   /**
-   *@description Title of the keybind category 'Rendering' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Rendering' in Settings' Shortcuts pannel.
    */
   rendering: 'Rendering',
   /**
-   *@description Title of the keybind category 'Recorder' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Recorder' in Settings' Shortcuts pannel.
    */
   recorder: 'Recorder',
   /**
-   *@description Title of the keybind category 'Changes' in Settings' Shortcuts pannel.
+   * @description Title of the keybind category 'Changes' in Settings' Shortcuts pannel.
    */
   changes: 'Changes',
 } as const;

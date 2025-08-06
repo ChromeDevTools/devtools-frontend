@@ -45,9 +45,9 @@ const UIStrings = {
    */
   notOptimizedS: 'Not optimized: {PH1}',
   /**
-   *@description Generic text with two placeholders separated by a comma
-   *@example {1 613 680} PH1
-   *@example {44 %} PH2
+   * @description Generic text with two placeholders separated by a comma
+   * @example {1 613 680} PH1
+   * @example {44 %} PH2
    */
   genericTextTwoPlaceholders: '{PH1}, {PH2}',
 } as const;

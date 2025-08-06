@@ -18,7 +18,7 @@ import {MediaQueryInspector} from './MediaQueryInspector.js';
 
 const UIStrings = {
   /**
-   *@description Bottom resizer element title in Device Mode View of the Device Toolbar
+   * @description Bottom resizer element title in Device Mode View of the Device Toolbar
    */
   doubleclickForFullHeight: 'Double-click for full height',
   /**

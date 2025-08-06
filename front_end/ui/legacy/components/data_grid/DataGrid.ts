@@ -39,22 +39,22 @@ import type {DataGridInternalToken} from './DataGridElement.js';
 
 const UIStrings = {
   /**
-   *@description Accessible text label for expandible nodes in datagrids
+   * @description Accessible text label for expandible nodes in datagrids
    */
   expanded: 'expanded',
   /**
-   *@description accessible name for expandible nodes in datagrids
+   * @description accessible name for expandible nodes in datagrids
    */
   collapsed: 'collapsed',
   /**
-   *@description Accessible text for datagrid
-   *@example {Coverage grid} PH1
-   *@example {expanded} PH2
+   * @description Accessible text for datagrid
+   * @example {Coverage grid} PH1
+   * @example {expanded} PH2
    */
   sRowS: '{PH1} Row {PH2}',
   /**
-   *@description Number of rows in a grid
-   *@example {1} PH1
+   * @description Number of rows in a grid
+   * @example {1} PH1
    */
   rowsS: 'Rows: {PH1}',
   /**
@@ -67,54 +67,54 @@ const UIStrings = {
   sSUseTheUpAndDownArrowKeysTo:
       '{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.',
   /**
-   *@description A context menu item in the Data Grid of a data grid
+   * @description A context menu item in the Data Grid of a data grid
    */
   sortByString: 'Sort By',
   /**
-   *@description A context menu item in data grids to reset the columns to their default weight
+   * @description A context menu item in data grids to reset the columns to their default weight
    */
   resetColumns: 'Reset Columns',
   /**
-   *@description A context menu item in data grids to list header options.
+   * @description A context menu item in data grids to list header options.
    */
   headerOptions: 'Header Options',
   /**
-   *@description Text to refresh the page
+   * @description Text to refresh the page
    */
   refresh: 'Refresh',
   /**
-   *@description A context menu item in the Data Grid of a data grid
+   * @description A context menu item in the Data Grid of a data grid
    */
   addNew: 'Add new',
   /**
-   *@description A context menu item in the Data Grid of a data grid
-   *@example {pattern} PH1
+   * @description A context menu item in the Data Grid of a data grid
+   * @example {pattern} PH1
    */
   editS: 'Edit "{PH1}"',
   /**
-   *@description Text to delete something
+   * @description Text to delete something
    */
   delete: 'Delete',
   /**
-   *@description Depth of a node in the datagrid
-   *@example {1} PH1
+   * @description Depth of a node in the datagrid
+   * @example {1} PH1
    */
   levelS: 'level {PH1}',
   /**
-   *@description Text exposed to screen readers on checked items.
+   * @description Text exposed to screen readers on checked items.
    */
   checked: 'checked',
   /**
-   *@description Accessible text indicating an empty row is created.
+   * @description Accessible text indicating an empty row is created.
    */
   emptyRowCreated: 'An empty table row has been created. You may double click or use context menu to edit.',
   /**
-   *@description Text for screen reader to announce when focusing on a sortable column in data grid.
-   *@example {ascending} PH1
+   * @description Text for screen reader to announce when focusing on a sortable column in data grid.
+   * @example {ascending} PH1
    */
   enterToSort: 'Column sort state: {PH1}. Press enter to apply sorting filter',
   /**
-   *@description Label for sortable column headers.
+   * @description Label for sortable column headers.
    */
   sortableColumn: 'Sortable column. Press enter to apply sorting filter',
 } as const;

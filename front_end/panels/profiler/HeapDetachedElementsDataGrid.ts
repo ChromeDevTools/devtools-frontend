@@ -13,15 +13,15 @@ import * as Elements from '../elements/elements.js';
 
 const UIStrings = {
   /**
-   *@description Text in Heap Snapshot View of a profiler tool
+   * @description Text in Heap Snapshot View of a profiler tool
    */
   detachedNodes: 'Detached nodes',
   /**
-   *@description Text in Heap Snapshot View of a profiler tool
+   * @description Text in Heap Snapshot View of a profiler tool
    */
   nodeSize: 'Node count',
   /**
-   *@description Label for the detached elements table
+   * @description Label for the detached elements table
    */
   detachedElementsList: 'Detached elements list',
 } as const;

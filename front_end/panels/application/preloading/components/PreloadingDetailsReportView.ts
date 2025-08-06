@@ -29,81 +29,81 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Text in PreloadingDetailsReportView of the Application panel if no element is selected. An element here is an item in a
+   * @description Text in PreloadingDetailsReportView of the Application panel if no element is selected. An element here is an item in a
    * table of target URLs and additional prefetching states. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
    */
   noElementSelected: 'No element selected',
   /**
-   *@description Text in PreloadingDetailsReportView of the Application panel to prompt user to select an element in a table. An element here is an item in a
+   * @description Text in PreloadingDetailsReportView of the Application panel to prompt user to select an element in a table. An element here is an item in a
    * table of target URLs and additional prefetching states. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
    */
   selectAnElementForMoreDetails: 'Select an element for more details',
   /**
-   *@description Text in details
+   * @description Text in details
    */
   detailsDetailedInformation: 'Detailed information',
   /**
-   *@description Text in details
+   * @description Text in details
    */
   detailsAction: 'Action',
   /**
-   *@description Text in details
+   * @description Text in details
    */
   detailsStatus: 'Status',
   /**
-   *@description Text in details
+   * @description Text in details
    */
   detailsTargetHint: 'Target hint',
   /**
-   *@description Text in details
+   * @description Text in details
    */
   detailsFailureReason: 'Failure reason',
   /**
-   *@description Header of rule set
+   * @description Header of rule set
    */
   detailsRuleSet: 'Rule set',
   /**
-   *@description Description: status
+   * @description Description: status
    */
   automaticallyFellBackToPrefetch: '(automatically fell back to prefetch)',
   /**
-   *@description Description: status
+   * @description Description: status
    */
   detailedStatusNotTriggered: 'Speculative load attempt is not yet triggered.',
   /**
-   *@description Description: status
+   * @description Description: status
    */
   detailedStatusPending: 'Speculative load attempt is eligible but pending.',
   /**
-   *@description Description: status
+   * @description Description: status
    */
   detailedStatusRunning: 'Speculative load is running.',
   /**
-   *@description Description: status
+   * @description Description: status
    */
   detailedStatusReady: 'Speculative load finished and the result is ready for the next navigation.',
   /**
-   *@description Description: status
+   * @description Description: status
    */
   detailedStatusSuccess: 'Speculative load finished and used for a navigation.',
   /**
-   *@description Description: status
+   * @description Description: status
    */
   detailedStatusFailure: 'Speculative load failed.',
   /**
-   *@description Description: status
+   * @description Description: status
    */
   detailedStatusFallbackToPrefetch: 'Speculative load failed, but fallback to prefetch succeeded.',
   /**
-   *@description button: Contents of button to inspect prerendered page
+   * @description button: Contents of button to inspect prerendered page
    */
   buttonInspect: 'Inspect',
   /**
-   *@description button: Title of button to inspect prerendered page
+   * @description button: Title of button to inspect prerendered page
    */
   buttonClickToInspect: 'Click to inspect prerendered page',
   /**
-   *@description button: Title of button to reveal rule set
+   * @description button: Title of button to reveal rule set
    */
   buttonClickToRevealRuleSet: 'Click to reveal rule set',
 } as const;

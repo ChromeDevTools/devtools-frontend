@@ -7,43 +7,43 @@ import type * as Platform from '../platform/platform.js';
 
 const UIStrings = {
   /**
-   *@description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right clicking an item that can be revealed
    */
   elementsPanel: 'Elements panel',
   /**
-   *@description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right clicking an item that can be revealed
    */
   stylesSidebar: 'styles sidebar',
   /**
-   *@description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right clicking an item that can be revealed
    */
   changesDrawer: 'Changes drawer',
   /**
-   *@description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right clicking an item that can be revealed
    */
   issuesView: 'Issues view',
   /**
-   *@description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right clicking an item that can be revealed
    */
   networkPanel: 'Network panel',
   /**
-   *@description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right clicking an item that can be revealed
    */
   applicationPanel: 'Application panel',
   /**
-   *@description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right clicking an item that can be revealed
    */
   securityPanel: 'Security panel',
   /**
-   *@description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right clicking an item that can be revealed
    */
   sourcesPanel: 'Sources panel',
   /**
-   *@description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right clicking an item that can be revealed
    */
   timelinePanel: 'Performance panel',
   /**
-   *@description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right clicking an item that can be revealed
    */
   memoryInspectorPanel: 'Memory inspector panel',
   /**
@@ -102,7 +102,7 @@ export class RevealerRegistry {
   /**
    * Register a new `Revealer` as described by the `registration`.
    *
-   * @param registration - the description.
+   * @param registration the description.
    */
   register(registration: RevealerRegistration<unknown>): void {
     this.registeredRevealers.push(registration);
@@ -111,8 +111,8 @@ export class RevealerRegistry {
   /**
    * Reveals the `revealable`.
    *
-   * @param revealable - the object to reveal.
-   * @param omitFocus - whether to omit focusing on the presentation of `revealable` afterwards.
+   * @param revealable the object to reveal.
+   * @param omitFocus whether to omit focusing on the presentation of `revealable` afterwards.
    */
   async reveal(revealable: unknown, omitFocus: boolean): Promise<void> {
     const revealers = await Promise.all(
@@ -152,7 +152,7 @@ export function revealDestination(revealable: unknown): string|null {
  * Register a new `Revealer` as described by the `registration` on the singleton
  * {@link RevealerRegistry} instance.
  *
- * @param registration - the description.
+ * @param registration the description.
  */
 export function registerRevealer<T>(registration: RevealerRegistration<T>): void {
   RevealerRegistry.instance().register(registration);
@@ -161,8 +161,8 @@ export function registerRevealer<T>(registration: RevealerRegistration<T>): void
 /**
  * Reveals the `revealable` via the singleton {@link RevealerRegistry} instance.
  *
- * @param revealable - the object to reveal.
- * @param omitFocus - whether to omit focusing on the presentation of `revealable` afterwards.
+ * @param revealable the object to reveal.
+ * @param omitFocus whether to omit focusing on the presentation of `revealable` afterwards.
  */
 export async function reveal(revealable: unknown, omitFocus = false): Promise<void> {
   await RevealerRegistry.instance().reveal(revealable, omitFocus);

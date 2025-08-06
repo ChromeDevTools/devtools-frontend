@@ -109,9 +109,9 @@ export interface TrackAppender {
 
   /**
    * Appends into the flame chart data the data corresponding to a track.
-   * @param level - the horizontal level of the flame chart events where the
+   * @param level the horizontal level of the flame chart events where the
    * track's events will start being appended.
-   * @param expanded - wether the track should be rendered expanded.
+   * @param expanded wether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
@@ -204,18 +204,18 @@ export class CompatibilityTracksAppender {
   #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null;
 
   /**
-   * @param flameChartData - the data used by the flame chart renderer on
+   * @param flameChartData the data used by the flame chart renderer on
    * which the track data will be appended.
-   * @param parsedTrace - the trace parsing engines output.
-   * @param entryData - the array containing all event to be rendered in
+   * @param parsedTrace the trace parsing engines output.
+   * @param entryData the array containing all event to be rendered in
    * the flamechart.
-   * @param legacyEntryTypeByLevel - an array containing the type of
+   * @param legacyEntryTypeByLevel an array containing the type of
    * each entry in the entryData array. Indexed by the position the
    * corresponding entry occupies in the entryData array. This reference
    * is needed only for compatibility with the legacy flamechart
    * architecture and should be removed once all tracks use the new
    * system.
-   * @param entityMapper - 3P entity data for the trace.
+   * @param entityMapper 3P entity data for the trace.
    */
   constructor(
       flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
@@ -498,9 +498,9 @@ export class CompatibilityTracksAppender {
 
   /**
    * Adds an event to the flame chart data at a defined level.
-   * @param event - the event to be appended,
-   * @param level - the level to append the event,
-   * @param appender - the track which the event belongs to.
+   * @param event the event to be appended,
+   * @param level the level to append the event,
+   * @param appender the track which the event belongs to.
    * @returns the index of the event in all events to be rendered in the flamechart.
    */
   appendEventAtLevel(event: Trace.Types.Events.Event, level: number, appender: TrackAppender): number {
@@ -518,14 +518,14 @@ export class CompatibilityTracksAppender {
 
   /**
    * Adds into the flame chart data a list of trace events.
-   * @param events - the trace events that will be appended to the flame chart.
+   * @param events the trace events that will be appended to the flame chart.
    * The events should be taken straight from the trace handlers. The handlers
    * should sort the events by start time, and the parent event is before the
    * child.
-   * @param trackStartLevel - the flame chart level from which the events will
+   * @param trackStartLevel the flame chart level from which the events will
    * be appended.
-   * @param appender - the track that the trace events belong to.
-   * @param eventAppendedCallback - an optional function called after the
+   * @param appender the track that the trace events belong to.
+   * @param eventAppendedCallback an optional function called after the
    * event has been added to the timeline data. This allows the caller
    * to know f.e. the position of the event in the entry data. Use this
    * hook to customize the data after it has been appended, f.e. to add

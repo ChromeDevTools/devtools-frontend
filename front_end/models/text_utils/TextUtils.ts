@@ -258,7 +258,7 @@ export class BalancedJSONTokenizer {
  * long leading comments correctly, when tab indentation is used for the snippets
  * of code.
  *
- * @param lines - The input document lines.
+ * @param lines The input document lines.
  * @returns The indentation detected for the lines as string or `null` if it's inconclusive.
  * @see https://heathermoor.medium.com/detecting-code-indentation-eff3ed0fb56b
  */
@@ -324,7 +324,7 @@ export const detectIndentation = function(lines: Iterable<string>): string|null 
  * A text is considered to be the result of minification if the average
  * line length for the whole text is 80 characters or more.
  *
- * @param text - The input text to check.
+ * @param text The input text to check.
  * @returns
  */
 export const isMinified = function(text: string): boolean {
@@ -375,7 +375,7 @@ export const performSearchInContent = function(
 /**
  * Similar to {@link performSearchInContent} but doesn't search in a whole text but rather
  * finds the exact matches on a prelminiary search result (i.e. lines with known matches).
- * @param matches - is deliberatedly typed as an object literal so we can pass the
+ * @param matches is deliberatedly typed as an object literal so we can pass the
  *                CDP search result type.
  */
 export const performSearchInSearchMatches = function(

@@ -16,58 +16,58 @@ import {FreDialog} from './FreDialog.js';
 
 const UIStringsNotTranslate = {
   /**
-   *@description Text for `ctrl` key.
+   * @description Text for `ctrl` key.
    */
   ctrl: 'ctrl',
   /**
-   *@description Text for `cmd` key.
+   * @description Text for `cmd` key.
    */
   cmd: 'cmd',
   /**
-   *@description Text for `i` key.
+   * @description Text for `i` key.
    */
   i: 'i',
   /**
-   *@description Text for dismissing teaser.
+   * @description Text for dismissing teaser.
    */
   dontShowAgain: 'Don\'t show again',
   /**
-   *@description Text for teaser to turn on code suggestions.
+   * @description Text for teaser to turn on code suggestions.
    */
   toTurnOnCodeSuggestions: 'to turn on code suggestions.',
   /**
-   *@description Text for snackbar notification on dismissing the teaser.
+   * @description Text for snackbar notification on dismissing the teaser.
    */
   turnOnCodeSuggestionsAtAnyTimeInSettings: 'Turn on code suggestions at any time in Settings',
   /**
-   *@description Text for snackbar action button to manage settings.
+   * @description Text for snackbar action button to manage settings.
    */
   manage: 'Manage',
   /**
-   *@description The footer disclaimer that links to more information
+   * @description The footer disclaimer that links to more information
    * about the AI feature.
    */
   learnMore: 'Learn more about AI code completion',
   /**
-   *@description Header text for the AI-powered suggestions disclaimer dialog.
+   * @description Header text for the AI-powered suggestions disclaimer dialog.
    */
   freDisclaimerHeader: 'Code faster with AI-powered suggestions',
   /**
-   *@description First disclaimer item text for the fre dialog.
+   * @description First disclaimer item text for the fre dialog.
    */
   freDisclaimerTextAiWontAlwaysGetItRight: 'This feature uses AI and won’t always get it right',
   /**
-   *@description Second disclaimer item text for the fre dialog.
+   * @description Second disclaimer item text for the fre dialog.
    */
   freDisclaimerTextPrivacy:
       'To generate code suggestions, your console input, the history of your current console session, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.',
   /**
-   *@description Second disclaimer item text for the fre dialog when enterprise logging is off.
+   * @description Second disclaimer item text for the fre dialog when enterprise logging is off.
    */
   freDisclaimerTextPrivacyNoLogging:
       'To generate code suggestions, your console input, the history of your current console session, and the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
-   *@description Third disclaimer item text for the fre dialog.
+   * @description Third disclaimer item text for the fre dialog.
    */
   freDisclaimerTextUseWithCaution: 'Use generated code snippets with caution',
 } as const;

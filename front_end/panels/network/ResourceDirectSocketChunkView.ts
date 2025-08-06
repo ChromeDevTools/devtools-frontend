@@ -17,31 +17,31 @@ import {DataGridItem, ResourceChunkView} from './ResourceChunkView.js';
 
 const UIStrings = {
   /**
-   *@description Text in Event Source Messages View of the Network panel
+   * @description Text in Event Source Messages View of the Network panel
    */
   data: 'Data',
   /**
-   *@description Text in Messages View of the Network panel
+   * @description Text in Messages View of the Network panel
    */
   length: 'Length',
   /**
-   *@description Text that refers to the time
+   * @description Text that refers to the time
    */
   time: 'Time',
   /**
-   *@description Text in Messages View of the Network panel
+   * @description Text in Messages View of the Network panel
    */
   address: 'Address',
   /**
-   *@description Text in Messages View of the Network panel
+   * @description Text in Messages View of the Network panel
    */
   port: 'Port',
   /**
-   *@description Data grid name for Direct Socket Chunk data grids
+   * @description Data grid name for Direct Socket Chunk data grids
    */
   directSocketChunk: 'Direct Socket Chunk',
   /**
-   *@description Example for placeholder text. Note: "(direct)?socket)" is an example code and should not be translated.
+   * @description Example for placeholder text. Note: "(direct)?socket)" is an example code and should not be translated.
    */
   filterUsingRegex: 'Filter using regex (example: `(direct)?socket)`',
 } as const;

@@ -62,8 +62,8 @@ import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
 const UIStrings = {
   /**
-   *@description Document title in Inspector Frontend Host of the DevTools window
-   *@example {example.com} PH1
+   * @description Document title in Inspector Frontend Host of the DevTools window
+   * @example {example.com} PH1
    */
   devtoolsS: 'DevTools - {PH1}',
 } as const;

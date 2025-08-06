@@ -7,8 +7,8 @@ import * as Host from '../../../core/host/host.js';
 import * as UI from '../../legacy/legacy.js';
 
 /**
- * @param text - Text to copy to clipboard
- * @param alert - Message to send for a11y
+ * @param text Text to copy to clipboard
+ * @param alert Message to send for a11y
  */
 export function copyTextToClipboard(text: string, alert?: string): void {
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);

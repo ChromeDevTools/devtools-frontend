@@ -11,7 +11,7 @@ import pieChartStyles from './pieChart.css.js';
 
 const UIStrings = {
   /**
-   *@description Text for sum
+   * @description Text for sum
    */
   total: 'Total',
 } as const;

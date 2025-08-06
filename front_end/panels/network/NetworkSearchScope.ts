@@ -14,7 +14,7 @@ import type * as Search from '../search/search.js';
 
 const UIStrings = {
   /**
-   *@description Text for web URLs
+   * @description Text for web URLs
    */
   url: 'URL',
 } as const;

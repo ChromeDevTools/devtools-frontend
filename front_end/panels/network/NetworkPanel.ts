@@ -62,63 +62,63 @@ import {type NetworkTimeCalculator, NetworkTransferTimeCalculator} from './Netwo
 
 const UIStrings = {
   /**
-   *@description Text to close something
+   * @description Text to close something
    */
   close: 'Close',
   /**
-   *@description Title of a search bar or tool
+   * @description Title of a search bar or tool
    */
   search: 'Search',
   /**
-   *@description Tooltip text that appears on the setting to preserve log when hovering over the item
+   * @description Tooltip text that appears on the setting to preserve log when hovering over the item
    */
   doNotClearLogOnPageReload: 'Do not clear log on page reload / navigation',
   /**
-   *@description Text to preserve the log after refreshing
+   * @description Text to preserve the log after refreshing
    */
   preserveLog: 'Preserve log',
   /**
-   *@description Text to disable cache while DevTools is open
+   * @description Text to disable cache while DevTools is open
    */
   disableCacheWhileDevtoolsIsOpen: 'Disable cache while DevTools is open',
   /**
-   *@description Text in Network Config View of the Network panel
+   * @description Text in Network Config View of the Network panel
    */
   disableCache: 'Disable cache',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in network panel of the network panel
+   * @description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in network panel of the network panel
    */
   networkSettings: 'Network settings',
   /**
-   *@description Tooltip for expanding network request row setting
+   * @description Tooltip for expanding network request row setting
    */
   showMoreInformationInRequestRows: 'Show more information in request rows',
   /**
-   *@description Text in Network Panel used to toggle the "big request rows" setting.
+   * @description Text in Network Panel used to toggle the "big request rows" setting.
    */
   useLargeRequestRows: 'Big request rows',
   /**
-   *@description Tooltip text for network request overview setting
+   * @description Tooltip text for network request overview setting
    */
   showOverviewOfNetworkRequests: 'Show overview of network requests',
   /**
-   *@description Text in Network Panel used to show the overview for a given network request.
+   * @description Text in Network Panel used to show the overview for a given network request.
    */
   showOverview: 'Overview',
   /**
-   *@description Tooltip for group by frame network setting
+   * @description Tooltip for group by frame network setting
    */
   groupRequestsByTopLevelRequest: 'Group requests by top level request frame',
   /**
-   *@description Text for group by frame network setting
+   * @description Text for group by frame network setting
    */
   groupByFrame: 'Group by frame',
   /**
-   *@description Tooltip for capture screenshot network setting
+   * @description Tooltip for capture screenshot network setting
    */
   captureScreenshotsWhenLoadingA: 'Capture screenshots when loading a page',
   /**
-   *@description Text to take screenshots
+   * @description Text to take screenshots
    */
   captureScreenshots: 'Screenshots',
   /**
@@ -153,12 +153,12 @@ const UIStrings = {
    */
   exportHarWithSensitiveData: 'Export `HAR` (with sensitive data)…',
   /**
-   *@description Text for throttling the network
+   * @description Text for throttling the network
    */
   throttling: 'Throttling',
   /**
-   *@description Text in Network Panel to tell the user to reload the page to capture screenshots.
-   *@example {Ctrl + R} PH1
+   * @description Text in Network Panel to tell the user to reload the page to capture screenshots.
+   * @example {Ctrl + R} PH1
    */
   hitSToReloadAndCaptureFilmstrip: 'Press {PH1} to reload and capture filmstrip.',
   /**
@@ -175,11 +175,11 @@ const UIStrings = {
    */
   openInNetworkPanelMissingRequest: 'Open in Network panel (missing request)',
   /**
-   *@description Text in Network Panel that is displayed whilst the recording is in progress.
+   * @description Text in Network Panel that is displayed whilst the recording is in progress.
    */
   recordingFrames: 'Recording frames…',
   /**
-   *@description Text in Network Panel that is displayed when frames are being fetched.
+   * @description Text in Network Panel that is displayed when frames are being fetched.
    */
   fetchingFrames: 'Fetching frames…',
   /**

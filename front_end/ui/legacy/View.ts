@@ -55,7 +55,7 @@ export class SimpleView extends VBox implements View {
   /**
    * Constructs a new `SimpleView` with the given `options`.
    *
-   * @param options - the settings for the resulting view.
+   * @param options the settings for the resulting view.
    * @throws TypeError - if `options.viewId` is not in extended kebab case.
    */
   constructor(options: SimpleViewOptions) {

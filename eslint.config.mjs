@@ -300,9 +300,20 @@ export default defineConfig([
         }
       ],
       'jsdoc/empty-tags': 'error',
+      'jsdoc/multiline-blocks': 'error',
+      'jsdoc/no-bad-blocks': 'error',
+      'jsdoc/no-blank-blocks': [
+        'error',
+        {
+          enableFixer: true,
+        },
+      ],
       'jsdoc/require-asterisk-prefix': 'error',
       'jsdoc/require-param-name': 'error',
-      'jsdoc/require-hyphen-before-param-description': 'error',
+      'jsdoc/require-hyphen-before-param-description': [
+        'error',
+        'never',
+      ],
       'jsdoc/sort-tags': 'error',
     },
   },

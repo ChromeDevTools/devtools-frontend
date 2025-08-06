@@ -13,27 +13,27 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
-   *@description The kind of an issue (plural) (Issues are categorized into kinds).
+   * @description The kind of an issue (plural) (Issues are categorized into kinds).
    */
   improvements: 'Improvements',
   /**
-   *@description The kind of an issue (plural) (Issues are categorized into kinds).
+   * @description The kind of an issue (plural) (Issues are categorized into kinds).
    */
   pageErrors: 'Page Errors',
   /**
-   *@description The kind of an issue (plural) (Issues are categorized into kinds).
+   * @description The kind of an issue (plural) (Issues are categorized into kinds).
    */
   breakingChanges: 'Breaking Changes',
   /**
-   *@description A description for a kind of issue we display in the issues tab.
+   * @description A description for a kind of issue we display in the issues tab.
    */
   pageErrorIssue: 'A page error issue: the page is not working correctly',
   /**
-   *@description A description for a kind of issue we display in the issues tab.
+   * @description A description for a kind of issue we display in the issues tab.
    */
   breakingChangeIssue: 'A breaking change issue: the page may stop working in an upcoming version of Chrome',
   /**
-   *@description A description for a kind of issue we display in the issues tab.
+   * @description A description for a kind of issue we display in the issues tab.
    */
   improvementIssue: 'An improvement issue: there is an opportunity to improve the page',
 } as const;

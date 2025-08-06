@@ -12,46 +12,46 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description text used to announce to a screen reader that they have entered the mode to edit the label
+   * @description text used to announce to a screen reader that they have entered the mode to edit the label
    */
   srEnterLabelEditMode: 'Editing the annotation label text',
   /**
-   *@description text used to announce to a screen reader that the entry label text has been updated
-   *@example {Hello world} PH1
+   * @description text used to announce to a screen reader that the entry label text has been updated
+   * @example {Hello world} PH1
    */
   srLabelTextUpdated: 'Label updated to {PH1}',
   /**
-   *@description text used to announce to a screen reader that the bounds of a time range annotation have been upodated
-   *@example {13ms} PH1
-   *@example {20ms} PH2
+   * @description text used to announce to a screen reader that the bounds of a time range annotation have been upodated
+   * @example {13ms} PH1
+   * @example {20ms} PH2
    */
   srTimeRangeBoundsUpdated: 'Time range updated, starting at {PH1} and ending at {PH2}',
   /**
-   *@description label for a time range overlay
+   * @description label for a time range overlay
    */
   timeRange: 'time range',
   /**
-   *@description label for a entry label overlay
+   * @description label for a entry label overlay
    */
   entryLabel: 'entry label',
   /**
-   *@description label for a connected entries overlay
+   * @description label for a connected entries overlay
    */
   entriesLink: 'connected entries',
   /**
-   *@description screen reader text to announce that an annotation has been removed
-   *@example {Entry Label} PH1
+   * @description screen reader text to announce that an annotation has been removed
+   * @example {Entry Label} PH1
    */
   srAnnotationRemoved: 'The {PH1} annotation has been removed',
   /**
-   *@description screen reader text to announce that an annotation has been added
-   *@example {Entry Label} PH1
+   * @description screen reader text to announce that an annotation has been added
+   * @example {Entry Label} PH1
    */
   srAnnotationAdded: 'The {PH1} annotation has been added',
   /**
-   *@description screen reader text to announce the two events that the connected entries annotation links to
-   *@example {Paint} PH1
-   *@example {Function call} PH2
+   * @description screen reader text to announce the two events that the connected entries annotation links to
+   * @example {Paint} PH1
+   * @example {Function call} PH2
    */
   srEntriesLinked: 'The connected entries annotation now links from {PH1} to {PH2}',
 

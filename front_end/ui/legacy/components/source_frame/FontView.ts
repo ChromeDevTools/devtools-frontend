@@ -41,12 +41,12 @@ import fontViewStyles from './fontView.css.js';
 
 const UIStrings = {
   /**
-   *@description Text that appears on a button for the font resource type filter.
+   * @description Text that appears on a button for the font resource type filter.
    */
   font: 'Font',
   /**
-   *@description Aria accessible name in Font View of the Sources panel
-   *@example {https://example.com} PH1
+   * @description Aria accessible name in Font View of the Sources panel
+   * @example {https://example.com} PH1
    */
   previewOfFontFromS: 'Preview of font from {PH1}',
 } as const;

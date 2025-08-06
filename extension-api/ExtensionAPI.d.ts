@@ -101,7 +101,7 @@ export namespace Chrome {
       /**
        * Fired when the theme changes in DevTools.
        *
-       * @param callback - The handler callback to register and be invoked on theme changes.
+       * @param callback The handler callback to register and be invoked on theme changes.
        */
       setThemeChangeHandler(callback?: (themeName: string) => unknown): void;
     }

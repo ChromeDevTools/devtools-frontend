@@ -53,7 +53,7 @@
   const TestSuite = class {
     /**
      * Test suite for interactive UI tests.
-     * @param domAutomationController - DomAutomationController instance.
+     * @param domAutomationController DomAutomationController instance.
      */
     constructor(domAutomationController) {
       this.domAutomationController_ = domAutomationController;
@@ -72,7 +72,7 @@
 
   /**
    * Reports test failure.
-   * @param message - Failure description.
+   * @param message Failure description.
    */
   TestSuite.prototype.fail = function(message) {
     if (this.controlTaken_) {
@@ -84,9 +84,9 @@
 
   /**
    * Equals assertion tests that expected === actual.
-   * @param expected - Expected object.
-   * @param actual - Actual object.
-   * @param opt_message - User message to print if the test fails.
+   * @param expected Expected object.
+   * @param actual Actual object.
+   * @param opt_message User message to print if the test fails.
    */
   TestSuite.prototype.assertEquals = function(expected, actual, opt_message) {
     if (expected !== actual) {
@@ -100,8 +100,8 @@
 
   /**
    * True assertion tests that value == true.
-   * @param value - Actual object.
-   * @param opt_message - User message to print if the test fails.
+   * @param value Actual object.
+   * @param opt_message User message to print if the test fails.
    */
   TestSuite.prototype.assertTrue = function(value, opt_message) {
     this.assertEquals(true, Boolean(value), opt_message);
@@ -180,7 +180,7 @@
 
   /**
    * Run specified test on a fresh instance of the test suite.
-   * @param args - method name followed by its parameters.
+   * @param args method name followed by its parameters.
    */
   TestSuite.prototype.dispatchOnTestSuite = async function(args) {
     const methodName = args.shift();
@@ -197,7 +197,7 @@
   /**
    * Wrap an async method with TestSuite.{takeControl(), releaseControl()}
    * and invoke TestSuite.reportOk_ upon completion.
-   * @param args - method name followed by its parameters.
+   * @param args method name followed by its parameters.
    */
   TestSuite.prototype.waitForAsync = function(var_args) {
     const args = Array.prototype.slice.call(arguments);
@@ -208,11 +208,11 @@
 
   /**
    * Overrides the method with specified name until it's called first time.
-   * @param receiver - An object whose method to override.
-   * @param methodName - Name of the method to override.
-   * @param override - A function that should be called right after the
+   * @param receiver An object whose method to override.
+   * @param methodName Name of the method to override.
+   * @param override A function that should be called right after the
    *     overridden method returns.
-   * @param opt_sticky - Whether restore original method after first run
+   * @param opt_sticky Whether restore original method after first run
    *     or not.
    */
   TestSuite.prototype.addSniffer = function(receiver, methodName, override, opt_sticky) {
@@ -274,7 +274,7 @@
   };
 
   /**
-   * @param panelName - Name of the panel to show.
+   * @param panelName Name of the panel to show.
    */
   TestSuite.prototype.showPanel = function(panelName) {
     return UI.InspectorView.InspectorView.instance().showPanel(panelName);
@@ -1430,12 +1430,12 @@
     return uiSourceCodes.filter(filterOutService);
   };
 
-  /*
- * Evaluates the code in the console as if user typed it manually and invokes
- * the callback when the result message is received and added to the console.
- * @param {string} code
- * @param {function(string)} callback
- */
+  /**
+   * Evaluates the code in the console as if user typed it manually and invokes
+   * the callback when the result message is received and added to the console.
+   * @param {string} code
+   * @param {function(string)} callback
+   */
   TestSuite.prototype.evaluateInConsole_ = function(code, callback) {
     function innerEvaluate() {
       UI.Context.Context.instance().removeFlavorChangeListener(
@@ -1463,7 +1463,7 @@
   /**
    * Checks that all expected scripts are present in the scripts list
    * in the Scripts panel.
-   * @param expected - Regular expressions describing
+   * @param expected Regular expressions describing
    *     expected script names.
    * @returns Whether all the scripts are in "scripts-files" select
    *     box

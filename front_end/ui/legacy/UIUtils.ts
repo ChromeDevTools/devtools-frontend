@@ -72,51 +72,51 @@ declare global {
 
 const UIStrings = {
   /**
-   *@description label to open link externally
+   * @description label to open link externally
    */
   openInNewTab: 'Open in new tab',
   /**
-   *@description label to copy link address
+   * @description label to copy link address
    */
   copyLinkAddress: 'Copy link address',
   /**
-   *@description label to copy file name
+   * @description label to copy file name
    */
   copyFileName: 'Copy file name',
   /**
-   *@description label for the profiler control button
+   * @description label for the profiler control button
    */
   anotherProfilerIsAlreadyActive: 'Another profiler is already active',
   /**
-   *@description Text in UIUtils
+   * @description Text in UIUtils
    */
   promiseResolvedAsync: 'Promise resolved (async)',
   /**
-   *@description Text in UIUtils
+   * @description Text in UIUtils
    */
   promiseRejectedAsync: 'Promise rejected (async)',
   /**
-   *@description Text for the title of asynchronous function calls group in Call Stack
+   * @description Text for the title of asynchronous function calls group in Call Stack
    */
   asyncCall: 'Async Call',
   /**
-   *@description Text for the name of anonymous functions
+   * @description Text for the name of anonymous functions
    */
   anonymous: '(anonymous)',
   /**
-   *@description Text to close something
+   * @description Text to close something
    */
   close: 'Close',
   /**
-   *@description Text on a button for message dialog
+   * @description Text on a button for message dialog
    */
   ok: 'OK',
   /**
-   *@description Text to cancel something
+   * @description Text to cancel something
    */
   cancel: 'Cancel',
   /**
-   *@description Text for the new badge appearing next to some menu items
+   * @description Text for the new badge appearing next to some menu items
    */
   new: 'NEW',
 } as const;
@@ -1277,9 +1277,9 @@ export function createIconLabel(
  * html`<label><input type="radio" name=${name} jslog=${jslog}>${title}</label>`
  * ```
  *
- * @param name - the name of the radio group.
- * @param title - the label text for the radio button.
- * @param jslogContext - the context string for the `jslog` attribute.
+ * @param name the name of the radio group.
+ * @param title the label text for the radio button.
+ * @param jslogContext the context string for the `jslog` attribute.
  * @returns the pair of `HTMLLabelElement` and `HTMLInputElement`.
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio
  */
@@ -1306,9 +1306,9 @@ export function createRadioButton(
  * html`<input type="range" min=${min} max=${max} tabindex=${tabIndex}>`
  * ```
  *
- * @param min - the minimum allowed value.
- * @param max - the maximum allowed value.
- * @param tabIndex - the value for the `tabindex` attribute.
+ * @param min the minimum allowed value.
+ * @param max the maximum allowed value.
+ * @param tabIndex the value for the `tabindex` attribute.
  * @returns the newly created `HTMLInputElement` for the slider.
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range
  */
@@ -1680,8 +1680,8 @@ export function loadImage(url: string): Promise<HTMLImageElement|null> {
 
 /**
  * Creates a file selector element.
- * @param callback - the function that will be called with the file the user selected
- * @param accept - optionally used to set the [`accept`](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept) parameter to limit file-types the user can pick.
+ * @param callback the function that will be called with the file the user selected
+ * @param accept optionally used to set the [`accept`](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept) parameter to limit file-types the user can pick.
  */
 export function createFileSelectorElement(callback: (arg0: File) => void, accept?: string): HTMLInputElement {
   const fileSelectorElement = document.createElement('input');
@@ -1963,8 +1963,8 @@ function focusChanged(event: Event): void {
  * Creates a new shadow DOM tree with the core styles and an optional list of
  * additional styles, and attaches it to the specified `element`.
  *
- * @param element - the `Element` to attach the shadow DOM tree to.
- * @param options - optional additional style sheets and options for `Element#attachShadow()`.
+ * @param element the `Element` to attach the shadow DOM tree to.
+ * @param options optional additional style sheets and options for `Element#attachShadow()`.
  * @returns the newly created `ShadowRoot`.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
  */
@@ -2027,7 +2027,7 @@ export function measuredScrollbarWidth(document?: Document|null): number {
  *   the search parameters, with `<channel>` being the release channel of
  *   Chrome ("stable", "beta", "dev", or "canary").
  *
- * @param url - the URL to open in a new tab.
+ * @param url the URL to open in a new tab.
  * @throws TypeError if `url` is not a valid URL.
  * @see https://en.wikipedia.org/wiki/UTM_parameters
  */

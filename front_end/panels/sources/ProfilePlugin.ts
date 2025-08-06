@@ -17,15 +17,15 @@ import {Plugin} from './Plugin.js';
 
 const UIStrings = {
   /**
-   *@description The milisecond unit
+   * @description The milisecond unit
    */
   ms: 'ms',
   /**
-   *@description Unit for data size in DevTools
+   * @description Unit for data size in DevTools
    */
   mb: 'MB',
   /**
-   *@description A unit
+   * @description A unit
    */
   kb: 'kB',
 } as const;

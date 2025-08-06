@@ -14,8 +14,8 @@ const UIStrings = {
    * @description Text in the Performance panel to show how long was spent in a particular part of the code.
    * The first placeholder is the total time taken for this node and all children, the second is the self time
    * (time taken in this node, without children included).
-   *@example {10ms} PH1
-   *@example {10ms} PH2
+   * @example {10ms} PH1
+   * @example {10ms} PH2
    */
   sSelfS: '{PH1} (self {PH2})',
 } as const;
@@ -29,7 +29,7 @@ export type LastTimestampByLevel = number[];
 /**
  * Builds the style for the group.
  * Each group has a predefined style and a reference to the definition of the legacy track (which should be removed in the future).
- * @param extra - the customized fields with value.
+ * @param extra the customized fields with value.
  * @returns the built GroupStyle
  */
 export function buildGroupStyle(extra?: Partial<PerfUI.FlameChart.GroupStyle>): PerfUI.FlameChart.GroupStyle {
@@ -47,17 +47,17 @@ export function buildGroupStyle(extra?: Partial<PerfUI.FlameChart.GroupStyle>): 
 
 /**
  * Builds the header corresponding to the track. A header is added in the shape of a group in the flame chart data.
- * @param jslogContext - the text that will be set as the logging context
+ * @param jslogContext the text that will be set as the logging context
  *                          for the Visual Elements logging framework. Pass
  *                          `null` to not set a context and consequently
  *                          cause this group not to be logged.
- * @param startLevel - the flame chart level at which the track header is appended.
- * @param name - the display name of the track.
- * @param style - the GroupStyle for the track header.
- * @param selectable - if the track is selectable.
- * @param expanded - if the track is expanded.
- * @param track - this is set only when `selectable` is true, and it is used for selecting a track in the details panel.
- * @param showStackContextMenu - whether menu with options to merge/collapse entries in track is shown.
+ * @param startLevel the flame chart level at which the track header is appended.
+ * @param name the display name of the track.
+ * @param style the GroupStyle for the track header.
+ * @param selectable if the track is selectable.
+ * @param expanded if the track is expanded.
+ * @param track this is set only when `selectable` is true, and it is used for selecting a track in the details panel.
+ * @param showStackContextMenu whether menu with options to merge/collapse entries in track is shown.
  * @returns the group that built from the give data
  */
 export function buildTrackHeader(
@@ -79,8 +79,8 @@ export function buildTrackHeader(
 
 /**
  * Returns the time info shown when an event is hovered in the timeline.
- * @param totalTime - the total time of the hovered event.
- * @param selfTime - the self time of the hovered event.
+ * @param totalTime the total time of the hovered event.
+ * @param selfTime the self time of the hovered event.
  * @returns the formatted time string for popoverInfo
  */
 

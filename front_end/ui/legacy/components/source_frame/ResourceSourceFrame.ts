@@ -45,7 +45,7 @@ import {type RevealPosition, SourceFrameImpl, type SourceFrameOptions} from './S
 
 const UIStrings = {
   /**
-   *@description Text to find an item
+   * @description Text to find an item
    */
   find: 'Find',
 } as const;

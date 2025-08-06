@@ -54,30 +54,30 @@ import profilesSidebarTreeStyles from './profilesSidebarTree.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in Profiles Panel of a profiler tool
-   *@example {'.js', '.json'} PH1
+   * @description Text in Profiles Panel of a profiler tool
+   * @example {'.js', '.json'} PH1
    */
   cantLoadFileSupportedFile: 'Can’t load file. Supported file extensions: \'\'{PH1}\'\'.',
   /**
-   *@description Text in Profiles Panel of a profiler tool
+   * @description Text in Profiles Panel of a profiler tool
    */
   cantLoadProfileWhileAnother: 'Can’t load profile while another profile is being recorded.',
   /**
-   *@description Text in Profiles Panel of a profiler tool
+   * @description Text in Profiles Panel of a profiler tool
    */
   profileLoadingFailed: 'Profile loading failed',
   /**
-   *@description Text in Profiles Panel of a profiler tool
-   *@example {cannot open file} PH1
+   * @description Text in Profiles Panel of a profiler tool
+   * @example {cannot open file} PH1
    */
   failReason: 'Reason: {PH1}.',
   /**
-   *@description Text in Profiles Panel of a profiler tool
-   *@example {2} PH1
+   * @description Text in Profiles Panel of a profiler tool
+   * @example {2} PH1
    */
   runD: 'Run {PH1}',
   /**
-   *@description Text in Profiles Panel of a profiler tool
+   * @description Text in Profiles Panel of a profiler tool
    */
   profiles: 'Profiles',
 } as const;

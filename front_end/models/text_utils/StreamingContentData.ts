@@ -58,7 +58,7 @@ export class StreamingContentData extends Common.ObjectWrapper.ObjectWrapper<Eve
     return Platform.MimeType.isTextType(this.mimeType);
   }
 
-  /** @param chunk - base64 encoded data */
+  /** @param chunk base64 encoded data */
   addChunk(chunk: string): void {
     if (this.#disallowStreaming) {
       throw new Error('Cannot add base64 data to a text-only ContentData.');

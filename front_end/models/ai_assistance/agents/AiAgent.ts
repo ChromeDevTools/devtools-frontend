@@ -412,8 +412,8 @@ export abstract class AiAgent<T> {
 
   /**
    * Declare a function that the AI model can call.
-   * @param name - The name of the function
-   * @param declaration - the function declaration. Currently functions must:
+   * @param name The name of the function
+   * @param declaration the function declaration. Currently functions must:
    * 1. Return an object of serializable key/value pairs. You cannot return
    *    anything other than a plain JavaScript object that can be serialized.
    * 2. Take one parameter which is an object that can have

@@ -15,7 +15,7 @@ import {
 
 const UIStrings = {
   /**
-   *@description Title for Client Hint specification url link
+   * @description Title for Client Hint specification url link
    */
   clientHintsInfrastructure: 'Client Hints Infrastructure',
 } as const;

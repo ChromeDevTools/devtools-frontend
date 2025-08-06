@@ -196,7 +196,7 @@ export function widgetRef<T extends Widget, Args extends unknown[]>(
  * This prevents a parent widget's styles from cascading into any nested
  * child widgets.
  *
- * @param styles - The CSS rules to be scoped.
+ * @param styles The CSS rules to be scoped.
  * @returns The scoped CSS string.
  */
 export function widgetScoped(styles: string): string {
@@ -288,7 +288,7 @@ export class Widget {
   /**
    * Constructs a new `Widget` with the given `options`.
    *
-   * @param options - optional settings to configure the behavior.
+   * @param options optional settings to configure the behavior.
    */
   constructor(options?: WidgetOptions);
 
@@ -299,8 +299,8 @@ export class Widget {
    * If `element` is `undefined`, a new `<div>` element will be created instead
    * and the widget will be attached to that.
    *
-   * @param element - an (optional) `HTMLElement` to attach the `Widget` to.
-   * @param options - optional settings to configure the behavior.
+   * @param element an (optional) `HTMLElement` to attach the `Widget` to.
+   * @param options optional settings to configure the behavior.
    */
   constructor(element?: HTMLElement, options?: WidgetOptions);
 
@@ -336,7 +336,7 @@ export class Widget {
    * Returns the {@link Widget} whose element is the given `node`, or `undefined`
    * if the `node` is not an element for a widget.
    *
-   * @param node - a DOM node.
+   * @param node a DOM node.
    * @returns the {@link Widget} that is attached to the `node` or `undefined`.
    */
   static get(node: Node): Widget|undefined {
@@ -936,7 +936,7 @@ export class VBox extends Widget {
   /**
    * Constructs a new `VBox` with the given `options`.
    *
-   * @param options - optional settings to configure the behavior.
+   * @param options optional settings to configure the behavior.
    */
   constructor(options?: WidgetOptions);
 
@@ -947,8 +947,8 @@ export class VBox extends Widget {
    * If `element` is `undefined`, a new `<div>` element will be created instead
    * and the widget will be attached to that.
    *
-   * @param element - an (optional) `HTMLElement` to attach the `VBox` to.
-   * @param options - optional settings to configure the behavior.
+   * @param element an (optional) `HTMLElement` to attach the `VBox` to.
+   * @param options optional settings to configure the behavior.
    */
   constructor(element?: HTMLElement, options?: WidgetOptions);
 
@@ -975,7 +975,7 @@ export class HBox extends Widget {
   /**
    * Constructs a new `HBox` with the given `options`.
    *
-   * @param options - optional settings to configure the behavior.
+   * @param options optional settings to configure the behavior.
    */
   constructor(options?: WidgetOptions);
 
@@ -986,8 +986,8 @@ export class HBox extends Widget {
    * If `element` is `undefined`, a new `<div>` element will be created instead
    * and the widget will be attached to that.
    *
-   * @param element - an (optional) `HTMLElement` to attach the `HBox` to.
-   * @param options - optional settings to configure the behavior.
+   * @param element an (optional) `HTMLElement` to attach the `HBox` to.
+   * @param options optional settings to configure the behavior.
    */
   constructor(element?: HTMLElement, options?: WidgetOptions);
 

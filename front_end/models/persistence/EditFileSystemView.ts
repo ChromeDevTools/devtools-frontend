@@ -42,19 +42,19 @@ const {styleMap} = Directives;
 
 const UIStrings = {
   /**
-   *@description Text in Edit File System View of the Workspace settings in Settings to indicate that the following string is a folder URL
+   * @description Text in Edit File System View of the Workspace settings in Settings to indicate that the following string is a folder URL
    */
   url: 'URL',
   /**
-   *@description Text in Edit File System View of the Workspace settings in Settings
+   * @description Text in Edit File System View of the Workspace settings in Settings
    */
   excludedFolders: 'Excluded sub-folders',
   /**
-   *@description Error message when a file system path is an empty string.
+   * @description Error message when a file system path is an empty string.
    */
   enterAPath: 'Enter a path',
   /**
-   *@description Error message when a file system path is identical to an existing path.
+   * @description Error message when a file system path is identical to an existing path.
    */
   enterAUniquePath: 'Enter a unique path',
 } as const;

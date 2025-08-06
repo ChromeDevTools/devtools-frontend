@@ -10,15 +10,15 @@ import {ThrottlingPresets, type NetworkThrottlingConditionsGroup} from './Thrott
 
 const UIStrings = {
   /**
-   *@description Text to indicate something is not enabled
+   * @description Text to indicate something is not enabled
    */
   disabled: 'Disabled',
   /**
-   *@description Title for a group of configuration options
+   * @description Title for a group of configuration options
    */
   presets: 'Presets',
   /**
-   *@description Text in Network Throttling Selector of the Network panel
+   * @description Text in Network Throttling Selector of the Network panel
    */
   custom: 'Custom',
 } as const;

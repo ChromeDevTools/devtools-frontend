@@ -9,8 +9,8 @@ import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-   *@description Tooltip text describing that a color was clipped after conversion to match the target gamut
-   *@example {rgb(255 255 255)} PH1
+   * @description Tooltip text describing that a color was clipped after conversion to match the target gamut
+   * @example {rgb(255 255 255)} PH1
    */
   colorClippedTooltipText: 'This color was clipped to match the format\'s gamut. The actual result was {PH1}',
 } as const;

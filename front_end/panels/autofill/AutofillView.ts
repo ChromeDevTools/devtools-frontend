@@ -89,11 +89,11 @@ const UIStrings = {
    */
   formInspector: 'Form inspector',
   /**
-   *@description Link text for a hyperlink to more documentation
+   * @description Link text for a hyperlink to more documentation
    */
   learnMore: 'Learn more',
   /**
-   *@description Link text for a hyperlink to webpage for leaving user feedback
+   * @description Link text for a hyperlink to webpage for leaving user feedback
    */
   sendFeedback: 'Send feedback',
 } as const;

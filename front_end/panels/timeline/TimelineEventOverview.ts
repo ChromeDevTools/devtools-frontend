@@ -41,21 +41,21 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Short for Network. Label for the network requests section of the Performance panel.
+   * @description Short for Network. Label for the network requests section of the Performance panel.
    */
   net: 'NET',
   /**
-   *@description Text in Timeline Event Overview of the Performance panel
+   * @description Text in Timeline Event Overview of the Performance panel
    */
   cpu: 'CPU',
   /**
-   *@description Text in Timeline Event Overview of the Performance panel
+   * @description Text in Timeline Event Overview of the Performance panel
    */
   heap: 'HEAP',
   /**
-   *@description Heap size label text content in Timeline Event Overview of the Performance panel
-   *@example {10 MB} PH1
-   *@example {30 MB} PH2
+   * @description Heap size label text content in Timeline Event Overview of the Performance panel
+   * @example {10 MB} PH1
+   * @example {30 MB} PH2
    */
   sSDash: '{PH1} – {PH2}',
 } as const;

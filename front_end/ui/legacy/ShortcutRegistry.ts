@@ -277,7 +277,8 @@ export class ShortcutRegistry {
       return Boolean(keyModifiers & mod);
     }
 
-    /** ;
+    /**
+     * ;
      */
     async function maybeExecuteActionForKey(this: ShortcutRegistry, event?: KeyboardEvent): Promise<boolean> {
       const actions = this.applicableActions(key, handlers);

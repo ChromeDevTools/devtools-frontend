@@ -11,7 +11,7 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
-   *@description Label for the link for SharedArrayBuffer Issues. The full text reads "Enabling `SharedArrayBuffer`"
+   * @description Label for the link for SharedArrayBuffer Issues. The full text reads "Enabling `SharedArrayBuffer`"
    * and is the title of an article that describes how to enable a JavaScript feature called SharedArrayBuffer.
    */
   enablingSharedArrayBuffer: 'Enabling `SharedArrayBuffer`',

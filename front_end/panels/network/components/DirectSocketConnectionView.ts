@@ -19,55 +19,55 @@ const {render, html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Section header for a list of the main aspects of a direct socket connection
+   * @description Section header for a list of the main aspects of a direct socket connection
    */
   general: 'General',
   /**
-   *@description Section header for a list of the main aspects of a direct socket connection
+   * @description Section header for a list of the main aspects of a direct socket connection
    */
   options: 'Options',
   /**
-   *@description Section header for a list of the main aspects of a direct socket connection
+   * @description Section header for a list of the main aspects of a direct socket connection
    */
   openInfo: 'Open Info',
   /**
-   *@description Text in Connection info View of the Network panel
+   * @description Text in Connection info View of the Network panel
    */
   type: 'DirectSocket Type',
   /**
-   *@description Text in Connection info View of the Network panel
+   * @description Text in Connection info View of the Network panel
    */
   errorMessage: 'Error message',
   /**
-   *@description Text in Connection info View of the Network panel
+   * @description Text in Connection info View of the Network panel
    */
   status: 'Status',
   /**
-   *@description Text in Connection info View of the Network panel
+   * @description Text in Connection info View of the Network panel
    */
   directSocketTypeTcp: 'TCP',
   /**
-   *@description Text in Connection info View of the Network panel
+   * @description Text in Connection info View of the Network panel
    */
   directSocketTypeUdpConnected: 'UDP (connected)',
   /**
-   *@description Text in Connection info View of the Network panel
+   * @description Text in Connection info View of the Network panel
    */
   directSocketTypeUdpBound: 'UDP (bound)',
   /**
-   *@description Text in Connection info View of the Network panel
+   * @description Text in Connection info View of the Network panel
    */
   directSocketStatusOpening: 'Opening',
   /**
-   *@description Text in Connection info View of the Network panel
+   * @description Text in Connection info View of the Network panel
    */
   directSocketStatusOpen: 'Open',
   /**
-   *@description Text in Connection info View of the Network panel
+   * @description Text in Connection info View of the Network panel
    */
   directSocketStatusClosed: 'Closed',
   /**
-   *@description Text in Connection info View of the Network panel
+   * @description Text in Connection info View of the Network panel
    */
   directSocketStatusAborted: 'Aborted',
 

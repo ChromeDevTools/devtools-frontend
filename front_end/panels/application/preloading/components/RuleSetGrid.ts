@@ -26,27 +26,27 @@ const {html, Directives: {styleMap}} = Lit;
 
 const UIStrings = {
   /**
-   *@description Column header: Short URL of rule set.
+   * @description Column header: Short URL of rule set.
    */
   ruleSet: 'Rule set',
   /**
-   *@description Column header: Show how many preloads are associated if valid, error counts if invalid.
+   * @description Column header: Show how many preloads are associated if valid, error counts if invalid.
    */
   status: 'Status',
   /**
-   *@description button: Title of button to reveal the corresponding request of rule set in Elements panel
+   * @description button: Title of button to reveal the corresponding request of rule set in Elements panel
    */
   clickToOpenInElementsPanel: 'Click to open in Elements panel',
   /**
-   *@description button: Title of button to reveal the corresponding request of rule set in Network panel
+   * @description button: Title of button to reveal the corresponding request of rule set in Network panel
    */
   clickToOpenInNetworkPanel: 'Click to open in Network panel',
   /**
-   *@description Value of status, specifying rule set contains how many errors.
+   * @description Value of status, specifying rule set contains how many errors.
    */
   errors: '{errorCount, plural, =1 {# error} other {# errors}}',
   /**
-   *@description button: Title of button to reveal preloading attempts with filter by selected rule set
+   * @description button: Title of button to reveal preloading attempts with filter by selected rule set
    */
   buttonRevealPreloadsAssociatedWithRuleSet: 'Reveal speculative loads associated with this rule set',
 } as const;

@@ -18,7 +18,7 @@ import {
 
 const UIStrings = {
   /**
-   *@description Tooltip for the 3-dots menu in the Memory panel profiles list.
+   * @description Tooltip for the 3-dots menu in the Memory panel profiles list.
    */
   profileOptions: 'Profile options',
 } as const;

@@ -1150,18 +1150,20 @@ export class RecorderController extends LitElement {
     const recordings = this.#storage.getRecordings();
     // clang-format off
     return html`
-      <devtools-recording-list-view
-        .recordings=${recordings.map(recording => ({
-          storageName: recording.storageName,
-          name: recording.flow.title,
-        }))}
-        .replayAllowed=${this.#replayAllowed}
+      <devtools-widget
+        .widgetConfig=${UI.Widget.widgetConfig(Components.RecordingListView.RecordingListView, {
+          recordings: recordings.map(recording => ({
+            storageName: recording.storageName,
+            name: recording.flow.title,
+          })),
+          replayAllowed: this.#replayAllowed,
+        })}
         @createrecording=${this.#onCreateNewRecording}
         @deleterecording=${this.#onDeleteRecording}
         @openrecording=${this.#onRecordingSelected}
         @playrecording=${this.#onPlayRecordingByName}
-        >
-      </devtools-recording-list-view>
+      >
+      </devtools-widget>
     `;
     // clang-format on
   }

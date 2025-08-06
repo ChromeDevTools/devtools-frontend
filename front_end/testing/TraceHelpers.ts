@@ -478,6 +478,7 @@ export function makeMockRendererHandlerData(
       entityByEvent: new Map(),
       eventsByEntity: new Map(),
       createdEntityCache: new Map(),
+      entityByUrlCache: new Map(),
     },
   };
 }
@@ -727,6 +728,7 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
         entityByEvent: new Map(),
         eventsByEntity: new Map(),
         createdEntityCache: new Map(),
+        entityByUrlCache: new Map(),
       },
     },
     Screenshots: {
@@ -756,6 +758,7 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
         entityByEvent: new Map(),
         eventsByEntity: new Map(),
         createdEntityCache: new Map(),
+        entityByUrlCache: new Map(),
       },
       linkPreconnectEvents: [],
     },

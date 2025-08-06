@@ -31,6 +31,7 @@ let entityMappings: HandlerHelpers.EntityMappings = {
   eventsByEntity: new Map<HandlerHelpers.Entity, Types.Events.Event[]>(),
   entityByEvent: new Map<Types.Events.Event, HandlerHelpers.Entity>(),
   createdEntityCache: new Map<string, HandlerHelpers.Entity>(),
+  entityByUrlCache: new Map<string, HandlerHelpers.Entity>(),
 };
 
 // We track the compositor tile worker thread name events so that at the end we
@@ -146,6 +147,7 @@ export function data(): RendererHandlerData {
       entityByEvent: new Map(entityMappings.entityByEvent),
       eventsByEntity: new Map(entityMappings.eventsByEntity),
       createdEntityCache: new Map(entityMappings.createdEntityCache),
+      entityByUrlCache: new Map(entityMappings.entityByUrlCache),
     },
   };
 }
@@ -337,7 +339,7 @@ export function buildHierarchy(
                 cpuProfile, samplesDataForThread.profileId, pid, tid, config);
         const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
         if (samplesIntegrator && profileCalls) {
-          allTraceEntries = [...allTraceEntries, ...profileCalls];
+          allTraceEntries = allTraceEntries.concat(profileCalls);
           thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);
           thread.profileCalls = profileCalls;
           // We'll also inject the instant JSSample events (in debug mode only)

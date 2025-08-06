@@ -74,6 +74,7 @@ const entityMappings: HandlerHelpers.EntityMappings = {
   eventsByEntity: new Map<HandlerHelpers.Entity, Types.Events.Event[]>(),
   entityByEvent: new Map<Types.Events.Event, HandlerHelpers.Entity>(),
   createdEntityCache: new Map<string, HandlerHelpers.Entity>(),
+  entityByUrlCache: new Map<string, HandlerHelpers.Entity>(),
 };
 
 function storeTraceEventWithRequestId<K extends keyof TraceEventsForNetworkRequest>(
@@ -582,6 +583,7 @@ export function data(): NetworkRequestData {
       entityByEvent: new Map(entityMappings.entityByEvent),
       eventsByEntity: new Map(entityMappings.eventsByEntity),
       createdEntityCache: new Map(entityMappings.createdEntityCache),
+      entityByUrlCache: new Map(entityMappings.entityByUrlCache),
     },
     linkPreconnectEvents,
   };

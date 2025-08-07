@@ -10,36 +10,7 @@ import { createLogger } from '../core/Logger.js';
 
 const logger = createLogger('Tools');
 
-/**
- * Helper function to create tracing observation for any tool execution
- */
-async function createToolTracingObservation(toolName: string, args: any): Promise<void> {
-  try {
-    const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
-    const context = getCurrentTracingContext();
-    if (context) {
-      const tracingProvider = createTracingProvider();
-      await tracingProvider.createObservation({
-        id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-        name: `Tool Execute: ${toolName}`,
-        type: 'event',
-        startTime: new Date(),
-        input: { 
-          toolName, 
-          toolArgs: args,
-          contextInfo: `Direct tool execution in ${toolName}`
-        },
-        metadata: {
-          executionPath: 'direct-tool',
-          toolName
-        }
-      }, context.traceId);
-    }
-  } catch (tracingError) {
-    // Don't fail tool execution due to tracing errors
-    console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
-  }
-}
+// Removed createToolTracingObservation - tool tracing is now handled centrally in ToolExecutorNode
 
 // Value imports first, then types, ordered correctly
 import type { AccessibilityNode } from '../common/context.js';
@@ -61,6 +32,7 @@ import { FullPageAccessibilityTreeToMarkdownTool, type FullPageAccessibilityTree
 import { HTMLToMarkdownTool, type HTMLToMarkdownResult } from './HTMLToMarkdownTool.js';
 import { SchemaBasedExtractorTool, type SchemaExtractionResult, type SchemaDefinition } from './SchemaBasedExtractorTool.js';
 import { VisitHistoryManager, type VisitData } from './VisitHistoryManager.js';
+import { SequentialThinkingTool, type SequentialThinkingResult, type SequentialThinkingArgs, type ExecutedStep } from './SequentialThinkingTool.js';
 
 /**
  * Base interface for all tools
@@ -147,7 +119,6 @@ export interface NetworkAnalysisResult {
  * Type for navigation result
  */
 export interface NavigationResult {
-  success: boolean;
   url: string;
   message: string;
   metadata?: { url: string, title: string };
@@ -177,7 +148,6 @@ export interface PageHTMLResult {
  * Type for click element result
  */
 export interface ClickElementResult {
-  success: boolean;
   message: string;
   elementInfo?: {
     tagName: string,
@@ -216,10 +186,19 @@ export interface ScrollResult {
 /**
  * Type for screenshot result
  */
-export interface ScreenshotResult {
-  success: boolean;
-  dataUrl?: string;
-  message: string;
+/**
+ * Interface for tool results that can include image data
+ */
+export interface ImageToolResult {
+  imageData?: string;  // Base64 data URL for sending to LLM
+  error?: string;
+}
+
+/**
+ * Result type for screenshot operations
+ */
+export interface ScreenshotResult extends ImageToolResult {
+  // Inherits success, message, imageData, error from ImageToolResult
 }
 
 /**
@@ -260,7 +239,7 @@ export interface AccessibilityTreeResult {
 /**
  * Type for perform action result
  */
-export interface PerformActionResult {
+export interface PerformActionResult extends ImageToolResult {
   xpath: string;
   pageChange: {
     hasChanges: boolean;
@@ -274,6 +253,7 @@ export interface PerformActionResult {
       modified: boolean;
     };
   };
+  visualCheck?: string; // LLM's assessment of success
 }
 
 /**
@@ -334,6 +314,16 @@ export interface SchemaBasedDataExtractionResult {
 }
 
 /**
+ * Type for wait result
+ */
+export interface WaitResult {
+  waited: number;
+  reason: string;
+  completed: boolean;
+  viewportSummary?: string;
+}
+
+/**
  * Tool for executing JavaScript in the page context
  */
 export class ExecuteJavaScriptTool implements Tool<{ code: string }, JavaScriptExecutionResult | ErrorResult> {
@@ -341,7 +331,6 @@ export class ExecuteJavaScriptTool implements Tool<{ code: string }, JavaScriptE
   description = 'Executes JavaScript code in the page context';
 
   async execute(args: { code: string }): Promise<JavaScriptExecutionResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     logger.info('execute_javascript', args);
     const code = args.code;
     if (typeof code !== 'string') {
@@ -400,7 +389,6 @@ export class NetworkAnalysisTool implements Tool<{ url?: string, limit?: number 
   description = 'Analyzes network requests, optionally filtered by URL pattern';
 
   async execute(args: { url?: string, limit?: number }): Promise<NetworkAnalysisResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     const url = args.url;
     const limit = args.limit || 10;
 
@@ -637,7 +625,6 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
   }
 
   async execute(args: { url: string, reasoning: string /* Add reasoning to signature */ }): Promise<NavigationResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     logger.info('navigate_url', args);
     const url = args.url;
     const LOAD_TIMEOUT_MS = 30000; // 30 seconds timeout for page load
@@ -691,7 +678,6 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
         // Proceed but without metadata, perhaps? Or return error?
         // Let's return success but indicate metadata failure.
         return {
-          success: true,
           url: target.inspectedURL() || url, // Use inspectedURL as fallback
           message: `Successfully navigated to ${target.inspectedURL() || url}, but failed to fetch metadata: ${metadataEval.exceptionDetails.text}`,
           metadata: undefined,
@@ -747,7 +733,6 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
         // Return an error or modify success message?
         // Let's modify the message but still return success=true, as the page *did* load.
         return {
-          success: true, // Technically navigated and loaded *something*
           url: finalUrl,
           message: `Navigation ended at ${finalUrl} (expected ${intendedUrl}) but page loaded.${verificationMessage}`,
           metadata,
@@ -756,7 +741,6 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
       // **********************************************************
 
       return {
-        success: true,
         url: metadata.url, // Use URL from metadata
         message: `Navigated to ${metadata.url} and page loaded.${verificationMessage}`,
         metadata,
@@ -889,7 +873,6 @@ export class NavigateBackTool implements Tool<{ steps: number, reasoning: string
   };
 
   async execute(args: { steps: number, reasoning: string }): Promise<NavigateBackResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     logger.error('navigate_back', args);
     const steps = args.steps;
     if (typeof steps !== 'number' || steps <= 0) {
@@ -994,7 +977,6 @@ export class GetPageHTMLTool implements Tool<Record<string, unknown>, PageHTMLRe
   description = 'Gets the HTML contents and structure of the current page for analysis and summarization with CSS, JavaScript, and other non-essential content removed';
 
   async execute(_args: Record<string, unknown>): Promise<PageHTMLResult | ErrorResult> {
-    await createToolTracingObservation(this.name, _args);
     // Get the main target
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
@@ -1107,7 +1089,6 @@ export class ClickElementTool implements Tool<{ selector: string }, ClickElement
   description = 'Clicks on an element identified by a CSS selector';
 
   async execute(args: { selector: string }): Promise<ClickElementResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     
     const selector = args.selector;
     if (typeof selector !== 'string') {
@@ -1182,7 +1163,6 @@ export class SearchContentTool implements Tool<{ query: string, limit?: number }
   description = 'Searches for text content on the page and returns matching elements';
 
   async execute(args: { query: string, limit?: number }): Promise<SearchContentResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     
     const query = args.query;
     const limit = args.limit || 5;
@@ -1326,7 +1306,6 @@ export class ScrollPageTool implements Tool<{ position?: { x: number, y: number 
   description = 'Scrolls the page to a specific position or in a specific direction';
 
   async execute(args: { position?: { x: number, y: number }, direction?: string, amount?: number }): Promise<ScrollResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     const position = args.position;
     const direction = args.direction;
     const amount = args.amount || 300;  // Default scroll amount
@@ -1421,14 +1400,125 @@ export class ScrollPageTool implements Tool<{ position?: { x: number, y: number 
 }
 
 /**
+ * Tool for waiting a specified duration
+ */
+export class WaitTool implements Tool<{ seconds?: number, duration?: number, reason?: string, reasoning?: string }, WaitResult | ErrorResult> {
+  name = 'wait_for_page_load';
+  description = 'Waits for a specified number of seconds to allow page content to load, animations to complete, or dynamic content to appear. After waiting, returns a summary of what is currently visible in the viewport to help determine if additional waiting is needed. Provide the number of seconds to wait and an optional reasoning for waiting.';
+
+  async execute(args: { seconds?: number, duration?: number, reason?: string, reasoning?: string }): Promise<WaitResult | ErrorResult> {
+    // Handle both 'seconds' and 'duration' parameter names for flexibility
+    const waitTime = args.seconds ?? args.duration;
+    const waitReason = args.reason ?? args.reasoning;
+    
+    // Validate input
+    if (typeof waitTime !== 'number') {
+      return { error: 'Must provide either "seconds" or "duration" parameter as a number' };
+    }
+    
+    if (waitTime < 0.1) {
+      return { error: 'Wait time must be at least 0.1 seconds' };
+    }
+    
+    if (waitTime > 300) {
+      return { error: 'Wait time cannot exceed 300 seconds (5 minutes) for safety' };
+    }
+
+    // Log the wait reason if provided
+    logger.info(`Waiting for ${waitTime} seconds${waitReason ? `: ${waitReason}` : ''}`);
+
+    // Wait for the specified duration
+    await new Promise(resolve => setTimeout(resolve, waitTime * 1000));
+
+    // Get viewport summary after waiting
+    let viewportSummary: string | undefined;
+    try {
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      if (target) {
+        // Get visible accessibility tree
+        const treeResult = await Utils.getVisibleAccessibilityTree(target);
+        
+        // Generate summary using LLM
+        const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+        const llm = LLMClient.getInstance();
+        
+        const reasonContext = waitReason ? `The wait was specifically for: ${waitReason}` : 'No specific reason was provided for the wait.';
+        
+        const systemPrompt = `You are analyzing the visible content of a webpage after a wait period. ${reasonContext}
+
+Provide a concise summary of what's currently visible in the viewport, paying special attention to elements related to the wait reason.
+
+Focus on:
+- Main content elements (headings, buttons, forms, text)
+- Loading indicators or spinners  
+- Error messages or notifications
+- Whether the page appears fully loaded or still loading
+- Any animations or transitions in progress
+- Elements specifically related to the wait reason (if provided)
+
+Keep the summary to 2-3 sentences maximum.`;
+
+        const userPrompt = `Analyze this viewport content and provide a brief summary${waitReason ? `, focusing on elements related to: ${waitReason}` : ''}:
+${treeResult.simplified}`;
+
+        const response = await llm.call({
+          provider,
+          model,
+          messages: [{ role: 'user', content: userPrompt }],
+          systemPrompt,
+          temperature: 0.1,
+        });
+
+        viewportSummary = response.text?.trim();
+      }
+    } catch (error) {
+      // Non-critical error - just log and continue
+      logger.warn('Failed to generate viewport summary:', error);
+    }
+
+    return {
+      waited: waitTime,
+      reason: waitReason || 'Waiting for page to settle',
+      completed: true,
+      viewportSummary
+    };
+  }
+
+  schema = {
+    type: 'object',
+    properties: {
+      seconds: {
+        type: 'number',
+        description: 'Number of seconds to wait (minimum 0.1, maximum 300)',
+        minimum: 0.1,
+        maximum: 300
+      },
+      duration: {
+        type: 'number',
+        description: 'Alternative to seconds - number of seconds to wait (minimum 0.1, maximum 300)',
+        minimum: 0.1,
+        maximum: 300
+      },
+      reasoning: {
+        type: 'string',
+        description: 'Optional reasoning for waiting (e.g., "for animation to complete", "for content to load")'
+      },
+      reason: {
+        type: 'string',
+        description: 'Alternative to reasoning - optional reason for waiting'
+      }
+    },
+  };
+}
+
+/**
  * Tool for taking screenshots of the page
  */
 export class TakeScreenshotTool implements Tool<{fullPage?: boolean}, ScreenshotResult|ErrorResult> {
   name = 'take_screenshot';
-  description = 'Takes a screenshot of the current page view or the entire page';
+  description = 'Takes a screenshot of the current page view or the entire page. The image can be used for analyzing the page layout, content, and visual elements. Always specify whether to capture the full page or just the viewport and the reasoning behind it.';
 
   async execute(args: {fullPage?: boolean}): Promise<ScreenshotResult|ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     const fullPage = args.fullPage || false;
 
     // Get the main target
@@ -1457,10 +1547,10 @@ export class TakeScreenshotTool implements Tool<{fullPage?: boolean}, Screenshot
       // Get base64 data from result
       const data = result.data;
 
+      const imageData = `data:image/png;base64,${data}`;
+      
       return {
-        success: true,
-        dataUrl: `data:image/png;base64,${data}`,
-        message: `Successfully took ${fullPage ? 'full page' : 'viewport'} screenshot`,
+        imageData: imageData
       };
     } catch (error) {
       return {error: `Failed to take screenshot: ${error.message}`};
@@ -1474,6 +1564,10 @@ export class TakeScreenshotTool implements Tool<{fullPage?: boolean}, Screenshot
         type: 'boolean',
         description: 'Whether to capture the entire page or just the viewport (default: false)',
       },
+      reasoning: {
+        type: 'string',
+        description: 'Optional reasoning for taking the screenshot (e.g., "for visual analysis", "to capture layout")'
+      }
     },
   };
 }
@@ -1486,7 +1580,6 @@ export class GetAccessibilityTreeTool implements Tool<{ reasoning: string }, Acc
   description = 'Gets the accessibility tree of the current page, providing a hierarchical structure of all accessible elements.';
 
   async execute(args: { reasoning: string }): Promise<AccessibilityTreeResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     try {
       // Log reasoning for this action (addresses unused args warning)
       logger.warn(`Getting accessibility tree: ${args.reasoning}`);
@@ -1531,7 +1624,6 @@ export class GetVisibleAccessibilityTreeTool implements Tool<{ reasoning: string
   description = 'Gets the accessibility tree of only the visible content in the viewport, providing a focused view of what the user can currently see.';
 
   async execute(args: { reasoning: string }): Promise<AccessibilityTreeResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     try {
       // Log reasoning for this action
       logger.warn(`Getting visible accessibility tree: ${args.reasoning}`);
@@ -1588,7 +1680,6 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number 
   description = 'Performs an action on a DOM element identified by NodeID';
 
   async execute(args: { method: string, nodeId: number | string, reasoning: string, args?: Record<string, unknown> | unknown[] }): Promise<PerformActionResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     logger.info('Executing with args:', JSON.stringify(args));
     const method = args.method;
     const nodeId = args.nodeId;
@@ -1817,6 +1908,19 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number 
         logger.warn('Failed to capture tree before action:', error);
       }
 
+      // --- Capture screenshot before action ---
+      let beforeScreenshotData: string | undefined;
+      try {
+        const beforeScreenshotResult = await target.pageAgent().invoke_captureScreenshot({
+          format: 'png' as Protocol.Page.CaptureScreenshotRequestFormat,
+          captureBeyondViewport: false
+        });
+        beforeScreenshotData = beforeScreenshotResult.data;
+        logger.info('Captured before screenshot');
+      } catch (error) {
+        logger.warn('Failed to capture before screenshot:', error);
+      }
+
       // --- Perform Action (Do this BEFORE verification) ---
       logger.info(`Executing Utils.performAction('${method}', args: ${JSON.stringify(actionArgsArray)}, xpath: '${xpath}', iframeNodeId: '${iframeNodeId || 'none'}')`);
       await Utils.performAction(target, method, actionArgsArray, xpath, iframeNodeId);
@@ -1935,6 +2039,233 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number 
         }
       }
 
+      // Visual verification using before/after screenshots and LLM
+      let visualCheck: string | undefined;
+      
+      // Check if current model supports vision
+      const currentModel = AIChatPanel.instance().getSelectedModel();
+      const isVisionCapable = await AIChatPanel.isVisionCapable(currentModel);
+      
+      if (!isVisionCapable) {
+        logger.info(`Model ${currentModel} does not support vision - using DOM-based verification`);
+        
+        // DOM-based verification for non-vision models
+        try {
+          // Get current (after action) content
+          let afterContent = '';
+          try {
+            const afterTreeResult = await Utils.getAccessibilityTree(target);
+            afterContent = afterTreeResult.simplified;
+          } catch (error) {
+            logger.warn('Failed to get after content for DOM verification:', error);
+            afterContent = 'Unable to retrieve page content';
+          }
+          
+          // Use LLM to analyze DOM changes
+          const llmClient = LLMClient.getInstance();
+          const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+          const response = await llmClient.call({
+            provider,
+            model,
+            systemPrompt: 'You are a DOM verification assistant. Analyze page content to determine if actions succeeded.',
+            messages: [
+              {
+                role: 'user',
+                content: `Analyze the page content to determine if this ${method} action succeeded.
+
+ACTION DETAILS:
+- Method: ${method}
+- Target Element XPath: ${xpath}
+- Node ID: ${nodeId}
+- Arguments: ${JSON.stringify(actionArgsArray)}
+- Reasoning: ${reasoning}
+${verificationMessage ? `- Verification status: ${verificationMessage}` : ''}
+
+CURRENT PAGE CONTENT (after action):
+${afterContent}
+
+Based on the page content and action details, please describe:
+- What changes occurred in the page content
+- Whether the action appears to have succeeded
+- Any error messages or unexpected behavior
+- Your overall assessment of the action's success
+
+Provide a clear, concise response about what happened.`
+              }
+            ],
+            temperature: 0
+          });
+          
+          visualCheck = response.text || 'No DOM verification response';
+          logger.info('DOM-based verification result:', visualCheck);
+        } catch (error) {
+          logger.warn('DOM-based verification failed:', error);
+          visualCheck = 'Unable to perform DOM-based verification';
+        }
+      } else {
+        try {
+          // Add some delay to allow UI to refresh
+          await new Promise(resolve => setTimeout(resolve, 300));
+          
+          // Take after screenshot
+          const afterScreenshotResult = await target.pageAgent().invoke_captureScreenshot({
+          format: 'png' as Protocol.Page.CaptureScreenshotRequestFormat,
+          captureBeyondViewport: false
+        });
+
+        if (afterScreenshotResult.data && beforeScreenshotData) {
+          // Get current page content for context
+          let currentPageContent = '';
+          try {
+            const currentTreeResult = await Utils.getAccessibilityTree(target);
+            currentPageContent = currentTreeResult.simplified;
+          } catch (error) {
+            logger.warn('Failed to get current page content for visual verification:', error);
+            currentPageContent = 'Page content unavailable';
+          }
+
+          // Ask LLM to verify using nano model for efficiency
+          const llmClient = LLMClient.getInstance();
+          const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+          const response = await llmClient.call({
+            provider,
+            model,
+            systemPrompt: 'You are a visual verification assistant. Compare before/after screenshots and page context to determine if actions succeeded.',
+            messages: [
+              {
+                role: 'user',
+                content: [
+                  {
+                    type: 'text',
+                    text: `Analyze the before and after screenshots to determine if this ${method} action succeeded and describe what you observe.
+
+ACTION DETAILS:
+- Method: ${method}
+- Target Element XPath: ${xpath}
+- Node ID: ${nodeId}
+- Arguments: ${JSON.stringify(actionArgsArray)}
+- Reasoning: ${reasoning}
+
+CURRENT PAGE CONTENT (visible elements):
+${currentPageContent}
+
+Please compare the before and after screenshots and describe:
+- What visual changes occurred between the two images
+- Whether these changes indicate the action was successful
+- Any error messages, validation warnings, or unexpected behavior you notice
+- Loading states, navigation changes, or form submissions that occurred
+- Your overall assessment of whether the action achieved its intended result
+
+The first image shows the page BEFORE the action, the second image shows the page AFTER the action.
+
+Provide a clear, descriptive response about what happened and whether the action appears to have succeeded.`
+                  },
+                  {
+                    type: 'image_url',
+                    image_url: {
+                      url: `data:image/png;base64,${beforeScreenshotData}`
+                    }
+                  },
+                  {
+                    type: 'image_url',
+                    image_url: {
+                      url: `data:image/png;base64,${afterScreenshotResult.data}`
+                    }
+                  }
+                ]
+              }
+            ],
+            temperature: 0
+          });
+          
+          visualCheck = response.text || 'No response';
+          logger.info('Visual verification result:', visualCheck);
+        } else if (afterScreenshotResult.data && !beforeScreenshotData) {
+          // Fallback to single after screenshot if before screenshot failed
+          logger.warn('Before screenshot unavailable, using after screenshot only');
+          
+          // Get current page content for context
+          let currentPageContent = '';
+          try {
+            const currentTreeResult = await Utils.getAccessibilityTree(target);
+            currentPageContent = currentTreeResult.simplified;
+          } catch (error) {
+            logger.warn('Failed to get current page content for visual verification:', error);
+            currentPageContent = 'Page content unavailable';
+          }
+
+          const llmClient = LLMClient.getInstance();
+          const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+          const response = await llmClient.call({
+            provider,
+            model,
+            systemPrompt: 'You are a visual verification assistant. Analyze screenshots and page context to determine if actions succeeded.',
+            messages: [
+              {
+                role: 'user',
+                content: [
+                  {
+                    type: 'text',
+                    text: `Analyze this screenshot to determine if the ${method} action succeeded and describe what you observe.
+
+ACTION DETAILS:
+- Method: ${method}
+- Target Element XPath: ${xpath}
+- Node ID: ${nodeId}
+- Arguments: ${JSON.stringify(actionArgsArray)}
+- Reasoning: ${reasoning}
+
+CURRENT PAGE CONTENT (visible elements):
+${currentPageContent}
+
+Please examine the screenshot and page content to describe:
+- What the current state of the page shows
+- Any visible indicators that suggest the action succeeded or failed
+- Error messages, validation warnings, or unexpected behavior you notice
+- Loading states, navigation changes, or form submissions that may have occurred
+- Your assessment of whether the action achieved its intended result
+
+Note: Only the after-action screenshot is available for analysis.
+
+Provide a clear, descriptive response about what you observe and whether the action appears to have succeeded.`
+                  },
+                  {
+                    type: 'image_url',
+                    image_url: {
+                      url: `data:image/png;base64,${afterScreenshotResult.data}`
+                    }
+                  }
+                ]
+              }
+            ],
+            temperature: 0
+          });
+          
+          visualCheck = response.text || 'No response';
+          logger.info('Visual verification result (after only):', visualCheck);
+        } else {
+          logger.error('Screenshot data is empty or undefined');
+        }
+        } catch (error) {
+          logger.warn('Visual verification failed:', error);
+          // Don't fail the action, just log the issue
+        }
+      }
+
+      // Get after-action screenshot data for returning to main LLM
+      let afterActionImageData: string | undefined;
+      try {
+        const afterScreenshotResult = await target.pageAgent().invoke_captureScreenshot({
+          format: 'png' as Protocol.Page.CaptureScreenshotRequestFormat,
+          captureBeyondViewport: false
+        });
+        if (afterScreenshotResult.data) {
+          afterActionImageData = `data:image/png;base64,${afterScreenshotResult.data}`;
+        }
+      } catch (error) {
+        logger.warn('Failed to capture after-action image for main LLM:', error);
+      }
+
       return {
         xpath,
         pageChange: treeDiff ? {
@@ -1956,6 +2287,7 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number 
           modified: [],
           hasMore: { added: false, removed: false, modified: false }
         },
+        visualCheck
       };
     } catch (error: unknown) {
       logger.info('Error during execution:', error instanceof Error ? error.message : String(error));
@@ -2493,7 +2825,6 @@ Important guidelines:
 
 
   async execute(args: { objective: string, offset?: number, chunkSize?: number, maxRetries?: number }): Promise<ObjectiveDrivenActionResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     const { objective, offset = 0, chunkSize = 60000, maxRetries = 1 } = args; // Default offset 0, chunkSize 60000, maxRetries 1
     let currentTry = 0;
     let lastError: string | null = null;
@@ -2574,7 +2905,8 @@ Important guidelines:
               parameters: performActionTool.schema
             }
           }],
-          temperature: 0.4
+          temperature: 0.4,
+          retryConfig: { maxRetries: 3, baseDelayMs: 2000 }
         });
         
         // Convert LLMResponse to expected format
@@ -2743,7 +3075,6 @@ export class NodeIDsToURLsTool implements Tool<{ nodeIds: number[] }, NodeIDsToU
   description = 'Gets URLs associated with DOM elements identified by NodeIDs from accessibility tree.';
 
   async execute(args: { nodeIds: number[] }): Promise<NodeIDsToURLsResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     if (!Array.isArray(args.nodeIds)) {
       return { error: 'nodeIds must be an array of numbers' };
     }
@@ -2850,7 +3181,7 @@ export class SchemaBasedDataExtractionTool implements Tool<{
   maxRetries?: number,
 }, SchemaBasedDataExtractionResult | ErrorResult> {
   name = 'schema_based_extraction';
-  description = 'Extracts structured data from the page according to a provided schema and objective, returning results in JSON format that resembles HTML structure. Uses an efficient NodeID-based extraction approach where accessibility NodeIDs are first identified then resolved to content. The output preserves document hierarchy with proper parent-child relationships between elements. Particularly useful for extracting content while maintaining its original structure and relationships.';
+  description = 'Extracts structured data from the page according to a provided schema and objective, returning results in JSON format that resembles JSON structure. Particularly useful for extracting content while maintaining its original structure and relationships. ALWAYS provide a JSON Schema definition that describes the structure of data to extract.';
 
   // Create system prompt for SchemaBasedDataExtractionTool
   private getSystemPrompt(): string {
@@ -3430,7 +3761,6 @@ CRITICAL:
 
 
   async execute(args: { objective: string, schema: Record<string, unknown>, offset?: number, chunkSize?: number, maxRetries?: number }): Promise<SchemaBasedDataExtractionResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     const { objective, schema, offset = 0, chunkSize = 60000, maxRetries = 1 } = args; // Default offset 0, chunkSize 60000, maxRetries 1
     let currentTry = 0;
     let lastError: string | null = null;
@@ -3496,7 +3826,8 @@ Extract NodeIDs according to the provided objective and schema, then return a st
             { role: 'user', content: promptExtractData }
           ],
           systemPrompt: this.getSystemPrompt(),
-          temperature: 0.7
+          temperature: 0.7,
+          retryConfig: { maxRetries: 3, baseDelayMs: 1000 }
         });
         const response = llmResponse.text;
         logger.info('SchemaBasedDataExtractionTool: Response:', response);
@@ -3636,7 +3967,6 @@ export class GetVisitsByDomainTool implements Tool<{ domain: string }, VisitHist
   description = 'Get a list of visited pages filtered by domain name';
 
   async execute(args: { domain: string }): Promise<VisitHistoryDomainResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     try {
       const visits = await VisitHistoryManager.getInstance().getVisitsByDomain(args.domain);
 
@@ -3675,7 +4005,6 @@ export class GetVisitsByKeywordTool implements Tool<{ keyword: string }, VisitHi
   description = 'Get a list of visited pages containing a specific keyword';
 
   async execute(args: { keyword: string }): Promise<VisitHistoryKeywordResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     try {
       const visits = await VisitHistoryManager.getInstance().getVisitsByKeyword(args.keyword);
 
@@ -3721,7 +4050,6 @@ export class SearchVisitHistoryTool implements Tool<{
     daysAgo?: number,
     limit?: number,
   }): Promise<VisitHistorySearchResult | ErrorResult> {
-    await createToolTracingObservation(this.name, args);
     try {
       const { domain, keyword, daysAgo, limit } = args;
 
@@ -3815,7 +4143,9 @@ export function getTools(): Array<(
   Tool<{ answer: string }, FinalizeWithCritiqueResult> |
   Tool<{ domain: string }, VisitHistoryDomainResult | ErrorResult> |
   Tool<{ keyword: string }, VisitHistoryKeywordResult | ErrorResult> |
-  Tool<{ domain?: string, keyword?: string, daysAgo?: number, limit?: number }, VisitHistorySearchResult | ErrorResult>
+  Tool<{ domain?: string, keyword?: string, daysAgo?: number, limit?: number }, VisitHistorySearchResult | ErrorResult> |
+  Tool<{ seconds: number, reason?: string }, WaitResult | ErrorResult> |
+  Tool<SequentialThinkingArgs, SequentialThinkingResult | ErrorResult>
 )> {
   return [
     new ExecuteJavaScriptTool(),
@@ -3837,6 +4167,11 @@ export function getTools(): Array<(
     new FinalizeWithCritiqueTool(),
     new GetVisitsByDomainTool(),
     new GetVisitsByKeywordTool(),
-    new SearchVisitHistoryTool()
+    new SearchVisitHistoryTool(),
+    new WaitTool(),
+    new SequentialThinkingTool()
   ];
 }
+
+// Export the SequentialThinkingTool
+export { SequentialThinkingTool } from './SequentialThinkingTool.js';

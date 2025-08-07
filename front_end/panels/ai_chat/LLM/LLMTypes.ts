@@ -142,11 +142,11 @@ export interface ExtendedRetryConfig extends ErrorRetryConfig {
 export type LLMProvider = 'openai' | 'litellm' | 'groq' | 'openrouter';
 
 /**
- * Content types for multimodal messages (text + images)
+ * Content types for multimodal messages (text + images + files)
  */
 export type MessageContent = 
   | string 
-  | Array<TextContent | ImageContent>;
+  | Array<TextContent | ImageContent | FileContent>;
 
 export interface TextContent {
   type: 'text';
@@ -161,9 +161,17 @@ export interface ImageContent {
   };
 }
 
+export interface FileContent {
+  type: 'file';
+  file: {
+    filename: string;
+    file_data: string; // Base64 encoded data URL (e.g., "data:application/pdf;base64,...")
+  };
+}
+
 /**
  * Message format compatible with OpenAI and LiteLLM APIs
- * Supports both text-only and multimodal (text + images) content
+ * Supports both text-only and multimodal (text + images + PDFs) content
  */
 export interface LLMMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';

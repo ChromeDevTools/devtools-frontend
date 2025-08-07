@@ -36,6 +36,9 @@ devtools_module("ai_chat") {
     "core/GraphHelpers.ts",
     "core/StateGraph.ts",
     "core/Logger.ts",
+    "core/AgentErrorHandler.ts",
+    "core/Version.ts",
+    "core/VersionChecker.ts",
     "LLM/LLMTypes.ts",
     "LLM/LLMProvider.ts",
     "LLM/LLMProviderRegistry.ts",
@@ -59,8 +62,11 @@ devtools_module("ai_chat") {
     "tools/VectorDBClient.ts",
     "tools/BookmarkStoreTool.ts",
     "tools/DocumentSearchTool.ts",
+    "tools/SequentialThinkingTool.ts",
+    "tools/ThinkingTool.ts",
     "agent_framework/ConfigurableAgentTool.ts",
     "agent_framework/AgentRunner.ts",
+    "agent_framework/AgentSessionTypes.ts",
     "agent_framework/implementation/ConfiguredAgents.ts",
     "evaluation/framework/types.ts",
     "evaluation/framework/judges/LLMEvaluator.ts",
@@ -90,10 +96,6 @@ devtools_module("ai_chat") {
     "tracing/TracingProvider.ts",
     "tracing/LangfuseProvider.ts",
     "tracing/TracingConfig.ts",
-    "ui/components/TracingConfig.ts",
-    "ui/components/EvaluationConfig.ts",
-    "ui/components/VectorDatabaseConfig.ts",
-    "ui/components/ProviderConfig.ts",
     "auth/PKCEUtils.ts",
     "auth/OpenRouterOAuth.ts",
   ]
@@ -124,10 +126,6 @@ _ai_chat_sources = [
     "ui/PromptEditDialog.ts",
     "ui/SettingsDialog.ts",
     "ui/EvaluationDialog.ts",
-    "ui/components/TracingConfig.ts",
-    "ui/components/EvaluationConfig.ts",
-    "ui/components/VectorDatabaseConfig.ts",
-    "ui/components/ProviderConfig.ts",
     "ai_chat_impl.ts",
     "core/Graph.ts",
     "core/State.ts",
@@ -142,6 +140,9 @@ _ai_chat_sources = [
     "core/GraphHelpers.ts",
     "core/StateGraph.ts",
     "core/Logger.ts",
+    "core/AgentErrorHandler.ts",
+    "core/Version.ts",
+    "core/VersionChecker.ts",
     "LLM/LLMTypes.ts",
     "LLM/LLMProvider.ts",
     "LLM/LLMProviderRegistry.ts",
@@ -165,8 +166,11 @@ _ai_chat_sources = [
     "tools/VectorDBClient.ts",
     "tools/BookmarkStoreTool.ts",
     "tools/DocumentSearchTool.ts",
+    "tools/SequentialThinkingTool.ts",
+    "tools/ThinkingTool.ts",
     "agent_framework/ConfigurableAgentTool.ts",
     "agent_framework/AgentRunner.ts",
+    "agent_framework/AgentSessionTypes.ts",
     "agent_framework/implementation/ConfiguredAgents.ts",
     "evaluation/framework/types.ts",
     "evaluation/framework/judges/LLMEvaluator.ts",
@@ -275,4 +279,19 @@ devtools_entrypoint("meta") {
   deps = [ ":bundle" ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "common/utils.test.ts",
+  ]
+
+  deps = [
+    ":ai_chat",
+    "../../testing",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+  ]
 }

@@ -34,7 +34,7 @@ devtools-code-block.animating {
 
 .message {
   line-height: 18px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--sys-color-on-surface);
   user-select: text;
 }

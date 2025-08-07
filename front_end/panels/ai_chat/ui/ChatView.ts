@@ -13,6 +13,9 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import { createLogger } from '../core/Logger.js';
+import type { AgentSession, AgentMessage, ToolCallMessage as AgentToolCallMessage, ToolResultMessage as AgentToolResultMessage } from '../agent_framework/AgentSessionTypes.js';
+import { getAgentUIConfig } from '../agent_framework/AgentSessionTypes.js';
+import { VersionChecker, type VersionInfo } from '../core/VersionChecker.js';
 
 const logger = createLogger('ChatView');
 
@@ -127,6 +130,7 @@ export enum ChatMessageEntity {
   USER = 'user',
   MODEL = 'model',
   TOOL_RESULT = 'tool_result',
+  AGENT_SESSION = 'agent_session',
 }
 
 // Base structure for all chat messages
@@ -172,11 +176,27 @@ export interface ToolResultMessage extends BaseChatMessage {
     resultData?: any;
     // Tool call ID for linking to assistant tool call (OpenAI format)
     toolCallId?: string;
+    // Mark if this is from a ConfigurableAgentTool
+    isFromConfigurableAgent?: boolean;
+    // Base64 image data URL for multimodal LLM responses
+    imageData?: string;
+    // Optional summary for agent tool completions
+    summary?: string;
+}
+
+// Represents an agent session execution
+export interface AgentSessionMessage extends BaseChatMessage {
+    entity: ChatMessageEntity.AGENT_SESSION;
+    agentSession: AgentSession;
+    // Link to the user message that triggered this execution
+    triggerMessageId?: string;
+    // Summary for quick display
+    summary?: string;
 }
 
 // Union type representing any possible chat message
 export type ChatMessage =
-    UserChatMessage|ModelChatMessage|ToolResultMessage;
+    UserChatMessage|ModelChatMessage|ToolResultMessage|AgentSessionMessage;
 
 // Defines the structure of an image input
 export interface ImageInputData {
@@ -231,6 +251,7 @@ export class ChatView extends HTMLElement {
 
   #messages: ChatMessage[] = [];
   #state: State = State.IDLE;
+  #agentViewMode: 'simplified' | 'enhanced' = 'simplified';
   #isTextInputEmpty = true;
   #imageInput?: ImageInputData;
   #onSendMessage?: (text: string, imageInput?: ImageInputData) => void;
@@ -266,6 +287,16 @@ export class ChatView extends HTMLElement {
   #aiAssistantStates = new Map<string, 'pending' | 'opened' | 'failed'>();
   #lastProcessedMessageKey: string | null = null;
 
+  // Add model selector state for searchable dropdown
+  #isModelDropdownOpen = false;
+  #modelSearchQuery = '';
+  #highlightedOptionIndex = 0;
+  #dropdownPosition: 'above' | 'below' = 'below';
+  
+  // Add version info state
+  #versionInfo: VersionInfo | null = null;
+  #isVersionBannerDismissed = false;
+
   connectedCallback(): void {
     const sheet = new CSSStyleSheet();
     sheet.replaceSync(chatViewStyles);
@@ -278,6 +309,9 @@ export class ChatView extends HTMLElement {
     if (this.#messagesContainerElement) {
       this.#messagesContainerResizeObserver.observe(this.#messagesContainerElement);
     }
+    
+    // Check for updates when component is connected
+    this.#checkForUpdates();
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -288,7 +322,52 @@ export class ChatView extends HTMLElement {
     
     // Clear state maps to prevent memory leaks
     this.#aiAssistantStates.clear();
+  }
+
+
+  /**
+   * Set the agent view mode for simplified/enhanced toggle
+   */
+  setAgentViewMode(mode: 'simplified' | 'enhanced'): void {
+    this.#agentViewMode = mode;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
     this.#lastProcessedMessageKey = null;
+  }
+
+  /**
+   * Check if a message is part of an agent session
+   */
+  #isPartOfAgentSession(message: ChatMessage): boolean {
+    // Check if there's an AgentSessionMessage in the current messages
+    const hasAgentSession = this.#messages.some(msg => msg.entity === ChatMessageEntity.AGENT_SESSION);
+    console.log('[DEBUG] hasAgentSession:', hasAgentSession);
+    
+    if (!hasAgentSession) {
+      return false;
+    }
+    
+    // For ModelChatMessage tool calls, check if they're from ConfigurableAgentTool
+    if (message.entity === ChatMessageEntity.MODEL) {
+      const modelMsg = message as ModelChatMessage;
+      if (modelMsg.action === 'tool' && modelMsg.toolName) {
+        console.log('[DEBUG] Checking tool:', modelMsg.toolName, 'callId:', modelMsg.toolCallId);
+        // Check if there's a corresponding tool result that's from ConfigurableAgentTool
+        const toolResultIndex = this.#messages.findIndex((msg) => 
+          msg.entity === ChatMessageEntity.TOOL_RESULT && 
+          (msg as ToolResultMessage).toolName === modelMsg.toolName &&
+          (msg as ToolResultMessage).toolCallId === modelMsg.toolCallId
+        );
+        
+        console.log('[DEBUG] Found tool result index:', toolResultIndex);
+        if (toolResultIndex !== -1) {
+          const toolResult = this.#messages[toolResultIndex] as ToolResultMessage;
+          console.log('[DEBUG] Tool result isFromConfigurableAgent:', toolResult.isFromConfigurableAgent);
+          return toolResult.isFromConfigurableAgent === true;
+        }
+      }
+    }
+    
+    return false;
   }
 
   // Add method to scroll to bottom
@@ -559,6 +638,7 @@ export class ChatView extends HTMLElement {
     // Store OAuth login state
     this.#showOAuthLogin = data.showOAuthLogin || false;
     this.#onOAuthLogin = data.onOAuthLogin;
+
     
     // Log the input state changes
     if (wasInputDisabled !== this.#isInputDisabled) {
@@ -593,6 +673,7 @@ export class ChatView extends HTMLElement {
       setTimeout(() => this.#scrollToBottom(), 0);
     }
   }
+
 
   #handleSendMessage(): void {
     // Check if textInputElement, onSendMessage callback, or input is disabled
@@ -655,10 +736,25 @@ export class ChatView extends HTMLElement {
               </div>
             </div>
           `;
+        case ChatMessageEntity.AGENT_SESSION:
+          // Render agent session using existing logic
+          {
+            const agentSessionMessage = message as AgentSessionMessage;
+            console.log('[AGENT SESSION RENDER] Rendering AgentSessionMessage:', agentSessionMessage);
+            return this.#renderTaskCompletion(agentSessionMessage.agentSession);
+          }
         case ChatMessageEntity.TOOL_RESULT:
           // Should only render if orphaned
           {
              const toolResultMessage = message as (ToolResultMessage & { orphaned?: boolean });
+             
+             // If this is from a ConfigurableAgentTool, don't render individual cards
+             // Let the agent session UI handle it
+             if (toolResultMessage.isFromConfigurableAgent) {
+               console.log('[UI FILTER] Hiding ConfigurableAgentTool result:', toolResultMessage.toolName);
+               return html``;
+             }
+             
              if (toolResultMessage.orphaned) {
                  return html`
                    <div class="message tool-result-message orphaned ${toolResultMessage.isError ? 'error' : ''}" >
@@ -681,6 +777,16 @@ export class ChatView extends HTMLElement {
           {
             // Cast to the potentially combined type
             const modelMessage = message as (ModelChatMessage & { resultText?: string, isError?: boolean, resultError?: string, combined?: boolean });
+
+            // Hide tool calls that are part of agent sessions
+            if (modelMessage.action === 'tool') {
+              const isPartOfSession = this.#isPartOfAgentSession(modelMessage);
+              console.log('[UI DEBUG] Tool call:', modelMessage.toolName, 'isPartOfAgentSession:', isPartOfSession);
+              if (isPartOfSession) {
+                console.log('[UI FILTER] Hiding ModelChatMessage tool call from agent session:', modelMessage.toolName);
+                return html``;
+              }
+            }
 
             // Check if it's a combined message (tool call + result) or just a running tool call / final answer
             const isCombined = modelMessage.combined === true;
@@ -729,93 +835,96 @@ export class ChatView extends HTMLElement {
               }
             }
 
-            // --- Render Combined Tool Call + Result OR Running Tool Call (with new styling) ---
+            // --- Render Tool Call with Timeline Design ---
             const toolReasoning = modelMessage.toolArgs?.reasoning as string | undefined;
             const resultText = modelMessage.resultText; // Available if combined
             const isResultError = modelMessage.isError ?? false; // Available if combined, default false
             const toolArgs = modelMessage.toolArgs || {};
-            const filteredArgs = Object.fromEntries(Object.entries(toolArgs).filter(([key]) => key !== 'reasoning'));
+            const filteredArgs = Object.fromEntries(Object.entries(toolArgs).filter(([key]) => 
+              key !== 'reasoning' && key !== 'query' && key !== 'url' && key !== 'objective'
+            ));
 
-            // Icons for tool status
-            const spinnerIcon = html`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0z" fill="currentColor"/><path d="M8 0a8 8 0 0 1 8 8h-1.5A6.5 6.5 0 0 0 8 1.5V0z" fill="currentColor"/></svg>`;
-            const checkIcon = html`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.7071 4.29289C14.0976 4.68342 14.0976 5.31658 13.7071 5.70711L7.70711 11.7071C7.31658 12.0976 6.68342 12.0976 6.29289 11.7071L2.29289 7.70711C1.90237 7.31658 1.90237 6.68342 2.29289 6.29289C2.68342 5.90237 3.31658 5.90237 3.70711 6.29289L7 9.58579L12.2929 4.29289C12.6834 3.90237 13.3166 3.90237 13.7071 4.29289Z" fill="currentColor"/></svg>`;
-            const errorIcon = html`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8.78-2.53a.75.75 0 0 0-1.56 0v5.06a.75.75 0 0 0 1.56 0V5.47zm-1.5 7.06a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5z" fill="currentColor"/></svg>`;
+            // Determine status
+            let status = 'running';
+            if (isCombined) {
+              status = isResultError ? 'error' : 'completed';
+            }
+
+            const toolName = modelMessage.toolName || 'unknown_tool';
+            const icon = this.#getToolIcon(toolName);
+            const descriptionData = this.#getToolDescription(toolName, toolArgs);
 
             return html`
-              <!-- Reasoning (if any) displayed above the block -->
+              <!-- Reasoning (if any) displayed above the timeline -->
               ${toolReasoning ? html`
                 <div class="message-text reasoning-text" style="margin-bottom: 8px;">
                   ${renderMarkdown(toolReasoning, this.#markdownRenderer, this.#openInAIAssistantViewer.bind(this))}
                 </div>
               ` : Lit.nothing}
 
-              <!-- Tool Interaction Block (using details/summary) -->
-              <details class="message model-message tool-interaction-details" ?open=${isRunningTool} >
-                <!-- Clickable Summary (Styled like Refine Box) -->
-                <summary class="tool-call-summary">
-                  <!-- Icon -->
-                  <span class=${isRunningTool ? 'spinner-icon' : ''}>
-                    ${isRunningTool ? spinnerIcon : (isResultError ? errorIcon : checkIcon)}
-                  </span>
-                  
-                  <!-- Text Block (Tool Name + Status) -->
-                  <div class="tool-name-container"> 
-                    <span class="tool-name">Tool: ${modelMessage.toolName}</span>
-                    <span class="tool-status-text">
-                      ${isRunningTool ? 'running...' : (isResultError ? 'Error' : 'Completed')}
-                    </span>
-                  </div>
-                </summary>
-
-                <!-- Content inside details (Args + Result Block) -->
-                <div class="tool-details-content"> 
-                  <!-- Args Section -->
-                  <div class="tool-args-container">
-                    <div class="tool-args-section">
-                      <span class="tool-args-label">Args:</span>
-                     ${Object.keys(filteredArgs).length > 0 ? html`
-                       <div class="tool-args-value">
-                           ${Object.entries(filteredArgs)
-                               .map(([key, value]) => html`<div><span class="tool-arg-key">${key}</span>${JSON.stringify(value)}</div>`)
-                               .reduce((prev, curr) => html`${prev}${curr}`, html``)
-                           }
-                       </div>
-                     ` : html`<div class="tool-no-args">No arguments</div>`}
-                    </div>
-                  </div>
-                  <!-- Reasoning Section (if available) -->
-                  ${modelMessage.reasoning?.length ? html`
-                    <div class="reasoning-block">
-                      <details class="reasoning-details">
-                        <summary class="reasoning-summary">
-                          <span class="reasoning-icon">💡</span>
-                          <span>Model Reasoning</span>
-                        </summary>
-                        <div class="reasoning-content">
-                          ${modelMessage.reasoning.map(item => html`
-                            <div class="reasoning-item">${renderMarkdown(item, this.#markdownRenderer, this.#openInAIAssistantViewer.bind(this))}</div>
-                          `)}
-                        </div>
-                      </details>
-                    </div>
-                  ` : Lit.nothing}
-                  ${modelMessage.error ? html`<div class="message-error tool-error-message">Model Error: ${modelMessage.error}</div>` : Lit.nothing}
-
-                  <!-- Result Block - Only shown when combined -->
-                  ${isCombined ? html`
-                    <div class="tool-result-block ${isResultError ? 'error' : 'success'}" >
-                      <div class="tool-result-header">
-                        ${isResultError ? errorIcon : checkIcon}
-                        <span>Result from: ${modelMessage.toolName}</span>
-                      </div>
-                      <div class="tool-result-content">
-                        ${this.#formatJsonWithSyntaxHighlighting(resultText || 'No result content')}
-                      </div>
-                      ${modelMessage.resultError ? html`<div class="message-error tool-error-message">Tool Error: ${modelMessage.resultError}</div>` : Lit.nothing}
-                    </div>
-                  ` : Lit.nothing}
+              <!-- Timeline Tool Execution -->
+              <div class="agent-execution-timeline single-tool">
+                <!-- Tool Header -->
+                <div class="agent-header">
+                  <div class="agent-marker"></div>
+                  <div class="agent-title">${descriptionData.action}</div>
+                  <div class="agent-divider"></div>
+                    <button class="tool-toggle" @click=${(e: Event) => this.#toggleToolResult(e)}>
+                      <span class="toggle-icon">▼</span>
+                    </button>
                 </div>
-              </details>
+                
+                <div class="timeline-items" style="display: none;">
+                  <div class="timeline-item">
+                    <div class="tool-line">
+                      ${descriptionData.isMultiLine ? html`
+                        <div class="tool-summary">
+                          <span class="tool-description">
+                            <span class="tool-description-indicator">└─</span>
+                            <div>${(descriptionData.content as Array<{key: string, value: string}>)[0]?.value || 'multiple parameters'}</div>
+                          </span>
+                          <span class="tool-status-marker ${status}" title="${status === 'running' ? 'Running' : status === 'completed' ? 'Completed' : status === 'error' ? 'Error' : 'Unknown'}">●</span>
+                        </div>
+                      ` : html`
+                        <span class="tool-description">
+                          <span class="tool-description-indicator">└─</span>
+                          <div>${descriptionData.content}</div>
+                        </span>
+                        <span class="tool-status-marker ${status}" title="${status === 'running' ? 'Running' : status === 'completed' ? 'Completed' : status === 'error' ? 'Error' : 'Unknown'}">●</span>
+                      `}
+                    </div>
+                    
+                    <!-- Result Block - Integrated within timeline item -->
+                    ${isCombined && resultText ? html`
+                      <div class="tool-result-integrated ${status}">
+                        Response:
+                        ${this.#formatJsonWithSyntaxHighlighting(resultText)}
+                      </div>
+                    ` : Lit.nothing}
+                  </div>
+                </div>
+                
+                <!-- Loading spinner for running tools -->
+                ${status === 'running' ? html`
+                  <div class="tool-loading">
+                    <svg class="loading-spinner" width="16" height="16" viewBox="0 0 16 16">
+                      <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="30 12" stroke-linecap="round">
+                        <animateTransform 
+                          attributeName="transform" 
+                          attributeType="XML" 
+                          type="rotate" 
+                          from="0 8 8" 
+                          to="360 8 8" 
+                          dur="1s" 
+                          repeatCount="indefinite" />
+                      </circle>
+                    </svg>
+                  </div>
+                ` : Lit.nothing}
+
+                <!-- Error messages -->
+                ${modelMessage.error ? html`<div class="message-error tool-error-message">Model Error: ${modelMessage.error}</div>` : Lit.nothing}
+              </div>
             `;
           }
         default:
@@ -840,8 +949,11 @@ export class ChatView extends HTMLElement {
     const lastMessage = this.#messages[this.#messages.length - 1];
     const isModelRunningTool = lastMessage?.entity === ChatMessageEntity.MODEL && !lastMessage.isFinalAnswer && lastMessage.toolName;
 
+    // All messages are rendered directly now, including AgentSessionMessage
+    let messagesToRender = this.#messages;
+
     // Combine the tool calling and tool result messages into a single logical unit for rendering
-    const combinedMessages = this.#messages.reduce((acc, message, index, allMessages) => {
+    const combinedMessages = messagesToRender.reduce((acc, message, index, allMessages) => {
       // Keep User messages and Final Model answers
       if (message.entity === ChatMessageEntity.USER ||
           (message.entity === ChatMessageEntity.MODEL && message.action === 'final')) {
@@ -926,6 +1038,7 @@ export class ChatView extends HTMLElement {
 
       Lit.render(html`
         <div class="chat-view-container centered-view">
+          ${this.#renderVersionBanner()}
           <div class="centered-content">
             ${welcomeMessage ? this.#renderMessage(welcomeMessage, 0) : Lit.nothing}
             
@@ -1056,6 +1169,7 @@ export class ChatView extends HTMLElement {
       // Render normal expanded view for conversation
       Lit.render(html`
         <div class="chat-view-container expanded-view">
+          ${this.#renderVersionBanner()}
           <div class="messages-container" 
             @scroll=${this.#handleScroll} 
             ${Lit.Directives.ref(this.#handleMessagesContainerRef)}>
@@ -1135,24 +1249,46 @@ export class ChatView extends HTMLElement {
                   this.#textInputElement = el as HTMLTextAreaElement;
                 })}
               ></textarea>
-              <button
-                class="send-button ${this.#isTextInputEmpty || this.#isInputDisabled ? 'disabled' : ''}"
-                ?disabled=${this.#isTextInputEmpty || this.#isInputDisabled}
-                @click=${this.#handleSendMessage.bind(this)}
-                title="Send message"
-                aria-label="Send message"
-              >
-                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-              </button>
             </div>
               <!-- Prompt Buttons Row -->
               <div class="prompt-buttons-row">
                 ${BaseOrchestratorAgent.renderAgentTypeButtons(this.#selectedPromptType, this.#handlePromptButtonClickBound)}
                 <div class="actions-container">
                   ${this.#renderModelSelector()}
+                  <button
+                    class="send-button ${this.#isTextInputEmpty || this.#isInputDisabled ? 'disabled' : ''}"
+                    ?disabled=${this.#isTextInputEmpty || this.#isInputDisabled}
+                    @click=${this.#handleSendMessage.bind(this)}
+                    title="Send message"
+                    aria-label="Send message"
+                  >
+                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          fill="none" 
+                          stroke="currentColor" 
+                          stroke-width="2" 
+                          stroke-linecap="round" 
+                          stroke-linejoin="round" 
+                          d="M29.4,15.1
+                            l-8.9-3.5
+                            l-3.5-8.9
+                            C16.8,2.3,16.4,2,16,2
+                            s-0.8,0.3-0.9,0.6
+                            l-3.5,8.9
+                            l-8.9,3.5
+                            C2.3,15.2,2,15.6,2,16
+                            s0.3,0.8,0.6,0.9
+                            l8.9,3.5
+                            l3.5,8.9
+                            c0.2,0.4,0.5,0.6,0.9,0.6
+                            s0.8-0.3,0.9-0.6
+                            l3.5-8.9
+                            l8.9-3.5
+                            c0.4-0.2,0.6-0.5,0.6-0.9
+                            S29.7,15.2,29.4,15.1
+                          z" />
+                      </svg>
+                  </button>
                 </div>
               </div>
             </div>
@@ -1166,18 +1302,23 @@ export class ChatView extends HTMLElement {
   // Helper method to format JSON with syntax highlighting
   #formatJsonWithSyntaxHighlighting(jsonString: string): Lit.TemplateResult {
     try {
-      // Only process if it looks like JSON
       if (jsonString.trim().startsWith('{') || jsonString.trim().startsWith('[')) {
+        // If it looks like JSON, parse and format it
         const parsed = JSON.parse(jsonString);
-        const formatted = JSON.stringify(parsed, null, 2);
+        if (parsed != null && parsed.error) {
+          // If the parsed JSON has an error field, treat it as an error
+          return html`
+            <pre class="json-error">
+              <span class="error-message">${parsed.error}</span>
+            </pre>`;
+        }
 
-        // Replace keys, strings, and booleans with highlighted spans
-        const highlighted = formatted
-          .replace(/"([^"]+)":/g, '<span class="tool-result-json-key">"$1"</span>:')
-          .replace(/"([^"]+)"/g, '<span class="tool-result-json-string">"$1"</span>')
-          .replace(/\b(true|false)\b/g, '<span class="tool-result-json-boolean">$1</span>');
-
-        return html`<div .innerHTML=${highlighted}></div>`;
+        // Use the YAML formatter for better readability
+        const yamlFormatted = this.#formatValueForDisplay(parsed);
+        return html`
+          <pre class="json-result">
+            ${yamlFormatted}
+          </pre>`;
       }
 
       // If not JSON or parsing fails, return as is
@@ -1194,6 +1335,17 @@ export class ChatView extends HTMLElement {
       return '';
     }
 
+    // Check if we need searchable dropdown (20+ options)
+    const needsSearch = this.#modelOptions.length > 20;
+    
+    if (needsSearch) {
+      return this.#renderSearchableModelSelector();
+    } else {
+      return this.#renderSimpleModelSelector();
+    }
+  }
+
+  #renderSimpleModelSelector() {
     return html`
       <div class="model-selector">
         <select 
@@ -1203,10 +1355,55 @@ export class ChatView extends HTMLElement {
           @change=${this.#handleModelChange.bind(this)}
           @focus=${this.#handleModelSelectorFocus.bind(this)}
         >
-          ${this.#modelOptions.map(option => html`
+          ${this.#modelOptions?.map(option => html`
             <option value=${option.value} ?selected=${option.value === this.#selectedModel}>${option.label}</option>
           `)}
         </select>
+      </div>
+    `;
+  }
+
+  #renderSearchableModelSelector() {
+    return html`
+      <div class="model-selector searchable">
+        <button 
+          class="model-select-trigger"
+          @click=${this.#toggleModelDropdown.bind(this)}
+          ?disabled=${this.#isModelSelectorDisabled}
+        >
+          <span class="selected-model">${this.#getSelectedModelLabel()}</span>
+          <span class="dropdown-arrow">${this.#isModelDropdownOpen ? '▲' : '▼'}</span>
+        </button>
+        
+        ${this.#isModelDropdownOpen ? html`
+          <div class="model-dropdown ${this.#dropdownPosition}" @click=${(e: Event) => e.stopPropagation()}>
+            <input 
+              class="model-search"
+              type="text"
+              placeholder="Search models..."
+              @input=${this.#handleModelSearch.bind(this)}
+              @keydown=${this.#handleModelSearchKeydown.bind(this)}
+              .value=${this.#modelSearchQuery}
+              ${Lit.Directives.ref((el: Element | undefined) => {
+                if (el) (el as HTMLInputElement).focus();
+              })}
+            />
+            <div class="model-options">
+              ${this.#getFilteredModelOptions().map((option, index) => html`
+                <div 
+                  class="model-option ${option.value === this.#selectedModel ? 'selected' : ''} ${index === this.#highlightedOptionIndex ? 'highlighted' : ''}"
+                  @click=${() => this.#selectModel(option.value)}
+                  @mouseenter=${() => this.#highlightedOptionIndex = index}
+                >
+                  ${option.label}
+                </div>
+              `)}
+              ${this.#getFilteredModelOptions().length === 0 ? html`
+                <div class="model-option no-results">No matching models found</div>
+              ` : ''}
+            </div>
+          </div>
+        ` : ''}
       </div>
     `;
   }
@@ -1264,6 +1461,124 @@ export class ChatView extends HTMLElement {
     }));
   }
 
+  // Helper methods for searchable model selector
+  #getSelectedModelLabel(): string {
+    const selectedOption = this.#modelOptions?.find(option => option.value === this.#selectedModel);
+    return selectedOption?.label || this.#selectedModel || 'Select Model';
+  }
+
+  #getFilteredModelOptions(): Array<{value: string, label: string}> {
+    if (!this.#modelOptions) return [];
+    if (!this.#modelSearchQuery) return this.#modelOptions;
+    
+    const query = this.#modelSearchQuery.toLowerCase();
+    return this.#modelOptions.filter(option => 
+      option.label.toLowerCase().includes(query) ||
+      option.value.toLowerCase().includes(query)
+    );
+  }
+
+  #toggleModelDropdown(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (this.#isModelSelectorDisabled) return;
+    
+    this.#isModelDropdownOpen = !this.#isModelDropdownOpen;
+    
+    if (this.#isModelDropdownOpen) {
+      this.#modelSearchQuery = '';
+      this.#highlightedOptionIndex = 0;
+      
+      // Calculate dropdown position
+      this.#calculateDropdownPosition(event.currentTarget as HTMLElement);
+      
+      // Add click outside handler with slight delay to avoid immediate trigger
+      setTimeout(() => {
+        document.addEventListener('click', this.#handleClickOutside.bind(this), { once: true });
+      }, 100);
+    }
+    
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  #calculateDropdownPosition(triggerElement: HTMLElement): void {
+    const rect = triggerElement.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const dropdownHeight = 300; // Max height from CSS
+    const spaceBelow = viewportHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    
+    // If not enough space below and more space above, show dropdown above
+    if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+      this.#dropdownPosition = 'above';
+    } else {
+      this.#dropdownPosition = 'below';
+    }
+  }
+
+  #handleClickOutside(event: Event): void {
+    const target = event.target as Element;
+    // Check if click is within the model selector or dropdown
+    const modelSelector = target.closest('.model-selector.searchable');
+    const modelDropdown = target.closest('.model-dropdown');
+    
+    if (!modelSelector && !modelDropdown) {
+      this.#isModelDropdownOpen = false;
+      this.#dropdownPosition = 'below'; // Reset position
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    }
+  }
+
+  #handleModelSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.#modelSearchQuery = input.value;
+    this.#highlightedOptionIndex = 0; // Reset highlight to first item
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  #handleModelSearchKeydown(event: KeyboardEvent): void {
+    const filteredOptions = this.#getFilteredModelOptions();
+    
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.#highlightedOptionIndex = Math.min(this.#highlightedOptionIndex + 1, filteredOptions.length - 1);
+        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+        break;
+        
+      case 'ArrowUp':
+        event.preventDefault();
+        this.#highlightedOptionIndex = Math.max(this.#highlightedOptionIndex - 1, 0);
+        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+        break;
+        
+      case 'Enter':
+        event.preventDefault();
+        if (filteredOptions[this.#highlightedOptionIndex]) {
+          this.#selectModel(filteredOptions[this.#highlightedOptionIndex].value);
+        }
+        break;
+        
+      case 'Escape':
+        event.preventDefault();
+        this.#isModelDropdownOpen = false;
+        this.#dropdownPosition = 'below'; // Reset position
+        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+        break;
+    }
+  }
+
+  #selectModel(modelValue: string): void {
+    if (this.#onModelChanged) {
+      this.#onModelChanged(modelValue);
+    }
+    this.#isModelDropdownOpen = false;
+    this.#modelSearchQuery = '';
+    this.#dropdownPosition = 'below'; // Reset position
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
   // Add this new method for copying text to clipboard
   #copyToClipboard(text: string): void {
     // Copy to clipboard using the Clipboard API
@@ -1286,6 +1601,95 @@ export class ChatView extends HTMLElement {
       .catch(err => {
         logger.error('Failed to copy text: ', err);
       });
+  }
+
+  // Method to check for updates
+  async #checkForUpdates(): Promise<void> {
+    try {
+      const versionChecker = VersionChecker.getInstance();
+      // Version is now automatically loaded from Version.ts
+      
+      logger.info('Checking for updates...');
+      // Check if we need to clear stale cache due to version change
+      const cachedInfo = versionChecker.getCachedVersionInfo();
+      if (cachedInfo && cachedInfo.currentVersion !== versionChecker.getCurrentVersion()) {
+        logger.info('Clearing cache due to version change');
+        versionChecker.clearCache();
+      }
+      const versionInfo = await versionChecker.checkForUpdates();
+      logger.info('Version info received:', versionInfo);
+      
+      if (versionInfo) {
+        logger.info('Update available?', versionInfo.isUpdateAvailable);
+        logger.info('Is update dismissed?', versionChecker.isUpdateDismissed(versionInfo.latestVersion));
+      }
+      
+      if (versionInfo && versionInfo.isUpdateAvailable && !versionChecker.isUpdateDismissed(versionInfo.latestVersion)) {
+        logger.info('Showing version banner for version:', versionInfo.latestVersion);
+        this.#versionInfo = versionInfo;
+        this.#isVersionBannerDismissed = false;
+        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+      } else {
+        logger.info('Not showing version banner');
+      }
+    } catch (error) {
+      logger.error('Failed to check for updates:', error);
+    }
+  }
+
+  // Method to dismiss version banner
+  #dismissVersionBanner(): void {
+    this.#isVersionBannerDismissed = true;
+    if (this.#versionInfo) {
+      VersionChecker.getInstance().dismissUpdate();
+    }
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  // Method to render version banner
+  #renderVersionBanner(): Lit.TemplateResult {
+    logger.info('Rendering version banner:', {
+      versionInfo: this.#versionInfo,
+      isUpdateAvailable: this.#versionInfo?.isUpdateAvailable,
+      isVersionBannerDismissed: this.#isVersionBannerDismissed,
+      messageCount: this.#messages.length
+    });
+    
+    // Hide banner after first message or if dismissed
+    if (!this.#versionInfo || !this.#versionInfo.isUpdateAvailable || 
+        this.#isVersionBannerDismissed || this.#messages.length > 1) {
+      logger.info('Not rendering version banner - conditions not met');
+      return html``;
+    }
+    
+    logger.info('Rendering version banner for version:', this.#versionInfo.latestVersion);
+
+    return html`
+      <div class="version-banner">
+        <div class="version-banner-content">
+          <span class="version-banner-icon">🎉</span>
+          <span class="version-banner-text">
+            New version ${this.#versionInfo.latestVersion} is available!
+          </span>
+          <a 
+            class="version-banner-link" 
+            href="${this.#versionInfo.releaseUrl}" 
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Release
+          </a>
+        </div>
+        <button 
+          class="version-banner-dismiss" 
+          @click=${this.#dismissVersionBanner.bind(this)}
+          title="Dismiss"
+          aria-label="Dismiss update notification"
+        >
+          ✕
+        </button>
+      </div>
+    `;
   }
 
   // Method to parse structured response with reasoning and markdown_report XML tags
@@ -1398,7 +1802,7 @@ export class ChatView extends HTMLElement {
                 class="view-document-btn"
                 @click=${() => this.#openInAIAssistantViewer(structuredResponse.markdownReport)}
                 title="Open full report in document viewer">
-                📄 ${isLastMessage ? 'Try AI Assistant' : 'View Full Report'}
+                📄 ${isLastMessage ? '' : 'View Full Report'}
               </button>
             </div>
           `}
@@ -1613,6 +2017,574 @@ export class ChatView extends HTMLElement {
         
         attemptInjection();
       });
+  }
+
+  /**
+   * Toggle between simplified and enhanced agent view
+   */
+  #toggleAgentView(): void {
+    this.#agentViewMode = this.#agentViewMode === 'simplified' ? 'enhanced' : 'simplified';
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  /**
+   * Toggle tool details visibility
+   */
+  #toggleToolDetails(event: Event): void {
+    const clickTarget = event.target as HTMLElement;
+    const button = clickTarget.closest('.tool-toggle') as HTMLButtonElement;
+    if (!button) return;
+    
+    const container = button.closest('.agent-execution-timeline');
+    if (!container) return;
+    
+    const summary = container.querySelector('.tool-summary') as HTMLElement;
+    const details = container.querySelector('.tool-details') as HTMLElement;
+    const toggleIcon = button.querySelector('.toggle-icon') as HTMLElement;
+    
+    if (!details || !toggleIcon) return;
+    
+    if (details.style.display === 'none') {
+      // Show details
+      summary.style.display = 'none';
+      details.style.display = 'flex';
+      toggleIcon.textContent = '▲';
+    } else {
+      // Hide details
+      summary.style.display = 'flex';
+      details.style.display = 'none';
+      toggleIcon.textContent = '▼';
+    }
+  }
+
+  /**
+   * Toggle tool result visibility
+   */
+  #toggleToolResult(event: Event): void {
+    const clickTarget = event.target as HTMLElement;
+    const button = clickTarget.closest('.tool-toggle') as HTMLButtonElement;
+    if (!button) return;
+    
+    const container = button.closest('.agent-execution-timeline');
+    if (!container) return;
+    
+    const result = container.querySelector('.timeline-items') as HTMLElement;
+    const toggleIcon = button.querySelector('.toggle-icon') as HTMLElement;
+    
+    if (!result || !toggleIcon) return;
+    
+    if (result.style.display === 'none') {
+      // Show result
+      result.style.display = 'block';
+      toggleIcon.textContent = '▲';
+    } else {
+      // Hide result
+      result.style.display = 'none';
+      toggleIcon.textContent = '▼';
+    }
+  }
+
+  /**
+   * Toggle agent session details visibility
+   */
+  #toggleAgentSessionDetails(event: Event): void {
+    const clickTarget = event.target as HTMLElement;
+    const button = clickTarget.closest('.tool-toggle') as HTMLButtonElement;
+    if (!button) return;
+    
+    const container = button.closest('.agent-session-container');
+    if (!container) return;
+    
+    const timelineItems = container.querySelector('.timeline-items') as HTMLElement;
+    const nestedSessions = container.querySelector('.nested-sessions') as HTMLElement;
+    const toggleIcon = button.querySelector('.toggle-icon') as HTMLElement;
+    
+    if (!toggleIcon) return;
+    
+    if (timelineItems.style.display === 'none') {
+      // Show details
+      timelineItems.style.display = 'block';
+      if (nestedSessions) {
+        nestedSessions.style.display = 'block';
+      }
+      toggleIcon.textContent = '▲';
+    } else {
+      // Hide details
+      timelineItems.style.display = 'none';
+      if (nestedSessions) {
+        nestedSessions.style.display = 'none';
+      }
+      toggleIcon.textContent = '▼';
+    }
+  }
+
+  /**
+   * Render task completion with agent sessions using seamless timeline design
+   */
+  #renderTaskCompletion(agentSession: AgentSession): Lit.TemplateResult {
+    if (!agentSession) {
+      return html``;
+    }
+
+    return html`
+      <div class="agent-execution-timeline">
+        ${this.#renderAgentSessionTimeline(agentSession)}
+      </div>
+    `;
+  }
+
+  /**
+   * Render agent session with timeline design
+   */
+  #renderAgentSessionTimeline(session: AgentSession, depth: number = 0, visitedSessions: Set<string> = new Set()): Lit.TemplateResult {
+    // Prevent infinite recursion with depth limit and visited tracking
+    if (depth > 10 || visitedSessions.has(session.sessionId)) {
+      return html`<div class="max-depth-reached">Maximum nesting depth reached</div>`;
+    }
+    
+    visitedSessions.add(session.sessionId);
+    const uiConfig = getAgentUIConfig(session.agentName, session.config);
+    const toolMessages = session.messages.filter(msg => msg.type === 'tool_call');
+    const toolResults = session.messages.filter(msg => msg.type === 'tool_result');
+    
+    return html`
+      ${session.agentReasoning ? html`<div class="message">${session.agentReasoning}</div>` : ''}
+      <div class="agent-session-container">
+        <div class="agent-header">
+          <div class="agent-marker"></div>
+          <div class="agent-title">${uiConfig.displayName}</div>
+          <div class="agent-divider"></div>
+          <button class="tool-toggle" @click=${(e: Event) => this.#toggleAgentSessionDetails(e)}>
+            <span class="toggle-icon">▼</span>
+          </button>
+        </div>
+
+        <div class="timeline-items" style="display: none;">
+          ${session.agentQuery ? html`
+          <div class="timeline-item">
+            <div class="tool-line">
+              <div class="tool-description-multiline">
+                <span class="tool-description-indicator">─</span>
+                <span style="margin-left: 4px;">${session.agentQuery}</span>
+              </div>
+            </div>
+          </div>
+          ` : ''}
+          ${toolMessages.map(toolMsg => {
+            const toolContent = toolMsg.content as AgentToolCallMessage;
+            const toolResult = toolResults.find(result => {
+              const resultContent = result.content as AgentToolResultMessage;
+              return resultContent.toolCallId === toolContent.toolCallId;
+            });
+            return this.#renderTimelineItem(toolMsg, toolResult);
+          })}
+        </div>
+        
+        <div class="nested-sessions" style="display: none;">
+          ${session.nestedSessions.map(nested => html`
+            <div class="handoff-indicator">
+              <span class="handoff-arrow">↓</span>
+              <span class="handoff-text">Handoff to ${getAgentUIConfig(nested.agentName, nested.config).displayName}</span>
+            </div>
+            ${this.#renderAgentSessionTimeline(nested, depth + 1, new Set(visitedSessions))}
+          `)}
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Render individual timeline item for tool execution
+   */
+  #renderTimelineItem(toolMessage: AgentMessage, toolResult: AgentMessage | undefined): Lit.TemplateResult {
+    const toolContent = toolMessage.content as AgentToolCallMessage;
+    const resultContent = toolResult?.content as AgentToolResultMessage;
+    const toolName = toolContent.toolName;
+    const toolArgs = toolContent.toolArgs || {};
+    
+    // Determine status based on tool result
+    let status = 'running';
+    if (toolResult && resultContent) {
+      status = resultContent.success ? 'completed' : 'error';
+    }
+    
+    const icon = this.#getToolIcon(toolName);
+    const toolNameDisplay = toolName.replace(/_/g, ' ');
+    const descriptionData = this.#getToolDescription(toolName, toolArgs);
+    const resultText = resultContent?.result ? JSON.stringify(resultContent.result, null, 2) : '';
+    
+    if (descriptionData.isMultiLine) {
+      // Multi-line format - just the timeline item, no wrapper
+      return html`
+        <div class="timeline-item">
+          <div class="tool-line">
+            <div class="tool-description-multiline" style="display: block;">
+              <span class="tool-description-indicator">─</span>
+              <span style="margin-left: 4px;">${icon}  ${toolNameDisplay}:</span>
+              ${(descriptionData.content as Array<{key: string, value: string}>).map(arg => html`
+                <div class="tool-arg">
+                  <span class="tool-arg-key">${arg.key}:</span>
+                  <span class="tool-arg-value">${arg.value}</span>
+                </div>
+              `)}
+            </div>
+            <span class="tool-status-marker ${status}" title="${status === 'running' ? 'Running' : status === 'completed' ? 'Completed' : status === 'error' ? 'Error' : 'Unknown'}">●</span>
+          </div>
+        </div>
+      `;
+    } else {
+      // Single-line format
+      return html`
+        <div class="timeline-item">
+          <div class="tool-line">
+            <div class="tool-description-multiline">
+              <span class="tool-description-indicator">─</span>
+              <span style="margin-left: 4px;">${icon}  ${descriptionData.content}</span>
+            </div>
+            <span class="tool-status-marker ${status}" title="${status === 'running' ? 'Running' : status === 'completed' ? 'Completed' : status === 'error' ? 'Error' : 'Unknown'}">●</span>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  /**
+   * Generate task title from agent session
+   */
+  #generateTaskTitle(agentSession: AgentSession): string {
+    if (!agentSession) {
+      return 'AI Task Execution';
+    }
+    
+    const totalTools = this.#countTotalTools(agentSession);
+    return `Completed task using ${totalTools} tools`;
+  }
+
+  /**
+   * Count total tools used across all sessions
+   */
+  #countTotalTools(session: AgentSession): number {
+    const sessionTools = session.messages.filter(msg => msg.type === 'tool_call').length;
+    const nestedTools = session.nestedSessions.reduce((total, nested) => {
+      return total + this.#countTotalTools(nested);
+    }, 0);
+    return sessionTools + nestedTools;
+  }
+
+  /**
+   * Render simplified content (current tool list style)
+   */
+  #renderSimplifiedContent(agentSession: AgentSession): Lit.TemplateResult {
+    if (!agentSession) {
+      return html``;
+    }
+
+    const allToolCalls = this.#flattenToolCalls(agentSession);
+    
+    return html`
+      <div class="simplified-content">
+        ${allToolCalls.map(tool => this.#renderSimpleToolItem(tool))}
+        <button class="show-more-button" @click=${() => { this.#agentViewMode = 'enhanced'; void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender); }}>
+          🔍 Show Agent Details
+        </button>
+      </div>
+    `;
+  }
+
+  /**
+   * Flatten tool calls from all sessions
+   */
+  #flattenToolCalls(session: AgentSession): Array<{toolName: string, args: any}> {
+    const sessionToolCalls = session.messages
+      .filter(msg => msg.type === 'tool_call')
+      .map(msg => ({
+        toolName: (msg.content as any).toolName,
+        args: (msg.content as any).toolArgs
+      }));
+
+    const nestedToolCalls = session.nestedSessions.flatMap(nested => 
+      this.#flattenToolCalls(nested)
+    );
+
+    return [...sessionToolCalls, ...nestedToolCalls];
+  }
+
+  /**
+   * Render simple tool item (current style)
+   */
+  #renderSimpleToolItem(tool: {toolName: string, args: any}): Lit.TemplateResult {
+    const icon = this.#getToolIcon(tool.toolName);
+    const description = this.#getToolDescription(tool.toolName, tool.args);
+    
+    return html`
+      <div class="tool-item">
+        <div class="tool-icon">${icon}</div>
+        <div class="tool-text">${description}</div>
+      </div>
+    `;
+  }
+
+  /**
+   * Get tool icon based on tool name
+   */
+  #getToolIcon(toolName: string): string {
+    if (toolName.includes('search')) return '🔍';
+    if (toolName.includes('browse') || toolName.includes('navigate')) return '🌐';
+    if (toolName.includes('create') || toolName.includes('write')) return '📝';
+    if (toolName.includes('extract') || toolName.includes('analyze')) return '🔬';
+    if (toolName.includes('click') || toolName.includes('action')) return '👆';
+    return '🔧';
+  }
+
+  /**
+   * Format value for display - convert objects to YAML-like format
+   */
+  #formatValueForDisplay(value: any, depth: number = 0): string {
+    // Prevent infinite recursion
+    if (depth > 10) {
+      return '[Max depth reached]';
+    }
+    
+    if (value === null || value === undefined) {
+      return String(value);
+    }
+    
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      return String(value);
+    }
+    
+    if (Array.isArray(value)) {
+      if (value.length === 0) return '[]';
+      if (value.length === 1) return this.#formatValueForDisplay(value[0], depth + 1);
+      return value.map(item => `- ${this.#formatValueForDisplay(item, depth + 1)}`).join('\n');
+    }
+    
+    if (typeof value === 'object') {
+      // Handle circular references by using try-catch
+      try {
+        const entries = Object.entries(value);
+        if (entries.length === 0) return '{}';
+        if (entries.length === 1) {
+          const [k, v] = entries[0];
+          return `${k}: ${this.#formatValueForDisplay(v, depth + 1)}`;
+        }
+        return entries.map(([k, v]) => `${k}: ${this.#formatValueForDisplay(v, depth + 1)}`).join('\n');
+      } catch (error) {
+        return '[Circular reference detected]';
+      }
+    }
+    
+    return String(value);
+  }
+
+  /**
+   * Get tool description from name and args
+   */
+  #getToolDescription(toolName: string, args: any): { isMultiLine: boolean, content: string | Array<{key: string, value: string}>, action: string } {
+    const action = toolName.replace(/_/g, ' ').toLowerCase();
+    
+    // Filter out common metadata fields
+    const filteredArgs = Object.fromEntries(
+      Object.entries(args).filter(([key]) => 
+        key !== 'reasoning' && key !== 'toolCallId' && key !== 'timestamp'
+      )
+    );
+    
+    const argKeys = Object.keys(filteredArgs);
+    
+    if (argKeys.length === 0) {
+      return { isMultiLine: false, content: action, action };
+    }
+    
+    if (argKeys.length === 1) {
+      // Single argument - inline format
+      const [key, value] = Object.entries(filteredArgs)[0];
+      const formattedValue = this.#formatValueForDisplay(value);
+      const needsNewline = formattedValue.length > 80;
+      return { isMultiLine: false, content: `${action}:${needsNewline ? '\n' : ''}${formattedValue}`, action };
+    }
+    
+    // Multiple arguments - return structured data for multi-line rendering
+    // Sort to put 'query' first if it exists
+    const sortedKeys = argKeys.sort((a, b) => {
+      if (a === 'query') return -1;
+      if (b === 'query') return 1;
+      return 0;
+    });
+    
+    const argsArray = sortedKeys.map(key => ({
+      key,
+      value: this.#formatValueForDisplay(filteredArgs[key])
+    }));
+    
+    return { isMultiLine: true, content: argsArray, action };
+  }
+
+  /**
+   * Render enhanced content (agent-centric view)
+   */
+  #renderEnhancedContent(agentSession: AgentSession): Lit.TemplateResult {
+    if (!agentSession) {
+      return html``;
+    }
+
+    return html`
+      <div class="enhanced-content">
+        ${this.#renderAgentSession(agentSession, 0)}
+        <button class="show-less-button" @click=${() => { this.#agentViewMode = 'simplified'; void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender); }}>
+          ↑ Show Simplified View
+        </button>
+      </div>
+    `;
+  }
+
+  /**
+   * Render agent session recursively
+   */
+  #renderAgentSession(session: AgentSession, depth: number): Lit.TemplateResult {
+    const uiConfig = getAgentUIConfig(session.agentName, session.config);
+    
+    return html`
+      <div class="agent-session" style="margin-left: ${depth * 20}px">
+        ${this.#renderAgentHeader(session, uiConfig)}
+        <div class="agent-session-content">
+          ${session.reasoning ? this.#renderReasoningBubble(session.reasoning) : Lit.nothing}
+          <div class="tool-sequence">
+            ${session.messages.map(msg => this.#renderAgentMessage(msg))}
+          </div>
+          ${session.nestedSessions.map((nested, index) => html`
+            ${index === 0 ? this.#renderHandoffIndicator(session.agentName, nested.agentName) : Lit.nothing}
+            ${this.#renderAgentSession(nested, depth + 1)}
+          `)}
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Render agent header
+   */
+  #renderAgentHeader(session: AgentSession, uiConfig: ReturnType<typeof getAgentUIConfig>): Lit.TemplateResult {
+    return html`
+      <div class="agent-session-header" style="background: ${uiConfig.backgroundColor}; border-left: 4px solid ${uiConfig.color}">
+        <div class="agent-avatar" style="background: ${uiConfig.backgroundColor}; color: ${uiConfig.color}">
+          ${uiConfig.avatar}
+        </div>
+        <div class="agent-info">
+          <div class="agent-name">${uiConfig.displayName}</div>
+          <div class="agent-status">
+            <span class="status-badge ${session.status}">${this.#getStatusText(session)}</span>
+            <span>${this.#getStatusDescription(session)}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Get status text from session
+   */
+  #getStatusText(session: AgentSession): string {
+    switch (session.status) {
+      case 'completed': return 'Completed';
+      case 'running': return 'Running';
+      case 'error': return 'Error';
+      default: return 'Unknown';
+    }
+  }
+
+  /**
+   * Get status description from session
+   */
+  #getStatusDescription(session: AgentSession): string {
+    const toolCount = session.messages.filter(msg => msg.type === 'tool_call').length;
+    if (toolCount === 0) {
+      return 'No tools executed';
+    }
+    return `Executed ${toolCount} tool${toolCount === 1 ? '' : 's'}`;
+  }
+
+  /**
+   * Render reasoning bubble
+   */
+  #renderReasoningBubble(reasoning: string): Lit.TemplateResult {
+    return html`
+      <div class="agent-reasoning">
+        ${reasoning}
+      </div>
+    `;
+  }
+
+  /**
+   * Render handoff indicator
+   */
+  #renderHandoffIndicator(fromAgent: string, toAgent: string): Lit.TemplateResult {
+    return html`
+      <div class="handoff-indicator">
+        <div class="handoff-line"></div>
+        <div class="handoff-badge">→ Handoff to ${toAgent}</div>
+      </div>
+    `;
+  }
+
+  /**
+   * Render agent message
+   */
+  #renderAgentMessage(message: AgentMessage): Lit.TemplateResult {
+    switch (message.type) {
+      case 'reasoning':
+        return html`<div class="reasoning-message">💭 ${(message.content as any).text}</div>`;
+      case 'tool_call':
+        return this.#renderToolCall(message);
+      case 'tool_result':
+        return this.#renderToolResult(message);
+      case 'handoff':
+        return html``; // Don't render handoff messages as they're handled by the handoff indicator
+      case 'final_answer':
+        return html`<div class="final-answer-message">🎯 ${(message.content as any).answer}</div>`;
+      default:
+        return html``;
+    }
+  }
+
+  /**
+   * Render tool call
+   */
+  #renderToolCall(message: AgentMessage): Lit.TemplateResult {
+    const content = message.content as any;
+    return html`
+      <div class="enterprise-tool success">
+        <div class="tool-header">
+          <div class="tool-name">${content.toolName}</div>
+          <div class="tool-status status-success">✓ Success</div>
+        </div>
+        <div class="tool-description">${this.#getToolDescription(content.toolName, content.toolArgs)}</div>
+        <div class="tool-details">${JSON.stringify(content.toolArgs, null, 2)}</div>
+      </div>
+    `;
+  }
+
+  /**
+   * Render tool result
+   */
+  #renderToolResult(message: AgentMessage): Lit.TemplateResult {
+    const content = message.content as any;
+    const statusClass = content.success ? 'success' : 'error';
+    const statusIcon = content.success ? '✓' : '❌';
+    
+    return html`
+      <div class="tool-result ${statusClass}">
+        <div class="tool-result-header">
+          ${statusIcon} ${content.toolName} result
+        </div>
+        ${content.result ? html`
+          <div class="tool-result-content">
+            ${typeof content.result === 'string' ? content.result : JSON.stringify(content.result, null, 2)}
+          </div>
+        ` : Lit.nothing}
+        ${content.error ? html`<div class="error-text">${content.error}</div>` : Lit.nothing}
+      </div>
+    `;
   }
 
 }

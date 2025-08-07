@@ -88,7 +88,7 @@ const wikipediaTestBase = {
         'Infobox contains key technical details',
         'External links are properly resolved URLs'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -175,7 +175,7 @@ export const ecommerceTest: TestCase<SchemaExtractionArgs> = {
         'Key product features are captured',
         'All URLs are properly resolved (not node IDs)'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -236,7 +236,6 @@ export const newsTest: TestCase<SchemaExtractionArgs> = {
         'Main story is properly identified',
         'All extracted content is in English'
       ],
-      model: 'gpt-4.1-mini',
       includeUrl: true
     }
   },
@@ -303,7 +302,7 @@ export const googleSearchTest: TestCase<SchemaExtractionArgs> = {
         'Related searches are extracted if present',
         'Featured snippet is captured when available'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -364,7 +363,7 @@ export const bingSearchTest: TestCase<SchemaExtractionArgs> = {
         'Sidebar information is extracted when present',
         'No duplicate results in the list'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -430,7 +429,7 @@ export const wikipediaSearchTest: TestCase<SchemaExtractionArgs> = {
         'Snippets contain relevant content highlights',
         'Metadata like word count is extracted when available'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -508,7 +507,7 @@ export const homeDepotTest: TestCase<SchemaExtractionArgs> = {
         'Ratings are on a 5-star scale',
         'Key product features are captured'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -601,7 +600,7 @@ export const macysTest: TestCase<SchemaExtractionArgs> = {
         'Brand names are accurately extracted',
         'Promotional text is included when present'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -689,7 +688,7 @@ export const googleFlightsTest: TestCase<SchemaExtractionArgs> = {
         'Stop information is correctly identified',
         'Duration is in readable format'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -747,7 +746,7 @@ export const simpleTest: TestCase<SchemaExtractionArgs> = {
         'Programming language is correctly identified',
         'Topic tags are relevant to the project'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -804,7 +803,7 @@ export const simpleStreamlinedTest: TestCase<StreamlinedSchemaExtractionArgs> = 
         'Programming language is correctly identified',
         'Topic tags are relevant to the project'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {

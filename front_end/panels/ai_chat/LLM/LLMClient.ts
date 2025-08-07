@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type { LLMMessage, LLMResponse, LLMCallOptions, LLMProvider, ModelInfo } from './LLMTypes.js';
+import type { LLMMessage, LLMResponse, LLMCallOptions, LLMProvider, ModelInfo, RetryConfig } from './LLMTypes.js';
 import { LLMProviderRegistry } from './LLMProviderRegistry.js';
 import { OpenAIProvider } from './OpenAIProvider.js';
 import { LiteLLMProvider } from './LiteLLMProvider.js';
@@ -39,6 +39,7 @@ export interface LLMCallRequest {
   systemPrompt: string;
   tools?: any[];
   temperature?: number;
+  retryConfig?: Partial<RetryConfig>;
 }
 
 /**
@@ -149,6 +150,9 @@ export class LLMClient {
     }
     if (request.tools) {
       options.tools = request.tools;
+    }
+    if (request.retryConfig) {
+      options.retryConfig = request.retryConfig;
     }
 
     return provider.callWithMessages(request.model, messages, options);

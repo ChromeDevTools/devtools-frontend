@@ -330,23 +330,21 @@ export class AIChatPanel extends UI.Panel.Panel {
 
   static getNanoModelWithProvider(): { model: string, provider: 'openai' | 'litellm' | 'groq' | 'openrouter' } {
     const modelName = AIChatPanel.getNanoModel();
-    const allModelOptions = AIChatPanel.getModelOptions();
-    const modelOption = allModelOptions.find(option => option.value === modelName);
+    const provider = AIChatPanel.getProviderForModel(modelName);
     
     return {
       model: modelName,
-      provider: (modelOption?.type as 'openai' | 'litellm' | 'groq' | 'openrouter') || 'openai'
+      provider: provider
     };
   }
 
   static getMiniModelWithProvider(): { model: string, provider: 'openai' | 'litellm' | 'groq' | 'openrouter' } {
     const modelName = AIChatPanel.getMiniModel();
-    const allModelOptions = AIChatPanel.getModelOptions();
-    const modelOption = allModelOptions.find(option => option.value === modelName);
+    const provider = AIChatPanel.getProviderForModel(modelName);
     
     return {
       model: modelName,
-      provider: (modelOption?.type as 'openai' | 'litellm' | 'groq' | 'openrouter') || 'openai'
+      provider: provider
     };
   }
 
@@ -365,6 +363,78 @@ export class AIChatPanel extends UI.Panel.Panel {
     const currentProvider = localStorage.getItem(PROVIDER_SELECTION_KEY) || 'openai';
     logger.debug(`Provider ${originalProvider} not available for model ${modelName}, falling back to current provider: ${currentProvider}`);
     return currentProvider as 'openai' | 'litellm' | 'groq' | 'openrouter';
+  }
+
+  /**
+   * Gets the currently selected provider from localStorage
+   * @returns The currently selected provider
+   */
+  static getCurrentProvider(): 'openai' | 'litellm' | 'groq' | 'openrouter' {
+    return (localStorage.getItem(PROVIDER_SELECTION_KEY) || 'openai') as 'openai' | 'litellm' | 'groq' | 'openrouter';
+  }
+
+  /**
+   * Checks if a model supports vision/multimodal capabilities
+   * @param modelName The model name to check
+   * @returns True if the model supports vision, false otherwise
+   */
+  static async isVisionCapable(modelName: string): Promise<boolean> {
+    logger.debug(`[Vision Check] Checking vision capability for model: ${modelName}`);
+    
+    // First, try to get the provider for this model and use its vision detection API
+    try {
+      const provider = AIChatPanel.getProviderForModel(modelName);
+      logger.debug(`[Vision Check] Model ${modelName} uses provider: ${provider}`);
+      
+      if (provider === 'openrouter') {
+        // Use OpenRouter's API-based vision detection
+        const { LLMProviderRegistry } = await import('../LLM/LLMProviderRegistry.js');
+        const providerInstance = LLMProviderRegistry.getProvider('openrouter') as any;
+        
+        if (providerInstance && typeof providerInstance.supportsVision === 'function') {
+          const isVision = await providerInstance.supportsVision(modelName);
+          logger.info(`[Vision Check] OpenRouter API result for ${modelName}: ${isVision}`);
+          return isVision;
+        }
+      }
+      
+      // For other providers, try the registry approach
+      const llmClient = LLMClient.getInstance();
+      const allModels = await llmClient.getAvailableModels();
+      logger.debug(`[Vision Check] Got ${allModels.length} models from registry`);
+      
+      const modelInfo = allModels.find(model => model.id === modelName);
+      
+      if (modelInfo && modelInfo.capabilities) {
+        const isVision = modelInfo.capabilities.vision;
+        logger.info(`[Vision Check] Model ${modelName} vision capability from registry: ${isVision}`);
+        return isVision;
+      }
+      
+    } catch (error) {
+      logger.warn(`[Vision Check] Provider-specific vision check failed for ${modelName}:`, error);
+    }
+    
+    // Fallback: Check if model name contains known vision model patterns
+    const modelNameWithoutPrefix = modelName.toLowerCase().replace(/^[^/]+\//, '');
+    logger.debug(`[Vision Check] Falling back to pattern matching - Original: ${modelName}, Without prefix: ${modelNameWithoutPrefix}`);
+    
+    const visionModelPatterns = [
+      'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4-vision',
+      'claude-3', 'claude-3-haiku', 'claude-3-sonnet', 'claude-3-opus', 'claude-3.5-sonnet', 'claude-4',
+      'gemini', 'gemini-pro', 'gemini-2.5', 'gemini-pro-vision',
+      'llava', 'vision', 'multimodal'
+    ];
+    
+    const matchedPattern = visionModelPatterns.find(pattern => 
+      modelNameWithoutPrefix.includes(pattern.toLowerCase()) ||
+      modelName.toLowerCase().includes(pattern.toLowerCase())
+    );
+    
+    const isVisionFromPattern = !!matchedPattern;
+    logger.info(`[Vision Check] Pattern matching result for ${modelName}: ${isVisionFromPattern}${matchedPattern ? ` (matched: ${matchedPattern})` : ''}`);
+    
+    return isVisionFromPattern;
   }
 
   

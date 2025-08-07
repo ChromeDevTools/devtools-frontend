@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import type { getTools } from '../tools/Tools.js';
-import { ChatMessageEntity, type ModelChatMessage, type ToolResultMessage, type ChatMessage } from '../ui/ChatView.js';
+import { ChatMessageEntity, type ModelChatMessage, type ToolResultMessage, type ChatMessage, type AgentSessionMessage } from '../ui/ChatView.js';
+import { ConfigurableAgentTool } from '../agent_framework/ConfigurableAgentTool.js';
 
 import { LLMClient } from '../LLM/LLMClient.js';
 import type { LLMMessage } from '../LLM/LLMTypes.js';
@@ -12,6 +13,7 @@ import { createSystemPromptAsync, getAgentToolsFromState } from './GraphHelpers.
 import { createLogger } from './Logger.js';
 import type { AgentState } from './State.js';
 import type { Runnable } from './Types.js';
+import { AgentErrorHandler } from './AgentErrorHandler.js';
 import { createTracingProvider, withTracingContext } from '../tracing/TracingConfig.js';
 import type { TracingProvider } from '../tracing/TracingProvider.js';
 
@@ -110,7 +112,7 @@ export function createAgentNode(modelName: string, temperature: number): Runnabl
       let generationId: string | undefined;
       const generationStartTime = new Date();
 
-      if (tracingContext?.traceId) {
+      if (tracingContext?.traceId) {        
         generationId = `gen-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
         await this.tracingProvider.createObservation({
           id: generationId,
@@ -126,9 +128,16 @@ export function createAgentNode(modelName: string, temperature: number): Runnabl
           input: {
             systemPrompt: systemPrompt.substring(0, 1000) + '...', // Truncate for tracing
             messages: state.messages.length,
-            tools: getAgentToolsFromState(state).map(t => t.name)
+            tools: getAgentToolsFromState(state).map(t => t.name),
+            lastMessage: state.messages.length > 0 ? {
+              entity: state.messages[state.messages.length - 1].entity,
+              content: JSON.stringify(state.messages[state.messages.length - 1]).substring(0, 500)
+            } : null
           }
         }, tracingContext.traceId);
+
+        // Update tracing context with current generation ID
+        tracingContext.currentGenerationId = generationId;
       }
 
       try {
@@ -143,36 +152,72 @@ export function createAgentNode(modelName: string, temperature: number): Runnabl
         // Convert ChatMessage[] to LLMMessage[]
         const llmMessages = this.convertChatMessagesToLLMMessages(state.messages);
         
-        // Call LLM with the new API
-        const response = await llm.call({
-          provider,
-          model: this.modelName,
-          messages: llmMessages,
-          systemPrompt,
-          tools: tools.map(tool => ({
-            type: 'function',
-            function: {
-              name: tool.name,
-              description: tool.description,
-              parameters: tool.schema,
-            }
-          })),
-          temperature: this.temperature,
+        // Create error handler for retry logic
+        const errorHandler = AgentErrorHandler.createErrorHandler({
+          continueOnError: true,
+          agentName: `AgentNode-${this.modelName}`,
+          availableTools: tools.map(t => t.name)
         });
-
-        // Parse the response
-        const parsedAction = llm.parseResponse(response);
+        
+        // Execute LLM call with retry logic
+        const retryResult = await errorHandler.executeWithRetry(
+          async () => {
+            // Call LLM
+            const response = await llm.call({
+              provider,
+              model: this.modelName,
+              messages: llmMessages,
+              systemPrompt,
+              tools: tools.map(tool => ({
+                type: 'function',
+                function: {
+                  name: tool.name,
+                  description: tool.description,
+                  parameters: tool.schema,
+                }
+              })),
+              temperature: this.temperature,
+            });
+            
+            // Parse the response
+            const parsed = llm.parseResponse(response);
+            
+            // Return both response and parsed action
+            return { response, parsedAction: parsed };
+          },
+          // Validation function - check if parsing was successful
+          (result) => result.parsedAction.type !== 'error',
+          // Retry configuration
+          {
+            maxRetries: 5,
+            baseDelayMs: 1000,
+            maxDelayMs: 5000,
+            backoffMultiplier: 2
+          }
+        );
+        
+        // Handle retry result
+        if (!retryResult.success) {
+          throw new Error(`Failed after ${retryResult.attemptsMade} attempts: ${retryResult.error}`);
+        }
+        
+        const { response, parsedAction } = retryResult.result!;
 
         // Update generation observation with output
         if (generationId && tracingContext?.traceId) {
-          await this.tracingProvider.createObservation({
-            id: generationId,
-            name: 'LLM Generation', // Include name when updating
-            type: 'generation',
+          // Extract token usage from rawResponse if available
+          const rawUsage = response.rawResponse?.usage;
+          const usage = rawUsage ? {
+            promptTokens: rawUsage.prompt_tokens || rawUsage.input_tokens || 0,
+            completionTokens: rawUsage.completion_tokens || rawUsage.output_tokens || 0,
+            totalTokens: rawUsage.total_tokens || 0
+          } : undefined;
+
+          await this.tracingProvider.updateObservation(generationId, {
             endTime: new Date(),
             output: parsedAction,
-            // Note: Usage tracking would need to be extracted from response.rawResponse if needed
-          }, tracingContext.traceId);
+            ...(usage && { usage })
+          });
         }
 
         // Directly create the ModelChatMessage object
@@ -183,11 +228,13 @@ export function createAgentNode(modelName: string, temperature: number): Runnabl
           // Create tool-call event observation
           const tracingContext = state.context?.tracingContext;
           if (tracingContext?.traceId) {
+            const toolCallObservationId = `tool-call-${parsedAction.name}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
             await this.tracingProvider.createObservation({
-              id: `event-tool-call-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-              name: `Tool Call: ${parsedAction.name}`,
+              id: toolCallObservationId,
+              name: `Tool Call Decision: ${parsedAction.name}`,
               type: 'event',
               startTime: new Date(),
+              parentObservationId: tracingContext.currentGenerationId || tracingContext.parentObservationId,
               input: {
                 toolName: parsedAction.name,
                 toolArgs: parsedAction.args,
@@ -202,6 +249,9 @@ export function createAgentNode(modelName: string, temperature: number): Runnabl
                 provider: AIChatPanel.getProviderForModel(this.modelName)
               }
             }, tracingContext.traceId);
+            
+            // Update tracing context with tool call observation ID for tool execution
+            tracingContext.currentToolCallId = toolCallObservationId;
           }
           
           newModelMessage = {
@@ -253,13 +303,10 @@ export function createAgentNode(modelName: string, temperature: number): Runnabl
         
         // Update generation observation with error
         if (generationId && tracingContext?.traceId) {
-          await this.tracingProvider.createObservation({
-            id: generationId,
-            name: 'LLM Generation', // Include name when updating
-            type: 'generation',
+          await this.tracingProvider.updateObservation(generationId, {
             endTime: new Date(),
             error: error instanceof Error ? error.message : String(error)
-          }, tracingContext.traceId);
+          });
         }
         
         throw error;
@@ -271,6 +318,34 @@ export function createAgentNode(modelName: string, temperature: number): Runnabl
       this.callCount = 0;
     }
 
+    /**
+     * Sanitizes tool result data for text representation by removing fields
+     * that shouldn't be sent to the LLM (imageData, success, etc.)
+     */
+    private sanitizeToolResultForText(toolResultData: any): any {
+      if (typeof toolResultData !== 'object' || toolResultData === null) {
+        return toolResultData;
+      }
+
+      // Create a shallow copy
+      const sanitized = { ...toolResultData };
+
+      // Remove fields that shouldn't be sent to LLM
+      const fieldsToRemove = [
+        'imageData',    // Prevents token waste from base64 strings
+        'success',      // LLM should infer success from error presence
+        'dataUrl',      // Legacy image field if any
+        'agentSession', // Avoid sending session data to LLM
+      ];
+
+      fieldsToRemove.forEach(field => {
+        if (sanitized.hasOwnProperty(field)) {
+          delete sanitized[field];
+        }
+      });
+
+      return sanitized;
+    }
 
     /**
      * Convert ChatMessage[] to LLMMessage[]
@@ -312,9 +387,27 @@ export function createAgentNode(modelName: string, temperature: number): Runnabl
         } else if (msg.entity === ChatMessageEntity.TOOL_RESULT) {
           // Tool result message
           if ('toolCallId' in msg && 'resultText' in msg) {
+            let content = msg.resultText;
+            
+            // Try to parse and sanitize if it's JSON (structured tool result)
+            if (typeof msg.resultText === 'string') {
+              try {
+                const parsed = JSON.parse(msg.resultText);
+                const sanitized = this.sanitizeToolResultForText(parsed);
+                content = JSON.stringify(sanitized);
+              } catch {
+                // Not JSON, use as-is (simple string tool result)
+                content = msg.resultText;
+              }
+            } else if (typeof msg.resultText === 'object' && msg.resultText !== null) {
+              // Already an object, sanitize directly
+              const sanitized = this.sanitizeToolResultForText(msg.resultText);
+              content = JSON.stringify(sanitized);
+            }
+            
             llmMessages.push({
               role: 'tool',
-              content: String(msg.resultText),
+              content: String(content),
               tool_call_id: msg.toolCallId,
             });
           }
@@ -356,35 +449,66 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
       const toolCallId = lastMessage.toolCallId; // Extract tool call ID for linking
       let resultText: string;
       let isError = false;
+      
+      // Initialize messages array with current state
+      const messages = [...state.messages];
+
+      const selectedTool = this.toolMap.get(toolName);
+      if (!selectedTool) {
+        throw new Error(`Tool ${toolName} not found`);
+      }
 
       // Create span for tool execution
       const tracingContext = state.context?.tracingContext;
       let spanId: string | undefined;
       const spanStartTime = new Date();
+      const isConfigurableAgent = selectedTool instanceof ConfigurableAgentTool;
+
+      console.log(`[HIERARCHICAL_TRACING] ToolExecutorNode: Creating span for ${toolName}:`, {
+        hasTracingContext: !!tracingContext,
+        traceId: tracingContext?.traceId,
+        currentToolCallId: tracingContext?.currentToolCallId,
+        parentObservationId: tracingContext?.parentObservationId,
+        toolName,
+        toolCallId,
+        isConfigurableAgent,
+        executionLevel: isConfigurableAgent ? 'agentrunner' : 'tool'
+      });
 
       if (tracingContext?.traceId) {
-        spanId = `tool-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        spanId = `tool-exec-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
         // Tool execution should be a span since it has duration
-        await this.tracingProvider.createObservation({
-          id: spanId,
-          name: `Tool: ${toolName}`,
-          type: 'span',
-          startTime: spanStartTime,
-          parentObservationId: tracingContext.parentObservationId,
-          input: toolArgs,
-          metadata: {
+        try {
+          await this.tracingProvider.createObservation({
+            id: spanId,
+            name: isConfigurableAgent ? `Agent Execution: ${toolName}` : `Tool Execution: ${toolName}`,
+            type: 'span',
+            startTime: spanStartTime,
+            parentObservationId: tracingContext.currentToolCallId || tracingContext.parentObservationId,
+            input: toolArgs,
+            metadata: {
+              toolName,
+              toolCallId,
+              phase: 'execution',
+              executionLevel: isConfigurableAgent ? 'agentrunner' : 'tool',
+              source: 'ToolExecutorNode',
+              isConfigurableAgent
+            }
+          }, tracingContext.traceId);
+          console.log(`[HIERARCHICAL_TRACING] ToolExecutorNode: Successfully created span:`, {
+            spanId,
             toolName,
-            toolCallId,
-            phase: 'execution'
-          }
-        }, tracingContext.traceId);
+            isConfigurableAgent,
+            spanName: isConfigurableAgent ? `Agent Execution: ${toolName}` : `Tool Execution: ${toolName}`
+          });
+        } catch (error) {
+          console.error(`[HIERARCHICAL_TRACING] ToolExecutorNode: Failed to create span:`, error);
+        }
+      } else {
+        console.log(`[HIERARCHICAL_TRACING] ToolExecutorNode: No tracing context or traceId available`);
       }
 
       try {
-        const selectedTool = this.toolMap.get(toolName);
-        if (!selectedTool) {
-          throw new Error(`Tool ${toolName} not found`);
-        }
 
         // Execute the tool with tracing context, casting toolArgs to any to satisfy the specific tool signature
         logger.info(`Executing tool ${toolName} with tracing context:`, { 
@@ -399,14 +523,98 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
         });
         
         console.log(`[TOOL EXECUTION PATH 1] ToolExecutorNode about to execute tool: ${toolName}`);
-        const result = await withTracingContext(tracingContext, async () => {
+        
+        // Create enhanced tracing context for ConfigurableAgentTool execution
+        let executionContext = tracingContext || null;
+        if (isConfigurableAgent && tracingContext && spanId) {
+          executionContext = {
+            ...tracingContext,
+            currentAgentSpanId: spanId,
+            parentObservationId: spanId, // Agent span becomes parent for AgentRunner operations
+            executionLevel: 'agentrunner' as const,
+            agentContext: {
+              agentName: toolName,
+              agentType: toolName,
+              iterationCount: 0
+            }
+          };
+          console.log(`[HIERARCHICAL_TRACING] ToolExecutorNode: Created enhanced tracing context for agent:`, {
+            agentSpanId: spanId,
+            agentName: toolName,
+            executionLevel: executionContext.executionLevel,
+            parentObservationId: executionContext.parentObservationId,
+            currentAgentSpanId: executionContext.currentAgentSpanId
+          });
+        }  
+              
+        const result = await withTracingContext(executionContext, async () => {
           console.log(`[TOOL EXECUTION PATH 1] Inside withTracingContext for tool: ${toolName}`);
           return await selectedTool.execute(toolArgs as any);
         });
         console.log(`[TOOL EXECUTION PATH 1] ToolExecutorNode completed tool: ${toolName}`);
 
-        // Special handling for finalize_with_critique tool results to ensure proper format
-        if (toolName === 'finalize_with_critique') {
+        // Check if result contains agentSession (ConfigurableAgentTool result)
+        if (selectedTool instanceof ConfigurableAgentTool && result && typeof result === 'object' && 'agentSession' in result) {
+          const agentSession = result.agentSession as any;
+          console.log(`[AGENT SESSION] Captured agent session from ${toolName}:`, agentSession);
+          
+          // Log detailed session information
+          console.log(`[AGENT SESSION] Session Details:`, {
+            sessionId: agentSession.sessionId,
+            agentName: agentSession.agentName,
+            status: agentSession.status,
+            messageCount: agentSession.messages?.length || 0,
+            messages: agentSession.messages,
+            nestedSessionCount: agentSession.nestedSessions?.length || 0,
+            nestedSessions: agentSession.nestedSessions,
+            tools: agentSession.tools,
+            iterationCount: agentSession.iterationCount,
+            maxIterations: agentSession.maxIterations,
+            terminationReason: agentSession.terminationReason
+          });
+          
+          // Log tool calls specifically
+          if (agentSession.messages) {
+            const toolCalls = agentSession.messages.filter((msg: any) => msg.type === 'tool_call');
+            const toolResults = agentSession.messages.filter((msg: any) => msg.type === 'tool_result');
+            console.log(`[AGENT SESSION] Tool Analysis:`, {
+              totalMessages: agentSession.messages.length,
+              toolCallCount: toolCalls.length,
+              toolResultCount: toolResults.length,
+              toolCalls: toolCalls,
+              toolResults: toolResults,
+              messageTypes: agentSession.messages.map((msg: any) => ({ type: msg.type, id: msg.id }))
+            });
+          }
+          
+          // Create AgentSessionMessage for UI rendering
+          const agentSessionMessage: AgentSessionMessage = {
+            entity: ChatMessageEntity.AGENT_SESSION,
+            agentSession: result.agentSession as any,
+            summary: `Agent ${toolName} execution completed`
+          };
+          
+          console.log(`[AGENT SESSION] Created AgentSessionMessage:`, {
+            sessionId: (result.agentSession as any).sessionId,
+            agentName: (result.agentSession as any).agentName,
+            status: (result.agentSession as any).status
+          });
+          
+          // Add the AgentSessionMessage to the state immediately after tool result
+          messages.push(agentSessionMessage);
+        }
+
+        // Special handling for ConfigurableAgentTool results
+        if (selectedTool instanceof ConfigurableAgentTool && result && typeof result === 'object' && 'output' in result) {
+          // For ConfigurableAgentTool, only send the output field to the LLM
+          const agentResult = result as any; // Cast to any to access ConfigurableAgentResult properties
+          resultText = agentResult.output || (agentResult.error ? `Error: ${agentResult.error}` : 'No output');
+          console.log(`[AGENT SESSION] Filtered ConfigurableAgentTool result for LLM:`, {
+            toolName,
+            originalResult: result,
+            filteredResult: resultText
+          });
+        } else if (toolName === 'finalize_with_critique') {
           logger.debug('ToolExecutorNode: finalize_with_critique result:', result);
           // Make sure the result is properly stringified
           resultText = typeof result === 'string' ? result : JSON.stringify(result);
@@ -418,22 +626,40 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
 
         // Complete the span with success
         if (spanId && tracingContext?.traceId) {
-          await this.tracingProvider.createObservation({
-            id: `${spanId}-complete`,
-            name: `Tool Complete: ${toolName}`,
-            type: 'span',
-            startTime: new Date(),
-            endTime: new Date(),
-            parentObservationId: tracingContext.parentObservationId,
-            output: result,
-            metadata: {
+          try {
+            const completionMetadata = {
               toolName,
               toolCallId,
-              phase: 'complete',
+              phase: 'completed',
               duration: Date.now() - spanStartTime.getTime(),
-              parentSpanId: spanId
-            }
-          }, tracingContext.traceId);
+              success: !isError,
+              executionLevel: isConfigurableAgent ? 'agentrunner' : 'tool',
+              source: 'ToolExecutorNode',
+              isConfigurableAgent,
+              ...(isConfigurableAgent && {
+                agentName: toolName,
+                agentType: toolName,
+                resultType: result && typeof result === 'object' && 'agentSession' in result ? 'agent_result' : 'unknown'
+              })
+            };
+
+            await this.tracingProvider.updateObservation(spanId, {
+              endTime: new Date(),
+              output: isConfigurableAgent && result && typeof result === 'object' && 'output' in result 
+                ? (result as any).output 
+                : result,
+              metadata: completionMetadata
+            });
+            console.log(`[HIERARCHICAL_TRACING] ToolExecutorNode: Successfully completed span:`, {
+              spanId,
+              toolName,
+              success: !isError,
+              isConfigurableAgent,
+              duration: Date.now() - spanStartTime.getTime()
+            });
+          } catch (error) {
+            console.error(`[HIERARCHICAL_TRACING] ToolExecutorNode: Failed to complete span:`, error);
+          }
         }
 
       } catch (err) {
@@ -443,22 +669,36 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
 
         // Complete the span with error
         if (spanId && tracingContext?.traceId) {
-          await this.tracingProvider.createObservation({
-            id: `${spanId}-error`,
-            name: `Tool Error: ${toolName}`,
-            type: 'span',
-            startTime: new Date(),
-            endTime: new Date(),
-            parentObservationId: tracingContext.parentObservationId,
-            error: err instanceof Error ? err.message : String(err),
-            metadata: {
+          try {
+            const errorMetadata = {
               toolName,
               toolCallId,
               phase: 'error',
               duration: Date.now() - spanStartTime.getTime(),
-              parentSpanId: spanId
-            }
-          }, tracingContext.traceId);
+              success: false,
+              executionLevel: isConfigurableAgent ? 'agentrunner' : 'tool',
+              source: 'ToolExecutorNode',
+              isConfigurableAgent,
+              ...(isConfigurableAgent && {
+                agentName: toolName,
+                agentType: toolName
+              })
+            };
+
+            await this.tracingProvider.updateObservation(spanId, {
+              endTime: new Date(),
+              error: err instanceof Error ? err.message : String(err),
+              metadata: errorMetadata
+            });
+            console.log(`[HIERARCHICAL_TRACING] ToolExecutorNode: Successfully completed span with error:`, {
+              spanId,
+              toolName,
+              error: err instanceof Error ? err.message : String(err),
+              isConfigurableAgent
+            });
+          } catch (error) {
+            console.error(`[HIERARCHICAL_TRACING] ToolExecutorNode: Failed to complete span with error:`, error);
+          }
         }
       }
 
@@ -469,17 +709,26 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
         resultText,
         isError,
         toolCallId, // Link back to the tool call for OpenAI format
-        ...(isError && { error: resultText })
+        ...(isError && { error: resultText }),
+        // Mark if this is from a ConfigurableAgentTool
+        ...(selectedTool instanceof ConfigurableAgentTool && { isFromConfigurableAgent: true })
       };
 
       logger.debug('ToolExecutorNode: Adding tool result message with toolCallId:', { toolCallId, toolResultMessage });
 
+      // Add the result message to the final messages array
+      messages.push(toolResultMessage);
+      
       // Add the result message to the state
-      return {
+      const newState = {
         ...state,
-        messages: [...state.messages, toolResultMessage],
+        messages: [...messages],
         error: isError ? resultText : undefined,
       };
+      
+      console.log(`[AGENT SESSION] Returning state with ${newState.messages.length} messages`);
+      
+      return newState;
     }
   }(toolMap);
   return toolExecutorNode;

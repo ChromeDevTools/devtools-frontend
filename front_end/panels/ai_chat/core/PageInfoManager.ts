@@ -202,11 +202,9 @@ export async function enhancePromptWithPageContext(basePrompt: string): Promise<
 <Context>
   <User>
     <Date>${new Date().toLocaleDateString()}</Date>
-    <Time>${new Date().toLocaleTimeString()}</Time>
   </User>
   <Page>
     <Title>${pageInfo.title}</Title>
-    <URL>${pageInfo.url}</URL>
     <PartialAccessibility>
       <!-- This tree represents only the currently visible (viewport) section of the page, not the full page. -->
       ${accessibilityTree ? `<Tree>\n${accessibilityTree}\n</Tree>` : 'Unavailable'}

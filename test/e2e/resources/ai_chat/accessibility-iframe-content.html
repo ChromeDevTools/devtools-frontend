@@ -1,0 +1,67 @@
+<!--
+  Copyright 2025 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFrame Content - Complex</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            background: #fafafa;
+        }
+        
+        .scrollable {
+            height: 100px;
+            overflow: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>IFrame Content</h1>
+    
+    <form aria-label="IFrame form">
+        <div>
+            <label for="iframe-input">Input in iframe:</label>
+            <input type="text" id="iframe-input" placeholder="Type here">
+        </div>
+        
+        <div>
+            <label for="iframe-select">Select in iframe:</label>
+            <select id="iframe-select">
+                <option value="">Choose option</option>
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+            </select>
+        </div>
+        
+        <button type="submit">Submit IFrame Form</button>
+    </form>
+    
+    <div class="scrollable" aria-label="Scrollable content in iframe">
+        <div style="height: 200px; background: linear-gradient(to bottom, #e0e0e0, #f0f0f0);">
+            <h3>Scrollable Content</h3>
+            <p>This content requires scrolling within the iframe.</p>
+            <button>Button in scrollable area</button>
+            <ul>
+                <li>IFrame list item 1</li>
+                <li>IFrame list item 2</li>
+                <li>IFrame list item 3</li>
+            </ul>
+        </div>
+    </div>
+    
+    <nav aria-label="IFrame navigation">
+        <a href="#iframe-section1">IFrame Link 1</a>
+        <a href="#iframe-section2">IFrame Link 2</a>
+    </nav>
+</body>
+</html>

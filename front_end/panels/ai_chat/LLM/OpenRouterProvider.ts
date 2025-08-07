@@ -26,6 +26,8 @@ export interface OpenRouterModel {
     modality: string;
     tokenizer: string;
     instruct_type?: string;
+    input_modalities?: string[];
+    output_modalities?: string[];
   };
   top_provider: {
     context_length: number;
@@ -51,6 +53,11 @@ export class OpenRouterProvider extends LLMBaseProvider {
   private static readonly MODELS_PATH = '/models';
   
   readonly name: LLMProvider = 'openrouter';
+  
+  // Cache for vision models
+  private visionModelsCache: Set<string> | null = null;
+  private visionModelsCacheExpiry: number = 0;
+  private static readonly CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes
 
   constructor(private readonly apiKey: string) {
     super();
@@ -74,6 +81,14 @@ export class OpenRouterProvider extends LLMBaseProvider {
    * Get the models endpoint URL with tool support filter
    */
   private getToolSupportingModelsEndpoint(): string {
+    return `${OpenRouterProvider.API_BASE_URL}${OpenRouterProvider.MODELS_PATH}?supported_parameters=tools`;
+  }
+
+  /**
+   * Get the models endpoint URL with tool support filter
+   * We'll filter for vision capabilities client-side since OpenRouter uses union logic
+   */
+  private getVisionModelsEndpoint(): string {
     return `${OpenRouterProvider.API_BASE_URL}${OpenRouterProvider.MODELS_PATH}?supported_parameters=tools`;
   }
 
@@ -135,6 +150,12 @@ export class OpenRouterProvider extends LLMBaseProvider {
           outputTokens: data.usage.completion_tokens,
           totalTokens: data.usage.total_tokens
         });
+        
+        // Ensure usage data is preserved in rawResponse for tracing
+        if (!data.rawResponse) {
+          data.rawResponse = {};
+        }
+        data.rawResponse.usage = data.usage;
       }
 
       return data;
@@ -151,6 +172,11 @@ export class OpenRouterProvider extends LLMBaseProvider {
     const result: LLMResponse = {
       rawResponse: data
     };
+    
+    // Ensure usage data is available for tracing
+    if (data.usage && data.rawResponse) {
+      data.rawResponse.usage = data.usage;
+    }
 
     if (!data?.choices || data.choices.length === 0) {
       throw new Error('No choices in OpenRouter response');
@@ -307,6 +333,40 @@ export class OpenRouterProvider extends LLMBaseProvider {
   }
 
   /**
+   * Fetch available vision models from OpenRouter API
+   */
+  async fetchVisionModels(): Promise<OpenRouterModel[]> {
+    logger.debug('Fetching available OpenRouter vision models...');
+
+    try {
+      const response = await fetch(this.getVisionModelsEndpoint(), {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: { message: 'Unknown error' } }));
+        logger.error('OpenRouter vision models API error:', JSON.stringify(errorData, null, 2));
+        throw new Error(`OpenRouter vision models API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
+      }
+
+      const data: OpenRouterModelsResponse = await response.json();
+      logger.debug('OpenRouter Vision Models Response:', data);
+
+      if (!data?.data || !Array.isArray(data.data)) {
+        throw new Error('Invalid vision models response format');
+      }
+
+      return data.data;
+    } catch (error) {
+      logger.error('Failed to fetch OpenRouter vision models:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get all models supported by this provider
    */
   async getModels(): Promise<ModelInfo[]> {
@@ -336,7 +396,7 @@ export class OpenRouterProvider extends LLMBaseProvider {
   /**
    * Check if a model supports function calling based on its metadata
    */
-  private modelSupportsFunctionCalling(model: OpenRouterModel): boolean {
+  private modelSupportsFunctionCalling(_model: OpenRouterModel): boolean {
     // Since we now fetch models with supported_parameters=tools filter,
     // all returned models support function calling
     return true;
@@ -365,13 +425,56 @@ export class OpenRouterProvider extends LLMBaseProvider {
     }
     
     const visionModels = [
-      'gpt-4-vision', 'gpt-4o', 'claude-3', 'llava', 'vision'
+      'gpt-4-vision', 'gpt-4o', 'gpt-4o-mini',
+      'claude-3', 'claude-3-haiku', 'claude-3-sonnet', 'claude-3-opus', 'claude-3.5-sonnet',
+      'gemini', 'gemini-pro', 'gemini-2.5', 'gemini-pro-vision',
+      'llava', 'vision', 'multimodal'
     ];
     
     return visionModels.some(modelType => 
       model.id.toLowerCase().includes(modelType) || 
       model.name?.toLowerCase().includes(modelType)
     );
+  }
+
+  /**
+   * Check if a specific model supports vision with API-based detection
+   */
+  async supportsVision(modelName: string): Promise<boolean> {
+    const now = Date.now();
+    
+    // Check cache validity
+    if (!this.visionModelsCache || now > this.visionModelsCacheExpiry) {
+      try {
+        logger.debug('Refreshing vision models cache from API...');
+        const visionModels = await this.fetchVisionModels();
+        
+        // Filter models client-side to ensure they actually support image input
+        // OpenRouter's API uses union logic, so we need to validate each model
+        const actualVisionModels = visionModels.filter(model => {
+          // Check if model actually supports image input in its architecture
+          const hasImageInput = model.architecture?.input_modalities?.includes('image');
+          
+          if (!hasImageInput) {
+            logger.debug(`Filtering out non-vision model: ${model.id} (input_modalities: ${JSON.stringify(model.architecture?.input_modalities)})`);
+            return false;
+          }
+          
+          return true;
+        });
+        
+        this.visionModelsCache = new Set(actualVisionModels.map(m => m.id));
+        this.visionModelsCacheExpiry = now + OpenRouterProvider.CACHE_DURATION_MS;
+        logger.info(`Cached ${this.visionModelsCache.size} actual vision models (filtered from ${visionModels.length} returned by API)`);
+      } catch (error) {
+        logger.warn('Failed to fetch vision models, using fallback detection:', error);
+        // Fallback to keyword-based detection
+        const visionKeywords = ['gpt-4-vision', 'gpt-4o', 'claude-3', 'llava', 'vision', 'gemini-pro-vision'];
+        return visionKeywords.some(keyword => modelName.toLowerCase().includes(keyword));
+      }
+    }
+    
+    return this.visionModelsCache.has(modelName);
   }
 
   /**

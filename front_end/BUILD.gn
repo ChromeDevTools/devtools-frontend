@@ -159,6 +159,7 @@ group("unittests") {
     "models/workspace_diff:unittests",
     "panels/accessibility:unittests",
     "panels/ai_assistance:unittests",
+    "panels/ai_chat:unittests",
     "panels/animation:unittests",
     "panels/application:unittests",
     "panels/application/components:unittests",

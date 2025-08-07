@@ -57,7 +57,7 @@ export class VisionAgentEvaluationRunner {
     }
 
     // Use provided judge model or default
-    const evaluationModel = judgeModel || 'gpt-4o-mini';
+    const evaluationModel = judgeModel || 'gpt-4.1-mini';
 
     this.config = {
       extractionModel: evaluationModel,
@@ -148,9 +148,9 @@ export class VisionAgentEvaluationRunner {
           if (shouldUseVision && visualConfig?.captureBeforeAction) {
             logger.info('📸 Capturing before screenshot (after navigation)...');
             const beforeResult = await this.screenshotTool.execute({ fullPage: false });
-            if ('dataUrl' in beforeResult) {
+            if ('imageData' in beforeResult) {
               beforeScreenshot = {
-                dataUrl: beforeResult.dataUrl || '',
+                dataUrl: beforeResult.imageData || '',
                 timestamp: Date.now()
               };
               logger.info('✅ Before screenshot captured');
@@ -164,9 +164,9 @@ export class VisionAgentEvaluationRunner {
           if (shouldUseVision && visualConfig?.captureAfterAction) {
             logger.info('📸 Capturing after screenshot...');
             const afterResult = await this.screenshotTool.execute({ fullPage: false });
-            if ('dataUrl' in afterResult) {
+            if ('imageData' in afterResult) {
               afterScreenshot = {
-                dataUrl: afterResult.dataUrl || '',
+                dataUrl: afterResult.imageData || '',
                 timestamp: Date.now()
               };
               logger.info('✅ After screenshot captured');

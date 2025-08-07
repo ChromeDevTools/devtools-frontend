@@ -1,0 +1,91 @@
+<!--
+  Copyright 2025 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Accessibility Test Page</title>
+    <style>
+        iframe {
+            border: 2px solid #333;
+            margin: 10px 0;
+        }
+        
+        .scrollable {
+            height: 150px;
+            overflow: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        
+        .content {
+            height: 300px;
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Page with Multiple IFrames</h1>
+        <p>This page contains multiple iframes to test accessibility tree processing.</p>
+    </header>
+
+    <main>
+        <section aria-labelledby="iframe-section-title">
+            <h2 id="iframe-section-title">IFrame Content</h2>
+            
+            <!-- First iframe with complex content -->
+            <iframe 
+                src="accessibility-iframe-content.html" 
+                title="Complex iframe content"
+                width="400" 
+                height="300"
+                aria-describedby="iframe1-desc">
+            </iframe>
+            <div id="iframe1-desc">This iframe contains a form and interactive elements</div>
+            
+            <!-- Second iframe with simple content -->
+            <iframe 
+                src="accessibility-simple-iframe.html" 
+                title="Simple iframe content"
+                width="400" 
+                height="200"
+                aria-describedby="iframe2-desc">
+            </iframe>
+            <div id="iframe2-desc">This iframe contains basic text content</div>
+        </section>
+
+        <section aria-labelledby="main-content-title">
+            <h2 id="main-content-title">Main Page Content</h2>
+            
+            <div class="scrollable" aria-label="Scrollable main content">
+                <div class="content">
+                    <h3>Scrollable Content in Main Page</h3>
+                    <p>This content is in the main page, outside of any iframe.</p>
+                    <button>Main page button</button>
+                    <ul>
+                        <li>Main page list item 1</li>
+                        <li>Main page list item 2</li>
+                        <li>Main page list item 3</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <nav aria-label="Page navigation">
+                <ul>
+                    <li><a href="#section1">Go to Section 1</a></li>
+                    <li><a href="#section2">Go to Section 2</a></li>
+                </ul>
+            </nav>
+        </section>
+    </main>
+
+    <footer>
+        <p>Footer content outside of iframes</p>
+    </footer>
+</body>
+</html>

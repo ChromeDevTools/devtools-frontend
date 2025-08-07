@@ -23,8 +23,9 @@ export class LLMEvaluator {
 
   constructor(apiKey: string, defaultModel?: string) {
     this.apiKey = apiKey;
-    // Use the user's selected mini model as default, which should be available
-    this.defaultModel = defaultModel || AIChatPanel.getMiniModel();
+    // Use the provided model, or fall back to saved judge model, or finally to mini model
+    const JUDGE_MODEL_STORAGE_KEY = 'ai_chat_judge_model';
+    this.defaultModel = defaultModel || localStorage.getItem(JUDGE_MODEL_STORAGE_KEY) || AIChatPanel.getMiniModel();
   }
 
 

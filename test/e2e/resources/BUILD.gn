@@ -8,6 +8,7 @@ group("resources") {
   deps = [
     ":shared",
     "ai_assistance",
+    "ai_chat",
     "animations",
     "application",
     "changes",

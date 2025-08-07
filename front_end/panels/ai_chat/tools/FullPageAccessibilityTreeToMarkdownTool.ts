@@ -20,33 +20,6 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
   name = 'accessibility_tree_full_to_markdown';
   description = 'Gets the full page accessibility tree, sends it to an LLM, and returns a Markdown summary of the entire tree.';
 
-  private async createToolTracingObservation(toolName: string, args: any): Promise<void> {
-    try {
-      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
-      const context = getCurrentTracingContext();
-      if (context) {
-        const tracingProvider = createTracingProvider();
-        await tracingProvider.createObservation({
-          id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-          name: `Tool Execute: ${toolName}`,
-          type: 'event',
-          startTime: new Date(),
-          input: { 
-            toolName, 
-            toolArgs: args,
-            contextInfo: `Direct tool execution in ${toolName}`
-          },
-          metadata: {
-            executionPath: 'direct-tool',
-            toolName
-          }
-        }, context.traceId);
-      }
-    } catch (tracingError) {
-      // Don't fail tool execution due to tracing errors
-      console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
-    }
-  }
 
   schema = {
     type: 'object',
@@ -62,7 +35,6 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
   }
 
   async execute(_args: Record<string, unknown>): Promise<FullPageAccessibilityTreeToMarkdownResult | ErrorResult> {
-    await this.createToolTracingObservation(this.name, _args);
     const getAccTreeTool = new GetAccessibilityTreeTool();
     const treeResult = await getAccTreeTool.execute({ reasoning: 'Get full accessibility tree for Markdown conversion' });
     if ('error' in treeResult) {

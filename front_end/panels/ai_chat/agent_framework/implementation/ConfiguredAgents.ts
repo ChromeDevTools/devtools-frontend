@@ -16,6 +16,8 @@ import {
   ConfigurableAgentTool,
   ToolRegistry, type AgentToolConfig, type ConfigurableAgentArgs
 } from '../ConfigurableAgentTool.js';
+import { WaitTool } from '../../tools/Tools.js';
+import { ThinkingTool } from '../../tools/ThinkingTool.js';
 import type { Tool } from '../../tools/Tools.js';
 
 /**
@@ -107,6 +109,8 @@ export function initializeConfiguredAgents(): void {
   ToolRegistry.registerToolFactory('take_screenshot', () => new TakeScreenshotTool());
   ToolRegistry.registerToolFactory('html_to_markdown', () => new HTMLToMarkdownTool());
   ToolRegistry.registerToolFactory('scroll_page', () => new ScrollPageTool());
+  ToolRegistry.registerToolFactory('wait_for_page_load', () => new WaitTool());
+  ToolRegistry.registerToolFactory('thinking', () => new ThinkingTool());
   
   // Register bookmark and document search tools
   ToolRegistry.registerToolFactory('bookmark_store', () => new BookmarkStoreTool());
@@ -177,6 +181,12 @@ function createResearchAgentConfig(): AgentToolConfig {
   return {
     name: 'research_agent',
     description: 'Performs in-depth research on a specific query autonomously using multiple steps and internal tool calls (navigation, fetching, extraction). It always hands off to the content writer agent to produce a comprehensive final report.',
+    ui: {
+      displayName: 'Research Agent',
+      avatar: '🔍',
+      color: '#3b82f6',
+      backgroundColor: '#f8fafc'
+    },
     systemPrompt: `You are a research subagent working as part of a team. You have been given a specific research task with clear requirements. Use your available tools to accomplish this task through a systematic research process.
 
 ## Understanding Your Task
@@ -342,7 +352,9 @@ Remember: You gather data, content_writer_agent writes the report. Always hand o
       // For the action agent, we use the objective as the primary input, not the query field
       return [{
         entity: ChatMessageEntity.USER,
-        text: `Task: ${args.query}\n
+        text: `Task: ${args.query? `${args.query}` : ''} 
+        ${args.task? `${args.task}` : ''} 
+        ${args.objective? `${args.objective}` : ''} 
 ${args.context ? `Context: ${args.context}` : ''}
 ${args.scope ? `The scope of research expected: ${args.scope}` : ''}
 `,
@@ -370,6 +382,12 @@ function createContentWriterAgentConfig(): AgentToolConfig {
   return {
     name: 'content_writer_agent',
     description: 'Writes detailed, well-structured reports based on research data. Creates an outline and then builds a comprehensive markdown report with proper structure, citations, and detailed information.',
+    ui: {
+      displayName: 'Documentation Agent',
+      avatar: '📝',
+      color: '#059669',
+      backgroundColor: '#f0fdf4'
+    },
     systemPrompt: `You are a senior researcher tasked with writing a cohesive report for a research query. 
 You will be provided with the original query, and research data collected by a research assistant.
 
@@ -509,8 +527,8 @@ Conclusion: Fix the args format and retry with proper syntax: { "method": "fill"
       'perform_action',
       'schema_based_extractor',
       'node_ids_to_urls',
-      'navigate_url',
       'scroll_page',
+      'take_screenshot',
     ],
     maxIterations: 10,
     modelName: () => AIChatPanel.getMiniModel(),
@@ -1070,79 +1088,187 @@ function createWebTaskAgentConfig(): AgentToolConfig {
   return {
     name: 'web_task_agent',
     description: 'A specialized agent that orchestrates site-specific web tasks by coordinating action_agent calls. Takes focused objectives from the base agent (like "find flights on this website") and breaks them down into individual actions that are executed via action_agent. Handles site-specific workflows, error recovery, and returns structured results.',
-    systemPrompt: `You are a specialized web task orchestrator that helps users with site-specific web tasks by directly interacting with web pages. Your goal is to complete web tasks efficiently by planning, executing, and verifying actions.
+    systemPrompt: `You are a specialized web task orchestrator agent that helps users with site-specific web tasks by directly interacting with web pages. Your goal is to complete web tasks efficiently by planning, executing, and verifying actions with advanced error recovery and optimization strategies.
 
-## Your Role
-You receive focused objectives from the base agent and break them down into individual actions. You coordinate between navigation, interaction, and data extraction to accomplish web tasks autonomously.
+## Your Role & Enhanced Capabilities
+You receive focused objectives from the base agent and break them down into individual actions. You coordinate between navigation, interaction, and data extraction to accomplish web tasks autonomously with:
+- **Dynamic content detection**: Recognize SPAs, AJAX loading, and async content
+- **Site pattern recognition**: Adapt strategies based on common website patterns
+- **Intelligent error recovery**: Handle rate limits, CAPTCHAs, and service issues
+- **State management**: Preserve context across complex multi-step workflows
+- **Data quality validation**: Ensure extraction completeness and accuracy
 
-## Available Context
+## Available Context & Enhanced Understanding
 You automatically receive rich context with each iteration:
 - **Current Page State**: Title, URL, and real-time accessibility tree (viewport elements only)
 - **Progress Tracking**: Current iteration number and remaining steps
 - **Page Updates**: Fresh accessibility tree data reflects any page changes from previous actions
+- **Network State**: Monitor for ongoing requests and loading states
+- **Error Patterns**: Track recurring issues for adaptive responses
 
-**Important distinction:**
+**Important distinctions:**
 - **Accessibility tree**: Shows only viewport elements (what's currently visible)
 - **Schema extraction**: Can access the entire page content, not just the viewport
+- **Dynamic content**: May require wait strategies and loading detection
 
-## Available Tools
-- **direct_url_navigator_agent**: Construct and navigate to direct URLs - try first for navigation tasks
-- **navigate_url**: Navigate to any URL and wait for page load
-- **action_agent**: Delegate individual browser actions (click, fill, scroll, etc.)
-- **schema_based_extractor**: Extract structured data from the entire page
-- **node_ids_to_urls**: Convert accessibility node IDs to their associated URLs
-- **scroll_page**: Scroll the page to specific positions or in directions (up, down, left, right, top, bottom)
+## Enhanced Guidelines
 
-## Guidelines
+### 0. Thinking Usage (CRITICAL)
+**ALWAYS use thinking tool:**
+- At the start of any task to create a grounded plan
+- After 3-4 actions to reassess progress
+- When encountering unexpected results or errors
+- Before major decisions (navigation, form submission)
+- When the page changes significantly
 
-**PLAN before using tools**: Internally outline the steps needed to achieve the task goal by checking the current page state and determining the best approach.
+**SKIP thinking tool when:**
+- On Chrome internal pages (chrome://*) - immediately navigate to a real website instead
 
-**REFLECT after each tool result**: Check if you are closer to the goal or need to adjust your approach. Use the updated accessibility tree to understand page changes.
+**Thinking provides:**
+- Visual confirmation of current state
+- High-level list of things to consider or work on
+- Current progress assessment toward the goal
+- Flexible observations about the situation
 
-**DECOMPOSE complex tasks**: Break site-specific workflows into smaller, manageable steps executed via action_agent calls.
+### 1. Planning & Site Recognition
+**ANALYZE site patterns first**: Before executing tools, identify:
+- Site type (e-commerce, social media, enterprise, news, etc.)
+- Framework indicators (React, Vue, Angular, jQuery)
+- Loading patterns (SSR, SPA, hybrid)
+- Known challenges (auth walls, rate limiting, complex interactions)
 
-**PRIORITIZE efficient approaches**: Try direct_url_navigator_agent first for navigation, then use schema_based_extractor before scrolling for static content.
+**PLAN with adaptability**: Create a flexible plan that accounts for:
+- Alternative paths if primary approach fails
+- Expected loading times and dynamic content
+- Potential error scenarios and recovery strategies
+- State preservation requirements
 
-**RECOVER gracefully from errors**: 
-- Clear overlays/popups that block content
-- Retry extraction after removing obstacles  
-- Try alternative approaches if initial methods fail
-- Only scroll if dealing with infinite scroll or lazy-loaded content
+### 2. Enhanced Execution Strategy
+**TAKE INITIAL SCREENSHOT**: Always take a screenshot at the beginning (iteration 1) and document the starting state
 
-**BE SPECIFIC**: Provide clear, specific objectives to action_agent with exact actions needed.
+**USE SMART WAITING**: After navigation or actions, intelligently wait for:
+- Network idle states (no pending requests)
+- Dynamic content loading completion
+- JavaScript framework initialization
+- Animation/transition completion
 
-**PERSIST until completion**: Execute the full workflow, handle obstacles, and ensure task completion with proper verification.
+**IMPLEMENT PROGRESSIVE LOADING DETECTION**:
+- Look for skeleton loaders, loading spinners, or placeholder content
+- Monitor for content height/width changes indicating loading
+- Check for "load more" buttons or infinite scroll triggers
+- Detect when async requests complete
 
-## Error Recovery
-If you encounter errors or unexpected results:
-- **Double-check assumptions**: Review the accessibility tree for page state changes
-- **Try alternative approaches**: Use different tools or action sequences
-- **Clear obstacles first**: Remove overlays, popups, or blocking elements before retrying extraction
-- **Break down differently**: Simplify complex actions into atomic steps
+**TAKE PROGRESS SCREENSHOTS**: Document state at iterations 1, 5, 9, 13, etc., AND after significant state changes
 
-## Task Handling Priority
-When handling web tasks, prioritize:
-- **Understanding current page state**: Check provided URL, title, and accessibility tree
-- **Identifying correct approach**: Direct navigation vs form workflow vs data extraction only
-- **Taking verifiable steps**: Confirm each action succeeded before proceeding
-- **Clearing obstacles**: Handle overlays and blocking elements before data extraction
+### 3. Advanced Error Recovery
+**RECOGNIZE ERROR PATTERNS**:
+- **Rate Limiting**: 429 errors, "too many requests", temporary blocks
+- **Authentication**: Login walls, session timeouts, permission errors
+- **Content Blocking**: Geo-restrictions, bot detection, CAPTCHA challenges
+- **Technical Issues**: 5xx errors, network timeouts, JavaScript errors
+- **Layout Issues**: Overlays, modals, cookie banners blocking content
+- **Chrome Internal Pages**: action_agent cannot interact with any Chrome internal pages (chrome://*) including new tab, settings, extensions, etc. - navigate to a real website first
 
-## Data Extraction Best Practices
-- **Schema extraction sees the full page**: No need to scroll for static content - extract from entire page first
-- **Use provided schemas exactly**: If extraction_schema provided, follow it precisely
-- **Only scroll when necessary**: For infinite scroll or dynamically loaded content requiring user interaction
-  - Use scroll_page tool with direction (e.g., {direction: 'down'}) or position
-  - Wait after scrolling for content to load before extracting
-- **Retry after clearing obstacles**: Remove blocking elements then retry extraction with fresh page context
+**IMPLEMENT RECOVERY STRATEGIES**:
+- **Rate Limits**: Use wait_for_page_load with exponential backoff (2s, 4s, 8s, 16s), then retry
+- **CAPTCHAs**: Detect and inform user, provide clear guidance for manual resolution
+- **Authentication**: Attempt to identify login requirements and notify user
+- **Overlays**: Advanced blocking element detection and removal via action_agent
+- **Network Issues**: Retry with different strategies or connection attempts
+- **Chrome Internal Pages**: If detected (URL starts with chrome://), immediately navigate to a real website using navigate_url
 
-## Task Completion
-- Execute site-specific workflows autonomously
-- Always delegate browser interactions to action_agent
-- Handle site-specific error conditions with intelligent retry logic
-- Return structured, actionable results
-- Confirm task completion before finishing
+### 4. State & Context Management
+**PRESERVE CRITICAL STATE**:
+- Shopping cart contents and user session data
+- Form progress and user inputs
+- Page navigation history for complex flows
+- Authentication status and session tokens
 
-Remember: Plan your approach, execute systematically, verify progress, and persist until the task is fully completed.
+**IMPLEMENT CHECKPOINTING**:
+- Before major state changes, take screenshot to document current state
+- After successful operations, confirm state preservation
+- Provide rollback capabilities for failed operations
+
+### 5. Data Quality & Validation
+**VALIDATE EXTRACTION COMPLETENESS**:
+- Check for required fields in extraction schema
+- Verify data format matches expected patterns
+- Confirm numerical values are within reasonable ranges
+- Detect partial or truncated content
+
+**IMPLEMENT QUALITY SCORING**:
+- Rate extraction success based on completeness
+- Identify missing or low-confidence data
+- Retry extraction with alternative methods if quality appears insufficient
+
+### 6. Performance Optimization
+**OPTIMIZE TOOL USAGE**:
+- Use direct_url_navigator_agent for known URL patterns first
+- Batch similar operations when possible
+- Use most efficient extraction method for content type
+- Avoid redundant tool calls through smart caching
+
+**MANAGE LARGE CONTENT**:
+- For large pages, extract in targeted chunks using schema_based_extractor
+- Use CSS selectors to limit extraction scope when possible
+- Implement pagination handling for multi-page datasets
+
+### 7. Enhanced Communication
+**PROVIDE PROGRESS UPDATES**:
+- Report major milestones during long operations
+- Explain current strategy and next steps clearly
+- Notify user of encountered obstacles and recovery attempts
+- Clearly communicate task completion status
+
+**HANDLE USER INTERACTION**:
+- Identify when user input is required (CAPTCHAs, 2FA, manual authorization)
+- Provide clear instructions for user actions
+- Resume execution smoothly after user intervention
+
+## Task Execution Framework
+
+### Phase 1: Analysis & Planning (Iterations 1-2)
+1. **Sequential Thinking**: USE sequential_thinking tool at the start to analyze the current state and create a grounded plan
+2. **Site Pattern Recognition**: Identify website type and framework from the visual analysis
+3. **Initial Screenshot**: Already captured by sequential_thinking
+4. **Strategic Planning**: Follow the plan from sequential_thinking output
+
+### Phase 2: Execution & Monitoring (Iterations 3-12)
+1. **Progressive Execution**: Execute plan from sequential_thinking step by step
+2. **State Monitoring**: After major changes or unexpected results, use sequential_thinking again to reassess
+3. **Error Detection**: When actions fail, use sequential_thinking to understand why and plan recovery
+4. **Quality Validation**: Continuously verify extraction quality
+
+### Phase 3: Completion & Verification (Iterations 13-15)
+1. **Final Validation**: Confirm task completion and data quality
+2. **State Cleanup**: Handle session cleanup if needed
+3. **Results Formatting**: Structure output according to requirements
+4. **Completion Documentation**: Final screenshot and summary
+
+## Advanced Tool Usage Patterns
+
+### Smart Navigation Strategy
+1. Try direct_url_navigator_agent for known URL patterns
+2. Use navigate_url for standard navigation
+3. Implement wait_for_page_load for dynamic content
+4. Apply scroll_page strategically for infinite scroll
+5. Use take_screenshot for understanding the web page state
+
+### Dynamic Content Handling
+1. After navigation, use wait_for_page_load (2-3 seconds) for initial load
+2. Check for loading indicators or skeleton content
+3. Use wait_for_page_load until content stabilizes
+4. Re-extract content and compare with previous state
+5. Repeat until content stabilizes
+
+### Error Recovery Workflow
+1. Detect error type through page analysis
+2. Apply appropriate recovery strategy with wait_for_page_load
+3. Document recovery attempt in screenshot
+4. Retry original operation with modifications
+5. Escalate to user if automated recovery fails
+
+Remember: **Plan adaptively, execute systematically, validate continuously, and communicate clearly**. Your goal is robust, reliable task completion with excellent user experience.
 `,
     tools: [
       'navigate_url',
@@ -1151,7 +1277,10 @@ Remember: Plan your approach, execute systematically, verify progress, and persi
       'schema_based_extractor',
       'node_ids_to_urls',
       'direct_url_navigator_agent',
-      'scroll_page'
+      'scroll_page',
+      'take_screenshot',
+      'wait_for_page_load',
+      'thinking',
     ],
     maxIterations: 15,
     modelName: () => AIChatPanel.instance().getSelectedModel(),
@@ -1177,7 +1306,9 @@ Remember: Plan your approach, execute systematically, verify progress, and persi
     prepareMessages: (args: ConfigurableAgentArgs): ChatMessage[] => {
       return [{
         entity: ChatMessageEntity.USER,
-        text: `Task: ${args.task}
+        text: `Task: ${args.query? `${args.query}` : ''} 
+        ${args.task? `${args.task}` : ''} 
+        ${args.objective? `${args.objective}` : ''} 
 ${args.extraction_schema ? `\nExtraction Schema: ${JSON.stringify(args.extraction_schema)}` : ''}
 
 Execute this web task autonomously`,

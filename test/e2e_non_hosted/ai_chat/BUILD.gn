@@ -1,0 +1,21 @@
+# Copyright 2025 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/typescript/typescript.gni")
+
+ts_e2e_library("ai_chat") {
+  sources = [ "accessibility-tree-integration_test.ts" ]
+
+  deps = [
+    "../../conductor:implementation",
+    "../../shared",
+  ]
+}
+
+group("ai_chat_test_resources") {
+  deps = [
+    "../../e2e/resources/ai_chat",
+  ]
+  data_deps = deps
+}

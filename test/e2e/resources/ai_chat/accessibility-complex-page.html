@@ -1,0 +1,249 @@
+<!--
+  Copyright 2025 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Accessibility Test Page</title>
+    <style>
+        .scrollable {
+            height: 200px;
+            overflow: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        .content {
+            height: 400px;
+            background: linear-gradient(45deg, #f0f0f0, #ffffff);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <header role="banner">
+        <h1 id="main-title">Complex Accessibility Test Page</h1>
+        <nav aria-label="Main navigation">
+            <ul role="menubar">
+                <li role="none">
+                    <a href="#section1" role="menuitem">Section 1</a>
+                </li>
+                <li role="none">
+                    <a href="#section2" role="menuitem">Section 2</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main role="main" aria-labelledby="main-title">
+        <section id="section1" aria-labelledby="section1-title">
+            <h2 id="section1-title">Interactive Elements</h2>
+            
+            <!-- Form with various input types -->
+            <form aria-label="Test form">
+                <div>
+                    <label for="text-input">Name:</label>
+                    <input type="text" id="text-input" required aria-describedby="text-help">
+                    <div id="text-help" class="sr-only">Enter your full name</div>
+                </div>
+                
+                <div>
+                    <label for="email-input">Email:</label>
+                    <input type="email" id="email-input" aria-invalid="false">
+                </div>
+                
+                <fieldset>
+                    <legend>Preferences</legend>
+                    <label>
+                        <input type="checkbox" name="newsletter" value="yes"> Subscribe to newsletter
+                    </label>
+                    <label>
+                        <input type="checkbox" name="notifications" value="yes" checked> Enable notifications
+                    </label>
+                </fieldset>
+                
+                <div role="radiogroup" aria-labelledby="color-legend">
+                    <div id="color-legend">Favorite color:</div>
+                    <label>
+                        <input type="radio" name="color" value="red" checked> Red
+                    </label>
+                    <label>
+                        <input type="radio" name="color" value="blue"> Blue
+                    </label>
+                    <label>
+                        <input type="radio" name="color" value="green"> Green
+                    </label>
+                </div>
+                
+                <div>
+                    <label for="country-select">Country:</label>
+                    <select id="country-select" aria-describedby="country-help">
+                        <option value="">Select a country</option>
+                        <option value="us">United States</option>
+                        <option value="ca">Canada</option>
+                        <option value="uk">United Kingdom</option>
+                    </select>
+                    <div id="country-help">Choose your country of residence</div>
+                </div>
+                
+                <button type="submit" aria-describedby="submit-help">Submit Form</button>
+                <div id="submit-help" class="sr-only">This will submit the form data</div>
+            </form>
+        </section>
+
+        <section id="section2" aria-labelledby="section2-title">
+            <h2 id="section2-title">Scrollable Content</h2>
+            
+            <div class="scrollable" aria-label="Scrollable content area">
+                <div class="content">
+                    <h3>Content inside scrollable area</h3>
+                    <p>This is a paragraph with a lot of content that requires scrolling to see all of it.</p>
+                    <ul>
+                        <li>List item 1</li>
+                        <li>List item 2</li>
+                        <li>List item 3</li>
+                    </ul>
+                    <button>Button inside scrollable area</button>
+                </div>
+            </div>
+            
+            <!-- Another scrollable area -->
+            <div class="scrollable" aria-label="Another scrollable area">
+                <div class="content">
+                    <table aria-label="Data table">
+                        <caption>Sample Data Table</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">City</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>30</td>
+                                <td>New York</td>
+                            </tr>
+                            <tr>
+                                <td>Jane Smith</td>
+                                <td>25</td>
+                                <td>Los Angeles</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section aria-labelledby="section3-title">
+            <h2 id="section3-title">Interactive Widgets</h2>
+            
+            <!-- Tab panel -->
+            <div role="tabpanel" aria-labelledby="tab1">
+                <div role="tablist" aria-label="Content tabs">
+                    <button role="tab" id="tab1" aria-selected="true" aria-controls="panel1">Tab 1</button>
+                    <button role="tab" id="tab2" aria-selected="false" aria-controls="panel2">Tab 2</button>
+                </div>
+                <div id="panel1" role="tabpanel" aria-labelledby="tab1">
+                    <h3>Panel 1 Content</h3>
+                    <p>Content for the first tab panel.</p>
+                </div>
+                <div id="panel2" role="tabpanel" aria-labelledby="tab2" class="hidden">
+                    <h3>Panel 2 Content</h3>
+                    <p>Content for the second tab panel.</p>
+                </div>
+            </div>
+            
+            <!-- Progress bar -->
+            <div>
+                <label for="progress1">Download Progress:</label>
+                <progress id="progress1" value="32" max="100" aria-describedby="progress-help">32%</progress>
+                <div id="progress-help">Download is 32% complete</div>
+            </div>
+            
+            <!-- Dialog trigger -->
+            <button id="open-dialog" aria-haspopup="dialog">Open Dialog</button>
+        </section>
+    </main>
+
+    <!-- Hidden dialog -->
+    <div id="test-dialog" role="dialog" aria-labelledby="dialog-title" aria-modal="true" class="hidden">
+        <h2 id="dialog-title">Test Dialog</h2>
+        <p>This is a modal dialog for testing.</p>
+        <button id="close-dialog">Close</button>
+    </div>
+
+    <aside role="complementary" aria-labelledby="sidebar-title">
+        <h2 id="sidebar-title">Related Information</h2>
+        <article>
+            <h3>Article Title</h3>
+            <p>This is an article with some related information.</p>
+            <footer>
+                <time datetime="2025-01-11">January 11, 2025</time>
+            </footer>
+        </article>
+    </aside>
+
+    <footer role="contentinfo">
+        <p>&copy; 2025 Test Company. All rights reserved.</p>
+        <nav aria-label="Footer navigation">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+            </ul>
+        </nav>
+    </footer>
+
+    <!-- Screen reader only content -->
+    <div class="sr-only" aria-live="polite" id="sr-announcements"></div>
+
+    <script>
+        // Add some interactivity for testing
+        document.getElementById('open-dialog')?.addEventListener('click', function() {
+            document.getElementById('test-dialog')?.classList.remove('hidden');
+        });
+        
+        document.getElementById('close-dialog')?.addEventListener('click', function() {
+            document.getElementById('test-dialog')?.classList.add('hidden');
+        });
+        
+        // Tab functionality
+        document.querySelectorAll('[role="tab"]').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tablist = this.closest('[role="tablist"]');
+                const allTabs = tablist.querySelectorAll('[role="tab"]');
+                const allPanels = document.querySelectorAll('[role="tabpanel"]');
+                
+                allTabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+                allPanels.forEach(p => p.classList.add('hidden'));
+                
+                this.setAttribute('aria-selected', 'true');
+                const panel = document.getElementById(this.getAttribute('aria-controls'));
+                panel?.classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

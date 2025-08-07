@@ -81,7 +81,7 @@ export class OpenAIProvider extends LLMBaseProvider {
    * Throws error if conversion fails
    */
   private convertContentToResponsesAPI(content: MessageContent | undefined, modelFamily: ModelFamily): any {
-    // For GPT models, return simple string content
+    // For GPT models (including GPT-4.1), handle content conversion
     if (modelFamily === ModelFamily.GPT) {
       if (!content) {
         return '';
@@ -91,15 +91,16 @@ export class OpenAIProvider extends LLMBaseProvider {
       }
       // For multimodal content on GPT models, we need to return the structured format
       if (Array.isArray(content)) {
-        // Return as OpenAI Chat API format for GPT models
+        // All models use Responses API format since we're using /v1/responses endpoint
+        // This includes GPT-4.1 models which require input_text/input_image types
         return content.map((item, index) => {
           if (item.type === 'text') {
-            return { type: 'text', text: item.text };
+            return { type: 'input_text', text: item.text };
           } else if (item.type === 'image_url') {
             if (!item.image_url?.url) {
               throw new Error(`Invalid image content at index ${index}: missing image_url.url`);
             }
-            return { type: 'image_url', image_url: item.image_url };
+            return { type: 'input_image', image_url: item.image_url.url };
           } else {
             throw new Error(`Unknown content type at index ${index}: ${(item as any).type}`);
           }
@@ -456,6 +457,17 @@ export class OpenAIProvider extends LLMBaseProvider {
           functionCalling: true,
           reasoning: true,
           vision: true,
+          structured: true
+        }
+      },
+      {
+        id: 'o3-mini-2025-01-31',
+        name: 'O3 Mini',
+        provider: 'openai',
+        capabilities: {
+          functionCalling: true,
+          reasoning: true,
+          vision: false,
           structured: true
         }
       }

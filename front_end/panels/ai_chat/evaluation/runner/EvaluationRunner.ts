@@ -34,7 +34,7 @@ export class EvaluationRunner {
     }
 
     // Use provided judge model or default
-    const evaluationModel = judgeModel || 'gpt-4o-mini';
+    const evaluationModel = judgeModel || 'gpt-4.1-mini';
 
     this.config = {
       extractionModel: evaluationModel,

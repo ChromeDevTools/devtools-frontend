@@ -9,6 +9,15 @@ export interface TracingContext {
   sessionId: string;
   traceId: string;
   parentObservationId?: string;
+  currentGenerationId?: string;
+  currentToolCallId?: string;
+  currentAgentSpanId?: string; // For nesting AgentRunner operations under agent execution
+  executionLevel?: 'stategraph' | 'agentrunner' | 'tool'; // Track execution context level
+  agentContext?: { // Agent-specific context
+    agentName: string;
+    agentType: string;
+    iterationCount?: number;
+  };
 }
 
 export interface TraceMetadata {

@@ -812,7 +812,7 @@ export const productReviewScrollTest: TestCase<WebTaskAgentArgs> = {
   id: 'web-task-agent-scroll-002',
   name: 'Product Review Scrolling',
   description: 'Test scrolling to load more product reviews on e-commerce sites',
-  url: 'https://www.amazon.com/dp/B08N5WRWNW',  // Echo Dot product page
+  url: 'https://www.amazon.com/Amazon-vibrant-helpful-routines-Charcoal/dp/B09B8V1LZ3/',  // Echo Dot product page
   tool: 'web_task_agent',
   input: {
     task: 'Scroll down to the reviews section and load more reviews by scrolling, then extract review details',
@@ -1053,8 +1053,8 @@ export const anaAirlinesIframeTest: TestCase<WebTaskAgentArgs> = {
   url: 'https://aswbe.ana.co.jp/webapps/reservation/flight-search?CONNECTION_KIND=SEA&LANG=en&hiddenSearchMode=ROUND_TRIP&departureDate:field=20260320&returnDate:field=20260330&departureAirportCode:field=SEA&arrivalAirportCode:field=NRT&adultCount=1&youngAdultCount=0&childCount=0&infantCount=0&boardingClass=INTY001&searchFlag=1',
   tool: 'web_task_agent',
   input: {
-    task: 'Navigate the ANA Airlines flight search page and extract available flight options from Seattle (SEA) to Tokyo Narita (NRT) for March 20-30, 2026. Handle any iframe content and booking interface elements.',
-    reasoning: 'Testing iframe content extraction and complex airline booking site navigation',
+    task: 'Navigate the ANA Airlines flight search page and search for available flight options from Seattle (SEA) to Tokyo Narita (NRT) for March 20-30, 2026.',
+    reasoning: 'Verifying agent\'s ability to handle complex airline booking interfaces',
     extraction_schema: {
       type: 'object',
       properties: {

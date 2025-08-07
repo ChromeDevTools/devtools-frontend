@@ -355,7 +355,7 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       },
       ...(parentObservationId && { parentObservationId })
     }, traceId);
-
+    
     try {
       // Create initial state for this run
       const state: AgentState = {
@@ -424,6 +424,9 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
           responseType: 'success'
         }
       }, traceId);
+
+      // Wait a moment for all async tracing operations to complete
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // Only finalize trace if we created a new one (not using existing evaluation trace)
       if (!existingContext) {

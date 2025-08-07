@@ -46,7 +46,7 @@ export const SYSTEM_PROMPTS = {
 Use the 'navigate_url' and 'fetcher_tool' tools whenever the user asks a question that requires up-to-date information 
 or knowledge beyond your training data. Prioritize concise and direct answers based on search results.`,
 
-  [BaseOrchestratorAgentType.DEEP_RESEARCH]: `You are an expert research lead focused on high-level research strategy, planning, efficient delegation to sub-research agents, and final report synthesis. Your core goal is to provide maximally helpful, comprehensive research reports by orchestrating an effective research process.
+  [BaseOrchestratorAgentType.DEEP_RESEARCH]: `You are an expert research browser agent focused on high-level research strategy, planning, efficient delegation to sub-research agents, and final report synthesis. Your core goal is to provide maximally helpful, comprehensive research reports by orchestrating an effective research process.
 
 ## Research Process
 
@@ -178,7 +178,7 @@ When calling 'finalize_with_critique', structure your response exactly as:
 
 The markdown report will be extracted and shown via an enhanced document viewer button while only the reasoning appears in chat.`,
 
-  [BaseOrchestratorAgentType.SHOPPING]: `You are a **Shopping Research Agent**. Your mission is to help users find and compare products tailored to their specific needs and budget, providing up-to-date, unbiased, and well-cited recommendations.
+  [BaseOrchestratorAgentType.SHOPPING]: `You are a **Shopping Browser Agent**. Your mission is to help users find and compare products tailored to their specific needs and budget, providing up-to-date, unbiased, and well-cited recommendations.
 
 ---
 
@@ -493,7 +493,12 @@ export function renderAgentTypeButtons(
           selectedAgentType === config.type ? 'selected' : '',
           isCustomized ? 'customized' : ''
         ].filter(Boolean).join(' ');
-        
+
+        const promptLabelClass =  [
+          'prompt-label',
+          selectedAgentType === config.type ? 'selected' : '',
+        ].filter(Boolean).join(' ');
+
         const title = isCustomized ? 
           `${config.description || config.label} (Custom prompt - double-click to edit)` : 
           `${config.description || config.label} (Double-click to edit prompt)`;
@@ -506,7 +511,7 @@ export function renderAgentTypeButtons(
           title=${title}
         >
           <span class="prompt-icon">${config.icon}</span>
-          ${showLabels ? html`<span class="prompt-label">${config.label}</span>` : Lit.nothing}
+          ${showLabels ? html`<span class=${promptLabelClass}>${config.label}</span>` : Lit.nothing}
           ${isCustomized ? html`<span class="prompt-custom-indicator">●</span>` : Lit.nothing}
         </button>
       `})}

@@ -39,33 +39,6 @@ export class StreamlinedSchemaExtractorTool implements Tool<StreamlinedSchemaExt
   description = `Tool for extracting structured data from web pages using JSON schema.
   - Returns: { success, data, error (if any) }`;
 
-  private async createToolTracingObservation(toolName: string, args: any): Promise<void> {
-    try {
-      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
-      const context = getCurrentTracingContext();
-      if (context) {
-        const tracingProvider = createTracingProvider();
-        await tracingProvider.createObservation({
-          id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-          name: `Tool Execute: ${toolName}`,
-          type: 'event',
-          startTime: new Date(),
-          input: { 
-            toolName, 
-            toolArgs: args,
-            contextInfo: `Direct tool execution in ${toolName}`
-          },
-          metadata: {
-            executionPath: 'direct-tool',
-            toolName
-          }
-        }, context.traceId);
-      }
-    } catch (tracingError) {
-      // Don't fail tool execution due to tracing errors
-      console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
-    }
-  }
 
   private readonly MAX_URL_RETRIES = 4;
   private readonly MAX_JSON_RETRIES = 2;
@@ -92,7 +65,6 @@ export class StreamlinedSchemaExtractorTool implements Tool<StreamlinedSchemaExt
 
 
   async execute(args: StreamlinedSchemaExtractionArgs): Promise<StreamlinedExtractionResult> {
-    await this.createToolTracingObservation(this.name, args);
     try {
       const context = await this.setupExecution(args);
       if (context.success !== true) {
@@ -276,7 +248,8 @@ IMPORTANT: Only extract data that you can see in the accessibility tree above. D
             { role: 'user', content: extractionPrompt }
           ],
           systemPrompt: systemPrompt,
-          temperature: 0.1
+          temperature: 0.1,
+          retryConfig: { maxRetries: 3, baseDelayMs: 1500 }
         });
         const result = llmResponse.text;
         
@@ -402,7 +375,8 @@ CRITICAL: Only use nodeIds that you can actually see in the accessibility tree a
           { role: 'user', content: extractionPrompt }
         ],
         systemPrompt: systemPrompt,
-        temperature: 0.1
+        temperature: 0.1,
+        retryConfig: { maxRetries: 3, baseDelayMs: 1500 }
       });
       const result = llmResponse.text;
       

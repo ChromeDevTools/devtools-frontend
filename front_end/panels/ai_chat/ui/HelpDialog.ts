@@ -17,7 +17,7 @@ const UIStrings = {
   /**
    *@description Getting started content
    */
-  gettingStartedContent: 'To use AI Assistant, you need to provide an OpenAI API key in the Settings. Or if you have a LiteLLM API key, you can use that instead.',
+  gettingStartedContent: 'To use AI Assistant, you need to provide an API key in the Settings. Supported providers include OpenAI, OpenRouter, Groq, and LiteLLM.',
   /**
    *@description Available models section title
    */
@@ -114,7 +114,7 @@ export class HelpDialog {
     
     const modelsContent = document.createElement('p');
     modelsContent.className = 'help-text';
-    modelsContent.textContent = 'AI Assistant supports several OpenAI models:';
+    modelsContent.textContent = 'AI Assistant supports models from multiple providers:';
     modelsSection.appendChild(modelsContent);
     
     const modelsList = document.createElement('ul');
@@ -122,10 +122,10 @@ export class HelpDialog {
     modelsSection.appendChild(modelsList);
     
     const models = [
-      {name: 'O4 Mini', description: 'Balanced performance for most tasks'},
-      {name: 'GPT-4.1 Mini', description: 'Good for general tasks'},
-      {name: 'GPT-4.1 Nano', description: 'Fastest response times'},
-      {name: 'GPT-4.1, Claude-3.7', description: 'Best quality for complex tasks'},
+      {name: 'OpenAI Models', description: 'GPT-4.1, GPT-4.1 Mini, GPT-4.1 Nano, O4 Mini, O3 Mini'},
+      {name: 'OpenRouter Models', description: 'Access to Claude, Llama, Mistral, and other models via OpenRouter'},
+      {name: 'Groq Models', description: 'Fast inference with Llama and Mixtral models'},
+      {name: 'LiteLLM Models', description: 'Unified API for any supported model provider'},
     ];
     
     models.forEach(model => {
@@ -188,9 +188,11 @@ export class HelpDialog {
     troubleshootingSection.appendChild(troubleshootingList);
     
     const troubleshootingItems = [
-      'Verify your API key is valid and has sufficient credits',
+      'Verify your API key is valid and has sufficient credits for your chosen provider',
       'Check your internet connection',
-      'Try a different model for your specific task',
+      'Try a different model or provider for your specific task',
+      'For OpenRouter: Ensure you have credits and the model is available',
+      'For Groq: Check that your API key has access to the selected model',
     ];
     
     troubleshootingItems.forEach(item => {

@@ -16,6 +16,7 @@ node_ts_library("tests") {
   deps = [
     "../conductor:implementation",
     "ai_assistance",
+    "ai_chat",
     "animations",
     "application",
     "assertion",

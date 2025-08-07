@@ -1,0 +1,6 @@
+# Optional: Uncomment the line below if you want to exclude the auto-generated Version.ts
+# core/Version.ts
+
+# Temporary files
+*.tmp
+*.log

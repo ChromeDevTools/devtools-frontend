@@ -41,7 +41,6 @@ export const basicResearchTest: TestCase<ResearchAgentArgs> = {
         'Research demonstrates understanding of the topic evolution',
         'Handoff to content_writer_agent occurred with comprehensive data'
       ],
-      model: 'gpt-4.1-mini',
       temperature: 0
     }
   },
@@ -78,7 +77,6 @@ export const currentEventsTest: TestCase<ResearchAgentArgs> = {
         'Successfully gathered information from diverse source types',
         'Data is properly organized for content writer handoff'
       ],
-      model: 'gpt-4.1-mini',
       includeUrl: true
     }
   },
@@ -115,7 +113,7 @@ export const comparativeResearchTest: TestCase<ResearchAgentArgs> = {
         'Demonstrates understanding of use cases for each language',
         'Research data is well-organized for comparative analysis'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -151,7 +149,7 @@ export const technicalDeepDiveTest: TestCase<ResearchAgentArgs> = {
         'Research addresses both benefits and limitations',
         'Technical accuracy is maintained throughout'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -187,7 +185,7 @@ export const businessResearchTest: TestCase<ResearchAgentArgs> = {
         'Research demonstrates understanding of business implications',
         'Statistics and claims are properly sourced'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -223,7 +221,7 @@ export const edgeCaseNoResultsTest: TestCase<ResearchAgentArgs> = {
         'Maintains professional approach despite limited data',
         'Shows appropriate uncertainty when information is sparse'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {
@@ -260,7 +258,7 @@ export const toolOrchestrationTest: TestCase<ResearchAgentArgs> = {
         'At least 3-5 different sources were accessed and processed',
         'Final handoff included comprehensive data from all tools'
       ],
-      model: 'gpt-4.1-mini'
+      
     }
   },
   metadata: {

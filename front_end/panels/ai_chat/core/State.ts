@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import {type ChatMessage, ChatMessageEntity, type ImageInputData} from '../ui/ChatView.js';
+import type {TracingContext} from '../tracing/TracingProvider.js';
 
 const UIStrings = {
 } as const;
@@ -52,11 +53,7 @@ export interface DevToolsContext {
   // Counter for tracking the number of intermediate steps in the current chain
   intermediateStepsCount?: number;
   // Tracing context for distributed tracing
-  tracingContext?: {
-    sessionId: string;
-    traceId: string;
-    parentObservationId?: string;
-  };
+  tracingContext?: TracingContext;
 }
 
 /**

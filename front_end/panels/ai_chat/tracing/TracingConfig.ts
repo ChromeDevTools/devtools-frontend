@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import { createLogger } from '../core/Logger.js';
-import { TracingProvider, NoOpTracingProvider } from './TracingProvider.js';
+import { TracingProvider, NoOpTracingProvider, type TracingContext } from './TracingProvider.js';
 import { LangfuseProvider } from './LangfuseProvider.js';
 
 const logger = createLogger('TracingConfig');
@@ -93,8 +93,12 @@ class TracingConfigStore {
 
   private refreshAgentServiceTracing(): void {
     try {
-      // Try to get the AgentService instance and refresh its tracing provider
-      // We need to import AgentService dynamically to avoid circular dependencies
+      // Refresh the singleton TracingProvider
+      refreshTracingProvider().catch((error: Error) => {
+        logger.error('Failed to refresh TracingProvider singleton:', error);
+      });
+      
+      // Also refresh AgentService if available to maintain backward compatibility
       import('../core/AgentService.js').then(({ AgentService }) => {
         const agentService = AgentService.getInstance();
         if (agentService && typeof agentService.refreshTracingProvider === 'function') {
@@ -106,7 +110,7 @@ class TracingConfigStore {
         logger.warn('Could not refresh AgentService tracing provider:', error);
       });
     } catch (error) {
-      logger.warn('Failed to refresh AgentService tracing provider:', error);
+      logger.warn('Failed to refresh tracing providers:', error);
     }
   }
 
@@ -139,36 +143,94 @@ export function isTracingEnabled(): boolean {
 }
 
 /**
- * Create a tracing provider based on current configuration
+ * Singleton manager for TracingProvider instances
  */
-export function createTracingProvider(): TracingProvider {
-  const config = getTracingConfig();
+class TracingProviderSingleton {
+  private static instance: TracingProvider | null = null;
 
-  if (config.provider === 'disabled') {
-    logger.info('Tracing is disabled');
-    return new NoOpTracingProvider();
+  static getInstance(): TracingProvider {
+    if (!TracingProviderSingleton.instance) {
+      TracingProviderSingleton.instance = this.createProvider();
+      logger.info('Created new TracingProvider singleton instance');
+    }
+    return TracingProviderSingleton.instance;
   }
 
-  if (config.provider === 'langfuse') {
-    if (!config.publicKey || !config.secretKey) {
-      logger.warn('Langfuse tracing enabled but missing credentials, falling back to no-op');
+  static async refresh(): Promise<void> {
+    logger.info('Refreshing TracingProvider singleton instance');
+    
+    // Cleanup old instance
+    if (this.instance) {
+      if (typeof (this.instance as any).destroy === 'function') {
+        (this.instance as any).destroy();
+        logger.debug('Destroyed previous TracingProvider instance');
+      }
+    }
+
+    // Create new instance
+    this.instance = this.createProvider();
+    
+    // Initialize if it has an initialize method
+    if (typeof (this.instance as any).initialize === 'function') {
+      await (this.instance as any).initialize();
+      logger.debug('Initialized new TracingProvider instance');
+    }
+  }
+
+  private static createProvider(): TracingProvider {
+    const config = getTracingConfig();
+
+    if (config.provider === 'disabled') {
+      logger.info('Tracing is disabled - creating NoOpTracingProvider');
       return new NoOpTracingProvider();
     }
 
-    logger.info('Creating Langfuse tracing provider', {
-      endpoint: config.endpoint
-    });
+    if (config.provider === 'langfuse') {
+      if (!config.publicKey || !config.secretKey) {
+        logger.warn('Langfuse tracing enabled but missing credentials, falling back to no-op');
+        return new NoOpTracingProvider();
+      }
 
-    return new LangfuseProvider(
-      config.endpoint!,
-      config.publicKey,
-      config.secretKey,
-      true
-    );
+      logger.info('Creating LangfuseProvider singleton', {
+        endpoint: config.endpoint,
+        hasPublicKey: !!config.publicKey,
+        hasSecretKey: !!config.secretKey
+      });
+
+      return new LangfuseProvider(
+        config.endpoint!,
+        config.publicKey,
+        config.secretKey,
+        true
+      );
+    }
+
+    // Default to no-op
+    logger.warn('Unknown tracing provider, falling back to no-op', { provider: config.provider });
+    return new NoOpTracingProvider();
   }
 
-  // Default to no-op
-  return new NoOpTracingProvider();
+  static reset(): void {
+    if (this.instance && typeof (this.instance as any).destroy === 'function') {
+      (this.instance as any).destroy();
+    }
+    this.instance = null;
+    logger.info('Reset TracingProvider singleton');
+  }
+}
+
+/**
+ * Create a tracing provider based on current configuration (singleton)
+ */
+export function createTracingProvider(): TracingProvider {
+  return TracingProviderSingleton.getInstance();
+}
+
+/**
+ * Refresh the singleton tracing provider (useful when configuration changes)
+ */
+export async function refreshTracingProvider(): Promise<void> {
+  await TracingProviderSingleton.refresh();
 }
 
 /**
@@ -176,7 +238,7 @@ export function createTracingProvider(): TracingProvider {
  */
 class TracingContextManager {
   private static instance: TracingContextManager;
-  private currentContext: any = null;
+  private currentContext: TracingContext | null = null;
 
   private constructor() {}
 
@@ -187,11 +249,11 @@ class TracingContextManager {
     return TracingContextManager.instance;
   }
 
-  setContext(context: any): void {
+  setContext(context: TracingContext | null): void {
     this.currentContext = context;
   }
 
-  getContext(): any {
+  getContext(): TracingContext | null {
     return this.currentContext;
   }
 
@@ -202,16 +264,19 @@ class TracingContextManager {
   /**
    * Execute a function with a specific tracing context
    */
-  async withContext<T>(context: any, fn: () => Promise<T>): Promise<T> {
+  async withContext<T>(context: TracingContext | null, fn: () => Promise<T>): Promise<T> {
     const previousContext = this.currentContext;
     contextLogger.info('Setting tracing context:', { 
       hasContext: !!context, 
       traceId: context?.traceId,
       previousContext: !!previousContext 
     });
-    console.log('[TRACING DEBUG] Setting tracing context:', { 
+    console.log(`[HIERARCHICAL_TRACING] TracingContextManager: Setting tracing context:`, { 
       hasContext: !!context, 
       traceId: context?.traceId,
+      currentAgentSpanId: context?.currentAgentSpanId,
+      executionLevel: context?.executionLevel,
+      agentName: context?.agentContext?.agentName,
       previousContext: !!previousContext 
     });
     this.setContext(context);
@@ -220,7 +285,10 @@ class TracingContextManager {
     } finally {
       this.setContext(previousContext);
       contextLogger.info('Restored previous tracing context:', { hasPrevious: !!previousContext });
-      console.log('[TRACING DEBUG] Restored previous tracing context:', { hasPrevious: !!previousContext });
+      console.log(`[HIERARCHICAL_TRACING] TracingContextManager: Restored previous tracing context:`, { 
+        hasPrevious: !!previousContext,
+        restoredExecutionLevel: previousContext?.executionLevel
+      });
     }
   }
 }
@@ -228,21 +296,21 @@ class TracingContextManager {
 /**
  * Get the current tracing context
  */
-export function getCurrentTracingContext(): any {
+export function getCurrentTracingContext(): TracingContext | null {
   return TracingContextManager.getInstance().getContext();
 }
 
 /**
  * Set the current tracing context
  */
-export function setCurrentTracingContext(context: any): void {
+export function setCurrentTracingContext(context: TracingContext | null): void {
   TracingContextManager.getInstance().setContext(context);
 }
 
 /**
  * Execute a function with a specific tracing context
  */
-export async function withTracingContext<T>(context: any, fn: () => Promise<T>): Promise<T> {
+export async function withTracingContext<T>(context: TracingContext | null, fn: () => Promise<T>): Promise<T> {
   return TracingContextManager.getInstance().withContext(context, fn);
 }
 
@@ -268,6 +336,8 @@ declare global {
     getTracingConfig?: typeof getTracingConfig;
     setTracingConfig?: typeof setTracingConfig;
     isTracingEnabled?: typeof isTracingEnabled;
+    refreshTracingProvider?: typeof refreshTracingProvider;
+    resetTracingProvider?: () => void;
   }
 }
 
@@ -277,4 +347,9 @@ if (typeof window !== 'undefined') {
   window.getTracingConfig = getTracingConfig;
   window.setTracingConfig = setTracingConfig;
   window.isTracingEnabled = isTracingEnabled;
+  window.refreshTracingProvider = refreshTracingProvider;
+  window.resetTracingProvider = () => {
+    // Add a convenience function to reset the singleton
+    TracingProviderSingleton.reset();
+  };
 }

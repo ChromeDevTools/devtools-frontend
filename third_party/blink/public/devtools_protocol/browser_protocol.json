@@ -2089,7 +2089,8 @@
                     "type": "string",
                     "enum": [
                         "BlockedFrameNavigation",
-                        "BlockedSubresource"
+                        "BlockedSubresource",
+                        "NoisedCanvasReadback"
                     ]
                 },
                 {
@@ -2106,6 +2107,12 @@
                             "description": "Applies to BlockedFrameNavigation and BlockedSubresource issue types.",
                             "optional": true,
                             "$ref": "AffectedRequest"
+                        },
+                        {
+                            "name": "sourceCodeLocation",
+                            "description": "Applies to NoisedCanvasReadback issue type.",
+                            "optional": true,
+                            "$ref": "SourceCodeLocation"
                         }
                     ]
                 },
@@ -6338,6 +6345,7 @@
                         "before",
                         "after",
                         "picker-icon",
+                        "interest-hint",
                         "marker",
                         "backdrop",
                         "column",

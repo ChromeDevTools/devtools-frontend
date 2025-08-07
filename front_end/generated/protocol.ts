@@ -1418,6 +1418,7 @@ export namespace Audits {
   export const enum UserReidentificationIssueType {
     BlockedFrameNavigation = 'BlockedFrameNavigation',
     BlockedSubresource = 'BlockedSubresource',
+    NoisedCanvasReadback = 'NoisedCanvasReadback',
   }
 
   /**
@@ -1430,6 +1431,10 @@ export namespace Audits {
      * Applies to BlockedFrameNavigation and BlockedSubresource issue types.
      */
     request?: AffectedRequest;
+    /**
+     * Applies to NoisedCanvasReadback issue type.
+     */
+    sourceCodeLocation?: SourceCodeLocation;
   }
 
   /**
@@ -4198,6 +4203,7 @@ export namespace DOM {
     Before = 'before',
     After = 'after',
     PickerIcon = 'picker-icon',
+    InterestHint = 'interest-hint',
     Marker = 'marker',
     Backdrop = 'backdrop',
     Column = 'column',

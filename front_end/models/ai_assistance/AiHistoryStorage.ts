@@ -5,7 +5,7 @@
 
 import * as Common from '../../core/common/common.js';
 
-import {type ResponseData, ResponseType} from './agents/AiAgent.js';
+import {type ResponseData, ResponseType, type SerializedResponseData} from './agents/AiAgent.js';
 
 const MAX_TITLE_LENGTH = 80;
 
@@ -22,7 +22,7 @@ export const NOT_FOUND_IMAGE_DATA = '';
 export interface SerializedConversation {
   id: string;
   type: ConversationType;
-  history: ResponseData[];
+  history: SerializedResponseData[];
   isExternal: boolean;
 }
 
@@ -117,11 +117,26 @@ export class Conversation {
         if (item.type === ResponseType.USER_QUERY) {
           return {...item, imageInput: undefined};
         }
+        // Remove the `confirm()`-function because `structuredClone()` throws on functions
+        if (item.type === ResponseType.SIDE_EFFECT) {
+          return {...item, confirm: undefined};
+        }
         return item;
       }),
       type: this.type,
       isExternal: this.#isExternal,
     };
+  }
+
+  static fromSerializedConversation(serializedConversation: SerializedConversation): Conversation {
+    const history = serializedConversation.history.map(entry => {
+      if (entry.type === ResponseType.SIDE_EFFECT) {
+        return {...entry, confirm: () => {}};
+      }
+      return entry;
+    });
+    return new Conversation(
+        serializedConversation.type, history, serializedConversation.id, true, serializedConversation.isExternal);
   }
 }
 

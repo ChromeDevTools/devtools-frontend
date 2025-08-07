@@ -85,6 +85,7 @@ export interface SideEffectResponse {
   code?: string;
   confirm: (confirm: boolean) => void;
 }
+interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {}
 
 export interface ActionResponse {
   type: ResponseType.ACTION;
@@ -106,6 +107,9 @@ export interface UserQuery {
 
 export type ResponseData = AnswerResponse|SuggestionsResponse|ErrorResponse|ActionResponse|SideEffectResponse|
     ThoughtResponse|TitleResponse|QueryingResponse|ContextResponse|UserQuery;
+
+export type SerializedResponseData = AnswerResponse|SuggestionsResponse|ErrorResponse|ActionResponse|
+    SerializedSideEffectResponse|ThoughtResponse|TitleResponse|QueryingResponse|ContextResponse|UserQuery;
 
 export type FunctionCallResponseData =
     TitleResponse|ThoughtResponse|ActionResponse|SideEffectResponse|SuggestionsResponse;

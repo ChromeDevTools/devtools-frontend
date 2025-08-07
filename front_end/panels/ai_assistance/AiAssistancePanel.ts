@@ -557,9 +557,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       accountFullName: syncInfo.accountFullName,
     };
 
-    this.#historicalConversations = AiAssistanceModel.AiHistoryStorage.instance().getHistory().map(item => {
-      return new AiAssistanceModel.Conversation(item.type, item.history, item.id, true, item.isExternal);
-    });
+    this.#historicalConversations = AiAssistanceModel.AiHistoryStorage.instance().getHistory().map(
+        serializedConversation => AiAssistanceModel.Conversation.fromSerializedConversation(serializedConversation));
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-element-search')) {
       this.#toggleSearchElementAction =

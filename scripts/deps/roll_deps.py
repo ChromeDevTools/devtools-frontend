@@ -13,6 +13,7 @@ import json
 import os
 import subprocess
 import sys
+import shutil
 
 
 def node_path(options):
@@ -31,6 +32,7 @@ FILES = [
     'v8/include/js_protocol.pdl',
     'third_party/blink/renderer/core/css/css_properties.json5',
     'third_party/blink/renderer/core/html/aria_properties.json5',
+    'third_party/blink/public/devtools_protocol/domains',
     'third_party/blink/public/devtools_protocol/browser_protocol.pdl',
     'third_party/blink/renderer/core/frame/deprecation/deprecation.json5',
 ]
@@ -106,8 +108,17 @@ def copy_files(options):
                                     os.path.normpath(to_path))
         print(f'{os.path.normpath(from_path)} => {os.path.normpath(to_path)}')
 
+        if not os.path.exists(from_path_full):
+            if from_path_full.endswith("/domains"):
+                continue
+            raise Exception(f'{os.path.normpath(from_path)} does not exist')
+
         # Create destination directory if it doesn't exist
         os.makedirs(os.path.dirname(to_path_full), exist_ok=True)
+
+        if os.path.isdir(from_path_full):
+            shutil.copytree(from_path_full, to_path_full, dirs_exist_ok=True)
+            continue
 
         with open(from_path_full, 'r', encoding='utf-8') as infile:
             content = infile.read()

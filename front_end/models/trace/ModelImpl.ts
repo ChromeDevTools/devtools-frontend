@@ -112,12 +112,25 @@ export class Model extends EventTarget {
     try {
       // Wait for all outstanding promises before finishing the async execution,
       // but perform all tasks in parallel.
-      await this.#processor.parse(traceEvents, {
+      const parseConfig: Types.Configuration.ParseOptions = {
         isFreshRecording,
         isCPUProfile,
         metadata,
         resolveSourceMap: config?.resolveSourceMap,
-      });
+      };
+      if (window.location.href.includes('devtools/bundled') || window.location.search.includes('debugFrontend')) {
+        // Someone is debugging DevTools, enable the logger.
+        const times: Record<string, number> = {};
+        parseConfig.logger = {
+          start(id) {
+            times[id] = performance.now();
+          },
+          end(id) {
+            performance.measure(id, {start: times[id]});
+          },
+        };
+      }
+      await this.#processor.parse(traceEvents, parseConfig);
       this.#storeParsedFileData(file, this.#processor.parsedTrace, this.#processor.insights);
       // We only push the file onto this.#traces here once we know it's valid
       // and there's been no errors in the parsing.

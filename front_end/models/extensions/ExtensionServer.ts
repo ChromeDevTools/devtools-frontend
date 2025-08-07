@@ -463,14 +463,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!scriptUrl || !ranges?.length) {
       return this.status.E_BADARG('command', 'expected valid scriptUrl and non-empty NamedFunctionRanges');
     }
-    if (!this.extensionAllowedOnURL(scriptUrl as Platform.DevToolsPath.UrlString, port)) {
-      return this.status.E_FAILED('Permission denied');
+    const resource = this.lookupAllowedUISourceCode(scriptUrl as Platform.DevToolsPath.UrlString, port);
+    if ('error' in resource) {
+      return resource.error;
     }
-    const uiSourceCode =
-        Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(scriptUrl as Platform.DevToolsPath.UrlString);
-    if (!uiSourceCode) {
-      return this.status.E_NOTFOUND(scriptUrl);
-    }
+    const {uiSourceCode} = resource;
     if (!uiSourceCode.contentType().isScript() || !uiSourceCode.contentType().isFromSourceMap()) {
       return this.status.E_BADARG('command', `expected a source map script resource for url: ${scriptUrl}`);
     }
@@ -865,17 +862,18 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private handleOpenURL(
       port: MessagePort, contentProviderOrUrl: TextUtils.ContentProvider.ContentProvider|string, lineNumber?: number,
       columnNumber?: number): void {
-    let url: Platform.DevToolsPath.UrlString;
     let resource: {url: string, type: string};
+    let isAllowed: boolean;
     if (typeof contentProviderOrUrl !== 'string') {
-      url = contentProviderOrUrl.contentURL();
       resource = this.makeResource(contentProviderOrUrl);
+      isAllowed = this.extensionAllowedOnContentProvider(contentProviderOrUrl, port);
     } else {
-      url = contentProviderOrUrl as Platform.DevToolsPath.UrlString;
+      const url = contentProviderOrUrl as Platform.DevToolsPath.UrlString;
       resource = {url, type: Common.ResourceType.resourceTypes.Other.name()};
+      isAllowed = this.extensionAllowedOnURL(url, port);
     }
 
-    if (this.extensionAllowedOnURL(url, port)) {
+    if (isAllowed) {
       port.postMessage({
         command: 'open-resource',
         resource,
@@ -889,6 +887,58 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const origin = extensionOrigins.get(port);
     const extension = origin && this.registeredExtensions.get(origin);
     return Boolean(extension?.isAllowedOnTarget(url));
+  }
+
+  /**
+   * Slightly more permissive as {@link extensionAllowedOnURL}: This method also permits
+   * UISourceCodes that originate from a {@link SDK.Script.Script} with a sourceURL magic comment as
+   * long as the corresponding target is permitted.
+   */
+  private extensionAllowedOnContentProvider(
+      contentProvider: TextUtils.ContentProvider.ContentProvider, port: MessagePort): boolean {
+    if (!(contentProvider instanceof Workspace.UISourceCode.UISourceCode)) {
+      return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
+    }
+
+    if (contentProvider.contentType() !== Common.ResourceType.resourceTypes.Script) {
+      // We only check sourceURL magic comments for scripts (excluding ones coming from source maps).
+      return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
+    }
+
+    const scripts =
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider);
+    if (scripts.length === 0) {
+      return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
+    }
+
+    return scripts.every(script => {
+      if (script.hasSourceURL) {
+        return this.extensionAllowedOnTarget(script.target(), port);
+      }
+      return this.extensionAllowedOnURL(script.contentURL(), port);
+    });
+  }
+
+  /**
+   * This method prefers returning 'Permission denied' errors if restricted resources are not found,
+   * rather then NOTFOUND. This prevents extensions from being able to fish for restricted resources.
+   */
+  private lookupAllowedUISourceCode(url: Platform.DevToolsPath.UrlString, port: MessagePort):
+      {uiSourceCode: Workspace.UISourceCode.UISourceCode}|{
+    error: Record,
+  }
+  {
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
+    if (!uiSourceCode && !this.extensionAllowedOnURL(url, port)) {
+      return {error: this.status.E_FAILED('Permission denied')};
+    }
+    if (!uiSourceCode) {
+      return {error: this.status.E_NOTFOUND(url)};
+    }
+    if (!this.extensionAllowedOnContentProvider(uiSourceCode, port)) {
+      return {error: this.status.E_FAILED('Permission denied')};
+    }
+    return {uiSourceCode};
   }
 
   private extensionAllowedOnTarget(target: SDK.Target.Target, port: MessagePort): boolean {
@@ -980,7 +1030,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     function pushResourceData(
         this: ExtensionServer, contentProvider: TextUtils.ContentProvider.ContentProvider): boolean {
       if (!resources.has(contentProvider.contentURL()) &&
-          this.extensionAllowedOnURL(contentProvider.contentURL(), port)) {
+          this.extensionAllowedOnContentProvider(contentProvider, port)) {
         resources.set(contentProvider.contentURL(), this.makeResource(contentProvider));
       }
       return false;
@@ -1003,7 +1053,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private async getResourceContent(
       contentProvider: TextUtils.ContentProvider.ContentProvider, message: PrivateAPI.ExtensionServerRequestMessage,
       port: MessagePort): Promise<void> {
-    if (!this.extensionAllowedOnURL(contentProvider.contentURL(), port)) {
+    if (!this.extensionAllowedOnContentProvider(contentProvider, port)) {
       this.dispatchCallback(message.requestId, port, this.status.E_FAILED('Permission denied'));
       return undefined;
     }
@@ -1053,20 +1103,16 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return this.status.E_FAILED('Expected a source map URL but got null');
     }
 
-    const url = message.contentUrl as Platform.DevToolsPath.UrlString;
-    if (!this.extensionAllowedOnURL(url, port)) {
-      return this.status.E_FAILED('Permission denied');
-    }
-    const contentProvider = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
-    if (!contentProvider) {
-      return this.status.E_NOTFOUND(url);
+    const resource = this.lookupAllowedUISourceCode(message.contentUrl as Platform.DevToolsPath.UrlString, port);
+    if ('error' in resource) {
+      return resource.error;
     }
 
     const debuggerBindingsInstance = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-    const scriptFiles = debuggerBindingsInstance.scriptsForUISourceCode(contentProvider);
+    const scriptFiles = debuggerBindingsInstance.scriptsForUISourceCode(resource.uiSourceCode);
     if (scriptFiles.length > 0) {
       for (const script of scriptFiles) {
-        const resourceFile = debuggerBindingsInstance.scriptFile(contentProvider, script.debuggerModel);
+        const resourceFile = debuggerBindingsInstance.scriptFile(resource.uiSourceCode, script.debuggerModel);
         resourceFile?.addSourceMapURL(message.sourceMapURL as Platform.DevToolsPath.UrlString);
       }
     }
@@ -1084,13 +1130,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       const response = error ? this.status.E_FAILED(error) : this.status.OK();
       this.dispatchCallback(requestId, port, response);
     }
-    if (!this.extensionAllowedOnURL(url as Platform.DevToolsPath.UrlString, port)) {
-      return this.status.E_FAILED('Permission denied');
-    }
 
-    const uiSourceCode =
-        Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
-    if (!uiSourceCode?.contentType().isDocumentOrScriptOrStyleSheet()) {
+    const resource = this.lookupAllowedUISourceCode(url as Platform.DevToolsPath.UrlString, port);
+    if ('error' in resource) {
+      return resource.error;
+    }
+    const {uiSourceCode} = resource;
+    if (!uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
       const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url as Platform.DevToolsPath.UrlString);
       if (!resource) {
         return this.status.E_NOTFOUND(url);

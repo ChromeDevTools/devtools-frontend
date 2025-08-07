@@ -28,6 +28,7 @@ ts_library("testing") {
     "MockNetworkLog.ts",
     "MockScopeChain.test.ts",
     "MockScopeChain.ts",
+    "MockSettingStorage.ts",
     "MutationHelpers.test.ts",
     "MutationHelpers.ts",
     "NetworkHelpers.ts",

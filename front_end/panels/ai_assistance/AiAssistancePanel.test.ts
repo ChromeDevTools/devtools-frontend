@@ -25,6 +25,7 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {MockStore} from '../../testing/MockSettingStorage.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
@@ -42,6 +43,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
   let viewManagerIsViewVisibleStub: sinon.SinonStub<[viewId: string], boolean>;
   beforeEach(() => {
     viewManagerIsViewVisibleStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'isViewVisible');
+    AiAssistanceModel.ConversationHandler.removeInstance();
     registerNoopActions([
       'elements.toggle-element-search', 'timeline.record-reload', 'timeline.toggle-recording', 'timeline.show-history',
       'components.collect-garbage'
@@ -52,6 +54,15 @@ describeWithMockConnection('AI Assistance Panel', () => {
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
     UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, null);
     UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
+
+    const mockStore = new MockStore();
+    const settingsStorage = new Common.Settings.SettingsStorage({}, mockStore);
+    Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: settingsStorage,
+      globalStorage: settingsStorage,
+      localStorage: settingsStorage,
+    });
   });
 
   afterEach(() => {
@@ -716,7 +727,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       });
       const aiHistoryStorage = AiAssistanceModel.AiHistoryStorage.instance({forceNew: true});
-      const deleteHistoryEntryStub = sinon.stub(aiHistoryStorage, 'deleteHistoryEntry');
+      const deleteHistoryEntrySpy = sinon.spy(aiHistoryStorage, 'deleteHistoryEntry');
       const {panel, view} = await createAiAssistancePanel(
           {
             aidaClient: mockAidaClient(
@@ -742,8 +753,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
       view.input.onDeleteClick();
 
       assert.deepEqual((await view.nextInput).messages, []);
-      sinon.assert.callCount(deleteHistoryEntryStub, 1);
-      assert.isString(deleteHistoryEntryStub.lastCall.args[0]);
+      sinon.assert.callCount(deleteHistoryEntrySpy, 1);
+      assert.isString(deleteHistoryEntrySpy.lastCall.args[0]);
 
       const menuAfterDelete = openHistoryContextMenu(view.input, 'User question to Freestyler?');
       assert.isUndefined(menuAfterDelete.id);

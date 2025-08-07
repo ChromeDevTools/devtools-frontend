@@ -13,6 +13,7 @@ devtools_module("ai_assistance") {
     "AiHistoryStorage.ts",
     "AiUtils.ts",
     "ChangeManager.ts",
+    "ConversationHandler.ts",
     "EvaluateAction.ts",
     "ExtensionScope.ts",
     "agents/AiAgent.ts",

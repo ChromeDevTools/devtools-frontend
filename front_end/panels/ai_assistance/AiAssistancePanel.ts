@@ -217,24 +217,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/AiAssistancePanel
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
-interface ExternalStylingRequestParameters {
-  conversationType: AiAssistanceModel.ConversationType.STYLING;
-  prompt: string;
-  selector?: string;
-}
-
-interface ExternalNetworkRequestParameters {
-  conversationType: AiAssistanceModel.ConversationType.NETWORK;
-  prompt: string;
-  requestUrl: string;
-}
-
-interface ExternalPerformanceInsightsRequestParameters {
-  conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT;
-  prompt: string;
-  insightTitle: string;
-}
-
 function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
   if (maybeNode) {
     return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
@@ -508,7 +490,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #conversationAgent?: AiAssistanceModel.AiAgent<unknown>;
   #conversation?: AiAssistanceModel.Conversation;
-  #historicalConversations: AiAssistanceModel.Conversation[] = [];
 
   #selectedFile: AiAssistanceModel.FileContext|null = null;
   #selectedElement: AiAssistanceModel.NodeContext|null = null;
@@ -540,6 +521,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   // Used to disable send button when there is not text input.
   #isTextInputEmpty = true;
   #timelinePanelInstance: TimelinePanel.TimelinePanel.TimelinePanel|null = null;
+  #conversationHandler: AiAssistanceModel.ConversationHandler;
+  #runAbortController = new AbortController();
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -556,9 +539,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       accountImage: syncInfo.accountImage,
       accountFullName: syncInfo.accountFullName,
     };
-
-    this.#historicalConversations = AiAssistanceModel.AiHistoryStorage.instance().getHistory().map(
-        serializedConversation => AiAssistanceModel.Conversation.fromSerializedConversation(serializedConversation));
+    this.#conversationHandler =
+        AiAssistanceModel.ConversationHandler.instance({aidaClient: this.#aidaClient, aidaAvailability});
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-element-search')) {
       this.#toggleSearchElementAction =
@@ -593,44 +575,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     } catch {
       return;
     }
-  }
-
-  #createAgent(conversationType: AiAssistanceModel.ConversationType): AiAssistanceModel.AiAgent<unknown> {
-    const options = {
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
-    };
-    let agent: AiAssistanceModel.AiAgent<unknown>;
-    switch (conversationType) {
-      case AiAssistanceModel.ConversationType.STYLING: {
-        agent = new AiAssistanceModel.StylingAgent({
-          ...options,
-          changeManager: this.#changeManager,
-        });
-        if (isAiAssistanceStylingWithFunctionCallingEnabled()) {
-          agent = new AiAssistanceModel.StylingAgentWithFunctionCalling({
-            ...options,
-            changeManager: this.#changeManager,
-          });
-        }
-
-        break;
-      }
-      case AiAssistanceModel.ConversationType.NETWORK: {
-        agent = new AiAssistanceModel.NetworkAgent(options);
-        break;
-      }
-      case AiAssistanceModel.ConversationType.FILE: {
-        agent = new AiAssistanceModel.FileAgent(options);
-        break;
-      }
-      case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
-      case AiAssistanceModel.ConversationType.PERFORMANCE: {
-        agent = new AiAssistanceModel.PerformanceAgent(options, conversationType);
-        break;
-      }
-    }
-    return agent;
   }
 
   static async instance(opts: {
@@ -721,7 +665,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
 
-    const agent = targetConversationType ? this.#createAgent(targetConversationType) : undefined;
+    const agent = targetConversationType ?
+        this.#conversationHandler.createAgent(targetConversationType, this.#changeManager) :
+        undefined;
     this.#updateConversationState(agent);
   }
 
@@ -746,7 +692,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             agent.id,
             false,
         );
-        this.#historicalConversations.push(this.#conversation);
       }
     }
 
@@ -1222,7 +1167,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#conversation?.isEmpty || targetConversationType === AiAssistanceModel.ConversationType.PERFORMANCE ||
         (agent instanceof AiAssistanceModel.PerformanceAgent &&
          agent.getConversationType() !== targetConversationType)) {
-      agent = this.#createAgent(targetConversationType);
+      agent = this.#conversationHandler.createAgent(targetConversationType, this.#changeManager);
     }
     this.#updateConversationState(agent);
     const predefinedPrompt = opts?.['prompt'];
@@ -1240,7 +1185,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #populateHistoryMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
-    for (const conversation of [...this.#historicalConversations].reverse()) {
+    const historicalConversations = AiAssistanceModel.AiHistoryStorage.instance().getHistory().map(
+        serializedConversation => AiAssistanceModel.Conversation.fromSerializedConversation(serializedConversation));
+    for (const conversation of historicalConversations.reverse()) {
       if (conversation.isEmpty) {
         continue;
       }
@@ -1250,7 +1197,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       }
 
       contextMenu.defaultSection().appendCheckboxItem(title, () => {
-        void this.#openConversation(conversation);
+        void this.#openHistoricConversation(conversation);
       }, {checked: (this.#conversation === conversation)});
     }
 
@@ -1273,7 +1220,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #onHistoryDeleted(): void {
-    this.#historicalConversations = [];
     this.#updateConversationState();
   }
 
@@ -1282,14 +1228,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
 
-    this.#historicalConversations =
-        this.#historicalConversations.filter(conversation => conversation !== this.#conversation);
     void AiAssistanceModel.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.chatDeleted));
   }
 
-  async #openConversation(conversation: AiAssistanceModel.Conversation): Promise<void> {
+  async #openHistoricConversation(conversation: AiAssistanceModel.Conversation): Promise<void> {
     if (this.#conversation === conversation) {
       return;
     }
@@ -1407,7 +1351,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     });
   }
 
-  #runAbortController = new AbortController();
   #cancel(): void {
     this.#runAbortController.abort();
     this.#runAbortController = new AbortController();
@@ -1482,27 +1425,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (this.#conversation) {
       void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
     }
-    const runner = this.#conversationAgent.run(
+    const generator = this.#conversationAgent.run(
         text, {
           signal,
           selected: context,
         },
         multimodalInput);
-    await this.#doConversation(this.#saveResponsesToCurrentConversation(runner));
-  }
-
-  async *
-      #saveResponsesToCurrentConversation(items: AsyncIterable<AiAssistanceModel.ResponseData, void, void>):
-          AsyncGenerator<AiAssistanceModel.ResponseData, void, void> {
-    const currentConversation = this.#conversation;
-
-    for await (const data of items) {
-      // We don't want to save partial responses to the conversation history.
-      if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
-        void currentConversation?.addHistoryItem(data);
-      }
-      yield data;
-    }
+    const generatorWithHistory = this.#conversationHandler.handleConversationWithHistory(generator, this.#conversation);
+    await this.#doConversation(generatorWithHistory);
   }
 
   async #doConversation(
@@ -1625,7 +1555,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           }
         }
 
-        // Commit update intermediated step when not
+        // Commit update intermediate step when not
         // in read only mode.
         if (!this.#conversation?.isReadOnly) {
           this.requestUpdate();
@@ -1674,8 +1604,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
    * context of the conversation.
    */
   handleExternalRequest(
-      parameters: ExternalStylingRequestParameters|ExternalNetworkRequestParameters|
-      ExternalPerformanceInsightsRequestParameters,
+      parameters: AiAssistanceModel.ExternalStylingRequestParameters|
+      AiAssistanceModel.ExternalNetworkRequestParameters|AiAssistanceModel.ExternalPerformanceInsightsRequestParameters,
       ): AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
     // eslint-disable-next-line require-yield
     async function*
@@ -1721,7 +1651,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   async *
       handleExternalPerformanceInsightsRequest(prompt: string, insightTitle: string):
           AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
-    const insightsAgent = this.#createAgent(AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
+    const insightsAgent = this.#conversationHandler.createAgent(AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
     const externalConversation = new AiAssistanceModel.Conversation(
         agentToConversationType(insightsAgent),
         [],
@@ -1729,7 +1659,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         /* isReadOnly */ true,
         /* isExternal */ true,
     );
-    this.#historicalConversations.push(externalConversation);
 
     const timelinePanel = TimelinePanel.TimelinePanel.TimelinePanel.instance();
 
@@ -1745,10 +1674,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     const selectedContext = createPerformanceTraceContext(focusOrError.focus);
-    const runner = insightsAgent.run(prompt, {selected: selectedContext});
-
+    const generator = insightsAgent.run(prompt, {selected: selectedContext});
+    const generatorWithHistory = this.#conversationHandler.handleConversationWithHistory(generator, this.#conversation);
     const devToolsLogs: object[] = [];
-    for await (const data of runner) {
+    for await (const data of generatorWithHistory) {
       // We don't want to save partial responses to the conversation history.
       if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
         void externalConversation.addHistoryItem(data);
@@ -1777,7 +1706,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   async *
       handleExternalStylingRequest(prompt: string, selector = 'body'):
           AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
-    const stylingAgent = this.#createAgent(AiAssistanceModel.ConversationType.STYLING);
+    const stylingAgent = this.#conversationHandler.createAgent(AiAssistanceModel.ConversationType.STYLING);
     const externalConversation = new AiAssistanceModel.Conversation(
         agentToConversationType(stylingAgent),
         [],
@@ -1785,20 +1714,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         /* isReadOnly */ true,
         /* isExternal */ true,
     );
-    this.#historicalConversations.push(externalConversation);
 
     const node = await inspectElementBySelector(selector);
     if (node) {
       await node.setAsInspectedNode();
     }
-    const runner = stylingAgent.run(
+    const generator = stylingAgent.run(
         prompt,
         {
           selected: createNodeContext(node),
         },
     );
+    const generatorWithHistory = this.#conversationHandler.handleConversationWithHistory(generator, this.#conversation);
     const devToolsLogs: object[] = [];
-    for await (const data of runner) {
+    for await (const data of generatorWithHistory) {
       // We don't want to save partial responses to the conversation history.
       if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
         void externalConversation.addHistoryItem(data);
@@ -1830,8 +1759,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   async *
       handleExternalNetworkRequest(prompt: string, requestUrl: string):
           AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
-    const networkAgent =
-        this.#createAgent(AiAssistanceModel.ConversationType.NETWORK) as AiAssistanceModel.NetworkAgent;
+    const networkAgent = this.#conversationHandler.createAgent(AiAssistanceModel.ConversationType.NETWORK) as
+        AiAssistanceModel.NetworkAgent;
     const externalConversation = new AiAssistanceModel.Conversation(
         agentToConversationType(networkAgent),
         [],
@@ -1839,7 +1768,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         /* isReadOnly */ true,
         /* isExternal */ true,
     );
-    this.#historicalConversations.push(externalConversation);
 
     const request = await inspectNetworkRequestByUrl(requestUrl);
     if (!request) {
@@ -1848,14 +1776,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         message: `Can't find request with the given selector ${requestUrl}`,
       };
     }
-    const runner = networkAgent.run(
+    const generator = networkAgent.run(
         prompt,
         {
           selected: createRequestContext(request),
         },
     );
+    const generatorWithHistory = this.#conversationHandler.handleConversationWithHistory(generator, this.#conversation);
     const devToolsLogs: object[] = [];
-    for await (const data of runner) {
+    for await (const data of generatorWithHistory) {
       // We don't want to save partial responses to the conversation history.
       if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
         void externalConversation.addHistoryItem(data);
@@ -1938,8 +1867,4 @@ function isAiAssistanceMultimodalInputEnabled(): boolean {
 
 function isAiAssistanceServerSideLoggingEnabled(): boolean {
   return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
-}
-
-function isAiAssistanceStylingWithFunctionCallingEnabled(): boolean {
-  return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.functionCalling);
 }

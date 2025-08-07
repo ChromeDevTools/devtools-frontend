@@ -212,7 +212,10 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private groupByDomain?: boolean;
   private groupByFolder?: boolean;
   constructor(jslogContext: string, enableAuthoredGrouping?: boolean) {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane(jslogContext).track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(navigatorViewStyles);
 
     this.placeholder = null;
@@ -222,7 +225,6 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.scriptsTree.hideOverflow();
     this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
     this.scriptsTree.setFocusable(false);
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane(jslogContext).track({resize: true})}`);
     this.contentElement.appendChild(this.scriptsTree.element);
     this.setDefaultFocusedElement(this.scriptsTree.element);
 

@@ -76,10 +76,12 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   #scopeChainModel: SourceMapScopes.ScopeChainModel.ScopeChainModel|null = null;
 
   private constructor() {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.section('sources.scope-chain')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(scopeChainSidebarPaneStyles);
 
-    this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.scope-chain')}`);
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
     this.treeOutline.registerRequiredCSS(scopeChainSidebarPaneStyles);
     this.treeOutline.hideOverflow();

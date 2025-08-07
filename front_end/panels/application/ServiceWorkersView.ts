@@ -197,14 +197,16 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
       Map<SDK.ServiceWorkerManager.ServiceWorkerManager, Common.EventTarget.EventDescriptor[]>;
 
   constructor() {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane('service-workers')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(serviceWorkersViewStyles);
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.currentWorkersView = new UI.ReportView.ReportView(i18n.i18n.lockedString('Service workers'));
     this.currentWorkersView.setBodyScrollable(false);
     this.contentElement.classList.add('service-worker-list');
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('service-workers')}`);
     this.currentWorkersView.show(this.contentElement);
     this.currentWorkersView.element.classList.add('service-workers-this-origin');
     this.currentWorkersView.element.setAttribute('jslog', `${VisualLogging.section('this-origin')}`);

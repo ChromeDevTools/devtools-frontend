@@ -68,10 +68,12 @@ export class StatusDialog extends UI.Widget.VBox {
         buttonText?: string,
       },
       onButtonClickCallback: () => (Promise<void>| void)) {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.dialog('timeline-status').track({resize: true})}`,
+      useShadowDom: true,
+    });
 
     this.contentElement.classList.add('timeline-status-dialog');
-    this.contentElement.setAttribute('jslog', `${VisualLogging.dialog('timeline-status').track({resize: true})}`);
 
     const statusLine = this.contentElement.createChild('div', 'status-dialog-line status');
     statusLine.createChild('div', 'label').textContent = i18nString(UIStrings.status);

@@ -58,6 +58,41 @@ describe('Widget', () => {
     assert.throws(() => div.removeChildren(), /Attempt to modify widget with native DOM method `removeChildren`/);
   });
 
+  describe('constructor', () => {
+    it('doesn\'t create a shadow DOM if `useShadowDom` is set to `false`', () => {
+      const widget = new Widget({useShadowDom: false});
+
+      assert.isNull(widget.element.shadowRoot);
+      assert.strictEqual(widget.element, widget.contentElement);
+    });
+
+    it('doesn\'t create a shadow DOM if `useShadowDom` is unspecified', () => {
+      const widget = new Widget();
+
+      assert.isNull(widget.element.shadowRoot);
+      assert.strictEqual(widget.element, widget.contentElement);
+    });
+
+    it('correctly sets the `jslog` attribute of the `contentElement`', () => {
+      const widget = new Widget({jslog: 'Panel; context: foo'});
+
+      assert.strictEqual(
+          widget.contentElement.getAttribute('jslog'),
+          'Panel; context: foo',
+      );
+    });
+
+    it('correctly sets the `jslog` attribute of the `contentElement` in the presence of Shadow DOM', () => {
+      const widget = new Widget({jslog: 'Section; context: bar', useShadowDom: true});
+
+      assert.isNull(widget.element.getAttribute('jslog'));
+      assert.strictEqual(
+          widget.contentElement.getAttribute('jslog'),
+          'Section; context: bar',
+      );
+    });
+  });
+
   describe('detach', () => {
     it('cancels pending updates', async () => {
       const widget = new Widget();

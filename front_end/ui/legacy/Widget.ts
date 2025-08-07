@@ -314,9 +314,6 @@ export class Widget {
       }
     }
     this.#shadowRoot = this.element.shadowRoot;
-    if (options?.jslog) {
-      this.element.setAttribute('jslog', options.jslog);
-    }
     if (options?.useShadowDom && !this.#shadowRoot) {
       this.element.classList.add('vbox');
       this.element.classList.add('flex-auto');
@@ -327,6 +324,9 @@ export class Widget {
       this.#shadowRoot.appendChild(this.contentElement);
     } else {
       this.contentElement = this.element;
+    }
+    if (options?.jslog) {
+      this.contentElement.setAttribute('jslog', options.jslog);
     }
     this.contentElement.classList.add('widget');
     widgetMap.set(this.element, this);

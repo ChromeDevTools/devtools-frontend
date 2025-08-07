@@ -35,11 +35,13 @@ export class LayersWidget extends UI.Widget.Widget {
   private layerTreeComponent = new TreeOutline.TreeOutline.TreeOutline<string>();
 
   constructor() {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane('css-layers')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(layersWidgetStyles);
 
     this.contentElement.className = 'styles-layers-pane';
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('css-layers')}`);
     UI.UIUtils.createTextChild(this.contentElement.createChild('div'), i18nString(UIStrings.cssLayersTitle));
 
     this.contentElement.appendChild(this.layerTreeComponent);

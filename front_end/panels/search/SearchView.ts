@@ -156,7 +156,10 @@ export class SearchView extends UI.Widget.VBox {
   #emptyStartView: UI.EmptyWidget.EmptyWidget;
 
   constructor(settingKey: string, throttler: Common.Throttler.Throttler) {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.panel('search').track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.setMinimumSize(0, 40);
     this.registerRequiredCSS(searchViewStyles);
 
@@ -174,8 +177,6 @@ export class SearchView extends UI.Widget.VBox {
     this.progressIndicator = null;
     this.visiblePane = null;
     this.#throttler = throttler;
-
-    this.contentElement.setAttribute('jslog', `${VisualLogging.panel('search').track({resize: true})}`);
 
     this.contentElement.classList.add('search-view');
     this.contentElement.addEventListener('keydown', event => {

@@ -486,11 +486,13 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   constructor(
       emptyView: UI.EmptyWidget.EmptyWidget, reportView: UI.ReportView.ReportView,
       throttler: Common.Throttler.Throttler) {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane('manifest')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(appManifestViewStyles);
 
     this.contentElement.classList.add('manifest-container');
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('manifest')}`);
 
     this.emptyView = emptyView;
     this.emptyView.link = 'https://web.dev/add-manifest/' as Platform.DevToolsPath.UrlString;

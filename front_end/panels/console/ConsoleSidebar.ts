@@ -59,7 +59,10 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly treeElements: FilterTreeElement[];
 
   constructor() {
-    super({useShadowDom: true});
+    super({
+      jslog: `${VisualLogging.pane('sidebar').track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.setMinimumSize(125, 0);
 
     this.tree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
@@ -67,7 +70,6 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.tree.registerRequiredCSS(consoleSidebarStyles);
     this.tree.hideOverflow();
 
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
     this.contentElement.appendChild(this.tree.element);
     this.selectedTreeElement = null;
     this.treeElements = [];

@@ -343,9 +343,10 @@ export function buildHierarchy(
           allTraceEntries = allTraceEntries.concat(profileCalls);
           thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);
           thread.profileCalls = profileCalls;
+
           // We'll also inject the instant JSSample events (in debug mode only)
           const jsSamples = samplesIntegrator.jsSampleEvents;
-          if (jsSamples) {
+          if (jsSamples.length) {
             allTraceEntries = [...allTraceEntries, ...jsSamples];
             thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, jsSamples);
           }

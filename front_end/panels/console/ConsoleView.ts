@@ -333,7 +333,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   #isDetached = false;
   #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
   private aiCodeCompletionSetting =
-      Common.Settings.Settings.instance().createSetting('ai-code-completion-fre-completed', false);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
   private aiCodeCompletionSummaryToolbarContainer?: HTMLElement;
   private aiCodeCompletionSummaryToolbar?: AiCodeCompletionSummaryToolbar;
 

@@ -35,7 +35,7 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
 
   afterEach(() => {
     Common.Settings.Settings.instance().settingForTest('ai-code-completion-teaser-dismissed').set(false);
-    Common.Settings.Settings.instance().settingForTest('ai-code-completion-fre-completed').set(false);
+    Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(false);
     sinon.restore();
   });
 

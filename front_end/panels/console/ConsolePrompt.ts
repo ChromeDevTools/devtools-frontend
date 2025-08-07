@@ -75,7 +75,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private placeholderCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
   private teaserContainer?: HTMLDivElement;
   private aiCodeCompletionSetting =
-      Common.Settings.Settings.instance().createSetting('ai-code-completion-fre-completed', false);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
   private aiCodeCompletionCitations?: Host.AidaClient.Citation[] = [];
 
   #getJavaScriptCompletionExtensions(): CodeMirror.Extension {

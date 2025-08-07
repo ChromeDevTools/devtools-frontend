@@ -174,12 +174,12 @@ const UIStrings = {
    * @description Explainer for which data is being sent for the 'Code suggestions' feature
    */
   codeSuggestionsSendData:
-      'To generate code suggestions, your console input, the history of your current console session, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.',
+      'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.',
   /**
    * @description Explainer for which data is being sent for the 'Code suggestions' feature when logging is not enabled
    */
   codeSuggestionsSendDataNoLogging:
-      'To generate code suggestions, your console input, the history of your current console session, and the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models.',
+      'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models.',
   /**
    * @description Label for a link to the terms of service
    */
@@ -256,7 +256,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     if (Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled) {
       // Get an existing setting or, if it does not exist, create a new one.
       this.#aiCodeCompletionSetting =
-          Common.Settings.Settings.instance().createSetting('ai-code-completion-fre-completed', false);
+          Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
     }
 
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);

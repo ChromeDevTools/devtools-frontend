@@ -60,12 +60,12 @@ const UIStringsNotTranslate = {
    * @description Second disclaimer item text for the fre dialog.
    */
   freDisclaimerTextPrivacy:
-      'To generate code suggestions, your console input, the history of your current console session, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.',
+      'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.',
   /**
    * @description Second disclaimer item text for the fre dialog when enterprise logging is off.
    */
   freDisclaimerTextPrivacyNoLogging:
-      'To generate code suggestions, your console input, the history of your current console session, and the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
    * @description Third disclaimer item text for the fre dialog.
    */
@@ -124,7 +124,7 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
 
   // Whether the user completed first run experience dialog or not.
   #aiCodeCompletionFreCompletedSetting =
-      Common.Settings.Settings.instance().createSetting('ai-code-completion-fre-completed', false);
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
   // Whether the user dismissed the teaser or not.
   #aiCodeCompletionTeaserDismissedSetting =
       Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);

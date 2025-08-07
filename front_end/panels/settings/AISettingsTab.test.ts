@@ -62,7 +62,7 @@ describeWithEnvironment('AISettingsTab', () => {
     Common.Settings.moduleSetting('console-insights-enabled').set(false);
     Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
     Common.Settings.moduleSetting('ai-annotations-enabled').set(true);
-    Common.Settings.moduleSetting('ai-code-completion-fre-completed').set(false);
+    Common.Settings.moduleSetting('ai-code-completion-enabled').set(false);
 
     view = new Settings.AISettingsTab.AISettingsTab();
     renderElementIntoDOM(view);
@@ -85,7 +85,7 @@ describeWithEnvironment('AISettingsTab', () => {
     Common.Settings.moduleSetting('console-insights-enabled').set(true);
     Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
     Common.Settings.moduleSetting('ai-annotations-enabled').set(true);
-    Common.Settings.moduleSetting('ai-code-completion-fre-completed').set(true);
+    Common.Settings.moduleSetting('ai-code-completion-enabled').set(true);
 
     view = new Settings.AISettingsTab.AISettingsTab();
     renderElementIntoDOM(view);
@@ -116,7 +116,7 @@ describeWithEnvironment('AISettingsTab', () => {
     Common.Settings.moduleSetting('console-insights-enabled').set(true);
     Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
     Common.Settings.moduleSetting('ai-annotations-enabled').set(true);
-    Common.Settings.moduleSetting('ai-code-completion-fre-completed').set(true);
+    Common.Settings.moduleSetting('ai-code-completion-enabled').set(true);
     updateHostConfig({
       aidaAvailability: {
         enabled: true,

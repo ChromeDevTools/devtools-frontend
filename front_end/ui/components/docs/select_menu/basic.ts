@@ -2,202 +2,94 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Dialogs from '../../../../ui/components/dialogs/dialogs.js';
-import * as Menus from '../../../../ui/components/menus/menus.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
+import * as Lit from '../../../lit/lit.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
-const menus = [
-  {
-    items: [
-      {
-        name: 'Opt 1',
-        value: '1',
-      },
-      {
-        name: 'Opt 2',
-        value: '2',
-        selected: false,
-      },
-      {
-        name: 'Opt 3',
-        value: '3',
-        group: '',
-      },
-      {
-        name: 'Opt 4',
-        value: '4',
-      },
-    ],
-    buttonTitle: 'Show dialog',
-  },
-  {
-    items: [
-      {
-        name: 'Opt 1',
-        value: '1',
-      },
-      {
-        name: 'Opt 2',
-        value: '2',
-        selected: false,
-      },
-      {
-        name: 'Opt 3',
-        value: '3',
-      },
-      {
-        name: 'Opt 4',
-        value: '4',
-      },
-    ],
-    buttonTitle: 'Show dialog',
-    position: Dialogs.Dialog.DialogVerticalPosition.TOP,
-    showArrow: true,
-  },
-  {
-    items: [
-      {
-        name: 'Opt 1',
-        value: '1',
-        selected: false,
-      },
-      {
-        name: 'Opt 2',
-        value: '2',
-      },
-      {
-        name: 'Opt 3',
-        value: '3',
-      },
-      {
-        name: 'Opt 4',
-        value: '4',
-      },
-    ],
-    buttonTitle: 'Show dialog',
-    position: Dialogs.Dialog.DialogVerticalPosition.BOTTOM,
-    showArrow: true,
-  },
-  {
-    items: [
-      {
-        name: 'Opt 1',
-        value: '1',
-        group: 'Group 1',
-        selected: false,
-      },
-      {
-        name: 'Opt 2',
-        value: '2',
-        group: 'Group 1',
-      },
-      {
-        name: 'Opt 3',
-        value: '3',
-        group: 'Group 2',
-      },
-      {
-        name: 'Opt 4',
-        value: '4',
-        group: 'Group 2',
-      },
-    ],
-    buttonTitle: 'Show dialog',
-    position: Dialogs.Dialog.DialogVerticalPosition.TOP,
-    showArrow: true,
-    hasGroups: true,
-  },
-  {
-    items: [
-      {
-        name: 'Option 1',
-        value: '1',
-        selected: true,
-      },
-      {
-        name: 'Option 2',
-        value: '2',
-      },
-      {
-        name: 'Option 3',
-        value: '3',
-      },
-      {
-        name: 'Option 4',
-        value: '4',
-      },
-    ],
-    showArrow: true,
-  },
-  {
-    items: [
-      {
-        name: 'Option 1',
-        value: '1',
-        selected: true,
-      },
-    ],
-    buttonTitle: 'Disabled',
-    disabled: true,
-  },
-];
-const root = document.getElementById('root');
-menus.forEach((menu, i) => {
-  const allItems: Menus.Menu.MenuItem[] = [];
-  const selectMenu = new Menus.SelectMenu.SelectMenu();
-  if (menu.buttonTitle) {
-    selectMenu.buttonTitle = menu.buttonTitle;
+const {html} = Lit;
+
+function createDivWithP(text: string): HTMLDivElement {
+  const div = document.createElement('div');
+  div.style.paddingLeft = '25px';
+  const p = document.createElement('p');
+  p.style.marginLeft = '-25px';
+  p.textContent = text;
+  div.appendChild(p);
+  document.body.appendChild(div);
+  return div;
+}
+
+{
+  const simpleMenuHTML = createDivWithP('Simple item select with lit-html');
+  Lit.render(
+      html`<select id="menu" aria-label="Select an option"
+              @change=${onChange}>
+      <option hidden>Select an option</option>
+      <option id="option-1" jslog=${VisualLogging.item('option-1').track({
+        click: true
+      })}
+              value="Option1">Option 1</option>
+      <option jslog=${VisualLogging.item('option-2').track({
+        click: true
+      })}
+              value="Option2">Option 2</option>
+      <option disabled jslog=${VisualLogging.item('option-3').track({
+        click: true
+      })}
+              value="Option3">Option 3</option>
+    </select>`,
+      simpleMenuHTML);
+}
+
+{
+  const groupMenuHTML = createDivWithP('Select with groups with lit-html');
+  Lit.render(
+      html`<select aria-label="Select an option"
+                @change=${onChange}>
+      <optgroup label="Group 1">
+        <option jslog=${VisualLogging.item('option-1').track({
+        click: true
+      })}
+        value="Option1">Option 1</option>
+      </optgroup>
+      <optgroup label="Group 2">
+        <option jslog=${VisualLogging.item('option-2').track({
+        click: true
+      })}
+        value="Option2">Option 2</option>
+        <option jslog=${VisualLogging.item('option-3').track({
+        click: true
+      })}
+        value="Option3">Option 3</option>
+      </optgroup>
+    </select>`,
+      groupMenuHTML);
+}
+
+{
+  const simpleMenuImperative = createDivWithP('Simple item select with imperative API');
+  const simpleSelect = UI.UIUtils.createSelect('Select an option', [
+    'Option 1',
+    'Option 2',
+    'Option 3',
+  ]);
+  simpleSelect.addEventListener('change', event => onChange(event));
+  simpleMenuImperative.appendChild(simpleSelect);
+}
+
+{
+  const groupMenuImperative = createDivWithP('Select with groups with imperative API');
+  const group1 = new Map<string, string[]>([['Group 1', ['Option 1']]]);
+  const group2 = new Map<string, string[]>([['Group 2', ['Option 2', 'Option 3']]]);
+  const groupSelect = UI.UIUtils.createSelect('Select an option', [group1, group2]);
+  groupSelect.addEventListener('change', event => onChange(event));
+  groupMenuImperative.appendChild(groupSelect);
+}
+
+function onChange(event: Event): void {
+  const menu = event.target;
+  if (menu instanceof HTMLSelectElement) {
+    // eslint-disable-next-line no-console
+    console.log('Option selected: ', menu.value);
   }
-  selectMenu.position = menu.position || Dialogs.Dialog.DialogVerticalPosition.BOTTOM;
-  const firstMenuGroup = new Menus.SelectMenu.SelectMenuGroup();
-  firstMenuGroup.name = 'Group 1';
-  const secondMenuGroup = new Menus.SelectMenu.SelectMenuGroup();
-  secondMenuGroup.name = 'Group 2';
-  selectMenu.showArrow = Boolean(menu.showArrow);
-  selectMenu.disabled = Boolean(menu.disabled);
-  menu.items.forEach((item, j) => {
-    const selectMenuItem = new Menus.Menu.MenuItem();
-    selectMenuItem.value = item.value;
-    selectMenuItem.selected = Boolean(item.selected);
-    const itemContent = document.createElement('div');
-    itemContent.textContent = item.name;
-    selectMenuItem.appendChild(itemContent);
-    if (menu.hasGroups && j < 2) {
-      firstMenuGroup.appendChild(selectMenuItem);
-    } else if (menu.hasGroups) {
-      secondMenuGroup.appendChild(selectMenuItem);
-    } else {
-      selectMenu.appendChild(selectMenuItem);
-    }
-    allItems.push(selectMenuItem);
-  });
-
-  if (menu.hasGroups) {
-    selectMenu.appendChild(firstMenuGroup);
-    selectMenu.appendChild(secondMenuGroup);
-  }
-
-  if (root) {
-    const ph = document.createElement('div');
-    ph.classList.add('place-holder');
-    ph.setAttribute('id', `place-holder-${i + 1}`);
-    root.appendChild(ph);
-    const result = document.createElement('div');
-    ph.appendChild(result);
-    selectMenu.addEventListener('selectmenuselected', (_evt: Event) => {
-      const evt = _evt as Menus.SelectMenu.SelectMenuItemSelectedEvent;
-      let item = null;
-      for (let i = 0; i < allItems.length; i++) {
-        allItems[i].selected = allItems[i].value === evt.itemValue;
-        if (allItems[i].selected) {
-          item = allItems[i];
-        }
-      }
-      if (!item) {
-        return;
-      }
-      result.innerText = `Selected option: ${item.innerText.trim()}`;
-    });
-
-    ph.appendChild(selectMenu);
-  }
-});
+}

@@ -100,9 +100,13 @@ export interface ModelOption {
 // Add model options constant - these are the default OpenAI models
 const DEFAULT_OPENAI_MODELS: ModelOption[] = [
   {value: 'o4-mini-2025-04-16', label: 'O4 Mini', type: 'openai'},
+  {value: 'o3-mini-2025-01-31', label: 'O3 Mini', type: 'openai'},
+  {value: 'gpt-5-2025-08-07', label: 'GPT-5', type: 'openai'},
+  {value: 'gpt-5-mini-2025-08-07', label: 'GPT-5 Mini', type: 'openai'},
+  {value: 'gpt-5-nano-2025-08-07', label: 'GPT-5 Nano', type: 'openai'},
+  {value: 'gpt-4.1-2025-04-14', label: 'GPT-4.1', type: 'openai'},
   {value: 'gpt-4.1-mini-2025-04-14', label: 'GPT-4.1 Mini', type: 'openai'},
   {value: 'gpt-4.1-nano-2025-04-14', label: 'GPT-4.1 Nano', type: 'openai'},
-  {value: 'gpt-4.1-2025-04-14', label: 'GPT-4.1', type: 'openai'},
 ];
 
 // Default model selections for each provider
@@ -516,7 +520,8 @@ export class AIChatPanel extends UI.Panel.Panel {
     const existingOpenRouterModels = existingAllModels.filter((m: ModelOption) => m.type === 'openrouter');
     
     // Update models based on what type of models we're adding
-    let updatedOpenAIModels = existingOpenAIModels.length > 0 ? existingOpenAIModels : DEFAULT_OPENAI_MODELS;
+    // Always use DEFAULT_OPENAI_MODELS for OpenAI to ensure we have the latest hardcoded list
+    let updatedOpenAIModels = DEFAULT_OPENAI_MODELS;
     let updatedLiteLLMModels = existingLiteLLMModels;
     let updatedGroqModels = existingGroqModels;
     let updatedOpenRouterModels = existingOpenRouterModels;
@@ -651,6 +656,15 @@ export class AIChatPanel extends UI.Panel.Panel {
     return updatedOptions;
   }
   
+  /**
+   * Clears cached model data to force refresh from defaults
+   */
+  static clearModelCache(): void {
+    localStorage.removeItem('ai_chat_all_model_options');
+    localStorage.removeItem('ai_chat_model_options');
+    logger.info('Cleared model cache - will use DEFAULT_OPENAI_MODELS on next refresh');
+  }
+
   /**
    * Removes a custom model from the options
    * @param modelName Name of the model to remove

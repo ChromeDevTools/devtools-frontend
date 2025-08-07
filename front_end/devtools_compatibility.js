@@ -791,6 +791,14 @@ const InspectorFrontendHostImpl = class {
 
   /**
    * @override
+   * @param featureName
+   */
+  recordNewBadgeUsage(featureName) {
+    DevToolsAPI.sendMessageToEmbedder('recordNewBadgeUsage', [featureName], null);
+  }
+
+  /**
+   * @override
    * @param umaName
    */
   recordUserMetricsAction(umaName) {

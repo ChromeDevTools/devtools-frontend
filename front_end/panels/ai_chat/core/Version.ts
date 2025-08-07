@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 export const VERSION_INFO = {
-  version: '0.2.2',
-  buildDate: '2025-08-06',
+  version: '0.3.0',
+  buildDate: '2025-08-07',
   channel: 'stable'
 } as const;
 

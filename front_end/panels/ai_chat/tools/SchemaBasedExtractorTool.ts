@@ -77,7 +77,7 @@ Schema Examples:
   async execute(args: SchemaExtractionArgs): Promise<SchemaExtractionResult> {
     logger.debug('Executing with args', args);
     
-    const { instruction, reasoning } = args;
+    const { schema, instruction, reasoning } = args;
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
 
@@ -89,30 +89,8 @@ Schema Examples:
       };
     }
 
-    // Handle both old format (schema as string) and new format (schema as object)
-    let actualSchema: SchemaDefinition;
-    
-    if (typeof args.schema === 'string') {
-      // Old format: reconstruct the schema from separate fields
-      if (!args.properties) {
-        return {
-          success: false,
-          data: null,
-          error: 'Schema is required. When using string format, properties field is required. Please provide a JSON Schema definition. Example: {"type": "object", "properties": {"title": {"type": "string"}}}'
-        };
-      }
-      
-      actualSchema = {
-        type: args.schema,
-        properties: args.properties,
-        ...(args.required && { required: args.required })
-      };
-      
-      logger.debug('Converted old format schema to new format:', actualSchema);
-    } else if (typeof args.schema === 'object' && args.schema !== null) {
-      // New format: use schema as-is
-      actualSchema = args.schema;
-    } else {
+    // Enhanced schema validation with helpful error messages
+    if (!schema) {
       return {
         success: false,
         data: null,
@@ -149,7 +127,7 @@ Schema Examples:
       const rootNodeId: Protocol.DOM.NodeId | undefined = undefined;
 
       // 2. Transform schema to replace URL fields with numeric AX Node IDs (strings)
-      const [transformedSchema, urlPaths] = this.transformUrlFieldsToIds(actualSchema);
+      const [transformedSchema, urlPaths] = this.transformUrlFieldsToIds(schema);
       logger.debug('Transformed Schema:', JSON.stringify(transformedSchema, null, 2));
       logger.debug('URL Paths:', urlPaths);
 
@@ -227,7 +205,7 @@ Schema Examples:
       const finalData = await this.resolveUrlsWithLLM({
         data: refinedData,
         apiKey,
-        schema: actualSchema, // Original schema to understand what fields are URLs
+        schema, // Original schema to understand what fields are URLs
       });
 
       logger.debug('Data after URL resolution:',
@@ -247,7 +225,7 @@ Schema Examples:
         instruction: instruction || 'Assess extraction completion',
         extractedData: finalData, // Use the final data with URLs for assessment
         domContent: treeText, // Pass the DOM content for context
-        schema: actualSchema, // Pass the schema to understand what was requested
+        schema, // Pass the schema to understand what was requested
         apiKey,
       });
 
@@ -878,13 +856,9 @@ Return ONLY a valid JSON object conforming to the required metadata schema.`;
  * Arguments for schema extraction
  */
 export interface SchemaExtractionArgs {
-  schema: SchemaDefinition | string; // Support both object and string formats
+  schema: SchemaDefinition;
   instruction?: string;
   reasoning?: string;
-  // Support old format fields
-  properties?: Record<string, SchemaProperty>;
-  required?: string[];
-  type?: string;
 }
 
 /**

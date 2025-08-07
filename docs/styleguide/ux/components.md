@@ -407,7 +407,7 @@ element.addEventListener('contextmenu', (event: MouseEvent) => {
 // Disabled item
   contextMenu.defaultSection().appendItem('Disabled item', () => {
     console.log('Will not be printed');
-  }, { jslogContext: 'disbaled-item',
+  }, { jslogContext: 'disabled-item',
        disabled: true });
 
 // Experimental item

@@ -147,6 +147,7 @@ devtools_entrypoint("bundle") {
     "../components/copy_to_clipboard:*",
     "../components/data_grid:*",
     "../components/docs/combo_box/*",
+    "../components/docs/context_menu/*",
     "../components/docs/performance_panel/*",
     "../components/docs/radio_button/*",
     "../components/docs/slider/*",

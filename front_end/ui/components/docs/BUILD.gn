@@ -19,6 +19,7 @@ group("docs") {
     "./computed_style_property",
     "./computed_style_trace",
     "./console_insight",
+    "./context_menu",
     "./elements_breadcrumbs",
     "./expandable_list",
     "./icon_button",

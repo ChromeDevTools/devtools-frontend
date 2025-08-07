@@ -280,6 +280,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   recordUserMetricsAction(_umaName: string): void {
   }
 
+  recordNewBadgeUsage(_featureName: string): void {
+  }
+
   connectAutomaticFileSystem(
       _fileSystemPath: Platform.DevToolsPath.RawPathString,
       _fileSystemUUID: string,

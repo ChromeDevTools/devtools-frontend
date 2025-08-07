@@ -103,10 +103,6 @@ const UIStrings = {
    */
   resetTrace: 'Reset trace',
   /**
-   * @description Context menu text in Performance Panel to that opens a submenu with AI prompts.
-   */
-  debugWithAi: 'Debug with AI',
-  /**
    * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
    */
   startAChat: 'Start a chat',
@@ -291,11 +287,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
               submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action,
               label: Common.UIString.LocalizedString, prompt: string, jslogContext: string): void {
             submenu.defaultSection().appendItem(
-                label, async () => await action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
+                label, () => action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
           }
 
           const submenu = contextMenu.footerSection().appendSubMenuItem(
-              i18nString(UIStrings.debugWithAi), false, PERF_AI_ACTION_ID);
+              action.title(), false, PERF_AI_ACTION_ID,
+              Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.featureName);
           submenu.defaultSection().appendAction(PERF_AI_ACTION_ID, i18nString(UIStrings.startAChat));
           submenu.defaultSection().appendItem(i18nString(UIStrings.labelEntry), () => {
             this.dispatchEventToListeners(
@@ -312,10 +309,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           appendSubmenuPromptAction(
               submenu, action, i18nString(UIStrings.findImprovements), 'How can I reduce the time of this call tree?',
               PERF_AI_ACTION_ID + '.improvements');
+        } else if (Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
+          contextMenu.footerSection().appendAction(
+              PERF_AI_ACTION_ID, undefined, false, undefined,
+              Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.featureName);
         } else {
           contextMenu.footerSection().appendAction(PERF_AI_ACTION_ID);
         }
-          UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
       }
     }
 

@@ -94,6 +94,29 @@ describeWithEnvironment('ContextMenu', () => {
     sinon.assert.called(showContextMenuAtPoint);
   });
 
+  it('records new badge usage', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showContextMenuAtPoint');
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const submenu1 = contextMenu.defaultSection().appendSubMenuItem('submenu', false, undefined, 'feature1');
+    submenu1.defaultSection().appendItem('item', () => {}, {featureName: 'feature2'});
+    submenu1.defaultSection().appendItem('item', () => {});
+
+    const submenu2 = contextMenu.defaultSection().appendSubMenuItem('submenu2', false, undefined, 'feature3');
+    submenu2.defaultSection().appendItem('item', () => {}, {featureName: 'feature4'});
+    const item = submenu2.defaultSection().appendItem('item', () => {}, {featureName: 'feature5'});
+
+    await contextMenu.show();
+    const newBadgeUsageStub =
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordNewBadgeUsage');
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
+        Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, item.id());
+    assert.deepEqual(newBadgeUsageStub.args, [['feature5'], ['feature3']]);
+  });
+
   it('logs impressions and clicks for hosted menu', async () => {
     const throttler = new Common.Throttler.Throttler(1000000000);
     await VisualLogging.startLogging({processingThrottler: throttler});

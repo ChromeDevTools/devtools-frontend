@@ -233,10 +233,6 @@ const UIStrings = {
    */
   elementHasScrollableOverflow: 'This element has a scrollable overflow',
   /**
-   * @description Context menu text in Elements Panel to that opens a submenu with AI prompts.
-   */
-  debugWithAi: 'Debug with AI',
-  /**
    * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
    */
   startAChat: 'Start a chat',
@@ -918,8 +914,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, this.nodeInternal);
       if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu =
-            contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.debugWithAi), false, openAiAssistanceId);
+        // Register new badge under the `devToolsAiSubmenuPrompts` feature, as the freestyler one is already used in ViewManager.
+        const submenu = contextMenu.footerSection().appendSubMenuItem(
+            action.title(), false, Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.featureName);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
 
         const submenuConfigs = [
@@ -1050,6 +1047,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 submenu, action, item.label, item.prompt, openAiAssistanceId + item.jslogContextSuffix);
           }
         }
+      } else if (Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
+        // Register new badge under the `devToolsAiDebugWithAi` feature, as the freestyler one is already used in ViewManager.
+        contextMenu.footerSection().appendAction(
+            openAiAssistanceId, undefined, false, undefined,
+            Root.Runtime.hostConfig.devToolsAiDebugWithAi?.featureName);
       } else {
         contextMenu.footerSection().appendAction(openAiAssistanceId);
       }

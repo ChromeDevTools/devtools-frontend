@@ -380,7 +380,11 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return Lit.nothing;
     }
 
-    const ariaLabel = `Ask AI about ${insightModel.title} insight`;
+    const aiLabel = Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled ||
+            Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled ?
+        'Debug with AI' :
+        'Ask AI';
+    const ariaLabel = `${aiLabel} about ${insightModel.title} insight`;
     // Only render the insight body content if it is selected.
     // To avoid re-rendering triggered from elsewhere.
     const content = this.renderContent();
@@ -398,7 +402,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
               jslog=${VisualLogging.action(`timeline.insight-ask-ai.${this.internalName}`).track({click: true})}
               @click=${this.#askAIButtonClick}
               aria-label=${ariaLabel}
-            >Ask AI</devtools-button>
+            >${aiLabel}</devtools-button>
           </div>
         `: Lit.nothing}
       </div>`;

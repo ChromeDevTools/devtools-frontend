@@ -90,7 +90,6 @@ export class TimelineDetailsPane extends
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
-  #filmStrip: Trace.Extras.FilmStrip.Data|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #thirdPartyTree = new ThirdPartyTreeViewWidget();
   #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
@@ -286,7 +285,7 @@ export class TimelineDetailsPane extends
       this.#parsedTrace = data.parsedTrace;
     }
     if (data.parsedTrace) {
-      this.#filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(data.parsedTrace);
+      this.#summaryContent.filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(data.parsedTrace);
       this.#entityMapper = new Utils.EntityMapper.EntityMapper(data.parsedTrace);
     }
     this.#selectedEvents = data.selectedEvents;
@@ -398,26 +397,7 @@ export class TimelineDetailsPane extends
     this.updateContents();
   }
 
-  #getFilmStripFrame(frame: Trace.Types.Events.LegacyTimelineFrame): Trace.Extras.FilmStrip.Frame|null {
-    if (!this.#filmStrip) {
-      return null;
-    }
-
-    const screenshotTime = (frame.idle ? frame.startTime : frame.endTime);
-    const filmStripFrame = Trace.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, screenshotTime);
-    if (!filmStripFrame) {
-      return null;
-    }
-
-    const frameTimeMilliSeconds = Trace.Helpers.Timing.microToMilli(filmStripFrame.screenshotEvent.ts);
-    const frameEndTimeMilliSeconds = Trace.Helpers.Timing.microToMilli(frame.endTime);
-    return frameTimeMilliSeconds - frameEndTimeMilliSeconds < 10 ? filmStripFrame : null;
-  }
-
-  #setSelectionForTimelineFrame(frame: Trace.Types.Events.LegacyTimelineFrame): void {
-    const matchedFilmStripFrame = this.#getFilmStripFrame(frame);
-    void this.updateSummaryAndSelectTab(
-        TimelineUIUtils.generateDetailsContentForFrame(frame, this.#filmStrip, matchedFilmStripFrame));
+  #addLayerTreeForSelectedFrame(frame: Trace.Types.Events.LegacyTimelineFrame): void {
     const target = SDK.TargetManager.TargetManager.instance().rootTarget();
     if (frame.layerTree && target) {
       const layerTreeForFrame = new TracingFrameLayerTree(target, frame.layerTree);
@@ -462,10 +442,10 @@ export class TimelineDetailsPane extends
       this.updateContentsScheduled = false;
 
       if (Trace.Types.Events.isLegacyTimelineFrame(selection.event)) {
-        this.#setSelectionForTimelineFrame(selection.event);
-      } else {
-        await this.#setSelectionForTraceEvent(selection.event);
+        this.#addLayerTreeForSelectedFrame(selection.event);
       }
+
+      await this.#setSelectionForTraceEvent(selection.event);
     } else if (selectionIsRange(selection)) {
       const timings = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(selection.bounds);
       this.updateSelectedRangeStats(timings.min, timings.max);
@@ -629,6 +609,7 @@ interface SummaryViewInput {
   entityMapper: Utils.EntityMapper.EntityMapper|null;
   target: SDK.Target.Target|null;
   linkifier: Components.Linkifier.Linkifier|null;
+  filmStrip: Trace.Extras.FilmStrip.Data|null;
 }
 
 type View = (input: SummaryViewInput, output: object, target: HTMLElement) => void;
@@ -659,6 +640,7 @@ class SummaryView extends UI.Widget.Widget {
   entityMapper: Utils.EntityMapper.EntityMapper|null = null;
   target: SDK.Target.Target|null = null;
   linkifier: Components.Linkifier.Linkifier|null = null;
+  filmStrip: Trace.Extras.FilmStrip.Data|null = null;
 
   constructor(element?: HTMLElement, view = SUMMARY_DEFAULT_VIEW) {
     super(element);
@@ -676,6 +658,7 @@ class SummaryView extends UI.Widget.Widget {
           entityMapper: this.entityMapper,
           target: this.target,
           linkifier: this.linkifier,
+          filmStrip: this.filmStrip
         },
         {}, this.contentElement);
   }
@@ -721,9 +704,43 @@ async function renderSelectedEventDetails(
     // clang-format on
   }
 
+  if (Trace.Types.Events.isLegacyTimelineFrame(selectedEvent) && input.filmStrip) {
+    const matchedFilmStripFrame = getFilmStripFrame(input.filmStrip, selectedEvent);
+    const content =
+        TimelineUIUtils.generateDetailsContentForFrame(selectedEvent, input.filmStrip, matchedFilmStripFrame);
+    return html`${content}`;
+  }
+
   // Fall back to the default trace event details. Long term this needs to use
   // the UI Eng Vision.
   const traceEventDetails =
       await TimelineUIUtils.buildTraceEventDetails(parsedTrace, selectedEvent, linkifier, true, input.entityMapper);
   return html`${traceEventDetails}`;
+}
+
+const filmStripFrameCache = new WeakMap<Trace.Types.Events.LegacyTimelineFrame, Trace.Extras.FilmStrip.Frame|null>();
+
+function getFilmStripFrame(filmStrip: Trace.Extras.FilmStrip.Data, frame: Trace.Types.Events.LegacyTimelineFrame):
+    Trace.Extras.FilmStrip.Frame|null {
+  const fromCache = filmStripFrameCache.get(frame);
+  if (typeof fromCache !== 'undefined') {
+    return fromCache;
+  }
+
+  const screenshotTime = (frame.idle ? frame.startTime : frame.endTime);
+  const filmStripFrame = Trace.Extras.FilmStrip.frameClosestToTimestamp(filmStrip, screenshotTime);
+  if (!filmStripFrame) {
+    filmStripFrameCache.set(frame, null);
+    return null;
+  }
+
+  const frameTimeMilliSeconds = Trace.Helpers.Timing.microToMilli(filmStripFrame.screenshotEvent.ts);
+  const frameEndTimeMilliSeconds = Trace.Helpers.Timing.microToMilli(frame.endTime);
+  if (frameTimeMilliSeconds - frameEndTimeMilliSeconds < 10) {
+    filmStripFrameCache.set(frame, filmStripFrame);
+    return filmStripFrame;
+  }
+
+  filmStripFrameCache.set(frame, null);
+  return null;
 }

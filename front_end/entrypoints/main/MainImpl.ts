@@ -55,7 +55,6 @@ import * as ProjectSettings from '../../models/project_settings/project_settings
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Snackbar from '../../ui/components/snackbars/snackbars.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -965,17 +964,9 @@ export class MainMenuItem implements UI.Toolbar.Provider {
         continue;
       }
 
-      if (viewExtension.isPreviewFeature()) {
-        const additionalElement = IconButton.Icon.create('experiment');
-        moreTools.defaultSection().appendItem(title, () => {
-          void UI.ViewManager.ViewManager.instance().showView(id, true, false);
-        }, {disabled: false, additionalElement, jslogContext: id});
-        continue;
-      }
-
       moreTools.defaultSection().appendItem(title, () => {
         void UI.ViewManager.ViewManager.instance().showView(id, true, false);
-      }, {jslogContext: id});
+      }, {isPreviewFeature: viewExtension.isPreviewFeature(), jslogContext: id});
     }
 
     const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.help), false, 'help');

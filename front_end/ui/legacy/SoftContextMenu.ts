@@ -308,6 +308,11 @@ export class SoftContextMenu {
     }
     ARIAUtils.setLabel(menuItemElement, accessibleName);
 
+    if (item.isExperimentalFeature) {
+      const experimentIcon = IconButton.Icon.create('experiment');
+      menuItemElement.appendChild(experimentIcon);
+    }
+
     this.detailsForElementMap.set(menuItemElement, detailsForElement);
 
     return menuItemElement;

@@ -64,6 +64,22 @@ export class OpenRouterProvider extends LLMBaseProvider {
   }
 
   /**
+   * Check if a model doesn't support temperature parameter
+   * OpenAI's GPT-5, O3, and O4 models accessed through OpenRouter don't support temperature
+   */
+  private shouldExcludeTemperature(modelName: string): boolean {
+    // OpenAI models that don't support temperature parameter
+    // These are accessed through OpenRouter as 'openai/model-name'
+    const noTemperatureModels = [
+      'openai/gpt-5',
+      'openai/o3',
+      'openai/o4'
+    ];
+    
+    return noTemperatureModels.some(pattern => modelName.includes(pattern));
+  }
+
+  /**
    * Get the chat completions endpoint URL
    */
   private getChatEndpoint(): string {
@@ -231,8 +247,8 @@ export class OpenRouterProvider extends LLMBaseProvider {
         messages: this.convertMessagesToOpenRouter(messages),
       };
 
-      // Add temperature if provided
-      if (options?.temperature !== undefined) {
+      // Add temperature if provided and model supports it
+      if (options?.temperature !== undefined && !this.shouldExcludeTemperature(modelName)) {
         payloadBody.temperature = options.temperature;
       }
 
@@ -571,9 +587,13 @@ export class OpenRouterProvider extends LLMBaseProvider {
     try {
       const testPrompt = 'Please respond with "Connection successful!" to confirm the connection is working.';
 
-      const response = await this.call(modelName, testPrompt, '', {
-        temperature: 0.1,
-      });
+      // Only add temperature if the model supports it
+      const callOptions: LLMCallOptions = {};
+      if (!this.shouldExcludeTemperature(modelName)) {
+        callOptions.temperature = 0.1;
+      }
+      
+      const response = await this.call(modelName, testPrompt, '', callOptions);
 
       if (response.text?.toLowerCase().includes('connection')) {
         return {

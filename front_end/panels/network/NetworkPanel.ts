@@ -222,7 +222,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   private readonly closeButtonElement: UI.UIUtils.DevToolsCloseButton;
   private preserveLogSetting: Common.Settings.Setting<boolean>;
   recordLogSetting: Common.Settings.Setting<boolean>;
-  private readonly throttlingSelect: UI.Toolbar.ToolbarComboBox;
+  private readonly throttlingSelect: UI.Toolbar.ToolbarItem;
   private readonly displayScreenshotDelay: number;
 
   constructor(displayScreenshotDelay: number) {
@@ -408,7 +408,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     return UI.ViewManager.ViewManager.instance().showView('network');
   }
 
-  throttlingSelectForTest(): UI.Toolbar.ToolbarComboBox {
+  throttlingSelectForTest(): UI.Toolbar.ToolbarItem {
     return this.throttlingSelect;
   }
 
@@ -519,10 +519,12 @@ export class NetworkPanel extends UI.Panel.Panel implements
     updateShowOptionsToGenerateHarWithSensitiveData();
   }
 
-  private createThrottlingConditionsSelect(): UI.Toolbar.ToolbarComboBox {
-    const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, i18nString(UIStrings.throttling));
+  private createThrottlingConditionsSelect(): UI.Toolbar.ToolbarItem {
+    const toolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
     toolbarItem.setMaxWidth(160);
-    MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(toolbarItem.element);
+
+    MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
+        toolbarItem.element, i18nString(UIStrings.throttling));
     return toolbarItem;
   }
 

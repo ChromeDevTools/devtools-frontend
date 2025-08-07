@@ -391,7 +391,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private loader?: TimelineLoader;
   private showScreenshotsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   private showMemoryToolbarCheckbox?: UI.Toolbar.ToolbarItem;
-  private networkThrottlingSelect?: MobileThrottling.ThrottlingManager.NetworkThrottlingSelectorWrapper;
+  private networkThrottlingSelect?: MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect;
   private cpuThrottlingSelect?: MobileThrottling.ThrottlingManager.CPUThrottlingSelectorWrapper;
   private fileSelectorElement?: HTMLInputElement;
   private selection: TimelineSelection|null = null;
@@ -763,7 +763,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #onFieldDataChanged(): void {
     const recs = Utils.Helpers.getThrottlingRecommendations();
     this.cpuThrottlingSelect?.updateRecommendedOption(recs.cpuOption);
-    this.networkThrottlingSelect?.updateRecommendedConditions(recs.networkConditions);
+    if (this.networkThrottlingSelect) {
+      this.networkThrottlingSelect.recommendedConditions = recs.networkConditions;
+    }
   }
 
   loadFromEvents(events: Trace.Types.Events.Event[]): void {
@@ -1320,10 +1322,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.updateSettingsPaneVisibility();
   }
 
-  private createNetworkConditionsSelectToolbarItem(): UI.Toolbar.ToolbarComboBox {
-    const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, i18nString(UIStrings.networkConditions));
+  private createNetworkConditionsSelectToolbarItem(): UI.Toolbar.ToolbarItem {
+    const toolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
     this.networkThrottlingSelect =
-        MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(toolbarItem.element);
+        MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
+            toolbarItem.element, i18nString(UIStrings.networkConditions));
     return toolbarItem;
   }
 

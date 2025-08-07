@@ -553,6 +553,14 @@ export class ToolbarItem<T = any, E extends HTMLElement = HTMLElement> extends C
 
   setCompactLayout(_enable: boolean): void {
   }
+
+  setMaxWidth(width: number): void {
+    this.element.style.maxWidth = width + 'px';
+  }
+
+  setMinWidth(width: number): void {
+    this.element.style.minWidth = width + 'px';
+  }
 }
 
 export const enum ToolbarItemWithCompactLayoutEvents {
@@ -1218,13 +1226,6 @@ export class ToolbarComboBox extends ToolbarItem<void, HTMLSelectElement> {
     return this.element.selectedIndex;
   }
 
-  setMaxWidth(width: number): void {
-    this.element.style.maxWidth = width + 'px';
-  }
-
-  setMinWidth(width: number): void {
-    this.element.style.minWidth = width + 'px';
-  }
 }
 
 export interface Option {

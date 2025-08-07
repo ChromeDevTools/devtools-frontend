@@ -197,7 +197,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     return {select: userAgentSelectElement, input: otherUserAgentElement, error: errorElement};
   }
 
-  private createSection(title: string, className?: string): Element {
+  private createSection(title: string, className?: string): HTMLElement {
     const section = this.contentElement.createChild('section', 'network-config-group');
     if (className) {
       section.classList.add(className);
@@ -215,9 +215,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
   private createNetworkThrottlingSection(): void {
     const title = i18nString(UIStrings.networkThrottling);
     const section = this.createSection(title, 'network-config-throttling');
-    const networkThrottlingSelect = section.createChild('select');
-    MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(networkThrottlingSelect);
-    UI.ARIAUtils.setLabel(networkThrottlingSelect, title);
+    MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(section, title);
     const saveDataSelect =
         MobileThrottling.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector('chrome-select').element;
     section.appendChild(saveDataSelect);

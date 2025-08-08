@@ -3519,8 +3519,7 @@ export namespace CSS {
 
   export interface ResolveValuesRequest {
     /**
-     * Substitution functions (var()/env()/attr()) and cascade-dependent
-     * keywords (revert/revert-layer) do not work.
+     * Cascade-dependent keywords (revert/revert-layer) do not work.
      */
     values: string[];
     /**
@@ -12331,6 +12330,7 @@ export namespace Page {
     DeferredFetch = 'deferred-fetch',
     DeferredFetchMinimal = 'deferred-fetch-minimal',
     DeviceAttributes = 'device-attributes',
+    DigitalCredentialsCreate = 'digital-credentials-create',
     DigitalCredentialsGet = 'digital-credentials-get',
     DirectSockets = 'direct-sockets',
     DirectSocketsPrivate = 'direct-sockets-private',

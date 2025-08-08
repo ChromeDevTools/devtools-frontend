@@ -94,7 +94,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(
         html`
-          <style>${styles}</style>
+          <style>${UI.Widget.widgetScoped(styles)}</style>
           <div class="ai-code-completion-teaser">
             <span class="ai-code-completion-teaser-action">
               <span>${cmdOrCtrl}</span>

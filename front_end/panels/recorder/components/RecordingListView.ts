@@ -113,7 +113,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
   // clang-format off
   Lit.render(
     html`
-      <style>${recordingListViewStyles}</style>
+      <style>${UI.Widget.widgetScoped(recordingListViewStyles)}</style>
       <div class="wrapper">
         <div class="header">
           <h1>${i18nString(UIStrings.savedRecordings)}</h1>

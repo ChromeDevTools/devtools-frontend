@@ -617,7 +617,7 @@ const SUMMARY_DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(
       html`
-        <style>${detailsViewStyles}</style>
+        <style>${UI.Widget.widgetScoped(detailsViewStyles)}</style>
         ${input.node ?? nothing}
         ${Directives.until(renderSelectedEventDetails(input))}
         <devtools-widget data-related-insight-chips .widgetConfig=${

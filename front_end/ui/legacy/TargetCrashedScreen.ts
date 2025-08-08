@@ -6,7 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import {html, render} from '../lit/lit.js';
 
 import targetCrashedScreenStyles from './targetCrashedScreen.css.js';
-import {VBox} from './Widget.js';
+import {VBox, widgetScoped} from './Widget.js';
 
 const UIStrings = {
   /**
@@ -26,7 +26,7 @@ type View = (input: object, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <style>${targetCrashedScreenStyles}</style>
+    <style>${widgetScoped(targetCrashedScreenStyles)}</style>
     <div class="message">${i18nString(UIStrings.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString(UIStrings.oncePageIsReloadedDevtoolsWill)}</div>`,
     target);

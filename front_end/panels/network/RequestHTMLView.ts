@@ -44,7 +44,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // Forbid to run JavaScript and set unique origin.
   // clang-format off
   render(html`
-    <style>${requestHTMLViewStyles}</style>
+    <style>${UI.Widget.widgetScoped(requestHTMLViewStyles)}</style>
     <div class="html request-view widget vbox">
       ${input.dataURL ? html`
         <!-- @ts-ignore -->

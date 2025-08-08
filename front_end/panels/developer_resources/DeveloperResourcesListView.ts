@@ -100,7 +100,7 @@ export type View = (input: ViewInput, output: object, target: HTMLElement) => vo
 const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-      <style>${developerResourcesListViewStyles}</style>
+      <style>${UI.Widget.widgetScoped(developerResourcesListViewStyles)}</style>
       <devtools-data-grid name=${i18nString(UIStrings.developerResources)} striped class="flex-auto"
          .filters=${input.filters} @contextmenu=${input.onContextMenu} @selected=${input.onSelect}>
         <table>

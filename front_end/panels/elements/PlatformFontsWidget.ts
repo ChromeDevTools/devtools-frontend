@@ -80,7 +80,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 
   // clang-format off
   render(html`
-    <style>${platformFontsWidgetStyles}</style>
+    <style>${UI.Widget.widgetScoped(platformFontsWidgetStyles)}</style>
     <div class="platform-fonts">
       ${isEmptySection ? '' : html`
         <div class="title">${i18nString(UIStrings.renderedFonts)}</div>

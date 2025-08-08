@@ -174,8 +174,8 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
       const title = Utils.EntryName.nameForEntry(input.event);
       // clang-format off
       render(html`
-        <style>${layoutShiftDetailsStyles}</style>
-        <style>${Buttons.textButtonStyles}</style>
+        <style>${UI.Widget.widgetScoped(layoutShiftDetailsStyles)}</style>
+        <style>${UI.Widget.widgetScoped(Buttons.textButtonStyles)}</style>
 
       <div class="layout-shift-summary-details">
         <div

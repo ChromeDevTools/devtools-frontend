@@ -67,7 +67,7 @@ export const DEFAULT_VIEW = (
   render(
     html`
       <style>
-        ${exploreWidgetStyles}
+        ${UI.Widget.widgetScoped(exploreWidgetStyles)}
       </style>
       <div class="ai-assistance-explore-container">
         <div class="header">

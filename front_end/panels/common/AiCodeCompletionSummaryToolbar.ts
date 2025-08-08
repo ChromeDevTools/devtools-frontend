@@ -89,7 +89,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
 
     render(
         html`
-        <style>${styles}</style>
+        <style>${UI.Widget.widgetScoped(styles)}</style>
         <div class="ai-code-completion-summary-toolbar">
             <div class="ai-code-completion-disclaimer">
                 <devtools-spinner
@@ -141,7 +141,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
             ${recitationNotice}
         </div>
         `, target);
-  // clang-format on
+    // clang-format on
 };
 
 const MINIMUM_LOADING_STATE_TIMEOUT = 1000;

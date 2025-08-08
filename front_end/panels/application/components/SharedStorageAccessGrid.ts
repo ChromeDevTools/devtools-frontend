@@ -90,7 +90,7 @@ export type View = (input: ViewInput, output: object, target: HTMLElement) => vo
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <style>${sharedStorageAccessGridStyles}</style>
+    <style>${UI.Widget.widgetScoped(sharedStorageAccessGridStyles)}</style>
     ${input.events.length === 0
       ? html`
         <div class="empty-state" jslog=${VisualLogging.section().context('empty-view')}>

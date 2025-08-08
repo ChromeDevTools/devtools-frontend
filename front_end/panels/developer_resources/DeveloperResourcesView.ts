@@ -80,7 +80,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
     <style>
-      ${developerResourcesViewStyles}
+      ${UI.Widget.widgetScoped(developerResourcesViewStyles)}
     </style>
     <div class="vbox flex-auto" jslog=${VisualLogging.panel('developer-resources').track({resize: true})}>
       <div class="developer-resource-view-toolbar-container" jslog=${VisualLogging.toolbar()}

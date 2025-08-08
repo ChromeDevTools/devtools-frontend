@@ -277,7 +277,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
   // clang-format off
   render(html`
-      <style>${cssOverviewCompletedViewStyles}</style>
+      <style>${UI.Widget.widgetScoped(cssOverviewCompletedViewStyles)}</style>
       <devtools-split-view direction="column" sidebar-position="first" sidebar-initial-size="200">
         <devtools-widget slot="sidebar" .widgetConfig=${widgetConfig(CSSOverviewSidebarPanel, {
           minimumSize: new UI.Geometry.Size(100, 25),
@@ -296,7 +296,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         <devtools-split-view sidebar-position="second" slot="main" direction="row" sidebar-initial-size="minimized">
           <div class="vbox overview-completed-view" slot="main" @click=${input.onClick}>
             <!-- Dupe the styles into the main container because of the shadow root will prevent outer styles. -->
-            <style>${cssOverviewCompletedViewStyles}</style>
+            <style>${UI.Widget.widgetScoped(cssOverviewCompletedViewStyles)}</style>
             <div class="results-section horizontally-padded summary"
                   ${ref(e => { output.revealSection.set('summary', revealSection.bind(null, e));})}>
               <h1>${i18nString(UIStrings.overviewSummary)}</h1>

@@ -433,27 +433,6 @@ function agentToConversationType(agent: AiAssistanceModel.AiAgent<unknown>): AiA
   throw new Error('Provided agent does not have a corresponding conversation type');
 }
 
-async function inspectElementBySelector(selector: string): Promise<SDK.DOMModel.DOMNode|null> {
-  const whitespaceTrimmedQuery = selector.trim();
-  if (!whitespaceTrimmedQuery.length) {
-    return null;
-  }
-
-  const showUAShadowDOM = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get();
-  const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel, {scoped: true});
-
-  const performSearchPromises =
-      domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
-  const resultCounts = await Promise.all(performSearchPromises);
-
-  // If the selector matches multiple times, this returns the first match.
-  const index = resultCounts.findIndex(value => value > 0);
-  if (index >= 0) {
-    return await domModels[index].searchResult(0);
-  }
-  return null;
-}
-
 let panelInstance: AiAssistancePanel;
 export class AiAssistancePanel extends UI.Panel.Panel {
   static panelName = 'freestyler';
@@ -1607,7 +1586,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       void VisualLogging.logFunctionCall(`start-conversation-${parameters.conversationType}`, 'external');
       switch (parameters.conversationType) {
         case AiAssistanceModel.ConversationType.STYLING:
-          return this.handleExternalStylingRequest(parameters.prompt, parameters.selector);
+          return generateErrorResponse('Not implemented here');
         case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
           if (!parameters.insightTitle) {
             return generateErrorResponse('The insightTitle parameter is required for debugging a Performance Insight.');
@@ -1667,59 +1646,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         yield {
           type: AiAssistanceModel.ExternalRequestResponseType.NOTIFICATION,
           message: data.title,
-        };
-      }
-    }
-    return {
-      type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
-      message: 'Something went wrong. No answer was generated.',
-    };
-  }
-
-  async *
-      handleExternalStylingRequest(prompt: string, selector = 'body'):
-          AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
-    const stylingAgent = this.#conversationHandler.createAgent(AiAssistanceModel.ConversationType.STYLING);
-    const externalConversation = new AiAssistanceModel.Conversation(
-        agentToConversationType(stylingAgent),
-        [],
-        stylingAgent.id,
-        /* isReadOnly */ true,
-        /* isExternal */ true,
-    );
-
-    const node = await inspectElementBySelector(selector);
-    if (node) {
-      await node.setAsInspectedNode();
-    }
-    const generator = stylingAgent.run(
-        prompt,
-        {
-          selected: createNodeContext(node),
-        },
-    );
-    const generatorWithHistory = this.#conversationHandler.handleConversationWithHistory(generator, this.#conversation);
-    const devToolsLogs: object[] = [];
-    for await (const data of generatorWithHistory) {
-      // We don't want to save partial responses to the conversation history.
-      if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
-        void externalConversation.addHistoryItem(data);
-        devToolsLogs.push(data);
-      }
-      if (data.type === AiAssistanceModel.ResponseType.CONTEXT || data.type === AiAssistanceModel.ResponseType.TITLE) {
-        yield {
-          type: AiAssistanceModel.ExternalRequestResponseType.NOTIFICATION,
-          message: data.title,
-        };
-      }
-      if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
-        data.confirm(true);
-      }
-      if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
-        return {
-          type: AiAssistanceModel.ExternalRequestResponseType.ANSWER,
-          message: data.text,
-          devToolsLogs,
         };
       }
     }

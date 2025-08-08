@@ -1109,10 +1109,9 @@ export async function handleExternalRequestGenerator(input: ExternalRequestInput
       });
     }
     case 'LIVE_STYLE_DEBUGGER': {
-      const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
-      const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-      return panelInstance.handleExternalRequest({
+      const conversationHandler = AiAssistanceModel.ConversationHandler.instance();
+      return await conversationHandler.handleExternalRequest({
         conversationType: AiAssistanceModel.ConversationType.STYLING,
         prompt: input.args.prompt,
         selector: input.args.selector,

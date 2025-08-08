@@ -21,7 +21,7 @@ import {
 import {FileAgent} from './agents/FileAgent.js';
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
 import {PerformanceAgent} from './agents/PerformanceAgent.js';
-import {StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
+import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
 import {
   Conversation,
   ConversationType,
@@ -74,6 +74,27 @@ function isAiAssistanceStylingWithFunctionCallingEnabled(): boolean {
 
 function isAiAssistanceServerSideLoggingEnabled(): boolean {
   return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+}
+
+async function inspectElementBySelector(selector: string): Promise<SDK.DOMModel.DOMNode|null> {
+  const whitespaceTrimmedQuery = selector.trim();
+  if (!whitespaceTrimmedQuery.length) {
+    return null;
+  }
+
+  const showUAShadowDOM = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get();
+  const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel, {scoped: true});
+
+  const performSearchPromises =
+      domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
+  const resultCounts = await Promise.all(performSearchPromises);
+
+  // If the selector matches multiple times, this returns the first match.
+  const index = resultCounts.findIndex(value => value > 0);
+  if (index >= 0) {
+    return await domModels[index].searchResult(0);
+  }
+  return null;
 }
 
 async function inspectNetworkRequestByUrl(selector: string): Promise<SDK.NetworkRequest.NetworkRequest|null> {
@@ -175,7 +196,7 @@ export class ConversationHandler {
       void VisualLogging.logFunctionCall(`start-conversation-${parameters.conversationType}`, 'external');
       switch (parameters.conversationType) {
         case ConversationType.STYLING: {
-          return generateErrorResponse('Not implemented here');
+          return this.#handleExternalStylingConversation(parameters.prompt, parameters.selector);
         }
         case ConversationType.PERFORMANCE_INSIGHT:
           return generateErrorResponse('Not implemented here');
@@ -201,6 +222,64 @@ export class ConversationHandler {
       }
       yield data;
     }
+  }
+
+  async *
+      #handleExternalStylingConversation(prompt: string, selector = 'body'):
+          AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
+    const options = {
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+    };
+    const stylingAgent = isAiAssistanceStylingWithFunctionCallingEnabled() ?
+        new StylingAgentWithFunctionCalling({...options}) :
+        new StylingAgent({...options});
+
+    const externalConversation = new Conversation(
+        ConversationType.STYLING,
+        [],
+        stylingAgent.id,
+        /* isReadOnly */ true,
+        /* isExternal */ true,
+    );
+
+    const node = await inspectElementBySelector(selector);
+    if (node) {
+      await node.setAsInspectedNode();
+    }
+    const generator = stylingAgent.run(
+        prompt,
+        {
+          selected: node ? new NodeContext(node) : null,
+        },
+    );
+    const generatorWithHistory = this.handleConversationWithHistory(generator, externalConversation);
+    const devToolsLogs: object[] = [];
+    for await (const data of generatorWithHistory) {
+      if (data.type !== ResponseType.ANSWER || data.complete) {
+        devToolsLogs.push(data);
+      }
+      if (data.type === ResponseType.CONTEXT || data.type === ResponseType.TITLE) {
+        yield {
+          type: ExternalRequestResponseType.NOTIFICATION,
+          message: data.title,
+        };
+      }
+      if (data.type === ResponseType.SIDE_EFFECT) {
+        data.confirm(true);
+      }
+      if (data.type === ResponseType.ANSWER && data.complete) {
+        return {
+          type: ExternalRequestResponseType.ANSWER,
+          message: data.text,
+          devToolsLogs,
+        };
+      }
+    }
+    return {
+      type: ExternalRequestResponseType.ERROR,
+      message: 'Something went wrong. No answer was generated.',
+    };
   }
 
   async *

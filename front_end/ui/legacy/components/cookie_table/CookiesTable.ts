@@ -477,7 +477,7 @@ export class CookiesTable extends UI.Widget.VBox {
           i18nString(UIStrings.timeAfterTooltip, {seconds: cookie.expires(), date: new Date(maxTime).toISOString()});
     }
     data[SDK.Cookie.Attribute.PARTITION_KEY_SITE] =
-        cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey) : cookie.topLevelSite();
+        cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey).toString() : cookie.topLevelSite();
     data[SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR] = cookie.hasCrossSiteAncestor() ? 'true' : '';
     data[SDK.Cookie.Attribute.SIZE] = String(cookie.size());
     data[SDK.Cookie.Attribute.PRIORITY] = cookie.priority();

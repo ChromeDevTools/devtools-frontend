@@ -454,27 +454,6 @@ async function inspectElementBySelector(selector: string): Promise<SDK.DOMModel.
   return null;
 }
 
-async function inspectNetworkRequestByUrl(selector: string): Promise<SDK.NetworkRequest.NetworkRequest|null> {
-  const networkManagers =
-      SDK.TargetManager.TargetManager.instance().models(SDK.NetworkManager.NetworkManager, {scoped: true});
-
-  const results = networkManagers
-                      .map(networkManager => {
-                        let request = networkManager.requestForURL(Platform.DevToolsPath.urlString`${selector}`);
-                        if (!request && selector.at(-1) === '/') {
-                          request =
-                              networkManager.requestForURL(Platform.DevToolsPath.urlString`${selector.slice(0, -1)}`);
-                        } else if (!request && selector.at(-1) !== '/') {
-                          request = networkManager.requestForURL(Platform.DevToolsPath.urlString`${selector}/`);
-                        }
-                        return request;
-                      })
-                      .filter(req => !!req);
-  const request = results.at(0);
-
-  return request ?? null;
-}
-
 let panelInstance: AiAssistancePanel;
 export class AiAssistancePanel extends UI.Panel.Panel {
   static panelName = 'freestyler';
@@ -1598,10 +1577,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   /**
    * Handles an external request using the given prompt and uses the
-   * conversation type to use the correct agent. Note that the `selector` param
-   * is contextual; for styling it is a literal CSS selector, but for
-   * Performance Insights it is the name of the Insight that forms the
-   * context of the conversation.
+   * conversation type to use the correct agent.
    */
   handleExternalRequest(
       parameters: AiAssistanceModel.ExternalStylingRequestParameters|
@@ -1638,10 +1614,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           }
           return this.handleExternalPerformanceInsightsRequest(parameters.prompt, parameters.insightTitle);
         case AiAssistanceModel.ConversationType.NETWORK:
-          if (!parameters.requestUrl) {
-            return generateErrorResponse('The url is required for debugging a network request.');
-          }
-          return this.handleExternalNetworkRequest(parameters.prompt, parameters.requestUrl);
+          return generateErrorResponse('Not implemented here');
       }
     } catch (error) {
       return generateErrorResponse(error.message);
@@ -1723,63 +1696,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         prompt,
         {
           selected: createNodeContext(node),
-        },
-    );
-    const generatorWithHistory = this.#conversationHandler.handleConversationWithHistory(generator, this.#conversation);
-    const devToolsLogs: object[] = [];
-    for await (const data of generatorWithHistory) {
-      // We don't want to save partial responses to the conversation history.
-      if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
-        void externalConversation.addHistoryItem(data);
-        devToolsLogs.push(data);
-      }
-      if (data.type === AiAssistanceModel.ResponseType.CONTEXT || data.type === AiAssistanceModel.ResponseType.TITLE) {
-        yield {
-          type: AiAssistanceModel.ExternalRequestResponseType.NOTIFICATION,
-          message: data.title,
-        };
-      }
-      if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
-        data.confirm(true);
-      }
-      if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
-        return {
-          type: AiAssistanceModel.ExternalRequestResponseType.ANSWER,
-          message: data.text,
-          devToolsLogs,
-        };
-      }
-    }
-    return {
-      type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
-      message: 'Something went wrong. No answer was generated.',
-    };
-  }
-
-  async *
-      handleExternalNetworkRequest(prompt: string, requestUrl: string):
-          AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
-    const networkAgent = this.#conversationHandler.createAgent(AiAssistanceModel.ConversationType.NETWORK) as
-        AiAssistanceModel.NetworkAgent;
-    const externalConversation = new AiAssistanceModel.Conversation(
-        agentToConversationType(networkAgent),
-        [],
-        networkAgent.id,
-        /* isReadOnly */ true,
-        /* isExternal */ true,
-    );
-
-    const request = await inspectNetworkRequestByUrl(requestUrl);
-    if (!request) {
-      return {
-        type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
-        message: `Can't find request with the given selector ${requestUrl}`,
-      };
-    }
-    const generator = networkAgent.run(
-        prompt,
-        {
-          selected: createRequestContext(request),
         },
     );
     const generatorWithHistory = this.#conversationHandler.handleConversationWithHistory(generator, this.#conversation);

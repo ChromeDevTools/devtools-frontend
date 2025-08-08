@@ -73,6 +73,7 @@ ts_library("unittests") {
     "AgentProject.test.ts",
     "AiHistoryStorage.test.ts",
     "ChangeManager.test.ts",
+    "ConversationHandler.test.ts",
     "EvaluateAction.test.ts",
     "ExtensionScope.test.ts",
     "agents/AiAgent.test.ts",

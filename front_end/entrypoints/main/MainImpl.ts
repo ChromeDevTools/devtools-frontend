@@ -1100,10 +1100,9 @@ export async function handleExternalRequestGenerator(input: ExternalRequestInput
       });
     }
     case 'NETWORK_DEBUGGER': {
-      const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
-      const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-      return panelInstance.handleExternalRequest({
+      const conversationHandler = await AiAssistanceModel.ConversationHandler.instance();
+      return await conversationHandler.handleExternalRequest({
         conversationType: AiAssistanceModel.ConversationType.NETWORK,
         prompt: input.args.prompt,
         requestUrl: input.args.requestUrl,

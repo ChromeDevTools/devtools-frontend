@@ -1671,62 +1671,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
                               .resolves({searchId: 'uniqueId', resultCount: 0, getError: () => undefined});
     });
 
-    describe('can be blocked', () => {
-      it('by a setting', async () => {
-        Common.Settings.moduleSetting('ai-assistance-enabled').set(false);
-        const {panel} = await createAiAssistancePanel({
-          aidaClient: mockAidaClient([[{explanation}]]),
-        });
-        const generator = await panel.handleExternalRequest({
-          prompt: 'Please help me debug this problem',
-          conversationType: AiAssistanceModel.ConversationType.STYLING
-        });
-        const response = await generator.next();
-        assert.strictEqual(response.value.type, 'error');
-        assert.strictEqual(
-            response.value.message,
-            'For AI features to be available, you need to enable AI assistance in DevTools settings.');
-      });
-
-      it('by feature availability', async () => {
-        const {panel} = await createAiAssistancePanel({
-          aidaClient: mockAidaClient([[{explanation}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED,
-        });
-        const generator = await panel.handleExternalRequest({
-          prompt: 'Please help me debug this problem',
-          conversationType: AiAssistanceModel.ConversationType.STYLING
-        });
-        const response = await generator.next();
-        assert.strictEqual(response.value.type, 'error');
-        assert.strictEqual(
-            response.value.message,
-            'This feature is only available when you sign into Chrome with your Google account.');
-      });
-
-      it('by user age', async () => {
-        updateHostConfig({
-          aidaAvailability: {
-            blockedByAge: true,
-          },
-          devToolsFreestyler: {
-            enabled: true,
-          },
-        });
-        const {panel} = await createAiAssistancePanel({
-          aidaClient: mockAidaClient([[{explanation}]]),
-        });
-        const generator = await panel.handleExternalRequest({
-          prompt: 'Please help me debug this problem',
-          conversationType: AiAssistanceModel.ConversationType.STYLING
-        });
-        const response = await generator.next();
-        assert.strictEqual(response.value.type, 'error');
-        assert.strictEqual(
-            response.value.message, 'This feature is only available to users who are 18 years of age or older.');
-      });
-    });
-
     it('returns an explanation for styling assistance requests', async () => {
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),
@@ -1890,33 +1834,6 @@ STOP`,
         },
       ]);
     });
-
-    it('returns an explanation for network assistance requests', async () => {
-      await createNetworkPanelForMockConnection();
-      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      const {panel} = await createAiAssistancePanel({
-        aidaClient: mockAidaClient([[{explanation}]]),
-      });
-      const snackbarShowStub = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
-
-      const request = createNetworkRequest();
-      const networkManager = sinon.createStubInstance(SDK.NetworkManager.NetworkManager, {
-        requestForURL: request,
-      });
-      sinon.stub(SDK.TargetManager.TargetManager.instance(), 'models').returns([networkManager]);
-
-      const generator = await panel.handleExternalRequest({
-        prompt: 'Please help me debug this problem',
-        conversationType: AiAssistanceModel.ConversationType.NETWORK,
-        requestUrl: 'https://localhost:8080/'
-      });
-      let response = await generator.next();
-      assert.strictEqual(response.value.message, 'Analyzing network data');
-      response = await generator.next();
-      assert.strictEqual(response.value.message, explanation);
-      sinon.assert.calledOnceWithExactly(snackbarShowStub, {message: 'DevTools received an external request'});
-    });
-
     it('handles performance insight requests with an insight title', async function() {
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),

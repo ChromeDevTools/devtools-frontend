@@ -125,6 +125,7 @@ describeWithMockConnection('ElementsTreeElement ', () => {
     isFlex: false,
     isGrid: false,
     isSubgrid: false,
+    isMasonry: false,
     isContainer: false,
     hasScroll: false,
   };

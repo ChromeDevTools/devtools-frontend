@@ -186,6 +186,14 @@ const UIStrings = {
    */
   disableGridMode: 'Disable grid mode',
   /**
+   * @description ARIA label for Elements Tree adorners
+   */
+  enableMasonryMode: 'Enable masonry mode',
+  /**
+   * @description ARIA label for Elements Tree adorners
+   */
+  disableMasonryMode: 'Disable masonry mode',
+  /**
    * @description ARIA label for an elements tree adorner
    */
   forceOpenPopover: 'Keep this popover open',
@@ -2504,6 +2512,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       if (layout.isGrid) {
         this.pushGridAdorner(this.tagTypeContext, layout.isSubgrid);
       }
+      if (layout.isMasonry) {
+        this.pushMasonryAdorner(this.tagTypeContext);
+      }
       if (layout.isFlex) {
         this.pushFlexAdorner(this.tagTypeContext);
       }
@@ -2581,6 +2592,47 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       shouldPropagateOnKeydown: false,
       ariaLabelDefault: i18nString(UIStrings.enableGridMode),
       ariaLabelActive: i18nString(UIStrings.disableGridMode),
+    });
+
+    node.domModel().overlayModel().addEventListener(
+        SDK.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, event => {
+          const {nodeId: eventNodeId, enabled} = event.data;
+          if (eventNodeId !== nodeId) {
+            return;
+          }
+          adorner.toggle(enabled);
+        });
+
+    context.styleAdorners.add(adorner);
+    if (node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId)) {
+      adorner.toggle(true);
+    }
+  }
+
+  pushMasonryAdorner(context: OpeningTagContext): void {
+    const node = this.node();
+    const nodeId = node.id;
+    if (!nodeId) {
+      return;
+    }
+
+    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
+        ElementsComponents.AdornerManager.RegisteredAdorners.MASONRY);
+    const adorner = this.adorn(config);
+    adorner.classList.add('masonry');
+
+    const onClick = ((() => {
+                       if (adorner.isActive()) {
+                         node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
+                       } else {
+                         node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
+                       }
+                     }) as EventListener);
+    adorner.addInteraction(onClick, {
+      isToggle: true,
+      shouldPropagateOnKeydown: false,
+      ariaLabelDefault: i18nString(UIStrings.enableMasonryMode),
+      ariaLabelActive: i18nString(UIStrings.disableMasonryMode),
     });
 
     node.domModel().overlayModel().addEventListener(

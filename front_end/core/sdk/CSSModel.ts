@@ -67,6 +67,7 @@ export interface LayoutProperties {
   isFlex: boolean;
   isGrid: boolean;
   isSubgrid: boolean;
+  isMasonry: boolean;
   isContainer: boolean;
   hasScroll: boolean;
 }
@@ -421,6 +422,7 @@ export class CSSModel extends SDKModel<EventTypes> {
                        (styles.get('grid-template-columns')?.startsWith('subgrid') ||
                         styles.get('grid-template-rows')?.startsWith('subgrid'))) ??
         false;
+    const isMasonry = display === 'masonry' || display === 'inline-masonry';
     const containerType = styles.get('container-type');
     const isContainer = Boolean(containerType) && containerType !== '' && containerType !== 'normal';
     const hasScroll = Boolean(styles.get('scroll-snap-type')) && styles.get('scroll-snap-type') !== 'none';
@@ -429,6 +431,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       isFlex,
       isGrid,
       isSubgrid,
+      isMasonry,
       isContainer,
       hasScroll,
     };

@@ -45,6 +45,18 @@ describe('Adornment in the Elements Tab', function() {
         devToolsPage);
   });
 
+  it('displays masonry adorners', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('elements/adornment-masonry.html');
+    await prepareElementsTab(devToolsPage);
+
+    await waitForAdorners(
+        [
+          {textContent: 'masonry', isActive: false},
+          {textContent: 'masonry', isActive: false},
+        ],
+        devToolsPage);
+  });
+
   it('displays scroll-snap adorners', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/adornment-scroll-snap.html');
     await prepareElementsTab(devToolsPage);

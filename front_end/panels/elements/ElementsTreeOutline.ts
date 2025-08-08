@@ -50,6 +50,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeElement, InitialChildrenLimit, isOpeningTag} from './ElementsTreeElement.js';
+import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import type {MarkerDecoratorRegistration} from './MarkerDecorator.js';
@@ -80,6 +81,264 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const elementsTreeOutlineByDOMModel = new WeakMap<SDK.DOMModel.DOMModel, ElementsTreeOutline>();
 
 const populatedTreeElements = new Set<ElementsTreeElement>();
+
+export type View = typeof DEFAULT_VIEW;
+
+interface ViewInput {
+  omitRootDOMNode: boolean;
+  selectEnabled: boolean;
+  hideGutter: boolean;
+  visibleWidth?: number;
+  visible?: boolean;
+  wrap: boolean;
+
+  onSelectedNodeChanged:
+      (event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>) => void;
+  onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
+}
+
+interface ViewOutput {
+  elementsTreeOutline?: ElementsTreeOutline;
+}
+
+export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+  if (!output.elementsTreeOutline) {
+    // FIXME: this is basically a ref to existing imperative
+    // implementation. Once this is declarative the ref should not be
+    // needed.
+    output.elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter);
+    output.elementsTreeOutline.addEventListener(
+        ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, this);
+    output.elementsTreeOutline.addEventListener(
+        ElementsTreeOutline.Events.ElementsTreeUpdated, input.onElementsTreeUpdated, this);
+    new ElementsTreeElementHighlighter(output.elementsTreeOutline, new Common.Throttler.Throttler(100));
+    target.appendChild(output.elementsTreeOutline.element);
+  }
+  if (input.visibleWidth !== undefined) {
+    output.elementsTreeOutline.setVisibleWidth(input.visibleWidth);
+  }
+  if (input.visible !== undefined) {
+    output.elementsTreeOutline.setVisible(input.visible);
+  }
+  output.elementsTreeOutline.setWordWrap(input.wrap);
+};
+
+/**
+ * The main goal of this presenter is to wrap ElementsTreeOutline until
+ * ElementsTreeOutline can be fully integrated into DOMTreeWidget.
+ *
+ * FIXME: once TreeOutline is declarative, this file needs to be renamed
+ * to DOMTreeWidget.ts.
+ */
+export class DOMTreeWidget extends UI.Widget.Widget {
+  omitRootDOMNode = false;
+  selectEnabled = false;
+  hideGutter = false;
+  onSelectedNodeChanged:
+      (event:
+           Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>) => void = () => {};
+  onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void = () => {};
+  onDocumentUpdated: (domModel: SDK.DOMModel.DOMModel) => void = () => {};
+
+  #visible = false;
+  #visibleWidth?: number;
+  #wrap = false;
+
+  set visibleWidth(width: number) {
+    this.#visibleWidth = width;
+    this.performUpdate();
+  }
+
+  // FIXME: this is not declarative because ElementsTreeOutline can
+  // change root node internally.
+  set rootDOMNode(node: SDK.DOMModel.DOMNode|null) {
+    this.performUpdate();
+    if (!this.#viewOutput.elementsTreeOutline) {
+      throw new Error('Unexpected: missing elementsTreeOutline');
+    }
+    this.#viewOutput.elementsTreeOutline.rootDOMNode = node;
+    this.performUpdate();
+  }
+  get rootDOMNode(): SDK.DOMModel.DOMNode|null {
+    return this.#viewOutput.elementsTreeOutline?.rootDOMNode ?? null;
+  }
+
+  #view: View;
+  #viewOutput: ViewOutput = {};
+
+  constructor(element?: HTMLElement, view?: View) {
+    super(element, {
+      useShadowDom: false,
+      delegatesFocus: false,
+    });
+    this.#view = view ?? DEFAULT_VIEW;
+  }
+
+  selectDOMNode(node: SDK.DOMModel.DOMNode|null, focus?: boolean): void {
+    this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
+  }
+
+  setWordWrap(wrap: boolean): void {
+    this.#wrap = wrap;
+    this.performUpdate();
+  }
+
+  selectedDOMNode(): SDK.DOMModel.DOMNode|null {
+    return this.#viewOutput.elementsTreeOutline?.selectedDOMNode() ?? null;
+  }
+
+  /**
+   * FIXME: this is called to re-render everything from scratch, for
+   * example, if global settings changed. Instead, the setting values
+   * should be the input for the view function.
+   */
+  reload(): void {
+    this.#viewOutput.elementsTreeOutline?.update();
+  }
+
+  /**
+   * Used by layout tests.
+   */
+  getTreeOutlineForTesting(): ElementsTreeOutline|undefined {
+    return this.#viewOutput.elementsTreeOutline;
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          omitRootDOMNode: this.omitRootDOMNode,
+          selectEnabled: this.selectEnabled,
+          hideGutter: this.hideGutter,
+          visibleWidth: this.#visibleWidth,
+          visible: this.#visible,
+          wrap: this.#wrap,
+          onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
+          onSelectedNodeChanged: this.onSelectedNodeChanged.bind(this),
+        },
+        this.#viewOutput, this.contentElement);
+  }
+
+  modelAdded(domModel: SDK.DOMModel.DOMModel): void {
+    this.performUpdate();
+    if (!this.#viewOutput.elementsTreeOutline) {
+      throw new Error('Unexpected: missing elementsTreeOutline');
+    }
+    this.#viewOutput.elementsTreeOutline.wireToDOMModel(domModel);
+    this.performUpdate();
+  }
+
+  modelRemoved(domModel: SDK.DOMModel.DOMModel): void {
+    this.#viewOutput.elementsTreeOutline?.unwireFromDOMModel(domModel);
+    this.performUpdate();
+  }
+
+  /**
+   * FIXME: which node is expanded should be part of the view input.
+   */
+  expand(): void {
+    if (this.#viewOutput.elementsTreeOutline?.selectedTreeElement) {
+      this.#viewOutput.elementsTreeOutline.selectedTreeElement.expand();
+    }
+  }
+
+  /**
+   * FIXME: which node is selected should be part of the view input.
+   */
+  selectDOMNodeWithoutReveal(node: SDK.DOMModel.DOMNode): void {
+    this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.select();
+  }
+
+  /**
+   * FIXME: adorners should be part of the view input.
+   */
+  updateNodeAdorners(node: SDK.DOMModel.DOMNode): void {
+    void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.updateStyleAdorners();
+  }
+
+  highlightMatch(node: SDK.DOMModel.DOMNode, query?: string): void {
+    const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
+    if (!treeElement) {
+      return;
+    }
+    if (query) {
+      treeElement.highlightSearchResults(query);
+    }
+    treeElement.reveal();
+    const matches = treeElement.listItemElement.getElementsByClassName(UI.UIUtils.highlightedSearchResultClassName);
+    if (matches.length) {
+      matches[0].scrollIntoViewIfNeeded(false);
+    }
+    treeElement.select(/* omitFocus */ true);
+  }
+
+  hideMatchHighlights(node: SDK.DOMModel.DOMNode): void {
+    const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
+    if (!treeElement) {
+      return;
+    }
+    treeElement.hideSearchHighlights();
+  }
+
+  toggleHideElement(node: SDK.DOMModel.DOMNode): void {
+    void this.#viewOutput.elementsTreeOutline?.toggleHideElement(node);
+  }
+
+  toggleEditAsHTML(node: SDK.DOMModel.DOMNode): void {
+    this.#viewOutput.elementsTreeOutline?.toggleEditAsHTML(node);
+  }
+
+  duplicateNode(node: SDK.DOMModel.DOMNode): void {
+    this.#viewOutput.elementsTreeOutline?.duplicateNode(node);
+  }
+
+  copyStyles(node: SDK.DOMModel.DOMNode): void {
+    void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.copyStyles();
+  }
+
+  /**
+   * FIXME: used to determine focus state, probably we can have a better
+   * way to do it.
+   */
+  empty(): boolean {
+    return !this.#viewOutput.elementsTreeOutline;
+  }
+
+  override focus(): void {
+    super.focus();
+    this.#viewOutput.elementsTreeOutline?.focus();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.#visible = true;
+    this.performUpdate();
+  }
+
+  override detach(overrideHideOnDetach?: boolean): void {
+    super.detach(overrideHideOnDetach);
+    this.#visible = false;
+    this.performUpdate();
+  }
+
+  override show(parentElement: Element, insertBefore?: Node|null, suppressOrphanWidgetError = false): void {
+    this.performUpdate();
+    const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel, {scoped: true});
+    for (const domModel of domModels) {
+      if (domModel.parentModel()) {
+        continue;
+      }
+      if (!this.rootDOMNode) {
+        if (domModel.existingDocument()) {
+          this.rootDOMNode = domModel.existingDocument();
+          this.onDocumentUpdated(domModel);
+        } else {
+          void domModel.requestDocument();
+        }
+      }
+    }
+    super.show(parentElement, insertBefore, suppressOrphanWidgetError);
+  }
+}
 
 export class ElementsTreeOutline extends
     Common.ObjectWrapper.eventMixin<ElementsTreeOutline.EventTypes, typeof UI.TreeOutline.TreeOutline>(

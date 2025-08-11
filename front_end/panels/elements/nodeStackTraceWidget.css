@@ -3,8 +3,9 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-.stack-trace {
-  font-size: 11px !important; /* stylelint-disable-line declaration-no-important */
-  font-family: Menlo, monospace;
+@scope to (devtools-widget > *) {
+  .stack-trace {
+    font-size: 11px !important; /* stylelint-disable-line declaration-no-important */
+    font-family: Menlo, monospace;
+  }
 }

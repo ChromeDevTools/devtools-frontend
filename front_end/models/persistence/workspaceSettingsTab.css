@@ -4,40 +4,42 @@
  * found in the LICENSE file.
  */
 
-.mappings-info,
-.folder-exclude-pattern {
-  height: var(--settings-single-item-height);
-}
-
-.mapping-view-container {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.folder-exclude-pattern {
-  display: flex;
-  align-items: center;
-
-  & > input {
-    flex: 1;
+@scope to (devtools-widget > *) {
+  .mappings-info,
+  .folder-exclude-pattern {
+    height: var(--settings-single-item-height);
   }
-}
 
-label {
-  padding-bottom: 0;
-}
+  .mapping-view-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
 
-.mappings-info {
-  border: none;
-}
+  .folder-exclude-pattern {
+    display: flex;
+    align-items: center;
 
-.add-button-container {
-  max-width: var(--sys-size-35);
-  margin-left: var(--sys-size-8);
-  width: 100%;
+    & > input {
+      flex: 1;
+    }
+  }
 
-  & .add-folder {
-    min-width: var(--sys-size-31);
+  label {
+    padding-bottom: 0;
+  }
+
+  .mappings-info {
+    border: none;
+  }
+
+  .add-button-container {
     max-width: var(--sys-size-35);
+    margin-left: var(--sys-size-8);
+    width: 100%;
+
+    & .add-folder {
+      min-width: var(--sys-size-31);
+      max-width: var(--sys-size-35);
+    }
   }
 }

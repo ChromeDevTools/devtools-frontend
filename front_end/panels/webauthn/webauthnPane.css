@@ -3,194 +3,195 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-.webauthn-pane {
-  overflow: auto;
-  min-width: 500px;
-}
-
-.webauthn-toolbar-container {
-  display: flex;
-  background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
-  flex: 0 0 auto;
-}
-
-.webauthn-toolbar {
-  display: inline-block;
-}
-
-.authenticators-view {
-  padding: 0 var(--sys-size-9);
-  min-height: auto;
-  display: none;
-}
-
-.webauthn-pane.enabled .authenticators-view {
-  display: block;
-}
-
-/* New Authenticator Section */
-.new-authenticator-title {
-  display: block;
-  padding: var(--sys-size-7) 0 var(--sys-size-5) 0;
-  font: var(--sys-typescale-headline5);
-
-  &:has(devtools-button) {
-    padding-top: var(--sys-size-4);
-  }
-}
-
-.new-authenticator-container {
-  display: none;
-  padding-left:  var(--sys-size-9);
-}
-
-.authenticator-option {
-  > select {
-    margin: 0 var(--sys-size-9) var(--sys-size-3) var(--sys-size-9);
+@scope to (devtools-widget > *) {
+  .webauthn-pane {
+    overflow: auto;
+    min-width: 500px;
   }
 
-  > devtools-button {
-    margin: var(--sys-size-3) var(--sys-size-9);
+  .webauthn-toolbar-container {
+    display: flex;
+    background-color: var(--sys-color-cdt-base-container);
+    border-bottom: 1px solid var(--sys-color-divider);
+    flex: 0 0 auto;
   }
 
-  > input[type="checkbox"] {
-    margin: var(--sys-size-5) var(--sys-size-9);
+  .webauthn-toolbar {
+    display: inline-block;
   }
-}
 
-.webauthn-pane.enabled .new-authenticator-container {
-  display: block;
-}
+  .authenticators-view {
+    padding: 0 var(--sys-size-9);
+    min-height: auto;
+    display: none;
+  }
 
-.new-authenticator-form {
-  border: none;
-  flex: 0 0 auto;
-  margin: 0;
-  padding-bottom: var(--sys-size-5);
-}
+  .webauthn-pane.enabled .authenticators-view {
+    display: block;
+  }
 
-.webauthn-pane select {
-  width: 120px;
-}
-/* Active Authenticator Section */
-.authenticator-section {
-  display: block;
-}
+  /* New Authenticator Section */
+  .new-authenticator-title {
+    display: block;
+    padding: var(--sys-size-7) 0 var(--sys-size-5) 0;
+    font: var(--sys-typescale-headline5);
 
-.divider {
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  margin: 10px calc(var(--sys-size-9) * -1) 0;
-}
+    &:has(devtools-button) {
+      padding-top: var(--sys-size-4);
+    }
+  }
 
-.authenticator-fields {
-  border: none;
-  flex: 0 0 auto;
-  margin-bottom: 10px;
-}
+  .new-authenticator-container {
+    display: none;
+    padding-left:  var(--sys-size-9);
+  }
 
-.authenticator-section-header {
-  margin: var(--sys-size-4) 0 var(--sys-size-5) calc(var(--sys-size-5) * -1);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
+  .authenticator-option {
+    > select {
+      margin: 0 var(--sys-size-9) var(--sys-size-3) var(--sys-size-9);
+    }
 
-.authenticator-section-title {
-  line-height: 24px;
-  display: inline-flex;
-}
+    > devtools-button {
+      margin: var(--sys-size-3) var(--sys-size-9);
+    }
 
-.authenticator-section-title .authenticator-name-field {
-  display: inline-block;
-  border: none;
-  animation: save-flash 0.2s;
-  text-overflow: ellipsis;
-  font: var(--sys-typescale-headline5);
-}
+    > input[type="checkbox"] {
+      margin: var(--sys-size-5) var(--sys-size-9);
+    }
+  }
 
-.authenticator-section-title.editing-name .authenticator-name-field {
-  border-bottom: 1px solid var(--sys-color-neutral-outline);
-  font-weight: normal;
-  animation: none;
-}
+  .webauthn-pane.enabled .new-authenticator-container {
+    display: block;
+  }
 
-.authenticator-field-value {
-  font: var(--sys-typescale-monospace-regular);
-  line-height: 18px;
-}
+  .new-authenticator-form {
+    border: none;
+    flex: 0 0 auto;
+    margin: 0;
+    padding-bottom: var(--sys-size-5);
+  }
 
-.authenticator-field {
-  margin: var(--sys-size-3) 0;
-}
+  .webauthn-pane select {
+    width: 120px;
+  }
+  /* Active Authenticator Section */
+  .authenticator-section {
+    display: block;
+  }
 
-.authenticator-field,
-.authenticator-option {
-  display: flex;
-  align-items: center;
-}
+  .divider {
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    margin: 10px calc(var(--sys-size-9) * -1) 0;
+  }
 
-.authenticator-option-label {
-  color: var(--sys-color-on-surface-subtle);
-  font: var(--sys-typescale-body5-medium);
-  padding-right: var(--sys-size-6);
-  text-align: left;
-  min-width: 152px;
-  line-height: 18px;
-}
+  .authenticator-fields {
+    border: none;
+    flex: 0 0 auto;
+    margin-bottom: 10px;
+  }
 
-::part(action-button) {
-  min-width: 20px;
-  margin: 4px;
-}
+  .authenticator-section-header {
+    margin: var(--sys-size-4) 0 var(--sys-size-5) calc(var(--sys-size-5) * -1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
 
-.active-button-container {
-  display: inline-block;
-  min-width: 28px;
-}
+  .authenticator-section-title {
+    line-height: 24px;
+    display: inline-flex;
+  }
 
-.edit-name-toolbar {
-  display: inline-block;
-  vertical-align: middle;
-}
+  .authenticator-section-title .authenticator-name-field {
+    display: inline-block;
+    border: none;
+    animation: save-flash 0.2s;
+    text-overflow: ellipsis;
+    font: var(--sys-typescale-headline5);
+  }
 
-@keyframes save-flash {
-  from { opacity: 0%; }
-  to { opacity: 100%; }
-}
-/* Credentials Table */
+  .authenticator-section-title.editing-name .authenticator-name-field {
+    border-bottom: 1px solid var(--sys-color-neutral-outline);
+    font-weight: normal;
+    animation: none;
+  }
 
-::part(credentialId-column),
-::part(isResidentCredential-column),
-::part(rpId-column),
-::part(userHandle-column),
-::part(signCount-column),
-::part(actions-column) {
-  vertical-align: middle;
-}
+  .authenticator-field-value {
+    font: var(--sys-typescale-monospace-regular);
+    line-height: 18px;
+  }
 
-.credentials-title {
-  display: block;
-  font: var(--sys-typescale-headline5);
-  padding: var(--sys-size-7) 0 var(--sys-size-5) 0;
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  margin-right: calc(var(--sys-size-9) * -1);
-}
+  .authenticator-field {
+    margin: var(--sys-size-3) 0;
+  }
 
-.code {
-  font-family: monospace;
-}
+  .authenticator-field,
+  .authenticator-option {
+    display: flex;
+    align-items: center;
+  }
 
-.learn-more {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  text-align: center;
-  overflow: hidden;
-}
+  .authenticator-option-label {
+    color: var(--sys-color-on-surface-subtle);
+    font: var(--sys-typescale-body5-medium);
+    padding-right: var(--sys-size-6);
+    text-align: left;
+    min-width: 152px;
+    line-height: 18px;
+  }
 
-.webauthn-pane.enabled .learn-more {
-  display: none;
+  ::part(action-button) {
+    min-width: 20px;
+    margin: 4px;
+  }
+
+  .active-button-container {
+    display: inline-block;
+    min-width: 28px;
+  }
+
+  .edit-name-toolbar {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  @keyframes save-flash {
+    from { opacity: 0%; }
+    to { opacity: 100%; }
+  }
+  /* Credentials Table */
+
+  ::part(credentialId-column),
+  ::part(isResidentCredential-column),
+  ::part(rpId-column),
+  ::part(userHandle-column),
+  ::part(signCount-column),
+  ::part(actions-column) {
+    vertical-align: middle;
+  }
+
+  .credentials-title {
+    display: block;
+    font: var(--sys-typescale-headline5);
+    padding: var(--sys-size-7) 0 var(--sys-size-5) 0;
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    margin-right: calc(var(--sys-size-9) * -1);
+  }
+
+  .code {
+    font-family: monospace;
+  }
+
+  .learn-more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .webauthn-pane.enabled .learn-more {
+    display: none;
+  }
 }

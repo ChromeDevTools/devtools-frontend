@@ -4,86 +4,88 @@
  * found in the LICENSE file.
  */
 
-.ai-code-completion-summary-toolbar {
-  display: flex;
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  background-color: var(--sys-color-cdt-base-container);
-  padding: var(--sys-size-2) var(--sys-size-5);
-  align-items: center;
-  gap: var(--sys-size-5);
-  flex-shrink: 0;
-  color: var(--sys-color-on-surface-subtle);
-
-  span.link {
+@scope to (devtools-widget > *) {
+  .ai-code-completion-summary-toolbar {
+    display: flex;
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    background-color: var(--sys-color-cdt-base-container);
+    padding: var(--sys-size-2) var(--sys-size-5);
+    align-items: center;
+    gap: var(--sys-size-5);
+    flex-shrink: 0;
     color: var(--sys-color-on-surface-subtle);
 
-    &:focus-visible {
-      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-      outline-offset: 0;
-      border-radius: var(--sys-shape-corner-extra-small);
-    }
-  }
-
-  .ai-code-completion-disclaimer {
-    padding-right: var(--sys-size-5);
-    gap: 5px;
-    display: flex;
-
-    devtools-spinner {
-      margin-top: var(--sys-size-2);
-      padding: var(--sys-size-1);
-      height: var(--sys-size-6);
-      width: var(--sys-size-6);
-    }
-  }
-
-  .ai-code-completion-recitation-notice {
-    border-left: var(--sys-size-1) solid var(--sys-color-divider);
-
     span.link {
-      padding-left: var(--sys-size-3);
-    }
-  }
+      color: var(--sys-color-on-surface-subtle);
 
-  devtools-tooltip:popover-open {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .citations-tooltip-container {
-        display: inline-flex;
-        padding: var(--sys-size-4) var(--sys-size-5);
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        gap: var(--sys-size-2);
-
-        x-link {
-            color: var(--sys-color-primary);
-            text-decoration: underline;
-
-            &:focus-visible {
-              outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-              outline-offset: 0;
-              border-radius: var(--sys-shape-corner-extra-small);
-            }
-        }
+      &:focus-visible {
+        outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+        outline-offset: 0;
+        border-radius: var(--sys-shape-corner-extra-small);
+      }
     }
 
-    .disclaimer-tooltip-container {
-      padding: var(--sys-size-4) 0;
-      max-width: var(--sys-size-30);
+    .ai-code-completion-disclaimer {
+      padding-right: var(--sys-size-5);
+      gap: 5px;
+      display: flex;
 
-      .tooltip-text {
-        color: var(--sys-color-on-surface-subtle);
-        padding: 0 var(--sys-size-5);
-        align-items: flex-start;
-        gap: 10px;
+      devtools-spinner {
+        margin-top: var(--sys-size-2);
+        padding: var(--sys-size-1);
+        height: var(--sys-size-6);
+        width: var(--sys-size-6);
+      }
+    }
+
+    .ai-code-completion-recitation-notice {
+      border-left: var(--sys-size-1) solid var(--sys-color-divider);
+
+      span.link {
+        padding-left: var(--sys-size-3);
+      }
+    }
+
+    devtools-tooltip:popover-open {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .citations-tooltip-container {
+          display: inline-flex;
+          padding: var(--sys-size-4) var(--sys-size-5);
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: center;
+          gap: var(--sys-size-2);
+
+          x-link {
+              color: var(--sys-color-primary);
+              text-decoration: underline;
+
+              &:focus-visible {
+                outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+                outline-offset: 0;
+                border-radius: var(--sys-shape-corner-extra-small);
+              }
+          }
       }
 
-      .link {
-        margin: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
-        display: inline-block;
+      .disclaimer-tooltip-container {
+        padding: var(--sys-size-4) 0;
+        max-width: var(--sys-size-30);
+
+        .tooltip-text {
+          color: var(--sys-color-on-surface-subtle);
+          padding: 0 var(--sys-size-5);
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .link {
+          margin: var(--sys-size-5) var(--sys-size-8) 0 var(--sys-size-5);
+          display: inline-block;
+        }
       }
     }
   }

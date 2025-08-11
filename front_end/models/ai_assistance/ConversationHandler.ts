@@ -168,6 +168,14 @@ export class ConversationHandler {
     return getDisabledReasons(this.#aidaAvailability);
   }
 
+  // eslint-disable-next-line require-yield
+  async * #generateErrorResponse(message: string): AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
+    return {
+      type: ExternalRequestResponseType.ERROR,
+      message,
+    };
+  }
+
   /**
    * Handles an external request using the given prompt and uses the
    * conversation type to use the correct agent.
@@ -176,15 +184,6 @@ export class ConversationHandler {
       parameters: ExternalStylingRequestParameters|ExternalNetworkRequestParameters|
       ExternalPerformanceInsightsRequestParameters,
       ): Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
-    // eslint-disable-next-line require-yield
-    async function*
-        generateErrorResponse(message: string): AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
-      return {
-        type: ExternalRequestResponseType.ERROR,
-        message,
-      };
-    }
-
     try {
       Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
       const disabledReasons = await this.#getDisabledReasons();
@@ -193,28 +192,29 @@ export class ConversationHandler {
         disabledReasons.push(lockedString(UIStringsNotTranslate.enableInSettings));
       }
       if (disabledReasons.length > 0) {
-        return generateErrorResponse(disabledReasons.join(' '));
+        return this.#generateErrorResponse(disabledReasons.join(' '));
       }
 
       void VisualLogging.logFunctionCall(`start-conversation-${parameters.conversationType}`, 'external');
       switch (parameters.conversationType) {
         case ConversationType.STYLING: {
-          return this.#handleExternalStylingConversation(parameters.prompt, parameters.selector);
+          return await this.#handleExternalStylingConversation(parameters.prompt, parameters.selector);
         }
         case ConversationType.PERFORMANCE_INSIGHT:
           if (!parameters.insightTitle) {
-            return generateErrorResponse('The insightTitle parameter is required for debugging a Performance Insight.');
+            return this.#generateErrorResponse(
+                'The insightTitle parameter is required for debugging a Performance Insight.');
           }
-          return this.#handleExternalPerformanceInsightsConversation(
+          return await this.#handleExternalPerformanceInsightsConversation(
               parameters.prompt, parameters.insightTitle, parameters.traceModel);
         case ConversationType.NETWORK:
           if (!parameters.requestUrl) {
-            return generateErrorResponse('The url is required for debugging a network request.');
+            return this.#generateErrorResponse('The url is required for debugging a network request.');
           }
-          return this.#handleExternalNetworkConversation(parameters.prompt, parameters.requestUrl);
+          return await this.#handleExternalNetworkConversation(parameters.prompt, parameters.requestUrl);
       }
     } catch (error) {
-      return generateErrorResponse(error.message);
+      return this.#generateErrorResponse(error.message);
     }
   }
 
@@ -231,9 +231,52 @@ export class ConversationHandler {
     }
   }
 
-  async *
-      #handleExternalStylingConversation(prompt: string, selector = 'body'):
-          AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
+  async * #doExternalConversation(opts: {
+    conversationType: ConversationType,
+    aiAgent: AiAgent<unknown>,
+    prompt: string,
+    selected: NodeContext|PerformanceTraceContext|RequestContext|null,
+  }): AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
+    const {conversationType, aiAgent, prompt, selected} = opts;
+    const externalConversation = new Conversation(
+        conversationType,
+        [],
+        aiAgent.id,
+        /* isReadOnly */ true,
+        /* isExternal */ true,
+    );
+    const generator = aiAgent.run(prompt, {selected});
+    const generatorWithHistory = this.handleConversationWithHistory(generator, externalConversation);
+    const devToolsLogs: object[] = [];
+    for await (const data of generatorWithHistory) {
+      if (data.type !== ResponseType.ANSWER || data.complete) {
+        devToolsLogs.push(data);
+      }
+      if (data.type === ResponseType.CONTEXT || data.type === ResponseType.TITLE) {
+        yield {
+          type: ExternalRequestResponseType.NOTIFICATION,
+          message: data.title,
+        };
+      }
+      if (data.type === ResponseType.SIDE_EFFECT) {
+        data.confirm(true);
+      }
+      if (data.type === ResponseType.ANSWER && data.complete) {
+        return {
+          type: ExternalRequestResponseType.ANSWER,
+          message: data.text,
+          devToolsLogs,
+        };
+      }
+    }
+    return {
+      type: ExternalRequestResponseType.ERROR,
+      message: 'Something went wrong. No answer was generated.',
+    };
+  }
+
+  async #handleExternalStylingConversation(prompt: string, selector = 'body'):
+      Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
@@ -241,170 +284,59 @@ export class ConversationHandler {
     const stylingAgent = isAiAssistanceStylingWithFunctionCallingEnabled() ?
         new StylingAgentWithFunctionCalling({...options}) :
         new StylingAgent({...options});
-
-    const externalConversation = new Conversation(
-        ConversationType.STYLING,
-        [],
-        stylingAgent.id,
-        /* isReadOnly */ true,
-        /* isExternal */ true,
-    );
-
     const node = await inspectElementBySelector(selector);
     if (node) {
       await node.setAsInspectedNode();
     }
-    const generator = stylingAgent.run(
-        prompt,
-        {
-          selected: node ? new NodeContext(node) : null,
-        },
-    );
-    const generatorWithHistory = this.handleConversationWithHistory(generator, externalConversation);
-    const devToolsLogs: object[] = [];
-    for await (const data of generatorWithHistory) {
-      if (data.type !== ResponseType.ANSWER || data.complete) {
-        devToolsLogs.push(data);
-      }
-      if (data.type === ResponseType.CONTEXT || data.type === ResponseType.TITLE) {
-        yield {
-          type: ExternalRequestResponseType.NOTIFICATION,
-          message: data.title,
-        };
-      }
-      if (data.type === ResponseType.SIDE_EFFECT) {
-        data.confirm(true);
-      }
-      if (data.type === ResponseType.ANSWER && data.complete) {
-        return {
-          type: ExternalRequestResponseType.ANSWER,
-          message: data.text,
-          devToolsLogs,
-        };
-      }
-    }
-    return {
-      type: ExternalRequestResponseType.ERROR,
-      message: 'Something went wrong. No answer was generated.',
-    };
+    const selected = node ? new NodeContext(node) : null;
+    return this.#doExternalConversation({
+      conversationType: ConversationType.STYLING,
+      aiAgent: stylingAgent,
+      prompt,
+      selected,
+    });
   }
 
-  async *
-      #handleExternalPerformanceInsightsConversation(
-          prompt: string, insightTitle: string, traceModel: Trace.TraceModel.Model):
-          AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
+  async #handleExternalPerformanceInsightsConversation(
+      prompt: string, insightTitle: string,
+      traceModel: Trace.TraceModel.Model): Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
     };
     const insightsAgent = new PerformanceAgent(options, ConversationType.PERFORMANCE_INSIGHT);
-
-    const externalConversation = new Conversation(
-        insightsAgent.getConversationType(),
-        [],
-        insightsAgent.id,
-        /* isReadOnly */ true,
-        /* isExternal */ true,
-    );
-
     const focusOrError = await Tracing.ExternalRequests.getInsightAgentFocusToDebug(
         traceModel,
         insightTitle,
     );
     if ('error' in focusOrError) {
-      return {
-        type: ExternalRequestResponseType.ERROR,
-        message: focusOrError.error,
-      };
+      return this.#generateErrorResponse(focusOrError.error);
     }
-
-    const generator = insightsAgent.run(prompt, {selected: new PerformanceTraceContext(focusOrError.focus)});
-    const generatorWithHistory = this.handleConversationWithHistory(generator, externalConversation);
-    const devToolsLogs: object[] = [];
-    for await (const data of generatorWithHistory) {
-      // We don't want to save partial responses to the conversation history.
-      if (data.type !== ResponseType.ANSWER || data.complete) {
-        void externalConversation.addHistoryItem(data);
-        devToolsLogs.push(data);
-      }
-      if (data.type === ResponseType.ANSWER && data.complete) {
-        return {
-          type: ExternalRequestResponseType.ANSWER,
-          message: data.text,
-          devToolsLogs,
-        };
-      }
-      if (data.type === ResponseType.CONTEXT || data.type === ResponseType.TITLE) {
-        yield {
-          type: ExternalRequestResponseType.NOTIFICATION,
-          message: data.title,
-        };
-      }
-    }
-    return {
-      type: ExternalRequestResponseType.ERROR,
-      message: 'Something went wrong. No answer was generated.',
-    };
+    return this.#doExternalConversation({
+      conversationType: insightsAgent.getConversationType(),
+      aiAgent: insightsAgent,
+      prompt,
+      selected: new PerformanceTraceContext(focusOrError.focus),
+    });
   }
 
-  async *
-      #handleExternalNetworkConversation(prompt: string, requestUrl: string):
-          AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
+  async #handleExternalNetworkConversation(prompt: string, requestUrl: string):
+      Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
     };
     const networkAgent = new NetworkAgent(options);
-    const externalConversation = new Conversation(
-        ConversationType.NETWORK,
-        [],
-        networkAgent.id,
-        /* isReadOnly */ true,
-        /* isExternal */ true,
-    );
-
     const request = await inspectNetworkRequestByUrl(requestUrl);
     if (!request) {
-      return {
-        type: ExternalRequestResponseType.ERROR,
-        message: `Can't find request with the given selector ${requestUrl}`,
-      };
+      return this.#generateErrorResponse(`Can't find request with the given selector ${requestUrl}`);
     }
-    const generator = networkAgent.run(
-        prompt,
-        {
-          selected: new RequestContext(request),
-        },
-    );
-    const generatorWithHistory = this.handleConversationWithHistory(generator, externalConversation);
-    const devToolsLogs: object[] = [];
-    for await (const data of generatorWithHistory) {
-      // We don't want to save partial responses to the conversation history.
-      if (data.type !== ResponseType.ANSWER || data.complete) {
-        void externalConversation.addHistoryItem(data);
-        devToolsLogs.push(data);
-      }
-      if (data.type === ResponseType.CONTEXT || data.type === ResponseType.TITLE) {
-        yield {
-          type: ExternalRequestResponseType.NOTIFICATION,
-          message: data.title,
-        };
-      }
-      if (data.type === ResponseType.SIDE_EFFECT) {
-        data.confirm(true);
-      }
-      if (data.type === ResponseType.ANSWER && data.complete) {
-        return {
-          type: ExternalRequestResponseType.ANSWER,
-          message: data.text,
-          devToolsLogs,
-        };
-      }
-    }
-    return {
-      type: ExternalRequestResponseType.ERROR,
-      message: 'Something went wrong. No answer was generated.',
-    };
+    return this.#doExternalConversation({
+      conversationType: ConversationType.NETWORK,
+      aiAgent: networkAgent,
+      prompt,
+      selected: new RequestContext(request),
+    });
   }
 
   createAgent(conversationType: ConversationType, changeManager?: ChangeManager): AiAgent<unknown> {

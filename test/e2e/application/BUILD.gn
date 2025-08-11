@@ -5,10 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("application") {
-  sources = [
-    "frame-tree_test.ts",
-    "shared-storage_test.ts",
-  ]
+  sources = [ "shared-storage_test.ts" ]
 
   deps = [
     "../../shared",

@@ -128,7 +128,7 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
       });
 
       // clang-format off
-      render(html`<style>${UI.Widget.widgetScoped(relatedInsightsStyles)}</style>
+      render(html`<style>${relatedInsightsStyles}</style>
         <ul>${insightMessages}</ul>
         <ul>${insightChips}</ul>`,
       target);

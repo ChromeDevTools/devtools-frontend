@@ -9,7 +9,7 @@ import {html, render} from '../../ui/lit/lit.js';
 import {Dialog} from './Dialog.js';
 import {SizeBehavior} from './GlassPane.js';
 import remoteDebuggingTerminatedScreenStyles from './remoteDebuggingTerminatedScreen.css.js';
-import {VBox, widgetScoped} from './Widget.js';
+import {VBox} from './Widget.js';
 
 const UIStrings = {
   /**
@@ -51,7 +51,7 @@ type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <style>${widgetScoped(remoteDebuggingTerminatedScreenStyles)}</style>
+    <style>${remoteDebuggingTerminatedScreenStyles}</style>
     <div class="header">${i18nString(UIStrings.debuggingConnectionWasClosed)}</div>
     <div class="content">
       <div class="reason">${i18nString(UIStrings.connectionClosedReason, {PH1: input.reason})}</div>

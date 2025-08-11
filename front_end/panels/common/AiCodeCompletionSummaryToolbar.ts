@@ -93,7 +93,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
 
     render(
         html`
-        <style>${UI.Widget.widgetScoped(styles)}</style>
+        <style>${styles}</style>
         <div class="ai-code-completion-summary-toolbar">
             <div class="ai-code-completion-disclaimer">
                 <devtools-spinner

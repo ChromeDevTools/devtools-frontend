@@ -436,7 +436,7 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
   // clang-format off
   Lit.render(
     html`
-    <style>${UI.Widget.widgetScoped(stepViewStyles)}</style>
+    <style>${stepViewStyles}</style>
     <devtools-timeline-section .data=${
       {
         isFirstSection: input.isFirstSection,

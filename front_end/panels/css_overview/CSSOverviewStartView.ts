@@ -56,7 +56,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
   render(html`
-    <style>${UI.Widget.widgetScoped(cssOverviewStartViewStyles)}</style>
+    <style>${cssOverviewStartViewStyles}</style>
     <div class="css-overview-start-view">
       <devtools-panel-introduction-steps>
         <span slot="title">${i18nString(UIStrings.identifyCSSImprovements)}</span>

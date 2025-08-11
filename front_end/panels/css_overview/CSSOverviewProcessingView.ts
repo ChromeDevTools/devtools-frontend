@@ -27,7 +27,7 @@ type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <style>${UI.Widget.widgetScoped(cssOverviewProcessingViewStyles)}</style>
+    <style>${cssOverviewProcessingViewStyles}</style>
     <div style="overflow:auto">
       <div class="vbox overview-processing-view">
         <h1>Processing page</h1>

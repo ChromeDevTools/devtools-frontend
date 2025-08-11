@@ -47,7 +47,7 @@ export type View = (input: ViewInput, output: object, target: HTMLElement) => vo
 const DEFAULT_VIEW: View = (input, _output, target: HTMLElement) => {
   // clang-format off
   render(html`${(input.tagName || input.pseudo) ?  html`
-    <style>${UI.Widget.widgetScoped(domLinkifierStyles)}</style>
+    <style>${domLinkifierStyles}</style>
     <span class="monospace">
       <button class="node-link text-button link-style ${classMap({
             'dynamic-link': Boolean(input.dynamic),
@@ -193,7 +193,7 @@ type DeferredView = (input: DeferredViewInput, output: object, target: HTMLEleme
 const DEFERRED_DEFAULT_VIEW: DeferredView = (input, _output, target: HTMLElement) => {
   // clang-format off
   render(html`
-      <style>${UI.Widget.widgetScoped(domLinkifierStyles)}</style>
+      <style>${domLinkifierStyles}</style>
       <button class="node-link text-button link-style"
           jslog=${VisualLogging.link('node').track({click: true})}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}

@@ -542,8 +542,8 @@ export type View = (input: BreakpointsViewInput, output: object, target: HTMLEle
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <style>${UI.Widget.widgetScoped(Input.checkboxStyles)}</style>
-    <style>${UI.Widget.widgetScoped(breakpointsViewStyles)}</style>
+    <style>${Input.checkboxStyles}</style>
+    <style>${breakpointsViewStyles}</style>
     <div jslog=${VisualLogging.section('sources.js-breakpoints')} id="devtools-breakpoint-view">
       <div class='pause-on-uncaught-exceptions'
           tabindex='0'

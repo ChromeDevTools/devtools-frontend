@@ -416,7 +416,7 @@ export const DEFAULT_VIEW: (input: SidebarAnnotationsTabViewInput, output: objec
     (input, _output, target) => {
       // clang-format off
       render(html`
-      <style>${UI.Widget.widgetScoped(sidebarAnnotationsTabStyles)}</style>
+      <style>${sidebarAnnotationsTabStyles}</style>
       <span class="annotations">
         ${input.annotations.length === 0 ? renderTutorial():
           html`

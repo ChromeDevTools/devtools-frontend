@@ -68,7 +68,7 @@ export class ReleaseNoteView extends UI.Panel.Panel {
     const markdownContent = input.markdownContent;
     // clang-format off
     render(html`
-      <style>${UI.Widget.widgetScoped(releaseNoteViewStyles)}</style>
+      <style>${releaseNoteViewStyles}</style>
       <div class="whatsnew" jslog=${VisualLogging.section().context('release-notes')}>
         <div class="whatsnew-content">
           <div class="header">

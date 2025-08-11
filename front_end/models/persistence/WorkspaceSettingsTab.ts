@@ -56,7 +56,7 @@ export type View = (input: WorkspaceSettingsTabInput, output: object, target: HT
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <style>${UI.Widget.widgetScoped(workspaceSettingsTabStyles)}</style>
+    <style>${workspaceSettingsTabStyles}</style>
     <div class="settings-card-container-wrapper" jslog=${VisualLogging.pane('workspace')}>
       <div class="settings-card-container">
         <devtools-card heading=${i18nString(UIStrings.workspace)}>

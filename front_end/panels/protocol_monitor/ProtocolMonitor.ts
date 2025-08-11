@@ -197,17 +197,8 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
     render(html`
-        <style>${
-          /*
-          * Reason for eslint-disable:
-          * In the live application, the component inherits its font-family from a global stylesheet appended to `document.body`.
-          * In screenshot tests, that global sheet is not present, so this component is rendered in default system fonts.
-          * TODO(crbug.com/437352350): We should update our screenshot tests to load `inspectorCommonStyles` and remove this eslint-disable.
-          */
-          /* eslint-disable-next-line rulesdir/no-unscoped-styles-in-views */
-          UI.inspectorCommonStyles
-        }</style>
-        <style>${UI.Widget.widgetScoped(protocolMonitorStyles)}</style>
+        <style>${UI.inspectorCommonStyles}</style>
+        <style>${protocolMonitorStyles}</style>
         <devtools-split-view name="protocol-monitor-split-container"
                              direction="column"
                              sidebar-initial-size="400"

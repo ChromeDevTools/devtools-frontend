@@ -664,7 +664,6 @@ export default defineConfig([
       ],
       'rulesdir/enforce-ui-strings-as-const': 'error',
       'rulesdir/no-new-lit-element-components': 'error',
-      'rulesdir/no-unscoped-styles-in-views': 'error',
     },
   },
   {

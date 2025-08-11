@@ -1908,7 +1908,6 @@ export const knownContextValues = new Set([
   'invalid',
   'invalidation-count',
   'invert-filter',
-  'ip-protection',
   'is',
   'is-landscape',
   'is-mobile',

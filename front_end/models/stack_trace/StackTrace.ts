@@ -1,0 +1,38 @@
+// Copyright 2025 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import type * as Common from '../../core/common/common.js';
+import type * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
+import type * as Workspace from '../workspace/workspace.js';
+
+export interface Factory {
+  createFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, target: SDK.Target.Target): Promise<StackTrace>;
+}
+
+export interface StackTrace extends Common.EventTarget.EventTarget<EventTypes> {
+  readonly syncFragment: Fragment;
+  readonly asyncFragments: readonly Fragment[];
+}
+
+export interface Fragment {
+  readonly description?: string;
+  readonly frames: readonly Frame[];
+}
+
+export interface Frame {
+  readonly url?: string;
+  readonly uiSourceCode?: Workspace.UISourceCode.UISourceCode;
+  readonly name?: string;
+  readonly line: number;
+  readonly column: number;
+}
+
+export const enum Events {
+  UPDATED = 'UPDATED',
+}
+
+export interface EventTypes {
+  [Events.UPDATED]: void;
+}

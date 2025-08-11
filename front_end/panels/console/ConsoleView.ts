@@ -563,6 +563,7 @@ export class ConsoleView extends UI.Widget.VBox implements
           ConsolePromptEvents.AI_CODE_COMPLETION_REQUEST_TRIGGERED, this.#onAiCodeCompletionRequestTriggered, this);
       this.prompt.addEventListener(
           ConsolePromptEvents.AI_CODE_COMPLETION_RESPONSE_RECEIVED, this.#onAiCodeCompletionResponseReceived, this);
+      this.element.addEventListener('keydown', this.keyDown.bind(this));
     }
 
     this.messagesElement.addEventListener('keydown', this.messagesKeyDown.bind(this), false);
@@ -1447,6 +1448,19 @@ export class ConsoleView extends UI.Widget.VBox implements
     if (handler) {
       handler(keyboardEvent);
       keyboardEvent.preventDefault();
+    }
+  }
+
+  private async keyDown(event: Event): Promise<void> {
+    const keyboardEvent = (event as KeyboardEvent);
+    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent)) {
+      if (keyboardEvent.key === 'i') {
+        keyboardEvent.consume(true);
+        await this.prompt.onAiCodeCompletionTeaserActionKeyDown(event);
+      } else if (keyboardEvent.key === 'x') {
+        keyboardEvent.consume(true);
+        this.prompt.onAiCodeCompletionTeaserDismissKeyDown(event);
+      }
     }
   }
 

@@ -52,6 +52,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     "../*",
+    "../../ui/components/text_editor/*",
     "../../ui/legacy/components/source_frame/*",
   ]
 

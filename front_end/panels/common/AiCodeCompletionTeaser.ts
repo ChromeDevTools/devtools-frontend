@@ -28,6 +28,10 @@ const UIStringsNotTranslate = {
    */
   i: 'i',
   /**
+   * @description Text for `x` key.
+   */
+  x: 'x',
+  /**
    * @description Text for dismissing teaser.
    */
   dontShowAgain: 'Don\'t show again',
@@ -70,6 +74,14 @@ const UIStringsNotTranslate = {
    * @description Third disclaimer item text for the fre dialog.
    */
   freDisclaimerTextUseWithCaution: 'Use generated code snippets with caution',
+  /**
+   *@description Text for ARIA label for the teaser.
+   */
+  press: 'Press',
+  /**
+   *@description Text for ARIA label for the teaser.
+   */
+  toDisableCodeSuggestions: 'to disable code suggestions.',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -90,12 +102,16 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   }
   const cmdOrCtrl =
       Host.Platform.isMac() ? lockedString(UIStringsNotTranslate.cmd) : lockedString(UIStringsNotTranslate.ctrl);
-  // TODO: Add ARIA labels
+  const teaserAriaLabel = lockedString(UIStringsNotTranslate.press) + ' ' + cmdOrCtrl + ' ' +
+      lockedString(UIStringsNotTranslate.i) + ' ' + lockedString(UIStringsNotTranslate.toTurnOnCodeSuggestions) + ' ' +
+      lockedString(UIStringsNotTranslate.press) + ' ' + cmdOrCtrl + ' ' + lockedString(UIStringsNotTranslate.x) + ' ' +
+      lockedString(UIStringsNotTranslate.toDisableCodeSuggestions);
   // clang-format off
   render(
         html`
           <style>${UI.Widget.widgetScoped(styles)}</style>
-          <div class="ai-code-completion-teaser">
+          <div class="ai-code-completion-teaser-screen-reader-only">${teaserAriaLabel}</div>
+          <div class="ai-code-completion-teaser" aria-hidden="true">
             <span class="ai-code-completion-teaser-action">
               <span>${cmdOrCtrl}</span>
               <span>${lockedString(UIStringsNotTranslate.i)}</span>
@@ -111,7 +127,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format on
 };
 
-export interface AiCodeCompletionTeaserConfig {
+interface AiCodeCompletionTeaserConfig {
   onDetach: () => void;
 }
 
@@ -133,6 +149,7 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
 
   constructor(config: AiCodeCompletionTeaserConfig, view?: View) {
     super();
+    this.markAsExternallyManaged();
     this.#onDetach = config.onDetach;
     this.#view = view ?? DEFAULT_VIEW;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
@@ -161,21 +178,6 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
       this.requestUpdate();
     }
   }
-
-  readonly #onKeyDown = async(event: KeyboardEvent): Promise<void> => {
-    const keyboardEvent = (event as KeyboardEvent);
-    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent)) {
-      if (keyboardEvent.key === 'i') {
-        keyboardEvent.consume(true);
-        await this.onAction(event);
-        void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-completion-teaser.fre');
-      } else if (keyboardEvent.key === 'x') {
-        keyboardEvent.consume(true);
-        this.onDismiss(event);
-        void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-completion-teaser.dismiss');
-      }
-    }
-  };
 
   onAction = async(event: Event): Promise<void> => {
     event.preventDefault();
@@ -239,14 +241,13 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
 
   override wasShown(): void {
     super.wasShown();
-    document.body.addEventListener('keydown', this.#onKeyDown);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
     void this.#onAidaAvailabilityChange();
   }
 
   override willHide(): void {
-    document.body.removeEventListener('keydown', this.#onKeyDown);
+    super.willHide();
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
   }

@@ -17,7 +17,7 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import {AiCodeCompletionTeaser} from '../common/common.js';
+import * as PanelCommon from '../common/common.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
 import consolePromptStyles from './consolePrompt.css.js';
@@ -72,8 +72,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   private aidaClient?: Host.AidaClient.AidaClient;
   private aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
+  private teaser?: PanelCommon.AiCodeCompletionTeaser;
   private placeholderCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
-  private teaserContainer?: HTMLDivElement;
   private aiCodeCompletionSetting =
       Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
   private aiCodeCompletionCitations?: Host.AidaClient.Citation[] = [];
@@ -170,10 +170,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       const aiCodeCompletionTeaserDismissedSetting =
           Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
       if (!this.aiCodeCompletionSetting.get() && !aiCodeCompletionTeaserDismissedSetting.get()) {
-        this.teaserContainer = document.createElement('div');
-        const teaser = new AiCodeCompletionTeaser({onDetach: this.detachAiCodeCompletionTeaser.bind(this)});
-        teaser.show(this.teaserContainer, undefined, true);
-        extensions.push(this.placeholderCompartment.of(CodeMirror.placeholder(this.teaserContainer)));
+        this.teaser = new PanelCommon.AiCodeCompletionTeaser({onDetach: this.detachAiCodeCompletionTeaser.bind(this)});
+        extensions.push(this.placeholderCompartment.of(TextEditor.aiCodeCompletionTeaserPlaceholder(this.teaser)));
       }
       extensions.push(TextEditor.Config.aiAutoCompleteSuggestion);
     }
@@ -433,8 +431,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         changes: {from: 0, to: this.editor.state.doc.length},
         scrollIntoView: true,
       });
-      if (this.teaserContainer) {
+      if (this.teaser) {
         this.detachAiCodeCompletionTeaser();
+        this.teaser = undefined;
       }
     } else if (this.editor.state.doc.length) {
       CodeMirror.insertNewlineAndIndent(this.editor.editor);
@@ -507,6 +506,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (!this.aidaClient) {
       this.aidaClient = new Host.AidaClient.AidaClient();
     }
+    if (this.teaser) {
+      this.detachAiCodeCompletionTeaser();
+      this.teaser = undefined;
+    }
     this.aiCodeCompletion =
         new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({aidaClient: this.aidaClient}, this.editor);
     this.aiCodeCompletion.addEventListener(AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED, event => {
@@ -526,11 +529,24 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
   }
 
+  async onAiCodeCompletionTeaserActionKeyDown(event: Event): Promise<void> {
+    if (this.teaser?.isShowing()) {
+      await this.teaser?.onAction(event);
+      void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-completion-teaser.fre');
+    }
+  }
+
+  onAiCodeCompletionTeaserDismissKeyDown(event: Event): void {
+    if (this.teaser?.isShowing()) {
+      this.teaser?.onDismiss(event);
+      void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-completion-teaser.dismiss');
+    }
+  }
+
   private detachAiCodeCompletionTeaser(): void {
     this.editor.dispatch({
       effects: this.placeholderCompartment.reconfigure([]),
     });
-    this.teaserContainer = undefined;
   }
 
   private isAiCodeCompletionEnabled(): boolean {

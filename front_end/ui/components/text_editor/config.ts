@@ -4,6 +4,7 @@
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../../../core/common/common.js';
+import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
@@ -489,6 +490,8 @@ export const setAiAutoCompleteSuggestion = CM.StateEffect.define<ActiveSuggestio
 interface ActiveSuggestion {
   text: string;
   from: number;
+  sampleId?: number;
+  rpcGlobalId?: Host.AidaClient.RpcGlobalId;
 }
 
 export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggestion|null>({
@@ -538,17 +541,18 @@ export function hasActiveAiSuggestion(state: CM.EditorState): boolean {
   return state.field(aiAutoCompleteSuggestionState) !== null;
 }
 
-export function acceptAiAutoCompleteSuggestion(view: CM.EditorView): boolean {
+export function acceptAiAutoCompleteSuggestion(view: CM.EditorView):
+    {accepted: boolean, suggestion?: ActiveSuggestion} {
   const suggestion = view.state.field(aiAutoCompleteSuggestionState);
   if (!suggestion) {
-    return false;
+    return {accepted: false};
   }
 
   const {text, from} = suggestion;
   const {head} = view.state.selection.main;
   const typedText = view.state.doc.sliceString(from, head);
   if (!text.startsWith(typedText)) {
-    return false;
+    return {accepted: false};
   }
 
   const remainingText = text.slice(typedText.length);
@@ -558,7 +562,7 @@ export function acceptAiAutoCompleteSuggestion(view: CM.EditorView): boolean {
     effects: setAiAutoCompleteSuggestion.of(null),
     userEvent: 'input.complete',
   });
-  return true;
+  return {accepted: true, suggestion};
 }
 
 export const aiAutoCompleteSuggestion: CM.Extension = [

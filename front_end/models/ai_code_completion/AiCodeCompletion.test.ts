@@ -78,9 +78,10 @@ describeWithEnvironment('AiCodeCompletion', () => {
     sinon.assert.calledOnce(mockAidaClient.completeCode);
     await clock.tickAsync(AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
     sinon.assert.calledOnce(editor.dispatch);
-    assert.deepEqual(
-        editor.dispatch.firstCall.args[0],
-        {effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({text: 'suggestion', from: 1})});
+    assert.deepEqual(editor.dispatch.firstCall.args[0], {
+      effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
+          {text: 'suggestion', from: 1, sampleId: 1, rpcGlobalId: undefined})
+    });
   });
 
   it('throttles requests to AIDA', async () => {

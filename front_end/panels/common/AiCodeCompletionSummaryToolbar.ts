@@ -44,6 +44,10 @@ const UIStrings = {
    * @description Text for citations
    */
   viewSources: 'View Sources',
+  /**
+   *@description Text announced when request is sent to AIDA and the spinner is loading
+   */
+  dataIsBeingSentToGoogle: 'Data is being sent to Google',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -183,6 +187,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
     if (loading) {
       if (!this.#loading) {
         this.#viewOutput.setLoading?.(true);
+        UI.ARIAUtils.LiveAnnouncer.status(lockedString(UIStrings.dataIsBeingSentToGoogle));
       }
       if (this.#spinnerLoadingTimeout) {
         clearTimeout(this.#spinnerLoadingTimeout);

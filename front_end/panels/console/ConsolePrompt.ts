@@ -356,10 +356,13 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       keymap.push({
         key: 'Tab',
         run: (): boolean => {
-          const accepted = TextEditor.Config.acceptAiAutoCompleteSuggestion(this.editor.editor);
+          const {accepted, suggestion} = TextEditor.Config.acceptAiAutoCompleteSuggestion(this.editor.editor);
           if (accepted) {
             this.dispatchEventToListeners(
                 Events.AI_CODE_COMPLETION_SUGGESTION_ACCEPTED, {citations: this.aiCodeCompletionCitations});
+            if (suggestion?.rpcGlobalId && suggestion?.sampleId) {
+              this.aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
+            }
           }
           return accepted;
         },

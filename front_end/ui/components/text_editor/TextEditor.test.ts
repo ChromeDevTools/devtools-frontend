@@ -255,8 +255,9 @@ describeWithEnvironment('TextEditor', () => {
         effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({text, from: 0}),
       });
 
-      const accepted = TextEditor.Config.acceptAiAutoCompleteSuggestion(editor.editor);
+      const {accepted, suggestion} = TextEditor.Config.acceptAiAutoCompleteSuggestion(editor.editor);
       assert.isTrue(accepted);
+      assert.strictEqual(suggestion?.text, text);
 
       assert.strictEqual(editor.state.doc.toString(), text);
       assert.isNull(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));

@@ -90,9 +90,17 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
           // In case the user typed a different character, the config for AI auto complete suggestion
           // will set the suggestion to null.
           this.#editor.dispatch({
-            effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-                {text: response.generatedSamples[0].generationString, from: cursor}),
+            effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({
+              text: response.generatedSamples[0].generationString,
+              from: cursor,
+              rpcGlobalId: response.metadata.rpcGlobalId,
+              sampleId: response.generatedSamples[0].sampleId,
+            })
           });
+          if (response.metadata.rpcGlobalId) {
+            const latency = performance.now() - startTime;
+            this.#registerUserImpression(response.metadata.rpcGlobalId, response.generatedSamples[0].sampleId, latency);
+          }
           const citations = response.generatedSamples[0].attributionMetadata?.citations;
           this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {citations});
         }, remainderDelay);
@@ -116,6 +124,44 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       temperature,
       modelId,
     };
+  }
+
+  #registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number, latency: number): void {
+    const seconds = Math.floor(latency / 1_000);
+    const remainingMs = latency % 1_000;
+    const nanos = remainingMs * 1_000_000;
+
+    void this.#aidaClient.registerClientEvent({
+      corresponding_aida_rpc_global_id: rpcGlobalId,
+      disable_user_content_logging: true,
+      complete_code_client_event: {
+        user_impression: {
+          sample: {
+            sample_id: sampleId,
+          },
+          latency: {
+            duration: {
+              seconds,
+              nanos,
+            },
+          }
+        },
+      },
+    });
+  }
+
+  registerUserAcceptance(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number): void {
+    void this.#aidaClient.registerClientEvent({
+      corresponding_aida_rpc_global_id: rpcGlobalId,
+      disable_user_content_logging: true,
+      complete_code_client_event: {
+        user_acceptance: {
+          sample: {
+            sample_id: sampleId,
+          }
+        },
+      },
+    });
   }
 
   onTextChanged = Common.Debouncer.debounce((prefix: string, suffix: string, cursor: number) => {

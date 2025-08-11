@@ -237,17 +237,38 @@ export interface CompletionRequest {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention  */
-export interface AidaDoConversationClientEvent {
-  corresponding_aida_rpc_global_id: RpcGlobalId;
-  disable_user_content_logging: boolean;
-  do_conversation_client_event: {
-    user_feedback: {
-      sentiment?: Rating,
-      user_input?: {
-        comment?: string,
-      },
+export interface DoConversationClientEvent {
+  user_feedback: {
+    sentiment?: Rating,
+    user_input?: {
+      comment?: string,
     },
   };
+}
+
+export interface UserImpression {
+  sample: {
+    sample_id: number,
+  };
+  latency: {
+    duration: {
+      seconds: number,
+      nanos: number,
+    },
+  };
+}
+
+export interface UserAcceptance {
+  sample: {
+    sample_id: number,
+  };
+}
+
+export interface AidaRegisterClientEvent {
+  corresponding_aida_rpc_global_id: RpcGlobalId;
+  disable_user_content_logging: boolean;
+  do_conversation_client_event?: DoConversationClientEvent;
+  complete_code_client_event?: {user_acceptance: UserAcceptance}|{user_impression: UserImpression};
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -545,7 +566,7 @@ export class AidaClient {
     };
   }
 
-  registerClientEvent(clientEvent: AidaDoConversationClientEvent): Promise<AidaClientResult> {
+  registerClientEvent(clientEvent: AidaRegisterClientEvent): Promise<AidaClientResult> {
     const {promise, resolve} = Promise.withResolvers<AidaClientResult>();
     InspectorFrontendHostInstance.registerAidaClientEvent(
         JSON.stringify({

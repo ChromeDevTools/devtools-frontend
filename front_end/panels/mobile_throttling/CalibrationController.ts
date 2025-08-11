@@ -283,7 +283,6 @@ export class CalibrationController {
  * Lifted from Lighthouse.
  *
  * Computes a memory/CPU performance benchmark index to determine rough device class.
- * @returns
  * @see https://github.com/GoogleChrome/lighthouse/issues/9085
  * @see https://docs.google.com/spreadsheets/d/1E0gZwKsxegudkjJl8Fki_sOwHKpqgXwt8aBAfuUaB8A/edit?usp=sharing
  *

@@ -3598,7 +3598,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * To do this, we go through the tree, and update the start and end level of each group.
    * This function is public for test purpose.
    * @param groups the array of all groups, it should be the one from FlameChartTimelineData
-   * @returns the root of the Group tree. The root is the fake one we added, which represent the parent for all groups
+   * @param root the root of the Group tree. The root is the fake one we added, which represent the parent for all groups
    */
   updateGroupTree(groups: Group[], root: GroupTreeNode): void {
     const maxStackDepth = this.dataProvider.maxStackDepth();

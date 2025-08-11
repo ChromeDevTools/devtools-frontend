@@ -861,8 +861,8 @@ export class Widget {
    * use the `requestUpdate()` method to schedule an asynchronous update.
    *
    * @returns can either return nothing or a promise; in that latter case, the
-   *         update logic will await the resolution of the returned promise
-   *         before proceeding.
+   *          update logic will await the resolution of the returned promise
+   *          before proceeding.
    */
   performUpdate(): Promise<void>|void {
   }

@@ -593,6 +593,7 @@ export default defineConfig([
       // Disallow redundant (and potentially conflicting) type information
       // within JSDoc comments.
       'jsdoc/no-types': 'error',
+      'jsdoc/require-returns-description': 'error',
     },
   },
   {

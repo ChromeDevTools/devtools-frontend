@@ -1098,21 +1098,22 @@ export const toggleAccessibilityTree = async (devToolsPage = getBrowserAndPagesW
   await expectVeEvents([veClick('Panel: elements > Action: toggle-accessibility-tree')], undefined, devToolsPage);
 };
 
-export const getPropertiesWithHints = async () => {
-  const allRuleSelectors = await $$(CSS_STYLE_RULE_SELECTOR);
+export const getPropertiesWithHints =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const allRuleSelectors = await devToolsPage.$$(CSS_STYLE_RULE_SELECTOR);
 
   const propertiesWithHints = [];
   for (const propertiesSection of allRuleSelectors) {
-    const cssRuleNodes = await $$('li ', propertiesSection);
+    const cssRuleNodes = await devToolsPage.$$('li ', propertiesSection);
 
     for (const cssRuleNode of cssRuleNodes) {
-      const propertyNode = await $(CSS_PROPERTY_NAME_SELECTOR, cssRuleNode);
+      const propertyNode = await devToolsPage.$(CSS_PROPERTY_NAME_SELECTOR, cssRuleNode);
       const propertyName = propertyNode !== null ? await propertyNode.evaluate(n => n.textContent) : null;
       if (propertyName === null) {
         continue;
       }
 
-      const authoringHintsIcon = await $(CSS_AUTHORING_HINTS_ICON_SELECTOR, cssRuleNode);
+      const authoringHintsIcon = await devToolsPage.$(CSS_AUTHORING_HINTS_ICON_SELECTOR, cssRuleNode);
       if (authoringHintsIcon) {
         propertiesWithHints.push(propertyName);
       }

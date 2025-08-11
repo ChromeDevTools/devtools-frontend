@@ -13,6 +13,7 @@ ts_e2e_library("elements") {
     "classes-pane_test.ts",
     "color-picker_test.ts",
     "computed-pane-properties_test.ts",
+    "css-hints_test.ts",
     "dom-breakpoints_test.ts",
     "elements-tree_test.ts",
     "flexbox-editor_test.ts",

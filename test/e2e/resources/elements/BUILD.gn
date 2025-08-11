@@ -40,6 +40,7 @@ copy_to_gen("elements") {
     "elements-panel-styles.css",
     "elements-panel-styles.html",
     "elements-search-test.html",
+    "filter-matched-styles.html",
     "flexbox-editor.html",
     "focus.html",
     "form-with-issues.html",

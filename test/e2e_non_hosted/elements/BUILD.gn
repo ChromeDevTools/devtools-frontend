@@ -16,6 +16,7 @@ ts_e2e_library("elements") {
     "css-hints_test.ts",
     "dom-breakpoints_test.ts",
     "elements-tree_test.ts",
+    "filter-matched-styles_test.ts",
     "flexbox-editor_test.ts",
     "grid-editor_test.ts",
     "oopif-elements_test.ts",

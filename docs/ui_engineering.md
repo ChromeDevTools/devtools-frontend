@@ -49,16 +49,36 @@ For backwards compatibility, the first argument to `widgetConfig` can also be a 
 ## Styling
 To prevent style conflicts in widgets without relying on shadow DOM, we use the CSS [`@scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/@scope) at-rule for style encapsulation. This ensures that styles defined for a widget do not leak out and affect other components.
 
-To simplify this process, a helper function, `UI.Widget.widgetScoped`, is provided. This function automatically wraps the given CSS rules in an `@scope to (devtools-widget)` block. The to (devtools-widget) part is crucial, as it establishes a "lower boundary," preventing the styles from cascading into any nested child widgets (which are rendered as <devtools-widget> elements).
+The convention is to add the `@scope` rule directly into the widget's .css file. The scope's "lower boundary" is set to `(devtools-widget > *)`. This prevents the styles from cascading into the contents of any nested child widgets, while still allowing the parent to style the `<devtools-widget>` element itself.
 
+First, define the styles within an @scope block in your CSS file:
+
+```css
+/* my-widget.css */
+@scope to (devtools-widget > *) {
+  /* Use :scope to style the widget's container element itself. */
+  :scope {
+    width: 100%;
+    box-shadow: none;
+  }
+
+  .title {
+    font-size: 1.2em;
+    color: var(--sys-color-tonal-on-container);
+  }
+}
+```
+
+Then, import and use these styles in your widget's view function:
 ```ts
+/* myWidget.ts */
 import {html} from 'lit-html';
 import * as UI from '../../ui/legacy/legacy.js';
 import myWidgetStyles from './myWidget.css.js';
 
 render(html`
   <style>
-    ${UI.Widget.widgetScoped(myWidgetStyles)}
+    ${myWidgetStyles}
   </style>
   <div class="container">
     <h3 class="title">My Widget</h3>
@@ -68,19 +88,7 @@ render(html`
 `, this.element);
 ```
 
-In this example, styles like `.title` will apply within the parent widget but will not apply to any elements inside the nested `<devtools-widget>`.
-
-It is also possible to style the widget's container element itself by using the `:scope` pseudo-class.
-
-For example:
-```css
-:scope {
-  width: 100%;
-  box-shadow: none;
-}
-```
-
-When the above CSS is processed by `UI.Widget.widgetScoped`, the rules within `:scope` will be applied directly to the widget's `contentElement`, where the view (and thus, the `<style>` tag) is rendered as the container's direct children.
+In this example, the `.title` style will apply within the parent widget but will not leak into the nested `<devtools-widget>`. Because this convention relies on developer discipline, it is important to verify its correct application during code reviews.
 
 ## Examples
 

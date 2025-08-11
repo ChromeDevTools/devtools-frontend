@@ -86,7 +86,7 @@ export class StateProvider {
 
     const browsingContext = await browser.createBrowserContext();
     const inspectedPage = await setupInspectedPage(browsingContext, StateProvider.serverPort);
-    const devToolsPage = await setupDevToolsPage(browsingContext, settings);
+    const devToolsPage = await setupDevToolsPage(browsingContext, settings, inspectedPage);
     const state = {
       devToolsPage,
       inspectedPage,

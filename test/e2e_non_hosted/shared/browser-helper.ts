@@ -80,10 +80,6 @@ export class Launcher {
   static async browserSetup(settings: BrowserSettings) {
     const browser = await Launcher.launchChrome(settings);
     setupBrowserProcessIO(browser);
-    // Close default devtools.
-    const devToolsTarget = await browser.waitForTarget(target => target.url().startsWith('devtools://'));
-    const page = await devToolsTarget.page();
-    await page?.close();
     return new BrowserWrapper(browser);
   }
 
@@ -101,7 +97,6 @@ export class Launcher {
       '--host-resolver-rules=MAP *.test 127.0.0.1',
       '--disable-gpu',
       `--disable-features=${disabledFeatures.join(',')}`,
-      '--auto-open-devtools-for-tabs',
       `--custom-devtools-frontend=${frontEndDirectory}`,
       '--enable-crash-reporter',
       // This has no effect (see https://crbug.com/435638630)

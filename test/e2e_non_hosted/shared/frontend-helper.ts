@@ -12,6 +12,7 @@ import {TestConfig} from '../../conductor/test_config.js';
 
 import type {BrowserWrapper} from './browser-helper.js';
 import {PageWrapper} from './page-wrapper.js';
+import type {InspectedPage} from './target-helper.js';
 
 export type Action = (element: puppeteer.ElementHandle) => Promise<void>;
 
@@ -681,8 +682,18 @@ async function setDockingSide(devToolsPage: DevToolsPage, side: string) {
   `);
 }
 
-export async function setupDevToolsPage(context: puppeteer.BrowserContext, settings: DevtoolsSettings) {
-  const devToolsTarget = await context.waitForTarget(target => target.url().startsWith('devtools://'));
+export async function setupDevToolsPage(
+    context: puppeteer.BrowserContext, settings: DevtoolsSettings, inspectedPage: InspectedPage) {
+  const session = await context.browser().target().createCDPSession();
+  // FIXME: get rid of the reload below and configure
+  // the initial DevTools state via the openDevTools command.
+  // @ts-expect-error no types yet
+  const {targetId} = await session.send('Target.openDevTools', {
+    // @ts-expect-error need to expose this via Puppeteer.
+    targetId: inspectedPage.page.target()._getTargetInfo().targetId
+  });
+  // @ts-expect-error need to expose this via Puppeteer.
+  const devToolsTarget = await context.waitForTarget(target => target._getTargetInfo().targetId === targetId);
   const frontend = await devToolsTarget?.page();
   if (!frontend) {
     throw new Error('Unable to find frontend target!');

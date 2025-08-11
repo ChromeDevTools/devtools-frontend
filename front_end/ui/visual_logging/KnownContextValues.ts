@@ -1682,6 +1682,7 @@ export const knownContextValues = new Set([
   'galaxy-z-fold-5',
   'gamma',
   'gap',
+  'gap-rule-overlap',
   'gap-rule-paint-order',
   'garamond',
   'gen-ai-settings-panel',

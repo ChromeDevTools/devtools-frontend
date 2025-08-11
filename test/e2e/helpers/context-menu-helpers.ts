@@ -61,8 +61,10 @@ export async function assertSubMenuItemsText(subMenuText: string, expectedOption
   assert.deepEqual(subMenuItemsText, expectedOptions);
 }
 
-export async function openSoftContextMenuAndClickOnItem(
-    selector: string, label: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function openSoftContextMenuAndClickOnItem(selector: string, label: string, devToolsPage?: DevToolsPage) {
+  if (!devToolsPage) {
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage;
+  }
   // Find the selected node, right click.
   await devToolsPage.click(selector, {clickOptions: {button: 'right'}});
 

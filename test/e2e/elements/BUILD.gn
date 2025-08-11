@@ -11,7 +11,6 @@ node_ts_library("elements") {
     "element-breadcrumbs_test.ts",
     "filter-matched-styles_test.ts",
     "layout-pane_test.ts",
-    "reveal-correct-node_test.ts",
     "selection-after-delete_test.ts",
     "shadowroot-styles_test.ts",
     "sidebar-event-listeners-remove_test.ts",

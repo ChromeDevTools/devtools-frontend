@@ -238,9 +238,10 @@ export const waitForSelectedTreeElementSelectorWithTextcontent = async (expected
   });
 };
 
-export const waitForSelectedTreeElementSelectorWhichIncludesText = async (expectedTextContent: string) => {
-  await waitForFunction(async () => {
-    const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
+export const waitForSelectedTreeElementSelectorWhichIncludesText =
+    async (expectedTextContent: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.waitForFunction(async () => {
+    const selectedNode = await devToolsPage.waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
     const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
     return selectedTextContent?.includes(expectedTextContent);
   });

@@ -2951,7 +2951,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.16.0';
+  const packageVersion = '24.16.1';
 
   /**
    * @license
@@ -24647,7 +24647,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   const PUPPETEER_REVISIONS = Object.freeze({
     chrome: '139.0.7258.66',
     'chrome-headless-shell': '139.0.7258.66',
-    firefox: 'stable_141.0.2'
+    firefox: 'stable_141.0.3'
   });
 
   /**

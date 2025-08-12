@@ -41,6 +41,7 @@ ts_library("testing") {
     "SourceMapEncoder.test.ts",
     "SourceMapEncoder.ts",
     "SourceMapHelpers.ts",
+    "StackTraceHelpers.ts",
     "StorageItemsViewHelpers.ts",
     "StubIssue.ts",
     "StyleHelpers.ts",

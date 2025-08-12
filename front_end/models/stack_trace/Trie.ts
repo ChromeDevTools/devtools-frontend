@@ -34,15 +34,85 @@ export interface FrameNode extends FrameNodeBase<FrameNode, AnyFrameNode> {
  * Stores stack trace fragments in a trie, but does not own them/keep them alive.
  */
 export class Trie {
-  // eslint-disable-next-line no-unused-private-class-members
   readonly #root: RootFrameNode = {parent: null, children: []};
 
+  /**
+   * Most sources produce stack traces in "top-to-bottom" order, so that is what this method expects.
+   *
+   * @returns The {@link FrameNode} corresponding to the top-most stack frame.
+   */
   insert(frames: RawFrame[]): FrameNode {
     if (frames.length === 0) {
       throw new Error('Trie.insert called with an empty frames array.');
     }
 
-    // TODO(crbug.com/433162438): Implement it.
-    throw new Error('Not implemented');
+    let currentNode: AnyFrameNode = this.#root;
+    for (let i = frames.length - 1; i >= 0; --i) {
+      currentNode = this.#insert(currentNode, frames[i]);
+    }
+    return currentNode as FrameNode;
   }
+
+  /**
+   * Inserts `rawFrame` into the children of the provided node if not already there.
+   *
+   * @returns the child node corresponding to `rawFrame`.
+   */
+  #insert(node: AnyFrameNode, rawFrame: RawFrame): FrameNode {
+    let i = 0;
+    for (; i < node.children.length; ++i) {
+      const maybeChild = node.children[i];
+      const child = maybeChild instanceof WeakRef ? maybeChild.deref() : maybeChild;
+      if (!child) {
+        continue;
+      }
+
+      const compareResult = compareRawFrames(child.rawFrame, rawFrame);
+      if (compareResult === 0) {
+        return child;
+      }
+      if (compareResult > 0) {
+        break;
+      }
+    }
+
+    const newNode: FrameNode = {
+      parent: node,
+      children: [],
+      rawFrame,
+      frames: [],
+    };
+    if (node.parent) {
+      node.children.splice(i, 0, newNode);
+    } else {
+      node.children.splice(i, 0, new WeakRef(newNode));
+    }
+    return newNode;
+  }
+}
+
+/**
+ * @returns a number < 0, 0 or > 0, if the `a` is smaller then, equal or greater then `b`.
+ */
+export function compareRawFrames(a: RawFrame, b: RawFrame): number {
+  const scriptIdCompare = (a.scriptId ?? '').localeCompare(b.scriptId ?? '');
+  if (scriptIdCompare !== 0) {
+    return scriptIdCompare;
+  }
+
+  const urlCompare = (a.url ?? '').localeCompare(b.url ?? '');
+  if (urlCompare !== 0) {
+    return urlCompare;
+  }
+
+  const nameCompare = (a.functionName ?? '').localeCompare(b.functionName ?? '');
+  if (nameCompare !== 0) {
+    return nameCompare;
+  }
+
+  if (a.lineNumber !== b.lineNumber) {
+    return a.lineNumber - b.lineNumber;
+  }
+
+  return a.columnNumber - b.columnNumber;
 }

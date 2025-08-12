@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {protocolCallFrame} from '../../testing/StackTraceHelpers.js';
+
 import * as StackTraceImpl from './stack_trace_impl.js';
 
 describe('Trie', () => {
@@ -10,6 +12,48 @@ describe('Trie', () => {
       const trie = new StackTraceImpl.Trie.Trie();
 
       assert.throws(() => trie.insert([]));
+    });
+
+    it('returns the same node when inserting the same frame twice', () => {
+      const trie = new StackTraceImpl.Trie.Trie();
+      const frame = protocolCallFrame('foo.js:1:foo:1:10');
+
+      const node1 = trie.insert([frame]);
+      const node2 = trie.insert([frame]);
+
+      assert.strictEqual(node1, node2);
+      assert.strictEqual(StackTraceImpl.Trie.compareRawFrames(frame, node1.rawFrame), 0);
+    });
+
+    it('returns different nodes when inserting different frames', () => {
+      const trie = new StackTraceImpl.Trie.Trie();
+      const frame1 = protocolCallFrame('foo.js:1:foo:1:10');
+      const frame2 = protocolCallFrame('foo.js:1:bar:2:20');
+
+      const node1 = trie.insert([frame1]);
+      const node2 = trie.insert([frame2]);
+
+      assert.notStrictEqual(node1, node2);
+      assert.strictEqual(StackTraceImpl.Trie.compareRawFrames(frame1, node1.rawFrame), 0);
+      assert.strictEqual(StackTraceImpl.Trie.compareRawFrames(frame2, node2.rawFrame), 0);
+    });
+
+    it('creates 3 nodes for 2 stack traces with 1 shared parent call frame', () => {
+      const trie = new StackTraceImpl.Trie.Trie();
+
+      const node1 = trie.insert([
+        'foo.js::x:1:10',
+        'foo.js::y:2:20',
+      ].map(protocolCallFrame));
+      const node2 = trie.insert([
+        'foo.js::x:1:15',
+        'foo.js::y:2:20',
+      ].map(protocolCallFrame));
+
+      assert.strictEqual(node1.rawFrame.columnNumber, 10);
+      assert.strictEqual(node2.rawFrame.columnNumber, 15);
+
+      assert.strictEqual(node1.parent, node2.parent);
     });
   });
 });

@@ -916,7 +916,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         // Register new badge under the `devToolsAiSubmenuPrompts` feature, as the freestyler one is already used in ViewManager.
         const submenu = contextMenu.footerSection().appendSubMenuItem(
-            action.title(), false, Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.featureName);
+            action.title(), false, openAiAssistanceId, Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.featureName);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
 
         const submenuConfigs = [
@@ -941,7 +941,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             ],
           },
           {
-            condition: (props: SDK.CSSModel.LayoutProperties|null): boolean => Boolean(props?.isGrid),
+            condition: (props: SDK.CSSModel.LayoutProperties|null): boolean =>
+                Boolean(props?.isGrid && !props?.isSubgrid),
             items: [
               {
                 label: i18nString(UIStrings.alignItems),

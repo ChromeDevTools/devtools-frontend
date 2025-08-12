@@ -199,8 +199,8 @@ describeWithMockConnection('ElementsTreeElement ', () => {
   });
 
   it('shows subgrid submenu items', async () => {
-    const contextMenu =
-        await getContextMenuForElementWithLayoutProperties({...DEFAULT_LAYOUT_PROPERTIES, isSubgrid: true});
+    const contextMenu = await getContextMenuForElementWithLayoutProperties(
+        {...DEFAULT_LAYOUT_PROPERTIES, isGrid: true, isSubgrid: true});
     const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
     assert.exists(debugWithAiItem);
     assert.deepEqual(

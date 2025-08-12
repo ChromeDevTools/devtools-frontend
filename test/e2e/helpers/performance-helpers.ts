@@ -381,7 +381,6 @@ export function veImpressionForPerformancePanel() {
           veImpression('Action', 'timeline.record-reload'),
           veImpression('Action', 'timeline.clear'),
           veImpression('Action', 'timeline.load-from-file'),
-          veImpression('DropDown', 'timeline.save-to-file-more-options'),
           veImpression('DropDown', 'history'),
           veImpression('Toggle', 'timeline-show-screenshots'),
           veImpression('Toggle', 'timeline-show-memory'),

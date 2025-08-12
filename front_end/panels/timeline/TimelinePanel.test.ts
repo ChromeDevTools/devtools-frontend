@@ -215,7 +215,8 @@ describeWithEnvironment('TimelinePanel', function() {
     const closeSpy = sinon.stub(fileManager, 'close');
 
     await timeline.saveToFile({
-      savingEnhancedTrace: false,
+      includeScriptContent: false,
+      includeSourceMaps: false,
       addModifications: true,
     });
 
@@ -252,7 +253,8 @@ describeWithEnvironment('TimelinePanel', function() {
     sinon.stub(fileManager, 'close');
 
     await timeline.saveToFile({
-      savingEnhancedTrace: false,
+      includeScriptContent: false,
+      includeSourceMaps: false,
       addModifications: false,
     });
 
@@ -279,7 +281,8 @@ describeWithEnvironment('TimelinePanel', function() {
     });
     sinon.stub(fileManager, 'close');
     await timeline.saveToFile({
-      savingEnhancedTrace: false,
+      includeScriptContent: false,
+      includeSourceMaps: false,
       addModifications: true,
     });
     sinon.assert.calledOnce(saveSpy);
@@ -301,7 +304,8 @@ describeWithEnvironment('TimelinePanel', function() {
     sinon.stub(fileManager, 'close');
 
     await timeline.saveToFile({
-      savingEnhancedTrace: false,
+      includeScriptContent: false,
+      includeSourceMaps: false,
       addModifications: false,
     });
 
@@ -480,7 +484,8 @@ describeWithEnvironment('TimelinePanel', function() {
         });
 
         await timeline.saveToFile({
-          savingEnhancedTrace: false,
+          includeScriptContent: false,
+          includeSourceMaps: false,
           addModifications: true,
         });
 

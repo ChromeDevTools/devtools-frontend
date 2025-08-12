@@ -128,6 +128,7 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,
   Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ,
   Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES,
+  Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES,
   Root.Runtime.ExperimentName.VERTICAL_DRAWER,
 ];
 

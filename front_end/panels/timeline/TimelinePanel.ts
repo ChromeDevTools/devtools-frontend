@@ -124,18 +124,6 @@ const UIStrings = {
    */
   loadTrace: 'Load trace…',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon download button
-   */
-  saveTrace: 'Save trace…',
-  /**
-   * @description An option to save trace with annotations that appears in the menu of the toolbar download button. This is the expected default option, therefore it does not mention annotations.
-   */
-  saveTraceWithAnnotationsMenuOption: 'Save trace',
-  /**
-   * @description An option to save trace without annotations that appears in the menu of the toolbar download button
-   */
-  saveTraceWithoutAnnotationsMenuOption: 'Save trace without annotations',
-  /**
    * @description Text to take screenshots
    */
   captureScreenshots: 'Capture screenshots',
@@ -228,16 +216,6 @@ const UIStrings = {
    * @description Text in Timeline Panel of the Performance panel
    */
   initializingTracing: 'Initializing tracing…',
-  /**
-   *
-   * @description Text for exporting basic traces
-   */
-  exportNormalTraces: 'Basic performance traces',
-  /**
-   *
-   * @description Text for exporting enhanced traces
-   */
-  exportEnhancedTraces: 'Enhanced performance traces',
   /**
    * @description Tooltip description for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
    */
@@ -384,7 +362,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private cpuProfiler!: SDK.CPUProfilerModel.CPUProfilerModel|null;
   private clearButton!: UI.Toolbar.ToolbarButton;
   private loadButton!: UI.Toolbar.ToolbarButton;
-  private saveButton!: UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarMenuButton;
+  private saveButton!: UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarMenuButton|UI.Toolbar.ToolbarItem;
   private homeButton?: UI.Toolbar.ToolbarButton;
   private statusDialog: StatusDialog|null = null;
   private landingPage!: UI.Widget.Widget;
@@ -1017,32 +995,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.panelToolbar.removeToolbarItem(this.#sidebarToggleButton);
   }
 
-  #populateDownloadMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
-    // If the current trace is annotated, add an option to save it without annotations.
-    const currModificationManager = ModificationsManager.activeManager();
-    const annotationsExist = currModificationManager && currModificationManager.getAnnotations()?.length > 0;
-
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithAnnotationsMenuOption), () => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
-      void this.saveToFile({savingEnhancedTrace: false, addModifications: true});
-    }, {
-      jslogContext: annotationsExist ? 'timeline.save-to-file-with-annotations' :
-                                       'timeline.save-to-file-without-annotations',
-    });
-
-    if (annotationsExist) {
-      contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithoutAnnotationsMenuOption), () => {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
-        void this.saveToFile({
-          savingEnhancedTrace: false,
-          addModifications: false,
-        });
-      }, {
-        jslogContext: 'timeline.save-to-file-without-annotations',
-      });
-    }
-  }
-
   /**
    * Returns false if this was loaded in a standalone context such that recording is
    * not possible, like an enhanced trace (which opens a new devtools window) or
@@ -1075,30 +1027,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.selectFileToLoad();
     });
 
-    this.saveButton = new UI.Toolbar.ToolbarMenuButton(
-        this.#populateDownloadMenu.bind(this), true, false, 'timeline.save-to-file-more-options', 'download');
-    this.saveButton.setTitle(i18nString(UIStrings.saveTrace));
-
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES)) {
-      this.saveButton.element.addEventListener('contextmenu', event => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (event.ctrlKey || event.button === 2) {
-          const contextMenu = new UI.ContextMenu.ContextMenu(event);
-          contextMenu.saveSection().appendItem(i18nString(UIStrings.exportNormalTraces), () => {
-            void this.saveToFile({savingEnhancedTrace: false, addModifications: false});
-          });
-          contextMenu.saveSection().appendItem(i18nString(UIStrings.exportEnhancedTraces), () => {
-            void this.saveToFile({savingEnhancedTrace: true, addModifications: false});
-          });
-
-          void contextMenu.show();
-        } else {
-          void this.saveToFile({savingEnhancedTrace: false, addModifications: false});
-        }
-      });
-    }
+    const exportTraceOptions = new TimelineComponents.ExportTraceOptions.ExportTraceOptions();
+    exportTraceOptions.data = {
+      onExport: this.saveToFile.bind(this),
+      buttonEnabled: this.state === State.IDLE && this.#hasActiveTrace(),
+    };
+    this.saveButton = new UI.Toolbar.ToolbarItem(exportTraceOptions);
 
     this.panelToolbar.appendSeparator();
     this.panelToolbar.appendToolbarItem(this.loadButton);
@@ -1372,7 +1306,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    *      3. Visual track configuration (re-ordering or hiding tracks).
    */
   async saveToFile(config: {
-    savingEnhancedTrace: boolean,
+    includeScriptContent: boolean,
+    includeSourceMaps: boolean,
     addModifications: boolean,
   }): Promise<void> {
     if (this.state !== State.IDLE) {
@@ -1392,8 +1327,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex) ?? {};
 
-    const shouldRetainScriptSources = config.savingEnhancedTrace &&
-        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES);
+    const shouldRetainScriptSources = config.includeScriptContent && config.includeSourceMaps;
     if (!shouldRetainScriptSources) {
       traceEvents = traceEvents.map(event => {
         if (Trace.Types.Events.isAnyScriptCatchupEvent(event) && event.name !== 'StubScriptCatchup') {
@@ -1426,7 +1360,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     try {
-      await this.innerSaveToFile(traceEvents, metadata, config);
+      await this.innerSaveToFile(
+          traceEvents, metadata,
+          {savingEnhancedTrace: config.includeScriptContent, addModifications: config.addModifications});
     } catch (e) {
       // We expect the error to be an Error class, but this deals with any weird case where it's not.
       const error = e instanceof Error ? e : new Error(e);
@@ -1943,7 +1879,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.#addSidebarIconToToolbar();
     }
 
-    this.saveButton.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
+    const exportTraceOptionsElement =
+        this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions;
+    exportTraceOptionsElement.data = {
+      onExport: this.saveToFile.bind(this),
+      buttonEnabled: this.state === State.IDLE && this.#hasActiveTrace(),
+    };
+
     this.#historyManager.setEnabled(this.state === State.IDLE);
     this.clearButton.setEnabled(this.state === State.IDLE);
     this.dropTarget.setEnabled(this.state === State.IDLE);
@@ -2099,6 +2041,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     const exclusiveFilter = this.#exclusiveFilterPerTrace.get(traceIndex) ?? null;
     this.#applyActiveFilters(parsedTrace.Meta.traceIsGeneric, exclusiveFilter);
+    (this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions)
+        .updateContentVisibility(currentManager ? currentManager.getAnnotations()?.length > 0 : false);
 
     // Add ModificationsManager listeners for annotations change to update the Annotation Overlays.
     currentManager?.addEventListener(AnnotationModifiedEvent.eventName, event => {
@@ -2130,6 +2074,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       const annotations = currentManager.getAnnotations();
       const annotationEntryToColorMap = this.buildColorsAnnotationsMap(annotations);
       this.#sideBar.setAnnotations(annotations, annotationEntryToColorMap);
+      (this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions)
+          .updateContentVisibility(currentManager ? currentManager.getAnnotations()?.length > 0 : false);
     });
 
     // To calculate the activity we might want to zoom in, we use the top-most main-thread track
@@ -3109,7 +3055,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         panel.recordReload();
         return true;
       case 'timeline.save-to-file':
-        void panel.saveToFile({savingEnhancedTrace: false, addModifications: false});
+        void panel.saveToFile({includeScriptContent: false, includeSourceMaps: false, addModifications: false});
         return true;
       case 'timeline.load-from-file':
         panel.selectFileToLoad();

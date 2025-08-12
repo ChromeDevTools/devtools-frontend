@@ -157,4 +157,33 @@ describe('Event listeners in the elements sidebar', () => {
       ['handler', '() => console.log(\'test\')'],
     ]);
   });
+
+  it('shows delete button by each node for a given event', async ({devToolsPage, inspectedPage}) => {
+    await loadEventListenersAndSelectButtonNode(devToolsPage, inspectedPage);
+    await openEventListenersPaneAndWaitForListeners(devToolsPage);
+    const {
+      firstListenerText,
+      listenerSelector,
+    } = await getFirstNodeForEventListener(devToolsPage, '[aria-label="click, event listener"]');
+
+    // Check that we have the right event for the right element
+    // and that it has the delete button within it.
+    assert.include(firstListenerText, 'button#test-button');
+    const removeButtonSelector = `${listenerSelector} devtools-button`;
+    const removeButton = await devToolsPage.waitFor(removeButtonSelector);
+    if (!removeButton) {
+      assert.fail(`Could not find remove button with selector ${removeButtonSelector}`);
+    }
+    const buttonTitle = await removeButton.evaluate(n => {
+      const button = n.shadowRoot?.querySelector('button');
+      return button?.title;
+    });
+    assert.strictEqual(buttonTitle, 'Delete event listener');
+
+    await devToolsPage.click(removeButtonSelector);
+
+    // now we can check that the 'click' event is gone
+    const eventListenerNames = await getDisplayedEventListenerNames(devToolsPage);
+    assert.deepEqual(eventListenerNames, ['custom event', 'hover']);
+  });
 });

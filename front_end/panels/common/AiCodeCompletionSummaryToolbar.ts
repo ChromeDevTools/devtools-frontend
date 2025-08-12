@@ -105,20 +105,21 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
                       };
                     }
                   })}></devtools-spinner>
-                <span
-                    tabIndex="0"
-                    class="link"
-                    role="link"
-                    jslog=${VisualLogging.link('open-ai-settings').track({
-                        click: true,
-                    })}
-                    aria-details=${input.disclaimerTooltipId}
-                    aria-describedby=${input.disclaimerTooltipId}
-                    @click=${() => {
-                        void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-                    }}
-                >${lockedString(UIStrings.relevantData)}</span>${lockedString(UIStrings.isSentToGoogle)}
-                <devtools-tooltip
+                <span class="disclaimer-text">
+                  <span
+                      tabIndex="0"
+                      class="link"
+                      role="link"
+                      jslog=${VisualLogging.link('open-ai-settings').track({
+                          click: true,
+                      })}
+                      aria-details=${input.disclaimerTooltipId}
+                      aria-describedby=${input.disclaimerTooltipId}
+                      @click=${() => {
+                          void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+                      }}
+                  >${lockedString(UIStrings.relevantData)}</span>&nbsp;${lockedString(UIStrings.isSentToGoogle)}
+                </span><devtools-tooltip
                     id=${input.disclaimerTooltipId}
                     variant=${'rich'}
                     jslogContext=${input.panelName + '.ai-code-completion-disclaimer'}

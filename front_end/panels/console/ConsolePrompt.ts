@@ -252,9 +252,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     }
     let suffix = query.substring(cursor);
-    if (suffix === '') {
-      suffix = '\n';
-    }
     if (prefix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
       prefix = prefix.substring(prefix.length - AI_CODE_COMPLETION_CHARACTER_LIMIT);
     }

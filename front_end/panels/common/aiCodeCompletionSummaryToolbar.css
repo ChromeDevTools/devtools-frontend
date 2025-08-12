@@ -7,6 +7,7 @@
 @scope to (devtools-widget > *) {
   .ai-code-completion-summary-toolbar {
     display: flex;
+    height: 26px;
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
     background-color: var(--sys-color-cdt-base-container);
     padding: var(--sys-size-2) var(--sys-size-5);
@@ -26,9 +27,11 @@
     }
 
     .ai-code-completion-disclaimer {
-      padding-right: var(--sys-size-5);
       gap: 5px;
       display: flex;
+      white-space: nowrap;
+      overflow: hidden;
+      flex-shrink: 0;
 
       devtools-spinner {
         margin-top: var(--sys-size-2);
@@ -39,10 +42,36 @@
     }
 
     .ai-code-completion-recitation-notice {
+      padding-left: var(--sys-size-5);
       border-left: var(--sys-size-1) solid var(--sys-color-divider);
+      white-space: nowrap;
+      overflow: hidden;
 
       span.link {
         padding-left: var(--sys-size-3);
+      }
+    }
+
+    @media (width < 545px) {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .ai-code-completion-disclaimer {
+        height: 26px;
+        margin-bottom: -3px;
+        margin-top: var(--sys-size-2);
+        flex-shrink: 1;
+      }
+
+      .ai-code-completion-recitation-notice {
+        height: 26px;
+        padding-left: 0;
+        border-left: 0;
+        margin-top: -3px;
+      }
+
+      &:has(.ai-code-completion-recitation-notice) {
+        height: 46px;
       }
     }
 

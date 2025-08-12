@@ -193,9 +193,11 @@ export class InstrumentedTestFunction {
         .then(
             () => {
               this.#abortController.abort();
+              AsyncScope.abortSignal = undefined;
             },
             async err => {
               this.#abortController.abort();
+              AsyncScope.abortSignal = undefined;
               throw await finalizeTestError(this.state, err);
             })
         .finally(async () => {

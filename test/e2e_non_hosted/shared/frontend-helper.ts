@@ -38,6 +38,11 @@ const globalThis: any = global;
 export class DevToolsPage extends PageWrapper {
   #currentHighlightedElement?: HighlightedElement;
 
+  constructor(page: puppeteer.Page) {
+    super(page);
+    this.#startHeartbeat();
+  }
+
   async delayPromisesIfRequired(): Promise<void> {
     if (envLatePromises === 0) {
       return;
@@ -57,6 +62,30 @@ export class DevToolsPage extends PageWrapper {
     }, envLatePromises);
   }
 
+  #heartbeatInterval: ReturnType<typeof setInterval> = -1 as unknown as ReturnType<typeof setInterval>;
+  /**
+   * Evaluates a script in the page every second
+   * to detect possible timeouts.
+   */
+  #startHeartbeat(): void {
+    const url = this.page.url();
+    this.#heartbeatInterval = setInterval(async () => {
+      // 1 - success, -1 - eval error, -2 - eval timeout.
+      const status = (await Promise.race([
+        this.page.evaluate(() => 1).catch(() => {
+          return -1;
+        }),
+        new Promise(resolve => setTimeout(() => resolve(-2), 1000))
+      ]) as number);
+      if (status <= 0) {
+        clearInterval(this.#heartbeatInterval);
+      }
+      if (status === -2) {
+        console.error(`hearbeat(${url}): failed with ${status}`);
+      }
+    }, 2000);
+  }
+
   async throttleCPUIfRequired(): Promise<void> {
     if (TestConfig.cpuThrottle === 1) {
       return;
@@ -70,12 +99,14 @@ export class DevToolsPage extends PageWrapper {
   }
 
   async ensureReadyForTesting() {
-    await this.page.waitForFunction(`
-      (async function() {
+    await this.waitForFunction(async () => {
+      const result = await this.page.evaluate(`(async function() {
         const Main = await import('./entrypoints/main/main.js');
         return Main.MainImpl.MainImpl.instanceForTest !== null;
-        })()
-        `);
+      })()`);
+      return result;
+    });
+
     await this.evaluate(`
       (async function() {
         const Main = await import('./entrypoints/main/main.js');

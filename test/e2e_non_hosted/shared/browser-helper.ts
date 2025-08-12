@@ -27,7 +27,7 @@ export class BrowserWrapper {
     return await this.browser.createBrowserContext();
   }
 
-  copyCrahsDumps() {
+  copyCrashDumps() {
     const crashesPath = this.#getCrashpadDir();
     if (!fs.existsSync(crashesPath)) {
       // TODO (liviurau): Determine where exactly does Crashpad store the dumps on

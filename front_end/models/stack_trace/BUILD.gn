@@ -23,3 +23,37 @@ devtools_entrypoint("bundle") {
 
   visibility = [ "*" ]
 }
+
+devtools_module("stack_trace_impl") {
+  sources = [ "Trie.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../generated",
+  ]
+}
+
+devtools_entrypoint("impl") {
+  entrypoint = "stack_trace_impl.ts"
+
+  deps = [ ":stack_trace_impl" ]
+
+  # IMPORTANT: Besides tests and bindings, no other module is allowed access.
+  #            If you have a use-case where you need access to stack trace internals,
+  #            consult one of the OWNERS before drilling holes.
+  visibility = [
+    ":unittests",
+    "../bindings",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "Trie.test.ts" ]
+
+  deps = [
+    ":bundle",
+    ":impl",
+  ]
+}

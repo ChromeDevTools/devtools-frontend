@@ -23,6 +23,7 @@ ts_e2e_library("elements") {
     "pseudo-states_test.ts",
     "reveal-correct-node_test.ts",
     "search-elements_test.ts",
+    "sidebar-event-listeners_test.ts",
     "style-pane-properties_test.ts",
     "switch-panels-while-editing-as-html_test.ts",
     "violating-element-and-attributes_test.ts",

@@ -6,7 +6,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("issues") {
   sources = [
-    "low-text-contrast-issues_test.ts",
     "quota-issues_test.ts",
     "user-reidentification-issues_test.ts",
   ]

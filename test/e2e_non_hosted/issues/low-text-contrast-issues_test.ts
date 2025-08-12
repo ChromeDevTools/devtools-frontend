@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {enableExperiment, goToResource} from '../../shared/helper.js';
 import {
   assertIssueTitle,
   expandIssue,
@@ -12,19 +11,22 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../helpers/issues-helpers.js';
+} from '../../e2e/helpers/issues-helpers.js';
 
 describe('Low contrast issues', () => {
-  it('should report low contrast issues', async () => {
-    await enableExperiment('contrast-issues');
-    await goToResource('elements/low-contrast.html');
-    await navigateToIssuesTab();
-    await expandIssue();
+  setup({
+    enabledDevToolsExperiments: ['contrast-issues'],
+  });
+
+  it('should report low contrast issues', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('elements/low-contrast.html');
+    await navigateToIssuesTab(devToolsPage);
+    await expandIssue(devToolsPage);
     const issueTitle = 'Users may have difficulties reading text content due to insufficient color contrast';
-    await assertIssueTitle(issueTitle);
-    const issueElement = await getIssueByTitle(issueTitle);
+    await assertIssueTitle(issueTitle, devToolsPage);
+    const issueElement = await getIssueByTitle(issueTitle, devToolsPage);
     assert.isOk(issueElement);
-    const section = await getResourcesElement('3 elements', issueElement);
+    const section = await getResourcesElement('3 elements', issueElement, undefined, devToolsPage);
     const expectedTableRows = [
       [
         'Element',
@@ -59,6 +61,6 @@ describe('Low contrast issues', () => {
         '400',
       ],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
   });
 });

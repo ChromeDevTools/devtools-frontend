@@ -2410,6 +2410,7 @@ grd_files_unbundled_sources = [
   "front_end/ui/components/survey_link/surveyLink.css.js",
   "front_end/ui/components/switch/SwitchImpl.js",
   "front_end/ui/components/switch/switch.css.js",
+  "front_end/ui/components/text_editor/AiCodeCompletionTeaserPlaceholder.js",
   "front_end/ui/components/text_editor/AutocompleteHistory.js",
   "front_end/ui/components/text_editor/ExecutionPositionHighlighter.js",
   "front_end/ui/components/text_editor/TextEditor.js",

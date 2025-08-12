@@ -16,7 +16,7 @@ export function flattenRect(rect: DOMRect, left: boolean): {
   return {left: x, right: x, top: rect.top, bottom: rect.bottom};
 }
 
-class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
+export class AiCodeCompletionTeaserPlaceholder extends CM.WidgetType {
   constructor(readonly teaser: PanelCommon.AiCodeCompletionTeaser) {
     super();
   }

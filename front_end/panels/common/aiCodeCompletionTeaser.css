@@ -17,6 +17,8 @@
     }
 
     .ai-code-completion-teaser {
+        padding-left: var(--sys-size-3);
+        line-height: normal;
         pointer-events: all;
         align-items: center;
         font-style: italic;

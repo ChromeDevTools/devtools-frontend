@@ -6,10 +6,22 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import type {AgentOptions, RequestOptions} from '../ai_assistance/ai_assistance.js';
 
 export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
+
+// TODO(b/404796739): Remove these definitions of AgentOptions and RequestOptions and
+// use the existing ones which are used for AI assistance panel agents.
+interface AgentOptions {
+  aidaClient: Host.AidaClient.AidaClient;
+  serverSideLoggingEnabled?: boolean;
+  confirmSideEffectForTest?: typeof Promise.withResolvers;
+}
+
+interface RequestOptions {
+  temperature?: number;
+  modelId?: string;
+}
 
 /**
  * The AiCodeCompletion class is responsible for fetching code completion suggestions

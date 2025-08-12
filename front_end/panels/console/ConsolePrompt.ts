@@ -171,7 +171,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
           Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
       if (!this.aiCodeCompletionSetting.get() && !aiCodeCompletionTeaserDismissedSetting.get()) {
         this.teaser = new PanelCommon.AiCodeCompletionTeaser({onDetach: this.detachAiCodeCompletionTeaser.bind(this)});
-        extensions.push(this.placeholderCompartment.of(TextEditor.aiCodeCompletionTeaserPlaceholder(this.teaser)));
+        extensions.push(this.placeholderCompartment.of(
+            TextEditor.AiCodeCompletionTeaserPlaceholder.aiCodeCompletionTeaserPlaceholder(this.teaser)));
       }
       extensions.push(TextEditor.Config.aiAutoCompleteSuggestion);
     }

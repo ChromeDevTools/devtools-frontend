@@ -11,7 +11,7 @@ import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.nex
 
 import * as TextEditor from './text_editor.js';
 
-const {aiCodeCompletionTeaserPlaceholder} = TextEditor;
+const {aiCodeCompletionTeaserPlaceholder} = TextEditor.AiCodeCompletionTeaserPlaceholder;
 
 describeWithEnvironment('AiCodeCompletionTeaserPlaceholder', () => {
   async function createTeaser() {

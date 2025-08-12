@@ -1830,6 +1830,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/snippets/ScriptSnippetFileSystem.js",
   "front_end/panels/snippets/SnippetsQuickOpen.js",
   "front_end/panels/sources/AddSourceMapURLDialog.js",
+  "front_end/panels/sources/AiCodeCompletionPlugin.js",
   "front_end/panels/sources/AiWarningInfobarPlugin.js",
   "front_end/panels/sources/BreakpointEditDialog.js",
   "front_end/panels/sources/BreakpointsView.js",

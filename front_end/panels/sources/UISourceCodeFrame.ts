@@ -32,6 +32,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es-modules-import
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -44,6 +45,7 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {AiCodeCompletionPlugin} from './AiCodeCompletionPlugin.js';
 import {AiWarningInfobarPlugin} from './AiWarningInfobarPlugin.js';
 import {CoveragePlugin} from './CoveragePlugin.js';
 import {CSSPlugin} from './CSSPlugin.js';
@@ -333,7 +335,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
   static sourceFramePlugins(): Array<typeof Plugin> {
     // The order of these plugins matters for toolbar items and editor
     // extension precedence
-    return [
+    const sourceFramePluginsList = [
       CSSPlugin,
       DebuggerPlugin,
       SnippetsPlugin,
@@ -343,6 +345,11 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
       PerformanceProfilePlugin,
       AiWarningInfobarPlugin,
     ];
+
+    if (Boolean(Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled)) {
+      sourceFramePluginsList.push(AiCodeCompletionPlugin);
+    }
+    return sourceFramePluginsList;
   }
 
   private loadPlugins(): void {

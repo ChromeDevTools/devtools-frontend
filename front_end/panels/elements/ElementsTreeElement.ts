@@ -915,16 +915,24 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       function appendSubmenuPromptAction(
           submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action, label: Common.UIString.LocalizedString,
           prompt: string, jslogContext: string): void {
-        submenu.defaultSection().appendItem(
-            label, () => action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
+        submenu.defaultSection().appendItem(label, () => {
+          void action.execute({prompt});
+          UI.UIUtils.PromotionManager.instance().recordFeatureInteraction(openAiAssistanceId);
+        }, {disabled: !action.enabled(), jslogContext});
       }
 
       UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, this.nodeInternal);
       if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         // Register new badge under the `devToolsAiSubmenuPrompts` feature, as the freestyler one is already used in ViewManager.
-        const submenu = contextMenu.footerSection().appendSubMenuItem(
-            action.title(), false, openAiAssistanceId, Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.featureName);
+        // Additionally register with the PromotionManager. Since we use two features for freeestyler here (submenu or debug with ai),
+        // the back-end will not be able to identify them as one as soon as we launch, and show the new badge
+        // on the 'Debug with Ai' item even if the user was already seeing it during the study if they were in the other study group.
+        const featureName = UI.UIUtils.PromotionManager.instance().maybeShowPromotion(openAiAssistanceId) ?
+            Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.featureName :
+            undefined;
+        const submenu =
+            contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId, featureName);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
 
         const submenuConfigs = [
@@ -1058,9 +1066,18 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
       } else if (Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
         // Register new badge under the `devToolsAiDebugWithAi` feature, as the freestyler one is already used in ViewManager.
-        contextMenu.footerSection().appendAction(
-            openAiAssistanceId, undefined, false, undefined,
-            Root.Runtime.hostConfig.devToolsAiDebugWithAi?.featureName);
+        // Additionally register with the PromotionManager. Since we use two different features for freeestyler here (submenu or debug with ai),
+        // the back-end will not be able to identify them as one as soon as we launch, and show the new badge
+        // on the 'Debug with Ai' item even if the user was already seeing it during the study if they were in the other study group.
+        const featureName = UI.UIUtils.PromotionManager.instance().maybeShowPromotion(openAiAssistanceId) ?
+            Root.Runtime.hostConfig.devToolsAiDebugWithAi?.featureName :
+            undefined;
+        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        contextMenu.footerSection().appendItem(action.title(), () => {
+          void action.execute();
+          UI.UIUtils.PromotionManager.instance().recordFeatureInteraction(openAiAssistanceId);
+        }, {jslogContext: openAiAssistanceId, disabled: !action.enabled(), featureName});
+
       } else {
         contextMenu.footerSection().appendAction(openAiAssistanceId);
       }

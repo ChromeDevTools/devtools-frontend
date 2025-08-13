@@ -56,4 +56,17 @@ describe('Trie', () => {
       assert.strictEqual(node1.parent, node2.parent);
     });
   });
+
+  describe('getCallStack', () => {
+    it('returns FrameNodes top to bottom', () => {
+      const trie = new StackTraceImpl.Trie.Trie();
+      const node = trie.insert([
+        'foo.js:1:foo:1:10',
+        'bar.js:2:bar:2:20',
+      ].map(protocolCallFrame));
+
+      const urls = [...node.getCallStack()].map(node => node.rawFrame.url);
+      assert.deepEqual(urls, ['foo.js', 'bar.js']);
+    });
+  });
 });

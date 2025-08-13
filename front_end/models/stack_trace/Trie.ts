@@ -25,9 +25,27 @@ interface FrameNodeBase<ChildT, ParentT> {
 type RootFrameNode = FrameNodeBase<WeakRef<FrameNode>, null>;
 type AnyFrameNode = FrameNode|RootFrameNode;
 
-export interface FrameNode extends FrameNodeBase<FrameNode, AnyFrameNode> {
+export class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode> {
+  readonly parent: AnyFrameNode;
+  readonly children: FrameNode[] = [];
+
   readonly rawFrame: RawFrame;
-  frames: StackTrace.StackTrace.Frame[];
+  frames: StackTrace.StackTrace.Frame[] = [];
+
+  constructor(rawFrame: RawFrame, parent: AnyFrameNode) {
+    this.rawFrame = rawFrame;
+    this.parent = parent;
+  }
+
+  /**
+   * Produces the ancestor chain. Including `this` but excluding the `RootFrameNode`.
+   */
+  * getCallStack(): Generator<FrameNode> {
+    // The `RootFrameNode` doesn't have an actual frame attached, that's why we check for `node.parent` instead of `node`.
+    for (let node: AnyFrameNode|null = this; node.parent; node = node.parent) {
+      yield node;
+    }
+  }
 }
 
 /**
@@ -76,12 +94,7 @@ export class Trie {
       }
     }
 
-    const newNode: FrameNode = {
-      parent: node,
-      children: [],
-      rawFrame,
-      frames: [],
-    };
+    const newNode = new FrameNode(rawFrame, node);
     if (node.parent) {
       node.children.splice(i, 0, newNode);
     } else {

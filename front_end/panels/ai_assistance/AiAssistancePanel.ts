@@ -1075,8 +1075,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   handleAction(actionId: string, opts?: Record<string, unknown>): void {
-    if (this.#isLoading) {
-      // If running some queries already, focus the input with the abort
+    if (this.#isLoading && !opts?.['prompt']) {
+      // If running some queries already, and this action doesn't contain a predefined prompt, focus the input with the abort
       // button and do nothing.
       this.#viewOutput.chatView?.focusTextInput();
       return;

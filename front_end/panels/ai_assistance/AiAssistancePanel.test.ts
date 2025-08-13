@@ -698,6 +698,91 @@ describeWithMockConnection('AI Assistance Panel', () => {
       ]);
     });
 
+    it('interrupts an ongoing conversation with an action-triggered prompt', async () => {
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+
+      const aidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient);
+      aidaClient.doConversation.onFirstCall().callsFake(async function*(_request, options) {
+        yield {
+          explanation: 'Thinking...',
+          metadata: {},
+          completed: false,
+        };
+        await new Promise((_resolve, reject) => {
+          options?.signal?.addEventListener('abort', () => {
+            reject(new Host.AidaClient.AidaAbortError());
+          });
+        });
+      });
+
+      aidaClient.doConversation.onSecondCall().callsFake(async function*() {
+        yield {
+          explanation: 'Interrupted and answered',
+          metadata: {},
+          completed: true,
+        };
+      });
+
+      const {panel, view} = await createAiAssistancePanel({aidaClient});
+
+      // Start a conversation
+      panel.handleAction('freestyler.element-panel-context', {prompt: 'first question'});
+
+      // Wait for the thinking part.
+      let currentView = await view.nextInput;
+      assert.isTrue(currentView.isLoading);
+      assert.deepEqual(currentView.messages, [
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'first question',
+          imageInput: undefined,
+        },
+        {
+          answer: 'Thinking...',
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+
+      // Now interrupt with another prompt.
+      panel.handleAction('freestyler.element-panel-context', {prompt: 'interrupting prompt'});
+
+      currentView = await view.nextInput;
+      assert.deepEqual(currentView.messages, [
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'first question',
+          imageInput: undefined,
+        },
+        {
+          answer: 'Thinking...',
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+          error: AiAssistanceModel.ErrorType.ABORT,
+        },
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'interrupting prompt',
+          imageInput: undefined,
+        },
+        {
+          answer: 'Interrupted and answered',
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+    });
+
     it('should not save partial responses to conversation history', async () => {
 
       updateHostConfig({

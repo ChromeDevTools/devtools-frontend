@@ -6,6 +6,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
+import type {FinalizeOptions} from './types.js';
 
 /**
  * This handler is responsible for the relationships between:
@@ -130,7 +131,7 @@ export function handleEvent(event: Types.Events.Event): void {
   }
 }
 
-export async function finalize(options: Types.Configuration.ParseOptions): Promise<void> {
+export async function finalize(options: FinalizeOptions): Promise<void> {
   // Painting in Chrome never uses the emulated DPR, but instead used the host's DPR.
   // We need to correct for that for our responsive image checks in the ImageDelivery
   // insight.

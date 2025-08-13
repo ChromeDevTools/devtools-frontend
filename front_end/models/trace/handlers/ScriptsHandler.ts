@@ -10,7 +10,7 @@ import * as Types from '../types/types.js';
 
 import {data as metaHandlerData, type MetaHandlerData} from './MetaHandler.js';
 import {data as networkRequestsHandlerData} from './NetworkRequestsHandler.js';
-import type {HandlerName} from './types.js';
+import type {FinalizeOptions, HandlerName} from './types.js';
 
 export interface ScriptsData {
   /** Note: this is only populated when the "Enhanced Traces" feature is enabled. */
@@ -254,7 +254,7 @@ function findCachedRawSourceMap(script: Script, options: Types.Configuration.Par
   return;
 }
 
-export async function finalize(options: Types.Configuration.ParseOptions): Promise<void> {
+export async function finalize(options: FinalizeOptions): Promise<void> {
   const meta = metaHandlerData();
   const networkRequests = [...networkRequestsHandlerData().byId.values()];
 

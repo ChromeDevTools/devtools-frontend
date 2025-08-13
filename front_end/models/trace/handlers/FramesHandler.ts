@@ -11,7 +11,7 @@ import {data as layerTreeHandlerData, type LayerTreeData} from './LayerTreeHandl
 import {data as metaHandlerData, type MetaHandlerData} from './MetaHandler.js';
 import {data as rendererHandlerData, type RendererHandlerData} from './RendererHandler.js';
 import * as Threads from './Threads.js';
-import type {HandlerName} from './types.js';
+import type {FinalizeOptions, HandlerName} from './types.js';
 
 /**
  * IMPORTANT: this handler is slightly different to the rest. This is because
@@ -24,21 +24,20 @@ import type {HandlerName} from './types.js';
  * In time we expect to migrate this code to a more "typical" handler.
  */
 
-const allEvents: Types.Events.Event[] = [];
 let model: TimelineFrameModel|null = null;
 
 export function reset(): void {
-  allEvents.length = 0;
+  model = null;
+}
+export function handleEvent(): void {
 }
 
-export function handleEvent(event: Types.Events.Event): void {
-  allEvents.push(event);
-}
-
-export async function finalize(): Promise<void> {
+export async function finalize({allTraceEvents}: FinalizeOptions): Promise<void> {
   // Snapshot events can be emitted out of order, so we need to sort before
-  // building the frames model.
-  Helpers.Trace.sortTraceEventsInPlace(allEvents);
+  // building the frames model, but we need to take a copy because we don't
+  // can't mutate the raw input.
+  // TODO(crbug.com/436491188): this is expensive...we copy and sort the entire trace each time we import it.
+  const allEvents = allTraceEvents.toSorted(Helpers.Trace.eventTimeComparator);
 
   const modelForTrace = new TimelineFrameModel(
       allEvents,

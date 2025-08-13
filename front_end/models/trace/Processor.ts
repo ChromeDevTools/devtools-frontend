@@ -216,6 +216,10 @@ export class TraceProcessor extends EventTarget {
     options.logger?.end('parse:handleEvent');
 
     // Finalize.
+    const finalizeOptions: Handlers.Types.FinalizeOptions = {
+      ...options,
+      allTraceEvents: traceEvents,
+    };
     for (let i = 0; i < sortedHandlers.length; i++) {
       const [name, handler] = sortedHandlers[i];
       if (handler.finalize) {
@@ -223,7 +227,7 @@ export class TraceProcessor extends EventTarget {
         // Yield to the UI because finalize() calls can be expensive
         // TODO(jacktfranklin): consider using `scheduler.yield()` or `scheduler.postTask(() => {}, {priority: 'user-blocking'})`
         await new Promise(resolve => setTimeout(resolve, 0));
-        await handler.finalize(options);
+        await handler.finalize(finalizeOptions);
         options.logger?.end(`parse:${name}:finalize`);
       }
       const percent = calculateProgress(i / sortedHandlers.length, ProgressPhase.FINALIZE);

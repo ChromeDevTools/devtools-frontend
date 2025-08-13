@@ -20,6 +20,7 @@ describe('ScriptsHandler', () => {
     await Trace.Handlers.ModelHandlers.Meta.finalize();
     await Trace.Handlers.ModelHandlers.NetworkRequests.finalize();
     await Trace.Handlers.ModelHandlers.Scripts.finalize({
+      allTraceEvents: events,
       async resolveSourceMap(params: Trace.Types.Configuration.ResolveSourceMapParams):
           Promise<SDK.SourceMap.SourceMap> {
             // Don't need to actually make a source map.

@@ -5,7 +5,7 @@
 
 import * as Common from '../../core/common/common.js';
 
-import {type ResponseData, ResponseType, type SerializedResponseData} from './agents/AiAgent.js';
+import {type ContextDetail, type ResponseData, ResponseType, type SerializedResponseData} from './agents/AiAgent.js';
 
 const MAX_TITLE_LENGTH = 80;
 
@@ -42,6 +42,15 @@ export class Conversation {
   #isReadOnly: boolean;
   readonly history: ResponseData[];
   #isExternal: boolean;
+
+  static #generateContextDetailsMarkdown(details: ContextDetail[]): string {
+    let detailsMarkdown = '**Details**:\n\n';
+    for (const detail of details) {
+      const text = detail.codeLang ? `\`\`\`${detail.codeLang}\n${detail.text}\n\`\`\`\n` : detail.text;
+      detailsMarkdown += `**${detail.title}:**\n\n${text}\n\n`;
+    }
+    return detailsMarkdown;
+  }
 
   constructor(
       type: ConversationType, data: ResponseData[] = [], id: string = crypto.randomUUID(), isReadOnly = true,
@@ -92,6 +101,66 @@ export class Conversation {
       return history;
     }
     return historyWithoutImages;
+  }
+
+  getConversationMarkdown(): string {
+    const contentParts: string[] = [];
+    contentParts.push(
+        '# Exported Chat from Chrome DevTools AI Assistance\n\n' +
+            `**Export Timestamp (UTC):** ${new Date().toISOString()}\n\n` +
+            '---\n\n',
+    );
+    for (const item of this.history) {
+      switch (item.type) {
+        case ResponseType.USER_QUERY: {
+          contentParts.push(`### User: ${item.query}\n`);
+          if (item.imageInput) {
+            contentParts.push('User attached an image\n\n');
+          }
+          break;
+        }
+        case ResponseType.CONTEXT: {
+          contentParts.push('### Context:\n');
+          if (item.details && item.details.length > 0) {
+            contentParts.push(Conversation.#generateContextDetailsMarkdown(item.details));
+          }
+          break;
+        }
+        case ResponseType.TITLE: {
+          contentParts.push(`### AI (Title): ${item.title}\n\n`);
+          break;
+        }
+        case ResponseType.THOUGHT: {
+          contentParts.push(`### AI (Thought): ${item.thought}\n\n`);
+          break;
+        }
+        case ResponseType.ACTION: {
+          // We want to export only actions with output field
+          if (!item.output) {
+            break;
+          }
+          contentParts.push('### AI (Action):\n');
+          if (item.code) {
+            contentParts.push(`**Code executed:**\n\`\`\`\n${item.code}\n\`\`\`\n`);
+          }
+          if (item.output) {
+            contentParts.push(`**Output:**\n\`\`\`\n${item.output}\n\`\`\`\n`);
+          }
+          if (item.canceled) {
+            contentParts.push('**(Action Canceled)**\n');
+          }
+          contentParts.push('\n');
+          break;
+        }
+        case ResponseType.ANSWER: {
+          if (item.complete) {
+            contentParts.push(`### AI (Answer): ${item.text}\n\n`);
+          }
+          break;
+        }
+      }
+    }
+    return contentParts.join('');
   }
 
   archiveConversation(): void {

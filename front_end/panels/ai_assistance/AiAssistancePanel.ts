@@ -12,6 +12,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
@@ -81,6 +82,10 @@ const UIStrings = {
    * @description AI assistance UI text that deletes all local history entries.
    */
   clearChatHistory: 'Clear local chats',
+  /**
+   *@description AI assistance UI text for the export conversation button.
+   */
+  exportConversation: 'Export conversation',
   /**
    * @description AI assistance UI text explains that he user had no pas conversations.
    */
@@ -276,10 +281,12 @@ interface ToolbarViewInput {
   onNewChatClick: () => void;
   populateHistoryMenu: (contextMenu: UI.ContextMenu.ContextMenu) => void;
   onDeleteClick: () => void;
+  onExportConversationClick: () => void;
   onHelpClick: () => void;
   onSettingsClick: () => void;
-  showDeleteHistoryAction: boolean;
+  isLoading: boolean;
   showChatActions: boolean;
+  showActiveConversationActions: boolean;
 }
 
 export type ViewInput = ChatViewProps&ToolbarViewInput;
@@ -311,15 +318,25 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
           .populateMenuCall=${input.populateHistoryMenu}
         ></devtools-menu-button>`
           : Lit.nothing}
-        ${input.showDeleteHistoryAction
-          ? html`<devtools-button
+        ${input.showActiveConversationActions ? html`
+          <devtools-button
               title=${i18nString(UIStrings.deleteChat)}
               aria-label=${i18nString(UIStrings.deleteChat)}
               .iconName=${'bin'}
               .jslogContext=${'freestyler.delete'}
               .variant=${Buttons.Button.Variant.TOOLBAR}
-              @click=${input.onDeleteClick}></devtools-button>`
-          : Lit.nothing}
+              @click=${input.onDeleteClick}>
+          </devtools-button>
+          <devtools-button
+            title=${i18nString(UIStrings.exportConversation)}
+            aria-label=${i18nString(UIStrings.exportConversation)}
+            .iconName=${'download'}
+            .disabled=${input.isLoading}
+            .jslogContext=${'export-ai-conversation'}
+            .variant=${Buttons.Button.Variant.TOOLBAR}
+            @click=${input.onExportConversationClick}>
+          </devtools-button>`
+           : Lit.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <x-link
@@ -857,8 +874,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
               this.#conversation?.type === AiAssistanceModel.ConversationType.STYLING,
           imageInput: this.#imageInput,
-          showDeleteHistoryAction: Boolean(this.#conversation && !this.#conversation.isEmpty),
           showChatActions: this.#shouldShowChatActions(),
+          showActiveConversationActions: Boolean(this.#conversation && !this.#conversation.isEmpty),
           isTextInputDisabled: this.#isTextInputDisabled(),
           emptyStateSuggestions,
           inputPlaceholder: this.#getChatInputPlaceholder(),
@@ -870,6 +887,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onNewChatClick: this.#handleNewChatRequest.bind(this),
           populateHistoryMenu: this.#populateHistoryMenu.bind(this),
           onDeleteClick: this.#onDeleteClicked.bind(this),
+          onExportConversationClick: this.#onExportConversationClick.bind(this),
           onHelpClick: () => {
             UI.UIUtils.openInNewTab(AI_ASSISTANCE_HELP);
           },
@@ -1181,6 +1199,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     void AiAssistanceModel.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.chatDeleted));
+  }
+
+  async #onExportConversationClick(): Promise<void> {
+    if (!this.#conversation) {
+      return;
+    }
+    const markdownContent = this.#conversation.getConversationMarkdown();
+    const titleFormatted = Platform.StringUtilities.toSnakeCase(this.#conversation.title || '');
+    const contentData = new TextUtils.ContentData.ContentData(markdownContent, false, 'text/markdown');
+    const filename = `devtools_${titleFormatted || 'conversation'}.md` as Platform.DevToolsPath.RawPathString;
+    await Workspace.FileManager.FileManager.instance().save(filename, contentData, true);
+    Workspace.FileManager.FileManager.instance().close(filename);
   }
 
   async #openHistoricConversation(conversation: AiAssistanceModel.Conversation): Promise<void> {

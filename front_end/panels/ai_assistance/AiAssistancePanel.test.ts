@@ -411,48 +411,52 @@ describeWithMockConnection('AI Assistance Panel', () => {
       sinon.assert.calledWith(stub, 'chrome-ai');
     });
 
-    it('should not show chat and delete history actions when ai assistance enabled setting is disabled', async () => {
-      Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(true);
+    it('should not show chat, delete history and export conversation actions when ai assistance enabled setting is disabled',
+       async () => {
+         Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(true);
 
-      const {view} = await createAiAssistancePanel();
+         const {view} = await createAiAssistancePanel();
 
-      assert.isFalse(view.input.showChatActions);
-      assert.isFalse(view.input.showDeleteHistoryAction);
-    });
+         assert.isFalse(view.input.showChatActions);
+         assert.isFalse(view.input.showActiveConversationActions);
+       });
 
-    it('should not show chat and delete history actions when ai assistance setting is marked as false', async () => {
-      Common.Settings.moduleSetting('ai-assistance-enabled').set(false);
+    it('should not show chat, delete history and export conversation actions when ai assistance setting is marked as false',
+       async () => {
+         Common.Settings.moduleSetting('ai-assistance-enabled').set(false);
 
-      const {view} = await createAiAssistancePanel();
+         const {view} = await createAiAssistancePanel();
 
-      assert.isFalse(view.input.showChatActions);
-      assert.isFalse(view.input.showDeleteHistoryAction);
-    });
+         assert.isFalse(view.input.showChatActions);
+         assert.isFalse(view.input.showActiveConversationActions);
+       });
 
-    it('should not show chat and delete history actions when the user is blocked by age', async () => {
-      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      updateHostConfig({
-        aidaAvailability: {
-          blockedByAge: true,
-        },
-      });
+    it('should not show chat, delete history and export conversation actions when the user is blocked by age',
+       async () => {
+         Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+         updateHostConfig({
+           aidaAvailability: {
+             blockedByAge: true,
+           },
+         });
 
-      const {view} = await createAiAssistancePanel();
+         const {view} = await createAiAssistancePanel();
 
-      assert.isFalse(view.input.showChatActions);
-      assert.isFalse(view.input.showDeleteHistoryAction);
-    });
+         assert.isFalse(view.input.showChatActions);
+         assert.isFalse(view.input.showActiveConversationActions);
+       });
 
-    it('should not show chat and delete history actions when Aida availability status is SYNC IS PAUSED', async () => {
-      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+    it('should not show chat, delete history and export conversation actions when Aida availability status is SYNC IS PAUSED',
+       async () => {
+         Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
 
-      const {view} =
-          await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED});
+         const {view} =
+             await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED});
 
-      assert.isFalse(view.input.showChatActions);
-      assert.isFalse(view.input.showDeleteHistoryAction);
-    });
+         assert.isFalse(view.input.showChatActions);
+         assert.isFalse(view.input.showActiveConversationActions);
+       });
+
   });
 
   describe('history interactions', () => {
@@ -1667,5 +1671,60 @@ describeWithEnvironment('AiAssistancePanel.ActionDelegate', () => {
 
     const [size] = await setDrawerSizeCall;
     assert.strictEqual(size, totalSizeStub / 4);
+  });
+
+  describe('Export conversation button', () => {
+    it('is not visible for empty conversation', async () => {
+      const {view} = await createAiAssistancePanel();
+      assert.isFalse(view.input.showActiveConversationActions);
+    });
+
+    it('should show export button if there are history items and disable it when loading', async () => {
+      const {promise, resolve} = Promise.withResolvers<void>();
+      const stubbedResponses: AsyncGenerator<AiAssistanceModel.ResponseData> = (async function*() {
+        yield {
+          type: AiAssistanceModel.ResponseType.THOUGHT,
+          thought: 'first response answer ',
+        };
+        await promise;
+        yield {
+          type: AiAssistanceModel.ResponseType.ANSWER,
+          text: 'second response answer',
+          complete: true,
+        };
+      })();
+      sinon.stub(AiAssistanceModel.StylingAgent.prototype, 'run').returns(stubbedResponses);
+
+      const {panel, view} = await createAiAssistancePanel();
+      panel.handleAction('freestyler.elements-floating-button');
+
+      assert.isFalse(view.input.showActiveConversationActions, 'should not show export conversation action by default');
+      (await view.nextInput).onTextSubmit('test');
+      await view.nextInput;
+      assert.isTrue(view.input.showActiveConversationActions, 'should show active conversation actions while loading');
+      assert.isTrue(view.input.isLoading, 'button should be disabled while loading');
+      resolve();
+      await view.nextInput;
+      assert.isTrue(view.input.showActiveConversationActions, 'should show active conversation actions after loading');
+    });
+
+    it('should call the save function when export conversation button is clicked', async () => {
+      const fileManager = Workspace.FileManager.FileManager.instance();
+      const saveSpy = sinon.stub(fileManager, 'save');
+      const closeSpy = sinon.stub(fileManager, 'close');
+      const {panel, view} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+      });
+      panel.handleAction('freestyler.elements-floating-button');
+      (await view.nextInput).onTextSubmit('test question');
+      await view.nextInput;
+      await view.input.onExportConversationClick();
+
+      sinon.assert.calledOnce(saveSpy);
+      sinon.assert.calledOnce(closeSpy);
+
+      const [fileName] = saveSpy.getCall(0).args;
+      assert.strictEqual(fileName, 'devtools_test_question.md');
+    });
   });
 });

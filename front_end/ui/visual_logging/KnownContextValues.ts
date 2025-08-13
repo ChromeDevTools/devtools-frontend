@@ -1497,6 +1497,7 @@ export const knownContextValues = new Set([
   'explain.console-message.context.warning',
   'explain.console-message.hover',
   'explanation',
+  'export-ai-conversation',
   'export-har',
   'export-har-menu',
   'export-har-with-sensitive-data',

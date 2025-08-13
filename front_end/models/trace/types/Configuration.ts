@@ -38,6 +38,13 @@ export interface Configuration {
    * attempt to gather or track invalidations.
    */
   maxInvalidationEventsPerEvent: number;
+  /**
+   * Determines if the AnimationFramesHandler should be enabled. Currently in
+   * DevTools we do not use it, so we disable it by default to avoid work that
+   * we do not use. If you disable it, you will still see `data.AnimationFrames`
+   * from the model, but the contents will be empty.
+   */
+  enableAnimationsFrameHandler: boolean;
 }
 
 export const defaults = (): Configuration => ({
@@ -45,6 +52,7 @@ export const defaults = (): Configuration => ({
   showAllEvents: false,
   debugMode: false,
   maxInvalidationEventsPerEvent: 20,
+  enableAnimationsFrameHandler: false,
 });
 
 /**

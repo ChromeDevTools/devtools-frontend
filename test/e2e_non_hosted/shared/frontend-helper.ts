@@ -81,7 +81,7 @@ export class DevToolsPage extends PageWrapper {
         clearInterval(this.#heartbeatInterval);
       }
       if (status === -2) {
-        console.error(`hearbeat(${url}): failed with ${status}`);
+        console.error(`heartbeat(${url}): failed with ${status}`);
       }
     }, 2000);
   }

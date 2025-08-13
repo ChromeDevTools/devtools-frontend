@@ -98,6 +98,11 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
+  override async reload() {
+    await super.reload();
+    await this.ensureReadyForTesting();
+  }
+
   async ensureReadyForTesting() {
     await this.waitForFunction(async () => {
       const result = await this.page.evaluate(`(async function() {
@@ -626,7 +631,7 @@ export class DevToolsPage extends PageWrapper {
 export interface DevtoolsSettings {
   enabledDevToolsExperiments: string[];
   disabledDevToolsExperiments: string[];
-  devToolsSettings: Record<string, string|boolean>;
+  devToolsSettings: Record<string, unknown>;
   // front_end/ui/legacy/DockController.ts DockState
   dockingMode: 'bottom'|'right'|'left'|'undocked';
 }
@@ -643,23 +648,36 @@ export const DEFAULT_DEVTOOLS_SETTINGS: DevtoolsSettings = {
 /**
  * @internal
  */
-async function setDevToolsSettings(devToolsPata: DevToolsPage, settings: Record<string, string|boolean>) {
+async function setDevToolsSettings(devToolsPata: DevToolsPage, settings: Record<string, unknown>) {
   if (!Object.keys(settings).length) {
     return;
   }
   const rawValues = Object.entries(settings).map(value => {
-    const rawValue = typeof value[1] === 'boolean' ? value[1].toString() : `'${value[1]}'`;
-    return [value[0], rawValue];
+    switch (typeof value[1]) {
+      case 'boolean':
+        return [value[0], value[1].toString()];
+      case 'string':
+      case 'number':
+      case 'bigint':
+        return [value[0], `'${value[1]}'`];
+      default:
+        return [value[0], JSON.stringify(value[1])];
+    }
   });
 
   return await devToolsPata.evaluate(`(async () => {
       const Common = await import('./core/common/common.js');
-      ${rawValues.map(([settingName, value]) => {
-    // Creating the setting might not be enough if it already exists, so we
-    // create it and then forcibly set the value.
-    return `const setting = Common.Settings.Settings.instance().createSetting('${settingName}', ${value});
-        setting.set(${value});`;
-  })}
+      ${
+      rawValues
+          .map(([settingName, value]) => {
+            // Creating the setting might not be enough if it already exists, so we
+            // create it and then forcibly set the value
+            return `{
+              const setting = Common.Settings.Settings.instance().createSetting('${settingName}', ${value});
+              setting.set(${value});
+            }`;
+          })
+          .join('')}
     })()`);
 }
 
@@ -739,7 +757,6 @@ export async function setupDevToolsPage(
     setDisabledDevToolsExperiments(devToolsPage, settings.disabledDevToolsExperiments),
   ]);
   await devToolsPage.reload();
-  await devToolsPage.ensureReadyForTesting();
 
   await Promise.all([
     devToolsPage.throttleCPUIfRequired(),

@@ -4,7 +4,7 @@
 
 import type {DevToolsFrontendReloadOptions} from '../../conductor/frontend_tab.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import {reloadDevTools as baseReloadDevTools, waitFor} from '../../shared/helper.js';
+import {reloadDevTools as baseReloadDevTools} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {veImpressionForAnimationsPanel} from './animations-helpers.js';
@@ -89,7 +89,7 @@ export async function reloadDevTools(
   }
   await baseReloadDevTools(options);
   const selectedPanel = options?.selectedPanel?.name || options?.queryParams?.panel || 'elements';
-  await waitFor(`.panel.${selectedPanel}`);
+  await devToolsPage.waitFor(`.panel.${selectedPanel}`);
   const expectClosedPanels = options?.expectClosedPanels;
   const dockable = options?.canDock;
   const panelImpression = selectedPanel === 'elements' ? veImpressionForElementsPanel({dockable}) :

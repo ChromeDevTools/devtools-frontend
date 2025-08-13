@@ -635,42 +635,42 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     const agent = targetConversationType ?
         this.#conversationHandler.createAgent(targetConversationType, this.#changeManager) :
         undefined;
-    this.#updateConversationState(agent);
+    this.#updateConversationState({agent});
   }
 
-  #updateConversationState(input?: AiAssistanceModel.AiAgent<unknown>|AiAssistanceModel.Conversation): void {
-    const agent = input instanceof AiAssistanceModel.AiAgent ? input : undefined;
-    const conversation = input instanceof AiAssistanceModel.Conversation ? input : undefined;
-
-    if (this.#conversationAgent !== agent) {
+  #updateConversationState(opts?: {
+    agent?: AiAssistanceModel.AiAgent<unknown>,
+    conversation?: AiAssistanceModel.Conversation,
+  }): void {
+    if (this.#conversationAgent !== opts?.agent) {
       // Cancel any previous conversation
       this.#cancel();
       this.#messages = [];
       this.#isLoading = false;
       this.#conversation?.archiveConversation();
-      this.#conversationAgent = agent;
+      this.#conversationAgent = opts?.agent;
 
       // If we get a new agent we need to
       // create a new conversation along side it
-      if (agent) {
+      if (opts?.agent) {
         this.#conversation = new AiAssistanceModel.Conversation(
-            agentToConversationType(agent),
+            agentToConversationType(opts?.agent),
             [],
-            agent.id,
+            opts?.agent.id,
             false,
         );
       }
     }
 
-    if (!agent) {
+    if (!opts?.agent) {
       this.#conversation = undefined;
       // We need to run doConversation separately
       this.#messages = [];
       // If a no new agent is provided
       // but conversation is
       // update with history conversation
-      if (conversation) {
-        this.#conversation = conversation;
+      if (opts?.conversation) {
+        this.#conversation = opts?.conversation;
       }
     }
 
@@ -694,7 +694,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#selectedPerformanceTrace =
         createPerformanceTraceContext(UI.Context.Context.instance().flavor(TimelineUtils.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
-    this.#updateConversationState(this.#conversationAgent);
+    this.#updateConversationState({agent: this.#conversationAgent});
 
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
@@ -791,7 +791,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     this.#selectedElement = createNodeContext(selectedElementFilter(ev.data));
-    this.#updateConversationState(this.#conversationAgent);
+    this.#updateConversationState({agent: this.#conversationAgent});
   };
 
   #handleDOMNodeAttrChange =
@@ -810,7 +810,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
 
         this.#selectedRequest = Boolean(ev.data) ? new AiAssistanceModel.RequestContext(ev.data) : null;
-        this.#updateConversationState(this.#conversationAgent);
+        this.#updateConversationState({agent: this.#conversationAgent});
       };
 
   #handlePerformanceTraceFlavorChange =
@@ -821,7 +821,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
         this.#selectedPerformanceTrace =
             Boolean(ev.data) ? new AiAssistanceModel.PerformanceTraceContext(ev.data) : null;
-        this.#updateConversationState(this.#conversationAgent);
+        this.#updateConversationState({agent: this.#conversationAgent});
       };
 
   #handleUISourceCodeFlavorChange =
@@ -834,7 +834,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           return;
         }
         this.#selectedFile = new AiAssistanceModel.FileContext(ev.data);
-        this.#updateConversationState(this.#conversationAgent);
+        this.#updateConversationState({agent: this.#conversationAgent});
       };
 
   #onPrimaryPageChanged(): void {
@@ -1137,7 +1137,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
          agent.getConversationType() !== targetConversationType)) {
       agent = this.#conversationHandler.createAgent(targetConversationType, this.#changeManager);
     }
-    this.#updateConversationState(agent);
+    this.#updateConversationState({agent});
     const predefinedPrompt = opts?.['prompt'];
     if (predefinedPrompt && typeof predefinedPrompt === 'string') {
       this.#imageInput = undefined;
@@ -1218,7 +1218,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
 
-    this.#updateConversationState(conversation);
+    this.#updateConversationState({conversation});
     await this.#doConversation(conversation.history);
   }
 

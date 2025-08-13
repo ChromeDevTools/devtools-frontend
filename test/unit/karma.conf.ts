@@ -117,7 +117,6 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       `--remote-debugging-port=${REMOTE_DEBUGGING_PORT}`,
       '--use-mock-keychain',
       '--disable-features=DialMediaRouteProvider',
-      '--enable-features=CADisplayLink',
       '--password-store=basic',
       '--disable-extensions',
       '--disable-gpu',

@@ -919,6 +919,7 @@ export const knownContextValues = new Set([
   'cookies-data',
   'cookies-for-frame',
   'copy',
+  'copy-ai-response',
   'copy-all-as-curl',
   'copy-all-as-curl-bash',
   'copy-all-as-curl-cmd',

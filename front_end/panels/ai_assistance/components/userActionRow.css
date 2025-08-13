@@ -14,7 +14,7 @@
     align-items: center;
     margin-block: calc(-1 * var(--sys-size-3));
 
-    .rate-buttons {
+    .action-buttons {
       display: flex;
       align-items: center;
       gap: var(--sys-size-2);

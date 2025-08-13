@@ -98,6 +98,10 @@ const UIStrings = {
    * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
+  /**
+   * @description The message shown in a toast when the response is copied to the clipboard.
+   */
+  responseCopiedToClipboard: 'Response copied to clipboard',
 } as const;
 
 /*
@@ -910,10 +914,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : undefined,
           onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
                                                                        undefined,
+          onCopyResponseClick: this.#onCopyResponseClick.bind(this),
           onTextInputChange: this.#handleTextInputChange.bind(this),
           onLoadImage: isAiAssistanceMultimodalUploadInputEnabled() ? this.#handleLoadImage.bind(this) : undefined,
         },
         this.#viewOutput, this.contentElement);
+  }
+
+  #onCopyResponseClick(message: ModelChatMessage): void {
+    const markdown = getResponseMarkdown(message);
+    if (markdown) {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(markdown);
+      Snackbars.Snackbar.Snackbar.show({
+        message: i18nString(UIStrings.responseCopiedToClipboard),
+      });
+    }
   }
 
   #handleSelectElementClick(): void {
@@ -1575,6 +1590,53 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       release();
     }
   }
+}
+
+export function getResponseMarkdown(message: ModelChatMessage): string {
+  let markdown = '';
+
+  const generateContextDetailsMarkdown = (details: Array<{title: string, text: string, codeLang?: string}>): string => {
+    let detailsMarkdown = '**Details**:\n\n';
+    for (const detail of details) {
+      const text = detail.codeLang ? `\`\`\`${detail.codeLang}\n${detail.text}\n\`\`\`\n` : `${detail.text}`;
+      detailsMarkdown += `**${detail.title}:**\n\n${text}\n\n`;
+    }
+    return detailsMarkdown;
+  };
+
+  for (const step of message.steps) {
+    if (step.contextDetails) {
+      markdown += '### Context:\n';
+      markdown += generateContextDetailsMarkdown(step.contextDetails);
+    }
+    if (step.title) {
+      markdown += `### AI (Title):\n${step.title}\n\n`;
+    }
+    if (step.thought) {
+      markdown += `### AI (Thought):\n${step.thought}\n\n`;
+    }
+    if (step.code) {
+      markdown += '### AI (Action):\n';
+      markdown += `**Code executed:**\n\`\`\`\n${step.code.trim()}\n\`\`\`\n`;
+    }
+    if (step.output) {
+      if (!step.code) {  // Add action header if not already added by code
+        markdown += '### AI (Action):\n';
+      }
+      markdown += `**Output:**\n\`\`\`\n${step.output}\n\`\`\`\n`;
+    }
+    if (step.canceled) {
+      if (!step.code && !step.output) {  // Add action header if not already added
+        markdown += '### AI (Action):\n';
+      }
+      markdown += '**(Action Canceled)**\n';
+    }
+    markdown += '\n';
+  }
+  if (message.answer) {
+    markdown += `### AI (Answer):\n${message.answer}\n`;
+  }
+  return markdown;
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

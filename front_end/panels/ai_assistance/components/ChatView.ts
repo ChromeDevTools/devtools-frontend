@@ -273,6 +273,7 @@ export interface Props {
   onCancelClick: () => void;
   onContextClick: () => void;
   onNewConversation: () => void;
+  onCopyResponseClick: (message: ModelChatMessage) => void;
   onTakeScreenshot?: () => void;
   onRemoveImageInput?: () => void;
   onTextInputChange: (input: string) => void;
@@ -626,6 +627,7 @@ export class ChatView extends HTMLElement {
             onSuggestionClick: this.#handleSuggestionClick,
             onFeedbackSubmit: this.#props.onFeedbackSubmit,
             onMessageContainerRef: this.#handleMessageContainerRef,
+            onCopyResponseClick: this.#props.onCopyResponseClick,
           })}
           ${this.#props.isReadOnly
             ? renderReadOnlySection({
@@ -912,6 +914,7 @@ function renderChatMessage({
   markdownRenderer,
   onSuggestionClick,
   onFeedbackSubmit,
+  onCopyResponseClick,
 }: {
   message: ChatMessage,
   isLoading: boolean,
@@ -922,6 +925,7 @@ function renderChatMessage({
   markdownRenderer: MarkdownRendererWithCodeBlock,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+  onCopyResponseClick: (message: ModelChatMessage) => void,
 }): Lit.TemplateResult {
   if (message.entity === ChatMessageEntity.USER) {
     const name = userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
@@ -990,6 +994,7 @@ function renderChatMessage({
             },
             suggestions: (isLast && !isReadOnly) ? message.suggestions : undefined,
             onSuggestionClick,
+            onCopyResponseClick: () => onCopyResponseClick(message),
             canShowFeedbackForm,
           })}></devtools-widget>`
       }
@@ -1102,6 +1107,7 @@ function renderMessages({
   changeManager,
   onSuggestionClick,
   onFeedbackSubmit,
+  onCopyResponseClick,
   onMessageContainerRef,
 }: {
   messages: ChatMessage[],
@@ -1112,6 +1118,7 @@ function renderMessages({
   markdownRenderer: MarkdownRendererWithCodeBlock,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+  onCopyResponseClick: (message: ModelChatMessage) => void,
   onMessageContainerRef: (el: Element|undefined) => void,
   changeSummary?: string,
   changeManager?: AiAssistanceModel.ChangeManager,
@@ -1145,6 +1152,7 @@ function renderMessages({
           markdownRenderer,
           onSuggestionClick,
           onFeedbackSubmit,
+          onCopyResponseClick,
         }),
       )}
       ${renderPatchWidget()}
@@ -1596,6 +1604,7 @@ function renderMainContents({
   changeManager,
   onSuggestionClick,
   onFeedbackSubmit,
+  onCopyResponseClick,
   onMessageContainerRef,
 }: {
   state: State,
@@ -1611,6 +1620,7 @@ function renderMainContents({
   changeManager: AiAssistanceModel.ChangeManager,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+  onCopyResponseClick: (message: ModelChatMessage) => void,
   onMessageContainerRef: (el: Element|undefined) => void,
   conversationType?: AiAssistanceModel.ConversationType,
   changeSummary?: string,
@@ -1640,7 +1650,7 @@ function renderMainContents({
       onSuggestionClick,
       onFeedbackSubmit,
       onMessageContainerRef,
-
+      onCopyResponseClick
     });
   }
 

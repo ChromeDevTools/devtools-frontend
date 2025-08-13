@@ -25,6 +25,7 @@ describeWithEnvironment('UserActionRow', () => {
       showRateButtons: true,
       canShowFeedbackForm: true,
       onSuggestionClick: sinon.stub(),
+      onCopyResponseClick: sinon.stub(),
       onFeedbackSubmit: sinon.stub(),
     });
 
@@ -46,6 +47,7 @@ describeWithEnvironment('UserActionRow', () => {
       showRateButtons: true,
       canShowFeedbackForm: false,
       onSuggestionClick: sinon.stub(),
+      onCopyResponseClick: sinon.stub(),
       onFeedbackSubmit: sinon.stub(),
     });
 
@@ -67,6 +69,7 @@ describeWithEnvironment('UserActionRow', () => {
       showRateButtons: true,
       canShowFeedbackForm: true,
       onSuggestionClick: sinon.stub(),
+      onCopyResponseClick: sinon.stub(),
       onFeedbackSubmit: sinon.stub(),
     });
 
@@ -102,6 +105,7 @@ describeWithEnvironment('UserActionRow', () => {
           {
             onRatingClick: () => {},
             onReportClick: () => {},
+            onCopyResponseClick: () => {},
             scrollSuggestionsScrollContainer: () => {},
             onSuggestionsScrollOrResize: () => {},
             onSuggestionClick: () => {},

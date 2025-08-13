@@ -26,6 +26,7 @@ import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockStore} from '../../testing/MockSettingStorage.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
+import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Network from '../network/network.js';
 import type * as TimelineComponents from '../timeline/components/components.js';
@@ -1152,6 +1153,25 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
   });
 
+  describe('copy response', () => {
+    it('should copy the response to clipboard when copy button is clicked', async () => {
+      const {view} = await createAiAssistancePanel();
+      const modelMessage: AiAssistancePanel.ModelChatMessage = {
+        entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+        steps: [],
+        answer: 'test',
+      };
+
+      const copyTextStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
+      const showSnackbarStub = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
+      view.input.onCopyResponseClick(modelMessage);
+
+      const expectedMarkdown = AiAssistancePanel.getResponseMarkdown(modelMessage);
+      sinon.assert.calledOnceWithExactly(copyTextStub, expectedMarkdown);
+      sinon.assert.calledOnce(showSnackbarStub);
+    });
+  });
+
   describe('auto agent selection for panels', () => {
     const tests: Array<{
       panelName: string,
@@ -1659,6 +1679,54 @@ describeWithMockConnection('AI Assistance Panel', () => {
         type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION
       });
       assert.isUndefined((await view.nextInput).imageInput);
+    });
+  });
+
+  describe('getResponseMarkdown', () => {
+    it('should generate correct markdown from a message object', () => {
+      const message: AiAssistancePanel.ModelChatMessage = {
+        entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+        steps: [
+          {
+            isLoading: false,
+            contextDetails: [
+              {title: 'Detail 1', text: 'Some detail text'},
+              {title: 'Detail 2', text: 'Some code', codeLang: 'js'},
+            ],
+          },
+          {
+            isLoading: false,
+            title: 'Step Title',
+            thought: 'Step Thought',
+            code: 'console.log("hello");',
+            output: 'hello',
+          },
+          {
+            isLoading: false,
+            code: 'some code',
+            canceled: true,
+          },
+          {
+            isLoading: false,
+            canceled: true,
+          },
+        ],
+        answer: 'Final answer.',
+      };
+
+      const expectedMarkdown = [
+        '### Context:\n',
+        '**Details**:\n\n**Detail 1:**\n\nSome detail text\n\n**Detail 2:**\n\n```js\nSome code\n```\n\n\n\n',
+        '### AI (Title):\nStep Title\n\n',
+        '### AI (Thought):\nStep Thought\n\n',
+        '### AI (Action):\n**Code executed:**\n```\nconsole.log("hello");\n```\n**Output:**\n```\nhello\n```\n\n',
+        '### AI (Action):\n**Code executed:**\n```\nsome code\n```\n**(Action Canceled)**\n\n',
+        '### AI (Action):\n**(Action Canceled)**\n\n',
+        '### AI (Answer):\nFinal answer.\n',
+      ].join('');
+
+      const result = AiAssistancePanel.getResponseMarkdown(message);
+      assert.strictEqual(result, expectedMarkdown);
     });
   });
 

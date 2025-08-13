@@ -277,13 +277,7 @@ export class ConversationHandler {
 
   async #handleExternalStylingConversation(prompt: string, selector = 'body'):
       Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
-    const options = {
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
-    };
-    const stylingAgent = isAiAssistanceStylingWithFunctionCallingEnabled() ?
-        new StylingAgentWithFunctionCalling({...options}) :
-        new StylingAgent({...options});
+    const stylingAgent = this.createAgent(ConversationType.STYLING);
     const node = await inspectElementBySelector(selector);
     if (node) {
       await node.setAsInspectedNode();
@@ -300,11 +294,7 @@ export class ConversationHandler {
   async #handleExternalPerformanceInsightsConversation(
       prompt: string, insightTitle: string,
       traceModel: Trace.TraceModel.Model): Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
-    const options = {
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
-    };
-    const insightsAgent = new PerformanceAgent(options, ConversationType.PERFORMANCE_INSIGHT);
+    const insightsAgent = this.createAgent(ConversationType.PERFORMANCE_INSIGHT);
     const focusOrError = await Tracing.ExternalRequests.getInsightAgentFocusToDebug(
         traceModel,
         insightTitle,
@@ -313,7 +303,7 @@ export class ConversationHandler {
       return this.#generateErrorResponse(focusOrError.error);
     }
     return this.#doExternalConversation({
-      conversationType: insightsAgent.getConversationType(),
+      conversationType: ConversationType.PERFORMANCE_INSIGHT,
       aiAgent: insightsAgent,
       prompt,
       selected: new PerformanceTraceContext(focusOrError.focus),
@@ -322,11 +312,7 @@ export class ConversationHandler {
 
   async #handleExternalNetworkConversation(prompt: string, requestUrl: string):
       Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
-    const options = {
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
-    };
-    const networkAgent = new NetworkAgent(options);
+    const networkAgent = this.createAgent(ConversationType.NETWORK);
     const request = await inspectNetworkRequestByUrl(requestUrl);
     if (!request) {
       return this.#generateErrorResponse(`Can't find request with the given selector ${requestUrl}`);

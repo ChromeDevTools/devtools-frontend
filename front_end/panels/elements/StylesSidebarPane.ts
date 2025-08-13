@@ -1955,17 +1955,11 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         continue;
       }
       const icon = new IconButton.Icon.Icon();
-      const width = '12.5px';
-      const height = '12.5px';
-      icon.data = {
-        iconName: iconInfo.iconName,
-        width,
-        height,
-        color: 'var(--icon-default)',
-      };
+      icon.name = iconInfo.iconName;
+      icon.classList.add('extra-small');
       icon.style.transform = `rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX * 1.1}, ${iconInfo.scaleY * 1.1})`;
-      icon.style.maxHeight = height;
-      icon.style.maxWidth = width;
+      icon.style.maxHeight = 'var(--sys-size-6)';
+      icon.style.maxWidth = 'var(--sys-size-6)';
       result.iconElement = icon;
     }
 

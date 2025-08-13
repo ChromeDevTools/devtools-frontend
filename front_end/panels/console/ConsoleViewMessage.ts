@@ -1465,9 +1465,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     icon.data = {
       iconName: 'lightbulb-spark',
       color: 'var(--devtools-icon-color)',
-      width: '16px',
-      height: '16px',
     };
+    icon.classList.add('medium');
     const button = document.createElement('button');
     button.append(icon);
     button.onclick = (event: Event) => {
@@ -1533,10 +1532,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.messageIcon.data = {
       iconName,
       color,
-      width: '14px',
-      height: '14px',
     };
-    this.messageIcon.classList.add('message-level-icon');
+    this.messageIcon.classList.add('message-level-icon', 'small');
     if (this.contentElementInternal) {
       this.contentElementInternal.insertBefore(this.messageIcon, this.contentElementInternal.firstChild);
     }
@@ -2077,8 +2074,8 @@ export class ConsoleCommand extends ConsoleViewMessage {
     this.setContentElement(newContentElement);
     newContentElement.classList.add('console-user-command');
     const userCommandIcon = new IconButton.Icon.Icon();
-    userCommandIcon.data = {iconName: 'chevron-right', color: 'var(--icon-default)', width: '16px', height: '16px'};
-    userCommandIcon.classList.add('command-result-icon');
+    userCommandIcon.name = 'chevron-right';
+    userCommandIcon.classList.add('command-result-icon', 'medium');
     newContentElement.appendChild(userCommandIcon);
 
     elementToMessage.set(newContentElement, this);
@@ -2110,8 +2107,8 @@ export class ConsoleCommandResult extends ConsoleViewMessage {
       element.classList.add('console-user-command-result');
       if (this.consoleMessage().level === Protocol.Log.LogEntryLevel.Info) {
         const icon = new IconButton.Icon.Icon();
-        icon.data = {iconName: 'chevron-left-dot', color: 'var(--icon-default)', width: '16px', height: '16px'};
-        icon.classList.add('command-result-icon');
+        icon.name = 'chevron-left-dot';
+        icon.classList.add('command-result-icon', 'medium');
         element.insertBefore(icon, element.firstChild);
       }
     }

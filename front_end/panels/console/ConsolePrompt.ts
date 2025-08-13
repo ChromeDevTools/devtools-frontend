@@ -117,16 +117,16 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.requestPreviewBound = this.requestPreview.bind(this);
     this.innerPreviewElement = this.eagerPreviewElement.createChild('div', 'console-eager-inner-preview');
     const previewIcon = new IconButton.Icon.Icon();
-    previewIcon.data = {iconName: 'chevron-left-dot', color: 'var(--icon-default)', width: '16px', height: '16px'};
-    previewIcon.classList.add('preview-result-icon');
+    previewIcon.name = 'chevron-left-dot';
+    previewIcon.classList.add('preview-result-icon', 'medium');
     this.eagerPreviewElement.appendChild(previewIcon);
 
     const editorContainerElement = this.element.createChild('div', 'console-prompt-editor-container');
     this.element.appendChild(this.eagerPreviewElement);
 
     this.promptIcon = new IconButton.Icon.Icon();
-    this.promptIcon.data = {iconName: 'chevron-right', color: 'var(--icon-action)', width: '16px', height: '16px'};
-    this.promptIcon.classList.add('console-prompt-icon');
+    this.promptIcon.data = {iconName: 'chevron-right', color: 'var(--icon-action)'};
+    this.promptIcon.classList.add('console-prompt-icon', 'medium');
     this.element.appendChild(this.promptIcon);
     this.iconThrottler = new Common.Throttler.Throttler(0);
 

@@ -130,10 +130,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     icon.data = {
       iconName: 'warning-filled',
       color: 'var(--icon-warning)',
-      width: '14px',
-      height: '14px',
     };
-    icon.classList.add('call-frame-warning-icon');
+    icon.classList.add('call-frame-warning-icon', 'small');
     this.callFrameWarningsElement.appendChild(icon);
     this.callFrameWarningsElement.appendChild(document.createTextNode(i18nString(UIStrings.callFrameWarnings)));
     this.callFrameWarningsElement.tabIndex = -1;
@@ -338,10 +336,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     icon.data = {
       iconName: 'large-arrow-right-filled',
       color: 'var(--icon-arrow-main-thread)',
-      width: '14px',
-      height: '14px',
     };
-    icon.classList.add('selected-call-frame-icon');
+    icon.classList.add('selected-call-frame-icon', 'small');
     element.appendChild(icon);
     element.tabIndex = item === this.list.selectedItem() ? 0 : -1;
 
@@ -350,10 +346,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       icon.data = {
         iconName: 'warning-filled',
         color: 'var(--icon-warning)',
-        width: '14px',
-        height: '14px',
       };
-      icon.classList.add('call-frame-warning-icon');
+      icon.classList.add('call-frame-warning-icon', 'small');
       const messages = callframe.missingDebugInfoDetails.resources.map(
           r => i18nString(UIStrings.debugFileNotFound, {PH1: Common.ParsedURL.ParsedURL.extractName(r.resourceUrl)}));
       UI.Tooltip.Tooltip.install(icon, [callframe.missingDebugInfoDetails.details, ...messages].join('\n'));

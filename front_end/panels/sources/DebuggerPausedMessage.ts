@@ -162,9 +162,8 @@ export class DebuggerPausedMessage {
     mainIcon.data = {
       iconName: 'info',
       color: 'var(--sys-color-on-yellow-container)',
-      width: '16px',
-      height: '16px',
     };
+    mainIcon.classList.add('medium');
     mainElement.appendChild(mainIcon);
     const breakpointType = BreakpointTypeNouns.get(data.type);
     mainElement.appendChild(document.createTextNode(
@@ -297,9 +296,8 @@ export class DebuggerPausedMessage {
       mainIcon.data = {
         iconName: errorLike ? 'cross-circle-filled' : 'info',
         color: errorLike ? 'var(--icon-error)' : 'var(--sys-color-on-yellow-container)',
-        width: '16px',
-        height: '16px',
       };
+      mainIcon.classList.add('medium');
       mainElement.appendChild(mainIcon);
       mainElement.appendChild(document.createTextNode(mainText));
       if (subText) {

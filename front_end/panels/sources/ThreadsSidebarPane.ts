@@ -58,10 +58,8 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     icon.data = {
       iconName: 'large-arrow-right-filled',
       color: 'var(--icon-arrow-main-thread)',
-      width: '14px',
-      height: '14px',
     };
-    icon.classList.add('selected-thread-icon');
+    icon.classList.add('selected-thread-icon', 'small');
     element.appendChild(icon);
     element.tabIndex = -1;
     self.onInvokeElement(element, event => {

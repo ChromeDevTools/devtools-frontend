@@ -573,11 +573,7 @@ function messageLevelComparator(a: RowMessage, b: RowMessage): number {
 
 function getIconDataForMessage(message: RowMessage): IconButton.Icon.IconData {
   if (message.origin instanceof IssuesManager.SourceFrameIssuesManager.IssueMessage) {
-    return {
-      ...IssueCounter.IssueCounter.getIssueKindIconData(message.origin.getIssueKind()),
-      width: '12px',
-      height: '12px',
-    };
+    return IssueCounter.IssueCounter.getIssueKindIconData(message.origin.getIssueKind());
   }
   return getIconDataForLevel(message.level());
 }
@@ -716,7 +712,7 @@ class MessageWidget extends CodeMirror.WidgetType {
     if (issue) {
       const issueIcon = wrap.appendChild(new IconButton.Icon.Icon());
       issueIcon.data = getIconDataForMessage(issue);
-      issueIcon.classList.add('cm-messageIcon-issue');
+      issueIcon.classList.add('cm-messageIcon-issue', 'extra-small');
       issueIcon.addEventListener('click', () => (issue.clickHandler() || Math.min)());
     }
     return wrap;
@@ -788,7 +784,7 @@ function renderMessage(message: RowMessage, count: number): HTMLElement {
   if (count === 1) {
     const icon = element.appendChild(new IconButton.Icon.Icon());
     icon.data = getIconDataForMessage(message);
-    icon.classList.add('text-editor-row-message-icon');
+    icon.classList.add('text-editor-row-message-icon', 'extra-small');
     icon.addEventListener('click', () => (message.clickHandler() || Math.min)());
   } else {
     const repeatCountElement = element.createChild('dt-small-bubble', 'text-editor-row-message-repeat-count');

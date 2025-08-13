@@ -140,7 +140,8 @@ export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGrid
         if (this.retainedNodeIds.has(descendantNode.backendNodeId() as number)) {
           const icon = new IconButton.Icon.Icon();
           // this needs to be updated, data field is deprecated
-          icon.data = {iconName: 'small-status-dot', color: 'var(--icon-error)', width: '12px', height: '12px'};
+          icon.data = {iconName: 'small-status-dot', color: 'var(--icon-error)'};
+          icon.classList.add('extra-small');
           icon.style.setProperty('vertical-align', 'middle');
           treeElement.setLeadingIcons([icon]);
           treeElement.listItemNode.classList.add('detached-elements-detached-node');

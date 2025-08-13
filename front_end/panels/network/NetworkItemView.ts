@@ -235,7 +235,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       const signedExchangeInfo = request.signedExchangeInfo();
       if (signedExchangeInfo?.errors?.length) {
         const icon = new IconButton.Icon.Icon();
-        icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};
+        icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)'};
+        icon.classList.add('small');
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.signedexchangeError));
         this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.PREVIEW, icon);
       }
@@ -317,7 +318,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
     if (this.#request.hasThirdPartyCookiePhaseoutIssue()) {
       const icon = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
+      icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)'};
+      icon.classList.add('small');
       icon.title = i18nString(UIStrings.thirdPartyPhaseout);
       this.setTrailingTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.COOKIES, icon);
     }
@@ -341,7 +343,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     if (trustTokenResult &&
         !NetworkComponents.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)) {
       const icon = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};
+      icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)'};
+      icon.classList.add('small');
       this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.TRUST_TOKENS, icon);
     }
   }

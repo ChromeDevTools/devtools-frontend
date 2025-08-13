@@ -128,8 +128,8 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
       for (const error of signedExchangeInfo.errors) {
         const fragment = document.createDocumentFragment();
         const icon = new IconButton.Icon.Icon();
-        icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};
-        icon.classList.add('prompt-icon');
+        icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)'};
+        icon.classList.add('prompt-icon', 'small');
         fragment.appendChild(icon);
         fragment.createChild('div', 'error-log').textContent = error.message;
         errorMessagesCategory.createLeaf(fragment);

@@ -205,9 +205,8 @@ export const codeFolding = DynamicSetting.bool('text-editor-code-folding', [
       icon.data = {
         iconName,
         color: 'var(--icon-fold-marker)',
-        width: '14px',
-        height: '14px',
       };
+      icon.classList.add('small');
       return icon;
     },
   }),

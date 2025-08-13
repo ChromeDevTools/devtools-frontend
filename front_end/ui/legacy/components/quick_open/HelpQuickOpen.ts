@@ -48,11 +48,8 @@ export class HelpQuickOpen extends Provider {
     const provider = this.providers[itemIndex];
 
     const iconElement = new IconButton.Icon.Icon();
-    iconElement.data = {
-      iconName: provider.iconName,
-      color: 'var(--icon-default)',
-      width: '18px',
-    };
+    iconElement.name = provider.iconName;
+    iconElement.classList.add('large');
     titleElement.parentElement?.parentElement?.insertBefore(iconElement, titleElement.parentElement);
 
     UI.UIUtils.createTextChild(titleElement, provider.title);

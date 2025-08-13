@@ -1281,9 +1281,8 @@ export class TabbedPaneTab {
     closeIcon.data = {
       iconName: 'experiment',
       color: 'var(--override-tabbed-pane-preview-icon-color)',
-      height: '14px',
-      width: '14px',
     };
+    previewIcon.classList.add('small');
     previewIcon.appendChild(closeIcon);
     previewIcon.setAttribute('title', i18nString(UIStrings.previewFeature));
     previewIcon.setAttribute('aria-label', i18nString(UIStrings.previewFeature));

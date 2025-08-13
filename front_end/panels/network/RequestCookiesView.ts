@@ -306,8 +306,8 @@ export class RequestCookiesView extends UI.Widget.Widget {
       for (const malformedCookie of malformedResponseCookies) {
         const listItem = this.malformedResponseCookiesList.createChild('span', 'cookie-line source-code');
         const icon = new IconButton.Icon.Icon();
-        icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};
-        icon.classList.add('cookie-warning-icon');
+        icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)'};
+        icon.classList.add('cookie-warning-icon', 'small');
         listItem.appendChild(icon);
         UI.UIUtils.createTextChild(listItem, malformedCookie.cookieLine);
 

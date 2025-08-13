@@ -393,7 +393,8 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Thrott
     const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'undo', undefined, 'hardware-concurrency-reset');
     reset.setTitle(i18nString(UIStrings.resetConcurrency));
     const icon = new IconButton.Icon.Icon();
-    icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
+    icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)'};
+    icon.classList.add('small');
     const warning = new UI.Toolbar.ToolbarItem(icon);
     warning.setTitle(i18nString(UIStrings.excessConcurrency));
 

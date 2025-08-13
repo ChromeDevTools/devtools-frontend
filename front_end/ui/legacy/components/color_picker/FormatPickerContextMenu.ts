@@ -109,11 +109,11 @@ export class FormatPickerContextMenu {
     let icon = undefined;
     if (newColor.isGamutClipped()) {
       icon = new IconButton.Icon.Icon();
+      icon.name = 'warning';
+      icon.classList.add('medium');
       icon.data = {
         iconName: 'warning',
         color: 'var(--icon-default)',
-        width: '16px',
-        height: '16px',
       };
       icon.style.marginLeft = '1px';
       icon.style.marginTop = '-1px';

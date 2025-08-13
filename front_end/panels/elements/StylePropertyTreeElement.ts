@@ -2460,8 +2460,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         const wrapper = document.createElement('span');
         wrapper.classList.add('hint-wrapper');
         const hintIcon = new IconButton.Icon.Icon();
-        hintIcon.data = {iconName: 'info', color: 'var(--icon-default)', width: '14px', height: '14px'};
-        hintIcon.classList.add('hint');
+        hintIcon.name = 'info';
+        hintIcon.classList.add('hint', 'small');
         hintIcon.tabIndex = -1;
         wrapper.append(hintIcon);
         this.listItemElement.append(wrapper);

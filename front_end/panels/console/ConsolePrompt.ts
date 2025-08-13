@@ -526,6 +526,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (this.aiCodeCompletionSetting.get() && this.isAiCodeCompletionEnabled()) {
       this.setAiCodeCompletion();
     } else if (this.aiCodeCompletion) {
+      this.aiCodeCompletion.remove();
       this.aiCodeCompletion = undefined;
     }
   }

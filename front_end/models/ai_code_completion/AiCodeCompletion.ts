@@ -40,6 +40,7 @@ interface RequestOptions {
  */
 export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #editor: TextEditor.TextEditor.TextEditor;
+  #renderingTimeout?: number;
 
   readonly #sessionId: string = crypto.randomUUID();
   readonly #aidaClient: Host.AidaClient.AidaClient;
@@ -51,6 +52,12 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
     this.#editor = editor;
   }
+
+  #debouncedRequestAidaSuggestion = Common.Debouncer.debounce(
+      (prefix: string, suffix: string, cursor: number, inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage) => {
+        void this.#requestAidaSuggestion(this.#buildRequest(prefix, suffix, inferenceLanguage), cursor);
+      },
+      AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
 
   #buildRequest(
       prefix: string, suffix: string,
@@ -94,7 +101,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
         const remainderDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
         // Delays the rendering of the Code completion
-        setTimeout(() => {
+        this.#renderingTimeout = window.setTimeout(() => {
           // We are not cancelling the previous responses even when there are more recent responses
           // from the LLM as:
           // In case the user kept typing characters that are prefix of the previous suggestion, it
@@ -176,9 +183,17 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     });
   }
 
-  onTextChanged = Common.Debouncer.debounce((prefix: string, suffix: string, cursor: number) => {
-    void this.#requestAidaSuggestion(this.#buildRequest(prefix, suffix), cursor);
-  }, AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
+  onTextChanged(
+      prefix: string, suffix: string, cursor: number, inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage): void {
+    this.#debouncedRequestAidaSuggestion(prefix, suffix, cursor, inferenceLanguage);
+  }
+
+  remove(): void {
+    if (this.#renderingTimeout) {
+      clearTimeout(this.#renderingTimeout);
+      this.#renderingTimeout = undefined;
+    }
+  }
 }
 
 export const enum Events {

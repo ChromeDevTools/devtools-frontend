@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
@@ -13,7 +14,11 @@ import * as PanelCommon from '../common/common.js';
 
 import {Plugin} from './Plugin.js';
 
+const AI_CODE_COMPLETION_CHARACTER_LIMIT = 20_000;
+
 export class AiCodeCompletionPlugin extends Plugin {
+  #aidaClient?: Host.AidaClient.AidaClient;
+  #aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
   #aiCodeCompletionSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
   #aiCodeCompletionTeaserDismissedSetting =
       Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
@@ -46,6 +51,7 @@ export class AiCodeCompletionPlugin extends Plugin {
     this.#teaser = undefined;
     this.#aiCodeCompletionSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
     this.#editor?.removeEventListener('keydown', this.#boundEditorKeyDown);
+    this.#aiCodeCompletion?.remove();
     super.dispose();
   }
 
@@ -58,8 +64,11 @@ export class AiCodeCompletionPlugin extends Plugin {
 
   override editorExtension(): CodeMirror.Extension {
     return [
-      CodeMirror.EditorView.updateListener.of(update => this.#editorUpdate(update)),
-      this.#teaserCompartment.of([]),
+      CodeMirror.EditorView.updateListener.of(update => this.#editorUpdate(update)), this.#teaserCompartment.of([]),
+      // conservativeCompletion is required so that the completion suggestions in the traditional
+      // autocomplete menu are only activated after the first keyDown/keyUp events.
+      TextEditor.Config.conservativeCompletion, TextEditor.Config.aiAutoCompleteSuggestion,
+      CodeMirror.Prec.highest(CodeMirror.keymap.of(this.#editorKeymap()))
     ];
   }
 
@@ -71,7 +80,61 @@ export class AiCodeCompletionPlugin extends Plugin {
       } else if (update.selectionSet) {
         update.view.dispatch({effects: this.#teaserCompartment.reconfigure([])});
       }
+    } else if (this.#aiCodeCompletion) {
+      if (update.docChanged && update.state.doc !== update.startState.doc) {
+        this.#triggerAiCodeCompletion();
+      }
     }
+  }
+
+  #triggerAiCodeCompletion(): void {
+    if (!this.#editor || !this.#aiCodeCompletion) {
+      return;
+    }
+    const {doc, selection} = this.#editor.state;
+    const query = doc.toString();
+    const cursor = selection.main.head;
+    let prefix = query.substring(0, cursor);
+    let suffix = query.substring(cursor);
+    if (prefix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
+      prefix = prefix.substring(prefix.length - AI_CODE_COMPLETION_CHARACTER_LIMIT);
+    }
+    if (suffix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
+      suffix = suffix.substring(0, AI_CODE_COMPLETION_CHARACTER_LIMIT);
+    }
+    this.#aiCodeCompletion.onTextChanged(prefix, suffix, cursor, this.#getInferenceLanguage());
+  }
+
+  #editorKeymap(): readonly CodeMirror.KeyBinding[] {
+    return [
+      {
+        key: 'Escape',
+        run: (): boolean => {
+          if (this.#aiCodeCompletion && this.#editor && TextEditor.Config.hasActiveAiSuggestion(this.#editor.state)) {
+            this.#editor.dispatch({
+              effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(null),
+            });
+            return true;
+          }
+          return false;
+        },
+      },
+      {
+        key: 'Tab',
+        run: (): boolean => {
+          if (this.#aiCodeCompletion && this.#editor && TextEditor.Config.hasActiveAiSuggestion(this.#editor.state)) {
+            const {accepted, suggestion} = TextEditor.Config.acceptAiAutoCompleteSuggestion(this.#editor.editor);
+            if (accepted) {
+              if (suggestion?.rpcGlobalId && suggestion?.sampleId) {
+                this.#aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
+              }
+            }
+            return accepted;
+          }
+          return false;
+        },
+      }
+    ];
   }
 
   async #editorKeyDown(event: Event): Promise<void> {
@@ -106,15 +169,26 @@ export class AiCodeCompletionPlugin extends Plugin {
   }, AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
 
   #setAiCodeCompletion(): void {
+    if (!this.#editor) {
+      return;
+    }
+    if (!this.#aidaClient) {
+      this.#aidaClient = new Host.AidaClient.AidaClient();
+    }
     if (this.#teaser) {
       this.#detachAiCodeCompletionTeaser();
       this.#teaser = undefined;
     }
+    this.#aiCodeCompletion =
+        new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({aidaClient: this.#aidaClient}, this.#editor);
   }
 
   #onAiCodeCompletionSettingChanged(): void {
     if (this.#aiCodeCompletionSetting.get()) {
       this.#setAiCodeCompletion();
+    } else if (this.#aiCodeCompletion) {
+      this.#aiCodeCompletion.remove();
+      this.#aiCodeCompletion = undefined;
     }
   }
 
@@ -127,6 +201,75 @@ export class AiCodeCompletionPlugin extends Plugin {
 
   #isAiCodeCompletionEnabled(): boolean {
     return Boolean(Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+  }
+
+  #getInferenceLanguage(): Host.AidaClient.AidaInferenceLanguage|undefined {
+    const mimeType = this.uiSourceCode.mimeType();
+    switch (mimeType) {
+      case 'application/javascript':
+      case 'application/ecmascript':
+      case 'application/x-ecmascript':
+      case 'application/x-javascript':
+      case 'text/ecmascript':
+      case 'text/javascript1.0':
+      case 'text/javascript1.1':
+      case 'text/javascript1.2':
+      case 'text/javascript1.3':
+      case 'text/javascript1.4':
+      case 'text/javascript1.5':
+      case 'text/jscript':
+      case 'text/livescript ':
+      case 'text/x-ecmascript':
+      case 'text/x-javascript':
+      case 'text/javascript':
+      case 'text/jsx':
+        return Host.AidaClient.AidaInferenceLanguage.JAVASCRIPT;
+      case 'text/typescript':
+      case 'text/typescript-jsx':
+      case 'application/typescript':
+        return Host.AidaClient.AidaInferenceLanguage.TYPESCRIPT;
+      case 'text/css':
+        return Host.AidaClient.AidaInferenceLanguage.CSS;
+      case 'text/html':
+        return Host.AidaClient.AidaInferenceLanguage.HTML;
+      case 'text/x-python':
+      case 'application/python':
+        return Host.AidaClient.AidaInferenceLanguage.PYTHON;
+      case 'text/x-java':
+      case 'text/x-java-source':
+        return Host.AidaClient.AidaInferenceLanguage.JAVA;
+      case 'text/x-c++src':
+      case 'text/x-csrc':
+      case 'text/x-c':
+        return Host.AidaClient.AidaInferenceLanguage.CPP;
+      case 'application/json':
+      case 'application/manifest+json':
+        return Host.AidaClient.AidaInferenceLanguage.JSON;
+      case 'text/markdown':
+        return Host.AidaClient.AidaInferenceLanguage.MARKDOWN;
+      case 'application/xml':
+      case 'application/xhtml+xml':
+      case 'text/xml':
+        return Host.AidaClient.AidaInferenceLanguage.XML;
+      case 'text/x-go':
+        return Host.AidaClient.AidaInferenceLanguage.GO;
+      case 'application/x-sh':
+      case 'text/x-sh':
+        return Host.AidaClient.AidaInferenceLanguage.BASH;
+      case 'text/x-kotlin':
+        return Host.AidaClient.AidaInferenceLanguage.KOTLIN;
+      case 'text/x-vue':
+      case 'text/x.vue':
+        return Host.AidaClient.AidaInferenceLanguage.VUE;
+      case 'application/vnd.dart':
+        return Host.AidaClient.AidaInferenceLanguage.DART;
+      default:
+        return undefined;
+    }
+  }
+
+  setAidaClientForTest(aidaClient: Host.AidaClient.AidaClient): void {
+    this.#aidaClient = aidaClient;
   }
 }
 

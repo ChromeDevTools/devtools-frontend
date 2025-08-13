@@ -23,19 +23,18 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
         enabled: true,
       },
     });
-    Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
-    Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
 
     uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
     uiSourceCode.contentType.returns(Common.ResourceType.resourceTypes.Script);
   });
 
   afterEach(() => {
+    Common.Settings.Settings.instance().settingForTest('ai-code-completion-teaser-dismissed').set(false);
+    Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(false);
     sinon.restore();
   });
 
-  function createEditorWithPlugin(doc: string):
-      {editor: TextEditor.TextEditor.TextEditor, plugin: AiCodeCompletionPlugin.AiCodeCompletionPlugin} {
+  function createEditorWithPlugin(doc: string): TextEditor.TextEditor.TextEditor {
     const plugin = new AiCodeCompletionPlugin.AiCodeCompletionPlugin(uiSourceCode);
     const editor = new TextEditor.TextEditor.TextEditor(
         CodeMirror.EditorState.create({
@@ -47,7 +46,7 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
     );
     plugin.editorInitialized(editor);
     renderElementIntoDOM(editor);
-    return {editor, plugin};
+    return editor;
   }
 
   describe('accepts', () => {
@@ -72,7 +71,7 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
 
   describe('teaser decoration', () => {
     it('shows teaser when cursor is at the end of the line', async () => {
-      const {editor} = createEditorWithPlugin('Hello');
+      const editor = createEditorWithPlugin('Hello');
       editor.dispatch({changes: {from: 5, insert: 'W'}, selection: {anchor: 6}});
       await clock.tickAsync(
           AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS +
@@ -81,7 +80,7 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
     });
 
     it('hides teaser when cursor is not at the end of the line', async () => {
-      const {editor} = createEditorWithPlugin('Hello');
+      const editor = createEditorWithPlugin('Hello');
       editor.dispatch({changes: {from: 5, insert: 'W'}, selection: {anchor: 6}});
       await clock.tickAsync(
           AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS +
@@ -96,7 +95,7 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
     });
 
     it('hides teaser when text is selected', async () => {
-      const {editor} = createEditorWithPlugin('Hello');
+      const editor = createEditorWithPlugin('Hello');
       editor.dispatch({changes: {from: 5, insert: 'W'}, selection: {anchor: 6}});
       await clock.tickAsync(
           AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS +
@@ -106,5 +105,15 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
       editor.dispatch({selection: {anchor: 2, head: 4}});
       assert.isNull(editor.editor.dom.querySelector('.cm-placeholder'));
     });
+  });
+
+  it('triggers code completion on text change', async () => {
+    const editor = createEditorWithPlugin('');
+    Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+    const onTextChangedStub = sinon.stub(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'onTextChanged');
+
+    editor.dispatch({changes: {from: 0, insert: 'Hello'}, selection: {anchor: 5}});
+    sinon.assert.called(onTextChangedStub);
+    assert.deepEqual(onTextChangedStub.firstCall.args, ['Hello', '', 5, undefined]);
   });
 });

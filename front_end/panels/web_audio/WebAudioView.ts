@@ -13,7 +13,6 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {ContextDetailBuilder, ContextSummaryBuilder} from './AudioContextContentBuilder.js';
 import * as GraphVisualizer from './graph_visualizer/graph_visualizer.js';
 import webAudioStyles from './webAudio.css.js';
 import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
@@ -37,6 +36,35 @@ const UIStrings = {
    * @example {realtime (1e03ec)} PH1
    */
   audioContextS: 'Audio context: {PH1}',
+  /**
+   * @description The current state of an item
+   */
+  state: 'State',
+  /**
+   * @description Text in Web Audio View
+   */
+  sampleRate: 'Sample Rate',
+  /**
+   * @description Text in Web Audio View
+   */
+  callbackBufferSize: 'Callback Buffer Size',
+  /**
+   * @description Label in the Web Audio View for the maximum number of output channels
+   * that this Audio Context has.
+   */
+  maxOutputChannels: 'Max Output Channels',
+  /**
+   * @description Text in Web Audio View
+   */
+  currentTime: 'Current Time',
+  /**
+   * @description Text in Web Audio View
+   */
+  callbackInterval: 'Callback Interval',
+  /**
+   * @description Text in Web Audio View
+   */
+  renderCapacity: 'Render Capacity',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/web_audio/WebAudioView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -417,18 +445,60 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
       this.landingPage.show(this.detailViewContainer);
       return;
     }
+
     if (this.landingPage.isShowing()) {
       this.landingPage.detach();
     }
-    const detailBuilder = new ContextDetailBuilder(context);
+
     this.detailViewContainer.removeChildren();
-    this.detailViewContainer.appendChild(detailBuilder.getFragment());
+
+    const container = document.createElement('div');
+    container.classList.add('context-detail-container');
+
+    const addEntry = (entry: string, value: string|number, unit?: string): void => {
+      const valueWithUnit = value + (unit ? ` ${unit}` : '');
+      container.appendChild(UI.Fragment.html`
+        <div class="context-detail-row">
+          <div class="context-detail-row-entry">${entry}</div>
+          <div class="context-detail-row-value">${valueWithUnit}</div>
+        </div>
+      `);
+    };
+
+    const title = context.contextType === 'realtime' ? i18n.i18n.lockedString('AudioContext') :
+                                                       i18n.i18n.lockedString('OfflineAudioContext');
+    container.appendChild(UI.Fragment.html`
+      <div class="context-detail-header">
+        <div class="context-detail-title">${title}</div>
+        <div class="context-detail-subtitle">${context.contextId}</div>
+      </div>
+    `);
+
+    addEntry(i18nString(UIStrings.state), context.contextState);
+    addEntry(i18nString(UIStrings.sampleRate), context.sampleRate, 'Hz');
+    if (context.contextType === 'realtime') {
+      addEntry(i18nString(UIStrings.callbackBufferSize), context.callbackBufferSize, 'frames');
+    }
+    addEntry(i18nString(UIStrings.maxOutputChannels), context.maxOutputChannelCount, 'ch');
+
+    this.detailViewContainer.appendChild(container);
   }
 
   private updateSummaryBar(contextRealtimeData: Protocol.WebAudio.ContextRealtimeData): void {
-    const summaryBuilder = new ContextSummaryBuilder(contextRealtimeData);
     this.summaryBarContainer.removeChildren();
-    this.summaryBarContainer.appendChild(summaryBuilder.getFragment());
+    const time = contextRealtimeData.currentTime.toFixed(3);
+    const mean = (contextRealtimeData.callbackIntervalMean * 1000).toFixed(3);
+    const stddev = (Math.sqrt(contextRealtimeData.callbackIntervalVariance) * 1000).toFixed(3);
+    const capacity = (contextRealtimeData.renderCapacity * 100).toFixed(3);
+    this.summaryBarContainer.appendChild(UI.Fragment.html`
+      <div class="context-summary-container">
+        <span>${i18nString(UIStrings.currentTime)}: ${time} s</span>
+        <span>\u2758</span>
+        <span>${i18nString(UIStrings.callbackInterval)}: μ = ${mean} ms, σ = ${stddev} ms</span>
+        <span>\u2758</span>
+        <span>${i18nString(UIStrings.renderCapacity)}: ${capacity} %</span>
+      </div>
+    `);
   }
 
   private clearSummaryBar(): void {

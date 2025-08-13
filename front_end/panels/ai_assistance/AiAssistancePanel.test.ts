@@ -7,7 +7,6 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
-import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
   cleanup,
@@ -27,7 +26,6 @@ import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockStore} from '../../testing/MockSettingStorage.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
-import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Network from '../network/network.js';
 import type * as TimelineComponents from '../timeline/components/components.js';
@@ -1646,61 +1644,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.isTrue(
           liveAnnouncerStatusStub.calledWith('Answer ready'),
           'Expected live announcer status to be called with the text "Answer loading"');
-    });
-  });
-
-  describe('handleExternalRequest', () => {
-    const explanation = 'I need more information';
-
-    beforeEach(() => {
-      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      updateHostConfig({
-        devToolsFreestyler: {
-          enabled: true,
-
-        },
-        devToolsAiAssistanceNetworkAgent: {
-          enabled: true,
-        }
-      });
-    });
-
-    it('handles performance insight requests with an insight title', async function() {
-      const {panel} = await createAiAssistancePanel({
-        aidaClient: mockAidaClient([[{explanation}]]),
-      });
-
-      // Create a timeline panel that has a trace imported with insights.
-      const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
-      const traceModel = Trace.TraceModel.Model.createWithAllHandlers();
-      await traceModel.parse(events);
-      Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: false, traceModel});
-
-      const generator = await panel.handleExternalRequest({
-        prompt: 'Please help me debug this problem',
-        conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT,
-        insightTitle: 'LCP breakdown'
-      });
-      let response = await generator.next();
-      assert.strictEqual(response.value.message, 'Analyzing insight: LCP breakdown');
-      response = await generator.next();
-      assert.strictEqual(response.value.message, explanation);
-    });
-
-    it('errors for performance insight requests with no insightTitle', async () => {
-      const {panel} = await createAiAssistancePanel({
-        aidaClient: mockAidaClient([[{explanation}]]),
-      });
-      const generator = await panel.handleExternalRequest(
-          // @ts-expect-error
-          {
-            prompt: 'Please help me debug this problem',
-            conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT
-          });
-      const response = await generator.next();
-      assert.strictEqual(response.value.type, 'error');
-      assert.strictEqual(
-          response.value.message, 'The insightTitle parameter is required for debugging a Performance Insight.');
     });
   });
 });

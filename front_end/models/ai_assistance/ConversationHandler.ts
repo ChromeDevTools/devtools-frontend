@@ -8,8 +8,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Tracing from '../../services/tracing/tracing.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import type * as Trace from '../trace/trace.js';
 
 import {
   type AiAgent,
@@ -20,7 +22,7 @@ import {
 } from './agents/AiAgent.js';
 import {FileAgent} from './agents/FileAgent.js';
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
-import {PerformanceAgent} from './agents/PerformanceAgent.js';
+import {PerformanceAgent, PerformanceTraceContext} from './agents/PerformanceAgent.js';
 import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
 import {
   Conversation,
@@ -29,13 +31,13 @@ import {
 import {getDisabledReasons} from './AiUtils.js';
 import type {ChangeManager} from './ChangeManager.js';
 
-export interface ExternalStylingRequestParameters {
+interface ExternalStylingRequestParameters {
   conversationType: ConversationType.STYLING;
   prompt: string;
   selector?: string;
 }
 
-export interface ExternalNetworkRequestParameters {
+interface ExternalNetworkRequestParameters {
   conversationType: ConversationType.NETWORK;
   prompt: string;
   requestUrl: string;
@@ -45,6 +47,7 @@ export interface ExternalPerformanceInsightsRequestParameters {
   conversationType: ConversationType.PERFORMANCE_INSIGHT;
   prompt: string;
   insightTitle: string;
+  traceModel: Trace.TraceModel.Model;
 }
 
 const UIStrings = {
@@ -199,7 +202,11 @@ export class ConversationHandler {
           return this.#handleExternalStylingConversation(parameters.prompt, parameters.selector);
         }
         case ConversationType.PERFORMANCE_INSIGHT:
-          return generateErrorResponse('Not implemented here');
+          if (!parameters.insightTitle) {
+            return generateErrorResponse('The insightTitle parameter is required for debugging a Performance Insight.');
+          }
+          return this.#handleExternalPerformanceInsightsConversation(
+              parameters.prompt, parameters.insightTitle, parameters.traceModel);
         case ConversationType.NETWORK:
           if (!parameters.requestUrl) {
             return generateErrorResponse('The url is required for debugging a network request.');
@@ -273,6 +280,64 @@ export class ConversationHandler {
           type: ExternalRequestResponseType.ANSWER,
           message: data.text,
           devToolsLogs,
+        };
+      }
+    }
+    return {
+      type: ExternalRequestResponseType.ERROR,
+      message: 'Something went wrong. No answer was generated.',
+    };
+  }
+
+  async *
+      #handleExternalPerformanceInsightsConversation(
+          prompt: string, insightTitle: string, traceModel: Trace.TraceModel.Model):
+          AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
+    const options = {
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+    };
+    const insightsAgent = new PerformanceAgent(options, ConversationType.PERFORMANCE_INSIGHT);
+
+    const externalConversation = new Conversation(
+        insightsAgent.getConversationType(),
+        [],
+        insightsAgent.id,
+        /* isReadOnly */ true,
+        /* isExternal */ true,
+    );
+
+    const focusOrError = await Tracing.ExternalRequests.getInsightAgentFocusToDebug(
+        traceModel,
+        insightTitle,
+    );
+    if ('error' in focusOrError) {
+      return {
+        type: ExternalRequestResponseType.ERROR,
+        message: focusOrError.error,
+      };
+    }
+
+    const generator = insightsAgent.run(prompt, {selected: new PerformanceTraceContext(focusOrError.focus)});
+    const generatorWithHistory = this.handleConversationWithHistory(generator, externalConversation);
+    const devToolsLogs: object[] = [];
+    for await (const data of generatorWithHistory) {
+      // We don't want to save partial responses to the conversation history.
+      if (data.type !== ResponseType.ANSWER || data.complete) {
+        void externalConversation.addHistoryItem(data);
+        devToolsLogs.push(data);
+      }
+      if (data.type === ResponseType.ANSWER && data.complete) {
+        return {
+          type: ExternalRequestResponseType.ANSWER,
+          message: data.text,
+          devToolsLogs,
+        };
+      }
+      if (data.type === ResponseType.CONTEXT || data.type === ResponseType.TITLE) {
+        yield {
+          type: ExternalRequestResponseType.NOTIFICATION,
+          message: data.title,
         };
       }
     }

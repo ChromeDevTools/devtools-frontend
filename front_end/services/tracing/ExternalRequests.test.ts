@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 import * as Trace from '../../models/trace/trace.js';
+import * as TimelineUtils from '../../panels/timeline/utils/utils.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
-import * as Timeline from './timeline.js';
+import * as Tracing from './tracing.js';
 
-const {getInsightAgentFocusToDebug} = Timeline.ExternalRequests;
+const {getInsightAgentFocusToDebug} = Tracing.ExternalRequests;
 
 describeWithEnvironment('ExternalRequests', () => {
   it('finds the insight by the title', async function() {
@@ -20,7 +21,7 @@ describeWithEnvironment('ExternalRequests', () => {
     if ('error' in result) {
       assert.fail(`Test failed: ${result.error}`);
     }
-    assert.instanceOf(result.focus, Timeline.Utils.AIContext.AgentFocus);
+    assert.instanceOf(result.focus, TimelineUtils.AIContext.AgentFocus);
     assert.strictEqual(result.focus.data.type === 'insight' && result.focus.data.insight.insightKey, 'LCPBreakdown');
   });
 

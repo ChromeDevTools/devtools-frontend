@@ -93,10 +93,6 @@ const UIStrings = {
    * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
-  /**
-   * @description Notification shown to the user whenever DevTools receives an external request.
-   */
-  externalRequestReceived: '`DevTools` received an external request',
 } as const;
 
 /*
@@ -207,10 +203,6 @@ const UIStringsNotTranslate = {
    * @description Message displayed in toast in case of any failures while uploading an image file as input.
    */
   uploadImageFailureMessage: 'Failed to upload image. Please try again.',
-  /**
-   * @description Error message shown when AI assistance is not enabled in DevTools settings.
-   */
-  enableInSettings: 'For AI features to be available, you need to enable AI assistance in DevTools settings.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/AiAssistancePanel.ts', UIStrings);
@@ -1552,107 +1544,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     } finally {
       release();
     }
-  }
-
-  /**
-   * Handles an external request using the given prompt and uses the
-   * conversation type to use the correct agent.
-   */
-  handleExternalRequest(
-      parameters: AiAssistanceModel.ExternalStylingRequestParameters|
-      AiAssistanceModel.ExternalNetworkRequestParameters|AiAssistanceModel.ExternalPerformanceInsightsRequestParameters,
-      ): AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
-    // eslint-disable-next-line require-yield
-    async function*
-        generateErrorResponse(message: string):
-            AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
-      return {
-        type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
-        message,
-      };
-    }
-
-    try {
-      Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
-      const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
-      const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
-      if (!aiAssistanceSetting) {
-        disabledReasons.push(lockedString(UIStringsNotTranslate.enableInSettings));
-      }
-      if (disabledReasons.length > 0) {
-        return generateErrorResponse(disabledReasons.join(' '));
-      }
-
-      void VisualLogging.logFunctionCall(`start-conversation-${parameters.conversationType}`, 'external');
-      switch (parameters.conversationType) {
-        case AiAssistanceModel.ConversationType.STYLING:
-          return generateErrorResponse('Not implemented here');
-        case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
-          if (!parameters.insightTitle) {
-            return generateErrorResponse('The insightTitle parameter is required for debugging a Performance Insight.');
-          }
-          return this.handleExternalPerformanceInsightsRequest(parameters.prompt, parameters.insightTitle);
-        case AiAssistanceModel.ConversationType.NETWORK:
-          return generateErrorResponse('Not implemented here');
-      }
-    } catch (error) {
-      return generateErrorResponse(error.message);
-    }
-  }
-
-  async *
-      handleExternalPerformanceInsightsRequest(prompt: string, insightTitle: string):
-          AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse> {
-    const insightsAgent = this.#conversationHandler.createAgent(AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
-    const externalConversation = new AiAssistanceModel.Conversation(
-        agentToConversationType(insightsAgent),
-        [],
-        insightsAgent.id,
-        /* isReadOnly */ true,
-        /* isExternal */ true,
-    );
-
-    const timelinePanel = TimelinePanel.TimelinePanel.TimelinePanel.instance();
-
-    const focusOrError = await TimelinePanel.ExternalRequests.getInsightAgentFocusToDebug(
-        timelinePanel.model,
-        insightTitle,
-    );
-    if ('error' in focusOrError) {
-      return {
-        type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
-        message: focusOrError.error,
-      };
-    }
-
-    const selectedContext = createPerformanceTraceContext(focusOrError.focus);
-    const generator = insightsAgent.run(prompt, {selected: selectedContext});
-    const generatorWithHistory = this.#conversationHandler.handleConversationWithHistory(generator, this.#conversation);
-    const devToolsLogs: object[] = [];
-    for await (const data of generatorWithHistory) {
-      // We don't want to save partial responses to the conversation history.
-      if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
-        void externalConversation.addHistoryItem(data);
-        devToolsLogs.push(data);
-      }
-      if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
-        return {
-          type: AiAssistanceModel.ExternalRequestResponseType.ANSWER,
-          message: data.text,
-          devToolsLogs,
-        };
-      }
-      if (data.type === AiAssistanceModel.ResponseType.CONTEXT || data.type === AiAssistanceModel.ResponseType.TITLE) {
-        yield {
-          type: AiAssistanceModel.ExternalRequestResponseType.NOTIFICATION,
-          message: data.title,
-        };
-      }
-    }
-    return {
-      type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
-      message: 'Something went wrong. No answer was generated.',
-    };
   }
 }
 

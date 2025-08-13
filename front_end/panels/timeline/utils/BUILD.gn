@@ -48,6 +48,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "..:*",
     "../../../models/ai_assistance/*",
+    "../../../services/tracing/*",
     "../../ai_assistance/*",
     "../../network/*",
     "../components:*",

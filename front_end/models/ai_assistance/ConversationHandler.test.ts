@@ -7,7 +7,9 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as AiAssistancePanel from '../../panels/ai_assistance/ai_assistance.js';
+import * as Timeline from '../../panels/timeline/timeline.js';
 import {
   createAiAssistancePanel,
   createNetworkRequest,
@@ -17,6 +19,7 @@ import {
 import {createTarget, registerNoopActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -306,6 +309,45 @@ describeWithMockConnection('ConversationHandler', () => {
       response = await generator.next();
       assert.strictEqual(response.value.message, explanation);
       sinon.assert.calledOnceWithExactly(snackbarShowStub, {message: 'DevTools received an external request'});
+    });
+
+    it('handles performance insight requests with an insight title', async function() {
+      const conversationHandler = AiAssistanceModel.ConversationHandler.instance({
+        aidaClient: mockAidaClient([[{explanation}]]),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      });
+
+      // Create a timeline panel that has a trace imported with insights.
+      const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
+      const traceModel = Trace.TraceModel.Model.createWithAllHandlers();
+      await traceModel.parse(events);
+      Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: false, traceModel});
+
+      const generator = await conversationHandler.handleExternalRequest({
+        prompt: 'Please help me debug this problem',
+        conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT,
+        insightTitle: 'LCP breakdown',
+        traceModel,
+      });
+      let response = await generator.next();
+      assert.strictEqual(response.value.message, 'Analyzing insight: LCP breakdown');
+      response = await generator.next();
+      assert.strictEqual(response.value.message, explanation);
+    });
+
+    it('errors for performance insight requests with no insightTitle', async () => {
+      const conversationHandler = AiAssistanceModel.ConversationHandler.instance({
+        aidaClient: mockAidaClient([[{explanation}]]),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      });
+      const generator = await conversationHandler.handleExternalRequest({
+        prompt: 'Please help me debug this problem',
+        conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT
+      } as AiAssistanceModel.ExternalPerformanceInsightsRequestParameters);
+      const response = await generator.next();
+      assert.strictEqual(response.value.type, 'error');
+      assert.strictEqual(
+          response.value.message, 'The insightTitle parameter is required for debugging a Performance Insight.');
     });
   });
 });

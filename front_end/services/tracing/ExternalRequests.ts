@@ -3,11 +3,10 @@
 // found in the LICENSE file.
 
 import * as Trace from '../../models/trace/trace.js';
-
-import * as Utils from './utils/utils.js';
+import * as TimelineUtils from '../../panels/timeline/utils/utils.js';
 
 type InsightResponse = {
-  focus: Utils.AIContext.AgentFocus,
+  focus: TimelineUtils.AIContext.AgentFocus,
 }|{error: string};
 
 /**
@@ -52,6 +51,6 @@ export async function getInsightAgentFocusToDebug(
   }
 
   const insight = insights.model[matchingInsightKey];
-  const focus = Utils.AIContext.AgentFocus.fromInsight(parsedTrace, insight, insights.bounds);
+  const focus = TimelineUtils.AIContext.AgentFocus.fromInsight(parsedTrace, insight, insights.bounds);
   return {focus};
 }

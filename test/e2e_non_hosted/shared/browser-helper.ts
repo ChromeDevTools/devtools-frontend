@@ -165,6 +165,7 @@ export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
     'PrivacySandboxAdsAPIsOverride',
     'AutofillEnableDevtoolsIssues',
     'DevToolsVeLogging:testing/true',
+    'CADisplayLink',
   ],
   disabledFeatures: [
     'PMProcessPriorityPolicy',                     // crbug.com/361252079

@@ -60,6 +60,7 @@ function launchChrome() {
     'FencedFrames',
     'PrivacySandboxAdsAPIsOverride',
     'AutofillEnableDevtoolsIssues',
+    'CADisplayLink',
   ];
   const disabledFeatures = [
     'PMProcessPriorityPolicy',                     // crbug.com/361252079

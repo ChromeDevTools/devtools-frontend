@@ -100,6 +100,24 @@ def sync_node(options):
                           cwd=options.devtools_dir)
 
 
+def replace_ifttt(content):
+    # Replace IFTTT tags with skipped versions.
+    # Escape "L" as "\x4C" to avoid presubmit failures.
+    content = content.replace('\x4CINT.IfChange', '\x4CINT_SKIP.IfChange')
+    content = content.replace('\x4CINT.ThenChange', '\x4CINT_SKIP.ThenChange')
+    return content
+
+
+def copy_file_content(from_path, to_path):
+    with open(from_path, 'r', encoding='utf-8') as infile:
+        content = infile.read()
+
+    content = replace_ifttt(content)
+
+    with open(to_path, 'w', encoding='utf-8') as outfile:
+        outfile.write(content)
+
+
 def copy_files(options):
     for from_path, to_path in FILE_MAPPINGS.items():
         from_path_full = os.path.join(options.chromium_dir,
@@ -117,20 +135,16 @@ def copy_files(options):
         os.makedirs(os.path.dirname(to_path_full), exist_ok=True)
 
         if os.path.isdir(from_path_full):
-            shutil.copytree(from_path_full, to_path_full, dirs_exist_ok=True)
+            # Copy files from dirs
+            for file in os.listdir(from_path_full):
+                file_from_path = os.path.join(from_path_full, file)
+                if os.path.isdir(file_from_path):
+                    continue
+                file_to_path = os.path.join(to_path_full, file)
+                copy_file_content(file_from_path, file_to_path)
             continue
 
-        with open(from_path_full, 'r', encoding='utf-8') as infile:
-            content = infile.read()
-
-        # Replace IFTTT tags with skipped versions.
-        # Escape "L" as "\x4C" to avoid presubmit failures.
-        content = content.replace('\x4CINT.IfChange', '\x4CINT_SKIP.IfChange')
-        content = content.replace('\x4CINT.ThenChange',
-                                  '\x4CINT_SKIP.ThenChange')
-
-        with open(to_path_full, 'w', encoding='utf-8') as outfile:
-            outfile.write(content)
+        copy_file_content(from_path_full, to_path_full)
 
 
 def generate_signatures(options):

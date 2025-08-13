@@ -19373,7 +19373,7 @@
                 },
                 {
                     "name": "highlightRect",
-                    "description": "Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.",
+                    "description": "Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.\nIssue: the method does not handle device pixel ratio (DPR) correctly.\nThe coordinates currently have to be adjusted by the client\nif DPR is not 1 (see crbug.com/437807128).",
                     "parameters": [
                         {
                             "name": "x",

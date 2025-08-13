@@ -120,6 +120,7 @@ export function reset(): void {
   entityMappings.eventsByEntity.clear();
   entityMappings.entityByEvent.clear();
   entityMappings.createdEntityCache.clear();
+  entityMappings.entityByUrlCache.clear();
   linkPreconnectEvents.length = 0;
 }
 

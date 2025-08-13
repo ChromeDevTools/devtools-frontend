@@ -528,15 +528,20 @@ dt-icon-label {
 
 .new-badge {
   width: fit-content;
-  height: var(--sys-size-7);
-  line-height: var(--sys-size-7);
+  height: var(--sys-size-8);
+  line-height: var(--sys-size-8);
   border-radius: var(--sys-shape-corner-extra-small);
   padding: 0 var(--sys-size-3);
-  background-color: var(--sys-color-primary);
-  color: var(--sys-color-on-primary);
+  background-color: var(--sys-color-tonal-container);
+  color: var(--sys-color-on-tonal-container);
   font-weight: var(--ref-typeface-weight-bold);
   font-size: 9px;
   text-align: center;
+}
+
+:host-context(.platform-mac) .new-badge {
+  background-color: var(--sys-color-primary);
+  color: var(--sys-color-on-primary);
 }
 
 .expandable-inline-button {

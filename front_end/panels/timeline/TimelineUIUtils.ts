@@ -1468,8 +1468,7 @@ export class TimelineUIUtils {
     }
 
     const stats: TimeRangeCategoryStats = {};
-    const showPieChart =
-        canShowPieChart && parsedTrace && TimelineUIUtils.aggregatedStatsForTraceEvent(stats, parsedTrace, event);
+    const showPieChart = canShowPieChart && TimelineUIUtils.aggregatedStatsForTraceEvent(stats, parsedTrace, event);
     if (showPieChart) {
       contentHelper.addSection(i18nString(UIStrings.aggregatedTime));
       const pieChart = TimelineUIUtils.generatePieChart(stats, TimelineUIUtils.eventStyle(event).category, selfTime);
@@ -1841,56 +1840,43 @@ export class TimelineUIUtils {
   private static aggregatedStatsForTraceEvent(
       total: TimeRangeCategoryStats, parsedTrace: Trace.Handlers.Types.ParsedTrace,
       event: Trace.Types.Events.Event): boolean {
-    // TODO(crbug.com/436491188): I think this is inefficient; we are going
-    // through every event we know about to find the index of the selected
-    // event and then walk through everything. We have a tree structure in
-    // the RendererHandler where each event has a node; we can likely make
-    // this more efficient.
-    // Once we do this and remove the use of AllThreadEntries.forTrace from
-    // here, it can be moved into the test utils as this is the only place
-    // in the user facing code that we use this helper.
-    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
-    const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
-    function eventComparator(startTime: number, e: Trace.Types.Events.Event): number {
-      return startTime - e.ts;
-    }
-    // Find the index of the selected event amongst all the events.
-    const index = Platform.ArrayUtilities.binaryIndexOf(events, startTime, eventComparator);
-    // Not a main thread event?
-    if (index < 0) {
+    const node = parsedTrace.Renderer.entryToNode.get(event);
+    if (!node) {
       return false;
     }
-    let hasChildren = false;
-    if (endTime) {
-      for (let i = index; i < events.length; i++) {
-        const nextEvent = events[i];
-        if (nextEvent.ts >= endTime) {
-          break;
-        }
-        const nextEventSelfTime = getEventSelfTime(nextEvent, parsedTrace);
-        if (!nextEventSelfTime) {
-          continue;
-        }
-        if (nextEvent.tid !== event.tid) {
-          continue;
-        }
-        if (i > index) {
-          hasChildren = true;
-        }
-        const categoryName = TimelineUIUtils.eventStyle(nextEvent).category.name;
-        total[categoryName] = (total[categoryName] || 0) + nextEventSelfTime;
-      }
-    }
-    if (Trace.Types.Events.isPhaseAsync(event.ph)) {
-      if (endTime) {
-        let aggregatedTotal = 0;
-        for (const categoryName in total) {
-          aggregatedTotal += total[categoryName];
-        }
 
-        const deltaInMicro = (endTime - startTime) as Trace.Types.Timing.Micro;
-        total['idle'] = Math.max(0, deltaInMicro - aggregatedTotal);
+    // If the event has no children, we cannot calculate a pie chart.
+    if (node.children.length === 0) {
+      return false;
+    }
+
+    const childNodeQueue: Trace.Helpers.TreeHelpers.TraceEntryNode[] = [...node.children];
+
+    while (childNodeQueue.length) {
+      // Usually you would shift(), but the order of traversal doesn't matter
+      // to us in this case, and pop() doesn't cause any re-indexing.
+      const childNode = childNodeQueue.pop();
+      if (!childNode) {
+        continue;
       }
+      const childSelfTime = childNode.selfTime ?? 0;
+      if (childSelfTime > 0) {
+        const categoryName = TimelineUIUtils.eventStyle(childNode.entry).category.name;
+        total[categoryName] = (total[categoryName] || 0) + childSelfTime;
+      }
+
+      childNodeQueue.push(...childNode.children);
+    }
+
+    if (Trace.Types.Events.isPhaseAsync(event.ph)) {
+      let aggregatedTotal = 0;
+      for (const categoryName in total) {
+        aggregatedTotal += total[categoryName];
+      }
+
+      const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
+      const deltaInMicro = (endTime - startTime) as Trace.Types.Timing.Micro;
+      total['idle'] = Math.max(0, deltaInMicro - aggregatedTotal);
       return false;
     }
 
@@ -1900,7 +1886,7 @@ export class TimelineUIUtils {
       total[categoryName] = Trace.Helpers.Timing.microToMilli(value);
     }
 
-    return hasChildren;
+    return true;
   }
 
   static async buildPicturePreviewContent(

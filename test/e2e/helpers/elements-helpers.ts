@@ -1025,13 +1025,16 @@ export const toggleClassesPaneCheckbox =
   await Promise.all([nodeChange, veEvents]);
 };
 
-export const uncheckStylesPaneCheckbox = async (checkboxLabel: string) => {
+export const uncheckStylesPaneCheckbox =
+    async (checkboxLabel: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   console.error('uncheckStylesPaneCheckbox', checkboxLabel);
-  const initialValue = await getContentOfSelectedNode();
-  await click(`.enabled-button[aria-label="${checkboxLabel}"]`);
-  await waitForSelectedNodeChange(initialValue);
-  await expectVeEvents([veClick(`Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: ${
-      checkboxLabel.split(' ')[0]} > Toggle`)]);
+  const initialValue = await getContentOfSelectedNode(devToolsPage);
+  await devToolsPage.click(`.enabled-button[aria-label="${checkboxLabel}"]`);
+  await waitForSelectedNodeChange(initialValue, devToolsPage);
+  await expectVeEvents(
+      [veClick(`Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: ${
+          checkboxLabel.split(' ')[0]} > Toggle`)],
+      undefined, devToolsPage);
 };
 
 export const assertSelectedNodeClasses =
@@ -1156,8 +1159,9 @@ export const goToResourceAndWaitForStyleSection = async (
   await waitForElementsStyleSection(null, devToolsPage);
 };
 
-export const checkStyleAttributes = async (expectedStyles: string[]) => {
-  const result = await $$(STYLE_PROPERTIES_SELECTOR, undefined, 'pierce');
+export const checkStyleAttributes =
+    async (expectedStyles: string[], devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const result = await devToolsPage.$$(STYLE_PROPERTIES_SELECTOR, undefined, 'pierce');
   const actual = await Promise.all(result.map(e => e.evaluate(e => e.textContent?.trim())));
   return actual.sort().join(' ') === expectedStyles.sort().join(' ');
 };

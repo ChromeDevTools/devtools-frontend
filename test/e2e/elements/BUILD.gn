@@ -11,7 +11,6 @@ node_ts_library("elements") {
     "element-breadcrumbs_test.ts",
     "layout-pane_test.ts",
     "selection-after-delete_test.ts",
-    "shadowroot-styles_test.ts",
     "style-pane-properties_test.ts",
     "styles-disable-inherited_test.ts",
   ]

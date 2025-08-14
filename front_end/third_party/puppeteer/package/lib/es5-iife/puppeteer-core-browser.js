@@ -2951,7 +2951,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.16.1';
+  const packageVersion = '24.16.2';
 
   /**
    * @license
@@ -4868,8 +4868,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           if (error.name === 'AbortError') {
             throw error;
           }
-          error.message = `Waiting for selector \`${selector}\` failed: ${error.message}`;
-          throw error;
+          const waitForSelectorError = new (error instanceof TimeoutError ? TimeoutError : Error)(`Waiting for selector \`${selector}\` failed`);
+          waitForSelectorError.cause = error;
+          throw waitForSelectorError;
         }
       } catch (e_4) {
         env_3.error = e_4;
@@ -12040,6 +12041,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   var _fn = /*#__PURE__*/new WeakMap();
   var _args = /*#__PURE__*/new WeakMap();
   var _timeout = /*#__PURE__*/new WeakMap();
+  var _genericError = /*#__PURE__*/new WeakMap();
   var _timeoutError2 = /*#__PURE__*/new WeakMap();
   var _result = /*#__PURE__*/new WeakMap();
   var _poller = /*#__PURE__*/new WeakMap();
@@ -12054,6 +12056,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       _classPrivateFieldInitSpec(this, _fn, void 0);
       _classPrivateFieldInitSpec(this, _args, void 0);
       _classPrivateFieldInitSpec(this, _timeout, void 0);
+      _classPrivateFieldInitSpec(this, _genericError, new Error('Waiting failed'));
       _classPrivateFieldInitSpec(this, _timeoutError2, void 0);
       _classPrivateFieldInitSpec(this, _result, Deferred.create());
       _classPrivateFieldInitSpec(this, _poller, void 0);
@@ -12153,7 +12156,8 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         }
         const badError = this.getBadError(error);
         if (badError) {
-          await this.terminate(badError);
+          _classPrivateFieldGet(_genericError, this).cause = badError;
+          await this.terminate(_classPrivateFieldGet(_genericError, this));
         }
       }
     }
@@ -24645,8 +24649,8 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '139.0.7258.66',
-    'chrome-headless-shell': '139.0.7258.66',
+    chrome: '139.0.7258.68',
+    'chrome-headless-shell': '139.0.7258.68',
     firefox: 'stable_141.0.3'
   });
 

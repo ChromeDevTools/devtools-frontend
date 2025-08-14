@@ -72,8 +72,8 @@ export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGrid
     const cell = this.createTD(columnId);
     switch (columnId) {
       case 'detached-node': {
-        const DOMNode = SDK.DOMModel.DOMNode.create(this.domModel, null, false, this.detachedElementInfo.treeNode);
-        cell.appendChild(this.#nodeRenderer(DOMNode));
+        const node = SDK.DOMModel.DOMNode.create(this.domModel, null, false, this.detachedElementInfo.treeNode);
+        this.#renderNode(node, cell);
         return cell;
       }
 
@@ -109,22 +109,26 @@ export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGrid
     return count;
   }
 
-  #nodeRenderer(node: SDK.DOMModel.DOMNode): HTMLElement {
-    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
-        /* omitRootDOMNode: */ false, /* selectEnabled: */ false, /* hideGutter: */ true);
-    treeOutline.rootDOMNode = node;
-    const firstChild = treeOutline.firstChild();
-    if (!firstChild || (firstChild && !firstChild.isExpandable())) {
-      treeOutline.element.classList.add('single-node');
-    }
-    treeOutline.setVisible(true);
-    // @ts-expect-error used in console_test_runner
-    treeOutline.element.treeElementForTest = firstChild;
-    treeOutline.setShowSelectionOnKeyboardFocus(/* show: */ true, /* preventTabOrder: */ true);
+  // FIXME: is it a partial dupe of front_end/panels/elements/ElementsTreeOutlineRenderer.ts?
+  #renderNode(node: SDK.DOMModel.DOMNode, target: HTMLElement): void {
+    const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget();
+    domTree.omitRootDOMNode = false;
+    domTree.selectEnabled = true;
+    domTree.hideGutter = true;
+    domTree.rootDOMNode = node;
+    domTree.showSelectionOnKeyboardFocus = true;
+    domTree.preventTabOrder = true;
+    domTree.deindentSingleNode = true;
+    domTree.show(target, undefined, true);
 
+    const treeOutline = domTree.getTreeOutlineForTesting();
+    if (!treeOutline) {
+      return;
+    }
     const nodes: SDK.DOMModel.DOMNode[] = [node];
 
     // Iterate through descendants to mark the nodes that were specifically retained in JS references.
+    // FIXME: support this in DOMTreeWidget or move to SDK.DOMModel.DOMNode.
     while (nodes.length > 0) {
       const descendantNode = nodes.shift() as SDK.DOMModel.DOMNode;
       const descendantsChildren = descendantNode.children();
@@ -154,7 +158,5 @@ export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGrid
     }
 
     treeOutline.findTreeElement(node)?.listItemNode.setAttribute('title', 'Detached Tree Node');
-
-    return treeOutline.element;
   }
 }

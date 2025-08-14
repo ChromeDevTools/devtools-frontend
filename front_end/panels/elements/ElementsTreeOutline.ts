@@ -91,6 +91,9 @@ interface ViewInput {
   visibleWidth?: number;
   visible?: boolean;
   wrap: boolean;
+  showSelectionOnKeyboardFocus: boolean;
+  preventTabOrder: boolean;
+  deindentSingleNode: boolean;
 
   onSelectedNodeChanged:
       (event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>) => void;
@@ -121,6 +124,10 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     output.elementsTreeOutline.setVisible(input.visible);
   }
   output.elementsTreeOutline.setWordWrap(input.wrap);
+  output.elementsTreeOutline.setShowSelectionOnKeyboardFocus(input.showSelectionOnKeyboardFocus, input.preventTabOrder);
+  if (input.deindentSingleNode) {
+    output.elementsTreeOutline.deindentSingleNode();
+  }
 };
 
 /**
@@ -134,6 +141,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   omitRootDOMNode = false;
   selectEnabled = false;
   hideGutter = false;
+  showSelectionOnKeyboardFocus = false;
+  preventTabOrder = false;
+  deindentSingleNode = false;
   onSelectedNodeChanged:
       (event:
            Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>) => void = () => {};
@@ -212,6 +222,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           visibleWidth: this.#visibleWidth,
           visible: this.#visible,
           wrap: this.#wrap,
+          showSelectionOnKeyboardFocus: this.showSelectionOnKeyboardFocus,
+          preventTabOrder: this.preventTabOrder,
+          deindentSingleNode: this.deindentSingleNode,
           onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
           onSelectedNodeChanged: this.onSelectedNodeChanged.bind(this),
         },
@@ -533,6 +546,13 @@ export class ElementsTreeOutline extends
       for (const [element, issues] of treeElementNodeElementsToIssues) {
         this.#nodeElementToIssues.set(element, issues);
       }
+    }
+  }
+
+  deindentSingleNode(): void {
+    const firstChild = this.firstChild();
+    if (!firstChild || (firstChild && !firstChild.isExpandable())) {
+      this.shadowRoot.querySelector('.elements-disclosure')?.classList.add('single-node');
     }
   }
 

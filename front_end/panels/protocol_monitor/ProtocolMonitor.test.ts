@@ -419,27 +419,79 @@ describeWithEnvironment('ProtocolMonitor', () => {
       ]);
     });
   });
-});
 
-describeWithEnvironment('view', () => {
-  let target!: HTMLElement;
-  const view = ProtocolMonitor.ProtocolMonitor.DEFAULT_VIEW;
+  describe('view', () => {
+    let target!: HTMLElement;
+    const view = ProtocolMonitor.ProtocolMonitor.DEFAULT_VIEW;
 
-  beforeEach(async () => {
-    const container = document.createElement('div');
-    renderElementIntoDOM(container);
-    const widget = new UI.Widget.Widget();
-    widget.markAsRoot();
-    widget.show(container);
-    target = widget.element;
-    target.style.display = 'flex';
-    target.style.width = '780px';
-    target.style.height = '400px';
-  });
+    beforeEach(async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      const widget = new UI.Widget.Widget();
+      widget.markAsRoot();
+      widget.show(container);
+      target = widget.element;
+      target.style.display = 'flex';
+      target.style.width = '780px';
+      target.style.height = '400px';
+    });
 
-  it('basic', async () => {
-    const viewInput = {
-      messages: [
+    // Fails on Linux due to a monospace font bug.
+    it.skip('[crbug.com/438643337]: basic', async () => {
+      const viewInput = {
+        messages: [
+          {
+            id: 1,
+            method: 'Test.test1',
+            result: {result: 'Test1'},
+            params: {test: 'Test'},
+            requestTime: 1,
+            elapsedTime: 2,
+          },
+          {
+            id: 2,
+            method: 'Test.test2',
+            params: {test: 'Test'},
+            requestTime: 1,
+            elapsedTime: 2,
+          },
+          {
+            method: 'Test.test2',
+            result: {test: 'Test'},
+            requestTime: 1,
+            elapsedTime: 2,
+          }
+        ],
+        selectedMessage: undefined,
+        sidebarVisible: false,
+        command: 'Test.test3',
+        commandSuggestions: [],
+        filterKeys: ['method', 'request', 'response', 'target', 'session'],
+        filter: '',
+        parseFilter: (_: string) => [],
+        onSplitChange: (_: CustomEvent<string>) => {},
+        onRecord: (_: Event) => {},
+        onClear: () => {},
+        onSave: () => {},
+        onSelect: (_: CustomEvent<HTMLElement|null>) => {},
+        onContextMenu: (_: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {},
+        onCommandChange: (_: CustomEvent<string>) => {},
+        onCommandSubmitted: (_: CustomEvent<string>) => {},
+        onFilterChanged: (_: CustomEvent<string>) => {},
+        onTargetChange: (_: Event) => {},
+        onToggleSidebar: (_: Event) => {},
+        targets: [],
+        selectedTargetId: 'main',
+      };
+      const viewOutput = {set editorWidget(_value: ProtocolMonitor.JSONEditor.JSONEditor) {}};
+
+      view(viewInput, viewOutput, target);
+      await assertScreenshot('protocol_monitor/basic.png');
+    });
+
+    // Fails on Linux due to a monospace font bug.
+    it.skip('[crbug.com/438643337]: advanced', async () => {
+      const messages = [
         {
           id: 1,
           method: 'Test.test1',
@@ -456,93 +508,43 @@ describeWithEnvironment('view', () => {
           elapsedTime: 2,
         },
         {
-          method: 'Test.test2',
+          method: 'Test.test3',
           result: {test: 'Test'},
           requestTime: 1,
           elapsedTime: 2,
         }
-      ],
-      selectedMessage: undefined,
-      sidebarVisible: false,
-      command: 'Test.test3',
-      commandSuggestions: [],
-      filterKeys: ['method', 'request', 'response', 'target', 'session'],
-      filter: '',
-      parseFilter: (_: string) => [],
-      onSplitChange: (_: CustomEvent<string>) => {},
-      onRecord: (_: Event) => {},
-      onClear: () => {},
-      onSave: () => {},
-      onSelect: (_: CustomEvent<HTMLElement|null>) => {},
-      onContextMenu: (_: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {},
-      onCommandChange: (_: CustomEvent<string>) => {},
-      onCommandSubmitted: (_: CustomEvent<string>) => {},
-      onFilterChanged: (_: CustomEvent<string>) => {},
-      onTargetChange: (_: Event) => {},
-      onToggleSidebar: (_: Event) => {},
-      targets: [],
-      selectedTargetId: 'main',
-    };
-    const viewOutput = {set editorWidget(_value: ProtocolMonitor.JSONEditor.JSONEditor) {}};
+      ];
 
-    view(viewInput, viewOutput, target);
-    await assertScreenshot('protocol_monitor/basic.png');
-  });
+      const viewInput = {
+        messages,
+        selectedMessage: messages[2],
+        sidebarVisible: false,
+        command: '{"command": "Test.test3"}',
+        commandSuggestions: [],
+        filterKeys: ['method', 'request', 'response', 'target', 'session'],
+        filter: 'method:Test.test3',
+        parseFilter: (_: string) => [{key: 'method', text: 'test3', negative: false}],
+        onSplitChange: (_: CustomEvent<string>) => {},
+        onRecord: (_: Event) => {},
+        onClear: () => {},
+        onSave: () => {},
+        onSelect: (_: CustomEvent<HTMLElement|null>) => {},
+        onContextMenu: (_: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {},
+        onCommandChange: (_: CustomEvent<string>) => {},
+        onCommandSubmitted: (_: CustomEvent<string>) => {},
+        onFilterChanged: (_: CustomEvent<string>) => {},
+        onTargetChange: (_: Event) => {},
+        onToggleSidebar: (_: Event) => {},
+        targets: [
+          {id: () => 'main', name: () => 'Main', inspectedURL: () => 'www.example.com'},
+          {id: () => 'prerender', name: () => 'Prerender', inspectedURL: () => 'www.example.com/prerender'}
+        ] as SDK.Target.Target[],
+        selectedTargetId: 'prerender',
+      };
+      const viewOutput = {set editorWidget(_value: ProtocolMonitor.JSONEditor.JSONEditor) {}};
 
-  it('advanced', async () => {
-    const messages = [
-      {
-        id: 1,
-        method: 'Test.test1',
-        result: {result: 'Test1'},
-        params: {test: 'Test'},
-        requestTime: 1,
-        elapsedTime: 2,
-      },
-      {
-        id: 2,
-        method: 'Test.test2',
-        params: {test: 'Test'},
-        requestTime: 1,
-        elapsedTime: 2,
-      },
-      {
-        method: 'Test.test3',
-        result: {test: 'Test'},
-        requestTime: 1,
-        elapsedTime: 2,
-      }
-    ];
-
-    const viewInput = {
-      messages,
-      selectedMessage: messages[2],
-      sidebarVisible: false,
-      command: '{"command": "Test.test3"}',
-      commandSuggestions: [],
-      filterKeys: ['method', 'request', 'response', 'target', 'session'],
-      filter: 'method:Test.test3',
-      parseFilter: (_: string) => [{key: 'method', text: 'test3', negative: false}],
-      onSplitChange: (_: CustomEvent<string>) => {},
-      onRecord: (_: Event) => {},
-      onClear: () => {},
-      onSave: () => {},
-      onSelect: (_: CustomEvent<HTMLElement|null>) => {},
-      onContextMenu: (_: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {},
-      onCommandChange: (_: CustomEvent<string>) => {},
-      onCommandSubmitted: (_: CustomEvent<string>) => {},
-      onFilterChanged: (_: CustomEvent<string>) => {},
-      onTargetChange: (_: Event) => {},
-      onToggleSidebar: (_: Event) => {},
-      targets: [
-        {id: () => 'main', name: () => 'Main', inspectedURL: () => 'www.example.com'},
-        {id: () => 'prerender', name: () => 'Prerender', inspectedURL: () => 'www.example.com/prerender'}
-      ] as SDK.Target.Target[],
-      selectedTargetId: 'prerender',
-    };
-    const viewOutput = {set editorWidget(_value: ProtocolMonitor.JSONEditor.JSONEditor) {}};
-
-    view(viewInput, viewOutput, target);
-    await assertScreenshot('protocol_monitor/advanced.png');
+      view(viewInput, viewOutput, target);
+      await assertScreenshot('protocol_monitor/advanced.png');
+    });
   });
 });

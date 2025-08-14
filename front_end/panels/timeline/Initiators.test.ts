@@ -58,6 +58,7 @@ describeWithEnvironment('Initiators', () => {
           Trace.Types.Events.Event;
       assert.exists(functionCallByrequestIdleCallback);
     });
+
     it('returns the initiator data', async function() {
       const initiatorData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, functionCallBySetTimeout, [], []);
       assert.deepEqual(initiatorData[0], {

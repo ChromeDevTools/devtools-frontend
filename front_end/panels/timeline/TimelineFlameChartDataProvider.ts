@@ -1359,12 +1359,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const expandableEntries: Trace.Types.Events.Event[] =
         ModificationsManager.activeManager()?.getEntriesFilter().expandableEntries() ?? [];
 
-    const initiatorsData = initiatorsDataToDraw(
-        this.parsedTrace,
-        event,
-        hiddenEvents,
-        expandableEntries,
-    );
+    const initiatorsData = initiatorsDataToDraw(this.parsedTrace, event, hiddenEvents, expandableEntries);
 
     if (initiatorsData.length === 0) {
       // Small optimization: cache if this entry has 0 initiators, meaning if

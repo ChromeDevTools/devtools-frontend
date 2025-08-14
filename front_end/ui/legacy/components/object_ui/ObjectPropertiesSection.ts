@@ -1265,7 +1265,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     if (!expression) {
       // The property was deleted, so remove this tree element.
-      this.parent && this.parent.removeChild(this);
+      this.parent?.removeChild(this);
     } else {
       // Call updateSiblings since their value might be based on the value that just changed.
       const parent = this.parent;

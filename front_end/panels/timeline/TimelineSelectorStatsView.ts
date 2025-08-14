@@ -470,7 +470,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
         return undefined;
       }
       const styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);
-      if (!styleSheetHeader || !styleSheetHeader.resourceURL()) {
+      if (!styleSheetHeader?.resourceURL()) {
         return undefined;
       }
 

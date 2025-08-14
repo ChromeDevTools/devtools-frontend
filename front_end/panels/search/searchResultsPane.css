@@ -27,7 +27,7 @@ li.search-result {
   font-size: 12px;
   margin-top: 8px;
   padding: 2px 0 2px 4px;
-  word-wrap: normal;
+  overflow-wrap: normal;
   white-space: pre;
 }
 
@@ -64,7 +64,7 @@ li.show-more-matches:hover {
 
 li.search-match {
   margin: 2px 0;
-  word-wrap: normal;
+  overflow-wrap: normal;
   white-space: pre;
 }
 

@@ -507,7 +507,7 @@ export class CoverageView extends UI.Widget.VBox {
     }
 
     this.model.reset();
-    this.decorationManager && this.decorationManager.reset();
+    this.decorationManager?.reset();
     this.listView.reset();
     void this.model.startPolling();
   }
@@ -516,7 +516,7 @@ export class CoverageView extends UI.Widget.VBox {
     this.updateStats();
     this.listView.update(this.model?.entries() || []);
     this.exportAction.setEnabled(this.model !== null && this.model.entries().length > 0);
-    this.decorationManager && this.decorationManager.update(updatedEntries);
+    this.decorationManager?.update(updatedEntries);
   }
 
   private updateStats(): void {

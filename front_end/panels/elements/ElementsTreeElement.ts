@@ -1283,7 +1283,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.updateEditorHandles(attribute, config);
 
     const componentSelection = this.listItemElement.getComponentSelection();
-    componentSelection && componentSelection.selectAllChildren(elementForSelection);
+    componentSelection?.selectAllChildren(elementForSelection);
 
     return true;
   }
@@ -1308,7 +1308,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         this.textNodeEditingCommitted.bind(this, textNode), this.editingCancelled.bind(this), null);
     this.updateEditorHandles(textNodeElement, config);
     const componentSelection = this.listItemElement.getComponentSelection();
-    componentSelection && componentSelection.selectAllChildren(textNodeElement);
+    componentSelection?.selectAllChildren(textNodeElement);
 
     return true;
   }
@@ -1342,7 +1342,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       if ((event as KeyboardEvent).key !== ' ') {
         return;
       }
-      this.editing && this.editing.commit();
+      this.editing?.commit();
       event.consume(true);
     };
 
@@ -1378,7 +1378,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         new UI.InplaceEditor.Config<string|null>(editingCommitted.bind(this), editingCancelled.bind(this), tagName);
     this.updateEditorHandles(tagNameElement, config);
     const componentSelection = this.listItemElement.getComponentSelection();
-    componentSelection && componentSelection.selectAllChildren(tagNameElement);
+    componentSelection?.selectAllChildren(tagNameElement);
     return true;
   }
 
@@ -1461,7 +1461,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             // The relatedTarget is null when no element gains focus, e.g. switching windows.
             const relatedTarget = (event.relatedTarget as Node | null);
             if (relatedTarget && !relatedTarget.isSelfOrDescendant(editor)) {
-              this.editing && this.editing.commit();
+              this.editing?.commit();
             }
           },
         }),
@@ -1472,7 +1472,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.htmlEditElement.appendChild(editor);
     editor.editor.focus();
 
-    this.treeOutline && this.treeOutline.setMultilineEditing(this.editing);
+    this.treeOutline?.setMultilineEditing(this.editing);
 
     function resize(this: ElementsTreeElement): void {
       if (this.treeOutline && this.htmlEditElement) {

@@ -407,7 +407,7 @@ export class IssuesPane extends UI.Widget.VBox {
       if (preservedSet?.has(key)) {
         continue;
       }
-      view.parent && view.parent.removeChild(view);
+      view.parent?.removeChild(view);
       views.delete(key);
     }
   }

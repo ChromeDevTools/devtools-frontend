@@ -1014,7 +1014,7 @@ function renderNode(data: PopulateNodesEventNodeTypes, link?: HTMLElement, showN
       ${link}
       <devtools-icon part="show-element" name="select-element"
           title=${i18nString(UIStrings.showElement)} tabindex="0"
-          @click=${() => showNode && showNode()}></devtools-icon>
+          @click=${() => showNode?.()}></devtools-icon>
     </td>`;
 }
 

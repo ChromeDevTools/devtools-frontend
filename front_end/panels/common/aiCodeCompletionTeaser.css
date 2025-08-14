@@ -8,7 +8,7 @@
     .ai-code-completion-teaser-screen-reader-only {
         position: absolute;
         overflow: hidden;
-        clip: rect(0 0 0 0);
+        clip-path: rect(0 0 0 0);
         height: var(--sys-size-1);
         width: var(--sys-size-1);
         margin: -1 * var(--sys-size-1);;

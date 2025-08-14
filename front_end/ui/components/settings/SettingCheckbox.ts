@@ -66,7 +66,7 @@ export class SettingCheckbox extends HTMLElement {
     }
 
     const learnMore = this.#setting.learnMore();
-    if (learnMore && learnMore.url) {
+    if (learnMore?.url) {
       const url = learnMore.url;
       const data: Buttons.Button.ButtonData = {
         iconName: 'help',

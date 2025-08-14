@@ -1175,7 +1175,7 @@ export class ConsoleView extends UI.Widget.VBox implements
           consoleViewMessage?.getExplainActionId(), undefined, /* optional=*/ true);
     }
 
-    if (consoleMessage && consoleMessage.url) {
+    if (consoleMessage?.url) {
       const menuTitle = i18nString(
           UIStrings.hideMessagesFromS, {PH1: new Common.ParsedURL.ParsedURL(consoleMessage.url).displayName});
       contextMenu.headerSection().appendItem(

@@ -39,7 +39,7 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     }
 
     const imageResults = getImageData(this.model);
-    if (!imageResults || !imageResults.discoveryDelay) {
+    if (!imageResults?.discoveryDelay) {
       return [];
     }
 

@@ -203,7 +203,7 @@ export function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscovery
 
 export function createOverlays(model: LCPDiscoveryInsightModel): Types.Overlays.Overlay[] {
   const imageResults = getImageData(model);
-  if (!imageResults || !imageResults.discoveryDelay) {
+  if (!imageResults?.discoveryDelay) {
     return [];
   }
 

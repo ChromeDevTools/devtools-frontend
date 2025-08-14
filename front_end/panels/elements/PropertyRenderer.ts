@@ -536,7 +536,7 @@ export class URLRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.URLM
     const container = document.createDocumentFragment();
     UI.UIUtils.createTextChild(container, 'url(');
     let hrefUrl: Platform.DevToolsPath.UrlString|null = null;
-    if (this.rule && this.rule.resourceURL()) {
+    if (this.rule?.resourceURL()) {
       hrefUrl = Common.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL(), url);
     } else if (this.node) {
       hrefUrl = this.node.resolveURL(url);

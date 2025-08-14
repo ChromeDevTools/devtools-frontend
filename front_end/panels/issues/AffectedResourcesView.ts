@@ -143,7 +143,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
    */
   #resolveFrameId(frameId: Protocol.Page.FrameId): SDK.ResourceTreeModel.ResourceTreeFrame|null {
     const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-    if (!frame || !frame.url) {
+    if (!frame?.url) {
       this.#unresolvedFrameIds.add(frameId);
       if (!this.#frameListeners.length) {
         const addListener = SDK.FrameManager.FrameManager.instance().addEventListener(

@@ -130,7 +130,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     // Find the source location for the raw location.
     const {lineNumber, columnNumber} = script.rawLocationToRelativeLocation(rawLocation);
     const entry = sourceMap.findEntry(lineNumber, columnNumber);
-    if (!entry || !entry.sourceURL) {
+    if (!entry?.sourceURL) {
       return [];
     }
 
@@ -214,7 +214,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     }
 
     const entry = sourceMap.findEntry(lineNumber, columnNumber, rawLocation.inlineFrameIndex);
-    if (!entry || !entry.sourceURL) {
+    if (!entry?.sourceURL) {
       return null;
     }
 

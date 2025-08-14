@@ -407,7 +407,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       {type: SDK.DebuggerModel.BreakpointType, hoverText?: string} {
     const breakpointWithCondition = locations.find(location => Boolean(location.breakpoint.condition()));
     const breakpoint = breakpointWithCondition?.breakpoint;
-    if (!breakpoint || !breakpoint.condition()) {
+    if (!breakpoint?.condition()) {
       return {type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT};
     }
 

@@ -75,7 +75,7 @@
 #console-messages {
   flex: 1 1;
   overflow-y: auto;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   user-select: text;
   transform: translateZ(0);
   overflow-anchor: none;  /* Chrome-specific scroll-anchoring opt-out */
@@ -375,7 +375,7 @@
 
 .console-object-preview {
   white-space: normal;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   font-style: italic;
 }
 

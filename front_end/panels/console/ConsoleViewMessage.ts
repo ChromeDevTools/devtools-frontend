@@ -662,7 +662,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       if (UI.UIUtils.isEditing() || contentElement.hasSelection()) {
         return;
       }
-      this.expandTrace && this.expandTrace(stackTraceElement.classList.contains('hidden-stack-trace'));
+      this.expandTrace?.(stackTraceElement.classList.contains('hidden-stack-trace'));
       event.consume();
     };
 
@@ -1229,7 +1229,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     if (event.key === 'ArrowLeft') {
-      this.elementInternal && this.elementInternal.focus();
+      this.elementInternal?.focus();
       return true;
     }
     if (event.key === 'ArrowRight') {
@@ -1240,7 +1240,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     if (event.key === 'ArrowUp') {
       const firstVisibleChild = this.nearestVisibleChild(0);
       if (this.selectableChildren[focusedChildIndex] === firstVisibleChild && firstVisibleChild) {
-        this.elementInternal && this.elementInternal.focus();
+        this.elementInternal?.focus();
         return true;
       }
       if (this.selectNearestVisibleChild(focusedChildIndex - 1, true /* backwards */)) {

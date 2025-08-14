@@ -368,7 +368,7 @@ export class AnimationModel extends SDKModel<EventTypes> {
 
   async animationStarted(payload: Protocol.Animation.Animation): Promise<void> {
     // We are not interested in animations without effect or target.
-    if (!payload.source || !payload.source.backendNodeId) {
+    if (!payload.source?.backendNodeId) {
       return;
     }
 

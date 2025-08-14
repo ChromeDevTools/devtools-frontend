@@ -177,7 +177,7 @@ export class NetworkNavigatorView extends NavigatorView {
     if (event.data !== mainTarget) {
       return;
     }
-    const inspectedURL = mainTarget && mainTarget.inspectedURL();
+    const inspectedURL = mainTarget?.inspectedURL();
     if (!inspectedURL) {
       return;
     }
@@ -190,7 +190,7 @@ export class NetworkNavigatorView extends NavigatorView {
 
   override uiSourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const mainTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
-    const inspectedURL = mainTarget && mainTarget.inspectedURL();
+    const inspectedURL = mainTarget?.inspectedURL();
     if (!inspectedURL) {
       return;
     }

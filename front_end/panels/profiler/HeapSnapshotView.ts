@@ -557,7 +557,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
       return null;
     }
     const script = rawLocation.script();
-    const sourceURL = script && script.sourceURL;
+    const sourceURL = script?.sourceURL;
     return sourceURL && this.linkifier ? this.linkifier.linkifyRawLocation(rawLocation, sourceURL) : null;
   }
 

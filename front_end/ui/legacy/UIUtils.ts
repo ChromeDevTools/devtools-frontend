@@ -247,8 +247,7 @@ class DragHandler {
 
     targetDocument.addEventListener('pointermove', this.elementDragMove, true);
     targetDocument.addEventListener('pointerup', this.elementDragEnd, true);
-    DragHandler.rootForMouseOut &&
-        DragHandler.rootForMouseOut.addEventListener('pointerout', this.mouseOutWhileDragging, {capture: true});
+    DragHandler.rootForMouseOut?.addEventListener('pointerout', this.mouseOutWhileDragging, {capture: true});
     if (this.dragEventsTargetDocumentTop && targetDocument !== this.dragEventsTargetDocumentTop) {
       this.dragEventsTargetDocumentTop.addEventListener('pointerup', this.elementDragEnd, true);
     }
@@ -300,7 +299,7 @@ class DragHandler {
       this.elementDragEnd(event);
       return;
     }
-    if (this.elementDraggingEventListener && this.elementDraggingEventListener(event)) {
+    if (this.elementDraggingEventListener?.(event)) {
       this.cancelDragEvents(event);
     }
   }

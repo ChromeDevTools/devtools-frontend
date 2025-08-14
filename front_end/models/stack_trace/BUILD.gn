@@ -25,7 +25,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_module("stack_trace_impl") {
-  sources = [ "Trie.ts" ]
+  sources = [
+    "StackTraceImpl.ts",
+    "Trie.ts",
+  ]
 
   deps = [
     ":bundle",
@@ -50,7 +53,10 @@ devtools_entrypoint("impl") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "Trie.test.ts" ]
+  sources = [
+    "StackTraceImpl.test.ts",
+    "Trie.test.ts",
+  ]
 
   deps = [
     ":bundle",

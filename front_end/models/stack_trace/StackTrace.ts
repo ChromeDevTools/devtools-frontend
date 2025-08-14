@@ -13,12 +13,15 @@ export interface Factory {
 
 export interface StackTrace extends Common.EventTarget.EventTarget<EventTypes> {
   readonly syncFragment: Fragment;
-  readonly asyncFragments: readonly Fragment[];
+  readonly asyncFragments: readonly AsyncFragment[];
 }
 
 export interface Fragment {
-  readonly description?: string;
   readonly frames: readonly Frame[];
+}
+
+export interface AsyncFragment extends Fragment {
+  readonly description: string;
 }
 
 export interface Frame {

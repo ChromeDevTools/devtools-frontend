@@ -1122,6 +1122,7 @@ grd_files_unbundled_sources = [
   "front_end/models/source_map_scopes/ScopeChainModel.js",
   "front_end/models/source_map_scopes/ScopeTreeCache.js",
   "front_end/models/stack_trace/StackTrace.js",
+  "front_end/models/stack_trace/StackTraceImpl.js",
   "front_end/models/stack_trace/Trie.js",
   "front_end/models/text_utils/CodeMirrorUtils.js",
   "front_end/models/text_utils/ContentData.js",

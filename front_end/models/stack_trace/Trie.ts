@@ -4,7 +4,7 @@
 
 import type * as Protocol from '../../generated/protocol.js';
 
-import type * as StackTrace from './stack_trace.js';
+import type {FragmentImpl, FrameImpl} from './StackTraceImpl.js';
 
 /**
  * Intentionally very close to a {@link Protocol.Runtime.CallFrame} but with optional `scriptId`.
@@ -30,7 +30,9 @@ export class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode> {
   readonly children: FrameNode[] = [];
 
   readonly rawFrame: RawFrame;
-  frames: StackTrace.StackTrace.Frame[] = [];
+  frames: FrameImpl[] = [];
+
+  fragment?: FragmentImpl;
 
   constructor(rawFrame: RawFrame, parent: AnyFrameNode) {
     this.rawFrame = rawFrame;

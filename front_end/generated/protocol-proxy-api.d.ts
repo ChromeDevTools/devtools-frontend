@@ -1107,6 +1107,7 @@ declare namespace ProtocolProxyApi {
      * Returns the root DOM node (and optionally the subtree) to the caller.
      * Deprecated, as it is not designed to work well with the rest of the DOM agent.
      * Use DOMSnapshot.captureSnapshot instead.
+     * @deprecated
      */
     invoke_getFlattenedDocument(params: Protocol.DOM.GetFlattenedDocumentRequest): Promise<Protocol.DOM.GetFlattenedDocumentResponse>;
 
@@ -1432,6 +1433,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Removes breakpoint on particular native event.
+     * @deprecated
      */
     invoke_removeInstrumentationBreakpoint(params: Protocol.DOMDebugger.RemoveInstrumentationBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -1457,6 +1459,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Sets breakpoint on particular native event.
+     * @deprecated
      */
     invoke_setInstrumentationBreakpoint(params: Protocol.DOMDebugger.SetInstrumentationBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -1485,6 +1488,7 @@ declare namespace ProtocolProxyApi {
      * template contents, and imported documents) in a flattened array, as well as layout and
      * white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is
      * flattened.
+     * @deprecated
      */
     invoke_getSnapshot(params: Protocol.DOMSnapshot.GetSnapshotRequest): Promise<Protocol.DOMSnapshot.GetSnapshotResponse>;
 
@@ -1580,6 +1584,7 @@ declare namespace ProtocolProxyApi {
   export interface EmulationApi {
     /**
      * Tells whether emulation is supported.
+     * @deprecated
      */
     invoke_canEmulate(): Promise<Protocol.Emulation.CanEmulateResponse>;
 
@@ -1739,6 +1744,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Overrides value returned by the javascript navigator object.
+     * @deprecated
      */
     invoke_setNavigatorOverrides(params: Protocol.Emulation.SetNavigatorOverridesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -1777,6 +1783,7 @@ declare namespace ProtocolProxyApi {
      * Resizes the frame/viewport of the page. Note that this does not affect the frame's container
      * (e.g. browser window). Can be used to produce screenshots of the specified size. Not supported
      * on Android.
+     * @deprecated
      */
     invoke_setVisibleSize(params: Protocol.Emulation.SetVisibleSizeRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -2034,11 +2041,13 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Disables headless events for the target.
+     * @deprecated
      */
     invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enables headless events for the target.
+     * @deprecated
      */
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -2442,16 +2451,19 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Tells whether clearing browser cache is supported.
+     * @deprecated
      */
     invoke_canClearBrowserCache(): Promise<Protocol.Network.CanClearBrowserCacheResponse>;
 
     /**
      * Tells whether clearing browser cookies is supported.
+     * @deprecated
      */
     invoke_canClearBrowserCookies(): Promise<Protocol.Network.CanClearBrowserCookiesResponse>;
 
     /**
      * Tells whether emulation of network conditions is supported.
+     * @deprecated
      */
     invoke_canEmulateNetworkConditions(): Promise<Protocol.Network.CanEmulateNetworkConditionsResponse>;
 
@@ -2471,6 +2483,7 @@ declare namespace ProtocolProxyApi {
      * fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted
      * event will be sent with the same InterceptionId.
      * Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead.
+     * @deprecated
      */
     invoke_continueInterceptedRequest(params: Protocol.Network.ContinueInterceptedRequestRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -2498,6 +2511,7 @@ declare namespace ProtocolProxyApi {
      * Returns all browser cookies. Depending on the backend support, will return detailed cookie
      * information in the `cookies` field.
      * Deprecated. Use Storage.getCookies instead.
+     * @deprecated
      */
     invoke_getAllCookies(): Promise<Protocol.Network.GetAllCookiesResponse>;
 
@@ -2585,6 +2599,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Sets the requests to intercept that match the provided patterns and optionally resource types.
      * Deprecated, please use Fetch.enable instead.
+     * @deprecated
      */
     invoke_setRequestInterception(params: Protocol.Network.SetRequestInterceptionRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -2647,6 +2662,7 @@ declare namespace ProtocolProxyApi {
      * Details of an intercepted HTTP request, which must be either allowed, blocked, modified or
      * mocked.
      * Deprecated, use Fetch.requestPaused instead.
+     * @deprecated
      */
     requestIntercepted(params: Protocol.Network.RequestInterceptedEvent): void;
 
@@ -2890,6 +2906,7 @@ declare namespace ProtocolProxyApi {
      * Deprecated: Doesn't work reliably and cannot be fixed due to process
      * separation (the owner node might be in a different process). Determine
      * the owner node in the client and use highlightNode.
+     * @deprecated
      */
     invoke_highlightFrame(params: Protocol.Overlay.HighlightFrameRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -2969,11 +2986,13 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Deprecated, no longer has any effect.
+     * @deprecated
      */
     invoke_setShowHitTestBorders(params: Protocol.Overlay.SetShowHitTestBordersRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Deprecated, no longer has any effect.
+     * @deprecated
      */
     invoke_setShowWebVitals(params: Protocol.Overlay.SetShowWebVitalsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3113,6 +3132,7 @@ declare namespace ProtocolProxyApi {
   export interface PageApi {
     /**
      * Deprecated, please use addScriptToEvaluateOnNewDocument instead.
+     * @deprecated
      */
     invoke_addScriptToEvaluateOnLoad(params: Protocol.Page.AddScriptToEvaluateOnLoadRequest): Promise<Protocol.Page.AddScriptToEvaluateOnLoadResponse>;
 
@@ -3139,16 +3159,19 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Clears the overridden device metrics.
+     * @deprecated
      */
     invoke_clearDeviceMetricsOverride(): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Clears the overridden Device Orientation.
+     * @deprecated
      */
     invoke_clearDeviceOrientationOverride(): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Clears the overridden Geolocation Position and Error.
+     * @deprecated
      */
     invoke_clearGeolocationOverride(): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3159,6 +3182,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Deletes browser cookie with given name, domain and path.
+     * @deprecated
      */
     invoke_deleteCookie(params: Protocol.Page.DeleteCookieRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3185,6 +3209,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Deprecated because it's not guaranteed that the returned icon is in fact the one used for PWA installation.
+     * @deprecated
      */
     invoke_getManifestIcons(): Promise<Protocol.Page.GetManifestIconsResponse>;
 
@@ -3253,6 +3278,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
+     * @deprecated
      */
     invoke_removeScriptToEvaluateOnLoad(params: Protocol.Page.RemoveScriptToEvaluateOnLoadRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3295,11 +3321,13 @@ declare namespace ProtocolProxyApi {
      * Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
      * window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
      * query results).
+     * @deprecated
      */
     invoke_setDeviceMetricsOverride(params: Protocol.Page.SetDeviceMetricsOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Overrides the Device Orientation.
+     * @deprecated
      */
     invoke_setDeviceOrientationOverride(params: Protocol.Page.SetDeviceOrientationOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3320,12 +3348,14 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Set the behavior when downloading a file.
+     * @deprecated
      */
     invoke_setDownloadBehavior(params: Protocol.Page.SetDownloadBehaviorRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
      * unavailable.
+     * @deprecated
      */
     invoke_setGeolocationOverride(params: Protocol.Page.SetGeolocationOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3336,6 +3366,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Toggles mouse event-based touch event emulation.
+     * @deprecated
      */
     invoke_setTouchEmulationEnabled(params: Protocol.Page.SetTouchEmulationEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3448,6 +3479,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Fired when frame no longer has a scheduled navigation.
+     * @deprecated
      */
     frameClearedScheduledNavigation(params: Protocol.Page.FrameClearedScheduledNavigationEvent): void;
 
@@ -3493,6 +3525,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Fired when frame schedules a potential navigation.
+     * @deprecated
      */
     frameScheduledNavigation(params: Protocol.Page.FrameScheduledNavigationEvent): void;
 
@@ -3509,12 +3542,14 @@ declare namespace ProtocolProxyApi {
     /**
      * Fired when page is about to start a download.
      * Deprecated. Use Browser.downloadWillBegin instead.
+     * @deprecated
      */
     downloadWillBegin(params: Protocol.Page.DownloadWillBeginEvent): void;
 
     /**
      * Fired when download makes progress. Last call has |done| == true.
      * Deprecated. Use Browser.downloadProgress instead.
+     * @deprecated
      */
     downloadProgress(params: Protocol.Page.DownloadProgressEvent): void;
 
@@ -3599,6 +3634,7 @@ declare namespace ProtocolProxyApi {
      * Sets time domain to use for collecting and reporting duration metrics.
      * Note that this must be called before enabling metrics collection. Calling
      * this method while metrics collection is enabled returns an error.
+     * @deprecated
      */
     invoke_setTimeDomain(params: Protocol.Performance.SetTimeDomainRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3686,12 +3722,14 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Handles a certificate error that fired a certificateError event.
+     * @deprecated
      */
     invoke_handleCertificateError(params: Protocol.Security.HandleCertificateErrorRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enable/disable overriding certificate errors. If enabled, all certificate error events need to
      * be handled by the DevTools client and should be answered with `handleCertificateError` commands.
+     * @deprecated
      */
     invoke_setOverrideCertificateErrors(params: Protocol.Security.SetOverrideCertificateErrorsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3702,6 +3740,7 @@ declare namespace ProtocolProxyApi {
      * handled with the `handleCertificateError` command. Note: this event does not fire if the
      * certificate error has been allowed internally. Only one client per target should override
      * certificate errors at the same time.
+     * @deprecated
      */
     certificateError(params: Protocol.Security.CertificateErrorEvent): void;
 
@@ -3712,6 +3751,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * The security state of the page changed. No longer being sent.
+     * @deprecated
      */
     securityStateChanged(params: Protocol.Security.SecurityStateChangedEvent): void;
 
@@ -4104,6 +4144,7 @@ declare namespace ProtocolProxyApi {
      * Sends protocol message over session with given id.
      * Consider using flat mode instead; see commands attachToTarget, setAutoAttach,
      * and crbug.com/991325.
+     * @deprecated
      */
     invoke_sendMessageToTarget(params: Protocol.Target.SendMessageToTargetRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -4478,6 +4519,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * This command is deprecated. Use getScriptSource instead.
+     * @deprecated
      */
     invoke_getWasmBytecode(params: Protocol.Debugger.GetWasmBytecodeRequest): Promise<Protocol.Debugger.GetWasmBytecodeResponse>;
 
@@ -4491,6 +4533,9 @@ declare namespace ProtocolProxyApi {
      */
     invoke_pause(): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * @deprecated
+     */
     invoke_pauseOnAsyncCall(params: Protocol.Debugger.PauseOnAsyncCallRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
@@ -4635,6 +4680,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Fired when breakpoint is resolved to an actual script and location.
      * Deprecated in favor of `resolvedBreakpoints` in the `scriptParsed` event.
+     * @deprecated
      */
     breakpointResolved(params: Protocol.Debugger.BreakpointResolvedEvent): void;
 

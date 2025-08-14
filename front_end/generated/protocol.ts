@@ -1136,6 +1136,9 @@ export namespace Audits {
     loaderId: Network.LoaderId;
   }
 
+  /**
+   * @deprecated
+   */
   export interface NavigatorUserAgentIssueDetails {
     url: string;
     location?: SourceCodeLocation;
@@ -1488,6 +1491,9 @@ export namespace Audits {
     attributionReportingIssueDetails?: AttributionReportingIssueDetails;
     quirksModeIssueDetails?: QuirksModeIssueDetails;
     partitioningBlobURLIssueDetails?: PartitioningBlobURLIssueDetails;
+    /**
+     * @deprecated
+     */
     navigatorUserAgentIssueDetails?: NavigatorUserAgentIssueDetails;
     genericIssueDetails?: GenericIssueDetails;
     deprecationIssueDetails?: DeprecationIssueDetails;
@@ -4546,6 +4552,7 @@ export namespace DOM {
      * Deprecated, as the HTML Imports API has been removed (crbug.com/937746).
      * This property used to return the imported document for the HTMLImport links.
      * The property is always undefined now.
+     * @deprecated
      */
     importedDocument?: Node;
     /**
@@ -6633,6 +6640,9 @@ export namespace Emulation {
      * Brands appearing in Sec-CH-UA-Full-Version-List.
      */
     fullVersionList?: UserAgentBrandVersion[];
+    /**
+     * @deprecated
+     */
     fullVersion?: string;
     platform: string;
     platformVersion: string;
@@ -6903,12 +6913,14 @@ export namespace Emulation {
      * If set, the display feature of a multi-segment screen. If not set, multi-segment support
      * is turned-off.
      * Deprecated, use Emulation.setDisplayFeaturesOverride.
+     * @deprecated
      */
     displayFeature?: DisplayFeature;
     /**
      * If set, the posture of a foldable device. If not set the posture is set
      * to continuous.
      * Deprecated, use Emulation.setDevicePostureOverride.
+     * @deprecated
      */
     devicePosture?: DevicePosture;
   }
@@ -9849,6 +9861,7 @@ export namespace Network {
     /**
      * HTTP POST request data.
      * Use postDataEntries instead.
+     * @deprecated
      */
     postData?: string;
     /**
@@ -10175,6 +10188,7 @@ export namespace Network {
     headers: Headers;
     /**
      * HTTP response headers text. This has been replaced by the headers in Network.responseReceivedExtraInfo.
+     * @deprecated
      */
     headersText?: string;
     /**
@@ -10191,6 +10205,7 @@ export namespace Network {
     requestHeaders?: Headers;
     /**
      * HTTP request headers text. This has been replaced by the headers in Network.requestWillBeSentExtraInfo.
+     * @deprecated
      */
     requestHeadersText?: string;
     /**
@@ -10465,6 +10480,7 @@ export namespace Network {
     priority: CookiePriority;
     /**
      * True if cookie is SameParty.
+     * @deprecated
      */
     sameParty: boolean;
     /**
@@ -11483,6 +11499,7 @@ export namespace Network {
   export interface SetCookieResponse extends ProtocolResponseWithError {
     /**
      * Always set to true. If an error occurs, the response indicates protocol error.
+     * @deprecated
      */
     success: boolean;
   }
@@ -11710,6 +11727,7 @@ export namespace Network {
    * Details of an intercepted HTTP request, which must be either allowed, blocked, modified or
    * mocked.
    * Deprecated, use Fetch.requestPaused instead.
+   * @deprecated
    */
   export interface RequestInterceptedEvent {
     /**
@@ -12509,6 +12527,7 @@ export namespace Overlay {
     gridBorderColor?: DOM.RGBA;
     /**
      * The cell border color (default: transparent). Deprecated, please use rowLineColor and columnLineColor instead.
+     * @deprecated
      */
     cellBorderColor?: DOM.RGBA;
     /**
@@ -12525,6 +12544,7 @@ export namespace Overlay {
     gridBorderDash?: boolean;
     /**
      * Whether the cell border is dashed (default: false). Deprecated, please us rowLineDash and columnLineDash instead.
+     * @deprecated
      */
     cellBorderDash?: boolean;
     /**
@@ -14600,6 +14620,7 @@ export namespace Page {
     data?: string;
     /**
      * Parsed manifest properties. Deprecated, use manifest instead.
+     * @deprecated
      */
     parsed?: AppManifestParsedProperties;
     manifest: WebAppManifest;
@@ -14649,14 +14670,17 @@ export namespace Page {
   export interface GetLayoutMetricsResponse extends ProtocolResponseWithError {
     /**
      * Deprecated metrics relating to the layout viewport. Is in device pixels. Use `cssLayoutViewport` instead.
+     * @deprecated
      */
     layoutViewport: LayoutViewport;
     /**
      * Deprecated metrics relating to the visual viewport. Is in device pixels. Use `cssVisualViewport` instead.
+     * @deprecated
      */
     visualViewport: VisualViewport;
     /**
      * Deprecated size of scrollable area. Is in DP. Use `cssContentSize` instead.
+     * @deprecated
      */
     contentSize: DOM.Rect;
     /**
@@ -15269,6 +15293,7 @@ export namespace Page {
 
   /**
    * Fired when frame no longer has a scheduled navigation.
+   * @deprecated
    */
   export interface FrameClearedScheduledNavigationEvent {
     /**
@@ -15389,6 +15414,7 @@ export namespace Page {
 
   /**
    * Fired when frame schedules a potential navigation.
+   * @deprecated
    */
   export interface FrameScheduledNavigationEvent {
     /**
@@ -15433,6 +15459,7 @@ export namespace Page {
   /**
    * Fired when page is about to start a download.
    * Deprecated. Use Browser.downloadWillBegin instead.
+   * @deprecated
    */
   export interface DownloadWillBeginEvent {
     /**
@@ -15462,6 +15489,7 @@ export namespace Page {
   /**
    * Fired when download makes progress. Last call has |done| == true.
    * Deprecated. Use Browser.downloadProgress instead.
+   * @deprecated
    */
   export interface DownloadProgressEvent {
     /**
@@ -15868,6 +15896,7 @@ export namespace Preload {
     errorType?: RuleSetErrorType;
     /**
      * TODO(https://crbug.com/1425354): Replace this property with structured error.
+     * @deprecated
      */
     errorMessage?: string;
   }
@@ -16323,6 +16352,7 @@ export namespace Security {
 
   /**
    * Information about insecure content on the page.
+   * @deprecated
    */
   export interface InsecureContentStatus {
     /**
@@ -16394,6 +16424,7 @@ export namespace Security {
    * handled with the `handleCertificateError` command. Note: this event does not fire if the
    * certificate error has been allowed internally. Only one client per target should override
    * certificate errors at the same time.
+   * @deprecated
    */
   export interface CertificateErrorEvent {
     /**
@@ -16422,6 +16453,7 @@ export namespace Security {
 
   /**
    * The security state of the page changed. No longer being sent.
+   * @deprecated
    */
   export interface SecurityStateChangedEvent {
     /**
@@ -16430,19 +16462,23 @@ export namespace Security {
     securityState: SecurityState;
     /**
      * True if the page was loaded over cryptographic transport such as HTTPS.
+     * @deprecated
      */
     schemeIsCryptographic: boolean;
     /**
      * Previously a list of explanations for the security state. Now always
      * empty.
+     * @deprecated
      */
     explanations: SecurityStateExplanation[];
     /**
      * Information about insecure content on the page.
+     * @deprecated
      */
     insecureContentStatus: InsecureContentStatus;
     /**
      * Overrides user-visible description of the state. Always omitted.
+     * @deprecated
      */
     summary?: string;
   }
@@ -18065,6 +18101,7 @@ export namespace Target {
   export interface CloseTargetResponse extends ProtocolResponseWithError {
     /**
      * Always set to true. If an error occurs, the response indicates protocol error.
+     * @deprecated
      */
     success: boolean;
   }
@@ -18185,6 +18222,7 @@ export namespace Target {
     sessionId?: SessionID;
     /**
      * Deprecated.
+     * @deprecated
      */
     targetId?: TargetID;
   }
@@ -18225,6 +18263,7 @@ export namespace Target {
     sessionId?: SessionID;
     /**
      * Deprecated.
+     * @deprecated
      */
     targetId?: TargetID;
   }
@@ -18320,6 +18359,7 @@ export namespace Target {
     sessionId: SessionID;
     /**
      * Deprecated.
+     * @deprecated
      */
     targetId?: TargetID;
   }
@@ -18336,6 +18376,7 @@ export namespace Target {
     message: string;
     /**
      * Deprecated.
+     * @deprecated
      */
     targetId?: TargetID;
   }
@@ -18553,10 +18594,12 @@ export namespace Tracing {
   export interface StartRequest {
     /**
      * Category/tag filter
+     * @deprecated
      */
     categories?: string;
     /**
      * Tracing options
+     * @deprecated
      */
     options?: string;
     /**
@@ -19247,6 +19290,7 @@ export namespace Debugger {
      * JavaScript script name or url.
      * Deprecated in favor of using the `location.scriptId` to resolve the URL via a previously
      * sent `Debugger.scriptParsed` event.
+     * @deprecated
      */
     url: string;
     /**
@@ -19607,14 +19651,17 @@ export namespace Debugger {
   export interface RestartFrameResponse extends ProtocolResponseWithError {
     /**
      * New stack trace.
+     * @deprecated
      */
     callFrames: CallFrame[];
     /**
      * Async stack trace, if any.
+     * @deprecated
      */
     asyncStackTrace?: Runtime.StackTrace;
     /**
      * Async stack trace, if any.
+     * @deprecated
      */
     asyncStackTraceId?: Runtime.StackTraceId;
   }
@@ -19851,18 +19898,22 @@ export namespace Debugger {
   export interface SetScriptSourceResponse extends ProtocolResponseWithError {
     /**
      * New stack trace in case editing has happened while VM was stopped.
+     * @deprecated
      */
     callFrames?: CallFrame[];
     /**
      * Whether current call stack  was modified after applying the changes.
+     * @deprecated
      */
     stackChanged?: boolean;
     /**
      * Async stack trace, if any.
+     * @deprecated
      */
     asyncStackTrace?: Runtime.StackTrace;
     /**
      * Async stack trace, if any.
+     * @deprecated
      */
     asyncStackTraceId?: Runtime.StackTraceId;
     /**
@@ -19926,6 +19977,7 @@ export namespace Debugger {
   /**
    * Fired when breakpoint is resolved to an actual script and location.
    * Deprecated in favor of `resolvedBreakpoints` in the `scriptParsed` event.
+   * @deprecated
    */
   export interface BreakpointResolvedEvent {
     /**
@@ -19984,6 +20036,7 @@ export namespace Debugger {
     asyncStackTraceId?: Runtime.StackTraceId;
     /**
      * Never present, will be removed.
+     * @deprecated
      */
     asyncCallStackTraceId?: Runtime.StackTraceId;
   }
@@ -20306,6 +20359,7 @@ export namespace HeapProfiler {
     reportProgress?: boolean;
     /**
      * Deprecated in favor of `exposeInternals`.
+     * @deprecated
      */
     treatGlobalObjectsAsRoots?: boolean;
     /**
@@ -20326,6 +20380,7 @@ export namespace HeapProfiler {
     /**
      * If true, a raw snapshot without artificial roots will be generated.
      * Deprecated in favor of `exposeInternals`.
+     * @deprecated
      */
     treatGlobalObjectsAsRoots?: boolean;
     /**
@@ -21600,6 +21655,7 @@ export namespace Runtime {
      * Deprecated in favor of `executionContextName` due to an unclear use case
      * and bugs in implementation (crbug.com/1169639). `executionContextId` will be
      * removed in the future.
+     * @deprecated
      */
     executionContextId?: ExecutionContextId;
     /**
@@ -21735,6 +21791,7 @@ export namespace Runtime {
   export interface ExecutionContextDestroyedEvent {
     /**
      * Id of the destroyed context
+     * @deprecated
      */
     executionContextId: ExecutionContextId;
     /**
@@ -21759,6 +21816,7 @@ export namespace Runtime {
 
 /**
  * This domain is deprecated.
+ * @deprecated
  */
 export namespace Schema {
 

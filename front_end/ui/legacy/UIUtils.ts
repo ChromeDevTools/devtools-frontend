@@ -36,6 +36,7 @@
 
 import './Toolbar.js';
 
+import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -43,8 +44,11 @@ import * as Root from '../../core/root/root.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
+import {Directives} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
+import * as ActionRegistration from './ActionRegistration.js';
+import {ActionRegistry} from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import checkboxTextLabelStyles from './checkboxTextLabel.css.js';
 import confirmDialogStyles from './confirmDialog.css.js';
@@ -2147,4 +2151,37 @@ export function maybeCreateNewBadge(promotionId: string): HTMLDivElement|undefin
     return badge;
   }
   return undefined;
+}
+
+export function bindToAction(actionName: string): ReturnType<typeof Directives.ref> {
+  const action = ActionRegistry.instance().getAction(actionName);
+
+  let setEnabled: (enabled: boolean) => void;
+  function actionEnabledChanged(event: Common.EventTarget.EventTargetEvent<boolean>): void {
+    setEnabled(event.data);
+  }
+
+  return Directives.ref((e: Element|undefined) => {
+    if (!e || !(e instanceof Buttons.Button.Button)) {
+      action.removeEventListener(ActionRegistration.Events.ENABLED, actionEnabledChanged);
+      return;
+    }
+
+    setEnabled = enabled => {
+      e.disabled = !enabled;
+    };
+
+    action.addEventListener(ActionRegistration.Events.ENABLED, actionEnabledChanged);
+
+    const title = action.title();
+    const iconName = action.icon();
+    const jslogContext = action.id();
+    if (iconName) {
+      e.data = {iconName, jslogContext, title, variant: Buttons.Button.Variant.ICON};
+    } else {
+      e.data = {jslogContext, title, variant: Buttons.Button.Variant.TEXT};
+    }
+    setEnabled(action.enabled());
+    e.onclick = () => action.execute();
+  });
 }

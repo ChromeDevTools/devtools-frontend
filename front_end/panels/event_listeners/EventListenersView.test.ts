@@ -16,7 +16,7 @@ describeWithLocale('EventListenersView placeholder', () => {
   }
 
   it('shows one-liner if in sources', () => {
-    const eventListenersView = new EventListeners.EventListenersView.EventListenersView(() => {});
+    const eventListenersView = new EventListeners.EventListenersView.EventListenersView();
     const container = document.createElement('div');
     renderElementIntoDOM(container);
     container.classList.add('sources', 'panel');
@@ -32,7 +32,7 @@ describeWithLocale('EventListenersView placeholder', () => {
   });
 
   it('shows empty widget if in elements panel', () => {
-    const eventListenersView = new EventListeners.EventListenersView.EventListenersView(() => {});
+    const eventListenersView = new EventListeners.EventListenersView.EventListenersView();
     const container = document.createElement('div');
     renderElementIntoDOM(container);
     container.classList.add('elements', 'panel');

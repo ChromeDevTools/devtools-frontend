@@ -4,14 +4,14 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("host") {
+ts_e2e_library("host") {
   sources = [
     "out-of-process_test.ts",
     "user-metrics_test.ts",
   ]
 
   deps = [
-    "../../shared",
-    "../helpers",
+    "../../e2e/helpers",
+    "../shared",
   ]
 }

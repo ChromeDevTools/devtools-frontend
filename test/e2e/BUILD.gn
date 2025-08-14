@@ -21,7 +21,6 @@ node_ts_library("tests") {
     "elements",
     "emulation",
     "extensions",
-    "host",
     "issues",
     "lighthouse",
     "network",

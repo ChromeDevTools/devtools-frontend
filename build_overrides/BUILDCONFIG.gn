@@ -27,7 +27,6 @@ declare_args() {
   is_official_build = false
 
   # Defined in Chromium and needed here as well
-  use_clang_modules = false
   is_wasm = false
 
   # Whether we're a traditional desktop unix.

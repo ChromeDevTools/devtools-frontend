@@ -1850,12 +1850,11 @@ export class TimelineUIUtils {
       return false;
     }
 
-    const childNodeQueue: Trace.Helpers.TreeHelpers.TraceEntryNode[] = [...node.children];
+    const childNodesToVisit: Trace.Helpers.TreeHelpers.TraceEntryNode[] = [...node.children];
 
-    while (childNodeQueue.length) {
-      // Usually you would shift(), but the order of traversal doesn't matter
-      // to us in this case, and pop() doesn't cause any re-indexing.
-      const childNode = childNodeQueue.pop();
+    while (childNodesToVisit.length) {
+      // Traversal order doesn't matter, pop() is more efficient than shift().
+      const childNode = childNodesToVisit.pop();
       if (!childNode) {
         continue;
       }
@@ -1865,7 +1864,7 @@ export class TimelineUIUtils {
         total[categoryName] = (total[categoryName] || 0) + childSelfTime;
       }
 
-      childNodeQueue.push(...childNode.children);
+      childNodesToVisit.push(...childNode.children);
     }
 
     if (Trace.Types.Events.isPhaseAsync(event.ph)) {

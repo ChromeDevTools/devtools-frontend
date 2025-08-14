@@ -1806,6 +1806,21 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setSmallViewportHeightDifferenceOverride(params: Protocol.Emulation.SetSmallViewportHeightDifferenceOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Returns device's screen configuration.
+     */
+    invoke_getScreenInfos(): Promise<Protocol.Emulation.GetScreenInfosResponse>;
+
+    /**
+     * Add a new screen to the device. Only supported in headless mode.
+     */
+    invoke_addScreen(params: Protocol.Emulation.AddScreenRequest): Promise<Protocol.Emulation.AddScreenResponse>;
+
+    /**
+     * Remove screen from the device. Only supported in headless mode.
+     */
+    invoke_removeScreen(params: Protocol.Emulation.RemoveScreenRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface EmulationDispatcher {
     /**

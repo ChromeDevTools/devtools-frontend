@@ -2627,6 +2627,27 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Returns device's screen configuration.
+     */
+    'Emulation.getScreenInfos': {
+      paramsType: [];
+      returnType: Protocol.Emulation.GetScreenInfosResponse;
+    };
+    /**
+     * Add a new screen to the device. Only supported in headless mode.
+     */
+    'Emulation.addScreen': {
+      paramsType: [Protocol.Emulation.AddScreenRequest];
+      returnType: Protocol.Emulation.AddScreenResponse;
+    };
+    /**
+     * Remove screen from the device. Only supported in headless mode.
+     */
+    'Emulation.removeScreen': {
+      paramsType: [Protocol.Emulation.RemoveScreenRequest];
+      returnType: void;
+    };
+    /**
      * Sets breakpoint on particular native event.
      */
     'EventBreakpoints.setInstrumentationBreakpoint': {

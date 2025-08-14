@@ -10360,6 +10360,130 @@
                     ]
                 },
                 {
+                    "id": "WorkAreaInsets",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "top",
+                            "description": "Work area top inset in pixels. Default is 0;",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "left",
+                            "description": "Work area left inset in pixels. Default is 0;",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "bottom",
+                            "description": "Work area bottom inset in pixels. Default is 0;",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "right",
+                            "description": "Work area right inset in pixels. Default is 0;",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "id": "ScreenId",
+                    "experimental": true,
+                    "type": "string"
+                },
+                {
+                    "id": "ScreenInfo",
+                    "description": "Screen information similar to the one returned by window.getScreenDetails() method,\nsee https://w3c.github.io/window-management/#screendetailed.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "left",
+                            "description": "Offset of the left edge of the screen.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "top",
+                            "description": "Offset of the top edge of the screen.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "width",
+                            "description": "Width of the screen.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "height",
+                            "description": "Height of the screen.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "availLeft",
+                            "description": "Offset of the left edge of the available screen area.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "availTop",
+                            "description": "Offset of the top edge of the available screen area.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "availWidth",
+                            "description": "Width of the available screen area.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "availHeight",
+                            "description": "Height of the available screen area.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "devicePixelRatio",
+                            "description": "Specifies the screen's device pixel ratio.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "orientation",
+                            "description": "Specifies the screen's orientation.",
+                            "$ref": "ScreenOrientation"
+                        },
+                        {
+                            "name": "colorDepth",
+                            "description": "Specifies the screen's color depth in bits.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "isExtended",
+                            "description": "Indicates whether the device has multiple screens.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "isInternal",
+                            "description": "Indicates whether the screen is internal to the device or external, attached to the device.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "isPrimary",
+                            "description": "Indicates whether the screen is set as the the operating system primary screen.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "label",
+                            "description": "Specifies the descriptive label for the screen.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "id",
+                            "description": "Specifies the unique identifier of the screen.",
+                            "$ref": "ScreenId"
+                        }
+                    ]
+                },
+                {
                     "id": "DisabledImageType",
                     "description": "Enum of image types that can be disabled.",
                     "experimental": true,
@@ -11076,6 +11200,100 @@
                             "name": "difference",
                             "description": "This will cause an element of size 100svh to be `difference` pixels smaller than an element\nof size 100lvh.",
                             "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "getScreenInfos",
+                    "description": "Returns device's screen configuration.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "screenInfos",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ScreenInfo"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "addScreen",
+                    "description": "Add a new screen to the device. Only supported in headless mode.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "left",
+                            "description": "Offset of the left edge of the screen in pixels.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "top",
+                            "description": "Offset of the top edge of the screen in pixels.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "width",
+                            "description": "The width of the screen in pixels.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "height",
+                            "description": "The height of the screen in pixels.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "workAreaInsets",
+                            "description": "Specifies the screen's work area. Default is entire screen.",
+                            "optional": true,
+                            "$ref": "WorkAreaInsets"
+                        },
+                        {
+                            "name": "devicePixelRatio",
+                            "description": "Specifies the screen's device pixel ratio. Default is 1.",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "rotation",
+                            "description": "Specifies the screen's rotation angle. Available values are 0, 90, 180 and 270. Default is 0.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "colorDepth",
+                            "description": "Specifies the screen's color depth in bits. Default is 24.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "label",
+                            "description": "Specifies the descriptive label for the screen. Default is none.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "isInternal",
+                            "description": "Indicates whether the screen is internal to the device or external, attached to the device. Default is false.",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "screenInfo",
+                            "$ref": "ScreenInfo"
+                        }
+                    ]
+                },
+                {
+                    "name": "removeScreen",
+                    "description": "Remove screen from the device. Only supported in headless mode.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "screenId",
+                            "$ref": "ScreenId"
                         }
                     ]
                 }

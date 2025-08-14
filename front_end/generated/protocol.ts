@@ -6707,6 +6707,98 @@ export namespace Emulation {
     available?: boolean;
   }
 
+  export interface WorkAreaInsets {
+    /**
+     * Work area top inset in pixels. Default is 0;
+     */
+    top?: integer;
+    /**
+     * Work area left inset in pixels. Default is 0;
+     */
+    left?: integer;
+    /**
+     * Work area bottom inset in pixels. Default is 0;
+     */
+    bottom?: integer;
+    /**
+     * Work area right inset in pixels. Default is 0;
+     */
+    right?: integer;
+  }
+
+  export type ScreenId = OpaqueIdentifier<string, 'Protocol.Emulation.ScreenId'>;
+
+  /**
+   * Screen information similar to the one returned by window.getScreenDetails() method,
+   * see https://w3c.github.io/window-management/#screendetailed.
+   */
+  export interface ScreenInfo {
+    /**
+     * Offset of the left edge of the screen.
+     */
+    left: integer;
+    /**
+     * Offset of the top edge of the screen.
+     */
+    top: integer;
+    /**
+     * Width of the screen.
+     */
+    width: integer;
+    /**
+     * Height of the screen.
+     */
+    height: integer;
+    /**
+     * Offset of the left edge of the available screen area.
+     */
+    availLeft: integer;
+    /**
+     * Offset of the top edge of the available screen area.
+     */
+    availTop: integer;
+    /**
+     * Width of the available screen area.
+     */
+    availWidth: integer;
+    /**
+     * Height of the available screen area.
+     */
+    availHeight: integer;
+    /**
+     * Specifies the screen's device pixel ratio.
+     */
+    devicePixelRatio: number;
+    /**
+     * Specifies the screen's orientation.
+     */
+    orientation: ScreenOrientation;
+    /**
+     * Specifies the screen's color depth in bits.
+     */
+    colorDepth: integer;
+    /**
+     * Indicates whether the device has multiple screens.
+     */
+    isExtended: boolean;
+    /**
+     * Indicates whether the screen is internal to the device or external, attached to the device.
+     */
+    isInternal: boolean;
+    /**
+     * Indicates whether the screen is set as the the operating system primary screen.
+     */
+    isPrimary: boolean;
+    /**
+     * Specifies the descriptive label for the screen.
+     */
+    label: string;
+    /**
+     * Specifies the unique identifier of the screen.
+     */
+    id: ScreenId;
+  }
+
   /**
    * Enum of image types that can be disabled.
    */
@@ -7108,6 +7200,61 @@ export namespace Emulation {
      * of size 100lvh.
      */
     difference: integer;
+  }
+
+  export interface GetScreenInfosResponse extends ProtocolResponseWithError {
+    screenInfos: ScreenInfo[];
+  }
+
+  export interface AddScreenRequest {
+    /**
+     * Offset of the left edge of the screen in pixels.
+     */
+    left: integer;
+    /**
+     * Offset of the top edge of the screen in pixels.
+     */
+    top: integer;
+    /**
+     * The width of the screen in pixels.
+     */
+    width: integer;
+    /**
+     * The height of the screen in pixels.
+     */
+    height: integer;
+    /**
+     * Specifies the screen's work area. Default is entire screen.
+     */
+    workAreaInsets?: WorkAreaInsets;
+    /**
+     * Specifies the screen's device pixel ratio. Default is 1.
+     */
+    devicePixelRatio?: number;
+    /**
+     * Specifies the screen's rotation angle. Available values are 0, 90, 180 and 270. Default is 0.
+     */
+    rotation?: integer;
+    /**
+     * Specifies the screen's color depth in bits. Default is 24.
+     */
+    colorDepth?: integer;
+    /**
+     * Specifies the descriptive label for the screen. Default is none.
+     */
+    label?: string;
+    /**
+     * Indicates whether the screen is internal to the device or external, attached to the device. Default is false.
+     */
+    isInternal?: boolean;
+  }
+
+  export interface AddScreenResponse extends ProtocolResponseWithError {
+    screenInfo: ScreenInfo;
+  }
+
+  export interface RemoveScreenRequest {
+    screenId: ScreenId;
   }
 }
 

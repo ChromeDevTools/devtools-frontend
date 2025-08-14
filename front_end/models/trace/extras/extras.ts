@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+export * as AllThreadEntries from './AllThreadEntries.js';
 export * as FilmStrip from './FilmStrip.js';
 export * as MainThreadActivity from './MainThreadActivity.js';
 export * as ScriptDuplication from './ScriptDuplication.js';

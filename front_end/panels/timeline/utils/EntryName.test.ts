@@ -29,7 +29,7 @@ describeWithEnvironment('EntryName', () => {
 
   it('adds the event type for EventDispatch events', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    const clickEvent = parsedTrace.Renderer.allTraceEntries.find(event => {
+    const clickEvent = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => {
       return Trace.Types.Events.isDispatch(event) && event.args.data.type === 'click';
     });
     assert.isOk(clickEvent);
@@ -54,7 +54,8 @@ describeWithEnvironment('EntryName', () => {
 
   it('uses the names defined in the entry styles', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const entry = parsedTrace.Renderer.allTraceEntries.find(e => e.name === Trace.Types.Events.Name.RUN_TASK);
+    const entry =
+        Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(e => e.name === Trace.Types.Events.Name.RUN_TASK);
     assert.isOk(entry);
 
     const name = Utils.EntryName.nameForEntry(entry, parsedTrace);

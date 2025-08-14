@@ -168,7 +168,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('assigns the right color for events when the trace is generic', async () => {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'generic-about-tracing.json.gz');
-    const event = parsedTrace.Renderer.allTraceEntries.find(entry => {
+    const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(entry => {
       return entry.name === 'ThreadControllerImpl::RunTask';
     });
     if (!event) {
@@ -192,7 +192,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('returns the correct title for a renderer event', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const events = parsedTrace.Renderer?.allTraceEntries;
+    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
     if (!events) {
       throw new Error('Could not find renderer events');
     }
@@ -202,7 +202,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('adds the type for EventDispatch events to the title', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'one-second-interaction.json.gz');
-    const events = parsedTrace.Renderer?.allTraceEntries;
+    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
     if (!events) {
       throw new Error('Could not find renderer events');
     }
@@ -262,7 +262,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   function getDefaultInfo() {
     const defaultInfo: Timeline.CompatibilityTracksAppender.PopoverInfo = {
-      title: 'title',
+      title: '',
       formattedTime: 'time',
       warningElements: [],
       additionalElements: [],
@@ -273,18 +273,17 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('shows self time only for events with self time above the threshold when hovered', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const events = parsedTrace.Renderer?.allTraceEntries;
-    if (!events) {
-      throw new Error('Could not find renderer events');
-    }
+    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
     const infoForShortEvent = getDefaultInfo();
-    threadAppenders[0].setPopoverInfo(events[0], infoForShortEvent);
-    assert.strictEqual(infoForShortEvent.formattedTime, '0.27\u00A0ms');
+    const shortEvent = events.find(e => {
+      return typeof e.dur === 'number' && (e.dur > 100 && e.dur < 200);
+    });
+    assert.isOk(shortEvent, 'could not find an event with a short duration');
+    threadAppenders[0].setPopoverInfo(shortEvent, infoForShortEvent);
+    assert.strictEqual(infoForShortEvent.formattedTime, '0.10\u00A0ms');
 
     const longTask = events.find(e => (e.dur || 0) > 1_000_000);
-    if (!longTask) {
-      throw new Error('Could not find long task');
-    }
+    assert.isOk(longTask);
     const infoForLongEvent = getDefaultInfo();
     threadAppenders[0].setPopoverInfo(longTask, infoForLongEvent);
     assert.strictEqual(infoForLongEvent.formattedTime, '1.30\u00A0s (self 47\xA0μs)');
@@ -292,21 +291,12 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('shows the correct title for a ParseHTML event', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const events = parsedTrace.Renderer?.allTraceEntries;
-    if (!events) {
-      throw new Error('Could not find renderer events');
-    }
-    const infoForShortEvent = getDefaultInfo();
-    threadAppenders[0].setPopoverInfo(events[0], infoForShortEvent);
-    assert.strictEqual(infoForShortEvent.formattedTime, '0.27\u00A0ms');
-
-    const longTask = events.find(e => (e.dur || 0) > 1_000_000);
-    if (!longTask) {
-      throw new Error('Could not find long task');
-    }
-    const infoForLongEvent = getDefaultInfo();
-    threadAppenders[0].setPopoverInfo(longTask, infoForLongEvent);
-    assert.strictEqual(infoForLongEvent.formattedTime, '1.30\u00A0s (self 47\xA0μs)');
+    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const event = events.find(Trace.Types.Events.isParseHTML);
+    assert.isOk(event);
+    const infoForEvent = getDefaultInfo();
+    threadAppenders[0].setPopoverInfo(event, infoForEvent);
+    assert.include(infoForEvent.title, 'www.google.com [0...37]');
   });
 
   it('shows the right time for a profile call when hovered', async function() {
@@ -330,7 +320,7 @@ describeWithEnvironment('ThreadAppender', function() {
   it('candy-stripes long tasks', async function() {
     const {parsedTrace, flameChartData, entryData} =
         await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const events = parsedTrace.Renderer?.allTraceEntries;
+    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
     if (!events) {
       throw new Error('Could not find renderer events');
     }
@@ -352,7 +342,7 @@ describeWithEnvironment('ThreadAppender', function() {
   it('does not candy-stripe tasks below the long task threshold', async function() {
     const {parsedTrace, flameChartData, entryData} =
         await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const events = parsedTrace.Renderer?.allTraceEntries;
+    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
     if (!events) {
       throw new Error('Could not find renderer events');
     }

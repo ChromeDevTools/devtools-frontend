@@ -64,7 +64,8 @@ describeWithEnvironment('EntityMapper', function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
       const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
 
-      const funcCall = parsedTrace.Renderer.allTraceEntries.find(e => Trace.Types.Events.isFunctionCall(e));
+      const funcCall =
+          Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(e => Trace.Types.Events.isFunctionCall(e));
       assert.exists(funcCall);
 
       // This function call should map to paulirish.com entity.

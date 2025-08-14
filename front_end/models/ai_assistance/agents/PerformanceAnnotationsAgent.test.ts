@@ -19,8 +19,9 @@ describeWithEnvironment('PerformanceAnnotationsAgent', () => {
       }]]),
     });
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const evalScriptEvent = parsedTrace.Renderer.allTraceEntries.find(
-        event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);
+    const evalScriptEvent =
+        Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
+            .find(event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);
     assert.exists(evalScriptEvent);
     const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(evalScriptEvent, parsedTrace);
     assert.isOk(aiCallTree);

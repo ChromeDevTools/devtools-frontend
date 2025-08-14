@@ -126,7 +126,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
   describe('popoverInfo', () => {
     it('shows the correct warning for a long task when hovered', async function() {
       await initTrackAppender(this, 'simple-js-program.json.gz');
-      const events = parsedTrace.Renderer.allTraceEntries;
+      const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
       const longTask = events.find(e => (e.dur || 0) > 1_000_000);
       if (!longTask) {
         throw new Error('Could not find long task');
@@ -182,7 +182,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
 
     it('shows the correct warning for slow idle callbacks', async function() {
       await initTrackAppender(this, 'idle-callback.json.gz');
-      const events = parsedTrace.Renderer.allTraceEntries;
+      const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
       const idleCallback = events.find(event => {
         const {duration} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
         if (!Trace.Types.Events.isFireIdleCallback(event)) {

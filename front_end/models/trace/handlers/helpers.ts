@@ -164,14 +164,14 @@ function makeUpChromeExtensionEntity(entityCache: Map<string, Entity>, url: stri
 }
 
 export function addEventToEntityMapping(event: Types.Events.Event, entityMappings: EntityMappings): void {
-  const entity = getEntityForEvent(event, entityMappings);
-  if (!entity) {
-    return;
-  }
-
   // As we share the entityMappings between Network and Renderer... We can have ResourceSendRequest events passed in here
   // that were already mapped in Network. So, to avoid mapping twice, we always check that we didn't yet.
   if (entityMappings.entityByEvent.has(event)) {
+    return;
+  }
+
+  const entity = getEntityForEvent(event, entityMappings);
+  if (!entity) {
     return;
   }
 

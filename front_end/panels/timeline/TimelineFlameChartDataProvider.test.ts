@@ -47,7 +47,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     assert.lengthOf(timelineData1.initiatorsData, 0);
 
     // a postTask scheduled event - picked as it has an initiator
-    const event = parsedTrace.Renderer.allTraceEntries.find(event => {
+    const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => {
       return event.name === Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK && event.ts === 512724961655;
     });
     assert.exists(event);
@@ -70,7 +70,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.timelineData();
     // a postTask scheduled event - picked as it has an initiator
-    const event = parsedTrace.Renderer.allTraceEntries.find(event => {
+    const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => {
       return event.name === Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK && event.ts === 512724961655;
     });
     assert.exists(event);
@@ -91,7 +91,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.timelineData();
     // a RunTask event with no initiators
-    const event = parsedTrace.Renderer.allTraceEntries.find(event => {
+    const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => {
       return event.name === Trace.Types.Events.Name.RUN_TASK && event.ts === 512724754996;
     });
     assert.exists(event);

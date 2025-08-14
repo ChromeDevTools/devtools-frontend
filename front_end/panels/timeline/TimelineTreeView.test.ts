@@ -222,7 +222,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Domain);
-      callTreeView.setModelWithEvents(parsedTrace.Renderer.allTraceEntries, parsedTrace);
+      callTreeView.setModelWithEvents(Trace.Extras.AllThreadEntries.forTrace(parsedTrace), parsedTrace);
 
       const tree = callTreeView.buildTree();
       const topLevelGroupNodes = Array.from(tree.children().entries());
@@ -248,7 +248,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.ThirdParties);
-      callTreeView.setModelWithEvents(parsedTrace.Renderer.allTraceEntries, parsedTrace, mapper);
+      callTreeView.setModelWithEvents(Trace.Extras.AllThreadEntries.forTrace(parsedTrace), parsedTrace, mapper);
 
       const tree = callTreeView.buildTree();
       const topLevelGroupNodes = Array.from(tree.children().entries());
@@ -274,7 +274,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Frame);
-      callTreeView.setModelWithEvents(parsedTrace.Renderer.allTraceEntries, parsedTrace);
+      callTreeView.setModelWithEvents(Trace.Extras.AllThreadEntries.forTrace(parsedTrace), parsedTrace);
 
       const tree = callTreeView.buildTree();
       const topLevelGroupNodes = Array.from(tree.children().entries());
@@ -294,7 +294,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.URL);
-      callTreeView.setModelWithEvents(parsedTrace.Renderer.allTraceEntries, parsedTrace);
+      callTreeView.setModelWithEvents(Trace.Extras.AllThreadEntries.forTrace(parsedTrace), parsedTrace);
 
       const tree = callTreeView.buildTree();
       const topLevelGroupNodes = Array.from(tree.children().entries());

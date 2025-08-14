@@ -101,7 +101,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const parsedProfile = cpuProfileData.parsedProfile;
       const samplesIntegrator =
           new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
-      const traceEvents = parsedTrace.Renderer.allTraceEntries.filter(event => event.pid === pid && event.tid === tid);
+      const traceEvents =
+          Trace.Extras.AllThreadEntries.forTrace(parsedTrace).filter(event => event.pid === pid && event.tid === tid);
       if (!traceEvents) {
         throw new Error('Trace events were unexpectedly not found.');
       }
@@ -350,7 +351,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const parsedProfile = cpuProfileData.parsedProfile;
       const samplesIntegrator =
           new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
-      const traceEvents = parsedTrace.Renderer.allTraceEntries.filter(event => event.pid === pid && event.tid === tid);
+      const traceEvents =
+          Trace.Extras.AllThreadEntries.forTrace(parsedTrace).filter(event => event.pid === pid && event.tid === tid);
       if (!traceEvents) {
         throw new Error('Trace events were unexpectedly not found.');
       }

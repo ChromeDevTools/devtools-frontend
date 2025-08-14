@@ -56,7 +56,7 @@ export type TraceEntryNodeId = Platform.Brand.Brand<number, 'traceEntryNodeIdTag
  *
  * Complexity: O(n), where n = number of events
  */
-export function treify(entries: Types.Events.Event[], options?: {
+export function treify(entries: readonly Types.Events.Event[], options?: {
   filter: {has: (name: Types.Events.Name) => boolean},
 }): {tree: TraceEntryTree, entryToNode: Map<Types.Events.Event, TraceEntryNode>} {
   // As we construct the tree, store a map of each entry to its node. This

@@ -108,7 +108,7 @@ describeWithEnvironment('Sidebar', () => {
 
   it('shows the count for the active annotations', async function() {
     const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const events = parsedTrace.Renderer.allTraceEntries;
+    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
     const annotation1: Trace.Types.File.Annotation = {
       type: 'ENTRY_LABEL',
       entry: events[0],
@@ -133,7 +133,7 @@ describeWithEnvironment('Sidebar', () => {
 
   it('de-duplicates annotations that are pending to not show an incorrect count', async function() {
     const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const events = parsedTrace.Renderer.allTraceEntries;
+    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
 
     // Create Empty Entry Label Annotation (considered not started)
     const entryLabelAnnotation: Trace.Types.File.Annotation = {
@@ -163,7 +163,7 @@ describeWithEnvironment('Sidebar', () => {
     const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const entryLabelAnnotation: Trace.Types.File.Annotation = {
       type: 'ENTRY_LABEL',
-      entry: parsedTrace.Renderer.allTraceEntries[0],  // random event, doesn't matter
+      entry: Trace.Extras.AllThreadEntries.forTrace(parsedTrace)[0],  // random event, doesn't matter
       label: 'hello world',
     };
 

@@ -462,18 +462,10 @@ export function makeMockRendererHandlerData(
     threads: new Map([[tid as Trace.Types.Events.ThreadID, mockThread]]),
   };
 
-  const renderereEvents: Trace.Types.Events.RendererEvent[] = [];
-  for (const entry of entries) {
-    if (Trace.Types.Events.isRendererEvent(entry)) {
-      renderereEvents.push(entry);
-    }
-  }
-
   return {
     processes: new Map([[pid as Trace.Types.Events.ProcessID, mockProcess]]),
     compositorTileWorkers: new Map(),
     entryToNode,
-    allTraceEntries: renderereEvents,
     entityMappings: {
       entityByEvent: new Map(),
       eventsByEntity: new Map(),
@@ -723,7 +715,6 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       processes: new Map(),
       compositorTileWorkers: new Map(),
       entryToNode: new Map(),
-      allTraceEntries: [],
       entityMappings: {
         entityByEvent: new Map(),
         eventsByEntity: new Map(),

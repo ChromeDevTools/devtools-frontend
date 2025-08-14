@@ -81,13 +81,15 @@ describeWithEnvironment('InitiatorsHandler', () => {
 
   it('sets an initiator relationship between a requestAnimationFrame and the scheduled FunctionCall', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
-    const requestAnimationFrameCall = parsedTrace.Renderer.allTraceEntries.find(
-        e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestAnimationFrame');
+    const requestAnimationFrameCall =
+        Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
+            .find(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestAnimationFrame');
     if (!requestAnimationFrameCall) {
       throw new Error('Could not find requestAnimationFrame call');
     }
-    const functionCallEvent = parsedTrace.Renderer.allTraceEntries.find(
-        e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestAnimationFrameCall.ts);
+    const functionCallEvent =
+        Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
+            .find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestAnimationFrameCall.ts);
     if (!functionCallEvent) {
       throw new Error('Could not find FunctionCall event');
     }
@@ -141,14 +143,14 @@ describeWithEnvironment('InitiatorsHandler', () => {
   it('sets an initiator relationship between a setTimeout and the scheduled FunctionCall', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
     const setTimeoutCall =
-        parsedTrace.Renderer.allTraceEntries
+        Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
             .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'setTimeout')
             .at(-1);
     if (!setTimeoutCall) {
       throw new Error('Could not find setTimeout call');
     }
-    const functionCallEvent = parsedTrace.Renderer.allTraceEntries.find(
-        e => Trace.Types.Events.isFunctionCall(e) && e.ts > setTimeoutCall.ts);
+    const functionCallEvent = Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
+                                  .find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > setTimeoutCall.ts);
     if (!functionCallEvent) {
       throw new Error('Could not find FunctionCall event');
     }
@@ -159,13 +161,14 @@ describeWithEnvironment('InitiatorsHandler', () => {
 
   it('sets an initiator relationship between a requestIdleCallback and the scheduled FunctionCall', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
-    const requestIdleCallback = parsedTrace.Renderer.allTraceEntries.find(
-        e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestIdleCallback');
+    const requestIdleCallback =
+        Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
+            .find(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestIdleCallback');
     if (!requestIdleCallback) {
       throw new Error('Could not find requestIdleCallback call');
     }
-    const functionCallEvent = parsedTrace.Renderer.allTraceEntries.find(
-        e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestIdleCallback.ts);
+    const functionCallEvent = Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
+                                  .find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestIdleCallback.ts);
     if (!functionCallEvent) {
       throw new Error('Could not find FunctionCall event');
     }
@@ -176,13 +179,14 @@ describeWithEnvironment('InitiatorsHandler', () => {
 
   it('sets an initiator relationship between a console.createTask and the scheduled task.run', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
-    const schedulerFuntion = parsedTrace.Renderer.allTraceEntries.find(
-        e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'startExample');
+    const schedulerFuntion =
+        Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
+            .find(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'startExample');
     if (!schedulerFuntion) {
       throw new Error('Could not find scheduler function call');
     }
-    const consoleRunTask = parsedTrace.Renderer.allTraceEntries.find(
-        e => Trace.Types.Events.isConsoleRunTask(e) && e.ts > schedulerFuntion.ts);
+    const consoleRunTask = Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
+                               .find(e => Trace.Types.Events.isConsoleRunTask(e) && e.ts > schedulerFuntion.ts);
     assert.exists(consoleRunTask);
     assert.strictEqual(parsedTrace.Initiators.eventToInitiator.get(consoleRunTask), schedulerFuntion);
     assert.deepEqual(parsedTrace.Initiators.initiatorToEvents.get(schedulerFuntion), [consoleRunTask]);

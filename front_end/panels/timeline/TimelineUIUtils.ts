@@ -1841,12 +1841,20 @@ export class TimelineUIUtils {
   private static aggregatedStatsForTraceEvent(
       total: TimeRangeCategoryStats, parsedTrace: Trace.Handlers.Types.ParsedTrace,
       event: Trace.Types.Events.Event): boolean {
-    const events = parsedTrace.Renderer?.allTraceEntries || [];
+    // TODO(crbug.com/436491188): I think this is inefficient; we are going
+    // through every event we know about to find the index of the selected
+    // event and then walk through everything. We have a tree structure in
+    // the RendererHandler where each event has a node; we can likely make
+    // this more efficient.
+    // Once we do this and remove the use of AllThreadEntries.forTrace from
+    // here, it can be moved into the test utils as this is the only place
+    // in the user facing code that we use this helper.
+    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
     const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
     function eventComparator(startTime: number, e: Trace.Types.Events.Event): number {
       return startTime - e.ts;
     }
-    // Find index of selected event amongst allTraceEntries.
+    // Find the index of the selected event amongst all the events.
     const index = Platform.ArrayUtilities.binaryIndexOf(events, startTime, eventComparator);
     // Not a main thread event?
     if (index < 0) {

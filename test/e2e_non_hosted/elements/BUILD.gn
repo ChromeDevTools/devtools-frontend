@@ -19,6 +19,7 @@ ts_e2e_library("elements") {
     "filter-matched-styles_test.ts",
     "flexbox-editor_test.ts",
     "grid-editor_test.ts",
+    "layout-pane_test.ts",
     "oopif-elements_test.ts",
     "pseudo-states_test.ts",
     "reveal-correct-node_test.ts",

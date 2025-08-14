@@ -67,32 +67,35 @@ export const EMULATE_FOCUSED_PAGE = 'Emulate a focused page';
 const DOM_BREAKPOINTS_SECTION_SELECTOR = '[aria-label="DOM Breakpoints"]';
 const DOM_BREAKPOINTS_LIST_SELECTOR = '[aria-label="DOM Breakpoints list"]';
 
-export const openLayoutPane = async () => {
-  await step('Open Layout pane', async () => {
-    await click(LAYOUT_PANE_TAB_SELECTOR);
-
-    const panel = await waitFor(LAYOUT_PANE_TABPANEL_SELECTOR);
-    await waitFor('.elements', panel);
-  });
-  await expectVeEvents([
-    veClick('Panel: elements > Toolbar: sidebar > PanelTabHeader: elements.layout'),
-    veImpressionsUnder('Panel: elements', [veImpression(
-                                              'Pane', 'layout',
-                                              [
-                                                veImpression('SectionHeader', 'grid-settings'),
-                                                veImpression(
-                                                    'Section', 'grid-settings',
-                                                    [
-                                                      veImpression('DropDown', 'show-grid-line-labels'),
-                                                      veImpression('Toggle', 'extend-grid-lines'),
-                                                      veImpression('Toggle', 'show-grid-areas'),
-                                                      veImpression('Toggle', 'show-grid-track-sizes'),
-                                                    ]),
-                                                veImpression('Section', 'grid-overlays'),
-                                                veImpression('SectionHeader', 'flexbox-overlays'),
-                                                veImpression('Section', 'flexbox-overlays'),
-                                              ])]),
-  ]);
+export const openLayoutPane = async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.click(LAYOUT_PANE_TAB_SELECTOR);
+  const panel = await devToolsPage.waitFor(LAYOUT_PANE_TABPANEL_SELECTOR);
+  await devToolsPage.waitFor('.elements', panel);
+  await expectVeEvents(
+      [
+        veClick('Panel: elements > Toolbar: sidebar > PanelTabHeader: elements.layout'),
+        veImpressionsUnder(
+            'Panel: elements',
+            [veImpression(
+                'Pane', 'layout',
+                [
+                  veImpression('SectionHeader', 'grid-settings'),
+                  veImpression(
+                      'Section', 'grid-settings',
+                      [
+                        veImpression('DropDown', 'show-grid-line-labels'),
+                        veImpression('Toggle', 'extend-grid-lines'),
+                        veImpression('Toggle', 'show-grid-areas'),
+                        veImpression('Toggle', 'show-grid-track-sizes'),
+                      ]),
+                  veImpression('Section', 'grid-overlays', [veImpression('Item', undefined, [
+                                veImpression('Action', 'elements.select-element'),
+                                veImpression('ShowStyleEditor', 'color'),
+                                veImpression('Toggle'),
+                              ])]),
+                ])]),
+      ],
+      undefined, devToolsPage);
 };
 
 export const waitForAdorners = async (
@@ -167,29 +170,35 @@ export const waitForNoAdornersOnSelectedNode =
   await devToolsPage.waitForNone(ADORNER_SELECTOR, selectedNode);
 };
 
-export const toggleElementCheckboxInLayoutPane = async () => {
-  await step('Click element checkbox in Layout pane', async () => {
-    await click(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);
-  });
-  await expectVeEvents([veClick('Panel: elements > Pane: layout > Section: grid-overlays > Item > Toggle')]);
+export const toggleElementCheckboxInLayoutPane =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.click(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);
+  await expectVeEvents(
+      [veClick('Panel: elements > Pane: layout > Section: grid-overlays > Item > Toggle')], undefined, devToolsPage);
 };
 
-export const getGridsInLayoutPane = async () => {
-  const panel = await waitFor(LAYOUT_PANE_TABPANEL_SELECTOR);
-  return await $$('.elements .element', panel);
+export const getGridsInLayoutPane = async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const panel = await devToolsPage.waitFor(LAYOUT_PANE_TABPANEL_SELECTOR);
+  return await devToolsPage.$$('.elements .element', panel);
 };
 
-export const waitForSomeGridsInLayoutPane = async (minimumGridCount: number) => {
-  await waitForFunction(async () => {
-    const grids = await getGridsInLayoutPane();
+export const waitForSomeGridsInLayoutPane =
+    async (minimumGridCount: number, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.waitForFunction(async () => {
+    const grids = await getGridsInLayoutPane(devToolsPage);
     return grids.length >= minimumGridCount;
   });
   await expectVeEvents(
-      [veImpressionsUnder('Panel: elements > Pane: layout > Section: grid-overlays', [veImpression('Item', undefined, [
-                            veImpression('Action', 'elements.select-element'),
-                            veImpression('ShowStyleEditor', 'color'),
-                            veImpression('Toggle'),
-                          ])])]);
+      [veImpressionsUnder(
+          'Panel: elements > Pane: layout > Section: grid-overlays',
+          [veImpression(
+              'Item', undefined,
+              [
+                veImpression('Action', 'elements.select-element'),
+                veImpression('ShowStyleEditor', 'color'),
+                veImpression('Toggle'),
+              ])])],
+      undefined, devToolsPage);
 };
 
 export const waitForContentOfSelectedElementsNode =

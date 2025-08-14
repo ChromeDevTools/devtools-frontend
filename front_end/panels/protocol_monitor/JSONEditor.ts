@@ -1021,15 +1021,7 @@ function renderInlineButton(opts: {
 }
 
 function renderWarningIcon(): Lit.TemplateResult|undefined {
-  return html`<devtools-icon
-    .data=${{
-    iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px',
-  }
-  }
-    class=${classMap({
-    'warning-icon': true,
-  })}
-  >
+  return html`<devtools-icon name='warning-filled' class='warning-icon small'>
   </devtools-icon>`;
 }
 

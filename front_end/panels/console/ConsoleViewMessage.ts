@@ -1510,7 +1510,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     let iconName = '';
     let accessibleName = '';
     if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
-      color = 'var(--icon-warning)';
       iconName = 'warning-filled';
       accessibleName = i18nString(UIStrings.warning);
     } else if (this.message.level === Protocol.Log.LogEntryLevel.Error) {

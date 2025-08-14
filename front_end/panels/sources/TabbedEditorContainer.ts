@@ -646,7 +646,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
          **/
         const suffixElement = document.createElement('div');
         const icon = new IconButton.Icon.Icon();
-        icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)'};
+        icon.name = 'warning-filled';
         icon.classList.add('small');
         const id = `tab-tooltip-${nextTooltipId++}`;
         icon.setAttribute('aria-describedby', id);

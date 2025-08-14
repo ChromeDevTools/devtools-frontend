@@ -98,10 +98,14 @@ export class Icon extends HTMLElement {
    * @deprecated use `name` and CSS instead.
    */
   set data(data: IconData) {
-    const {color, width = '20px', height = '20px'} = data;
+    const {color, width, height} = data;
     this.style.color = color;
-    this.style.width = width;
-    this.style.height = height;
+    if (width) {
+      this.style.width = width;
+    }
+    if (height) {
+      this.style.height = height;
+    }
     if ('iconName' in data && data.iconName) {
       this.name = data.iconName;
     } else if ('iconPath' in data && data.iconPath) {

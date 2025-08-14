@@ -83,7 +83,7 @@ export class IconButton extends HTMLElement {
       ${filteredGroups.map(counter =>
       html`
       <devtools-icon class="status-icon"
-      .data=${{iconName: counter.iconName, color: counter.iconColor, width: counter.iconWidth || '1.5ex', height: counter.iconHeight || '1.5ex'} as IconData}>
+      .data=${{iconName: counter.iconName, color: counter.iconColor, width: counter.iconWidth || 'var(--sys-size-7)', height: counter.iconHeight || 'var(--sys-size-7)'} as IconData}>
       </devtools-icon>
       ${this.#compact ? html`<!-- Force line-height for this element --><span>&#8203;</span>` : Lit.nothing}
       <span class="icon-button-title">${counter.text}</span>`,

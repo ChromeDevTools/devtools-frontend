@@ -204,7 +204,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
         if (this.deoptReason) {
           cell.classList.add('not-optimized');
           const warningIcon = new IconButton.Icon.Icon();
-          warningIcon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)'};
+          warningIcon.name = 'warning-filled';
           warningIcon.classList.add('profile-warn-marker', 'small');
           UI.Tooltip.Tooltip.install(warningIcon, i18nString(UIStrings.notOptimizedS, {PH1: this.deoptReason}));
           cell.appendChild(warningIcon);

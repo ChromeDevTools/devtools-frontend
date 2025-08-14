@@ -1856,7 +1856,6 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
     // Note that we cannot use `cookieDomainInternal` here since it contains scheme.
     if (IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssueForDomain(cookieUrl.domain())) {
       icon.name = 'warning-filled';
-      icon.classList.add('warn-icon');
       this.tooltip = i18nString(UIStrings.thirdPartyPhaseout, {PH1: this.cookieDomainInternal});
     }
     this.setLeadingIcons([icon]);

@@ -492,14 +492,12 @@ export class CookiesTable extends UI.Widget.VBox {
         if (attribute === SDK.Cookie.Attribute.NAME &&
             IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssue(cookie)) {
           data.icons[attribute].name = 'warning-filled';
-          data.icons[attribute].style.color = 'var(--icon-warning)';
-          data.icons[attribute].classList.add('small');
           data.icons[attribute].onclick = () => IssuesManager.RelatedIssue.reveal(cookie);
           data.icons[attribute].style.cursor = 'pointer';
         } else {
           data.icons[attribute].name = 'info';
-          data.icons[attribute].classList.add('small');
         }
+        data.icons[attribute].classList.add('small');
         data.icons[attribute].title = blockedReason.uiString;
       } else if (data.icons[attribute]) {
         data.icons[attribute].title += '\n' + blockedReason.uiString;

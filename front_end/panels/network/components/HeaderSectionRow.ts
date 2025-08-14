@@ -303,15 +303,10 @@ export class HeaderSectionRow extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       return html`
-        <devtools-icon class="row-flex-icon" title=${titleText} .data=${{
-            iconName: 'warning-filled',
-            color: 'var(--icon-warning)',
-            width: '16px',
-            height: '16px',
-          }}>
+        <devtools-icon class="row-flex-icon medium" title=${titleText} name='warning-filled'>
         </devtools-icon>
       `;
-            // clang-format on
+      // clang-format on
     }
     return Lit.nothing;
   }

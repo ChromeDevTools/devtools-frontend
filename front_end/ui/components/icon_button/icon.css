@@ -44,6 +44,10 @@
   display: none;
 }
 
+:host([name="warning-filled"]) {
+  color: var(--icon-warning);
+}
+
 :host([name="triangle-up"]),
 :host([name="triangle-down"]),
 :host([name="triangle-left"]),

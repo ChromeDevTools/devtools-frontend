@@ -318,7 +318,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
     if (this.#request.hasThirdPartyCookiePhaseoutIssue()) {
       const icon = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)'};
+      icon.name = 'warning-filled';
       icon.classList.add('small');
       icon.title = i18nString(UIStrings.thirdPartyPhaseout);
       this.setTrailingTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.COOKIES, icon);

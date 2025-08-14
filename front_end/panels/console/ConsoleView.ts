@@ -623,8 +623,8 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   createAiCodeCompletionSummaryToolbar(): void {
-    this.aiCodeCompletionSummaryToolbar =
-        new AiCodeCompletionSummaryToolbar(DISCLAIMER_TOOLTIP_ID, CITATIONS_TOOLTIP_ID, 'console');
+    this.aiCodeCompletionSummaryToolbar = new AiCodeCompletionSummaryToolbar(
+        {citationsTooltipId: CITATIONS_TOOLTIP_ID, panelName: 'console', disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID});
     this.aiCodeCompletionSummaryToolbarContainer = this.element.createChild('div');
     this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, undefined, true);
   }

@@ -10,6 +10,7 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "aiCodeCompletionDisclaimer.css",
     "aiCodeCompletionSummaryToolbar.css",
     "aiCodeCompletionTeaser.css",
     "common.css",
@@ -19,6 +20,7 @@ generate_css("css_files") {
 
 devtools_module("common") {
   sources = [
+    "AiCodeCompletionDisclaimer.ts",
     "AiCodeCompletionSummaryToolbar.ts",
     "AiCodeCompletionTeaser.ts",
     "FreDialog.ts",
@@ -63,6 +65,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "AiCodeCompletionDisclaimer.test.ts",
     "AiCodeCompletionSummaryToolbar.test.ts",
     "AiCodeCompletionTeaser.test.ts",
   ]

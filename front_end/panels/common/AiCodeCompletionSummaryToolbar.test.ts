@@ -2,19 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../core/root/root.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Common from './common.js';
 
 describeWithEnvironment('AiCodeCompletionSummaryToolbar', () => {
   async function createToolbar(panelName = 'console') {
     const view = createViewFunctionStub(Common.AiCodeCompletionSummaryToolbar);
-    const widget =
-        new Common.AiCodeCompletionSummaryToolbar('disclaimer-tooltip', 'citations-tooltip', panelName, view);
+    const widget = new Common.AiCodeCompletionSummaryToolbar(
+        {citationsTooltipId: 'citations-tooltip', panelName, disclaimerTooltipId: 'disclaimer-tooltip'}, view);
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     await view.nextInput;
@@ -23,36 +21,6 @@ describeWithEnvironment('AiCodeCompletionSummaryToolbar', () => {
 
   afterEach(() => {
     sinon.restore();
-  });
-
-  it('should show disclaimer with no logging text when enterprise policy value is ALLOW_WITHOUT_LOGGING', async () => {
-    updateHostConfig({
-      aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING},
-    });
-
-    const {view, widget} = await createToolbar();
-
-    assert.isTrue(view.input.noLogging);
-    widget.detach();
-  });
-
-  it('should show disclaimer without no logging text when enterprise policy value is ALLOW', async () => {
-    updateHostConfig({aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW}});
-
-    const {view, widget} = await createToolbar();
-
-    assert.isFalse(view.input.noLogging);
-    widget.detach();
-  });
-
-  it('should open settings on manage in settings tooltip click', async () => {
-    const {view, widget} = await createToolbar();
-    const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
-
-    view.input.onManageInSettingsTooltipClick();
-
-    assert.isTrue(showViewStub.calledOnceWith('chrome-ai'));
-    widget.detach();
   });
 
   it('should update citations', async () => {

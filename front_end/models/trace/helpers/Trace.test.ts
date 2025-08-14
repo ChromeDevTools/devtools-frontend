@@ -4,6 +4,7 @@
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
+  allThreadEntriesInTrace,
   getMainThread,
   makeAsyncEndEvent,
   makeAsyncStartEvent,
@@ -505,7 +506,7 @@ describeWithEnvironment('Trace helpers', function() {
   describe('frameIDForEvent', () => {
     it('returns the frame ID from beginData if the event has it', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      const parseHTMLEvent = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(Trace.Types.Events.isParseHTML);
+      const parseHTMLEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isParseHTML);
       assert.isOk(parseHTMLEvent);
       const frameId = Trace.Helpers.Trace.frameIDForEvent(parseHTMLEvent);
       assert.isNotNull(frameId);
@@ -514,8 +515,7 @@ describeWithEnvironment('Trace helpers', function() {
 
     it('returns the frame ID from args.data if the event has it', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      const invalidateLayoutEvent =
-          Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(Trace.Types.Events.isInvalidateLayout);
+      const invalidateLayoutEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isInvalidateLayout);
       assert.isOk(invalidateLayoutEvent);
       const frameId = Trace.Helpers.Trace.frameIDForEvent(invalidateLayoutEvent);
       assert.isNotNull(frameId);
@@ -524,7 +524,7 @@ describeWithEnvironment('Trace helpers', function() {
 
     it('returns null if the event does not have a frame', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      const v8CompileEvent = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(Trace.Types.Events.isV8Compile);
+      const v8CompileEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isV8Compile);
       assert.isOk(v8CompileEvent);
       const frameId = Trace.Helpers.Trace.frameIDForEvent(v8CompileEvent);
       assert.isNull(frameId);
@@ -720,7 +720,7 @@ describeWithEnvironment('Trace helpers', function() {
   describe('isTopLevelEvent', () => {
     it('is true for a RunTask event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const runTask = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(Trace.Types.Events.isRunTask);
+      const runTask = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isRunTask);
       assert.isOk(runTask);
 
       assert.isTrue(Trace.Helpers.Trace.isTopLevelEvent(runTask));

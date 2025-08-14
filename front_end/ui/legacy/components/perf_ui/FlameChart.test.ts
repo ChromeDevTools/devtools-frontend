@@ -9,6 +9,7 @@ import * as Extensions from '../../../../panels/timeline/extensions/extensions.j
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {
+  allThreadEntriesInTrace,
   FakeFlameChartProvider,
   MockFlameChartDelegate,
   renderFlameChartIntoDOM,
@@ -1200,7 +1201,7 @@ describeWithEnvironment('FlameChart', () => {
 
     // This event is one that is deep into the main thread, so it forces the
     // flamechart to be vertically scrolled. That's why we pick this one.
-    const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(entry => {
+    const event = allThreadEntriesInTrace(parsedTrace).find(entry => {
       return entry.dur === 462 && entry.ts === 1020035043753 &&
           entry.name === Trace.Types.Events.Name.UPDATE_LAYOUT_TREE;
     });

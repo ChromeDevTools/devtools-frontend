@@ -9,7 +9,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {describeWithEnvironment, stubNoopSettings, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
-import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
+import {allThreadEntriesInTrace, setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as PerfUi from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -47,7 +47,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     assert.lengthOf(timelineData1.initiatorsData, 0);
 
     // a postTask scheduled event - picked as it has an initiator
-    const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => {
+    const event = allThreadEntriesInTrace(parsedTrace).find(event => {
       return event.name === Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK && event.ts === 512724961655;
     });
     assert.exists(event);
@@ -70,7 +70,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.timelineData();
     // a postTask scheduled event - picked as it has an initiator
-    const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => {
+    const event = allThreadEntriesInTrace(parsedTrace).find(event => {
       return event.name === Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK && event.ts === 512724961655;
     });
     assert.exists(event);
@@ -91,7 +91,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.timelineData();
     // a RunTask event with no initiators
-    const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => {
+    const event = allThreadEntriesInTrace(parsedTrace).find(event => {
       return event.name === Trace.Types.Events.Name.RUN_TASK && event.ts === 512724754996;
     });
     assert.exists(event);

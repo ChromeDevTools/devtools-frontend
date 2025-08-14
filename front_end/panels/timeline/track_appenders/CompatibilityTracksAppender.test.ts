@@ -4,7 +4,7 @@
 
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {setupIgnoreListManagerEnvironment} from '../../../testing/TraceHelpers.js';
+import {allThreadEntriesInTrace, setupIgnoreListManagerEnvironment} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Timeline from '../timeline.js';
@@ -126,7 +126,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
   describe('popoverInfo', () => {
     it('shows the correct warning for a long task when hovered', async function() {
       await initTrackAppender(this, 'simple-js-program.json.gz');
-      const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+      const events = allThreadEntriesInTrace(parsedTrace);
       const longTask = events.find(e => (e.dur || 0) > 1_000_000);
       if (!longTask) {
         throw new Error('Could not find long task');
@@ -182,7 +182,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
 
     it('shows the correct warning for slow idle callbacks', async function() {
       await initTrackAppender(this, 'idle-callback.json.gz');
-      const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+      const events = allThreadEntriesInTrace(parsedTrace);
       const idleCallback = events.find(event => {
         const {duration} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
         if (!Trace.Types.Events.isFireIdleCallback(event)) {

@@ -895,3 +895,31 @@ export function getAllNetworkRequestsByHost(
 
   return reqs;
 }
+
+const allThreadEntriesForTraceCache = new WeakMap<Trace.Handlers.Types.ParsedTrace, Trace.Types.Events.Event[]>();
+
+/**
+ * A function to get a list of all thread entries that exist. This is
+ * reasonably expensive, so it's cached to avoid a huge impact on our test suite
+ * speed.
+ */
+export function allThreadEntriesInTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Types.Events.Event[] {
+  const fromCache = allThreadEntriesForTraceCache.get(parsedTrace);
+  if (fromCache) {
+    return fromCache;
+  }
+
+  const allEvents: Trace.Types.Events.Event[] = [];
+
+  for (const process of parsedTrace.Renderer.processes.values()) {
+    for (const thread of process.threads.values()) {
+      for (const entry of thread.entries) {
+        allEvents.push(entry);
+      }
+    }
+  }
+
+  Trace.Helpers.Trace.sortTraceEventsInPlace(allEvents);
+  allThreadEntriesForTraceCache.set(parsedTrace, allEvents);
+  return allEvents;
+}

@@ -5,6 +5,7 @@
 import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 import * as Utils from './utils.js';
@@ -18,7 +19,7 @@ describeWithEnvironment('AICallTree', () => {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
     // A random RasterizerTask. Although this does technically run on the
     // main _frame_, it is not on the thread we identify as the main thread.
-    const rasterTask = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(e => {
+    const rasterTask = allThreadEntriesInTrace(parsedTrace).find(e => {
       return e.name === Trace.Types.Events.Name.RASTER_TASK && e.pid === 4274 && e.tid === 23555;
     });
     assert.isOk(rasterTask);
@@ -94,7 +95,7 @@ describeWithEnvironment('AICallTree', () => {
 
   it('serializes a simple tree', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
-    const mainEvents = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const mainEvents = allThreadEntriesInTrace(parsedTrace);
     // A function '_ds.q.ns'. Has a very small tree by default.
     const selectedEvent = mainEvents.find(event => event.ts === 465457308823);
     if (!selectedEvent) {
@@ -122,7 +123,7 @@ describeWithEnvironment('AICallTree', () => {
 
   it('correctly serializes selected node with multiple children', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const mainEvents = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const mainEvents = allThreadEntriesInTrace(parsedTrace);
 
     const selectedEvent = mainEvents.find(event => event.ts === 1020034984106);
     if (!selectedEvent) {
@@ -143,7 +144,7 @@ describeWithEnvironment('AICallTree', () => {
   // it is important to test that the final parent-child IDs are assigned correctly.
   it('correctly numbers child node IDs sequentially', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const mainEvents = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const mainEvents = allThreadEntriesInTrace(parsedTrace);
 
     // The selected event is structured like this:
     //
@@ -180,7 +181,7 @@ describeWithEnvironment('AICallTree', () => {
 
   it('correctly numbers child nodes IDs for larger trees', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const mainEvents = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const mainEvents = allThreadEntriesInTrace(parsedTrace);
 
     // The selected event is structured like this:
     //
@@ -232,7 +233,7 @@ describeWithEnvironment('AICallTree', () => {
 
   it('serializes a simple tree in a concise format', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
-    const mainEvents = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const mainEvents = allThreadEntriesInTrace(parsedTrace);
     // A function '_ds.q.ns'. Has a very small tree by default.
     const selectedEvent = mainEvents.find(event => event.ts === 465457308823);
     if (!selectedEvent) {
@@ -260,7 +261,7 @@ describeWithEnvironment('AICallTree', () => {
 
   it('serializes a tree in a concise format', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const mainEvents = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const mainEvents = allThreadEntriesInTrace(parsedTrace);
     const selectedEvent = mainEvents.find(event => event.ts === 1020035169460);
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
@@ -296,7 +297,7 @@ describeWithEnvironment('AICallTree', () => {
     Root.Runtime.experiments.enableForTest('timeline-show-all-events');
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     // find a "v8.run" function that would not normally be shown
-    const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(entry => {
+    const event = allThreadEntriesInTrace(parsedTrace).find(entry => {
       return entry.name === 'v8.run' && entry.ts === 122411196071;
     });
     assert.exists(event);
@@ -308,7 +309,7 @@ describeWithEnvironment('AICallTree', () => {
 
   it('serializes a tree with lots of recursion', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    const mainEvents = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const mainEvents = allThreadEntriesInTrace(parsedTrace);
     const selectedEvent = mainEvents.find(event => event.ts === 141251951589);
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
@@ -325,7 +326,7 @@ describeWithEnvironment('AICallTree', () => {
 
   it('AITreeFilter includes the right items in the tree', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'two-workers.json.gz');
-    const mainEvents = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const mainEvents = allThreadEntriesInTrace(parsedTrace);
 
     function getNodeNames(serializedTree: string|undefined): string {
       if (!serializedTree) {

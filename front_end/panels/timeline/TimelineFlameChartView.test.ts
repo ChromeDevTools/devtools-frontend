@@ -10,6 +10,7 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {assertScreenshot, dispatchClickEvent, doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {
+  allThreadEntriesInTrace,
   microsecondsTraceWindow,
   renderWidgetInVbox,
   setupIgnoreListManagerEnvironment
@@ -171,7 +172,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
       // No particular reason to pick this event; it's just an event in the
       // main thread within the time bounds.
-      const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => {
+      const event = allThreadEntriesInTrace(parsedTrace).find(event => {
         return Trace.Types.Events.isTimerFire(event) && event.ts === 122411157276;
       });
       assert.isOk(event);
@@ -1097,7 +1098,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
       flameChartView.setModel(parsedTrace, metadata);
       // Find some task in the main thread that we can build an AI Call Tree from
-      const task = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => {
+      const task = allThreadEntriesInTrace(parsedTrace).find(event => {
         return Trace.Types.Events.isRunTask(event) && event.dur > 5_000 &&
             Utils.AICallTree.AICallTree.fromEvent(event, parsedTrace) !== null;
       });

@@ -10,6 +10,7 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
+  allThreadEntriesInTrace,
   makeMockRendererHandlerData as makeRendererHandlerData,
   makeProfileCall,
   setupIgnoreListManagerEnvironment,
@@ -168,7 +169,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('assigns the right color for events when the trace is generic', async () => {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'generic-about-tracing.json.gz');
-    const event = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(entry => {
+    const event = allThreadEntriesInTrace(parsedTrace).find(entry => {
       return entry.name === 'ThreadControllerImpl::RunTask';
     });
     if (!event) {
@@ -192,7 +193,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('returns the correct title for a renderer event', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const events = allThreadEntriesInTrace(parsedTrace);
     if (!events) {
       throw new Error('Could not find renderer events');
     }
@@ -202,7 +203,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('adds the type for EventDispatch events to the title', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'one-second-interaction.json.gz');
-    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const events = allThreadEntriesInTrace(parsedTrace);
     if (!events) {
       throw new Error('Could not find renderer events');
     }
@@ -273,7 +274,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('shows self time only for events with self time above the threshold when hovered', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const events = allThreadEntriesInTrace(parsedTrace);
     const infoForShortEvent = getDefaultInfo();
     const shortEvent = events.find(e => {
       return typeof e.dur === 'number' && (e.dur > 100 && e.dur < 200);
@@ -291,7 +292,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('shows the correct title for a ParseHTML event', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const events = allThreadEntriesInTrace(parsedTrace);
     const event = events.find(Trace.Types.Events.isParseHTML);
     assert.isOk(event);
     const infoForEvent = getDefaultInfo();
@@ -320,7 +321,7 @@ describeWithEnvironment('ThreadAppender', function() {
   it('candy-stripes long tasks', async function() {
     const {parsedTrace, flameChartData, entryData} =
         await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const events = allThreadEntriesInTrace(parsedTrace);
     if (!events) {
       throw new Error('Could not find renderer events');
     }
@@ -342,7 +343,7 @@ describeWithEnvironment('ThreadAppender', function() {
   it('does not candy-stripe tasks below the long task threshold', async function() {
     const {parsedTrace, flameChartData, entryData} =
         await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const events = Trace.Extras.AllThreadEntries.forTrace(parsedTrace);
+    const events = allThreadEntriesInTrace(parsedTrace);
     if (!events) {
       throw new Error('Could not find renderer events');
     }

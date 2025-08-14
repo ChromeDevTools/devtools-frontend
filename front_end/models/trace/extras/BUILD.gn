@@ -9,7 +9,6 @@ import("../../visibility.gni")
 
 devtools_module("extras") {
   sources = [
-    "AllThreadEntries.ts",
     "FilmStrip.ts",
     "MainThreadActivity.ts",
     "ScriptDuplication.ts",

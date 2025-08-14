@@ -14,6 +14,7 @@ import {
   updateHostConfig
 } from '../../../testing/EnvironmentHelpers.js';
 import {getInsightOrError, getInsightSetOrError} from '../../../testing/InsightHelpers.js';
+import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../../trace/trace.js';
 import {
@@ -126,7 +127,7 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       // An Evaluate Script event, picked because it has a URL of googletagmanager.com/...
       const evalScriptEvent =
-          Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
+          allThreadEntriesInTrace(parsedTrace)
               .find(event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);
       assert.exists(evalScriptEvent);
       const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(evalScriptEvent, parsedTrace);
@@ -139,7 +140,7 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       // A random layout event with no URL associated
       const layoutEvent =
-          Trace.Extras.AllThreadEntries.forTrace(parsedTrace)
+          allThreadEntriesInTrace(parsedTrace)
               .find(event => event.name === Trace.Types.Events.Name.LAYOUT && event.ts === 122411130078);
       assert.exists(layoutEvent);
       const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(layoutEvent, parsedTrace);
@@ -153,7 +154,7 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
     it('generates an answer', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
       // A basic Layout.
-      const layoutEvt = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => event.ts === 465457096322);
+      const layoutEvt = allThreadEntriesInTrace(parsedTrace).find(event => event.ts === 465457096322);
       assert.exists(layoutEvt);
       const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(layoutEvt, parsedTrace);
       assert.exists(aiCallTree);

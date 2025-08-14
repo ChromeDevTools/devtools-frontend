@@ -4,6 +4,7 @@
 
 import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Timeline from './timeline.js';
@@ -63,8 +64,8 @@ describeWithEnvironment('ModificationsManager', () => {
   it('creates annotations and generates correct json for annotations', async function() {
     const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
     // Get any entres to create a label and a link with.
-    const entry = Trace.Extras.AllThreadEntries.forTrace(parsedTrace)[0];
-    const entry2 = Trace.Extras.AllThreadEntries.forTrace(parsedTrace)[1];
+    const entry = allThreadEntriesInTrace(parsedTrace)[0];
+    const entry2 = allThreadEntriesInTrace(parsedTrace)[1];
 
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
@@ -117,8 +118,8 @@ describeWithEnvironment('ModificationsManager', () => {
      async function() {
        const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
        // Get any entry to create links with.
-       const entry = Trace.Extras.AllThreadEntries.forTrace(parsedTrace)[0];
-       const entry2 = Trace.Extras.AllThreadEntries.forTrace(parsedTrace)[1];
+       const entry = allThreadEntriesInTrace(parsedTrace)[0];
+       const entry2 = allThreadEntriesInTrace(parsedTrace)[1];
 
        const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
        assert.isOk(modificationsManager);
@@ -151,9 +152,9 @@ describeWithEnvironment('ModificationsManager', () => {
   it('correctly identifies if a connection between entries already exists', async function() {
     const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
     // Get any entry to create links with.
-    const entry1 = Trace.Extras.AllThreadEntries.forTrace(parsedTrace)[0];
-    const entry2 = Trace.Extras.AllThreadEntries.forTrace(parsedTrace)[1];
-    const entry3 = Trace.Extras.AllThreadEntries.forTrace(parsedTrace)[2];
+    const entry1 = allThreadEntriesInTrace(parsedTrace)[0];
+    const entry2 = allThreadEntriesInTrace(parsedTrace)[1];
+    const entry3 = allThreadEntriesInTrace(parsedTrace)[2];
 
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);

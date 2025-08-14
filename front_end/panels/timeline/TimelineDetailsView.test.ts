@@ -5,6 +5,7 @@
 import * as Trace from '../../models/trace/trace.js';
 import {doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import type * as Components from './components/components.js';
@@ -136,7 +137,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     renderElementIntoDOM(detailsView);
-    const evalScriptEvent = Trace.Extras.AllThreadEntries.forTrace(parsedTrace).find(event => {
+    const evalScriptEvent = allThreadEntriesInTrace(parsedTrace).find(event => {
       return event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.dur && event.dur > 2000;
     });
     assert.isOk(evalScriptEvent);
@@ -166,7 +167,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
       parsedTrace,
       // We have to set selected events for the range selection UI to be drawn
       // (without the set of events we can't generate the range stats)
-      selectedEvents: Trace.Extras.AllThreadEntries.forTrace(parsedTrace),
+      selectedEvents: allThreadEntriesInTrace(parsedTrace),
       traceInsightsSets: null,
       eventToRelatedInsightsMap: null,
       entityMapper: null

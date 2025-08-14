@@ -475,10 +475,6 @@ const UIStrings = {
    */
   moreFilters: 'More filters',
   /**
-   *@description Context menu text in Network Panel to that opens a submenu with AI prompts.
-   */
-  debugWithAi: 'Debug with AI',
-  /**
    *@description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
    */
   startAChat: 'Start a chat',
@@ -1717,14 +1713,15 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
             submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action,
             label: Common.UIString.LocalizedString, prompt: string, jslogContext: string): void {
           submenu.defaultSection().appendItem(
-              label, async () => await action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
+              label, () => action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
         }
 
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, request);
         if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
           const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
           const submenu = contextMenu.footerSection().appendSubMenuItem(
-              i18nString(UIStrings.debugWithAi), false, openAiAssistanceId);
+              action.title(), false, openAiAssistanceId,
+              Root.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.featureName);
           submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
           appendSubmenuPromptAction(
               submenu, action, i18nString(UIStrings.explainPurpose), 'What is the purpose of this request?',
@@ -1738,6 +1735,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           appendSubmenuPromptAction(
               submenu, action, i18nString(UIStrings.assessSecurityHeaders), 'Are there any security headers present?',
               openAiAssistanceId + '.security');
+        } else if (Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
+          contextMenu.footerSection().appendAction(
+              openAiAssistanceId, undefined, false, undefined,
+              Root.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.featureName);
         } else {
           contextMenu.footerSection().appendAction(openAiAssistanceId);
         }

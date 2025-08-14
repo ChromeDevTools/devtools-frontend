@@ -168,10 +168,6 @@ const UIStrings = {
    */
   openInSourcesPanel: 'Open in Sources panel',
   /**
-   *@description Context menu text in Sources Panel to that opens a submenu with AI prompts.
-   */
-  debugWithAi: 'Debug with AI',
-  /**
    *@description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
    */
   startAChat: 'Start a chat',
@@ -974,7 +970,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
         if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
           const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
           const submenu = contextMenu.footerSection().appendSubMenuItem(
-              i18nString(UIStrings.debugWithAi), false, openAiAssistanceId);
+              action.title(), false, openAiAssistanceId,
+              Root.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.featureName);
           submenu.defaultSection().appendAction('drjones.sources-panel-context', i18nString(UIStrings.startAChat));
           appendSubmenuPromptAction(
               submenu, action, i18nString(UIStrings.assessPerformance), 'Is this script optimized for performance?',
@@ -985,6 +982,10 @@ export class SourcesPanel extends UI.Panel.Panel implements
           appendSubmenuPromptAction(
               submenu, action, i18nString(UIStrings.explainInputHandling), 'Does the script handle user input safely',
               openAiAssistanceId + '.input');
+        } else if (Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
+          contextMenu.footerSection().appendAction(
+              openAiAssistanceId, undefined, false, undefined,
+              Root.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.featureName);
         } else {
           contextMenu.footerSection().appendAction(openAiAssistanceId);
         }

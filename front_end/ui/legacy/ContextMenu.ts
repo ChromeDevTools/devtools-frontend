@@ -649,15 +649,26 @@ export class ContextMenu extends SubMenu {
 
   private itemSelected(id: number): void {
     this.invokeHandler(id);
+    // Collect all features used along the way when searching for the clicked item.
+    // I.e. a 'feature' on a submenu should be counted as 'used' if its submenu items are clicked.
+    const featuresUsed: string[] = [];
     if (this.openHostedMenu) {
       const itemWithId = (items: Host.InspectorFrontendHostAPI.ContextMenuDescriptor[],
                           id: number): Host.InspectorFrontendHostAPI.ContextMenuDescriptor|null => {
         for (const item of items) {
           if (item.id === id) {
+            if (item.featureName) {
+              featuresUsed.push(item.featureName);
+            }
+
             return item;
           }
           const subitem = item.subItems && itemWithId(item.subItems, id);
           if (subitem) {
+            // Record submenu feature.
+            if (item.featureName) {
+              featuresUsed.push(item.featureName);
+            }
             return subitem;
           }
         }
@@ -666,6 +677,10 @@ export class ContextMenu extends SubMenu {
       const item = itemWithId(this.openHostedMenu, id);
       if (item?.jslogContext) {
         void VisualLogging.logClick(item, new MouseEvent('click'));
+      }
+      if (item && featuresUsed.length > 0) {
+        featuresUsed.map(
+            feature => Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordNewBadgeUsage(feature));
       }
     }
 

@@ -9,7 +9,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as Root from '../../core/root/root.js';
+import * as Root from '../../core/root/root.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
@@ -17,7 +17,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import type {ContextMenu} from './ContextMenu.js';
 import {type EventData, Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {type ItemsProvider, type ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
-import {createTextChild} from './UIUtils.js';
+import {createTextChild, PromotionManager} from './UIUtils.js';
 import type {TabbedViewLocation, View, ViewLocation} from './View.js';
 import viewContainersStyles from './viewContainers.css.js';
 import {
@@ -742,6 +742,32 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   private appendTabsToMenu(contextMenu: ContextMenu): void {
     const views = Array.from(this.views.values());
     views.sort((viewa, viewb) => viewa.title().localeCompare(viewb.title()));
+
+    const freestylerView = views.find(view => view.viewId() === 'freestyler');
+    if (freestylerView) {
+      const featureName = Root.Runtime.hostConfig.devToolsFreestyler?.featureName;
+      const promotionId =
+          (freestylerView instanceof PreRegisteredView) ? freestylerView.featurePromotionId() : undefined;
+      // Register this with the PromotionManager and the back-end, in order to make sure that
+      // showing the general ai assistance panel new badge is synchronized.
+      const handler = (): void => {
+        void this.showView(freestylerView, undefined, true);
+        if (promotionId) {
+          PromotionManager.instance().recordFeatureInteraction(promotionId);
+        }
+      };
+      contextMenu.defaultSection().appendItem(freestylerView.title(), handler, {
+        isPreviewFeature: freestylerView.isPreviewFeature(),
+        jslogContext: freestylerView.viewId(),
+        // Request to show a new badge in the native context menu only if:
+        // 1. The promotion manager agrees that we may show it, or 2. the promotion manager doesn't track this badge.
+        // Note that this is only a request to show the new badge, the back-end will decide whether
+        // or not it will show it depending on the user education service.
+        featureName: !promotionId || PromotionManager.instance().maybeShowPromotion(promotionId) ? featureName :
+                                                                                                   undefined,
+      });
+    }
+
     for (const view of views) {
       const title = view.title();
 
@@ -750,6 +776,11 @@ class TabbedLocation extends Location implements TabbedViewLocation {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HAMBURGER_MENU);
           void this.showView(view, undefined, true);
         }, {jslogContext: 'issues-pane'});
+        continue;
+      }
+
+      if (view.viewId() === 'freestyler') {
+        // We have already taken care of this.
         continue;
       }
 

@@ -451,10 +451,16 @@ interface AllowPopoverForcing {
 
 interface AiSubmenuPrompts {
   enabled: boolean;
+  featureName?: string;
 }
 
 interface IpProtectionInDevTools {
   enabled: boolean;
+}
+
+interface AiDebugWithAi {
+  enabled: boolean;
+  featureName?: string;
 }
 
 /**
@@ -477,6 +483,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsDeepLinksViaExtensibilityApi: HostConfigDeepLinksViaExtensibilityApi,
   devToolsFreestyler: HostConfigFreestyler,
   devToolsAiAssistanceNetworkAgent: HostConfigAiAssistanceNetworkAgent,
+  devToolsAiDebugWithAi: AiDebugWithAi,
   devToolsAiAssistanceFileAgent: HostConfigAiAssistanceFileAgent,
   devToolsAiAssistancePerformanceAgent: HostConfigAiAssistancePerformanceAgent,
   devToolsAiCodeCompletion: HostConfigAiCodeCompletion,

@@ -355,6 +355,8 @@ export interface InspectorFrontendHostAPI {
 
   recordUserMetricsAction(umaName: string): void;
 
+  recordNewBadgeUsage(featureName: string): void;
+
   sendMessageToBackend(message: string): void;
 
   setDevicesDiscoveryConfig(config: Adb.Config): void;

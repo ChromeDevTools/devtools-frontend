@@ -806,35 +806,3 @@ export class EvaluationAgent {
   }
 }
 
-// Global instance management
-let evaluationAgent: EvaluationAgent | null = null;
-
-export function getEvaluationAgent(): EvaluationAgent | null {
-  return evaluationAgent;
-}
-
-export async function createAndConnectEvaluationAgent(
-  clientId: string,
-  endpoint: string,
-  secretKey?: string
-): Promise<EvaluationAgent> {
-  if (evaluationAgent) {
-    evaluationAgent.disconnect();
-  }
-
-  evaluationAgent = new EvaluationAgent({
-    clientId,
-    endpoint,
-    secretKey
-  });
-
-  await evaluationAgent.connect();
-  return evaluationAgent;
-}
-
-export function disconnectEvaluationAgent(): void {
-  if (evaluationAgent) {
-    evaluationAgent.disconnect();
-    evaluationAgent = null;
-  }
-}

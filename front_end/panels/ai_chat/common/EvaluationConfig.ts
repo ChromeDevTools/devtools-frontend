@@ -4,7 +4,6 @@
 
 import { createLogger } from '../core/Logger.js';
 import { WebSocketRPCClient } from './WebSocketRPCClient.js';
-import { createAndConnectEvaluationAgent, getEvaluationAgent, disconnectEvaluationAgent } from '../evaluation/remote/EvaluationAgent.js';
 
 const logger = createLogger('EvaluationConfig');
 
@@ -146,26 +145,13 @@ class EvaluationConfigStore {
       throw new Error(EvaluationStrings.clientIdNotAvailable);
     }
 
-    // Check if already connected
-    const existingAgent = getEvaluationAgent();
-    if (existingAgent && existingAgent.isConnected()) {
-      logger.info('Already connected to evaluation service');
-      return;
-    }
-
-    // Create and connect evaluation agent
-    await createAndConnectEvaluationAgent(
-      this.config.clientId,
-      this.config.endpoint,
-      this.config.secretKey
-    );
-
-    logger.info('Connected to evaluation service with client ID:', this.config.clientId);
+    // Note: Connection is now handled per-tab by AIChatPanel instances
+    logger.info('Evaluation service configuration validated, client ID:', this.config.clientId);
   }
 
   disconnect(): void {
-    disconnectEvaluationAgent();
-    logger.info('Disconnected from evaluation service');
+    // Note: Disconnection is now handled per-tab by AIChatPanel instances
+    logger.info('Evaluation service configuration cleared');
   }
 
   getClientId(): string | undefined {
@@ -173,8 +159,9 @@ class EvaluationConfigStore {
   }
 
   isConnected(): boolean {
-    const agent = getEvaluationAgent();
-    return agent ? agent.isConnected() : false;
+    // Note: Connection status is now managed per-tab by AIChatPanel instances
+    // This method returns the enabled status instead
+    return this.config.enabled;
   }
 
   async testConnection(): Promise<{ success: boolean; message: string }> {

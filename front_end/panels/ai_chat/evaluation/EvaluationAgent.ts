@@ -421,17 +421,66 @@ export class EvaluationAgent {
       // Execute the tool
       this.sendStatus(params.evaluationId, 'running', 0.5, `Executing ${params.tool}...`);
       
-      const toolResult = await this.executeToolWithTimeout(
-        tool,
-        params.input,
-        params.timeout || 30000,
-        tracingContext,
-        params.tool
-      );
+      let toolResult: any;
+      let toolExecutionAttempts = 0;
+      const maxAttempts = 3;
+      
+      while (toolExecutionAttempts < maxAttempts) {
+        try {
+          toolResult = await this.executeToolWithTimeout(
+            tool,
+            params.input,
+            params.timeout || 30000,
+            tracingContext,
+            params.tool
+          );
+          break; // Success, exit retry loop
+        } catch (toolError) {
+          toolExecutionAttempts++;
+          const errorMessage = toolError instanceof Error ? toolError.message : 'Unknown error';
+          
+          logger.warn(`Tool execution attempt ${toolExecutionAttempts} failed: ${errorMessage}`, {
+            evaluationId: params.evaluationId,
+            tool: params.tool,
+            attempt: toolExecutionAttempts
+          });
+          
+          if (toolExecutionAttempts < maxAttempts) {
+            // Wait before retry, with exponential backoff
+            const retryDelay = 1000 * Math.pow(2, toolExecutionAttempts - 1);
+            this.sendStatus(params.evaluationId, 'running', 0.5 + (toolExecutionAttempts * 0.1), 
+              `Tool execution failed (attempt ${toolExecutionAttempts}), retrying in ${retryDelay/1000}s...`);
+            
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
+          } else {
+            // Final attempt failed, but continue to check if we got partial results
+            this.sendStatus(params.evaluationId, 'running', 0.8, 
+              `Tool execution failed after ${maxAttempts} attempts, checking for partial results...`);
+            
+            // Instead of throwing, set a default result and continue
+            toolResult = {
+              error: `Tool execution failed after ${maxAttempts} attempts: ${errorMessage}`,
+              partial: true,
+              lastError: errorMessage,
+              attempts: maxAttempts
+            };
+            
+            logger.warn(`All tool execution attempts failed, using error result`, {
+              evaluationId: params.evaluationId,
+              tool: params.tool,
+              finalError: errorMessage
+            });
+          }
+        }
+      }
 
       const executionTime = Date.now() - startTime;
 
-      // Send JSON-RPC success response
+      // Determine if this was a complete success or partial result
+      const isPartialResult = toolResult && typeof toolResult === 'object' && toolResult.partial;
+      const hasError = toolResult && typeof toolResult === 'object' && toolResult.error;
+      
+      // Send JSON-RPC response (success even for partial results to avoid immediate failure)
       const rpcResponse = createSuccessResponse(
         id,
         toolResult,
@@ -440,11 +489,13 @@ export class EvaluationAgent {
           tool: params.tool,
           timestamp: new Date().toISOString(),
           duration: executionTime,
-          status: 'success'
+          status: isPartialResult ? 'partial' : 'success',
+          ...(hasError && { error: toolResult.error })
         }],
         {
           url: params.url,
-          evaluationId: params.evaluationId
+          evaluationId: params.evaluationId,
+          ...(isPartialResult && { partial: true })
         }
       );
 
@@ -452,25 +503,37 @@ export class EvaluationAgent {
         this.client.send(rpcResponse);
       }
 
-      this.sendStatus(params.evaluationId, 'completed', 1.0, 'Evaluation completed successfully');
+      const statusMessage = isPartialResult 
+        ? `Evaluation completed with errors after retries: ${toolResult.error}` 
+        : 'Evaluation completed successfully';
+      
+      this.sendStatus(params.evaluationId, 'completed', 1.0, statusMessage);
 
       // Update trace with success
       try {
         await this.tracingProvider.finalizeTrace(traceId, {
           output: toolResult,
-          statusMessage: 'completed',
+          statusMessage: isPartialResult ? 'completed_with_errors' : 'completed',
           metadata: {
             executionTime,
-            evaluationId: params.evaluationId
+            evaluationId: params.evaluationId,
+            ...(isPartialResult && { 
+              partial: true, 
+              errorMessage: toolResult.error,
+              attempts: toolResult.attempts 
+            })
           }
         });
       } catch (error) {
         logger.warn('Failed to update trace:', error);
       }
 
-      logger.info('Evaluation completed successfully', {
+      logger.info('Evaluation completed', {
         evaluationId: params.evaluationId,
-        executionTime
+        executionTime,
+        success: !isPartialResult,
+        partial: isPartialResult,
+        ...(hasError && { error: toolResult.error })
       });
 
     } catch (error) {
@@ -640,35 +703,3 @@ export class EvaluationAgent {
   }
 }
 
-// Global instance management
-let evaluationAgent: EvaluationAgent | null = null;
-
-export function getEvaluationAgent(): EvaluationAgent | null {
-  return evaluationAgent;
-}
-
-export async function createAndConnectEvaluationAgent(
-  clientId: string,
-  endpoint: string,
-  secretKey?: string
-): Promise<EvaluationAgent> {
-  if (evaluationAgent) {
-    evaluationAgent.disconnect();
-  }
-
-  evaluationAgent = new EvaluationAgent({
-    clientId,
-    endpoint,
-    secretKey
-  });
-
-  await evaluationAgent.connect();
-  return evaluationAgent;
-}
-
-export function disconnectEvaluationAgent(): void {
-  if (evaluationAgent) {
-    evaluationAgent.disconnect();
-    evaluationAgent = null;
-  }
-}

@@ -11,6 +11,7 @@ class ClientManager {
     this.clients = new Map();
     this.evaluations = new Map(); // clientId -> evaluations array
     this.configDefaults = null; // Config.yaml defaults for model precedence
+    this.activeTabs = new Map(); // clientId -> Set of { tabId, connection, metadata }
     
     // Ensure directories exist
     if (!fs.existsSync(this.clientsDir)) {
@@ -36,7 +37,7 @@ class ClientManager {
         this.configDefaults = yaml.load(configContent);
         logger.info('Loaded config.yaml defaults:', this.configDefaults);
       } else {
-        logger.warn('config.yaml not found, no global defaults will be applied');
+        // Don't warn about missing config.yaml - it's optional
         this.configDefaults = null;
       }
     } catch (error) {
@@ -81,7 +82,12 @@ class ClientManager {
   loadAllClients() {
     try {
       const files = fs.readdirSync(this.clientsDir)
-        .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+        .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
+        .filter(f => {
+          // Only load base client YAML files, not composite ones with tab IDs
+          const clientId = path.basename(f, path.extname(f));
+          return !clientId.includes(':');
+        });
       
       for (const file of files) {
         const clientId = path.basename(file, path.extname(file));
@@ -141,6 +147,9 @@ class ClientManager {
    */
   loadAllEvaluations() {
     try {
+      // Clear existing evaluations to prevent duplicates on reload
+      this.evaluations.clear();
+      
       // Find all category directories
       const categories = fs.readdirSync(this.evalsDir)
         .filter(dir => fs.statSync(path.join(this.evalsDir, dir)).isDirectory());
@@ -360,6 +369,208 @@ class ClientManager {
     
     logger.debug('Client validation successful', { clientId });
     return { valid: true };
+  }
+
+  /**
+   * Parse composite client ID to extract base client ID and tab ID
+   * Format: baseClientId:tabId
+   */
+  parseCompositeClientId(compositeClientId) {
+    if (compositeClientId.includes(':')) {
+      const [baseClientId, tabId] = compositeClientId.split(':', 2);
+      return { baseClientId, tabId, isComposite: true };
+    }
+    return { baseClientId: compositeClientId, tabId: null, isComposite: false };
+  }
+
+  /**
+   * Register a tab for a client
+   */
+  registerTab(compositeClientId, connection, metadata = {}) {
+    const { baseClientId, tabId } = this.parseCompositeClientId(compositeClientId);
+    
+    if (!this.activeTabs.has(baseClientId)) {
+      this.activeTabs.set(baseClientId, new Set());
+    }
+    
+    const tabs = this.activeTabs.get(baseClientId);
+    const tabInfo = {
+      tabId: tabId || 'default',
+      compositeClientId,
+      connection,
+      connectedAt: new Date().toISOString(),
+      ...metadata
+    };
+    
+    // Remove existing tab with same ID if it exists
+    tabs.forEach(existingTab => {
+      if (existingTab.tabId === tabInfo.tabId) {
+        tabs.delete(existingTab);
+      }
+    });
+    
+    tabs.add(tabInfo);
+    
+    logger.info('Tab registered', {
+      baseClientId,
+      tabId: tabInfo.tabId,
+      compositeClientId,
+      totalTabs: tabs.size
+    });
+    
+    return tabInfo;
+  }
+
+  /**
+   * Unregister a tab for a client
+   */
+  unregisterTab(compositeClientId) {
+    const { baseClientId, tabId } = this.parseCompositeClientId(compositeClientId);
+    
+    if (!this.activeTabs.has(baseClientId)) {
+      return false;
+    }
+    
+    const tabs = this.activeTabs.get(baseClientId);
+    const targetTabId = tabId || 'default';
+    
+    let removed = false;
+    tabs.forEach(tab => {
+      if (tab.tabId === targetTabId) {
+        tabs.delete(tab);
+        removed = true;
+      }
+    });
+    
+    // Remove client entry if no tabs remain
+    if (tabs.size === 0) {
+      this.activeTabs.delete(baseClientId);
+    }
+    
+    if (removed) {
+      logger.info('Tab unregistered', {
+        baseClientId,
+        tabId: targetTabId,
+        compositeClientId,
+        remainingTabs: tabs.size
+      });
+    }
+    
+    return removed;
+  }
+
+  /**
+   * Get all active tabs for a client
+   */
+  getClientTabs(baseClientId) {
+    const tabs = this.activeTabs.get(baseClientId);
+    return tabs ? Array.from(tabs) : [];
+  }
+
+  /**
+   * Get all clients with their active tabs
+   */
+  getAllClientsWithTabs() {
+    const result = [];
+    
+    for (const [baseClientId, tabs] of this.activeTabs) {
+      const client = this.clients.get(baseClientId);
+      if (client) {
+        result.push({
+          ...client,
+          baseClientId,
+          activeTabs: Array.from(tabs),
+          tabCount: tabs.size
+        });
+      }
+    }
+    
+    return result;
+  }
+
+  /**
+   * Get a specific tab by composite client ID
+   */
+  getTab(compositeClientId) {
+    const { baseClientId, tabId } = this.parseCompositeClientId(compositeClientId);
+    const tabs = this.activeTabs.get(baseClientId);
+    
+    if (!tabs) return null;
+    
+    const targetTabId = tabId || 'default';
+    for (const tab of tabs) {
+      if (tab.tabId === targetTabId) {
+        return tab;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Get total tab count across all clients
+   */
+  getTotalTabCount() {
+    let total = 0;
+    for (const tabs of this.activeTabs.values()) {
+      total += tabs.size;
+    }
+    return total;
+  }
+
+  /**
+   * Cleanup stale tab references (called on disconnection)
+   */
+  cleanupStaleTab(baseClientId, tabId) {
+    if (!this.activeTabs.has(baseClientId)) {
+      return;
+    }
+
+    const tabs = this.activeTabs.get(baseClientId);
+    const targetTabId = tabId || 'default';
+    
+    // Find and remove stale tab references
+    const staleTabs = Array.from(tabs).filter(tab => 
+      tab.tabId === targetTabId && 
+      (!tab.connection || tab.connection.ws.readyState !== tab.connection.ws.OPEN)
+    );
+    
+    staleTabs.forEach(staleTab => {
+      tabs.delete(staleTab);
+      logger.debug('Cleaned up stale tab reference', {
+        baseClientId,
+        tabId: staleTab.tabId
+      });
+    });
+
+    // Remove client entry if no tabs remain
+    if (tabs.size === 0) {
+      this.activeTabs.delete(baseClientId);
+    }
+  }
+
+  /**
+   * Periodic cleanup of all stale tab connections
+   */
+  cleanupStaleConnections() {
+    for (const [baseClientId, tabs] of this.activeTabs) {
+      const staleTabs = Array.from(tabs).filter(tab => 
+        !tab.connection || tab.connection.ws.readyState !== tab.connection.ws.OPEN
+      );
+      
+      staleTabs.forEach(staleTab => {
+        tabs.delete(staleTab);
+        logger.debug('Cleaned up stale connection', {
+          baseClientId,
+          tabId: staleTab.tabId
+        });
+      });
+
+      // Remove client entry if no tabs remain
+      if (tabs.size === 0) {
+        this.activeTabs.delete(baseClientId);
+      }
+    }
   }
 }
 

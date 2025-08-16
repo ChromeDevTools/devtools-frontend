@@ -1,0 +1,10 @@
+# Core dependencies
+websockets>=11.0.0
+loguru>=0.7.0
+
+# Development dependencies (optional)
+# Install with: pip install -e ".[dev]"
+# pytest>=7.0.0
+# pytest-asyncio>=0.21.0
+# black>=23.0.0
+# mypy>=1.0.0

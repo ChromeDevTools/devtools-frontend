@@ -32,6 +32,16 @@ const logger = winston.createLogger({
   ]
 });
 
+// Create dedicated evaluation logger once to avoid recreating on each call
+const evaluationLogger = winston.createLogger({
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({
+      filename: `${CONFIG.logging.dir}/evaluations.jsonl`
+    })
+  ]
+});
+
 export function logEvaluation(evaluationData) {
   const logEntry = {
     type: 'evaluation',
@@ -71,15 +81,6 @@ export function logEvaluation(evaluationData) {
   logger.info('Evaluation completed', logEntry);
   
   // Also save to dedicated evaluation log
-  const evaluationLogger = winston.createLogger({
-    format: winston.format.json(),
-    transports: [
-      new winston.transports.File({
-        filename: `${CONFIG.logging.dir}/evaluations.jsonl`
-      })
-    ]
-  });
-  
   evaluationLogger.info(logEntry);
 }
 

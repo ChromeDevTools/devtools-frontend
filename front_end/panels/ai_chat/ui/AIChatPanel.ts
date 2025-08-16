@@ -18,7 +18,8 @@ import { LiteLLMProvider } from '../LLM/LiteLLMProvider.js';
 import { GroqProvider } from '../LLM/GroqProvider.js';
 import { OpenRouterProvider } from '../LLM/OpenRouterProvider.js';
 import { createLogger } from '../core/Logger.js';
-import { isEvaluationEnabled, connectToEvaluationService } from '../common/EvaluationConfig.js';
+import { isEvaluationEnabled, getEvaluationConfig } from '../common/EvaluationConfig.js';
+import { EvaluationAgent } from '../evaluation/remote/EvaluationAgent.js';
 
 const logger = createLogger('AIChatPanel');
 
@@ -716,6 +717,7 @@ export class AIChatPanel extends UI.Panel.Panel {
   #liteLLMApiKey: string | null = null; // LiteLLM API key
   #liteLLMEndpoint: string | null = null; // LiteLLM endpoint
   #apiKey: string | null = null; // Regular API key
+  #evaluationAgent: EvaluationAgent | null = null; // Evaluation agent for this tab
 
   constructor() {
     super(AIChatPanel.panelName);
@@ -727,7 +729,7 @@ export class AIChatPanel extends UI.Panel.Panel {
     this.#setupInitialState();
     this.#setupOAuthEventListeners();
     this.#initializeAgentService();
-    this.#initializeEvaluationService();
+    this.#createEvaluationAgentIfNeeded();
     this.performUpdate();
     this.#fetchLiteLLMModelsOnLoad();
   }
@@ -1231,15 +1233,38 @@ export class AIChatPanel extends UI.Panel.Panel {
   }
 
   /**
-   * Initialize the evaluation service if enabled
+   * Create EvaluationAgent instance if evaluation is enabled
    */
-  async #initializeEvaluationService(): Promise<void> {
+  async #createEvaluationAgentIfNeeded(): Promise<void> {
     if (isEvaluationEnabled()) {
       try {
-        await connectToEvaluationService();
-        logger.info('Auto-connected to evaluation service on panel initialization');
+        // Disconnect existing agent if any
+        if (this.#evaluationAgent) {
+          this.#evaluationAgent.disconnect();
+          this.#evaluationAgent = null;
+        }
+
+        const config = getEvaluationConfig();
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const tabId = target?.id() || 'unknown';
+        const compositeClientId = `${config.clientId}:${tabId}`;
+
+        logger.info('Creating EvaluationAgent for tab', {
+          tabId,
+          compositeClientId,
+          endpoint: config.endpoint
+        });
+
+        this.#evaluationAgent = new EvaluationAgent({
+          clientId: compositeClientId,
+          endpoint: config.endpoint,
+          secretKey: config.secretKey
+        });
+
+        await this.#evaluationAgent.connect();
+        logger.info('EvaluationAgent connected successfully for tab', { tabId });
       } catch (error) {
-        logger.error('Failed to auto-connect to evaluation service:', error);
+        logger.error('Failed to create EvaluationAgent:', error);
         // Don't throw - evaluation connection failure shouldn't break the panel
       }
     }
@@ -1824,6 +1849,10 @@ export class AIChatPanel extends UI.Panel.Panel {
     this.#messages = this.#agentService.getMessages();
     this.#isProcessing = false;
     this.#selectedAgentType = null; // Reset selected agent type
+    
+    // Create new EvaluationAgent for new chat session
+    this.#createEvaluationAgentIfNeeded();
+    
     this.performUpdate();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.newChatCreated));
   }

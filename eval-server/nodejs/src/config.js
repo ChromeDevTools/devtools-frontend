@@ -25,11 +25,12 @@ export const CONFIG = {
   }
 };
 
-export function validateConfig() {
+export function validateConfig(requireLLM = false) {
   const errors = [];
   
-  if (!CONFIG.llm.apiKey) {
-    errors.push('OPENAI_API_KEY is required');
+  // Only require OpenAI API key if LLM judge is explicitly needed
+  if (requireLLM && !CONFIG.llm.apiKey) {
+    errors.push('OPENAI_API_KEY is required when using LLM judge');
   }
   
   if (CONFIG.server.port < 1 || CONFIG.server.port > 65535) {

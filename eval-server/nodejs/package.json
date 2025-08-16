@@ -1,0 +1,43 @@
+{
+  "name": "bo-eval-server",
+  "version": "1.0.0",
+  "description": "WebSocket server for evaluating LLM agents with LLM-as-a-judge",
+  "main": "src/lib/EvalServer.js",
+  "type": "module",
+  "exports": {
+    ".": "./src/lib/EvalServer.js",
+    "./EvalServer": "./src/lib/EvalServer.js",
+    "./EvaluationLoader": "./src/lib/EvaluationLoader.js",
+    "./HTTPWrapper": "./src/lib/HTTPWrapper.js",
+    "./judges/Judge": "./src/lib/judges/Judge.js",
+    "./judges/LLMJudge": "./src/lib/judges/LLMJudge.js",
+    "./CLI": "./src/cli/CLI.js"
+  },
+  "bin": {
+    "eval-server": "./src/cli/index.js"
+  },
+  "scripts": {
+    "start": "node examples/with-http-wrapper.js",
+    "dev": "node --watch examples/with-http-wrapper.js",
+    "cli": "node src/cli/index.js",
+    "lib:example": "node examples/library-usage.js",
+    "lib:example:http": "node examples/with-http-wrapper.js"
+  },
+  "keywords": ["websocket", "llm", "evaluation", "rpc", "library", "programmatic"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.16.0",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0",
+    "dotenv": "^16.3.1",
+    "openai": "^4.24.1",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.10"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -7,8 +7,8 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Utils from '../common/utils.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
+import { callLLMWithTracing } from './LLMTracingWrapper.js';
 
 import { waitForPageLoad, type Tool } from './Tools.js';
 
@@ -319,19 +319,28 @@ ${instruction}
   }): Promise<{
     markdownContent: string,
   }> {
-    // Call LLM using the unified client
+    // Call LLM using the unified client with tracing
     const { model, provider } = AIChatPanel.getNanoModelWithProvider();
-    const llm = LLMClient.getInstance();
-    const llmResponse = await llm.call({
-      provider,
-      model,
-      messages: [
-        { role: 'system', content: params.systemPrompt },
-        { role: 'user', content: params.userPrompt }
-      ],
-      systemPrompt: params.systemPrompt,
-      temperature: 0.2 // Lower temperature for more deterministic results
-    });
+    const llmResponse = await callLLMWithTracing(
+      {
+        provider,
+        model,
+        messages: [
+          { role: 'system', content: params.systemPrompt },
+          { role: 'user', content: params.userPrompt }
+        ],
+        systemPrompt: params.systemPrompt,
+        temperature: 0.2 // Lower temperature for more deterministic results
+      },
+      {
+        toolName: this.name,
+        operationName: 'html_to_markdown',
+        context: 'content_extraction',
+        additionalMetadata: {
+          promptLength: params.userPrompt.length
+        }
+      }
+    );
     const response = llmResponse.text;
 
     // Process the response - UnifiedLLMClient returns string directly

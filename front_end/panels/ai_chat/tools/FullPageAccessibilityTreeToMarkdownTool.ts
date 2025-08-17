@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import { AgentService } from '../core/AgentService.js';
-import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
+import { callLLMWithTracing } from './LLMTracingWrapper.js';
 
 import { GetAccessibilityTreeTool, type Tool, type ErrorResult } from './Tools.js';
 
@@ -55,17 +55,27 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
     const prompt = `Accessibility Tree:\n\n\`\`\`\n${accessibilityTreeString}\n\`\`\``;
 
     try {
-      const llm = LLMClient.getInstance();
-      const llmResponse = await llm.call({
-        provider,
-        model,
-        messages: [
-          { role: 'system', content: this.getSystemPrompt() },
-          { role: 'user', content: prompt }
-        ],
-        systemPrompt: this.getSystemPrompt(),
-        temperature: 0.7
-      });
+      const llmResponse = await callLLMWithTracing(
+        {
+          provider,
+          model,
+          messages: [
+            { role: 'system', content: this.getSystemPrompt() },
+            { role: 'user', content: prompt }
+          ],
+          systemPrompt: this.getSystemPrompt(),
+          temperature: 0.7
+        },
+        {
+          toolName: this.name,
+          operationName: 'accessibility_to_markdown',
+          context: 'accessibility_tree_conversion',
+          additionalMetadata: {
+            treeLength: accessibilityTreeString.length
+          }
+        }
+      );
+
       const response = llmResponse.text;
       if (response) {
         return {

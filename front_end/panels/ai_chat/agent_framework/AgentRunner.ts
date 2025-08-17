@@ -12,6 +12,7 @@ import { createLogger } from '../core/Logger.js';
 import { createTracingProvider, getCurrentTracingContext } from '../tracing/TracingConfig.js';
 import type { AgentSession, AgentMessage } from './AgentSessionTypes.js';
 import { AgentErrorHandler } from '../core/AgentErrorHandler.js';
+import { callLLMWithTracing } from '../tools/LLMTracingWrapper.js';
 
 const logger = createLogger('AgentRunner');
 
@@ -1142,18 +1143,29 @@ Format your response as a clear, informative summary that would help a calling a
         content: summaryPrompt
       });
 
-      // Use existing LLM infrastructure
-      const llm = LLMClient.getInstance();
       const provider = AIChatPanel.getProviderForModel(modelName);
 
-      const response = await llm.call({
-        provider,
-        model: modelName,
-        messages: llmMessages,
-        systemPrompt: '', // Empty string instead of undefined
-        // Omit tools parameter entirely to avoid tool_choice conflicts
-        temperature: 0.1 // Lower temperature for more consistent summaries
-      });
+      const response = await callLLMWithTracing(
+        {
+          provider,
+          model: modelName,
+          messages: llmMessages,
+          systemPrompt: '', // Empty string instead of undefined
+          temperature: 0.1,
+          // Omit tools parameter entirely to avoid tool_choice conflicts
+        },
+        {
+          toolName: 'AgentRunner',
+          operationName: 'summarize_agent_progress',
+          context: 'agent_analysis',
+          additionalMetadata: {
+            agentName,
+            completionType,
+            maxIterations,
+            messageCount: messages.length
+          }
+        }
+      );
 
       logger.info(`Generated summary for agent "${agentName}":`, response.text || 'No summary generated.');
       return response.text || 'No summary generated.';

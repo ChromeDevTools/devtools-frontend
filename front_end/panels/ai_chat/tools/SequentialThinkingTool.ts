@@ -7,8 +7,8 @@ import type { Tool } from './Tools.js';
 import { TakeScreenshotTool } from './Tools.js';
 import { GetAccessibilityTreeTool } from './Tools.js';
 import { createLogger } from '../core/Logger.js';
-import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
+import { callLLMWithTracing } from './LLMTracingWrapper.js';
 
 const logger = createLogger('SequentialThinkingTool');
 
@@ -224,7 +224,6 @@ Based on the screenshot and current state, create a grounded sequential plan for
       // Get the selected model and its provider
       const model = AIChatPanel.instance().getSelectedModel();
       const provider = AIChatPanel.getProviderForModel(model);
-      const llm = LLMClient.getInstance();
 
       // Prepare message based on vision capability
       const messages = [{
@@ -238,14 +237,26 @@ Based on the screenshot and current state, create a grounded sequential plan for
         ] : prompt.userPrompt // Text-only for non-vision models
       }];
 
-      const response = await llm.call({
-        provider,
-        model,
-        messages,
-        systemPrompt: prompt.systemPrompt,
-        temperature: 0.2,
-        retryConfig: { maxRetries: 3 }
-      });
+      const response = await callLLMWithTracing(
+        {
+          provider,
+          model,
+          messages,
+          systemPrompt: prompt.systemPrompt,
+          temperature: 0.2,
+          options: { retryConfig: { maxRetries: 3 } }
+        },
+        {
+          toolName: this.name,
+          operationName: 'sequential_analysis',
+          context: 'grounded_planning',
+          additionalMetadata: {
+            isVisionCapable,
+            imageCount: prompt.images.length,
+            hasValidImages: prompt.images.some(img => img.data !== 'no-screenshot-available')
+          }
+        }
+      );
 
       if (!response.text) {
         return { error: 'No response from LLM' };

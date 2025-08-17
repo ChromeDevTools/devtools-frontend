@@ -50,6 +50,7 @@ devtools_module("ai_chat") {
     "LLM/OpenRouterProvider.ts",
     "LLM/LLMClient.ts",
     "tools/Tools.ts",
+    "tools/LLMTracingWrapper.ts",
     "tools/CritiqueTool.ts",
     "tools/FetcherTool.ts",
     "tools/FinalizeWithCritiqueTool.ts",

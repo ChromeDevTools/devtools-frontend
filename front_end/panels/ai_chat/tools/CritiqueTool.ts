@@ -4,8 +4,8 @@
 
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
+import { callLLMWithTracing } from './LLMTracingWrapper.js';
 
 import type { Tool } from './Tools.js';
 
@@ -167,17 +167,26 @@ Return a JSON array of requirement statements. Example format:
 
     try {
       const { model, provider } = AIChatPanel.getNanoModelWithProvider();
-      const llm = LLMClient.getInstance();
       
-      const response = await llm.call({
-        provider,
-        model,
-        messages: [
-          { role: 'user', content: userPrompt }
-        ],
-        systemPrompt,
-        temperature: 0.1,
-      });
+      const response = await callLLMWithTracing(
+        {
+          provider,
+          model,
+          messages: [
+            { role: 'user', content: userPrompt }
+          ],
+          systemPrompt,
+          temperature: 0.1,
+        },
+        {
+          toolName: this.name,
+          operationName: 'extract_requirements',
+          context: 'requirement_analysis',
+          additionalMetadata: {
+            inputLength: userInput.length
+          }
+        }
+      );
 
       if (!response.text) {
         return { success: false, requirements: [], error: 'No response received' };
@@ -260,17 +269,27 @@ ${JSON.stringify(evaluationSchema, null, 2)}`;
 
     try {
       const { model, provider } = AIChatPanel.getNanoModelWithProvider();
-      const llm = LLMClient.getInstance();
       
-      const response = await llm.call({
-        provider,
-        model,
-        messages: [
-          { role: 'user', content: userPrompt }
-        ],
-        systemPrompt,
-        temperature: 0.1,
-      });
+      const response = await callLLMWithTracing(
+        {
+          provider,
+          model,
+          messages: [
+            { role: 'user', content: userPrompt }
+          ],
+          systemPrompt,
+          temperature: 0.1,
+        },
+        {
+          toolName: this.name,
+          operationName: 'evaluate_response',
+          context: 'plan_evaluation',
+          additionalMetadata: {
+            requirementCount: requirements.length,
+            responseLength: finalResponse.length
+          }
+        }
+      );
 
       if (!response.text) {
         return { success: false, error: 'No response received' };
@@ -320,17 +339,27 @@ Be concise, specific, and constructive.`;
 
     try {
       const { model, provider } = AIChatPanel.getNanoModelWithProvider();
-      const llm = LLMClient.getInstance();
       
-      const response = await llm.call({
-        provider,
-        model,
-        messages: [
-          { role: 'user', content: userPrompt }
-        ],
-        systemPrompt,
-        temperature: 0.7,
-      });
+      const response = await callLLMWithTracing(
+        {
+          provider,
+          model,
+          messages: [
+            { role: 'user', content: userPrompt }
+          ],
+          systemPrompt,
+          temperature: 0.7,
+        },
+        {
+          toolName: this.name,
+          operationName: 'generate_feedback',
+          context: 'feedback_generation',
+          additionalMetadata: {
+            satisfiesCriteria: criteria.satisfiesCriteria,
+            missedRequirements: criteria.missedRequirements?.length || 0
+          }
+        }
+      );
 
       return response.text || 'The plan does not meet all requirements, but no specific feedback could be generated.';
     } catch (error: any) {

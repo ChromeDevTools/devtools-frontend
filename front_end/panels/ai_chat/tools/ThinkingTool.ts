@@ -6,8 +6,8 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type { Tool } from './Tools.js';
 import { TakeScreenshotTool, GetAccessibilityTreeTool } from './Tools.js';
 import { createLogger } from '../core/Logger.js';
-import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
+import { callLLMWithTracing } from './LLMTracingWrapper.js';
 
 const logger = createLogger('ThinkingTool');
 
@@ -236,7 +236,6 @@ Based on the accessibility tree structure above, think through what needs to be 
       // Get the selected model and its provider
       const model = AIChatPanel.instance().getSelectedModel();
       const provider = AIChatPanel.getProviderForModel(model);
-      const llm = LLMClient.getInstance();
 
       // Prepare message based on model type
       const messages = [{
@@ -250,14 +249,26 @@ Based on the accessibility tree structure above, think through what needs to be 
         ] : prompt.userPrompt // Text-only for non-vision models
       }];
 
-      const response = await llm.call({
-        provider,
-        model,
-        messages,
-        systemPrompt: prompt.systemPrompt,
-        temperature: 0.3,
-        retryConfig: { maxRetries: 3 }
-      });
+      const response = await callLLMWithTracing(
+        {
+          provider,
+          model,
+          messages,
+          systemPrompt: prompt.systemPrompt,
+          temperature: 0.3,
+          options: { retryConfig: { maxRetries: 3 } }
+        },
+        {
+          toolName: this.name,
+          operationName: 'thinking_analysis',
+          context: 'page_analysis',
+          additionalMetadata: {
+            isVisionModel,
+            imageCount: prompt.images.length,
+            promptLength: prompt.userPrompt.length
+          }
+        }
+      );
 
       if (!response.text) {
         return { error: 'No response from LLM' };

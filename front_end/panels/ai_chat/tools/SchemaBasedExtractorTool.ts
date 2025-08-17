@@ -7,8 +7,8 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Utils from '../common/utils.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
+import { callLLMWithTracing } from './LLMTracingWrapper.js';
 
 import { NodeIDsToURLsTool, type Tool } from './Tools.js';
 
@@ -448,18 +448,29 @@ Only output the JSON object with real data from the accessibility tree.`;
 
     try {
       const { model, provider } = AIChatPanel.getNanoModelWithProvider();
-      const llm = LLMClient.getInstance();
-      const llmResponse = await llm.call({
-        provider,
-        model,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: extractionPrompt }
-        ],
-        systemPrompt: systemPrompt,
-        temperature: 0.1,
-        retryConfig: { maxRetries: 3, baseDelayMs: 1500 }
-      });
+      const llmResponse = await callLLMWithTracing(
+        {
+          provider,
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: extractionPrompt }
+          ],
+          systemPrompt: systemPrompt,
+          temperature: 0.1,
+          options: { retryConfig: { maxRetries: 3, baseDelayMs: 1500 } }
+        },
+        {
+          toolName: this.name,
+          operationName: 'extract_data',
+          context: 'schema_extraction',
+          additionalMetadata: {
+            instructionLength: instruction.length,
+            domContentLength: domContent.length,
+            schemaFields: Object.keys(schema.properties || {}).length
+          }
+        }
+      );
       const response = llmResponse.text;
       if (!response) { throw new Error('No text response from extraction LLM'); }
       return this.parseJsonResponse(response);
@@ -517,18 +528,28 @@ Do not add any conversational text or explanations or thinking tags.`;
 
     try {
       const { model, provider } = AIChatPanel.getNanoModelWithProvider();
-      const llm = LLMClient.getInstance();
-      const llmResponse = await llm.call({
-        provider,
-        model,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: refinePrompt }
-        ],
-        systemPrompt: systemPrompt,
-        temperature: 0.1,
-        retryConfig: { maxRetries: 3, baseDelayMs: 1500 }
-      });
+      const llmResponse = await callLLMWithTracing(
+        {
+          provider,
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: refinePrompt }
+          ],
+          systemPrompt: systemPrompt,
+          temperature: 0.1,
+          options: { retryConfig: { maxRetries: 3, baseDelayMs: 1500 } }
+        },
+        {
+          toolName: this.name,
+          operationName: 'refine_data',
+          context: 'data_refinement',
+          additionalMetadata: {
+            instructionLength: instruction.length,
+            initialDataFields: Object.keys(initialData || {}).length
+          }
+        }
+      );
       const response = llmResponse.text;
       if (!response) { throw new Error('No text response from refinement LLM'); }
       return this.parseJsonResponse(response);
@@ -614,18 +635,29 @@ Return ONLY a valid JSON object conforming to the required metadata schema.`;
 
     try {
       const { model, provider } = AIChatPanel.getNanoModelWithProvider();
-      const llm = LLMClient.getInstance();
-      const llmResponse = await llm.call({
-        provider,
-        model,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: metadataPrompt }
-        ],
-        systemPrompt: systemPrompt,
-        temperature: 0.0, // Use low temp for objective assessment
-        retryConfig: { maxRetries: 3, baseDelayMs: 1500 }
-      });
+      const llmResponse = await callLLMWithTracing(
+        {
+          provider,
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: metadataPrompt }
+          ],
+          systemPrompt: systemPrompt,
+          temperature: 0.0, // Use low temp for objective assessment
+          options: { retryConfig: { maxRetries: 3, baseDelayMs: 1500 } }
+        },
+        {
+          toolName: this.name,
+          operationName: 'assess_metadata',
+          context: 'extraction_assessment',
+          additionalMetadata: {
+            instructionLength: instruction.length,
+            hasExtractedData: !!extractedData,
+            domContentLength: domContent.length
+          }
+        }
+      );
       const response = llmResponse.text;
       if (!response) { throw new Error('No text response from metadata LLM'); }
       const parsedMetadata = this.parseJsonResponse(response);

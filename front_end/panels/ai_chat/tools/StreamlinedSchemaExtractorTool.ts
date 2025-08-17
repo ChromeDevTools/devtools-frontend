@@ -8,8 +8,8 @@ import * as Utils from '../common/utils.js';
 import type { AccessibilityNode } from '../common/context.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
+import { callLLMWithTracing } from './LLMTracingWrapper.js';
 
 import type { Tool } from './Tools.js';
 
@@ -239,18 +239,30 @@ IMPORTANT: Only extract data that you can see in the accessibility tree above. D
         }
 
         const { model, provider } = AIChatPanel.getMiniModelWithProvider();
-        const llm = LLMClient.getInstance();
-        const llmResponse = await llm.call({
-          provider,
-          model,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: extractionPrompt }
-          ],
-          systemPrompt: systemPrompt,
-          temperature: 0.1,
-          retryConfig: { maxRetries: 3, baseDelayMs: 1500 }
-        });
+        const llmResponse = await callLLMWithTracing(
+          {
+            provider,
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: extractionPrompt }
+            ],
+            systemPrompt: systemPrompt,
+            temperature: 0.1,
+            options: { retryConfig: { maxRetries: 3, baseDelayMs: 1500 } }
+          },
+          {
+            toolName: this.name,
+            operationName: 'streamlined_extraction',
+            context: 'json_extraction_with_retry',
+            additionalMetadata: {
+              attempt,
+              maxRetries,
+              instructionLength: instruction.length,
+              treeTextLength: treeText.length
+            }
+          }
+        );
         const result = llmResponse.text;
         
         logger.debug(`JSON extraction successful on attempt ${attempt}`);
@@ -366,18 +378,29 @@ CRITICAL: Only use nodeIds that you can actually see in the accessibility tree a
 
     try {
       const { model, provider } = AIChatPanel.getMiniModelWithProvider();
-      const llm = LLMClient.getInstance();
-      const llmResponse = await llm.call({
-        provider,
-        model,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: extractionPrompt }
-        ],
-        systemPrompt: systemPrompt,
-        temperature: 0.1,
-        retryConfig: { maxRetries: 3, baseDelayMs: 1500 }
-      });
+      const llmResponse = await callLLMWithTracing(
+        {
+          provider,
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: extractionPrompt }
+          ],
+          systemPrompt: systemPrompt,
+          temperature: 0.1,
+          options: { retryConfig: { maxRetries: 3, baseDelayMs: 1500 } }
+        },
+        {
+          toolName: this.name,
+          operationName: 'retry_url_resolution',
+          context: 'url_resolution_retry',
+          additionalMetadata: {
+            attemptNumber,
+            unresolvedCount: unresolvedNodeIds.length,
+            failedNodeIds: unresolvedNodeIds
+          }
+        }
+      );
       const result = llmResponse.text;
       
       return result;

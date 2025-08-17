@@ -427,6 +427,13 @@ describeWithEnvironment('TimelinePanel', function() {
         const file = await contentDataToFile(contentData);
         assert.isUndefined(file.metadata.enhancedTraceVersion);
         assert.deepEqual(file.traceEvents, traceEvents);
+
+        // All `StubScriptCatchup` should have durations
+        for (const event of file.traceEvents) {
+          if (event.name === 'StubScriptCatchup') {
+            assert.isDefined(event.dur);
+          }
+        }
       });
 
       it('saves a CPU profile trace file', async function() {

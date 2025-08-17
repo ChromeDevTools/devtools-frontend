@@ -1356,6 +1356,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
             cat: event.cat,
             name: 'StubScriptCatchup',
             ts: event.ts,
+            dur: event.dur,
             ph: event.ph,
             pid: event.pid,
             tid: event.tid,

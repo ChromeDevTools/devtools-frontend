@@ -9,7 +9,6 @@ node_ts_library("elements") {
     "add-view-transition-pseudo-styles_test.ts",
     "at-function-sections_test.ts",
     "element-breadcrumbs_test.ts",
-    "selection-after-delete_test.ts",
     "style-pane-properties_test.ts",
   ]
 

@@ -13,7 +13,6 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import * as GraphVisualizer from './graph_visualizer/graph_visualizer.js';
 import webAudioStyles from './webAudio.css.js';
 import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
 
@@ -76,7 +75,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     SDK.TargetManager.SDKModelObserver<WebAudioModel> {
   private readonly contentContainer: HTMLElement;
   private readonly detailViewContainer: HTMLElement;
-  private graphManager: GraphVisualizer.GraphManager.GraphManager;
+  private readonly knownContexts = new Set<string>();
   private readonly landingPage: UI.EmptyWidget.EmptyWidget;
   private readonly summaryBarContainer: HTMLElement;
   private readonly contextSelectorPlaceholderText: Platform.UIString.LocalizedString;
@@ -117,8 +116,6 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
 
     // Creates the detail view.
     this.detailViewContainer = this.contentContainer.createChild('div', 'web-audio-details-container vbox flex-auto');
-
-    this.graphManager = new GraphVisualizer.GraphManager.GraphManager();
 
     // Creates the landing page.
     this.landingPage = new UI.EmptyWidget.EmptyWidget(
@@ -166,18 +163,6 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     webAudioModel.addEventListener(ModelEvents.CONTEXT_DESTROYED, this.contextDestroyed, this);
     webAudioModel.addEventListener(ModelEvents.CONTEXT_CHANGED, this.contextChanged, this);
     webAudioModel.addEventListener(ModelEvents.MODEL_RESET, this.reset, this);
-    webAudioModel.addEventListener(ModelEvents.MODEL_SUSPEND, this.suspendModel, this);
-    webAudioModel.addEventListener(ModelEvents.AUDIO_LISTENER_CREATED, this.audioListenerCreated, this);
-    webAudioModel.addEventListener(
-        ModelEvents.AUDIO_LISTENER_WILL_BE_DESTROYED, this.audioListenerWillBeDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.AUDIO_NODE_CREATED, this.audioNodeCreated, this);
-    webAudioModel.addEventListener(ModelEvents.AUDIO_NODE_WILL_BE_DESTROYED, this.audioNodeWillBeDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.AUDIO_PARAM_CREATED, this.audioParamCreated, this);
-    webAudioModel.addEventListener(ModelEvents.AUDIO_PARAM_WILL_BE_DESTROYED, this.audioParamWillBeDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.NODES_CONNECTED, this.nodesConnected, this);
-    webAudioModel.addEventListener(ModelEvents.NODES_DISCONNECTED, this.nodesDisconnected, this);
-    webAudioModel.addEventListener(ModelEvents.NODE_PARAM_CONNECTED, this.nodeParamConnected, this);
-    webAudioModel.addEventListener(ModelEvents.NODE_PARAM_DISCONNECTED, this.nodeParamDisconnected, this);
   }
 
   private removeEventListeners(webAudioModel: WebAudioModel): void {
@@ -185,18 +170,6 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     webAudioModel.removeEventListener(ModelEvents.CONTEXT_DESTROYED, this.contextDestroyed, this);
     webAudioModel.removeEventListener(ModelEvents.CONTEXT_CHANGED, this.contextChanged, this);
     webAudioModel.removeEventListener(ModelEvents.MODEL_RESET, this.reset, this);
-    webAudioModel.removeEventListener(ModelEvents.MODEL_SUSPEND, this.suspendModel, this);
-    webAudioModel.removeEventListener(ModelEvents.AUDIO_LISTENER_CREATED, this.audioListenerCreated, this);
-    webAudioModel.removeEventListener(
-        ModelEvents.AUDIO_LISTENER_WILL_BE_DESTROYED, this.audioListenerWillBeDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.AUDIO_NODE_CREATED, this.audioNodeCreated, this);
-    webAudioModel.removeEventListener(ModelEvents.AUDIO_NODE_WILL_BE_DESTROYED, this.audioNodeWillBeDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.AUDIO_PARAM_CREATED, this.audioParamCreated, this);
-    webAudioModel.removeEventListener(ModelEvents.AUDIO_PARAM_WILL_BE_DESTROYED, this.audioParamWillBeDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.NODES_CONNECTED, this.nodesConnected, this);
-    webAudioModel.removeEventListener(ModelEvents.NODES_DISCONNECTED, this.nodesDisconnected, this);
-    webAudioModel.removeEventListener(ModelEvents.NODE_PARAM_CONNECTED, this.nodeParamConnected, this);
-    webAudioModel.removeEventListener(ModelEvents.NODE_PARAM_DISCONNECTED, this.nodeParamDisconnected, this);
   }
 
   private addContextSelectorPlaceholderOption(): void {
@@ -251,14 +224,14 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
 
   private contextCreated(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext>): void {
     const context = event.data;
-    this.graphManager.createContext(context.contextId);
+    this.knownContexts.add(context.contextId);
     this.contextSelectorItems.insert(this.contextSelectorItems.length, context);
     this.onContextSelectorListItemReplaced();
   }
 
   private contextDestroyed(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.GraphObjectId>): void {
     const contextId = event.data;
-    this.graphManager.destroyContext(contextId);
+    this.knownContexts.delete(contextId);
     const index = this.contextSelectorItems.findIndex(context => context.contextId === contextId);
     if (index > -1) {
       this.contextSelectorItems.remove(index);
@@ -268,7 +241,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
 
   private contextChanged(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext>): void {
     const context = event.data;
-    if (!this.graphManager.hasContext(context.contextId)) {
+    if (!this.knownContexts.has(context.contextId)) {
       return;
     }
 
@@ -289,153 +262,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     }
     this.detailViewContainer.removeChildren();
     this.landingPage.show(this.detailViewContainer);
-    this.graphManager.clearGraphs();
-  }
-
-  private suspendModel(): void {
-    this.graphManager.clearGraphs();
-  }
-
-  private audioListenerCreated(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.AudioListener>): void {
-    const listener = event.data;
-    const graph = this.graphManager.getGraph(listener.contextId);
-    if (!graph) {
-      return;
-    }
-    graph.addNode({
-      nodeId: listener.listenerId,
-      nodeType: 'Listener',
-      numberOfInputs: 0,
-      numberOfOutputs: 0,
-    });
-  }
-
-  private audioListenerWillBeDestroyed(
-      event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.AudioListenerWillBeDestroyedEvent>): void {
-    const {contextId, listenerId} = event.data;
-    const graph = this.graphManager.getGraph(contextId);
-    if (!graph) {
-      return;
-    }
-    graph.removeNode(listenerId);
-  }
-
-  private audioNodeCreated(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.AudioNode>): void {
-    const node = event.data;
-    const graph = this.graphManager.getGraph(node.contextId);
-    if (!graph) {
-      return;
-    }
-    graph.addNode({
-      nodeId: node.nodeId,
-      nodeType: node.nodeType,
-      numberOfInputs: node.numberOfInputs,
-      numberOfOutputs: node.numberOfOutputs,
-    });
-  }
-
-  private audioNodeWillBeDestroyed(
-      event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.AudioNodeWillBeDestroyedEvent>): void {
-    const {contextId, nodeId} = event.data;
-    const graph = this.graphManager.getGraph(contextId);
-    if (!graph) {
-      return;
-    }
-    graph.removeNode(nodeId);
-  }
-
-  private audioParamCreated(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.AudioParam>): void {
-    const param = event.data;
-    const graph = this.graphManager.getGraph(param.contextId);
-    if (!graph) {
-      return;
-    }
-    graph.addParam({
-      paramId: param.paramId,
-      paramType: param.paramType,
-      nodeId: param.nodeId,
-    });
-  }
-
-  private audioParamWillBeDestroyed(
-      event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.AudioParamWillBeDestroyedEvent>): void {
-    const {contextId, paramId} = event.data;
-    const graph = this.graphManager.getGraph(contextId);
-    if (!graph) {
-      return;
-    }
-    graph.removeParam(paramId);
-  }
-
-  private nodesConnected(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.NodesConnectedEvent>): void {
-    const {contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex} = event.data;
-    const graph = this.graphManager.getGraph(contextId);
-    if (!graph) {
-      return;
-    }
-    graph.addNodeToNodeConnection({
-      sourceId,
-      destinationId,
-      sourceOutputIndex,
-      destinationInputIndex,
-    });
-  }
-
-  private nodesDisconnected(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.NodesDisconnectedEvent>):
-      void {
-    const {contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex} = event.data;
-    const graph = this.graphManager.getGraph(contextId);
-    if (!graph) {
-      return;
-    }
-    graph.removeNodeToNodeConnection({
-      sourceId,
-      destinationId,
-      sourceOutputIndex,
-      destinationInputIndex,
-    });
-  }
-
-  private nodeParamConnected(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.NodeParamConnectedEvent>):
-      void {
-    const {contextId, sourceId, destinationId, sourceOutputIndex} = event.data;
-    const graph = this.graphManager.getGraph(contextId);
-    if (!graph) {
-      return;
-    }
-    // Since the destinationId is AudioParamId, we need to find the nodeId as the
-    // real destinationId.
-    const nodeId = graph.getNodeIdByParamId(destinationId);
-    if (!nodeId) {
-      return;
-    }
-    graph.addNodeToParamConnection({
-      sourceId,
-      destinationId: nodeId,
-      sourceOutputIndex,
-      destinationParamId: destinationId,
-    });
-  }
-
-  private nodeParamDisconnected(
-      event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.NodeParamDisconnectedEvent>): void {
-    const {contextId, sourceId, destinationId, sourceOutputIndex} = event.data;
-    const graph = this.graphManager.getGraph(contextId);
-    if (!graph) {
-      return;
-    }
-    // Since the destinationId is AudioParamId, we need to find the nodeId as the
-    // real destinationId.
-    const nodeId = graph.getNodeIdByParamId(destinationId);
-    if (!nodeId) {
-      return;
-    }
-    graph.removeNodeToParamConnection({
-      sourceId,
-      destinationId: nodeId,
-      sourceOutputIndex,
-      destinationParamId: destinationId,
-    });
+    this.knownContexts.clear();
   }
 
   private updateDetailView(context: Protocol.WebAudio.BaseAudioContext|null): void {
@@ -515,7 +342,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
       // Display summary only for real-time context.
       if (context.contextType === 'realtime') {
-        if (!this.graphManager.hasContext(context.contextId)) {
+        if (!this.knownContexts.has(context.contextId)) {
           continue;
         }
         const realtimeData = await model.requestRealtimeData(context.contextId);

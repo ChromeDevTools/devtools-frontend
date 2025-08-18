@@ -29,7 +29,6 @@ devtools_module("web_audio") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../ui/legacy:bundle",
-    "graph_visualizer:bundle",
   ]
 }
 

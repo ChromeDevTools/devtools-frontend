@@ -2231,28 +2231,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.font = this.#font;
 
     const {markerIndices, drawBatches, titleIndices} = this.getDrawBatches(context, timelineData);
-
-    const groups = this.rawTimelineData?.groups || [];
-    const trackIndex = groups.findIndex(g => g.name.includes('Main'));
-    const group = groups.at(trackIndex);
-    const startLevel = group?.startLevel;
-    const endLevel = groups.at(trackIndex + 1)?.startLevel;
-    const entryIndexIsInTrack = (index: number): boolean => {
-      if (trackIndex < 0 || startLevel === undefined || endLevel === undefined) {
-        return false;
-      }
-      const barWidth = Math.min(this.#eventBarWidth(timelineData, index), canvasWidth);
-      return timelineData.entryLevels[index] >= startLevel && timelineData.entryLevels[index] < endLevel &&
-          barWidth > 10;
-    };
-    let wideEntryExists = false;
     for (const [{color, outline}, {indexes}] of drawBatches) {
-      if (!wideEntryExists) {
-        wideEntryExists = indexes.some(entryIndexIsInTrack);
-      }
       this.#drawBatchEvents(context, timelineData, color, indexes, outline);
     }
-    this.dispatchEventToListeners(Events.CHART_PLAYABLE_STATE_CHANGED, wideEntryExists);
 
     if (!this.#inTrackConfigEditMode) {
       // In configuration mode, we do not render the actual flame chart, so we
@@ -4352,7 +4333,6 @@ export const enum Events {
    * mouse off the event)
    */
   ENTRY_HOVERED = 'EntryHovered',
-  CHART_PLAYABLE_STATE_CHANGED = 'ChartPlayableStateChange',
 
   LATEST_DRAW_DIMENSIONS = 'LatestDrawDimensions',
 
@@ -4372,7 +4352,6 @@ export interface EventTypes {
   [Events.ENTRY_INVOKED]: number;
   [Events.ENTRY_SELECTED]: number;
   [Events.ENTRY_HOVERED]: number;
-  [Events.CHART_PLAYABLE_STATE_CHANGED]: boolean;
   [Events.LATEST_DRAW_DIMENSIONS]: {
     chart: {
       widthPixels: number,

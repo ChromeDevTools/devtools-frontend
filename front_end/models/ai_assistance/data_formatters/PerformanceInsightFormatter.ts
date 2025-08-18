@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../trace/trace.js';
+import type {ConversationSuggestion} from '../agents/AiAgent.js';
 
 import {
   NetworkRequestFormatter,
@@ -101,6 +103,83 @@ export class PerformanceInsightFormatter {
     return this.#description().length > 0;
   }
 
+  getSuggestions(): [ConversationSuggestion, ...ConversationSuggestion[]] {
+    switch (this.#insight.insightKey) {
+      case 'CLSCulprits':
+        return [
+          {title: 'Help me optimize my CLS score'},
+          {title: 'How can I prevent layout shifts on this page?'},
+        ];
+      case 'DocumentLatency':
+        return [
+          {title: 'How do I decrease the initial loading time of my page?'},
+          {title: 'Did anything slow down the request for this document?'},
+        ];
+      case 'DOMSize':
+        return [{title: 'How can I reduce the size of my DOM?'}];
+      case 'DuplicatedJavaScript':
+        return [
+          {title: 'How do I deduplicate the identified scripts in my bundle?'},
+          {title: 'Which duplicated JavaScript modules are the most problematic?'}
+        ];
+      case 'FontDisplay':
+        return [
+          {title: 'How can I update my CSS to avoid layout shifts caused by incorrect `font-display` properties?'}
+        ];
+      case 'ForcedReflow':
+        return [
+          {title: 'How can I avoid layout thrashing?'}, {title: 'What is forced reflow and why is it problematic?'}
+        ];
+      case 'ImageDelivery':
+        return [
+          {title: 'What should I do to improve and optimize the time taken to fetch and display images on the page?'},
+          {title: 'Are all images on my site optimized?'},
+        ];
+      case 'INPBreakdown':
+        return [
+          {title: 'Suggest fixes for my longest interaction'}, {title: 'Why is a large INP score problematic?'},
+          {title: 'What\'s the biggest contributor to my longest interaction?'}
+        ];
+      case 'LCPDiscovery':
+        return [
+          {title: 'Suggest fixes to reduce my LCP'}, {title: 'What can I do to reduce my LCP discovery time?'},
+          {title: 'Why is LCP discovery time important?'}
+        ];
+      case 'LCPBreakdown':
+        return [
+          {title: 'Help me optimize my LCP score'}, {title: 'Which LCP phase was most problematic?'},
+          {title: 'What can I do to reduce the LCP time for this page load?'}
+        ];
+      case 'NetworkDependencyTree':
+        return [{title: 'How do I optimize my network dependency tree?'}];
+      case 'RenderBlocking':
+        return [
+          {title: 'Show me the most impactful render blocking requests that I should focus on'},
+          {title: 'How can I reduce the number of render blocking requests?'}
+        ];
+      case 'SlowCSSSelector':
+        return [{title: 'How can I optimize my CSS to increase the performance of CSS selectors?'}];
+      case 'ThirdParties':
+        return [{title: 'Which third parties are having the largest impact on my page performance?'}];
+      case 'Cache':
+        return [{title: 'What caching strategies can I apply to improve my page performance?'}];
+      case 'Viewport':
+        return [{title: 'How do I make sure my page is optimized for mobile viewing?'}];
+      case 'ModernHTTP':
+        return [
+          {title: 'Is my site using the best HTTP practices?'},
+          {title: 'Which resources are not using a modern HTTP protocol?'},
+        ];
+      case 'LegacyJavaScript':
+        return [
+          {title: 'Is my site polyfilling modern JavaScript features?'},
+          {title: 'How can I reduce the amount of legacy JavaScript on my page?'},
+        ];
+      default:
+        Platform.assertNever(this.#insight.insightKey, 'Unknown insight key');
+    }
+  }
+
   /**
    * Formats and outputs the insight's data.
    * Pass `{headingLevel: X}` to determine what heading level to use for the
@@ -118,7 +197,7 @@ ${this.#description()}
 ${header} Detailed analysis:
 ${this.#details()}
 
-${header} Estimated savings: ${this.#estimatedSavings() || 'none'}
+${header} Estimated savings: ${this.estimatedSavings() || 'none'}
 
 ${header} External resources:
 ${this.#links()}`;
@@ -210,8 +289,8 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
     }
 
     if (Trace.Insights.Models.RenderBlocking.isRenderBlocking(this.#insight)) {
-      const requestSummary = TraceEventFormatter.networkRequests(
-          this.#insight.renderBlockingRequests, this.#parsedTrace, {verbose: false});
+      const requestSummary =
+          TraceEventFormatter.networkRequests(this.#insight.renderBlockingRequests, this.#parsedTrace);
 
       if (requestSummary.length === 0) {
         return 'There are no network requests that are render blocking.';
@@ -354,7 +433,7 @@ ${filesFormatted}`;
     return '';
   }
 
-  #estimatedSavings(): string {
+  estimatedSavings(): string {
     return Object.entries(this.#insight.metricSavings ?? {})
         .map(([k, v]) => {
           if (k === 'CLS') {
@@ -488,7 +567,7 @@ Polyfills and transforms enable older browsers to use new JavaScript features. H
 }
 
 export interface NetworkRequestFormatOptions {
-  verbose: boolean;
+  verbose?: boolean;
   customTitle?: string;
 }
 
@@ -540,11 +619,18 @@ ${rootCauseText}`;
       return '';
     }
 
+    let verbose;
+    if (options?.verbose !== undefined) {
+      verbose = options.verbose;
+    } else {
+      verbose = requests.length === 1;
+    }
+
     // Use verbose format for a single network request. With the compressed format, a format description
     // needs to be provided, which is not worth sending if only one network request is being stringified.
     // For a single request, use `formatRequestVerbosely`, which formats with all fields specified and does not require a
     // format description.
-    if (options?.verbose || requests.length === 1) {
+    if (verbose) {
       return requests.map(request => this.#networkRequestVerbosely(request, parsedTrace, options?.customTitle))
           .join('\n');
     }
@@ -686,7 +772,7 @@ Network requests data:
   /**
    * Network requests format description that is sent to the model as a fact.
    */
-  static networkDataFormatDescription = `The format is as follows:
+  static networkDataFormatDescription = `Network requests are formatted like this:
 \`urlIndex;queuedTime;requestSentTime;downloadCompleteTime;processingCompleteTime;totalDuration;downloadDuration;mainThreadProcessingDuration;statusCode;mimeType;priority;initialPriority;finalPriority;renderBlocking;protocol;fromServiceWorker;initiators;redirects:[[redirectUrlIndex|startTime|duration]];responseHeaders:[header1Value|header2Value|...]\`
 
 - \`urlIndex\`: Numerical index for the request's URL, referencing the "All URLs" list.

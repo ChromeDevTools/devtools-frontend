@@ -361,6 +361,9 @@ export class MainImpl {
     );
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ, 'Performance panel: enable saving traces as .gz');
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.TIMELINE_ASK_AI_FULL_BUTTON,
+        'Performance panel: enable new, more powerful Ask AI in trace view');
 
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,

@@ -113,6 +113,7 @@ export enum FunctionalityType {
   AGENTIC_CHAT = 5,
 }
 
+// See: cs/aida.proto (google3).
 export enum ClientFeature {
   // Unspecified client feature.
   CLIENT_FEATURE_UNSPECIFIED = 0,
@@ -132,6 +133,8 @@ export enum ClientFeature {
   CHROME_PATCH_AGENT = 12,
   // Chrome AI Assistance Performance Insights Agent.
   CHROME_PERFORMANCE_INSIGHTS_AGENT = 13,
+  // Chrome AI Assistance Performance Agent.
+  CHROME_PERFORMANCE_FULL_AGENT = 24,
 }
 
 export enum UserTier {

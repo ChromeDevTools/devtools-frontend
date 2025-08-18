@@ -165,6 +165,14 @@ const UIStringsNotTranslate = {
    */
   inputPlaceholderForPerformanceInsightsNoContext: 'Select a performance insight to ask a question',
   /**
+   * @description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForPerformanceTrace: 'Ask a question about the selected performance trace',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForPerformanceTraceNoContext: 'Select a performance trace to ask a question',
+  /**
    * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForStyling:
@@ -260,8 +268,12 @@ async function getEmptyStateSuggestions(
         {title: 'Are there any security headers present?', jslogContext: 'network-default'},
         {title: 'Why is the request failing?', jslogContext: 'network-default'},
       ];
+    case AiAssistanceModel.ConversationType.PERFORMANCE_FULL:
+      return [
+        {title: 'What performance issues exist with my page?', jslogContext: 'performance-default'},
+      ];
     case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
-    case AiAssistanceModel.ConversationType.PERFORMANCE: {
+    case AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE: {
       const focus = context?.getItem() as TimelineUtils.AIContext.AgentFocus | null;
       if (focus?.data.type === 'call-tree') {
         return [
@@ -627,7 +639,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         hostConfig.devToolsAiAssistancePerformanceAgent?.insightsEnabled && userHasExpandedPerfInsight) {
       targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT;
     } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
-      targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE;
+      targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE;
     }
 
     if (this.#conversation?.type === targetConversationType) {
@@ -825,6 +837,26 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
         this.#selectedPerformanceTrace =
             Boolean(ev.data) ? new AiAssistanceModel.PerformanceTraceContext(ev.data) : null;
+
+        let conversationType: AiAssistanceModel.ConversationType|undefined;
+        if (ev.data) {
+          if (ev.data.data.type === 'full') {
+            conversationType = AiAssistanceModel.ConversationType.PERFORMANCE_FULL;
+          } else if (ev.data.data.type === 'insight') {
+            conversationType = AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT;
+          } else if (ev.data.data.type === 'call-tree') {
+            conversationType = AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE;
+          } else {
+            Platform.assertNever(ev.data.data, 'Unknown agent focus');
+          }
+        }
+
+        let agent = this.#conversationAgent;
+        if (conversationType && agent instanceof AiAssistanceModel.PerformanceAgent &&
+            agent.getConversationType() !== conversationType) {
+          agent = this.#conversationHandler.createAgent(conversationType);
+        }
+
         this.#updateConversationState({agent: this.#conversationAgent});
       };
 
@@ -998,7 +1030,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       case AiAssistanceModel.ConversationType.NETWORK:
         return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForNetwork) :
                                        lockedString(UIStringsNotTranslate.inputPlaceholderForNetworkNoContext);
-      case AiAssistanceModel.ConversationType.PERFORMANCE: {
+      case AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE: {
         const perfPanel = UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
         if (perfPanel?.hasActiveTrace()) {
           return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForPerformance) :
@@ -1010,6 +1042,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         return this.#selectedContext ?
             lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceInsights) :
             lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceInsightsNoContext);
+      case AiAssistanceModel.ConversationType.PERFORMANCE_FULL:
+        return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceTrace) :
+                                       lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceTraceNoContext);
     }
   }
 
@@ -1040,7 +1075,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
       // It is deliberate that both Performance agents use the same disclaimer
       // text and this has been approved by Privacy.
-      case AiAssistanceModel.ConversationType.PERFORMANCE:
+      case AiAssistanceModel.ConversationType.PERFORMANCE_FULL:
+      case AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE:
       case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
         if (noLogging) {
           return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceEnterpriseNoLogging);
@@ -1076,6 +1112,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
     if (context instanceof AiAssistanceModel.PerformanceTraceContext) {
       const focus = context.getItem().data;
+      if (focus.type === 'full') {
+        return;
+      }
       if (focus.type === 'call-tree') {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
         const trace = new SDK.TraceObject.RevealableEvent(event);
@@ -1120,13 +1159,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         break;
       }
       case 'drjones.performance-panel-context': {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformancePanel);
-        targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE;
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformancePanelCallTree);
+        targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE;
         break;
       }
       case 'drjones.performance-insight-context': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformanceInsight);
         targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT;
+        break;
+      }
+      case 'drjones.performance-panel-full-context': {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformanceFullButton);
+        targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE_FULL;
         break;
       }
       case 'drjones.sources-floating-button': {
@@ -1147,7 +1191,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     let agent = this.#conversationAgent;
     if (!this.#conversation || !this.#conversationAgent || this.#conversation.type !== targetConversationType ||
-        this.#conversation?.isEmpty || targetConversationType === AiAssistanceModel.ConversationType.PERFORMANCE ||
+        this.#conversation?.isEmpty ||
+        targetConversationType === AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE ||
         (agent instanceof AiAssistanceModel.PerformanceAgent &&
          agent.getConversationType() !== targetConversationType)) {
       agent = this.#conversationHandler.createAgent(targetConversationType, this.#changeManager);
@@ -1384,7 +1429,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       case AiAssistanceModel.ConversationType.NETWORK:
         context = this.#selectedRequest;
         break;
-      case AiAssistanceModel.ConversationType.PERFORMANCE:
+      case AiAssistanceModel.ConversationType.PERFORMANCE_FULL:
+      case AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE:
       case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
         context = this.#selectedPerformanceTrace;
         break;
@@ -1646,6 +1692,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'freestyler.element-panel-context':
       case 'drjones.network-floating-button':
       case 'drjones.network-panel-context':
+      case 'drjones.performance-panel-full-context':
       case 'drjones.performance-panel-context':
       case 'drjones.performance-insight-context':
       case 'drjones.sources-floating-button':

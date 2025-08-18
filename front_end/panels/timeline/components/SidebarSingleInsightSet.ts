@@ -224,9 +224,14 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   #getLocalMetrics(insightSetKey: string) {
-    const lcp = Trace.Insights.Common.getLCP(this.#data.insights, insightSetKey);
-    const cls = Trace.Insights.Common.getCLS(this.#data.insights, insightSetKey);
-    const inp = Trace.Insights.Common.getINP(this.#data.insights, insightSetKey);
+    const insightSet = this.#data.insights?.get(insightSetKey);
+    if (!insightSet) {
+      return {};
+    }
+
+    const lcp = Trace.Insights.Common.getLCP(insightSet);
+    const cls = Trace.Insights.Common.getCLS(insightSet);
+    const inp = Trace.Insights.Common.getINP(insightSet);
 
     return {lcp, cls, inp};
   }
@@ -282,7 +287,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
     const lcpEl = this.#renderMetricValue('LCP', local.lcp?.value ?? null, local.lcp?.event ?? null);
     const inpEl = this.#renderMetricValue('INP', local.inp?.value ?? null, local.inp?.event ?? null);
-    const clsEl = this.#renderMetricValue('CLS', local.cls.value ?? null, local.cls?.worstClusterEvent ?? null);
+    const clsEl = this.#renderMetricValue('CLS', local.cls?.value ?? null, local.cls?.worstClusterEvent ?? null);
 
     const localMetricsTemplateResult = html`
       <div class="metrics-row">

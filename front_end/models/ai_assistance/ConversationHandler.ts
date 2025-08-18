@@ -343,8 +343,9 @@ export class ConversationHandler {
         agent = new FileAgent(options);
         break;
       }
+      case ConversationType.PERFORMANCE_FULL:
       case ConversationType.PERFORMANCE_INSIGHT:
-      case ConversationType.PERFORMANCE: {
+      case ConversationType.PERFORMANCE_CALL_TREE: {
         agent = new PerformanceAgent(options, conversationType);
         break;
       }

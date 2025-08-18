@@ -10,7 +10,9 @@ import * as Types from '../types/types.js';
 import type {TraceFilter} from './TraceFilter.js';
 
 export class Node {
+  /** ms */
   totalTime: number;
+  /** ms */
   selfTime: number;
   transferSize: number;
   id: string|symbol;

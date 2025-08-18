@@ -33,7 +33,7 @@ const fileContentsCache = new Map<string, Trace.Types.File.Contents>();
 const traceEngineCache = new Map<string, Map<string, {
                                    parsedTrace: Trace.Handlers.Types.ParsedTrace,
                                    insights: Trace.Insights.Types.TraceInsightSets | null,
-                                   metadata: Trace.Types.File.MetaData | null,
+                                   metadata: Trace.Types.File.MetaData,
                                    model: Trace.TraceModel.Model,
                                  }>>();
 
@@ -148,7 +148,7 @@ export class TraceLoader {
       config: Trace.Types.Configuration.Configuration = Trace.Types.Configuration.defaults()): Promise<{
     parsedTrace: Trace.Handlers.Types.ParsedTrace,
     insights: Trace.Insights.Types.TraceInsightSets|null,
-    metadata: Trace.Types.File.MetaData|null,
+    metadata: Trace.Types.File.MetaData,
   }> {
     if (context) {
       TraceLoader.setTestTimeout(context);
@@ -190,7 +190,7 @@ export class TraceLoader {
     const cacheByName = traceEngineCache.get(name) ?? new Map<string, {
                           parsedTrace: Trace.Handlers.Types.ParsedTrace,
                           insights: Trace.Insights.Types.TraceInsightSets | null,
-                          metadata: Trace.Types.File.MetaData | null,
+                          metadata: Trace.Types.File.MetaData,
                           model: Trace.TraceModel.Model,
                         }>();
     cacheByName.set(configCacheKey, parsedTraceData);

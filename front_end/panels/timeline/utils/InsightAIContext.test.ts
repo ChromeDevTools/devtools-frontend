@@ -70,7 +70,8 @@ describeWithEnvironment('AIQueries', () => {
     const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
     const insightSet = getInsightSetOrError(insights, firstNav);
     const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
-    const activity = Utils.InsightAIContext.AIQueries.mainThreadActivity(insight, insightSet.bounds, parsedTrace);
+    const activity =
+        Utils.InsightAIContext.AIQueries.mainThreadActivityForInsight(insight, insightSet.bounds, parsedTrace);
     assert.instanceOf(activity, Utils.AICallTree.AICallTree);
     // There are a few smaller tasks but for this test we want to make sure we
     // found the long task of ~999ms.
@@ -99,7 +100,8 @@ describeWithEnvironment('AIQueries', () => {
     const insightSet = getInsightSetOrError(insights);
     const insight = getInsightOrError('INPBreakdown', insights);
 
-    const activity = Utils.InsightAIContext.AIQueries.mainThreadActivity(insight, insightSet.bounds, parsedTrace);
+    const activity =
+        Utils.InsightAIContext.AIQueries.mainThreadActivityForInsight(insight, insightSet.bounds, parsedTrace);
     assert.isOk(activity);
 
     // These are the first 3 nodes that we expect. The structure of the

@@ -14,6 +14,7 @@ import {html, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as Trace from '../../trace/trace.js';
 import {ConversationType} from '../AiHistoryStorage.js';
 import {PerformanceInsightFormatter, TraceEventFormatter} from '../data_formatters/PerformanceInsightFormatter.js';
+import {PerformanceTraceFormatter} from '../data_formatters/PerformanceTraceFormatter.js';
 import {debugLog} from '../debug.js';
 
 import {
@@ -29,6 +30,10 @@ import {
 } from './AiAgent.js';
 
 const UIStringsNotTranslated = {
+  /**
+   *@description Shown when the agent is investigating a trace
+   */
+  analyzingTrace: 'Analyzing trace',
   analyzingCallTree: 'Analyzing call tree',
   /**
    * @description Shown when the agent is investigating network activity
@@ -167,36 +172,124 @@ The 'calculatePosition' function, taking 80ms, is a potential bottleneck.
 Consider optimizing the position calculation logic or reducing the frequency of calls to improve animation performance.
 `;
 
+const fullTracePreamble = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
+
+Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
+
+You will be provided a summary of a trace: some performance metrics; the most critical network requests; a bottom-up call graph summary; and a brief overview of available insights. Each insight has information about potential performance issues with the page.
+
+Don't mention anything about an insight without first getting more data about it by calling \`getInsightDetails\`.
+
+You have many functions available to learn more about the trace. Use these to confirm hypotheses, or to further explore the trace when diagnosing performance issues.
+
+You will be given bounds representing a time range within the trace. Bounds include a min and a max time in microseconds. max is always bigger than min in a bounds.
+
+The 3 main performance metrics are:
+- LCP: "Largest Contentful Paint"
+- INP: "Interaction to Next Paint"
+- CLS: "Cumulative Layout Shift"
+
+Trace events referenced in the information given to you will be marked with an \`eventKey\`. For example: \`LCP element: <img src="..."> (eventKey: r-123, ts: 123456)\`
+You can use this key with \`getEventByKey\` to get more information about that trace event. For example: \`getEventByKey('r-123')\`
+
+## Step-by-step instructions for debugging performance issues
+
+Note: if the user asks a specific question about the trace (such as "What is my LCP?", or "How many requests were render-blocking?", directly answer their question and skip starting a performance investigation. Otherwise, your task is to collaborate with the user to discover and resolve real performance issues.
+
+### Step 1: Determine a performance problem to investigate
+
+- With help from the user, determine what performance problem to focus on.
+- If the user is not specific about what problem to investigate, help them by doing a high-level investigation yourself. Present to the user a few options with 1-sentence summaries. Mention what performance metrics each option impacts. Call as many functions and confirm the data thoroughly: never present an option without being certain it is a real performance issue. Don't suggest solutions yet.
+- Rank the options from most impactful to least impactful, and present them to the user in that order.
+- Don't present more than 5 options.
+- Once a performance problem has been identified for investigation, move on to step 2.
+
+### Step 2: Suggest solutions
+
+- Suggest possible solutions to remedy the identified performance problem. Be as specific as possible, using data from the trace via the provided functions to back up everything you say. You should prefer specific solutions, but absent any specific solution you may suggest general solutions (such as from an insight's documentation links).
+- A good first step to discover solutions is to consider the insights, but you should also validate all potential advice by analyzing the trace until you are confident about the root cause of a performance issue.
+
+## Guidelines
+
+- Use the provided functions to get detailed performance data. Prioritize functions that provide context relevant to the performance issue being investigated.
+- Before finalizing your advice, look over it and validate using any relevant functions. If something seems off, refine the advice before giving it to the user.
+- Do not rely on assumptions or incomplete information. Use the provided functions to get more data when needed.
+- Use the track summary functions to get high-level detail about portions of the trace. For the \`bounds\` parameter, default to using the bounds of the trace. Never specifically ask the user for a bounds. You can use more narrow bounds (such as the bounds relevant to a specific insight) when appropriate. Narrow the bounds given functions when possible.
+- Use \`getEventByKey\` to get data on a specific trace event. This is great for root-cause analysis or validating any assumptions.
+- Provide clear, actionable recommendations. Avoid technical jargon unless necessary, and explain any technical terms used.
+- If you see a generic task like "Task", "Evaluate script" or "(anonymous)" in the main thread activity, try to look at its children to see what actual functions are executed and refer to those. When referencing the main thread activity, be as specific as you can. Ensure you identify to the user relevant functions and which script they were defined in. Avoid referencing "Task", "Evaluate script" and "(anonymous)" nodes if possible and instead focus on their children.
+- Structure your response using markdown headings and bullet points for improved readability.
+- Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
+
+## Strict Constraints
+
+Adhere to the following critical requirements:
+
+- Never show bounds to the user.
+- Never show eventKey to the user.
+- Ensure your responses only use ms for time units.
+- Ensure numbers for time units are rounded to the nearest whole number.
+- Ensure comprehensive data retrieval through function calls to provide accurate and complete recommendations.
+- If the user asks a specific question about web performance that doesn't have anything to do with the trace, don't call any functions and be succinct in your answer.
+- Before suggesting changing the format of an image, consider what format it is already in. For example, if the mime type is image/webp, do not suggest to the user that the image is converted to WebP, as the image is already in that format.
+- Do not mention the functions you call to gather information about the trace (e.g., \`getEventByKey\`, \`getMainThreadTrackSummary\`) in your output. These are internal implementation details that should be hidden from the user.
+- Do not mention that you are an AI, or refer to yourself in the third person. You are simulating a performance expert.
+- If asked about sensitive topics (religion, race, politics, sexuality, gender, etc.), respond with: "My expertise is limited to website performance analysis. I cannot provide information on that topic.".
+- Do not provide answers on non-web-development topics, such as legal, financial, medical, or personal advice.
+`;
+
+const callFrameDataFormatDescription = `Each call frame is presented in the following format:
+
+'id;name;duration;selfTime;urlIndex;childRange;[S]'
+
+Key definitions:
+
+* id: A unique numerical identifier for the call frame.
+* name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
+* duration: The total execution time of the call frame, including its children.
+* selfTime: The time spent directly within the call frame, excluding its children's execution.
+* urlIndex: Index referencing the "All URLs" list. Empty if no specific script URL is associated.
+* childRange: Specifies the direct children of this node using their IDs. If empty ('' or 'S' at the end), the node has no children. If a single number (e.g., '4'), the node has one child with that ID. If in the format 'firstId-lastId' (e.g., '4-5'), it indicates a consecutive range of child IDs from 'firstId' to 'lastId', inclusive.
+* S: _Optional_. The letter 'S' terminates the line if that call frame was selected by the user.
+
+Example Call Tree:
+
+1;r-123;main;500;100;;
+2;r-124;update;200;50;;3
+3;r-125;animate;150;20;0;4-5;S
+4;r-126;calculatePosition;80;80;;
+5;r-127;applyStyles;50;50;;
+`;
+
 const mainThreadActivityFormatDescription =
     `The tree is represented as a call frame with a root task and a series of children.
-  The format of each callframe is:
+The format of each callframe is:
 
-    'id;name;duration;selfTime;urlIndex;childRange;[S]'
+  'id;name;duration;selfTime;urlIndex;childRange;[S]'
 
-  The fields are:
+The fields are:
 
-  * id: A unique numerical identifier for the call frame.
-  * name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
-  * duration: The total execution time of the call frame, including its children.
-  * selfTime: The time spent directly within the call frame, excluding its children's execution.
-  * urlIndex: Index referencing the "All URLs" list. Empty if no specific script URL is associated.
-  * childRange: Specifies the direct children of this node using their IDs. If empty ('' or 'S' at the end), the node has no children. If a single number (e.g., '4'), the node has one child with that ID. If in the format 'firstId-lastId' (e.g., '4-5'), it indicates a consecutive range of child IDs from 'firstId' to 'lastId', inclusive.
-  * S: **Optional marker.** The letter 'S' appears at the end of the line **only** for the single call frame selected by the user.`;
+* id: A unique numerical identifier for the call frame.
+* name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
+* duration: The total execution time of the call frame, including its children.
+* selfTime: The time spent directly within the call frame, excluding its children's execution.
+* urlIndex: Index referencing the "All URLs" list. Empty if no specific script URL is associated.
+* childRange: Specifies the direct children of this node using their IDs. If empty ('' or 'S' at the end), the node has no children. If a single number (e.g., '4'), the node has one child with that ID. If in the format 'firstId-lastId' (e.g., '4-5'), it indicates a consecutive range of child IDs from 'firstId' to 'lastId', inclusive.
+* S: **Optional marker.** The letter 'S' appears at the end of the line **only** for the single call frame selected by the user.`;
 
-function serializeFocus(focus: TimelineUtils.AIContext.AgentFocus): string {
-  if (focus.data.type === 'call-tree') {
-    return focus.data.callTree.serialize();
-  }
-
-  if (focus.data.type === 'insight') {
-    const formatter = new PerformanceInsightFormatter(focus.data.parsedTrace, focus.data.insight);
-    return formatter.formatInsight();
-  }
-
-  Platform.assertNever(focus.data, 'Unknown agent focus');
+enum ScorePriority {
+  REQUIRED = 3,
+  CRITICAL = 2,
+  DEFAULT = 1,
 }
 
 export class PerformanceTraceContext extends ConversationContext<TimelineUtils.AIContext.AgentFocus> {
+  static full(
+      parsedTrace: Trace.Handlers.Types.ParsedTrace, insightSet: Trace.Insights.Types.InsightSet|null,
+      traceMetadata: Trace.Types.File.MetaData): PerformanceTraceContext {
+    return new PerformanceTraceContext(TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insightSet, traceMetadata));
+  }
+
   static fromInsight(
       parsedTrace: Trace.Handlers.Types.ParsedTrace, insight: Trace.Insights.Types.InsightModel,
       insightSetBounds: Trace.Types.Timing.TraceWindowMicro): PerformanceTraceContext {
@@ -217,6 +310,11 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
 
   override getOrigin(): string {
     const focus = this.#focus.data;
+
+    if (focus.type === 'full') {
+      const {min, max} = focus.parsedTrace.Meta.traceBounds;
+      return `trace-${min}-${max}`;
+    }
 
     if (focus.type === 'call-tree') {
       // Although in this context we expect the call tree to have a selected node
@@ -245,8 +343,12 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
       return uuid;
     }
 
-    const {min, max} = focus.parsedTrace.Meta.traceBounds;
-    return `trace-${min}-${max}`;
+    if (focus.type === 'insight') {
+      const {min, max} = focus.parsedTrace.Meta.traceBounds;
+      return `insight-${min}-${max}`;
+    }
+
+    Platform.assertNever(focus, 'Unknown agent focus');
   }
 
   override getItem(): TimelineUtils.AIContext.AgentFocus {
@@ -260,6 +362,10 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
 
   override getTitle(): string {
     const focus = this.#focus.data;
+
+    if (focus.type === 'full') {
+      return `Trace: ${new URL(focus.parsedTrace.Meta.mainFrameURL).hostname}`;
+    }
 
     if (focus.type === 'call-tree') {
       const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
@@ -284,83 +390,10 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
     const focus = this.#focus.data;
 
     if (focus.type !== 'insight') {
-      return undefined;
+      return;
     }
 
-    switch (focus.insight.insightKey) {
-      case 'CLSCulprits':
-        return [
-          {title: 'Help me optimize my CLS score'},
-          {title: 'How can I prevent layout shifts on this page?'},
-        ];
-      case 'DocumentLatency':
-        return [
-          {title: 'How do I decrease the initial loading time of my page?'},
-          {title: 'Did anything slow down the request for this document?'},
-        ];
-      case 'DOMSize':
-        return [{title: 'How can I reduce the size of my DOM?'}];
-      case 'DuplicatedJavaScript':
-        return [
-          {title: 'How do I deduplicate the identified scripts in my bundle?'},
-          {title: 'Which duplicated JavaScript modules are the most problematic?'}
-        ];
-      case 'FontDisplay':
-        return [
-          {title: 'How can I update my CSS to avoid layout shifts caused by incorrect `font-display` properties?'}
-        ];
-      case 'ForcedReflow':
-        return [
-          {title: 'How can I avoid layout thrashing?'}, {title: 'What is forced reflow and why is it problematic?'}
-        ];
-      case 'ImageDelivery':
-        return [
-          {title: 'What should I do to improve and optimize the time taken to fetch and display images on the page?'},
-          {title: 'Are all images on my site optimized?'},
-        ];
-      case 'INPBreakdown':
-        return [
-          {title: 'Suggest fixes for my longest interaction'}, {title: 'Why is a large INP score problematic?'},
-          {title: 'What\'s the biggest contributor to my longest interaction?'}
-        ];
-      case 'LCPDiscovery':
-        return [
-          {title: 'Suggest fixes to reduce my LCP'}, {title: 'What can I do to reduce my LCP discovery time?'},
-          {title: 'Why is LCP discovery time important?'}
-        ];
-      case 'LCPBreakdown':
-        return [
-          {title: 'Help me optimize my LCP score'}, {title: 'Which LCP phase was most problematic?'},
-          {title: 'What can I do to reduce the LCP time for this page load?'}
-        ];
-      case 'NetworkDependencyTree':
-        return [{title: 'How do I optimize my network dependency tree?'}];
-      case 'RenderBlocking':
-        return [
-          {title: 'Show me the most impactful render blocking requests that I should focus on'},
-          {title: 'How can I reduce the number of render blocking requests?'}
-        ];
-      case 'SlowCSSSelector':
-        return [{title: 'How can I optimize my CSS to increase the performance of CSS selectors?'}];
-      case 'ThirdParties':
-        return [{title: 'Which third parties are having the largest impact on my page performance?'}];
-      case 'Cache':
-        return [{title: 'What caching strategies can I apply to improve my page performance?'}];
-      case 'Viewport':
-        return [{title: 'How do I make sure my page is optimized for mobile viewing?'}];
-      case 'ModernHTTP':
-        return [
-          {title: 'Is my site using the best HTTP practices?'},
-          {title: 'Which resources are not using a modern HTTP protocol?'},
-        ];
-      case 'LegacyJavaScript':
-        return [
-          {title: 'Is my site polyfilling modern JavaScript features?'},
-          {title: 'How can I reduce the amount of legacy JavaScript on my page?'},
-        ];
-      default:
-        Platform.assertNever(focus.insight.insightKey, 'Unknown insight key');
-    }
+    return new PerformanceInsightFormatter(focus.parsedTrace, focus.insight).getSuggestions();
   }
 }
 
@@ -368,15 +401,25 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
 const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
 
 /**
+ * Union of all the performance conversation types, which are all implemented by this file.
+ * This temporary until all Performance Panel AI features use the "Full" type. go/chrome-devtools:more-powerful-performance-agent-design
+ */
+type PerformanceConversationType =
+    ConversationType.PERFORMANCE_FULL|ConversationType.PERFORMANCE_CALL_TREE|ConversationType.PERFORMANCE_INSIGHT;
+
+/**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
  */
 export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus> {
   // TODO: would make more sense on AgentOptions
-  #conversationType: ConversationType.PERFORMANCE|ConversationType.PERFORMANCE_INSIGHT;
+  #conversationType: PerformanceConversationType;
+  #formatter: PerformanceTraceFormatter|null = null;
   #lastInsightForEnhancedQuery: Trace.Insights.Types.InsightModel|undefined;
+  #eventsSerializer = new TimelineUtils.EventsSerializer.EventsSerializer();
+  #lastFocusHandledForContextDetails: TimelineUtils.AIContext.AgentFocus|null = null;
 
-  constructor(opts: AgentOptions, conversationType: ConversationType.PERFORMANCE|ConversationType.PERFORMANCE_INSIGHT) {
+  constructor(opts: AgentOptions, conversationType: PerformanceConversationType) {
     super(opts);
     this.#conversationType = conversationType;
   }
@@ -393,10 +436,18 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
    * Agent stores facts in a set, and we need to pass the same object through to
    * make sure it isn't mistakenly duplicated in the request.
    */
-  #functionCallCache = new Map<Trace.Insights.Types.InsightModel, {
+  #functionCallCacheForInsight = new Map<Trace.Insights.Types.InsightModel, {
     getNetworkActivitySummary?: Host.AidaClient.RequestFact,
     getMainThreadActivity?: Host.AidaClient.RequestFact,
   }>();
+
+  /**
+   * Similar to above, but only used for the "Full" trace focus.
+   *
+   * The record key is the result of a function's displayInfoFromArgs.
+   */
+  #functionCallCacheForFocus =
+      new Map<TimelineUtils.AIContext.AgentFocus, Record<string, Host.AidaClient.RequestFact>>();
 
   /*
   * Since don't know for sure if the model will request the main thread or network requests information,
@@ -406,11 +457,19 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
       Host.AidaClient.RequestFact = {text: mainThreadActivityFormatDescription, metadata: {source: 'devtools'}};
   #networkDataDescriptionFact: Host.AidaClient.RequestFact = {
     text: TraceEventFormatter.networkDataFormatDescription,
-    metadata: {source: 'devtools'}
+    metadata: {source: 'devtools', score: ScorePriority.CRITICAL}
   };
+  #callFrameDataDescriptionFact: Host.AidaClient.RequestFact = {
+    text: callFrameDataFormatDescription,
+    metadata: {source: 'devtools', score: ScorePriority.CRITICAL}
+  };
+  #traceFacts: Host.AidaClient.RequestFact[] = [];
 
   get preamble(): string {
-    if (this.#conversationType === ConversationType.PERFORMANCE) {
+    if (this.#conversationType === ConversationType.PERFORMANCE_FULL) {
+      return fullTracePreamble;
+    }
+    if (this.#conversationType === ConversationType.PERFORMANCE_CALL_TREE) {
       return callTreePreamble;
     }
     if (this.#conversationType === ConversationType.PERFORMANCE_INSIGHT) {
@@ -420,7 +479,10 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
   }
 
   get clientFeature(): Host.AidaClient.ClientFeature {
-    if (this.#conversationType === ConversationType.PERFORMANCE) {
+    if (this.#conversationType === ConversationType.PERFORMANCE_FULL) {
+      return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
+    }
+    if (this.#conversationType === ConversationType.PERFORMANCE_CALL_TREE) {
       return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_AGENT;
     }
     if (this.#conversationType === ConversationType.PERFORMANCE_INSIGHT) {
@@ -445,6 +507,44 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     return this.#conversationType;
   }
 
+  #lookupEvent(key: Trace.Types.File.SerializableKey): Trace.Types.Events.Event|null {
+    const parsedTrace = this.context?.getItem().data.parsedTrace;
+    if (!parsedTrace) {
+      return null;
+    }
+
+    try {
+      return this.#eventsSerializer.eventForKey(key, parsedTrace);
+    } catch (err) {
+      if (err.toString().includes('Unknown trace event')) {
+        return null;
+      }
+
+      throw err;
+    }
+  }
+
+  #serializeFocus(focus: TimelineUtils.AIContext.AgentFocus): string {
+    if (focus.data.type === 'full') {
+      if (!this.#formatter) {
+        return '';
+      }
+
+      return this.#formatter.formatTraceSummary();
+    }
+
+    if (focus.data.type === 'call-tree') {
+      return focus.data.callTree.serialize();
+    }
+
+    if (focus.data.type === 'insight') {
+      const formatter = new PerformanceInsightFormatter(focus.data.parsedTrace, focus.data.insight);
+      return formatter.formatInsight();
+    }
+
+    Platform.assertNever(focus.data, 'Unknown agent focus');
+  }
+
   async *
       handleContextDetails(context: ConversationContext<TimelineUtils.AIContext.AgentFocus>|null):
           AsyncGenerator<ContextResponse, void, void> {
@@ -453,21 +553,35 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     }
 
     const focus = context.getItem();
+    if (this.#lastFocusHandledForContextDetails === focus) {
+      return;
+    }
 
-    if (focus.data.type === 'call-tree') {
+    this.#lastFocusHandledForContextDetails = focus;
+
+    if (focus.data.type === 'full') {
+      yield {
+        type: ResponseType.CONTEXT,
+        title: lockedString(UIStringsNotTranslated.analyzingTrace),
+        details: [
+          {
+            title: 'Trace',
+            text: this.#serializeFocus(focus),
+          },
+        ],
+      };
+    } else if (focus.data.type === 'call-tree') {
       yield {
         type: ResponseType.CONTEXT,
         title: lockedString(UIStringsNotTranslated.analyzingCallTree),
         details: [
           {
             title: 'Selected call tree',
-            text: serializeFocus(focus),
+            text: this.#serializeFocus(focus),
           },
         ],
       };
-    }
-
-    if (focus.data.type === 'insight') {
+    } else if (focus.data.type === 'insight') {
       const activeInsight = focus.data.insight;
       const title = `Analyzing insight: ${activeInsight.title}`;
       yield {
@@ -477,10 +591,12 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
           {
             // Purposefully use the raw title in the details view, we don't need to repeat "Analyzing insight"
             title: activeInsight.title,
-            text: serializeFocus(focus),
+            text: this.#serializeFocus(focus),
           },
         ],
       };
+    } else {
+      Platform.assertNever(focus.data, 'Unknown agent focus');
     }
   }
 
@@ -515,16 +631,20 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     }
 
     this.clearDeclaredFunctions();
-    this.declareFunctions(context);
+    this.#declareFunctions(context);
 
     const focus = context.getItem();
     let contextString = '';
+
+    if (focus.data.type === 'full') {
+      return query;
+    }
 
     if (focus.data.type === 'call-tree') {
       // If this is a followup chat about the same call tree, don't include the call tree serialization again.
       // We don't need to repeat it and we'd rather have more the context window space.
       if (!this.#callTreeContextSet.has(focus.data.callTree)) {
-        contextString = serializeFocus(focus);
+        contextString = this.#serializeFocus(focus);
       }
       if (!this.#callTreeContextSet.has(focus.data.callTree)) {
         this.#callTreeContextSet.add(focus.data.callTree);
@@ -541,7 +661,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
       // User clicks Insight A. We should resend the Insight info with the prompt.
       const includeInsightInfo = focus.data.insight !== this.#lastInsightForEnhancedQuery;
       const extraQuery =
-          `${includeInsightInfo ? serializeFocus(focus) + '\n\n' : ''}# User question for you to answer:\n`;
+          `${includeInsightInfo ? this.#serializeFocus(focus) + '\n\n' : ''}# User question for you to answer:\n`;
       this.#lastInsightForEnhancedQuery = focus.data.insight;
       return `${extraQuery}${query}`;
     }
@@ -553,13 +673,18 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     selected: ConversationContext<TimelineUtils.AIContext.AgentFocus>|null,
     signal?: AbortSignal,
   }): AsyncGenerator<ResponseData, void, void> {
-    if (this.#conversationType === ConversationType.PERFORMANCE_INSIGHT) {
-      const focus = options.selected?.getItem().data;
-      const insight = focus?.type === 'insight' ? focus.insight : null;
+    const focus = options.selected?.getItem();
 
-      // Clear any previous facts in case the user changed the active context.
-      this.clearFacts();
-      const cachedFunctionCalls = insight ? this.#functionCallCache.get(insight) : null;
+    // Clear any previous facts in case the user changed the active context.
+    this.clearFacts();
+
+    if (this.#conversationType === ConversationType.PERFORMANCE_FULL) {
+      if (focus) {
+        this.#addFactsForFullTrace(focus);
+      }
+    } else if (this.#conversationType === ConversationType.PERFORMANCE_INSIGHT) {
+      const insight = focus?.data.type === 'insight' ? focus.data.insight : null;
+      const cachedFunctionCalls = insight ? this.#functionCallCacheForInsight.get(insight) : null;
       if (cachedFunctionCalls) {
         for (const fact of Object.values(cachedFunctionCalls)) {
           this.addFact(fact);
@@ -570,10 +695,259 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     return yield* super.run(initialQuery, options);
   }
 
-  private declareFunctions(context: ConversationContext<TimelineUtils.AIContext.AgentFocus>): void {
+  #createFactForTraceSummary(focus: TimelineUtils.AIContext.AgentFocus): void {
+    if (!this.#formatter) {
+      return;
+    }
+
+    const text = this.#serializeFocus(focus);
+    if (!text) {
+      return;
+    }
+
+    this.#traceFacts.push(
+        {text: `Trace summary:\n${text}`, metadata: {source: 'devtools', score: ScorePriority.REQUIRED}});
+  }
+
+  #createFactForCriticalRequests(): void {
+    if (!this.#formatter) {
+      return;
+    }
+
+    const text = this.#formatter.formatCriticalRequests();
+    if (!text) {
+      return;
+    }
+
+    this.#traceFacts.push({
+      text,
+      metadata: {source: 'devtools', score: ScorePriority.CRITICAL},
+    });
+  }
+
+  #createFactForMainThreadBottomUpSummary(): void {
+    if (!this.#formatter) {
+      return;
+    }
+
+    const text = this.#formatter.formatMainThreadBottomUpSummary();
+    if (!text) {
+      return;
+    }
+
+    this.#traceFacts.push({
+      text,
+      metadata: {source: 'devtools', score: ScorePriority.CRITICAL},
+    });
+  }
+
+  #createFactForThirdPartySummary(): void {
+    if (!this.#formatter) {
+      return;
+    }
+
+    const text = this.#formatter.formatThirdPartySummary();
+    if (!text) {
+      return;
+    }
+
+    this.#traceFacts.push({
+      text,
+      metadata: {source: 'devtools', score: ScorePriority.CRITICAL},
+    });
+  }
+
+  #createFactForLongestTasks(): void {
+    if (!this.#formatter) {
+      return;
+    }
+
+    const text = this.#formatter.formatLongestTasks();
+    if (!text) {
+      return;
+    }
+
+    this.#traceFacts.push({
+      text,
+      metadata: {source: 'devtools', score: ScorePriority.CRITICAL},
+    });
+  }
+
+  #addFactsForFullTrace(focus: TimelineUtils.AIContext.AgentFocus): void {
+    if (focus.data.type !== 'full') {
+      return;
+    }
+
+    this.addFact(this.#callFrameDataDescriptionFact);
+    this.addFact(this.#networkDataDescriptionFact);
+
+    if (!this.#traceFacts.length) {
+      this.#formatter = new PerformanceTraceFormatter(focus, this.#eventsSerializer);
+      this.#createFactForTraceSummary(focus);
+      this.#createFactForCriticalRequests();
+      this.#createFactForMainThreadBottomUpSummary();
+      this.#createFactForThirdPartySummary();
+      this.#createFactForLongestTasks();
+    }
+
+    for (const fact of this.#traceFacts) {
+      this.addFact(fact);
+    }
+
+    const cachedFunctionCalls = this.#functionCallCacheForFocus.get(focus);
+    if (cachedFunctionCalls) {
+      for (const fact of Object.values(cachedFunctionCalls)) {
+        this.addFact(fact);
+      }
+    }
+  }
+
+  #cacheFunctionResult(focus: TimelineUtils.AIContext.AgentFocus, key: string, result: string): void {
+    const fact: Host.AidaClient.RequestFact = {
+      text: `This is the result of calling ${key}:\n${result}`,
+      metadata: {source: key, score: ScorePriority.DEFAULT},
+    };
+    const cache = this.#functionCallCacheForFocus.get(focus) ?? {};
+    cache[key] = fact;
+    this.#functionCallCacheForFocus.set(focus, cache);
+  }
+
+  #declareFunctionsForFullTrace(focus: TimelineUtils.AIContext.AgentFocus): void {
+    if (focus.data.type !== 'full') {
+      return;
+    }
+
+    const {parsedTrace, insightSet} = focus.data;
+
+    this.declareFunction<{insightName: string}, {details: string}>('getInsightDetails', {
+      description:
+          'Returns detailed information about a specific insight. Use this before commenting on any specific issue to get more information.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          insightName: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'The name of the insight. Only use the insight names given in the Available Insights list.',
+            nullable: false,
+          }
+        },
+      },
+      displayInfoFromArgs: params => {
+        return {
+          title: lockedString(`Investigating insight ${params.insightName}…`),
+          action: `getInsightDetails('${params.insightName}')`
+        };
+      },
+      handler: async params => {
+        debugLog('Function call: getInsightDetails', params);
+        const insight = insightSet?.model[params.insightName as keyof Trace.Insights.Types.InsightModels];
+        if (!insight) {
+          return {error: 'No insight available'};
+        }
+
+        const details = new PerformanceInsightFormatter(parsedTrace, insight).formatInsight();
+
+        const key = `getInsightDetails('${params.insightName}')`;
+        this.#cacheFunctionResult(focus, key, details);
+        return {result: {details}};
+      },
+    });
+
+    this.declareFunction<{eventKey: string}, {details: string}>('getEventByKey', {
+      description:
+          'Returns detailed information about a specific event. Use the detail returned to validate performance issues, but do not tell the user about irrelevant raw data from a trace event.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          eventKey: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'The key for the event.',
+            nullable: false,
+          }
+        },
+      },
+      displayInfoFromArgs: params => {
+        return {title: lockedString('Looking at trace event…'), action: `getEventByKey('${params.eventKey}')`};
+      },
+      handler: async params => {
+        debugLog('Function call: getEventByKey', params);
+        const event = this.#lookupEvent(params.eventKey as Trace.Types.File.SerializableKey);
+        if (!event) {
+          return {error: 'Invalid eventKey'};
+        }
+
+        // TODO(b/425270067): Format in the same way that "Summary" detail tab does.
+        const details = JSON.stringify(event);
+
+        const key = `getEventByKey('${params.eventKey}')`;
+        this.#cacheFunctionResult(focus, key, details);
+        return {result: {details}};
+      },
+    });
+
+    this.declareFunction<{min: Trace.Types.Timing.Micro, max: Trace.Types.Timing.Micro}, {activity: string}>(
+        'getMainThreadTrackSummary', {
+          description: 'Returns the main thread activity for the selected bounds. The result is a call tree.',
+          parameters: {
+            type: Host.AidaClient.ParametersTypes.OBJECT,
+            description: '',
+            nullable: false,
+            properties: {
+              min: {
+                type: Host.AidaClient.ParametersTypes.INTEGER,
+                description: 'The minimum time of the bounds, in microseconds',
+                nullable: false,
+              },
+              max: {
+                type: Host.AidaClient.ParametersTypes.INTEGER,
+                description: 'The maximum time of the bounds, in microseconds',
+                nullable: false,
+              },
+            },
+          },
+          displayInfoFromArgs: args => {
+            return {
+              title: lockedString(UIStringsNotTranslated.mainThreadActivity),
+              action: `getMainThreadTrackSummary({min: ${args.min}, max: ${args.max}})`
+            };
+          },
+          handler: async args => {
+            debugLog('Function call: getMainThreadTrackSummary');
+
+            if (!this.#formatter) {
+              throw new Error('missing formatter');
+            }
+
+            const min = Math.max(args.min ?? 0, parsedTrace.Meta.traceBounds.min) as Trace.Types.Timing.Micro;
+            const max = Math.min(args.max ?? Number.POSITIVE_INFINITY, parsedTrace.Meta.traceBounds.max) as
+                Trace.Types.Timing.Micro;
+            const activity = this.#formatter.formatMainThreadTrackSummary(min, max);
+            if (this.#isFunctionResponseTooLarge(activity)) {
+              return {
+                error: 'getMainThreadTrackSummary response is too large. Try investigating using other functions',
+              };
+            }
+
+            const key = `getMainThreadTrackSummary({min: ${min}, max: ${max}})`;
+            this.#cacheFunctionResult(focus, key, activity);
+            return {result: {activity}};
+          },
+
+        });
+  }
+
+  #declareFunctions(context: ConversationContext<TimelineUtils.AIContext.AgentFocus>): void {
     const focus = context.getItem();
 
-    // Currently only insight focus gets these functions.
+    if (focus.data.type === 'full') {
+      this.#declareFunctionsForFullTrace(focus);
+      return;
+    }
+
     if (focus.data.type !== 'insight') {
       return;
     }
@@ -623,9 +997,9 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
                   formatted}`,
           metadata: {source: 'getNetworkActivitySummary()'}
         };
-        const cacheForInsight = this.#functionCallCache.get(insight) ?? {};
+        const cacheForInsight = this.#functionCallCacheForInsight.get(insight) ?? {};
         cacheForInsight.getNetworkActivitySummary = summaryFact;
-        this.#functionCallCache.set(insight, cacheForInsight);
+        this.#functionCallCacheForInsight.set(insight, cacheForInsight);
 
         this.addFact(this.#networkDataDescriptionFact);
         return {result: {requests: formatted}};
@@ -695,7 +1069,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
         if (!insight) {
           return {error: 'No insight available'};
         }
-        const tree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivity(
+        const tree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityForInsight(
             insight,
             insightSetBounds,
             parsedTrace,
@@ -719,9 +1093,9 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
                   activity}`,
           metadata: {source: 'getMainThreadActivity()'},
         };
-        const cacheForInsight = this.#functionCallCache.get(insight) ?? {};
+        const cacheForInsight = this.#functionCallCacheForInsight.get(insight) ?? {};
         cacheForInsight.getMainThreadActivity = activityFact;
-        this.#functionCallCache.set(insight, cacheForInsight);
+        this.#functionCallCacheForInsight.set(insight, cacheForInsight);
 
         this.addFact(this.#mainThreadActivityDescriptionFact);
         return {result: {activity}};

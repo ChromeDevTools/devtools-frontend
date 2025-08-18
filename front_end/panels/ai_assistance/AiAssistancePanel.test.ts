@@ -599,7 +599,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       view.input.onNewChatClick();
 
       assert.deepEqual((await view.nextInput).messages, []);
-      assert.deepEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE);
+      assert.deepEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE);
     });
 
     it('should switch agents and restore history', async () => {
@@ -1194,7 +1194,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           },
           {
             panelName: 'timeline',
-            expectedConversationType: AiAssistanceModel.ConversationType.PERFORMANCE,
+            expectedConversationType: AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE,
             featureFlagName: 'devToolsAiAssistancePerformanceAgent',
           }
         ];
@@ -1286,7 +1286,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
            UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.SelectedInsight, null);
 
            const {view} = await createAiAssistancePanel();
-           assert.strictEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE);
+           assert.strictEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE);
          });
     });
   });

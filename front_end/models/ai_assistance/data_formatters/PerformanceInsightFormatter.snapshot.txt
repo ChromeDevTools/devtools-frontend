@@ -461,7 +461,7 @@ Response headers
 - expires: Thu, 07 Mar 2024 21:17:02 GMT
 === end content
 
-Title: PerformanceInsightFormatter Formatting TraceEvents try formatting an individual network request in a non-verbose mode, resulting in verbose because 1 request is always formatted in a verbose mode
+Title: PerformanceInsightFormatter Formatting TraceEvents defaults to verbose mode when 1 request and verbose option is not defined
 Content:
 ## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
 Timings:

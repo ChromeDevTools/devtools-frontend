@@ -26,6 +26,7 @@ devtools_module("ai_assistance") {
     "data_formatters/FileFormatter.ts",
     "data_formatters/NetworkRequestFormatter.ts",
     "data_formatters/PerformanceInsightFormatter.ts",
+    "data_formatters/PerformanceTraceFormatter.ts",
     "debug.ts",
     "injected.ts",
   ]
@@ -86,6 +87,7 @@ ts_library("unittests") {
     "data_formatters/FileFormatter.test.ts",
     "data_formatters/NetworkRequestFormatter.test.ts",
     "data_formatters/PerformanceInsightFormatter.test.ts",
+    "data_formatters/PerformanceTraceFormatter.test.ts",
   ]
 
   deps = [
@@ -102,5 +104,8 @@ ts_library("unittests") {
 }
 
 copy_to_gen("snapshots") {
-  sources = [ "data_formatters/PerformanceInsightFormatter.snapshot.txt" ]
+  sources = [
+    "data_formatters/PerformanceInsightFormatter.snapshot.txt",
+    "data_formatters/PerformanceTraceFormatter.snapshot.txt",
+  ]
 }

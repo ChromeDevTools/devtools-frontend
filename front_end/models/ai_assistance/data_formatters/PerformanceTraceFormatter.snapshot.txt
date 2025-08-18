@@ -1,0 +1,73 @@
+Title: PerformanceTraceFormatter formatTraceSummary
+Content:
+URL: https://web.dev/cls/
+Bounds: {min: 1020034823047, max: 1020036087961}
+CPU throttling: none
+Network throttling: none
+Metrics:
+  - LCP: 118 ms, event: (eventKey: r-1802, ts: 1020034953358)
+  - CLS: 0
+Available insights:
+  - insight name: LCPBreakdown
+    description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    relevant trace bounds: {min: 1020034834921, max: 1020036087961}
+    example question: Help me optimize my LCP score
+    example question: Which LCP phase was most problematic?
+    example question: What can I do to reduce the LCP time for this page load?
+  - insight name: DocumentLatency
+    description: Your first network request is the most important.  Reduce its latency by avoiding redirects, ensuring a fast server response, and enabling text compression.
+    relevant trace bounds: {min: 1020034836013, max: 1020034892491}
+    estimated metric savings: FCP 0 ms, LCP 0 ms
+    estimated wasted bytes: 52 kB
+    example question: How do I decrease the initial loading time of my page?
+    example question: Did anything slow down the request for this document?
+=== end content
+
+Title: PerformanceTraceFormatter formatCriticalRequests
+Content:
+Critical network requests:
+
+Network requests data:
+
+
+
+allUrls = [0: http://localhost:8000/, 1: https://code.jquery.com/jquery-3.7.1.js, 2: http://localhost:8000/render-blocking-stylesheet.css, 3: http://localhost:8000/render-blocking-script.js]
+
+0;1.50 ms;2.83 ms;575.96 ms;583.43 ms;581.93 ms;0.42 ms;7.48 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.0;f;;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:27 GMT|Content-type: text/html|Last-Modified: Fri, 07 Mar 2025 14:58:55 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+1;581.40 ms;584.53 ms;1,942.70 ms;1,944.05 ms;1,362.65 ms;775.53 ms;1.35 ms;200;application/javascript;High;High;High;t;h2;f;0;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]
+2;581.60 ms;583.11 ms;1,192.93 ms;1,193.16 ms;611.56 ms;0.19 ms;0.23 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;0;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+3;581.56 ms;583.25 ms;1,176.60 ms;1,177.86 ms;596.30 ms;0.36 ms;1.27 ms;200;text/javascript;High;High;High;t;http/1.0;f;0;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+=== end content
+
+Title: PerformanceTraceFormatter formatLongestTasks
+Content:
+Longest 3 tasks:
+- total time: 10.5 ms, event: (eventKey: r-62, ts: 2297273193336)
+- total time: 2.8 ms, event: (eventKey: r-723, ts: 2297274436743)
+- total time: 1.5 ms, event: (eventKey: r-631, ts: 2297274234151)
+=== end content
+
+Title: PerformanceTraceFormatter formatMainThreadBottomUpSummary
+Content:
+This is the bottom-up summary for the entire trace. Only the top 10 activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.
+- self: 186.2 ms, total: 192.6 ms, source: V8.CompileCode
+- self: 98.4 ms, total: 992.8 ms, source: RunTask
+- self: 55.6 ms, total: 70 ms, source: v8.compile
+- self: 51.7 ms, total: 64 ms, source: setTimeout
+- self: 37.5 ms, total: 40.3 ms, source: aC (url: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js, line: 0, column: 19068)
+- self: 34.9 ms, total: 34.9 ms, source:  (url: https://news.yahoo.com/, line: 57, column: 187957)
+- self: 33.7 ms, total: 33.7 ms, source:  (url: https://news.yahoo.com/, line: 57, column: 187957)
+- self: 31.3 ms, total: 33.9 ms, source: clearTimeout
+- self: 30.3 ms, total: 53.4 ms, source: ParseHTML
+- self: 25.9 ms, total: 258.9 ms, source: p
+=== end content
+
+Title: PerformanceTraceFormatter formatThirdPartySummary
+Content:
+Third party summary:
+- name: Google/Doubleclick Ads, main thread time: 53 ms, network transfer size: 259 kB
+- name: Taboola, main thread time: 42.7 ms, network transfer size: 394 kB
+- name: Google Tag Manager, main thread time: 18.7 ms, network transfer size: 124 kB
+- name: AOL / Oath / Verizon Media, main thread time: 4.7 ms, network transfer size: 42 kB
+- name: ay.delivery, main thread time: 4 ms, network transfer size: 123 kB
+=== end content

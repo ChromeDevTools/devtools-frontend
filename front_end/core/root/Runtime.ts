@@ -323,6 +323,7 @@ export const enum ExperimentName {
   TIMELINE_DEBUG_MODE = 'timeline-debug-mode',
   TIMELINE_ENHANCED_TRACES = 'timeline-enhanced-traces',
   TIMELINE_COMPILED_SOURCES = 'timeline-compiled-sources',
+  TIMELINE_ASK_AI_FULL_BUTTON = 'timeline-ask-ai-full-button',
   TIMELINE_SAVE_AS_GZ = 'timeline-save-as-gz',
   VERTICAL_DRAWER = 'vertical-drawer',
   // Adding or removing an entry from this enum?

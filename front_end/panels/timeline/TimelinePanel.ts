@@ -377,6 +377,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private loadButton!: UI.Toolbar.ToolbarButton;
   private saveButton!: UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarMenuButton|UI.Toolbar.ToolbarItem;
   private homeButton?: UI.Toolbar.ToolbarButton;
+  private askAiButton?: UI.Toolbar.ToolbarButton;
   private statusDialog: StatusDialog|null = null;
   private landingPage!: UI.Widget.Widget;
   private loader?: TimelineLoader;
@@ -1021,6 +1022,19 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return true;
   }
 
+  private shouldEnableFullAskAI(): boolean {
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ASK_AI_FULL_BUTTON)) {
+      return false;
+    }
+
+    if (Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.DISABLE) {
+      return false;
+    }
+
+    return true;
+  }
+
   private populateToolbar(): void {
     const canRecord = this.canRecord();
 
@@ -1069,6 +1083,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     }
 
+    if (this.shouldEnableFullAskAI()) {
+      this.askAiButton = new UI.Toolbar.ToolbarButton('Ask AI', 'button-magic', undefined, 'timeline.ask-ai');
+      this.askAiButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#onClickAskAIButton.bind(this));
+      this.panelToolbar.appendToolbarItem(this.askAiButton);
+      this.panelToolbar.appendSeparator();
+    }
+
     // TODO(crbug.com/337909145): need to hide "Live metrics" option if !canRecord.
     this.panelToolbar.appendToolbarItem(this.#historyManager.button());
 
@@ -1113,6 +1134,43 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.panelRightToolbar.appendSeparator();
       this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
     }
+  }
+
+  // Currently for debugging purposes only.
+  #onClickAskAIButton(): void {
+    const traceIndex = this.#activeTraceIndex();
+    if (traceIndex === null) {
+      return;
+    }
+
+    const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
+    if (parsedTrace === null) {
+      return;
+    }
+
+    const insights = this.#traceEngineModel.traceInsights(traceIndex);
+    if (insights === null) {
+      return;
+    }
+
+    const traceMetadata = this.#traceEngineModel.metadata(traceIndex);
+    if (traceMetadata === null) {
+      return;
+    }
+
+    const actionId = 'drjones.performance-panel-full-context';
+    if (!UI.ActionRegistry.ActionRegistry.instance().hasAction(actionId)) {
+      return;
+    }
+
+    // Currently only support a single insight set.
+    const insightSet = [...insights.values()].at(0) ?? null;
+    const context = Utils.AIContext.AgentFocus.full(parsedTrace, insightSet, traceMetadata);
+    UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
+
+    // Trigger the AI Assistance panel to open.
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);
+    void action.execute();
   }
 
   #setupNavigationSetting(): HTMLElement {
@@ -1917,6 +1975,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.loadButton.setEnabled(this.state === State.IDLE);
     this.toggleRecordAction.setToggled(this.state === State.RECORDING);
     this.toggleRecordAction.setEnabled(this.state === State.RECORDING || this.state === State.IDLE);
+    this.askAiButton?.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
 
     if (!this.canRecord()) {
       return;

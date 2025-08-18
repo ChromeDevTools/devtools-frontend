@@ -383,14 +383,14 @@ export class TraceProcessor extends EventTarget {
 
     // Normalize the estimated savings to a single number, weighted by its relative impact
     // to the page experience based on the same scoring curve that Lighthouse uses.
-    const observedLcpMicro = Insights.Common.getLCP(this.#insights, insightSet.id)?.value;
+    const observedLcpMicro = Insights.Common.getLCP(insightSet)?.value;
     const observedLcp = observedLcpMicro ? Helpers.Timing.microToMilli(observedLcpMicro) : Types.Timing.Milli(0);
-    const observedCls = Insights.Common.getCLS(this.#insights, insightSet.id).value;
+    const observedCls = Insights.Common.getCLS(insightSet).value;
 
     // INP is special - if users did not interact with the page, we'll have no INP, but we should still
     // be able to prioritize insights based on this metric. When we observe no interaction, instead use
     // a default value for the baseline INP.
-    const observedInpMicro = Insights.Common.getINP(this.#insights, insightSet.id)?.value;
+    const observedInpMicro = Insights.Common.getINP(insightSet)?.value;
     const observedInp = observedInpMicro ? Helpers.Timing.microToMilli(observedInpMicro) : Types.Timing.Milli(200);
 
     const observedLcpScore =

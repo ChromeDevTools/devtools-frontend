@@ -152,7 +152,7 @@ function getBottomUpTree(
   // The bottom up root node handles all the "in Tracebounds" checks we need for the insight.
   const startTime = Helpers.Timing.microToMilli(tracebounds.min);
   const endTime = Helpers.Timing.microToMilli(tracebounds.max);
-  const node = new TraceTree.BottomUpRootNode(mainThreadEvents, {
+  return new TraceTree.BottomUpRootNode(mainThreadEvents, {
     textFilter: new TraceFilter.ExclusiveNameFilter([]),
     filters: [filter],
     startTime,
@@ -161,6 +161,5 @@ function getBottomUpTree(
     calculateTransferSize: true,
     // Ensure we group by 3P alongside eventID for correct 3P grouping.
     forceGroupIdCallback: true,
-  }) as TraceTree.BottomUpRootNode;
-  return node;
+  });
 }

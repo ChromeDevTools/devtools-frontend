@@ -16,23 +16,13 @@ import {
   type InsightSet,
   type InsightSetContext,
   type MetricSavings,
-  type TraceInsightSets
 } from './types.js';
 
 const GRAPH_SAVINGS_PRECISION = 50;
 
 export function getInsight<InsightName extends keyof InsightModels>(
-    insightName: InsightName, insights: TraceInsightSets|null, key: string|null): InsightModels[InsightName]|null {
-  if (!insights || !key) {
-    return null;
-  }
-
-  const insightSets = insights.get(key);
-  if (!insightSets) {
-    return null;
-  }
-
-  const insight = insightSets.model[insightName];
+    insightName: InsightName, insightSet: InsightSet): InsightModels[InsightName]|null {
+  const insight = insightSet.model[insightName];
   if (insight instanceof Error) {
     return null;
   }
@@ -41,9 +31,9 @@ export function getInsight<InsightName extends keyof InsightModels>(
   return insight;
 }
 
-export function getLCP(insights: TraceInsightSets|null, key: string|null):
+export function getLCP(insightSet: InsightSet):
     {value: Types.Timing.Micro, event: Types.Events.LargestContentfulPaintCandidate}|null {
-  const insight = getInsight(InsightKeys.LCP_BREAKDOWN, insights, key);
+  const insight = getInsight(InsightKeys.LCP_BREAKDOWN, insightSet);
   if (!insight || !insight.lcpMs || !insight.lcpEvent) {
     return null;
   }
@@ -52,9 +42,9 @@ export function getLCP(insights: TraceInsightSets|null, key: string|null):
   return {value, event: insight.lcpEvent};
 }
 
-export function getINP(insights: TraceInsightSets|null, key: string|null):
+export function getINP(insightSet: InsightSet):
     {value: Types.Timing.Micro, event: Types.Events.SyntheticInteractionPair}|null {
-  const insight = getInsight(InsightKeys.INP_BREAKDOWN, insights, key);
+  const insight = getInsight(InsightKeys.INP_BREAKDOWN, insightSet);
   if (!insight?.longestInteractionEvent?.dur) {
     return null;
   }
@@ -63,9 +53,8 @@ export function getINP(insights: TraceInsightSets|null, key: string|null):
   return {value, event: insight.longestInteractionEvent};
 }
 
-export function getCLS(
-    insights: TraceInsightSets|null, key: string|null): {value: number, worstClusterEvent: Types.Events.Event|null} {
-  const insight = getInsight(InsightKeys.CLS_CULPRITS, insights, key);
+export function getCLS(insightSet: InsightSet): {value: number, worstClusterEvent: Types.Events.Event|null} {
+  const insight = getInsight(InsightKeys.CLS_CULPRITS, insightSet);
   if (!insight) {
     // Unlike the other metrics, there is always a value for CLS even with no data.
     return {value: 0, worstClusterEvent: null};

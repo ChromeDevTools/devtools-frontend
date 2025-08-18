@@ -181,15 +181,15 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const output = TraceEventFormatter.networkRequests([request], parsedTrace, {verbose: true});
       snapshotTester.assert(this, output);
     });
-    it('try formatting an individual network request in a non-verbose mode, resulting in verbose because 1 request is always formatted in a verbose mode',
-       async function() {
-         const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
-         const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
-         const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
-         assert.isOk(request);
-         const output = TraceEventFormatter.networkRequests([request], parsedTrace, {verbose: false});
-         snapshotTester.assert(this, output);
-       });
+
+    it('defaults to verbose mode when 1 request and verbose option is not defined', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
+      const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
+      assert.isOk(request);
+      const output = TraceEventFormatter.networkRequests([request], parsedTrace);
+      snapshotTester.assert(this, output);
+    });
 
     it('getNetworkRequestsNewFormat correctly formats network requests for bad request latency trace', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');

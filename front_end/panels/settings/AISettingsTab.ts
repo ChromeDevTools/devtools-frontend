@@ -294,8 +294,10 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           text: noLogging ? i18nString(UIStrings.consoleInsightsSendsDataNoLogging) :
                             i18nString(UIStrings.consoleInsightsSendsData)
         }],
-        learnMoreLink:
-            {url: 'https://goo.gle/devtools-console-messages-ai', linkJSLogContext: 'learn-more.console-insights'},
+        learnMoreLink: {
+          url: 'https://developer.chrome.com/docs/devtools/console/understand-messages',
+          linkJSLogContext: 'learn-more.console-insights',
+        },
         settingExpandState: {
           isSettingExpanded: false,
           expandSettingJSLogContext: 'console-insights.accordion',
@@ -320,7 +322,10 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           text: noLogging ? i18nString(UIStrings.freestylerSendsDataNoLogging) :
                             i18nString(UIStrings.freestylerSendsData)
         }],
-        learnMoreLink: {url: 'https://goo.gle/devtools-ai-assistance', linkJSLogContext: 'learn-more.ai-assistance'},
+        learnMoreLink: {
+          url: 'https://developer.chrome.com/docs/devtools/ai-assistance',
+          linkJSLogContext: 'learn-more.ai-assistance',
+        },
         settingExpandState: {
           isSettingExpanded: false,
           expandSettingJSLogContext: 'freestyler.accordion',

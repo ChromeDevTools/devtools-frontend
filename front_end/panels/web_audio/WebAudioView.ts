@@ -5,7 +5,7 @@
 
 import '../../ui/legacy/legacy.js';
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -71,8 +71,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const WEBAUDIO_EXPLANATION_URL =
     'https://developer.chrome.com/docs/devtools/webaudio' as Platform.DevToolsPath.UrlString;
 
-export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
-    SDK.TargetManager.SDKModelObserver<WebAudioModel> {
+export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<WebAudioModel> {
   private readonly contentContainer: HTMLElement;
   private readonly detailViewContainer: HTMLElement;
   private readonly knownContexts = new Set<string>();
@@ -82,11 +81,11 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
   private readonly contextSelectorElement: HTMLSelectElement;
   private readonly contextSelectorItems: UI.ListModel.ListModel<Protocol.WebAudio.BaseAudioContext>;
   private readonly contextSelectorToolbarItem: UI.Toolbar.ToolbarItem;
+  private readonly pollRealtimeDataThrottler: Common.Throttler.Throttler;
 
   constructor() {
-    super(true, 1000);
+    super({jslog: `${VisualLogging.panel('web-audio').track({resize: true})}`, useShadowDom: true});
     this.registerRequiredCSS(webAudioStyles);
-    this.element.setAttribute('jslog', `${VisualLogging.panel('web-audio').track({resize: true})}`);
     this.element.classList.add('web-audio-drawer');
 
     // Creates the toolbar.
@@ -127,6 +126,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     this.summaryBarContainer = this.contentContainer.createChild('div', 'web-audio-summary-container');
 
     SDK.TargetManager.TargetManager.instance().observeModels(WebAudioModel, this);
+    this.pollRealtimeDataThrottler = new Common.Throttler.Throttler(1000);
   }
 
   override wasShown(): void {
@@ -150,11 +150,6 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
 
   modelRemoved(webAudioModel: WebAudioModel): void {
     this.removeEventListeners(webAudioModel);
-  }
-
-  override async doUpdate(): Promise<void> {
-    await this.pollRealtimeData();
-    this.update();
   }
 
   private addEventListeners(webAudioModel: WebAudioModel): void {
@@ -215,7 +210,6 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
           i18nString(UIStrings.audioContextS, {PH1: this.contextSelectorPlaceholderText}));
     }
     this.updateDetailView(selectedContext);
-    void this.doUpdate();
   }
 
   private titleForContext(context: Protocol.WebAudio.BaseAudioContext): string {
@@ -227,6 +221,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     this.knownContexts.add(context.contextId);
     this.contextSelectorItems.insert(this.contextSelectorItems.length, context);
     this.onContextSelectorListItemReplaced();
+    void this.pollRealtimeDataThrottler.schedule(this.pollRealtimeData.bind(this));
   }
 
   private contextDestroyed(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.GraphObjectId>): void {
@@ -349,6 +344,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
         if (realtimeData) {
           this.updateSummaryBar(realtimeData);
         }
+        void this.pollRealtimeDataThrottler.schedule(this.pollRealtimeData.bind(this));
       } else {
         this.clearSummaryBar();
       }

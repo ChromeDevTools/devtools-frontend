@@ -23,7 +23,7 @@ import {
 import {FileAgent} from './agents/FileAgent.js';
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
 import {PerformanceAgent, PerformanceTraceContext} from './agents/PerformanceAgent.js';
-import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
+import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
 import {
   Conversation,
   ConversationType,
@@ -70,10 +70,6 @@ const UIStringsNotTranslate = {
 const str_ = i18n.i18n.registerUIStrings('models/ai_assistance/ConversationHandler.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
-
-function isAiAssistanceStylingWithFunctionCallingEnabled(): boolean {
-  return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.functionCalling);
-}
 
 function isAiAssistanceServerSideLoggingEnabled(): boolean {
   return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
@@ -337,13 +333,6 @@ export class ConversationHandler {
           ...options,
           changeManager,
         });
-        if (isAiAssistanceStylingWithFunctionCallingEnabled()) {
-          agent = new StylingAgentWithFunctionCalling({
-            ...options,
-            changeManager,
-          });
-        }
-
         break;
       }
       case ConversationType.NETWORK: {

@@ -143,9 +143,11 @@ describeWithMockConnection('ConversationHandler', () => {
       const conversationHandler = AiAssistanceModel.ConversationHandler.instance({
         aidaClient: mockAidaClient([
           [{
-            explanation: `ACTION
-  $0.style.backgroundColor = 'red'
-  STOP`,
+            functionCalls: [{
+              name: 'executeJavaScript',
+              args: {code: '$0.style.backgroundColor = \'red\';'},
+            }],
+            explanation: '',
           }],
         ]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,

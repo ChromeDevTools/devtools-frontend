@@ -785,7 +785,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should not save partial responses to conversation history', async () => {
-
       updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
@@ -794,9 +793,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const addHistoryItemStub = sinon.stub(AiAssistanceModel.Conversation.prototype, 'addHistoryItem');
       viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
       const {view} = await createAiAssistancePanel({
-        aidaClient: mockAidaClient([[
-          {explanation: 'ANSWER: partially started'}, {explanation: 'ANSWER: partially started and now it\'s finished'}
-        ]])
+        aidaClient: mockAidaClient(
+            [[{explanation: 'partially started'}, {explanation: 'partially started and now it\'s finished'}]])
       });
       // Trigger running the conversation (observe that there are two answers: one partial, one complete)
       view.input.onTextSubmit('User question to Freestyler?');

@@ -20,7 +20,7 @@ describe('AI Assistance', function() {
   async function setupMocks(
       devToolsPage: DevToolsPage,
       hostConfig: Root.Runtime.HostConfig,
-      messages: string[],
+      messages: AidaPart[],
   ) {
     const syncInformation = {
       accountEmail: 'some-email',
@@ -59,7 +59,7 @@ describe('AI Assistance', function() {
 
   async function resetMockMessages(
       devtoolsPage: DevToolsPage,
-      messages: string[],
+      messages: AidaPart[],
   ) {
     await devtoolsPage.evaluate(() => {
       // @ts-expect-error different context
@@ -70,12 +70,7 @@ describe('AI Assistance', function() {
       // @ts-expect-error devtools context.
       globalThis.InspectorFrontendHost.doAidaConversation = async (request, streamId, cb) => {
         const response = JSON.stringify([
-          {
-            textChunk: {
-              text: messages[call],
-            },
-            metadata: {},
-          },
+          messages[call],
         ]);
         call++;
         let first = true;
@@ -187,9 +182,11 @@ describe('AI Assistance', function() {
     })) as Log[];
   }
 
+  type AidaPart = object;
+
   async function runAiAssistance(devToolsPage: DevToolsPage, inspectedPage: InspectedPage, options: {
     query: string,
-    messages: string[],
+    messages: AidaPart[],
     resource?: string,
     node?: string,
     iframeId?: string,
@@ -244,7 +241,7 @@ describe('AI Assistance', function() {
 
   async function sendAiAssistanceMessage(devToolsPage: DevToolsPage, options: {
     query: string,
-    messages: string[],
+    messages: AidaPart[],
     node?: string,
     iframeId?: string,
     shadowRoot?: string,
@@ -269,18 +266,28 @@ describe('AI Assistance', function() {
     const result = await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the background color for this element to blue',
       messages: [
-        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-TITLE: changing the property
-ACTION
-const data = {
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought:
+                    'I can change the background color of an element by setting the background-color CSS property.',
+                title: 'changing the property',
+                code: `const data = {
   color: window.getComputedStyle($0).color
-}
-STOP`,
-        'ANSWER: changed styles',
+}`
+              }
+            }
+          }
+        },
+        {textChunk: {text: 'changed styles'}},
       ],
     });
-    assert.deepEqual(
-        result.at(-1)!.request.current_message, {role: 1, parts: [{text: 'OBSERVATION: {"color":"rgb(0, 0, 0)"}'}]});
+    assert.deepEqual(result.at(-1)!.request.current_message, {
+      role: 0,
+      parts: [{functionResponse: {name: 'executeJavaScript', response: {result: '{"color":"rgb(0, 0, 0)"}'}}}]
+    });
   });
 
   it('handles trailing ;', async ({devToolsPage, inspectedPage}) => {
@@ -290,10 +297,15 @@ STOP`,
         {
           query: 'Change the background color for this element to blue',
           messages: [
-            `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-  TITLE: changing the property
-  ACTION
-  const originalWidth = $0.style.width;
+            {
+              functionCallChunk: {
+                functionCall: {
+                  name: 'executeJavaScript',
+                  args: {
+                    thought:
+                        'I can change the background color of an element by setting the background-color CSS property.',
+                    title: 'changing the property',
+                    code: `const originalWidth = $0.style.width;
   const originalHeight = $0.style.height;
   $0.removeAttribute('width');
   $0.removeAttribute('height');
@@ -302,24 +314,34 @@ STOP`,
     aspectRatio: computedStyles['aspect-ratio'],
   };
   $0.style.width = originalWidth; // Restore original width
-  $0.style.height = originalHeight;
-  STOP`,
-            'ANSWER: changed styles',
+  $0.style.height = originalHeight;`,
+                  },
+                },
+              },
+            },
+            {textChunk: {text: 'changed styles'}}
           ],
         },
     );
-    assert.deepEqual(
-        result.at(-1)!.request.current_message, {role: 1, parts: [{text: 'OBSERVATION: {"aspectRatio":"auto"}'}]});
+    assert.deepEqual(result.at(-1)!.request.current_message, {
+      role: 0,
+      parts: [{functionResponse: {name: 'executeJavaScript', response: {result: '{"aspectRatio":"auto"}'}}}],
+    });
   });
 
   it('handles comments', async ({devToolsPage, inspectedPage}) => {
     const result = await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the background color for this element to blue',
       messages: [
-        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-  TITLE: changing the property
-  ACTION
-  const originalWidth = $0.style.width;
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought:
+                    'I can change the background color of an element by setting the background-color CSS property.',
+                title: 'changing the property',
+                code: `const originalWidth = $0.style.width;
   const originalHeight = $0.style.height;
   $0.removeAttribute('width');
   $0.removeAttribute('height');
@@ -328,26 +350,39 @@ STOP`,
     aspectRatio: computedStyles['aspect-ratio'],
   };
   $0.style.width = originalWidth; // Restore original width
-  $0.style.height = originalHeight; // Restore original height
-  STOP`,
-        'ANSWER: changed styles',
+  $0.style.height = originalHeight; // Restore original height`,
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'changed styles'}}
       ],
     });
-    assert.deepEqual(
-        result.at(-1)!.request.current_message, {role: 1, parts: [{text: 'OBSERVATION: {"aspectRatio":"auto"}'}]});
+    assert.deepEqual(result.at(-1)!.request.current_message, {
+      role: 0,
+      parts: [{functionResponse: {name: 'executeJavaScript', response: {result: '{"aspectRatio":"auto"}'}}}],
+    });
   });
 
   it('modifies the inline styles using the extension functions', async ({devToolsPage, inspectedPage}) => {
     await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the background color for this element to blue',
       messages: [
-        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'background-color': 'blue' });
-  await setElementStyles($0.parentElement, { 'background-color': 'green' });
-  STOP`,
-        'ANSWER: changed styles',
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought:
+                    'I can change the background color of an element by setting the background-color CSS property.',
+                title: 'changing the property',
+                code: `await setElementStyles($0, { 'background-color': 'blue' });
+  await setElementStyles($0.parentElement, { 'background-color': 'green' });`,
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'changed styles'}}
       ],
     });
 
@@ -365,12 +400,20 @@ STOP`,
     await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the background color for this element to blue',
       messages: [
-        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'background-color': 'blue' });
-  STOP`,
-        'ANSWER: changed styles',
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought:
+                    'I can change the background color of an element by setting the background-color CSS property.',
+                title: 'changing the property',
+                code: 'await setElementStyles($0, { \'background-color\': \'blue\' });',
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'changed styles'}}
       ],
       node: 'div',
     });
@@ -385,12 +428,20 @@ STOP`,
     await sendAiAssistanceMessage(devToolsPage, {
       query: 'Change the background color for this element to green',
       messages: [
-        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'background-color': 'green' });
-  STOP`,
-        'ANSWER: changed styles',
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought:
+                    'I can change the background color of an element by setting the background-color CSS property.',
+                title: 'changing the property',
+                code: 'await setElementStyles($0, { \'background-color\': \'green\' });',
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'changed styles'}}
       ],
       node: 'button',
     });
@@ -407,12 +458,20 @@ STOP`,
     await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the background color for this element to blue',
       messages: [
-        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'background-color': 'blue' });
-  STOP`,
-        'ANSWER: changed styles',
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought:
+                    'I can change the background color of an element by setting the background-color CSS property.',
+                title: 'changing the property',
+                code: 'await setElementStyles($0, { \'background-color\': \'blue\' });',
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'changed styles'}}
       ],
       resource: '../resources/recorder/shadow-open.html',
       node: 'button',
@@ -430,12 +489,19 @@ STOP`,
     await sendAiAssistanceMessage(devToolsPage, {
       query: 'Change the font color for this element to green',
       messages: [
-        `THOUGHT: I can change the font color of an element by setting the color CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'color': 'green' });
-  STOP`,
-        'ANSWER: changed styles',
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought: 'I can change the font color of an element by setting the color CSS property.',
+                title: 'changing the property',
+                code: 'await setElementStyles($0, { \'color\': \'green\' });',
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'changed styles'}}
       ],
       node: 'button',
       shadowRoot: 'login-element',
@@ -455,11 +521,14 @@ STOP`,
     const result = await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'What is the document title',
       messages: [
-        `THOUGHT: I can get the title via web API
-  TITLE: getting the document title
-  ACTION
-
-  // TODO: Enable once this stop crashing the page
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought: 'I can get the title via web API',
+                title: 'getting the document title',
+                code: `// TODO: Enable once this stop crashing the page
   // if(window.self === window.top){
   //   throw new Error('Access from non frame')
   // }
@@ -467,16 +536,21 @@ STOP`,
   const data = {
     title: document.title,
   };
-  STOP`,
-        'ANSWER: Title collected',
+`,
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'Title collected'}}
       ],
       resource: '../resources/ai_assistance/index.html',
       node: 'div',
       iframeId: 'iframe',
     });
 
-    assert.deepEqual(result.at(-1)!.request.current_message.parts[0], {
-      text: 'OBSERVATION: {"title":"I have a title"}',
+    assert.deepEqual(result.at(-1)!.request.current_message, {
+      role: 0,
+      parts: [{functionResponse: {name: 'executeJavaScript', response: {result: '{"title":"I have a title"}'}}}],
     });
   });
 
@@ -484,13 +558,19 @@ STOP`,
      async ({devToolsPage, inspectedPage}) => {
        await runAiAssistance(devToolsPage, inspectedPage, {
          query: 'Change the background color for this element to blue',
-         messages: [
-           `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'background-color': 'blue' });
-  STOP`,
-         ],
+         messages: [{
+           functionCallChunk: {
+             functionCall: {
+               name: 'executeJavaScript',
+               args: {
+                 thought:
+                     'I can change the background color of an element by setting the background-color CSS property.',
+                 title: 'changing the property',
+                 code: 'await setElementStyles($0, { \'background-color\': \'blue\' });',
+               },
+             },
+           },
+         }],
          node: 'div',
          waitForSideEffect: true,
        });
@@ -503,12 +583,20 @@ STOP`,
        });
 
        const messages = [
-         `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'background-color': 'green' });
-  STOP`,
-         'ANSWER: changed styles',
+         {
+           functionCallChunk: {
+             functionCall: {
+               name: 'executeJavaScript',
+               args: {
+                 thought:
+                     'I can change the background color of an element by setting the background-color CSS property.',
+                 title: 'changing the property',
+                 code: 'await setElementStyles($0, { \'background-color\': \'green\' });',
+               },
+             },
+           },
+         },
+         {textChunk: {text: 'changed styles'}}
        ];
        await resetMockMessages(devToolsPage, messages);
        await inspectNode(devToolsPage, 'div');
@@ -536,12 +624,20 @@ STOP`,
     await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the background color for this element to blue',
       messages: [
-        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'background-color': 'blue' });
-  STOP`,
-        'ANSWER: changed styles',
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought:
+                    'I can change the background color of an element by setting the background-color CSS property.',
+                title: 'changing the property',
+                code: 'await setElementStyles($0, { \'background-color\': \'blue\' });',
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'changed styles'}}
       ],
       node: 'div',
     });
@@ -550,13 +646,18 @@ STOP`,
 
     await sendAiAssistanceMessage(devToolsPage, {
       query: 'Change the background color for this element to green',
-      messages: [
-        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'background-color': 'green' });
-  STOP`,
-      ],
+      messages: [{
+        functionCallChunk: {
+          functionCall: {
+            name: 'executeJavaScript',
+            args: {
+              thought: 'I can change the background color of an element by setting the background-color CSS property.',
+              title: 'changing the property',
+              code: 'await setElementStyles($0, { \'background-color\': \'green\' });',
+            },
+          },
+        },
+      }],
       node: 'div',
       waitForSideEffect: true,
     });
@@ -573,12 +674,19 @@ STOP`,
     await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the color for this element to rebeccapurple',
       messages: [
-        `THOUGHT: I can change the color of an element by setting the color CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'color': 'rebeccapurple' });
-  STOP`,
-        'ANSWER: changed styles',
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought: 'I can change the color of an element by setting the color CSS property.',
+                title: 'changing the property',
+                code: 'await setElementStyles($0, { \'color\': \'rebeccapurple\' });',
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'changed styles'}}
       ],
       resource: '../resources/ai_assistance/high-specificity.html',
       node: 'h1',
@@ -596,20 +704,32 @@ STOP`,
     const result = await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the non/css/prop for this element to blue',
       messages: [
-        `THOUGHT: I can change the non/css/prop color of an element by setting the non/css/prop CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { 'non/css/prop': 'blue' });
-  STOP`,
-        'ANSWER: Unable to make the change',
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought: 'I can change the non/css/prop color of an element by setting the non/css/prop CSS property.',
+                title: 'changing the property',
+                code: 'await setElementStyles($0, { \'non/css/prop\': \'blue\' });',
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'Unable to make the change'}}
       ],
     });
 
     assert.deepEqual(result.at(-1)!.request.current_message, {
-      role: 1,
+      role: 0,
       parts: [{
-        text:
-            'OBSERVATION: Error: None of the suggested CSS properties or their values for selector were considered valid by the browser\'s CSS engine. Please ensure property names are correct and values match the expected format for those properties.'
+        functionResponse: {
+          name: 'executeJavaScript',
+          response: {
+            result:
+                'Error: None of the suggested CSS properties or their values for selector were considered valid by the browser\'s CSS engine. Please ensure property names are correct and values match the expected format for those properties.',
+          },
+        },
       }],
     });
   });
@@ -618,36 +738,49 @@ STOP`,
     const result = await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the fontSize for this element to blue',
       messages: [
-        `THOUGHT: I can change the fontSize of an element by setting the fontSize CSS property.
-  TITLE: changing the property
-  ACTION
-  await setElementStyles($0, { fontSize: '100px' });
-  STOP`,
-        'ANSWER: Unable to make the change',
+        {
+          functionCallChunk: {
+            functionCall: {
+              name: 'executeJavaScript',
+              args: {
+                thought: 'I can change the fontSize of an element by setting the fontSize CSS property.',
+                title: 'changing the property',
+                code: 'await setElementStyles($0, { fontSize: \'100px\' });',
+              },
+            },
+          },
+        },
+        {textChunk: {text: 'Unable to make the change'}}
       ],
     });
 
     assert.deepEqual(result.at(-1)!.request.current_message, {
-      role: 1,
-      parts: [{text: 'OBSERVATION: undefined'}],
+      role: 0,
+      parts: [{functionResponse: {name: 'executeJavaScript', response: {result: 'undefined'}}}],
     });
   });
 
   for (const code of ['const data = {}', 'throw new Error("test")', 'const data = {;']) {
-    it(`should not trigger a side-effect for "${code}"`,
-        async ({devToolsPage, inspectedPage}) => {
-          await runAiAssistance(devToolsPage, inspectedPage, {
-            query: 'Change the fontSize for this element to blue',
-            throwOnSideEffect: true,
-            messages: [
-              `THOUGHT: data
-  TITLE: data
-  ACTION
-  ${code}
-  STOP`,
-              'ANSWER: done',
-            ],
-          });
-        });
+    it(`should not trigger a side-effect for "${code}"`, async ({devToolsPage, inspectedPage}) => {
+      await runAiAssistance(devToolsPage, inspectedPage, {
+        query: 'Change the fontSize for this element to blue',
+        throwOnSideEffect: true,
+        messages: [
+          {
+            functionCallChunk: {
+              functionCall: {
+                name: 'executeJavaScript',
+                args: {
+                  thought: 'data',
+                  title: 'data',
+                  code,
+                },
+              },
+            },
+          },
+          {textChunk: {text: 'done'}}
+        ],
+      });
+    });
   }
 });

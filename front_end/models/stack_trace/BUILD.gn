@@ -27,11 +27,13 @@ devtools_entrypoint("bundle") {
 devtools_module("stack_trace_impl") {
   sources = [
     "StackTraceImpl.ts",
+    "StackTraceModel.ts",
     "Trie.ts",
   ]
 
   deps = [
     ":bundle",
+    "../../core/sdk:bundle",
     "../../generated",
   ]
 }

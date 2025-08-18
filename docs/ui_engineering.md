@@ -44,7 +44,7 @@ To embed another presenter (`UI.Widget`) in the lit-html template, use `<devtool
 
 This will instantiate a `Widget` class with the web component as its `element` and, optionally, will set the properties provided in the second parameter. The widget won’t be re-instantiated on the subsequent template renders, but the properties would be updated. For this to work, the widget needs to accept `HTMLElement` as a sole constructor parameter and properties need to be public members or setters.
 
-For backwards compatibility, the first argument to `widgetConfig` can also be a factory function: `<devtools-widget .widgetConfig=${widgetConfig(element => new MyWidget(foo, bar, element))}>`. Similar to the class constructor version, `element` is the actual `<devtools-widget>` so the following two invocations of `widgetConfig` are equivalent: `widgetConfig(MyWidget)` and `widgetConfig(element = new MyWidget(element))`.
+For backwards compatibility, the first argument to `widgetConfig` can also be a factory function: `<devtools-widget .widgetConfig=${widgetConfig(element => new MyWidget(foo, bar, element))}>`. Similar to the class constructor version, `element` is the actual `<devtools-widget>` so the following two invocations of `widgetConfig` are equivalent: `widgetConfig(MyWidget)` and `widgetConfig(element => new MyWidget(element))`.
 
 ## Styling
 To prevent style conflicts in widgets without relying on shadow DOM, we use the CSS [`@scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/@scope) at-rule for style encapsulation. This ensures that styles defined for a widget do not leak out and affect other components.

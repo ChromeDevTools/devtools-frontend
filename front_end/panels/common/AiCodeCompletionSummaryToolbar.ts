@@ -28,13 +28,11 @@ const lockedString = i18n.i18n.lockedString;
 
 export interface AiCodeCompletionSummaryToolbarProps {
   citationsTooltipId: string;
-  panelName: string;
   disclaimerTooltipId?: string;
 }
 
 export interface ViewInput {
   disclaimerTooltipId?: string;
-  panelName: string;
   citations?: string[];
   citationsTooltipId: string;
   loading: boolean;
@@ -54,7 +52,6 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, _output, target) => {
     html`<devtools-widget
             .widgetConfig=${UI.Widget.widgetConfig(AiCodeCompletionDisclaimer, {
       disclaimerTooltipId: input.disclaimerTooltipId,
-      panelName: input.panelName,
       loading: input.loading,
     })} class="disclaimer-widget"></devtools-widget>` : nothing;
 
@@ -69,12 +66,12 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, _output, target) => {
                 <devtools-tooltip
                     id=${input.citationsTooltipId}
                     variant=${'rich'}
-                    jslogContext=${input.panelName + '.ai-code-completion-citations'}
+                    jslogContext=${'ai-code-completion-citations'}
                 ><div class="citations-tooltip-container">
                     ${Directives.repeat(input.citations, citation => html`<x-link
                         tabIndex="0"
                         href=${citation}
-                        jslog=${VisualLogging.link(input.panelName + '.ai-code-completion-citations.citation-link').track({
+                        jslog=${VisualLogging.link('ai-code-completion-citations.citation-link').track({
       click: true
     })}>${citation}</x-link>`)}</div></devtools-tooltip>
             </div>` : nothing;
@@ -95,7 +92,6 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
 
   #disclaimerTooltipId?: string;
   #citationsTooltipId: string;
-  #panelName: string;
   #citations: string[] = [];
   #loading = false;
 
@@ -103,7 +99,6 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
     super();
     this.#disclaimerTooltipId = props.disclaimerTooltipId;
     this.#citationsTooltipId = props.citationsTooltipId;
-    this.#panelName = props.panelName;
     this.#view = view ?? DEFAULT_SUMMARY_TOOLBAR_VIEW;
     this.requestUpdate();
   }
@@ -133,7 +128,6 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
           disclaimerTooltipId: this.#disclaimerTooltipId,
           citations: this.#citations,
           citationsTooltipId: this.#citationsTooltipId,
-          panelName: this.#panelName,
           loading: this.#loading,
         },
         undefined, this.contentElement);

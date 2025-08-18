@@ -46,7 +46,6 @@ const lockedString = i18n.i18n.lockedString;
 
 export interface ViewInput {
   disclaimerTooltipId?: string;
-  panelName?: string;
   noLogging: boolean;
   onManageInSettingsTooltipClick: () => void;
 }
@@ -58,12 +57,13 @@ export interface ViewOutput {
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
-  if (!input.disclaimerTooltipId || !input.panelName) {
-    render(nothing, target);
-    return;
-  }
-  // clang-format off
+export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View =
+    (input, output, target) => {
+      if (!input.disclaimerTooltipId) {
+        render(nothing, target);
+        return;
+      }
+      // clang-format off
   render(
     html`
         <style>${styles}</style>
@@ -92,7 +92,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
           <devtools-tooltip
               id=${input.disclaimerTooltipId}
               variant=${'rich'}
-              jslogContext=${input.panelName + '.ai-code-completion-disclaimer'}
+              jslogContext=${'ai-code-completion-disclaimer'}
               ${Directives.ref(el => {
                 if (el instanceof HTMLElement) {
                   output.hideTooltip = () => {
@@ -113,8 +113,8 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, output, target) => {
                 >${lockedString(UIStringsNotTranslate.manageInSettings)}</span></div></devtools-tooltip>
           </div class="ai-code-completion-disclaimer">
         `, target);
-  // clang-format on
-};
+      // clang-format on
+    };
 
 const MINIMUM_LOADING_STATE_TIMEOUT = 1000;
 
@@ -123,7 +123,6 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
   #viewOutput: ViewOutput = {};
 
   #disclaimerTooltipId?: string;
-  #panelName?: string;
   #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
   #loading = false;
   #loadingStartTime = 0;
@@ -131,6 +130,7 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
 
   constructor(element?: HTMLElement, view: View = DEFAULT_SUMMARY_TOOLBAR_VIEW) {
     super(element);
+    this.markAsExternallyManaged();
     this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     this.#view = view;
@@ -138,11 +138,6 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
 
   set disclaimerTooltipId(disclaimerTooltipId: string) {
     this.#disclaimerTooltipId = disclaimerTooltipId;
-    this.requestUpdate();
-  }
-
-  set panelName(panelName: string) {
-    this.#panelName = panelName;
     this.requestUpdate();
   }
 
@@ -182,7 +177,6 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
     this.#view(
         {
           disclaimerTooltipId: this.#disclaimerTooltipId,
-          panelName: this.#panelName,
           noLogging: this.#noLogging,
           onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
         },

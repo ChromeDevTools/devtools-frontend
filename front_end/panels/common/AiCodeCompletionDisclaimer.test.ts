@@ -11,11 +11,10 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Common from './common.js';
 
 describeWithEnvironment('AiCodeCompletionDisclaimer', () => {
-  async function createDisclaimer(panelName = 'console') {
+  async function createDisclaimer() {
     const view = createViewFunctionStub(Common.AiCodeCompletionDisclaimer);
     const widget = new Common.AiCodeCompletionDisclaimer(undefined, view);
     widget.disclaimerTooltipId = 'disclaimer-tooltip';
-    widget.panelName = panelName;
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     await view.nextInput;

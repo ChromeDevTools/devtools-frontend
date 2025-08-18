@@ -1,6 +1,7 @@
 // Copyright 2025 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
@@ -15,6 +16,7 @@ import * as PanelCommon from '../common/common.js';
 import {Plugin} from './Plugin.js';
 
 const AI_CODE_COMPLETION_CHARACTER_LIMIT = 20_000;
+const DISCLAIMER_TOOLTIP_ID = 'sources-ai-code-completion-disclaimer-tooltip';
 
 export class AiCodeCompletionPlugin extends Plugin {
   #aidaClient?: Host.AidaClient.AidaClient;
@@ -26,6 +28,9 @@ export class AiCodeCompletionPlugin extends Plugin {
   #teaser?: PanelCommon.AiCodeCompletionTeaser;
   #teaserDisplayTimeout?: number;
   #editor?: TextEditor.TextEditor.TextEditor;
+  #aiCodeCompletionDisclaimer?: PanelCommon.AiCodeCompletionDisclaimer;
+  #aiCodeCompletionDisclaimerContainer = document.createElement('div');
+  #aiCodeCompletionDisclaimerToolbarItem = new UI.Toolbar.ToolbarItem(this.#aiCodeCompletionDisclaimerContainer);
 
   #boundEditorKeyDown: (event: Event) => Promise<void>;
   #boundOnAiCodeCompletionSettingChanged: () => void;
@@ -51,6 +56,10 @@ export class AiCodeCompletionPlugin extends Plugin {
     this.#teaser = undefined;
     this.#aiCodeCompletionSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
     this.#editor?.removeEventListener('keydown', this.#boundEditorKeyDown);
+    this.#aiCodeCompletion?.removeEventListener(
+        AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED, this.#onAiRequestTriggered, this);
+    this.#aiCodeCompletion?.removeEventListener(
+        AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED, this.#onAiResponseReceived, this);
     this.#aiCodeCompletion?.remove();
     super.dispose();
   }
@@ -70,6 +79,10 @@ export class AiCodeCompletionPlugin extends Plugin {
       TextEditor.Config.conservativeCompletion, TextEditor.Config.aiAutoCompleteSuggestion,
       CodeMirror.Prec.highest(CodeMirror.keymap.of(this.#editorKeymap()))
     ];
+  }
+
+  override rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
+    return [this.#aiCodeCompletionDisclaimerToolbarItem];
   }
 
   #editorUpdate(update: CodeMirror.ViewUpdate): void {
@@ -181,16 +194,41 @@ export class AiCodeCompletionPlugin extends Plugin {
     }
     this.#aiCodeCompletion =
         new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({aidaClient: this.#aidaClient}, this.#editor);
+    this.#aiCodeCompletion.addEventListener(
+        AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED, this.#onAiRequestTriggered, this);
+    this.#aiCodeCompletion.addEventListener(
+        AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED, this.#onAiResponseReceived, this);
+  }
+
+  #createAiCodeCompletionDisclaimer(): void {
+    this.#aiCodeCompletionDisclaimer = new PanelCommon.AiCodeCompletionDisclaimer();
+    this.#aiCodeCompletionDisclaimer.disclaimerTooltipId = DISCLAIMER_TOOLTIP_ID;
+    this.#aiCodeCompletionDisclaimer.show(this.#aiCodeCompletionDisclaimerContainer, undefined, true);
   }
 
   #onAiCodeCompletionSettingChanged(): void {
     if (this.#aiCodeCompletionSetting.get()) {
       this.#setAiCodeCompletion();
+      this.#createAiCodeCompletionDisclaimer();
     } else if (this.#aiCodeCompletion) {
       this.#aiCodeCompletion.remove();
       this.#aiCodeCompletion = undefined;
+      this.#aiCodeCompletionDisclaimerContainer.removeChildren();
+      this.#aiCodeCompletionDisclaimer = undefined;
     }
   }
+
+  #onAiRequestTriggered = (): void => {
+    if (this.#aiCodeCompletionDisclaimer) {
+      this.#aiCodeCompletionDisclaimer.loading = true;
+    }
+  };
+
+  #onAiResponseReceived = (): void => {
+    if (this.#aiCodeCompletionDisclaimer) {
+      this.#aiCodeCompletionDisclaimer.loading = false;
+    }
+  };
 
   #detachAiCodeCompletionTeaser(): void {
     this.#editor?.dispatch({

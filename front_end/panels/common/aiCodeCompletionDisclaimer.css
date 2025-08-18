@@ -5,6 +5,8 @@
  */
 
 @scope to (devtools-widget > *) {
+    display: flex;
+
     .ai-code-completion-disclaimer {
         gap: 5px;
         display: flex;

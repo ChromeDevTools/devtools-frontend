@@ -9,10 +9,10 @@ import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Common from './common.js';
 
 describeWithEnvironment('AiCodeCompletionSummaryToolbar', () => {
-  async function createToolbar(panelName = 'console') {
+  async function createToolbar() {
     const view = createViewFunctionStub(Common.AiCodeCompletionSummaryToolbar);
     const widget = new Common.AiCodeCompletionSummaryToolbar(
-        {citationsTooltipId: 'citations-tooltip', panelName, disclaimerTooltipId: 'disclaimer-tooltip'}, view);
+        {citationsTooltipId: 'citations-tooltip', disclaimerTooltipId: 'disclaimer-tooltip'}, view);
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     await view.nextInput;

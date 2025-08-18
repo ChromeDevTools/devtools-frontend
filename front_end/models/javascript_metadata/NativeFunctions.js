@@ -8423,7 +8423,7 @@ export const NativeFunctions = [
     signatures: [["id"]]
   },
   {
-    name: "printJob",
+    name: "submitPrintJob",
     signatures: [["job_name","document","attributes"]]
   },
   {

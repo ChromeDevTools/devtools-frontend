@@ -27448,6 +27448,13 @@
                             "$ref": "Page.FrameId"
                         },
                         {
+                            "name": "parentFrameId",
+                            "description": "Id of the parent frame, only present for the \"iframe\" targets.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "Page.FrameId"
+                        },
+                        {
                             "name": "browserContextId",
                             "experimental": true,
                             "optional": true,

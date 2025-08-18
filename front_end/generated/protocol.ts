@@ -18019,6 +18019,10 @@ export namespace Target {
      * Frame id of originating window (is only set if target has an opener).
      */
     openerFrameId?: Page.FrameId;
+    /**
+     * Id of the parent frame, only present for the "iframe" targets.
+     */
+    parentFrameId?: Page.FrameId;
     browserContextId?: Browser.BrowserContextID;
     /**
      * Provides additional details for specific target types. For example, for

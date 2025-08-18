@@ -43,9 +43,14 @@ export class FragmentImpl implements StackTrace.StackTrace.Fragment {
     this.node = node;
   }
 
-  get frames(): StackTrace.StackTrace.Frame[] {
-    // TODO(crbug.com/433162438): Walk `this.node.getCallStack` and collect frames, but take care to deduplicate outlined frames.
-    throw new Error('Not implemented');
+  get frames(): FrameImpl[] {
+    const frames: FrameImpl[] = [];
+
+    for (const node of this.node.getCallStack()) {
+      frames.push(...node.frames);
+    }
+
+    return frames;
   }
 }
 

@@ -2659,7 +2659,7 @@ export const NativeFunctions = [
   },
   {
     name: "resolve",
-    signatures: [["possibleDescendant"],["possibleChild"]],
+    signatures: [["possibleDescendant"]],
     receivers: ["FileSystemDirectoryHandle"]
   },
   {
@@ -7238,10 +7238,6 @@ export const NativeFunctions = [
   {
     name: "ReadableStreamDefaultReader",
     signatures: [["stream"]]
-  },
-  {
-    name: "ReadableStream",
-    signatures: [["?underlyingSource","?strategy"]]
   },
   {
     name: "TransformStream",

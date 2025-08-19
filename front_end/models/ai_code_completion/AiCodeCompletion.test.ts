@@ -37,6 +37,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         sinon.createStubInstance(TextEditor.TextEditor.TextEditor),
+        ['\n'],
     );
 
     aiCodeCompletion.onTextChanged('prefix', 'suffix', 6);

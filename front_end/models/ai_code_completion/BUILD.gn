@@ -8,7 +8,10 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("ai_code_completion") {
-  sources = [ "AiCodeCompletion.ts" ]
+  sources = [
+    "AiCodeCompletion.ts",
+    "debug.ts",
+  ]
 
   deps = [
     "../../core/common:bundle",

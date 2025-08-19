@@ -7,6 +7,8 @@ import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 
+import {debugLog} from './debug.js';
+
 export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
 
@@ -40,17 +42,19 @@ interface RequestOptions {
  */
 export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #editor: TextEditor.TextEditor.TextEditor;
+  #stopSequences: string[];
   #renderingTimeout?: number;
 
   readonly #sessionId: string = crypto.randomUUID();
   readonly #aidaClient: Host.AidaClient.AidaClient;
   readonly #serverSideLoggingEnabled: boolean;
 
-  constructor(opts: AgentOptions, editor: TextEditor.TextEditor.TextEditor) {
+  constructor(opts: AgentOptions, editor: TextEditor.TextEditor.TextEditor, stopSequences?: string[]) {
     super();
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
     this.#editor = editor;
+    this.#stopSequences = stopSequences ?? [];
   }
 
   #debouncedRequestAidaSuggestion = Common.Debouncer.debounce(
@@ -75,7 +79,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
         inference_language: inferenceLanguage,
         temperature: validTemperature(this.#options.temperature),
         model_id: this.#options.modelId || undefined,
-        stop_sequences: ['\n'],  // We are prioritizing single line suggestions to reduce noise
+        stop_sequences: this.#stopSequences,
       },
       metadata: {
         disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
@@ -92,6 +96,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
     try {
       const response = await this.#aidaClient.completeCode(request);
+      debugLog('At cursor position', cursor, {request, response});
       if (response && response.generatedSamples.length > 0 && response.generatedSamples[0].generationString) {
         if (response.generatedSamples[0].attributionMetadata?.attributionAction ===
             Host.AidaClient.RecitationAction.BLOCK) {
@@ -116,6 +121,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
               sampleId: response.generatedSamples[0].sampleId,
             })
           });
+          debugLog('Suggestion dispatched to the editor', response.generatedSamples[0], 'at cursor position', cursor);
           if (response.metadata.rpcGlobalId) {
             const latency = performance.now() - startTime;
             this.#registerUserImpression(response.metadata.rpcGlobalId, response.generatedSamples[0].sampleId, latency);
@@ -167,6 +173,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
         },
       },
     });
+    debugLog('Registered user impression with latency {seconds:', seconds, ', nanos:', nanos, '}');
   }
 
   registerUserAcceptance(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number): void {
@@ -181,6 +188,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
         },
       },
     });
+    debugLog('Registered user acceptance');
   }
 
   onTextChanged(

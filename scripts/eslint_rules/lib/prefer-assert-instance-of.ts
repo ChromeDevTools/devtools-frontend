@@ -44,7 +44,8 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    function reportError(node: TSESTree.CallExpression, calleeText: string, messageId) {
+    function reportError(
+        node: TSESTree.CallExpression, calleeText: string, messageId: 'useAssertInstanceOf'|'useAssertNotInstanceOf') {
       context.report({
         node,
         messageId,

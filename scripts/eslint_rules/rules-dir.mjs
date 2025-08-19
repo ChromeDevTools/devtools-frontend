@@ -47,6 +47,9 @@ const RULES_DIR = join(import.meta.dirname, 'lib');
 
 const ruleExtensions = new Set(['.js', '.cjs', '.mjs', '.ts', '.cts', '.mts']);
 
+/**
+ * @type {Record<string, unknown>}
+ */
 const rulesModules = {};
 
 for (const filename of readdirSync(RULES_DIR)) {

@@ -9,6 +9,7 @@ import * as Trace from '../../trace/trace.js';
 import {PerformanceInsightFormatter, TraceEventFormatter} from './PerformanceInsightFormatter.js';
 
 const ms = (ms: number): string => `${Platform.NumberUtilities.floor(ms, 1)} ms`;
+const kb = (bytes: number): string => `${Math.round(bytes / 1000)} kB`;
 
 export class PerformanceTraceFormatter {
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
@@ -91,7 +92,7 @@ export class PerformanceTraceFormatter {
           insightParts.push(`estimated metric savings: ${metricSavingsText}`);
         }
         if (model.wastedBytes) {
-          insightParts.push(`estimated wasted bytes: ${Math.round(model.wastedBytes / 1000)} kB`);
+          insightParts.push(`estimated wasted bytes: ${kb(model.wastedBytes)}`);
         }
         for (const suggestion of formatter.getSuggestions()) {
           insightParts.push(`example question: ${suggestion.title}`);
@@ -199,7 +200,7 @@ export class PerformanceTraceFormatter {
 
     const listText = topMainThreadTimeEntries
                          .map(s => {
-                           const transferSize = `${Math.round(s.transferSize / 1000)} kB`;
+                           const transferSize = `${kb(s.transferSize)}`;
                            return `- name: ${s.entity.name}, main thread time: ${
                                ms(s.mainThreadTime)}, network transfer size: ${transferSize}`;
                          })

@@ -314,7 +314,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
           activeDark: 'var(--sys-color-divider-prominent)',
         },
       }),
-      infobarState,
+      sourceFrameInfobarState,
     ];
   }
 
@@ -1249,21 +1249,26 @@ const sourceFrameTheme = CodeMirror.EditorView.theme({
 export type RevealPosition = number|{lineNumber: number, columnNumber?: number}|
     {from: {lineNumber: number, columnNumber: number}, to: {lineNumber: number, columnNumber: number}};
 
+// This is usually an Infobar but is also used for AiCodeCompletionSummaryToolbar
+export interface SourceFrameInfobar {
+  element: HTMLElement;
+  order?: number;
+}
+
 // Infobar panel state, used to show additional panels below the editor.
+export const addSourceFrameInfobar = CodeMirror.StateEffect.define<SourceFrameInfobar>();
+export const removeSourceFrameInfobar = CodeMirror.StateEffect.define<SourceFrameInfobar>();
 
-export const addInfobar = CodeMirror.StateEffect.define<UI.Infobar.Infobar>();
-export const removeInfobar = CodeMirror.StateEffect.define<UI.Infobar.Infobar>();
-
-const infobarState = CodeMirror.StateField.define<UI.Infobar.Infobar[]>({
-  create(): UI.Infobar.Infobar[] {
+const sourceFrameInfobarState = CodeMirror.StateField.define<SourceFrameInfobar[]>({
+  create(): SourceFrameInfobar[] {
     return [];
   },
-  update(current, tr): UI.Infobar.Infobar[] {
+  update(current, tr): SourceFrameInfobar[] {
     for (const effect of tr.effects) {
-      if (effect.is(addInfobar)) {
+      if (effect.is(addSourceFrameInfobar)) {
         current = current.concat(effect.value);
-      } else if (effect.is(removeInfobar)) {
-        current = current.filter(b => b !== effect.value);
+      } else if (effect.is(removeSourceFrameInfobar)) {
+        current = current.filter(b => b.element !== effect.value.element);
       }
     }
     return current;
@@ -1271,5 +1276,7 @@ const infobarState = CodeMirror.StateField.define<UI.Infobar.Infobar[]>({
   provide: (field): CodeMirror.Extension => CodeMirror.showPanel.computeN(
       [field],
       (state): Array<() => CodeMirror.Panel> =>
-          state.field(field).map((bar): (() => CodeMirror.Panel) => (): CodeMirror.Panel => ({dom: bar.element}))),
+          state.field(field)
+              .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+              .map((bar): (() => CodeMirror.Panel) => (): CodeMirror.Panel => ({dom: bar.element}))),
 });

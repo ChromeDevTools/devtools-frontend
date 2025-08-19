@@ -1,7 +1,6 @@
 // Copyright 2019 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import '../../ui/legacy/legacy.js';
 
@@ -11,10 +10,13 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import webAudioStyles from './webAudio.css.js';
 import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
+const {widgetConfig} = UI.Widget;
+const {bindToAction} = UI.UIUtils;
 
 const UIStrings = {
   /**
@@ -71,62 +73,127 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const WEBAUDIO_EXPLANATION_URL =
     'https://developer.chrome.com/docs/devtools/webaudio' as Platform.DevToolsPath.UrlString;
 
+interface ViewInput {
+  contexts: Protocol.WebAudio.BaseAudioContext[];
+  selectedContextIndex: number;
+  onContextSelectorSelectionChanged: (contextId: string) => void;
+  contextRealtimeData: Protocol.WebAudio.ContextRealtimeData|null;
+}
+
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const {
+    contexts,
+    selectedContextIndex,
+    onContextSelectorSelectionChanged,
+    contextRealtimeData,
+  } = input;
+  const selectedContext = selectedContextIndex > -1 ? contexts[selectedContextIndex] : null;
+
+  const titleForContext = (context: Protocol.WebAudio.BaseAudioContext): string =>
+      context.contextType + ' (' + context.contextId.substr(-6) + ')';
+
+  const selectorTitle = i18nString(
+      UIStrings.audioContextS,
+      {PH1: selectedContext ? titleForContext(selectedContext) : i18nString(UIStrings.noRecordings)});
+
+  // clang-format off
+  render(html`
+    <div class="web-audio-toolbar-container vbox" role="toolbar">
+      <devtools-toolbar class="web-audio-toolbar" role="presentation"
+          jslog=${VisualLogging.toolbar()}>
+        <devtools-button ${bindToAction('components.collect-garbage')}></devtools-button>
+        <div class="toolbar-divider"></div>
+        <select
+          title=${selectorTitle}
+          aria-label=${selectorTitle}
+          ?disabled=${contexts.length === 0}
+          @change=${(e: Event) => onContextSelectorSelectionChanged((e.target as HTMLSelectElement).value)}
+          .value=${selectedContext ? selectedContext.contextId : ''}>
+          ${contexts.length === 0
+              ? html`<option value="" hidden>${i18nString(UIStrings.noRecordings)}</option>`
+              : contexts.map(context => html`
+            <option value=${context.contextId}>${titleForContext(context)}</option>
+          `)}
+        </select>
+      </devtools-toolbar>
+    </div>
+    <div class="web-audio-content-container vbox flex-auto">
+      ${!selectedContext ? html`
+        <div class="web-audio-details-container vbox flex-auto">
+          <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget,
+            {header: i18nString(UIStrings.noWebAudio),
+              text: i18nString(UIStrings.openAPageThatUsesWebAudioApiTo),
+            link: WEBAUDIO_EXPLANATION_URL,
+          })}>
+          </devtools-widget>
+        </div>` : html`<div class="web-audio-details-container vbox flex-auto">
+          <div class="context-detail-container">
+            <div class="context-detail-header">
+              <div class="context-detail-title">
+                ${selectedContext.contextType === 'realtime' ? i18n.i18n.lockedString('AudioContext')
+                                                             : i18n.i18n.lockedString('OfflineAudioContext')}
+              </div>
+              <div class="context-detail-subtitle">${selectedContext.contextId}</div>
+            </div>
+            <div class="context-detail-row">
+              <div class="context-detail-row-entry">${i18nString(UIStrings.state)}</div>
+              <div class="context-detail-row-value">${selectedContext.contextState}</div>
+            </div>
+            <div class="context-detail-row">
+              <div class="context-detail-row-entry">${i18nString(UIStrings.sampleRate)}</div>
+              <div class="context-detail-row-value">${selectedContext.sampleRate} Hz</div>
+            </div>
+            ${selectedContext.contextType === 'realtime' ? html`
+              <div class="context-detail-row">
+                <div class="context-detail-row-entry">${i18nString(UIStrings.callbackBufferSize)}</div>
+                <div class="context-detail-row-value">${selectedContext.callbackBufferSize} frames</div>
+              </div>` : ''}
+            <div class="context-detail-row">
+              <div class="context-detail-row-entry">${i18nString(UIStrings.maxOutputChannels)}</div>
+              <div class="context-detail-row-value">${selectedContext.maxOutputChannelCount} ch</div>
+            </div>
+          </div>
+        </div>`}
+      <div class="web-audio-summary-container">
+        ${contextRealtimeData ?
+            html`<div class="context-summary-container">
+            <span>${i18nString(UIStrings.currentTime)}: ${contextRealtimeData.currentTime.toFixed(3)} s</span>
+            <span>\u2758</span>
+            <span>${i18nString(UIStrings.callbackInterval)}: μ = ${
+                (contextRealtimeData.callbackIntervalMean * 1000).toFixed(3)} ms, σ = ${
+                (Math.sqrt(contextRealtimeData.callbackIntervalVariance) * 1000).toFixed(3)} ms</span>
+            <span>\u2758</span>
+            <span>${i18nString(UIStrings.renderCapacity)}: ${
+                (contextRealtimeData.renderCapacity * 100).toFixed(3)} %</span>
+          </div>` : ''}
+      </div>
+    </div>`, target);
+  // clang-format on
+};
+
 export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<WebAudioModel> {
-  private readonly contentContainer: HTMLElement;
-  private readonly detailViewContainer: HTMLElement;
   private readonly knownContexts = new Set<string>();
-  private readonly landingPage: UI.EmptyWidget.EmptyWidget;
-  private readonly summaryBarContainer: HTMLElement;
-  private readonly contextSelectorPlaceholderText: Platform.UIString.LocalizedString;
-  private readonly contextSelectorElement: HTMLSelectElement;
   private readonly contextSelectorItems: UI.ListModel.ListModel<Protocol.WebAudio.BaseAudioContext>;
-  private readonly contextSelectorToolbarItem: UI.Toolbar.ToolbarItem;
+  private contextRealtimeData: Protocol.WebAudio.ContextRealtimeData|null = null;
+  private readonly view: View;
+  private selectedContextIndex = -1;
   private readonly pollRealtimeDataThrottler: Common.Throttler.Throttler;
 
-  constructor() {
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
     super({jslog: `${VisualLogging.panel('web-audio').track({resize: true})}`, useShadowDom: true});
+    this.view = view;
     this.registerRequiredCSS(webAudioStyles);
-    this.element.classList.add('web-audio-drawer');
 
     // Creates the toolbar.
-    const toolbarContainer = this.contentElement.createChild('div', 'web-audio-toolbar-container vbox');
-    toolbarContainer.role = 'toolbar';
 
-    this.contextSelectorPlaceholderText = i18nString(UIStrings.noRecordings);
     this.contextSelectorItems = new UI.ListModel.ListModel();
-    this.contextSelectorElement = document.createElement('select');
-    this.contextSelectorToolbarItem = new UI.Toolbar.ToolbarItem(this.contextSelectorElement);
-    this.contextSelectorToolbarItem.setTitle(
-        i18nString(UIStrings.audioContextS, {PH1: this.contextSelectorPlaceholderText}));
-    this.contextSelectorElement.addEventListener('change', this.onContextSelectorSelectionChanged.bind(this));
-    this.contextSelectorElement.disabled = true;
-    this.addContextSelectorPlaceholderOption();
-    this.contextSelectorItems.addEventListener(
-        UI.ListModel.Events.ITEMS_REPLACED, this.onContextSelectorListItemReplaced, this);
-    const toolbar = toolbarContainer.createChild('devtools-toolbar', 'web-audio-toolbar');
-    toolbar.role = 'presentation';
-    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('components.collect-garbage'));
-    toolbar.appendSeparator();
-    toolbar.appendToolbarItem(this.contextSelectorToolbarItem);
-    toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-
-    // Create content container
-    this.contentContainer = this.contentElement.createChild('div', 'web-audio-content-container vbox flex-auto');
-
-    // Creates the detail view.
-    this.detailViewContainer = this.contentContainer.createChild('div', 'web-audio-details-container vbox flex-auto');
-
-    // Creates the landing page.
-    this.landingPage = new UI.EmptyWidget.EmptyWidget(
-        i18nString(UIStrings.noWebAudio), i18nString(UIStrings.openAPageThatUsesWebAudioApiTo));
-    this.landingPage.link = WEBAUDIO_EXPLANATION_URL;
-    this.landingPage.show(this.detailViewContainer);
-
-    // Creates the summary bar.
-    this.summaryBarContainer = this.contentContainer.createChild('div', 'web-audio-summary-container');
+    this.contextSelectorItems.addEventListener(UI.ListModel.Events.ITEMS_REPLACED, this.requestUpdate, this);
 
     SDK.TargetManager.TargetManager.instance().observeModels(WebAudioModel, this);
     this.pollRealtimeDataThrottler = new Common.Throttler.Throttler(1000);
+    this.performUpdate();
   }
 
   override wasShown(): void {
@@ -152,6 +219,16 @@ export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SD
     this.removeEventListeners(webAudioModel);
   }
 
+  override performUpdate(): void {
+    const input = {
+      contexts: [...this.contextSelectorItems],
+      selectedContextIndex: this.selectedContextIndex,
+      onContextSelectorSelectionChanged: this.onContextSelectorSelectionChanged.bind(this),
+      contextRealtimeData: this.contextRealtimeData,
+    };
+    this.view(input, {}, this.contentElement);
+  }
+
   private addEventListeners(webAudioModel: WebAudioModel): void {
     webAudioModel.ensureEnabled();
     webAudioModel.addEventListener(ModelEvents.CONTEXT_CREATED, this.contextCreated, this);
@@ -167,61 +244,21 @@ export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SD
     webAudioModel.removeEventListener(ModelEvents.MODEL_RESET, this.reset, this);
   }
 
-  private addContextSelectorPlaceholderOption(): void {
-    const placeholderOption = UI.Fragment.html`
-    <option value="" hidden>${this.contextSelectorPlaceholderText}</option>`;
-    this.contextSelectorElement.appendChild(placeholderOption);
-  }
-
-  private onContextSelectorListItemReplaced(): void {
-    this.contextSelectorElement.removeChildren();
-
-    if (this.contextSelectorItems.length === 0) {
-      this.addContextSelectorPlaceholderOption();
-      this.contextSelectorElement.disabled = true;
-      this.onContextSelectorSelectionChanged();
-      return;
-    }
-
-    for (const context of this.contextSelectorItems) {
-      const option = UI.Fragment.html`
-    <option value=${context.contextId}>${this.titleForContext(context)}</option>`;
-      this.contextSelectorElement.appendChild(option);
-    }
-    this.contextSelectorElement.disabled = false;
-    this.onContextSelectorSelectionChanged();
-  }
-
-  private selectedContext(): Protocol.WebAudio.BaseAudioContext|null {
-    const selectedValue = this.contextSelectorElement.value;
-    if (!selectedValue) {
-      return null;
-    }
-    return this.contextSelectorItems.find(context => context.contextId === selectedValue) || null;
-  }
-
-  private onContextSelectorSelectionChanged(): void {
-    const selectedContext = this.selectedContext();
-    if (selectedContext) {
-      this.contextSelectorToolbarItem.setTitle(
-          i18nString(UIStrings.audioContextS, {PH1: this.titleForContext(selectedContext)}));
-    } else {
-      this.contextSelectorToolbarItem.setTitle(
-          i18nString(UIStrings.audioContextS, {PH1: this.contextSelectorPlaceholderText}));
-    }
-    this.updateDetailView(selectedContext);
-  }
-
-  private titleForContext(context: Protocol.WebAudio.BaseAudioContext): string {
-    return `${context.contextType} (${context.contextId.substr(-6)})`;
+  private onContextSelectorSelectionChanged(contextId: string): void {
+    this.selectedContextIndex = this.contextSelectorItems.findIndex(context => context.contextId === contextId);
+    void this.pollRealtimeDataThrottler.schedule(this.pollRealtimeData.bind(this));
+    this.requestUpdate();
   }
 
   private contextCreated(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext>): void {
     const context = event.data;
     this.knownContexts.add(context.contextId);
     this.contextSelectorItems.insert(this.contextSelectorItems.length, context);
-    this.onContextSelectorListItemReplaced();
-    void this.pollRealtimeDataThrottler.schedule(this.pollRealtimeData.bind(this));
+    if (this.selectedContextIndex === -1) {
+      this.selectedContextIndex = this.contextSelectorItems.length - 1;
+      void this.pollRealtimeDataThrottler.schedule(this.pollRealtimeData.bind(this));
+    }
+    this.requestUpdate();
   }
 
   private contextDestroyed(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.GraphObjectId>): void {
@@ -229,9 +266,13 @@ export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SD
     this.knownContexts.delete(contextId);
     const index = this.contextSelectorItems.findIndex(context => context.contextId === contextId);
     if (index > -1) {
+      const selectedContext =
+          this.selectedContextIndex > -1 ? this.contextSelectorItems.at(this.selectedContextIndex) : null;
       this.contextSelectorItems.remove(index);
-      this.onContextSelectorListItemReplaced();
+      this.selectedContextIndex =
+          selectedContext ? this.contextSelectorItems.indexOf(selectedContext) : this.contextSelectorItems.length - 1;
     }
+    this.requestUpdate();
   }
 
   private contextChanged(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext>): void {
@@ -244,93 +285,32 @@ export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SD
     const index = this.contextSelectorItems.findIndex(context => context.contextId === changedContext.contextId);
     if (index > -1) {
       this.contextSelectorItems.replace(index, changedContext);
-      this.onContextSelectorListItemReplaced();
     }
+    this.requestUpdate();
   }
 
   private reset(): void {
     this.contextSelectorItems.replaceAll([]);
-    this.onContextSelectorListItemReplaced();
+    this.selectedContextIndex = -1;
 
-    if (this.landingPage.isShowing()) {
-      this.landingPage.detach();
-    }
-    this.detailViewContainer.removeChildren();
-    this.landingPage.show(this.detailViewContainer);
     this.knownContexts.clear();
+    this.requestUpdate();
   }
 
-  private updateDetailView(context: Protocol.WebAudio.BaseAudioContext|null): void {
-    if (!context) {
-      this.landingPage.detach();
-      this.detailViewContainer.removeChildren();
-      this.landingPage.show(this.detailViewContainer);
-      return;
-    }
-
-    if (this.landingPage.isShowing()) {
-      this.landingPage.detach();
-    }
-
-    this.detailViewContainer.removeChildren();
-
-    const container = document.createElement('div');
-    container.classList.add('context-detail-container');
-
-    const addEntry = (entry: string, value: string|number, unit?: string): void => {
-      const valueWithUnit = value + (unit ? ` ${unit}` : '');
-      container.appendChild(UI.Fragment.html`
-        <div class="context-detail-row">
-          <div class="context-detail-row-entry">${entry}</div>
-          <div class="context-detail-row-value">${valueWithUnit}</div>
-        </div>
-      `);
-    };
-
-    const title = context.contextType === 'realtime' ? i18n.i18n.lockedString('AudioContext') :
-                                                       i18n.i18n.lockedString('OfflineAudioContext');
-    container.appendChild(UI.Fragment.html`
-      <div class="context-detail-header">
-        <div class="context-detail-title">${title}</div>
-        <div class="context-detail-subtitle">${context.contextId}</div>
-      </div>
-    `);
-
-    addEntry(i18nString(UIStrings.state), context.contextState);
-    addEntry(i18nString(UIStrings.sampleRate), context.sampleRate, 'Hz');
-    if (context.contextType === 'realtime') {
-      addEntry(i18nString(UIStrings.callbackBufferSize), context.callbackBufferSize, 'frames');
-    }
-    addEntry(i18nString(UIStrings.maxOutputChannels), context.maxOutputChannelCount, 'ch');
-
-    this.detailViewContainer.appendChild(container);
-  }
-
-  private updateSummaryBar(contextRealtimeData: Protocol.WebAudio.ContextRealtimeData): void {
-    this.summaryBarContainer.removeChildren();
-    const time = contextRealtimeData.currentTime.toFixed(3);
-    const mean = (contextRealtimeData.callbackIntervalMean * 1000).toFixed(3);
-    const stddev = (Math.sqrt(contextRealtimeData.callbackIntervalVariance) * 1000).toFixed(3);
-    const capacity = (contextRealtimeData.renderCapacity * 100).toFixed(3);
-    this.summaryBarContainer.appendChild(UI.Fragment.html`
-      <div class="context-summary-container">
-        <span>${i18nString(UIStrings.currentTime)}: ${time} s</span>
-        <span>\u2758</span>
-        <span>${i18nString(UIStrings.callbackInterval)}: μ = ${mean} ms, σ = ${stddev} ms</span>
-        <span>\u2758</span>
-        <span>${i18nString(UIStrings.renderCapacity)}: ${capacity} %</span>
-      </div>
-    `);
-  }
-
-  private clearSummaryBar(): void {
-    this.summaryBarContainer.removeChildren();
+  private setContextRealtimeData(contextRealtimeData: Protocol.WebAudio.ContextRealtimeData|null): void {
+    this.contextRealtimeData = contextRealtimeData;
+    this.requestUpdate();
   }
 
   private async pollRealtimeData(): Promise<void> {
-    const context = this.selectedContext();
+    if (this.selectedContextIndex < 0) {
+      this.setContextRealtimeData(null);
+      return;
+    }
+
+    const context = this.contextSelectorItems.at(this.selectedContextIndex);
     if (!context) {
-      this.clearSummaryBar();
+      this.setContextRealtimeData(null);
       return;
     }
 
@@ -342,11 +322,11 @@ export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SD
         }
         const realtimeData = await model.requestRealtimeData(context.contextId);
         if (realtimeData) {
-          this.updateSummaryBar(realtimeData);
+          this.setContextRealtimeData(realtimeData);
         }
         void this.pollRealtimeDataThrottler.schedule(this.pollRealtimeData.bind(this));
       } else {
-        this.clearSummaryBar();
+        this.setContextRealtimeData(null);
       }
     }
   }

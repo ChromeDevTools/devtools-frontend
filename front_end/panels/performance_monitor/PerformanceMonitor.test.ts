@@ -7,6 +7,7 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as PerformanceMonitor from './performance_monitor.js';
 
@@ -25,14 +26,13 @@ describeWithMockConnection('PerformanceMonitor', () => {
 
   it('updates metrics', async () => {
     const getMetrics = sinon.stub(target.performanceAgent(), 'invoke_getMetrics');
-    performanceMonitor = new PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl(0);
+    const view = createViewFunctionStub(PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl);
+    performanceMonitor = new PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl(0, view);
     renderElementIntoDOM(performanceMonitor);
-    assert.isFalse(
-        [...performanceMonitor.contentElement.querySelectorAll('.perfmon-indicator-value')].some(e => e.textContent));
+
+    assert.isUndefined((await view.nextInput).metrics);
     await expectCall(getMetrics, {fakeFn: () => Promise.resolve({metrics: [{name: 'LayoutCount', value: 42}]})});
     await expectCall(getMetrics, {fakeFn: () => Promise.resolve({metrics: [{name: 'LayoutCount', value: 84}]})});
-    await performanceMonitor.updateComplete;
-    assert.isTrue(
-        [...performanceMonitor.contentElement.querySelectorAll('.perfmon-indicator-value')].some(e => e.textContent));
+    assert.isNotEmpty((await view.nextInput).metrics);
   });
 });

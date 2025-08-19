@@ -34,14 +34,10 @@
 }
 
 .perfmon-chart-suspend-overlay {
-  display: none;
+  display: flex;
   font-size: 26px;
   align-items: center;
   justify-content: center;
-}
-
-.suspended.perfmon-chart-suspend-overlay {
-  display: flex;
 }
 
 .perfmon-control-pane {

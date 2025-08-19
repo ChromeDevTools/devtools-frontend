@@ -1,7 +1,6 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -10,7 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import {html, render, type TemplateResult} from '../../ui/lit/lit.js';
+import {Directives, html, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import performanceMonitorStyles from './performanceMonitor.css.js';
@@ -59,9 +58,57 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/performance_monitor/PerformanceMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {widgetConfig} = UI.Widget;
+const {classMap, ref} = Directives;
+
+interface PerformanceMonitorInput {
+  onMetricChanged: (metricName: string, active: boolean) => void;
+  chartsInfo: ChartInfo[];
+  metrics?: Map<string, number>;
+  width: number;
+  height: number;
+  suspended: boolean;
+}
+
+interface PerformanceMonitorOutput {
+  graphRenderingContext: CanvasRenderingContext2D|null;
+  width: number;
+}
+
+type PerformanceMonitorView = (input: PerformanceMonitorInput, output: PerformanceMonitorOutput, target: HTMLElement) =>
+    void;
+
+const DEFAULT_VIEW: PerformanceMonitorView = (input, output, target) => {
+  // clang-format off
+  render(html`
+    <devtools-widget .widgetConfig=${widgetConfig(ControlPane, {
+      onMetricChanged: input.onMetricChanged,
+      chartsInfo: input.chartsInfo,
+      metrics: input.metrics
+    })} class=${classMap({suspended: input.suspended})}></devtools-widget>
+    <div class="perfmon-chart-container ${classMap({suspended: input.suspended})}">
+      <canvas tabindex="-1" aria-label=${i18nString(UIStrings.graphsDisplayingARealtimeViewOf)}
+          .width=${Math.round(input.width * window.devicePixelRatio)} .height=${input.height}
+          style="height:${input.height / window.devicePixelRatio}px" ${ref(e => {
+            if (e) {
+              const canvas = e as HTMLCanvasElement;
+              output.graphRenderingContext = canvas.getContext('2d');
+              output.width = canvas.offsetWidth;
+            }
+      })}>
+      </canvas>
+    </div>
+    ${input.suspended ? html`
+      <div class="perfmon-chart-suspend-overlay fill">
+        <div>${i18nString(UIStrings.paused)}</div>
+      </div>` : ''}`,
+    target);
+  // clang-format on
+};
 
 export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     SDK.TargetManager.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
+  private view: PerformanceMonitorView;
   private chartInfos: ChartInfo[] = [];
   private activeCharts = new Set<string>();
   private metricsBuffer: Array<{timestamp: number, metrics: Map<string, number>}>;
@@ -70,8 +117,6 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   private readonly scaleHeight: number;
   private graphHeight: number;
   private gridColor: string;
-  private controlPane: ControlPane;
-  private canvas: HTMLCanvasElement;
   private animationId!: number;
   private width!: number;
   private height!: number;
@@ -79,12 +124,14 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   private pollTimer?: number;
   private metrics?: Map<string, number>;
   private suspended = false;
+  private graphRenderingContext: CanvasRenderingContext2D|null = null;
 
-  constructor(pollIntervalMs = 500) {
+  constructor(pollIntervalMs = 500, view = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.panel('performance.monitor').track({resize: true})}`,
       useShadowDom: true,
     });
+    this.view = view;
     this.registerRequiredCSS(performanceMonitorStyles);
 
     this.metricsBuffer = [];
@@ -97,15 +144,6 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     /** @constant */
     this.graphHeight = 90;
     this.gridColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--divider-line');
-    this.controlPane = new ControlPane();
-    this.controlPane.show(this.contentElement);
-    const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
-    this.canvas = chartContainer.createChild('canvas');
-    this.canvas.tabIndex = -1;
-    UI.ARIAUtils.setLabel(this.canvas, i18nString(UIStrings.graphsDisplayingARealtimeViewOf));
-    this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
-        i18nString(UIStrings.paused);
-    this.controlPane.onMetricChanged = this.onMetricStateChanged.bind(this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
   }
 
@@ -129,7 +167,6 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
       // to re-evaluate when the theme changes before re-drawing the canvas.
       this.chartInfos = this.createChartInfos();
       this.requestUpdate();
-      this.draw();
     });
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.suspendStateChanged, this);
@@ -149,15 +186,18 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   }
 
   override performUpdate(): void {
-    this.controlPane.chartsInfo = this.chartInfos;
-    this.controlPane.metrics = this.metrics;
-    this.width = this.canvas.offsetWidth;
-    this.canvas.width = Math.round(this.width * window.devicePixelRatio);
-    this.canvas.height = this.height;
-    this.canvas.style.height = `${this.height / window.devicePixelRatio}px`;
-    for (const child of this.contentElement.children) {
-      child.classList.toggle('suspended', this.suspended);
-    }
+    const input = {
+      onMetricChanged: this.onMetricStateChanged.bind(this),
+      chartsInfo: this.chartInfos,
+      metrics: this.metrics,
+      width: this.width,
+      height: this.height,
+      suspended: this.suspended,
+    };
+    const output = {graphRenderingContext: null, width: 0};
+    this.view(input, output, this.contentElement);
+    this.graphRenderingContext = output.graphRenderingContext;
+    this.width = output.width;
     this.draw();
   }
 
@@ -230,10 +270,10 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   }
 
   private draw(): void {
-    if (!this.canvas) {
+    if (!this.graphRenderingContext) {
       return;
     }
-    const ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = this.graphRenderingContext;
     ctx.save();
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     ctx.clearRect(0, 0, this.width, this.height);
@@ -446,7 +486,6 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
   override onResize(): void {
     super.onResize();
-    this.width = this.canvas.offsetWidth;
     this.recalcChartHeight();
   }
 
@@ -617,8 +656,8 @@ export class ControlPane extends UI.Widget.VBox {
   readonly #metricValues = new Map<string, number>();
   readonly #view: ControlPaneView;
 
-  constructor(view = CONTROL_PANE_DEFAULT_VIEW) {
-    super({useShadowDom: false, classes: ['perfmon-control-pane']});
+  constructor(element: HTMLElement, view = CONTROL_PANE_DEFAULT_VIEW) {
+    super(element, {useShadowDom: false, classes: ['perfmon-control-pane']});
     this.#view = view;
 
     this.#enabledChartsSetting = Common.Settings.Settings.instance().createSetting(

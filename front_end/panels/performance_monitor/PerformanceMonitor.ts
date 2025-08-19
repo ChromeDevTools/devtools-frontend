@@ -87,7 +87,6 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     });
     this.registerRequiredCSS(performanceMonitorStyles);
 
-    this.contentElement.classList.add('perfmon-pane');
     this.metricsBuffer = [];
     /** @constant */
     this.pixelsPerMs = 10 / 1000;
@@ -156,7 +155,9 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     this.canvas.width = Math.round(this.width * window.devicePixelRatio);
     this.canvas.height = this.height;
     this.canvas.style.height = `${this.height / window.devicePixelRatio}px`;
-    this.contentElement.classList.toggle('suspended', this.suspended);
+    for (const child of this.contentElement.children) {
+      child.classList.toggle('suspended', this.suspended);
+    }
     this.draw();
   }
 

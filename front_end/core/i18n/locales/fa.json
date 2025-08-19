@@ -1280,14 +1280,8 @@
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() دیگر در مبدأهای ناامن کار نمی‌کند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
   },
-  "generated/Deprecation.ts | H1UserAgentFontSizeInSection": {
-    "message": "برچسب <h1> درون یک <article>،‏ <aside>،‏ <nav>، یا <section> پیدا شد که اندازه قلم مشخصی ندارد. اندازه نوشتار این سرصفحه به‌زودی در این مرورگر تغییر خواهد کرد. برای اطلاعات بیشتر، به https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 مراجعه کنید."
-  },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate منسوخ شده است. لطفاً درعوض از RTCPeerConnectionIceErrorEvent.address یا RTCPeerConnectionIceErrorEvent.port استفاده کنید."
-  },
-  "generated/Deprecation.ts | IdentityDigitalCredentials": {
-    "message": "این قالب برای درخواست navigator.credentials.get()‎ مربوط به اطلاعات اعتباری دیجیتال منسوخ شده است؛ لطفاً فراخوانی‌تان را به‌روز کنید تا از قالب جدید استفاده کند."
   },
   "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
     "message": "داده‌های اختیاری و مبدأ فروشنده از رویداد عامل خدماتی canmakepayment منسوخ شده‌اند و برداشته خواهند شد: topOrigin، paymentRequestOrigin، methodData، modifiers."
@@ -1327,6 +1321,9 @@
   },
   "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
     "message": "مشخص کردن overflow: visible در برچسب‌های بوم نقاشی، ویدیو، و تصویر ممکن است باعث شود محتوای بصری خارج از محدوده‌های عنصر تولید کند. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md را ببینید."
+  },
+  "generated/Deprecation.ts | OverrideFlashEmbedwithHTML": {
+    "message": "جاسازی ویدیو فلش قدیمی به HTML iframe بازنویسی شده است. فلاش کردن مدت‌ها است از رده خارج شده است، این روش بازنویسی منسوخ است و ممکن است در آینده برداشته شود."
   },
   "generated/Deprecation.ts | PaymentInstruments": {
     "message": "paymentManager.instruments منسوخ شده است. لطفاً به‌جای آن از نصب به‌موقع برای کنترل‌کننده‌های پرداخت استفاده کنید."
@@ -1397,9 +1394,6 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "برای ادامه استفاده از SharedArrayBuffer، افزونه‌ها باید در جداسازی بین‌مبدائی فعال شوند. به https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎ مراجعه کنید."
   },
-  "generated/Deprecation.ts | WebGPUAdapterIsFallbackAdapter": {
-    "message": "مشخصه isFallbackAdapter‏ GPUAdapter منسوخ شده است، به‌جای آن از مشخصه isFallbackAdapter‏ GPUAdapterInfo استفاده کنید."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "پاسخ json در XMLHttpRequest از UTF-16 پشتیبانی نمی‌کند."
   },
@@ -1444,24 +1438,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "‫[{PH1}] درحال بارگیری نمادهای اشکال‌زدایی برای {PH2} (ازطریق {PH3})…"
-  },
-  "models/bindings/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
-    "message": "افزودن همه متن‌های ناشناس به فهرست استثناها"
-  },
-  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "افزودن همه متن‌های افزونه به فهرست استثناها"
-  },
-  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
-    "message": "افزودن همه متون شخص ثالث به فهرست نادیده گرفتن"
-  },
-  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
-    "message": "افزودن فهرست راهنما به فهرست نادیده گرفتن"
-  },
-  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
-    "message": "افزودن متن به فهرست نادیده گرفتن"
-  },
-  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
-    "message": "برداشتن از فهرست نادیده گرفتن"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit ترجمه نشد: {PH1}"
@@ -1700,6 +1676,12 @@
   "models/persistence/IsolatedFileSystem.ts | cantReadFileSS": {
     "message": "خواندن فایل ممکن نیست: {PH1}: {PH2}"
   },
+  "models/persistence/IsolatedFileSystem.ts | createDirFailed": {
+    "message": "ملغی می‌شود: دایرکتوری {PH1} ایجاد نشد. آیا فضای کاری یا ملغی‌شده‌ها به‌درستی پیکربندی شده است؟"
+  },
+  "models/persistence/IsolatedFileSystem.ts | createDirFailedBecausePathIsFile": {
+    "message": "ملغی می‌شود: دایرکتوری {PH1} ایجاد نشد زیرا این مسیر ازقبل وجود دارد و یک فایل است."
+  },
   "models/persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
     "message": "خطای سیستم فایل: {PH1}"
   },
@@ -1796,9 +1778,6 @@
   "models/trace/insights/CLSCulprits.ts | description": {
     "message": "تغییرات چیدمان زمانی اتفاق می‌افتد که عناصر بدون تعامل کاربر حرکت می‌کنند. [دلایل این تغییرات در چیدمان را بررسی کنید](https://web.dev/articles/optimize-cls)، مثلاً اضافه شدن یا برداشته شدن عناصر یا تغییر کردن قلم آن‌ها وقتی صفحه بار می‌شود."
   },
-  "models/trace/insights/CLSCulprits.ts | fontRequest": {
-    "message": "درخواست قلم"
-  },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "‫iframe تزریق‌شده"
   },
@@ -1818,7 +1797,10 @@
     "message": "مشکلات اصلی تغییر چیدمان"
   },
   "models/trace/insights/CLSCulprits.ts | unsizedImage": {
-    "message": "Unsized image element"
+    "message": "عنصر تصویر بدون اندازه"
+  },
+  "models/trace/insights/CLSCulprits.ts | webFont": {
+    "message": "قلم وب"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "بدترین خوشه"
@@ -1847,8 +1829,17 @@
   "models/trace/insights/DOMSize.ts | description": {
     "message": "‫DOM بزرگ می‌تواند مدت زمان محاسبه سبک و آرایش مجدد لایه‌ها را افزایش دهد و بر پاسخ‌گویی صفحه تأثیر بگذارد. DOM بزرگ باعث می‌شود استفاده از حافظه هم افزایش یابد. [ببینید چگونه می‌توانید از افزایش بیش‌ازحد اندازه DOM جلوگیری کنید](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
   },
+  "models/trace/insights/DOMSize.ts | duration": {
+    "message": "مدت"
+  },
   "models/trace/insights/DOMSize.ts | element": {
     "message": "عنصر"
+  },
+  "models/trace/insights/DOMSize.ts | largeLayout": {
+    "message": "چیدمان ({PH1} شیء)"
+  },
+  "models/trace/insights/DOMSize.ts | largeStyleRecalc": {
+    "message": "محاسبه مجدد سبک ({PH1} عنصر)"
   },
   "models/trace/insights/DOMSize.ts | maxChildren": {
     "message": "اکثر فرزندان"
@@ -1861,6 +1852,9 @@
   },
   "models/trace/insights/DOMSize.ts | title": {
     "message": "بهینه‌سازی اندازه DOM"
+  },
+  "models/trace/insights/DOMSize.ts | topUpdatesDescription": {
+    "message": "این‌ها بزرگ‌ترین رویدادهای محاسبه مجدد چیدمان و سبک هستند. با ساده‌تر کردن DOM، می‌توان تأثیر آن‌ها بر عملکرد را کاهش داد."
   },
   "models/trace/insights/DOMSize.ts | totalElements": {
     "message": "کل عناصر"
@@ -1929,7 +1923,7 @@
     "message": "(ناشناس)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "بسیاری از میاناهای برنامه‌سازی کاربردی که معمولاً هندسه چیدمان را می‌خوانند، موتور پرداز زدن را مجبور می‌کنند اجرای دستورگان را متوقف کند و سبک و چیدمان را محاسبه کند. درباره [بازآرایی اجباری](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) و کاهش آن بیشتر بدانید."
+    "message": "یک بازآرایی اجباری زمانی رخ می‌دهد که جاوا اسکریپت پس‌از نامعتبر شدن سبک‌ها به‌دنبال تغییر در وضعیت DOM، از ویژگی‌های هندسی (مانند offsetWidth) پرس‌وجو می‌کند. می‌تواند منجر به عملکرد ضعیف شود. درباره [بازآرایی اجباری](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) و روش‌های ممکن برای کاهش آن بیشتر بدانید."
   },
   "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
     "message": "ردیابی پشته‌ای"
@@ -1945,6 +1939,30 @@
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
     "message": "[بدون نسبت]"
+  },
+  "models/trace/insights/INPBreakdown.ts | description": {
+    "message": "بازرسی را با طولانی‌ترین بخش فرعی شروع کنید. [می‌توان میزان تأخیرها را به‌حداقل رساند](https://web.dev/articles/optimize-inp#optimize_interactions). برای کاهش مدت پردازش، [هزینه‌های رشته اصلی را بهینه کنید](https://web.dev/articles/optimize-long-tasks) (رشته اصلی اغلب جاوا اسکریپت است)."
+  },
+  "models/trace/insights/INPBreakdown.ts | duration": {
+    "message": "مدت"
+  },
+  "models/trace/insights/INPBreakdown.ts | inputDelay": {
+    "message": "تأخیر ورودی"
+  },
+  "models/trace/insights/INPBreakdown.ts | noInteractions": {
+    "message": "تعاملی شناسایی نشد"
+  },
+  "models/trace/insights/INPBreakdown.ts | presentationDelay": {
+    "message": "تأخیر ارائه"
+  },
+  "models/trace/insights/INPBreakdown.ts | processingDuration": {
+    "message": "مدت پردازش"
+  },
+  "models/trace/insights/INPBreakdown.ts | subpart": {
+    "message": "بخش فرعی"
+  },
+  "models/trace/insights/INPBreakdown.ts | title": {
+    "message": "تفکیک INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "کاهش زمان بارگیری تصاویر می‌تواند مدت زمان احساس‌شده برای بار کردن صفحه و LCP را بهبود بخشد. [درباره بهینه‌سازی اندازه تصویر بیشتر بدانید](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -1976,29 +1994,35 @@
   "models/trace/insights/ImageDelivery.ts | useVideoFormat": {
     "message": "استفاده از قالب‌های ویدیو به‌جای گیف می‌تواند اندازه بارگیری محتوای متحرک را بهبود ببخشد."
   },
-  "models/trace/insights/InteractionToNextPaint.ts | description": {
-    "message": "بازرسی را با طولانی‌ترین فاز شروع کنید. [می‌توان میزان تأخیرها را به‌حداقل رساند](https://web.dev/articles/optimize-inp#optimize_interactions). برای کاهش مدت پردازش، [هزینه‌های رشته اصلی را بهینه کنید](https://web.dev/articles/optimize-long-tasks) (رشته اصلی اغلب جاوااسکریپت است)."
+  "models/trace/insights/LCPBreakdown.ts | description": {
+    "message": "هر [بخش فرعی استراتژی‌های بهبود مشخصی دارد](https://web.dev/articles/optimize-lcp#lcp-breakdown). در حالت ایده‌آل، اکثر زمان LCP باید صرف بار کردن منابع شود، نه اینکه با تأخیر هدر برود."
   },
-  "models/trace/insights/InteractionToNextPaint.ts | duration": {
+  "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "مدت"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | inputDelay": {
-    "message": "تأخیر ورودی"
+  "models/trace/insights/LCPBreakdown.ts | elementRenderDelay": {
+    "message": "تأخیر در پرداز زدن عنصر"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | noInteractions": {
-    "message": "تعاملی شناسایی نشد"
+  "models/trace/insights/LCPBreakdown.ts | fieldDuration": {
+    "message": "فیلد صدک ۷۵"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | phase": {
-    "message": "فاز"
+  "models/trace/insights/LCPBreakdown.ts | noLcp": {
+    "message": "«بزرگ‌ترین نقاشی دارای محتوا» (LCP) شناسایی نشد"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | presentationDelay": {
-    "message": "تأخیر ارائه"
+  "models/trace/insights/LCPBreakdown.ts | resourceLoadDelay": {
+    "message": "تأخیر در بار کردن منبع"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | processingDuration": {
-    "message": "مدت پردازش"
+  "models/trace/insights/LCPBreakdown.ts | resourceLoadDuration": {
+    "message": "مدت زمان بار شدن منبع"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | title": {
-    "message": "‫INP براساس مرحله"
+  "models/trace/insights/LCPBreakdown.ts | subpart": {
+    "message": "بخش فرعی"
+  },
+  "models/trace/insights/LCPBreakdown.ts | timeToFirstByte": {
+    "message": "زمان تا اولین بایت"
+  },
+  "models/trace/insights/LCPBreakdown.ts | title": {
+    "message": "تفکیک LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
     "message": "با [یافتنی کردن](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) تصویر LCP مستقیماً از HTML، و اجتناب از [بارگیری کُند](https://web.dev/articles/lcp-lazy-loading) تصویر LCP را بهینه کنید."
@@ -2027,36 +2051,6 @@
   "models/trace/insights/LCPDiscovery.ts | title": {
     "message": "اکتشاف درخواست LCP"
   },
-  "models/trace/insights/LCPPhases.ts | description": {
-    "message": "هر [فاز استراتژی‌های بهبود مشخصی دارد](https://web.dev/articles/optimize-lcp#lcp-breakdown). در حالت ایده‌آل، اکثر زمان LCP باید صرف بار کردن منابع شود، نه اینکه با تأخیر هدر برود."
-  },
-  "models/trace/insights/LCPPhases.ts | duration": {
-    "message": "مدت"
-  },
-  "models/trace/insights/LCPPhases.ts | elementRenderDelay": {
-    "message": "تأخیر در پرداز زدن عنصر"
-  },
-  "models/trace/insights/LCPPhases.ts | fieldDuration": {
-    "message": "فیلد صدک ۷۵"
-  },
-  "models/trace/insights/LCPPhases.ts | noLcp": {
-    "message": "«بزرگ‌ترین نقاشی دارای محتوا» (LCP) شناسایی نشد"
-  },
-  "models/trace/insights/LCPPhases.ts | phase": {
-    "message": "فاز"
-  },
-  "models/trace/insights/LCPPhases.ts | resourceLoadDelay": {
-    "message": "تأخیر در بار کردن منبع"
-  },
-  "models/trace/insights/LCPPhases.ts | resourceLoadDuration": {
-    "message": "مدت زمان بار شدن منبع"
-  },
-  "models/trace/insights/LCPPhases.ts | timeToFirstByte": {
-    "message": "زمان تا اولین بایت"
-  },
-  "models/trace/insights/LCPPhases.ts | title": {
-    "message": "‫LCP براساس فاز"
-  },
   "models/trace/insights/LegacyJavaScript.ts | columnScript": {
     "message": "دستورگان"
   },
@@ -2073,7 +2067,7 @@
     "message": "‫HTTP/2 و HTTP/3 مزایای زیادی نسبت‌به HTTP/1.1 ارائه می‌دهند، مثل هم‌تافتگری. [درباره استفاده از HTTP مدرن بیشتر بدانید](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
-    "message": "هیچ درخواستی از HTTP/1.1 استفاده نمی‌کند"
+    "message": "هیچ درخواستی از HTTP/1.1 استفاده نکرده است، یا استفاده فعلی از HTTP/1.1 فرصت بهینه‌سازی قابل توجهی ایجاد نمی‌کند. درخواست‌های HTTP/1.1 تنها زمانی پرچم‌گذاری می‌شوند که حداقل شش منبع ایستا از یک مبدأ یکسان باشند و از محیط توسعه نرم‌افزار محلی یا منابع طرف سوم نباشند."
   },
   "models/trace/insights/ModernHTTP.ts | protocol": {
     "message": "پروتکل"
@@ -2174,6 +2168,12 @@
   "models/trace/insights/SlowCSSSelector.ts | title": {
     "message": "هزینه‌های گزینشگر CSS"
   },
+  "models/trace/insights/SlowCSSSelector.ts | topSelectorElapsedTime": {
+    "message": "بیشترین مدت سپری‌شده برای گزینشگر"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | topSelectorMatchAttempt": {
+    "message": "بیشترین تلاش برای تطبیق گزینشگر"
+  },
   "models/trace/insights/SlowCSSSelector.ts | topSelectors": {
     "message": "گزینشگران برتر"
   },
@@ -2206,6 +2206,24 @@
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "بهینه کردن ناحیه نمایش برای تلفن همراه"
+  },
+  "models/workspace/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
+    "message": "افزودن همه متن‌های ناشناس به فهرست استثناها"
+  },
+  "models/workspace/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "افزودن همه متن‌های افزونه به فهرست استثناها"
+  },
+  "models/workspace/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "افزودن همه متون شخص ثالث به فهرست نادیده گرفتن"
+  },
+  "models/workspace/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "افزودن فهرست راهنما به فهرست نادیده گرفتن"
+  },
+  "models/workspace/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "افزودن متن به فهرست نادیده گرفتن"
+  },
+  "models/workspace/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "برداشتن از فهرست نادیده گرفتن"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(نمایه)"
@@ -2639,9 +2657,6 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "حذف گپ محلی"
   },
-  "panels/ai_assistance/AiAssistancePanel.ts | externalRequestReceived": {
-    "message": "‫DevTools یک درخواست خارجی دریافت کرد"
-  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "برای پرسیدن سؤال، مراحل بالا را دنبال کنید"
   },
@@ -2674,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "پرسیدن از هوش مصنوعی"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
+    "message": "اشکال‌زدایی کردن با هوش مصنوعی"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "فعال کردن دستیاری هوش مصنوعی"
@@ -3581,9 +3599,6 @@
   "panels/application/ServiceWorkersView.ts | focus": {
     "message": "فوکوس"
   },
-  "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "بازرسی"
-  },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "درخواست‌های شبکه"
   },
@@ -4071,10 +4086,10 @@
     "message": "صفحه بااستفاده از «window.open()» باز شده است و برگه دیگری به آن ارجاع داده است، یا صفحه پنجره‌ای را باز کرده است."
   },
   "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "پردازش تولیدکننده تصویر برای صفحه در حافظه پنهان عقب-جلو از کار افتاد."
+    "message": "روند ارائه‌دهنده تصویر برای صفحه در حافظه پنهان عقب-جلو ازکار افتاد."
   },
   "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "پردازش تولیدکننده تصویر برای صفحه موجود در حافظه پنهان عقب-جلو متوقف شد."
+    "message": "روند ارائه‌دهنده تصویر برای صفحه موجود در حافظه پنهان عقب-جلو متوقف شد."
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
     "message": "درحال‌حاضر، صفحه‌هایی که اجازه‌های ضبط صدا درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
@@ -4117,6 +4132,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
     "message": "درحال‌حاضر، صفحه‌هایی که از SharedWorker استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorkerMessage": {
+    "message": "صفحه از حافظه پنهان خارج شد زیرا پیامی از یک SharedWorker دریافت کرده است"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
     "message": "درحال‌حاضر، صفحه‌هایی که از SpeechRecognizer استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
@@ -5202,10 +5220,10 @@
     "message": "آشکار کردن بارگذاری‌های فرضی مرتبط با این مجموعه قوانین"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | clickToOpenInElementsPanel": {
-    "message": "برای باز کردن در پانل «عناصر»، کلیک کنید"
+    "message": "کلیلک کردن برای باز کردن در پانل «عناصر»"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | clickToOpenInNetworkPanel": {
-    "message": "برای باز کردن در پانل «شبکه»، کلیک کنید"
+    "message": "کلیک کردن برای باز کردن در پانل «شبکه»"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# خطا}one{# خطا}other{# خطا}}"
@@ -5241,7 +5259,7 @@
     "message": "نشانی وب کنونی"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | detailsFailureReason": {
-    "message": "دلیل عدم موفقیت"
+    "message": "دلیل انجام نشدن"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
     "message": "صفحه آغازگر تلاش کرد نشانی وب این صفحه را پیش‌پرداز کند. پیش‌پرداز انجام نشد اما متن پاسخ حاصل همچنان به‌عنوان واکشی اولیه استفاده می‌شد."
@@ -5576,20 +5594,23 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "نمایش تغییرات"
   },
+  "panels/common/FreDialog.ts | cancel": {
+    "message": "لغو"
+  },
+  "panels/common/FreDialog.ts | gotIt": {
+    "message": "متوجهم"
+  },
+  "panels/common/FreDialog.ts | learnMore": {
+    "message": "بیشتر بدانید"
+  },
+  "panels/common/FreDialog.ts | thingsToConsider": {
+    "message": "مواردی که باید درنظر داشت"
+  },
   "panels/common/common.ts | allow": {
     "message": "اجازه دادن"
   },
   "panels/common/common.ts | cancel": {
     "message": "لغو"
-  },
-  "panels/common/common.ts | gotIt": {
-    "message": "متوجهم"
-  },
-  "panels/common/common.ts | learnMore": {
-    "message": "بیشتر بدانید"
-  },
-  "panels/common/common.ts | thingsToConsider": {
-    "message": "مواردی که باید درنظر داشت"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "افزونه"
@@ -6470,6 +6491,9 @@
   "panels/elements/ElementIssueUtils.ts | interactiveContentOptionChild": {
     "message": "در عنصر <option>، عنصر تعاملی وجود دارد"
   },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentSummaryDescendant": {
+    "message": "در عنصر <legend>، عنصر تعاملی وجود دارد"
+  },
   "panels/elements/ElementIssueUtils.ts | nonPhrasingContentOptionChild": {
     "message": "در عنصر <option> از محتوای نامرتبط با جمله‌بندی استفاده شده است"
   },
@@ -6548,8 +6572,23 @@
   "panels/elements/ElementsTreeElement.ts | addAttribute": {
     "message": "افزودن مشخصه"
   },
+  "panels/elements/ElementsTreeElement.ts | addPadding": {
+    "message": "افزودن لایه‌گذاری"
+  },
+  "panels/elements/ElementsTreeElement.ts | alignItems": {
+    "message": "تراز کردن موارد"
+  },
+  "panels/elements/ElementsTreeElement.ts | assessVisibility": {
+    "message": "ارزیابی رؤیت‌پذیری"
+  },
   "panels/elements/ElementsTreeElement.ts | captureNodeScreenshot": {
     "message": "ضبط نماگرفت گره"
+  },
+  "panels/elements/ElementsTreeElement.ts | centerElement": {
+    "message": "به مرکز بردن عنصر"
+  },
+  "panels/elements/ElementsTreeElement.ts | changeParentProperties": {
+    "message": "تغییر خصوصیت‌های مادر"
   },
   "panels/elements/ElementsTreeElement.ts | children": {
     "message": "فرزندان:"
@@ -6596,6 +6635,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "غیرفعال کردن همپوشانی قفل پیمایش"
   },
+  "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
+    "message": "توزیع یکنواخت موارد"
+  },
   "panels/elements/ElementsTreeElement.ts | duplicateElement": {
     "message": "عنصر تکراری"
   },
@@ -6623,8 +6665,35 @@
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "گسترده کردن تکرارشونده"
   },
+  "panels/elements/ElementsTreeElement.ts | explainContainerContext": {
+    "message": "توضیح بافت محتوا"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainContainerQueries": {
+    "message": "توضیح پُرسمان‌های محتوا"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainContainerTypes": {
+    "message": "توضیح انواع محتوا"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainFlexbox": {
+    "message": "توضیح چارگوش انعطاف‌پذیر"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainGridLayout": {
+    "message": "توضیح چیدمان شبکه‌ای"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainScrollbars": {
+    "message": "توضیح نوارهای پیمایش"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
+    "message": "توضیح جدول‌های فرعی"
+  },
+  "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
+    "message": "یافتن تعریف جدول"
+  },
   "panels/elements/ElementsTreeElement.ts | focus": {
     "message": "کانونی کردن"
+  },
+  "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
+    "message": "باز نگه داشتن این بالاپر"
   },
   "panels/elements/ElementsTreeElement.ts | forceState": {
     "message": "اعمال اجباری وضعیت"
@@ -6637,6 +6706,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "جای‌گذاری کردن"
+  },
+  "panels/elements/ElementsTreeElement.ts | removeScrollbars": {
+    "message": "برداشتن نوارهای پیمایش"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "پیمایش کنید تا نمایش داده شود"
@@ -6653,6 +6725,15 @@
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
     "message": "نمایش عنصر منسوب به مشخصه popovertarget"
   },
+  "panels/elements/ElementsTreeElement.ts | startAChat": {
+    "message": "شروع گپ"
+  },
+  "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
+    "message": "متوقف کردن باز ماندن این بالاپر"
+  },
+  "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
+    "message": "سبک‌بندی نوارهای پیمایش"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "این قاب به‌عنوان قاب آگهی شناسایی شده است"
   },
@@ -6662,11 +6743,11 @@
   "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<مقدار برای ویرایش بسیار بزرگ است>"
   },
+  "panels/elements/ElementsTreeElement.ts | wrapTheseItems": {
+    "message": "پیچیدن این موارد"
+  },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "DOM صفحه"
-  },
-  "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "نمایش"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "نمایش همه گره‌ها ({PH1} مورد دیگر)"
@@ -6706,6 +6787,27 @@
   },
   "panels/elements/LayersWidget.ts | toggleCSSLayers": {
     "message": "فعال/ غیرفعال کردن نمای لایه‌های CSS"
+  },
+  "panels/elements/LayoutPane.ts | chooseElementOverlayColor": {
+    "message": "انتخاب رنگ همپوشانی برای این عنصر"
+  },
+  "panels/elements/LayoutPane.ts | colorPickerOpened": {
+    "message": "انتخاب‌گر رنگ باز شد."
+  },
+  "panels/elements/LayoutPane.ts | flexbox": {
+    "message": "چارگوش انعطاف‌پذیر"
+  },
+  "panels/elements/LayoutPane.ts | flexboxOverlays": {
+    "message": "همپوشانی‌های چارگوش انعطاف‌پذیر"
+  },
+  "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
+    "message": "هیچ‌گونه طرح‌بندی چارگوش انعطاف‌پذیر در این صفحه پیدا نشد"
+  },
+  "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
+    "message": "تنظیمات نمایش همپوشانی"
+  },
+  "panels/elements/LayoutPane.ts | showElementInTheElementsPanel": {
+    "message": "نمایش عنصر در پانل «عناصر»"
   },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "نقطه گسست DOM"
@@ -6751,6 +6853,9 @@
   },
   "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
     "message": "مقدار خصوصیت CSS: {PH1}"
+  },
+  "panels/elements/ShortcutTreeElement.ts | reveal": {
+    "message": "نمایش"
   },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "برگه سبک نگارش ساخته‌شده"
@@ -6893,11 +6998,29 @@
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "بیشتر بدانید"
   },
+  "panels/elements/components/CSSPropertyDocsView.ts | browserOnPlatform": {
+    "message": "‫{PH1} در {PH2}"
+  },
   "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
     "message": "نشان داده نشود"
   },
   "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "بیشتر بدانید"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | limitedAvailability": {
+    "message": "دسترسی محدود در مرورگرهای اصلی"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | limitedAvailabilityInBrowsers": {
+    "message": "دسترس‌پذیری محدود در مرورگرهای اصلی (به‌طور کامل در {PH1} پیاده‌سازی نشده است)"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | newlyAvailableSince": {
+    "message": "به‌تازگی در مرورگرهای اصلی دردسترس قرار گرفته است (Baseline از {PH1})"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | unknownDate": {
+    "message": "تاریخ نامشخص"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | widelyAvailableSince": {
+    "message": "به‌طور گسترده در مرورگرهای اصلی دردسترس است (Baseline از{PH1})"
   },
   "panels/elements/components/CSSVariableValueView.ts | invalidPropertyValue": {
     "message": "مقدار دارایی نامعتبر است، نوع موردانتظار: {type}"
@@ -6922,36 +7045,6 @@
   },
   "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
     "message": "ازهم باز کردن"
-  },
-  "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "انتخاب رنگ همپوشانی برای این عنصر"
-  },
-  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
-    "message": "انتخاب‌گر رنگ باز شد."
-  },
-  "panels/elements/components/LayoutPane.ts | flexbox": {
-    "message": "چارگوش انعطاف‌پذیر"
-  },
-  "panels/elements/components/LayoutPane.ts | flexboxOverlays": {
-    "message": "همپوشانی‌های چارگوش انعطاف‌پذیر"
-  },
-  "panels/elements/components/LayoutPane.ts | grid": {
-    "message": "جدول"
-  },
-  "panels/elements/components/LayoutPane.ts | gridOverlays": {
-    "message": "هم‌پوشانی جدول"
-  },
-  "panels/elements/components/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
-    "message": "هیچ‌گونه طرح‌بندی چارگوش انعطاف‌پذیر در این صفحه پیدا نشد"
-  },
-  "panels/elements/components/LayoutPane.ts | noGridLayoutsFoundOnThisPage": {
-    "message": "هیچ‌گونه طرح‌بندی جدولی در این صفحه پیدا نشد"
-  },
-  "panels/elements/components/LayoutPane.ts | overlayDisplaySettings": {
-    "message": "تنظیمات نمایش همپوشانی"
-  },
-  "panels/elements/components/LayoutPane.ts | showElementInTheElementsPanel": {
-    "message": "نمایش عنصر در پانل «عناصر»"
   },
   "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
     "message": "برداشتن {propertyName}: {propertyValue}"
@@ -7084,12 +7177,6 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "ویرایش…"
-  },
-  "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeature": {
-    "message": "پرچم «Experimental Web Platform Feature» فعال است. برای غیرفعال کردن آن کلیک کنید."
-  },
-  "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeatureFlag": {
-    "message": "پرچم «Experimental Web Platform Feature» غیرفعال است. برای فعال کردن آن کلیک کنید."
   },
   "panels/emulation/DeviceModeToolbar.ts | fitToWindowF": {
     "message": "متناسب با پنجره (٪{PH1})"
@@ -7281,7 +7368,7 @@
     "message": "(در برگه جدیدی باز می‌شود)"
   },
   "panels/explain/components/ConsoleInsight.ts | references": {
-    "message": "منابع و محتوای مربوط"
+    "message": "منابع و محتوای مرتبط"
   },
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "کد مربوط"
@@ -7805,7 +7892,7 @@
   "panels/layer_viewer/LayerDetailsView.ts | slowScrollRegions": {
     "message": "مناطق با پیمایش آهسته"
   },
-  "panels/layer_viewer/LayerDetailsView.ts | stickyAncenstorLayersS": {
+  "panels/layer_viewer/LayerDetailsView.ts | stickyAncestorLayersS": {
     "message": "{PH1}: {PH2} ({PH3})"
   },
   "panels/layer_viewer/LayerDetailsView.ts | stickyBoxRectangleDimensions": {
@@ -8426,6 +8513,9 @@
   "panels/media/PlayerPropertiesView.ts | hardwareEncoder": {
     "message": "کدبند سخت‌افزار"
   },
+  "panels/media/PlayerPropertiesView.ts | hlsBufferedRanges": {
+    "message": "محدوده‌های رسانه میان‌گیری‌شده"
+  },
   "panels/media/PlayerPropertiesView.ts | noDecoder": {
     "message": "رمزگشا وجود ندارد"
   },
@@ -8448,7 +8538,7 @@
     "message": "پشتیبانی از سرصفحه Range"
   },
   "panels/media/PlayerPropertiesView.ts | rendererName": {
-    "message": "نام تولیدکننده تصویر"
+    "message": "نام ارائه‌دهنده تصویر"
   },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "وضوح"
@@ -8519,12 +8609,6 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "پیش‌تنظیم‌ها"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | add": {
-    "message": "افزودن…"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | addS": {
-    "message": "افزودن {PH1}"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "واسنجی…"
   },
@@ -8546,6 +8630,9 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
     "message": "مقدار گزارش‌شده توسط navigator.hardwareConcurrency را ملغی می‌کند"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | noSaveDataOverride": {
+    "message": "‫«Save-Data»: پیش‌فرض"
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "آفلاین"
   },
@@ -8558,8 +8645,14 @@
   "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
     "message": "بازنشانی به مقدار پیش‌فرض"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | sS": {
-    "message": "{PH1}: {PH2}"
+  "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
+    "message": "‫«Save-Data»: خاموش اجباری"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
+    "message": "‫«Save-Data»: روشن اجباری"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
+    "message": "ارزش گزارش‌شده توسط navigator.connection.saveData در صفحه را ملغی می‌کند"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | throttling": {
     "message": "محدودسازی"
@@ -8829,7 +8922,7 @@
     "message": "وضعیت شبکه نمایش داده شد."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
-    "message": "محدودکردن شبکه"
+    "message": "شبکه"
   },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
     "message": "استفاده از پیش‌فرض مرورگر"
@@ -8854,6 +8947,21 @@
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(لغوشده)"
+  },
+  "panels/network/NetworkDataGridNode.ts | coepFrameResourceNeedsCoepHeader": {
+    "message": "منبع با چارچوب COEP به سرصفحه COEP نیاز دارد"
+  },
+  "panels/network/NetworkDataGridNode.ts | coopSandboxedIframeCannotNavigateToCoopPage": {
+    "message": "بالاپر iframe قرارگرفته در جعبه امن به صفحه COOP هدایت نمی‌شود"
+  },
+  "panels/network/NetworkDataGridNode.ts | corpNotSameOrigin": {
+    "message": "‫CORP با «same-site» مطابقت ندارد"
+  },
+  "panels/network/NetworkDataGridNode.ts | corpNotSameOriginAfterDefaultedToSameOriginByCoep": {
+    "message": "‫CORP پس‌از تنظیم پیش‌فرض «same-origin» توسط COEP دیگر «same-origin» نیست"
+  },
+  "panels/network/NetworkDataGridNode.ts | corpNotSameSite": {
+    "message": "‫CORP با «same-site» مطابقت ندارد"
   },
   "panels/network/NetworkDataGridNode.ts | corsError": {
     "message": "خطای CORS"
@@ -8944,6 +9052,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "هدایت کردن"
+  },
+  "panels/network/NetworkDataGridNode.ts | responseIsIpProtectedToolTip": {
+    "message": "این درخواست ازطریق پراکسی‌های «حفاظت پروتکل اینترنتی» ارسال شده است."
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + پیش‌پرواز"
@@ -9080,6 +9191,9 @@
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowserCookies": {
     "message": "مطمئنید می‌خواهید کوکی‌های مرورگر را پاک کنید؟"
   },
+  "panels/network/NetworkLogView.ts | assessSecurityHeaders": {
+    "message": "ارزیابی سرصفحه‌های امنیتی"
+  },
   "panels/network/NetworkLogView.ts | blockRequestDomain": {
     "message": "مسدود کردن دامنه درخواست"
   },
@@ -9194,6 +9308,15 @@
   "panels/network/NetworkLogView.ts | dropHarFilesHere": {
     "message": "فایل‌های HAR را اینجا رها کنید"
   },
+  "panels/network/NetworkLogView.ts | explainFailures": {
+    "message": "توضیح خطاها"
+  },
+  "panels/network/NetworkLogView.ts | explainPurpose": {
+    "message": "توضیح هدف"
+  },
+  "panels/network/NetworkLogView.ts | explainSlowness": {
+    "message": "توضیح کندی"
+  },
   "panels/network/NetworkLogView.ts | finishS": {
     "message": "پایان: {PH1}"
   },
@@ -9215,6 +9338,9 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "فیلتر جستجو را معکوس می‌کند"
   },
+  "panels/network/NetworkLogView.ts | ippRequests": {
+    "message": "درخواست‌های محافظت‌شده توسط پروتکل اینترنتی"
+  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "بارگیری: {PH1}"
   },
@@ -9229,6 +9355,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "فقط درخواست‌های مسدودشده نشان داده می‌شود"
+  },
+  "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
+    "message": "(فقط در حالت ناشناس) فقط درخواست‌هایی که به پراکسی‌های «حفاظت پروتکل اینترنتی» ارسال شده‌اند نشان داده می‌شوند"
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "فقط درخواست‌هایی که پاسخ کوکی‌ها مسدود شده‌اند نشان داده می‌شود"
@@ -9289,6 +9418,9 @@
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "درخواست‌های فقط نمایش/ پنهان کردن"
+  },
+  "panels/network/NetworkLogView.ts | startAChat": {
+    "message": "شروع گپ"
   },
   "panels/network/NetworkLogView.ts | startRecording": {
     "message": "شروع ضبط"
@@ -11543,23 +11675,14 @@
   "panels/security/CookieReportView.ts | gitHubResource": {
     "message": "{PH1} سایت طرف سوم را مرور کنید"
   },
-  "panels/security/CookieReportView.ts | gitHubResourceInsightTypeString": {
-    "message": "GitHub"
-  },
   "panels/security/CookieReportView.ts | gracePeriod": {
     "message": "{PH1} را مرور کنید. استثنای مهلت ارفاقی فعال است."
-  },
-  "panels/security/CookieReportView.ts | gracePeriodInsightTypeString": {
-    "message": "مهلت ارفاقی"
   },
   "panels/security/CookieReportView.ts | guidance": {
     "message": "راهنما"
   },
   "panels/security/CookieReportView.ts | heuristics": {
     "message": "بعداً اقدام لازم است. استثنای مبتنی بر اکتشاف فعال است."
-  },
-  "panels/security/CookieReportView.ts | heuristicsInisightTypeString": {
-    "message": "اکتشاف"
   },
   "panels/security/CookieReportView.ts | hostingCookieTypeString": {
     "message": "میزبانی"
@@ -11577,9 +11700,6 @@
     "message": "برای اطلاعات بیشتر با سایت طرف سوم تماس بگیرید"
   },
   "panels/security/CookieReportView.ts | otherCookieTypeString": {
-    "message": "سایر موارد"
-  },
-  "panels/security/CookieReportView.ts | otherInsightTypeString": {
     "message": "سایر موارد"
   },
   "panels/security/CookieReportView.ts | platform": {
@@ -11838,7 +11958,7 @@
     "message": "امضای سرور از SHA-1 استفاده می‌کند که منسوخ شده است. به‌جای آن، الگوریتم امضای SHA-2 را فعال کنید. (توجه داشته باشید این امضا با امضای موجود در گواهینامه تفاوت دارد.)"
   },
   "panels/security/SecurityPanel.ts | thisIsAnErrorPage": {
-    "message": "این صفحه خطا است."
+    "message": "این یک صفحه خطا است."
   },
   "panels/security/SecurityPanel.ts | thisOriginIsANonhttpsSecure": {
     "message": "این مبدأ یک مبدأ امن غیر HTTPS است."
@@ -12209,8 +12329,17 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "کاربر آزاد، قفل صفحه باز است"
   },
+  "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
+    "message": "درحین تایپ در پانل «کنسول» یا «منابع»، پیشنهادهایی برای کد دریافت خواهید کرد. برای پذیرفتن یکی از پیشنهادها، کلید جهش را فشار دهید."
+  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "بهره‌وری‌تان را با هوش مصنوعی تقویت کنید"
+  },
+  "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
+    "message": "برای تولید پیشنهادهای کد، ورودی کنسول شما، سابقه جلسه فعلی کنسول، و محتوای فایل بازشده فعلی با Google هم‌رسانی می‌شوند. برای بهبود دادن این ویژگی، ممکن است افراد بازبین این داده‌ها را ببینند."
+  },
+  "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
+    "message": "برای تولید پیشنهادهای کد، ورودی کنسول شما، سابقه جلسه فعلی کنسول، و محتوای فایل بازشده فعلی با Google هم‌رسانی می‌شوند. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "پیام کنسول، ردیابی پشته‌ای منسوب، کد منبع مربوطه، و سرصفحه‌های شبکه منسوب برای تولید توضیحات به Google ارسال می‌شوند. ممکن است افراد بازبین این داده‌ها را ببینند تا این ویژگی را بهبود دهند."
@@ -12265,6 +12394,9 @@
   },
   "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
     "message": "دریافت پیشنهادهای هوش مصنوعی برای گزارمان‌های پانل عملکرد"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
+    "message": "دریافت کمک برای تکمیل کد"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "به شما کمک می‌کند هشدارها و خطاهای کنسول را متوجه شوید و آن‌ها را برطرف کنید"
@@ -12404,7 +12536,7 @@
   "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
     "message": "تغییرات میان‌بر اعمال شد"
   },
-  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscarded": {
     "message": "از تغییرات میان‌بر صرف‌نظر شد"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
@@ -12554,8 +12686,35 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "مشخصات دستگاه"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorAutomotive": {
+    "message": "Automotive"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorDesktop": {
+    "message": "رایانه"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorEInk": {
+    "message": "EInk"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorMobile": {
+    "message": "تلفن همراه"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorTablet": {
+    "message": "رایانه لوحی"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorWatch": {
+    "message": "ساعت"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorXR": {
+    "message": "واقعیت گسترده"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorsGroupAriaLabel": {
+    "message": "ضریب‌های شکل دردسترس"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorsTitle": {
+    "message": "ضریب‌های شکل (Sec-CH-UA-Form-Factors)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "نسخه کامل مرورگر (Sec-CH-UA-Full-Browser-Version)"
+    "message": "نسخه کامل مرورگر (Sec-CH-UA-Full-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "نسخه کامل مرورگر (برای نمونه ۸۷.۰.۴۲۸۰.۸۸)"
@@ -12700,6 +12859,63 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "فقط درصورت درست بودن شرط موقتاً متوقف شود"
+  },
+  "panels/sources/BreakpointsView.ts | breakpointHit": {
+    "message": "رسیدن به نقطه گسست {PH1}"
+  },
+  "panels/sources/BreakpointsView.ts | checked": {
+    "message": "علامت زده شد"
+  },
+  "panels/sources/BreakpointsView.ts | conditionCode": {
+    "message": "وضعیت: {PH1}"
+  },
+  "panels/sources/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "غیرفعال کردن همه نقاط توقف"
+  },
+  "panels/sources/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "غیرفعال کردن همه نقطه‌های توقف در فایل"
+  },
+  "panels/sources/BreakpointsView.ts | editCondition": {
+    "message": "ویرایش شرط"
+  },
+  "panels/sources/BreakpointsView.ts | editLogpoint": {
+    "message": "ویرایش نقطه گزارش"
+  },
+  "panels/sources/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "فعال کردن همه نقاط توقف"
+  },
+  "panels/sources/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "فعال کردن همه نقطه‌های توقف در فایل"
+  },
+  "panels/sources/BreakpointsView.ts | indeterminate": {
+    "message": "ترکیبی"
+  },
+  "panels/sources/BreakpointsView.ts | logpointCode": {
+    "message": "نقطه گزارش: {PH1}"
+  },
+  "panels/sources/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "مکث در موارد استثنای پیداشده"
+  },
+  "panels/sources/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "مکث در موارد استثنای مشخص‌نشده"
+  },
+  "panels/sources/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "حذف همه نقاط توقف"
+  },
+  "panels/sources/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "برداشتن همه نقطه‌های توقف در فایل"
+  },
+  "panels/sources/BreakpointsView.ts | removeBreakpoint": {
+    "message": "برداشتن نقطه گسست"
+  },
+  "panels/sources/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "برداشتن دیگر نقاط توقف"
+  },
+  "panels/sources/BreakpointsView.ts | revealLocation": {
+    "message": "نمایش مکان"
+  },
+  "panels/sources/BreakpointsView.ts | unchecked": {
+    "message": "لغوانتخاب‌شده"
   },
   "panels/sources/CSSPlugin.ts | addSourceMap": {
     "message": "افزودن نگاشت منبع…"
@@ -13163,6 +13379,9 @@
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "انتخاب پوشه برای ملغی کردن"
   },
+  "panels/sources/SourcesPanel.ts | assessPerformance": {
+    "message": "ارزیابی عملکرد"
+  },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "ادامه به اینجا"
   },
@@ -13186,6 +13405,12 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "پوشه فضای کاری را اینجا رها کنید"
+  },
+  "panels/sources/SourcesPanel.ts | explainInputHandling": {
+    "message": "توضیح مدیریت ورودی"
+  },
+  "panels/sources/SourcesPanel.ts | explainThisScript": {
+    "message": "توضیح این دستورگان"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
     "message": "گروه‌بندی براساس نوشته‌شده/ مستقرشده"
@@ -13231,6 +13456,9 @@
   },
   "panels/sources/SourcesPanel.ts | showNavigator": {
     "message": "نمایش ابزار پیمایش"
+  },
+  "panels/sources/SourcesPanel.ts | startAChat": {
+    "message": "شروع گپ"
   },
   "panels/sources/SourcesPanel.ts | storeAsGlobalVariable": {
     "message": "ذخیره به‌عنوان متغیر سراسری"
@@ -13294,63 +13522,6 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
     "message": "عبارت تحت نظارت حذف شد"
-  },
-  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
-    "message": "رسیدن به نقطه گسست {PH1}"
-  },
-  "panels/sources/components/BreakpointsView.ts | checked": {
-    "message": "علامت زده شد"
-  },
-  "panels/sources/components/BreakpointsView.ts | conditionCode": {
-    "message": "وضعیت: {PH1}"
-  },
-  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
-    "message": "غیرفعال کردن همه نقاط توقف"
-  },
-  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
-    "message": "غیرفعال کردن همه نقطه‌های توقف در فایل"
-  },
-  "panels/sources/components/BreakpointsView.ts | editCondition": {
-    "message": "ویرایش شرط"
-  },
-  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
-    "message": "ویرایش نقطه گزارش"
-  },
-  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
-    "message": "فعال کردن همه نقاط توقف"
-  },
-  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
-    "message": "فعال کردن همه نقطه‌های توقف در فایل"
-  },
-  "panels/sources/components/BreakpointsView.ts | indeterminate": {
-    "message": "ترکیبی"
-  },
-  "panels/sources/components/BreakpointsView.ts | logpointCode": {
-    "message": "نقطه گزارش: {PH1}"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
-    "message": "مکث در موارد استثنای پیداشده"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
-    "message": "مکث در موارد استثنای مشخص‌نشده"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
-    "message": "حذف همه نقاط توقف"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
-    "message": "برداشتن همه نقطه‌های توقف در فایل"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
-    "message": "برداشتن نقطه گسست"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
-    "message": "برداشتن دیگر نقاط توقف"
-  },
-  "panels/sources/components/BreakpointsView.ts | revealLocation": {
-    "message": "نمایش مکان"
-  },
-  "panels/sources/components/BreakpointsView.ts | unchecked": {
-    "message": "لغوانتخاب‌شده"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "افزودن سرصفحه"
@@ -13689,7 +13860,7 @@
     "message": "هنگام اشکال‌زدایی Wasm با اطلاعات اشکال‌زدایی، درصورت امکان روی بایت‌کد Wasm مکث نشود"
   },
   "panels/sources/sources-meta.ts | watch": {
-    "message": "تماشا"
+    "message": "ساعت"
   },
   "panels/sources/sources-meta.ts | wordWrap": {
     "message": "شکستن خط"
@@ -13760,11 +13931,8 @@
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "زمان شروع"
   },
-  "panels/timeline/ExtensionTrackAppender.ts | customTrackDescription": {
-    "message": "این مسیری سفارشی است که شخص ثالث اضافه کرده است."
-  },
-  "panels/timeline/ExtensionTrackAppender.ts | customTrackName": {
-    "message": "‫{PH1} — مسیر سفارشی"
+  "panels/timeline/ExtensionTrackAppender.ts | customTrackSubtitle": {
+    "message": "— سفارشی"
   },
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "واحد پردازش گرافیکی (GPU)"
@@ -13916,8 +14084,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | addScriptToIgnoreList": {
     "message": "افزودن دستورگان به فهرست استثناها"
   },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | assessThePurpose": {
+    "message": "ارزیابی هدف"
+  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "قاب رهاشده"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | findImprovements": {
+    "message": "یافتن بهبودها"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "قاب"
@@ -13934,8 +14108,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | hideRepeatingChildren": {
     "message": "پنهان کردن فرزندان تکراری"
   },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | identifyTimeSpent": {
+    "message": "شناسایی زمان صرف‌شده"
+  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "قاب آزاد"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | labelEntry": {
+    "message": "برچسب زدن ورودی"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "قابی که بخشی از آن ارائه شده است"
@@ -13948,6 +14128,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | resetTrace": {
     "message": "بازنشانی ردپا"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | startAChat": {
+    "message": "شروع گپ"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} در {PH2}"
@@ -14019,7 +14202,7 @@
     "message": "محدود کردن طرف‌های سوم"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
-    "message": "فایل یا نشانی وب خط زمان را اینجا رها کنید"
+    "message": "فایل ردیابی یا نشانی وب را اینجا رها کنید"
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "فعال کردن ابزارگری نقاشی پیشرفته (آهسته)"
@@ -14030,14 +14213,11 @@
   "panels/timeline/TimelinePanel.ts | eventSelected": {
     "message": "رویداد {PH1} انتخاب شد"
   },
-  "panels/timeline/TimelinePanel.ts | exportEnhancedTraces": {
-    "message": "ردیابی‌های بهبودیافته عملکرد"
-  },
-  "panels/timeline/TimelinePanel.ts | exportNormalTraces": {
-    "message": "ردیابی‌های پایه عملکرد"
-  },
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "ردپا صادر نشد"
+  },
+  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
+    "message": "‫DevTools یک درخواست خارجی دریافت کرد"
   },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "رفع مشکل"
@@ -14048,17 +14228,17 @@
   "panels/timeline/TimelinePanel.ts | hideSidebar": {
     "message": "پنهان کردن نوار کناری"
   },
-  "panels/timeline/TimelinePanel.ts | initializingProfiler": {
-    "message": "راه‌اندازی تحلیل‌گر…"
+  "panels/timeline/TimelinePanel.ts | initializingTracing": {
+    "message": "مقداردهی اولیه ردیابی…"
   },
   "panels/timeline/TimelinePanel.ts | learnMore": {
     "message": "بیشتر بدانید"
   },
-  "panels/timeline/TimelinePanel.ts | loadProfile": {
-    "message": "بار کردن نمایه…"
+  "panels/timeline/TimelinePanel.ts | loadTrace": {
+    "message": "بار کردن ردیابی…"
   },
-  "panels/timeline/TimelinePanel.ts | loadingProfile": {
-    "message": "درحال بارگیری نمایه…"
+  "panels/timeline/TimelinePanel.ts | loadingTrace": {
+    "message": "درحال بار کردن ردیابی…"
   },
   "panels/timeline/TimelinePanel.ts | memory": {
     "message": "حافظه"
@@ -14072,26 +14252,14 @@
   "panels/timeline/TimelinePanel.ts | processed": {
     "message": "پردازش شد"
   },
-  "panels/timeline/TimelinePanel.ts | processingProfile": {
-    "message": "درحال پردازش نمایه…"
-  },
-  "panels/timeline/TimelinePanel.ts | profiling": {
-    "message": "درحال نمایه‌سازی…"
+  "panels/timeline/TimelinePanel.ts | processingTrace": {
+    "message": "درحال پردازش ردیابی…"
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "دریافت شد"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "ضبط ناموفق بود"
-  },
-  "panels/timeline/TimelinePanel.ts | saveProfile": {
-    "message": "ذخیره نمایه…"
-  },
-  "panels/timeline/TimelinePanel.ts | saveTraceWithAnnotationsMenuOption": {
-    "message": "ذخیره کردن ردیابی"
-  },
-  "panels/timeline/TimelinePanel.ts | saveTraceWithoutAnnotationsMenuOption": {
-    "message": "ذخیره کردن ردیابی بدون گزارمان‌ها"
   },
   "panels/timeline/TimelinePanel.ts | screenshots": {
     "message": "نماگرفت‌ها"
@@ -14132,11 +14300,23 @@
   "panels/timeline/TimelinePanel.ts | timelineZoom": {
     "message": "بزرگ‌نمایی"
   },
+  "panels/timeline/TimelinePanel.ts | tracing": {
+    "message": "ردیابی…"
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "کپی کردن جدول"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | elapsed": {
     "message": "سپری‌شده (میلی‌ثانیه)"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | elapsedExplanation": {
+    "message": "مدت زمان سپری‌شده برای تطبیق یک گزینشگر با DOM برحسب میلی‌ثانیه."
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | invalidationCount": {
+    "message": "تعداد ابطال"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | invalidationCountExplanation": {
+    "message": "تعداد تجمیع گره‌های باطل‌شده و در ادامه سبک آن‌ها دوباره محاسبه شده است که توسط این گزینشگر مطابقت دارند توجه داشته باشید که یک گره می‌تواند چندین بار و توسط چندین گزینشگر باطل شود."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | lineNumber": {
     "message": "خط {PH1}:{PH2}"
@@ -14144,23 +14324,35 @@
   "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
     "message": "تلاش برای انطباق"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchAttemptsExplanation": {
+    "message": "تعداد گره‌هایی که موتور تلاش کرده است با قانون سبک مطابقت دهد."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
     "message": "تعداد موارد منطبق"
   },
-  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "٪ موارد غیرمنطبق مسیر آهسته"
-  },
-  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
-    "message": "درصد گره‌های غیرمنطبق (تعداد تلاش برای تطبیق - تعداد تطابق) که به‌دلیل پیچیدگی بالای گزینشگر نمی‌توان آن‌ها را به‌سرعت توسط فیلتر بولوم رد کرد. مقدار کمتر بهتر است."
+  "panels/timeline/TimelineSelectorStatsView.ts | matchCountExplanation": {
+    "message": "تعداد گره‌های که با یک قانون سبک مطابقت دارند."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "گزینشگر"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | selectorExplanation": {
+    "message": "متن گزینشگر CSS مربوط به یک قانون سبک."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
     "message": "آمار گزینشگر"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatches": {
+    "message": "٪ موارد غیرمنطبق مسیر آهسته"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatchesExplanation": {
+    "message": "درصد گره‌های غیرمنطبق (تعداد تلاش برای تطبیق - تعداد تطابق) که به‌دلیل پیچیدگی بالای گزینشگر نمی‌توان آن‌ها را به‌سرعت توسط فیلتر بولوم رد کرد. مقدار کمتر بهتر است."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
     "message": "شیوه‌نامه"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | styleSheetIdExplanation": {
+    "message": "پیوندهایی به تعریف قانون گزینشگر در شیوه‌نامه‌ها. توجه داشته باشید که یک قانون گزینشگر ممکن است در چندین محل از یک شیوه‌نامه یا در چندین شیوه‌نامه تعریف شده باشد. قوانین گزینشگر شیوه‌نامه نماینده کاربر مرورگر یا شیوه‌نامه‌های پویا پیوند ندارند."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "جدول در بریده‌دان کپی شد"
@@ -15278,12 +15470,6 @@
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
     "message": "محدوده زمان تعریف کنید"
   },
-  "panels/timeline/components/SidebarInsightsTab.ts | feedbackButton": {
-    "message": "بازخورد"
-  },
-  "panels/timeline/components/SidebarInsightsTab.ts | feedbackTooltip": {
-    "message": "اطلاعات آماری یک ویژگی آزمایشی است. بازخورد شما به ما کمک می‌کند آن را بهبود ببخشیم."
-  },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
     "message": "بستن"
   },
@@ -15824,33 +16010,6 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "کوکی‌های این درخواست به‌دلیل پرچم‌های Chrome یا پیکربندی مرورگر مسدود شده است. در پانل «مشکلات»، اطلاعات بیشتری کسب کنید."
   },
-  "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
-    "message": "اندازه میان‌گیری فراخوانی"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | callbackInterval": {
-    "message": "وقفه پاسخ تماس"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | currentTime": {
-    "message": "زمان کنونی"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | maxOutputChannels": {
-    "message": "حداکثرکانال‌های خروجی"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | renderCapacity": {
-    "message": "ظرفیت پرداز زدن"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | sampleRate": {
-    "message": "بسامد نمونه"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | state": {
-    "message": "وضعیت"
-  },
-  "panels/web_audio/AudioContextSelector.ts | audioContextS": {
-    "message": "بافت صوتی: {PH1}"
-  },
-  "panels/web_audio/AudioContextSelector.ts | noRecordings": {
-    "message": "(هیچ ضبطی وجود ندارد)"
-  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "هیچ استفاده‌ای از میانای برنامه‌سازی کاربردی Web Audio شناسایی نشده است"
   },
@@ -15874,9 +16033,6 @@
   },
   "panels/webauthn/WebauthnPane.ts | add": {
     "message": "افزودن"
-  },
-  "panels/webauthn/WebauthnPane.ts | addAuthenticator": {
-    "message": "افزودن برنامه اصالت‌سنجی"
   },
   "panels/webauthn/WebauthnPane.ts | authenticatorS": {
     "message": "برنامه اصالت‌سنجی {PH1}"
@@ -16418,6 +16574,9 @@
   "ui/legacy/UIUtils.ts | copyLinkAddress": {
     "message": "کپی نشانی پیوند"
   },
+  "ui/legacy/UIUtils.ts | new": {
+    "message": "جدید"
+  },
   "ui/legacy/UIUtils.ts | ok": {
     "message": "تأیید"
   },
@@ -16821,7 +16980,7 @@
     "message": "نمودار شعله‌ای"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | labelEntry": {
-    "message": "ورودی برچسب"
+    "message": "برچسب زدن ورودی"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | linkEntries": {
     "message": "پیوند دادن ورودی‌ها"

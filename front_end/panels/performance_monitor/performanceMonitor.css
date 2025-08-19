@@ -46,6 +46,7 @@
 
 .perfmon-control-pane {
   display: flex;
+  flex: initial;
   flex-direction: column;
   padding: 6px 0;
   overflow: hidden auto;

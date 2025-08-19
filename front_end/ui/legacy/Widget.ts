@@ -247,6 +247,10 @@ export interface WidgetOptions {
    * `Widget`.
    */
   jslog?: string;
+  /**
+   * The additional classes to put onto the `element` of the resulting `Widget`.
+   */
+  classes?: string[];
 }
 export class Widget {
   readonly element: HTMLElement;
@@ -309,6 +313,9 @@ export class Widget {
       this.#shadowRoot.appendChild(this.contentElement);
     } else {
       this.contentElement = this.element;
+    }
+    if (options?.classes) {
+      this.element.classList.add(...options.classes);
     }
     if (options?.jslog) {
       this.contentElement.setAttribute('jslog', options.jslog);

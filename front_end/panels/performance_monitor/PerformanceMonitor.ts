@@ -10,6 +10,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import {html, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import performanceMonitorStyles from './performanceMonitor.css.js';
@@ -93,14 +94,15 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     /** @constant */
     this.graphHeight = 90;
     this.gridColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--divider-line');
-    this.controlPane = new ControlPane(this.contentElement);
+    this.controlPane = new ControlPane();
+    this.controlPane.show(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
     this.canvas = chartContainer.createChild('canvas');
     this.canvas.tabIndex = -1;
     UI.ARIAUtils.setLabel(this.canvas, i18nString(UIStrings.graphsDisplayingARealtimeViewOf));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         i18nString(UIStrings.paused);
-    this.controlPane.addEventListener(Events.METRIC_CHANGED, this.recalcChartHeight, this);
+    this.controlPane.setOnMetricChanged(this.recalcChartHeight.bind(this));
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
   }
 
@@ -330,7 +332,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     ctx.beginPath();
     for (let i = 0; i < 2; ++i) {
       const y = calcY(scaleValue);
-      const labelText = MetricIndicator.formatNumber(scaleValue, info);
+      const labelText = formatNumber(scaleValue, info);
       ctx.moveTo(0, y);
       ctx.lineTo(4, y);
       ctx.moveTo(ctx.measureText(labelText).width + 12, y);
@@ -435,21 +437,24 @@ export const enum Format {
   BYTES = 'Bytes',
 }
 
-export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  element: Element;
+export class ControlPane extends UI.Widget.VBox {
   private readonly enabledChartsSetting: Common.Settings.Setting<string[]>;
   private readonly enabledCharts: Set<string>;
+  private onMetricChanged: (() => void)|null = null;
 
   private chartsInfo: ChartInfo[] = [];
-  private indicators = new Map<string, MetricIndicator>();
+  private readonly metricValues = new Map<string, number>();
 
-  constructor(parent: Element) {
-    super();
-    this.element = parent.createChild('div', 'perfmon-control-pane');
+  constructor() {
+    super({useShadowDom: false, classes: ['perfmon-control-pane']});
 
     this.enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
         'perfmon-active-indicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
     this.enabledCharts = new Set(this.enabledChartsSetting.get());
+  }
+
+  setOnMetricChanged(callback: () => void): void {
+    this.onMetricChanged = callback;
   }
 
   instantiateMetricData(): void {
@@ -566,22 +571,30 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       },
     ];
 
-    // Clear any existing child elements.
-    this.element.removeChildren();
+    this.requestUpdate();
+  }
 
-    this.indicators = new Map();
-    for (const chartInfo of this.chartsInfo) {
-      const chartName = chartInfo.metrics[0].name;
-      const active = this.enabledCharts.has(chartName);
-      const indicator = new MetricIndicator(this.element, chartInfo, active, this.onToggle.bind(this, chartName));
-      indicator.element.setAttribute(
-          'jslog',
-          `${
-              VisualLogging.toggle()
-                  .track({click: true, keydown: 'Enter'})
-                  .context(Platform.StringUtilities.toKebabCase(chartName))}`);
-      this.indicators.set(chartName, indicator);
-    }
+  override performUpdate(): void {
+    // clang-format off
+    // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
+    render(
+      this.chartsInfo.map(chartInfo => {
+        const chartName = chartInfo.metrics[0].name;
+        const active = this.enabledCharts.has(chartName);
+        const value = this.metricValues.get(chartName) || 0;
+        return renderMetricIndicator(
+          chartInfo,
+          active,
+          value,
+          (e: Event) => this.onCheckboxChange(chartName, e),
+        );
+      }), this.element, {host: this});
+    // clang-format on
+  }
+
+  private onCheckboxChange(chartName: string, e: Event): void {
+    this.onToggle(chartName, (e.target as HTMLInputElement).checked);
+    this.requestUpdate();
   }
 
   private onToggle(chartName: string, active: boolean): void {
@@ -591,7 +604,9 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       this.enabledCharts.delete(chartName);
     }
     this.enabledChartsSetting.set(Array.from(this.enabledCharts));
-    this.dispatchEventToListeners(Events.METRIC_CHANGED);
+    if (this.onMetricChanged) {
+      this.onMetricChanged();
+    }
   }
 
   charts(): ChartInfo[] {
@@ -603,70 +618,48 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   updateMetrics(metrics: Map<string, number>): void {
-    for (const name of this.indicators.keys()) {
-      const metric = metrics.get(name);
-      if (metric !== undefined) {
-        const indicator = this.indicators.get(name);
-        if (indicator) {
-          indicator.setValue(metric);
-        }
-      }
+    for (const [name, value] of metrics.entries()) {
+      this.metricValues.set(name, value);
     }
+    this.requestUpdate();
   }
-}
-
-const enum Events {
-  METRIC_CHANGED = 'MetricChanged',
-}
-
-interface EventTypes {
-  [Events.METRIC_CHANGED]: void;
 }
 
 let numberFormatter: Intl.NumberFormat;
 let percentFormatter: Intl.NumberFormat;
 
-export class MetricIndicator {
-  private info: ChartInfo;
-  element: HTMLElement;
-  private readonly swatchElement: UI.UIUtils.CheckboxLabel;
-  private valueElement: HTMLElement;
-  private color: string;
-
-  constructor(parent: Element, info: ChartInfo, active: boolean, onToggle: (arg0: boolean) => void) {
-    this.color = info.color || info.metrics[0].color;
-    this.info = info;
-    this.element = parent.createChild('div', 'perfmon-indicator');
-    const chartName = info.metrics[0].name;
-    this.swatchElement = UI.UIUtils.CheckboxLabel.create(info.title, active, undefined, chartName);
-    this.element.appendChild(this.swatchElement);
-    this.swatchElement.addEventListener('change', () => {
-      onToggle(this.swatchElement.checked);
-      this.element.classList.toggle('active');
-    });
-    this.valueElement = this.element.createChild('div', 'perfmon-indicator-value');
-    this.valueElement.style.color = this.color;
-    this.element.classList.toggle('active', active);
+export function formatNumber(value: number, info: ChartInfo): string {
+  if (!numberFormatter) {
+    numberFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
+    percentFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1, style: 'percent'});
   }
-
-  static formatNumber(value: number, info: ChartInfo): string {
-    if (!numberFormatter) {
-      numberFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
-      percentFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1, style: 'percent'});
-    }
-    switch (info.format) {
-      case Format.PERCENT:
-        return percentFormatter.format(value);
-      case Format.BYTES:
-        return i18n.ByteUtilities.bytesToString(value);
-      default:
-        return numberFormatter.format(value);
-    }
+  switch (info.format) {
+    case Format.PERCENT:
+      return percentFormatter.format(value);
+    case Format.BYTES:
+      return i18n.ByteUtilities.bytesToString(value);
+    default:
+      return numberFormatter.format(value);
   }
+}
 
-  setValue(value: number): void {
-    this.valueElement.textContent = MetricIndicator.formatNumber(value, this.info);
-  }
+function renderMetricIndicator(
+    info: ChartInfo, active: boolean, value: number, onCheckboxChange: (e: Event) => void): TemplateResult {
+  const color = info.color || info.metrics[0].color;
+  const chartName = info.metrics[0].name;
+  // clang-format off
+  return html`
+      <div class="perfmon-indicator ${active ? 'active' : ''}" jslog=${VisualLogging.toggle().track({
+        click: true,
+        keydown: 'Enter',
+      }).context(Platform.StringUtilities.toKebabCase(chartName))}>
+        <devtools-checkbox .checked=${active}
+            @change=${onCheckboxChange} .jslogContext=${chartName}>${info.title}</devtools-checkbox>
+        <div class="perfmon-indicator-value" style="color:${color}">${
+      formatNumber(value, info)}</div>
+      </div>
+    `;
+  // clang-format on
 }
 
 export const format = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});

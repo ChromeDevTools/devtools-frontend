@@ -116,7 +116,7 @@ export function primitive_type(tokeniser) {
     "boolean",
     "byte",
     "octet",
-    "undefined"
+    "undefined",
   );
   if (base) {
     return new Type({ source, tokens: { base } });
@@ -217,7 +217,7 @@ export function autofixAddExposedWindow(def) {
       def.extAttrs.unshift(exposed);
     } else {
       autoParenter(def).extAttrs = ExtendedAttributes.parse(
-        new Tokeniser("[Exposed=Window]")
+        new Tokeniser("[Exposed=Window]"),
       );
       const trivia = def.tokens.base.trivia;
       def.extAttrs.tokens.open.trivia = trivia;

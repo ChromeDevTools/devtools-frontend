@@ -1,6 +1,6 @@
 {
   "name": "@eslint/plugin-kit",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Utilities for building ESLint plugins.",
   "author": "Nicholas C. Zakas",
   "type": "module",

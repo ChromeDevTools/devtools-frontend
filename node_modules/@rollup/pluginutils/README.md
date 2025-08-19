@@ -223,6 +223,22 @@ export default function myPlugin(options = {}) {
 }
 ```
 
+### exactRegex
+
+Constructs a RegExp that matches the exact string specified. This is useful for plugin hook filters.
+
+Parameters: `(str: String, flags?: String)`<br>
+Returns: `RegExp`
+
+#### Usage
+
+```js
+import { exactRegex } from '@rollup/pluginutils';
+
+exactRegex('foobar'); // /^foobar$/
+exactRegex('foo(bar)', 'i'); // /^foo\(bar\)$/i
+```
+
 ### makeLegalIdentifier
 
 Constructs a bundle-safe identifier from a `String`.
@@ -253,6 +269,22 @@ import { normalizePath } from '@rollup/pluginutils';
 
 normalizePath('foo\\bar'); // 'foo/bar'
 normalizePath('foo/bar'); // 'foo/bar'
+```
+
+### prefixRegex
+
+Constructs a RegExp that matches a value that has the specified prefix. This is useful for plugin hook filters.
+
+Parameters: `(str: String, flags?: String)`<br>
+Returns: `RegExp`
+
+#### Usage
+
+```js
+import { prefixRegex } from '@rollup/pluginutils';
+
+prefixRegex('foobar'); // /^foobar/
+prefixRegex('foo(bar)', 'i'); // /^foo\(bar\)/i
 ```
 
 ## Meta

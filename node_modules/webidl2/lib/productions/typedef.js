@@ -51,7 +51,7 @@ export class Typedef extends Base {
         w.name_token(this.tokens.name, { data: this }),
         w.token(this.tokens.termination),
       ]),
-      { data: this }
+      { data: this },
     );
   }
 }

@@ -68,7 +68,7 @@ export class Constant extends Base {
         w.token(this.tokens.value),
         w.token(this.tokens.termination),
       ]),
-      { data: this, parent }
+      { data: this, parent },
     );
   }
 }

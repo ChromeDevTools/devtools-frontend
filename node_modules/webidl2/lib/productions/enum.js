@@ -27,7 +27,7 @@ export class EnumValue extends WrappedToken {
       w.ts.trivia(this.tokens.value.trivia),
       w.ts.definition(
         w.ts.wrap(['"', w.ts.name(this.value, { data: this, parent }), '"']),
-        { data: this, parent }
+        { data: this, parent },
       ),
       w.token(this.tokens.separator),
     ]);
@@ -88,7 +88,7 @@ export class Enum extends Base {
         w.token(this.tokens.close),
         w.token(this.tokens.termination),
       ]),
-      { data: this }
+      { data: this },
     );
   }
 }

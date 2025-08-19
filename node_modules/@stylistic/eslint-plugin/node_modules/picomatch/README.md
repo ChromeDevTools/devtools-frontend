@@ -335,7 +335,7 @@ The following options may be used with the main `picomatch()` function or any of
 | `keepQuotes`          | `boolean`      | `false`     | Retain quotes in the generated regex, since quotes may also be used as an alternative to backslashes.  |
 | `literalBrackets`     | `boolean`      | `undefined` | When `true`, brackets in the glob pattern will be escaped so that only literal brackets will be matched. |
 | `matchBase`           | `boolean`      | `false`     | Alias for `basename` |
-| `maxLength`           | `boolean`      | `65536`     | Limit the max length of the input string. An error is thrown if the input string is longer than this value. |
+| `maxLength`           | `number`      | `65536`     | Limit the max length of the input string. An error is thrown if the input string is longer than this value. |
 | `nobrace`             | `boolean`      | `false`     | Disable brace matching, so that `{a,b}` and `{1..3}` would be treated as literal characters. |
 | `nobracket`           | `boolean`      | `undefined` | Disable matching with regex brackets. |
 | `nocase`              | `boolean`      | `false`     | Make matching case-insensitive. Equivalent to the regex `i` flag. Note that this option is overridden by the `flags` option. |

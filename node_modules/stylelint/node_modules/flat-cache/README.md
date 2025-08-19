@@ -123,7 +123,7 @@ In version 6 we attempted to keep as much as the functionality as possible which
 
 - `create(options?: FlatCacheOptions)` - Creates a new cache and will load the data from disk if it exists
 - `createFromFile(filePath, options?: FlatCacheOptions)` - Creates a new cache from a file
-- `clearCacheById(cacheId: string, cacheDir?: string)` - Clears the cache by the cacheId
+- `clearCacheById(cacheId: string, cacheDir?: string)` - Clears the cache by the cacheId on the file system not in memory.
 - `clearAll(cacheDirectory?: string)` - Clears all the caches
 
 

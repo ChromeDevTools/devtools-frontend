@@ -48,7 +48,7 @@ export class Constructor extends Base {
         w.token(this.tokens.close),
         w.token(this.tokens.termination),
       ]),
-      { data: this, parent }
+      { data: this, parent },
     );
   }
 }

@@ -1280,14 +1280,8 @@
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() අනාරක්ෂිත මූලාරම්භවල තවදුරටත් ක්‍රියා නොකරයි. මෙම විශේෂාංගය භාවිත කිරීමට, ඔබ ඔබගේ යෙදුම HTTPS වැනි ආරක්ෂිත මූලාරම්භයකට මාරු කිරීම සලකා බැලිය යුතුය. වැඩි විස්තර සඳහා https://goo.gle/chrome-insecure-origins බලන්න."
   },
-  "generated/Deprecation.ts | H1UserAgentFontSizeInSection": {
-    "message": "නිශ්චිත අකුරු ප්‍රමාණයක් නොමැති <article>, <aside>, <nav>, හෝ <section> තුළ <h1> ටැගයක් හමු විය. මෙම බ්‍රවුසරයේ මෙම ශීර්ෂ පාඨයේ ප්‍රමාණය නුදුරු අනාගතයේ දී වෙනස් වනු ඇත. වැඩිදුර තොරතුරු සඳහා https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 බලන්න."
-  },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate අත්හැරේ. ඒ වෙනුවට RTCPeerConnectionIceErrorEvent.address හෝ RTCPeerConnectionIceErrorEvent.port භාවිත කරන්න."
-  },
-  "generated/Deprecation.ts | IdentityDigitalCredentials": {
-    "message": "ඩිජිටල් අක්තපත්‍ර සඳහා navigator.credentials.get() ඉල්ලීම සඳහා මෙම ආකෘතිය අතහැර දමා ඇත, නව ආකෘතිය භාවිතා කිරීමට ඔබේ ඇමතුම යාවත්කාලීන කරන්න."
   },
   "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
     "message": "canmakepayment සේවා සේවක සිදුවීමෙන් ලැබෙන වෙළෙන්දා සම්භවය සහ අන්තනෝමතික දත්ත අත්හරිනු ලබන අතර ඉවත් කරනු ලැබේ: topOrigin, paymentRequestOrigin, methodData, modifiers."
@@ -1327,6 +1321,9 @@
   },
   "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
     "message": "img, වීඩියෝ සහ කැන්වස් ටැග් මත overflow: visible සඳහන් කිරීම මූලද්‍රව්‍ය සීමාවෙන් පිටත දෘශ්‍ය අන්තර්ගතයක් නිපදවීමට හේතු විය හැක. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md බලන්න."
+  },
+  "generated/Deprecation.ts | OverrideFlashEmbedwithHTML": {
+    "message": "Legacy ෆ්ලෑෂ් වීඩියෝ කාවැද්දූ HTML iframe වෙත නැවත ලියා ඇත. Flash බොහෝ කලකට පෙර නතර විය, මෙම නැවත ලිවීමේ හැක් කිරීම අතහැර දමා ඇති අතර අනාගතයේදී ඉවත් කළ හැක."
   },
   "generated/Deprecation.ts | PaymentInstruments": {
     "message": "paymentManager.instruments අත්හරිනු ලැබේ. ඒ වෙනුවට ගෙවීම් හසුරුවන්නන් සඳහා කාලීන ස්ථාපනය භාවිතා කරන්න."
@@ -1397,9 +1394,6 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer භාවිත කිරීම දිගටම කරගෙන යාමට දිගු හරස් සම්භවය හුදකලාව තෝරා ගත යුතුය. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ බලන්න."
   },
-  "generated/Deprecation.ts | WebGPUAdapterIsFallbackAdapter": {
-    "message": "GPUAdapter isFallbackAdapter උපලක්ෂණය අතහැර දමා ඇත, ඒ වෙනුවට GPUAdapterInfo isFallbackAdapter උපලක්ෂණය භාවිතා කරන්න."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 XMLHttpRequest හි ප්‍රතිචාර json මගින් සහාය නොදක්වයි"
   },
@@ -1444,24 +1438,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] {PH2} සඳහා නිදොස් කිරීමේ සංකේත පූරණය කරමින් ({PH3} හරහා)…"
-  },
-  "models/bindings/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
-    "message": "නොසලකා හැරීමේ ලැයිස්තුවට සියලු නිර්නාමික ස්ක්‍රිප්ට එක් කරන්න"
-  },
-  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "ලැයිස්තුව නොසලකා හැරීමට සියලු දිගු ස්ක්‍රිප්ට එක් කරන්න"
-  },
-  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
-    "message": "නොසලකා හැරීමේ ලැයිස්තුවට සියලු තෙවන පාර්ශ්වීය ස්ක්‍රිප්ට එක් කරන්න"
-  },
-  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
-    "message": "නාමාවලිය නොසලකා හැරීමේ ලැයිස්තුවට එක් කරන්න"
-  },
-  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
-    "message": "නොසලකා හරින්න ලැයිස්තුවට ස්ක්‍රිප්ටය එක් කරන්න"
-  },
-  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
-    "message": "නොසලකා හරින්න ලැයිස්තුවෙන් ඉවත් කරන්න"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit සම්පාදනය අසාර්ථක විය: {PH1}"
@@ -1700,6 +1676,12 @@
   "models/persistence/IsolatedFileSystem.ts | cantReadFileSS": {
     "message": "ගොනුව කියවිය නොහැකිය: {PH1}: {PH2}"
   },
+  "models/persistence/IsolatedFileSystem.ts | createDirFailed": {
+    "message": "ප්‍රතික්ෂේප කිරීම්: {PH1} නාමාවලිය නිර්මාණය කිරීමට අසමත් විය. කාර්ය ඉඩ හෝ ප්‍රතික්ෂේප කිරීම් නිවැරදිව වින්‍යාස කර තිබේ ද?"
+  },
+  "models/persistence/IsolatedFileSystem.ts | createDirFailedBecausePathIsFile": {
+    "message": "ප්‍රතික්ෂේප කිරීම්: මාර්ගය පවතින නිසාත් එය ගොනුවක් නිසාත් {PH1} නාමාවලිය නිර්මාණය කිරීමට අසමත් විය."
+  },
   "models/persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
     "message": "ගොනු පද්ධති දෝෂයකි: {PH1}"
   },
@@ -1796,9 +1778,6 @@
   "models/trace/insights/CLSCulprits.ts | description": {
     "message": "කිසියම් පරිශීලක අන්තර්ක්‍රියාවක් නොමැතිව මූලද්‍රව්‍ය චලනය වන විට පිරිසැලසුම් මාරුවීම් සිදුවේ. [මූලද්‍රව්‍ය එකතු කිරීම, ඉවත් කිරීම හෝ පිටුව පූරණය වන විට ඒවායේ අකුරු වෙනස් වීම වැනි පිරිසැලසුම් මාරුවීම්](https://web.dev/articles/optimize-cls), සඳහා හේතු විමර්ශනය කරන්න."
   },
-  "models/trace/insights/CLSCulprits.ts | fontRequest": {
-    "message": "අකුරු ඉල්ලීම"
-  },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "එන්නත් කළ iframe"
   },
@@ -1818,7 +1797,10 @@
     "message": "ඉහළ පිරිසැලසුම් මාරු වැරදිකරුවන්"
   },
   "models/trace/insights/CLSCulprits.ts | unsizedImage": {
-    "message": "Unsized image element"
+    "message": "ප්‍රමාණ නොකළ රූප මූලාංගය"
+  },
+  "models/trace/insights/CLSCulprits.ts | webFont": {
+    "message": "වෙබ් අකුරු වර්ගය"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "නරකම පොකුරක්"
@@ -1847,8 +1829,17 @@
   "models/trace/insights/DOMSize.ts | description": {
     "message": "විශාල DOM එකක් මඟින් විලාස ගණනය කිරීම් සහ පිරිසැලසුම් ප්‍රතිප්‍රවාහ කාලසීමාව වැඩි කළ හැකි අතර, එය පිටු ප්‍රතිචාර දැක්වීමට බලපායි. විශාල DOM එකක් මතක භාවිතය වැඩි කරයි. [අධික DOM ප්‍රමාණයක් වළක්වා ගන්නා ආකාරය දැන ගන්න](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
   },
+  "models/trace/insights/DOMSize.ts | duration": {
+    "message": "කාල පරාසය"
+  },
   "models/trace/insights/DOMSize.ts | element": {
     "message": "මූලාංගය"
+  },
+  "models/trace/insights/DOMSize.ts | largeLayout": {
+    "message": "පිරිසැලසුම ({PH1} වස්තූන්)"
+  },
+  "models/trace/insights/DOMSize.ts | largeStyleRecalc": {
+    "message": "විලාස නැවත ගණනය කිරීම ({PH1} මූලාංග)"
   },
   "models/trace/insights/DOMSize.ts | maxChildren": {
     "message": "බොහෝ දරුවන්"
@@ -1861,6 +1852,9 @@
   },
   "models/trace/insights/DOMSize.ts | title": {
     "message": "DOM ප්‍රමාණය ප්‍රශස්ත කරන්න"
+  },
+  "models/trace/insights/DOMSize.ts | topUpdatesDescription": {
+    "message": "මේවා විශාලතම පිරිසැලසුම සහ විලාස නැවත ගණනය කිරීමේ සිදුවීම් වේ. DOM සරල කිරීමෙන් ඒවායේ කාර්යසාධන බලපෑම අඩු කළ හැක."
   },
   "models/trace/insights/DOMSize.ts | totalElements": {
     "message": "මුළු මූලිකාංග"
@@ -1929,7 +1923,7 @@
     "message": "(නිර්නාමික)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "බොහෝ API, සාමාන්‍යයෙන් පිරිසැලසුම් ජ්‍යාමිතිය කියවන අතර, විලාසය සහ පිරිසැලසුම ගණනය කිරීම සඳහා විදැහුම් එන්ජිමට ස්ක්‍රිප්ට් ක්‍රියාත්මක කිරීම විරාම කිරීමට බල කරයි. බලහත්කාරයෙන් [ප්‍රතිප්‍රවාහ කිරීම](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) සහ එහි අවම කිරීම් පිළිබඳව තව දැන ගන්න."
+    "message": "DOM තත්ත්වයට වෙනස් කිරීමකින් විලාස අවලංගු කිරීමෙන් පසු, JavaScript ජ්‍යාමිතික ගුණාංග (offsetWidth වැනි) විමසන විට බලහත්කාරයෙන් නැවත ප්‍රවාහයක් සිදු වේ. මෙය දුර්වල කාර්යසාධනයකට හේතු විය හැක. [බලහත්කාරයෙන් නැවත ප්‍රවාහ කිරීම](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) සහ විය හැකි අවම කිරීම් පිළිබඳව තව දැන ගන්න."
   },
   "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
     "message": "ඇමතුම් අට්ටි අනුසාරය"
@@ -1945,6 +1939,30 @@
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
     "message": "[උපලක්ෂණ නොවන]"
+  },
+  "models/trace/insights/INPBreakdown.ts | description": {
+    "message": "දිගම උප කොටසින් විමර්ශනය ආරම්භ කරන්න. [ප්‍රමාදය අවම කර ගත හැක](https://web.dev/articles/optimize-inp#optimize_interactions). සැකසුම් කාලය අඩු කිරීම සඳහා, [ප්‍රධාන පොට පිරිවැය ප්‍රශස්ත කරන්න](https://web.dev/articles/optimize-long-tasks), බොහෝ විට JS."
+  },
+  "models/trace/insights/INPBreakdown.ts | duration": {
+    "message": "කාල පරාසය"
+  },
+  "models/trace/insights/INPBreakdown.ts | inputDelay": {
+    "message": "ආදාන ප්‍රමාදය"
+  },
+  "models/trace/insights/INPBreakdown.ts | noInteractions": {
+    "message": "අන්තර්ක්‍රියා අනාවරණය නොවුණි"
+  },
+  "models/trace/insights/INPBreakdown.ts | presentationDelay": {
+    "message": "ඉදිරිපත් කිරීමේ ප්‍රමාදය"
+  },
+  "models/trace/insights/INPBreakdown.ts | processingDuration": {
+    "message": "සැකසුම් කිරීම් කාල සීමාව"
+  },
+  "models/trace/insights/INPBreakdown.ts | subpart": {
+    "message": "උප කොටස"
+  },
+  "models/trace/insights/INPBreakdown.ts | title": {
+    "message": "INP බිඳවැටීම"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "රූප බාගත කිරීමේ කාලය අඩු කිරීමෙන් පිටුවේ සහ LCP හි සංජානනීය පැටවීමේ කාලය වැඩි දියුණු කළ හැක. [රූප ප්‍රමාණය ප්‍රශස්ත කිරීම ගැන තව දැන ගන්න](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -1976,29 +1994,35 @@
   "models/trace/insights/ImageDelivery.ts | useVideoFormat": {
     "message": "GIF වෙනුවට වීඩියෝ ආකෘති භාවිත කිරීමෙන් සජීවීකරණ අන්තර්ගතයේ බාගත කිරීමේ ප්‍රමාණය වැඩි දියුණු කළ හැක."
   },
-  "models/trace/insights/InteractionToNextPaint.ts | description": {
-    "message": "දිගම අදියර සමග විමර්ශනය ආරම්භ කරන්න. [ප්‍රමාදය අවම කර ගත හැක](https://web.dev/articles/optimize-inp#optimize_interactions). සැකසුම් කාලය අඩු කිරීම සඳහා, [ප්‍රධාන පොට පිරිවැය ප්‍රශස්ත කරන්න](https://web.dev/articles/optimize-long-tasks), බොහෝ විට JS."
+  "models/trace/insights/LCPBreakdown.ts | description": {
+    "message": "සෑම [උප කොටසකටම නිශ්චිත වැඩිදියුණු කිරීමේ උපාය මාර්ග ඇත](https://web.dev/articles/optimize-lcp#lcp-breakdown). ඉතා මැනවින්, LCP කාලයෙන් වැඩි ප්‍රමාණයක් වැය කළ යුත්තේ ප්‍රමාදයන් තුළ නොව සම්පත් පැටවීම සඳහා ය."
   },
-  "models/trace/insights/InteractionToNextPaint.ts | duration": {
+  "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "කාල පරාසය"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | inputDelay": {
-    "message": "ආදාන ප්‍රමාදය"
+  "models/trace/insights/LCPBreakdown.ts | elementRenderDelay": {
+    "message": "මූලාංග විදැහුම් ප්‍රමාදය"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | noInteractions": {
-    "message": "අන්තර්ක්‍රියා අනාවරණය නොවුණි"
+  "models/trace/insights/LCPBreakdown.ts | fieldDuration": {
+    "message": "ක්ෂේත්‍රය p75"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | phase": {
-    "message": "අදියර"
+  "models/trace/insights/LCPBreakdown.ts | noLcp": {
+    "message": "LCP අනාවරණය වී නොමැත"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | presentationDelay": {
-    "message": "ඉදිරිපත් කිරීමේ ප්‍රමාදය"
+  "models/trace/insights/LCPBreakdown.ts | resourceLoadDelay": {
+    "message": "සම්පත් පූරණ කිරීමේ ප්‍රමාදය"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | processingDuration": {
-    "message": "සැකසුම් කිරීම් කාල සීමාව"
+  "models/trace/insights/LCPBreakdown.ts | resourceLoadDuration": {
+    "message": "සම්පත් පූරණ වීමේ කාල සීමාව"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | title": {
-    "message": "අදියර අනුව INP"
+  "models/trace/insights/LCPBreakdown.ts | subpart": {
+    "message": "උප කොටස"
+  },
+  "models/trace/insights/LCPBreakdown.ts | timeToFirstByte": {
+    "message": "පළමු බයිට් එකට කාලයයි"
+  },
+  "models/trace/insights/LCPBreakdown.ts | title": {
+    "message": "LCP බිඳවැටීම"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
     "message": "LCP රූපය HTML වෙතින් වහාම [සොයා ගත හැකි බවට](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) පත් කිරීමෙන් සහ [කම්මැලි-පූරණය වළක්වා ගැනීමෙන්](https://web.dev/articles/lcp-lazy-loading) LCP ප්‍රශස්ත කරන්න"
@@ -2027,36 +2051,6 @@
   "models/trace/insights/LCPDiscovery.ts | title": {
     "message": "LCP ඉල්ලීම සොයා ගැනීම"
   },
-  "models/trace/insights/LCPPhases.ts | description": {
-    "message": "එක් එක් [අදියරකටම නිශ්චිත වැඩි දියුණු කිරීමේ උපාය මාර්ග ඇත](https://web.dev/articles/optimize-lcp#lcp-breakdown). ඉතා මැනවින්, LCP කාලයෙන් වැඩි ප්‍රමාණයක් වැය කළ යුත්තේ ප්‍රමාදයන් තුළ නොව සම්පත් පැටවීම සඳහා ය."
-  },
-  "models/trace/insights/LCPPhases.ts | duration": {
-    "message": "කාල පරාසය"
-  },
-  "models/trace/insights/LCPPhases.ts | elementRenderDelay": {
-    "message": "මූලද්‍රව්‍ය විදැහුම් ප්‍රමාදය"
-  },
-  "models/trace/insights/LCPPhases.ts | fieldDuration": {
-    "message": "ක්ෂේත්‍රය p75"
-  },
-  "models/trace/insights/LCPPhases.ts | noLcp": {
-    "message": "LCP අනාවරණය වී නොමැත"
-  },
-  "models/trace/insights/LCPPhases.ts | phase": {
-    "message": "අදියර"
-  },
-  "models/trace/insights/LCPPhases.ts | resourceLoadDelay": {
-    "message": "සම්පත් පූරණ කිරීමේ ප්‍රමාදය"
-  },
-  "models/trace/insights/LCPPhases.ts | resourceLoadDuration": {
-    "message": "සම්පත් පූරණ වීමේ කාල සීමාව"
-  },
-  "models/trace/insights/LCPPhases.ts | timeToFirstByte": {
-    "message": "පළමු බයිට් එකට කාලයයි"
-  },
-  "models/trace/insights/LCPPhases.ts | title": {
-    "message": "අදියර අනුව LCP"
-  },
   "models/trace/insights/LegacyJavaScript.ts | columnScript": {
     "message": "ස්ක්‍රිප්ට"
   },
@@ -2073,7 +2067,7 @@
     "message": "HTTP/2 සහ HTTP/3, HTTP/1.1 හට වඩා බොහෝ ප්‍රතිලාභ ලබා දෙයි, උදාහරණයක් ලෙස බහුකාර්යකරණය. [නවීන HTTP භාවිතය පිළිබඳ තව දැන ගන්න](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
-    "message": "HTTP/1.1 ඉල්ලීම් භාවිතා කර නැත"
+    "message": "HTTP/1.1 භාවිත කරන ලද ඉල්ලීම් කිසිවක් නොමැති අතර, නැතහොත් එහි වර්තමාන HTTP/1.1 භාවිතය සැලකිය යුතු ප්‍රශස්තිකරණ අවස්ථාවක් ඉදිරිපත් නොකරයි. HTTP/1.1 ඉල්ලීම් සලකුණු කරනු ලබන්නේ ස්ථිතික වත්කම් හයක් හෝ වැඩි ගණනක් එකම මූලාරම්භයකින් ආරම්භ වුවහොත් සහ ඒවා දේශීය සංවර්ධන පරිසරයකින් හෝ තෙවන පාර්ශවීය මූලාශ්‍රයකින් ලබා නොදෙන්නේ නම් පමණි."
   },
   "models/trace/insights/ModernHTTP.ts | protocol": {
     "message": "ප්‍රොටොකෝලය"
@@ -2174,6 +2168,12 @@
   "models/trace/insights/SlowCSSSelector.ts | title": {
     "message": "CSS තේරීම් පිරිවැය"
   },
+  "models/trace/insights/SlowCSSSelector.ts | topSelectorElapsedTime": {
+    "message": "ඉහළ තෝරකයට ගත වූ කාලය"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | topSelectorMatchAttempt": {
+    "message": "ඉහළම තෝරක ගැළපීමේ උත්සාහය"
+  },
   "models/trace/insights/SlowCSSSelector.ts | topSelectors": {
     "message": "ඉහළ තේරීම් කරන්නන්"
   },
@@ -2206,6 +2206,24 @@
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "ජංගමය සඳහා බැලීම් පෝටය ප්‍රශස්ත කරන්න"
+  },
+  "models/workspace/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
+    "message": "නොසලකා හැරීමේ ලැයිස්තුවට සියලු නිර්නාමික ස්ක්‍රිප්ට එක් කරන්න"
+  },
+  "models/workspace/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "ලැයිස්තුව නොසලකා හැරීමට සියලු දිගු ස්ක්‍රිප්ට එක් කරන්න"
+  },
+  "models/workspace/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "නොසලකා හැරීමේ ලැයිස්තුවට සියලු තෙවන පාර්ශ්වීය ස්ක්‍රිප්ට එක් කරන්න"
+  },
+  "models/workspace/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "නාමාවලිය නොසලකා හැරීමේ ලැයිස්තුවට එක් කරන්න"
+  },
+  "models/workspace/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "නොසලකා හරින්න ලැයිස්තුවට ස්ක්‍රිප්ටය එක් කරන්න"
+  },
+  "models/workspace/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "නොසලකා හරින්න ලැයිස්තුවෙන් ඉවත් කරන්න"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(සුචිය)"
@@ -2639,9 +2657,6 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "ස්ථානීය කතාබහ මකන්න"
   },
-  "panels/ai_assistance/AiAssistancePanel.ts | externalRequestReceived": {
-    "message": "DevTools හට බාහිර ඉල්ලීමක් ලැබුණා"
-  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "ප්‍රශ්නයක් ඇසීමට ඉහත පියවර අනුගමනය කරන්න"
   },
@@ -2674,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "AI අහන්න"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
+    "message": "AI සමග නිදොස් කරන්න"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "AI සහාය සබල කරන්න"
@@ -3581,9 +3599,6 @@
   "panels/application/ServiceWorkersView.ts | focus": {
     "message": "නාභිගත කිරීම"
   },
-  "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "පරීක්‍ෂා කරන්න"
-  },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "ජාල ඉල්ලීම්"
   },
@@ -4117,6 +4132,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
     "message": "SharedWorker භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorkerMessage": {
+    "message": "SharedWorker වෙතින් පණිවිඩයක් ලැබුණු නිසා පිටුව කෑෂයෙන් ඉවත් කරන ලදි"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
     "message": "SpeechRecognizer භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
@@ -4821,7 +4839,7 @@
     "message": "රීති කට්ටලය හෙළි කිරීමට ක්ලික් කරන්න"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonInspect": {
-    "message": "පරීක්‍ෂා කරන්න"
+    "message": "පරීක්ෂා කරන්න"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "සමපේක්ෂන පූරණය අසමත් විය."
@@ -5576,20 +5594,23 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "වෙනස් කිරීම් පෙන්වන්න"
   },
+  "panels/common/FreDialog.ts | cancel": {
+    "message": "අවලංගු කරන්න"
+  },
+  "panels/common/FreDialog.ts | gotIt": {
+    "message": "තේරුණා"
+  },
+  "panels/common/FreDialog.ts | learnMore": {
+    "message": "තව දැන ගන්න"
+  },
+  "panels/common/FreDialog.ts | thingsToConsider": {
+    "message": "සලකා බැලිය යුතු කරුණු"
+  },
   "panels/common/common.ts | allow": {
     "message": "ඉඩ දෙන්න"
   },
   "panels/common/common.ts | cancel": {
     "message": "අවලංගු කරන්න"
-  },
-  "panels/common/common.ts | gotIt": {
-    "message": "තේරුණා"
-  },
-  "panels/common/common.ts | learnMore": {
-    "message": "තව දැන ගන්න"
-  },
-  "panels/common/common.ts | thingsToConsider": {
-    "message": "සලකා බැලිය යුතු කරුණු"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "දිගුව"
@@ -6470,6 +6491,9 @@
   "panels/elements/ElementIssueUtils.ts | interactiveContentOptionChild": {
     "message": "<option> මූලද්‍රව්‍යයක් තුළ අන්තර්ක්‍රියාකාරීත්ව මූලද්‍රව්‍යය"
   },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentSummaryDescendant": {
+    "message": "<summary> මූලාංගයක් තුළ අන්තර්ක්‍රියාකාරී මූලාංගය"
+  },
   "panels/elements/ElementIssueUtils.ts | nonPhrasingContentOptionChild": {
     "message": "<option> මූලද්‍රව්‍යයක් තුළ භාවිත කරන ලද වාක්‍ය ඛණ්ඩ නොවන අන්තර්ගතය"
   },
@@ -6548,8 +6572,23 @@
   "panels/elements/ElementsTreeElement.ts | addAttribute": {
     "message": "උපලක්ෂණය එක් කරන්න"
   },
+  "panels/elements/ElementsTreeElement.ts | addPadding": {
+    "message": "පිරවුම එක් කරන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | alignItems": {
+    "message": "අයිතම පෙළගස්වන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | assessVisibility": {
+    "message": "දෘශ්‍යතාව තක්සේරු කරන්න"
+  },
   "panels/elements/ElementsTreeElement.ts | captureNodeScreenshot": {
     "message": "නෝඩ තිර රුවක් ගන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | centerElement": {
+    "message": "මධ්‍යම මූලාංගය"
+  },
+  "panels/elements/ElementsTreeElement.ts | changeParentProperties": {
+    "message": "මාපිය ගුණත්ව වෙනස් කරන්න"
   },
   "panels/elements/ElementsTreeElement.ts | children": {
     "message": "ළමයින්:"
@@ -6596,6 +6635,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "අනුචලන-ස්නැප් උඩැතිරිය අබල කරන්න"
   },
+  "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
+    "message": "අයිතම ඒකාකාරව බෙදා හරින්න"
+  },
   "panels/elements/ElementsTreeElement.ts | duplicateElement": {
     "message": "මූලාංගය අනුපිටපත් කරන්න"
   },
@@ -6623,8 +6665,35 @@
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "ප්‍රත්‍යාවර්තීව දිග හරින්න"
   },
+  "panels/elements/ElementsTreeElement.ts | explainContainerContext": {
+    "message": "බහාලුම් සන්දර්භය පැහැදිලි කරන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainContainerQueries": {
+    "message": "බහාලුම් විමසුම් පැහැදිලි කරන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainContainerTypes": {
+    "message": "බහාලුම් වර්ග පැහැදිලි කරන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainFlexbox": {
+    "message": "flexbox පැහැදිලි කරන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainGridLayout": {
+    "message": "ජාලක පිරිසැලසුම පැහැදිලි කරන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainScrollbars": {
+    "message": "අනුචලන තීරු පැහැදිලි කරන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
+    "message": "උප ජාලක පැහැදිලි කරන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
+    "message": "ජාලක අර්ථ දැක්වීම සොයන්න"
+  },
   "panels/elements/ElementsTreeElement.ts | focus": {
     "message": "නාභිගත කිරීම"
+  },
+  "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
+    "message": "මෙම උත්පතනය විවෘතව තබා ගන්න"
   },
   "panels/elements/ElementsTreeElement.ts | forceState": {
     "message": "තත්ත්වය බල කරන්න"
@@ -6637,6 +6706,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "අලවන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | removeScrollbars": {
+    "message": "අනුචලන තීරු ඉවත් කරන්න"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "දසුනට අනුචලනය කරන්න"
@@ -6653,6 +6725,15 @@
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
     "message": "popovertarget උපලක්ෂණය හා සම්බන්ධ මූලද්‍රව්‍යය පෙන්වන්න"
   },
+  "panels/elements/ElementsTreeElement.ts | startAChat": {
+    "message": "කථාබස් ආරම්භ කරන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
+    "message": "මෙම උත්පතනය විවෘතව තබා ගැනීම නවත්වන්න"
+  },
+  "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
+    "message": "විලාස අනුචලන තීරු"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "මෙම රාමුව වෙළඳ දැන්වීම් රාමුවක් ලෙස හඳුනා ගන්නා ලදි"
   },
@@ -6662,11 +6743,11 @@
   "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<සංස්කරණය කිරීමට අගය විශාල වැඩිය>"
   },
+  "panels/elements/ElementsTreeElement.ts | wrapTheseItems": {
+    "message": "මෙම අයිතම ඔතන්න"
+  },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "පිටු DOM"
-  },
-  "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "හෙළිදරව් කරන්න"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "සියලු පුරුක පෙන්වන්න (තව {PH1})"
@@ -6706,6 +6787,27 @@
   },
   "panels/elements/LayersWidget.ts | toggleCSSLayers": {
     "message": "CSS ස්තර දසුන ටොගල කරන්න"
+  },
+  "panels/elements/LayoutPane.ts | chooseElementOverlayColor": {
+    "message": "මෙම මූලාංගය සඳහා උඩැතිරි වර්ණය තෝරන්න"
+  },
+  "panels/elements/LayoutPane.ts | colorPickerOpened": {
+    "message": "වර්ණ තෝරකය විවෘතයි."
+  },
+  "panels/elements/LayoutPane.ts | flexbox": {
+    "message": "Flexbox"
+  },
+  "panels/elements/LayoutPane.ts | flexboxOverlays": {
+    "message": "Flexbox උඩැතිරි"
+  },
+  "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
+    "message": "මෙම පිටුවේ flexbox පිරිසැලසුම් හමු නොවීය"
+  },
+  "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
+    "message": "උඩැතිරි සංදර්ශන සැකසීම්"
+  },
+  "panels/elements/LayoutPane.ts | showElementInTheElementsPanel": {
+    "message": "මූලාංග පැනලයේ මූලාංගය පෙන්වන්න"
   },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM බිඳුම් ලක්ෂ්‍යය"
@@ -6751,6 +6853,9 @@
   },
   "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
     "message": "CSS දේපළ වටිනාකම: {PH1}"
+  },
+  "panels/elements/ShortcutTreeElement.ts | reveal": {
+    "message": "හෙළිදරව් කරන්න"
   },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "ගොඩනගන ලද මෝස්තර පත්‍රය"
@@ -6893,11 +6998,29 @@
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "තව දැන ගන්න"
   },
+  "panels/elements/components/CSSPropertyDocsView.ts | browserOnPlatform": {
+    "message": "{PH2} මත {PH1}"
+  },
   "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
     "message": "නොපෙන්වන්න"
   },
   "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "තව දැන ගන්න⁠"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | limitedAvailability": {
+    "message": "ප්‍රධාන බ්‍රව්සර් හරහා සීමිත ලබා ගත හැකි බව"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | limitedAvailabilityInBrowsers": {
+    "message": "ප්‍රධාන බ්‍රව්සර් හරහා සීමිත ලබා ගැනීමේ හැකියාව ({PH1} හි සම්පූර්ණයෙන්ම ක්‍රියාත්මක කර නොමැත)"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | newlyAvailableSince": {
+    "message": "ප්‍රධාන බ්‍රව්සර් හරහා අලුතින් ලබා ගත හැක ({PH1} සිට Baseline)"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | unknownDate": {
+    "message": "නොදන්නා දිනයක්"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | widelyAvailableSince": {
+    "message": "ප්‍රධාන බ්‍රව්සර් හරහා පුළුල් ලෙස ලබා ගත හැක ({PH1} සිට Baseline)"
   },
   "panels/elements/components/CSSVariableValueView.ts | invalidPropertyValue": {
     "message": "අවලංගු ගුණත්ව අගය, අපේක්‍ෂිත වර්ගය {type}"
@@ -6922,36 +7045,6 @@
   },
   "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
     "message": "දිග හරින්න"
-  },
-  "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "මෙම මූලාංගය සඳහා උඩැතිරි වර්ණය තෝරන්න"
-  },
-  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
-    "message": "වර්ණ තෝරකය විවෘතයි."
-  },
-  "panels/elements/components/LayoutPane.ts | flexbox": {
-    "message": "Flexbox"
-  },
-  "panels/elements/components/LayoutPane.ts | flexboxOverlays": {
-    "message": "Flexbox උඩැතිරි"
-  },
-  "panels/elements/components/LayoutPane.ts | grid": {
-    "message": "ජාලකය"
-  },
-  "panels/elements/components/LayoutPane.ts | gridOverlays": {
-    "message": "ජාලක උඩැතිරි"
-  },
-  "panels/elements/components/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
-    "message": "මෙම පිටුවේ flexbox පිරිසැලසුම් හමු නොවීය"
-  },
-  "panels/elements/components/LayoutPane.ts | noGridLayoutsFoundOnThisPage": {
-    "message": "මෙම පිටුවේ ජාලක පිරිසැලසුම් හමු නොවීය"
-  },
-  "panels/elements/components/LayoutPane.ts | overlayDisplaySettings": {
-    "message": "උඩැතිරි සංදර්ශන සැකසීම්"
-  },
-  "panels/elements/components/LayoutPane.ts | showElementInTheElementsPanel": {
-    "message": "මූලාංග පැනලයේ මූලාංගය පෙන්වන්න"
   },
   "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
     "message": "{propertyName} ඉවත් කරන්න: {propertyValue}"
@@ -7084,12 +7177,6 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "සංස්කරණය කරන්න…"
-  },
-  "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeature": {
-    "message": "\"Experimental Web Platform Feature\" සලකුණු කිරීම සබල කර ඇත. එය අබල කිරීමට ක්ලික් කරන්න."
-  },
-  "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeatureFlag": {
-    "message": "\"Experimental Web Platform Feature\" සලකුණු කිරීම අබල කර ඇත. එය සබල කිරීමට ක්ලික් කරන්න."
   },
   "panels/emulation/DeviceModeToolbar.ts | fitToWindowF": {
     "message": "කවුළුවට ගැළපෙන ({PH1}%)"
@@ -7805,7 +7892,7 @@
   "panels/layer_viewer/LayerDetailsView.ts | slowScrollRegions": {
     "message": "මන්දගාමී අනුචලන කලාප"
   },
-  "panels/layer_viewer/LayerDetailsView.ts | stickyAncenstorLayersS": {
+  "panels/layer_viewer/LayerDetailsView.ts | stickyAncestorLayersS": {
     "message": "{PH1}: {PH2} ({PH3})"
   },
   "panels/layer_viewer/LayerDetailsView.ts | stickyBoxRectangleDimensions": {
@@ -8426,6 +8513,9 @@
   "panels/media/PlayerPropertiesView.ts | hardwareEncoder": {
     "message": "දෘඪාංග කේතකය"
   },
+  "panels/media/PlayerPropertiesView.ts | hlsBufferedRanges": {
+    "message": "බෆර් කළ මාධ්‍ය පරාස"
+  },
   "panels/media/PlayerPropertiesView.ts | noDecoder": {
     "message": "විකේතකයක් නැත"
   },
@@ -8519,12 +8609,6 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "පෙර සැකසීම්"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | add": {
-    "message": "එක් කරන්න…"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | addS": {
-    "message": "{PH1} එක් කරන්න"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "ක්‍රමාංකනය කරන්න…"
   },
@@ -8546,6 +8630,9 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
     "message": "navigator.hardwareConcurrency විසින් වාර්තා කරන ලද අගය අභිබවා යන්න"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | noSaveDataOverride": {
+    "message": "'දත්ත-සුරකින්න': පෙරනිමිය"
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "නොබැඳි"
   },
@@ -8558,8 +8645,14 @@
   "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
     "message": "පෙරනිමි අගයට යළි පිහිටුවන්න"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | sS": {
-    "message": "{PH1}: {PH2}"
+  "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
+    "message": "'දත්ත සුරකින්න': බලහත්කාරයෙන් ක්‍රියාවිරහිත කරන්න"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
+    "message": "'දත්ත සුරකින්න': බලහත්කාරයෙන් ක්‍රියාත්මක කරන්න"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
+    "message": "පිටුවේ navigator.connection.saveData විසින් වාර්තා කරන ලද අගය ප්‍රතික්ෂේප කරන්න"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | throttling": {
     "message": "අවකරණය"
@@ -8829,7 +8922,7 @@
     "message": "ජාල තත්ත්ව පෙන්වා ඇත."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
-    "message": "ජාල අවකරණය"
+    "message": "ජාලය"
   },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
     "message": "පෙරනිමි බ්‍රව්සරය භාවිත කරන්න"
@@ -8854,6 +8947,21 @@
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(අවලංගු කරන ලදි)"
+  },
+  "panels/network/NetworkDataGridNode.ts | coepFrameResourceNeedsCoepHeader": {
+    "message": "COEP-රාමු කළ සම්පතට COEP ශීර්ෂය අවශ්‍යයි"
+  },
+  "panels/network/NetworkDataGridNode.ts | coopSandboxedIframeCannotNavigateToCoopPage": {
+    "message": "සෑන්ඩ්බොක්ස් කළ iframe උත්පතනයට COOP පිටුවට සංචාලනය කළ නොහැක"
+  },
+  "panels/network/NetworkDataGridNode.ts | corpNotSameOrigin": {
+    "message": "CORP \"එකම-මූලාරම්භයක්\" නොවේ"
+  },
+  "panels/network/NetworkDataGridNode.ts | corpNotSameOriginAfterDefaultedToSameOriginByCoep": {
+    "message": "COEP විසින් \"එකම-මූලාරම්භයක්\" ලෙස පෙරනිමි කළ පසු CORP \"එකම-මූලාරම්භයක්\" නොවේ"
+  },
+  "panels/network/NetworkDataGridNode.ts | corpNotSameSite": {
+    "message": "CORP \"එකම-අඩවිය\" නොවේ"
   },
   "panels/network/NetworkDataGridNode.ts | corsError": {
     "message": "CORS දෝෂය"
@@ -8944,6 +9052,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "ප්‍රතියොමු කරන්න"
+  },
+  "panels/network/NetworkDataGridNode.ts | responseIsIpProtectedToolTip": {
+    "message": "මෙම ඉල්ලීම IP ආරක්ෂණ ප්‍රොක්සි හරහා යවන ලදි."
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + Preflight"
@@ -9080,6 +9191,9 @@
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowserCookies": {
     "message": "බ්‍රවුසර කුකි හිස් කිරීමට ඔබට අවශ්‍ය බව ඔබට විශ්වාසද?"
   },
+  "panels/network/NetworkLogView.ts | assessSecurityHeaders": {
+    "message": "සුරැකුම් ශීර්ෂ තක්සේරු කරන්න"
+  },
   "panels/network/NetworkLogView.ts | blockRequestDomain": {
     "message": "ඉල්ලීම් වසර අවහිර කරන්න"
   },
@@ -9194,6 +9308,15 @@
   "panels/network/NetworkLogView.ts | dropHarFilesHere": {
     "message": "මෙහි HAR ගොනු හෙළන්න"
   },
+  "panels/network/NetworkLogView.ts | explainFailures": {
+    "message": "අසාර්ථක වීම් පැහැදිලි කරන්න"
+  },
+  "panels/network/NetworkLogView.ts | explainPurpose": {
+    "message": "අරමුණ පැහැදිලි කරන්න"
+  },
+  "panels/network/NetworkLogView.ts | explainSlowness": {
+    "message": "මන්දගාමී බව පැහැදිලි කරන්න"
+  },
   "panels/network/NetworkLogView.ts | finishS": {
     "message": "අවසන් කරන්න: {PH1}"
   },
@@ -9215,6 +9338,9 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "සෙවීම් පෙරහන හරවයි"
   },
+  "panels/network/NetworkLogView.ts | ippRequests": {
+    "message": "IP ආරක්ෂිත ඉල්ලීම්"
+  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "පූරණය කරන්න: {PH1}"
   },
@@ -9229,6 +9355,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "අවහිර කළ ඉල්ලීම් පමණක් පෙන්වන්න"
+  },
+  "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
+    "message": "(අප්‍රසිද්ධ පමණි) IP ආරක්ෂණ ප්‍රොක්සි වෙත යවන ලද ඉල්ලීම් පමණක් පෙන්වන්න"
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "අවහිර කළ ප්‍රතිචාර කුකීස් සහිත ඉල්ලීම් පමණක් පෙන්වන්න"
@@ -9289,6 +9418,9 @@
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "ඉල්ලීම් පමණක් පෙන්වන්න / සඟවන්න"
+  },
+  "panels/network/NetworkLogView.ts | startAChat": {
+    "message": "කථාබස් ආරම්භ කරන්න"
   },
   "panels/network/NetworkLogView.ts | startRecording": {
     "message": "පටිගත කිරීම අරඹන්න"
@@ -11543,23 +11675,14 @@
   "panels/security/CookieReportView.ts | gitHubResource": {
     "message": "තෙවන පාර්ශ්වීය අඩවියකින් {PH1} සමාලෝචනය කරන්න"
   },
-  "panels/security/CookieReportView.ts | gitHubResourceInsightTypeString": {
-    "message": "Github"
-  },
   "panels/security/CookieReportView.ts | gracePeriod": {
     "message": "{PH1} සමාලෝචනය කරන්න. සහන කාල සීමාවේ ව්‍යතිරේකය සක්‍රියයි."
-  },
-  "panels/security/CookieReportView.ts | gracePeriodInsightTypeString": {
-    "message": "අනුග්‍රහක පරාසය"
   },
   "panels/security/CookieReportView.ts | guidance": {
     "message": "මාර්ගෝපදේශය"
   },
   "panels/security/CookieReportView.ts | heuristics": {
     "message": "පසුව ක්‍රියාමාර්ග අවශ්‍ය වේ. විවරණෝපයෝගීත්ව මත පදනම් වූ ව්‍යතිරේකය සක්‍රියයි."
-  },
-  "panels/security/CookieReportView.ts | heuristicsInisightTypeString": {
-    "message": "විවරණෝපයෝගීත්ව"
   },
   "panels/security/CookieReportView.ts | hostingCookieTypeString": {
     "message": "සත්කාරකත්වය"
@@ -11577,9 +11700,6 @@
     "message": "වැඩිදුර තතු සඳහා තෙවන පාර්ශ්වීය අඩවිය අමතන්න"
   },
   "panels/security/CookieReportView.ts | otherCookieTypeString": {
-    "message": "වෙනත්"
-  },
-  "panels/security/CookieReportView.ts | otherInsightTypeString": {
     "message": "වෙනත්"
   },
   "panels/security/CookieReportView.ts | platform": {
@@ -12209,8 +12329,17 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "පරිශීලක නිෂ්ක්‍රියයි, තිරය අගුලු හරින ලදි"
   },
+  "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
+    "message": "ඔබ කොන්සෝලය හෝ මූලාශ්‍ර පැනලය ටයිප් කරන විට, ඔබට කේත යෝජනා ලැබෙනු ඇත. එකක් පිළිගැනීමට පටිත්ත ඔබන්න."
+  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "AI සමඟින් ඔබේ ඵලදායිතාව ඉහළ නංවන්න"
+  },
+  "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
+    "message": "කේත යෝජනා ජනනය කිරීම සඳහා, ඔබේ කොන්සෝල ආදානය, ඔබේ වත්මන් කොන්සෝල සැසියේ ඉතිහාසය සහ දැනට විවෘතව ඇති ගොනුවේ අන්තර්ගතය Google සමග බෙදා ගනු ලැබේ. මෙම විශේෂාංගය වැඩි දියුණු කිරීම සඳහා මෙම දත්ත මානව සමාලෝචකයින් විසින් දැකිය හැක."
+  },
+  "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
+    "message": "කේත යෝජනා ජනනය කිරීම සඳහා, ඔබේ කොන්සෝල ආදානය, ඔබේ වත්මන් කොන්සෝල සැසියේ ඉතිහාසය සහ දැනට විවෘතව ඇති ගොනුවේ අන්තර්ගතය Google සමග බෙදා ගනු ලැබේ. මෙම දත්ත Google හි AI ආකෘති වැඩි දියුණු කිරීමට භාවිතා නොකරනු ඇත."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "පැහැදිලි කිරීම් උත්පාදනය කිරීම සඳහා කොන්සෝල පණිවිඩය, ආශ්‍රිත අට්ටි ලුහුබැඳීම, අදාළ මූලාශ්‍ර කේතය සහ සම්බන්ධිත ජාල ශීර්ෂයන් Google වෙත යවනු ලැබේ. මෙම විශේෂාංගය වැඩි දියුණු කිරීම සඳහා මෙම දත්ත මානව සමාලෝචකයින් විසින් දැකිය හැක."
@@ -12265,6 +12394,9 @@
   },
   "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
     "message": "කාර්ය සාධන පැනල් විවරණ සඳහා AI යෝජනා ලබා ගන්න"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
+    "message": "ඔබේ කේතය සම්පූර්ණ කිරීමට උදවු ලබා ගන්න"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "කොන්සෝල අනතුරු ඇඟවීම් සහ දෝෂ වටහා ගැනීමට සහ නිරාකරණය කිරීමට ඔබට උදවු කරයි"
@@ -12404,7 +12536,7 @@
   "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
     "message": "කෙටිමඟ වෙත කළ වෙනස්කම් යොදන ලදී"
   },
-  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscarded": {
     "message": "කෙටිමඟ වෙත කළ වෙනස්කම් ඉවත ලන ලදි"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
@@ -12554,8 +12686,35 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "උපාංග දේපළ"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorAutomotive": {
+    "message": "Automotive"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorDesktop": {
+    "message": "ඩෙස්ක්ටොප්"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorEInk": {
+    "message": "EInk"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorMobile": {
+    "message": "ජංගම"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorTablet": {
+    "message": "ටැබ්ලටය"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorWatch": {
+    "message": "නරඹන්න"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorXR": {
+    "message": "XR"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorsGroupAriaLabel": {
+    "message": "ලබා ගත හැකි ආකෘති සාධක"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorsTitle": {
+    "message": "ආකෘති සාධක (Sec-CH-UA-Form-Factors)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "පූර්ණ බ්‍රව්සර අනුවාදය (Sec-CH-UA-Full-Browser-Version)"
+    "message": "පූර්ණ බ්‍රව්සර අනුවාදය (Sec-CH-UA-Full-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "සම්පූර්ණ බ්‍රවුසර අනුවාදය (උදා. 87.0.4280.88)"
@@ -12700,6 +12859,63 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "කොන්දේසිය සත්‍ය විට පමණක් විරාම කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} බිඳුම් ලක්ෂ්‍ය පහර"
+  },
+  "panels/sources/BreakpointsView.ts | checked": {
+    "message": "ලකුණු කර ඇත"
+  },
+  "panels/sources/BreakpointsView.ts | conditionCode": {
+    "message": "තත්ත්වය: {PH1}"
+  },
+  "panels/sources/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "සියලු බිඳුම් ලක්ෂ්‍ය අබල කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "ගොනුවේ ඇති සියලු බිඳුම් ලක්ෂ්‍ය අබල කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | editCondition": {
+    "message": "කොන්දේසිය සංස්කරණය කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | editLogpoint": {
+    "message": "ලොග් ලක්ෂ්‍යය සංස්කරණය කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "සියලු බිඳුම් ලක්ෂ්‍ය සබල කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "ගොනුවේ ඇති සියලු බිඳුම් ලක්ෂ්‍ය සබල කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | indeterminate": {
+    "message": "මිශ්‍ර"
+  },
+  "panels/sources/BreakpointsView.ts | logpointCode": {
+    "message": "ලොග ලක්ෂ්‍යය: {PH1}"
+  },
+  "panels/sources/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "අල්ලා ගත් ව්‍යතිරේකවලට විරාමයක් දෙන්න"
+  },
+  "panels/sources/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "අල්ලා නොගත් ව්‍යතිරේක මත විරාම කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "සියලු බිඳුම් ලක්ෂ්‍ය ඉවත් කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "ගොනුවේ ඇති සියලු බිඳුම් ලක්ෂ්‍ය ඉවත් කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | removeBreakpoint": {
+    "message": "බිඳුම් ලක්ෂ්‍යය ඉවත් කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "බිඳුම් ලක්ෂ්‍ය ඉවත් කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | revealLocation": {
+    "message": "ස්ථානය හෙළිදරව් කරන්න"
+  },
+  "panels/sources/BreakpointsView.ts | unchecked": {
+    "message": "ලකුණු කිරීම ඉවත් කරන ලදි"
   },
   "panels/sources/CSSPlugin.ts | addSourceMap": {
     "message": "මූලාශ්‍ර සිතියම එක් කරන්න…"
@@ -13163,6 +13379,9 @@
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ප්‍රතික්ෂේප කිරීම් සඳහා ෆෝල්ඩරය තෝරන්න"
   },
+  "panels/sources/SourcesPanel.ts | assessPerformance": {
+    "message": "කාර්යසාධනය තක්සේරු කරන්න"
+  },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "මෙහි ඉදිරියට යන්න"
   },
@@ -13186,6 +13405,12 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "කාර්ය ඉඩ ෆෝල්ඩරය මෙහි හෙළන්න"
+  },
+  "panels/sources/SourcesPanel.ts | explainInputHandling": {
+    "message": "ආදාන හැසිරවීම පැහැදිලි කරන්න"
+  },
+  "panels/sources/SourcesPanel.ts | explainThisScript": {
+    "message": "මෙම ස්ක්‍රිප්ට් එක පැහැදිලි කරන්න"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
     "message": "කර්තෘත්වය ඇති/යොදවන ලද ඒවාට අනුව සමූහ කරන්න"
@@ -13231,6 +13456,9 @@
   },
   "panels/sources/SourcesPanel.ts | showNavigator": {
     "message": "සංචාලනය කරන්නා පෙන්වන්න"
+  },
+  "panels/sources/SourcesPanel.ts | startAChat": {
+    "message": "කථාබස් ආරම්භ කරන්න"
   },
   "panels/sources/SourcesPanel.ts | storeAsGlobalVariable": {
     "message": "ගෝලීය විචල්‍යය ලෙස ගබඩා කරන්න"
@@ -13294,63 +13522,6 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
     "message": "ඔරලෝසු ප්‍රකාශනය මකන ලදි"
-  },
-  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
-    "message": "{PH1} බිඳුම් ලක්ෂ්‍ය පහර"
-  },
-  "panels/sources/components/BreakpointsView.ts | checked": {
-    "message": "ලකුණු කර ඇත"
-  },
-  "panels/sources/components/BreakpointsView.ts | conditionCode": {
-    "message": "තත්ත්වය: {PH1}"
-  },
-  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
-    "message": "සියලු බිඳුම් ලක්ෂ්‍ය අබල කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
-    "message": "ගොනුවේ ඇති සියලු බිඳුම් ලක්ෂ්‍ය අබල කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | editCondition": {
-    "message": "කොන්දේසිය සංස්කරණය කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
-    "message": "ලොග් ලක්ෂ්‍යය සංස්කරණය කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
-    "message": "සියලු බිඳුම් ලක්ෂ්‍ය සබල කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
-    "message": "ගොනුවේ ඇති සියලු බිඳුම් ලක්ෂ්‍ය සබල කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | indeterminate": {
-    "message": "මිශ්‍ර"
-  },
-  "panels/sources/components/BreakpointsView.ts | logpointCode": {
-    "message": "ලොග ලක්ෂ්‍යය: {PH1}"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
-    "message": "අල්ලා ගත් ව්‍යතිරේකවලට විරාමයක් දෙන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
-    "message": "අල්ලා නොගත් ව්‍යතිරේක මත විරාම කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
-    "message": "සියලු බිඳුම් ලක්ෂ්‍ය ඉවත් කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
-    "message": "ගොනුවේ ඇති සියලු බිඳුම් ලක්ෂ්‍ය ඉවත් කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
-    "message": "බිඳුම් ලක්ෂ්‍යය ඉවත් කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
-    "message": "බිඳුම් ලක්ෂ්‍ය ඉවත් කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | revealLocation": {
-    "message": "ස්ථානය හෙළිදරව් කරන්න"
-  },
-  "panels/sources/components/BreakpointsView.ts | unchecked": {
-    "message": "ලකුණු කිරීම ඉවත් කරන ලදි"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "ශීර්ෂකයක් එක් කරන්න"
@@ -13760,11 +13931,8 @@
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "ආරම්භක වේලාව"
   },
-  "panels/timeline/ExtensionTrackAppender.ts | customTrackDescription": {
-    "message": "මෙය තෙවන පාර්ශ්වයක් විසින් එක් කරන ලද අභිරුචි පථයකි."
-  },
-  "panels/timeline/ExtensionTrackAppender.ts | customTrackName": {
-    "message": "{PH1} — අභිරුචි ඛණ්ඩය"
+  "panels/timeline/ExtensionTrackAppender.ts | customTrackSubtitle": {
+    "message": "— අභිරුචි"
   },
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
@@ -13916,8 +14084,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | addScriptToIgnoreList": {
     "message": "නොසලකා හැරීමේ ලැයිස්තුවට ස්ක්‍රිප්ටය එක් කරන්න"
   },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | assessThePurpose": {
+    "message": "අරමුණ තක්සේරු කරන්න"
+  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "අතහැර දැමූ රාමුව"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | findImprovements": {
+    "message": "වැඩිදියුණු කිරීම් සොයන්න"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "රාමුව"
@@ -13934,8 +14108,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | hideRepeatingChildren": {
     "message": "පුනරාවර්තන ප්‍රතිඵල සඟවන්න"
   },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | identifyTimeSpent": {
+    "message": "ගත කළ කාලය හඳුනා ගන්න"
+  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "නිෂ්ක්‍රිය රාමුව"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | labelEntry": {
+    "message": "ලේබල් ඇතුළත් කිරීම"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "අඩ වශයෙන් ඉදිරිපත් කළ රාමුව"
@@ -13948,6 +14128,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | resetTrace": {
     "message": "හෝඩුවාව යළි සකසන්න"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | startAChat": {
+    "message": "කථාබස් ආරම්භ කරන්න"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} දින {PH2}ට"
@@ -14019,7 +14202,7 @@
     "message": "3වන පාර්ශවයන් අඳුරු කරන්න"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
-    "message": "කාලරේඛා ගොනුව හෝ URL මෙහි අදින්න"
+    "message": "හෝඩුවාවන් ගොනුව හෝ URL එක මෙතැනට දමන්න"
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "උසස් තීන්ත උපකරණ සබල කරන්න (මන්දගාමී)"
@@ -14030,14 +14213,11 @@
   "panels/timeline/TimelinePanel.ts | eventSelected": {
     "message": "සිදුවීම {PH1} තෝරා ඇත"
   },
-  "panels/timeline/TimelinePanel.ts | exportEnhancedTraces": {
-    "message": "ඉහළ නැංවූ කාර්ය සාධන හඹා යෑම්"
-  },
-  "panels/timeline/TimelinePanel.ts | exportNormalTraces": {
-    "message": "මූලික කාර්ය සාධන හඹා යෑම්"
-  },
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "හෝඩුවාව නිර්යාත කිරීම අසමත් විය"
+  },
+  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
+    "message": "DevTools හට බාහිර ඉල්ලීමක් ලැබුණා"
   },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "මා හරිගස්සන්න"
@@ -14048,17 +14228,17 @@
   "panels/timeline/TimelinePanel.ts | hideSidebar": {
     "message": "පැති තීරුව සඟවන්න"
   },
-  "panels/timeline/TimelinePanel.ts | initializingProfiler": {
-    "message": "පැතිකඩකරු මුලපුරමින්…"
+  "panels/timeline/TimelinePanel.ts | initializingTracing": {
+    "message": "හඹා යාම ආරම්භ කරමින්…"
   },
   "panels/timeline/TimelinePanel.ts | learnMore": {
     "message": "තව දැන ගන්න"
   },
-  "panels/timeline/TimelinePanel.ts | loadProfile": {
-    "message": "පැතිකඩ පූරණය කරන්න…"
+  "panels/timeline/TimelinePanel.ts | loadTrace": {
+    "message": "හෝඩුවාව පූරණය කරන්න…"
   },
-  "panels/timeline/TimelinePanel.ts | loadingProfile": {
-    "message": "පැතිකඩ පූරණය කරමින්…"
+  "panels/timeline/TimelinePanel.ts | loadingTrace": {
+    "message": "හෝඩුවාව පූරණය කරමින්…"
   },
   "panels/timeline/TimelinePanel.ts | memory": {
     "message": "මතකය"
@@ -14072,26 +14252,14 @@
   "panels/timeline/TimelinePanel.ts | processed": {
     "message": "ක්‍රියාකරන ලද"
   },
-  "panels/timeline/TimelinePanel.ts | processingProfile": {
-    "message": "පැතිකඩ සකසමින්…"
-  },
-  "panels/timeline/TimelinePanel.ts | profiling": {
-    "message": "පැතිකඩ අගයමින්…"
+  "panels/timeline/TimelinePanel.ts | processingTrace": {
+    "message": "හෝඩුවාව සකසමින්…"
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "ලැබුණි"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "පටිගත කිරීම අසාර්ථක විය"
-  },
-  "panels/timeline/TimelinePanel.ts | saveProfile": {
-    "message": "පැතිකඩ සුරකින්න…"
-  },
-  "panels/timeline/TimelinePanel.ts | saveTraceWithAnnotationsMenuOption": {
-    "message": "හඹා යාම සුරකින්න"
-  },
-  "panels/timeline/TimelinePanel.ts | saveTraceWithoutAnnotationsMenuOption": {
-    "message": "අනුසටහන් නොමැතිව හඹා යාම සුරකින්න"
   },
   "panels/timeline/TimelinePanel.ts | screenshots": {
     "message": "තිර රූ"
@@ -14132,11 +14300,23 @@
   "panels/timeline/TimelinePanel.ts | timelineZoom": {
     "message": "විශාලනය"
   },
+  "panels/timeline/TimelinePanel.ts | tracing": {
+    "message": "ලුහුබැඳීම…"
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "වගුව පිටපත් කරන්න"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | elapsed": {
     "message": "ගත වූයේ (ms)"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | elapsedExplanation": {
+    "message": "DOM එකකට එරෙහිව තෝරකයක් ගැළපීමට ගත වූ කාලය මිලි තත්පර වලින්."
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | invalidationCount": {
+    "message": "අවලංගු කිරීමේ ගණන"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | invalidationCountExplanation": {
+    "message": "නෝඩ් වල අවලංගු කිරීම් ගණන එකතු කර පසුව විලාසය නැවත ගණනය කරන ලදි, ඒ සියල්ල මෙම තෝරකය මඟින් ගැළපේ. නෝඩයක් කිහිප වතාවක් සහ බහු තෝරක මඟින් අවලංගු කළ හැකි බව සලකන්න."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | lineNumber": {
     "message": "පේළිය {PH1}:{PH2}"
@@ -14144,23 +14324,35 @@
   "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
     "message": "ගැළපුම් ප්‍රයත්න"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchAttemptsExplanation": {
+    "message": "එන්ජිම විලාස රීතියකට එරෙහිව ගැළපීමට උත්සාහ කළ නෝඩ් ගණන."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
     "message": "ගැළපුම් ගණන"
   },
-  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "මන්දගාමී මාර්ග නොගැළපුම් %"
-  },
-  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
-    "message": "ඉහළ තේරීම් සංකීර්ණත්වය හේතුවෙන් බ්ලූම් ෆිල්ටරය මගින් ඉක්මනින් බැහැර කළ නොහැකි නොගැළපෙන නෝඩ් ප්‍රතිශතය (ගැළපුම් උත්සාහයන් - ගැළපුම් ගණන). ඉතා අඩු නම් ඉතා හොඳයි."
+  "panels/timeline/TimelineSelectorStatsView.ts | matchCountExplanation": {
+    "message": "විලාස රීතියකට ගැළපෙන නෝඩ් ගණන."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "තෝරකය"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | selectorExplanation": {
+    "message": "විලාස රීතියක CSS තෝරක පෙළ."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
     "message": "තෝරක සංඛ්‍යානය"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatches": {
+    "message": "මන්දගාමී මාර්ග නොගැළපුම් %"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatchesExplanation": {
+    "message": "ඉහළ තේරීම් සංකීර්ණත්වය හේතුවෙන් බ්ලූම් ෆිල්ටරය මගින් ඉක්මනින් බැහැර කළ නොහැකි නොගැළපෙන නෝඩ් ප්‍රතිශතය (ගැළපුම් උත්සාහයන් - ගැළපුම් ගණන). ඉතා අඩු නම් ඉතා හොඳයි."
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
     "message": "විලාස පත්‍රය"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | styleSheetIdExplanation": {
+    "message": "විලාසිතා පත්‍රවල තෝරක රීති අර්ථ දැක්වීමට සබැඳි. තෝරක රීතියක් විලාසිතා පත්‍රයක ස්ථාන කිහිපයක හෝ බහු විලාසිතා පත්‍රවල අර්ථ දැක්විය හැකි බව සලකන්න. බ්‍රව්සර පරිශීලක-නියෝජිත විලාසිතා පත්‍රයේ හෝ ගතික විලාසිතා පත්‍රවල තෝරක රීතිවලට සබැඳියක් නොමැත."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "වගුව පසුරු පුවරුවට පිටපත් කරන ලදි"
@@ -15278,12 +15470,6 @@
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
     "message": "කාල පරාසයක් නිර්වචනය කරන්න"
   },
-  "panels/timeline/components/SidebarInsightsTab.ts | feedbackButton": {
-    "message": "ප්‍රතිපෝෂණය"
-  },
-  "panels/timeline/components/SidebarInsightsTab.ts | feedbackTooltip": {
-    "message": "ඇතුළාන්තය අත්හදා බැලීම විශේෂාංගය. ඔබගේ ප්‍රතිපෝෂණය අපට එය වැඩිදියුණු කිරීමට උපකාරී වනු ඇත."
-  },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
     "message": "අස් කරන්න"
   },
@@ -15824,33 +16010,6 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome ධජ හෝ බ්‍රවුසර වින්‍යාසය නිසා මෙම ඉල්ලීම සඳහා කුකීස් අවහිර කර ඇත. ගැටලු පැනලයේ තව දැන ගන්න."
   },
-  "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
-    "message": "ආපසු ඇමතීමේ අන්තරාච ප්‍රමාණය"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | callbackInterval": {
-    "message": "ආපසු ඇමතීමේ කාල පරතරය"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | currentTime": {
-    "message": "වර්තමාන වේලාව"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | maxOutputChannels": {
-    "message": "උපරිම ප්‍රතිදාන නාලිකා"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | renderCapacity": {
-    "message": "ධාරිතාව විදහා දක්වන්න"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | sampleRate": {
-    "message": "සාම්පල අනුපාතය"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | state": {
-    "message": "ජනපදය"
-  },
-  "panels/web_audio/AudioContextSelector.ts | audioContextS": {
-    "message": "ශ්‍රව්‍ය සන්දර්භය: {PH1}"
-  },
-  "panels/web_audio/AudioContextSelector.ts | noRecordings": {
-    "message": "(පටිගත කිරීම් නැත)"
-  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "වෙබ් ශ්‍රව්‍ය API භාවිතයක් අනාවරණය වී නොමැත"
   },
@@ -15874,9 +16033,6 @@
   },
   "panels/webauthn/WebauthnPane.ts | add": {
     "message": "එක් කරන්න"
-  },
-  "panels/webauthn/WebauthnPane.ts | addAuthenticator": {
-    "message": "සත්‍යාපකය එක් කරන්න"
   },
   "panels/webauthn/WebauthnPane.ts | authenticatorS": {
     "message": "සත්‍යාපකය {PH1}"
@@ -16417,6 +16573,9 @@
   },
   "ui/legacy/UIUtils.ts | copyLinkAddress": {
     "message": "සබැඳි ලිපිනය පිටපත් කරන්න"
+  },
+  "ui/legacy/UIUtils.ts | new": {
+    "message": "නව"
   },
   "ui/legacy/UIUtils.ts | ok": {
     "message": "හරි"

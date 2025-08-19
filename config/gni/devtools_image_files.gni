@@ -200,6 +200,7 @@ devtools_svg_sources = [
   "keyboard-full.svg",
   "keyboard-pen.svg",
   "keyboard.svg",
+  "label-auto.svg",
   "label.svg",
   "large-arrow-right-filled.svg",
   "layers-filled.svg",

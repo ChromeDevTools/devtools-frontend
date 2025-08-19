@@ -50,16 +50,17 @@ Longest 3 tasks:
 Title: PerformanceTraceFormatter formatMainThreadBottomUpSummary
 Content:
 This is the bottom-up summary for the entire trace. Only the top 10 activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.
-- self: 186.2 ms, total: 192.6 ms, source: V8.CompileCode
-- self: 98.4 ms, total: 992.8 ms, source: RunTask
-- self: 55.6 ms, total: 70 ms, source: v8.compile
+
+- self: 186.2 ms, total: 192.6 ms, source: Compile code
+- self: 98.4 ms, total: 992.8 ms, source: Task
+- self: 55.6 ms, total: 70 ms, source: Compile script
 - self: 51.7 ms, total: 64 ms, source: setTimeout
 - self: 37.5 ms, total: 40.3 ms, source: aC (url: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js, line: 0, column: 19068)
-- self: 34.9 ms, total: 34.9 ms, source:  (url: https://news.yahoo.com/, line: 57, column: 187957)
-- self: 33.7 ms, total: 33.7 ms, source:  (url: https://news.yahoo.com/, line: 57, column: 187957)
+- self: 34.9 ms, total: 34.9 ms, source: Recalculate style (url: https://news.yahoo.com/, line: 57, column: 187957)
+- self: 33.7 ms, total: 33.7 ms, source: Layout (url: https://news.yahoo.com/, line: 57, column: 187957)
 - self: 31.3 ms, total: 33.9 ms, source: clearTimeout
-- self: 30.3 ms, total: 53.4 ms, source: ParseHTML
-- self: 25.9 ms, total: 258.9 ms, source: p
+- self: 30.3 ms, total: 53.4 ms, source: Parse HTML
+- self: 25.9 ms, total: 258.9 ms, source: Function call
 === end content
 
 Title: PerformanceTraceFormatter formatThirdPartySummary
@@ -70,4 +71,360 @@ Third party summary:
 - name: Google Tag Manager, main thread time: 18.7 ms, network transfer size: 124 kB
 - name: AOL / Oath / Verizon Media, main thread time: 4.7 ms, network transfer size: 42 kB
 - name: ay.delivery, main thread time: 4 ms, network transfer size: 123 kB
+=== end content
+
+Title: PerformanceTraceFormatter formatMainThreadTrackSummary
+Content:
+# Top-down main thread summary
+
+
+## All URLs:
+
+  * 0: https://consent.cmp.oath.com/version/7.0.0/cmp.js
+  * 1: https://securepubads.g.doubleclick.net/tag/js/gpt.js
+  * 2: https://cdn.taboola.com/libtrc/yahooweb-network/loader.js
+  * 3: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js
+  * 4: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js
+  * 5: https://s.yimg.com/aaq/prebid/prebid-2.0.js
+  * 6: https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202503250101/pubads_impl.js
+  * 7: https://news.yahoo.com/
+  * 8: https://www.googletagmanager.com/gtag/js?id=G-B40QGCQW3G
+  * 9: https://s.yimg.com/aaq/benji/benji-2.2.99.js
+
+## Call tree:
+
+1;Task;10.3;0;;18
+2;Task;32.5;0;;19
+3;Task;11.7;0.1;;20
+4;Task;23.4;0.3;;21
+5;Task;12.8;0.1;;22
+6;Task;14.1;0.1;;23
+7;Task;41;0.1;;24-26
+8;Task;87.7;0.1;;26
+9;Task;40.2;0;;27
+10;Task;10.4;0.1;;28
+11;Task;30.9;30.9;;
+12;Task;12.9;0;;29
+13;Task;23.3;0;;30
+14;Task;17.4;0.1;;31
+15;Task;10.2;0;;32
+16;Task;29.8;0.1;;33
+17;Task;24.7;0;;34
+18;Evaluate script;10.3;10.3;0;
+19;Timer fired;32.5;0;;35
+20;Evaluate script;11.6;1.3;1;36
+21;Evaluate script;23.1;11.6;2;37
+22;Evaluate script;12.7;2.6;3;38
+23;Evaluate script;14;1.5;4;39
+24;Evaluate script;27.1;5.9;5;40
+25;Event: load;13.9;0;;41
+26;Timer fired;87.6;1.9;;42
+27;Evaluate script;40.2;5.2;6;43-45
+28;Parse HTML;10.4;10.4;7;
+29;Evaluate script;12.8;12.8;8;
+30;Timer fired;23.3;0;;45
+31;Run microtasks;17.3;5.8;;46
+32;Run microtasks;10.2;0;;47
+33;Run microtasks;29.7;0.3;;48
+34;Timer fired;24.7;2.5;;49
+35;Function call;32.5;1.8;7;50
+36;(anonymous);10.4;10.4;1;
+37;Compile script;11.5;11.5;2;
+38;(anonymous);10.1;;3;51
+39;(anonymous);12.5;12.5;4;
+40;(anonymous);21.2;1.2;5;52
+41;Run microtasks;13.8;0.2;;53
+42;Function call;85.7;0.5;3;54-56
+43;(anonymous);14.9;;6;56
+44;Run microtasks;20.1;0.1;;57
+45;Function call;23.3;0.4;3;58
+46;(anonymous);11.5;;2;59
+47;(anonymous);10.1;;2;60
+48;(anonymous);29.5;;3;61
+49;Run microtasks;22.2;5.6;;62
+50;(anonymous);30.6;;7;63
+51;apiVersionSuffix;10.1;10.1;3;
+52;(anonymous);20;8;5;64
+53;(anonymous);13.6;2.8;9;65
+54;fg;74.2;;3;66
+55;fg;11;;3;67
+56;(anonymous);14.9;4;6;68
+57;b;20;7.2;6;69
+58;fg;22.9;;3;70
+59;u;11.5;;2;71
+60;fillEllipsis;10.1;;2;72
+61;(anonymous);29.5;;5;73
+62;b;16.6;;6;74
+63;ready;30.6;;7;75
+64;t;12;12;5;
+65;_setConfig;10.8;;9;76
+66;(anonymous);74.2;;9;77
+67;(anonymous);11;;9;78
+68;(anonymous);10.9;10.9;6;
+69;EB.next;12.7;;6;79
+70;rC;22.9;;8;80
+71;(anonymous);11.5;;2;81
+72;fillNativeEllipsis;10.1;0;2;82
+73;success;29.5;4.1;5;83
+74;EB.next;16.6;2.5;6;84
+75;(anonymous);30.6;10.7;7;85
+76;Z.cmd.push;10.8;;5;86
+77;_requestBids;74.2;;9;87
+78;_requestBids;11;;9;88
+79;CB;12.7;;6;89
+80;pC;22.9;0.1;8;90-92
+81;u;11.5;;2;92
+82;computeStyles;10.1;10.1;2;
+83;onResponse;25.4;0.1;5;93
+84;CB;14.1;;6;94
+85;ge;19.9;1.2;7;95
+86;(anonymous);10.8;;9;96
+87;Z.cmd.push;74.2;;5;97
+88;Z.cmd.push;11;;5;98
+89;(anonymous);12.7;0.8;6;99
+90;mC;12;1.2;8;100
+91;config;10.7;0.5;8;101
+92;(anonymous);11.5;;2;102
+93;(anonymous);25.3;0.1;5;103
+94;(anonymous);14.1;2.3;6;104
+95;e.init;18.7;;7;105
+96;v;10.8;;5;106
+97;(anonymous);74.2;;9;107
+98;(anonymous);11;;9;108
+99;PV.g;12;;6;109
+100;tB;10.9;10.9;8;
+101;Sp.push;10.2;;8;110
+102;(anonymous);11.5;11.5;2;
+103;(anonymous);25.2;;5;111
+104;i_.g;11.8;;6;112
+105;(anonymous);18.7;0.4;7;113
+106;A;10.8;;5;114
+107;(anonymous);74.2;;5;115
+108;(anonymous);11;;5;116
+109;M.id;12;0.4;6;117
+110;Sp.flush;10.2;;8;118
+111;(anonymous);25.2;;5;119
+112;sA;11.8;11.8;6;
+113;(anonymous);18.3;0.3;7;120
+114;(anonymous);10.8;10.8;5;
+115;y;74.2;;5;121
+116;y;11;;5;122
+117;mt;11.6;1.5;6;123
+118;Tp;10.2;;8;124
+119;(anonymous);25.2;;5;125
+120;(anonymous);18;8.4;7;126
+121;p;74.2;;5;127
+122;p;11;;5;128
+123;_.Xl;10.1;10.1;6;
+124;Om;10.2;;8;129
+125;adapterDone;25.2;;5;130
+126;Recalculate style;9.6;9.6;;
+127;(anonymous);74.2;;5;131
+128;(anonymous);11;;5;132
+129;w;10.2;;8;133
+130;finally;25.2;;5;134
+131;measureHookTime;74.2;;5;135
+132;measureHookTime;11;;5;136
+133;c;10.2;10.2;8;
+134;then;25.2;;5;137
+135;(anonymous);74.2;;5;138
+136;(anonymous);11;;5;139
+137;o;25.2;;5;140
+138;(anonymous);74.2;;5;141
+139;(anonymous);11;;5;142
+140;(anonymous);25.2;;5;143
+141;D;74.2;;5;144
+142;D;11;;5;145
+143;s;25.2;;5;146
+144;iab;74.2;;5;147
+145;iab;11;;5;148
+146;(anonymous);25.2;;5;149
+147;v;74.2;;5;150
+148;v;11;;5;151
+149;(anonymous);25.2;;5;152
+150;o;74.2;;5;153
+151;o;11;;5;154
+152;T;25.2;;5;155
+153;(anonymous);74.2;;5;156
+154;(anonymous);11;;5;157
+155;ae;25.2;0;5;158
+156;window.__uspapi;74.2;;0;159
+157;window.__uspapi;11;;0;160
+158;oe;25.2;5.9;5;161
+159;(anonymous);74.2;;5;162
+160;(anonymous);11;;5;163
+161;t.emit;19.2;;5;164
+162;consentDataCallback;74.2;;5;165
+163;consentDataCallback;11;;5;166
+164;(anonymous);19.2;;5;167
+165;h;74.2;;5;168
+166;h;11;;5;169
+167;(anonymous);19.2;2.7;5;170
+168;o;74.2;;5;171
+169;o;11;;5;172
+170;(anonymous);16.5;0.2;3;173
+171;(anonymous);74.2;;5;174
+172;(anonymous);11;;5;175
+173;d3.<computed>.<computed>;16.4;;3;176
+174;(anonymous);74.2;0.3;5;177
+175;(anonymous);11;;5;178
+176;(anonymous);16.4;16.4;3;
+177;p;74;;5;179
+178;p;11;;5;180
+179;(anonymous);74;;5;181
+180;(anonymous);11;;5;182
+181;measureHookTime;74;;5;183
+182;measureHookTime;11;;5;184
+183;(anonymous);74;;5;185
+184;(anonymous);11;;5;186
+185;(anonymous);74;;5;187
+186;(anonymous);11;;5;188
+187;t;74;;5;189
+188;t;11;;5;190
+189;(anonymous);74;;5;191
+190;(anonymous);11;;5;192
+191;p;74;;5;193
+192;p;11;;5;194
+193;(anonymous);74;;5;195
+194;(anonymous);11;;5;196
+195;measureHookTime;74;;5;197
+196;measureHookTime;11;;5;198
+197;(anonymous);74;;5;199
+198;(anonymous);11;;5;200
+199;(anonymous);74;;5;201
+200;(anonymous);11;;5;202
+201;n;74;;5;203
+202;n;11;;5;204
+203;(anonymous);74;;5;205
+204;(anonymous);11;;5;206
+205;p;74;;5;207
+206;p;11;;5;208
+207;(anonymous);74;;5;209
+208;(anonymous);11;;5;210
+209;measureHookTime;74;;5;211
+210;measureHookTime;11;;5;212
+211;(anonymous);74;;5;213
+212;(anonymous);11;;5;214
+213;(anonymous);74;;5;215
+214;(anonymous);11;;5;216
+215;z;74;0.7;5;217
+216;z;11;;5;218
+217;(anonymous);73.3;;5;219
+218;(anonymous);11;;5;220
+219;p;73.3;;5;221
+220;p;11;;5;222
+221;(anonymous);73.3;1.1;5;223
+222;(anonymous);11;;5;224
+223;p;72.1;;5;225
+224;p;11;;5;226
+225;(anonymous);72.1;;5;227
+226;(anonymous);11;;5;228
+227;measureHookTime;72.1;;5;229
+228;measureHookTime;11;;5;230
+229;(anonymous);72.1;;5;231
+230;(anonymous);11;;5;232
+231;(anonymous);72.1;0.3;5;233
+232;(anonymous);11;;5;234
+233;then;71.9;;5;235
+234;then;11;;5;236
+235;o;71.9;;5;237
+236;o;11;;5;238
+237;(anonymous);71.9;;5;239
+238;(anonymous);11;;5;240
+239;s;71.9;;5;241
+240;s;11;;5;242
+241;(anonymous);71.9;1;5;243
+242;(anonymous);11;;5;244
+243;(anonymous);70.9;;5;245
+244;(anonymous);11;;5;246
+245;p;70.9;;5;247
+246;p;11;;5;248
+247;o.<computed>;70.9;;5;249
+248;o.<computed>;11;;5;250
+249;(anonymous);70.9;1.9;5;251
+250;(anonymous);11;;5;252
+251;then;69;;5;253
+252;then;11;;5;254
+253;o;69;;5;255
+254;o;11;;5;256
+255;(anonymous);69;;5;257
+256;(anonymous);11;;5;258
+257;s;69;;5;259
+258;s;11;;5;260
+259;(anonymous);69;;5;261
+260;(anonymous);11;;5;262
+261;y;69;;5;263
+262;y;11;;5;264
+263;p;69;;5;265
+264;p;11;;5;266
+265;(anonymous);69;;5;267
+266;(anonymous);11;;5;268
+267;measureHookTime;69;;5;269
+268;measureHookTime;11;;5;270
+269;(anonymous);69;;5;271
+270;(anonymous);11;;5;272
+271;(anonymous);69;;5;273
+272;(anonymous);11;;5;274
+273;f;69;0.1;5;275
+274;f;11;;5;276
+275;(anonymous);68.9;0.1;5;277
+276;(anonymous);11;;5;278
+277;p;68.8;;5;279
+278;p;11;;5;280
+279;o.<computed>;68.8;;5;281
+280;o.<computed>;11;;5;282
+281;(anonymous);68.8;1.8;5;283
+282;(anonymous);11;;5;284
+283;callBids;67;;5;285-287
+284;callBids;11;;5;287
+285;measureTime;11.9;;5;288
+286;(anonymous);55;;5;289
+287;(anonymous);11;;5;290
+288;(anonymous);11.9;;5;291
+289;ce;55;;5;292
+290;ce;11;;5;293
+291;(anonymous);11.9;;5;294
+292;a;55;;5;295
+293;a;11;;5;296
+294;y;11.9;;5;297
+295;run;55;2.1;5;298
+296;run;11;;5;299
+297;p;11.9;;5;300
+298;R.callBids;53;;5;301
+299;R.callBids;11;;5;302
+300;f;11.9;1.9;5;303
+301;(anonymous);53;15;5;304
+302;(anonymous);11;;5;305
+303;p;10;;5;306
+304;T;38;38;5;
+305;T;11;1;5;307
+306;o.<computed>;10;;5;308
+307;callBids;10.1;;5;309
+308;(anonymous);10;10;5;
+309;(anonymous);10.1;10.1;5;
+
+# Bottom-up main thread summary
+
+This is the bottom-up summary for the entire trace. Only the top 20 activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.
+
+- self: 148.1 ms, total: 153.4 ms, source: Compile code
+- self: 70.9 ms, total: 771.5 ms, source: Task
+- self: 49 ms, total: 54.6 ms, source: Compile script
+- self: 48.7 ms, total: 60.8 ms, source: setTimeout
+- self: 31 ms, total: 31 ms, source: Layout (url: https://news.yahoo.com/, line: 57, column: 187957)
+- self: 30.6 ms, total: 30.6 ms, source: Recalculate style (url: https://news.yahoo.com/, line: 57, column: 187957)
+- self: 29.2 ms, total: 31.6 ms, source: clearTimeout
+- self: 26.5 ms, total: 49.6 ms, source: Parse HTML
+- self: 17.8 ms, total: 19.4 ms, source: aC (url: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js, line: 0, column: 19068)
+- self: 17.6 ms, total: 185.8 ms, source: (anonymous) (url: https://s.yimg.com/aaq/prebid/prebid-2.0.js, line: 5, column: 1)
+- self: 15.5 ms, total: 226.3 ms, source: Function call
+- self: 12.1 ms, total: 162.8 ms, source: (anonymous) (url: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js, line: 0, column: 0)
+- self: 12 ms, total: 82.9 ms, source: (anonymous) (url: https://cdn.taboola.com/libtrc/yahooweb-network/loader.js, line: 0, column: 9)
+- self: 11.3 ms, total: 11.5 ms, source: fetch
+- self: 11.1 ms, total: 11.5 ms, source: evaluate
+- self: 10 ms, total: 212 ms, source: Run microtasks
+- self: 8.9 ms, total: 18.5 ms, source: (anonymous) (url: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js, line: 0, column: 0)
+- self: 8.8 ms, total: 9.9 ms, source: Minor GC
+- self: 7.7 ms, total: 226 ms, source: Evaluate script
+- self: 7.2 ms, total: 108.8 ms, source: n (url: https://s.yimg.com/aaq/prebid/prebid-2.0.js, line: 11, column: 4263)
 === end content

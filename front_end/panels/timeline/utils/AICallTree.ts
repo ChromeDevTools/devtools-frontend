@@ -253,7 +253,9 @@ export class AICallTree {
     }
   }
 
-  serialize(): string {
+  serialize(headerLevel = 1): string {
+    const header = '#'.repeat(headerLevel);
+
     // Keep a map of URLs. We'll output a LUT to keep size down.
     const allUrls: string[] = [];
 
@@ -266,9 +268,9 @@ export class AICallTree {
     let output = '';
     if (allUrls.length) {
       // Output lookup table of URLs within this tree
-      output += '\n# All URLs:\n\n' + allUrls.map((url, index) => `  * ${index}: ${url}`).join('\n');
+      output += `\n${header} All URLs:\n\n` + allUrls.map((url, index) => `  * ${index}: ${url}`).join('\n');
     }
-    output += '\n\n# Call tree:\n' + nodesStr;
+    output += `\n\n${header} Call tree:\n${nodesStr}`;
     return output;
   }
 

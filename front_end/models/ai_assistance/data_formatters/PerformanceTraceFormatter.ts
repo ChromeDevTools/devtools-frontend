@@ -126,6 +126,44 @@ export class PerformanceTraceFormatter {
         TraceEventFormatter.networkRequests(criticalRequests, parsedTrace, {verbose: false});
   }
 
+  #serializeBottomUpRootNode(rootNode: Trace.Extras.TraceTree.BottomUpRootNode, limit: number): string {
+    // Sorted by selfTime.
+    // No nodes less than 1 ms.
+    // Limit.
+    const topNodes = [...rootNode.children().values()]
+                         .filter(n => n.totalTime >= 1)
+                         .sort((a, b) => b.selfTime - a.selfTime)
+                         .slice(0, limit);
+
+    function nodeToText(node: Trace.Extras.TraceTree.Node): string {
+      const event = node.event;
+
+      let frame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.[0];
+      if (Trace.Types.Events.isProfileCall(event)) {
+        frame = event.callFrame;
+      }
+
+      let source = TimelineUtils.EntryName.nameForEntry(event);
+      if (frame?.url) {
+        source += ` (url: ${frame.url}`;
+        if (frame.lineNumber !== -1) {
+          source += `, line: ${frame.lineNumber}`;
+        }
+        if (frame.columnNumber !== -1) {
+          source += `, column: ${frame.columnNumber}`;
+        }
+        source += ')';
+      }
+
+      return `- self: ${ms(node.selfTime)}, total: ${ms(node.totalTime)}, source: ${source}`;
+    }
+
+    const listText = topNodes.map(nodeToText).join('\n');
+    const format = `This is the bottom-up summary for the entire trace. Only the top ${
+        limit} activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.`;
+    return `${format}\n\n${listText}`;
+  }
+
   formatMainThreadBottomUpSummary(): string {
     const parsedTrace = this.#parsedTrace;
     const insightSet = this.#insightSet;
@@ -140,46 +178,7 @@ export class PerformanceTraceFormatter {
       return '';
     }
 
-    // Sorted by selfTime.
-    // No nodes less than 1 ms.
-    // Limit 10.
-    const topNodes = [...rootNode.children().values()]
-                         .filter(n => n.totalTime >= 1)
-                         .sort((a, b) => b.selfTime - a.selfTime)
-                         .slice(0, 10);
-
-    function nodeToText(node: Trace.Extras.TraceTree.Node): string {
-      const event = node.event;
-
-      let frame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.[0];
-      if (Trace.Types.Events.isProfileCall(event)) {
-        frame = event.callFrame;
-      }
-
-      let source: string;
-      if (frame) {
-        source = `${frame.functionName}`;
-        if (frame.url) {
-          source += ` (url: ${frame.url}`;
-          if (frame.lineNumber !== -1) {
-            source += `, line: ${frame.lineNumber}`;
-          }
-          if (frame.columnNumber !== -1) {
-            source += `, column: ${frame.columnNumber}`;
-          }
-          source += ')';
-        }
-      } else {
-        source = String(node.id);
-      }
-
-      return `- self: ${ms(node.selfTime)}, total: ${ms(node.totalTime)}, source: ${source}`;
-    }
-
-    const listText = topNodes.map(nodeToText).join('\n');
-    const format =
-        'This is the bottom-up summary for the entire trace. Only the top 10 activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.';
-    return `${format}\n${listText}`;
+    return this.#serializeBottomUpRootNode(rootNode, 10);
   }
 
   formatThirdPartySummary(): string {
@@ -229,16 +228,34 @@ export class PerformanceTraceFormatter {
   }
 
   formatMainThreadTrackSummary(min: Trace.Types.Timing.Micro, max: Trace.Types.Timing.Micro): string {
-    const tree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityTopDown(
+    const results = [];
+
+    const topDownTree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityTopDown(
         this.#insightSet?.navigation?.args.data?.navigationId,
         {min, max, range: (max - min) as Trace.Types.Timing.Micro},
         this.#parsedTrace,
     );
-    if (!tree) {
+    if (topDownTree) {
+      results.push('# Top-down main thread summary');
+      results.push(topDownTree.serialize(2 /* headerLevel */));
+    }
+
+    const bottomUpRootNode = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityBottomUp(
+        this.#insightSet?.navigation?.args.data?.navigationId,
+        {min, max, range: (max - min) as Trace.Types.Timing.Micro},
+        this.#parsedTrace,
+    );
+    if (bottomUpRootNode) {
+      results.push('# Bottom-up main thread summary');
+      results.push(this.#serializeBottomUpRootNode(bottomUpRootNode, 20));
+    }
+
+    // TODO(b/425270067): add third party summary
+
+    if (!results.length) {
       return 'No main thread activity found';
     }
 
-    // TODO(b/425270067): include eventKey for each node/event (instead of "id").
-    return tree.serialize();
+    return results.join('\n\n');
   }
 }

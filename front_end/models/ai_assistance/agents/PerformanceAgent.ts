@@ -254,11 +254,11 @@ Key definitions:
 
 Example Call Tree:
 
-1;r-123;main;500;100;;
-2;r-124;update;200;50;;3
-3;r-125;animate;150;20;0;4-5;S
-4;r-126;calculatePosition;80;80;;
-5;r-127;applyStyles;50;50;;
+1;main;500;100;;
+2;update;200;50;;3
+3;animate;150;20;0;4-5;S
+4;calculatePosition;80;80;;
+5;applyStyles;50;50;;
 `;
 
 const mainThreadActivityFormatDescription =

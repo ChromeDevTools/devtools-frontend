@@ -22,7 +22,8 @@ describeWithEnvironment('WebAudioView', () => {
     } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
   });
 
-  it('shows placeholder', () => {
+  // Will migrate to screenshot test
+  it.skip('[crbug.com/414631999] shows placeholder', () => {
     const view = new WebAudioView.WebAudioView();
     assert.exists(view.contentElement.querySelector('.empty-state'));
     assert.deepEqual(

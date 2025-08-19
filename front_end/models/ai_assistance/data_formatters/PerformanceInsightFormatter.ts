@@ -704,6 +704,9 @@ ${rootCauseText}`;
 - Duration: ${formatMicroToMilli(redirect.dur)}`;
     });
 
+    const initiators = this.#getInitiatorChain(parsedTrace, request);
+    const initiatorUrls = initiators.map(initiator => initiator.args.data.url);
+
     return `${titlePrefix}: ${url}
 Timings:
 - Queued at: ${formatMicroToMilli(startTimesForLifecycle.queuedAt)}
@@ -721,6 +724,7 @@ Protocol: ${protocol}
 ${priorityLines.join('\n')}
 Render blocking: ${renderBlocking ? 'Yes' : 'No'}
 From a service worker: ${fromServiceWorker ? 'Yes' : 'No'}
+Initiators (root request to the request that directly loaded this one): ${initiatorUrls.join(', ') || 'none'}
 ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [], true)}`;
   }
 

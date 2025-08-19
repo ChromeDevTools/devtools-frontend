@@ -26,6 +26,7 @@ Protocol: h2
 Priority: High
 Render blocking: No
 From a service worker: No
+Initiators (root request to the request that directly loaded this one): file:///Users/cjamcl/surge/misc/display-dpr/index.html
 Response headers
 - cache-control: max-age=31536000, public
 - x-via: <redacted>
@@ -84,6 +85,7 @@ Protocol: unknown
 Priority: VeryHigh
 Render blocking: No
 From a service worker: No
+Initiators (root request to the request that directly loaded this one): none
 
 
 We can break this time down into the 4 phases that combine to make the LCP time:
@@ -202,6 +204,7 @@ Initial priority: Low
 Final priority: High
 Render blocking: No
 From a service worker: No
+Initiators (root request to the request that directly loaded this one): http://localhost:8787/lcp-discovery-delay/index.html
 Response headers
 - Cache-Control: public, max-age=0
 - ETag: <redacted>
@@ -265,6 +268,7 @@ Protocol: http/1.1
 Priority: VeryHigh
 Render blocking: No
 From a service worker: No
+Initiators (root request to the request that directly loaded this one): none
 Response headers
 - Transfer-Encoding: chunked
 - Keep-Alive: <redacted>
@@ -443,6 +447,7 @@ Protocol: unknown
 Priority: VeryHigh
 Render blocking: Yes
 From a service worker: No
+Initiators (root request to the request that directly loaded this one): https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Response headers
 - date: Thu, 07 Mar 2024 21:17:02 GMT
 - content-encoding: gzip
@@ -481,6 +486,7 @@ Protocol: unknown
 Priority: VeryHigh
 Render blocking: Yes
 From a service worker: No
+Initiators (root request to the request that directly loaded this one): https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Response headers
 - date: Thu, 07 Mar 2024 21:17:02 GMT
 - content-encoding: gzip

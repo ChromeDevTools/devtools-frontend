@@ -62,6 +62,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     SDK.TargetManager.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
+  private chartInfos: ChartInfo[] = [];
+  private activeCharts = new Set<string>();
   private metricsBuffer: Array<{timestamp: number, metrics: Map<string, number>}>;
   private readonly pixelsPerMs: number;
   private pollIntervalMs: number;
@@ -102,20 +104,31 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     UI.ARIAUtils.setLabel(this.canvas, i18nString(UIStrings.graphsDisplayingARealtimeViewOf));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         i18nString(UIStrings.paused);
-    this.controlPane.setOnMetricChanged(this.recalcChartHeight.bind(this));
+    this.controlPane.onMetricChanged = this.onMetricStateChanged.bind(this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
+  }
+
+  private onMetricStateChanged(metricName: string, active: boolean): void {
+    if (active) {
+      this.activeCharts.add(metricName);
+    } else {
+      this.activeCharts.delete(metricName);
+    }
+    this.recalcChartHeight();
   }
 
   override wasShown(): void {
     if (!this.model) {
       return;
     }
-    this.controlPane.instantiateMetricData();
+    this.chartInfos = this.createChartInfos();
+    this.controlPane.chartsInfo = this.chartInfos;
     const themeSupport = ThemeSupport.ThemeSupport.instance();
     themeSupport.addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
       // instantiateMetricData sets the colors for the metrics, which we need
       // to re-evaluate when the theme changes before re-drawing the canvas.
-      this.controlPane.instantiateMetricData();
+      this.chartInfos = this.createChartInfos();
+      this.controlPane.chartsInfo = this.chartInfos;
       this.draw();
     });
     SDK.TargetManager.TargetManager.instance().addEventListener(
@@ -207,8 +220,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     ctx.clearRect(0, 0, this.width, this.height);
     ctx.save();
     ctx.translate(0, this.scaleHeight);  // Reserve space for the scale bar.
-    for (const chartInfo of this.controlPane.charts()) {
-      if (!this.controlPane.isActive(chartInfo.metrics[0].name)) {
+    for (const chartInfo of this.chartInfos) {
+      if (!this.activeCharts.has(chartInfo.metrics[0].name)) {
         continue;
       }
       this.drawChart(ctx, chartInfo, this.graphHeight);
@@ -421,8 +434,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
   private recalcChartHeight(): void {
     let height = this.scaleHeight;
-    for (const chartInfo of this.controlPane.charts()) {
-      if (this.controlPane.isActive(chartInfo.metrics[0].name)) {
+    for (const chartInfo of this.chartInfos) {
+      if (this.activeCharts.has(chartInfo.metrics[0].name)) {
         height += this.graphHeight;
       }
     }
@@ -430,34 +443,11 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     this.canvas.height = this.height;
     this.canvas.style.height = `${this.height / window.devicePixelRatio}px`;
   }
-}
 
-export const enum Format {
-  PERCENT = 'Percent',
-  BYTES = 'Bytes',
-}
+  private createChartInfos(): ChartInfo[] {
+    const themeSupport = ThemeSupport.ThemeSupport.instance();
+    const elementForStyles = this.contentElement;
 
-export class ControlPane extends UI.Widget.VBox {
-  private readonly enabledChartsSetting: Common.Settings.Setting<string[]>;
-  private readonly enabledCharts: Set<string>;
-  private onMetricChanged: (() => void)|null = null;
-
-  private chartsInfo: ChartInfo[] = [];
-  private readonly metricValues = new Map<string, number>();
-
-  constructor() {
-    super({useShadowDom: false, classes: ['perfmon-control-pane']});
-
-    this.enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
-        'perfmon-active-indicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
-    this.enabledCharts = new Set(this.enabledChartsSetting.get());
-  }
-
-  setOnMetricChanged(callback: () => void): void {
-    this.onMetricChanged = callback;
-  }
-
-  instantiateMetricData(): void {
     const defaults = {
       color: undefined,
       format: undefined,
@@ -467,35 +457,33 @@ export class ControlPane extends UI.Widget.VBox {
       stacked: undefined,
     };
 
-    // Get ThemeSupport instance here just to make things a little less verbose.
-    const themeSupport = ThemeSupport.ThemeSupport.instance();
-    this.chartsInfo = [
+    return [
       {
         ...defaults,
         title: i18nString(UIStrings.cpuUsage),
         metrics: [
           {
             name: 'TaskDuration',
-            color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu-task-duration', this.element),
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu-task-duration', elementForStyles),
           },
           {
             name: 'ScriptDuration',
-            color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu-script-duration', this.element),
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu-script-duration', elementForStyles),
           },
           {
             name: 'LayoutDuration',
-            color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu-layout-duration', this.element),
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu-layout-duration', elementForStyles),
           },
           {
             name: 'RecalcStyleDuration',
-            color:
-                themeSupport.getComputedValue('--override-color-perf-monitor-cpu-recalc-style-duration', this.element),
+            color: themeSupport.getComputedValue(
+                '--override-color-perf-monitor-cpu-recalc-style-duration', elementForStyles),
           },
         ],
         format: Format.PERCENT,
         smooth: true,
         stacked: true,
-        color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu', this.element),
+        color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu', elementForStyles),
         max: 1,
         currentMax: undefined,
       },
@@ -505,15 +493,15 @@ export class ControlPane extends UI.Widget.VBox {
         metrics: [
           {
             name: 'JSHeapTotalSize',
-            color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap-total-size', this.element),
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap-total-size', elementForStyles),
           },
           {
             name: 'JSHeapUsedSize',
-            color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap-used-size', this.element),
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap-used-size', elementForStyles),
           },
         ],
         format: Format.BYTES,
-        color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap'),
+        color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap', elementForStyles),
       },
       {
         ...defaults,
@@ -521,7 +509,7 @@ export class ControlPane extends UI.Widget.VBox {
         metrics: [
           {
             name: 'Nodes',
-            color: themeSupport.getComputedValue('--override-color-perf-monitor-dom-nodes', this.element),
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-dom-nodes', elementForStyles),
           },
         ],
       },
@@ -531,7 +519,7 @@ export class ControlPane extends UI.Widget.VBox {
         metrics: [
           {
             name: 'JSEventListeners',
-            color: themeSupport.getComputedValue('--override-color-perf-monitor-js-event-listeners', this.element),
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-js-event-listeners', elementForStyles),
           },
         ],
       },
@@ -540,7 +528,7 @@ export class ControlPane extends UI.Widget.VBox {
         title: i18nString(UIStrings.documents),
         metrics: [{
           name: 'Documents',
-          color: themeSupport.getComputedValue('--override-color-perf-monitor-documents', this.element),
+          color: themeSupport.getComputedValue('--override-color-perf-monitor-documents', elementForStyles),
         }],
       },
       {
@@ -548,7 +536,7 @@ export class ControlPane extends UI.Widget.VBox {
         title: i18nString(UIStrings.documentFrames),
         metrics: [{
           name: 'Frames',
-          color: themeSupport.getComputedValue('--override-color-perf-monitor-document-frames', this.element),
+          color: themeSupport.getComputedValue('--override-color-perf-monitor-document-frames', elementForStyles),
         }],
       },
       {
@@ -556,7 +544,7 @@ export class ControlPane extends UI.Widget.VBox {
         title: i18nString(UIStrings.layoutsSec),
         metrics: [{
           name: 'LayoutCount',
-          color: themeSupport.getComputedValue('--override-color-perf-monitor-layout-count', this.element),
+          color: themeSupport.getComputedValue('--override-color-perf-monitor-layout-count', elementForStyles),
         }],
       },
       {
@@ -565,61 +553,104 @@ export class ControlPane extends UI.Widget.VBox {
         metrics: [
           {
             name: 'RecalcStyleCount',
-            color: themeSupport.getComputedValue('--override-color-perf-monitor-recalc-style-count', this.element),
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-recalc-style-count', elementForStyles),
           },
         ],
       },
     ];
+  }
+}
 
+export const enum Format {
+  PERCENT = 'Percent',
+  BYTES = 'Bytes',
+}
+
+interface ControlPaneInput {
+  chartsInfo: ChartInfo[];
+  enabledCharts: Set<string>;
+  metricValues: Map<string, number>;
+  onCheckboxChange: (chartName: string, e: Event) => void;
+}
+
+type ControlPaneView = (input: ControlPaneInput, output: object, target: HTMLElement) => void;
+
+const CONTROL_PANE_DEFAULT_VIEW: ControlPaneView = (input, _output, target) => {
+  render(
+      input.chartsInfo.map(chartInfo => {
+        const chartName = chartInfo.metrics[0].name;
+        const active = input.enabledCharts.has(chartName);
+        const value = input.metricValues.get(chartName) || 0;
+        return renderMetricIndicator(
+            chartInfo,
+            active,
+            value,
+            (e: Event) => input.onCheckboxChange(chartName, e),
+        );
+      }),
+      target);
+};
+
+export class ControlPane extends UI.Widget.VBox {
+  readonly #enabledChartsSetting: Common.Settings.Setting<string[]>;
+  readonly #enabledCharts: Set<string>;
+  #onMetricChanged: ((metricName: string, active: boolean) => void)|null = null;
+
+  #chartsInfo: ChartInfo[] = [];
+  readonly #metricValues = new Map<string, number>();
+  readonly #view: ControlPaneView;
+
+  constructor(view = CONTROL_PANE_DEFAULT_VIEW) {
+    super({useShadowDom: false, classes: ['perfmon-control-pane']});
+    this.#view = view;
+
+    this.#enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
+        'perfmon-active-indicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
+    this.#enabledCharts = new Set(this.#enabledChartsSetting.get());
+  }
+
+  set chartsInfo(chartsInfo: ChartInfo[]) {
+    this.#chartsInfo = chartsInfo;
     this.requestUpdate();
+  }
+
+  set onMetricChanged(callback: (metricName: string, active: boolean) => void) {
+    this.#onMetricChanged = callback;
+    for (const chartName of this.#enabledCharts) {
+      callback(chartName, true);
+    }
   }
 
   override performUpdate(): void {
-    // clang-format off
-    // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
-    render(
-      this.chartsInfo.map(chartInfo => {
-        const chartName = chartInfo.metrics[0].name;
-        const active = this.enabledCharts.has(chartName);
-        const value = this.metricValues.get(chartName) || 0;
-        return renderMetricIndicator(
-          chartInfo,
-          active,
-          value,
-          (e: Event) => this.onCheckboxChange(chartName, e),
-        );
-      }), this.element, {host: this});
-    // clang-format on
+    const input = {
+      chartsInfo: this.#chartsInfo,
+      enabledCharts: this.#enabledCharts,
+      metricValues: this.#metricValues,
+      onCheckboxChange: this.#onCheckboxChange.bind(this),
+    };
+    this.#view(input, {}, this.element);
   }
 
-  private onCheckboxChange(chartName: string, e: Event): void {
-    this.onToggle(chartName, (e.target as HTMLInputElement).checked);
+  #onCheckboxChange(chartName: string, e: Event): void {
+    this.#onToggle(chartName, (e.target as HTMLInputElement).checked);
     this.requestUpdate();
   }
 
-  private onToggle(chartName: string, active: boolean): void {
+  #onToggle(chartName: string, active: boolean): void {
     if (active) {
-      this.enabledCharts.add(chartName);
+      this.#enabledCharts.add(chartName);
     } else {
-      this.enabledCharts.delete(chartName);
+      this.#enabledCharts.delete(chartName);
     }
-    this.enabledChartsSetting.set(Array.from(this.enabledCharts));
-    if (this.onMetricChanged) {
-      this.onMetricChanged();
+    this.#enabledChartsSetting.set(Array.from(this.#enabledCharts));
+    if (this.#onMetricChanged) {
+      this.#onMetricChanged(chartName, active);
     }
-  }
-
-  charts(): ChartInfo[] {
-    return this.chartsInfo;
-  }
-
-  isActive(metricName: string): boolean {
-    return this.enabledCharts.has(metricName);
   }
 
   updateMetrics(metrics: Map<string, number>): void {
     for (const [name, value] of metrics.entries()) {
-      this.metricValues.set(name, value);
+      this.#metricValues.set(name, value);
     }
     this.requestUpdate();
   }

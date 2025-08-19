@@ -792,7 +792,8 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
     if (pendingEventExpectation?.missingEvents) {
       pendingEventExpectation.fail(new Error(
           '\nMissing VE Events:\n' + formatVeEvents(pendingEventExpectation.missingEvents) +
-          '\nUnmatched VE Events:\n' + formatVeEvents(pendingEventExpectation.unmatchingEvents)));
+          '\nUnmatched VE Events:\n' + formatVeEvents(pendingEventExpectation.unmatchingEvents) + '\nAll events:\n' +
+          JSON.stringify(veDebugEventsLog, null, 2)));
     }
   }, EVENT_EXPECTATION_TIMEOUT);
 

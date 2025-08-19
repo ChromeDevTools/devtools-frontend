@@ -202,7 +202,7 @@ export async function navigateToSharedStorageForTopDomain() {
 async function doubleClickTreeItem(selector: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const element = await devToolsPage.waitFor(selector);
   await element.evaluate(el => el.scrollIntoView(true));
-  await devToolsPage.click(selector, {clickOptions: {clickCount: 2}});
+  await devToolsPage.click(selector, {clickOptions: {count: 2}});
 }
 
 export async function getDataGridData(

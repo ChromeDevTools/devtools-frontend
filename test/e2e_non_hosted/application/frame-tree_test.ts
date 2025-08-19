@@ -233,8 +233,7 @@ describe('The Application Tab', () => {
     assert.deepEqual(fieldValuesTextContent, expected);
   });
 
-  // ve-logging assertion in navigateToFrameServiceWorkers is flaky on windows.
-  it.skip('[crbug.com/41492400]: shows service workers in the frame tree', async ({devToolsPage, inspectedPage}) => {
+  it('shows service workers in the frame tree', async ({devToolsPage, inspectedPage}) => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     await navigateToApplicationTab('service-worker-network', devToolsPage, inspectedPage);
     await navigateToFrameServiceWorkers('top', devToolsPage);

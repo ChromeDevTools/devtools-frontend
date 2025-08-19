@@ -415,6 +415,22 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       void this.updateScrollAdorner();
     }
     this.expandAllButtonElement = null;
+
+    if (this.nodeInternal.retained && !this.isClosingTag()) {
+      const icon = new IconButton.Icon.Icon();
+      // FIXME: this needs to be updated, data field is deprecated
+      icon.data = {iconName: 'small-status-dot', color: 'var(--icon-error)'};
+      icon.classList.add('extra-small');
+      icon.style.setProperty('vertical-align', 'middle');
+      this.setLeadingIcons([icon]);
+      this.listItemNode.classList.add('detached-elements-detached-node');
+      this.listItemNode.style.setProperty('display', '-webkit-box');
+      this.listItemNode.setAttribute('title', 'Retained Node');
+    }
+
+    if (this.nodeInternal.detached && !this.isClosingTag()) {
+      this.listItemNode.setAttribute('title', 'Detached Tree Node');
+    }
   }
 
   static animateOnDOMUpdate(treeElement: ElementsTreeElement): void {

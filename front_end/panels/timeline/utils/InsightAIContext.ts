@@ -115,7 +115,6 @@ export class AIQueries {
       filters: [filter],
       startTime,
       endTime,
-      calculateTransferSize: true,
     });
   }
 

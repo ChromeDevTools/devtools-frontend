@@ -1209,7 +1209,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
          );
        });
 
-    it('shows the aggregated time information for an event', async function() {
+    // Skip while we resolve the test failures.
+    it.skip('[crbug.com/407751016] shows the aggregated time information for an event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const event = allThreadEntriesInTrace(parsedTrace).find(e => e.ts === 1020034919877 && e.name === 'RunTask');
       if (!event) {

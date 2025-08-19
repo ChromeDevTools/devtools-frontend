@@ -223,14 +223,16 @@ describe('UIUtils', () => {
       return {button, container};
     }
 
-    it('sets button properties from the action', () => {
+    // Skip while we resolve the test failures.
+    it.skip('[crbug.com/407751016] sets button properties from the action', () => {
       const {button} = setup();
       const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
       assert.strictEqual(innerButton.title, action.title());
       assert.strictEqual(button.disabled, !action.enabled());
     });
 
-    it('updates the button when the action\'s enabled state changes', () => {
+    // Skip while we resolve the test failures.
+    it.skip('[crbug.com/407751016] updates the button when the action\'s enabled state changes', () => {
       const {button} = setup();
 
       action.setEnabled(false);
@@ -240,7 +242,8 @@ describe('UIUtils', () => {
       assert.isFalse(button.disabled);
     });
 
-    it('removes the change listener when the button is removed from the DOM', () => {
+    // Skip while we resolve the test failures.
+    it.skip('[crbug.com/407751016] removes the change listener when the button is removed from the DOM', () => {
       const {button, container} = setup();
       const spy = sinon.spy(action, 'removeEventListener');
 

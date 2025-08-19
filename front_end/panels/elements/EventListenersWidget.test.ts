@@ -14,7 +14,7 @@ import * as Elements from './elements.js';
 
 const {EventListenersWidget, DispatchFilterBy} = Elements.EventListenersWidget;
 
-describeWithMockConnection.only('EventListenersWidget', () => {
+describeWithMockConnection('EventListenersWidget', () => {
   let target: SDK.Target.Target;
 
   beforeEach(() => {

@@ -17108,6 +17108,13 @@
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "enableDurableMessages",
+                            "description": "Enable storing response bodies outside of renderer, so that these survive\na cross-process navigation. Requires maxTotalBufferSize to be set.\nCurrently defaults to false.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },

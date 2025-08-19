@@ -8427,10 +8427,6 @@ export const NativeFunctions = [
     signatures: [["job_name","document","attributes"]]
   },
   {
-    name: "getEncryptedMatchKey",
-    signatures: [["reportCollector","options"]]
-  },
-  {
     name: "PushEvent",
     signatures: [["type","?eventInitDict"]]
   },

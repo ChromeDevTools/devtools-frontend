@@ -982,7 +982,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
    */
   async *
       iterateAsyncParents(stackTraceOrPausedDetails: Protocol.Runtime.StackTrace|DebuggerPausedDetails):
-          AsyncGenerator<Protocol.Runtime.StackTrace> {
+          AsyncGenerator<{stackTrace: Protocol.Runtime.StackTrace, target: Target}> {
     // We make `DebuggerPausedDetails` look like a stack trace. We are only interested in `parent` and `parentId` in any case.
     let stackTrace: Protocol.Runtime.StackTrace = stackTraceOrPausedDetails instanceof DebuggerPausedDetails ?
         {
@@ -991,6 +991,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
           parentId: stackTraceOrPausedDetails.asyncStackTraceId
         } :
         stackTraceOrPausedDetails;
+    let target = this.target();
 
     while (true) {
       if (stackTrace.parent) {
@@ -999,16 +1000,20 @@ export class DebuggerModel extends SDKModel<EventTypes> {
         const model: DebuggerModel|null = stackTrace.parentId.debuggerId ?
             await DebuggerModel.modelForDebuggerId(stackTrace.parentId.debuggerId) :
             this;
-        const maybeStackTrace = await model?.fetchAsyncStackTrace(stackTrace.parentId);
+        if (!model) {
+          return;
+        }
+        const maybeStackTrace = await model.fetchAsyncStackTrace(stackTrace.parentId);
         if (!maybeStackTrace) {
           return;
         }
         stackTrace = maybeStackTrace;
+        target = model.target();
       } else {
         return;
       }
 
-      yield stackTrace;
+      yield {stackTrace, target};
     }
   }
 }

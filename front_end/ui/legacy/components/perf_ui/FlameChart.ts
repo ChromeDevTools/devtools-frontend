@@ -3458,8 +3458,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.timelineLevels = levelIndexes;
     const groups = this.rawTimelineData.groups || [];
     for (let i = 0; i < groups.length; ++i) {
-      const expanded = groups[i].expanded ?? this.#persistedGroupConfig?.[i]?.expanded ?? false;
-      const hidden = groups[i].hidden ?? this.#persistedGroupConfig?.[i]?.hidden ?? false;
+      // Find matching config based on the name of the track.
+      const matchingConfig = this.#persistedGroupConfig?.find(c => c.trackName === groups[i].name);
+
+      // Priority:
+      // 1. Prefer the active track config.
+      // 2. If that doesn't exist, prefer any explicit state set on the group.
+      // 3. If that doesn't exist, set defaults.
+      const expanded = matchingConfig?.expanded ?? groups[i].expanded ?? false;
+      const hidden = matchingConfig?.hidden ?? groups[i].hidden ?? false;
       groups[i].expanded = expanded;
       groups[i].hidden = hidden;
     }
@@ -3491,7 +3498,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
 
     // If we have persisted track config, apply it. This method can get called when there is no timeline data, so we check for that.
-    // It shouldn't happen, but if the length of the persisted config does not match, we bail, rather than apply some invalid state.
+    // For now, we only apply the sorting persistence if the length of the
+    // groups in the config matches the length of the current trace. In the
+    // future we might want to adjust this because it means that the persisted
+    // config sorting isn't that useful; the moment you import a trace with a
+    // new set of groups that are a different length, we don't use it.
     if (this.#persistedGroupConfig && groups.length > 0 && this.#groupTreeRoot &&
         this.#persistedGroupConfig.length === groups.length) {
       this.#reOrderGroupsBasedOnPersistedConfig(this.#persistedGroupConfig, this.#groupTreeRoot);
@@ -4033,7 +4044,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.scheduleUpdate();
   }
 
-  setPersistedConfig(config: PersistedGroupConfig[]): void {
+  setPersistedConfig(config: PersistedGroupConfig[]|null): void {
     this.#persistedGroupConfig = config;
   }
 
@@ -4248,7 +4259,7 @@ export interface DataProviderSearchResult {
 }
 
 export interface FlameChartDataProvider {
-  setPersistedGroupConfigSetting?(setting: Common.Settings.Setting<PersistedConfigPerTrace>): void;
+  setPersistedGroupConfigSetting?(setting: Common.Settings.Setting<PersistedGroupConfig[]|null>): void;
 
   minimumBoundary(): number;
 
@@ -4441,22 +4452,15 @@ export interface GroupStyle {
   useDecoratorsForOverview?: boolean;
 }
 
+/**
+ * Persists the configuration state of a group. When a trace is recorded /
+ * imported, we see if we can match any persisted config to each track based on
+ * its name, and if we can, we apply the config to it.
+ */
 export interface PersistedGroupConfig {
+  trackName: string;
   hidden: boolean;
   expanded: boolean;
   originalIndex: number;
   visualIndex: number;
 }
-
-/**
- * Used to persist into memory the configuration, so that if the user imports a
- * new trace and then navigates back to the old one, the configuration is
- * restored.
- * The key here is the `traceBounds.min` time from the trace. Given this is
- * monotonic, the chances of it clashing within traces the user records are very
- * low. It could happen, but we accept that this is best effort.
- * Note: the value type includes `undefined` to make sure that anyone can't do
- * value[traceMin] and not check that it exists. If the user has not manually
- * edited the track config, it will not be stored.
- */
-export type PersistedConfigPerTrace = Record<Trace.Types.Timing.Micro, PersistedGroupConfig[]|undefined>;

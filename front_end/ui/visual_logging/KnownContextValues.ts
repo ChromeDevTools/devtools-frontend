@@ -3707,6 +3707,8 @@ export const knownContextValues = new Set([
   'timeline-main-flamechart-group-config',
   'timeline-network-flame-group-config',
   'timeline-overview',
+  'timeline-persisted-main-flamechart-track-config',
+  'timeline-persisted-network-flamechart-track-config',
   'timeline-save-as-gz',
   'timeline-scope',
   'timeline-settings-pane',

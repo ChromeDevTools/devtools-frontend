@@ -1432,15 +1432,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     metadata.modifications = config.addModifications ? ModificationsManager.activeManager()?.toJSON() : undefined;
-    if (config.addModifications) {
-      // Get any visual track config
-      const visualConfig = this.flameChart.getPersistedConfigMetadata(trace);
-      // If both these values are null then the user has not made any visual
-      // changes, so we don't need to store it into the saved file.
-      if (visualConfig.main !== null || visualConfig.network !== null) {
-        metadata.visualTrackConfig = visualConfig;
-      }
-    }
+
+    // NOTE: we used to export the track configuration changes into the trace
+    // file here.
+    // We don't do this now because as of August 2025 (M141) track
+    // configuration is persisted globally (not per trace). When a user imports
+    // a trace, we don't look for any configuration (as we treat the user's
+    // DevTools config as the canonical config), so it doesn't make sense to
+    // export the config.
 
     try {
       await this.innerSaveToFile(
@@ -2302,8 +2301,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    * if that happens we do not want to bring it back again.
    */
   #maybeCreateHiddenTracksBanner(trace: Trace.Handlers.Types.ParsedTrace): void {
-    const visualConfig = this.flameChart.getPersistedConfigMetadata(trace);
-    const maybeOverlay = createHiddenTracksOverlay(trace, visualConfig, {
+    const hasHiddenTracks = this.flameChart.hasHiddenTracks();
+    if (!hasHiddenTracks) {
+      return;
+    }
+
+    const maybeOverlay = createHiddenTracksOverlay(trace, {
       onClose: () => {
         this.flameChart.overlays().removeOverlaysOfType('BOTTOM_INFO_BAR');
         this.#hiddenTracksInfoBarPerTrace.set(trace, 'DISMISSED');

@@ -38,33 +38,22 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const hiddenTracksInfoBarPerTrace = new WeakMap<Trace.Handlers.Types.ParsedTrace, UI.Infobar.Infobar|'DISMISSED'>();
 
 /**
- * Creates an overlay for the timeline that will show a banner if any tracks
- * are hidden in the provided `persistedConfig`.
+ * Creates an overlay for the timeline that will show a banner informing the user that at least one track is hidden.
  *
  * @param trace The trace parsed data.
- * @param persistedConfig The configuration for the trace, which includes
- * information on which tracks are visible or hidden.
  * @param callbacks An object containing the callback functions to be executed
  * when the user interacts with the banner.
  *   - `onShowAllTracks`: called when the user clicks the "Unhide all" button.
  *   - `onShowTrackConfigurationMode`: called when the user clicks the "Show hidden tracks" button.
  *   - `onClose`: called when the banner is closed by the user.
  * @returns A `Trace.Types.Overlays.Overlay` object to be rendered, or `null` if
- * no banner should be shown (either because no tracks are hidden, or the user
- * has already dismissed the banner for this trace).
+ * no banner should be shown (because the user has already seen the banner)
  */
-export function createHiddenTracksOverlay(
-    trace: Trace.Handlers.Types.ParsedTrace, persistedConfig: Trace.Types.File.PersistedTraceVisualConfig, callbacks: {
-      onShowAllTracks: () => void,
-      onShowTrackConfigurationMode: () => void,
-      onClose: () => void,
-    }): Trace.Types.Overlays.BottomInfoBar|null {
-  const hasHiddenTracks =
-      persistedConfig.main?.some(track => track.hidden) || persistedConfig.network?.some(track => track.hidden);
-  if (!hasHiddenTracks) {
-    // No hidden tracks which means there is no need to show the banner.
-    return null;
-  }
+export function createHiddenTracksOverlay(trace: Trace.Handlers.Types.ParsedTrace, callbacks: {
+  onShowAllTracks: () => void,
+  onShowTrackConfigurationMode: () => void,
+  onClose: () => void,
+}): Trace.Types.Overlays.BottomInfoBar|null {
   const status = hiddenTracksInfoBarPerTrace.get(trace);
   if (status === 'DISMISSED') {
     // The user has already seen the banner + dismissed it for this trace, so

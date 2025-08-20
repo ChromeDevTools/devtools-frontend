@@ -38,9 +38,9 @@ describe('TrackConfiguration', () => {
     const visualOrder = [1, 2, 0];
     const data = buildPersistedConfig(groups, visualOrder);
     assert.deepEqual(data, [
-      {expanded: false, hidden: false, originalIndex: 0, visualIndex: 2},
-      {expanded: false, hidden: true, originalIndex: 1, visualIndex: 0},
-      {expanded: true, hidden: false, originalIndex: 2, visualIndex: 1},
+      {expanded: false, hidden: false, originalIndex: 0, visualIndex: 2, trackName: 'Group 1'},
+      {expanded: false, hidden: true, originalIndex: 1, visualIndex: 0, trackName: 'Group 2'},
+      {expanded: true, hidden: false, originalIndex: 2, visualIndex: 1, trackName: 'Group 3'},
     ]);
   });
 });

@@ -254,6 +254,110 @@ describeWithEnvironment('FlameChart', () => {
     });
   });
 
+  describe('applying track configuration', () => {
+    it('applies existing track configuration', async () => {
+      class TrackConfigurationProvider extends FakeFlameChartProvider {
+        static data = PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [0, 1, 2],
+          entryStartTimes: [5, 60, 80],
+          entryTotalTimes: [50, 10, 10],
+          groups:
+              [
+                {
+                  name: 'Group0' as Platform.UIString.LocalizedString,
+                  startLevel: 0,
+                  style: defaultGroupStyle,
+                  hidden: false,
+                },
+                {
+                  name: 'Group1' as Platform.UIString.LocalizedString,
+                  startLevel: 1,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+                {
+                  name: 'Group2' as Platform.UIString.LocalizedString,
+                  startLevel: 2,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+              ],
+        });
+
+        override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+          return TrackConfigurationProvider.data;
+        }
+      }
+
+      const persistedConfig: PerfUI.FlameChart.PersistedGroupConfig[] = [
+        {expanded: true, hidden: true, originalIndex: 0, visualIndex: 0, trackName: 'Group0'},
+        {expanded: true, hidden: true, originalIndex: 1, visualIndex: 1, trackName: 'Group1'},
+        {expanded: true, hidden: true, originalIndex: 2, visualIndex: 2, trackName: 'Group2'},
+      ];
+      const provider = new TrackConfigurationProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      chartInstance.setPersistedConfig(persistedConfig);
+      renderChart(chartInstance);
+      const data = chartInstance.timelineData();
+      assert.isOk(data);
+      // It should have applied the persisted config from above and each group
+      // is now hidden and expanded.
+      assert.isTrue(data.groups.every(g => g.expanded && g.hidden));
+    });
+
+    it('does not apply configuration if the group name does not match', async () => {
+      class TrackConfigurationProvider extends FakeFlameChartProvider {
+        static data = PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [0, 1, 2],
+          entryStartTimes: [5, 60, 80],
+          entryTotalTimes: [50, 10, 10],
+          groups:
+              [
+                {
+                  name: 'Group0' as Platform.UIString.LocalizedString,
+                  startLevel: 0,
+                  style: defaultGroupStyle,
+                  hidden: false,
+                },
+                {
+                  name: 'Group1' as Platform.UIString.LocalizedString,
+                  startLevel: 1,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+                {
+                  name: 'Group2' as Platform.UIString.LocalizedString,
+                  startLevel: 2,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+              ],
+        });
+
+        override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+          return TrackConfigurationProvider.data;
+        }
+      }
+
+      const persistedConfig: PerfUI.FlameChart.PersistedGroupConfig[] = [
+        {expanded: true, hidden: true, originalIndex: 0, visualIndex: 0, trackName: 'WRONG NON-MATCHING GROUP NAME'},
+        {expanded: true, hidden: true, originalIndex: 1, visualIndex: 1, trackName: 'Group1'},
+        {expanded: true, hidden: true, originalIndex: 2, visualIndex: 2, trackName: 'Group2'},
+      ];
+      const provider = new TrackConfigurationProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      chartInstance.setPersistedConfig(persistedConfig);
+      renderChart(chartInstance);
+      const data = chartInstance.timelineData();
+      assert.isOk(data);
+      assert.isFalse(data.groups[0].hidden);  // Because the name does not match.
+      assert.isTrue(data.groups[1].hidden);
+      assert.isTrue(data.groups[2].hidden);
+    });
+  });
+
   describe('showAllGroups', () => {
     it('updates each group to be expanded', async () => {
       class ShowAllGroupsTestProvider extends FakeFlameChartProvider {

@@ -39,13 +39,16 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
 }
 
 function clearPersistTrackConfigSettings() {
-  const mainGroupSetting = Common.Settings.Settings.instance().createSetting('timeline-main-flame-group-config', {});
+  const mainGroupSetting =
+      Common.Settings.Settings.instance().createSetting<PerfUI.FlameChart.PersistedGroupConfig[]|null>(
+          'timeline-persisted-main-flamechart-track-config', null);
   const networkGroupSetting =
-      Common.Settings.Settings.instance().createSetting('timeline-network-flame-group-config', {});
+      Common.Settings.Settings.instance().createSetting<PerfUI.FlameChart.PersistedGroupConfig[]|null>(
+          'timeline-persisted-network-flamechart-track-config', null);
 
   // In case they already existed and need clearing out.
-  mainGroupSetting.set({});
-  networkGroupSetting.set({});
+  mainGroupSetting.set(null);
+  networkGroupSetting.set(null);
 }
 
 describeWithEnvironment('TimelineFlameChartView', function() {
@@ -183,6 +186,26 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     });
   });
 
+  it('knows if the current trace has got hidden tracks', async function() {
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const mockViewDelegate = new MockViewDelegate();
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+    renderElementIntoDOM(flameChartView);
+    flameChartView.setModel(parsedTrace, metadata);
+
+    assert.isFalse(flameChartView.hasHiddenTracks());
+    // Ensure it is true when something in the main flame chart is hidden
+    flameChartView.getMainFlameChart().hideGroup(0);
+    assert.isTrue(flameChartView.hasHiddenTracks());
+    flameChartView.getMainFlameChart().showGroup(0);
+    assert.isFalse(flameChartView.hasHiddenTracks());
+    // Ensure it is true when something in the network chart is hidden
+    // (users cannot technically achieve this via the UI, but in case they can
+    // in the future let's explicitly check!)
+    flameChartView.getNetworkFlameChart().hideGroup(0);
+    assert.isTrue(flameChartView.hasHiddenTracks());
+  });
+
   it('can gather the visual track config to store as metadata', async function() {
     const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const mockViewDelegate = new MockViewDelegate();
@@ -199,82 +222,57 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     const networkChart = flameChartView.getNetworkFlameChart();
     networkChart.toggleGroupExpand(0);
 
-    const visualMetadata = flameChartView.getPersistedConfigMetadata(parsedTrace);
+    const visualMetadata = flameChartView.getPersistedConfigMetadata();
 
-    assert.deepEqual(visualMetadata.network, [{expanded: true, hidden: false, originalIndex: 0, visualIndex: 0}]);
+    assert.deepEqual(
+        visualMetadata.network,
+        [{expanded: true, hidden: false, originalIndex: 0, visualIndex: 0, trackName: 'Network'}]);
 
     assert.deepEqual(visualMetadata.main, [
-      {expanded: false, hidden: true, originalIndex: 0, visualIndex: 0},
-      {expanded: false, hidden: false, originalIndex: 1, visualIndex: 1},
-      {expanded: false, hidden: false, originalIndex: 2, visualIndex: 3},
-      {expanded: true, hidden: false, originalIndex: 3, visualIndex: 2},
-      {expanded: false, hidden: false, originalIndex: 4, visualIndex: 4},
-      {expanded: false, hidden: false, originalIndex: 5, visualIndex: 5},
-      {expanded: false, hidden: false, originalIndex: 6, visualIndex: 6},
-      {expanded: false, hidden: false, originalIndex: 7, visualIndex: 7},
-      {expanded: false, hidden: false, originalIndex: 8, visualIndex: 8},
-      {expanded: false, hidden: false, originalIndex: 9, visualIndex: 9},
-      {expanded: false, hidden: false, originalIndex: 10, visualIndex: 10},
-      {expanded: false, hidden: false, originalIndex: 11, visualIndex: 11},
-      {expanded: false, hidden: false, originalIndex: 12, visualIndex: 12}
+      {expanded: false, hidden: true, originalIndex: 0, visualIndex: 0, trackName: 'Frames'}, {
+        expanded: false,
+        hidden: false,
+        originalIndex: 1,
+        visualIndex: 1,
+        // screenshots but it has no visible title
+        trackName: ''
+      },
+      {expanded: false, hidden: false, originalIndex: 2, visualIndex: 3, trackName: 'Animations'},
+      {expanded: true, hidden: false, originalIndex: 3, visualIndex: 2, trackName: 'Main — https://web.dev/'}, {
+        expanded: false,
+        hidden: false,
+        originalIndex: 4,
+        visualIndex: 4,
+        trackName:
+            'Frame — https://shared-storage-demo-content-producer.web.app/paa/scripts/private-aggregation-test.html'
+      },
+      {expanded: false, hidden: false, originalIndex: 5, visualIndex: 5, trackName: 'Thread pool'},
+      {expanded: false, hidden: false, originalIndex: 6, visualIndex: 6, trackName: 'Thread pool worker 1'},
+      {expanded: false, hidden: false, originalIndex: 7, visualIndex: 7, trackName: 'Thread pool worker 2'},
+      {expanded: false, hidden: false, originalIndex: 8, visualIndex: 8, trackName: 'Thread pool worker 3'},
+      {expanded: false, hidden: false, originalIndex: 9, visualIndex: 9, trackName: 'Thread pool worker 4'},
+      {expanded: false, hidden: false, originalIndex: 10, visualIndex: 10, trackName: 'Thread pool worker 5'},
+      {expanded: false, hidden: false, originalIndex: 11, visualIndex: 11, trackName: 'StackSamplingProfiler'},
+      {expanded: false, hidden: false, originalIndex: 12, visualIndex: 12, trackName: 'GPU'}
     ]);
   });
 
-  it('will apply metadata on disk to the setting when a trace is imported', async function() {
-    const {parsedTrace, metadata: originalMetdata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-
-    const FAKE_VISUAL_CONFIG_MAIN: Trace.Types.File.TrackVisualConfig[] = [
-      // Move the order of Group 1 and Group 2 around
-      {expanded: false, hidden: true, originalIndex: 0, visualIndex: 0},
-      {expanded: false, hidden: false, originalIndex: 1, visualIndex: 1},
-      {expanded: false, hidden: false, originalIndex: 2, visualIndex: 3},
-      {expanded: true, hidden: false, originalIndex: 3, visualIndex: 2},
-      {expanded: false, hidden: false, originalIndex: 4, visualIndex: 4},
-      {expanded: false, hidden: false, originalIndex: 5, visualIndex: 5},
-      {expanded: false, hidden: false, originalIndex: 6, visualIndex: 6},
-      {expanded: false, hidden: false, originalIndex: 7, visualIndex: 7},
-      {expanded: false, hidden: false, originalIndex: 8, visualIndex: 8},
-      {expanded: false, hidden: false, originalIndex: 9, visualIndex: 9},
-      {expanded: false, hidden: false, originalIndex: 10, visualIndex: 10},
-      {expanded: false, hidden: false, originalIndex: 11, visualIndex: 11},
-      {expanded: false, hidden: false, originalIndex: 12, visualIndex: 12}
-    ];
-
-    const FAKE_VISUAL_CONFIG_NETWORK: Trace.Types.File.TrackVisualConfig[] =
-        [{expanded: true, hidden: false, originalIndex: 0, visualIndex: 0}];
-
-    const metadata: Trace.Types.File.MetaData = {
-      ...originalMetdata,
-      visualTrackConfig: {
-        main: FAKE_VISUAL_CONFIG_MAIN,
-        network: FAKE_VISUAL_CONFIG_NETWORK,
-      }
-    };
-    const mockViewDelegate = new MockViewDelegate();
-    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-    flameChartView.setModel(parsedTrace, metadata);
-
-    const metadataInSetting = flameChartView.getPersistedConfigMetadata(parsedTrace);
-    assert.deepEqual(metadataInSetting, {main: FAKE_VISUAL_CONFIG_MAIN, network: FAKE_VISUAL_CONFIG_NETWORK});
-  });
-
-  it('does not use visual config from file if the user has locally made config changes', async function() {
+  it('does not apply visual config from a file', async function() {
     const {parsedTrace, metadata: originalMetadata} =
         await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
     const FROM_FILE_VISUAL_CONFIG_NETWORK: Trace.Types.File.TrackVisualConfig[] =
-        [{expanded: true, hidden: false, originalIndex: 0, visualIndex: 0}];
+        [{expanded: true, hidden: false, originalIndex: 0, visualIndex: 0, trackName: 'Network'}];
 
-    const traceKey = Timeline.TrackConfiguration.keyForTraceConfig(parsedTrace);
     // Populate the in-memory setting to pretend the user has already modified
     // this trace's visual config.
     // Importantly for this test, this is a different setting to FAKE_VISUAL_CONFIG_NETWORK above.
     const networkGroupSetting =
-        Common.Settings.Settings.instance()
-            .createSetting<PerfUI.FlameChart.PersistedConfigPerTrace>('timeline-network-flame-group-config', {})
-            .get();
-    const USER_VISUAL_CONFIG_NETWORK = {hidden: true, expanded: true, originalIndex: 0, visualIndex: 0};
-    networkGroupSetting[traceKey] = [USER_VISUAL_CONFIG_NETWORK];
+        Common.Settings.Settings.instance().createSetting<PerfUI.FlameChart.PersistedGroupConfig[]|null>(
+            'timeline-persisted-network-flamechart-track-config', null);
+    const USER_VISUAL_CONFIG_NETWORK =
+        {hidden: true, expanded: true, originalIndex: 0, visualIndex: 0, trackName: 'Network'};
+    networkGroupSetting.set([USER_VISUAL_CONFIG_NETWORK]);
 
     // Now add network configuration to the metadata that we get from the trace file itself.
     const metadata: Trace.Types.File.MetaData = {
@@ -288,7 +286,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
     flameChartView.setModel(parsedTrace, metadata);
 
-    const metadataInSetting = flameChartView.getPersistedConfigMetadata(parsedTrace);
+    const metadataInSetting = flameChartView.getPersistedConfigMetadata();
     assert.deepEqual(metadataInSetting, {main: null, network: [USER_VISUAL_CONFIG_NETWORK]});
   });
 

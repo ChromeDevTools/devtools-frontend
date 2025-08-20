@@ -332,7 +332,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   it('persists track configurations to the setting if it is provided with one', async function() {
     const {Settings} = Common.Settings;
     const setting =
-        Settings.instance().createSetting<PerfUi.FlameChart.PersistedConfigPerTrace>('persist-flame-config', {});
+        Settings.instance().createSetting<PerfUi.FlameChart.PersistedGroupConfig[]|null>('persist-flame-config', null);
 
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
@@ -350,25 +350,27 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     dataProvider.handleTrackConfigurationChange(groups, newVisualOrder);
 
     const newSetting = setting.get();
-    const traceKey = Timeline.TrackConfiguration.keyForTraceConfig(parsedTrace);
-    assert.deepEqual(newSetting[traceKey], [
+    assert.deepEqual(newSetting, [
       {
         expanded: false,
         hidden: false,
         originalIndex: 0,
         visualIndex: 2,
+        trackName: 'Frames',
       },
       {
         expanded: false,
         hidden: false,
         originalIndex: 1,
         visualIndex: 0,
+        trackName: '',  // This is screenshots.
       },
       {
         expanded: false,
         hidden: false,
         originalIndex: 2,
         visualIndex: 1,
+        trackName: 'Animations',
       }
     ]);
   });

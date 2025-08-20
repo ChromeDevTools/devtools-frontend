@@ -26,6 +26,7 @@ export function buildPersistedConfig(groups: readonly PerfUI.FlameChart.Group[],
       hidden: Boolean(group.hidden),
       originalIndex: index,
       visualIndex: newVisualIndex,
+      trackName: group.name,
     };
   });
 }

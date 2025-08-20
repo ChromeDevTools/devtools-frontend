@@ -268,6 +268,8 @@ Note: because this approach uses `SyntheticProfileCalls`, which are built from C
 
 We allow the user to edit the visual status and order of tracks in the main flame chart. Initially when we shipped this feature it was not persisted, meaning that if you refreshed or imported another trace, your configuration was lost. This was changed in crrev.com/c/6632596 which added persisting of the track configuration into memory, and added these docs too :)
 
+As of crrev.com/c/6862799, this feature was changed to be persisted across all traces, whereas previously configuration was only applied per trace, which made it much less useful.
+
 ### How tracks get rendered
 
 Tracks on the timeline are called `Groups` in the code (`PerfUI.FlameChart.Group`). These get constructed in the data providers and pushed onto the `groups` array.
@@ -323,21 +325,11 @@ We persist the order of the groups and for each group its `hidden` and `expanded
   originalIndex: 0,
   visualIndex: 2,
   hidden: false,
-  expanded: true
+  expanded: true,
+  trackName: 'Frames',
 }
 ```
 
 When the user makes any visual change to the UI, which happens in `FlameChart.ts`, we notify the data provider of that change. It can then choose to persist this data anywhere it likes. In our case, we persist into a DevTools setting which is persisted globally (e.g. it survives restarts).
 
-Because the user can import/record multiple traces over time, we cannot just persist the array of group states, because then we would mistakenly apply it to other traces. To avoid this we persist the list of groups under a key. The key is the `min` time for each trace (e.g. the time the trace started). This is not guaranteed to be unique, but it is pretty likely to be, given that it is monotonic and microsecond precision.
-
-So, what actually gets stored into the setting is:
-
-```
-{
-  12345: [{...group state as above...}],
-  56789: [{...group state as above...}],
-}
-```
-
-When a trace is recorded / imported, we look to read any persisted configuration from disk before applying it.
+We store this as two global settings (one for the main flame chart, one for the network flame chart). This means that the user can make changes to one trace and it is applied to all future traces. This is by design - we have lots of feedback that there is a lot of noise that people want to hide.

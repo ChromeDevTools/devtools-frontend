@@ -1409,8 +1409,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex) ?? {};
 
-    const shouldRetainScriptSources = config.includeScriptContent && config.includeSourceMaps;
-    if (!shouldRetainScriptSources) {
+    if (!config.includeScriptContent) {
       traceEvents = traceEvents.map(event => {
         if (Trace.Types.Events.isAnyScriptCatchupEvent(event) && event.name !== 'StubScriptCatchup') {
           return {
@@ -1442,9 +1441,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // export the config.
 
     try {
-      await this.innerSaveToFile(
-          traceEvents, metadata,
-          {savingEnhancedTrace: config.includeScriptContent, addModifications: config.addModifications});
+      await this.innerSaveToFile(traceEvents, metadata, {
+        includeScriptContent: config.includeScriptContent,
+        includeSourceMaps: config.includeSourceMaps,
+        addModifications: config.addModifications
+      });
     } catch (e) {
       // We expect the error to be an Error class, but this deals with any weird case where it's not.
       const error = e instanceof Error ? e : new Error(e);
@@ -1460,7 +1461,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   async innerSaveToFile(traceEvents: readonly Trace.Types.Events.Event[], metadata: Trace.Types.File.MetaData, config: {
-    savingEnhancedTrace: boolean,
+    includeScriptContent: boolean,
+    includeSourceMaps: boolean,
     addModifications: boolean,
   }): Promise<void> {
     // Base the filename on the trace's time of recording
@@ -1468,13 +1470,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         Platform.DateUtilities.toISO8601Compact(metadata.startTime ? new Date(metadata.startTime) : new Date());
 
     const isCpuProfile = metadata.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE;
-    const {savingEnhancedTrace} = config;
+    const {includeScriptContent, includeSourceMaps} = config;
     metadata.enhancedTraceVersion =
-        savingEnhancedTrace ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
+        includeScriptContent ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
 
     let fileName = (isCpuProfile ? `CPU-${isoDate}.cpuprofile` :
-                        savingEnhancedTrace ? `EnhancedTrace-${isoDate}.json` :
-                                              `Trace-${isoDate}.json`) as Platform.DevToolsPath.RawPathString;
+                        includeScriptContent ? `EnhancedTrace-${isoDate}.json` :
+                                               `Trace-${isoDate}.json`) as Platform.DevToolsPath.RawPathString;
 
     let blobParts: string[] = [];
     if (isCpuProfile) {
@@ -1483,7 +1485,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     } else {
       const formattedTraceIter = traceJsonGenerator(traceEvents, {
         ...metadata,
-        sourceMaps: savingEnhancedTrace ? metadata.sourceMaps : undefined,
+        sourceMaps: includeScriptContent && includeSourceMaps ? metadata.sourceMaps : undefined,
       });
       blobParts = Array.from(formattedTraceIter);
     }

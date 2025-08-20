@@ -311,7 +311,8 @@ describeWithEnvironment('TimelinePanel', function() {
       it('saves a regular trace file', async function() {
         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
         await timeline.innerSaveToFile(traceEvents, metadata, {
-          savingEnhancedTrace: false,
+          includeScriptContent: false,
+          includeSourceMaps: false,
           addModifications: false,
         });
 
@@ -340,7 +341,8 @@ describeWithEnvironment('TimelinePanel', function() {
         const {traceEvents, metadata} = file;
 
         await timeline.innerSaveToFile(traceEvents, metadata, {
-          savingEnhancedTrace: false,
+          includeScriptContent: false,
+          includeSourceMaps: false,
           addModifications: false,
         });
 
@@ -356,10 +358,11 @@ describeWithEnvironment('TimelinePanel', function() {
         assert.deepEqual(cpuFile, profile2);
       });
 
-      it('saves an enhanced trace file', async function() {
+      it('saves an enhanced trace file without sourcemaps', async function() {
         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'enhanced-traces.json.gz');
         await timeline.innerSaveToFile(traceEvents, metadata, {
-          savingEnhancedTrace: true,
+          includeScriptContent: true,
+          includeSourceMaps: false,
           addModifications: false,
         });
 
@@ -371,6 +374,26 @@ describeWithEnvironment('TimelinePanel', function() {
 
         const file = await contentDataToFile(contentData);
         assert.isDefined(file.metadata.enhancedTraceVersion);
+        assert.isUndefined(file.metadata.sourceMaps);
+      });
+
+      it('saves an enhanced trace file with sourcemaps', async function() {
+        const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'dupe-js-inline-maps.json.gz');
+        await timeline.innerSaveToFile(traceEvents, metadata, {
+          includeScriptContent: true,
+          includeSourceMaps: true,
+          addModifications: false,
+        });
+
+        sinon.assert.calledOnce(saveSpy);
+        sinon.assert.calledOnce(closeSpy);
+
+        const [fileName, contentData] = saveSpy.getCall(0).args;
+        assert.match(fileName, /EnhancedTrace-[\d|T]+\.json\.gz$/);
+
+        const file = await contentDataToFile(contentData);
+        assert.isDefined(file.metadata.enhancedTraceVersion);
+        assert.isDefined(file.metadata.sourceMaps);
       });
 
       it('saves a trace file with modifications', async function() {
@@ -407,7 +430,8 @@ describeWithEnvironment('TimelinePanel', function() {
       it('saves a regular trace file', async function() {
         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
         await timeline.innerSaveToFile(traceEvents, metadata, {
-          savingEnhancedTrace: false,
+          includeScriptContent: false,
+          includeSourceMaps: false,
           addModifications: false,
         });
 

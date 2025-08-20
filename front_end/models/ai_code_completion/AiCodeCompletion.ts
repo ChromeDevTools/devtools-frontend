@@ -223,7 +223,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
   #registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number, latency: number): void {
     const seconds = Math.floor(latency / 1_000);
     const remainingMs = latency % 1_000;
-    const nanos = remainingMs * 1_000_000;
+    const nanos = Math.floor(remainingMs * 1_000_000);
 
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcGlobalId,

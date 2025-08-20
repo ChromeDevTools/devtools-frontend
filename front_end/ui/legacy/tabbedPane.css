@@ -432,6 +432,10 @@
   justify-content: center;
   margin-left: var(--sys-size-2);
   flex-shrink: 0;
+
+  devtools-icon {
+    color: var(--override-tabbed-pane-preview-icon-color);
+  }
 }
 
 @media (forced-colors: active) {

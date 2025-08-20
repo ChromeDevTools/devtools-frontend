@@ -1275,18 +1275,15 @@ export class TabbedPaneTab {
   }
 
   private createPreviewIcon(): HTMLDivElement {
-    const previewIcon = document.createElement('div');
-    previewIcon.classList.add('preview-icon');
-    const closeIcon = new IconButton.Icon.Icon();
-    closeIcon.data = {
-      iconName: 'experiment',
-      color: 'var(--override-tabbed-pane-preview-icon-color)',
-    };
+    const iconContainer = document.createElement('div');
+    iconContainer.classList.add('preview-icon');
+    const previewIcon = new IconButton.Icon.Icon();
+    previewIcon.name = 'experiment';
     previewIcon.classList.add('small');
-    previewIcon.appendChild(closeIcon);
-    previewIcon.setAttribute('title', i18nString(UIStrings.previewFeature));
-    previewIcon.setAttribute('aria-label', i18nString(UIStrings.previewFeature));
-    return previewIcon;
+    iconContainer.appendChild(previewIcon);
+    iconContainer.setAttribute('title', i18nString(UIStrings.previewFeature));
+    iconContainer.setAttribute('aria-label', i18nString(UIStrings.previewFeature));
+    return iconContainer;
   }
 
   private isCloseIconClicked(element: HTMLElement): boolean {

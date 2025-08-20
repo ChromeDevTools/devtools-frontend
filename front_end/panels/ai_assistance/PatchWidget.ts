@@ -83,11 +83,11 @@ const UIStringsNotTranslate = {
    * @description The footer disclaimer that links to more information
    * about the AI feature. Same text as in ChatView.
    */
-  learnMore: 'Learn about AI in DevTools',
+  learnMore: 'Learn more',
   /**
    * @description Header text for the AI-powered code suggestions disclaimer dialog.
    */
-  freDisclaimerHeader: 'Get AI-powered code suggestions for your workspace',
+  freDisclaimerHeader: 'Apply changes directly to your project’s source code',
   /**
    * @description First disclaimer item text for the fre dialog.
    */
@@ -95,12 +95,13 @@ const UIStringsNotTranslate = {
   /**
    * @description Second disclaimer item text for the fre dialog.
    */
-  freDisclaimerTextPrivacy: 'Source code from the selected folder is sent to Google to generate code suggestions',
+  freDisclaimerTextPrivacy:
+      'To generate code suggestions, source code from the selected folder is sent to Google. This data may be seen by human reviewers to improve this feature.',
   /**
    * @description Second disclaimer item text for the fre dialog when enterprise logging is off.
    */
   freDisclaimerTextPrivacyNoLogging:
-      'Source code from the selected folder is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
+      'To generate code suggestions, source code from the selected folder is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
    * @description Third disclaimer item text for the fre dialog.
    */

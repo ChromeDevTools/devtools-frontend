@@ -198,6 +198,7 @@ grd_files_bundled_sources = [
   "front_end/Images/keyboard-full.svg",
   "front_end/Images/keyboard-pen.svg",
   "front_end/Images/keyboard.svg",
+  "front_end/Images/label-auto.svg",
   "front_end/Images/label.svg",
   "front_end/Images/large-arrow-right-filled.svg",
   "front_end/Images/layers-filled.svg",

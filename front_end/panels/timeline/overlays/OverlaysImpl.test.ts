@@ -518,7 +518,7 @@ describeWithEnvironment('Overlays', () => {
          const customLearnMoreButtonTitle = showFreDialogStub.lastCall.args[0].learnMoreButtonTitle;
          assert.exists(
              customLearnMoreButtonTitle, 'Expected FreDialog to have a custom button title but it\'s not provided');
-         assert.deepEqual(customLearnMoreButtonTitle.toString(), 'Learn more about auto annotations');
+         assert.deepEqual(customLearnMoreButtonTitle.toString(), 'Learn more');
        });
 
     it('should not show FRE dialog on the ai suggestion button click if the `ai-annotations-enabled` setting is on',

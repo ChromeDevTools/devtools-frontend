@@ -108,7 +108,8 @@ describeWithEnvironment('AISettingsTab', () => {
     const settingCardDesc = view.shadowRoot.querySelectorAll('.setting-description');
     assert.strictEqual(settingCardDesc[0].textContent, 'Helps you understand and fix console warnings and errors');
     assert.strictEqual(settingCardDesc[1].textContent, 'Get help with understanding CSS styles');
-    assert.strictEqual(settingCardDesc[2].textContent, 'Get AI suggestions for performance panel annotations');
+    assert.strictEqual(
+        settingCardDesc[2].textContent, 'Automatically generate titles for performance trace annotations');
     assert.strictEqual(settingCardDesc[3].textContent, 'Get help completing your code');
   });
 

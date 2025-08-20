@@ -103,6 +103,10 @@ export class ReportsGrid extends HTMLElement {
     this.#render();
   }
 
+  get data(): ReportsGridData {
+    return {reports: this.#reports};
+  }
+
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off

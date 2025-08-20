@@ -3017,6 +3017,7 @@ export const knownContextValues = new Set([
   'report',
   'report-status',
   'reporting-api',
+  'reporting-api-empty',
   'reports',
   'request',
   'request-animation-frame',

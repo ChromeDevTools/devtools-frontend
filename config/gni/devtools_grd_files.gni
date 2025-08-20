@@ -1291,7 +1291,6 @@ grd_files_unbundled_sources = [
   "front_end/panels/application/KeyValueStorageItemsView.js",
   "front_end/panels/application/OpenedWindowDetailsView.js",
   "front_end/panels/application/PreloadingTreeElement.js",
-  "front_end/panels/application/ReportingApiReportsView.js",
   "front_end/panels/application/ReportingApiTreeElement.js",
   "front_end/panels/application/ReportingApiView.js",
   "front_end/panels/application/ResourcesPanel.js",

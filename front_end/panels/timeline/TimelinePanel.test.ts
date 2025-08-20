@@ -56,8 +56,6 @@ describeWithEnvironment('TimelinePanel', function() {
     timeline.detach();
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
     Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
-    UI.ActionRegistry.ActionRegistry.reset();
-    Timeline.TimelinePanel.TimelinePanel.removeInstance();
   });
 
   it('should keep other tracks when the custom tracks setting is toggled', async function() {

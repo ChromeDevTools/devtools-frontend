@@ -99,6 +99,15 @@ export function stubNoopSettings() {
   } as unknown as Common.Settings.Settings);
 }
 
+export function registerActions(actions: UIModule.ActionRegistration.ActionRegistration[]): void {
+  for (const action of actions) {
+    UI.ActionRegistration.maybeRemoveActionExtension(action.actionId);
+    UI.ActionRegistration.registerActionExtension(action);
+  }
+  const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+  UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+}
+
 export function registerNoopActions(actionIds: string[]): void {
   for (const actionId of actionIds) {
     UI.ActionRegistration.maybeRemoveActionExtension(actionId);

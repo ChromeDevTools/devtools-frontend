@@ -7,7 +7,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import {createTarget, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, registerActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 
@@ -136,18 +136,12 @@ describeWithMockConnection('ElementsTreeElement ', () => {
         enabled: true,
       },
     });
-    UI.ActionRegistration.registerActionExtension({
+
+    registerActions([{
       actionId: 'freestyler.element-panel-context',
       title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
       category: UI.ActionRegistration.ActionCategory.GLOBAL,
-    });
-    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
-  });
-
-  afterEach(() => {
-    UI.ActionRegistry.ActionRegistry.reset();
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+    }]);
   });
 
   async function getContextMenuForElementWithLayoutProperties(layoutProperties: SDK.CSSModel.LayoutProperties|null):

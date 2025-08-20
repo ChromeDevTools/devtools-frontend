@@ -19,6 +19,7 @@ import {dispatchClickEvent, raf, renderElementIntoDOM} from '../../testing/DOMHe
 import {
   createTarget,
   describeWithEnvironment,
+  registerActions,
   registerNoopActions,
   stubNoopSettings,
   updateHostConfig
@@ -943,18 +944,21 @@ describeWithMockConnection('NetworkLogView placeholder', () => {
 
   beforeEach(() => {
     stubNoopSettings();
-    UI.ActionRegistration.registerActionExtension({
-      actionId: START_RECORDING_ID,
-      category: UI.ActionRegistration.ActionCategory.NETWORK,
-      title: () => 'mock' as Platform.UIString.LocalizedString,
-      toggleable: true,
-    });
-    UI.ActionRegistration.registerActionExtension({
-      actionId: RELOAD_ID,
-      category: UI.ActionRegistration.ActionCategory.NETWORK,
-      title: () => 'mock' as Platform.UIString.LocalizedString,
-      toggleable: true,
-    });
+
+    registerActions([
+      {
+        actionId: START_RECORDING_ID,
+        category: UI.ActionRegistration.ActionCategory.NETWORK,
+        title: () => 'mock' as Platform.UIString.LocalizedString,
+        toggleable: true,
+      },
+      {
+        actionId: RELOAD_ID,
+        category: UI.ActionRegistration.ActionCategory.NETWORK,
+        title: () => 'mock' as Platform.UIString.LocalizedString,
+        toggleable: true,
+      }
+    ]);
     sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({
       shortcutTitleForAction: () => 'Ctrl',
       shortcutsForAction: () => [new UI.KeyboardShortcut.KeyboardShortcut(
@@ -1003,13 +1007,11 @@ describeWithEnvironment('NetworkLogView', () => {
       },
     });
     stubNoopSettings();
-    UI.ActionRegistration.registerActionExtension({
+    registerActions([{
       actionId: 'drjones.network-panel-context',
       title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
       category: UI.ActionRegistration.ActionCategory.GLOBAL,
-    });
-    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    }]);
 
     const filterBar = new UI.FilterBar.FilterBar('network-test');
     const progressBarContainer = document.createElement('div');
@@ -1030,10 +1032,6 @@ describeWithEnvironment('NetworkLogView', () => {
     assert.deepEqual(
         debugWithAiItem?.subItems?.map(item => item.label),
         ['Start a chat', 'Explain purpose', 'Explain slowness', 'Explain failures', 'Assess security headers']);
-
-    // Cleanup
-    UI.ActionRegistry.ActionRegistry.reset();
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
   });
 });
 

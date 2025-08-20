@@ -4,9 +4,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import type * as Platform from '../../core/platform/platform.js';
 import {dispatchMouseUpEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
@@ -161,15 +160,9 @@ describeWithEnvironment('ContextMenu', () => {
   });
 
   it('can register an action menu item with a new badge', async () => {
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'test-action',
-      category: UI.ActionRegistration.ActionCategory.GLOBAL,
-      title: () => 'mock' as Platform.UIString.LocalizedString,
-      toggleable: true,
-    });
+    const actionId = 'test-action';
+    registerNoopActions([actionId]);
 
-    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
 
     const showContextMenuAtPoint =
@@ -178,7 +171,7 @@ describeWithEnvironment('ContextMenu', () => {
     const event = new Event('contextmenu');
     sinon.stub(event, 'target').value(document);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendAction('test-action', 'mockLabel', false, undefined, 'mockFeature');
+    contextMenu.defaultSection().appendAction(actionId, 'mockLabel', false, undefined, 'mockFeature');
     await contextMenu.show();
     sinon.assert.calledOnce(showContextMenuAtPoint);
 

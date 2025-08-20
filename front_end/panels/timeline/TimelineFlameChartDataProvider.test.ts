@@ -8,7 +8,12 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {describeWithEnvironment, stubNoopSettings, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {
+  describeWithEnvironment,
+  registerActions,
+  stubNoopSettings,
+  updateHostConfig
+} from '../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace, setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as PerfUi from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -277,13 +282,11 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       },
     });
     stubNoopSettings();
-    UI.ActionRegistration.registerActionExtension({
+    registerActions([{
       actionId: 'drjones.performance-panel-context',
       title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
       category: UI.ActionRegistration.ActionCategory.GLOBAL,
-    });
-    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    }]);
 
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
@@ -296,9 +299,6 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     assert.deepEqual(
         debugWithAiItem?.subItems?.map(item => item.label),
         ['Start a chat', 'Label entry', 'Assess the purpose', 'Identify time spent', 'Find improvements']);
-
-    UI.ActionRegistry.ActionRegistry.reset();
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
   });
 
   it('filters navigations to only return those that happen on the main frame', async function() {

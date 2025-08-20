@@ -115,5 +115,6 @@ afterEach(async function() {
   resetHostConfig();
   sinon.restore();
   stopTrackingAsyncActivity();
+
   // Clear out any Sinon stubs or spies between individual tests.
 });

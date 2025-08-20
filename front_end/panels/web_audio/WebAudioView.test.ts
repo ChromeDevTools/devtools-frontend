@@ -2,20 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {WebAudioView} from './web_audio.js';
 
 describeWithEnvironment('WebAudioView', () => {
   beforeEach(() => {
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'components.collect-garbage',
-      category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-      title: () => 'mock' as Platform.UIString.LocalizedString,
-      toggleable: true,
-    });
+    registerNoopActions(['components.collect-garbage']);
+
     sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({
       shortcutTitleForAction: () => {},
       shortcutsForAction: () => [],

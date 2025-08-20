@@ -8,7 +8,7 @@ import * as path from 'node:path';
 
 import type {Conversation, EvalFileOutput} from '../types';
 
-const BASE_DIR = path.join(path.dirname(import.meta.filename), '..', 'outputs');
+const BASE_DIR = path.join(path.dirname(import.meta.filename), '..', 'outputs', 'outputs');
 
 export function getMarkdownConversation(example: Conversation): string {
   let markdown = '';

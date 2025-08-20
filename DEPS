@@ -216,6 +216,19 @@ deps = {
           },
       ],
   },
+  "scripts/ai_assistance/suite/outputs": {
+    "dep_type": "gcs",
+    'condition': 'checkout_ai_evals == True',
+    "bucket": "chrome-devtools-ai-evals",
+    "objects": [
+      {
+        "object_name": "f0e8e7b99dc61f7a943bfdf284552982c63bdf8d6217091f5260bc8ebd84ca9f",
+        "sha256sum": "af579f30f2384089e1bece67db9afb71b902aa6ff99cb9749d4694ce53783670",
+        "size_bytes": 3582,
+        "generation": 1755705853621054
+      }
+    ]
+  },
   'third_party/node/win': {
       'dep_type': 'gcs',
       'condition': 'host_os == "win" and build_with_chromium == False and non_git_source',

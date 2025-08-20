@@ -61,6 +61,10 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
     this.treeOutline.element.classList.toggle('hidden', !foundAttributes);
   }
 
+  getTreeOutlineForTesting(): Readonly<UI.TreeOutline.TreeOutline>|undefined {
+    return this.treeOutline;
+  }
+
   private isARIAAttribute(attribute: SDK.DOMModel.Attribute): boolean {
     return ATTRIBUTES.has(attribute.name);
   }
@@ -93,6 +97,10 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
   override onattach(): void {
     this.populateListItem();
     this.listItemElement.addEventListener('click', this.mouseClick.bind(this));
+  }
+
+  getPromptForTesting(): Readonly<ARIAAttributePrompt>|undefined {
+    return this.prompt;
   }
 
   private populateListItem(): void {

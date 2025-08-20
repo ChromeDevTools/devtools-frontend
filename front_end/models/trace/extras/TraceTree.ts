@@ -512,7 +512,9 @@ export class BottomUpRootNode extends Node {
         groupNode = new GroupNode(groupId, this, node.events);
         groupNodes.set(groupId, groupNode);
       } else {
-        groupNode.events.push(...node.events);
+        for (const e of node.events) {
+          groupNode.events.push(e);
+        }
       }
       groupNode.addChild(node as BottomUpNode, node.selfTime, node.selfTime, node.transferSize);
     }

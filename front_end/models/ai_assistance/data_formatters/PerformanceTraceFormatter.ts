@@ -250,6 +250,47 @@ export class PerformanceTraceFormatter {
       results.push(this.#serializeBottomUpRootNode(bottomUpRootNode, 20));
     }
 
+    const insightNameToRelatedEvents = new Map<string, Trace.Types.Events.Event[]>();
+    if (this.#insightSet) {
+      for (const model of Object.values(this.#insightSet.model)) {
+        if (!model.relatedEvents) {
+          continue;
+        }
+
+        const relatedEvents =
+            Array.isArray(model.relatedEvents) ? model.relatedEvents : [...model.relatedEvents.keys()];
+        if (!relatedEvents.length) {
+          continue;
+        }
+
+        const events = [];
+        if (topDownTree) {
+          events.push(...relatedEvents.filter(e => topDownTree.rootNode.events.includes(e)));
+        }
+        if (bottomUpRootNode) {
+          events.push(...relatedEvents.filter(e => bottomUpRootNode.events.includes(e)));
+        }
+        if (events.length) {
+          insightNameToRelatedEvents.set(model.insightKey, events);
+        }
+      }
+    }
+
+    if (insightNameToRelatedEvents.size) {
+      results.push('# Related insights');
+      results.push(
+          'Here are all the insights that contain some related event from the main thread in the given range.');
+      for (const [insightKey, events] of insightNameToRelatedEvents) {
+        // Limit to 5, because some insights (namely ThirdParties) can have a huge
+        // number of related events. Mostly, insights probably don't have more than
+        // 5.
+        const eventsString = events.slice(0, 5)
+                                 .map(e => TimelineUtils.EntryName.nameForEntry(e) + ' ' + this.serializeEvent(e))
+                                 .join(', ');
+        results.push(`- ${insightKey}: ${eventsString}`);
+      }
+    }
+
     // TODO(b/425270067): add third party summary
 
     if (!results.length) {

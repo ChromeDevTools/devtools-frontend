@@ -11,8 +11,6 @@
     .ai-code-completion-disclaimer {
         gap: 5px;
         display: flex;
-        white-space: nowrap;
-        overflow: hidden;
         flex-shrink: 0;
 
         span.link {

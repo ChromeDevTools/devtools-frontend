@@ -38,7 +38,6 @@
 
     .ai-code-completion-recitation-notice {
       white-space: nowrap;
-      overflow: hidden;
 
       span.link {
         padding-left: var(--sys-size-3);

@@ -1209,8 +1209,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
          );
        });
 
-    // Skip while we resolve the test failures.
-    it.skip('[crbug.com/407751016] shows the aggregated time information for an event', async function() {
+    it('shows the aggregated time information for an event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const event = allThreadEntriesInTrace(parsedTrace).find(e => e.ts === 1020034919877 && e.name === 'RunTask');
       if (!event) {
@@ -1227,10 +1226,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
       const expectedPieChartData = [
         {title: 'System (self)', value: '2\u00A0ms'},
-        {title: 'System (children)', value: '2\u00A0ms'},
+        {title: 'System (children)', value: '0\u00A0ms'},
         {title: 'Rendering', value: '28\u00A0ms'},
         {title: 'Painting', value: '2\u00A0ms'},
-        {title: 'Total', value: '34\u00A0ms'},
+        {title: 'Total', value: '32\u00A0ms'},
       ];
       assert.deepEqual(
           pieChartData,

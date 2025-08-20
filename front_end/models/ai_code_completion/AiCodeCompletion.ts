@@ -25,6 +25,11 @@ interface RequestOptions {
   modelId?: string;
 }
 
+interface CachedRequest {
+  request: Host.AidaClient.CompletionRequest;
+  response: Host.AidaClient.CompletionResponse;
+}
+
 /**
  * The AiCodeCompletion class is responsible for fetching code completion suggestions
  * from the AIDA backend and displaying them in the text editor.
@@ -44,6 +49,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
   #editor: TextEditor.TextEditor.TextEditor;
   #stopSequences: string[];
   #renderingTimeout?: number;
+  #aidaRequestCache?: CachedRequest;
 
   readonly #sessionId: string = crypto.randomUUID();
   readonly #aidaClient: Host.AidaClient.AidaClient;
@@ -92,10 +98,20 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   async #requestAidaSuggestion(request: Host.AidaClient.CompletionRequest, cursor: number): Promise<void> {
     const startTime = performance.now();
+    let servedFromCache = false;
     this.dispatchEventToListeners(Events.REQUEST_TRIGGERED, {});
 
     try {
-      const response = await this.#aidaClient.completeCode(request);
+      let response = this.#checkCachedRequestForResponse(request);
+      if (!response) {
+        response = await this.#aidaClient.completeCode(request);
+
+        if (response) {
+          this.#updateCachedRequest(request, response);
+        }
+      } else {
+        servedFromCache = true;
+      }
       debugLog('At cursor position', cursor, {request, response});
       if (response && response.generatedSamples.length > 0 && response.generatedSamples[0].generationString) {
         if (response.generatedSamples[0].attributionMetadata?.attributionAction ===
@@ -121,6 +137,9 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
               sampleId: response.generatedSamples[0].sampleId,
             })
           });
+          if (servedFromCache) {
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
+          }
           debugLog('Suggestion dispatched to the editor', response.generatedSamples[0], 'at cursor position', cursor);
           if (response.metadata.rpcGlobalId) {
             const latency = performance.now() - startTime;
@@ -149,6 +168,33 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       temperature,
       modelId,
     };
+  }
+
+  #checkCachedRequestForResponse(request: Host.AidaClient.CompletionRequest): Host.AidaClient.CompletionResponse|null {
+    if (!this.#aidaRequestCache || this.#aidaRequestCache.request.suffix !== request.suffix ||
+        JSON.stringify(this.#aidaRequestCache.request.options) !== JSON.stringify(request.options)) {
+      return null;
+    }
+    const possibleGeneratedSamples: Host.AidaClient.GenerationSample[] = [];
+    for (const sample of this.#aidaRequestCache.response.generatedSamples) {
+      const prefixWithSample = this.#aidaRequestCache.request.prefix + sample.generationString;
+      if (prefixWithSample.startsWith(request.prefix)) {
+        possibleGeneratedSamples.push({
+          generationString: prefixWithSample.substring(request.prefix.length),
+          sampleId: sample.sampleId,
+          score: sample.score,
+          attributionMetadata: sample.attributionMetadata,
+        });
+      }
+    }
+    if (possibleGeneratedSamples.length === 0) {
+      return null;
+    }
+    return {generatedSamples: possibleGeneratedSamples, metadata: this.#aidaRequestCache.response.metadata};
+  }
+
+  #updateCachedRequest(request: Host.AidaClient.CompletionRequest, response: Host.AidaClient.CompletionResponse): void {
+    this.#aidaRequestCache = {request, response};
   }
 
   #registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number, latency: number): void {

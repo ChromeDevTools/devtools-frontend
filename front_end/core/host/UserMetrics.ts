@@ -537,7 +537,8 @@ export enum Action {
   AiAssistanceError = 181,
   AiAssistanceOpenedFromPerformanceInsight = 182,
   AiAssistanceOpenedFromPerformanceFullButton = 183,
-  MAX_VALUE = 184,
+  AiCodeCompletionResponseServedFromCache = 184,
+  MAX_VALUE = 185,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

@@ -71,6 +71,7 @@ ts_library("testing") {
     "../models/bindings:bundle",
     "../models/extensions:bundle",
     "../models/issues_manager:bundle",
+    "../models/stack_trace:bundle",
     "../models/text_utils:bundle",
     "../models/trace:bundle",
     "../models/workspace:bundle",

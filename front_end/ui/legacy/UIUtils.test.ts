@@ -199,15 +199,17 @@ describe('UIUtils', () => {
   });
 
   describe('bindToAction', () => {
-    const actionId = 'mock.action';
-    const mockHandleAction = sinon.stub();
-    UI.ActionRegistration.registerActionExtension({
-      actionId,
-      category: UI.ActionRegistration.ActionCategory.GLOBAL,
-      title: i18n.i18n.lockedLazyString('Mock action'),
-      loadActionDelegate: async () => ({handleAction: mockHandleAction}),
+    const actionId = 'mock.action.bind.to.action';
+
+    before(() => {
+      const mockHandleAction = sinon.stub();
+      UI.ActionRegistration.registerActionExtension({
+        actionId,
+        category: UI.ActionRegistration.ActionCategory.GLOBAL,
+        title: i18n.i18n.lockedLazyString('Mock action for bindToAction'),
+        loadActionDelegate: async () => ({handleAction: mockHandleAction}),
+      });
     });
-    const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);
 
     function setup() {
       const {bindToAction} = UI.UIUtils;
@@ -219,21 +221,19 @@ describe('UIUtils', () => {
 
       const button = buttonRef.value;
       assert.exists(button);
-
-      return {button, container};
+      const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);
+      return {button, container, action};
     }
 
-    // Skip while we resolve the test failures.
-    it.skip('[crbug.com/407751016] sets button properties from the action', () => {
-      const {button} = setup();
+    it('sets button properties from the action', () => {
+      const {button, action} = setup();
       const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
       assert.strictEqual(innerButton.title, action.title());
       assert.strictEqual(button.disabled, !action.enabled());
     });
 
-    // Skip while we resolve the test failures.
-    it.skip('[crbug.com/407751016] updates the button when the action\'s enabled state changes', () => {
-      const {button} = setup();
+    it('updates the button when the action\'s enabled state changes', () => {
+      const {button, action} = setup();
 
       action.setEnabled(false);
       assert.isTrue(button.disabled);
@@ -242,9 +242,8 @@ describe('UIUtils', () => {
       assert.isFalse(button.disabled);
     });
 
-    // Skip while we resolve the test failures.
-    it.skip('[crbug.com/407751016] removes the change listener when the button is removed from the DOM', () => {
-      const {button, container} = setup();
+    it('removes the change listener when the button is removed from the DOM', () => {
+      const {button, container, action} = setup();
       const spy = sinon.spy(action, 'removeEventListener');
 
       render(html``, container);

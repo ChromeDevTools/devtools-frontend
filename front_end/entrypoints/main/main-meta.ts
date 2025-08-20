@@ -892,6 +892,26 @@ UI.Toolbar.registerToolbarItem({
 });
 
 UI.Toolbar.registerToolbarItem({
+  condition(config) {
+    const isFlagEnabled = config?.devToolsGlobalAiButton?.enabled;
+
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+    const isLocaleRestricted = !devtoolsLocale.locale.startsWith('en-');
+
+    const isGeoRestricted = config?.aidaAvailability?.blockedByGeo === true;
+    const isPolicyRestricted = config?.aidaAvailability?.blockedByEnterprisePolicy === true;
+    const isAgeRestricted = Boolean(config?.aidaAvailability?.blockedByAge);
+    return Boolean(isFlagEnabled && !isLocaleRestricted && !isGeoRestricted && !isPolicyRestricted && !isAgeRestricted);
+  },
+  async loadItem() {
+    const Main = await loadMainModule();
+    return Main.GlobalAiButton.GlobalAiButtonToolbarProvider.instance();
+  },
+  order: 98,
+  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
+});
+
+UI.Toolbar.registerToolbarItem({
   async loadItem() {
     const Main = await loadMainModule();
     return Main.MainImpl.SettingsButtonProvider.instance();

@@ -324,6 +324,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(
         Common.Settings.SettingCategory.ELEMENTS, 'show-event-listeners-for-ancestors', true,
         Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'global-ai-button-click-count', 0),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);

@@ -1697,6 +1697,8 @@ export const knownContextValues = new Set([
   'geolocation.watch-position',
   'georgia',
   'gl',
+  'global-ai-button',
+  'global-ai-button-click-count',
   'googlebot',
   'googlebot-desktop',
   'googlebot-smartphone',

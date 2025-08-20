@@ -469,6 +469,11 @@ interface AiDebugWithAi {
   featureName?: string;
 }
 
+interface GlobalAiButton {
+  enabled: boolean;
+  promotionEnabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -509,6 +514,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAllowPopoverForcing: AllowPopoverForcing,
   devToolsAiSubmenuPrompts: AiSubmenuPrompts,
   devToolsIpProtectionInDevTools: IpProtectionInDevTools,
+  devToolsGlobalAiButton: GlobalAiButton,
 }>;
 
 /**

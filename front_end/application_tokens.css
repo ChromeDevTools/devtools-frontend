@@ -229,6 +229,13 @@
    */
   --app-color-ai-assistance-input-divider: rgb(0 0 0 / 10%);
 
+  /**
+  * Gradient colors for Google AI, used in the Global AI button in promotion enabled state
+  */
+  --app-color-google-ai-blue: #4285f4;
+  --app-color-google-ai-green: #2daeb8;
+  --app-gradient-google-ai: linear-gradient(46deg, var(--app-color-google-ai-blue) 32.34%, var(--app-color-google-ai-green) 98.11%);
+
   &.baseline-default {
     /**
      * Color for navigation drawers.

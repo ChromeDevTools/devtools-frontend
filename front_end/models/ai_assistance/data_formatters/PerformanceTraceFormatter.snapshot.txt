@@ -428,6 +428,14 @@ This is the bottom-up summary for the entire trace. Only the top 20 activities (
 - self: 7.7 ms, total: 226 ms, source: Evaluate script
 - self: 7.2 ms, total: 108.8 ms, source: n (url: https://s.yimg.com/aaq/prebid/prebid-2.0.js, line: 11, column: 4263)
 
+# Third parties
+
+- name: Yahoo!, main thread time: 213.5 ms, network transfer size: 2428 kB
+- name: Taboola, main thread time: 41.3 ms, network transfer size: 392 kB
+- name: Google/Doubleclick Ads, main thread time: 41 ms, network transfer size: 226 kB
+- name: Google Tag Manager, main thread time: 18.7 ms, network transfer size: 124 kB
+- name: AOL / Oath / Verizon Media, main thread time: 4.6 ms, network transfer size: 42 kB
+
 # Related insights
 
 Here are all the insights that contain some related event from the main thread in the given range.

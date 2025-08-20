@@ -181,17 +181,7 @@ export class PerformanceTraceFormatter {
     return this.#serializeBottomUpRootNode(rootNode, 10);
   }
 
-  formatThirdPartySummary(): string {
-    const insightSet = this.#insightSet;
-    if (!insightSet) {
-      return '';
-    }
-
-    const thirdParties = insightSet.model.ThirdParties;
-    let summaries = thirdParties.entitySummaries ?? [];
-    if (thirdParties.firstPartyEntity) {
-      summaries = summaries.filter(s => s.entity !== thirdParties?.firstPartyEntity || null);
-    }
+  #formatThirdPartyEntitySummaries(summaries: Trace.Extras.ThirdParties.EntitySummary[]): string {
     const topMainThreadTimeEntries = summaries.toSorted((a, b) => b.mainThreadTime - a.mainThreadTime).slice(0, 5);
     if (!topMainThreadTimeEntries.length) {
       return '';
@@ -204,6 +194,26 @@ export class PerformanceTraceFormatter {
                                ms(s.mainThreadTime)}, network transfer size: ${transferSize}`;
                          })
                          .join('\n');
+    return listText;
+  }
+
+  formatThirdPartySummary(): string {
+    const insightSet = this.#insightSet;
+    if (!insightSet) {
+      return '';
+    }
+
+    const thirdParties = insightSet.model.ThirdParties;
+    let summaries = thirdParties.entitySummaries ?? [];
+    if (thirdParties.firstPartyEntity) {
+      summaries = summaries.filter(s => s.entity !== thirdParties?.firstPartyEntity || null);
+    }
+
+    const listText = this.#formatThirdPartyEntitySummaries(summaries);
+    if (!listText) {
+      return '';
+    }
+
     return `Third party summary:\n${listText}`;
   }
 
@@ -229,10 +239,11 @@ export class PerformanceTraceFormatter {
 
   formatMainThreadTrackSummary(min: Trace.Types.Timing.Micro, max: Trace.Types.Timing.Micro): string {
     const results = [];
+    const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
 
     const topDownTree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityTopDown(
         this.#insightSet?.navigation?.args.data?.navigationId,
-        {min, max, range: (max - min) as Trace.Types.Timing.Micro},
+        bounds,
         this.#parsedTrace,
     );
     if (topDownTree) {
@@ -242,12 +253,18 @@ export class PerformanceTraceFormatter {
 
     const bottomUpRootNode = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityBottomUp(
         this.#insightSet?.navigation?.args.data?.navigationId,
-        {min, max, range: (max - min) as Trace.Types.Timing.Micro},
+        bounds,
         this.#parsedTrace,
     );
     if (bottomUpRootNode) {
       results.push('# Bottom-up main thread summary');
       results.push(this.#serializeBottomUpRootNode(bottomUpRootNode, 20));
+    }
+
+    const thirdPartySummaries = Trace.Extras.ThirdParties.summarizeByThirdParty(this.#parsedTrace, bounds);
+    if (thirdPartySummaries.length) {
+      results.push('# Third parties');
+      results.push(this.#formatThirdPartyEntitySummaries(thirdPartySummaries));
     }
 
     const insightNameToRelatedEvents = new Map<string, Trace.Types.Events.Event[]>();
@@ -290,8 +307,6 @@ export class PerformanceTraceFormatter {
         results.push(`- ${insightKey}: ${eventsString}`);
       }
     }
-
-    // TODO(b/425270067): add third party summary
 
     if (!results.length) {
       return 'No main thread activity found';

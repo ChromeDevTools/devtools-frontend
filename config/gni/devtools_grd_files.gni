@@ -1019,6 +1019,7 @@ grd_files_unbundled_sources = [
   "front_end/models/ai_assistance/debug.js",
   "front_end/models/ai_assistance/injected.js",
   "front_end/models/ai_code_completion/AiCodeCompletion.js",
+  "front_end/models/ai_code_completion/debug.js",
   "front_end/models/autofill_manager/AutofillManager.js",
   "front_end/models/bindings/CSSWorkspaceBinding.js",
   "front_end/models/bindings/CompilerScriptMapping.js",

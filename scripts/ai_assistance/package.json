@@ -2,6 +2,7 @@
   "type": "module",
   "scripts": {
     "auto-run": "node --no-warnings --experimental-strip-types auto-run/auto-run.ts",
-    "auto-run:test": "npx --node-options='--no-warnings --experimental-strip-types' mocha auto-run/**/*.test.ts"
+    "auto-run:test": "npx --node-options='--no-warnings --experimental-strip-types' mocha auto-run/**/*.test.ts",
+    "eval-suite": "node --no-warnings --experimental-strip-types suite/*.eval.ts"
   }
 }

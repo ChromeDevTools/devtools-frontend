@@ -565,6 +565,6 @@ export async function raf(page: puppeteer.Page): Promise<void> {
 }
 
 export async function readClipboard() {
-  const {devToolsPage, browserWrapper} = getBrowserAndPagesWrappers();
-  return await devToolsPage.readClipboard(browserWrapper);
+  const {devToolsPage} = getBrowserAndPagesWrappers();
+  return await devToolsPage.readClipboard();
 }

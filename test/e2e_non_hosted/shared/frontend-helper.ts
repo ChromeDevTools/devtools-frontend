@@ -10,7 +10,6 @@ import {installPageErrorHandlers} from '../../conductor/events.js';
 import {platform} from '../../conductor/platform.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
-import type {BrowserWrapper} from './browser-helper.js';
 import {PageWrapper} from './page-wrapper.js';
 import type {InspectedPage} from './target-helper.js';
 
@@ -620,10 +619,10 @@ export class DevToolsPage extends PageWrapper {
     await this.pressKey('f', {control: true});
   }
 
-  async readClipboard(browserWrapper: BrowserWrapper) {
-    await browserWrapper.browser.defaultBrowserContext().overridePermissions(this.page.url(), ['clipboard-read']);
+  async readClipboard() {
+    await this.page.browserContext().overridePermissions(this.page.url(), ['clipboard-read', 'clipboard-write']);
     const clipboard = await this.page.evaluate(async () => await navigator.clipboard.readText());
-    await browserWrapper.browser.defaultBrowserContext().clearPermissionOverrides();
+    await this.page.browserContext().clearPermissionOverrides();
     return clipboard;
   }
 }

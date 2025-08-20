@@ -160,15 +160,16 @@ export async function clearTextFilter(devToolsPage: DevToolsPage = getBrowserAnd
   }
 }
 
-export async function getTextFromHeadersRow(row: puppeteer.ElementHandle<Element>) {
-  const headerNameElement = await waitFor('.header-name', row);
+export async function getTextFromHeadersRow(
+    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const headerNameElement = await devToolsPage.waitFor('.header-name', row);
   const headerNameText = await headerNameElement.evaluate(el => el.textContent || '');
 
-  const headerValueElement = await waitFor('.header-value', row);
+  const headerValueElement = await devToolsPage.waitFor('.header-value', row);
   let headerValueText = (await headerValueElement.evaluate(el => el.textContent || '')).trim();
   if (headerValueText === '') {
-    const headerValueEditableSpanComponent = await waitFor('.header-value devtools-editable-span', row);
-    const editableSpan = await waitFor('.editable', headerValueEditableSpanComponent);
+    const headerValueEditableSpanComponent = await devToolsPage.waitFor('.header-value devtools-editable-span', row);
+    const editableSpan = await devToolsPage.waitFor('.editable', headerValueEditableSpanComponent);
     headerValueText = (await editableSpan.evaluate(el => el.textContent || '')).trim();
   }
 

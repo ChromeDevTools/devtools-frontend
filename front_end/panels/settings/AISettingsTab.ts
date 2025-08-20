@@ -62,11 +62,7 @@ const UIStrings = {
   /**
    * @description Text describing the 'Auto Annotations' feature
    */
-  aIAnnotationsFeatureDescription: 'Automatically generate titles for performance trace annotations',
-  /**
-   * @description Text explaining AI feature helps annotate a performance trace with auto-generated labels
-   */
-  helpAnnotatePerformance: 'Helps you annotate your performance trace with auto-generated labels',
+  getAIAnnotationsSuggestions: 'Get AI suggestions for performance panel annotations',
   /**
    * @description Label for a button to expand an accordion
    */
@@ -91,12 +87,12 @@ const UIStrings = {
    * @description Explainer for which data is being sent by the console insights feature
    */
   consoleInsightsSendsData:
-      'To generate explanations, the console message, associated stack trace, related source code, and the associated network headers are sent to Google. This data may be seen by human reviewers to improve this feature.',
+      'The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature.',
   /**
    * @description Explainer for which data is being sent by the console insights feature
    */
   consoleInsightsSendsDataNoLogging:
-      'To generate explanations, the console message, associated stack trace, related source code, and the associated network headers are sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models.',
   /**
    * @description Reference to the terms of service and privacy notice
    * @example {Google Terms of Service} PH1
@@ -153,22 +149,22 @@ const UIStrings = {
    * @description Explainer for which data is being sent by the AI assistance feature
    */
   freestylerSendsData:
-      'To generate explanations, any user query and data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google. This data may be seen by human reviewers to improve this feature. Don’t use on pages with personal or sensitive information.',
+      'Any user query and data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature. Don’t use on pages with personal or sensitive information.',
   /**
    * @description Explainer for which data is being sent by the AI assistance feature
    */
   freestylerSendsDataNoLogging:
-      'To generate explanations, any user query and data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'Any user query and data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models.',
   /**
    * @description Explainer for which data is being sent by the AI generated annotations feature
    */
   generatedAiAnnotationsSendData:
-      'To generate annotation suggestions, your performance trace is sent to Google. This data may be seen by human reviewers to improve this feature.',
+      'Your performance trace is sent to Google to generate an explanation. This data will be used to improve Google’s AI models.',
   /**
    * @description Explainer for which data is being sent by the AI assistance feature
    */
   generatedAiAnnotationsSendDataNoLogging:
-      'To generate annotation suggestions, your performance trace is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'Your performance trace is sent to Google to generate an explanation. This data will not be used to improve Google’s AI models.',
   /**
    * @description Description of the 'Code suggestions' feature
    */
@@ -178,12 +174,12 @@ const UIStrings = {
    * @description Explainer for which data is being sent for the 'Code suggestions' feature
    */
   codeSuggestionsSendData:
-      'To generate annotation suggestions, your performance trace is sent to Google. This data may be seen by human reviewers to improve this feature.',
+      'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data may be seen by human reviewers to improve this feature.',
   /**
    * @description Explainer for which data is being sent for the 'Code suggestions' feature when logging is not enabled
    */
   codeSuggestionsSendDataNoLogging:
-      'To generate annotation suggestions, your performance trace is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models.',
   /**
    * @description Label for a link to the terms of service
    */
@@ -343,10 +339,10 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       const aiAnnotationsData: AiSettingParams = {
         settingName: i18n.i18n.lockedString('Auto annotations'),
         iconName: 'pen-spark',
-        settingDescription: i18nString(UIStrings.aIAnnotationsFeatureDescription),
+        settingDescription: i18nString(UIStrings.getAIAnnotationsSuggestions),
         enableSettingText: i18nString(UIStrings.enableAiSuggestedAnnotations),
         settingItems: [
-          {iconName: 'label-auto', text: i18nString(UIStrings.helpAnnotatePerformance)},
+          {iconName: 'pen-spark', text: i18nString(UIStrings.getAIAnnotationsSuggestions)},
         ],
         toConsiderSettingItems: [{
           iconName: 'google',

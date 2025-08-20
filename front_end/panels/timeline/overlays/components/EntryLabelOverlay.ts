@@ -98,13 +98,7 @@ const UIStringsNotTranslate = {
   /**
    * @description Second disclaimer item text for the fre dialog - trace data is sent to Google.
    */
-  freDisclaimerPrivacyDataSentToGoogle:
-      'To generate annotation suggestions, your performance trace is sent to Google. This data may be seen by human reviewers to improve this feature.',
-  /**
-   * @description Second disclaimer item text for the fre dialog - trace data is sent to Google.
-   */
-  freDisclaimerPrivacyDataSentToGoogleNoLogging:
-      'To generate annotation suggestions, your performance trace is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+  freDisclaimerPrivacyDataSentToGoogle: 'Performance trace is sent to Google to generate annotation suggestions',
   /**
    * @description Third disclaimer item text part for the fre dialog part - you can control this setting from the settings panel (because 'settings panel' part of the string is a link, it is attached separately).
    */
@@ -116,7 +110,7 @@ const UIStringsNotTranslate = {
   /**
    * @description Text for the 'learn more' button displayed in fre.
    */
-  learnMoreButton: 'Learn more',
+  learnMoreButton: 'Learn more about auto annotations',
 } as const;
 
 const enum AIButtonState {
@@ -188,7 +182,7 @@ export class EntryLabelOverlay extends HTMLElement {
   #label: string;
   #shouldDrawBelowEntry: boolean;
   #richTooltip: Lit.Directives.Ref<HTMLElement> = Directives.createRef();
-  #noLogging: boolean;
+
   /**
    * Required to generate a label with AI.
    */
@@ -238,8 +232,6 @@ export class EntryLabelOverlay extends HTMLElement {
     this.#entryHighlightWrapper =
         this.#labelPartsWrapper?.querySelector<HTMLElement>('.entry-highlight-wrapper') ?? null;
     this.#label = label;
-    this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
-        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     this.#drawLabel(label);
     // If the label is not empty, it was loaded from the trace file.
     // In that case, do not auto-focus it as if the user were creating it for the first time
@@ -578,8 +570,7 @@ export class EntryLabelOverlay extends HTMLElement {
         },
         {
           iconName: 'google',
-          content: this.#noLogging ? lockedString(UIStringsNotTranslate.freDisclaimerPrivacyDataSentToGoogleNoLogging) :
-                                     lockedString(UIStringsNotTranslate.freDisclaimerPrivacyDataSentToGoogle),
+          content: lockedString(UIStringsNotTranslate.freDisclaimerPrivacyDataSentToGoogle),
         },
         {
           iconName: 'gear',
@@ -679,6 +670,9 @@ export class EntryLabelOverlay extends HTMLElement {
   }
 
   #renderAiButton(): Lit.LitTemplate {
+    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+
     if (this.#currAIButtonState === AIButtonState.GENERATION_FAILED) {
       // Only show the error message on the first component render render after the failure.
       // clang-format off
@@ -721,7 +715,7 @@ export class EntryLabelOverlay extends HTMLElement {
           .variant=${Buttons.Button.Variant.ICON}
           ></devtools-button>
         ${this.#renderAITooltip({
-         textContent: this.#noLogging ? lockedString(UIStringsNotTranslate.generateLabelSecurityDisclaimerLogginOff) : lockedString(UIStringsNotTranslate.generateLabelSecurityDisclaimer),
+         textContent: noLogging ? lockedString(UIStringsNotTranslate.generateLabelSecurityDisclaimerLogginOff) : lockedString(UIStringsNotTranslate.generateLabelSecurityDisclaimer),
          includeSettingsButton: true,
         })}
       </span>

@@ -85,7 +85,36 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
   });
 
-  it('throttles requests to AIDA', async () => {
+  it('trims a suggestion with suffix overlap and dispatches it to the editor', async () => {
+    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
+      completeCode: Promise.resolve({
+        generatedSamples: [{
+          generationString: '"Hello World");',
+          sampleId: 1,
+          score: 1,
+        }],
+        metadata: {},
+      }),
+    });
+    const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
+        {aidaClient: mockAidaClient},
+        editor,
+    );
+
+    aiCodeCompletion.onTextChanged('console.log(', ');\n', 1);
+
+    await clock.tickAsync(AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
+    sinon.assert.calledOnce(mockAidaClient.completeCode);
+    await clock.tickAsync(AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
+    sinon.assert.calledOnce(editor.dispatch);
+    assert.deepEqual(editor.dispatch.firstCall.args[0], {
+      effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
+          {text: '"Hello World"', from: 1, sampleId: 1, rpcGlobalId: undefined})
+    });
+  });
+
+  it('debounces requests to AIDA', async () => {
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
       completeCode: Promise.resolve(null),
     });

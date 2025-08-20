@@ -105,7 +105,6 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       let response = this.#checkCachedRequestForResponse(request);
       if (!response) {
         response = await this.#aidaClient.completeCode(request);
-
         if (response) {
           this.#updateCachedRequest(request, response);
         }
@@ -116,6 +115,16 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       if (response && response.generatedSamples.length > 0 && response.generatedSamples[0].generationString) {
         if (response.generatedSamples[0].attributionMetadata?.attributionAction ===
             Host.AidaClient.RecitationAction.BLOCK) {
+          this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {});
+          return;
+        }
+
+        // Use the suffix from the request to find and remove any overlap.
+        let suggestionText = response.generatedSamples[0].generationString;
+        if (request.suffix && request.suffix.length > 0) {
+          suggestionText = this.#trimSuggestionOverlap(response.generatedSamples[0].generationString, request.suffix);
+        }
+        if (suggestionText.length === 0) {
           this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {});
           return;
         }
@@ -131,7 +140,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
           // will set the suggestion to null.
           this.#editor.dispatch({
             effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({
-              text: response.generatedSamples[0].generationString,
+              text: suggestionText,
               from: cursor,
               rpcGlobalId: response.metadata.rpcGlobalId,
               sampleId: response.generatedSamples[0].sampleId,
@@ -168,6 +177,20 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       temperature,
       modelId,
     };
+  }
+
+  /**
+   * Removes the end of a suggestion if it overlaps with the start of the suffix.
+   */
+  #trimSuggestionOverlap(generationString: string, suffix: string): string {
+    // Iterate from the longest possible overlap down to the shortest
+    for (let i = Math.min(generationString.length, suffix.length); i > 0; i--) {
+      const overlapCandidate = suffix.substring(0, i);
+      if (generationString.endsWith(overlapCandidate)) {
+        return generationString.slice(0, -i);
+      }
+    }
+    return generationString;
   }
 
   #checkCachedRequestForResponse(request: Host.AidaClient.CompletionRequest): Host.AidaClient.CompletionResponse|null {

@@ -291,7 +291,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                         <td>
                           ${message.result    ? html`<code>${JSON.stringify(message.result)}</code>` :
                                 message.error ? html`<code>${JSON.stringify(message.error)}</code>` :
-                                                '(pending)'}
+                              'id' in message ? '(pending)' : ''}
                         </td>
                         <td data-value=${message.elapsedTime || 0}>
                           ${!('id' in message)  ? '' :

@@ -997,10 +997,10 @@ export const NO_NAVIGATION = 'NO_NAVIGATION';
 export type NavigationId = string|typeof NO_NAVIGATION;
 
 /**
- * This is a synthetic Layout shift cluster. Not based on a raw event as there's no concept
- * of this as a trace event.
+ * This is a synthetic Layout shift cluster. The rawSourceEvent is the worst layout shift event
+ * in the cluster.
  */
-export interface SyntheticLayoutShiftCluster {
+export interface SyntheticLayoutShiftCluster extends SyntheticBased<Phase.COMPLETE> {
   name: 'SyntheticLayoutShiftCluster';
   clusterWindow: TraceWindowMicro;
   clusterCumulativeScore: number;

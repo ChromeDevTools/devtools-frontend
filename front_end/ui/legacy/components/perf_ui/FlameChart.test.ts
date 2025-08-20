@@ -254,6 +254,52 @@ describeWithEnvironment('FlameChart', () => {
     });
   });
 
+  describe('showAllGroups', () => {
+    it('updates each group to be expanded', async () => {
+      class ShowAllGroupsTestProvider extends FakeFlameChartProvider {
+        static data = PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [0, 1, 2],
+          entryStartTimes: [5, 60, 80],
+          entryTotalTimes: [50, 10, 10],
+          groups:
+              [
+                {
+                  name: 'Test Group 0' as Platform.UIString.LocalizedString,
+                  startLevel: 0,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+                {
+                  name: 'Test Group 1' as Platform.UIString.LocalizedString,
+                  startLevel: 1,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+                {
+                  name: 'Test Group 2' as Platform.UIString.LocalizedString,
+                  startLevel: 2,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+              ],
+        });
+
+        override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+          return ShowAllGroupsTestProvider.data;
+        }
+      }
+      const provider = new ShowAllGroupsTestProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      renderChart(chartInstance);
+      const data = chartInstance.timelineData();
+      assert.isOk(data);
+      assert.isTrue(data.groups.every(g => g.hidden === true));
+      chartInstance.showAllGroups();
+      assert.isTrue(data.groups.every(g => g.hidden === false));
+    });
+  });
+
   describe('updateLevelPositions', () => {
     class UpdateLevelPositionsTestProvider extends FakeFlameChartProvider {
       static data = PerfUI.FlameChart.FlameChartTimelineData.create({

@@ -1614,6 +1614,14 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#overlays.bringLabelForward(overlay);
   }
 
+  enterMainChartTrackConfigurationMode(): void {
+    this.mainFlameChart.enterTrackConfigurationMode();
+  }
+
+  showAllMainChartTracks(): void {
+    this.mainFlameChart.showAllGroups();
+  }
+
   private onAddEntryLabelAnnotation(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
       event: Common.EventTarget.EventTargetEvent<{entryIndex: number, withLinkCreationButton: boolean}>): void {

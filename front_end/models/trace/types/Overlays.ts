@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as UI from '../../../ui/legacy/legacy.js';
 import type * as Lit from '../../../ui/lit/lit.js';
 
 import type {EntriesLinkState} from './File.js';
@@ -123,8 +124,13 @@ export interface TimingsMarkerFieldResult {
   pageScope: 'url'|'origin';
 }
 
+export interface BottomInfoBar {
+  type: 'BOTTOM_INFO_BAR';
+  infobar: UI.Infobar.Infobar;
+}
+
 /**
  * All supported overlay types.
  */
 export type Overlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|EntriesLink|TimespanBreakdown|
-    TimestampMarker|CandyStripedTimeRange|TimingsMarker;
+    TimestampMarker|CandyStripedTimeRange|TimingsMarker|BottomInfoBar;

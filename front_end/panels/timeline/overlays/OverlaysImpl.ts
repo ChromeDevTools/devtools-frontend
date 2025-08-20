@@ -110,6 +110,8 @@ export function entriesForOverlay(overlay: Trace.Types.Overlays.Overlay): readon
       entries.push(...overlay.entries);
       break;
     }
+    case 'BOTTOM_INFO_BAR':
+      break;
     default:
       Platform.assertNever(overlay, `Unknown overlay type ${JSON.stringify(overlay)}`);
   }
@@ -152,7 +154,7 @@ export function overlayIsSingleton(overlay: Trace.Types.Overlays.Overlay): overl
 }
 
 export function overlayTypeIsSingleton(type: Trace.Types.Overlays.Overlay['type']): type is SingletonOverlay['type'] {
-  return type === 'TIMESTAMP_MARKER' || type === 'ENTRY_SELECTED';
+  return type === 'TIMESTAMP_MARKER' || type === 'ENTRY_SELECTED' || type === 'BOTTOM_INFO_BAR';
 }
 
 /**
@@ -588,6 +590,7 @@ export class Overlays extends EventTarget {
       this.#overlaysContainer.innerHTML = '';
     }
     this.#overlaysToElements.clear();
+    this.#singletonOverlays.clear();
 
     // Clear out dimensions from the old Flame Charts.
     this.#dimensions.trace.visibleWindow = null;
@@ -602,7 +605,6 @@ export class Overlays extends EventTarget {
    */
   async update(): Promise<void> {
     const timeRangeOverlays: Trace.Types.Overlays.TimeRangeLabel[] = [];
-    const timingsMarkerOverlays: Trace.Types.Overlays.TimingsMarker[] = [];
 
     for (const [overlay, existingElement] of this.#overlaysToElements) {
       const element = existingElement || this.#createElementForNewOverlay(overlay);
@@ -626,9 +628,6 @@ export class Overlays extends EventTarget {
 
       if (overlay.type === 'TIME_RANGE') {
         timeRangeOverlays.push(overlay);
-      }
-      if (overlay.type === 'TIMINGS_MARKER') {
-        timingsMarkerOverlays.push(overlay);
       }
     }
 
@@ -809,9 +808,78 @@ export class Overlays extends EventTarget {
         break;
       }
 
+      case 'BOTTOM_INFO_BAR': {
+        this.#positionInfoBarBanner(overlay, element);
+        break;
+      }
+
       default: {
         Platform.TypeScriptUtilities.assertNever(overlay, `Unknown overlay: ${JSON.stringify(overlay)}`);
       }
+    }
+  }
+
+  #positionInfoBarBanner(
+      overlay: Trace.Types.Overlays.BottomInfoBar,
+      element: HTMLElement,
+      ): void {
+    const mainChart = this.#dimensions.charts.main;
+    if (!mainChart) {
+      this.#setOverlayElementVisibility(element, false);
+      return;
+    }
+
+    /*
+     * This calculation determines how many pixels of the bottom-positioned element
+     * (the banner) are visible within a scrollable container.
+
+     * The logic works by first calculating the number of pixels that are hidden
+     * below the current scroll position, and then subtracting that value from
+     * the total height of the banner.
+
+     * 1. totalHeight - (mainChart.scrollOffsetPixels + mainChart.heightPixels):
+     *    Calculates the number of pixels of content that are hidden below the
+     *    bottom of the viewport.
+
+     * 2. defaultBannerHeight - (hidden pixels):
+     *    Subtracts the hidden pixels from the banner's total height to find
+     *    the remaining, visible portion.
+     */
+
+    // By default an Infobar is 40px high. But when it comes to rendering it
+    // might be higher if the infobar is wrapped; so we adjust the actual
+    // number of visible pixels later on.
+    // We can't use the real value in the calculation because when its hidden
+    // it has a height of 0, which means we'd never calculate the right values.
+    const defaultBannerHeight = 40;
+    const totalHeight = this.#charts.mainChart.totalContentHeight();
+    const pixelsHiddenBelowViewport = totalHeight - (mainChart.scrollOffsetPixels + mainChart.heightPixels);
+    const visiblePixelsOfBanner = defaultBannerHeight - pixelsHiddenBelowViewport;
+
+    if (visiblePixelsOfBanner <= 0) {
+      this.#setOverlayElementVisibility(element, false);
+      return;
+    }
+
+    this.#setOverlayElementVisibility(element, true);
+
+    // Now we adjust our calculation based on the actual size of the infobar
+    // (it has height as now it's visible on the screen)
+    // We do this by removing the default banner height (to reset our
+    // calculation back to "0") and adding the actual height.
+    const actualBannerHeight = overlay.infobar.element.clientHeight;
+    const adjustedVisiblePixels = visiblePixelsOfBanner - defaultBannerHeight + actualBannerHeight;
+    // Use Math.min here to ensure the infobar never grows beyond the size it
+    // needs to be. Without this we make the infobar fill all available space
+    // in the canvas, but we want it to stay the right size and stuck to the
+    // bottom.
+    element.style.height = `${Math.min(adjustedVisiblePixels, actualBannerHeight)}px`;
+
+    // So it doesn't overlap the right scrollbar.
+    if (this.#charts.mainChart.verticalScrollBarVisible()) {
+      element.style.right = '11px';
+    } else {
+      element.style.right = '0';
     }
   }
 
@@ -1622,6 +1690,19 @@ export class Overlays extends EventTarget {
         break;
       case 'TIMINGS_MARKER':
         break;
+      case 'BOTTOM_INFO_BAR': {
+        if (element.contains(overlay.infobar.element)) {
+          return;
+        }
+
+        // This overlay is a singleton; this means it could be updated with a
+        // different info bar. So we need to clear out the existing contents
+        // before appending the infobar, just in case.
+        element.innerHTML = '';
+        element.appendChild(overlay.infobar.element);
+      }
+
+      break;
       default:
         Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
     }
@@ -1657,6 +1738,8 @@ export class Overlays extends EventTarget {
       case 'CANDY_STRIPED_TIME_RANGE':
         break;
       case 'TIMINGS_MARKER':
+        break;
+      case 'BOTTOM_INFO_BAR':
         break;
       default:
         Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
@@ -1987,6 +2070,8 @@ export function jsLogContext(overlay: Trace.Types.Overlays.Overlay): string|null
     case 'TIMINGS_MARKER': {
       return 'timeline.overlays.timings-marker';
     }
+    case 'BOTTOM_INFO_BAR':
+      return 'timeline.overlays.info-bar';
     default:
       Platform.assertNever(overlay, 'Unknown overlay type');
   }

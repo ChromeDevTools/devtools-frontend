@@ -1932,6 +1932,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/timeline/TimelineUIUtils.js",
   "front_end/panels/timeline/TimingsTrackAppender.js",
   "front_end/panels/timeline/TracingLayerTree.js",
+  "front_end/panels/timeline/TrackConfigBanner.js",
   "front_end/panels/timeline/TrackConfiguration.js",
   "front_end/panels/timeline/UIDevtoolsController.js",
   "front_end/panels/timeline/UIDevtoolsUtils.js",

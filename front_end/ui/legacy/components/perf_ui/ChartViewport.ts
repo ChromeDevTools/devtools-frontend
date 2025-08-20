@@ -117,6 +117,10 @@ export class ChartViewport extends UI.Widget.VBox {
     return [this.vScrollElement];
   }
 
+  verticalScrollBarVisible(): boolean {
+    return !this.vScrollElement.classList.contains('hidden');
+  }
+
   private updateScrollBar(): void {
     const showScroll = this.alwaysShowVerticalScrollInternal || this.totalHeight > this.offsetHeight;
     if (this.vScrollElement.classList.contains('hidden') !== showScroll) {

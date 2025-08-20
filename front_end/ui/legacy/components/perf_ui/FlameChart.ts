@@ -465,6 +465,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.#canvasBoundingClientRect;
   }
 
+  verticalScrollBarVisible(): boolean {
+    return this.chartViewport.verticalScrollBarVisible();
+  }
+
   /**
    * In some cases we need to manually adjust the positioning of the tooltip
    * vertically to account for the fact that it might be rendered not relative
@@ -1358,6 +1362,26 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.#toggleGroupHiddenState(groupIndex, /* hidden= */ false);
   }
 
+  showAllGroups(): void {
+    if (!this.rawTimelineData?.groups) {
+      return;
+    }
+
+    for (const group of this.rawTimelineData.groups) {
+      group.hidden = false;
+    }
+
+    this.updateLevelPositions();
+    this.updateHighlight();
+    this.updateHeight();
+    this.draw();
+    this.#notifyProviderOfConfigurationChange();
+
+    // When you show all groups, the UI can change quite significantly, so
+    // scroll the user back up to the top to orient them.
+    this.scrollGroupIntoView(0);
+  }
+
   #toggleGroupHiddenState(groupIndex: number, hidden: boolean): void {
     if (groupIndex < 0) {
       return;
@@ -1399,7 +1423,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.contextMenu = new UI.ContextMenu.ContextMenu(event);
     const label = i18nString(UIStrings.enterTrackConfigurationMode);
     this.contextMenu.defaultSection().appendItem(label, () => {
-      this.#enterEditMode();
+      this.enterTrackConfigurationMode();
     }, {
       jslogContext: 'track-configuration-enter',
     });
@@ -2143,7 +2167,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return {groupIndex: -1, hoverType: HoverType.OUTSIDE_TRACKS};
   }
 
-  #enterEditMode(): void {
+  enterTrackConfigurationMode(): void {
+    if (!this.#hasTrackConfigurationMode()) {
+      return;
+    }
     const div = document.createElement('div');
     div.classList.add('flame-chart-edit-confirm');
     const button = new Buttons.Button.Button();
@@ -2162,6 +2189,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.dispatchEventToListeners(Events.TRACKS_REORDER_STATE_CHANGED, true);
     this.updateLevelPositions();
     this.draw();
+    // When we collapse all the tracks into edit mode, we can leave the user at
+    // the bottom of the panel which can look very empty.
+    // So, scroll the user to the top so they can see all of the collapsed
+    // tracks.
+    this.scrollGroupIntoView(0);
   }
 
   #removeEditModeButton(): void {
@@ -3984,8 +4016,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private updateHeight(): void {
-    const height = this.levelToOffset(this.dataProvider.maxStackDepth()) + 2;
-    this.chartViewport.setContentHeight(height);
+    this.chartViewport.setContentHeight(this.totalContentHeight());
+  }
+
+  /**
+   * This is the total height that would be required to render the flame chart
+   * with no overflows.
+   */
+  totalContentHeight(): number {
+    return this.levelToOffset(this.dataProvider.maxStackDepth()) + 2;
   }
 
   override onResize(): void {

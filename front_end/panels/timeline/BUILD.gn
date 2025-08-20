@@ -100,6 +100,7 @@ devtools_module("timeline") {
     "TimelineUIUtils.ts",
     "TimingsTrackAppender.ts",
     "TracingLayerTree.ts",
+    "TrackConfigBanner.ts",
     "TrackConfiguration.ts",
     "UIDevtoolsController.ts",
     "UIDevtoolsUtils.ts",
@@ -215,6 +216,7 @@ ts_library("unittests") {
     "TimelineSelection.test.ts",
     "TimelineTreeView.test.ts",
     "TimelineUIUtils.test.ts",
+    "TrackConfigBanner.test.ts",
     "TrackConfiguration.test.ts",
   ]
 

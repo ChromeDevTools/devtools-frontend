@@ -86,6 +86,7 @@ import {
   type TimelineSelection,
 } from './TimelineSelection.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
+import {createHiddenTracksOverlay} from './TrackConfigBanner.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 import * as Utils from './utils/utils.js';
@@ -430,6 +431,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       'flamechart-selected-navigation', 'Classic - scroll to zoom', 'timeline.select-classic-navigation');
 
   #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
+  #hiddenTracksInfoBarPerTrace = new WeakMap<Trace.Handlers.Types.ParsedTrace, UI.Infobar.Infobar|'DISMISSED'>();
 
   constructor(traceModel?: Trace.TraceModel.Model) {
     super('timeline');
@@ -891,6 +893,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         }
         this.flameChart.dimThirdPartiesIfRequired();
         this.dispatchEventToListeners(Events.IS_VIEWING_TRACE, true);
+
         return;
       }
 
@@ -2214,9 +2217,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.updateMiniMap();
     this.statusDialog?.updateProgressBar(i18nString(UIStrings.processed), 90);
     this.updateTimelineControls();
+    this.#maybeCreateHiddenTracksBanner(parsedTrace);
 
     this.#setActiveInsight(null);
-
     this.#sideBar.setInsights(traceInsightsSets);
 
     this.#eventToRelatedInsights.clear();
@@ -2291,6 +2294,30 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     return annotationEntryToColorMap;
+  }
+
+  /**
+   * If the user imports or records a trace and we have any hidden tracks, we
+   * show a warning banner at the bottom. This can be dismissed by the user and
+   * if that happens we do not want to bring it back again.
+   */
+  #maybeCreateHiddenTracksBanner(trace: Trace.Handlers.Types.ParsedTrace): void {
+    const visualConfig = this.flameChart.getPersistedConfigMetadata(trace);
+    const maybeOverlay = createHiddenTracksOverlay(trace, visualConfig, {
+      onClose: () => {
+        this.flameChart.overlays().removeOverlaysOfType('BOTTOM_INFO_BAR');
+        this.#hiddenTracksInfoBarPerTrace.set(trace, 'DISMISSED');
+      },
+      onShowAllTracks: () => {
+        this.flameChart.showAllMainChartTracks();
+      },
+      onShowTrackConfigurationMode: () => {
+        this.flameChart.enterMainChartTrackConfigurationMode();
+      }
+    });
+    if (maybeOverlay) {
+      this.flameChart.addOverlay(maybeOverlay);
+    }
   }
 
   private getEntryColorByEntry(entry: Trace.Types.Events.Event): string {
@@ -2450,9 +2477,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    * have recorded a fresh trace.
    *
    * IMPORTANT: All the code in here should be code that is only required when we have
-   * recorded or loaded a brand new trace. If you need the code to run when the
-   * user switches to an existing trace, please @see #setModelForActiveTrace and put your
-   * code in there.
+   * recorded or imported from disk a brand new trace. If you need the code to
+   * run when the user switches to an existing trace, please @see
+   * #setModelForActiveTrace and put your code in there.
    **/
   async loadingComplete(
       collectedEvents: Trace.Types.Events.Event[], exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter|null = null,

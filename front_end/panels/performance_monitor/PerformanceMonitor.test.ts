@@ -31,6 +31,7 @@ describeWithMockConnection('PerformanceMonitor', () => {
         [...performanceMonitor.contentElement.querySelectorAll('.perfmon-indicator-value')].some(e => e.textContent));
     await expectCall(getMetrics, {fakeFn: () => Promise.resolve({metrics: [{name: 'LayoutCount', value: 42}]})});
     await expectCall(getMetrics, {fakeFn: () => Promise.resolve({metrics: [{name: 'LayoutCount', value: 84}]})});
+    await performanceMonitor.updateComplete;
     assert.isTrue(
         [...performanceMonitor.contentElement.querySelectorAll('.perfmon-indicator-value')].some(e => e.textContent));
   });

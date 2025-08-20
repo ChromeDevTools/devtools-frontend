@@ -77,6 +77,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   private height!: number;
   private model?: SDK.PerformanceMetricsModel.PerformanceMetricsModel|null;
   private pollTimer?: number;
+  private metrics?: Map<string, number>;
+  private suspended = false;
 
   constructor(pollIntervalMs = 500) {
     super({
@@ -122,19 +124,19 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
       return;
     }
     this.chartInfos = this.createChartInfos();
-    this.controlPane.chartsInfo = this.chartInfos;
     const themeSupport = ThemeSupport.ThemeSupport.instance();
     themeSupport.addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
       // instantiateMetricData sets the colors for the metrics, which we need
       // to re-evaluate when the theme changes before re-drawing the canvas.
       this.chartInfos = this.createChartInfos();
-      this.controlPane.chartsInfo = this.chartInfos;
+      this.requestUpdate();
       this.draw();
     });
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.suspendStateChanged, this);
     void this.model.enable();
     this.suspendStateChanged();
+    this.requestUpdate();
   }
 
   override willHide(): void {
@@ -145,6 +147,17 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
         SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.suspendStateChanged, this);
     this.stopPolling();
     void this.model.disable();
+  }
+
+  override performUpdate(): void {
+    this.controlPane.chartsInfo = this.chartInfos;
+    this.controlPane.metrics = this.metrics;
+    this.width = this.canvas.offsetWidth;
+    this.canvas.width = Math.round(this.width * window.devicePixelRatio);
+    this.canvas.height = this.height;
+    this.canvas.style.height = `${this.height / window.devicePixelRatio}px`;
+    this.contentElement.classList.toggle('suspended', this.suspended);
+    this.draw();
   }
 
   modelAdded(model: SDK.PerformanceMetricsModel.PerformanceMetricsModel): void {
@@ -174,7 +187,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     } else {
       this.startPolling();
     }
-    this.contentElement.classList.toggle('suspended', suspended);
+    this.suspended = suspended;
+    this.requestUpdate();
   }
 
   private startPolling(): void {
@@ -210,10 +224,14 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     {
       this.metricsBuffer.splice(0, this.metricsBuffer.length - maxCount);
     }
-    this.controlPane.updateMetrics(metrics);
+    this.metrics = metrics;
+    this.requestUpdate();
   }
 
   private draw(): void {
+    if (!this.canvas) {
+      return;
+    }
     const ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     ctx.save();
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
@@ -428,7 +446,6 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   override onResize(): void {
     super.onResize();
     this.width = this.canvas.offsetWidth;
-    this.canvas.width = Math.round(this.width * window.devicePixelRatio);
     this.recalcChartHeight();
   }
 
@@ -440,8 +457,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
       }
     }
     this.height = Math.ceil(height * window.devicePixelRatio);
-    this.canvas.height = this.height;
-    this.canvas.style.height = `${this.height / window.devicePixelRatio}px`;
+    this.requestUpdate();
   }
 
   private createChartInfos(): ChartInfo[] {
@@ -648,7 +664,10 @@ export class ControlPane extends UI.Widget.VBox {
     }
   }
 
-  updateMetrics(metrics: Map<string, number>): void {
+  set metrics(metrics: Map<string, number>|undefined) {
+    if (!metrics) {
+      return;
+    }
     for (const [name, value] of metrics.entries()) {
       this.#metricValues.set(name, value);
     }

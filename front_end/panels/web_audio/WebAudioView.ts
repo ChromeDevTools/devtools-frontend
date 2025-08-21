@@ -267,8 +267,12 @@ export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SD
       const selectedContext =
           this.selectedContextIndex > -1 ? this.contextSelectorItems.at(this.selectedContextIndex) : null;
       this.contextSelectorItems.remove(index);
-      this.selectedContextIndex =
-          selectedContext ? this.contextSelectorItems.indexOf(selectedContext) : this.contextSelectorItems.length - 1;
+      const newSelectedIndex = selectedContext ? this.contextSelectorItems.indexOf(selectedContext) : -1;
+      if (newSelectedIndex > -1) {
+        this.selectedContextIndex = newSelectedIndex;
+      } else {
+        this.selectedContextIndex = Math.min(index, this.contextSelectorItems.length - 1);
+      }
     }
     this.requestUpdate();
   }

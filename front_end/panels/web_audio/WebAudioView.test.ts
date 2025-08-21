@@ -189,4 +189,59 @@ describeWithMockConnection('WebAudioView', () => {
     const input = await view.nextInput;
     assert.strictEqual(input.selectedContextIndex, 1);
   });
+
+  it('keeps context selected when another is destroyed', async () => {
+    const view = createViewFunctionStub(WebAudio.WebAudioView.WebAudioView);
+    renderElementIntoDOM(new WebAudio.WebAudioView.WebAudioView(undefined, view));
+    const target = createTarget();
+    const model = target.model(WebAudio.WebAudioModel.WebAudioModel);
+    assert.exists(model);
+
+    model.dispatchEventToListeners(WebAudio.WebAudioModel.Events.CONTEXT_CREATED, context1);
+    await view.nextInput;
+    model.dispatchEventToListeners(WebAudio.WebAudioModel.Events.CONTEXT_CREATED, context2);
+    await view.nextInput;
+
+    model.dispatchEventToListeners(WebAudio.WebAudioModel.Events.CONTEXT_DESTROYED, context2.contextId);
+    const input = await view.nextInput;
+
+    assert.deepEqual(input.contexts, [context1]);
+    assert.strictEqual(input.selectedContextIndex, 0);
+  });
+
+  it('selects another context when the selected one is destroyed', async () => {
+    const view = createViewFunctionStub(WebAudio.WebAudioView.WebAudioView);
+    renderElementIntoDOM(new WebAudio.WebAudioView.WebAudioView(undefined, view));
+    const target = createTarget();
+    const model = target.model(WebAudio.WebAudioModel.WebAudioModel);
+    assert.exists(model);
+
+    model.dispatchEventToListeners(WebAudio.WebAudioModel.Events.CONTEXT_CREATED, context1);
+    await view.nextInput;
+    model.dispatchEventToListeners(WebAudio.WebAudioModel.Events.CONTEXT_CREATED, context2);
+    await view.nextInput;
+
+    model.dispatchEventToListeners(WebAudio.WebAudioModel.Events.CONTEXT_DESTROYED, context1.contextId);
+    const input = await view.nextInput;
+
+    assert.deepEqual(input.contexts, [context2]);
+    assert.strictEqual(input.selectedContextIndex, 0);
+  });
+
+  it('selects nothing when the only context is destroyed', async () => {
+    const view = createViewFunctionStub(WebAudio.WebAudioView.WebAudioView);
+    renderElementIntoDOM(new WebAudio.WebAudioView.WebAudioView(undefined, view));
+    const target = createTarget();
+    const model = target.model(WebAudio.WebAudioModel.WebAudioModel);
+    assert.exists(model);
+
+    model.dispatchEventToListeners(WebAudio.WebAudioModel.Events.CONTEXT_CREATED, context1);
+    await view.nextInput;
+
+    model.dispatchEventToListeners(WebAudio.WebAudioModel.Events.CONTEXT_DESTROYED, context1.contextId);
+    const input = await view.nextInput;
+
+    assert.isEmpty(input.contexts);
+    assert.strictEqual(input.selectedContextIndex, -1);
+  });
 });

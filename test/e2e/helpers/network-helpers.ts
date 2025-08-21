@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
@@ -161,15 +162,19 @@ export async function clearTextFilter(devToolsPage: DevToolsPage = getBrowserAnd
 }
 
 export async function getTextFromHeadersRow(
-    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const headerNameElement = await devToolsPage.waitFor('.header-name', row);
+    row: puppeteer.ElementHandle<Element>, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const headerNameElement = await row.waitForSelector('.header-name');
+  assert.isOk(headerNameElement);
   const headerNameText = await headerNameElement.evaluate(el => el.textContent || '');
 
-  const headerValueElement = await devToolsPage.waitFor('.header-value', row);
+  const headerValueElement = await row.waitForSelector('.header-value');
+  assert.isOk(headerValueElement);
   let headerValueText = (await headerValueElement.evaluate(el => el.textContent || '')).trim();
   if (headerValueText === '') {
     const headerValueEditableSpanComponent = await devToolsPage.waitFor('.header-value devtools-editable-span', row);
+    assert.isOk(headerValueEditableSpanComponent);
     const editableSpan = await devToolsPage.waitFor('.editable', headerValueEditableSpanComponent);
+    assert.isOk(editableSpan);
     headerValueText = (await editableSpan.evaluate(el => el.textContent || '')).trim();
   }
 
@@ -244,4 +249,13 @@ export function veImpressionForNetworkPanel(options?: {newFilterBar?: boolean}) 
     veImpression('TableHeader', 'size'),
     veImpression('TableHeader', 'time'),
   ]);
+}
+
+export async function clickInfobarButton(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const infoBar = await devToolsPage.waitForAria('Select a folder to store override files in');
+  // Allow time for infobar to animate in before clicking the button
+  await devToolsPage.timeout(550);
+  await devToolsPage.click('.infobar-main-row .infobar-button', {
+    root: infoBar,
+  });
 }

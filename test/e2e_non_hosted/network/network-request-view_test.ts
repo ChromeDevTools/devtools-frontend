@@ -12,6 +12,7 @@ import {
 } from '../../e2e/helpers/console-helpers.js';
 import {triggerLocalFindDialog} from '../../e2e/helpers/memory-helpers.js';
 import {
+  clickInfobarButton,
   getAllRequestNames,
   getTextFromHeadersRow,
   navigateToNetworkTab,
@@ -24,65 +25,8 @@ import type {InspectedPage} from '../shared/target-helper.js';
 const SIMPLE_PAGE_REQUEST_NUMBER = 2;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
 
-async function setupMocks(devToolsPage: DevToolsPage) {
-  await devToolsPage.evaluateOnNewDocument(`
-    Object.defineProperty(window, 'InspectorFrontendHost', {
-      configurable: true,
-      enumerable: true,
-      get() {
-          return this._InspectorFrontendHost;
-      },
-      set(value) {
-          this._InspectorFrontendHost = value;
-          this._InspectorFrontendHost.fileSystem = null;
-          this._InspectorFrontendHost.addFileSystem = (type) => {
-            const onFileSystem = (fs) => {
-              this._InspectorFrontendHost.fileSystem = fs;
-              const fileSystem = {
-                fileSystemName: 'sandboxedRequestedFileSystem',
-                fileSystemPath: '/overrides',
-                rootURL: 'filesystem:devtools://devtools/isolated/',
-                type: 'overrides',
-              };
-              this._InspectorFrontendHost.events.dispatchEventToListeners('fileSystemAdded', {fileSystem});
-            };
-            window.webkitRequestFileSystem(window.TEMPORARY, 1024 * 1024, onFileSystem);
-          };
-          this._InspectorFrontendHost.removeFileSystem = (fileSystemPath) => {
-            const removalCallback = (entries) => {
-              entries.forEach(entry => {
-                if (entry.isDirectory) {
-                  entry.removeRecursively(() => {});
-                } else if (entry.isFile) {
-                  entry.remove(() => {});
-                }
-              });
-            };
-
-            if (this._InspectorFrontendHost.fileSystem) {
-              this._InspectorFrontendHost.fileSystem.root.createReader().readEntries(removalCallback);
-            }
-
-            this._InspectorFrontendHost.fileSystem = null;
-            this._InspectorFrontendHost.events.dispatchEventToListeners('fileSystemRemoved', '/overrides');
-          }
-          this._InspectorFrontendHost.isolatedFileSystem = (_fileSystemId, _registeredName) => {
-            return this._InspectorFrontendHost.fileSystem;
-          };
-      }
-    });
-  `);
-  await devToolsPage.reload();
-}
-
 const configureAndCheckHeaderOverrides = async (devToolsPage: DevToolsPage, inspectedPage: InspectedPage) => {
-  const infoBar = await devToolsPage.waitForAria('Select a folder to store override files in');
-  // Allow time for infobar to animate in before clicking the button
-  await devToolsPage.timeout(550);
-  await devToolsPage.click('.infobar-main-row .infobar-button', {
-    root: infoBar,
-  });
-
+  await clickInfobarButton(devToolsPage);
   let networkView = await devToolsPage.waitFor('.network-item-view');
   await devToolsPage.click('#tab-headers-component', {
     root: networkView,
@@ -669,7 +613,7 @@ describe('The Network Request view', () => {
   });
 
   it('can create header overrides via request\'s context menu', async ({devToolsPage, inspectedPage}) => {
-    await setupMocks(devToolsPage);
+    await devToolsPage.setupOverridesFSMocks();
     await devToolsPage.useSoftMenu();
     await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
     await selectRequestByName(
@@ -683,7 +627,7 @@ describe('The Network Request view', () => {
   });
 
   it('can create header overrides via header\'s pencil icon', async ({devToolsPage, inspectedPage}) => {
-    await setupMocks(devToolsPage);
+    await devToolsPage.setupOverridesFSMocks();
     await navigateToNetworkTab('hello.html', devToolsPage, inspectedPage);
     await selectRequestByName('hello.html', {devToolsPage});
 

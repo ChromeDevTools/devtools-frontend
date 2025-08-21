@@ -17,6 +17,7 @@ ts_e2e_library("sources") {
     "debug-raw-wasm_test.ts",
     "debugger-sidebar_test.ts",
     "eval_test.ts",
+    "header-overrides_test.ts",
     "icon-row-bucket_test.ts",
     "ignore-list_test.ts",
     "inline-breakpoint_test.ts",

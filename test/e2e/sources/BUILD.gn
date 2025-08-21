@@ -10,7 +10,6 @@ node_ts_library("sources") {
     "breakpoint-javascript_test.ts",
     "can-break-with-wasm-sourcemaps_test.ts",
     "can-disable-auto-sources-focus_test.ts",
-    "header-overrides_test.ts",
     "overrides_test.ts",
     "syntax-highlighting_test.ts",
   ]

@@ -160,11 +160,11 @@ export async function openWorkspaceSubPane() {
   await waitFor('[aria-label="Workspace panel"]');
 }
 
-export async function openOverridesSubPane() {
-  const root = await waitFor('.navigator-tabbed-pane');
-  await clickMoreTabsButton(root);
-  await click('[aria-label="Overrides"]');
-  await waitFor('[aria-label="Overrides panel"]');
+export async function openOverridesSubPane(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const root = await devToolsPage.waitFor('.navigator-tabbed-pane');
+  await clickMoreTabsButton(root, devToolsPage);
+  await devToolsPage.click('[aria-label="Overrides"]');
+  await devToolsPage.waitFor('[aria-label="Overrides panel"]');
 }
 
 export async function openFileInEditor(
@@ -742,11 +742,10 @@ export async function addSelectedTextToWatches(devToolsPage = getBrowserAndPages
   await devToolsPage.pressKey('A', {control: true, shift: true});
 }
 
-export async function enableLocalOverrides() {
-  await clickMoreTabsButton();
-  await click(OVERRIDES_TAB_SELECTOR);
-  await click(ENABLE_OVERRIDES_SELECTOR);
-  await waitFor(CLEAR_CONFIGURATION_SELECTOR);
+export async function enableLocalOverrides(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await openOverridesSubPane(devToolsPage);
+  await devToolsPage.click(ENABLE_OVERRIDES_SELECTOR);
+  await devToolsPage.waitFor(CLEAR_CONFIGURATION_SELECTOR);
 }
 
 export interface LabelMapping {

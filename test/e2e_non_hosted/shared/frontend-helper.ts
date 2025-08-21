@@ -625,6 +625,57 @@ export class DevToolsPage extends PageWrapper {
     await this.page.browserContext().clearPermissionOverrides();
     return clipboard;
   }
+
+  async setupOverridesFSMocks() {
+    await this.evaluateOnNewDocument(`
+      Object.defineProperty(window, 'InspectorFrontendHost', {
+        configurable: true,
+        enumerable: true,
+        get() {
+            return this._InspectorFrontendHost;
+        },
+        set(value) {
+            this._InspectorFrontendHost = value;
+            this._InspectorFrontendHost.fileSystem = null;
+            this._InspectorFrontendHost.addFileSystem = (type) => {
+              const onFileSystem = (fs) => {
+                this._InspectorFrontendHost.fileSystem = fs;
+                const fileSystem = {
+                  fileSystemName: 'sandboxedRequestedFileSystem',
+                  fileSystemPath: '/overrides',
+                  rootURL: 'filesystem:devtools://devtools/isolated/',
+                  type: 'overrides',
+                };
+                this._InspectorFrontendHost.events.dispatchEventToListeners('fileSystemAdded', {fileSystem});
+              };
+              window.webkitRequestFileSystem(window.TEMPORARY, 1024 * 1024, onFileSystem);
+            };
+            this._InspectorFrontendHost.removeFileSystem = (fileSystemPath) => {
+              const removalCallback = (entries) => {
+                entries.forEach(entry => {
+                  if (entry.isDirectory) {
+                    entry.removeRecursively(() => {});
+                  } else if (entry.isFile) {
+                    entry.remove(() => {});
+                  }
+                });
+              };
+
+              if (this._InspectorFrontendHost.fileSystem) {
+                this._InspectorFrontendHost.fileSystem.root.createReader().readEntries(removalCallback);
+              }
+
+              this._InspectorFrontendHost.fileSystem = null;
+              this._InspectorFrontendHost.events.dispatchEventToListeners('fileSystemRemoved', '/overrides');
+            }
+            this._InspectorFrontendHost.isolatedFileSystem = (_fileSystemId, _registeredName) => {
+              return this._InspectorFrontendHost.fileSystem;
+            };
+        }
+      });
+    `);
+    await this.reload();
+  }
 }
 
 export interface DevtoolsSettings {

@@ -111,7 +111,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View =
                     })}
                     @click=${input.onManageInSettingsTooltipClick}
                 >${lockedString(UIStringsNotTranslate.manageInSettings)}</span></div></devtools-tooltip>
-          </div class="ai-code-completion-disclaimer">
+          </div>
         `, target);
       // clang-format on
     };

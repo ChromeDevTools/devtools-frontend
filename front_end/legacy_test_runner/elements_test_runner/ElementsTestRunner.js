@@ -833,62 +833,6 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
   print((rootNode ? treeOutline.findTreeElement(rootNode) : treeOutline.rootElement()), '', depth || 10000);
 };
 
-ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth) {
-  let hasHighlights = false;
-  TestRunner.addSniffer(Elements.ElementsTreeOutline.ElementsTreeOutline.prototype, 'updateModifiedNodes', didUpdate);
-
-  function didUpdate() {
-    const treeOutline = ElementsTestRunner.firstElementsTreeOutline();
-    print((rootNode ? treeOutline.findTreeElement(rootNode) : treeOutline.rootElement()), '', depth || 10000);
-
-    if (!hasHighlights) {
-      TestRunner.addResult('<No highlights>');
-    }
-
-    if (callback) {
-      callback();
-    }
-  }
-
-  function print(treeItem, prefix, depth) {
-    if (!treeItem.root) {
-      const elementXPath = Elements.DOMPath.xPath(treeItem.node(), true);
-      const highlightedElements = treeItem.listItemElement.querySelectorAll('.dom-update-highlight');
-
-      for (let i = 0; i < highlightedElements.length; ++i) {
-        const element = highlightedElements[i];
-        const classList = element.classList;
-        let xpath = elementXPath;
-
-        if (classList.contains('webkit-html-attribute-name')) {
-          xpath += '/@' + element.textContent + ' (empty)';
-        } else if (classList.contains('webkit-html-attribute-value')) {
-          const name = element.parentElement.querySelector('.webkit-html-attribute-name').textContent;
-          xpath += '/@' + name + ' ' + element.textContent;
-        } else if (classList.contains('webkit-html-text-node')) {
-          xpath += '/text() "' + element.textContent + '"';
-        }
-
-        TestRunner.addResult(prefix + xpath);
-        hasHighlights = true;
-      }
-    }
-
-    if (!treeItem.expanded) {
-      return;
-    }
-
-    const children = treeItem.children();
-    const newPrefix = (treeItem.root ? '' : prefix + '    ');
-
-    for (let i = 0; depth && children && i < children.length; ++i) {
-      if (!children[i].isClosingTag || !children[i].isClosingTag()) {
-        print(children[i], newPrefix, depth - 1);
-      }
-    }
-  }
-};
-
 ElementsTestRunner.expandElementsTree = function(callback) {
   let expandedSomething = false;
   callback = TestRunner.safeWrap(callback);

@@ -15,6 +15,7 @@ copy_to_gen("traces") {
     "basic.json.gz",
     "byte-efficiency.json.gz",
     "changing-priority.json.gz",
+    "chrome-ext-sourcemap-script-content.json.gz",
     "cls-cluster-max-duration.json.gz",
     "cls-cluster-max-timeout.json.gz",
     "cls-cluster-navigation.json.gz",

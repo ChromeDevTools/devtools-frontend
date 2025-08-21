@@ -446,5 +446,93 @@ describeWithEnvironment('TimelinePanel', function() {
         assert.deepEqual(file.traceEvents, traceEvents);
       });
     });
+
+    describe('removes chrome-extensions content', function() {
+      it('from trace events when saving a trace with "Include script content" on', async function() {
+        const {traceEvents, metadata} =
+            await TraceLoader.traceFile(this, 'chrome-ext-sourcemap-script-content.json.gz');
+        await timeline.loadingComplete(traceEvents as Trace.Types.Events.Event[], null, metadata);
+
+        // 7192505913775043000.8 matches a chrome-extension script in the trace
+        let extensionTracesWithContent = traceEvents.filter(value => {
+          return value.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' &&
+              `${(value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.isolate}.${
+                  (value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.scriptId}` ===
+              '7192505913775043000.8';
+        });
+
+        // loading the trace and verifying the chrome extension script has associated source text
+        let castedEvent =
+            (extensionTracesWithContent[0] as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent);
+        assert.lengthOf(extensionTracesWithContent, 1);
+        assert.isDefined(castedEvent.args.data.sourceText);
+
+        await timeline.saveToFile({
+          includeScriptContent: true,
+          includeSourceMaps: false,
+          addModifications: false,
+        });
+
+        sinon.assert.calledOnce(saveSpy);
+        sinon.assert.calledOnce(closeSpy);
+
+        const [fileName, contentData] = saveSpy.getCall(0).args;
+        assert.match(fileName, /EnhancedTrace-[\d|T]+\.json$/);
+
+        const file = await contentDataToFile(contentData);
+        assert.isDefined(file.metadata.enhancedTraceVersion);
+
+        // getting the same trace as before, but this time after saving has happened.
+        extensionTracesWithContent = file.traceEvents?.filter(value => {
+          return value.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' &&
+              `${(value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.isolate}.${
+                  (value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.scriptId}` ===
+              '7192505913775043000.8';
+        });
+
+        // the associated source text is now undefined from the chrome-extension script
+        castedEvent = (extensionTracesWithContent[0] as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent);
+        assert.lengthOf(extensionTracesWithContent, 1);
+        assert.isUndefined(castedEvent.args.data.sourceText);
+
+        // non-extension script content is still present (7192505913775043000.10)
+        extensionTracesWithContent = file.traceEvents?.filter(value => {
+          return value.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' &&
+              `${(value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.isolate}.${
+                  (value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.scriptId}` ===
+              '7192505913775043000.10';
+        });
+        castedEvent = (extensionTracesWithContent[0] as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent);
+        assert.lengthOf(extensionTracesWithContent, 1);
+        assert.isDefined(castedEvent.args.data.sourceText);
+      });
+
+      it('from trace sourcemaps when saving a trace with "Include source map" on', async function() {
+        const {traceEvents, metadata} =
+            await TraceLoader.traceFile(this, 'chrome-ext-sourcemap-script-content.json.gz');
+
+        await timeline.innerSaveToFile(traceEvents, metadata, {
+          includeScriptContent: true,
+          includeSourceMaps: true,
+          addModifications: false,
+        });
+
+        sinon.assert.calledOnce(saveSpy);
+        sinon.assert.calledOnce(closeSpy);
+
+        const [fileName, contentData] = saveSpy.getCall(0).args;
+        assert.match(fileName, /EnhancedTrace-[\d|T]+\.json$/);
+
+        const file = await contentDataToFile(contentData);
+        assert.isDefined(file.metadata.enhancedTraceVersion);
+
+        const totalSourceMapsWithChromExtensionProtocol = file.metadata.sourceMaps?.filter(value => {
+          value.url.startsWith('chrome-extension:');
+        });
+        assert.isNotNull(totalSourceMapsWithChromExtensionProtocol);
+        assert.strictEqual(totalSourceMapsWithChromExtensionProtocol?.length, 0);
+      });
+    });
+
   });
 });

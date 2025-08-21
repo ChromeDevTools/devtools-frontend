@@ -219,7 +219,7 @@ export interface MetaData {
   hostDPR?: number;
 }
 
-interface MetadataSourceMap {
+export interface MetadataSourceMap {
   url: string;
   /** If not defined, then this was a data url. */
   sourceMapUrl?: string;

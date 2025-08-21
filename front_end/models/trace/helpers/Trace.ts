@@ -527,6 +527,10 @@ export function isTopLevelEvent(event: Types.Events.Event): boolean {
   return event.cat.includes(DevToolsTimelineEventCategory) && event.name === Types.Events.Name.RUN_TASK;
 }
 
+export function isExtensionUrl(url: string): boolean {
+  return url.startsWith('extensions:') || url.startsWith('chrome-extension:');
+}
+
 function topLevelEventIndexEndingAfter(events: Types.Events.Event[], time: Types.Timing.Micro): number {
   let index = Platform.ArrayUtilities.upperBound(events, time, (time, event) => time - event.ts) - 1;
   while (index > 0 && !isTopLevelEvent(events[index])) {

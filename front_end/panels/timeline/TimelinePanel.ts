@@ -1407,11 +1407,24 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return;
     }
 
+    // Grab the script mapping to be able to filter out by url.
+    const mappedScriptsWithData = Trace.Handlers.ModelHandlers.Scripts.data().scripts;
+    const scriptByIdMap = new Map<string, Trace.Handlers.ModelHandlers.Scripts.Script>();
+
+    for (const mapScript of mappedScriptsWithData) {
+      scriptByIdMap.set(`${mapScript.isolate}.${mapScript.scriptId}`, mapScript);
+    }
+
     const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex) ?? {};
 
-    if (!config.includeScriptContent) {
-      traceEvents = traceEvents.map(event => {
-        if (Trace.Types.Events.isAnyScriptCatchupEvent(event) && event.name !== 'StubScriptCatchup') {
+    traceEvents = traceEvents.map(event => {
+      if (Trace.Types.Events.isAnyScriptCatchupEvent(event) && event.name !== 'StubScriptCatchup') {
+        const mappedScript = scriptByIdMap.get(`${event.args.data.isolate}.${event.args.data.scriptId}`);
+
+        // If the checkbox to include script content is not checked or if it comes from and
+        // extension we dont include the script content.
+        if (!config.includeScriptContent ||
+            (mappedScript?.url && Trace.Helpers.Trace.isExtensionUrl(mappedScript.url))) {
           return {
             cat: event.cat,
             name: 'StubScriptCatchup',
@@ -1425,10 +1438,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
             },
           } as Trace.Types.Events.V8SourceRundownSourcesStubScriptCatchupEvent;
         }
+      }
 
-        return event;
-      });
-    }
+      return event;
+    });
 
     metadata.modifications = config.addModifications ? ModificationsManager.activeManager()?.toJSON() : undefined;
 
@@ -1483,9 +1496,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       const profile = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.extractCpuProfileFromFakeTrace(traceEvents);
       blobParts = [JSON.stringify(profile)];
     } else {
+      const filteredMetadataSourceMaps =
+          includeScriptContent && includeSourceMaps ? this.#filterMetadataSourceMaps(metadata) : undefined;
       const formattedTraceIter = traceJsonGenerator(traceEvents, {
         ...metadata,
-        sourceMaps: includeScriptContent && includeSourceMaps ? metadata.sourceMaps : undefined,
+        sourceMaps: filteredMetadataSourceMaps,
       });
       blobParts = Array.from(formattedTraceIter);
     }
@@ -1530,6 +1545,18 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       a.click();
       URL.revokeObjectURL(url);
     }
+  }
+
+  #filterMetadataSourceMaps(metadata: Trace.Types.File.MetaData): Trace.Types.File.MetadataSourceMap[]|undefined {
+    if (!metadata.sourceMaps) {
+      return undefined;
+    }
+
+    // extensions sourcemaps provide little to no-value for the exported trace
+    // debugging, so they are filtered out.
+    return metadata.sourceMaps.filter(value => {
+      return value.url && Trace.Helpers.Trace.isExtensionUrl(value.url);
+    });
   }
 
   #showExportTraceErrorDialog(error: Error): void {

@@ -48,10 +48,7 @@ export function veImpression(ve: string, context?: string, children?: TestImpres
   return {impressions: [key, ...veImpressionsUnder(key, children || []).impressions]};
 }
 
-function veImpressionForTabHeader(panel: string, options?: {closable: boolean}) {
-  if (options?.closable) {
-    return veImpression('PanelTabHeader', panel, [veImpression('Close')]);
-  }
+function veImpressionForTabHeader(panel: string) {
   return veImpression('PanelTabHeader', panel);
 }
 
@@ -60,15 +57,18 @@ export function veImpressionForMainToolbar(options?: {
   expectClosedPanels?: string[],
   dockable?: boolean,
 }) {
-  const regularPanels = ['elements', 'console', 'sources', 'network'];
+  const panels = [
+    'elements',
+    'console',
+    'sources',
+    'network',
+  ];
   if (!options?.dockable) {
-    regularPanels.push('timeline', 'heap-profiler', 'resources', 'lighthouse');
+    panels.push('security', 'chrome-recorder', 'timeline', 'heap-profiler', 'resources', 'lighthouse');
   }
 
-  const closablePanels =
-      options?.dockable ? [] : ['security', 'chrome-recorder'].filter(p => !options?.expectClosedPanels?.includes(p));
-  if (options?.selectedPanel && !regularPanels.includes(options?.selectedPanel)) {
-    closablePanels.push(options.selectedPanel);
+  if (options?.selectedPanel && !panels.includes(options?.selectedPanel)) {
+    panels.push(options.selectedPanel);
   }
 
   const dockableItems = options?.dockable ?
@@ -80,8 +80,7 @@ export function veImpressionForMainToolbar(options?: {
       [];
 
   return veImpression('Toolbar', 'main', [
-    ...regularPanels.map(panel => veImpressionForTabHeader(panel)),
-    ...closablePanels.map(panel => veImpressionForTabHeader(panel, {closable: true})),
+    ...panels.map(panel => veImpressionForTabHeader(panel)),
     veImpression('Toggle', 'elements.toggle-element-search'),
     veImpression('Action', 'settings.show'),
     veImpression('DropDown', 'main-menu'),
@@ -108,12 +107,10 @@ export function veImpressionForElementsPanel(options?: {dockable?: boolean}) {
     veImpression('Pane', 'styles', [
       veImpression('Section', 'style-properties', [veImpression('CSSRuleHeader', 'selector')]),
       veImpression('Section', 'style-properties', [
-        veImpression('Action', 'elements.new-style-rule'),
         veImpression('CSSRuleHeader', 'selector'),
         veImpression('Tree', undefined, [
-          veImpression('TreeItem', 'display', [veImpression('Toggle'), veImpression('Key'), veImpression('Value')]),
+          veImpression('TreeItem', 'display', [/* veImpression('Toggle'), */veImpression('Key'), veImpression('Value')]),
           veImpression('TreeItem', 'margin', [
-            veImpression('Toggle'),
             veImpression('Key'),
             veImpression('Expand'),
             veImpression('Value'),
@@ -134,10 +131,10 @@ export function veImpressionForElementsPanel(options?: {dockable?: boolean}) {
 export function veImpressionForDrawerToolbar(options?: {
   selectedPanel?: string,
 }) {
-  const closeablePanels = options?.selectedPanel ? [options?.selectedPanel] : [];
+  const panels = options?.selectedPanel ? [options?.selectedPanel] : [];
   return veImpression('Toolbar', 'drawer', [
     veImpressionForTabHeader('console'),
-    ...closeablePanels.map(panel => veImpressionForTabHeader(panel, {closable: true})),
+    ...panels.map(panel => veImpressionForTabHeader(panel)),
     veImpression('DropDown', 'more-tabs'),
     veImpression('Close'),
   ]);

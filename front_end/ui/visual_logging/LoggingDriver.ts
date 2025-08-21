@@ -153,7 +153,8 @@ export async function process(): Promise<void> {
     if (!loggingState.impressionLogged) {
       const overlap = visibleOverlap(element, viewportRectFor(element));
       const visibleSelectOption = element.tagName === 'OPTION' && loggingState.parent?.selectOpen;
-      const visible = overlap && (!parent || loggingState.parent?.impressionLogged);
+      const visible = overlap && element.checkVisibility({checkVisibilityCSS: true}) &&
+          (!parent || loggingState.parent?.impressionLogged);
       if (visible || visibleSelectOption) {
         if (overlap) {
           loggingState.size = overlap;

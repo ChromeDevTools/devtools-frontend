@@ -483,22 +483,24 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       return;
     }
 
-    const emptyWidget = new UI.EmptyWidget.EmptyWidget('', '');
+    let emptyWidget: UI.EmptyWidget.EmptyWidget;
     if (this.dataGrid.rootNode().children.length) {
-      emptyWidget.header = i18nString(UIStrings.noEventSelected);
-      emptyWidget.text = i18nString(UIStrings.selectAnEventToViewMetadata);
+      emptyWidget = new UI.EmptyWidget.EmptyWidget(
+          i18nString(UIStrings.noEventSelected), i18nString(UIStrings.selectAnEventToViewMetadata));
     } else if (this.recordButton.isToggled()) {
       // Inform users that we are recording/waiting for events.
       const featureName = BackgroundServiceView.getUIString(this.serviceName).toLowerCase();
-      emptyWidget.header = i18nString(UIStrings.recordingSActivity, {PH1: featureName});
-      emptyWidget.text = i18nString(UIStrings.devtoolsWillRecordAllSActivity, {PH1: featureName});
+      emptyWidget = new UI.EmptyWidget.EmptyWidget(
+          i18nString(UIStrings.recordingSActivity, {PH1: featureName}),
+          i18nString(UIStrings.devtoolsWillRecordAllSActivity, {PH1: featureName}));
     } else {
       const recordShortcuts =
           UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('background-service.toggle-recording')[0];
-      emptyWidget.header = i18nString(UIStrings.noRecording);
-      emptyWidget.text = i18nString(
-          UIStrings.startRecordingToDebug,
-          {PH1: i18nString(UIStrings.startRecordingEvents), PH2: recordShortcuts.title()});
+      emptyWidget = new UI.EmptyWidget.EmptyWidget(
+          i18nString(UIStrings.noRecording), i18nString(UIStrings.startRecordingToDebug, {
+            PH1: i18nString(UIStrings.startRecordingEvents),
+            PH2: recordShortcuts.title(),
+          }));
       emptyWidget.link = this.createLearnMoreLink();
 
       const button = UI.UIUtils.createTextButton(

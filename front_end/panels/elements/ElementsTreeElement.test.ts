@@ -7,6 +7,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, registerActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
@@ -221,5 +222,222 @@ describeWithMockConnection('ElementsTreeElement ', () => {
     assert.deepEqual(
         debugWithAiItem?.subItems?.map(item => item.label),
         ['Start a chat', 'Explain container queries', 'Explain container types', 'Explain container context']);
+  });
+});
+
+describeWithMockConnection('ElementsTreeElement highlighting', () => {
+  let domModel: SDK.DOMModel.DOMModel;
+  let treeOutline: Elements.ElementsTreeOutline.ElementsTreeOutline;
+  let containerNode: SDK.DOMModel.DOMNode;
+  let attrTestNode: SDK.DOMModel.DOMNode;
+  let childTestNode: SDK.DOMModel.DOMNode;
+  let textTestNode: SDK.DOMModel.DOMNode;
+  let attrTestTreeElement: Elements.ElementsTreeElement.ElementsTreeElement;
+  let childTestTreeElement: Elements.ElementsTreeElement.ElementsTreeElement;
+  let textTestTreeElement: Elements.ElementsTreeElement.ElementsTreeElement;
+  let nodeId = 0;
+
+  function createDOMNodePayload(name: string, attrs: Record<string, string> = {}): Protocol.DOM.Node {
+    const attrList: string[] = [];
+    for (const [key, value] of Object.entries(attrs)) {
+      attrList.push(key, value);
+    }
+    return {
+      nodeId: ++nodeId as Protocol.DOM.NodeId,
+      backendNodeId: ++nodeId as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: name.toUpperCase(),
+      localName: name,
+      nodeValue: '',
+      attributes: attrList,
+      childNodeCount: 0,
+    };
+  }
+
+  function createTextNodePayload(text: string): Protocol.DOM.Node {
+    return {
+      nodeId: ++nodeId as Protocol.DOM.NodeId,
+      backendNodeId: ++nodeId as Protocol.DOM.BackendNodeId,
+      nodeType: Node.TEXT_NODE,
+      nodeName: '#text',
+      localName: '',
+      nodeValue: text,
+      childNodeCount: 0,
+    };
+  }
+
+  beforeEach(async () => {
+    const target = createTarget();
+    domModel = target.model(SDK.DOMModel.DOMModel)!;
+
+    const containerPayload = createDOMNodePayload('div', {id: 'container'});
+    const attrTestPayload = createDOMNodePayload('div', {id: 'attrTest', attrFoo: 'foo'});
+    const childTestPayload = createDOMNodePayload('div', {id: 'childTest'});
+    const textTestPayload = createDOMNodePayload('div', {id: 'textTest'});
+
+    containerNode = SDK.DOMModel.DOMNode.create(domModel, null, false, containerPayload);
+    containerNode.setChildrenPayload([attrTestPayload, childTestPayload, textTestPayload]);
+
+    attrTestNode = containerNode.children()![0];
+    childTestNode = containerNode.children()![1];
+    textTestNode = containerNode.children()![2];
+
+    treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    treeOutline.wireToDOMModel(domModel);
+
+    const containerTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(containerNode);
+    attrTestTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(attrTestNode);
+    containerTreeElement.appendChild(attrTestTreeElement);
+    childTestTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(childTestNode);
+    containerTreeElement.appendChild(childTestTreeElement);
+    textTestTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(textTestNode);
+    containerTreeElement.appendChild(textTestTreeElement);
+    treeOutline.appendChild(containerTreeElement);
+
+    treeOutline.setVisible(true);
+    renderElementIntoDOM(treeOutline.element);
+    containerTreeElement.expand();
+  });
+
+  afterEach(() => {
+    treeOutline.removeChildren();
+    treeOutline.setVisible(false);
+  });
+
+  let stub: sinon.SinonStub<[], void>|undefined;
+  async function waitForHighlights(element: Elements.ElementsTreeElement.ElementsTreeElement) {
+    stub?.restore();
+    return await new Promise(resolve => {
+      stub = sinon.stub(treeOutline, 'updateModifiedNodes');
+      stub.callsFake(() => {
+        stub?.wrappedMethod.call(treeOutline);
+        resolve(element.listItemElement.querySelectorAll('.dom-update-highlight').length);
+      });
+    });
+  }
+
+  it('highlights attribute value change', async () => {
+    const highlights = waitForHighlights(attrTestTreeElement);
+    domModel.attributeModified(attrTestNode.id, 'attrFoo', 'bar');
+    assert.strictEqual(await highlights, 1);
+  });
+
+  it('highlights attribute set to empty', async () => {
+    const highlights = waitForHighlights(attrTestTreeElement);
+    domModel.attributeModified(attrTestNode.id, 'attrFoo', '');
+    assert.strictEqual(await highlights, 1);
+  });
+
+  it('highlights new attribute', async () => {
+    const highlights = waitForHighlights(attrTestTreeElement);
+    domModel.attributeModified(attrTestNode.id, 'attrBar', 'bar');
+    assert.strictEqual(await highlights, 1);
+  });
+
+  it('highlights attribute removal', async () => {
+    const highlights = waitForHighlights(attrTestTreeElement);
+    domModel.attributeRemoved(attrTestNode.id, 'attrFoo');
+    assert.strictEqual(await highlights, 1);
+  });
+
+  it('highlights appending child to an empty node', async () => {
+    const highlights = waitForHighlights(childTestTreeElement);
+    const child1Payload = createDOMNodePayload('span', {id: 'child1'});
+    const child1Node = SDK.DOMModel.DOMNode.create(domModel, childTestNode.ownerDocument, false, child1Payload);
+    child1Node.parentNode = childTestNode;
+    domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, child1Node);
+    assert.strictEqual(await highlights, 1);
+  });
+
+  it('highlights appending child to an expanded node', async () => {
+    childTestTreeElement.expand();
+    const child1Payload = createDOMNodePayload('span', {id: 'child1'});
+    const child1Node = SDK.DOMModel.DOMNode.create(domModel, childTestNode.ownerDocument, false, child1Payload);
+    child1Node.parentNode = childTestNode;
+    childTestNode.setChildrenPayload([child1Payload]);
+    const child1TreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(child1Node);
+    childTestTreeElement.appendChild(child1TreeElement);
+
+    const highlights = waitForHighlights(childTestTreeElement);
+    const child2Payload = createDOMNodePayload('span', {id: 'child2'});
+    const child2Node = SDK.DOMModel.DOMNode.create(domModel, childTestNode.ownerDocument, false, child2Payload);
+    child2Node.parentNode = childTestNode;
+    domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, child2Node);
+    assert.strictEqual(await highlights, 1);
+  });
+
+  it('highlights child removal', async () => {
+    const child1Payload = createDOMNodePayload('span', {id: 'child1'});
+    const child1Node = SDK.DOMModel.DOMNode.create(domModel, childTestNode.ownerDocument, false, child1Payload);
+    child1Node.parentNode = childTestNode;
+    childTestNode.setChildrenPayload([child1Payload]);
+    const child1TreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(child1Node);
+    childTestTreeElement.appendChild(child1TreeElement);
+
+    const highlights = waitForHighlights(childTestTreeElement);
+    domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeRemoved, {node: child1Node, parent: childTestNode});
+    assert.strictEqual(await highlights, 1);
+  });
+
+  it('highlights setting text content', async () => {
+    const highlights = waitForHighlights(textTestTreeElement);
+    const textNodePayload = createTextNodePayload('Text');
+    const textNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, textNodePayload);
+    textNode.parentNode = textTestNode;
+    domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, textNode);
+    assert.strictEqual(await highlights, 1);
+  });
+
+  it('highlights changing text node content', async () => {
+    const textNodePayload = createTextNodePayload('Text');
+    const textNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, textNodePayload);
+    textTestNode.setChildrenPayload([textNodePayload]);
+    textNode.parentNode = textTestNode;
+    const textNodeTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(textNode);
+    textTestTreeElement.appendChild(textNodeTreeElement);
+
+    const highlights = waitForHighlights(textTestTreeElement);
+    domModel.characterDataModified(textNode.id, 'Changed');
+    assert.strictEqual(await highlights, 2);
+  });
+
+  it('highlights removing a text node', async () => {
+    const textNodePayload = createTextNodePayload('Text');
+    const textNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, textNodePayload);
+    textNode.parentNode = textTestNode;
+    textTestNode.setChildrenPayload([textNodePayload]);
+    const textNodeTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(textNode);
+    textTestTreeElement.appendChild(textNodeTreeElement);
+
+    const highlights = waitForHighlights(textTestTreeElement);
+    domModel.childNodeRemoved(textTestNode.id, textNode.id);
+    assert.strictEqual(await highlights, 1);
+  });
+
+  it('highlights clearing text node content', async () => {
+    const textNodePayload = createTextNodePayload('Text');
+    const textNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, textNodePayload);
+    textTestNode.setChildrenPayload([textNodePayload]);
+    textNode.parentNode = textTestNode;
+    const textNodeTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(textNode);
+    textTestTreeElement.appendChild(textNodeTreeElement);
+
+    const highlights = waitForHighlights(textTestTreeElement);
+    domModel.characterDataModified(textNode.id, '');
+    assert.strictEqual(await highlights, 2);
+  });
+
+  it('does not highlight when panel is hidden', async () => {
+    treeOutline.setVisible(false);
+    attrTestNode.setAttribute('attrFoo', 'bar');
+    let highlights = waitForHighlights(attrTestTreeElement);
+    domModel.dispatchEventToListeners(SDK.DOMModel.Events.AttrModified, {node: attrTestNode, name: 'attrFoo'});
+    assert.strictEqual(await highlights, 0);
+
+    treeOutline.setVisible(true);
+    highlights = waitForHighlights(attrTestTreeElement);
+    attrTestNode.setAttribute('attrFoo', 'baz');
+    domModel.dispatchEventToListeners(SDK.DOMModel.Events.AttrModified, {node: attrTestNode, name: 'attrFoo'});
+    assert.strictEqual(await highlights, 1);
   });
 });

@@ -1511,7 +1511,11 @@ export class ElementsTreeOutline extends
     this.updateModifiedNodesTimeout = window.setTimeout(this.updateModifiedNodes.bind(this), 50);
   }
 
-  private updateModifiedNodes(): void {
+  /**
+   * TODO: this is made public for unit tests until the ElementsTreeOutline is
+   * migrated into DOMTreeWidget and highlights are declarative.
+   */
+  updateModifiedNodes(): void {
     if (this.updateModifiedNodesTimeout) {
       clearTimeout(this.updateModifiedNodesTimeout);
       delete this.updateModifiedNodesTimeout;

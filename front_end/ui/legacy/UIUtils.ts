@@ -123,6 +123,10 @@ const UIStrings = {
    * @description Text for the new badge appearing next to some menu items
    */
   new: 'NEW',
+  /**
+   * @description Aria label for the new badge appearing next to some menu items
+   */
+  newFeature: 'This is a new feature',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/UIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -2146,6 +2150,7 @@ export function maybeCreateNewBadge(promotionId: string): HTMLDivElement|undefin
     const badge = document.createElement('div');
     badge.className = 'new-badge';
     badge.textContent = i18nString(UIStrings.new);
+    badge.ariaLabel = i18nString(UIStrings.newFeature);
     badge.setAttribute('jslog', `${VisualLogging.badge('new-badge')}`);
     return badge;
   }

@@ -3,13 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
-import type * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import type * as Workspace from '../workspace/workspace.js';
-
-export interface Factory {
-  createFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, target: SDK.Target.Target): Promise<StackTrace>;
-}
 
 export interface StackTrace extends Common.EventTarget.EventTarget<EventTypes> {
   readonly syncFragment: Fragment;

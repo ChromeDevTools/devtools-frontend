@@ -10,8 +10,6 @@ devtools_module("stack_trace") {
 
   deps = [
     "../../core/common:bundle",
-    "../../core/sdk:bundle",
-    "../../generated",
     "../workspace:bundle",
   ]
 }
@@ -57,12 +55,15 @@ ts_library("unittests") {
 
   sources = [
     "StackTraceImpl.test.ts",
+    "StackTraceModel.test.ts",
     "Trie.test.ts",
   ]
 
   deps = [
     ":bundle",
     ":impl",
+    "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
   ]
 }

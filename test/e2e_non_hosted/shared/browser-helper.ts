@@ -114,6 +114,7 @@ export class Launcher {
       dumpio: !headless || Boolean(process.env['LUCI_CONTEXT']),
       protocolTimeout,
       networkEnabled: false,
+      pipe: true,
       ignoreDefaultArgs: [
         '--disable-crash-reporter',
         '--disable-breakpad',

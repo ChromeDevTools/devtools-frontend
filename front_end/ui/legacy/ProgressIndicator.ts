@@ -28,80 +28,86 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no-imperative-dom-api */
-
 import type * as Common from '../../core/common/common.js';
 
 import progressIndicatorStyles from './progressIndicator.css.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 
-export class ProgressIndicator implements Common.Progress.Progress {
-  element: HTMLDivElement;
-  private readonly shadowRoot: ShadowRoot;
-  private readonly contentElement: Element;
-  private labelElement: Element;
-  private progressElement: HTMLProgressElement;
-  private readonly stopButton?: Element;
-  private isCanceledInternal: boolean;
-  private worked: number;
-  private isDone?: boolean;
+export class ProgressIndicator extends HTMLElement implements Common.Progress.Progress {
+  readonly #shadowRoot: ShadowRoot;
+  readonly #contentElement: Element;
+  #labelElement: Element;
+  #progressElement: HTMLProgressElement;
+  readonly #stopButton?: Element;
+  #isCanceled = false;
+  #worked: number;
+  #isDone = false;
 
-  constructor(options = {showStopButton: true}) {
-    this.element = document.createElement('div');
-    this.element.classList.add('progress-indicator');
-    this.shadowRoot = createShadowRootWithCoreStyles(this.element, {cssFile: progressIndicatorStyles});
-    this.contentElement = this.shadowRoot.createChild('div', 'progress-indicator-shadow-container');
+  constructor() {
+    super();
+    this.#shadowRoot = createShadowRootWithCoreStyles(this, {cssFile: progressIndicatorStyles});
+    this.#contentElement = this.#shadowRoot.createChild('div', 'progress-indicator-shadow-container');
 
-    this.labelElement = this.contentElement.createChild('div', 'title');
-    this.progressElement = this.contentElement.createChild('progress');
-    this.progressElement.value = 0;
+    this.#labelElement = this.#contentElement.createChild('div', 'title');
+    this.#progressElement = this.#contentElement.createChild('progress') as HTMLProgressElement;
+    this.#progressElement.value = 0;
 
-    if (options.showStopButton) {
-      this.stopButton = this.contentElement.createChild('button', 'progress-indicator-shadow-stop-button');
-      this.stopButton.addEventListener('click', this.cancel.bind(this));
+    // By default we show the stop button, but this can be controlled by
+    // using the 'no-stop-button' attribute on the element.
+    if (!this.hasAttribute('no-stop-button')) {
+      this.#stopButton = this.#contentElement.createChild('button', 'progress-indicator-shadow-stop-button');
+      this.#stopButton.addEventListener('click', this.cancel.bind(this));
     }
 
-    this.isCanceledInternal = false;
-    this.worked = 0;
+    this.#isCanceled = false;
+    this.#worked = 0;
   }
 
-  show(parent: Element): void {
-    parent.appendChild(this.element);
+  connectedCallback(): void {
+    this.classList.add('progress-indicator');
   }
 
   done(): void {
-    if (this.isDone) {
+    if (this.#isDone) {
       return;
     }
-    this.isDone = true;
-    this.element.remove();
+    this.#isDone = true;
+    this.remove();
   }
 
   cancel(): void {
-    this.isCanceledInternal = true;
+    this.#isCanceled = true;
   }
 
   isCanceled(): boolean {
-    return this.isCanceledInternal;
+    return this.#isCanceled;
   }
 
   setTitle(title: string): void {
-    this.labelElement.textContent = title;
+    this.#labelElement.textContent = title;
   }
 
   setTotalWork(totalWork: number): void {
-    this.progressElement.max = totalWork;
+    this.#progressElement.max = totalWork;
   }
 
   setWorked(worked: number, title?: string): void {
-    this.worked = worked;
-    this.progressElement.value = worked;
+    this.#worked = worked;
+    this.#progressElement.value = worked;
     if (title) {
       this.setTitle(title);
     }
   }
 
   incrementWorked(worked?: number): void {
-    this.setWorked(this.worked + (worked || 1));
+    this.setWorked(this.#worked + (worked || 1));
+  }
+}
+
+customElements.define('devtools-progress', ProgressIndicator);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'devtools-progress': ProgressIndicator;
   }
 }

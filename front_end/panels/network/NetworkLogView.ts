@@ -1972,8 +1972,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       return;
     }
 
-    const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
-    this.progressBarContainer.appendChild(progressIndicator.element);
+    const progressIndicator = this.progressBarContainer.createChild('devtools-progress');
     await HAR.Writer.Writer.write(stream, this.harRequests(), options, progressIndicator);
     progressIndicator.done();
     void stream.close();

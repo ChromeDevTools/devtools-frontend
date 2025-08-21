@@ -551,10 +551,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   protected async setContentDataOrError(contentDataPromise: Promise<TextUtils.ContentData.ContentDataOrError>):
       Promise<void> {
-    const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
+    const progressIndicator = document.createElement('devtools-progress');
     progressIndicator.setTitle(i18nString(UIStrings.loading));
     progressIndicator.setTotalWork(100);
-    this.progressToolbarItem.element.appendChild(progressIndicator.element);
+    this.progressToolbarItem.element.appendChild(progressIndicator);
 
     progressIndicator.setWorked(1);
     const contentData = await contentDataPromise;

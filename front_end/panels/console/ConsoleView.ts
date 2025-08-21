@@ -1215,7 +1215,7 @@ export class ConsoleView extends UI.Widget.VBox implements
         Platform.DevToolsPath.RawPathString;
     const stream = new Bindings.FileUtils.FileOutputStream();
 
-    const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
+    const progressIndicator = document.createElement('devtools-progress');
     progressIndicator.setTitle(i18nString(UIStrings.writingFile));
     progressIndicator.setTotalWork(this.itemCount());
 
@@ -1224,7 +1224,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     if (!await stream.open(filename)) {
       return;
     }
-    this.progressToolbarItem.element.appendChild(progressIndicator.element);
+    this.progressToolbarItem.element.appendChild(progressIndicator);
 
     let messageIndex = 0;
     while (messageIndex < this.itemCount() && !progressIndicator.isCanceled()) {
@@ -1518,10 +1518,10 @@ export class ConsoleView extends UI.Widget.VBox implements
       this.searchShouldJumpBackwards = Boolean(jumpBackwards);
     }
 
-    this.searchProgressIndicator = new UI.ProgressIndicator.ProgressIndicator();
+    this.searchProgressIndicator = document.createElement('devtools-progress');
     this.searchProgressIndicator.setTitle(i18nString(UIStrings.searching));
     this.searchProgressIndicator.setTotalWork(this.visibleViewMessages.length);
-    this.progressToolbarItem.element.appendChild(this.searchProgressIndicator.element);
+    this.progressToolbarItem.element.appendChild(this.searchProgressIndicator);
 
     this.innerSearch(0);
   }

@@ -258,8 +258,8 @@ export class CPUThrottlingCard {
 
     this.textEl = this.calibrateEl.createChild('div', 'text-container');
 
-    this.progress = new UI.ProgressIndicator.ProgressIndicator({showStopButton: false});
-    this.calibrateEl.append(this.progress.element);
+    this.progress = this.calibrateEl.createChild('devtools-progress');
+    this.progress.setAttribute('no-stop-button', '');
 
     this.updateState();
   }
@@ -288,7 +288,7 @@ export class CPUThrottlingCard {
     this.calibrateButton.style.display = 'none';
     this.textEl.style.display = 'none';
     this.cancelButton.style.display = 'none';
-    this.progress.element.style.display = 'none';
+    this.progress.style.display = 'none';
 
     if (this.state === 'cta') {
       this.calibrateButton.style.display = '';
@@ -314,7 +314,7 @@ export class CPUThrottlingCard {
       this.textEl.append(this.createTextWithIcon(i18nString(UIStrings.calibrationConfirmationPrompt), 'info'));
     } else if (this.state === 'calibrating') {
       this.cancelButton.style.display = '';
-      this.progress.element.style.display = '';
+      this.progress.style.display = '';
     }
 
     const resultToString = (result: number|SDK.CPUThrottlingManager.CalibrationError|undefined): string => {

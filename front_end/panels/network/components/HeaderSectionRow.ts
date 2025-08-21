@@ -180,12 +180,7 @@ export class HeaderSectionRow extends HTMLElement {
             Lit.nothing
           }
           ${isHeaderNameEditable && !this.#isValidHeaderName ?
-            html`<devtools-icon class="inline-icon disallowed-characters" title=${UIStrings.headerNamesOnlyLetters} .data=${{
-              iconName: 'cross-circle-filled',
-              width: '16px',
-              height: '16px',
-              color: 'var(--icon-error)',
-            }}>
+            html`<devtools-icon class="inline-icon disallowed-characters medium" title=${UIStrings.headerNamesOnlyLetters} name='cross-circle-filled'>
             </devtools-icon>` : Lit.nothing
           }
           ${isHeaderNameEditable && !this.#header.isDeleted ?

@@ -1506,14 +1506,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.messageIcon = null;
     }
 
-    let color = '';
+    const color = '';
     let iconName = '';
     let accessibleName = '';
     if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
       iconName = 'warning-filled';
       accessibleName = i18nString(UIStrings.warning);
     } else if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
-      color = 'var(--icon-error)';
       iconName = 'cross-circle-filled';
       accessibleName = i18nString(UIStrings.error);
     } else if (this.message.originatesFromLogpoint) {

@@ -85,7 +85,7 @@ describeWithEnvironment('panels/utils', () => {
       return container.firstElementChild;
     }
 
-    it('creates an error red icon for request with status code 404', async () => {
+    it('creates an error icon for request with status code 404', async () => {
       const request = SDK.NetworkRequest.NetworkRequest.create(
           'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
       request.statusCode = 404;
@@ -93,9 +93,6 @@ describeWithEnvironment('panels/utils', () => {
       const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('cross-circle-filled', iconImage);
-
-      const backgroundColorOfIcon = iconElement.style.color.toString();
-      assert.strictEqual(backgroundColorOfIcon, 'var(--icon-error)');
     });
 
     it('show document icon', async () => {

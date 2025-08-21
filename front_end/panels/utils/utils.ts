@@ -70,19 +70,16 @@ export class PanelUtils {
 
     if (PanelUtils.isFailedNetworkRequest(request)) {
       let iconName: string;
-      let color: string;
       // Failed prefetch network requests are displayed as warnings instead of errors.
       if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch) {
         iconName = 'warning-filled';
-        color = 'var(--icon-warning)';
       } else {
         iconName = 'cross-circle-filled';
-        color = 'var(--icon-error)';
       }
 
       // clang-format off
       return html`<devtools-icon
-          class="icon" name=${iconName} title=${type.title()} style=${styleMap({color})}>
+          class="icon" name=${iconName} title=${type.title()}>
         </devtools-icon>`;
       // clang-format on
     }

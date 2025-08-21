@@ -98,7 +98,7 @@ describeWithEnvironment('NetworkLogView', () => {
     assert.isNull(marker);
   });
 
-  it('adds an error red icon to the left of the failed requests', async () => {
+  it('adds an error icon to the left of the failed requests', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 404;
@@ -111,9 +111,6 @@ describeWithEnvironment('NetworkLogView', () => {
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('cross-circle-filled', iconImage);
-
-    const backgroundColorOfIcon = iconElement.style.color.toString();
-    assert.strictEqual(backgroundColorOfIcon, 'var(--icon-error)');
   });
 
   it('show document icon', async () => {
@@ -475,7 +472,5 @@ describeWithEnvironment('NetworkLogView', () => {
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('warning-filled', iconImage);
-    const backgroundColorOfIcon = iconElement.style.color.toString();
-    assert.strictEqual(backgroundColorOfIcon, 'var(--icon-warning)');
   });
 });

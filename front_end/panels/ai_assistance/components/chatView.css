@@ -859,10 +859,6 @@ main {
     align-items: center;
     gap: var(--sys-size-3);
     color: var(--sys-color-error);
-
-    devtools-icon {
-      color: var(--sys-color-error);
-    }
   }
 
   .footer {

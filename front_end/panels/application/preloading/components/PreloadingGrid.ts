@@ -110,7 +110,6 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
                         name=${hasWarning ? 'warning-filled' : 'cross-circle-filled'}
                         class='medium'
                         style=${styleMap({
-                          color: hasWarning ? 'var(--sys-color-warning)' : 'var(--sys-color-error)',
                           'vertical-align': 'sub',
                         })}
                       ></devtools-icon>` : ''}

@@ -487,11 +487,11 @@ export class ElementsTreeOutline extends
                     // This shouldn't happen, but add this if check to pass ts check.
                     return nothing;
                   }
-                  const issueKindIconData = IssueCounter.IssueCounter.getIssueKindIconData(issue.getKind());
+                  const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
                   const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
                   return html`
                     <div class="squiggles-content-item">
-                    <devtools-icon .data=${issueKindIconData} @click=${openIssueEvent}></devtools-icon>
+                    <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
                     <x-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</x-link>
                     <span>${elementIssueDetails.tooltip}</span>
                     </div>`;})}

@@ -12,7 +12,7 @@ import iconStyles from './icon.css.js';
  */
 export interface IconWithName {
   iconName: string;
-  color: string;
+  color?: string;
   width?: string;
   height?: string;
 }
@@ -99,7 +99,9 @@ export class Icon extends HTMLElement {
    */
   set data(data: IconData) {
     const {color, width, height} = data;
-    this.style.color = color;
+    if (color) {
+      this.style.color = color;
+    }
     if (width) {
       this.style.width = width;
     }

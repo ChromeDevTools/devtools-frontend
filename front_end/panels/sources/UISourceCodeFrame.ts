@@ -573,7 +573,7 @@ function messageLevelComparator(a: RowMessage, b: RowMessage): number {
 
 function getIconDataForMessage(message: RowMessage): IconButton.Icon.IconData {
   if (message.origin instanceof IssuesManager.SourceFrameIssuesManager.IssueMessage) {
-    return IssueCounter.IssueCounter.getIssueKindIconData(message.origin.getIssueKind());
+    return {iconName: IssueCounter.IssueCounter.getIssueKindIconName(message.origin.getIssueKind())};
   }
   return getIconDataForLevel(message.level());
 }

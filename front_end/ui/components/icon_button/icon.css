@@ -44,12 +44,18 @@
   display: none;
 }
 
-:host([name="warning-filled"]) {
+:host([name="warning-filled"]),
+:host([name="issue-exclamation-filled"]) {
   color: var(--icon-warning);
 }
 
-:host([name="cross-circle-filled"]) {
+:host([name="cross-circle-filled"]),
+:host([name="issue-cross-filled"]) {
   color: var(--icon-error);
+}
+
+:host([name="issue-text-filled"]) {
+  color: var(--icon-info);
 }
 
 :host([name="triangle-up"]),

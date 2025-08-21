@@ -133,6 +133,7 @@ let BrowsingContext = (() => {
         parent;
         userContext;
         originalOpener;
+        #emulationState = { javaScriptEnabled: true };
         constructor(context, parent, id, url, originalOpener) {
             super();
             this.#url = url;
@@ -535,6 +536,17 @@ let BrowsingContext = (() => {
                 startNodes: startNodes.length ? startNodes : undefined,
             });
             return result.result.nodes;
+        }
+        async setJavaScriptEnabled(enabled) {
+            await this.userContext.browser.session.send('emulation.setScriptingEnabled', {
+                // Enabled `null` means `default`, `false` means `disabled`.
+                enabled: enabled ? null : false,
+                contexts: [this.id],
+            });
+            this.#emulationState.javaScriptEnabled = enabled;
+        }
+        isJavaScriptEnabled() {
+            return this.#emulationState.javaScriptEnabled;
         }
     };
 })();

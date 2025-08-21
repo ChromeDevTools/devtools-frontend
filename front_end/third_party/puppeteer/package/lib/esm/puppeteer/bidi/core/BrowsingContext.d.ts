@@ -134,5 +134,7 @@ export declare class BrowsingContext extends EventEmitter<{
     [disposeSymbol](): void;
     deleteCookie(...cookieFilters: Bidi.Storage.CookieFilter[]): Promise<void>;
     locateNodes(locator: Bidi.BrowsingContext.Locator, startNodes: [Bidi.Script.SharedReference, ...Bidi.Script.SharedReference[]]): Promise<Bidi.Script.NodeRemoteValue[]>;
+    setJavaScriptEnabled(enabled: boolean): Promise<void>;
+    isJavaScriptEnabled(): boolean;
 }
 //# sourceMappingURL=BrowsingContext.d.ts.map

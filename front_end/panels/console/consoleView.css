@@ -330,11 +330,12 @@
 .console-view-object-properties-section {
   padding: 0;
   position: relative;
-  vertical-align: baseline;
+  vertical-align: top;
   color: inherit;
   display: inline-block;
   overflow-wrap: break-word;
   max-width: 100%;
+  margin-top: -1.5px;
 }
 
 .info-note {

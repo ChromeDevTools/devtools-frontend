@@ -74,10 +74,10 @@ const UIStrings = {
    */
   adorner: 'Adorner',
   /**
-   * @description Header for the "Sync" section in the settings UI. The "Sync"
-   * section allows users to configure which DevTools data is synced via Chrome Sync.
+   * @description Header for the "Account" section in the settings UI. The "Account"
+   * section allows users see their signed in account and configure which DevTools data is synced via Chrome Sync.
    */
-  sync: 'Sync',
+  account: 'Account',
   /**
    * @description Text for the privacy section of the page.
    */
@@ -148,7 +148,7 @@ export const enum SettingCategory {
   MEMORY = 'MEMORY',
   EXTENSIONS = 'EXTENSIONS',
   ADORNER = 'ADORNER',
-  SYNC = 'SYNC',
+  ACCOUNT = 'ACCOUNT',
   PRIVACY = 'PRIVACY',
 }
 
@@ -190,8 +190,8 @@ export function getLocalizedSettingsCategory(category: SettingCategory): Platfor
       return i18nString(UIStrings.adorner);
     case SettingCategory.NONE:
       return i18n.i18n.lockedString('');
-    case SettingCategory.SYNC:
-      return i18nString(UIStrings.sync);
+    case SettingCategory.ACCOUNT:
+      return i18nString(UIStrings.account);
     case SettingCategory.PRIVACY:
       return i18nString(UIStrings.privacy);
   }

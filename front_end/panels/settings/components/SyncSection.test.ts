@@ -20,20 +20,32 @@ async function renderSyncSection(data: PanelComponents.SyncSection.SyncSectionDa
 }
 
 describeWithLocale('SyncSection', () => {
-  it('shows a warning when sync is not active', async () => {
+  it('shows a warning tooltip when sync is not active and the user is signed in', async () => {
     const syncSetting = createFakeSetting<boolean>('setting', true);
-    const {shadowRoot} = await renderSyncSection({syncInfo: {isSyncActive: false}, syncSetting});
-    const warning = shadowRoot.querySelector('.warning');
+    const {shadowRoot} = await renderSyncSection({
+      syncInfo: {
+        isSyncActive: false,
+        accountEmail: 'user@gmail.com',
+      },
+      syncSetting
+    });
+    const warning = shadowRoot.querySelector('devtools-tooltip');
     assert.instanceOf(warning, HTMLElement);
     assert.include(warning.innerText, 'To turn this setting on');
   });
 
-  it('shows a warning when sync is active but preferences bucket is not synced', async () => {
+  it('shows a warning tooltip when sync is active but preferences bucket is not synced', async () => {
     const syncSetting = createFakeSetting<boolean>('setting', true);
-    const {shadowRoot} =
-        await renderSyncSection({syncInfo: {isSyncActive: true, arePreferencesSynced: false}, syncSetting});
+    const {shadowRoot} = await renderSyncSection({
+      syncInfo: {
+        isSyncActive: true,
+        arePreferencesSynced: false,
+        accountEmail: 'user@gmail.com',
+      },
+      syncSetting
+    });
 
-    const warning = shadowRoot.querySelector('.warning');
+    const warning = shadowRoot.querySelector('devtools-tooltip');
     assert.instanceOf(warning, HTMLElement);
 
     assert.include(warning.innerText, 'To turn this setting on');
@@ -41,7 +53,13 @@ describeWithLocale('SyncSection', () => {
 
   it('disables the checkbox when sync is not active', async () => {
     const syncSetting = createFakeSetting<boolean>('setting', true);
-    const {shadowRoot} = await renderSyncSection({syncInfo: {isSyncActive: false}, syncSetting});
+    const {shadowRoot} = await renderSyncSection({
+      syncInfo: {
+        isSyncActive: false,
+        accountEmail: 'user@gmail.com',
+      },
+      syncSetting
+    });
 
     const settingCheckbox = shadowRoot.querySelector('setting-checkbox');
     assert.instanceOf(settingCheckbox, SettingComponents.SettingCheckbox.SettingCheckbox);
@@ -53,7 +71,7 @@ describeWithLocale('SyncSection', () => {
     assert.isTrue(checkbox.disabled);
   });
 
-  it('shows the avatar and email of the logged in user when sync is active', async () => {
+  it('shows the avatar and email of the logged in user', async () => {
     const syncSetting = createFakeSetting<boolean>('setting', true);
     const {shadowRoot} = await renderSyncSection({
       syncInfo: {
@@ -72,5 +90,21 @@ describeWithLocale('SyncSection', () => {
     assert.instanceOf(email, HTMLElement);
 
     assert.include(email.innerText, 'user@gmail.com');
+  });
+
+  it('shows not signed in if the user is not logged in', async () => {
+    const syncSetting = createFakeSetting<boolean>('setting', true);
+    const {shadowRoot} = await renderSyncSection({
+      syncInfo: {
+        isSyncActive: false,
+        arePreferencesSynced: false,
+      },
+      syncSetting,
+    });
+
+    const email = shadowRoot.querySelector('.not-signed-in');
+    assert.instanceOf(email, HTMLElement);
+
+    assert.include(email.innerText, 'not signed into Chrome');
   });
 });

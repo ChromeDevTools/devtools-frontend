@@ -781,7 +781,7 @@ function createOptionForLocale(localeString: string): Common.Settings.SettingExt
 }
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.SYNC,
+  category: Common.Settings.SettingCategory.ACCOUNT,
   // This name must be kept in sync with DevToolsSettings::kSyncDevToolsPreferencesFrontendName.
   settingName: 'sync-preferences',
   settingType: Common.Settings.SettingType.BOOLEAN,

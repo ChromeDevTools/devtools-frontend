@@ -18,6 +18,7 @@ import {
 // The default feature set.
 const DEFAULT_FEATURE_SET = new FeatureSet();
 process.platform === 'darwin' && DEFAULT_FEATURE_SET.disable('MediaRouter');
+DEFAULT_FEATURE_SET.enable('DevToolsAiCodeCompletion');
 DEFAULT_FEATURE_SET.enable('DevToolsAiAssistancePerformanceAgent', {insights_enabled: true});
 DEFAULT_FEATURE_SET.enable('DevToolsAiGeneratedTimelineLabels');
 DEFAULT_FEATURE_SET.enable('DevToolsCssValueTracing');

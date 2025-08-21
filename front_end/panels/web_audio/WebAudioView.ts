@@ -100,6 +100,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 
   // clang-format off
   render(html`
+    <style>${webAudioStyles}</style>
     <div class="web-audio-toolbar-container vbox" role="toolbar">
       <devtools-toolbar class="web-audio-toolbar" role="presentation"
           jslog=${VisualLogging.toolbar()}>
@@ -184,9 +185,6 @@ export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SD
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
     super({jslog: `${VisualLogging.panel('web-audio').track({resize: true})}`, useShadowDom: true});
     this.view = view;
-    this.registerRequiredCSS(webAudioStyles);
-
-    // Creates the toolbar.
 
     this.contextSelectorItems = new UI.ListModel.ListModel();
     this.contextSelectorItems.addEventListener(UI.ListModel.Events.ITEMS_REPLACED, this.requestUpdate, this);

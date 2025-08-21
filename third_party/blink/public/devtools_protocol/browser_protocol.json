@@ -14435,6 +14435,21 @@
                             "type": "object"
                         }
                     ]
+                },
+                {
+                    "id": "Player",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "playerId",
+                            "$ref": "PlayerId"
+                        },
+                        {
+                            "name": "domNodeId",
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -14507,15 +14522,12 @@
                     ]
                 },
                 {
-                    "name": "playersCreated",
-                    "description": "Called whenever a player is created, or when a new agent joins and receives\na list of active players. If an agent is restored, it will receive the full\nlist of player ids and all events again.",
+                    "name": "playerCreated",
+                    "description": "Called whenever a player is created, or when a new agent joins and receives\na list of active players. If an agent is restored, it will receive one\nevent for each active player.",
                     "parameters": [
                         {
-                            "name": "players",
-                            "type": "array",
-                            "items": {
-                                "$ref": "PlayerId"
-                            }
+                            "name": "player",
+                            "$ref": "Player"
                         }
                     ]
                 }

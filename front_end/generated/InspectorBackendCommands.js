@@ -736,7 +736,7 @@ inspectorBackend.registerEvent("Media.playerPropertiesChanged", ["playerId", "pr
 inspectorBackend.registerEvent("Media.playerEventsAdded", ["playerId", "events"]);
 inspectorBackend.registerEvent("Media.playerMessagesLogged", ["playerId", "messages"]);
 inspectorBackend.registerEvent("Media.playerErrorsRaised", ["playerId", "errors"]);
-inspectorBackend.registerEvent("Media.playersCreated", ["players"]);
+inspectorBackend.registerEvent("Media.playerCreated", ["player"]);
 inspectorBackend.registerCommand("Media.enable", [], [], "Enables the Media domain");
 inspectorBackend.registerCommand("Media.disable", [], [], "Disables the Media domain.");
 inspectorBackend.registerType("Media.PlayerMessage", [{"name": "level", "type": "string", "optional": false, "description": "Keep in sync with MediaLogMessageLevel We are currently keeping the message level 'error' separate from the PlayerError type because right now they represent different things, this one being a DVLOG(ERROR) style log message that gets printed based on what log level is selected in the UI, and the other is a representation of a media::PipelineStatus object. Soon however we're going to be moving away from using PipelineStatus for errors and introducing a new error type which should hopefully let us integrate the error log level into the PlayerError type.", "typeRef": null}, {"name": "message", "type": "string", "optional": false, "description": "", "typeRef": null}]);
@@ -744,6 +744,7 @@ inspectorBackend.registerType("Media.PlayerProperty", [{"name": "name", "type": 
 inspectorBackend.registerType("Media.PlayerEvent", [{"name": "timestamp", "type": "number", "optional": false, "description": "", "typeRef": "Media.Timestamp"}, {"name": "value", "type": "string", "optional": false, "description": "", "typeRef": null}]);
 inspectorBackend.registerType("Media.PlayerErrorSourceLocation", [{"name": "file", "type": "string", "optional": false, "description": "", "typeRef": null}, {"name": "line", "type": "number", "optional": false, "description": "", "typeRef": null}]);
 inspectorBackend.registerType("Media.PlayerError", [{"name": "errorType", "type": "string", "optional": false, "description": "", "typeRef": null}, {"name": "code", "type": "number", "optional": false, "description": "Code is the numeric enum entry for a specific set of error codes, such as PipelineStatusCodes in media/base/pipeline_status.h", "typeRef": null}, {"name": "stack", "type": "array", "optional": false, "description": "A trace of where this error was caused / where it passed through.", "typeRef": "Media.PlayerErrorSourceLocation"}, {"name": "cause", "type": "array", "optional": false, "description": "Errors potentially have a root cause error, ie, a DecoderError might be caused by an WindowsError", "typeRef": "Media.PlayerError"}, {"name": "data", "type": "object", "optional": false, "description": "Extra data attached to an error, such as an HRESULT, Video Codec, etc.", "typeRef": null}]);
+inspectorBackend.registerType("Media.Player", [{"name": "playerId", "type": "string", "optional": false, "description": "", "typeRef": "Media.PlayerId"}, {"name": "domNodeId", "type": "number", "optional": true, "description": "", "typeRef": "DOM.BackendNodeId"}]);
 
 // Memory.
 inspectorBackend.registerEnum("Memory.PressureLevel", {Moderate: "moderate", Critical: "critical"});

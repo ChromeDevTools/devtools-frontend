@@ -9418,6 +9418,11 @@ export namespace Media {
     data: any;
   }
 
+  export interface Player {
+    playerId: PlayerId;
+    domNodeId?: DOM.BackendNodeId;
+  }
+
   /**
    * This can be called multiple times, and can be used to set / override /
    * remove player properties. A null propValue indicates removal.
@@ -9454,11 +9459,11 @@ export namespace Media {
 
   /**
    * Called whenever a player is created, or when a new agent joins and receives
-   * a list of active players. If an agent is restored, it will receive the full
-   * list of player ids and all events again.
+   * a list of active players. If an agent is restored, it will receive one
+   * event for each active player.
    */
-  export interface PlayersCreatedEvent {
-    players: PlayerId[];
+  export interface PlayerCreatedEvent {
+    player: Player;
   }
 }
 

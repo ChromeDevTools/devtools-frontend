@@ -368,12 +368,9 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     }
 
     const memoryIcon = new IconButton.Icon.Icon();
-    memoryIcon.data = {
-      iconName: 'memory',
-      color: 'var(--icon-default)',
-      width: '16px',
-      height: '13px',
-    };
+    memoryIcon.name = 'memory';
+    memoryIcon.style.width = 'var(--sys-size-8)';
+    memoryIcon.style.height = '13px';
     memoryIcon.addEventListener('click', event => {
       event.consume();
       void Common.Revealer.reveal(new SDK.RemoteObject.LinearMemoryInspectable(object, expression));

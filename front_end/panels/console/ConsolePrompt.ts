@@ -125,7 +125,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.element.appendChild(this.eagerPreviewElement);
 
     this.promptIcon = new IconButton.Icon.Icon();
-    this.promptIcon.data = {iconName: 'chevron-right', color: 'var(--icon-action)'};
+    this.promptIcon.name = 'chevron-right';
+    this.promptIcon.style.color = 'var(--icon-action)';
     this.promptIcon.classList.add('console-prompt-icon', 'medium');
     this.element.appendChild(this.promptIcon);
     this.iconThrottler = new Common.Throttler.Throttler(0);

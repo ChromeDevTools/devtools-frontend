@@ -111,10 +111,6 @@ export class FormatPickerContextMenu {
       icon = new IconButton.Icon.Icon();
       icon.name = 'warning';
       icon.classList.add('medium');
-      icon.data = {
-        iconName: 'warning',
-        color: 'var(--icon-default)',
-      };
       icon.style.marginLeft = '1px';
       icon.style.marginTop = '-1px';
       icon.style.minWidth = '16px';

@@ -538,7 +538,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
   }
 }
 
-function getIconDataForLevel(level: Workspace.UISourceCode.Message.Level): IconButton.Icon.IconData {
+function getIconDataForLevel(level: Workspace.UISourceCode.Message.Level): IconButton.Icon.IconWithName {
   if (level === Workspace.UISourceCode.Message.Level.ERROR) {
     return {color: 'var(--icon-error)', width: '16px', height: '14px', iconName: 'cross-circle-filled'};
   }
@@ -571,7 +571,7 @@ function messageLevelComparator(a: RowMessage, b: RowMessage): number {
   return messageLevelPriority[a.level()] - messageLevelPriority[b.level()];
 }
 
-function getIconDataForMessage(message: RowMessage): IconButton.Icon.IconData {
+function getIconDataForMessage(message: RowMessage): IconButton.Icon.IconWithName {
   if (message.origin instanceof IssuesManager.SourceFrameIssuesManager.IssueMessage) {
     return {iconName: IssueCounter.IssueCounter.getIssueKindIconName(message.origin.getIssueKind())};
   }
@@ -704,14 +704,16 @@ class MessageWidget extends CodeMirror.WidgetType {
     const nonIssues = this.messages.filter(msg => msg.level() !== Workspace.UISourceCode.Message.Level.ISSUE);
     if (nonIssues.length) {
       const maxIssue = nonIssues.sort(messageLevelComparator)[nonIssues.length - 1];
-      const errorIcon = wrap.appendChild(new IconButton.Icon.Icon());
-      errorIcon.data = getIconDataForLevel(maxIssue.level());
+      const iconData = getIconDataForLevel(maxIssue.level());
+      const errorIcon = createIconFromIconData(iconData);
+      wrap.appendChild(errorIcon);
       errorIcon.classList.add('cm-messageIcon-error');
     }
     const issue = this.messages.find(m => m.level() === Workspace.UISourceCode.Message.Level.ISSUE);
     if (issue) {
-      const issueIcon = wrap.appendChild(new IconButton.Icon.Icon());
-      issueIcon.data = getIconDataForMessage(issue);
+      const iconData = getIconDataForMessage(issue);
+      const issueIcon = createIconFromIconData(iconData);
+      wrap.appendChild(issueIcon);
       issueIcon.classList.add('cm-messageIcon-issue', 'extra-small');
       issueIcon.addEventListener('click', () => (issue.clickHandler() || Math.min)());
     }
@@ -750,6 +752,18 @@ class RowMessageDecorations {
   }
 }
 
+function createIconFromIconData(data: IconButton.Icon.IconWithName): IconButton.Icon.Icon {
+  const icon = new IconButton.Icon.Icon();
+  icon.name = data.iconName;
+  if (data.width) {
+    icon.style.width = data.width;
+  }
+  if (data.height) {
+    icon.style.height = data.height;
+  }
+  return icon;
+}
+
 const showRowMessages = CodeMirror.StateField.define<RowMessageDecorations>({
   create(state): RowMessageDecorations {
     return RowMessageDecorations.create(new RowMessages([]), state.doc);
@@ -782,8 +796,9 @@ function renderMessage(message: RowMessage, count: number): HTMLElement {
   element.style.gap = '4px';
 
   if (count === 1) {
-    const icon = element.appendChild(new IconButton.Icon.Icon());
-    icon.data = getIconDataForMessage(message);
+    const data = getIconDataForMessage(message);
+    const icon = createIconFromIconData(data);
+    element.appendChild(icon);
     icon.classList.add('text-editor-row-message-icon', 'extra-small');
     icon.addEventListener('click', () => (message.clickHandler() || Math.min)());
   } else {

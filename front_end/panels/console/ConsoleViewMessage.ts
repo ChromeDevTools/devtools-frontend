@@ -1462,10 +1462,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   #createHoverButton(): HTMLButtonElement {
     const icon = new IconButton.Icon.Icon();
-    icon.data = {
-      iconName: 'lightbulb-spark',
-      color: 'var(--devtools-icon-color)',
-    };
+    icon.name = 'lightbulb-spark';
+    icon.style.color = 'var(--devtools-icon-color)';
     icon.classList.add('medium');
     const button = document.createElement('button');
     button.append(icon);
@@ -1527,10 +1525,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     this.messageIcon = new IconButton.Icon.Icon();
-    this.messageIcon.data = {
-      iconName,
-      color,
-    };
+    this.messageIcon.name = iconName;
+    this.messageIcon.style.color = color;
     this.messageIcon.classList.add('message-level-icon', 'small');
     if (this.contentElementInternal) {
       this.contentElementInternal.insertBefore(this.messageIcon, this.contentElementInternal.firstChild);

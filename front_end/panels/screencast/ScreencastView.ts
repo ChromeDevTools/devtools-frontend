@@ -694,7 +694,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.mouseInputToggle.disabled = true;
     {
       this.mouseInputToggleIcon = this.mouseInputToggle.appendChild(new IconButton.Icon.Icon());
-      this.mouseInputToggleIcon.data = {color: 'var(--icon-toggled)', iconName: 'mouse'};
+      this.mouseInputToggleIcon.name = 'mouse';
+      this.mouseInputToggleIcon.classList.toggle('toggled', true);
     }
     UI.ARIAUtils.setLabel(this.mouseInputToggle, i18nString(UIStrings.mouseInput));
 

@@ -418,8 +418,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     if (this.nodeInternal.retained && !this.isClosingTag()) {
       const icon = new IconButton.Icon.Icon();
-      // FIXME: this needs to be updated, data field is deprecated
-      icon.data = {iconName: 'small-status-dot', color: 'var(--icon-error)'};
+      icon.name = 'small-status-dot';
+      icon.style.color = 'var(--icon-error)';
       icon.classList.add('extra-small');
       icon.style.setProperty('vertical-align', 'middle');
       this.setLeadingIcons([icon]);

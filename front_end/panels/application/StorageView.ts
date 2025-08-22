@@ -519,7 +519,8 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     if (!response.overrideActive && response.quota < 125829120) {  // 120 MB
       const icon = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'info', color: 'var(--icon-info)'};
+      icon.name = 'info';
+      icon.style.color = 'var(--icon-info)';
       icon.classList.add('small');
       UI.Tooltip.Tooltip.install(this.quotaRow, i18nString(UIStrings.storageQuotaIsLimitedIn));
       this.quotaRow.appendChild(icon);

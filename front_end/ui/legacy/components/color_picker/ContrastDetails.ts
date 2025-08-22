@@ -274,14 +274,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         this.contrastPassFailAPCA.createChild('span').textContent = `: ${apcaThreshold.toFixed(2)}%`;
       }
       if (passesAPCA) {
-        const iconCheckmark = new IconButton.Icon.Icon();
-        iconCheckmark
-            .data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '20px', height: '14px'};
+        const iconCheckmark = createIconCheckmark();
         this.contrastPassFailAPCA.appendChild(iconCheckmark);
       } else {
-        const iconNo = new IconButton.Icon.Icon();
-        iconNo.data = {iconName: 'clear', color: 'var(--icon-error)'};
-        iconNo.classList.add('small');
+        const iconNo = createIconNo();
         this.contrastPassFailAPCA.appendChild(iconNo);
         const suggestedColor = this.computeSuggestedColor('APCA');
         if (suggestedColor) {
@@ -325,13 +321,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.contrastPassFailAA.createChild('span').textContent =
         i18nString(UIStrings.placeholderWithColon, {PH1: aa.toFixed(1)});
     if (this.passesAA) {
-      const iconCheckmark = new IconButton.Icon.Icon();
-      iconCheckmark.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '20px', height: '14px'};
+      const iconCheckmark = createIconCheckmark();
       this.contrastPassFailAA.appendChild(iconCheckmark);
     } else {
-      const iconNo = new IconButton.Icon.Icon();
-      iconNo.data = {iconName: 'clear', color: 'var(--icon-error)'};
-      iconNo.classList.add('small');
+      const iconNo = createIconNo();
       this.contrastPassFailAA.appendChild(iconNo);
       const suggestedColor = this.computeSuggestedColor('aa');
       if (suggestedColor) {
@@ -349,13 +342,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.contrastPassFailAAA.createChild('span').textContent =
         i18nString(UIStrings.placeholderWithColon, {PH1: aaa.toFixed(1)});
     if (passesAAA) {
-      const iconCheckmark = new IconButton.Icon.Icon();
-      iconCheckmark.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '20px', height: '14px'};
+      const iconCheckmark = createIconCheckmark();
       this.contrastPassFailAAA.appendChild(iconCheckmark);
     } else {
-      const iconNo = new IconButton.Icon.Icon();
-      iconNo.data = {iconName: 'clear', color: 'var(--icon-error)'};
-      iconNo.classList.add('small');
+      const iconNo = createIconNo();
       this.contrastPassFailAAA.appendChild(iconNo);
       const suggestedColor = this.computeSuggestedColor('aaa');
       if (suggestedColor) {
@@ -499,4 +489,21 @@ export class Swatch {
     // Show border if the swatch is white.
     this.swatchElement.classList.toggle('swatch-inner-white', bgColor.as(Common.Color.Format.HSL).l > 0.9);
   }
+}
+
+function createIconCheckmark(): IconButton.Icon.Icon {
+  const icon = new IconButton.Icon.Icon();
+  icon.name = 'checkmark';
+  icon.style.color = 'var(--icon-checkmark-green)';
+  icon.style.width = 'var(--sys-size-9)';
+  icon.style.height = 'var(--sys-size-7)';
+  return icon;
+}
+
+function createIconNo(): IconButton.Icon.Icon {
+  const icon = new IconButton.Icon.Icon();
+  icon.name = 'clear';
+  icon.style.color = 'var(--icon-error)';
+  icon.classList.add('small');
+  return icon;
 }

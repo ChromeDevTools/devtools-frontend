@@ -22,7 +22,7 @@ export interface IconWithName {
  */
 export type IconData = IconWithName|{
   iconPath: string,
-  color: string,
+  color?: string,
   width?: string,
   height?: string,
 };

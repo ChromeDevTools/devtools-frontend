@@ -10044,6 +10044,20 @@ export namespace Network {
   }
 
   /**
+   * Sets Controls for IP Proxy of requests.
+   * Page reload is required before the new behavior will be observed.
+   */
+  export const enum IpProxyStatus {
+    Available = 'Available',
+    FeatureNotEnabled = 'FeatureNotEnabled',
+    MaskedDomainListNotEnabled = 'MaskedDomainListNotEnabled',
+    MaskedDomainListNotPopulated = 'MaskedDomainListNotPopulated',
+    AuthTokensUnavailable = 'AuthTokensUnavailable',
+    Unavailable = 'Unavailable',
+    BypassedByDevTools = 'BypassedByDevTools',
+  }
+
+  /**
    * The reason why request was blocked.
    */
   export const enum CorsError {
@@ -11148,6 +11162,13 @@ export namespace Network {
     includeCredentials: boolean;
   }
 
+  export interface GetIPProtectionProxyStatusResponse extends ProtocolResponseWithError {
+    /**
+     * Whether IP proxy is available
+     */
+    status: IpProxyStatus;
+  }
+
   export interface SetAcceptedEncodingsRequest {
     /**
      * List of accepted content encodings.
@@ -11291,6 +11312,12 @@ export namespace Network {
      * Whether DirectSocket chunk send/receive events should be reported.
      */
     reportDirectSocketTraffic?: boolean;
+    /**
+     * Enable storing response bodies outside of renderer, so that these survive
+     * a cross-process navigation. Requires maxTotalBufferSize to be set.
+     * Currently defaults to false.
+     */
+    enableDurableMessages?: boolean;
   }
 
   export interface GetAllCookiesResponse extends ProtocolResponseWithError {

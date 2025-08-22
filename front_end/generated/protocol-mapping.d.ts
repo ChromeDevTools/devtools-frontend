@@ -3247,6 +3247,14 @@ export namespace ProtocolMapping {
       returnType: Protocol.Memory.GetSamplingProfileResponse;
     };
     /**
+     * Returns enum representing if IP Proxy of requests is available
+     * or reason it is not active.
+     */
+    'Network.getIPProtectionProxyStatus': {
+      paramsType: [];
+      returnType: Protocol.Network.GetIPProtectionProxyStatusResponse;
+    };
+    /**
      * Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
      */
     'Network.setAcceptedEncodings': {

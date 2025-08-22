@@ -15314,6 +15314,21 @@
                     ]
                 },
                 {
+                    "id": "IpProxyStatus",
+                    "description": "Sets Controls for IP Proxy of requests.\nPage reload is required before the new behavior will be observed.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "Available",
+                        "FeatureNotEnabled",
+                        "MaskedDomainListNotEnabled",
+                        "MaskedDomainListNotPopulated",
+                        "AuthTokensUnavailable",
+                        "Unavailable",
+                        "BypassedByDevTools"
+                    ]
+                },
+                {
                     "id": "CorsError",
                     "description": "The reason why request was blocked.",
                     "type": "string",
@@ -16880,6 +16895,18 @@
             ],
             "commands": [
                 {
+                    "name": "getIPProtectionProxyStatus",
+                    "description": "Returns enum representing if IP Proxy of requests is available\nor reason it is not active.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "status",
+                            "description": "Whether IP proxy is available",
+                            "$ref": "IpProxyStatus"
+                        }
+                    ]
+                },
+                {
                     "name": "setAcceptedEncodings",
                     "description": "Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.",
                     "experimental": true,
@@ -17117,6 +17144,13 @@
                         {
                             "name": "reportDirectSocketTraffic",
                             "description": "Whether DirectSocket chunk send/receive events should be reported.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "enableDurableMessages",
+                            "description": "Enable storing response bodies outside of renderer, so that these survive\na cross-process navigation. Requires maxTotalBufferSize to be set.\nCurrently defaults to false.",
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"

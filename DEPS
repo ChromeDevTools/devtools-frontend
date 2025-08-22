@@ -12,7 +12,7 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '9600dd1bdce4700841c2cfd09934824049646f29',
+  'build_revision': '28fc2a8926a053943647b94d5a314ace0d2fbea8',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': '5c2d6c70afa623219e0310a0c3b0c3f9d7d4c6e3',

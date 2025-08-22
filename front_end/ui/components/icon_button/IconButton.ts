@@ -7,7 +7,6 @@ import './Icon.js';
 
 import * as Lit from '../../lit/lit.js';
 
-import type {IconData} from './Icon.js';
 import iconButtonStyles from './iconButton.css.js';
 
 const {html} = Lit;
@@ -82,8 +81,7 @@ export class IconButton extends HTMLElement {
       ${(!this.#compact && this.#leadingText) ? html`<span class="icon-button-title">${this.#leadingText}</span>` : Lit.nothing}
       ${filteredGroups.map(counter =>
       html`
-      <devtools-icon class="status-icon"
-      .data=${{iconName: counter.iconName, color: counter.iconColor, width: counter.iconWidth || 'var(--sys-size-7)', height: counter.iconHeight || 'var(--sys-size-7)'} as IconData}>
+      <devtools-icon class="status-icon" name=${counter.iconName} style="color: ${counter.iconColor}; width: ${counter.iconWidth || 'var(--sys-size-7)'}; height: ${counter.iconHeight || 'var(--sys-size-7)'}">
       </devtools-icon>
       ${this.#compact ? html`<!-- Force line-height for this element --><span>&#8203;</span>` : Lit.nothing}
       <span class="icon-button-title">${counter.text}</span>`,

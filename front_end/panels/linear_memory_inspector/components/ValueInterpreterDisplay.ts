@@ -154,8 +154,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
               <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
                 jslog=${VisualLogging.action('linear-memory-inspector.jump-to-address').track({click: true})}
                 @click=${this.#onJumpToAddressClicked.bind(this, Number(address))}>
-                <devtools-icon .data=${
-                  {iconName: 'open-externally', color: iconColor, width: '16px'}}>
+                <devtools-icon name="open-externally" class="medium" style="color: ${iconColor}">
                 </devtools-icon>
               </button>`}
         </div>

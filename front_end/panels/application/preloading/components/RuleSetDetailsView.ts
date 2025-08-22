@@ -108,18 +108,12 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // clang-format off
     return html`
       <div class="ruleset-header">
-        <devtools-icon
-          .data=${{
-            iconName: 'cross-circle',
-            color: 'var(--icon-error)',
-            width: '16px',
-            height: '16px',
-          }}>
+        <devtools-icon name="cross-circle" class="medium">
         </devtools-icon>
         <span id="error-message-text">${this.#data.errorMessage}</span>
       </div>
     `;
-            // clang-format on
+    // clang-format on
   }
 
   #renderSource(sourceText: string): Lit.LitTemplate {

@@ -175,12 +175,7 @@ export class PermissionsPolicySection extends HTMLElement {
       return html`
         <div class="permissions-row">
           <div>
-            <devtools-icon class="allowed-icon"
-              .data=${{
-                color: 'var(--icon-error)',
-                iconName: 'cross-circle',
-                width: '20px', height: '20px',
-              }}>
+            <devtools-icon class="allowed-icon extra-large" name="cross-circle">
             </devtools-icon>
           </div>
           <div class="feature-name text-ellipsis">
@@ -203,7 +198,7 @@ export class PermissionsPolicySection extends HTMLElement {
           </div>
         </div>
       `;
-              // clang-format on
+      // clang-format on
     }));
 
     return html`

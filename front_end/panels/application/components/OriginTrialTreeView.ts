@@ -10,7 +10,6 @@ import '../../../ui/components/tree_outline/tree_outline.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Adorners from '../../../ui/components/adorners/adorners.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
@@ -334,15 +333,7 @@ export class OriginTrialTreeView extends HTMLElement {
           html`
     <style>${originTrialTreeViewStyles}</style>
     <span class="status-badge">
-      <devtools-icon
-          .data=${{
-            iconName: 'clear',
-            color: 'var(--icon-default)',
-            width: '16px',
-            height: '16px',
-          } as IconButton.Icon.IconWithName}
-        >
-      </devtools-icon>
+      <devtools-icon class="medium" name="clear"></devtools-icon>
       <span>${i18nString(UIStrings.noTrialTokens)}</span>
     </span>`,
           this.#shadow, {host: this});

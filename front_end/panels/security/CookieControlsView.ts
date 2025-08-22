@@ -174,7 +174,7 @@ export class CookieControlsView extends UI.Widget.VBox {
           ${Boolean(enterpriseEnabledSetting.get()) ? html `
             <devtools-icon
               tabindex="0"
-              .name=${'domain'}
+              name="domain"
               ${Lit.Directives.ref((el: Element|undefined) => {
                 UI.Tooltip.Tooltip.install(el as HTMLElement, i18nString(UIStrings.enterpriseTooltip));
                 (el as HTMLElement).role = 'img';
@@ -266,7 +266,7 @@ export class CookieControlsView extends UI.Widget.VBox {
         <div class="text body">${i18nString(UIStrings.enterpriseDisclaimer)}</div>
           <div class="anchor">
             <devtools-icon
-            .name=${'domain'}
+            name="domain"
             ></devtools-icon>
             <devtools-button
             @click=${input.openChromeCookieSettings}

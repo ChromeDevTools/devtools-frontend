@@ -10,7 +10,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Switch from '../../ui/components/switch/switch.js';
@@ -480,12 +479,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format off
     return html`
       <div>
-        <devtools-icon .data=${{
-          iconName: icon,
-          color: 'var(--icon-default)',
-          width: 'var(--sys-size-8)',
-          height: 'var(--sys-size-8)',
-        } as IconButton.Icon.IconData}>
+        <devtools-icon .name=${icon} class="medium">
         </devtools-icon>
       </div>
       <div>${text}</div>
@@ -538,11 +532,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format off
     return html`
       <div>
-        <devtools-icon .data=${{
-          iconName: settingItem.iconName,
-          width: 'var(--sys-size-9)',
-          height: 'var(--sys-size-9)',
-        } as IconButton.Icon.IconData}>
+        <devtools-icon class="extra-large" .name=${settingItem.iconName}>
         </devtools-icon>
       </div>
       <div class="padded">${settingItem.text}</div>
@@ -631,12 +621,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       <div class="disabled-explainer">
         ${disabledReasons.map(reason => html`
           <div class="disabled-explainer-row">
-            <devtools-icon .data=${{
-              iconName: 'warning',
-              color: 'var(--sys-color-orange)',
-              width: 'var(--sys-size-8)',
-              height: 'var(--sys-size-8)',
-            } as IconButton.Icon.IconData}>
+            <devtools-icon name="warning" class="medium" style="color: var(--icon-warning);">
             </devtools-icon>
             ${reason}
           </div>

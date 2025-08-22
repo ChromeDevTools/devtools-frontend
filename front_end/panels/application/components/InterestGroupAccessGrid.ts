@@ -92,9 +92,8 @@ export class InterestGroupAccessGrid extends HTMLElement {
         html`
           <div>
             <span class="heading">Interest Groups</span>
-            <devtools-icon class="info-icon"
-                          title=${i18nString(UIStrings.allInterestGroupStorageEvents)}
-                          .data=${{iconName: 'info', color: 'var(--icon-default)', width: '16px'}}>
+            <devtools-icon class="info-icon medium" name="info"
+                          title=${i18nString(UIStrings.allInterestGroupStorageEvents)}>
             </devtools-icon>
             ${this.#renderGrid()}
           </div>`}

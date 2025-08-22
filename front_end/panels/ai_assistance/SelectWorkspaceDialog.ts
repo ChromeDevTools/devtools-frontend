@@ -114,7 +114,7 @@ export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input: ViewInput, _output: 
                 role="option"
                 tabindex=${index === input.selectedIndex ? '0' : '-1'}
               >
-                <devtools-icon class="folder-icon" .name=${'folder'}></devtools-icon>
+                <devtools-icon class="folder-icon" name="folder"></devtools-icon>
                 <span class="ellipsis">${folder.name}</span>
               </li>`;
           })}

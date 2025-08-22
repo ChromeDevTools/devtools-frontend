@@ -660,10 +660,9 @@ export class EntryLabelOverlay extends HTMLElement {
         <span
           class="ai-label-error">
           <devtools-icon
-            class="warning"
-            .name=${'warning'}
-            .data=${{
-            iconName: 'warning', color: 'var(--ref-palette-error50)', width: '20px'}}>
+            class="warning extra-large"
+            name="warning"
+            style="color: var(--ref-palette-error50)">
           </devtools-icon>
           <span class="generate-label-text">${lockedString(UIStringsNotTranslate.generationFailed)}</span>
         </span>
@@ -680,10 +679,9 @@ export class EntryLabelOverlay extends HTMLElement {
           class="ai-label-button enabled"
           @click=${this.#handleAiButtonClick}>
           <devtools-icon
-            class="pen-icon"
-            .name=${'pen-spark'}
-            .data=${{
-            iconName: 'pen-spark', color: 'var(--color-primary)', width: '20px'}}>
+            class="pen-icon extra-large"
+            name="pen-spark"
+            style="color: var(--icon-primary);">
           </devtools-icon>
           <span class="generate-label-text">${i18nString(UIStrings.generateLabelButton)}</span>
         </button>
@@ -726,10 +724,9 @@ export class EntryLabelOverlay extends HTMLElement {
           @click=${this.#handleAiButtonClick}>
           <devtools-icon
             aria-details="info-tooltip"
-            class="pen-icon"
-            .name=${'pen-spark'}
-            .data=${{
-            iconName: 'pen-spark', color: 'var(--sys-color-state-disabled)', width: '20px'}}>
+            class="pen-icon extra-large"
+            name="pen-spark"
+            style="color: var(--sys-color-state-disabled);">
           </devtools-icon>
         </button>
         ${this.#renderAITooltip({
@@ -796,13 +793,7 @@ export class EntryLabelOverlay extends HTMLElement {
                 class="delete-button"
                 @click=${() => this.dispatchEvent(new EntryLabelRemoveEvent())}
                 jslog=${VisualLogging.action('timeline.annotations.delete-entry-label').track({click: true})}>
-              <devtools-icon
-                .data=${{
-                  iconName: 'cross',
-                  color: 'var(--color-background)',
-                  width: '14px',
-                  height: '14px'
-                }}
+              <devtools-icon name="cross" class="small" style="color: var(--color-background);"
               ></devtools-icon>
               </button>
             ` : Lit.nothing}

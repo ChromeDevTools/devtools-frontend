@@ -72,12 +72,7 @@ export class ReportsGridStatusHeader extends HTMLElement {
       <span class="status-header">${i18nString(UIStrings.status)}</span>
       <x-link href="https://web.dev/reporting-api/#report-status"
       jslog=${VisualLogging.link('report-status').track({click: true})}>
-        <devtools-icon class="inline-icon" .data=${{
-          iconName: 'help',
-          color: 'var(--icon-link)',
-          width: '16px',
-          height: '16px',
-          }}></devtools-icon>
+        <devtools-icon class="inline-icon medium" name="help" style="color: var(--icon-link);"></devtools-icon>
       </x-link>
     `, this.#shadow, {host: this});
     // clang-format on

@@ -108,11 +108,7 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
           <button class="delete-highlight-button" title=${i18nString(UIStrings.deleteHighlight)}
               jslog=${VisualLogging.action('linear-memory-inspector.delete-highlight').track({click:true})}
               @click=${():void => this.#onDeleteHighlightClick(highlightInfo)}>
-            <devtools-icon .data=${{
-              iconName: 'cross',
-              color: 'var(--icon-default-hover)',
-              width: '16px',
-              }}>
+            <devtools-icon name="cross" class="medium">
             </devtools-icon>
           </button>
         </div>

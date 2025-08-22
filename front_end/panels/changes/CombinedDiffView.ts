@@ -74,7 +74,7 @@ function renderSingleDiffView(singleDiffViewInput: SingleDiffViewInput): Lit.Tem
     <details open class=${classes}>
       <summary>
         <div class="summary-left">
-          <devtools-icon class="drop-down-icon" .name=${'arrow-drop-down'}></devtools-icon>
+          <devtools-icon class="drop-down-icon" name="arrow-drop-down"></devtools-icon>
           ${icon}
           <button class="file-name-link" jslog=${VisualLogging.action('jump-to-file')} @click=${() => onFileNameClick(fileUrl)}>${fileName}</button>
         </div>

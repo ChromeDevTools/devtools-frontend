@@ -15,7 +15,6 @@ import * as Workspace from '../../../models/workspace/workspace.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
@@ -296,11 +295,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     const fileIcon = html`
-      <devtools-icon class=${overridesSetting.get() ? 'inline-icon dot purple': 'inline-icon'} .data=${{
-          iconName: 'document',
-          width: '16px',
-          height: '16px',
-        } as IconButton.Icon.IconData}>
+      <devtools-icon name="document" class=${'medium' + overridesSetting.get() ? 'inline-icon dot purple': 'inline-icon'}>
       </devtools-icon>`;
     // clang-format on
 
@@ -321,11 +316,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           class="link devtools-link"
           jslog=${VisualLogging.link('devtools-override').track({click: true})}
       >
-        <devtools-icon class="inline-icon" .data=${{
-            iconName: 'help',
-            width: '16px',
-            height: '16px',
-          } as IconButton.Icon.IconData}>
+        <devtools-icon name="help" class="inline-icon medium">
         </devtools-icon>
       </x-link>
       <x-link

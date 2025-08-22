@@ -88,7 +88,6 @@ export class PanelUtils {
       // clang-format off
       return html`<devtools-icon
           class="icon" name="warning-filled" title=${i18nString(UIStrings.thirdPartyPhaseout)}
-          style="color:var(--icon-warning)">
         </devtools-icon>`;
       // clang-format on
     }

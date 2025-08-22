@@ -114,7 +114,7 @@ export class ProtocolHandlersView extends HTMLElement {
     return html`
     <div class="protocol-handlers-row status">
             <devtools-icon class="inline-icon"
-                                                name=${this.#protocolHandlers.length > 0 ? 'check-circle' : 'info'}>
+                           name=${this.#protocolHandlers.length > 0 ? 'check-circle' : 'info'}>
             </devtools-icon>
             ${i18n.i18n.getFormatLocalizedString(str_, statusString, {
       PH1: manifestInTextLink,

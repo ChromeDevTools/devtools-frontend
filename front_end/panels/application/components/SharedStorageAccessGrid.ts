@@ -105,9 +105,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       : html`
         <div jslog=${VisualLogging.section('events-table')}>
           <span class="heading">${i18nString(UIStrings.sharedStorage)}</span>
-          <devtools-icon class="info-icon"
-                          title=${i18nString(UIStrings.allSharedStorageEvents)}
-                          .data=${{iconName: 'info', color: 'var(--icon-default)', width: '16px'}}>
+          <devtools-icon class="info-icon medium" name="info"
+                          title=${i18nString(UIStrings.allSharedStorageEvents)}>
           </devtools-icon>
           <devtools-data-grid striped inline @select=${input.onSelect}>
             <table>

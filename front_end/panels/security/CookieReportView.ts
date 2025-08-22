@@ -270,7 +270,7 @@ export class CookieReportView extends UI.Widget.VBox {
                 <div class="empty-report">
                   <devtools-icon
                     class="cookie-off"
-                    .name=${'cookie_off'}
+                    name="cookie_off"
                   ></devtools-icon>
                   <div class="empty-report-title">
                     ${i18nString(UIStrings.emptyReport)}

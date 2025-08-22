@@ -122,11 +122,7 @@ export class SurveyLink extends HTMLElement {
       <button
           class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'}
           .disabled=${ariaDisabled} aria-disabled=${ariaDisabled} @click=${this.#sendSurvey}>
-        <devtools-icon class="link-icon" .data=${{
-            iconName: 'review',
-            color: 'var(--sys-color-primary)',
-            width: 'var(--issue-link-icon-size, 16px)',
-            height: 'var(--issue-link-icon-size, 16px)'}}>
+        <devtools-icon class="link-icon" name="review" style="color: var(--sys-color-primary); width: var(--issue-link-icon-size, 16px); height: var(--issue-link-icon-size, 16px)">
         </devtools-icon>
         ${linkText}
       </button>`;

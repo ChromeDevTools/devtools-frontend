@@ -356,8 +356,7 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
   }
 
   override getIcon(): TemplateResult {
-    return html`<devtools-icon name="performance" title="Performance"
-        style="color: var(--sys-color-on-surface-subtle);"></devtools-icon>`;
+    return html`<devtools-icon name="performance" title="Performance"></devtools-icon>`;
   }
 
   override getTitle(): string {

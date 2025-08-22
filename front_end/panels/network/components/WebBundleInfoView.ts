@@ -10,7 +10,6 @@ import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import {PanelUtils} from '../../../panels/utils/utils.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -19,8 +18,6 @@ import webBundleInfoViewStyles from './WebBundleInfoView.css.js';
 
 const {mimeFromURL, fromMimeTypeOverride, fromMimeType} = Common.ResourceType.ResourceType;
 const {iconDataForResourceType} = PanelUtils;
-
-type IconData = IconButton.Icon.IconData;
 
 const UIStrings = {
   /**
@@ -52,16 +49,14 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
     render(html`
       <style>${webBundleInfoViewStyles}</style>
       <div class="header">
-        <devtools-icon class="icon"
-          .data=${{color: 'var(--icon-default)', iconName: 'bundle', width: '20px'} as IconData}>
+        <devtools-icon name="bundle" class="icon extra-large">
         </devtools-icon>
         <span>${this.#webBundleName}</span>
         <x-link href="https://web.dev/web-bundles/#explaining-web-bundles"
           jslog=${VisualLogging.link('webbundle-explainer').track({
           click: true,
         })}>
-          <devtools-icon class="icon"
-            .data=${{color: 'var(--icon-default)', iconName: 'help', width: '16px'} as IconData}>
+          <devtools-icon name="help" class="icon medium">
           </devtools-icon>
         </x-link>
       </div>
@@ -77,7 +72,7 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
             return html`<tr>
               <td>
                 <div style="display: flex;">
-                  <devtools-icon class="icon" .data=${{...iconData, width: '20px'} as IconData}>
+                  <devtools-icon class="icon extra-large" .data=${iconData} as IconData}>
                   </devtools-icon>
                   <span>${url}</span>
                 </div>

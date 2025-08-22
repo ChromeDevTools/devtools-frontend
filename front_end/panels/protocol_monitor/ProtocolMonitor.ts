@@ -279,11 +279,11 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                           style="--override-data-grid-row-background-color: var(--sys-color-surface3)">
                         ${'id' in message ? html`
                           <td title="sent">
-                            <devtools-icon name="arrow-up-down" style="color: var(--icon-request-response); width: 16px; height: 16px;">
+                            <devtools-icon name="arrow-up-down" class="medium" style="color: var(--icon-request-response);">
                             </devtools-icon>
                           </td>` : html`
                           <td title="received">
-                            <devtools-icon name="arrow-down" style="color: var(--icon-request); width: 16px; height: 16px;">
+                            <devtools-icon name="arrow-down" class="medium" style="color: var(--icon-request);">
                             </devtools-icon>
                           </td>`}
                         <td>${message.method}</td>

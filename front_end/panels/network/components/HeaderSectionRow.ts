@@ -200,12 +200,7 @@ export class HeaderSectionRow extends HTMLElement {
           ${this.#renderHeaderValue()}
         </div>
         ${showReloadInfoIcon ?
-          html`<devtools-icon class="row-flex-icon flex-right" title=${UIStrings.reloadPrompt} .data=${{
-            iconName: 'info',
-            width: '16px',
-            height: '16px',
-            color: 'var(--icon-default)',
-          }}>
+          html`<devtools-icon name="info" class="row-flex-icon flex-right medium" title=${UIStrings.reloadPrompt}>
           </devtools-icon>` : Lit.nothing
         }
       </div>
@@ -332,34 +327,24 @@ export class HeaderSectionRow extends HTMLElement {
       // clang-format off
       return html`
         <div class="devtools-link" @click=${blockedDetails.reveal}>
-          <devtools-icon class="inline-icon" .data=${{
-            iconName: 'issue-exclamation-filled',
-            color: 'var(--icon-warning)',
-            width: '16px',
-            height: '16px',
-          }}>
+          <devtools-icon name="issue-exclamation-filled" class="inline-icon medium">
           </devtools-icon
           >${i18nString(UIStrings.learnMoreInTheIssuesTab)}
         </div>
       `;
-            // clang-format on
+      // clang-format on
     }
     if (blockedDetails?.link) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       return html`
         <x-link href=${blockedDetails.link.url} class="link">
-          <devtools-icon class="inline-icon" .data=${{
-            iconName: 'open-externally',
-            color: 'var(--icon-link)',
-            width: '20px',
-            height: '20px',
-          }}>
+          <devtools-icon name="open-externally" class="inline-icon extra-large" style="color: var(--icon-link);">
           </devtools-icon
           >${i18nString(UIStrings.learnMore)}
         </x-link>
       `;
-            // clang-format on
+      // clang-format on
     }
     return Lit.nothing;
   }

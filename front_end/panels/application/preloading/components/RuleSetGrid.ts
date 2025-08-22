@@ -163,11 +163,9 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
                                 .action(revealInElements ? 'reveal-in-elements' : 'reveal-in-network')
                                 .track({click: true})}
                           >
-                            <devtools-icon name=${revealInElements ? 'code-circle' : 'arrow-up-down-circle'}
+                            <devtools-icon name=${revealInElements ? 'code-circle' : 'arrow-up-down-circle'} class="medium"
                               style=${styleMap({
                                 color: 'var(--icon-link)',
-                                width: '16px',
-                                height: '16px',
                                 'vertical-align': 'sub',
                               })}
                             ></devtools-icon>

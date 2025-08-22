@@ -53,6 +53,7 @@
   color: var(--icon-warning);
 }
 
+:host([name="cross-circle"]),
 :host([name="cross-circle-filled"]),
 :host([name="issue-cross-filled"]),
 :host([name="small-status-dot"]) {

@@ -1066,11 +1066,11 @@ function renderContrastRatio(data: PopulateNodesEventNodeTypes): TemplateResult 
 
 function createClearIcon(): TemplateResult {
   return html`
-    <devtools-icon name="clear" style="color:var(--icon-error); width:14px; height:14px"></devtools-icon>`;
+    <devtools-icon name="clear" class="small" style="color:var(--icon-error);"></devtools-icon>`;
 }
 
 function createCheckIcon(): TemplateResult {
   return html`
-    <devtools-icon name="checkmark"
-        style="color:var(--icon-checkmark-green); width:14px; height:14px"></devtools-icon>`;
+    <devtools-icon name="checkmark" class="small"
+        style="color:var(--icon-checkmark-green);></devtools-icon>`;
 }

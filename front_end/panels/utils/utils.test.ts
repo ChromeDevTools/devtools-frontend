@@ -105,9 +105,6 @@ describeWithEnvironment('panels/utils', () => {
       const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-document', iconImage);
-
-      const backgroundColorOfIcon = iconElement.style.color.toString();
-      assert.strictEqual(backgroundColorOfIcon, 'var(--icon-file-document)');
     });
 
     it('show media icon', async () => {

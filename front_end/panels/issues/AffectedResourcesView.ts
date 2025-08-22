@@ -181,7 +181,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     frameCell.classList.add('affected-resource-cell');
     if (frame) {
       const icon = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'code-circle', color: 'var(--icon-link)'};
+      icon.name = 'code-circle';
       icon.classList.add('link', 'elements-panel', 'medium');
       icon.onclick = async () => {
         Host.userMetrics.issuesPanelResourceOpened(issueCategory, AffectedItem.ELEMENT);

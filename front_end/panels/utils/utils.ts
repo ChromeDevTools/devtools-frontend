@@ -158,45 +158,45 @@ export class PanelUtils {
     // clang-format on
   }
 
-  static iconDataForResourceType(resourceType: Common.ResourceType.ResourceType): {iconName: string, color: string} {
+  static iconDataForResourceType(resourceType: Common.ResourceType.ResourceType): {iconName: string, color?: string} {
     if (resourceType.isDocument()) {
-      return {iconName: 'file-document', color: 'var(--icon-file-document)'};
+      return {iconName: 'file-document'};
     }
     if (resourceType.isImage()) {
       return {iconName: 'file-image', color: 'var(--icon-file-image)'};
     }
     if (resourceType.isFont()) {
-      return {iconName: 'file-font', color: 'var(--icon-file-font)'};
+      return {iconName: 'file-font'};
     }
     if (resourceType.isScript()) {
-      return {iconName: 'file-script', color: 'var(--icon-file-script)'};
+      return {iconName: 'file-script'};
     }
     if (resourceType.isStyleSheet()) {
-      return {iconName: 'file-stylesheet', color: 'var(--icon-file-styles)'};
+      return {iconName: 'file-stylesheet'};
     }
     if (resourceType.name() === Common.ResourceType.resourceTypes.Manifest.name()) {
-      return {iconName: 'file-manifest', color: 'var(--icon-default)'};
+      return {iconName: 'file-manifest'};
     }
     if (resourceType.name() === Common.ResourceType.resourceTypes.Wasm.name()) {
-      return {iconName: 'file-wasm', color: 'var(--icon-default)'};
+      return {iconName: 'file-wasm'};
     }
     if (resourceType.name() === Common.ResourceType.resourceTypes.WebSocket.name() ||
         resourceType.name() === Common.ResourceType.resourceTypes.DirectSocket.name()) {
-      return {iconName: 'file-websocket', color: 'var(--icon-default)'};
+      return {iconName: 'file-websocket'};
     }
     if (resourceType.name() === Common.ResourceType.resourceTypes.Media.name()) {
-      return {iconName: 'file-media', color: 'var(--icon-file-media)'};
+      return {iconName: 'file-media'};
     }
     if (resourceType.isWebbundle()) {
-      return {iconName: 'bundle', color: 'var(--icon-default)'};
+      return {iconName: 'bundle'};
     }
 
     if (resourceType.name() === Common.ResourceType.resourceTypes.Fetch.name() ||
         resourceType.name() === Common.ResourceType.resourceTypes.XHR.name()) {
-      return {iconName: 'file-fetch-xhr', color: 'var(--icon-default)'};
+      return {iconName: 'file-fetch-xhr'};
     }
 
-    return {iconName: 'file-generic', color: 'var(--icon-default)'};
+    return {iconName: 'file-generic'};
   }
 
   static getIconForSourceFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): TemplateResult {

@@ -55,10 +55,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     const title = element.createChild('div', 'thread-item-title');
     const pausedState = element.createChild('div', 'thread-item-paused-state');
     const icon = new IconButton.Icon.Icon();
-    icon.data = {
-      iconName: 'large-arrow-right-filled',
-      color: 'var(--icon-arrow-main-thread)',
-    };
+    icon.name = 'large-arrow-right-filled';
     icon.classList.add('selected-thread-icon', 'small');
     element.appendChild(icon);
     element.tabIndex = -1;

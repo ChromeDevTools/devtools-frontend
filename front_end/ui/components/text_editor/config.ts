@@ -202,10 +202,7 @@ export const codeFolding = DynamicSetting.bool('text-editor-code-folding', [
       const icon = new Icon.Icon.Icon();
       icon.setAttribute('class', open ? 'cm-foldGutterElement' : 'cm-foldGutterElement cm-foldGutterElement-folded');
       icon.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
-      icon.data = {
-        iconName,
-        color: 'var(--icon-fold-marker)',
-      };
+      icon.name = iconName;
       icon.classList.add('small');
       return icon;
     },

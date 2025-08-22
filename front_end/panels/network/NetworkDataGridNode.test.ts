@@ -128,8 +128,6 @@ describeWithEnvironment('NetworkLogView', () => {
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-document', iconImage);
 
-    const backgroundColorOfIcon = iconElement.style.color.toString();
-    assert.strictEqual(backgroundColorOfIcon, 'var(--icon-file-document)');
     // TODO(barrypollard): Would be good to test the value of --icon-file-document
     // is correctly set to --sys-color-blue-bright. See https://crbug.com/346714111
   });

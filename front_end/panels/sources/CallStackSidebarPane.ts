@@ -331,10 +331,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     UI.ARIAUtils.setSelected(element, isSelected);
     element.classList.toggle('hidden', !this.showIgnoreListed && item.isIgnoreListed);
     const icon = new IconButton.Icon.Icon();
-    icon.data = {
-      iconName: 'large-arrow-right-filled',
-      color: 'var(--icon-arrow-main-thread)',
-    };
+    icon.name = 'large-arrow-right-filled';
     icon.classList.add('selected-call-frame-icon', 'small');
     element.appendChild(icon);
     element.tabIndex = item === this.list.selectedItem() ? 0 : -1;

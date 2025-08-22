@@ -28,7 +28,6 @@
   --icon-file-image: var(--sys-color-green-bright);
   --icon-file-script: var(--sys-color-orange-bright);
   --icon-file-styles: var(--sys-color-purple-bright);
-  --icon-fold-marker: var(--sys-color-on-surface-subtle);
   --icon-folder-authored: var(--sys-color-orange);
   --icon-folder-primary: var(--sys-color-on-surface-subtle);
   --icon-folder-deployed: var(--sys-color-primary-bright);

@@ -12,6 +12,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Main from './main.js';
 
+const CLICK_COUNT_LIMIT = 2;
+
 const {GlobalAiButton} = Main.GlobalAiButton;
 
 describeWithEnvironment('GlobalAiButton', () => {
@@ -59,7 +61,7 @@ describeWithEnvironment('GlobalAiButton', () => {
         },
       });
       clock = sinon.useFakeTimers({now: new Date('2025-01-01'), toFake: ['setTimeout', 'Date']});
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(4);
+      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT - 1);
 
       const {view} = await createWidget();
 
@@ -73,7 +75,7 @@ describeWithEnvironment('GlobalAiButton', () => {
         },
       });
       clock = sinon.useFakeTimers({now: new Date('2025-01-01'), toFake: ['setTimeout', 'Date']});
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(4);
+      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT - 1);
 
       const {view} = await createWidget();
       clock.tick(5000);
@@ -89,7 +91,7 @@ describeWithEnvironment('GlobalAiButton', () => {
         },
       });
       clock = sinon.useFakeTimers({now: new Date('2025-01-01'), toFake: ['setTimeout', 'Date']});
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(4);
+      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT - 1);
 
       const {view} = await createWidget();
 
@@ -106,21 +108,21 @@ describeWithEnvironment('GlobalAiButton', () => {
         now: new Date('2026-10-01'),  // After 2026-09-30
         toFake: ['setTimeout', 'Date']
       });
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(4);
+      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT - 1);
 
       const {view} = await createWidget();
 
       assert.strictEqual(view.input.state, Main.GlobalAiButton.GlobalAiButtonState.DEFAULT);
     });
 
-    it('does not trigger promotion if the click count is too high', async () => {
+    it('does not trigger promotion if the click count is more than or equal to 2', async () => {
       updateHostConfig({
         devToolsGlobalAiButton: {
           promotionEnabled: true,
         },
       });
       clock = sinon.useFakeTimers({now: new Date('2025-01-01'), toFake: ['setTimeout', 'Date']});
-      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(5);
+      Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count').set(CLICK_COUNT_LIMIT);
 
       const {view} = await createWidget();
 

@@ -82,11 +82,11 @@ export class GlobalAiButton extends UI.Widget.Widget {
   // We only want to enable promotion when:
   // * The flag is enabled,
   // * The current date is before the promotion end date,
-  // * The click count on this button is less than 5.
+  // * The click count on this button is less than 2.
   #shouldTriggerPromotion(): boolean {
     const isFlagEnabled = Boolean(Root.Runtime.hostConfig.devToolsGlobalAiButton?.promotionEnabled);
     const isBeforeEndDate = (new Date()) < PROMOTION_END_DATE;
-    return isFlagEnabled && isBeforeEndDate && getClickCountSetting().get() < 5;
+    return isFlagEnabled && isBeforeEndDate && getClickCountSetting().get() < 2;
   }
 
   #triggerPromotion(): void {

@@ -26,6 +26,7 @@ node_ts_library("tests") {
     "css_overview",
     "elements",
     "emulation",
+    "extensions",
     "host",
     "inline_editor",
     "inspector",

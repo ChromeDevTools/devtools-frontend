@@ -232,5 +232,5 @@ export async function postFileTeardown() {
 }
 
 export function getDevToolsFrontendHostname(): string {
-  return frontendTab.hostname();
+  return frontendTab?.hostname() || 'localhost';
 }

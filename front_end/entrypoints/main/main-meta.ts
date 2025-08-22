@@ -887,7 +887,7 @@ UI.Toolbar.registerToolbarItem({
 
 UI.Toolbar.registerToolbarItem({
   separator: true,
-  order: 97,
+  order: 96,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
 });
 

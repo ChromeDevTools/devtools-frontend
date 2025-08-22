@@ -15,7 +15,7 @@ import type {InspectedPage} from '../e2e_non_hosted/shared/target-helper.js';
 
 import {getBrowserAndPagesWrappers} from './non_hosted_wrappers.js';
 
-export {platform} from '../conductor/mocha-interface-helpers.js';
+export {platform} from '../conductor/platform.js';
 
 declare global {
   interface Window {

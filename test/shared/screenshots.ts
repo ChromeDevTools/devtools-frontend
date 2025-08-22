@@ -11,8 +11,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type * as puppeteer from 'puppeteer-core';
 
-import {platform} from '../conductor/mocha-interface-helpers.js';
 import {SOURCE_ROOT} from '../conductor/paths.js';
+import {platform} from '../conductor/platform.js';
 import {ScreenshotError} from '../conductor/screenshot-error.js';
 import {TestConfig} from '../conductor/test_config.js';
 import {

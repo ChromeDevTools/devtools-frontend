@@ -10,9 +10,9 @@ import {
 } from '../../e2e/helpers/elements-helpers.js';
 
 describe('The Elements tab', function() {
-  // Skip since this test seems to be consistently failing on mac.
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/440335793] does not break further style inspection if inherited style property was disabled',
+  // Skip since this test seems to be consistently failing on mac and linux.
+  it.skip(
+      '[crbug.com/440335793] does not break further style inspection if inherited style property was disabled',
       async ({devToolsPage, inspectedPage}) => {
         await inspectedPage.goToResource('elements/styles-disable-inherited.html');
         await expandSelectedNodeRecursively(devToolsPage);

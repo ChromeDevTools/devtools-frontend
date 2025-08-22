@@ -274,11 +274,14 @@ Find an exhaustive collection of icons currently used in DevTools [here](https:/
 
 #### Developer guidelines
 
+For some frequently used icons e.g. cross-circle, warning-filled etc. colors are auto-set in the component. See full list [here](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/components/icon_button/icon.css;l=47)
+
 ##### Dos and Don'ts
 
 ###### Do
 
-  * Set class and change color and / or size in .css files
+  * Set class and change color in .css files
+  * Set one of the predefined classes to change icon size e.g. extra-small for 12px
 
 ###### Don't
 

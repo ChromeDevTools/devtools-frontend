@@ -5,10 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("issues") {
-  sources = [
-    "quota-issues_test.ts",
-    "user-reidentification-issues_test.ts",
-  ]
+  sources = [ "quota-issues_test.ts" ]
 
   deps = [
     "../../shared",

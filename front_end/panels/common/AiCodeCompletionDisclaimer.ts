@@ -104,6 +104,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View =
                 ${input.noLogging ? lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLogging) : lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletion)}
                 </div>
                 <span
+                    tabIndex="0"
                     class="link"
                     role="link"
                     jslog=${VisualLogging.link('open-ai-settings').track({

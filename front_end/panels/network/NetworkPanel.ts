@@ -52,7 +52,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Search from '../search/search.js';
 
-import {Events, type RequestActivatedEvent} from './NetworkDataGridNode.js';
+import {Events, type RequestActivatedEvent, RequestPanelBehavior} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkOverview} from './NetworkOverview.js';
@@ -694,9 +694,9 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
   private onRequestActivated(event: Common.EventTarget.EventTargetEvent<RequestActivatedEvent>): void {
     const {showPanel, tab, takeFocus} = event.data;
-    if (showPanel) {
+    if (showPanel === RequestPanelBehavior.ShowPanel) {
       this.showRequestPanel(tab, takeFocus);
-    } else {
+    } else if (showPanel === RequestPanelBehavior.HidePanel) {
       this.hideRequestPanel();
     }
   }

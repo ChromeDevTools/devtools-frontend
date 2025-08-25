@@ -350,8 +350,14 @@ export const enum Events {
   RequestActivated = 'RequestActivated',
 }
 
+export const enum RequestPanelBehavior {
+  ShowPanel = 'ShowPanel',
+  HidePanel = 'HidePanel',
+  Unchanged = 'Unchanged',
+}
+
 export interface RequestActivatedEvent {
-  showPanel: boolean;
+  showPanel: RequestPanelBehavior;
   takeFocus?: boolean;
   tab?: NetworkForward.UIRequestLocation.UIRequestTabs;
 }
@@ -1145,11 +1151,13 @@ export class NetworkRequestNode extends NetworkNode {
       cell.style.setProperty('padding-left', leftPadding);
       cell.tabIndex = -1;
       cell.addEventListener('dblclick', this.openInNewTab.bind(this), false);
-      cell.addEventListener('mousedown', () => {
+      cell.addEventListener('mousedown', (event: MouseEvent) => {
         // When the request panel isn't visible yet, firing the RequestActivated event
         // doesn't make it visible if no request is selected. So we'll select it first.
         this.select();
-        this.parentView().dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
+        // Only open panel on mousedown with left mouse button.
+        const showPanel = event.button ? RequestPanelBehavior.Unchanged : RequestPanelBehavior.ShowPanel;
+        this.parentView().dispatchEventToListeners(Events.RequestActivated, {showPanel});
       });
       cell.addEventListener('focus', () => this.parentView().resetFocus());
 
@@ -1285,7 +1293,7 @@ export class NetworkRequestNode extends NetworkNode {
         this.setTextAndTitleAsLink(
             cell, i18nString(UIStrings.blockeds, {PH1: reason}), i18nString(UIStrings.blockedTooltip), () => {
               this.parentView().dispatchEventToListeners(Events.RequestActivated, {
-                showPanel: true,
+                showPanel: RequestPanelBehavior.ShowPanel,
                 tab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
               });
             });

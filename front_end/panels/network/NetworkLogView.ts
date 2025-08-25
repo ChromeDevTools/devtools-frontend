@@ -65,6 +65,7 @@ import {
   type NetworkLogViewInterface,
   type NetworkNode,
   NetworkRequestNode,
+  RequestPanelBehavior,
 } from './NetworkDataGridNode.js';
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import networkLogViewStyles from './networkLogView.css.js';
@@ -1136,7 +1137,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.dataGrid.setName('network-log');
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
     this.dataGrid.element.classList.add('network-log-grid');
-    this.dataGrid.element.addEventListener('mousedown', this.dataGridMouseDown.bind(this), true);
     this.dataGrid.element.addEventListener('mousemove', this.dataGridMouseMove.bind(this), true);
     this.dataGrid.element.addEventListener('mouseleave', () => this.setHoveredNode(null), true);
     this.dataGrid.element.addEventListener('keydown', event => {
@@ -1148,7 +1148,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       }
 
       if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
-        this.dispatchEventToListeners(Events.RequestActivated, {showPanel: true, takeFocus: true});
+        this.dispatchEventToListeners(
+            Events.RequestActivated, {showPanel: RequestPanelBehavior.ShowPanel, takeFocus: true});
         event.consume(true);
       }
     });
@@ -1188,13 +1189,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.hoveredNodeInternal = node;
     if (this.hoveredNodeInternal) {
       this.hoveredNodeInternal.setHovered(true, Boolean(highlightInitiatorChain));
-    }
-  }
-
-  private dataGridMouseDown(event: Event): void {
-    const mouseEvent = (event as MouseEvent);
-    if (!this.dataGrid.selectedNode && mouseEvent.button) {
-      mouseEvent.consume();
     }
   }
 
@@ -1557,7 +1551,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   private reset(): void {
-    this.dispatchEventToListeners(Events.RequestActivated, {showPanel: false});
+    this.dispatchEventToListeners(Events.RequestActivated, {showPanel: RequestPanelBehavior.HidePanel});
 
     this.setHoveredNode(null);
     this.columnsInternal.reset();

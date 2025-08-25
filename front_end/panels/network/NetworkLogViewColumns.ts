@@ -277,11 +277,6 @@ export class NetworkLogViewColumns {
       deleteCallback: undefined,
       refreshCallback: undefined,
     }));
-    this.dataGridInternal.element.addEventListener('mousedown', event => {
-      if (!this.dataGridInternal.selectedNode && event.button) {
-        event.consume();
-      }
-    }, true);
     this.dataGridScroller = (this.dataGridInternal.scrollContainer as HTMLDivElement);
 
     this.updateColumns();

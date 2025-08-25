@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError} from '../../../testing/InsightHelpers.js';
@@ -66,7 +66,19 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
     const {formatter, parsedTrace} = await createFormatter(this, 'yahoo-news.json.gz');
     const min = parsedTrace.Meta.traceBounds.min;
     const max = parsedTrace.Meta.traceBounds.min + parsedTrace.Meta.traceBounds.range / 2 as Trace.Types.Timing.Micro;
-    const output = formatter.formatMainThreadTrackSummary(min, max);
+    const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
+    const output = formatter.formatMainThreadTrackSummary(bounds);
+    snapshotTester.assert(this, output);
+  });
+
+  it('formatNetworkTrackSummary', async function() {
+    const {formatter, parsedTrace} = await createFormatter(this, 'yahoo-news.json.gz');
+    // Just check the first 300 ms.
+    const min = parsedTrace.Meta.traceBounds.min;
+    const max = (parsedTrace.Meta.traceBounds.min + Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(300))) as
+        Trace.Types.Timing.Micro;
+    const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
+    const output = formatter.formatNetworkTrackSummary(bounds);
     snapshotTester.assert(this, output);
   });
 });

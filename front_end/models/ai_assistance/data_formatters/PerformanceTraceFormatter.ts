@@ -237,9 +237,50 @@ export class PerformanceTraceFormatter {
     return `Longest ${longestTaskTrees.length} tasks:\n${listText}`;
   }
 
-  formatMainThreadTrackSummary(min: Trace.Types.Timing.Micro, max: Trace.Types.Timing.Micro): string {
+  #serializeRelatedInsightsForEvents(events: Trace.Types.Events.Event[]): string {
+    if (!events.length) {
+      return '';
+    }
+
+    const insightNameToRelatedEvents = new Map<string, Trace.Types.Events.Event[]>();
+    if (this.#insightSet) {
+      for (const model of Object.values(this.#insightSet.model)) {
+        if (!model.relatedEvents) {
+          continue;
+        }
+
+        const modeRelatedEvents =
+            Array.isArray(model.relatedEvents) ? model.relatedEvents : [...model.relatedEvents.keys()];
+        if (!modeRelatedEvents.length) {
+          continue;
+        }
+
+        const relatedEvents = modeRelatedEvents.filter(e => events.includes(e));
+        if (relatedEvents.length) {
+          insightNameToRelatedEvents.set(model.insightKey, relatedEvents);
+        }
+      }
+    }
+
+    if (!insightNameToRelatedEvents.size) {
+      return '';
+    }
+
     const results = [];
-    const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
+    for (const [insightKey, events] of insightNameToRelatedEvents) {
+      // Limit to 5, because some insights (namely ThirdParties) can have a huge
+      // number of related events. Mostly, insights probably don't have more than
+      // 5.
+      const eventsString = events.slice(0, 5)
+                               .map(e => TimelineUtils.EntryName.nameForEntry(e) + ' ' + this.serializeEvent(e))
+                               .join(', ');
+      results.push(`- ${insightKey}: ${eventsString}`);
+    }
+    return results.join('\n');
+  }
+
+  formatMainThreadTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): string {
+    const results = [];
 
     const topDownTree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityTopDown(
         this.#insightSet?.navigation?.args.data?.navigationId,
@@ -267,49 +308,36 @@ export class PerformanceTraceFormatter {
       results.push(this.#formatThirdPartyEntitySummaries(thirdPartySummaries));
     }
 
-    const insightNameToRelatedEvents = new Map<string, Trace.Types.Events.Event[]>();
-    if (this.#insightSet) {
-      for (const model of Object.values(this.#insightSet.model)) {
-        if (!model.relatedEvents) {
-          continue;
-        }
-
-        const relatedEvents =
-            Array.isArray(model.relatedEvents) ? model.relatedEvents : [...model.relatedEvents.keys()];
-        if (!relatedEvents.length) {
-          continue;
-        }
-
-        const events = [];
-        if (topDownTree) {
-          events.push(...relatedEvents.filter(e => topDownTree.rootNode.events.includes(e)));
-        }
-        if (bottomUpRootNode) {
-          events.push(...relatedEvents.filter(e => bottomUpRootNode.events.includes(e)));
-        }
-        if (events.length) {
-          insightNameToRelatedEvents.set(model.insightKey, events);
-        }
-      }
-    }
-
-    if (insightNameToRelatedEvents.size) {
+    const relatedInsightsText = this.#serializeRelatedInsightsForEvents(
+        [...topDownTree?.rootNode.events ?? [], ...bottomUpRootNode?.events ?? []]);
+    if (relatedInsightsText) {
       results.push('# Related insights');
       results.push(
           'Here are all the insights that contain some related event from the main thread in the given range.');
-      for (const [insightKey, events] of insightNameToRelatedEvents) {
-        // Limit to 5, because some insights (namely ThirdParties) can have a huge
-        // number of related events. Mostly, insights probably don't have more than
-        // 5.
-        const eventsString = events.slice(0, 5)
-                                 .map(e => TimelineUtils.EntryName.nameForEntry(e) + ' ' + this.serializeEvent(e))
-                                 .join(', ');
-        results.push(`- ${insightKey}: ${eventsString}`);
-      }
+      results.push(relatedInsightsText);
     }
 
     if (!results.length) {
       return 'No main thread activity found';
+    }
+
+    return results.join('\n\n');
+  }
+
+  formatNetworkTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): string {
+    const results = [];
+
+    const requests = this.#parsedTrace.NetworkRequests.byTime.filter(
+        request => Trace.Helpers.Timing.eventIsInBounds(request, bounds));
+    const requestsText = TraceEventFormatter.networkRequests(requests, this.#parsedTrace, {verbose: false});
+    results.push('# Network requests summary');
+    results.push(requestsText || 'No requests in the given bounds');
+
+    const relatedInsightsText = this.#serializeRelatedInsightsForEvents(requests);
+    if (relatedInsightsText) {
+      results.push('# Related insights');
+      results.push('Here are all the insights that contain some related request from the given range.');
+      results.push(relatedInsightsText);
     }
 
     return results.join('\n\n');

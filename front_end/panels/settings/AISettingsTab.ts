@@ -200,9 +200,13 @@ const UIStrings = {
    */
   enableAiAssistance: 'Enable AI assistance',
   /**
-   * @description Label for a toggle to enable the AI assistance feature
+   * @description Label for a toggle to enable the AI annotation feature
    */
   enableAiSuggestedAnnotations: 'Enable AI suggestions for performance panel annotations',
+  /**
+   * @description Label for a toggle to enable the AI code suggestions feature
+   */
+  enableAiCodeSuggestions: 'Enable AI code suggestions',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/AISettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -370,7 +374,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         settingName: i18n.i18n.lockedString('Code suggestions'),
         iconName: 'text-analysis',
         settingDescription: i18nString(UIStrings.helpUnderstandCodeSuggestions),
-        enableSettingText: i18nString(UIStrings.enableAiSuggestedAnnotations),
+        enableSettingText: i18nString(UIStrings.enableAiCodeSuggestions),
         settingItems: [{iconName: 'code', text: i18nString(UIStrings.asYouTypeCodeSuggestions)}],
         toConsiderSettingItems: [{
           iconName: 'google',

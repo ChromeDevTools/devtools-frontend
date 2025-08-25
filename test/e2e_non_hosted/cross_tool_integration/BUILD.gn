@@ -5,7 +5,10 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("cross_tool_integration") {
-  sources = [ "browser_test.ts" ]
+  sources = [
+    "browser_test.ts",
+    "workflow_test.ts",
+  ]
 
   deps = [
     "../../e2e/helpers",

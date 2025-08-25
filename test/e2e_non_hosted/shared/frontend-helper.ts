@@ -34,6 +34,18 @@ const CONTROL_OR_META = platform === 'mac' ? 'Meta' : 'Control';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;
 
+interface DevToolsReloadParams {
+  /**
+   * Mocks DevTools URL search params to make it think whether it can dock or not.
+   * This does not control whether or not the panel can actually dock or not.
+   */
+  canDock?: boolean;
+  /**
+   * Mocks DevTools URL search params to make it open a specific panel on load.
+   */
+  panel?: string;
+}
+
 export class DevToolsPage extends PageWrapper {
   #currentHighlightedElement?: HighlightedElement;
 
@@ -100,6 +112,35 @@ export class DevToolsPage extends PageWrapper {
   override async reload() {
     await super.reload();
     await this.ensureReadyForTesting();
+  }
+
+  /**
+   * Use the Runtime.setQueryParamForTesting to mock the parameter before
+   * DevTools is loaded.
+   * If Panel is provided it waits for it to be shown.
+   *
+   * Important information for the implementation:
+   * Trying to change the url and then reload or navigate to the new one will
+   * hit this check in the back end:
+   * https://crsrc.org/c/chrome/browser/devtools/devtools_ui_bindings.cc;l=406?q=devtools_ui_b&ss=chromium
+   */
+  async reloadWithParams({panel, canDock}: DevToolsReloadParams) {
+    const token = await this.page.evaluateOnNewDocument(async (panelName, canDockDevTools) => {
+      // @ts-expect-error Evaluated in DevTools context
+      const Root = await import('./core/root/root.js');
+      if (panelName) {
+        Root.Runtime.Runtime.setQueryParamForTesting('panel', panelName);
+      }
+      if (canDockDevTools) {
+        Root.Runtime.Runtime.setQueryParamForTesting('can_dock', `${canDockDevTools}`);
+      }
+    }, panel, canDock);
+
+    await this.reload();
+    await this.page.removeScriptToEvaluateOnNewDocument(token.identifier);
+    if (panel) {
+      await this.waitFor(`.panel.${panel}`);
+    }
   }
 
   async ensureReadyForTesting() {

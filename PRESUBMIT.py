@@ -532,6 +532,10 @@ def CheckAuthorizedAuthor(input_api, output_api):
 
 
 def CheckPanProjectChecksOnCommit(input_api, output_api):
+    # TODO(b/40277703): CheckLicense is explicitly disabled for now until the
+    # situation around the Blink-inherited Google Inc copyright headers is
+    # resolved, at which point we need to remove the `license_header` parameter.
     return input_api.canned_checks.PanProjectChecks(input_api,
                                                     output_api,
+                                                    license_header=".*",
                                                     maxlen=120)

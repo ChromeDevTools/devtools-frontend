@@ -57,6 +57,20 @@ export class PerformanceTraceFormatter {
       parts.push('Metrics:');
       if (lcp) {
         parts.push(`  - LCP: ${Math.round(lcp.value / 1000)} ms, event: ${this.serializeEvent(lcp.event)}`);
+        const subparts = insightSet?.model.LCPBreakdown.subparts;
+        if (subparts) {
+          const serializeSubpart = (subpart: Trace.Insights.Models.LCPBreakdown.Subpart): string => {
+            return `${ms(subpart.range / 1000)}, bounds: ${this.serializeBounds(subpart)}`;
+          };
+          parts.push(`    - TTFB: ${serializeSubpart(subparts.ttfb)}`);
+          if (subparts.loadDelay !== undefined) {
+            parts.push(`    - Load delay: ${serializeSubpart(subparts.loadDelay)}`);
+          }
+          if (subparts.loadDuration !== undefined) {
+            parts.push(`    - Load duration: ${serializeSubpart(subparts.loadDuration)}`);
+          }
+          parts.push(`    - Render delay: ${serializeSubpart(subparts.renderDelay)}`);
+        }
       }
       if (inp) {
         parts.push(`  - INP: ${Math.round(inp.value / 1000)} ms, event: ${this.serializeEvent(inp.event)}`);

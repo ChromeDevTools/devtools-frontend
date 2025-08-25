@@ -32,10 +32,22 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
     await snapshotTester.finish();
   });
 
-  it('formatTraceSummary', async function() {
-    const {formatter} = await createFormatter(this, 'web-dev.json.gz');
-    const output = formatter.formatTraceSummary();
-    snapshotTester.assert(this, output);
+  describe('formatTraceSummary', () => {
+    it('web-dev.json.gz', async function() {
+      // TODO(b/425270067): in LCPBreakdown, `anyValuesNaN` is true, so the summary
+      // does not include LCP phases. Investigate this.
+      // LOG: Object{min: 1020034834921, max: NaN, range: NaN, label: 'Time to first byte'}
+      // LOG: Object{min: NaN, max: 1020034953358, range: NaN, label: 'Element render delay'}
+      const {formatter} = await createFormatter(this, 'web-dev.json.gz');
+      const output = formatter.formatTraceSummary();
+      snapshotTester.assert(this, output);
+    });
+
+    it('yahoo-news.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'yahoo-news.json.gz');
+      const output = formatter.formatTraceSummary();
+      snapshotTester.assert(this, output);
+    });
   });
 
   it('formatCriticalRequests', async function() {

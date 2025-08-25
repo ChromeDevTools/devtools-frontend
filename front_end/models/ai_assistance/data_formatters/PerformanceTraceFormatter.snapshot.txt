@@ -1,28 +1,3 @@
-Title: PerformanceTraceFormatter formatTraceSummary
-Content:
-URL: https://web.dev/cls/
-Bounds: {min: 1020034823047, max: 1020036087961}
-CPU throttling: none
-Network throttling: none
-Metrics:
-  - LCP: 118 ms, event: (eventKey: r-1802, ts: 1020034953358)
-  - CLS: 0
-Available insights:
-  - insight name: LCPBreakdown
-    description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
-    relevant trace bounds: {min: 1020034834921, max: 1020036087961}
-    example question: Help me optimize my LCP score
-    example question: Which LCP phase was most problematic?
-    example question: What can I do to reduce the LCP time for this page load?
-  - insight name: DocumentLatency
-    description: Your first network request is the most important.  Reduce its latency by avoiding redirects, ensuring a fast server response, and enabling text compression.
-    relevant trace bounds: {min: 1020034836013, max: 1020034892491}
-    estimated metric savings: FCP 0 ms, LCP 0 ms
-    estimated wasted bytes: 52 kB
-    example question: How do I decrease the initial loading time of my page?
-    example question: Did anything slow down the request for this document?
-=== end content
-
 Title: PerformanceTraceFormatter formatCriticalRequests
 Content:
 Critical network requests:
@@ -510,4 +485,70 @@ Here are all the insights that contain some related request from the given range
 - ThirdParties: cmp.js (consent.cmp.oath.com) (eventKey: s-3382, ts: 157423742399), gpt.js (securepubads.g.doubleclick.net) (eventKey: s-6244, ts: 157423760529), loader.js (cdn.taboola.com) (eventKey: s-6352, ts: 157423761978)
 - Cache: prebid-2.0.js (s.yimg.com) (eventKey: s-6279, ts: 157423760925), cmp.js (consent.cmp.oath.com) (eventKey: s-3382, ts: 157423742399), d1irmdsmbztlvx.js (s.yimg.com) (eventKey: s-6185, ts: 157423759200), consent.js (s.yimg.com) (eventKey: s-3384, ts: 157423742450), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794)
 - LegacyJavaScript: benji-2.2.99.js (s.yimg.com) (eventKey: s-3387, ts: 157423742567), 25fa214.caas-news_web.min.js (s.yimg.com) (eventKey: s-3412, ts: 157423743431), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794), consent.js (s.yimg.com) (eventKey: s-3384, ts: 157423742450), news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126)
+=== end content
+
+Title: PerformanceTraceFormatter formatTraceSummary web-dev.json.gz
+Content:
+URL: https://web.dev/cls/
+Bounds: {min: 1020034823047, max: 1020036087961}
+CPU throttling: none
+Network throttling: none
+Metrics:
+  - LCP: 118 ms, event: (eventKey: r-1802, ts: 1020034953358)
+  - CLS: 0
+Available insights:
+  - insight name: LCPBreakdown
+    description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    relevant trace bounds: {min: 1020034834921, max: 1020036087961}
+    example question: Help me optimize my LCP score
+    example question: Which LCP phase was most problematic?
+    example question: What can I do to reduce the LCP time for this page load?
+  - insight name: DocumentLatency
+    description: Your first network request is the most important.  Reduce its latency by avoiding redirects, ensuring a fast server response, and enabling text compression.
+    relevant trace bounds: {min: 1020034836013, max: 1020034892491}
+    estimated metric savings: FCP 0 ms, LCP 0 ms
+    estimated wasted bytes: 52 kB
+    example question: How do I decrease the initial loading time of my page?
+    example question: Did anything slow down the request for this document?
+=== end content
+
+Title: PerformanceTraceFormatter formatTraceSummary yahoo-news.json.gz
+Content:
+URL: https://news.yahoo.com/
+Bounds: {min: 157423484442, max: 157427277166}
+CPU throttling: none
+Network throttling: none
+Metrics:
+  - LCP: 464 ms, event: (eventKey: r-33210, ts: 157423953162)
+    - TTFB: 215.6 ms, bounds: {min: 157423488682, max: 157423704371}
+    - Load delay: 90.3 ms, bounds: {min: 157423704371, max: 157423794709}
+    - Load duration: 63.9 ms, bounds: {min: 157423794709, max: 157423858674}
+    - Render delay: 94.4 ms, bounds: {min: 157423858674, max: 157423953162}
+  - CLS: 0.043065690033645056, event: (eventKey: s--1, ts: 157425604232)
+Available insights:
+  - insight name: LCPBreakdown
+    description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    relevant trace bounds: {min: 157423488682, max: 157423953162}
+    example question: Help me optimize my LCP score
+    example question: Which LCP phase was most problematic?
+    example question: What can I do to reduce the LCP time for this page load?
+  - insight name: CLSCulprits
+    description: Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://web.dev/articles/optimize-cls), such as elements being added, removed, or their fonts changing as the page loads.
+    relevant trace bounds: {min: 157425604232, max: 157426760958}
+    example question: Help me optimize my CLS score
+    example question: How can I prevent layout shifts on this page?
+  - insight name: ImageDelivery
+    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)
+    relevant trace bounds: {min: 157423794709, max: 157424082831}
+    estimated metric savings: FCP 0 ms, LCP 0 ms
+    estimated wasted bytes: 98 kB
+    example question: What should I do to improve and optimize the time taken to fetch and display images on the page?
+    example question: Are all images on my site optimized?
+  - insight name: LegacyJavaScript
+    description: Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)
+    relevant trace bounds: {min: 157423489126, max: 157426132225}
+    estimated metric savings: FCP 0 ms, LCP 0 ms
+    estimated wasted bytes: 127 kB
+    example question: Is my site polyfilling modern JavaScript features?
+    example question: How can I reduce the amount of legacy JavaScript on my page?
 === end content

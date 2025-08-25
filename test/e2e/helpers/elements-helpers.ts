@@ -1036,8 +1036,10 @@ export const toggleClassesPaneCheckbox =
 
 export const uncheckStylesPaneCheckbox =
     async (checkboxLabel: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
-  console.error('uncheckStylesPaneCheckbox', checkboxLabel);
   const initialValue = await getContentOfSelectedNode(devToolsPage);
+  await devToolsPage.hover(`.enabled-button[aria-label="${checkboxLabel}"]`);
+  // To detect an impression, we need to hover for some time.
+  await new Promise(resolve => setTimeout(resolve, 250));
   await devToolsPage.click(`.enabled-button[aria-label="${checkboxLabel}"]`);
   await waitForSelectedNodeChange(initialValue, devToolsPage);
   await expectVeEvents(

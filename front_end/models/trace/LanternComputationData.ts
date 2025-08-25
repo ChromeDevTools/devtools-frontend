@@ -102,6 +102,7 @@ function createLanternRequest(
     // These two timings are not included in the trace.
     workerFetchStart: -1,
     workerRespondWithSettled: -1,
+    receiveHeadersStart: -1,
     ...request.args.data.timing,
   } :
                                             undefined;

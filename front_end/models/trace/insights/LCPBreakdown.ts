@@ -8,6 +8,7 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
+import {calculateDocFirstByteTs} from './Common.js';
 import {
   InsightCategory,
   InsightKeys,
@@ -113,15 +114,9 @@ function determineSubparts(
     nav: Types.Events.NavigationStart, docRequest: Types.Events.SyntheticNetworkRequest,
     lcpEvent: Types.Events.LargestContentfulPaintCandidate,
     lcpRequest: Types.Events.SyntheticNetworkRequest|undefined): LCPSubparts|null {
-  const docReqTiming = docRequest.args.data.timing;
-
-  let firstDocByteTs;
-  if (docReqTiming) {
-    firstDocByteTs = Types.Timing.Micro(
-        Helpers.Timing.secondsToMicro(docReqTiming.requestTime) +
-        Helpers.Timing.milliToMicro(docReqTiming.receiveHeadersStart));
-  } else {
-    firstDocByteTs = docRequest.ts;  // file:
+  const firstDocByteTs = calculateDocFirstByteTs(docRequest);
+  if (firstDocByteTs === null) {
+    return null;
   }
 
   const ttfb = Helpers.Timing.traceWindowFromMicroSeconds(nav.ts, firstDocByteTs) as Subpart;

@@ -495,11 +495,13 @@ CPU throttling: none
 Network throttling: none
 Metrics:
   - LCP: 118 ms, event: (eventKey: r-1802, ts: 1020034953358)
+    - TTFB: 31.3 ms, bounds: {min: 1020034834921, max: 1020034866264}
+    - Render delay: 87 ms, bounds: {min: 1020034866264, max: 1020034953358}
   - CLS: 0
 Available insights:
   - insight name: LCPBreakdown
     description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
-    relevant trace bounds: {min: 1020034834921, max: 1020036087961}
+    relevant trace bounds: {min: 1020034834921, max: 1020034953358}
     example question: Help me optimize my LCP score
     example question: Which LCP phase was most problematic?
     example question: What can I do to reduce the LCP time for this page load?

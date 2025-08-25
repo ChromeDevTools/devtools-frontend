@@ -389,7 +389,7 @@ export interface SyntheticNetworkRequest extends Complete, SyntheticBased<Phase.
        *
        * Note, this is not the same as URL.protocol.
        *
-       * Example values (not exhaustive): http/0.9, http/1.0, http/1.1, http, h2, h3-Q050, data, blob
+       * Example values (not exhaustive): http/0.9, http/1.0, http/1.1, http, h2, h3-Q050, data, blob, file
        */
       protocol: string,
       redirects: SyntheticNetworkRedirect[],
@@ -1115,7 +1115,8 @@ interface ResourceReceiveResponseTimingData {
   pushEnd: Milli;
   pushStart: Milli;
   receiveHeadersEnd: Milli;
-  receiveHeadersStart: Milli;
+  /** M116. */
+  receiveHeadersStart?: Milli;
   /** When the network service is about to handle a request, ie. just before going to the HTTP cache or going to the network for DNS/connection setup. */
   requestTime: Seconds;
   sendEnd: Milli;

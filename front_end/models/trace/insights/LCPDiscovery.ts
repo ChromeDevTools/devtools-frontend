@@ -7,6 +7,7 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
+import {calculateDocFirstByteTs} from './Common.js';
 import {
   type Checklist,
   InsightCategory,
@@ -135,11 +136,8 @@ export function generateInsight(
 
   const imageLoadingAttr = lcpEvent.args.data?.loadingAttr;
   const imageFetchPriorityHint = lcpRequest?.args.data.fetchPriorityHint;
-  // This is the earliest discovery time an LCP request could have - it's TTFB.
-  const earliestDiscoveryTime = docRequest?.args.data.timing ?
-      Helpers.Timing.secondsToMicro(docRequest.args.data.timing.requestTime) +
-          Helpers.Timing.milliToMicro(docRequest.args.data.timing.receiveHeadersStart) :
-      undefined;
+  // This is the earliest discovery time an LCP request could have - it's TTFB (as an absolute timestamp).
+  const earliestDiscoveryTime = calculateDocFirstByteTs(docRequest);
 
   const priorityHintFound = imageFetchPriorityHint === 'high';
 

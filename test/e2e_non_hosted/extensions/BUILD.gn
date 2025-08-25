@@ -8,6 +8,7 @@ ts_e2e_library("extensions") {
   sources = [
     "can-create-panels_test.ts",
     "can-reveal-requests_test.ts",
+    "can-search-in-extension-panel_test.ts",
   ]
 
   deps = [

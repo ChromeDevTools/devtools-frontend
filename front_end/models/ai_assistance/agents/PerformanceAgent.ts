@@ -994,6 +994,45 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
       },
 
     });
+
+    this.declareFunction<{eventKey: string}, {callTree: string}>('getDetailedCallTree', {
+      description: 'Returns a detailed call tree for the given main thread event.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          eventKey: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'The key for the event.',
+            nullable: false,
+          },
+        },
+      },
+      displayInfoFromArgs: args => {
+        return {title: lockedString('Looking at call tree…'), action: `getDetailedCallTree(${args.eventKey})`};
+      },
+      handler: async args => {
+        debugLog('Function call: getDetailedCallTree');
+
+        if (!this.#formatter) {
+          throw new Error('missing formatter');
+        }
+
+        const event = this.#lookupEvent(args.eventKey as Trace.Types.File.SerializableKey);
+        if (!event) {
+          return {error: 'Invalid eventKey'};
+        }
+
+        const tree = TimelineUtils.AICallTree.AICallTree.fromEvent(event, parsedTrace);
+        const callTree = tree?.serialize() ?? 'No call tree found';
+
+        const key = `getDetailedCallTree(${args.eventKey})`;
+        this.#cacheFunctionResult(focus, key, callTree);
+        return {result: {callTree}};
+      },
+
+    });
   }
 
   #declareFunctions(context: ConversationContext<TimelineUtils.AIContext.AgentFocus>): void {

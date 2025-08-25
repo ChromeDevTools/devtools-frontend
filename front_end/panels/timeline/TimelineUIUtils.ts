@@ -54,7 +54,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {getDurationString} from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
 import * as Extensions from './extensions/extensions.js';
-import {Tracker} from './FreshRecording.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {targetForEvent} from './TargetForEvent.js';
 import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
@@ -1021,7 +1020,8 @@ export class TimelineUIUtils {
       }
     }
 
-    const isFreshRecording = Boolean(parsedTrace && Tracker.instance().recordingIsFresh(parsedTrace));
+    const isFreshRecording =
+        Boolean(parsedTrace && Utils.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace));
 
     switch (event.name) {
       case Trace.Types.Events.Name.GC:

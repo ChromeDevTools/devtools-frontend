@@ -16,7 +16,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as TimelineComponents from './components/components.js';
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
-import {Tracker} from './FreshRecording.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {ThirdPartyTreeViewWidget} from './ThirdPartyTreeView.js';
 import detailsViewStyles from './timelineDetailsView.css.js';
@@ -671,7 +670,8 @@ async function renderSelectedEventDetails(
   if (!selectedEvent || !parsedTrace || !linkifier) {
     return nothing;
   }
-  const traceRecordingIsFresh = parsedTrace ? Tracker.instance().recordingIsFresh(parsedTrace) : false;
+  const traceRecordingIsFresh =
+      parsedTrace ? Utils.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace) : false;
 
   if (Trace.Types.Events.isSyntheticLayoutShift(selectedEvent) ||
       Trace.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {

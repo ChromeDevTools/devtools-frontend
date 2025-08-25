@@ -9,6 +9,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {html, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as Trace from '../../trace/trace.js';
@@ -816,7 +817,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
       return;
     }
 
-    const {parsedTrace, insightSet} = focus.data;
+    const {parsedTrace, insightSet, traceMetadata} = focus.data;
 
     this.declareFunction<{insightName: string}, {details: string}>('getInsightDetails', {
       description:
@@ -1033,6 +1034,51 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
       },
 
     });
+
+    const isFresh = TimelineUtils.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
+    const hasScriptContents = traceMetadata.enhancedTraceVersion && parsedTrace.Scripts.scripts.some(s => s.content);
+
+    if (isFresh || hasScriptContents) {
+      this.declareFunction<{url: string}, {content: string}>('getResourceContent', {
+        description: 'Returns the content of the resource with the given url. Only use this for text resource types.',
+        parameters: {
+          type: Host.AidaClient.ParametersTypes.OBJECT,
+          description: '',
+          nullable: false,
+          properties: {
+            url: {
+              type: Host.AidaClient.ParametersTypes.STRING,
+              description: 'The url for the resource.',
+              nullable: false,
+            },
+          },
+        },
+        displayInfoFromArgs: args => {
+          return {title: lockedString('Looking at resource content…'), action: `getResourceContent(${args.url})`};
+        },
+        handler: async args => {
+          debugLog('Function call: getResourceContent');
+
+          const url = args.url as Platform.DevToolsPath.UrlString;
+          const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+          if (!resource) {
+            if (!resource) {
+              return {error: 'Resource not found'};
+            }
+          }
+
+          const content = resource.content;
+          if (!content) {
+            return {error: 'Resource has no content'};
+          }
+
+          const key = `getResourceContent(${args.url})`;
+          this.#cacheFunctionResult(focus, key, content);
+          return {result: {content}};
+        },
+
+      });
+    }
   }
 
   #declareFunctions(context: ConversationContext<TimelineUtils.AIContext.AgentFocus>): void {

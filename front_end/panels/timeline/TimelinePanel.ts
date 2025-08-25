@@ -64,7 +64,6 @@ import * as AnnotationHelpers from './AnnotationHelpers.js';
 import {TraceLoadEvent} from './BenchmarkEvents.js';
 import * as TimelineComponents from './components/components.js';
 import * as TimelineInsights from './components/insights/insights.js';
-import {Tracker} from './FreshRecording.js';
 import {IsolateSelector} from './IsolateSelector.js';
 import {AnnotationModifiedEvent, ModificationsManager} from './ModificationsManager.js';
 import * as Overlays from './overlays/overlays.js';
@@ -2564,7 +2563,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
 
       if (recordingIsFresh) {
-        Tracker.instance().registerFreshRecording(parsedTrace);
+        Utils.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
       }
 
       // We store the index of the active trace so we can load it back easily

@@ -17,7 +17,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ActiveFilters} from './ActiveFilters.js';
 import * as Extensions from './extensions/extensions.js';
-import {Tracker} from './FreshRecording.js';
 import {targetForEvent} from './TargetForEvent.js';
 import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
@@ -794,7 +793,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       const parsedTrace = this.treeView.parsedTrace();
       const target = parsedTrace ? targetForEvent(parsedTrace, event) : null;
       const linkifier = this.treeView.linkifier;
-      const isFreshRecording = Boolean(parsedTrace && Tracker.instance().recordingIsFresh(parsedTrace));
+      const isFreshRecording =
+          Boolean(parsedTrace && Utils.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace));
       this.linkElement = TimelineUIUtils.linkifyTopCallFrame(event, target, linkifier, isFreshRecording);
       if (this.linkElement) {
         container.createChild('div', 'activity-link').appendChild(this.linkElement);

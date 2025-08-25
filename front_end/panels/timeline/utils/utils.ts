@@ -9,6 +9,7 @@ import * as EntryName from './EntryName.js';
 import * as EntryNodes from './EntryNodes.js';
 import * as EntryStyles from './EntryStyles.js';
 import * as EventsSerializer from './EventsSerializer.js';
+import * as FreshRecording from './FreshRecording.js';
 import * as Helpers from './Helpers.js';
 import * as IgnoreList from './IgnoreList.js';
 import * as ImageCache from './ImageCache.js';
@@ -24,6 +25,7 @@ export {
   EntryNodes,
   EntryStyles,
   EventsSerializer,
+  FreshRecording,
   Helpers,
   IgnoreList,
   ImageCache,

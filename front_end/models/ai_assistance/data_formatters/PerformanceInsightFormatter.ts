@@ -437,9 +437,9 @@ ${filesFormatted}`;
     return Object.entries(this.#insight.metricSavings ?? {})
         .map(([k, v]) => {
           if (k === 'CLS') {
-            return `${k} ${v}`;
+            return `${k} ${v.toFixed(2)}`;
           }
-          return `${k} ${v} ms`;
+          return `${k} ${Math.round(v)} ms`;
         })
         .join(', ');
   }

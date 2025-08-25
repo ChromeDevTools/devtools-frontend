@@ -497,7 +497,7 @@ Metrics:
   - LCP: 118 ms, event: (eventKey: r-1802, ts: 1020034953358)
     - TTFB: 31.3 ms, bounds: {min: 1020034834921, max: 1020034866264}
     - Render delay: 87 ms, bounds: {min: 1020034866264, max: 1020034953358}
-  - CLS: 0
+  - CLS: 0.00
 Available insights:
   - insight name: LCPBreakdown
     description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
@@ -526,7 +526,7 @@ Metrics:
     - Load delay: 90.3 ms, bounds: {min: 157423704371, max: 157423794709}
     - Load duration: 63.9 ms, bounds: {min: 157423794709, max: 157423858674}
     - Render delay: 94.4 ms, bounds: {min: 157423858674, max: 157423953162}
-  - CLS: 0.043065690033645056, event: (eventKey: s--1, ts: 157425604232)
+  - CLS: 0.04, event: (eventKey: s--1, ts: 157425604232)
 Available insights:
   - insight name: LCPBreakdown
     description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.

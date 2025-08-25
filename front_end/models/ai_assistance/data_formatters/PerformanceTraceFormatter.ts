@@ -77,7 +77,7 @@ export class PerformanceTraceFormatter {
       }
       if (cls) {
         const eventText = cls.worstClusterEvent ? `, event: ${this.serializeEvent(cls.worstClusterEvent)}` : '';
-        parts.push(`  - CLS: ${cls.value}${eventText}`);
+        parts.push(`  - CLS: ${cls.value.toFixed(2)}${eventText}`);
       }
     } else {
       parts.push('Metrics: n/a');

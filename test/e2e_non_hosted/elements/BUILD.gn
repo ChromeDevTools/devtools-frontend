@@ -15,6 +15,7 @@ ts_e2e_library("elements") {
     "computed-pane-properties_test.ts",
     "css-hints_test.ts",
     "dom-breakpoints_test.ts",
+    "element-breadcrumbs_test.ts",
     "elements-tree_test.ts",
     "filter-matched-styles_test.ts",
     "flexbox-editor_test.ts",

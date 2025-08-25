@@ -8,7 +8,6 @@ node_ts_library("elements") {
   sources = [
     "add-view-transition-pseudo-styles_test.ts",
     "at-function-sections_test.ts",
-    "element-breadcrumbs_test.ts",
     "style-pane-properties_test.ts",
   ]
 

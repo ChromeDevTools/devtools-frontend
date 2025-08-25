@@ -4488,6 +4488,18 @@
                     ]
                 },
                 {
+                    "id": "ComputedStyleExtraFields",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "isAppearanceBase",
+                            "description": "Returns whether or not this node is being rendered with base appearance,\nwhich happens when it has its appearance property set to base/base-select\nor it is in the subtree of an element being rendered with base appearance.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "id": "CSSStyle",
                     "description": "CSS style representation.",
                     "type": "object",
@@ -5489,6 +5501,12 @@
                             "items": {
                                 "$ref": "CSSComputedStyleProperty"
                             }
+                        },
+                        {
+                            "name": "extraFields",
+                            "description": "A list of non-standard \"extra fields\" which blink stores alongside each\ncomputed style.",
+                            "experimental": true,
+                            "$ref": "ComputedStyleExtraFields"
                         }
                     ]
                 },

@@ -767,16 +767,13 @@ function formatInteraction(e: TestLogEntry): string {
   return '';
 }
 
-function formatVeEvents(events: Array<TestLogEntry|IntuitiveLogEntry|AdHocAnalysisLogEntry>): string {
+function formatVeEvents(events: TestLogEntry[]): string {
   return events
       .map(e => {
         if ('interaction' in e) {
           return formatInteraction(e);
         }
-        if ('impressions' in e) {
-          return formatImpressions(e.impressions);
-        }
-        return JSON.stringify(e);
+        return formatImpressions(e.impressions);
       })
       .join('\n');
 }
@@ -796,7 +793,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
       pendingEventExpectation.fail(new Error(
           '\nMissing VE Events:\n' + formatVeEvents(pendingEventExpectation.missingEvents) +
           '\nUnmatched VE Events:\n' + formatVeEvents(pendingEventExpectation.unmatchingEvents) + '\nAll events:\n' +
-          formatVeEvents(veDebugEventsLog)));
+          JSON.stringify(veDebugEventsLog, null, 2)));
     }
   }, EVENT_EXPECTATION_TIMEOUT);
 

@@ -50,6 +50,12 @@ export interface ExternalPerformanceInsightsRequestParameters {
   traceModel: Trace.TraceModel.Model;
 }
 
+export interface ExternalPerformanceRequestParameters {
+  conversationType: ConversationType.PERFORMANCE_FULL;
+  prompt: string;
+  traceModel: Trace.TraceModel.Model;
+}
+
 const UIStrings = {
   /**
    * @description Notification shown to the user whenever DevTools receives an external request.
@@ -178,7 +184,7 @@ export class ConversationHandler {
    */
   async handleExternalRequest(
       parameters: ExternalStylingRequestParameters|ExternalNetworkRequestParameters|
-      ExternalPerformanceInsightsRequestParameters,
+      ExternalPerformanceInsightsRequestParameters|ExternalPerformanceRequestParameters,
       ): Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
     try {
       Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
@@ -203,6 +209,8 @@ export class ConversationHandler {
           }
           return await this.#handleExternalPerformanceInsightsConversation(
               parameters.prompt, parameters.insightTitle, parameters.traceModel);
+        case ConversationType.PERFORMANCE_FULL:
+          return await this.#handleExternalPerformanceConversation(parameters.prompt, parameters.traceModel);
         case ConversationType.NETWORK:
           if (!parameters.requestUrl) {
             return this.#generateErrorResponse('The url is required for debugging a network request.');
@@ -301,6 +309,23 @@ export class ConversationHandler {
     return this.#doExternalConversation({
       conversationType: ConversationType.PERFORMANCE_INSIGHT,
       aiAgent: insightsAgent,
+      prompt,
+      selected: new PerformanceTraceContext(focusOrError.focus),
+    });
+  }
+
+  async #handleExternalPerformanceConversation(prompt: string, traceModel: Trace.TraceModel.Model):
+      Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
+    const agent = this.createAgent(ConversationType.PERFORMANCE_FULL);
+    const focusOrError = await Tracing.ExternalRequests.getPerformanceAgentFocusToDebug(
+        traceModel,
+    );
+    if ('error' in focusOrError) {
+      return this.#generateErrorResponse(focusOrError.error);
+    }
+    return this.#doExternalConversation({
+      conversationType: ConversationType.PERFORMANCE_FULL,
+      aiAgent: agent,
       prompt,
       selected: new PerformanceTraceContext(focusOrError.focus),
     });

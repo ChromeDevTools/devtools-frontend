@@ -1052,8 +1052,12 @@ type ExternalRequestInput = {
 }|{
   kind: 'PERFORMANCE_RELOAD_GATHER_INSIGHTS',
 }|{
+  // TODO(b/425270067): remove once MCP removes insight tool.
   kind: 'PERFORMANCE_ANALYZE_INSIGHT',
   args: {insightTitle: string, prompt: string},
+}|{
+  kind: 'PERFORMANCE_ANALYZE',
+  args: {prompt: string},
 }|{
   kind: 'NETWORK_DEBUGGER',
   args: {requestUrl: string, prompt: string},
@@ -1101,6 +1105,17 @@ export async function handleExternalRequestGenerator(input: ExternalRequestInput
         conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT,
         prompt: input.args.prompt,
         insightTitle: input.args.insightTitle,
+        traceModel,
+      });
+    }
+    case 'PERFORMANCE_ANALYZE': {
+      const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
+      const TimelinePanel = await import('../../panels/timeline/timeline.js');
+      const traceModel = TimelinePanel.TimelinePanel.TimelinePanel.instance().model;
+      const conversationHandler = AiAssistanceModel.ConversationHandler.instance();
+      return await conversationHandler.handleExternalRequest({
+        conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_FULL,
+        prompt: input.args.prompt,
         traceModel,
       });
     }

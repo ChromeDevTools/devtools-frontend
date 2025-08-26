@@ -54,3 +54,21 @@ export async function getInsightAgentFocusToDebug(
   const focus = TimelineUtils.AIContext.AgentFocus.fromInsight(parsedTrace, insight, insights.bounds);
   return {focus};
 }
+
+export async function getPerformanceAgentFocusToDebug(model: Trace.TraceModel.Model): Promise<InsightResponse> {
+  const parsedTrace = model.parsedTrace();
+  const insights = model.traceInsights();
+  const traceMetadata = model.metadata();
+  if (!insights || !parsedTrace || !traceMetadata) {
+    return {
+      error:
+          'No trace has been recorded, so we cannot analyze the performance. Must run the devtools_performance_run_trace tool first.',
+    };
+  }
+
+  // Currently only support a single insight set.
+  const insightSet = [...insights.values()].at(0) ?? null;
+
+  const focus = TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insightSet, traceMetadata);
+  return {focus};
+}

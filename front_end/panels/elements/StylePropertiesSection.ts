@@ -958,7 +958,8 @@ export class StylePropertiesSection {
       queryName: containerQuery.name,
       onContainerLinkClick: event => {
         event.preventDefault();
-        void ElementsPanel.instance().revealAndSelectNode(container.containerNode, true, true);
+        void ElementsPanel.instance().revealAndSelectNode(
+            container.containerNode, {showPanel: true, focusNode: true, highlightInOverlay: false});
         void container.containerNode.scrollIntoView();
       },
     };

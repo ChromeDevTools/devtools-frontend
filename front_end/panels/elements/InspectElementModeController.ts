@@ -135,8 +135,19 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
     this.toggleSearchAction.setToggled(false);
   }
 
-  private inspectNode(node: SDK.DOMModel.DOMNode): void {
-    void ElementsPanel.instance().revealAndSelectNode(node, true, true);
+  private inspectNode(node: SDK.DOMModel.DOMNode): Promise<void> {
+    const returnToPanel = UI.Context.Context.instance().flavor(Common.ReturnToPanel.ReturnToPanelFlavor);
+    UI.Context.Context.instance().setFlavor(Common.ReturnToPanel.ReturnToPanelFlavor, null);
+
+    if (returnToPanel) {
+      return ElementsPanel.instance()
+          .revealAndSelectNode(node, {showPanel: false, highlightInOverlay: false})
+          .then(() => {
+            void UI.ViewManager.ViewManager.instance().showView(returnToPanel.viewId, false, false);
+          });
+    }
+    return ElementsPanel.instance().revealAndSelectNode(
+        node, {showPanel: true, focusNode: true, highlightInOverlay: false});
   }
 
   private showDetailedInspectTooltipChanged(): void {

@@ -164,6 +164,18 @@ export const enum SidebarPaneTabId {
   STYLES = 'styles',
 }
 
+type RevealAndSelectNodeOptsSelectionAndFocus = {
+  showPanel?: false,
+  focusNode?: never,
+}|{
+  showPanel: true,
+  focusNode?: boolean,
+};
+
+type RevealAndSelectNodeOpts = RevealAndSelectNodeOptsSelectionAndFocus&{
+  highlightInOverlay?: boolean,
+};
+
 const createAccessibilityTreeToggleButton = (isActive: boolean): HTMLElement => {
   const button = new Buttons.Button.Button();
   const title =
@@ -826,14 +838,14 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     return node;
   }
 
-  async revealAndSelectNode(nodeToReveal: SDK.DOMModel.DOMNode, focus: boolean, omitHighlight?: boolean):
-      Promise<void> {
+  async revealAndSelectNode(nodeToReveal: SDK.DOMModel.DOMNode, opts?: RevealAndSelectNodeOpts): Promise<void> {
+    const {showPanel = true, focusNode = false, highlightInOverlay = true} = opts ?? {};
     this.omitDefaultSelection = true;
 
     const node = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get() ?
         nodeToReveal :
         this.leaveUserAgentShadowDOM(nodeToReveal);
-    if (!omitHighlight) {
+    if (highlightInOverlay) {
       node.highlightForTwoSeconds();
     }
 
@@ -841,8 +853,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       void this.accessibilityTreeView.revealAndSelectNode(nodeToReveal);
     }
 
-    await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);
-    this.selectDOMNode(node, focus);
+    if (showPanel) {
+      await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);
+    }
+    this.selectDOMNode(node, focusNode);
     delete this.omitDefaultSelection;
     if (!this.notFirstInspectElement) {
       ElementsPanel.firstInspectElementNodeNameForTest = node.nodeName();
@@ -1268,7 +1282,7 @@ export class DOMNodeRevealer implements
         }
 
         if (resolvedNode) {
-          void panel.revealAndSelectNode(resolvedNode, !omitFocus).then(resolve);
+          void panel.revealAndSelectNode(resolvedNode, {showPanel: true, focusNode: !omitFocus}).then(resolve);
           return;
         }
         const msg = i18nString(UIStrings.nodeCannotBeFoundInTheCurrent);

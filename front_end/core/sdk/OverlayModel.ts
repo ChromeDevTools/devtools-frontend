@@ -743,7 +743,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     }
   }
 
-  static setInspectNodeHandler(handler: (arg0: DOMNode) => void): void {
+  static setInspectNodeHandler(handler: (arg0: DOMNode) => Promise<void>): void {
     OverlayModel.inspectNodeHandler = handler;
   }
 
@@ -752,7 +752,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     if (OverlayModel.inspectNodeHandler) {
       void deferredNode.resolvePromise().then(node => {
         if (node && OverlayModel.inspectNodeHandler) {
-          OverlayModel.inspectNodeHandler(node);
+          void OverlayModel.inspectNodeHandler(node);
         }
       });
     } else {
@@ -770,7 +770,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.dispatchEventToListeners(Events.EXITED_INSPECT_MODE);
   }
 
-  static inspectNodeHandler: ((node: DOMNode) => void)|null = null;
+  static inspectNodeHandler: ((node: DOMNode) => Promise<void>)|null = null;
 
   getOverlayAgent(): ProtocolProxyApi.OverlayApi {
     return this.overlayAgent;

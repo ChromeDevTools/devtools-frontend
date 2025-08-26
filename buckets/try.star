@@ -86,6 +86,17 @@ devtools_frontend_linux_blink_light_rel</a> but has
 devtools_skip_typecheck=True.""",
 )
 
+try_builder(
+    name = "dtf_check_no_bundle",
+    recipe_name = "devtools/compilator",
+    dimensions = dimensions.default_ubuntu,
+    build_numbers = True,
+    use_siso = SISO.CHROMIUM_UNTRUSTED,
+    properties = {
+        "devtools_bundle": False,
+    },
+)
+
 builder_coverage(
     covered_oss = ["mac_arm64"],
     builder_factory = try_builder,
@@ -177,6 +188,7 @@ cq_builders = struct(
     devtools_builders = [
         "cpp_debug_extension_e2e_dbg",
         "cpp_debug_extension_e2e_rel",
+        "dtf_check_no_bundle",
         "dtf_linux_dbg",
         "dtf_linux_dbg_fastbuild",
         "dtf_linux_rel",
@@ -193,6 +205,7 @@ cq_builders = struct(
     experiment_builders = {
         # Quarantine a builder here
         # This will make them experiment with the given percentage
+        "dtf_check_no_bundle": 100,
     },
     includable_only_builders = [
         "dtf_mac_cross_rel",
@@ -232,6 +245,11 @@ def custom_locationsfilters(builder):
             cq.location_filter(path_regexp = "node_modules/.+", exclude = False),
             cq.location_filter(path_regexp = "third_party/.+", exclude = False),
             cq.location_filter(path_regexp = "build", exclude = False),
+        ]
+    if builder == "dtf_check_no_bundle":
+        return [
+            cq.location_filter(path_regexp = ".+BUILD\\.gn", exclude = False),
+            cq.location_filter(path_regexp = ".+\\.gni", exclude = False),
         ]
     return [
         cq.location_filter(path_regexp = "docs/.+", exclude = True),

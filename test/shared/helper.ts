@@ -540,8 +540,8 @@ export async function renderCoordinatorQueueEmpty(): Promise<void> {
   await devToolsPage.renderCoordinatorQueueEmpty();
 }
 
-export async function setCheckBox(selector: string, wantChecked: boolean): Promise<void> {
-  const {devToolsPage} = getBrowserAndPagesWrappers();
+export async function setCheckBox(
+    selector: string, wantChecked: boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<void> {
   await devToolsPage.setCheckBox(selector, wantChecked);
 }
 

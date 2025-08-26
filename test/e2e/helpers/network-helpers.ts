@@ -8,11 +8,8 @@ import type * as puppeteer from 'puppeteer-core';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
-  $,
-  goToResource,
   setCheckBox,
   waitFor,
-  waitForFunction,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -38,7 +35,7 @@ export async function openNetworkTab(devToolsPage: DevToolsPage = getBrowserAndP
 export async function navigateToNetworkTab(
     testName: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
     inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
-  await goToResource(`network/${testName}`, {inspectedPage});
+  await inspectedPage.goToResource(`network/${testName}`);
   await openNetworkTab(devToolsPage);
 }
 
@@ -66,8 +63,8 @@ export async function getNumberOfRequests() {
   return (await getAllRequestNames()).length;
 }
 
-export async function getSelectedRequestName() {
-  const request = await $(REQUEST_LIST_SELECTOR + ' tr.selected .name-column');
+export async function getSelectedRequestName(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const request = await devToolsPage.$(REQUEST_LIST_SELECTOR + ' tr.selected .name-column');
   if (!request) {
     return null;
   }
@@ -104,9 +101,10 @@ export async function selectRequestByName(
   }
 }
 
-export async function waitForSelectedRequestChange(initialRequestName: string|null) {
-  await waitForFunction(async () => {
-    const name = await getSelectedRequestName();
+export async function waitForSelectedRequestChange(
+    initialRequestName: string|null, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForFunction(async () => {
+    const name = await getSelectedRequestName(devToolsPage);
     return name !== initialRequestName;
   });
 }
@@ -121,8 +119,8 @@ export async function setCacheDisabled(
   await devToolsPage.setCheckBox('[title^="Disable cache"]', disabled);
 }
 
-export async function setInvert(invert: boolean) {
-  await setCheckBox('[title="Invert"]', invert);
+export async function setInvert(invert: boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await setCheckBox('[title="Invert"]', invert, devToolsPage);
 }
 
 export async function setTimeWindow(): Promise<void> {

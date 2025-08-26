@@ -5,23 +5,22 @@
 import {assert} from 'chai';
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {getResourcesPath} from '../../shared/helper.js';
-import {loadExtension} from '../helpers/extension-helpers.js';
+import {loadExtension} from '../../e2e/helpers/extension-helpers.js';
 import {
   getToolbarText,
   openFileInSourcesPanel,
   SourceFileEvents,
   waitForHighlightedLine,
   waitForSourceFiles,
-} from '../helpers/sources-helpers.js';
+} from '../../e2e/helpers/sources-helpers.js';
 
 describe('The Extension API', () => {
-  it('can open wasm resources with offset', async () => {
+  it('can open wasm resources with offset', async ({devToolsPage, inspectedPage}) => {
     await waitForSourceFiles(
         SourceFileEvents.ADDED_TO_SOURCE_TREE, files => files.some(f => f.endsWith('scopes.wasm')),
-        () => openFileInSourcesPanel('wasm/scopes.html'));
-    const extension = await loadExtension('TestExtension');
-    const resource = `${getResourcesPath()}/sources/wasm/scopes.wasm`;
+        () => openFileInSourcesPanel('wasm/scopes.html', devToolsPage, inspectedPage), devToolsPage);
+    const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
+    const resource = `${inspectedPage.getResourcesPath()}/sources/wasm/scopes.wasm`;
 
     await extension.waitForFunction(async (resource: string) => {
       const resources =
@@ -31,15 +30,15 @@ describe('The Extension API', () => {
 
     // Accepts a wasm offset as column
     await extension.evaluate(resource => window.chrome.devtools.panels.openResource(resource, 0, 0x4b), resource);
-    await waitForHighlightedLine(0x4b);
+    await waitForHighlightedLine(0x4b, devToolsPage);
 
     // Selects the right wasm line on an inexact match
     await extension.evaluate(resource => window.chrome.devtools.panels.openResource(resource, 0, 0x4e), resource);
-    await waitForHighlightedLine(0x4d);
+    await waitForHighlightedLine(0x4d, devToolsPage);
 
     // Accepts a missing columnNumber
     await extension.evaluate(resource => window.chrome.devtools.panels.openResource(resource, 0), resource);
-    await waitForHighlightedLine(0);
+    await waitForHighlightedLine(0, devToolsPage);
 
     // Accepts a wasm offset as column and a callback
     {
@@ -48,7 +47,7 @@ describe('The Extension API', () => {
           resource);
       assert.deepEqual(r, 1);
     }
-    await waitForHighlightedLine(0x4b);
+    await waitForHighlightedLine(0x4b, devToolsPage);
 
     // Is backwards compatible: accepts a callback with a missing columnNumber
     {
@@ -57,16 +56,16 @@ describe('The Extension API', () => {
           resource => new Promise(r => window.chrome.devtools.panels.openResource(resource, 0, () => r(1))), resource);
       assert.deepEqual(r, 1);
     }
-    await waitForHighlightedLine(0);
+    await waitForHighlightedLine(0, devToolsPage);
   });
 
-  it('can open page resources with column numbers', async () => {
-    const resource = `${getResourcesPath()}/sources/wasm/scopes.html`;
+  it('can open page resources with column numbers', async ({devToolsPage, inspectedPage}) => {
+    const resource = `${inspectedPage.getResourcesPath()}/sources/wasm/scopes.html`;
     await waitForSourceFiles(
         SourceFileEvents.ADDED_TO_SOURCE_TREE, files => files.some(f => f.endsWith('scopes.wasm')),
-        () => openFileInSourcesPanel('wasm/scopes.html'));
+        () => openFileInSourcesPanel('wasm/scopes.html', devToolsPage, inspectedPage), devToolsPage);
 
-    const extension = await loadExtension('TestExtension');
+    const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
 
     await extension.waitForFunction(async (resource: string) => {
       const resources =
@@ -76,13 +75,13 @@ describe('The Extension API', () => {
 
     // Accepts a missing columnNumber
     await extension.evaluate(resource => window.chrome.devtools.panels.openResource(resource, 2), resource);
-    await waitForHighlightedLine(3);
+    await waitForHighlightedLine(3, devToolsPage);
 
     // Accepts a column number
     {
       await extension.evaluate(resource => window.chrome.devtools.panels.openResource(resource, 29, 160), resource);
-      await waitForHighlightedLine(30);
-      const toolbarText = await getToolbarText();
+      await waitForHighlightedLine(30, devToolsPage);
+      const toolbarText = await getToolbarText(devToolsPage);
       assert.isTrue(toolbarText.includes('Line 30, Column 161'));
     }
 
@@ -92,8 +91,8 @@ describe('The Extension API', () => {
           resource => new Promise(r => window.chrome.devtools.panels.openResource(resource, 1, 2000, () => r(1))),
           resource);
       assert.deepEqual(r, 1);
-      await waitForHighlightedLine(2);
-      const toolbarText = await getToolbarText();
+      await waitForHighlightedLine(2, devToolsPage);
+      const toolbarText = await getToolbarText(devToolsPage);
       assert.isTrue(toolbarText.includes('Line 2, Column 60'));
     }
 
@@ -103,7 +102,7 @@ describe('The Extension API', () => {
           // @ts-expect-error Legacy API
           resource => new Promise(r => window.chrome.devtools.panels.openResource(resource, 2, () => r(1))), resource);
       assert.deepEqual(r, 1);
-      await waitForHighlightedLine(3);
+      await waitForHighlightedLine(3, devToolsPage);
     }
   });
 });

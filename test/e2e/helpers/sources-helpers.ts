@@ -222,12 +222,12 @@ export async function waitForHighlightedLine(
   });
 }
 
-export async function getToolbarText() {
-  const toolbar = await waitFor('.sources-toolbar');
+export async function getToolbarText(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const toolbar = await devToolsPage.waitFor('.sources-toolbar');
   if (!toolbar) {
     return [];
   }
-  const textNodes = await $$('.toolbar-text', toolbar);
+  const textNodes = await devToolsPage.$$('.toolbar-text', toolbar);
   return await Promise.all(textNodes.map(node => node.evaluate(node => node.textContent, node)));
 }
 

@@ -188,13 +188,13 @@ export async function getSelectedSource(): Promise<string> {
   return await (sourceTabs.evaluate(node => node.getAttribute('aria-label')) as Promise<string>);
 }
 
-export async function getBreakpointHitLocation() {
-  const breakpointHitHandle = await waitFor('.breakpoint-item.hit');
-  const locationHandle = await waitFor('.location', breakpointHitHandle);
+export async function getBreakpointHitLocation(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const breakpointHitHandle = await devToolsPage.waitFor('.breakpoint-item.hit');
+  const locationHandle = await devToolsPage.waitFor('.location', breakpointHitHandle);
   const locationText = await locationHandle.evaluate(location => location.textContent);
 
   const groupHandle = await breakpointHitHandle.evaluateHandle(x => x.parentElement!);
-  const groupHeaderTitleHandle = await waitFor('.group-header-title', groupHandle);
+  const groupHeaderTitleHandle = await devToolsPage.waitFor('.group-header-title', groupHandle);
   const groupHeaderTitle = await groupHeaderTitleHandle?.evaluate(header => header.textContent);
 
   return `${groupHeaderTitle}:${locationText}`;

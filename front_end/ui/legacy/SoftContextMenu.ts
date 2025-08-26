@@ -64,6 +64,10 @@ const UIStrings = {
    * @example {44 %} PH2
    */
   sS: '{PH1}, {PH2}',
+  /**
+   * @description Accessible text exposed to screen readers appended to menu items that have a new badge.
+   */
+  newFeature: 'This is a new feature',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SoftContextMenu.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -305,6 +309,9 @@ export class SoftContextMenu {
       }
     } else if (item.shortcut) {
       accessibleName = i18nString(UIStrings.sS, {PH1: String(item.label), PH2: item.shortcut});
+    }
+    if (item.element?.className === 'new-badge') {
+      accessibleName = i18nString(UIStrings.sS, {PH1: String(item.label), PH2: i18nString(UIStrings.newFeature)});
     }
     ARIAUtils.setLabel(menuItemElement, accessibleName);
 

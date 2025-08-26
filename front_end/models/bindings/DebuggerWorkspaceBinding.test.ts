@@ -9,6 +9,7 @@ import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 import {loadBasicSourceMapExample} from '../../testing/SourceMapHelpers.js';
+import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
@@ -87,5 +88,92 @@ describeWithMockConnection('DebuggerWorkspaceBinding', () => {
 
     assert.isTrue(sourceMap.hasScopeInfo());
     assert.strictEqual(sourceMap.findOriginalFunctionName({line: 0, column: 110}), 'foo');
+  });
+
+  describe('createStackTraceFromProtocolRuntime', () => {
+    it('identity translates frames by default', async () => {
+      const stackTrace = await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(
+          {
+            callFrames: [
+              'foo.js:1:foo:1:10',
+              'bar.js:2:bar:2:20',
+              'baz.js:3:baz:3:30',
+            ].map(protocolCallFrame),
+          },
+          target);
+
+      assert.strictEqual(stringifyStackTrace(stackTrace), [
+        'at foo (foo.js:1:10)',
+        'at bar (bar.js:2:20)',
+        'at baz (baz.js:3:30)',
+      ].join('\n'));
+    });
+
+    it('identity translates frames for disposed targets (no ModelData instance)', async () => {
+      target.dispose('disposed for testing');
+      const stackTrace = await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(
+          {
+            callFrames: [
+              'foo.js:1:foo:1:10',
+              'bar.js:2:bar:2:20',
+              'baz.js:3:baz:3:30',
+            ].map(protocolCallFrame),
+          },
+          target);
+
+      assert.strictEqual(stringifyStackTrace(stackTrace), [
+        'at foo (foo.js:1:10)',
+        'at bar (bar.js:2:20)',
+        'at baz (baz.js:3:30)',
+      ].join('\n'));
+    });
+
+    it('calls the debugger language plugin', async () => {
+      const spy = sinon.spy(debuggerWorkspaceBinding.pluginManager, 'translateRawFramesStep');
+
+      await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(
+          {
+            callFrames: [
+              'foo.js:1:foo:1:10',
+              'bar.js:2:bar:2:20',
+              'baz.js:3:baz:3:30',
+            ].map(protocolCallFrame),
+          },
+          target);
+
+      sinon.assert.calledThrice(spy);
+    });
+
+    it('translates source location via the fallback script mapping', async () => {
+      backend = new MockProtocolBackend();
+      const script = await backend.addScript(
+          target, {
+            url: Platform.DevToolsPath.urlString`http://example.com/foo.js`,
+            content: '// content omitted as its not required',
+          },
+          null);
+      const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
+      assert.exists(uiSourceCode);
+
+      const stackTrace = await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(
+          {
+            callFrames: [
+              `${script.contentURL()}:${script.scriptId}:foo:1:10`,
+              `${script.contentURL()}:${script.scriptId}:bar:2:20`,
+              `${script.contentURL()}:${script.scriptId}:baz:3:30`,
+            ].map(protocolCallFrame),
+          },
+          target);
+
+      assert.strictEqual(stringifyStackTrace(stackTrace), [
+        'at foo (foo.js:1:10)',
+        'at bar (foo.js:2:20)',
+        'at baz (foo.js:3:30)',
+      ].join('\n'));
+
+      assert.strictEqual(stackTrace.syncFragment.frames[0].uiSourceCode, uiSourceCode);
+      assert.strictEqual(stackTrace.syncFragment.frames[1].uiSourceCode, uiSourceCode);
+      assert.strictEqual(stackTrace.syncFragment.frames[2].uiSourceCode, uiSourceCode);
+    });
   });
 });

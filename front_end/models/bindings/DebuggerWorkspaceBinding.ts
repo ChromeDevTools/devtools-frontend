@@ -6,6 +6,9 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as StackTrace from '../stack_trace/stack_trace.js';
+// eslint-disable-next-line rulesdir/es-modules-import
+import * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -166,6 +169,13 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       this.recordLiveLocationChange(updatePromise);
       await updatePromise;
     }
+  }
+
+  async createStackTraceFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, target: SDK.Target.Target):
+      Promise<StackTrace.StackTrace.StackTrace> {
+    const model =
+        target.model(StackTraceImpl.StackTraceModel.StackTraceModel) as StackTraceImpl.StackTraceModel.StackTraceModel;
+    return await model.createFromProtocolRuntime(stackTrace, this.#translateRawFrames.bind(this));
   }
 
   async createLiveLocation(
@@ -437,6 +447,36 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
         autoSteppingContext.columnNumber !== functionLocation.columnNumber ||
         autoSteppingContext.lineNumber !== functionLocation.lineNumber;
   }
+
+  async #translateRawFrames(frames: readonly StackTraceImpl.Trie.RawFrame[], target: SDK.Target.Target):
+      ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames> {
+    const rawFrames = frames.slice(0);
+    const translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>> = [];
+    while (rawFrames.length) {
+      await this.#translateRawFramesStep(rawFrames, translatedFrames, target);
+    }
+    return translatedFrames;
+  }
+
+  async #translateRawFramesStep(
+      rawFrames: StackTraceImpl.Trie.RawFrame[],
+      translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>,
+      target: SDK.Target.Target): Promise<void> {
+    if (await this.pluginManager.translateRawFramesStep(rawFrames, translatedFrames, target)) {
+      return;
+    }
+
+    const modelData =
+        this.#debuggerModelToData.get(target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel);
+    if (modelData) {
+      modelData.translateRawFramesStep(rawFrames, translatedFrames);
+      return;
+    }
+
+    const frame = rawFrames.shift() as StackTraceImpl.Trie.RawFrame;
+    const {url, lineNumber, columnNumber, functionName} = frame;
+    translatedFrames.push([{url, line: lineNumber, column: columnNumber, name: functionName}]);
+  }
 }
 
 class ModelData {
@@ -528,6 +568,39 @@ class ModelData {
     ranges ??= this.#resourceMapping.uiLocationRangeToJSLocationRanges(uiSourceCode, textRange);
     ranges ??= this.#defaultMapping.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
     return ranges;
+  }
+
+  translateRawFramesStep(
+      rawFrames: StackTraceImpl.Trie.RawFrame[],
+      translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): void {
+    if (!this.compilerMapping.translateRawFramesStep(rawFrames, translatedFrames)) {
+      this.#defaultTranslateRawFramesStep(rawFrames, translatedFrames);
+    }
+  }
+
+  /** The default implementation translates one frame at a time and only translates the location, but not the function name. */
+  #defaultTranslateRawFramesStep(
+      rawFrames: StackTraceImpl.Trie.RawFrame[],
+      translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): void {
+    const frame = rawFrames.shift() as StackTraceImpl.Trie.RawFrame;
+    const {scriptId, url, lineNumber, columnNumber, functionName} = frame;
+    const rawLocation = scriptId ? this.#debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber) :
+        url                      ? this.#debuggerModel.createRawLocationByURL(url, lineNumber, columnNumber) :
+                                   null;
+    if (rawLocation) {
+      const uiLocation = this.rawLocationToUILocation(rawLocation);
+      if (uiLocation) {
+        translatedFrames.push([{
+          uiSourceCode: uiLocation.uiSourceCode,
+          name: functionName,
+          line: uiLocation.lineNumber,
+          column: uiLocation.columnNumber ?? -1
+        }]);
+        return;
+      }
+    }
+
+    translatedFrames.push([{url, line: lineNumber, column: columnNumber, name: functionName}]);
   }
 
   getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Set<number>|null {

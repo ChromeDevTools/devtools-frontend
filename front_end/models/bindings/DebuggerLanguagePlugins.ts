@@ -9,6 +9,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -764,6 +765,14 @@ export class DebuggerLanguagePluginManager implements
       }
     }
     return ranges;
+  }
+
+  async translateRawFramesStep(
+      _rawFrames: StackTraceImpl.Trie.RawFrame[],
+      _translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>,
+      _target: SDK.Target.Target): Promise<boolean> {
+    // TODO(crbug.com/433162438): Implement source map stack trace translation.
+    return false;
   }
 
   scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[] {

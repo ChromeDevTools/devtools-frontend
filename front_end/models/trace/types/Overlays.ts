@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as UI from '../../../ui/legacy/legacy.js';
 import type * as Lit from '../../../ui/lit/lit.js';
 
 import type {EntriesLinkState} from './File.js';
@@ -126,7 +125,12 @@ export interface TimingsMarkerFieldResult {
 
 export interface BottomInfoBar {
   type: 'BOTTOM_INFO_BAR';
-  infobar: UI.Infobar.Infobar;
+  // In DevTools, this infobar is a UI.Infobar.Infobar but we can't refer to
+  // the type here.
+  infobar: {
+    element: HTMLElement,
+    dispose: () => void,
+  };
 }
 
 /**

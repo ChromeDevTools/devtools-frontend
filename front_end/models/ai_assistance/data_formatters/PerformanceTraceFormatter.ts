@@ -303,7 +303,7 @@ export class PerformanceTraceFormatter {
     );
     if (topDownTree) {
       results.push('# Top-down main thread summary');
-      results.push(topDownTree.serialize(2 /* headerLevel */));
+      results.push(this.formatCallTree(topDownTree, 2 /* headerLevel */));
     }
 
     const bottomUpRootNode = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityBottomUp(
@@ -355,5 +355,21 @@ export class PerformanceTraceFormatter {
     }
 
     return results.join('\n\n');
+  }
+
+  formatCallTree(tree: TimelineUtils.AICallTree.AICallTree, headerLevel = 1): string {
+    const results = [tree.serialize(headerLevel), ''];
+
+    // TODO(b/425270067): add eventKey to tree.serialize, but need to wait for other
+    // performance agent to be consolidated.
+    results.push('#'.repeat(headerLevel) + ' Node id to eventKey\n');
+    results.push('These node ids correspond to the call tree nodes listed in the above section.\n');
+    tree.breadthFirstWalk(tree.rootNode.children().values(), (node, nodeId) => {
+      results.push(`${nodeId}: ${this.#eventsSerializer.keyForEvent(node.event)}`);
+    });
+
+    results.push('\nIMPORTANT: Never show eventKey to the user.');
+
+    return results.join('\n');
   }
 }

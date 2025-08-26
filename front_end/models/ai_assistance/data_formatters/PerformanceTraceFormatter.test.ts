@@ -87,4 +87,13 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
     const output = formatter.formatNetworkTrackSummary(bounds);
     snapshotTester.assert(this, output);
   });
+
+  it('formatCallTree', async function() {
+    const {formatter, parsedTrace} = await createFormatter(this, 'long-task-from-worker-thread.json.gz');
+    const event = new TimelineUtils.EventsSerializer.EventsSerializer().eventForKey('r-62', parsedTrace);
+    const tree = TimelineUtils.AICallTree.AICallTree.fromEvent(event, parsedTrace);
+    assert.exists(tree);
+    const output = formatter.formatCallTree(tree);
+    snapshotTester.assert(this, output);
+  });
 });

@@ -245,7 +245,7 @@ const callFrameDataFormatDescription = `Each call frame is presented in the foll
 
 Key definitions:
 
-* id: A unique numerical identifier for the call frame.
+* id: A unique numerical identifier for the call frame. Never mention this id in the output to the user.
 * name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
 * duration: The total execution time of the call frame, including its children.
 * selfTime: The time spent directly within the call frame, excluding its children's execution.
@@ -1026,7 +1026,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
         }
 
         const tree = TimelineUtils.AICallTree.AICallTree.fromEvent(event, parsedTrace);
-        const callTree = tree?.serialize() ?? 'No call tree found';
+        const callTree = tree ? this.#formatter.formatCallTree(tree) : 'No call tree found';
 
         const key = `getDetailedCallTree(${args.eventKey})`;
         this.#cacheFunctionResult(focus, key, callTree);

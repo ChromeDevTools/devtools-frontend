@@ -40,7 +40,7 @@ export class ProgressIndicator extends HTMLElement implements Common.Progress.Pr
   #progressElement: HTMLProgressElement;
   readonly #stopButton?: Element;
   #isCanceled = false;
-  #worked: number;
+  #worked = 0;
   #isDone = false;
 
   constructor() {
@@ -49,7 +49,7 @@ export class ProgressIndicator extends HTMLElement implements Common.Progress.Pr
     this.#contentElement = this.#shadowRoot.createChild('div', 'progress-indicator-shadow-container');
 
     this.#labelElement = this.#contentElement.createChild('div', 'title');
-    this.#progressElement = this.#contentElement.createChild('progress') as HTMLProgressElement;
+    this.#progressElement = this.#contentElement.createChild('progress');
     this.#progressElement.value = 0;
 
     // By default we show the stop button, but this can be controlled by
@@ -58,9 +58,6 @@ export class ProgressIndicator extends HTMLElement implements Common.Progress.Pr
       this.#stopButton = this.#contentElement.createChild('button', 'progress-indicator-shadow-stop-button');
       this.#stopButton.addEventListener('click', this.cancel.bind(this));
     }
-
-    this.#isCanceled = false;
-    this.#worked = 0;
   }
 
   connectedCallback(): void {

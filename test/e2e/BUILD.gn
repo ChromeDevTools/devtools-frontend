@@ -19,7 +19,6 @@ node_ts_library("tests") {
     "console",
     "elements",
     "extensions",
-    "issues",
     "lighthouse",
     "network",
     "performance",

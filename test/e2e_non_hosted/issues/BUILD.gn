@@ -27,6 +27,7 @@ ts_e2e_library("issues") {
     "partitioning-blob-url-issues_test.ts",
     "privacy-sandbox-extensions-api_test.ts",
     "quirks-mode-issues_test.ts",
+    "quota-issues_test.ts",
     "report-only_test.ts",
     "sab-issues_test.ts",
     "select-element-accessibility-issues_test.ts",

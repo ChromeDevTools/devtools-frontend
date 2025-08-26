@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  devtools-frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: devtools-frontend:latest
+    container_name: devtools-frontend
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    volumes:
+      # For development: mount the built files directly (optional)
+      # Uncomment the line below to use local files instead of container files
+      # - ../out/Default/gen/front_end:/usr/share/nginx/html:ro
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=8000
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - devtools-network
+
+networks:
+  devtools-network:
+    driver: bridge
+
+# Optional: Add a development configuration
+# Use: docker-compose -f docker/docker-compose.yml -f docker/docker-compose.dev.yml up
+# Create docker-compose.dev.yml for development-specific overrides

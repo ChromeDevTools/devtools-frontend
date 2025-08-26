@@ -1,0 +1,36 @@
+# Git files (not needed for build)
+.git/
+
+# Build outputs (will be regenerated during Docker build)
+out/
+
+# Large Chrome binaries (not needed for build)
+third_party/chrome/
+
+# Node modules (will be installed fresh during build)
+node_modules/
+**/node_modules/
+
+# IDE and temp files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Log files
+*.log
+logs/
+chrome_logs*.txt
+
+# Local development files
+.env
+.env.local
+test-server.pid
+
+# Docker files themselves (prevent recursion)
+docker/
+Dockerfile
+docker-compose.yml
+.dockerignore

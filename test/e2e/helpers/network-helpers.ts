@@ -9,7 +9,6 @@ import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js'
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   setCheckBox,
-  waitFor,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -59,8 +58,8 @@ export async function getAllRequestNames(devToolsPage: DevToolsPage = getBrowser
           r => [...r.childNodes].find(({nodeType}) => nodeType === Node.TEXT_NODE)?.textContent ?? '')));
 }
 
-export async function getNumberOfRequests() {
-  return (await getAllRequestNames()).length;
+export async function getNumberOfRequests(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  return (await getAllRequestNames(devToolsPage)).length;
 }
 
 export async function getSelectedRequestName(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -123,13 +122,13 @@ export async function setInvert(invert: boolean, devToolsPage = getBrowserAndPag
   await setCheckBox('[title="Invert"]', invert, devToolsPage);
 }
 
-export async function setTimeWindow(): Promise<void> {
-  const overviewGridCursorArea = await waitFor('.overview-grid-cursor-area');
+export async function setTimeWindow(devToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<void> {
+  const overviewGridCursorArea = await devToolsPage.waitFor('.overview-grid-cursor-area');
   await overviewGridCursorArea.click({offset: {x: 0, y: 10}});
 }
 
-export async function clearTimeWindow(): Promise<void> {
-  const overviewGridCursorArea = await waitFor('.overview-grid-cursor-area');
+export async function clearTimeWindow(devToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<void> {
+  const overviewGridCursorArea = await devToolsPage.waitFor('.overview-grid-cursor-area');
   await overviewGridCursorArea.click({count: 2});
 }
 

@@ -5,10 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("network") {
-  sources = [
-    "network-throttle-persist_test.ts",
-    "network_test.ts",
-  ]
+  sources = [ "network-throttle-persist_test.ts" ]
 
   deps = [
     "../../../front_end/generated",

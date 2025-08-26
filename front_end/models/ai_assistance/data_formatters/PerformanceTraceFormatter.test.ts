@@ -5,7 +5,6 @@
 import * as Trace from '../../../models/trace/trace.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getFirstOrError} from '../../../testing/InsightHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import {PerformanceTraceFormatter} from '../ai_assistance.js';
@@ -14,8 +13,7 @@ async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: st
     Promise<{formatter: PerformanceTraceFormatter, parsedTrace: Trace.Handlers.Types.ParsedTrace}> {
   const {parsedTrace, insights, metadata} = await TraceLoader.traceEngine(context, name);
   assert.isOk(insights);
-  const insightSet = getFirstOrError(insights.values());
-  const focus = TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insightSet, metadata);
+  const focus = TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insights, metadata);
   const eventsSerializer = new TimelineUtils.EventsSerializer.EventsSerializer();
   const formatter = new PerformanceTraceFormatter(focus, eventsSerializer);
   return {formatter, parsedTrace};

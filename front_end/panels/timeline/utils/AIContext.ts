@@ -30,8 +30,10 @@ type AgentFocusData = AgentFocusDataCallTree|AgentFocusDataInsight|AgentFocusDat
 
 export class AgentFocus {
   static full(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, insightSet: Trace.Insights.Types.InsightSet|null,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace, insights: Trace.Insights.Types.TraceInsightSets,
       traceMetadata: Trace.Types.File.MetaData): AgentFocus {
+    // Currently only support a single insight set. Pick the first one with a navigation.
+    const insightSet = [...insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
     return new AgentFocus({
       type: 'full',
       parsedTrace,

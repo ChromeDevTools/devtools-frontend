@@ -751,9 +751,7 @@ describeWithEnvironment('PerformanceAgent – all focus', () => {
   it('uses the min and max bounds of the trace as the origin', async function() {
     const {parsedTrace, insights, metadata} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     assert.isOk(insights);
-    const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-    const insightSet = getInsightSetOrError(insights, firstNav);
-    const context = PerformanceTraceContext.full(parsedTrace, insightSet, metadata);
+    const context = PerformanceTraceContext.full(parsedTrace, insights, metadata);
     assert.strictEqual(context.getOrigin(), 'trace-658799706428-658804825864');
   });
 });

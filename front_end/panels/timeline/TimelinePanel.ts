@@ -1167,9 +1167,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return;
     }
 
-    // Currently only support a single insight set.
-    const insightSet = [...insights.values()].at(0) ?? null;
-    const context = Utils.AIContext.AgentFocus.full(parsedTrace, insightSet, traceMetadata);
+    const context = Utils.AIContext.AgentFocus.full(parsedTrace, insights, traceMetadata);
     UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
 
     // Trigger the AI Assistance panel to open.

@@ -286,9 +286,9 @@ enum ScorePriority {
 
 export class PerformanceTraceContext extends ConversationContext<TimelineUtils.AIContext.AgentFocus> {
   static full(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, insightSet: Trace.Insights.Types.InsightSet|null,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace, insights: Trace.Insights.Types.TraceInsightSets,
       traceMetadata: Trace.Types.File.MetaData): PerformanceTraceContext {
-    return new PerformanceTraceContext(TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insightSet, traceMetadata));
+    return new PerformanceTraceContext(TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insights, traceMetadata));
   }
 
   static fromInsight(

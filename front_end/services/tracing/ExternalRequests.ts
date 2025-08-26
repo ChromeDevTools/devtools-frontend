@@ -66,9 +66,6 @@ export async function getPerformanceAgentFocusToDebug(model: Trace.TraceModel.Mo
     };
   }
 
-  // Currently only support a single insight set.
-  const insightSet = [...insights.values()].at(0) ?? null;
-
-  const focus = TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insightSet, traceMetadata);
+  const focus = TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insights, traceMetadata);
   return {focus};
 }

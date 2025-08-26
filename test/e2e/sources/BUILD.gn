@@ -9,7 +9,6 @@ node_ts_library("sources") {
     "breakpoint-javascript_test.ts",
     "can-disable-auto-sources-focus_test.ts",
     "overrides_test.ts",
-    "syntax-highlighting_test.ts",
   ]
 
   deps = [

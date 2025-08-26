@@ -38,6 +38,7 @@ ts_e2e_library("sources") {
     "sourcemap_test.ts",
     "sources-list_test.ts",
     "sourceurl_test.ts",
+    "syntax-highlighting_test.ts",
     "text-editor_test.ts",
     "watch-expressions_test.ts",
     "worker-relative-sourcemap_test.ts",

@@ -1,8 +1,6 @@
 // Copyright 2025 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -76,9 +74,10 @@ interface ViewInput {
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
-// clang-format off
-export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+
+export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW: View = (input, _output, target): void => {
   const hasFolders = input.folders.length > 0;
+  // clang-format off
   render(
     html`
       <style>${selectWorkspaceDialogStyles}</style>
@@ -145,11 +144,11 @@ export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input: ViewInput, _output: 
         ` : nothing}
       </div>
     `,
-    target,
-    {host: target}
+    target
   );
+  // clang-format on
 };
-// clang-format on
+
 export class SelectWorkspaceDialog extends UI.Widget.VBox {
   #view: View;
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -167,7 +166,6 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       },
       view?: View) {
     super();
-    this.element.classList.add('dialog-container');
     this.#onProjectSelected = options.onProjectSelected;
     this.#dialog = options.dialog;
     this.#updateProjectsAndFolders();

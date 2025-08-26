@@ -67,7 +67,7 @@ const UIStrings = {
    */
   closeDrawer: 'Close drawer',
   /**
-   * @description The aria label for main tabbed pane that contains Panels
+   * @description The ARIA label for the main tab bar that contains the DevTools panels
    */
   panels: 'Panels',
   /**
@@ -79,13 +79,13 @@ const UIStrings = {
    */
   reloadDevtools: 'Reload DevTools',
   /**
-   * @description Text for context menu action to move a tab to the main panel
+   * @description Text for context menu action to move a tab to the main tab bar
    */
-  moveToTop: 'Move to top',
+  moveToMainTabBar: 'Move to main tab bar',
   /**
    * @description Text for context menu action to move a tab to the drawer
    */
-  moveToBottom: 'Move to bottom',
+  moveToDrawer: 'Move to drawer',
   /**
    * @description Text shown in a prompt to the user when DevTools is started and the
    * currently selected DevTools locale does not match Chrome's locale.
@@ -162,7 +162,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     GlassPane.setContainer(this.element);
     this.setMinimumSize(250, 72);
 
-    // DevTools sidebar is a vertical split of panels tabbed pane and a drawer.
+    // DevTools sidebar is a vertical split of main tab bar panels and a drawer.
     this.drawerSplitWidget = new SplitWidget(false, true, 'inspector.drawer-split-view-state', 200, 200);
     this.drawerSplitWidget.hideSidebar();
     this.drawerSplitWidget.enableShowModeSaving();
@@ -744,7 +744,7 @@ export class InspectorViewTabDelegate implements TabbedPaneTabDelegate {
     ViewManager.instance().moveView(tabId, 'drawer-view');
   }
 
-  moveToMainPanel(tabId: string): void {
+  moveToMainTabBar(tabId: string): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.TabMovedToMainPanel);
     ViewManager.instance().moveView(tabId, 'panel');
   }
@@ -758,10 +758,11 @@ export class InspectorViewTabDelegate implements TabbedPaneTabDelegate {
     const locationName = ViewManager.instance().locationNameForViewId(tabId);
     if (locationName === 'drawer-view') {
       contextMenu.defaultSection().appendItem(
-          i18nString(UIStrings.moveToTop), this.moveToMainPanel.bind(this, tabId), {jslogContext: 'move-to-top'});
+          i18nString(UIStrings.moveToMainTabBar), this.moveToMainTabBar.bind(this, tabId),
+          {jslogContext: 'move-to-top'});
     } else {
       contextMenu.defaultSection().appendItem(
-          i18nString(UIStrings.moveToBottom), this.moveToDrawer.bind(this, tabId), {jslogContext: 'move-to-bottom'});
+          i18nString(UIStrings.moveToDrawer), this.moveToDrawer.bind(this, tabId), {jslogContext: 'move-to-bottom'});
     }
   }
 }

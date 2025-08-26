@@ -6,7 +6,7 @@ import {navigateToConsoleTab, waitForConsoleInfoMessageAndClickOnLink} from '../
 import {
   clickOnContextMenuItemFromTab,
   MOVE_TO_DRAWER_SELECTOR,
-  MOVE_TO_MAIN_PANEL_SELECTOR,
+  MOVE_TO_MAIN_TAB_BAR_SELECTOR,
   tabExistsInDrawer,
   tabExistsInMainPanel,
 } from '../../e2e/helpers/cross-tool-helper.js';
@@ -95,7 +95,7 @@ describe('A user can move tabs', function() {
     const ANIMATIONS_TAB_ID = '#tab-animations';
     await openPanelViaMoreTools('Animations', devToolsPage);
     await tabExistsInDrawer(ANIMATIONS_TAB_ID, devToolsPage);
-    await clickOnContextMenuItemFromTab(ANIMATIONS_TAB_ID, MOVE_TO_MAIN_PANEL_SELECTOR, devToolsPage);
+    await clickOnContextMenuItemFromTab(ANIMATIONS_TAB_ID, MOVE_TO_MAIN_TAB_BAR_SELECTOR, devToolsPage);
     await tabExistsInMainPanel(ANIMATIONS_TAB_ID, devToolsPage);
   });
 });

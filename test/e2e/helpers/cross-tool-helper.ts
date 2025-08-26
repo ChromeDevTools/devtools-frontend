@@ -32,8 +32,8 @@ export async function clickOnContextMenuItemFromTab(
   await devToolsPage.click(menuItemSelector);
 }
 
-export const MOVE_TO_DRAWER_SELECTOR = '[aria-label="Move to bottom"]';
-export const MOVE_TO_MAIN_PANEL_SELECTOR = '[aria-label="Move to top"]';
+export const MOVE_TO_DRAWER_SELECTOR = '[aria-label="Move to drawer"]';
+export const MOVE_TO_MAIN_TAB_BAR_SELECTOR = '[aria-label="Move to main tab bar"]';
 export const MAIN_PANEL_SELECTOR = 'div[class*="main-tabbed-pane"][slot*="main"]';
 export const DRAWER_PANEL_SELECTOR = 'div[class*="drawer-tabbed-pane"][slot*="sidebar"]';
 export const TAB_HEADER_SELECTOR = 'div[class*="tabbed-pane-header"]';

@@ -11,7 +11,7 @@ import {
 } from '../../e2e/helpers/coverage-helpers.js';
 import {
   MAIN_PANEL_SELECTOR,
-  MOVE_TO_MAIN_PANEL_SELECTOR,
+  MOVE_TO_MAIN_TAB_BAR_SELECTOR,
 } from '../../e2e/helpers/cross-tool-helper.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
@@ -26,7 +26,7 @@ describe('Coverage Panel', function() {
     await waitForTheCoveragePanelToLoad(devToolsPage);
     // Bring the coverage panel to the top to ensure it has enough height to show all the rows.
     await devToolsPage.click(COVERAGE_TAB_ID, {clickOptions: {button: 'right'}});
-    await devToolsPage.click(MOVE_TO_MAIN_PANEL_SELECTOR);
+    await devToolsPage.click(MOVE_TO_MAIN_TAB_BAR_SELECTOR);
     const mainPanel = await devToolsPage.waitFor(MAIN_PANEL_SELECTOR);
     await devToolsPage.waitFor(COVERAGE_TAB_ID, mainPanel);
     await startInstrumentingCoverage(devToolsPage);

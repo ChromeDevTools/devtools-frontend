@@ -76,7 +76,8 @@ export const setupTestDOM = async () => {
     // AfterEach hook fails before cleaning the DOM.
     // Clean it here and report
     console.error('Non clean test state found!');
-    await cleanTestDOM();
+    cleanTestDOM();
+    await raf();
   }
   // Tests are run in light mode by default.
   setColorScheme('light');
@@ -91,7 +92,7 @@ export const setupTestDOM = async () => {
  * Completely cleans out the test DOM to ensure it's empty for the next test run.
  * This is run automatically between tests - you should not be manually calling this yourself.
  **/
-export const cleanTestDOM = async () => {
+export const cleanTestDOM = () => {
   const previousContainer = document.getElementById(TEST_CONTAINER_ID);
   if (previousContainer) {
     removeChildren(previousContainer);
@@ -99,7 +100,6 @@ export const cleanTestDOM = async () => {
   }
   // Tests are run in light mode by default.
   setColorScheme('light');
-  await raf();
 };
 
 /**

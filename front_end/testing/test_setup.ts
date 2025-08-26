@@ -73,32 +73,30 @@ beforeEach(async () => {
 /**
  * If a widget creates a glass pane, it can get orphaned and not cleaned up correctly.
  */
-async function removeGlassPanes() {
+function removeGlassPanes() {
   for (const pane of document.body.querySelectorAll('[data-devtools-glass-pane]')) {
     document.body.removeChild(pane);
   }
-  await raf();
 }
 /**
  * If a text editor is created we create a special parent for the tooltip
  * This does not get cleared after render, but it's internals do.
  * So we need to manually remove it
  */
-async function removeTextEditorTooltip() {
+function removeTextEditorTooltip() {
   // Found in front_end/ui/components/text_editor/config.ts
   for (const pane of document.body.querySelectorAll('.editor-tooltip-host')) {
     document.body.removeChild(pane);
   }
-  await raf();
 }
 
 afterEach(async function() {
-  await cleanTestDOM();
-
-  await removeGlassPanes();
-  await removeTextEditorTooltip();
-
+  cleanTestDOM();
+  removeGlassPanes();
+  removeTextEditorTooltip();
   UI.ARIAUtils.LiveAnnouncer.removeAnnouncerElements(document.body);
+  // Make sure all DOM clean up happens before the raf
+  await raf();
 
   for (const child of document.body.children) {
     if (!documentBodyElements.has(child)) {
@@ -110,11 +108,10 @@ afterEach(async function() {
     // @ts-expect-error
     delete Root.Runtime.hostConfig[key];
   }
-  await cleanTestDOM();
+
   await checkForPendingActivity();
   resetHostConfig();
   sinon.restore();
   stopTrackingAsyncActivity();
-
   // Clear out any Sinon stubs or spies between individual tests.
 });

@@ -1,0 +1,66 @@
+Title: AiHistoryStorage getConversationMarkdown should generate markdown from a conversation
+Content:
+# Exported Chat from Chrome DevTools AI Assistance
+
+**Export Timestamp (UTC):** 2024-01-01T00:00:00.000Z
+
+---
+
+## User
+
+What is the color of the sky?
+
+## AI
+
+### Analyzing context
+
+**Detail 1:**
+````
+Some detail
+````
+
+**Detail 2:**
+````js
+const a = 1;
+````
+
+### Thinking about it
+
+The user is asking about colors.
+
+**Code executed:**
+```
+console.log("blue")
+```
+
+**Data returned:**
+```
+blue
+```
+
+**Code executed:**
+```
+console.log("red")
+```
+
+**Data returned:**
+```
+Error: User denied code execution with side effects
+```
+
+### Answer
+
+The sky is blue.
+
+## User
+
+And what about this image?
+
+User attached an image
+
+## AI
+
+### Answer
+
+This image contains a red apple.
+=== end content

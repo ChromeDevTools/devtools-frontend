@@ -102,3 +102,7 @@ ts_library("unittests") {
     "../../ui/legacy:bundle",
   ]
 }
+
+copy_to_gen("snapshots") {
+  sources = [ "AiAssistancePanel.snapshot.txt" ]
+}

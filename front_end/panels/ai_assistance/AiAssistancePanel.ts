@@ -1641,50 +1641,29 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 }
 
 export function getResponseMarkdown(message: ModelChatMessage): string {
-  let markdown = '';
-
-  const generateContextDetailsMarkdown = (details: Array<{title: string, text: string, codeLang?: string}>): string => {
-    let detailsMarkdown = '**Details**:\n\n';
-    for (const detail of details) {
-      const text = detail.codeLang ? `\`\`\`${detail.codeLang}\n${detail.text}\n\`\`\`\n` : `${detail.text}`;
-      detailsMarkdown += `**${detail.title}:**\n\n${text}\n\n`;
-    }
-    return detailsMarkdown;
-  };
+  const contentParts = ['## AI'];
 
   for (const step of message.steps) {
-    if (step.contextDetails) {
-      markdown += '### Context:\n';
-      markdown += generateContextDetailsMarkdown(step.contextDetails);
-    }
     if (step.title) {
-      markdown += `### AI (Title):\n${step.title}\n\n`;
+      contentParts.push(`### ${step.title}`);
+    }
+    if (step.contextDetails) {
+      contentParts.push(AiAssistanceModel.Conversation.generateContextDetailsMarkdown(step.contextDetails));
     }
     if (step.thought) {
-      markdown += `### AI (Thought):\n${step.thought}\n\n`;
+      contentParts.push(step.thought);
     }
     if (step.code) {
-      markdown += '### AI (Action):\n';
-      markdown += `**Code executed:**\n\`\`\`\n${step.code.trim()}\n\`\`\`\n`;
+      contentParts.push(`**Code executed:**\n\`\`\`\n${step.code.trim()}\n\`\`\``);
     }
     if (step.output) {
-      if (!step.code) {  // Add action header if not already added by code
-        markdown += '### AI (Action):\n';
-      }
-      markdown += `**Output:**\n\`\`\`\n${step.output}\n\`\`\`\n`;
+      contentParts.push(`**Data returned:**\n\`\`\`\n${step.output}\n\`\`\``);
     }
-    if (step.canceled) {
-      if (!step.code && !step.output) {  // Add action header if not already added
-        markdown += '### AI (Action):\n';
-      }
-      markdown += '**(Action Canceled)**\n';
-    }
-    markdown += '\n';
   }
   if (message.answer) {
-    markdown += `### AI (Answer):\n${message.answer}\n`;
+    contentParts.push(`### Answer\n\n${message.answer}`);
   }
-  return markdown;
+  return contentParts.join('\n\n');
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

@@ -5,10 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("console") {
-  sources = [
-    "console-context-menu_test.ts",
-    "console-insight_test.ts",
-  ]
+  sources = [ "console-insight_test.ts" ]
 
   deps = [
     "../../../front_end/panels/console:bundle",

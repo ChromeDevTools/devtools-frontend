@@ -162,11 +162,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.#javaScriptCompletionCompartment.of(this.#getJavaScriptCompletionExtensions()),
     ];
 
-    const doc = this.initialText;
-    const editorState = CodeMirror.EditorState.create({doc, extensions});
-
-    this.editor = new TextEditor.TextEditor.TextEditor(editorState);
-
     if (this.isAiCodeCompletionEnabled()) {
       const aiCodeCompletionTeaserDismissedSetting =
           Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
@@ -177,6 +172,11 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
       extensions.push(TextEditor.Config.aiAutoCompleteSuggestion);
     }
+
+    const doc = this.initialText;
+    const editorState = CodeMirror.EditorState.create({doc, extensions});
+
+    this.editor = new TextEditor.TextEditor.TextEditor(editorState);
 
     this.editor.addEventListener('keydown', event => {
       if (event.defaultPrevented) {

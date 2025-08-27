@@ -55,10 +55,6 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
   });
 
-  afterEach(async () => {
-    sinon.restore();
-  });
-
   let id = 0;
 
   function createExecutionContext(target: SDK.Target.Target): SDK.RuntimeModel.ExecutionContext {

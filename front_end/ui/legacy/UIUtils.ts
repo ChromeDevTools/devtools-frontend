@@ -44,7 +44,7 @@ import * as Root from '../../core/root/root.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
-import {Directives} from '../lit/lit.js';
+import {Directives, type LitTemplate, render} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ActionRegistration from './ActionRegistration.js';
@@ -2183,4 +2183,43 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
     setEnabled(action.enabled());
     e.onclick = () => action.execute();
   });
+}
+
+export class HTMLElementWithLightDOMTemplate extends HTMLElement {
+  readonly #mutationObserver = new MutationObserver(this.#onChange.bind(this));
+  #contentTemplate: HTMLTemplateElement|null = null;
+
+  constructor() {
+    super();
+    this.#mutationObserver.observe(this, {childList: true, attributes: true, subtree: true, characterData: true});
+  }
+
+  set template(template: LitTemplate) {
+    if (!this.#contentTemplate) {
+      this.removeChildren();
+      this.#contentTemplate = this.createChild('template');
+      this.#mutationObserver.disconnect();
+      this.#mutationObserver.observe(
+          this.#contentTemplate.content, {childList: true, attributes: true, subtree: true, characterData: true});
+    }
+    // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
+    render(template, this.#contentTemplate.content);
+  }
+
+  #onChange(mutationList: MutationRecord[]): void {
+    for (const mutation of mutationList) {
+      this.removeNodes(mutation.removedNodes);
+      this.addNodes(mutation.addedNodes);
+      this.updateNodes(mutation.target, mutation.attributeName);
+    }
+  }
+
+  protected updateNodes(_node: Node, _attributeName: string|null): void {
+  }
+
+  protected addNodes(_nodes: NodeList|Node[]): void {
+  }
+
+  protected removeNodes(_nodes: NodeList): void {
+  }
 }

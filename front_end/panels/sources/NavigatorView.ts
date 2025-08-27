@@ -222,7 +222,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.scriptsTree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.scriptsTree.registerRequiredCSS(navigatorTreeStyles);
 
-    this.scriptsTree.hideOverflow();
+    this.scriptsTree.setHideOverflow(true);
     this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
     this.scriptsTree.setFocusable(false);
     this.contentElement.appendChild(this.scriptsTree.element);

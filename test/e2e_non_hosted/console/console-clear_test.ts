@@ -46,17 +46,18 @@ describe('The Console Tab', function() {
     // Check that the sidebar is also cleared.
     await devToolsPage.click('[aria-label="Show console sidebar"]');
     const sideBar = await devToolsPage.waitFor('div[slot="sidebar"]');
-    const entries = await devToolsPage.$$('li', sideBar);
-    const entriesText = await Promise.all(entries.map(e => e.evaluate(e => e.textContent)));
+    const treeOutline = await devToolsPage.waitFor('.tree-outline', sideBar);
+    const entries = await devToolsPage.$$('li', treeOutline);
+    const entriesText = await Promise.all(entries.map(e => e.evaluate(e => e.innerText)));
     assert.deepEqual(entriesText, [
       '1 message',
-      '<other>1',
+      '<other> 1',
       '1 user message',
-      '<other>1',
+      '<other> 1',
       'No errors',
       'No warnings',
       '1 info',
-      '<other>1',
+      '<other> 1',
       'No verbose',
     ]);
   });

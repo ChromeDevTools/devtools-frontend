@@ -102,6 +102,7 @@ ts_library("unittests") {
     "ConsoleContextSelector.test.ts",
     "ConsoleFormat.test.ts",
     "ConsolePrompt.test.ts",
+    "ConsoleSidebar.test.ts",
     "ConsoleView.test.ts",
     "ConsoleViewMessage.test.ts",
     "ConsoleViewport.test.ts",

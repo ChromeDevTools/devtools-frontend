@@ -117,7 +117,7 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
     root.registerRequiredCSS(signedExchangeInfoTreeStyles);
     root.element.classList.add('signed-exchange-info-tree');
     root.setFocusable(false);
-    root.makeDense();
+    root.setDense(true);
     root.expandTreeElementsWhenArrowing = true;
     this.element.appendChild(root.element);
 

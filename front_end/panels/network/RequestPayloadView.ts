@@ -127,7 +127,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     const root = new UI.TreeOutline.TreeOutlineInShadow();
     root.registerRequiredCSS(objectValueStyles, objectPropertiesSectionStyles, requestPayloadTreeStyles);
     root.element.classList.add('request-payload-tree');
-    root.makeDense();
+    root.setDense(true);
     this.element.appendChild(root.element);
 
     this.queryStringCategory = new Category(root, 'query-string');

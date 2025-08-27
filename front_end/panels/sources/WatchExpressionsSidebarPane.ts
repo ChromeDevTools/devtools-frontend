@@ -132,7 +132,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.contentElement.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
     this.treeOutline.registerRequiredCSS(watchExpressionsSidebarPaneStyles);
-    this.treeOutline.hideOverflow();
+    this.treeOutline.setHideOverflow(true);
 
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.expandController =

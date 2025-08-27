@@ -49,7 +49,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
     this.treeElements = [];
     this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this.treeOutline.registerRequiredCSS(searchResultsPaneStyles);
-    this.treeOutline.hideOverflow();
+    this.treeOutline.setHideOverflow(true);
 
     this.contentElement.appendChild(this.treeOutline.element);
 

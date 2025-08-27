@@ -35,7 +35,7 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.treeoutline = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.treeoutline.registerRequiredCSS(changesSidebarStyles);
     this.treeoutline.setFocusable(false);
-    this.treeoutline.hideOverflow();
+    this.treeoutline.setHideOverflow(true);
     this.treeoutline.addEventListener(UI.TreeOutline.Events.ElementSelected, this.selectionChanged, this);
     UI.ARIAUtils.markAsTablist(this.treeoutline.contentElement);
 

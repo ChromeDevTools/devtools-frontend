@@ -84,7 +84,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
 
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
     this.treeOutline.registerRequiredCSS(scopeChainSidebarPaneStyles);
-    this.treeOutline.hideOverflow();
+    this.treeOutline.setHideOverflow(true);
 
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.expandController =

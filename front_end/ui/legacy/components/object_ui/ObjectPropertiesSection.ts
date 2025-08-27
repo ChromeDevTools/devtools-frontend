@@ -155,7 +155,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     this.object = object;
     this.editable = true;
     if (!showOverflow) {
-      this.hideOverflow();
+      this.setHideOverflow(true);
     }
     this.setFocusable(true);
     this.setShowSelectionOnKeyboardFocus(true);

@@ -140,7 +140,7 @@ const UIStrings = {
   /**
    * @description Tooltip for a filter in the Network panel
    */
-  onlyShowIPProtectedRequests: '(Incognito Only) Show only requests sent to IP Protection proxies',
+  onlyShowIPProtectedRequests: 'Show only requests sent to IP Protection proxies. Has no effect in regular browsing.',
   /**
    * @description Text that appears when user drag and drop something (for example, a file) in Network Log View of the Network panel
    */
@@ -2747,7 +2747,6 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper<UI
           i18nString(UIStrings.ippRequests),
           () => this.networkOnlyIPProtectedRequestsSetting.set(!this.networkOnlyIPProtectedRequestsSetting.get()), {
             checked: this.networkOnlyIPProtectedRequestsSetting.get(),
-            disabled: !Root.Runtime.hostConfig.isOffTheRecord,
             tooltip: i18nString(UIStrings.onlyShowIPProtectedRequests),
             jslogContext: 'only-ip-protected-requests',
           });

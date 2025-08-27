@@ -348,6 +348,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   readonly #dimThirdPartiesSetting: Common.Settings.Setting<boolean>|null = null;
   #thirdPartyCheckbox: UI.Toolbar.ToolbarSettingCheckbox|null = null;
 
+  #onAnnotationModifiedEventBound = this.#onAnnotationModifiedEvent.bind(this);
+
   /**
    * We get given any filters for a new trace when it is recorded/imported.
    * Because the user can then use the dropdown to navigate to another trace,
@@ -403,14 +405,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   );
 
   #sideBar = new TimelineComponents.Sidebar.SidebarWidget();
-
-  /**
-   * Used to track an aria announcement that we need to alert for
-   * screen-readers. We track these because we debounce announcements to not
-   * overwhelm.
-   */
-  #pendingAriaMessage: string|null = null;
-
   #eventToRelatedInsights: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap = new Map();
   #shortcutsDialog: Dialogs.ShortcutDialog.ShortcutDialog = new Dialogs.ShortcutDialog.ShortcutDialog();
   /**
@@ -844,6 +838,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       // Store any modifications (e.g. annotations) that the user has created
       // on the current trace before we move away to a new view.
       this.#saveModificationsForActiveTrace();
+
+      // No need to listen to annotation events, they cannot occur on non
+      // visible traces. When a trace is made visible, this listener is added
+      // back.
+      const manager = ModificationsManager.activeManager();
+      if (manager) {
+        manager.removeEventListener(AnnotationModifiedEvent.eventName, this.#onAnnotationModifiedEventBound);
+      }
     }
 
     this.#viewMode = newMode;
@@ -1707,7 +1709,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   #extensionDataVisibilityChanged(): void {
-    this.flameChart.rebuildDataForTrace();
+    this.flameChart.rebuildDataForTrace({updateType: 'REDRAW_EXISTING_TRACE'});
   }
 
   private updateSettingsPaneVisibility(): void {
@@ -2066,32 +2068,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   /**
-   * If we generate a lot of the same aria announcements very quickly, we don't
-   * want to send them all to the user.
-   */
-  #ariaDebouncer = Common.Debouncer.debounce(() => {
-    if (this.#pendingAriaMessage) {
-      UI.ARIAUtils.LiveAnnouncer.alert(this.#pendingAriaMessage);
-      this.#pendingAriaMessage = null;
-    }
-  }, 1_000);
-
-  #makeAriaAnnouncement(message: string): void {
-    // If we already have one pending, don't queue this one.
-    if (message === this.#pendingAriaMessage) {
-      return;
-    }
-
-    // If the pending message is different, immediately announce the pending
-    // message + then update the pending message to the new one.
-    if (this.#pendingAriaMessage) {
-      UI.ARIAUtils.LiveAnnouncer.alert(this.#pendingAriaMessage);
-    }
-    this.#pendingAriaMessage = message;
-    this.#ariaDebouncer();
-  }
-
-  /**
    * Called when we update the active trace that is being shown to the user.
    * This is called from {@see changeView} when we change the UI to show a
    * trace - either one the user has just recorded/imported, or one they have
@@ -2158,39 +2134,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     (this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions)
         .updateContentVisibility(currentManager ? currentManager.getAnnotations()?.length > 0 : false);
 
-    // Add ModificationsManager listeners for annotations change to update the Annotation Overlays.
-    currentManager?.addEventListener(AnnotationModifiedEvent.eventName, event => {
-      // Update screen readers.
-      const announcementText = AnnotationHelpers.ariaAnnouncementForModifiedEvent(event as AnnotationModifiedEvent);
-      if (announcementText) {
-        this.#makeAriaAnnouncement(announcementText);
-      }
-
-      const {overlay, action} = (event as AnnotationModifiedEvent);
-      if (action === 'Add') {
-        this.flameChart.addOverlay(overlay);
-      } else if (action === 'Remove') {
-        this.flameChart.removeOverlay(overlay);
-      } else if (action === 'UpdateTimeRange' && AnnotationHelpers.isTimeRangeLabel(overlay)) {
-        this.flameChart.updateExistingOverlay(overlay, {
-          bounds: overlay.bounds,
-        });
-      } else if (action === 'UpdateLinkToEntry' && AnnotationHelpers.isEntriesLink(overlay)) {
-        this.flameChart.updateExistingOverlay(overlay, {
-          entryTo: overlay.entryTo,
-        });
-      } else if (action === 'EnterLabelEditState' && AnnotationHelpers.isEntryLabel(overlay)) {
-        this.flameChart.enterLabelEditMode(overlay);
-      } else if (action === 'LabelBringForward' && AnnotationHelpers.isEntryLabel(overlay)) {
-        this.flameChart.bringLabelForward(overlay);
-      }
-
-      const annotations = currentManager.getAnnotations();
-      const annotationEntryToColorMap = this.buildColorsAnnotationsMap(annotations);
-      this.#sideBar.setAnnotations(annotations, annotationEntryToColorMap);
-      (this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions)
-          .updateContentVisibility(currentManager ? currentManager.getAnnotations()?.length > 0 : false);
-    });
+    // Add ModificationsManager listeners for annotations change to update the
+    // Annotation Overlays.
+    currentManager?.addEventListener(AnnotationModifiedEvent.eventName, this.#onAnnotationModifiedEventBound);
 
     // To calculate the activity we might want to zoom in, we use the top-most main-thread track
     const topMostMainThreadAppender =
@@ -2287,6 +2233,40 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
             Host.UserMetrics.TimelineNavigationSetting.MODERN_AT_SESSION_FIRST_TRACE);
       }
     }
+  }
+
+  #onAnnotationModifiedEvent(e: Event): void {
+    const event = e as AnnotationModifiedEvent;
+    const announcementText = AnnotationHelpers.ariaAnnouncementForModifiedEvent(event);
+    if (announcementText) {
+      UI.ARIAUtils.LiveAnnouncer.alert(announcementText);
+    }
+
+    const {overlay, action} = event;
+    if (action === 'Add') {
+      this.flameChart.addOverlay(overlay);
+    } else if (action === 'Remove') {
+      this.flameChart.removeOverlay(overlay);
+    } else if (action === 'UpdateTimeRange' && AnnotationHelpers.isTimeRangeLabel(overlay)) {
+      this.flameChart.updateExistingOverlay(overlay, {
+        bounds: overlay.bounds,
+      });
+    } else if (action === 'UpdateLinkToEntry' && AnnotationHelpers.isEntriesLink(overlay)) {
+      this.flameChart.updateExistingOverlay(overlay, {
+        entryTo: overlay.entryTo,
+      });
+    } else if (action === 'EnterLabelEditState' && AnnotationHelpers.isEntryLabel(overlay)) {
+      this.flameChart.enterLabelEditMode(overlay);
+    } else if (action === 'LabelBringForward' && AnnotationHelpers.isEntryLabel(overlay)) {
+      this.flameChart.bringLabelForward(overlay);
+    }
+
+    const currentManager = ModificationsManager.activeManager();
+    const annotations = currentManager?.getAnnotations() ?? [];
+    const annotationEntryToColorMap = this.buildColorsAnnotationsMap(annotations);
+    this.#sideBar.setAnnotations(annotations, annotationEntryToColorMap);
+    (this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions)
+        .updateContentVisibility(currentManager ? currentManager.getAnnotations()?.length > 0 : false);
   }
 
   /**

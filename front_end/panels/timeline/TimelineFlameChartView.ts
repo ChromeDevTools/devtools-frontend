@@ -918,7 +918,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       type: 'TIME_RANGE',
       label: '',
     };
-    ModificationsManager.activeManager()?.createAnnotation(this.#timeRangeSelectionAnnotation);
+    ModificationsManager.activeManager()?.createAnnotation(
+        this.#timeRangeSelectionAnnotation, {muteAriaNotifications: false, loadedFromFile: false});
   }
 
   /**
@@ -1166,7 +1167,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       };
       // Before creating a new range, make sure to delete the empty ranges.
       ModificationsManager.activeManager()?.deleteEmptyRangeAnnotations();
-      ModificationsManager.activeManager()?.createAnnotation(this.#timeRangeSelectionAnnotation);
+      ModificationsManager.activeManager()?.createAnnotation(
+          this.#timeRangeSelectionAnnotation, {muteAriaNotifications: false, loadedFromFile: false});
     }
   }
 
@@ -1200,14 +1202,19 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       dimmer.mainChartIndices = [];
       dimmer.networkChartIndices = [];
     }
-    this.rebuildDataForTrace();
+    this.rebuildDataForTrace({updateType: 'NEW_TRACE'});
   }
 
   /**
    * Resets the state of the UI data and initializes it again with the
    * current parsed trace.
+   * @param opts.updateType determines if we are redrawing because we need to show a new trace,
+   * or redraw an existing trace (if the user changed a setting).
+   * This distinction is needed because in the latter case we do not want to
+   * trigger some code such as Aria announcements for annotations if we are
+   * just redrawing.
    */
-  rebuildDataForTrace(): void {
+  rebuildDataForTrace(opts: {updateType: 'NEW_TRACE'|'REDRAW_EXISTING_TRACE'}): void {
     if (!this.#parsedTrace) {
       return;
     }
@@ -1242,7 +1249,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.resizeToPreferredHeights();
     this.setMarkers(this.#parsedTrace);
     this.dimThirdPartiesIfRequired();
-    ModificationsManager.activeManager()?.applyAnnotationsFromCache();
+    ModificationsManager.activeManager()?.applyAnnotationsFromCache(
+        {muteAriaNotifications: opts.updateType === 'REDRAW_EXISTING_TRACE'});
   }
 
   /**
@@ -1600,11 +1608,13 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     const selection = dataProvider.createSelection(event.data.entryIndex);
     if (selectionIsEvent(selection)) {
       this.setSelectionAndReveal(selection);
-      ModificationsManager.activeManager()?.createAnnotation({
-        type: 'ENTRY_LABEL',
-        entry: selection.event,
-        label: '',
-      });
+      ModificationsManager.activeManager()?.createAnnotation(
+          {
+            type: 'ENTRY_LABEL',
+            entry: selection.event,
+            label: '',
+          },
+          {loadedFromFile: false, muteAriaNotifications: false});
       if (event.data.withLinkCreationButton) {
         this.onEntriesLinkAnnotationCreate(dataProvider, event.data.entryIndex, true);
       }
@@ -1624,7 +1634,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
                                     Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT,
       });
       if (this.#linkSelectionAnnotation) {
-        ModificationsManager.activeManager()?.createAnnotation(this.#linkSelectionAnnotation);
+        ModificationsManager.activeManager()?.createAnnotation(
+            this.#linkSelectionAnnotation, {loadedFromFile: false, muteAriaNotifications: false});
       }
     }
   }

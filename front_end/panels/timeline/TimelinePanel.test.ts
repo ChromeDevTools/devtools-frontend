@@ -47,6 +47,7 @@ describeWithEnvironment('TimelinePanel', function() {
       targetManager: SDK.TargetManager.TargetManager.instance(),
       ignoreListManager,
     });
+    Timeline.ModificationsManager.ModificationsManager.reset();
     traceModel = Trace.TraceModel.Model.createWithAllHandlers();
     timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: false, traceModel});
     renderElementIntoDOM(timeline);
@@ -106,6 +107,7 @@ describeWithEnvironment('TimelinePanel', function() {
     const tracksAfterEnablingSetting = timeline.getFlameChart().getMainDataProvider().timelineData().groups;
     assert.deepEqual(tracksBeforeDisablingSetting, tracksAfterEnablingSetting);
   });
+
   it('should keep marker overlays when the custom tracks setting is toggled', async function() {
     const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
     await timeline.loadingComplete(events, null, null);
@@ -147,34 +149,43 @@ describeWithEnvironment('TimelinePanel', function() {
     assert.isAbove(dimIndicesAfterToggle.length, 0);
   });
 
-  it('keeps annotations after toggling the custom tracks setting', async function() {
-    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
-    await timeline.loadingComplete(events, null, null);
-    const parsedTrace = traceModel.parsedTrace();
-    assert.isOk(parsedTrace?.Meta.traceBounds.min);
-    const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
-    assert.isOk(modificationsManager);
+  it('keeps annotations after toggling the custom tracks setting and does not aria alert the user twice',
+     async function() {
+       const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+       await timeline.loadingComplete(events, null, null);
+       const parsedTrace = traceModel.parsedTrace();
+       assert.isOk(parsedTrace?.Meta.traceBounds.min);
+       const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+       assert.isOk(modificationsManager);
+       const ariaAlertStub = sinon.spy(UI.ARIAUtils.LiveAnnouncer, 'alert');
+       // Add an annotation
+       modificationsManager.createAnnotation(
+           {
+             bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+                 parsedTrace.Meta.traceBounds.min, parsedTrace.Meta.traceBounds.max),
+             type: 'TIME_RANGE',
+             label: '',
+           },
+           {loadedFromFile: false, muteAriaNotifications: false});
 
-    // Add an annotation
-    modificationsManager.createAnnotation({
-      bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-          parsedTrace.Meta.traceBounds.min, parsedTrace.Meta.traceBounds.max),
-      type: 'TIME_RANGE',
-      label: '',
-    });
+       sinon.assert.calledOnceWithExactly(ariaAlertStub, 'The time range annotation has been added');
 
-    const annotationsBeforeToggle =
-        timeline.getFlameChart().overlays().allOverlays().filter(e => e.type === 'TIME_RANGE');
-    assert.exists(annotationsBeforeToggle);
-    assert.isAbove(annotationsBeforeToggle.length, 0);
+       const annotationsBeforeToggle =
+           timeline.getFlameChart().overlays().allOverlays().filter(e => e.type === 'TIME_RANGE');
+       assert.exists(annotationsBeforeToggle);
+       assert.lengthOf(annotationsBeforeToggle, 1);
 
-    // Toggle the custom track setting and verify annotations remain.
-    Timeline.TimelinePanel.TimelinePanel.extensionDataVisibilitySetting().set(true);
-    const annotationsAfterToggle =
-        timeline.getFlameChart().overlays().allOverlays().filter(e => e.type === 'TIME_RANGE');
-    assert.exists(annotationsAfterToggle);
-    assert.isAbove(annotationsAfterToggle.length, 0);
-  });
+       // Toggle the custom track setting and verify annotations remain.
+       Timeline.TimelinePanel.TimelinePanel.extensionDataVisibilitySetting().set(true);
+       const annotationsAfterToggle =
+           timeline.getFlameChart().overlays().allOverlays().filter(e => e.type === 'TIME_RANGE');
+       assert.exists(annotationsAfterToggle);
+       assert.isAbove(annotationsAfterToggle.length, 0);
+
+       // Ensure the alert wasn't fired again after the custom tracks setting
+       // was toggled.
+       sinon.assert.calledOnce(ariaAlertStub);
+     });
 
   it('clears out AI related contexts when the user presses "Clear"', async () => {
     const context = UI.Context.Context.instance();
@@ -403,12 +414,14 @@ describeWithEnvironment('TimelinePanel', function() {
         const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
         assert.isOk(modificationsManager);
 
-        modificationsManager.createAnnotation({
-          bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-              Trace.Types.Timing.Micro(1), Trace.Types.Timing.Micro(2)),
-          type: 'TIME_RANGE',
-          label: 'Test Annotation',
-        });
+        modificationsManager.createAnnotation(
+            {
+              bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+                  Trace.Types.Timing.Micro(1), Trace.Types.Timing.Micro(2)),
+              type: 'TIME_RANGE',
+              label: 'Test Annotation',
+            },
+            {loadedFromFile: false, muteAriaNotifications: false});
 
         await timeline.saveToFile({
           includeScriptContent: false,
@@ -533,6 +546,5 @@ describeWithEnvironment('TimelinePanel', function() {
         assert.strictEqual(totalSourceMapsWithChromExtensionProtocol?.length, 0);
       });
     });
-
   });
 });

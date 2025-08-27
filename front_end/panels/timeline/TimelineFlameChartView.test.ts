@@ -328,7 +328,10 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     const labelAnnotation = modifications.getAnnotations().find(a => a.type === 'ENTRY_LABEL');
     assert.isOk(labelAnnotation);
     // This creates an active annotation in the UI and creates the overlay.
-    const overlay = modifications.createAnnotation(labelAnnotation);
+    const overlay = modifications.createAnnotation(labelAnnotation, {
+      loadedFromFile: false,
+      muteAriaNotifications: false,
+    });
     flameChartView.addOverlay(overlay);
     await raf();
     const overlayElement = flameChartView.overlays().elementForOverlay(overlay);

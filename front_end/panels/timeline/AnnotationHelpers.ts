@@ -172,6 +172,9 @@ export function ariaDescriptionForOverlay(overlay: Trace.Types.Overlays.Overlay)
 }
 
 export function ariaAnnouncementForModifiedEvent(event: AnnotationModifiedEvent): string|null {
+  if (event.muteAriaNotifications) {
+    return null;
+  }
   const {overlay, action} = event;
   switch (action) {
     case 'Remove': {

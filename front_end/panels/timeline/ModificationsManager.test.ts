@@ -70,28 +70,34 @@ describeWithEnvironment('ModificationsManager', () => {
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
 
-    modificationsManager.createAnnotation({
-      type: 'ENTRY_LABEL',
-      entry,
-      label: 'entry label',
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'ENTRY_LABEL',
+          entry,
+          label: 'entry label',
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
-    modificationsManager.createAnnotation({
-      type: 'ENTRIES_LINK',
-      state: Trace.Types.File.EntriesLinkState.CONNECTED,
-      entryFrom: entry,
-      entryTo: entry2,
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'ENTRIES_LINK',
+          state: Trace.Types.File.EntriesLinkState.CONNECTED,
+          entryFrom: entry,
+          entryTo: entry2,
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
-    modificationsManager.createAnnotation({
-      type: 'TIME_RANGE',
-      bounds: {
-        min: Trace.Types.Timing.Micro(0),
-        max: Trace.Types.Timing.Micro(10),
-        range: Trace.Types.Timing.Micro(10),
-      },
-      label: 'range label',
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'TIME_RANGE',
+          bounds: {
+            min: Trace.Types.Timing.Micro(0),
+            max: Trace.Types.Timing.Micro(10),
+            range: Trace.Types.Timing.Micro(10),
+          },
+          label: 'range label',
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
     const modifications = modificationsManager.toJSON().annotations;
     assert.deepEqual(modifications, {
@@ -124,18 +130,22 @@ describeWithEnvironment('ModificationsManager', () => {
        const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
        assert.isOk(modificationsManager);
 
-       modificationsManager.createAnnotation({
-         type: 'ENTRIES_LINK',
-         state: Trace.Types.File.EntriesLinkState.CONNECTED,
-         entryFrom: entry,
-         entryTo: entry2,
-       });
+       modificationsManager.createAnnotation(
+           {
+             type: 'ENTRIES_LINK',
+             state: Trace.Types.File.EntriesLinkState.CONNECTED,
+             entryFrom: entry,
+             entryTo: entry2,
+           },
+           {loadedFromFile: false, muteAriaNotifications: false});
 
-       modificationsManager.createAnnotation({
-         type: 'ENTRIES_LINK',
-         state: Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT,
-         entryFrom: entry2,
-       });
+       modificationsManager.createAnnotation(
+           {
+             type: 'ENTRIES_LINK',
+             state: Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT,
+             entryFrom: entry2,
+           },
+           {loadedFromFile: false, muteAriaNotifications: false});
 
        // Make sure only the link with both 'to' and 'from' entries in in the generated JSON
        const modifications = modificationsManager.toJSON().annotations;
@@ -160,12 +170,14 @@ describeWithEnvironment('ModificationsManager', () => {
     assert.isOk(modificationsManager);
 
     // Create a connection between entry 1 and entry 2
-    modificationsManager.createAnnotation({
-      type: 'ENTRIES_LINK',
-      state: Trace.Types.File.EntriesLinkState.CONNECTED,
-      entryFrom: entry1,
-      entryTo: entry2,
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'ENTRIES_LINK',
+          state: Trace.Types.File.EntriesLinkState.CONNECTED,
+          entryFrom: entry1,
+          entryTo: entry2,
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
     // Chech if a connection between entries 1 and 3 exists
     const existsBetween1And3 = modificationsManager.linkAnnotationBetweenEntriesExists(entry1, entry3);
@@ -188,37 +200,43 @@ describeWithEnvironment('ModificationsManager', () => {
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
 
-    modificationsManager.createAnnotation({
-      type: 'TIME_RANGE',
-      bounds: {
-        min: Trace.Types.Timing.Micro(0),
-        max: Trace.Types.Timing.Micro(10),
-        range: Trace.Types.Timing.Micro(10),
-      },
-      label: 'label',
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'TIME_RANGE',
+          bounds: {
+            min: Trace.Types.Timing.Micro(0),
+            max: Trace.Types.Timing.Micro(10),
+            range: Trace.Types.Timing.Micro(10),
+          },
+          label: 'label',
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
     // Create time range with empty label that shoud be removed
-    modificationsManager.createAnnotation({
-      type: 'TIME_RANGE',
-      bounds: {
-        min: Trace.Types.Timing.Micro(3),
-        max: Trace.Types.Timing.Micro(10),
-        range: Trace.Types.Timing.Micro(7),
-      },
-      label: '',
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'TIME_RANGE',
+          bounds: {
+            min: Trace.Types.Timing.Micro(3),
+            max: Trace.Types.Timing.Micro(10),
+            range: Trace.Types.Timing.Micro(7),
+          },
+          label: '',
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
     // Create time range with empty label that shoud be removed
-    modificationsManager.createAnnotation({
-      type: 'TIME_RANGE',
-      bounds: {
-        min: Trace.Types.Timing.Micro(5),
-        max: Trace.Types.Timing.Micro(10),
-        range: Trace.Types.Timing.Micro(5),
-      },
-      label: '',
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'TIME_RANGE',
+          bounds: {
+            min: Trace.Types.Timing.Micro(5),
+            max: Trace.Types.Timing.Micro(10),
+            range: Trace.Types.Timing.Micro(5),
+          },
+          label: '',
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
     modificationsManager.deleteEmptyRangeAnnotations();
     const modifications = modificationsManager.toJSON().annotations;

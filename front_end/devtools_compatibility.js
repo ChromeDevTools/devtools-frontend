@@ -1221,6 +1221,14 @@ const InspectorFrontendHostImpl = class {
   registerAidaClientEvent(request, cb) {
     DevToolsAPI.sendMessageToEmbedder('registerAidaClientEvent', [request], cb);
   }
+
+  /**
+   * @param request
+   * @param cb
+   */
+  dispatchHttpRequest(request, cb) {
+    DevToolsAPI.sendMessageToEmbedder('dispatchHttpRequest', [request], cb);
+  }
 };
 
 window.InspectorFrontendHost = new InspectorFrontendHostImpl();

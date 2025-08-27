@@ -7582,6 +7582,10 @@ export const NativeFunctions = [
     signatures: [["element","x","y","?options"],["element","x","y","dwidth","dheight","?options"]]
   },
   {
+    name: "drawHTMLElement",
+    signatures: [["element","x","y","?options"],["element","x","y","dwidth","dheight","?options"]]
+  },
+  {
     name: "setHitTestRegions",
     signatures: [["hitTestRegions"]]
   },
@@ -8015,6 +8019,10 @@ export const NativeFunctions = [
   },
   {
     name: "neg",
+    signatures: [["x","?options"]]
+  },
+  {
+    name: "roundEven",
     signatures: [["x","?options"]]
   },
   {
@@ -8858,6 +8866,10 @@ export const NativeFunctions = [
   {
     name: "provokingVertexWEBGL",
     signatures: [["provokeMode"]]
+  },
+  {
+    name: "texHTMLElement2D",
+    signatures: [["target","level","internalformat","format","type","element"]]
   },
   {
     name: "texElement2D",

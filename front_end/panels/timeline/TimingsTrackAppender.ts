@@ -115,8 +115,7 @@ export class TimingsTrackAppender implements TrackAppender {
    * extension markers (the first available level to append more data).
    */
   #appendExtensionsAtLevel(currentLevel: number): number {
-    let markers: Trace.Types.Extensions.SyntheticExtensionMarker[] = [];
-    markers = markers.concat(this.#extensionMarkers).sort((m1, m2) => m1.ts - m2.ts);
+    const markers = this.#extensionMarkers.toSorted((m1, m2) => m1.ts - m2.ts);
     if (markers.length === 0) {
       return currentLevel;
     }

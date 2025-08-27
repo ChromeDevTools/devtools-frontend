@@ -4194,6 +4194,18 @@ export class FlameChartTimelineData {
    **/
   entryDecorations: FlameChartDecoration[][];
   groups: Group[];
+
+  /**
+   * Markers are events with vertical lines that go down the entire timeline at their start time.
+   * These are only used now in the Extensibility API; users can provide a
+   * `marker` event
+   * (https://developer.chrome.com/docs/devtools/performance/extension#inject_your_data_with_the_user_timings_api)
+   * which will render with a vertical line.
+   * If you are wondering what we use to draw page events like LCP, those are
+   * done via the overlays system. In time, it probably makes sense to use the
+   * overlays for e11y marker events too, and then we can remove markers from
+   * TimelineData, rather than have two systems to build the same UI...
+   */
   markers: FlameChartMarker[];
 
   // These four arrays are used to draw the initiator arrows, and if there are

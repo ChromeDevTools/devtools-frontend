@@ -6,15 +6,16 @@
 
 @scope to (devtools-widget > *) {
   .global-ai-button-container {
-    margin-inline: var(--sys-size-2);
+    margin-left: var(--sys-size-3);
+    margin-right: var(--sys-size-1);
   }
 
   .global-ai-button {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: var(--sys-size-10);
-    height: var(--sys-size-10);
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
     border-radius: var(--sys-shape-corner-full);
     background-image: var(--app-gradient-google-ai);
     font: var(--sys-typescale-body4-medium);
@@ -49,8 +50,8 @@
     }
 
     devtools-icon {
-      width: var(--sys-size-8);
-      height: var(--sys-size-8);
+      width: var(--sys-size-7);
+      height: var(--sys-size-7);
       color: var(--ref-palette-neutral100);
     }
 

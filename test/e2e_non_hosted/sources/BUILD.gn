@@ -29,6 +29,7 @@ ts_e2e_library("sources") {
     "link-to-correct-source-line_test.ts",
     "live-edit-moving-breakpoint_test.ts",
     "navigator-view_test.ts",
+    "overrides_test.ts",
     "pause-button_test.ts",
     "popover_test.ts",
     "restart-frame_test.ts",

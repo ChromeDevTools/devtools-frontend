@@ -1033,8 +1033,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     const position = Common.Settings.Settings.instance().moduleSetting('sidebar-position').get();
     let splitMode = SplitMode.HORIZONTAL;
-    if (position === 'right' ||
-        (position === 'auto' && UI.InspectorView.InspectorView.instance().element.offsetWidth > 680)) {
+    if (position === 'right' || (position === 'auto' && this.splitWidget.element.offsetWidth > 680)) {
       splitMode = SplitMode.VERTICAL;
     }
     if (!this.sidebarPaneView) {

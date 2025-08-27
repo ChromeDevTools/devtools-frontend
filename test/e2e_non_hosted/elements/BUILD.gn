@@ -8,6 +8,7 @@ ts_e2e_library("elements") {
   sources = [
     "accessibility-pane_test.ts",
     "accessibility-tree_test.ts",
+    "add-view-transition-pseudo-styles_test.ts",
     "adornment_test.ts",
     "at-function-sections_test.ts",
     "at-property-sections_test.ts",

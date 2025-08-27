@@ -5,10 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("elements") {
-  sources = [
-    "add-view-transition-pseudo-styles_test.ts",
-    "style-pane-properties_test.ts",
-  ]
+  sources = [ "style-pane-properties_test.ts" ]
 
   deps = [
     "../../shared",

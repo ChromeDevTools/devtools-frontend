@@ -20,7 +20,6 @@ node_ts_library("tests") {
     "elements",
     "extensions",
     "lighthouse",
-    "network",
     "performance",
     "sources",
   ]

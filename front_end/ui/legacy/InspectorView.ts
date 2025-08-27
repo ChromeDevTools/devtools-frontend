@@ -141,6 +141,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorViewInstance: InspectorView|null = null;
 
 export class InspectorView extends VBox implements ViewLocationResolver {
+  private readonly drawerIsVerticalSetting: Common.Settings.Setting<boolean>;
   private readonly drawerSplitWidget: SplitWidget;
   private readonly tabDelegate: InspectorViewTabDelegate;
   private readonly drawerTabbedLocation: TabbedViewLocation;
@@ -163,7 +164,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.setMinimumSize(250, 72);
 
     // DevTools sidebar is a vertical split of main tab bar panels and a drawer.
-    this.drawerSplitWidget = new SplitWidget(false, true, 'inspector.drawer-split-view-state', 200, 200);
+    this.drawerIsVerticalSetting =
+        Common.Settings.Settings.instance().createSetting('inspector.use-vertical-drawer-orientation', false);
+    this.drawerSplitWidget =
+        new SplitWidget(this.drawerIsVerticalSetting.get(), true, 'inspector.drawer-split-view-state', 200, 200);
     this.drawerSplitWidget.hideSidebar();
     this.drawerSplitWidget.enableShowModeSaving();
     this.drawerSplitWidget.show(this.element);
@@ -434,6 +438,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   toggleDrawerOrientation(): void {
     const drawerWillBeVertical = !this.drawerSplitWidget.isVertical();
     this.#toggleOrientationButton.setGlyph(drawerWillBeVertical ? 'dock-bottom' : 'dock-right');
+    this.drawerIsVerticalSetting.set(drawerWillBeVertical);
     this.drawerSplitWidget.setVertical(drawerWillBeVertical);
     this.setDrawerMinimumSize();
   }
@@ -468,6 +473,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
   isDrawerMinimized(): boolean {
     return this.drawerSplitWidget.isSidebarMinimized();
+  }
+
+  isDrawerOrientationVertical(): boolean {
+    return this.drawerSplitWidget.isVertical();
   }
 
   private keyDown(event: Event): void {

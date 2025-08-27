@@ -184,6 +184,7 @@ ts_library("unittests") {
     "Fragment.test.ts",
     "Geometry.test.ts",
     "Infobar.test.ts",
+    "InspectorView.test.ts",
     "KeyboardShortcut.test.ts",
     "ListModel.test.ts",
     "ListWidget.test.ts",

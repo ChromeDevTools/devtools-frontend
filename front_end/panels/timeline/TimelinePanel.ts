@@ -392,6 +392,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private traceLoadStart!: Trace.Types.Timing.Milli|null;
 
   #traceEngineModel: Trace.TraceModel.Model;
+  #externalAIConversationData: AiAssistanceModel.ExternalPerformanceAIConversationData|null = null;
   #sourceMapsResolver: Utils.SourceMapsResolver.SourceMapsResolver|null = null;
   #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
@@ -929,6 +930,40 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return this.#traceEngineModel;
   }
 
+  getOrCreateExternalAIConversationData(): AiAssistanceModel.ExternalPerformanceAIConversationData {
+    if (!this.#externalAIConversationData) {
+      const conversationHandler = AiAssistanceModel.ConversationHandler.instance();
+      const focus = Utils.AIContext.getPerformanceAgentFocusFromModel(this.model);
+      if (!focus) {
+        throw new Error('could not create performance agent focus');
+      }
+
+      const agent = conversationHandler.createAgent(AiAssistanceModel.ConversationType.PERFORMANCE_FULL);
+      const conversation = new AiAssistanceModel.Conversation(
+          AiAssistanceModel.ConversationType.PERFORMANCE_FULL,
+          [],
+          agent.id,
+          /* isReadOnly */ true,
+          /* isExternal */ true,
+      );
+
+      const selected = new AiAssistanceModel.PerformanceTraceContext(focus);
+
+      this.#externalAIConversationData = {
+        conversationHandler,
+        conversation,
+        agent,
+        selected,
+      };
+    }
+
+    return this.#externalAIConversationData;
+  }
+
+  invalidateExternalAIConversationData(): void {
+    this.#externalAIConversationData = null;
+  }
+
   /**
    * NOTE: this method only exists to enable some layout tests to be migrated to the new engine.
    * DO NOT use this method within DevTools. It is marked as deprecated so
@@ -1142,33 +1177,17 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   // Currently for debugging purposes only.
   #onClickAskAIButton(): void {
-    const traceIndex = this.#activeTraceIndex();
-    if (traceIndex === null) {
-      return;
-    }
-
-    const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
-    if (parsedTrace === null) {
-      return;
-    }
-
-    const insights = this.#traceEngineModel.traceInsights(traceIndex);
-    if (insights === null) {
-      return;
-    }
-
-    const traceMetadata = this.#traceEngineModel.metadata(traceIndex);
-    if (traceMetadata === null) {
-      return;
-    }
-
     const actionId = 'drjones.performance-panel-full-context';
     if (!UI.ActionRegistry.ActionRegistry.instance().hasAction(actionId)) {
       return;
     }
 
-    const context = Utils.AIContext.AgentFocus.full(parsedTrace, insights, traceMetadata);
-    UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
+    const focus = Utils.AIContext.getPerformanceAgentFocusFromModel(this.#traceEngineModel);
+    if (!focus) {
+      return;
+    }
+
+    UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, focus);
 
     // Trigger the AI Assistance panel to open.
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);
@@ -3000,6 +3019,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       type: AiAssistanceModel.ExternalRequestResponseType.NOTIFICATION,
       message: 'Recording performance trace',
     };
+    TimelinePanel.instance().invalidateExternalAIConversationData();
     void VisualLogging.logFunctionCall('timeline.record-reload', 'external');
     Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
 
@@ -3094,6 +3114,16 @@ ${responseTextForPassedInsights}`;
       panelInstance.addEventListener(Events.RECORDING_COMPLETED, listener);
 
       panelInstance.recordReload();
+    });
+  }
+
+  static async handleExternalAnalyzeRequest(prompt: string):
+      Promise<AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse>> {
+    const data = TimelinePanel.instance().getOrCreateExternalAIConversationData();
+    return await data.conversationHandler.handleExternalRequest({
+      conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_FULL,
+      prompt,
+      data,
     });
   }
 }

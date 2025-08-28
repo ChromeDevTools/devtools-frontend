@@ -5,7 +5,7 @@
 import * as Trace from '../../models/trace/trace.js';
 import * as TimelineUtils from '../../panels/timeline/utils/utils.js';
 
-type InsightResponse = {
+type PerformanceAgentResponse = {
   focus: TimelineUtils.AIContext.AgentFocus,
 }|{error: string};
 
@@ -18,7 +18,7 @@ type InsightResponse = {
  *   some extra input data to figure it out.
  */
 export async function getInsightAgentFocusToDebug(
-    model: Trace.TraceModel.Model, insightTitle: string): Promise<InsightResponse> {
+    model: Trace.TraceModel.Model, insightTitle: string): Promise<PerformanceAgentResponse> {
   const parsedTrace = model.parsedTrace();
   const latestInsights = model.traceInsights();
   if (!latestInsights || !parsedTrace) {
@@ -52,20 +52,5 @@ export async function getInsightAgentFocusToDebug(
 
   const insight = insights.model[matchingInsightKey];
   const focus = TimelineUtils.AIContext.AgentFocus.fromInsight(parsedTrace, insight, insights.bounds);
-  return {focus};
-}
-
-export async function getPerformanceAgentFocusToDebug(model: Trace.TraceModel.Model): Promise<InsightResponse> {
-  const parsedTrace = model.parsedTrace();
-  const insights = model.traceInsights();
-  const traceMetadata = model.metadata();
-  if (!insights || !parsedTrace || !traceMetadata) {
-    return {
-      error:
-          'No trace has been recorded, so we cannot analyze the performance. Must run the devtools_performance_run_trace tool first.',
-    };
-  }
-
-  const focus = TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insights, traceMetadata);
   return {focus};
 }

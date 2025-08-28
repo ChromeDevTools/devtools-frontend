@@ -1109,15 +1109,8 @@ export async function handleExternalRequestGenerator(input: ExternalRequestInput
       });
     }
     case 'PERFORMANCE_ANALYZE': {
-      const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
       const TimelinePanel = await import('../../panels/timeline/timeline.js');
-      const traceModel = TimelinePanel.TimelinePanel.TimelinePanel.instance().model;
-      const conversationHandler = AiAssistanceModel.ConversationHandler.instance();
-      return await conversationHandler.handleExternalRequest({
-        conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_FULL,
-        prompt: input.args.prompt,
-        traceModel,
-      });
+      return await TimelinePanel.TimelinePanel.TimelinePanel.handleExternalAnalyzeRequest(input.args.prompt);
     }
     case 'NETWORK_DEBUGGER': {
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');

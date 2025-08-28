@@ -1887,5 +1887,30 @@ describeWithEnvironment('AiAssistancePanel.ActionDelegate', () => {
       const [fileName] = saveSpy.getCall(0).args;
       assert.strictEqual(fileName, 'devtools_test_question.md');
     });
+
+    it('should truncate a long file name when exporting', async () => {
+      const fileManager = Workspace.FileManager.FileManager.instance();
+      const saveSpy = sinon.stub(fileManager, 'save');
+      const {panel, view} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+      });
+      panel.handleAction('freestyler.elements-floating-button');
+      const longTitle = 'this is a very long title that should be truncated when exporting the conversation to a file';
+      (await view.nextInput).onTextSubmit(longTitle);
+      await view.nextInput;
+      await view.input.onExportConversationClick();
+
+      sinon.assert.calledOnce(saveSpy);
+
+      const [fileName] = saveSpy.getCall(0).args;
+      const expectedSnakeCase =
+          'this_is_a_very_long_title_that_should_be_truncated_when_exporting_the_conversation_to_a_file';
+      const prefix = 'devtools_';
+      const suffix = '.md';
+      const maxTitleLength = 64 - prefix.length - suffix.length;
+      const expectedFileName = `${prefix}${expectedSnakeCase.substring(0, maxTitleLength)}${suffix}`;
+      assert.strictEqual(fileName, expectedFileName);
+      assert.isAtMost(fileName.length, 64);
+    });
   });
 });

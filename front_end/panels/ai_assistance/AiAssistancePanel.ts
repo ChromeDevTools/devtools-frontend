@@ -1268,10 +1268,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (!this.#conversation) {
       return;
     }
+
     const markdownContent = this.#conversation.getConversationMarkdown();
-    const titleFormatted = Platform.StringUtilities.toSnakeCase(this.#conversation.title || '');
     const contentData = new TextUtils.ContentData.ContentData(markdownContent, false, 'text/markdown');
-    const filename = `devtools_${titleFormatted || 'conversation'}.md` as Platform.DevToolsPath.RawPathString;
+
+    const titleFormatted = Platform.StringUtilities.toSnakeCase(this.#conversation.title || '');
+    const prefix = 'devtools_';
+    const suffix = '.md';
+    const maxTitleLength = 64 - prefix.length - suffix.length;
+    let finalTitle = titleFormatted || 'conversation';
+    if (finalTitle.length > maxTitleLength) {
+      finalTitle = finalTitle.substring(0, maxTitleLength);
+    }
+    const filename = `${prefix}${finalTitle}${suffix}` as Platform.DevToolsPath.RawPathString;
+
     await Workspace.FileManager.FileManager.instance().save(filename, contentData, true);
     Workspace.FileManager.FileManager.instance().close(filename);
   }

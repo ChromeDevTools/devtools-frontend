@@ -9166,10 +9166,6 @@ export const NativeFunctions = [
     signatures: [["?init"]]
   },
   {
-    name: "WebTransport",
-    signatures: [["url","?options"]]
-  },
-  {
     name: "USBAlternateInterface",
     signatures: [["deviceInterface","alternateSetting"]]
   },

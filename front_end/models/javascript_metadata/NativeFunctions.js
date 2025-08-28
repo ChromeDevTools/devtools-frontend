@@ -20,7 +20,13 @@ export const NativeFunctions = [
   },
   {
     name: "isNaN",
-    signatures: [["number"]]
+    signatures: [["number"]],
+    receivers: ["Window","NumberConstructor"]
+  },
+  {
+    name: "isNaN",
+    signatures: [["x","?options"]],
+    receivers: ["MLGraphBuilder"]
   },
   {
     name: "isFinite",
@@ -8031,6 +8037,10 @@ export const NativeFunctions = [
   },
   {
     name: "identity",
+    signatures: [["x","?options"]]
+  },
+  {
+    name: "isInfinite",
     signatures: [["x","?options"]]
   },
   {

@@ -11326,6 +11326,12 @@ export namespace Network {
      * Whether DirectSocket chunk send/receive events should be reported.
      */
     reportDirectSocketTraffic?: boolean;
+    /**
+     * Enable storing response bodies outside of renderer, so that these survive
+     * a cross-process navigation. Requires maxTotalBufferSize to be set.
+     * Currently defaults to false.
+     */
+    enableDurableMessages?: boolean;
   }
 
   export interface GetAllCookiesResponse extends ProtocolResponseWithError {

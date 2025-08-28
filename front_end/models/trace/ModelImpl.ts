@@ -118,7 +118,8 @@ export class Model extends EventTarget {
         metadata,
         resolveSourceMap: config?.resolveSourceMap,
       };
-      if (window.location.href.includes('devtools/bundled') || window.location.search.includes('debugFrontend')) {
+      if (!parseConfig.logger &&
+          (window.location.href.includes('devtools/bundled') || window.location.search.includes('debugFrontend'))) {
         // Someone is debugging DevTools, enable the logger.
         const times: Record<string, number> = {};
         parseConfig.logger = {

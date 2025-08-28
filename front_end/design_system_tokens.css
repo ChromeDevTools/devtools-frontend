@@ -182,7 +182,7 @@
   --sys-color-token-deleted: var(--ref-palette-error50);
   --sys-color-token-inserted: var(--ref-palette-green60);
   --sys-color-token-pseudo-element: var(--ref-palette-blue40);
-  --sys-color-token-subtle: var(--ref-palette-neutral60);
+  --sys-color-token-subtle: var(--ref-palette-neutral50);
 
   /**
   * Gradients

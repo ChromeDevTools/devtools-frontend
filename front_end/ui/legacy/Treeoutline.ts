@@ -1453,7 +1453,7 @@ function getTreeNodes(nodeList: NodeList|Node[]): HTMLLIElement[] {
   return nodeList.values()
       .flatMap(node => {
         if (node instanceof HTMLLIElement && node.role === 'treeitem') {
-          return [node];
+          return [node, ...node.querySelectorAll<HTMLLIElement>('ul[role="group"] li[role="treeitem"]')];
         }
         if (node instanceof HTMLElement) {
           return node.querySelectorAll<HTMLLIElement>('li[role="treeitem"]');
@@ -1508,20 +1508,23 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
 
   constructor() {
     super();
-    this.#treeOutline.addEventListener(
-        Events.ElementSelected,
-        event =>
-            this.dispatchEvent(new TreeViewElement.SelectEvent((event.data as TreeViewTreeElement).configElement)));
-    this.#treeOutline.addEventListener(
-        Events.ElementExpanded,
-        event => (event.data as TreeViewTreeElement)
-                     .configElement.dispatchEvent(new TreeViewElement.ExpandEvent(
-                         {expanded: true, target: (event.data as TreeViewTreeElement).configElement})));
-    this.#treeOutline.addEventListener(
-        Events.ElementCollapsed,
-        event => (event.data as TreeViewTreeElement)
-                     .configElement.dispatchEvent(new TreeViewElement.ExpandEvent(
-                         {expanded: false, target: (event.data as TreeViewTreeElement).configElement})));
+    this.#treeOutline.addEventListener(Events.ElementSelected, event => {
+      if (event.data instanceof TreeViewTreeElement) {
+        this.dispatchEvent(new TreeViewElement.SelectEvent(event.data.configElement));
+      }
+    });
+    this.#treeOutline.addEventListener(Events.ElementExpanded, event => {
+      if (event.data instanceof TreeViewTreeElement) {
+        event.data.configElement.dispatchEvent(new TreeViewElement.ExpandEvent(
+            {expanded: true, target: (event.data as TreeViewTreeElement).configElement}));
+      }
+    });
+    this.#treeOutline.addEventListener(Events.ElementCollapsed, event => {
+      if (event.data instanceof TreeViewTreeElement) {
+        event.data.configElement.dispatchEvent(new TreeViewElement.ExpandEvent(
+            {expanded: false, target: (event.data as TreeViewTreeElement).configElement}));
+      }
+    });
     this.addNodes(getTreeNodes([this]));
   }
 
@@ -1545,12 +1548,29 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     return treeElement ? {expanded, treeElement} : null;
   }
 
-  protected override updateNodes(node: Node, _attributeName: string|null): void {
+  protected override updateNodes(node: Node, attributeName: string|null): void {
     while (node?.parentNode && !(node instanceof HTMLElement)) {
       node = node.parentNode;
     }
     const treeNode = node instanceof HTMLElement ? node.closest('li[role="treeitem"]') : null;
-    treeNode && TreeViewTreeElement.get(treeNode)?.refresh();
+    if (!treeNode) {
+      return;
+    }
+    const treeElement = TreeViewTreeElement.get(treeNode);
+    if (!treeElement) {
+      return;
+    }
+    treeElement.refresh();
+    if (node === treeNode && attributeName === 'selected' && hasBooleanAttribute(treeNode, 'selected')) {
+      treeElement.revealAndSelect(true);
+    }
+    if (attributeName === 'hidden' && node instanceof HTMLUListElement && node.role === 'group') {
+      if (hasBooleanAttribute(node, 'hidden')) {
+        treeElement.collapse();
+      } else {
+        treeElement.expand();
+      }
+    }
   }
 
   protected override addNodes(nodes: NodeList|Node[]): void {

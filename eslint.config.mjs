@@ -695,7 +695,7 @@ export default defineConfig([
       // errors on {describe, it}.only
       'mocha/no-exclusive-tests': 'error',
 
-      'mocha/no-async-suite': 'error',
+      'mocha/no-async-describe': 'error',
       'mocha/no-global-tests': 'error',
       'mocha/no-nested-tests': 'error',
 
@@ -739,22 +739,22 @@ export default defineConfig([
         {
           name: 'describeWithDevtoolsExtension',
           type: 'suite',
-          interface: 'BDD',
+          interfaces: ['BDD', 'TDD'],
         },
         {
           name: 'describeWithEnvironment',
           type: 'suite',
-          interface: 'BDD',
+          interfaces: ['BDD', 'TDD'],
         },
         {
           name: 'describeWithLocale',
           type: 'suite',
-          interface: 'BDD',
+          interfaces: ['BDD', 'TDD'],
         },
         {
           name: 'describeWithMockConnection',
           type: 'suite',
-          interface: 'BDD',
+          interfaces: ['BDD', 'TDD'],
         },
       ],
     },

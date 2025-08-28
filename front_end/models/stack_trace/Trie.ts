@@ -104,6 +104,27 @@ export class Trie {
     }
     return newNode;
   }
+
+  /**
+   * Traverses the trie in pre-order.
+   *
+   * @param node Start at `node` or `null` to start with the children of the root.
+   * @param visit Called on each node in the trie. Return `true` if the visitor should descend into child nodes of the provided node.
+   */
+  walk(node: FrameNode|null, visit: (node: FrameNode) => boolean): void {
+    const stack =
+        node ? [node] : [...this.#root.children].map(ref => ref.deref()).filter(node => Boolean(node)) as FrameNode[];
+
+    for (let node = stack.pop(); node; node = stack.pop()) {
+      const visitChildren = visit(node);
+      if (visitChildren) {
+        // Pushing the children in reverse means the "left-most" child is visited first (i.e. pre-order).
+        for (let i = node.children.length - 1; i >= 0; --i) {
+          stack.push(node.children[i]);
+        }
+      }
+    }
+  }
 }
 
 /**

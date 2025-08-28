@@ -69,4 +69,61 @@ describe('Trie', () => {
       assert.deepEqual(urls, ['foo.js', 'bar.js']);
     });
   });
+
+  describe('walk', () => {
+    function setupTrie() {
+      const trie = new StackTraceImpl.Trie.Trie();
+      const frameA = protocolCallFrame('a.js:1:a:1:10');
+      const frameB = protocolCallFrame('b.js:2:b:2:20');
+      const frameC = protocolCallFrame('c.js:3:c:3:30');
+      const frameD = protocolCallFrame('d.js:4:d:4:40');
+
+      // stack trace C -> B -> A
+      const nodeC = trie.insert([frameC, frameB, frameA]);
+      // stack trace D -> A
+      const nodeD = trie.insert([frameD, frameA]);
+
+      const nodeB = nodeC.parent as StackTraceImpl.Trie.FrameNode;
+      const nodeA = nodeB.parent as StackTraceImpl.Trie.FrameNode;
+      assert.strictEqual(nodeD.parent, nodeA);
+
+      return {trie, nodeA, nodeB, nodeC, nodeD};
+    }
+
+    it('walks the whole trie', () => {
+      const {trie, nodeA, nodeB, nodeC, nodeD} = setupTrie();
+      const visited: StackTraceImpl.Trie.FrameNode[] = [];
+
+      trie.walk(null, node => {
+        visited.push(node);
+        return true;
+      });
+
+      assert.deepEqual(visited, [nodeA, nodeB, nodeC, nodeD]);
+    });
+
+    it('can start walking from a given node', () => {
+      const {trie, nodeB, nodeC} = setupTrie();
+      const visited: StackTraceImpl.Trie.FrameNode[] = [];
+
+      trie.walk(nodeB, node => {
+        visited.push(node);
+        return true;
+      });
+
+      assert.deepEqual(visited, [nodeB, nodeC]);
+    });
+
+    it('does not walk children if the callback returns false', () => {
+      const {trie, nodeA, nodeB, nodeD} = setupTrie();
+      const visited: StackTraceImpl.Trie.FrameNode[] = [];
+
+      trie.walk(null, node => {
+        visited.push(node);
+        return node !== nodeB;
+      });
+
+      assert.deepEqual(visited, [nodeA, nodeB, nodeD]);
+    });
+  });
 });

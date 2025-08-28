@@ -923,3 +923,81 @@ export function allThreadEntriesInTrace(parsedTrace: Trace.Handlers.Types.Parsed
   allThreadEntriesForTraceCache.set(parsedTrace, allEvents);
   return allEvents;
 }
+
+export interface PerformanceAPIExtensionTestData {
+  detail: {devtools?: Trace.Types.Extensions.ExtensionDataPayload};
+  name: string;
+  start?: string|number;
+  end?: string|number;
+  ts: number;
+  dur?: number;
+}
+
+export interface ConsoleAPIExtensionTestData {
+  name: string;
+  start?: string|number;
+  end?: string|number;
+  track?: string;
+  trackGroup?: string;
+  color?: string;
+  ts: number;
+}
+
+let idCounter = 0;
+
+export function makeTimingEventWithPerformanceExtensionData(
+    {name, ts: tsMicro, detail, dur: durMicro}: PerformanceAPIExtensionTestData): Trace.Types.Events.Event[] {
+  const isMark = durMicro === undefined;
+  const currentId = idCounter++;
+  const traceEventBase = {
+    cat: 'blink.user_timing',
+    pid: Trace.Types.Events.ProcessID(2017),
+    tid: Trace.Types.Events.ThreadID(259),
+    id2: {local: `${currentId}`},
+  };
+
+  const stringDetail = JSON.stringify(detail);
+  const args = isMark ? {data: {detail: stringDetail}} : {detail: stringDetail};
+  const firstEvent = {
+    args,
+    name,
+    ph: isMark ? Trace.Types.Events.Phase.INSTANT : Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
+    ts: Trace.Types.Timing.Micro(tsMicro),
+    ...traceEventBase,
+  } as Trace.Types.Events.Event;
+  if (isMark) {
+    return [firstEvent];
+  }
+  return [
+    firstEvent,
+    {
+      name,
+      ...traceEventBase,
+      ts: Trace.Types.Timing.Micro(tsMicro + (durMicro || 0)),
+      ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_END,
+    },
+  ];
+}
+
+export function makeTimingEventWithConsoleExtensionData(
+    {name, ts, start, end, track, trackGroup, color}: ConsoleAPIExtensionTestData):
+    Trace.Types.Events.ConsoleTimeStamp {
+  return {
+    cat: 'devtools.timeline',
+    pid: Trace.Types.Events.ProcessID(2017),
+    tid: Trace.Types.Events.ThreadID(259),
+    name: Trace.Types.Events.Name.TIME_STAMP,
+    args: {
+      data: {
+        message: name,
+        start,
+        end,
+        track,
+        trackGroup,
+        color,
+      }
+    },
+    ts: Trace.Types.Timing.Micro(ts),
+    ph: Trace.Types.Events.Phase.INSTANT,
+  };
+}

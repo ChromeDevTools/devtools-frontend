@@ -4,11 +4,10 @@
 
 import { // eslint-disable-line rulesdir/es-modules-import
   createTraceExtensionDataFromPerformanceAPITestInput,
-  type PerformanceAPIExtensionTestData,
 } from '../../../models/trace/handlers/ExtensionTraceDataHandler.test.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getBaseTraceParseModelData} from '../../../testing/TraceHelpers.js';
+import {getBaseTraceParseModelData, type PerformanceAPIExtensionTestData} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';

@@ -214,37 +214,14 @@ export function extractPerformanceAPIExtensionEntries(
   }
 }
 
-function parseDetail(timingDetail: string, key: string): Types.Extensions.ExtensionDataPayload|
-    Types.Extensions.ExtensionTrackEntryPayloadDeeplink|null {
-  try {
-    // Attempt to parse the detail as an object that might be coming from a
-    // DevTools Perf extension.
-    // Wrapped in a try-catch because timingDetail might either:
-    // 1. Not be `json.parse`-able (it should, but just in case...)
-    // 2.Not be an object - in which case the `in` check will error.
-    // If we hit either of these cases, we just ignore this mark and move on.
-    const detailObj = JSON.parse(timingDetail);
-    if (!(key in detailObj)) {
-      return null;
-    }
-    if (!Types.Extensions.isValidExtensionPayload(detailObj[key])) {
-      return null;
-    }
-    return detailObj[key];
-  } catch {
-    // No need to worry about this error, just discard this event and don't
-    // treat it as having any useful information for the purposes of extensions
-    return null;
-  }
-}
-
 function extensionPayloadForConsoleApi(timing: Types.Events.ConsoleTimeStamp):
     Types.Extensions.ExtensionTrackEntryPayloadDeeplink|null {
   if (!timing.args.data || !('devtools' in timing.args.data)) {
     return null;
   }
 
-  return parseDetail(`{"additionalContext": ${timing.args.data.devtools} }`, 'additionalContext') as
+  return Helpers.Trace.parseDevtoolsDetails(
+             `{"additionalContext": ${timing.args.data.devtools} }`, 'additionalContext') as
       Types.Extensions.ExtensionTrackEntryPayloadDeeplink;
 }
 
@@ -256,7 +233,7 @@ export function extensionDataInPerformanceTiming(
   if (!timingDetail) {
     return null;
   }
-  return parseDetail(timingDetail, 'devtools') as Types.Extensions.ExtensionDataPayload;
+  return Helpers.Trace.parseDevtoolsDetails(timingDetail, 'devtools') as Types.Extensions.ExtensionDataPayload;
 }
 
 /**

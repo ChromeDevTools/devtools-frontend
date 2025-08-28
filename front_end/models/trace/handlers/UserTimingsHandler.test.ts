@@ -4,10 +4,41 @@
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
+  type ConsoleAPIExtensionTestData,
   makeCompleteEvent,
+  makeTimingEventWithConsoleExtensionData,
+  makeTimingEventWithPerformanceExtensionData,
+  type PerformanceAPIExtensionTestData,
 } from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
+
+export async function createEventDataFromTestInput(
+    extensionData: Array<PerformanceAPIExtensionTestData|ConsoleAPIExtensionTestData>):
+    Promise<Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData> {
+  const events: Trace.Types.Events.Event[] = [];
+  for (const data of extensionData) {
+    if ('detail' in data) {
+      events.push(...makeTimingEventWithPerformanceExtensionData(data));
+    } else {
+      events.push(makeTimingEventWithConsoleExtensionData(data));
+    }
+  }
+  events.sort((e1, e2) => e1.ts - e2.ts);
+  return await createUserTimingsDataFromEvents(events);
+}
+
+async function createUserTimingsDataFromEvents(events: Trace.Types.Events.Event[]):
+    Promise<Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData> {
+  Trace.Helpers.SyntheticEvents.SyntheticEventsManager.createAndActivate(events);
+
+  Trace.Handlers.ModelHandlers.UserTimings.reset();
+  for (const event of events) {
+    Trace.Handlers.ModelHandlers.UserTimings.handleEvent(event);
+  }
+  await Trace.Handlers.ModelHandlers.UserTimings.finalize();
+  return Trace.Handlers.ModelHandlers.UserTimings.data();
+}
 
 describeWithEnvironment('UserTimingsHandler', function() {
   let timingsData: Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData;
@@ -121,6 +152,7 @@ describeWithEnvironment('UserTimingsHandler', function() {
       });
     });
   });
+
   describe('console timings', function() {
     beforeEach(async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
@@ -194,6 +226,271 @@ describeWithEnvironment('UserTimingsHandler', function() {
       const data = Trace.Handlers.ModelHandlers.UserTimings.data();
       assert.lengthOf(data.measureTraceByTraceId, 1);
       assert.deepEqual([...data.measureTraceByTraceId.entries()][0], [1, userTimingMeasure]);
+    });
+  });
+
+  describe('parsing user timings events', function() {
+    let userTimingsHandlerOutput: Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData;
+    beforeEach(async function() {
+      userTimingsHandlerOutput = await createUserTimingsDataExample();
+    });
+    after(() => {
+      Trace.Handlers.ModelHandlers.UserTimings.reset();
+    });
+
+    function createUserTimingsDataExample(): Promise<Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData> {
+      const extensionData: Array<ConsoleAPIExtensionTestData|PerformanceAPIExtensionTestData> = [
+        // Two events for Track 1 via PerformanceAPIExtensionTestData.
+        // Add B first, so that they get reordered alphabetically (A first, then B).
+        {
+          name: 'B-extension-track-1',
+          ts: 800,
+          dur: 100,
+          detail: {
+            devtools: {color: 'error', dataType: 'marker', track: 'Track 1'},
+          },
+        } as PerformanceAPIExtensionTestData,
+        {
+          name: 'A-extension-track-1',
+          ts: 800,
+          dur: 100,
+          detail: {
+            devtools: {color: 'error', dataType: 'marker', track: 'Track 1'},
+          },
+        } as PerformanceAPIExtensionTestData,
+
+        // Do the same for Track 2.
+        {
+          name: 'B-extension-track-2',
+          ts: 800,
+          dur: 100,
+          detail: {
+            devtools: {color: 'error', dataType: 'marker', track: 'Track 2'},
+          },
+        } as PerformanceAPIExtensionTestData,
+        {
+          name: 'A-extension-track-2',
+          ts: 800,
+          dur: 100,
+          detail: {
+            devtools: {color: 'error', dataType: 'marker', track: 'Track 2'},
+          },
+        } as PerformanceAPIExtensionTestData,
+
+        // Two events for Track 0 via ConsoleAPIExtensionTestData.
+        {
+          name: 'B-timestamp',
+          start: 600,
+          end: 700,
+          track: 'Track 0',
+          ts: 600,
+        } as ConsoleAPIExtensionTestData,
+        {
+          name: 'A-timestamp',
+          start: 600,
+          end: 700,
+          track: 'Track 0',
+          ts: 600,
+        } as ConsoleAPIExtensionTestData,
+
+        // Two events (for no track) which means they get added to the user timing track.
+        {
+          name: 'B-timing-track',
+          start: 800,
+          end: 900,
+          ts: 800,
+        } as PerformanceAPIExtensionTestData,
+        {
+          name: 'A-timing-track',
+          start: 800,
+          end: 900,
+          ts: 800,
+        } as PerformanceAPIExtensionTestData,
+      ];
+      return createEventDataFromTestInput(extensionData);
+    }
+
+    describe('user timings parsing', function() {
+      it('no console timings should have been parsed', async () => {
+        assert.lengthOf(userTimingsHandlerOutput.consoleTimings, 0);
+      });
+      it('parsing should reveal four timestamp events', async () => {
+        const events = userTimingsHandlerOutput.timestampEvents;
+        assert.lengthOf(events, 4);
+        assert.strictEqual(events[0].args.data?.message, 'A-timestamp');
+        assert.strictEqual(events[1].args.data?.message, 'B-timestamp');
+        assert.strictEqual(events[2].args.data?.message, 'A-timing-track');
+        assert.strictEqual(events[3].args.data?.message, 'B-timing-track');
+      });
+      it('no performance marks should have been parsed', async () => {
+        assert.lengthOf(userTimingsHandlerOutput.performanceMarks, 0);
+      });
+      it('parsing should reveal four performance measures', async () => {
+        const events = userTimingsHandlerOutput.performanceMeasures;
+        assert.lengthOf(events, 4);
+        assert.strictEqual(events[0].name, 'A-extension-track-1');
+        assert.strictEqual(events[1].name, 'B-extension-track-1');
+        assert.strictEqual(events[2].name, 'A-extension-track-2');
+        assert.strictEqual(events[3].name, 'B-extension-track-2');
+      });
+      it('no measure traces should have been set', async () => {
+        assert.lengthOf(userTimingsHandlerOutput.measureTraceByTraceId, 0);
+      });
+    });
+  });
+
+  describe('sorting functions', () => {
+    function makeFakeSyntheticEvent(
+        ts: number, dur: number, name: string, track: string): Trace.Types.Events.SyntheticEventPair {
+      const beginEvent = makeCompleteEvent(name, ts, dur, 'blink.user_timing', 0, 0) as unknown as
+          Trace.Types.Events.PerformanceMeasureBegin;
+      beginEvent.ph = Trace.Types.Events.Phase.ASYNC_NESTABLE_START;
+      beginEvent.args.detail = JSON.stringify({devtools: {track}});
+      const endEvent = makeCompleteEvent(name, ts + dur, 0, 'blink.user_timing', 0, 0) as unknown as
+          Trace.Types.Events.PerformanceMeasureEnd;
+      endEvent.ph = Trace.Types.Events.Phase.ASYNC_NESTABLE_END;
+      const syntheticEvent = Trace.Helpers.SyntheticEvents.SyntheticEventsManager
+                                 .registerSyntheticEvent<Trace.Types.Events.SyntheticUserTimingPair>({
+                                   rawSourceEvent: beginEvent,
+                                   name,
+                                   cat: 'blink.user_timing',
+                                   ts: Trace.Types.Timing.Micro(ts),
+                                   dur: Trace.Types.Timing.Micro(dur),
+                                   args: {data: {beginEvent, endEvent}},
+                                   ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
+                                   pid: Trace.Types.Events.ProcessID(0),
+                                   tid: Trace.Types.Events.ThreadID(0),
+                                 });
+      return syntheticEvent;
+    }
+
+    function sortAll(events: Trace.Types.Events.SyntheticEventPair[]) {
+      events.sort((a, b) => Trace.Handlers.ModelHandlers.UserTimings.userTimingComparator(a, b, [...events]));
+    }
+
+    it('userTimingComparator sorts by start time in ASC order', () => {
+      const event1 = makeFakeSyntheticEvent(1, 1, 'E1', 'Track A');
+      const event2 = makeFakeSyntheticEvent(2, 1, 'E2', 'Track A');
+      const event3 = makeFakeSyntheticEvent(3, 1, 'E3', 'Track A');
+      const events = [event3, event1, event2];
+
+      sortAll(events);
+      assert.deepEqual(events, [event1, event2, event3]);
+    });
+
+    it('userTimingComparator sorts by longest duration if start is the same for all', () => {
+      const event1 = makeFakeSyntheticEvent(1, 1, 'E1', 'Track A');
+      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track A');
+      const event3 = makeFakeSyntheticEvent(1, 3, 'E3', 'Track A');
+      const events = [event1, event2, event3];
+
+      sortAll(events);
+      assert.deepEqual(events, [event3, event2, event1]);
+    });
+
+    it('userTimingComparator flips if the timestamps are the same', () => {
+      const event1 = makeFakeSyntheticEvent(1, 2, 'E1', 'Track A');
+      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track A');
+      const event3 = makeFakeSyntheticEvent(2, 4, 'E3', 'Track B');
+      const event4 = makeFakeSyntheticEvent(2, 4, 'E4', 'Track B');
+      const events = [event1, event2, event3, event4];
+
+      sortAll(events);
+      assert.deepEqual(events, [event2, event1, event4, event3]);
+    });
+
+    it('userTimingComparator wont flip across tracks', () => {
+      const event1 = makeFakeSyntheticEvent(1, 2, 'E1', 'Track A');
+      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track B');
+      const event3 = makeFakeSyntheticEvent(1, 2, 'E3', 'Track C');
+      const event4 = makeFakeSyntheticEvent(1, 2, 'E4', 'Track D');
+      const events = [event1, event2, event3, event4];
+
+      sortAll(events);
+      assert.deepEqual(events, [event1, event2, event3, event4]);
+    });
+
+    it('userTimingComparator three identical measure events', () => {
+      const event1 = makeFakeSyntheticEvent(1, 2, 'E1', 'Track A');
+      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track A');
+      const event3 = makeFakeSyntheticEvent(1, 2, 'E3', 'Track A');
+      const events = [event1, event2, event3];
+
+      sortAll(events);
+      assert.deepEqual(events, [event3, event2, event1]);
+    });
+
+    function makeFakeConsoleTimestampEvent(
+        start: number, end: number, name: string, track: string): Trace.Types.Events.ConsoleTimeStamp {
+      return {
+        cat: 'devtools.timeline',
+        pid: Trace.Types.Events.ProcessID(2017),
+        tid: Trace.Types.Events.ThreadID(259),
+        name: Trace.Types.Events.Name.TIME_STAMP,
+        args: {
+          data: {
+            message: name,
+            start,
+            end,
+            track,
+          },
+        },
+        ts: Trace.Types.Timing.Micro(start),
+        ph: Trace.Types.Events.Phase.INSTANT,
+      };
+    }
+
+    function sortAllConsoleTimestamps(events: Trace.Types.Events.ConsoleTimeStamp[]) {
+      events.sort((a, b) => Trace.Handlers.ModelHandlers.UserTimings.consoleTimestampComparator(a, b, [...events]));
+    }
+
+    it('consoleTimestampComparator sorts by start time in ASC order', () => {
+      const event1 = makeFakeConsoleTimestampEvent(1, 1, 'E1', 'Track A');
+      const event2 = makeFakeConsoleTimestampEvent(2, 1, 'E2', 'Track A');
+      const event3 = makeFakeConsoleTimestampEvent(3, 1, 'E3', 'Track A');
+      const events = [event3, event1, event2];
+      sortAllConsoleTimestamps(events);
+      assert.deepEqual(events, [event1, event2, event3]);
+    });
+
+    it('consoleTimestampComparator sorts by longest duration if start is the same for all', () => {
+      const event1 = makeFakeConsoleTimestampEvent(1, 1, 'E1', 'Track A');
+      const event2 = makeFakeConsoleTimestampEvent(1, 2, 'E2', 'Track A');
+      const event3 = makeFakeConsoleTimestampEvent(1, 3, 'E3', 'Track A');
+      const events = [event1, event2, event3];
+      sortAllConsoleTimestamps(events);
+      assert.deepEqual(events, [event3, event2, event1]);
+    });
+
+    it('consoleTimestampComparator flips if the timestamps are the same', () => {
+      const event1 = makeFakeConsoleTimestampEvent(1, 3, 'E1', 'Track A');
+      const event2 = makeFakeConsoleTimestampEvent(1, 3, 'E2', 'Track A');
+      const event3 = makeFakeConsoleTimestampEvent(2, 6, 'E3', 'Track B');
+      const event4 = makeFakeConsoleTimestampEvent(2, 6, 'E4', 'Track B');
+      const events = [event1, event2, event3, event4];
+      sortAllConsoleTimestamps(events);
+      assert.deepEqual(events, [event2, event1, event4, event3]);
+    });
+
+    it('consoleTimestampComparator wont flip across tracks', () => {
+      const event1 = makeFakeConsoleTimestampEvent(1, 2, 'E1', 'Track A');
+      const event2 = makeFakeConsoleTimestampEvent(1, 2, 'E2', 'Track B');
+      const event3 = makeFakeConsoleTimestampEvent(1, 2, 'E3', 'Track C');
+      const event4 = makeFakeConsoleTimestampEvent(1, 2, 'E4', 'Track D');
+      const events = [event1, event2, event3, event4];
+
+      sortAllConsoleTimestamps(events);
+      assert.deepEqual(events, [event1, event2, event3, event4]);
+    });
+
+    it('consoleTimestampComparator three identical measure events', () => {
+      const event1 = makeFakeConsoleTimestampEvent(1, 2, 'E1', 'Track A');
+      const event2 = makeFakeConsoleTimestampEvent(1, 2, 'E2', 'Track A');
+      const event3 = makeFakeConsoleTimestampEvent(1, 2, 'E3', 'Track A');
+      const events = [event1, event2, event3];
+
+      sortAllConsoleTimestamps(events);
+      assert.deepEqual(events, [event3, event2, event1]);
     });
   });
 });

@@ -28,7 +28,7 @@ const performanceMarkEvents: Types.Events.PerformanceMark[] = [];
 
 const consoleTimings: Array<Types.Events.ConsoleTimeBegin|Types.Events.ConsoleTimeEnd> = [];
 
-const timestampEvents: Types.Events.ConsoleTimeStamp[] = [];
+let timestampEvents: Types.Events.ConsoleTimeStamp[] = [];
 
 export interface UserTimingsData {
   /**
@@ -115,8 +115,8 @@ const ignoredNames = [...resourceTimingNames, ...navTimingNames];
 /**
  * Similar to the default {@see Helpers.Trace.eventTimeComparator}
  * but with a twist:
- * In case of equal start and end times, always put the second event
- * first.
+ * In case of equal start and end times, put the second event (within a
+ * track) first.
  *
  * Explanation:
  * User timing entries come as trace events dispatched when
@@ -128,32 +128,67 @@ const ignoredNames = [...resourceTimingNames, ...navTimingNames];
  * performance.measure calls usually are done in bottom-up direction:
  * calls for children first and for parent later (because the call
  * is usually done when the measured task is over). This means that
- * when two user timing events have the start and end time, usually the
- * second event is the parent of the first. Hence the switch.
+ * when two user timing events have the same start and end time, usually
+ * the second event is the parent of the first. Hence the switch.
  *
  */
-function userTimingComparator(
-    a: Helpers.Trace.TimeSpan, b: Helpers.Trace.TimeSpan, originalArray: Helpers.Trace.TimeSpan[]): number {
-  const aBeginTime = a.ts;
-  const bBeginTime = b.ts;
-  if (aBeginTime < bBeginTime) {
-    return -1;
+export function userTimingComparator(
+    a: Types.Events.SyntheticEventPair, b: Types.Events.SyntheticEventPair,
+    originalArray: readonly Types.Events.SyntheticEventPair[]): number {
+  const aStart = a.ts;
+  const bStart = b.ts;
+  const aEnd = aStart + (a.dur ?? 0);
+  const bEnd = bStart + (b.dur ?? 0);
+  const timeDifference = Helpers.Trace.compareBeginAndEnd(aStart, bStart, aEnd, bEnd);
+  if (timeDifference) {
+    return timeDifference;
   }
-  if (aBeginTime > bBeginTime) {
-    return 1;
+
+  // Never re-order entries across different tracks.
+  const aDetailString = (a.args.data.beginEvent.args as {detail?: string})?.detail;
+  const bDetailString = (b.args.data.beginEvent.args as {detail?: string})?.detail;
+  const aDetails = aDetailString ? Helpers.Trace.parseDevtoolsDetails(aDetailString, 'devtools') : null;
+  const bDetails = bDetailString ? Helpers.Trace.parseDevtoolsDetails(bDetailString, 'devtools') : null;
+  const aTrack = aDetails && 'track' in aDetails ? aDetails.track : undefined;
+  const bTrack = bDetails && 'track' in bDetails ? bDetails.track : undefined;
+  if (aTrack !== bTrack) {
+    return 0;  // Preserve current positions.
   }
-  const aDuration = a.dur ?? 0;
-  const bDuration = b.dur ?? 0;
-  const aEndTime = aBeginTime + aDuration;
-  const bEndTime = bBeginTime + bDuration;
-  if (aEndTime > bEndTime) {
-    return -1;
-  }
-  if (aEndTime < bEndTime) {
-    return 1;
-  }
+
   // Prefer the event located in a further position in the original array.
-  return originalArray.indexOf(b) - originalArray.indexOf(a);
+  const aIndex = originalArray.indexOf(a);
+  const bIndex = originalArray.indexOf(b);
+  return bIndex - aIndex;
+}
+
+export function consoleTimestampComparator(
+    a: Types.Events.ConsoleTimeStamp, b: Types.Events.ConsoleTimeStamp,
+    originalArray: readonly Types.Events.ConsoleTimeStamp[]): number {
+  const aStart = a.args.data?.start;
+  const aEnd = a.args.data?.end;
+  const bStart = b.args.data?.start;
+  const bEnd = b.args.data?.end;
+  if (typeof aStart !== 'number' || typeof aEnd !== 'number' || typeof bStart !== 'number' ||
+      typeof bEnd !== 'number') {
+    return 0;
+  }
+
+  const timeDifference = Helpers.Trace.compareBeginAndEnd(aStart, bStart, aEnd, bEnd);
+  if (timeDifference) {
+    return timeDifference;
+  }
+
+  // Never re-order entries across different tracks.
+  const aTrack = a.args.data?.track;
+  const bTrack = b.args.data?.track;
+  if (aTrack !== bTrack) {
+    return 0;  // Preserve current positions.
+  }
+
+  // Prefer the event located in a further position in the original array.
+  const aIndex = originalArray.indexOf(a);
+  const bIndex = originalArray.indexOf(b);
+  return bIndex - aIndex;
 }
 
 export function handleEvent(event: Types.Events.Event): void {
@@ -182,6 +217,7 @@ export async function finalize(): Promise<void> {
   const asyncEvents = [...performanceMeasureEvents, ...consoleTimings];
   syntheticEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
   syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, [...syntheticEvents]));
+  timestampEvents = timestampEvents.sort((a, b) => consoleTimestampComparator(a, b, [...timestampEvents]));
 }
 
 export function data(): UserTimingsData {

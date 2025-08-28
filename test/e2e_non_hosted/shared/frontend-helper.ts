@@ -41,6 +41,7 @@ interface DevToolsReloadParams {
 
 export class DevToolsPage extends PageWrapper {
   #currentHighlightedElement?: HighlightedElement;
+  #cdpSession?: puppeteer.CDPSession;
 
   constructor(page: puppeteer.Page) {
     super(page);
@@ -96,7 +97,7 @@ export class DevToolsPage extends PageWrapper {
     }
     /* eslint-disable-next-line no-console */
     console.log(`Throttling CPU: ${TestConfig.cpuThrottle}x slowdown`);
-    const client = await this.page.createCDPSession();
+    const client = await this.#getCDPSession();
     await client.send('Emulation.setCPUThrottlingRate', {
       rate: TestConfig.cpuThrottle,
     });
@@ -717,6 +718,24 @@ export class DevToolsPage extends PageWrapper {
     `);
     await this.reload();
   }
+
+  async #getCDPSession() {
+    if (!this.#cdpSession) {
+      this.#cdpSession = await this.page.createCDPSession();
+    }
+    return this.#cdpSession;
+  }
+
+  async disableAnimations() {
+    const session = await this.#getCDPSession();
+    await session.send('Animation.enable');
+    await session.send('Animation.setPlaybackRate', {playbackRate: 30_000});
+  }
+
+  async enableAnimations() {
+    const session = await this.#getCDPSession();
+    await session.send('Animation.setPlaybackRate', {playbackRate: 1});
+  }
 }
 
 export interface DevtoolsSettings {
@@ -788,12 +807,6 @@ async function setDevToolsExperiments(devToolsPage: DevToolsPage, experiments: s
   }, experiments);
 }
 
-async function disableAnimations(devToolsPage: DevToolsPage) {
-  const session = await devToolsPage.page.createCDPSession();
-  await session.send('Animation.enable');
-  await session.send('Animation.setPlaybackRate', {playbackRate: 30_000});
-}
-
 /**
  * @internal
  */
@@ -842,7 +855,7 @@ export async function setupDevToolsPage(
   const devToolsPage = new DevToolsPage(frontend);
   await devToolsPage.ensureReadyForTesting();
   await Promise.all([
-    disableAnimations(devToolsPage),
+    devToolsPage.disableAnimations(),
     setDevToolsSettings(devToolsPage, settings.devToolsSettings),
     setDevToolsExperiments(devToolsPage, settings.enabledDevToolsExperiments),
     setDisabledDevToolsExperiments(devToolsPage, settings.disabledDevToolsExperiments),

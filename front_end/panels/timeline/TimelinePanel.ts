@@ -1677,7 +1677,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       hostWindow.removeEventListener('message', onMessageHandler);
     }
     hostWindow.addEventListener('message', onMessageHandler);
-    rehydratingWindow = hostWindow.open(pathToLaunch, /* target: */ undefined, 'noopener=false,popup=true');
+
+    if (this.isDocked()) {
+      rehydratingWindow = hostWindow.open(pathToLaunch, /* target: */ '_blank', 'noopener=false,popup=false');
+    } else {
+      rehydratingWindow = hostWindow.open(pathToLaunch, /* target: */ undefined, 'noopener=false,popup=true');
+    }
   }
 
   async loadFromURL(url: Platform.DevToolsPath.UrlString): Promise<void> {
@@ -1686,6 +1691,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
     this.prepareToLoadTimeline();
     this.loader = await TimelineLoader.loadFromURL(url, this);
+  }
+
+  private isDocked(): boolean {
+    return UI.DockController.DockController.instance().dockSide() !== UI.DockController.DockState.UNDOCKED;
   }
 
   private updateMiniMap(): void {

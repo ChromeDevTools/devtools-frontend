@@ -152,6 +152,10 @@ const UIStrings = {
    */
   timeout: 'Timeout',
   /**
+   * @description Text used to refer to a positive timeout value that schedules the idle callback once elapsed, even if no idle time is available.
+   */
+  requestIdleCallbackTimeout: 'Timeout',
+  /**
    * @description Text used to indicate that a timer is repeating (e.g. every X seconds) rather than a one off.
    */
   repeats: 'Repeats',
@@ -1373,6 +1377,12 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.REQUEST_IDLE_CALLBACK:
       case Trace.Types.Events.Name.CANCEL_IDLE_CALLBACK: {
         contentHelper.appendTextRow(i18nString(UIStrings.callbackId), unsafeEventData['id']);
+
+        if (Trace.Types.Events.isRequestIdleCallback(event)) {
+          contentHelper.appendTextRow(
+              i18nString(UIStrings.requestIdleCallbackTimeout),
+              i18n.TimeUtilities.preciseMillisToString(event.args.data.timeout));
+        }
         break;
       }
 

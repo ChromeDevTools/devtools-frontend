@@ -339,7 +339,7 @@ describeWithEnvironment('UserTimingsHandler', function() {
     });
   });
 
-  describe('sorting functions', () => {
+  describe('sorting function userTimingComparator', () => {
     function makeFakeSyntheticEvent(
         ts: number, dur: number, name: string, track: string): Trace.Types.Events.SyntheticEventPair {
       const beginEvent = makeCompleteEvent(name, ts, dur, 'blink.user_timing', 0, 0) as unknown as
@@ -364,62 +364,6 @@ describeWithEnvironment('UserTimingsHandler', function() {
       return syntheticEvent;
     }
 
-    function sortAll(events: Trace.Types.Events.SyntheticEventPair[]) {
-      events.sort((a, b) => Trace.Handlers.ModelHandlers.UserTimings.userTimingComparator(a, b, [...events]));
-    }
-
-    it('userTimingComparator sorts by start time in ASC order', () => {
-      const event1 = makeFakeSyntheticEvent(1, 1, 'E1', 'Track A');
-      const event2 = makeFakeSyntheticEvent(2, 1, 'E2', 'Track A');
-      const event3 = makeFakeSyntheticEvent(3, 1, 'E3', 'Track A');
-      const events = [event3, event1, event2];
-
-      sortAll(events);
-      assert.deepEqual(events, [event1, event2, event3]);
-    });
-
-    it('userTimingComparator sorts by longest duration if start is the same for all', () => {
-      const event1 = makeFakeSyntheticEvent(1, 1, 'E1', 'Track A');
-      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track A');
-      const event3 = makeFakeSyntheticEvent(1, 3, 'E3', 'Track A');
-      const events = [event1, event2, event3];
-
-      sortAll(events);
-      assert.deepEqual(events, [event3, event2, event1]);
-    });
-
-    it('userTimingComparator flips if the timestamps are the same', () => {
-      const event1 = makeFakeSyntheticEvent(1, 2, 'E1', 'Track A');
-      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track A');
-      const event3 = makeFakeSyntheticEvent(2, 4, 'E3', 'Track B');
-      const event4 = makeFakeSyntheticEvent(2, 4, 'E4', 'Track B');
-      const events = [event1, event2, event3, event4];
-
-      sortAll(events);
-      assert.deepEqual(events, [event2, event1, event4, event3]);
-    });
-
-    it('userTimingComparator wont flip across tracks', () => {
-      const event1 = makeFakeSyntheticEvent(1, 2, 'E1', 'Track A');
-      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track B');
-      const event3 = makeFakeSyntheticEvent(1, 2, 'E3', 'Track C');
-      const event4 = makeFakeSyntheticEvent(1, 2, 'E4', 'Track D');
-      const events = [event1, event2, event3, event4];
-
-      sortAll(events);
-      assert.deepEqual(events, [event1, event2, event3, event4]);
-    });
-
-    it('userTimingComparator three identical measure events', () => {
-      const event1 = makeFakeSyntheticEvent(1, 2, 'E1', 'Track A');
-      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track A');
-      const event3 = makeFakeSyntheticEvent(1, 2, 'E3', 'Track A');
-      const events = [event1, event2, event3];
-
-      sortAll(events);
-      assert.deepEqual(events, [event3, event2, event1]);
-    });
-
     function makeFakeConsoleTimestampEvent(
         start: number, end: number, name: string, track: string): Trace.Types.Events.ConsoleTimeStamp {
       return {
@@ -440,57 +384,142 @@ describeWithEnvironment('UserTimingsHandler', function() {
       };
     }
 
-    function sortAllConsoleTimestamps(events: Trace.Types.Events.ConsoleTimeStamp[]) {
-      events.sort((a, b) => Trace.Handlers.ModelHandlers.UserTimings.consoleTimestampComparator(a, b, [...events]));
+    function sortAll(events: Array<Trace.Types.Events.SyntheticEventPair|Trace.Types.Events.ConsoleTimeStamp>) {
+      events.sort((a, b) => Trace.Handlers.ModelHandlers.UserTimings.userTimingComparator(a, b, [...events]));
     }
 
-    it('consoleTimestampComparator sorts by start time in ASC order', () => {
+    it('sorts synthetic events by start time in ASC order', () => {
+      const event1 = makeFakeSyntheticEvent(1, 1, 'E1', 'Track A');
+      const event2 = makeFakeSyntheticEvent(2, 1, 'E2', 'Track A');
+      const event3 = makeFakeSyntheticEvent(3, 1, 'E3', 'Track A');
+      const events = [event3, event1, event2];
+
+      sortAll(events);
+      assert.deepEqual(events, [event1, event2, event3]);
+    });
+
+    it('sorts synthetic events by longest duration if start is the same for all', () => {
+      const event1 = makeFakeSyntheticEvent(1, 1, 'E1', 'Track A');
+      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track A');
+      const event3 = makeFakeSyntheticEvent(1, 3, 'E3', 'Track A');
+      const events = [event1, event2, event3];
+
+      sortAll(events);
+      assert.deepEqual(events, [event3, event2, event1]);
+    });
+
+    it('flips synthetic events if the timestamps are the same', () => {
+      const event1 = makeFakeSyntheticEvent(1, 2, 'E1', 'Track A');
+      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track A');
+      const event3 = makeFakeSyntheticEvent(2, 4, 'E3', 'Track B');
+      const event4 = makeFakeSyntheticEvent(2, 4, 'E4', 'Track B');
+      const events = [event1, event2, event3, event4];
+
+      sortAll(events);
+      assert.deepEqual(events, [event2, event1, event4, event3]);
+    });
+
+    it('wont flip synthetic events across tracks', () => {
+      const event1 = makeFakeSyntheticEvent(1, 2, 'E1', 'Track A');
+      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track B');
+      const event3 = makeFakeSyntheticEvent(1, 2, 'E3', 'Track C');
+      const event4 = makeFakeSyntheticEvent(1, 2, 'E4', 'Track D');
+      const events = [event1, event2, event3, event4];
+
+      sortAll(events);
+      assert.deepEqual(events, [event1, event2, event3, event4]);
+    });
+
+    it('sorts three identical synthetic events correctly', () => {
+      const event1 = makeFakeSyntheticEvent(1, 2, 'E1', 'Track A');
+      const event2 = makeFakeSyntheticEvent(1, 2, 'E2', 'Track A');
+      const event3 = makeFakeSyntheticEvent(1, 2, 'E3', 'Track A');
+      const events = [event1, event2, event3];
+
+      sortAll(events);
+      assert.deepEqual(events, [event3, event2, event1]);
+    });
+
+    it('sorts console timestamps by start time in ASC order', () => {
       const event1 = makeFakeConsoleTimestampEvent(1, 1, 'E1', 'Track A');
       const event2 = makeFakeConsoleTimestampEvent(2, 1, 'E2', 'Track A');
       const event3 = makeFakeConsoleTimestampEvent(3, 1, 'E3', 'Track A');
       const events = [event3, event1, event2];
-      sortAllConsoleTimestamps(events);
+
+      sortAll(events);
       assert.deepEqual(events, [event1, event2, event3]);
     });
 
-    it('consoleTimestampComparator sorts by longest duration if start is the same for all', () => {
+    it('sorts console timestamps by longest duration if start is the same for all', () => {
       const event1 = makeFakeConsoleTimestampEvent(1, 1, 'E1', 'Track A');
       const event2 = makeFakeConsoleTimestampEvent(1, 2, 'E2', 'Track A');
       const event3 = makeFakeConsoleTimestampEvent(1, 3, 'E3', 'Track A');
       const events = [event1, event2, event3];
-      sortAllConsoleTimestamps(events);
+
+      sortAll(events);
       assert.deepEqual(events, [event3, event2, event1]);
     });
 
-    it('consoleTimestampComparator flips if the timestamps are the same', () => {
+    it('flips console timestamps if the timestamps are the same', () => {
       const event1 = makeFakeConsoleTimestampEvent(1, 3, 'E1', 'Track A');
       const event2 = makeFakeConsoleTimestampEvent(1, 3, 'E2', 'Track A');
       const event3 = makeFakeConsoleTimestampEvent(2, 6, 'E3', 'Track B');
       const event4 = makeFakeConsoleTimestampEvent(2, 6, 'E4', 'Track B');
       const events = [event1, event2, event3, event4];
-      sortAllConsoleTimestamps(events);
+
+      sortAll(events);
       assert.deepEqual(events, [event2, event1, event4, event3]);
     });
 
-    it('consoleTimestampComparator wont flip across tracks', () => {
+    it('wont flip console timestamps across tracks', () => {
       const event1 = makeFakeConsoleTimestampEvent(1, 2, 'E1', 'Track A');
       const event2 = makeFakeConsoleTimestampEvent(1, 2, 'E2', 'Track B');
       const event3 = makeFakeConsoleTimestampEvent(1, 2, 'E3', 'Track C');
       const event4 = makeFakeConsoleTimestampEvent(1, 2, 'E4', 'Track D');
       const events = [event1, event2, event3, event4];
 
-      sortAllConsoleTimestamps(events);
+      sortAll(events);
       assert.deepEqual(events, [event1, event2, event3, event4]);
     });
 
-    it('consoleTimestampComparator three identical measure events', () => {
+    it('sorts three identical console timestamp events', () => {
       const event1 = makeFakeConsoleTimestampEvent(1, 2, 'E1', 'Track A');
       const event2 = makeFakeConsoleTimestampEvent(1, 2, 'E2', 'Track A');
       const event3 = makeFakeConsoleTimestampEvent(1, 2, 'E3', 'Track A');
       const events = [event1, event2, event3];
 
-      sortAllConsoleTimestamps(events);
+      sortAll(events);
       assert.deepEqual(events, [event3, event2, event1]);
+    });
+
+    // Mixed synthetic events and console timestamps.
+
+    it('sorts mixed events by start time in ASC order', () => {
+      const event1a = makeFakeSyntheticEvent(1, 1, 'E1a', 'Track A');
+      const event1b = makeFakeConsoleTimestampEvent(1, 1, 'E1b', 'Track A');
+      const event2a = makeFakeSyntheticEvent(2, 1, 'E2a', 'Track A');
+      const event2b = makeFakeConsoleTimestampEvent(2, 1, 'E2b', 'Track A');
+      const event3a = makeFakeSyntheticEvent(3, 1, 'E3a', 'Track A');
+      const event3b = makeFakeConsoleTimestampEvent(3, 1, 'E3b', 'Track A');
+      const events = [event3b, event3a, event1b, event1a, event2b, event2a];
+
+      sortAll(events);
+      assert.deepEqual(events, [event1a, event1b, event2a, event2b, event3a, event3b]);
+    });
+
+    it('wont flip mixed events across tracks', () => {
+      const event1a = makeFakeSyntheticEvent(1, 2, 'E1a', 'Track A');
+      const event2a = makeFakeSyntheticEvent(1, 2, 'E2a', 'Track B');
+      const event3a = makeFakeSyntheticEvent(1, 2, 'E3a', 'Track C');
+      const event4a = makeFakeSyntheticEvent(1, 2, 'E4a', 'Track D');
+      const event1b = makeFakeConsoleTimestampEvent(1, 2, 'E1b', 'Track E');
+      const event2b = makeFakeConsoleTimestampEvent(1, 2, 'E2b', 'Track F');
+      const event3b = makeFakeConsoleTimestampEvent(1, 2, 'E3b', 'Track G');
+      const event4b = makeFakeConsoleTimestampEvent(1, 2, 'E4b', 'Track H');
+      const events = [event1a, event2a, event3a, event4a, event1b, event2b, event3b, event4b];
+
+      sortAll(events);
+      assert.deepEqual(events, [event1a, event2a, event3a, event4a, event1b, event2b, event3b, event4b]);
     });
   });
 });

@@ -448,7 +448,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     if (drawerIsVertical) {
       // Set minimum size when the drawer is vertical to ensure the buttons will always be
       // visible during resizing.
-      this.drawerTabbedPane.setMinimumSize(100, 27);
+      this.drawerTabbedPane.setMinimumSize(200, 27);
     } else {
       this.drawerTabbedPane.setMinimumSize(0, 27);
     }

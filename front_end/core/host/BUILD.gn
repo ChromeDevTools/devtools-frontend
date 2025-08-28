@@ -8,6 +8,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("host") {
   sources = [
     "AidaClient.ts",
+    "GdpClient.ts",
     "InspectorFrontendHost.ts",
     "InspectorFrontendHostAPI.ts",
     "Platform.ts",
@@ -34,7 +35,10 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "AidaClient.test.ts" ]
+  sources = [
+    "AidaClient.test.ts",
+    "GdpClient.test.ts",
+  ]
 
   deps = [
     ":bundle",

@@ -253,6 +253,34 @@ export interface EventTypes {
   [Events.ShowPanel]: string;
 }
 
+export type DispatchHttpRequestRequest = {
+  service: string,
+  path: string,
+  method: 'GET',
+  body?: never,
+}|{
+  service: string,
+  path: string,
+  method: 'POST',
+  // A JSON string containing the request body.
+  body?: string,
+};
+
+interface DispatchHttpRequestSuccessResult {
+  response: string;
+  statusCode: number;
+}
+
+interface DispatchHttpRequestErrorResult {
+  error: string;
+  detail?: string;
+  netError?: number;
+  netErrorName?: string;
+  statusCode?: number;
+}
+
+export type DispatchHttpRequestResult = DispatchHttpRequestSuccessResult|DispatchHttpRequestErrorResult;
+
 export interface InspectorFrontendHostAPI {
   events: Common.EventTarget.EventTarget<EventTypes>;
 
@@ -402,6 +430,7 @@ export interface InspectorFrontendHostAPI {
   doAidaConversation: (request: string, streamId: number, cb: (result: DoAidaConversationResult) => void) => void;
   registerAidaClientEvent: (request: string, cb: (result: AidaClientResult) => void) => void;
   aidaCodeComplete: (request: string, cb: (result: AidaCodeCompleteResult) => void) => void;
+  dispatchHttpRequest: (request: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => void;
 
   recordImpression(event: ImpressionEvent): void;
   recordClick(event: ClickEvent): void;

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as AidaClient from './AidaClient.js';
+import * as GdpClient from './GdpClient.js';
 import * as InspectorFrontendHost from './InspectorFrontendHost.js';
 import * as InspectorFrontendHostAPI from './InspectorFrontendHostAPI.js';
 import * as Platform from './Platform.js';
@@ -11,6 +12,7 @@ import * as UserMetrics from './UserMetrics.js';
 
 export {
   AidaClient,
+  GdpClient,
   InspectorFrontendHost,
   InspectorFrontendHostAPI,
   Platform,

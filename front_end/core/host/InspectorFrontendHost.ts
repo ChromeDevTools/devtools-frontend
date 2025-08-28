@@ -40,6 +40,8 @@ import {
   type ChangeEvent,
   type ClickEvent,
   type ContextMenuDescriptor,
+  type DispatchHttpRequestRequest,
+  type DispatchHttpRequestResult,
   type DoAidaConversationResult,
   type DragEvent,
   type EnumeratedHistogram,
@@ -546,6 +548,11 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     callback({
       error: 'Not implemented',
     });
+  }
+
+  dispatchHttpRequest(_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void):
+      void {
+    callback({error: 'Not implemented'});
   }
 
   recordImpression(_event: ImpressionEvent): void {

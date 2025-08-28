@@ -1453,7 +1453,6 @@ grd_files_unbundled_sources = [
   "front_end/panels/elements/ElementsPanel.js",
   "front_end/panels/elements/ElementsSidebarPane.js",
   "front_end/panels/elements/ElementsTreeElement.js",
-  "front_end/panels/elements/ElementsTreeElementHighlighter.js",
   "front_end/panels/elements/ElementsTreeOutline.js",
   "front_end/panels/elements/ElementsTreeOutlineRenderer.js",
   "front_end/panels/elements/EventListenersWidget.js",

@@ -8,25 +8,27 @@ import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
 
+import * as StackTrace from './stack_trace.js';
 import * as StackTraceImpl from './stack_trace_impl.js';
 
 describeWithMockConnection('StackTraceModel', () => {
+  const identityTranslateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) =>
+      Promise.resolve(frames.map(f => [{
+                                   url: f.url,
+                                   name: f.functionName,
+                                   line: f.lineNumber,
+                                   column: f.columnNumber,
+                                 }]));
+
+  function setup() {
+    const target = createTarget();
+    return {
+      model: target.model(StackTraceImpl.StackTraceModel.StackTraceModel)!,
+      translateSpy: sinon.spy(identityTranslateFn),
+    };
+  }
+
   describe('createFromProtocolRuntime', () => {
-    const identityTranslateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) =>
-        Promise.resolve(frames.map(f => [{
-                                     url: f.url,
-                                     name: f.functionName,
-                                     line: f.lineNumber,
-                                     column: f.columnNumber,
-                                   }]));
-
-    function setup() {
-      const target = createTarget();
-      return {
-        model: target.model(StackTraceImpl.StackTraceModel.StackTraceModel)!,
-      };
-    }
-
     it('correctly handles a stack trace with only a sync fragment', async () => {
       const {model} = setup();
 
@@ -140,13 +142,12 @@ describeWithMockConnection('StackTraceModel', () => {
     });
 
     it('calls the translate function with the correct raw frames', async () => {
-      const {model} = setup();
+      const {model, translateSpy} = setup();
       const callFrames = [
         'foo.js:1:foo:1:10',
         'bar.js:2:bar:2:20',
         'baz.js:3:baz:3:30',
       ].map(protocolCallFrame);
-      const translateSpy = sinon.spy(identityTranslateFn);
 
       await model.createFromProtocolRuntime({callFrames}, translateSpy);
 
@@ -166,5 +167,130 @@ describeWithMockConnection('StackTraceModel', () => {
       } catch {
       }
     });
+  });
+
+  describe('scriptInfoChanged', () => {
+    const createUpdatedSpy = (stackTrace: StackTrace.StackTrace.StackTrace) => {
+      const updatedSpy = sinon.spy();
+      stackTrace.addEventListener(StackTrace.StackTrace.Events.UPDATED, updatedSpy);
+      return updatedSpy;
+    };
+
+    it('re-translates and notifies a single stack trace', async () => {
+      const {model, translateSpy} = setup();
+      const callFrames = [
+        'foo.js:id1:foo:1:10',
+        'bar.js:id2:bar:2:20',
+      ].map(protocolCallFrame);
+      const stackTrace = await model.createFromProtocolRuntime({callFrames}, identityTranslateFn);
+      const updatedSpy = createUpdatedSpy(stackTrace);
+      const script = {scriptId: 'id1', sourceURL: 'foo.js'} as SDK.Script.Script;
+
+      await model.scriptInfoChanged(script, translateSpy);
+
+      sinon.assert.calledOnce(updatedSpy);
+      sinon.assert.calledOnceWithMatch(translateSpy, callFrames, model.target());
+    });
+
+    it('only re-translates affected fragments and notifies affected stack traces', async () => {
+      const {model, translateSpy} = setup();
+      const callFrames1 = [
+        'foo.js:id1:foo:1:10',
+        'bar.js:id2:bar:2:20',
+      ].map(protocolCallFrame);
+      const callFrames2 = [
+        'foo.js:id1:foo:1:10',
+        'baz.js:id3:bar:3:30',
+      ].map(protocolCallFrame);
+      const stackTrace1 = await model.createFromProtocolRuntime({callFrames: callFrames1}, identityTranslateFn);
+      const stackTrace2 = await model.createFromProtocolRuntime({callFrames: callFrames2}, identityTranslateFn);
+      const [updatedSpy1, updatedSpy2] = [createUpdatedSpy(stackTrace1), createUpdatedSpy(stackTrace2)];
+      const script = {scriptId: 'id2', sourceURL: 'bar.js'} as SDK.Script.Script;
+
+      await model.scriptInfoChanged(script, translateSpy);
+
+      sinon.assert.calledOnceWithMatch(translateSpy, callFrames1, model.target());
+      sinon.assert.calledOnce(updatedSpy1);
+      sinon.assert.notCalled(updatedSpy2);
+    });
+
+    it('notifies a stack trace once, even when multiple fragments are affected', async () => {
+      const {model, translateSpy} = setup();
+      const stackTrace = await model.createFromProtocolRuntime(
+          {
+            callFrames: [
+              'foo.js:id1:foo:1:10',
+              'bar.js:id2:bar:2:20',
+            ].map(protocolCallFrame),
+            parent: {
+              description: 'setTimeout',
+              callFrames: [
+                'foo.js:id1:someFn:3:30',
+                'baz.js:id3:bar:4:40',
+              ].map(protocolCallFrame),
+            }
+          },
+          identityTranslateFn);
+      const updatedSpy = createUpdatedSpy(stackTrace);
+      const script = {scriptId: 'id1', sourceURL: 'foo.js'} as SDK.Script.Script;
+
+      await model.scriptInfoChanged(script, translateSpy);
+
+      sinon.assert.calledTwice(translateSpy);
+      sinon.assert.calledOnce(updatedSpy);
+    });
+
+    it('matches fragments based on URL if scriptId is missing', async () => {
+      const {model, translateSpy} = setup();
+      const callFrames = [protocolCallFrame('foo.js::foo:1:10')];
+      const stackTrace = await model.createFromProtocolRuntime({callFrames}, identityTranslateFn);
+      const updatedSpy = createUpdatedSpy(stackTrace);
+      const script = {scriptId: 'scriptId1', sourceURL: 'foo.js'} as SDK.Script.Script;
+
+      await model.scriptInfoChanged(script, translateSpy);
+
+      sinon.assert.calledOnceWithMatch(translateSpy, callFrames);
+      sinon.assert.calledOnce(updatedSpy);
+    });
+
+    it('does nothing if no fragments are affected', async () => {
+      const {model, translateSpy} = setup();
+      const callFrames = [protocolCallFrame('foo.js:1:foo:1:10')];
+      const stackTrace = await model.createFromProtocolRuntime({callFrames}, identityTranslateFn);
+      const updatedSpy = createUpdatedSpy(stackTrace);
+      const script = {scriptId: 'otherScriptId', sourceURL: 'bar.js'} as SDK.Script.Script;
+
+      await model.scriptInfoChanged(script, translateSpy);
+
+      sinon.assert.notCalled(translateSpy);
+      sinon.assert.notCalled(updatedSpy);
+    });
+
+    it('does not re-translate fragments that are a complete sub-set of another fragment (but notifies stack traces)',
+       async () => {
+         const {model, translateSpy} = setup();
+         const fullCallFrames = [
+           'foo.js:id1:foo:1:10',
+           'bar.js:id2:bar:2:20',
+           'baz.js:id3:bar:3:30',
+         ].map(protocolCallFrame);
+         const subSetFrames = [
+           'bar.js:id2:bar:2:20',
+           'baz.js:id3:bar:3:30',
+         ].map(protocolCallFrame);
+         const fullStackTrace =
+             await model.createFromProtocolRuntime({callFrames: fullCallFrames}, identityTranslateFn);
+         const subSetStackTrace =
+             await model.createFromProtocolRuntime({callFrames: subSetFrames}, identityTranslateFn);
+         const [updatedSpyFull, updatedSpySubSet] =
+             [createUpdatedSpy(fullStackTrace), createUpdatedSpy(subSetStackTrace)];
+         const script = {scriptId: 'id2', sourceURL: 'bar.js'} as SDK.Script.Script;
+
+         await model.scriptInfoChanged(script, translateSpy);
+
+         sinon.assert.calledOnceWithMatch(translateSpy, fullCallFrames, model.target());
+         sinon.assert.calledOnce(updatedSpyFull);
+         sinon.assert.calledOnce(updatedSpySubSet);
+       });
   });
 });

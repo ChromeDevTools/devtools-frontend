@@ -163,12 +163,18 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   async updateLocations(script: SDK.Script.Script): Promise<void> {
+    const updatePromises = [script.target()
+                                .model(StackTraceImpl.StackTraceModel.StackTraceModel)
+                                ?.scriptInfoChanged(script, this.#translateRawFrames.bind(this))];
+
     const modelData = this.#debuggerModelToData.get(script.debuggerModel);
     if (modelData) {
       const updatePromise = modelData.updateLocations(script);
       this.recordLiveLocationChange(updatePromise);
-      await updatePromise;
+      updatePromises.push(updatePromise);
     }
+
+    await Promise.all(updatePromises);
   }
 
   async createStackTraceFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, target: SDK.Target.Target):

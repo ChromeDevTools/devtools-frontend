@@ -58,7 +58,7 @@ export class StateProvider {
 
     const settings = this.#getSettings(suite);
     const browserSettings = {
-      enabledBlinkFeatures: (settings.enabledBlinkFeatures ?? []).toSorted(),
+      enabledFeatures: (settings.enabledFeatures ?? []).toSorted(),
       disabledFeatures: (settings.disabledFeatures ?? []).toSorted(),
     };
     const browserKey = JSON.stringify(browserSettings);
@@ -131,7 +131,7 @@ export function mergeSettings(s1: E2E.SuiteSettings, s2: E2E.HarnessSettings): E
   }
 
   return {
-    enabledBlinkFeatures: mergeAsSet(s1.enabledBlinkFeatures, s2.enabledBlinkFeatures),
+    enabledFeatures: mergeAsSet(s1.enabledFeatures, s2.enabledFeatures),
     disabledFeatures: mergeAsSet(s1.disabledFeatures, s2.disabledFeatures),
     enabledDevToolsExperiments: mergeAsSet(s1.enabledDevToolsExperiments, s2.enabledDevToolsExperiments),
     disabledDevToolsExperiments: mergeAsSet(s1.disabledDevToolsExperiments, s2.disabledDevToolsExperiments),

@@ -85,7 +85,7 @@ export class Launcher {
 
   private static launchChrome(settings: BrowserSettings) {
     const frontEndDirectory = url.pathToFileURL(path.join(GEN_DIR, 'front_end'));
-    const disabledFeatures = settings.enabledBlinkFeatures?.slice() ?? [];
+    const disabledFeatures = settings.disabledFeatures?.slice() ?? [];
     const launchArgs = [
       '--remote-allow-origins=*',
       '--remote-debugging-port=0',
@@ -139,7 +139,7 @@ export class Launcher {
     if (!headless) {
       launchArgs.push(`--window-size=${windowWidth},${windowHeight}`);
     }
-    const enabledFeatures = settings.enabledBlinkFeatures?.slice() ?? [];
+    const enabledFeatures = settings.enabledFeatures?.slice() ?? [];
     // TODO: remove
     const envChromeFeatures = process.env['CHROME_FEATURES'];
     if (envChromeFeatures) {
@@ -153,13 +153,13 @@ export class Launcher {
 }
 
 export interface BrowserSettings {
-  enabledBlinkFeatures: string[];
+  enabledFeatures: string[];
   disabledFeatures: string[];
 }
 
 export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
   // LINT.IfChange(features)
-  enabledBlinkFeatures: [
+  enabledFeatures: [
     'PartitionedCookies',
     'SharedStorageAPI',
     'FencedFrames',

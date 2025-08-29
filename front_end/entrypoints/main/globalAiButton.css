@@ -7,7 +7,7 @@
 @scope to (devtools-widget > *) {
   .global-ai-button-container {
     margin-left: var(--sys-size-3);
-    margin-right: var(--sys-size-1);
+    margin-right: var(--sys-size-2);
   }
 
   .global-ai-button {

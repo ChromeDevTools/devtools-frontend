@@ -29,7 +29,7 @@ type NavigationId = string;
  * The metric scores include the event related to the metric as well as the data regarding
  * the score itself.
  */
-const metricScoresByFrameId = new Map<FrameId, Map<NavigationId, Map<MetricName, MetricScore>>>();
+let metricScoresByFrameId = new Map<FrameId, Map<NavigationId, Map<MetricName, MetricScore>>>();
 
 /**
  * Page load events with no associated duration that happened in the
@@ -38,10 +38,10 @@ const metricScoresByFrameId = new Map<FrameId, Map<NavigationId, Map<MetricName,
 let allMarkerEvents: Types.Events.PageLoadEvent[] = [];
 
 export function reset(): void {
-  metricScoresByFrameId.clear();
+  metricScoresByFrameId = new Map();
   pageLoadEventsArray = [];
   allMarkerEvents = [];
-  selectedLCPCandidateEvents.clear();
+  selectedLCPCandidateEvents = new Set();
 }
 
 let pageLoadEventsArray: Types.Events.PageLoadEvent[] = [];
@@ -54,7 +54,7 @@ let pageLoadEventsArray: Types.Events.PageLoadEvent[] = [];
 // trace, we store that and delete the prior event. When we've parsed the
 // entire trace this set will contain all the LCP events that were used - e.g.
 // the candidates that were the actual LCP events.
-const selectedLCPCandidateEvents = new Set<Types.Events.LargestContentfulPaintCandidate>();
+let selectedLCPCandidateEvents = new Set<Types.Events.LargestContentfulPaintCandidate>();
 
 export function handleEvent(event: Types.Events.Event): void {
   if (!Types.Events.eventIsPageLoadEvent(event)) {

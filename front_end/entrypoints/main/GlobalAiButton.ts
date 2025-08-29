@@ -68,6 +68,8 @@ export type View = typeof DEFAULT_VIEW;
 export class GlobalAiButton extends UI.Widget.Widget {
   #view: View;
   #buttonState: GlobalAiButtonState = GlobalAiButtonState.DEFAULT;
+  #mouseOnMainToolbar = false;
+  #returnToDefaultStateTimeout?: number;
 
   constructor(element?: HTMLElement, view?: View) {
     super(element);
@@ -77,6 +79,36 @@ export class GlobalAiButton extends UI.Widget.Widget {
     if (this.#shouldTriggerPromotion()) {
       this.#triggerPromotion();
     }
+  }
+
+  override willHide(): void {
+    this.#removeHoverEventListeners();
+
+    if (this.#returnToDefaultStateTimeout) {
+      window.clearTimeout(this.#returnToDefaultStateTimeout);
+    }
+  }
+
+  #handleMainToolbarMouseEnter = (): void => {
+    this.#mouseOnMainToolbar = true;
+  };
+
+  #handleMainToolbarMouseLeave = (): void => {
+    this.#mouseOnMainToolbar = false;
+  };
+
+  #addHoverEventListeners(): void {
+    UI.InspectorView.InspectorView.instance().tabbedPane.headerElement().addEventListener(
+        'mouseenter', this.#handleMainToolbarMouseEnter);
+    UI.InspectorView.InspectorView.instance().tabbedPane.headerElement().addEventListener(
+        'mouseleave', this.#handleMainToolbarMouseLeave);
+  }
+
+  #removeHoverEventListeners(): void {
+    UI.InspectorView.InspectorView.instance().tabbedPane.headerElement().removeEventListener(
+        'mouseenter', this.#handleMainToolbarMouseEnter);
+    UI.InspectorView.InspectorView.instance().tabbedPane.headerElement().removeEventListener(
+        'mouseleave', this.#handleMainToolbarMouseLeave);
   }
 
   // We only want to enable promotion when:
@@ -90,11 +122,33 @@ export class GlobalAiButton extends UI.Widget.Widget {
   }
 
   #triggerPromotion(): void {
+    // Set up hover listeners for making sure that we don't return to default state from promotion state
+    // when the user's cursor is on the main toolbar.
     this.#buttonState = GlobalAiButtonState.PROMOTION;
     this.requestUpdate();
-    window.setTimeout(() => {
+    this.#addHoverEventListeners();
+    this.#scheduleReturnToDefaultState();
+  }
+
+  #scheduleReturnToDefaultState(): void {
+    if (this.#returnToDefaultStateTimeout) {
+      window.clearTimeout(this.#returnToDefaultStateTimeout);
+    }
+
+    this.#returnToDefaultStateTimeout = window.setTimeout(() => {
+      // If the mouse is currently on the main toolbar,
+      // we don't want to trigger the animation from promotion & to the default
+      // state to not cause a layout shift when the user is not expecting it
+      // (e.g. while they were going to click on a button on the toolbar).
+      if (this.#mouseOnMainToolbar) {
+        this.#scheduleReturnToDefaultState();
+        return;
+      }
+
       this.#buttonState = GlobalAiButtonState.DEFAULT;
       this.requestUpdate();
+      // Remove hover listeners once the button is in its default state.
+      this.#removeHoverEventListeners();
     }, DELAY_BEFORE_PROMOTION_COLLAPSE_IN_MS);
   }
 

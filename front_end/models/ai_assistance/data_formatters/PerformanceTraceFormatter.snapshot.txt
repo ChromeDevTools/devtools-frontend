@@ -876,6 +876,10 @@ Available insights:
     relevant trace bounds: {min: 157425604232, max: 157426760958}
     example question: Help me optimize my CLS score
     example question: How can I prevent layout shifts on this page?
+  - insight name: NetworkDependencyTree
+    description: [Avoid chaining critical requests](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.
+    relevant trace bounds: {min: 157423489126, max: 157426527569}
+    example question: How do I optimize my network dependency tree?
   - insight name: ImageDelivery
     description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)
     relevant trace bounds: {min: 157423794709, max: 157424082831}

@@ -4,21 +4,21 @@
 
 import * as Types from '../types/types.js';
 
-const invalidationsForEvent = new Map<Types.Events.Event, Types.Events.InvalidationTrackingEvent[]>();
-const invalidationCountForEvent = new Map<Types.Events.Event, number>();
+let invalidationsForEvent = new Map<Types.Events.Event, Types.Events.InvalidationTrackingEvent[]>();
+let invalidationCountForEvent = new Map<Types.Events.Event, number>();
 
 let lastRecalcStyleEvent: Types.Events.UpdateLayoutTree|null = null;
 
 // Used to track paints so we track invalidations correctly per paint.
 let hasPainted = false;
 
-const allInvalidationTrackingEvents: Types.Events.InvalidationTrackingEvent[] = [];
+let allInvalidationTrackingEvents: Types.Events.InvalidationTrackingEvent[] = [];
 
 export function reset(): void {
-  invalidationsForEvent.clear();
-  invalidationCountForEvent.clear();
+  invalidationsForEvent = new Map();
+  invalidationCountForEvent = new Map();
   lastRecalcStyleEvent = null;
-  allInvalidationTrackingEvents.length = 0;
+  allInvalidationTrackingEvents = [];
   hasPainted = false;
   maxInvalidationsPerEvent = null;
 }

@@ -33,6 +33,10 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
   #relatedRequests: Set<Trace.Types.Events.SyntheticNetworkRequest>|null = null;
   #countOfChains = 0;
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   #createOverlayForChain(requests: Set<Trace.Types.Events.SyntheticNetworkRequest>):
       Trace.Types.Overlays.EntryOutline[] {
     const overlays: Trace.Types.Overlays.EntryOutline[] = [];

@@ -36,7 +36,7 @@ before(async () => {
   const div = document.createElement('div');
   div.style.fontFamily = 'roboto';
   // Some latin characters to trigger the latin font file to be loaded.
-  // Additional non-lating characters can be included if needed.
+  // Additional non-latin characters can be included if needed.
   div.innerText = 'abc';
   // eslint-disable-next-line rulesdir/no-document-body-mutation
   document.body.append(div);
@@ -109,7 +109,7 @@ afterEach(async function() {
     delete Root.Runtime.hostConfig[key];
   }
 
-  await checkForPendingActivity();
+  await checkForPendingActivity(this.currentTest?.fullTitle());
   resetHostConfig();
   sinon.restore();
   stopTrackingAsyncActivity();

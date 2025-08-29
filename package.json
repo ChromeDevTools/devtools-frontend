@@ -61,7 +61,7 @@
     "eslint-plugin-eslint-plugin": "7.0.0",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-jsdoc": "51.3.4",
-    "eslint-plugin-mocha": "11.1.0",
+    "eslint-plugin-mocha": "10.5.0",
     "glob": "7.1.7",
     "globals": "16.3.0",
     "js-yaml": "4.1.0",

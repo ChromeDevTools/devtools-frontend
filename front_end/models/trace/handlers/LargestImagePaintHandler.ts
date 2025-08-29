@@ -30,12 +30,13 @@ import type {HandlerName} from './types.js';
  * `BackendNodeId`s are only unique within a given renderer process, so this is
  * also keyed on `ProcessId`.
  **/
-const imagePaintsByNodeIdAndProcess =
+let imagePaintsByNodeIdAndProcess =
     new Map<Types.Events.ProcessID, Map<Protocol.DOM.BackendNodeId, Types.Events.LargestImagePaintCandidate>>();
-const lcpRequestByNavigationId = new Map<string, Types.Events.SyntheticNetworkRequest>();
+let lcpRequestByNavigationId = new Map<string, Types.Events.SyntheticNetworkRequest>();
 
 export function reset(): void {
-  imagePaintsByNodeIdAndProcess.clear();
+  imagePaintsByNodeIdAndProcess = new Map();
+  lcpRequestByNavigationId = new Map();
 }
 
 export function handleEvent(event: Types.Events.Event): void {

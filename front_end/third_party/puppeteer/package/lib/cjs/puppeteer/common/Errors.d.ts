@@ -70,4 +70,11 @@ export declare class UnsupportedOperation extends PuppeteerError {
  */
 export declare class TargetCloseError extends ProtocolError {
 }
+/**
+ * Thrown if underlying protocol connection has been closed.
+ *
+ * @public
+ */
+export declare class ConnectionClosedError extends ProtocolError {
+}
 //# sourceMappingURL=Errors.d.ts.map

@@ -134,6 +134,8 @@ async function disable() {
   if (outgoingMessageListenerEntryMap.size > 0) {
     throw new Error('MockConnection still has pending listeners. All promises should be awaited.');
   }
+  // Some Widgets rely on Global vars to be there so they
+  // can properly remove state once they detach.
   cleanTestDOM();
   await raf();
   await deinitializeGlobalVars();

@@ -364,4 +364,26 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       snapshotTester.assert(this, output);
     });
   });
+
+  describe('NetworkDependencyTree', () => {
+    it('serializes correctly when there are no results', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details when there are problems found in the network dependency tree', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-multiple-frames.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
 });

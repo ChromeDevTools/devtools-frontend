@@ -2621,7 +2621,7 @@ export interface RequestIdleCallback extends Instant {
     data: {
       frame: string,
       id: number,
-      timeout: number,
+      timeout: Milli,
       stackTrace?: CallFrame,
     },
 

@@ -24,7 +24,7 @@ import * as Types from '../types/types.js';
 // flows with the timestamps of each phase. Then, we place trace events
 // in the flows where their corresponding phase events were placed (if
 // there are any corresponding flow phase events at all).
-const flowDataByGroupToken = new Map<string, number>();
+let flowDataByGroupToken = new Map<string, number>();
 
 interface EventFlowData {
   flows: Set<number>;
@@ -43,20 +43,20 @@ type FlowBindingTuple =
 // every event in a trace, resulting in a lot of memory overhead and
 // major GC triggering. So we are trading off readability for
 // performance.
-const boundFlowData: FlowBindingTuple = new Map();
+let boundFlowData: FlowBindingTuple = new Map();
 
-const flowsById = new Map<number, Map<Types.Timing.Micro, Types.Events.Event>>();
-const flowEvents: Types.Events.FlowEvent[] = [];
-const nonFlowEvents: Types.Events.Event[] = [];
+let flowsById = new Map<number, Map<Types.Timing.Micro, Types.Events.Event>>();
+let flowEvents: Types.Events.FlowEvent[] = [];
+let nonFlowEvents: Types.Events.Event[] = [];
 let flows: Types.Events.Event[][] = [];
 const ID_COMPONENT_SEPARATOR = '-$-';
 export function reset(): void {
   flows = [];
-  flowEvents.length = 0;
-  nonFlowEvents.length = 0;
-  flowDataByGroupToken.clear();
-  boundFlowData.clear();
-  flowsById.clear();
+  flowEvents = [];
+  nonFlowEvents = [];
+  flowDataByGroupToken = new Map();
+  boundFlowData = new Map();
+  flowsById = new Map();
 }
 
 export function handleEvent(event: Types.Events.Event): void {

@@ -25,6 +25,10 @@ describeWithMockConnection('StorageView', () => {
     domStorageModel = target.model(Resources.DOMStorageModel.DOMStorageModel);
     domStorageModel?.enable();
     storageKeyManager = target.model(SDK.StorageKeyManager.StorageKeyManager);
+    sinon.stub(target.networkAgent(), 'invoke_getCookies').resolves({
+      cookies: [],
+      getError: () => undefined,
+    });
   });
 
   expectConsoleLogs({

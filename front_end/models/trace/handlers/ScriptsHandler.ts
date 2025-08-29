@@ -43,14 +43,14 @@ type GeneratedFileSizes = {
   errorMessage: string,
 }|{files: Record<string, number>, unmappedBytes: number, totalBytes: number};
 
-const scriptById = new Map<string, Script>();
+let scriptById = new Map<string, Script>();
 
 export function deps(): HandlerName[] {
   return ['Meta', 'NetworkRequests'];
 }
 
 export function reset(): void {
-  scriptById.clear();
+  scriptById = new Map();
 }
 
 export function handleEvent(event: Types.Events.Event): void {

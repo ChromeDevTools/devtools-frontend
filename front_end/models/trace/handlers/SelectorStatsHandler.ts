@@ -25,17 +25,17 @@ interface InvalidatedNode {
 let lastUpdateLayoutTreeEvent: Types.Events.UpdateLayoutTree|null = null;
 let lastInvalidatedNode: InvalidatedNode|null = null;
 
-const selectorDataForUpdateLayoutTree = new Map<Types.Events.UpdateLayoutTree, {
+let selectorDataForUpdateLayoutTree = new Map<Types.Events.UpdateLayoutTree, {
   timings: Types.Events.SelectorTiming[],
 }>();
 
-const invalidatedNodeList = new Array<InvalidatedNode>();
+let invalidatedNodeList = new Array<InvalidatedNode>();
 
 export function reset(): void {
   lastUpdateLayoutTreeEvent = null;
   lastInvalidatedNode = null;
-  selectorDataForUpdateLayoutTree.clear();
-  invalidatedNodeList.length = 0;
+  selectorDataForUpdateLayoutTree = new Map();
+  invalidatedNodeList = [];
 }
 
 export function handleEvent(event: Types.Events.Event): void {

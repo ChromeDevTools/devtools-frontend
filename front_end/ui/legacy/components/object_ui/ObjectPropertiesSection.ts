@@ -1659,6 +1659,9 @@ export class Renderer implements UI.UIUtils.Renderer {
       section.titleLessMode();
     }
     section.editable = Boolean(options.editable);
+    if (options.expand) {
+      section.firstChild()?.expand();
+    }
     return {node: section.element, tree: section} as {
       node: Node,
       tree: UI.TreeOutline.TreeOutline | null,

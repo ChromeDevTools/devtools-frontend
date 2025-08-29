@@ -1142,6 +1142,33 @@ describeWithMockConnection('TimelineUIUtils', function() {
       );
     });
 
+    it('includes the timeout for a RequestIdleCallback event', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-timings.json.gz');
+      const events = allThreadEntriesInTrace(parsedTrace);
+      const requestIdleCallback = events.find(e => {
+        return Trace.Types.Events.isRequestIdleCallback(e) && e.ts === 10041020329;
+      });
+      assert.isOk(requestIdleCallback);
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          parsedTrace,
+          requestIdleCallback,
+          new Components.Linkifier.Linkifier(),
+          false,
+          null,
+      );
+      const rowData = getRowDataForDetailsElement(details);
+      assert.deepEqual(
+          rowData.slice(0, 2),  // Don't care about the stack trace or initiator
+          [
+            {
+              title: 'Callback ID',
+              value: '1',
+            },
+            {title: 'Timeout', value: '4\xA0ms'},
+          ],
+      );
+    });
+
     it('shows information for the WebSocketCreate initiator when viewing a WebSocketSendHandshakeRequest event',
        async function() {
          const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-sockets.json.gz');

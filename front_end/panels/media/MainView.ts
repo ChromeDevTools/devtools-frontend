@@ -228,7 +228,7 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
     mediaModel.addEventListener(Events.PLAYER_EVENTS_ADDED, this.eventsAdded, this);
     mediaModel.addEventListener(Events.PLAYER_MESSAGES_LOGGED, this.messagesLogged, this);
     mediaModel.addEventListener(Events.PLAYER_ERRORS_RAISED, this.errorsRaised, this);
-    mediaModel.addEventListener(Events.PLAYERS_CREATED, this.playersCreated, this);
+    mediaModel.addEventListener(Events.PLAYER_CREATED, this.playerCreated, this);
   }
 
   private removeEventListeners(mediaModel: MediaModel): void {
@@ -236,7 +236,7 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
     mediaModel.removeEventListener(Events.PLAYER_EVENTS_ADDED, this.eventsAdded, this);
     mediaModel.removeEventListener(Events.PLAYER_MESSAGES_LOGGED, this.messagesLogged, this);
     mediaModel.removeEventListener(Events.PLAYER_ERRORS_RAISED, this.errorsRaised, this);
-    mediaModel.removeEventListener(Events.PLAYERS_CREATED, this.playersCreated, this);
+    mediaModel.removeEventListener(Events.PLAYER_CREATED, this.playerCreated, this);
   }
 
   private onPlayerCreated(playerID: string): void {
@@ -318,13 +318,11 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
     this.detailPanels.get(playerID)?.onEvent(event);
   }
 
-  private playersCreated(event: Common.EventTarget.EventTargetEvent<Protocol.Media.PlayerId[]>): void {
-    if (event.data.length > 0 && this.splitWidget().showMode() !== UI.SplitWidget.ShowMode.BOTH) {
+  private playerCreated(event: Common.EventTarget.EventTargetEvent<Protocol.Media.Player>): void {
+    if (this.splitWidget().showMode() !== UI.SplitWidget.ShowMode.BOTH) {
       this.splitWidget().showBoth();
     }
-    for (const playerID of event.data) {
-      this.onPlayerCreated(playerID);
-    }
+    this.onPlayerCreated(event.data.playerId);
   }
 
   markPlayerForDeletion(playerID: string): void {

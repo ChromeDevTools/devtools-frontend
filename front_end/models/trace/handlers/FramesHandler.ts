@@ -25,7 +25,7 @@ import type {HandlerName} from './types.js';
  */
 
 let model: TimelineFrameModel|null = null;
-const relevantFrameEvents: Types.Events.Event[] = [];
+let relevantFrameEvents: Types.Events.Event[] = [];
 
 type FrameEvent = Types.Events.BeginFrame|Types.Events.DroppedFrame|Types.Events.RequestMainThreadFrame|
                   Types.Events.BeginMainThreadFrame|Types.Events.Commit|Types.Events.CompositeLayers|
@@ -58,7 +58,7 @@ const MAIN_FRAME_MARKERS = new Set<Types.Events.Name>([
 
 export function reset(): void {
   model = null;
-  relevantFrameEvents.length = 0;
+  relevantFrameEvents = [];
 }
 export function handleEvent(event: Types.Events.Event): void {
   // This might seem like a wide set of events to filter for, but these are all

@@ -116,7 +116,6 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   private dockSideChanged(): void {
     this.setDockSide(this.currentDockStateSetting.get());
-    setTimeout(this.announceDockLocation.bind(this), 2000);
   }
 
   dockSide(): DockState|undefined {
@@ -169,6 +168,7 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   private setIsDockedResponse(eventData: ChangeEvent): void {
     this.dispatchEventToListeners(Events.AFTER_DOCK_SIDE_CHANGED, eventData);
+    this.announceDockLocation();
   }
 
   toggleDockSide(): void {

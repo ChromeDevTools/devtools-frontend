@@ -20,39 +20,39 @@ export interface WarningsData {
 
 export type Warning = 'LONG_TASK'|'IDLE_CALLBACK_OVER_TIME'|'FORCED_REFLOW'|'LONG_INTERACTION';
 
-const warningsPerEvent: WarningsData['perEvent'] = new Map();
-const eventsPerWarning: WarningsData['perWarning'] = new Map();
+let warningsPerEvent: WarningsData['perEvent'] = new Map();
+let eventsPerWarning: WarningsData['perWarning'] = new Map();
 
 /**
  * Tracks the stack formed by nested trace events up to a given point
  */
-const allEventsStack: Types.Events.Event[] = [];
+let allEventsStack: Types.Events.Event[] = [];
 /**
  * Tracks the stack formed by JS invocation trace events up to a given point.
  * F.e. FunctionCall, EvaluateScript, V8Execute.
  * Not to be confused with ProfileCalls.
  */
-const jsInvokeStack: Types.Events.Event[] = [];
+let jsInvokeStack: Types.Events.Event[] = [];
 /**
  * Tracks reflow events in a task.
  */
-const taskReflowEvents: Types.Events.Event[] = [];
+let taskReflowEvents: Types.Events.Event[] = [];
 /**
  * Tracks events containing long running tasks. These are compared later against the worker thread pool to filter out long tasks from worker threads.
  */
-const longTaskEvents: Types.Events.Event[] = [];
+let longTaskEvents: Types.Events.Event[] = [];
 
 export const FORCED_REFLOW_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.Milli(30));
 
 export const LONG_MAIN_THREAD_TASK_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.Milli(50));
 
 export function reset(): void {
-  warningsPerEvent.clear();
-  eventsPerWarning.clear();
-  allEventsStack.length = 0;
-  jsInvokeStack.length = 0;
-  taskReflowEvents.length = 0;
-  longTaskEvents.length = 0;
+  warningsPerEvent = new Map();
+  eventsPerWarning = new Map();
+  allEventsStack = [];
+  jsInvokeStack = [];
+  taskReflowEvents = [];
+  longTaskEvents = [];
 }
 
 function storeWarning(event: Types.Events.Event, warning: Warning): void {

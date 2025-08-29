@@ -43,10 +43,6 @@ describeWithMockConnection('NetworkAgent', () => {
   });
 
   describe('buildRequest', () => {
-    beforeEach(() => {
-      sinon.restore();
-    });
-
     it('builds a request with a model id', async () => {
       mockHostConfig('test model');
       const agent = new NetworkAgent({
@@ -132,10 +128,6 @@ describeWithMockConnection('NetworkAgent', () => {
               [initiatedNetworkRequest2, selectedNetworkRequest],
             ]),
           });
-    });
-
-    afterEach(() => {
-      sinon.restore();
     });
 
     it('generates an answer', async () => {

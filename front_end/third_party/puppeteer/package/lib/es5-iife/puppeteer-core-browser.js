@@ -2951,7 +2951,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.17.0';
+  const packageVersion = '24.17.1';
 
   /**
    * @license
@@ -3225,6 +3225,12 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * @internal
    */
   class TargetCloseError extends ProtocolError {}
+  /**
+   * Thrown if underlying protocol connection has been closed.
+   *
+   * @public
+   */
+  class ConnectionClosedError extends ProtocolError {}
 
   /**
    * @license
@@ -13644,7 +13650,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
      */
     _rawSend(callbacks, method, params, sessionId, options) {
       if (_classPrivateFieldGet(_closed, this)) {
-        return Promise.reject(new Error('Protocol error: Connection closed.'));
+        return Promise.reject(new ConnectionClosedError('Connection closed.'));
       }
       return callbacks.create(method, options?.timeout ?? _classPrivateFieldGet(_timeout2, this), id => {
         const stringifiedMessage = JSON.stringify({
@@ -16304,6 +16310,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   var _sameDocumentNavigationDeferred = /*#__PURE__*/new WeakMap();
   var _lifecycleDeferred = /*#__PURE__*/new WeakMap();
   var _newDocumentNavigationDeferred = /*#__PURE__*/new WeakMap();
+  var _error3 = /*#__PURE__*/new WeakMap();
   var _hasSameDocumentNavigation = /*#__PURE__*/new WeakMap();
   var _swapped = /*#__PURE__*/new WeakMap();
   var _navigationResponseReceived = /*#__PURE__*/new WeakMap();
@@ -16321,6 +16328,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       _classPrivateFieldInitSpec(this, _sameDocumentNavigationDeferred, Deferred.create());
       _classPrivateFieldInitSpec(this, _lifecycleDeferred, Deferred.create());
       _classPrivateFieldInitSpec(this, _newDocumentNavigationDeferred, Deferred.create());
+      _classPrivateFieldInitSpec(this, _error3, new Error('LifecycleWatcher terminated'));
       _classPrivateFieldInitSpec(this, _hasSameDocumentNavigation, void 0);
       _classPrivateFieldInitSpec(this, _swapped, void 0);
       _classPrivateFieldInitSpec(this, _navigationResponseReceived, void 0);
@@ -16336,6 +16344,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         return protocolEvent;
       }));
       signal?.addEventListener('abort', () => {
+        if (signal.reason instanceof Error) {
+          signal.reason.cause = _classPrivateFieldGet(_error3, this);
+        }
         _classPrivateFieldGet(_terminationDeferred, this).reject(signal.reason);
       });
       _classPrivateFieldSet(_frame2, this, _frame3);
@@ -16377,7 +16388,8 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     }
     dispose() {
       _classPrivateFieldGet(_subscriptions2, this).dispose();
-      _classPrivateFieldGet(_terminationDeferred, this).resolve(new Error('LifecycleWatcher disposed'));
+      _classPrivateFieldGet(_error3, this).cause = new Error('LifecycleWatcher disposed');
+      _classPrivateFieldGet(_terminationDeferred, this).resolve(_classPrivateFieldGet(_error3, this));
     }
   }
 
@@ -16414,7 +16426,8 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   }
   function _onFrameDetached(frame) {
     if (_classPrivateFieldGet(_frame2, this) === frame) {
-      _classPrivateFieldGet(_terminationDeferred, this).resolve(new Error('Navigating frame was detached'));
+      _classPrivateFieldGet(_error3, this).message = 'Navigating frame was detached';
+      _classPrivateFieldGet(_terminationDeferred, this).resolve(_classPrivateFieldGet(_error3, this));
       return;
     }
     _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
@@ -21236,7 +21249,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       try {
         const _guard = __addDisposableResource$1(env_3, await this.browserContext().waitForScreenshotOperations(), false);
         const connection = _classPrivateFieldGet(_primaryTargetClient, this).connection();
-        assert(connection, 'Protocol error: Connection closed. Most likely the page has been closed.');
+        assert(connection, 'Connection closed. Most likely the page has been closed.');
         const runBeforeUnload = !!options.runBeforeUnload;
         if (runBeforeUnload) {
           await _classPrivateFieldGet(_primaryTargetClient, this).send('Page.close');
@@ -21521,6 +21534,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       height: Math.max(Math.min(clip.y + clip.height, viewport.y + viewport.height) - y, 0)
     };
   }
+  /**
+   * @internal
+   */
   function convertCookiesPartitionKeyFromPuppeteerToCdp(partitionKey) {
     if (partitionKey === undefined) {
       return undefined;
@@ -24649,9 +24665,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '139.0.7258.138',
-    'chrome-headless-shell': '139.0.7258.138',
-    firefox: 'stable_142.0'
+    chrome: '139.0.7258.154',
+    'chrome-headless-shell': '139.0.7258.154',
+    firefox: 'stable_142.0.1'
   });
 
   /**
@@ -24701,6 +24717,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   exports.CdpTouchscreen = CdpTouchscreen;
   exports.CdpWebWorker = CdpWebWorker;
   exports.Connection = Connection;
+  exports.ConnectionClosedError = ConnectionClosedError;
   exports.ConsoleMessage = ConsoleMessage;
   exports.Coverage = Coverage;
   exports.CustomQueryHandlerRegistry = CustomQueryHandlerRegistry;

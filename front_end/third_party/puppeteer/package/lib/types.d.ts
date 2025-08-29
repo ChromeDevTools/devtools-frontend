@@ -995,6 +995,14 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
 }
 
 /**
+ * Thrown if underlying protocol connection has been closed.
+ *
+ * @public
+ */
+export declare class ConnectionClosedError extends ProtocolError {
+}
+
+/**
  * @license
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
@@ -1150,8 +1158,6 @@ export declare interface ContinueRequestOverrides {
     postData?: string;
     headers?: Record<string, string>;
 }
-
-export declare function convertCookiesPartitionKeyFromPuppeteerToCdp(partitionKey: CookiePartitionKey | string | undefined): Protocol.Network.CookiePartitionKey | undefined;
 
 /**
  * Represents a cookie object.
@@ -7004,7 +7010,6 @@ declare namespace Puppeteer_2 {
         ProtocolLifeCycleEvent,
         NetworkConditions,
         InternalNetworkConditions,
-        convertCookiesPartitionKeyFromPuppeteerToCdp,
         PredefinedNetworkConditions,
         TracingOptions,
         Tracing,
@@ -7037,6 +7042,7 @@ declare namespace Puppeteer_2 {
         TouchError,
         ProtocolError,
         UnsupportedOperation,
+        ConnectionClosedError,
         EventType,
         Handler,
         CommonEventEmitter,

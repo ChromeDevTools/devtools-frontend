@@ -9,10 +9,10 @@ export interface MemoryData {
   updateCountersByProcess: Map<Types.Events.ProcessID, Types.Events.UpdateCounters[]>;
 }
 
-const updateCountersByProcess: MemoryData['updateCountersByProcess'] = new Map();
+let updateCountersByProcess: MemoryData['updateCountersByProcess'] = new Map();
 
 export function reset(): void {
-  updateCountersByProcess.clear();
+  updateCountersByProcess = new Map();
 }
 
 export function handleEvent(event: Types.Events.Event): void {

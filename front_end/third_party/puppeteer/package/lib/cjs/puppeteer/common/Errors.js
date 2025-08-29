@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TargetCloseError = exports.UnsupportedOperation = exports.ProtocolError = exports.TouchError = exports.TimeoutError = exports.PuppeteerError = void 0;
+exports.ConnectionClosedError = exports.TargetCloseError = exports.UnsupportedOperation = exports.ProtocolError = exports.TouchError = exports.TimeoutError = exports.PuppeteerError = void 0;
 /**
  * The base class for all Puppeteer-specific errors
  *
@@ -93,4 +93,12 @@ exports.UnsupportedOperation = UnsupportedOperation;
 class TargetCloseError extends ProtocolError {
 }
 exports.TargetCloseError = TargetCloseError;
+/**
+ * Thrown if underlying protocol connection has been closed.
+ *
+ * @public
+ */
+class ConnectionClosedError extends ProtocolError {
+}
+exports.ConnectionClosedError = ConnectionClosedError;
 //# sourceMappingURL=Errors.js.map

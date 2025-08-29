@@ -181,6 +181,86 @@ export class PerformanceInsightFormatter {
   }
 
   /**
+   * Create an AI prompt string out of the NetworkDependencyTree Insight model to use with Ask AI.
+   * Note: This function accesses the UIStrings within NetworkDependencyTree to help build the
+   * AI prompt, but does not (and should not) call i18nString to localize these strings. They
+   * should all be sent in English (at least for now).
+   * @param insight The Network Dependency Tree Insight Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatNetworkDependencyTreeInsight(
+      insight: Trace.Insights.Models.NetworkDependencyTree.NetworkDependencyTreeInsightModel): string {
+    let output = insight.fail ?
+        'The network dependency tree checks found one or more problems.\n\n' :
+        'The network dependency tree checks found no problems, but optimization suggestions may be available.\n\n';
+
+    const rootNodes = insight.rootNodes;
+    if (rootNodes.length > 0) {
+      output += `Max critical path latency is ${formatMicroToMilli(insight.maxTime)}\n\n`;
+      output += 'The following is the critical request chain:\n';
+
+      function formatNode(
+          node: Trace.Insights.Models.NetworkDependencyTree.CriticalRequestNode, indent: string): string {
+        const url = node.request.args.data.url;
+        const time = formatMicroToMilli(node.timeFromInitialRequest);
+        const isLongest = node.isLongest ? ' (longest chain)' : '';
+        let nodeString = `${indent}- ${url} (${time})${isLongest}\n`;
+        for (const child of node.children) {
+          nodeString += formatNode(child, indent + '  ');
+        }
+        return nodeString;
+      }
+
+      for (const rootNode of rootNodes) {
+        output += formatNode(rootNode, '');
+      }
+      output += '\n';
+    } else {
+      output += `${Trace.Insights.Models.NetworkDependencyTree.UIStrings.noNetworkDependencyTree}.\n\n`;
+    }
+
+    if (insight.preconnectedOrigins?.length > 0) {
+      output += `${Trace.Insights.Models.NetworkDependencyTree.UIStrings.preconnectOriginsTableTitle}:\n`;
+      output += `${Trace.Insights.Models.NetworkDependencyTree.UIStrings.preconnectOriginsTableDescription}\n`;
+      for (const origin of insight.preconnectedOrigins) {
+        const headerText = 'headerText' in origin ? `'${origin.headerText}'` : ``;
+        output += `
+  - ${origin.url}
+    - ${Trace.Insights.Models.NetworkDependencyTree.UIStrings.columnSource}: '${origin.source}'`;
+        if (headerText) {
+          output += `\n   - Header: ${headerText}`;
+        }
+        if (origin.unused) {
+          output += `\n   - Warning: ${Trace.Insights.Models.NetworkDependencyTree.UIStrings.unusedWarning}`;
+        }
+        if (origin.crossorigin) {
+          output += `\n   - Warning: ${Trace.Insights.Models.NetworkDependencyTree.UIStrings.crossoriginWarning}`;
+        }
+      }
+      if (insight.preconnectedOrigins.length >
+          Trace.Insights.Models.NetworkDependencyTree.TOO_MANY_PRECONNECTS_THRESHOLD) {
+        output +=
+            `\n\n**Warning**: ${Trace.Insights.Models.NetworkDependencyTree.UIStrings.tooManyPreconnectLinksWarning}`;
+      }
+    } else {
+      output += `${Trace.Insights.Models.NetworkDependencyTree.UIStrings.noPreconnectOrigins}.`;
+    }
+
+    if (insight.preconnectCandidates.length > 0 &&
+        insight.preconnectedOrigins.length <
+            Trace.Insights.Models.NetworkDependencyTree.TOO_MANY_PRECONNECTS_THRESHOLD) {
+      output += `\n\n${Trace.Insights.Models.NetworkDependencyTree.UIStrings.estSavingTableTitle}:\n${
+          Trace.Insights.Models.NetworkDependencyTree.UIStrings.estSavingTableDescription}\n`;
+      for (const candidate of insight.preconnectCandidates) {
+        output +=
+            `\nAdding [preconnect] to origin '${candidate.origin}' would save ${formatMilli(candidate.wastedMs)}.`;
+      }
+    }
+
+    return output;
+  }
+
+  /**
    * Formats and outputs the insight's data.
    * Pass `{headingLevel: X}` to determine what heading level to use for the
    * titles in the markdown output. The default is 2 (##).
@@ -430,6 +510,10 @@ Legacy JavaScript by file:
 ${filesFormatted}`;
     }
 
+    if (Trace.Insights.Models.NetworkDependencyTree.isNetworkDependencyTree(this.#insight)) {
+      return this.formatNetworkDependencyTreeInsight(this.#insight);
+    }
+
     return '';
   }
 
@@ -473,7 +557,8 @@ ${filesFormatted}`;
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
       case 'NetworkDependencyTree':
-        return '';
+        return `- https://web.dev/learn/performance/understanding-the-critical-path
+- https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/`;
       case 'RenderBlocking':
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
@@ -538,7 +623,13 @@ It is important that all of these checks pass to minimize the delay between the 
       case 'LCPBreakdown':
         return 'This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.';
       case 'NetworkDependencyTree':
-        return '';
+        return `This insight analyzes the network dependency tree to identify:
+- The maximum critical path latency (the longest chain of network requests that the browser must download before it can render the page).
+- Whether current [preconnect] tags are appropriate, according to the following rules:
+   1. They should all be in use (no unnecessary preconnects).
+   2. All preconnects should specify cross-origin correctly.
+   3. The maximum of 4 preconnects should be respected.
+- Opportunities to add [preconnect] for a faster loading experience.`;
       case 'RenderBlocking':
         return 'This insight identifies network requests that were render blocking. Render blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render blocking network request and prioritize your suggestions to the user based on the impact of each render blocking request.';
       case 'SlowCSSSelector':

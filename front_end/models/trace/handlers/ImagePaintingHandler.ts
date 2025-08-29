@@ -25,35 +25,35 @@ import type {FinalizeOptions} from './types.js';
  */
 
 // Track paintImageEvents across threads.
-const paintImageEvents = new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.PaintImage[]>>();
-const decodeLazyPixelRefEvents =
+let paintImageEvents = new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.PaintImage[]>>();
+let decodeLazyPixelRefEvents =
     new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.DecodeLazyPixelRef[]>>();
 
 // A DrawLazyPixelRef event will contain a numerical reference in
 // args.LazyPixelRef. As we parse each DrawLazyPixelRef, we can assign it to a
 // paint event. Later we want to look up paint events by this reference, so we
 // store them in this map.
-const paintImageByLazyPixelRef = new Map<number, Types.Events.PaintImage>();
+let paintImageByLazyPixelRef = new Map<number, Types.Events.PaintImage>();
 
 // When we find events that we want to tie to a particular PaintImage event, we add them to this map.
 // These are currently only DecodeImage and ResizeImage events, but the type is
 // deliberately generic as in the future we might want to add more events that
 // have a relationship to a individual PaintImage event.
-const eventToPaintImage = new Map<Types.Events.Event, Types.Events.PaintImage>();
+let eventToPaintImage = new Map<Types.Events.Event, Types.Events.PaintImage>();
 
-const urlToPaintImage = new Map<string, Types.Events.PaintImage[]>();
+let urlToPaintImage = new Map<string, Types.Events.PaintImage[]>();
 
-const paintEventToCorrectedDisplaySize = new Map<Types.Events.PaintImage, {width: number, height: number}>();
+let paintEventToCorrectedDisplaySize = new Map<Types.Events.PaintImage, {width: number, height: number}>();
 
 let didCorrectForHostDpr = false;
 
 export function reset(): void {
-  paintImageEvents.clear();
-  decodeLazyPixelRefEvents.clear();
-  paintImageByLazyPixelRef.clear();
-  eventToPaintImage.clear();
-  urlToPaintImage.clear();
-  paintEventToCorrectedDisplaySize.clear();
+  paintImageEvents = new Map();
+  decodeLazyPixelRefEvents = new Map();
+  paintImageByLazyPixelRef = new Map();
+  eventToPaintImage = new Map();
+  urlToPaintImage = new Map();
+  paintEventToCorrectedDisplaySize = new Map();
   didCorrectForHostDpr = false;
 }
 

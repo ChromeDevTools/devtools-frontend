@@ -2263,9 +2263,15 @@ export namespace Browser {
      */
     setting: PermissionSetting;
     /**
-     * Origin the permission applies to, all origins if not specified.
+     * Requesting origin the permission applies to, all origins if not specified.
      */
     origin?: string;
+    /**
+     * Embedding origin the permission applies to. It is ignored unless the requesting origin is
+     * present and valid. If the requesting origin is provided but the embedding origin isn't, the
+     * requesting origin is used as the embedding origin.
+     */
+    embeddingOrigin?: string;
     /**
      * Context to override. When omitted, default browser context is used.
      */

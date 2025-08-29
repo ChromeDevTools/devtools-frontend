@@ -9,10 +9,10 @@ export interface DOMStatsData {
   domStatsByFrameId: Map<string, Types.Events.DOMStats[]>;
 }
 
-const domStatsByFrameId: DOMStatsData['domStatsByFrameId'] = new Map();
+let domStatsByFrameId: DOMStatsData['domStatsByFrameId'] = new Map();
 
 export function reset(): void {
-  domStatsByFrameId.clear();
+  domStatsByFrameId = new Map();
 }
 
 export function handleEvent(event: Types.Events.Event): void {

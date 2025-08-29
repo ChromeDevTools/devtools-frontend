@@ -31,11 +31,11 @@ import * as Types from '../types/types.js';
  * args.data.target property, which is a string ID shared by both
  * events.
  */
-const runningInProcessEvents = new Map<Types.Events.ProcessID, Types.Events.AuctionWorkletRunningInProcess>();
-const doneWithProcessEvents = new Map<Types.Events.ProcessID, Types.Events.AuctionWorkletDoneWithProcess>();
+let runningInProcessEvents = new Map<Types.Events.ProcessID, Types.Events.AuctionWorkletRunningInProcess>();
+let doneWithProcessEvents = new Map<Types.Events.ProcessID, Types.Events.AuctionWorkletDoneWithProcess>();
 
 // Keyed by the PID defined in  `args.data.pid` on AuctionWorklet trace events..
-const createdSyntheticEvents = new Map<Types.Events.ProcessID, Types.Events.SyntheticAuctionWorklet>();
+let createdSyntheticEvents = new Map<Types.Events.ProcessID, Types.Events.SyntheticAuctionWorklet>();
 
 // Each AuctonWorklet takes over a process and has 2 threads (that we care
 // about and want to show as tracks):
@@ -44,15 +44,15 @@ const createdSyntheticEvents = new Map<Types.Events.ProcessID, Types.Events.Synt
 //    either a "Seller" or a "Bidder"
 // To detect these we look for the metadata thread_name events. We key these by
 // PID so that we can easily look them up later without having to loop through.
-const utilityThreads = new Map<Types.Events.ProcessID, Types.Events.ThreadName>();
-const v8HelperThreads = new Map<Types.Events.ProcessID, Types.Events.ThreadName>();
+let utilityThreads = new Map<Types.Events.ProcessID, Types.Events.ThreadName>();
+let v8HelperThreads = new Map<Types.Events.ProcessID, Types.Events.ThreadName>();
 
 export function reset(): void {
-  runningInProcessEvents.clear();
-  doneWithProcessEvents.clear();
-  createdSyntheticEvents.clear();
-  utilityThreads.clear();
-  v8HelperThreads.clear();
+  runningInProcessEvents = new Map();
+  doneWithProcessEvents = new Map();
+  createdSyntheticEvents = new Map();
+  utilityThreads = new Map();
+  v8HelperThreads = new Map();
 }
 
 export function handleEvent(event: Types.Events.Event): void {

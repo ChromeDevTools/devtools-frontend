@@ -74,8 +74,7 @@ describe('Media Tab', () => {
     });
   }
 
-  // Skip to allow DEPS roll while we properly figure out how to re-enable this.
-  it.skip('[crbug.com/40269197] ensures video playback adds entry', async ({devToolsPage, inspectedPage}) => {
+  it('ensures video playback adds entry', async ({devToolsPage, inspectedPage}) => {
     await openPanelViaMoreTools('Media', devToolsPage);
     await playMediaFile('fisch.webm', inspectedPage);
     await devToolsPage.waitForFunction(async () => {
@@ -84,18 +83,14 @@ describe('Media Tab', () => {
     });
   });
 
-  // Skip to allow DEPS roll while we properly figure out how to re-enable this.
-  it.skip(
-      '[crbug.com/40269197] ensures video playback adds entry for web worker',
-      async ({devToolsPage, inspectedPage}) => {
-        await devToolsPage.bringToFront();
-        await openPanelViaMoreTools('Media', devToolsPage);
-        await inspectedPage.goToResource('media/codec_worker.html');
-        await waitForPlayerButtonTexts(4, devToolsPage);
-      });
+  it('ensures video playback adds entry for web worker', async ({devToolsPage, inspectedPage}) => {
+    await devToolsPage.bringToFront();
+    await openPanelViaMoreTools('Media', devToolsPage);
+    await inspectedPage.goToResource('media/codec_worker.html');
+    await waitForPlayerButtonTexts(4, devToolsPage);
+  });
 
-  // Skip to allow DEPS roll while we properly figure out how to re-enable this.
-  it.skip('[crbug.com/40269197] ensures that errors are rendered nicely', async ({devToolsPage, inspectedPage}) => {
+  it('ensures that errors are rendered nicely', async ({devToolsPage, inspectedPage}) => {
     await devToolsPage.bringToFront();
     await openPanelViaMoreTools('Media', devToolsPage);
     await inspectedPage.goToResource('media/corrupt.webm');

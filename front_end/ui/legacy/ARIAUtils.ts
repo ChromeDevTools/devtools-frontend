@@ -440,7 +440,7 @@ export class LiveAnnouncer {
 
   static removeAnnouncerElements(container: HTMLElement = document.body): void {
     LiveAnnouncer.#removeAnnouncerElement(container, AnnouncerRole.ALERT);
-    LiveAnnouncer.#removeAnnouncerElement(container, AnnouncerRole.ALERT);
+    LiveAnnouncer.#removeAnnouncerElement(container, AnnouncerRole.STATUS);
   }
 
   static alert(message: string): void {

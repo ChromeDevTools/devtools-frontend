@@ -33,6 +33,7 @@ class LifecycleWatcher {
     #sameDocumentNavigationDeferred = Deferred_js_1.Deferred.create();
     #lifecycleDeferred = Deferred_js_1.Deferred.create();
     #newDocumentNavigationDeferred = Deferred_js_1.Deferred.create();
+    #error = new Error('LifecycleWatcher terminated');
     #hasSameDocumentNavigation;
     #swapped;
     #navigationResponseReceived;
@@ -50,6 +51,9 @@ class LifecycleWatcher {
             return protocolEvent;
         });
         signal?.addEventListener('abort', () => {
+            if (signal.reason instanceof Error) {
+                signal.reason.cause = this.#error;
+            }
             this.#terminationDeferred.reject(signal.reason);
         });
         this.#frame = frame;
@@ -100,7 +104,8 @@ class LifecycleWatcher {
     }
     #onFrameDetached(frame) {
         if (this.#frame === frame) {
-            this.#terminationDeferred.resolve(new Error('Navigating frame was detached'));
+            this.#error.message = 'Navigating frame was detached';
+            this.#terminationDeferred.resolve(this.#error);
             return;
         }
         this.#checkLifecycleComplete();
@@ -165,7 +170,8 @@ class LifecycleWatcher {
     }
     dispose() {
         this.#subscriptions.dispose();
-        this.#terminationDeferred.resolve(new Error('LifecycleWatcher disposed'));
+        this.#error.cause = new Error('LifecycleWatcher disposed');
+        this.#terminationDeferred.resolve(this.#error);
     }
 }
 exports.LifecycleWatcher = LifecycleWatcher;

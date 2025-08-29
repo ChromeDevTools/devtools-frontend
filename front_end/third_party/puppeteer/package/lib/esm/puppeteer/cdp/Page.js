@@ -829,7 +829,7 @@ export class CdpPage extends Page {
         try {
             const _guard = __addDisposableResource(env_3, await this.browserContext().waitForScreenshotOperations(), false);
             const connection = this.#primaryTargetClient.connection();
-            assert(connection, 'Protocol error: Connection closed. Most likely the page has been closed.');
+            assert(connection, 'Connection closed. Most likely the page has been closed.');
             const runBeforeUnload = !!options.runBeforeUnload;
             if (runBeforeUnload) {
                 await this.#primaryTargetClient.send('Page.close');
@@ -909,6 +909,9 @@ function getIntersectionRect(clip, viewport) {
         height: Math.max(Math.min(clip.y + clip.height, viewport.y + viewport.height) - y, 0),
     };
 }
+/**
+ * @internal
+ */
 export function convertCookiesPartitionKeyFromPuppeteerToCdp(partitionKey) {
     if (partitionKey === undefined) {
         return undefined;

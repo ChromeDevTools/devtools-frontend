@@ -1227,7 +1227,7 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * Set permission settings for given origin.
+     * Set permission settings for given requesting and embedding origins.
      */
     'Browser.setPermission': {
       paramsType: [Protocol.Browser.SetPermissionRequest];

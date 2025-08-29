@@ -19,55 +19,55 @@ import viewStyles from './resourceChunkView.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in Event Source Messages View of the Network panel
+   * @description Text in Event Source Messages View of the Network panel
    */
   data: 'Data',
   /**
-   *@description Text in Messages View of the Network panel
+   * @description Text in Messages View of the Network panel
    */
   length: 'Length',
   /**
-   *@description Text that refers to the time
+   * @description Text that refers to the time
    */
   time: 'Time',
   /**
-   *@description Text to clear everything
+   * @description Text to clear everything
    */
   clearAll: 'Clear All',
   /**
-   *@description Text to filter result items
+   * @description Text to filter result items
    */
   filter: 'Filter',
   /**
-   *@description Text in Messages View of the Network panel that shows if no message is selected for viewing its content
+   * @description Text in Messages View of the Network panel that shows if no message is selected for viewing its content
    */
   noMessageSelected: 'No message selected',
   /**
-   *@description Text in Messages View of the Network panel
+   * @description Text in Messages View of the Network panel
    */
   selectMessageToBrowseItsContent: 'Select message to browse its content.',
   /**
-   *@description Text in Messages View of the Network panel
+   * @description Text in Messages View of the Network panel
    */
   copyMessageD: 'Copy message…',
   /**
-   *@description A context menu item in the Messages View of the Network panel
+   * @description A context menu item in the Messages View of the Network panel
    */
   copyMessage: 'Copy message',
   /**
-   *@description Text to clear everything
+   * @description Text to clear everything
    */
   clearAllL: 'Clear all',
   /**
-   *@description Text for everything
+   * @description Text for everything
    */
   all: 'All',
   /**
-   *@description Text in Messages View of the Network panel
+   * @description Text in Messages View of the Network panel
    */
   send: 'Send',
   /**
-   *@description Text in Messages View of the Network panel
+   * @description Text in Messages View of the Network panel
    */
   receive: 'Receive',
 } as const;

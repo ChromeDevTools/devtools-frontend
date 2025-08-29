@@ -1,27 +1,14 @@
-declare namespace getSideChannel {
-	type Key = unknown;
-	type ListNode<T> = {
-		key: Key;
-		next: ListNode<T>;
-		value: T;
-	};
-	type RootNode<T> = {
-		key: object;
-		next: null | ListNode<T>;
-	};
-	function listGetNode<T>(list: RootNode<T>, key: ListNode<T>['key']): ListNode<T> | void;
-	function listGet<T>(objects: RootNode<T>, key: ListNode<T>['key']): T | void;
-	function listSet<T>(objects: RootNode<T>, key: ListNode<T>['key'], value: T): void;
-	function listHas<T>(objects: RootNode<T>, key: ListNode<T>['key']): boolean;
+import getSideChannelList from 'side-channel-list';
+import getSideChannelMap from 'side-channel-map';
+import getSideChannelWeakMap from 'side-channel-weakmap';
 
-	type Channel = {
-		assert: (key: Key) => void;
-		has: (key: Key) => boolean;
-		get: <T>(key: Key) => T;
-		set: <T>(key: Key, value: T) => void;
-	}
+declare namespace getSideChannel {
+	type Channel<K, V> =
+		| getSideChannelList.Channel<K, V>
+		| ReturnType<Exclude<typeof getSideChannelMap<K, V>, false>>
+		| ReturnType<Exclude<typeof getSideChannelWeakMap<K, V>, false>>;
 }
 
-declare function getSideChannel(): getSideChannel.Channel;
+declare function getSideChannel<K, V>(): getSideChannel.Channel<K, V>;
 
 export = getSideChannel;

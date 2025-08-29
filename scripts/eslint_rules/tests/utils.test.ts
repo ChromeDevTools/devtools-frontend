@@ -7,7 +7,7 @@ import {assert} from 'chai';
 
 import {isLitHtmlRenderCall, isLitHtmlTemplateCall} from '../lib/utils/lit.ts';
 
-function getParsedExpression(code) {
+function getParsedExpression(code: string) {
   const parsed = parser.parse(code).body[0];
 
   if (parsed.type !== 'ExpressionStatement') {

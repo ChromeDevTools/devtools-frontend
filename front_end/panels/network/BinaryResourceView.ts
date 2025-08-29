@@ -23,7 +23,7 @@ const UIStrings = {
    */
   copiedAsBase: 'Copied as `Base64`',
   /**
-   *@description Text in Binary Resource View of the Network panel
+   * @description Text in Binary Resource View of the Network panel
    */
   hexViewer: '`Hex` Viewer',
   /**
@@ -33,16 +33,16 @@ const UIStrings = {
    */
   copiedAsHex: 'Copied as `Hex`',
   /**
-   *@description Text in Binary Resource View of the Network panel. Shown to the user as a status
+   * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
    * message after the current text has been copied to the clipboard. UTF-8 is a format for encoding data.
    */
   copiedAsUtf: 'Copied as `UTF-8`',
   /**
-   *@description Screen reader label for a select box that chooses how to display binary data in the Network panel
+   * @description Screen reader label for a select box that chooses how to display binary data in the Network panel
    */
   binaryViewType: 'Binary view type',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon copy button in the Binary Resource View of the Network panel
+   * @description Tooltip text that appears when hovering over the largeicon copy button in the Binary Resource View of the Network panel
    */
   copyToClipboard: 'Copy to clipboard',
   /**
@@ -51,12 +51,12 @@ const UIStrings = {
    */
   copyAsBase: 'Copy as `Base64`',
   /**
-   *@description A context menu command in the Binary Resource View of the Network panel, for copying
+   * @description A context menu command in the Binary Resource View of the Network panel, for copying
    * to the clipboard. Hex is short for hexadecimal, and is a format for encoding data.
    */
   copyAsHex: 'Copy as `Hex`',
   /**
-   *@description A context menu command in the Binary Resource View of the Network panel, for copying
+   * @description A context menu command in the Binary Resource View of the Network panel, for copying
    *to the clipboard. UTF-8 is a format for encoding data.
    */
   copyAsUtf: 'Copy as `UTF-8`',
@@ -76,7 +76,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
   constructor(
       content: TextUtils.StreamingContentData.StreamingContentData, contentUrl: Platform.DevToolsPath.UrlString,
       resourceType: Common.ResourceType.ResourceType, element?: HTMLElement) {
-    super(undefined, undefined, element);
+    super(element);
     this.registerRequiredCSS(binaryResourceViewStyles);
 
     this.binaryResourceViewFactory =

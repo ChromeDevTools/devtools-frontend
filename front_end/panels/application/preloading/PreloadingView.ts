@@ -27,76 +27,76 @@ import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
 
 const UIStrings = {
   /**
-   *@description DropDown title for filtering preloading attempts by rule set
+   * @description DropDown title for filtering preloading attempts by rule set
    */
   filterFilterByRuleSet: 'Filter by rule set',
   /**
-   *@description DropDown text for filtering preloading attempts by rule set: No filter
+   * @description DropDown text for filtering preloading attempts by rule set: No filter
    */
   filterAllPreloads: 'All speculative loads',
   /**
-   *@description Dropdown subtitle for filtering preloading attempts by rule set
+   * @description Dropdown subtitle for filtering preloading attempts by rule set
    *             when there are no rule sets in the page.
    */
   noRuleSets: 'no rule sets',
   /**
-   *@description Text in grid: Rule set is valid
+   * @description Text in grid: Rule set is valid
    */
   validityValid: 'Valid',
   /**
-   *@description Text in grid: Rule set must be a valid JSON object
+   * @description Text in grid: Rule set must be a valid JSON object
    */
   validityInvalid: 'Invalid',
   /**
-   *@description Text in grid: Rule set contains invalid rules and they are ignored
+   * @description Text in grid: Rule set contains invalid rules and they are ignored
    */
   validitySomeRulesInvalid: 'Some rules invalid',
   /**
-   *@description Text in grid and details: Preloading attempt is not yet triggered.
+   * @description Text in grid and details: Preloading attempt is not yet triggered.
    */
   statusNotTriggered: 'Not triggered',
   /**
-   *@description Text in grid and details: Preloading attempt is eligible but pending.
+   * @description Text in grid and details: Preloading attempt is eligible but pending.
    */
   statusPending: 'Pending',
   /**
-   *@description Text in grid and details: Preloading is running.
+   * @description Text in grid and details: Preloading is running.
    */
   statusRunning: 'Running',
   /**
-   *@description Text in grid and details: Preloading finished and the result is ready for the next navigation.
+   * @description Text in grid and details: Preloading finished and the result is ready for the next navigation.
    */
   statusReady: 'Ready',
   /**
-   *@description Text in grid and details: Ready, then used.
+   * @description Text in grid and details: Ready, then used.
    */
   statusSuccess: 'Success',
   /**
-   *@description Text in grid and details: Preloading failed.
+   * @description Text in grid and details: Preloading failed.
    */
   statusFailure: 'Failure',
   /**
-   *@description Text to pretty print a file
+   * @description Text to pretty print a file
    */
   prettyPrint: 'Pretty print',
   /**
-   *@description Placeholder text if there are no rules to show. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   * @description Placeholder text if there are no rules to show. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
    */
   noRulesDetected: 'No rules detected',
   /**
-   *@description Placeholder text if there are no rules to show. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   * @description Placeholder text if there are no rules to show. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
    */
   rulesDescription: 'On this page you will see the speculation rules used to prefetch and prerender page navigations.',
   /**
-   *@description Placeholder text if there are no speculation attempts for prefetching or prerendering urls. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   * @description Placeholder text if there are no speculation attempts for prefetching or prerendering urls. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
    */
   noPrefetchAttempts: 'No speculation detected',
   /**
-   *@description Placeholder text if there are no speculation attempts for prefetching or prerendering urls. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   * @description Placeholder text if there are no speculation attempts for prefetching or prerendering urls. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
    */
   prefetchDescription: 'On this page you will see details on speculative loads.',
   /**
-   *@description Text for a learn more link
+   * @description Text for a learn more link
    */
   learnMore: 'Learn more',
 } as const;
@@ -158,6 +158,7 @@ class PreloadingUIUtils {
       case undefined:
         return i18nString(UIStrings.validityValid);
       case Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject:
+      case Protocol.Preload.RuleSetErrorType.InvalidRulesetLevelTag:
         return i18nString(UIStrings.validityInvalid);
       case Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped:
         return i18nString(UIStrings.validitySomeRulesInvalid);
@@ -202,7 +203,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
   private shouldPrettyPrint = Common.Settings.Settings.instance().moduleSetting('auto-pretty-print-minified').get();
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
-    super(/* isWebComponent */ true, /* delegatesFocus */ false);
+    super({useShadowDom: true});
     this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
     this.model = model;
@@ -353,10 +354,12 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   private readonly ruleSetSelector: PreloadingRuleSetSelector;
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
-    super(/* isWebComponent */ true, /* delegatesFocus */ false);
+    super({
+      jslog: `${VisualLogging.pane('preloading-speculations')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane('preloading-speculations')}`);
     this.model = model;
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -510,10 +513,12 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
   private readonly usedPreloading = new PreloadingComponents.UsedPreloadingView.UsedPreloadingView();
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
-    super(/* isWebComponent */ true, /* delegatesFocus */ false);
+    super({
+      jslog: `${VisualLogging.pane('speculative-loads')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane('speculative-loads')}`);
     this.model = model;
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -709,7 +714,7 @@ export class PreloadingWarningsView extends UI.Widget.VBox {
   private readonly infobar = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
 
   constructor() {
-    super(/* isWebComponent */ false, /* delegatesFocus */ false);
+    super();
     this.registerRequiredCSS(emptyWidgetStyles);
   }
 

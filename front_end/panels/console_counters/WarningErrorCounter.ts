@@ -15,20 +15,20 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
-   *@description The console error count in the Warning Error Counter shown in the main toolbar (top-left in DevTools). The error count refers to the number of errors currently present in the JavaScript console.
+   * @description The console error count in the Warning Error Counter shown in the main toolbar (top-left in DevTools). The error count refers to the number of errors currently present in the JavaScript console.
    */
   sErrors: '{n, plural, =1 {# error} other {# errors}}',
   /**
-   *@description The console warning count in the Warning Error Counter shown in the main toolbar (top-left in DevTools). The warning count refers to the number of warnings currently present in the JavaScript console.
+   * @description The console warning count in the Warning Error Counter shown in the main toolbar (top-left in DevTools). The warning count refers to the number of warnings currently present in the JavaScript console.
    */
   sWarnings: '{n, plural, =1 {# warning} other {# warnings}}',
   /**
-   *@description Tooltip shown for a main toolbar button that opens the Console panel
-   *@example {2 errors, 1 warning} PH1
+   * @description Tooltip shown for a main toolbar button that opens the Console panel
+   * @example {2 errors, 1 warning} PH1
    */
   openConsoleToViewS: 'Open Console to view {PH1}',
   /**
-   *@description Title for the issues count in the Issues Error Counter shown in the main toolbar (top-left in DevTools). The issues count refers to the number of issues in the issues tab.
+   * @description Title for the issues count in the Issues Error Counter shown in the main toolbar (top-left in DevTools). The issues count refers to the number of issues in the issues tab.
    */
   openIssuesToView: '{n, plural, =1 {Open Issues to view # issue:} other {Open Issues to view # issues:}}',
 } as const;
@@ -70,16 +70,10 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
     groups: [
       {
         iconName: 'cross-circle-filled',
-        iconColor: 'var(--icon-error)',
-        iconHeight: '14px',
-        iconWidth: '14px',
         text: countToText(errors)
       },
       {
         iconName: 'warning-filled',
-        iconColor: 'var(--icon-warning)',
-        iconHeight: '14px',
-        iconWidth: '14px',
         text: countToText(warnings)
       },
     ],
@@ -102,7 +96,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
          ><icon-button
             .data=${iconData}
             title=${consoleTitle}
-            class=${warnings || errors ? nothing as unknown as string : 'hidden'}
+            class=${'small' + warnings || errors ? nothing as unknown as string : 'hidden'}
             jslog=${VisualLogging.counter('console').track({
         click: true
       })}
@@ -114,7 +108,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
         click: true
       })}
          ></devtools-issue-counter></div>`,
-      target, {host: input});
+      target);
 };
 
 export class WarningErrorCounterWidget extends UI.Widget.Widget {
@@ -126,7 +120,7 @@ export class WarningErrorCounterWidget extends UI.Widget.Widget {
   constructor(
       element: HTMLElement, private readonly setVisibility: (visible: boolean) => void,
       private readonly view: View = DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.throttler = new Common.Throttler.Throttler(100);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(

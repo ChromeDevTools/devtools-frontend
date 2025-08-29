@@ -11,7 +11,7 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
-   *@description Title for Bounce Tracking Mitigation explainer url link.
+   * @description Title for Bounce Tracking Mitigation explainer url link.
    */
   bounceTrackingMitigations: 'Bounce tracking mitigations',
 } as const;

@@ -40,7 +40,7 @@ import jsonViewStyles from './jsonView.css.js';
 
 const UIStrings = {
   /**
-   *@description Text to find an item
+   * @description Text to find an item
    */
   find: 'Find',
 } as const;
@@ -83,9 +83,9 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     return searchableView;
   }
 
-  static createViewSync(obj: Object|null): UI.SearchableView.SearchableView {
+  static createViewSync(obj: Object|null, element?: HTMLElement): UI.SearchableView.SearchableView {
     const jsonView = new JSONView(new ParsedJSON(obj, '', ''));
-    const searchableView = new UI.SearchableView.SearchableView(jsonView, null);
+    const searchableView = new UI.SearchableView.SearchableView(jsonView, null, undefined, element);
     searchableView.setPlaceholder(i18nString(UIStrings.find));
     jsonView.searchableView = searchableView;
     jsonView.show(searchableView.element);

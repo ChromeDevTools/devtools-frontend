@@ -244,8 +244,7 @@ export function processEventForTestDebugging(
   if (event !== 'SettingAccess' && event !== 'FunctionCall') {
     lastImpressionLogEntry = null;
   }
-  maybeLogDebugEvent(
-      {interaction: `${event}: ${veTestKeys.get(state?.veid || 0) || (state?.veid ? '<UNKNOWN>' : '')}`});
+  maybeLogDebugEvent({interaction: event, veid: state?.veid || 0});
   checkPendingEventExpectation();
 }
 
@@ -312,6 +311,7 @@ type TestLogEntry = {
   impressions: string[],
 }|{
   interaction: string,
+  veid?: number,
 };
 
 export function processImpressionsForDebugging(states: LoggingState[]): void {
@@ -715,7 +715,8 @@ export function processStartLoggingForDebugging(): void {
 // Interaction events need to match exactly.
 function compareVeEvents(actual: TestLogEntry, expected: TestLogEntry): boolean {
   if ('interaction' in expected && 'interaction' in actual) {
-    return expected.interaction === actual.interaction;
+    const actualString = formatInteraction(actual);
+    return expected.interaction === actualString;
   }
   if ('impressions' in expected && 'impressions' in actual) {
     const actualSet = new Set(actual.impressions);
@@ -755,8 +756,26 @@ function formatImpressions(impressions: string[]): string {
 
 const EVENT_EXPECTATION_TIMEOUT = 5000;
 
+function formatInteraction(e: TestLogEntry): string {
+  if ('interaction' in e) {
+    if (e.veid !== undefined) {
+      const key = veTestKeys.get(e.veid) || (e.veid ? '<UNKNOWN>' : '');
+      return `${e.interaction}: ${key}`;
+    }
+    return e.interaction;
+  }
+  return '';
+}
+
 function formatVeEvents(events: TestLogEntry[]): string {
-  return events.map(e => 'interaction' in e ? e.interaction : formatImpressions(e.impressions)).join('\n');
+  return events
+      .map(e => {
+        if ('interaction' in e) {
+          return formatInteraction(e);
+        }
+        return formatImpressions(e.impressions);
+      })
+      .join('\n');
 }
 
 // Verifies that VE events contains all the expected events in given order.
@@ -773,7 +792,8 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
     if (pendingEventExpectation?.missingEvents) {
       pendingEventExpectation.fail(new Error(
           '\nMissing VE Events:\n' + formatVeEvents(pendingEventExpectation.missingEvents) +
-          '\nUnmatched VE Events:\n' + formatVeEvents(pendingEventExpectation.unmatchingEvents)));
+          '\nUnmatched VE Events:\n' + formatVeEvents(pendingEventExpectation.unmatchingEvents) + '\nAll events:\n' +
+          JSON.stringify(veDebugEventsLog, null, 2)));
     }
   }, EVENT_EXPECTATION_TIMEOUT);
 
@@ -832,9 +852,7 @@ function checkPendingEventExpectation(): void {
 
 function getUnmatchedVeEvents(): string {
   console.error(numMatchedEvents);
-  return (veDebugEventsLog.slice(numMatchedEvents) as TestLogEntry[])
-      .map(e => 'interaction' in e ? e.interaction : formatImpressions(e.impressions))
-      .join('\n');
+  return formatVeEvents(veDebugEventsLog.slice(numMatchedEvents) as TestLogEntry[]);
 }
 
 // @ts-expect-error

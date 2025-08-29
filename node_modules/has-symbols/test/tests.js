@@ -1,5 +1,6 @@
 'use strict';
 
+/** @type {(t: import('tape').Test) => false | void} */
 // eslint-disable-next-line consistent-return
 module.exports = function runSymbolTests(t) {
 	t.equal(typeof Symbol, 'function', 'global Symbol is a function');
@@ -31,6 +32,7 @@ module.exports = function runSymbolTests(t) {
 
 	t.equal(typeof Object.getOwnPropertySymbols, 'function', 'Object.getOwnPropertySymbols is a function');
 
+	/** @type {{ [k in symbol]?: unknown }} */
 	var obj = {};
 	var sym = Symbol('test');
 	var symObj = Object(sym);
@@ -40,8 +42,8 @@ module.exports = function runSymbolTests(t) {
 
 	var symVal = 42;
 	obj[sym] = symVal;
-	// eslint-disable-next-line no-restricted-syntax
-	for (sym in obj) { t.fail('symbol property key was found in for..in of object'); }
+	// eslint-disable-next-line no-restricted-syntax, no-unused-vars
+	for (var _ in obj) { t.fail('symbol property key was found in for..in of object'); }
 
 	t.deepEqual(Object.keys(obj), [], 'no enumerable own keys on symbol-valued object');
 	t.deepEqual(Object.getOwnPropertyNames(obj), [], 'no own names on symbol-valued object');

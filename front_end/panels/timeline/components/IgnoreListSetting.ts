@@ -9,7 +9,7 @@ import '../../../ui/components/menus/menus.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
+import * as Workspace from '../../../models/workspace/workspace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -34,17 +34,17 @@ const UIStrings = {
    */
   ignoreListDescription: 'Add regular expression rules to remove matching scripts from the flame chart.',
   /**
-   *@description Pattern title in Framework Ignore List Settings Tab of the Settings
-   *@example {ad.*?} regex
+   * @description Pattern title in Framework Ignore List Settings Tab of the Settings
+   * @example {ad.*?} regex
    */
   ignoreScriptsWhoseNamesMatchS: 'Ignore scripts whose names match \'\'{regex}\'\'',
   /**
-   *@description Label for the button to remove an regex
-   *@example {ad.*?} regex
+   * @description Label for the button to remove an regex
+   * @example {ad.*?} regex
    */
   removeRegex: 'Remove the regex: \'\'{regex}\'\'',
   /**
-   *@description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the input
+   * @description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the input
    * field used to add new or edit existing regular expressions that match file names to ignore in the debugger.
    */
   addNewRegex: 'Add a regular expression rule for the script\'s URL',
@@ -143,7 +143,7 @@ export class IgnoreListSetting extends HTMLElement {
       // It the new regex is invalid, let's skip it.
       return;
     }
-    Bindings.IgnoreListManager.IgnoreListManager.instance().addRegexToIgnoreList(newRegex);
+    Workspace.IgnoreListManager.IgnoreListManager.instance().addRegexToIgnoreList(newRegex);
     this.#resetInput();
   }
 

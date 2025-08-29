@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Functions and state to tie error reporting and console output of
+ * @file Functions and state to tie error reporting and console output of
  * the browser process and frontend pages together.
  */
 
@@ -39,7 +39,8 @@ const ALLOWED_ASSERTION_FAILURES = [
   // neterror.js started serving sourcemaps and we're requesting it unnecessarily.
   'Request Network.loadNetworkResource failed. {"code":-32602,"message":"Unsupported URL scheme"}',
   'Fetch API cannot load chrome-error://chromewebdata/neterror.rollup.js.map. URL scheme "chrome-error" is not supported.',
-  'Request Storage.getAffectedUrlsForThirdPartyCookieMetadata failed. {"code":-32603,"message":"Internal error"}',
+  'Request Storage.getAffectedUrlsForThirdPartyCookieMetadata failed.',
+  'Cannot find registered action with ID \'sources.add-folder-to-workspace\'',
 ];
 
 const logLevels = {
@@ -97,6 +98,14 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
     if (error.message.includes(path.join('ui', 'components', 'docs'))) {
       uiComponentDocErrors.push(error);
     }
+    const message = error.stack ?? error.message;
+    if (isExpectedError(error)) {
+      expectedErrors.push(message);
+      console.log('(expected) ' + message);
+    } else {
+      fatalErrors.push(message);
+      console.error(message);
+    }
     throw new Error(`Page error in Frontend: ${error}`);
   });
 
@@ -131,8 +140,9 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
   });
 }
 
-function isExpectedError(consoleMessage: puppeteer.ConsoleMessage) {
-  if (ALLOWED_ASSERTION_FAILURES.some(f => consoleMessage.text().includes(f))) {
+function isExpectedError(consoleMessage: puppeteer.ConsoleMessage|Error) {
+  if (ALLOWED_ASSERTION_FAILURES.some(
+          f => (consoleMessage instanceof Error ? consoleMessage.message : consoleMessage.text()).includes(f))) {
     return true;
   }
   for (const expectation of pendingErrorExpectations) {
@@ -145,7 +155,7 @@ function isExpectedError(consoleMessage: puppeteer.ConsoleMessage) {
 }
 
 export class ErrorExpectation {
-  #caught: puppeteer.ConsoleMessage|undefined;
+  #caught: puppeteer.ConsoleMessage|Error|undefined;
   readonly #msg: string|RegExp;
   constructor(msg: string|RegExp) {
     this.#msg = msg;
@@ -161,8 +171,8 @@ export class ErrorExpectation {
     return this.#caught;
   }
 
-  check(consoleMessage: puppeteer.ConsoleMessage) {
-    const text = consoleMessage.text();
+  check(consoleMessage: puppeteer.ConsoleMessage|Error) {
+    const text = consoleMessage instanceof Error ? consoleMessage.message : consoleMessage.text();
     const match = (this.#msg instanceof RegExp) ? Boolean(text.match(this.#msg)) : text.includes(this.#msg);
     if (match) {
       this.#caught = consoleMessage;

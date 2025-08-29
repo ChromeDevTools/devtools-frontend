@@ -3,11 +3,11 @@ import iterateJsdoc from '../iterateJsdoc.js';
 // eslint-disable-next-line complexity
 export default iterateJsdoc(({
   context,
-  jsdoc,
-  report,
   info: {
     lastIndex,
   },
+  jsdoc,
+  report,
   utils,
 }) => {
   const {

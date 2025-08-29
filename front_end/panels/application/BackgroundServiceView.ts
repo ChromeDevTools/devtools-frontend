@@ -23,118 +23,117 @@ import backgroundServiceViewStyles from './backgroundServiceView.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in Background Service View of the Application panel
+   * @description Text in Background Service View of the Application panel
    */
   backgroundFetch: 'Background fetch',
   /**
-   *@description Text in Background Service View of the Application panel
+   * @description Text in Background Service View of the Application panel
    */
   backgroundSync: 'Background sync',
   /**
-   *@description Text in Background Service View of the Application panel
+   * @description Text in Background Service View of the Application panel
    */
   pushMessaging: 'Push messaging',
   /**
-   *@description Text in Background Service View of the Application panel
+   * @description Text in Background Service View of the Application panel
    */
   notifications: 'Notifications',
   /**
-   *@description Text in Background Service View of the Application panel
+   * @description Text in Background Service View of the Application panel
    */
   paymentHandler: 'Payment handler',
   /**
-   *@description Text in the Periodic Background Service View of the Application panel
+   * @description Text in the Periodic Background Service View of the Application panel
    */
   periodicBackgroundSync: 'Periodic background sync',
   /**
-   *@description Text to clear content
+   * @description Text to clear content
    */
   clear: 'Clear',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon download button in the Background Service View of the Application panel
+   * @description Tooltip text that appears when hovering over the largeicon download button in the Background Service View of the Application panel
    */
   saveEvents: 'Save events',
   /**
-   *@description Text in Background Service View of the Application panel
+   * @description Text in Background Service View of the Application panel
    */
   showEventsFromOtherDomains: 'Show events from other domains',
   /**
-   *@description Text of a checkbox to show events for other storage keys
+   * @description Text of a checkbox to show events for other storage keys
    */
   showEventsForOtherStorageKeys: 'Show events from other storage partitions',
   /**
-   *@description Title of an action under the Background Services category that can be invoked through the Command Menu
+   * @description Title of an action under the Background Services category that can be invoked through the Command Menu
    */
   stopRecordingEvents: 'Stop recording events',
   /**
-   *@description Title of an action under the Background Services category that can be invoked through the Command Menu
+   * @description Title of an action under the Background Services category that can be invoked through the Command Menu
    */
   startRecordingEvents: 'Start recording events',
   /**
-   *@description Text for timestamps of items
+   * @description Text for timestamps of items
    */
   timestamp: 'Timestamp',
   /**
-   *@description Text that refers to some events
+   * @description Text that refers to some events
    */
   event: 'Event',
   /**
-   *@description Text for the origin of something
+   * @description Text for the origin of something
    */
   origin: 'Origin',
   /**
-   *@description Text for the storage key of something
+   * @description Text for the storage key of something
    */
   storageKey: 'Storage Key',
   /**
-   *@description Text in Background Service View of the Application panel. The Scope is a URL associated with the Service Worker, which limits which pages/sites the Service Worker operates on.
+   * @description Text in Background Service View of the Application panel. The Scope is a URL associated with the Service Worker, which limits which pages/sites the Service Worker operates on.
    */
   swScope: 'Service Worker Scope',
   /**
-   *@description Text in Background Service View of the Application panel
+   * @description Text in Background Service View of the Application panel
    */
   instanceId: 'Instance ID',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   backgroundServices: 'Background services',
   /**
-   *@description Text in Background Service View of the Application panel.
+   * @description Text in Background Service View of the Application panel.
    *             An event here refers to a background service event that is an entry in a table.
    */
   noEventSelected: 'No event selected',
   /**
-   *@description Text in Background Service View of the Application panel
+   * @description Text in Background Service View of the Application panel
    */
   selectAnEventToViewMetadata: 'Select an event to view its metadata',
   /**
-   *@description Text in Background Service View of the Application panel
-   *@example {Background Fetch} PH1
+   * @description Text in Background Service View of the Application panel
+   * @example {Background Fetch} PH1
    */
   recordingSActivity: 'Recording {PH1} activity…',
   /**
-   *@description Text in Background Service View of the Application panel
+   * @description Text in Background Service View of the Application panel
    */
   noRecording: 'No recording yet',
   /**
-   *@description Inform users that DevTools are recording/waiting for events in the Periodic Background Sync tool of the Application panel
-   *@example {Background Fetch} PH1
+   * @description Inform users that DevTools are recording/waiting for events in the Periodic Background Sync tool of the Application panel
+   * @example {Background Fetch} PH1
    */
   devtoolsWillRecordAllSActivity: 'DevTools will record all {PH1} activity for up to 3 days, even when closed.',
   /**
-   *@description Text in Background Service View of the Application panel to instruct the user on how to start a recording for
+   * @description Text in Background Service View of the Application panel to instruct the user on how to start a recording for
    * background services.
-   *
-   *@example {Start recording events} PH1
-   *@example {Ctrl + E} PH2
+   * @example {Start recording events} PH1
+   * @example {Ctrl + E} PH2
    */
   startRecordingToDebug: 'Start to debug background services by using the "{PH1}" button or by pressing {PH2}.',
   /**
-   *@description Text to show an item is empty
+   * @description Text to show an item is empty
    */
   empty: 'empty',
   /**
-   *@description Text in Background Service View of the Application panel
+   * @description Text in Background Service View of the Application panel
    */
   noMetadataForThisEvent: 'No metadata for this event',
 } as const;
@@ -178,12 +177,13 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   }
 
   constructor(serviceName: Protocol.BackgroundService.ServiceName, model: BackgroundServiceModel) {
-    super(true);
+    super({
+      jslog: `${VisualLogging.pane().context(Platform.StringUtilities.toKebabCase(serviceName))}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(emptyWidgetStyles, backgroundServiceViewStyles);
 
     this.serviceName = serviceName;
-    const kebabName = Platform.StringUtilities.toKebabCase(serviceName);
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context(kebabName)}`);
 
     this.model = model;
     this.model.addEventListener(Events.RecordingStateChanged, this.onRecordingStateChanged, this);
@@ -483,22 +483,24 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       return;
     }
 
-    const emptyWidget = new UI.EmptyWidget.EmptyWidget('', '');
+    let emptyWidget: UI.EmptyWidget.EmptyWidget;
     if (this.dataGrid.rootNode().children.length) {
-      emptyWidget.header = i18nString(UIStrings.noEventSelected);
-      emptyWidget.text = i18nString(UIStrings.selectAnEventToViewMetadata);
+      emptyWidget = new UI.EmptyWidget.EmptyWidget(
+          i18nString(UIStrings.noEventSelected), i18nString(UIStrings.selectAnEventToViewMetadata));
     } else if (this.recordButton.isToggled()) {
       // Inform users that we are recording/waiting for events.
       const featureName = BackgroundServiceView.getUIString(this.serviceName).toLowerCase();
-      emptyWidget.header = i18nString(UIStrings.recordingSActivity, {PH1: featureName});
-      emptyWidget.text = i18nString(UIStrings.devtoolsWillRecordAllSActivity, {PH1: featureName});
+      emptyWidget = new UI.EmptyWidget.EmptyWidget(
+          i18nString(UIStrings.recordingSActivity, {PH1: featureName}),
+          i18nString(UIStrings.devtoolsWillRecordAllSActivity, {PH1: featureName}));
     } else {
       const recordShortcuts =
           UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('background-service.toggle-recording')[0];
-      emptyWidget.header = i18nString(UIStrings.noRecording);
-      emptyWidget.text = i18nString(
-          UIStrings.startRecordingToDebug,
-          {PH1: i18nString(UIStrings.startRecordingEvents), PH2: recordShortcuts.title()});
+      emptyWidget = new UI.EmptyWidget.EmptyWidget(
+          i18nString(UIStrings.noRecording), i18nString(UIStrings.startRecordingToDebug, {
+            PH1: i18nString(UIStrings.startRecordingEvents),
+            PH2: recordShortcuts.title(),
+          }));
       emptyWidget.link = this.createLearnMoreLink();
 
       const button = UI.UIUtils.createTextButton(

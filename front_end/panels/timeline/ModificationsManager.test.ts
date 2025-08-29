@@ -4,6 +4,7 @@
 
 import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Timeline from './timeline.js';
@@ -63,39 +64,45 @@ describeWithEnvironment('ModificationsManager', () => {
   it('creates annotations and generates correct json for annotations', async function() {
     const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
     // Get any entres to create a label and a link with.
-    const entry = parsedTrace.Renderer.allTraceEntries[0];
-    const entry2 = parsedTrace.Renderer.allTraceEntries[1];
+    const entry = allThreadEntriesInTrace(parsedTrace)[0];
+    const entry2 = allThreadEntriesInTrace(parsedTrace)[1];
 
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
 
-    modificationsManager.createAnnotation({
-      type: 'ENTRY_LABEL',
-      entry,
-      label: 'entry label',
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'ENTRY_LABEL',
+          entry,
+          label: 'entry label',
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
-    modificationsManager.createAnnotation({
-      type: 'ENTRIES_LINK',
-      state: Trace.Types.File.EntriesLinkState.CONNECTED,
-      entryFrom: entry,
-      entryTo: entry2,
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'ENTRIES_LINK',
+          state: Trace.Types.File.EntriesLinkState.CONNECTED,
+          entryFrom: entry,
+          entryTo: entry2,
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
-    modificationsManager.createAnnotation({
-      type: 'TIME_RANGE',
-      bounds: {
-        min: Trace.Types.Timing.Micro(0),
-        max: Trace.Types.Timing.Micro(10),
-        range: Trace.Types.Timing.Micro(10),
-      },
-      label: 'range label',
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'TIME_RANGE',
+          bounds: {
+            min: Trace.Types.Timing.Micro(0),
+            max: Trace.Types.Timing.Micro(10),
+            range: Trace.Types.Timing.Micro(10),
+          },
+          label: 'range label',
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
     const modifications = modificationsManager.toJSON().annotations;
     assert.deepEqual(modifications, {
       entryLabels: [{
-        entry: 'r-38',
+        entry: 'r-39',
         label: 'entry label',
       }],
       labelledTimeRanges: [{
@@ -107,8 +114,8 @@ describeWithEnvironment('ModificationsManager', () => {
         label: 'range label',
       }],
       linksBetweenEntries: [{
-        entryFrom: 'r-38',
-        entryTo: 'r-39',
+        entryFrom: 'r-39',
+        entryTo: 'r-42',
       }],
     });
   });
@@ -117,24 +124,28 @@ describeWithEnvironment('ModificationsManager', () => {
      async function() {
        const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
        // Get any entry to create links with.
-       const entry = parsedTrace.Renderer.allTraceEntries[0];
-       const entry2 = parsedTrace.Renderer.allTraceEntries[1];
+       const entry = allThreadEntriesInTrace(parsedTrace)[0];
+       const entry2 = allThreadEntriesInTrace(parsedTrace)[1];
 
        const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
        assert.isOk(modificationsManager);
 
-       modificationsManager.createAnnotation({
-         type: 'ENTRIES_LINK',
-         state: Trace.Types.File.EntriesLinkState.CONNECTED,
-         entryFrom: entry,
-         entryTo: entry2,
-       });
+       modificationsManager.createAnnotation(
+           {
+             type: 'ENTRIES_LINK',
+             state: Trace.Types.File.EntriesLinkState.CONNECTED,
+             entryFrom: entry,
+             entryTo: entry2,
+           },
+           {loadedFromFile: false, muteAriaNotifications: false});
 
-       modificationsManager.createAnnotation({
-         type: 'ENTRIES_LINK',
-         state: Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT,
-         entryFrom: entry2,
-       });
+       modificationsManager.createAnnotation(
+           {
+             type: 'ENTRIES_LINK',
+             state: Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT,
+             entryFrom: entry2,
+           },
+           {loadedFromFile: false, muteAriaNotifications: false});
 
        // Make sure only the link with both 'to' and 'from' entries in in the generated JSON
        const modifications = modificationsManager.toJSON().annotations;
@@ -142,8 +153,8 @@ describeWithEnvironment('ModificationsManager', () => {
          entryLabels: [],
          labelledTimeRanges: [],
          linksBetweenEntries: [{
-           entryFrom: 'r-38',
-           entryTo: 'r-39',
+           entryFrom: 'r-39',
+           entryTo: 'r-42',
          }],
        });
      });
@@ -151,20 +162,22 @@ describeWithEnvironment('ModificationsManager', () => {
   it('correctly identifies if a connection between entries already exists', async function() {
     const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
     // Get any entry to create links with.
-    const entry1 = parsedTrace.Renderer.allTraceEntries[0];
-    const entry2 = parsedTrace.Renderer.allTraceEntries[1];
-    const entry3 = parsedTrace.Renderer.allTraceEntries[2];
+    const entry1 = allThreadEntriesInTrace(parsedTrace)[0];
+    const entry2 = allThreadEntriesInTrace(parsedTrace)[1];
+    const entry3 = allThreadEntriesInTrace(parsedTrace)[2];
 
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
 
     // Create a connection between entry 1 and entry 2
-    modificationsManager.createAnnotation({
-      type: 'ENTRIES_LINK',
-      state: Trace.Types.File.EntriesLinkState.CONNECTED,
-      entryFrom: entry1,
-      entryTo: entry2,
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'ENTRIES_LINK',
+          state: Trace.Types.File.EntriesLinkState.CONNECTED,
+          entryFrom: entry1,
+          entryTo: entry2,
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
     // Chech if a connection between entries 1 and 3 exists
     const existsBetween1And3 = modificationsManager.linkAnnotationBetweenEntriesExists(entry1, entry3);
@@ -187,37 +200,43 @@ describeWithEnvironment('ModificationsManager', () => {
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
 
-    modificationsManager.createAnnotation({
-      type: 'TIME_RANGE',
-      bounds: {
-        min: Trace.Types.Timing.Micro(0),
-        max: Trace.Types.Timing.Micro(10),
-        range: Trace.Types.Timing.Micro(10),
-      },
-      label: 'label',
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'TIME_RANGE',
+          bounds: {
+            min: Trace.Types.Timing.Micro(0),
+            max: Trace.Types.Timing.Micro(10),
+            range: Trace.Types.Timing.Micro(10),
+          },
+          label: 'label',
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
     // Create time range with empty label that shoud be removed
-    modificationsManager.createAnnotation({
-      type: 'TIME_RANGE',
-      bounds: {
-        min: Trace.Types.Timing.Micro(3),
-        max: Trace.Types.Timing.Micro(10),
-        range: Trace.Types.Timing.Micro(7),
-      },
-      label: '',
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'TIME_RANGE',
+          bounds: {
+            min: Trace.Types.Timing.Micro(3),
+            max: Trace.Types.Timing.Micro(10),
+            range: Trace.Types.Timing.Micro(7),
+          },
+          label: '',
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
     // Create time range with empty label that shoud be removed
-    modificationsManager.createAnnotation({
-      type: 'TIME_RANGE',
-      bounds: {
-        min: Trace.Types.Timing.Micro(5),
-        max: Trace.Types.Timing.Micro(10),
-        range: Trace.Types.Timing.Micro(5),
-      },
-      label: '',
-    });
+    modificationsManager.createAnnotation(
+        {
+          type: 'TIME_RANGE',
+          bounds: {
+            min: Trace.Types.Timing.Micro(5),
+            max: Trace.Types.Timing.Micro(10),
+            range: Trace.Types.Timing.Micro(5),
+          },
+          label: '',
+        },
+        {loadedFromFile: false, muteAriaNotifications: false});
 
     modificationsManager.deleteEmptyRangeAnnotations();
     const modifications = modificationsManager.toJSON().annotations;

@@ -4,9 +4,11 @@
 
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
+import * as fs from 'fs';
 import * as path from 'path';
 import type {Page, ScreenshotOptions, Target} from 'puppeteer-core';
 import puppeteer from 'puppeteer-core';
+import * as url from 'url';
 
 import {formatAsPatch, resultAssertionsDiff, ResultsDBReporter} from '../../test/conductor/karma-resultsdb-reporter.js';
 import {CHECKOUT_ROOT, GEN_DIR, SOURCE_ROOT} from '../../test/conductor/paths.js';
@@ -43,7 +45,7 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
   this._execCommand = async function(_cmd: string, args: string[]) {
     const url = args.pop()!;
     const browser = await puppeteer.launch({
-      headless: !TestConfig.debug || TestConfig.headless,
+      headless: TestConfig.headless,
       executablePath: TestConfig.chromeBinary,
       defaultViewport: null,
       dumpio: true,
@@ -195,6 +197,7 @@ module.exports = function(config: any) {
       {pattern: path.join(GEN_DIR, 'inspector_overlay/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'inspector_overlay/**/*.js.map'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/**/fixtures/**/*'), served: true, included: false},
+      {pattern: path.join(GEN_DIR, 'front_end/**/*.snapshot.txt'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/ui/components/docs/**/*'), served: true, included: false},
     ],
 
@@ -230,6 +233,7 @@ module.exports = function(config: any) {
       require('karma-coverage'),
       {'reporter:resultsdb': ['type', ResultsDBReporter]},
       {'reporter:progress-diff': ['type', ProgressWithDiffReporter]},
+      {'middleware:snapshotTester': ['factory', snapshotTesterFactory]},
     ],
 
     preprocessors: {
@@ -243,6 +247,8 @@ module.exports = function(config: any) {
       '/json': `http://localhost:${REMOTE_DEBUGGING_PORT}/json`,
       '/front_end': `/base/${targetDir}/front_end`,
     },
+
+    middleware: ['snapshotTester'],
 
     coverageReporter: {
       dir: path.join(TestConfig.artifactsDir, COVERAGE_OUTPUT_DIRECTORY),
@@ -266,3 +272,45 @@ module.exports = function(config: any) {
 
   config.set(options);
 };
+
+function snapshotTesterFactory() {
+  return (req: any, res: any, next: any) => {
+    if (req.url.startsWith('/snapshot-update-mode')) {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      const updateMode = TestConfig.onDiff.update === true;
+      res.end(JSON.stringify({updateMode}));
+      return res.end();
+    }
+
+    if (req.url.startsWith('/update-snapshot')) {
+      const parsedUrl = url.parse(req.url, true);
+      if (typeof parsedUrl.query.snapshotUrl !== 'string') {
+        throw new Error('invalid snapshotUrl');
+      }
+
+      const snapshotUrl = parsedUrl.query.snapshotUrl;
+      const snapshotPath = path.join(SOURCE_ROOT, url.parse(snapshotUrl, false).pathname?.split('gen')[1] ?? '');
+
+      let body = '';
+      req.on('data', (chunk: any) => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        // eslint-disable-next-line no-console
+        console.info(`updating snapshot: ${snapshotPath}`);
+        if (body) {
+          fs.writeFileSync(snapshotPath, body);
+        } else {
+          fs.rmSync(snapshotPath, {force: true});
+        }
+
+        res.writeHead(200);
+        res.end();
+      });
+
+      return;
+    }
+
+    next();
+  };
+}

@@ -7,7 +7,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Application from '../../panels/application/application.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 
 export const dumpCacheTree = async function(pathFilter) {

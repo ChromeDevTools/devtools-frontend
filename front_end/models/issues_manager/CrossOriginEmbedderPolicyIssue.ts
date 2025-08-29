@@ -15,11 +15,11 @@ import {
 
 const UIStrings = {
   /**
-   *@description Link text for a link to external documentation
+   * @description Link text for a link to external documentation
    */
   coopAndCoep: 'COOP and COEP',
   /**
-   *@description Title for an external link to more information in the issues view
+   * @description Title for an external link to more information in the issues view
    */
   samesiteAndSameorigin: 'Same-Site and Same-Origin',
 } as const;

@@ -12,31 +12,31 @@ import * as PreloadingHelper from './preloading/helper/helper.js';
 
 const UIStrings = {
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   application: 'Application',
   /**
-   *@description Command for showing the 'Application' tool
+   * @description Command for showing the 'Application' tool
    */
   showApplication: 'Show Application',
   /**
-   *@description A tag of Application Panel that can be searched in the command menu
+   * @description A tag of Application Panel that can be searched in the command menu
    */
   pwa: 'pwa',
   /**
-   *@description Text of button in Clear Storage View of the Application panel
+   * @description Text of button in Clear Storage View of the Application panel
    */
   clearSiteData: 'Clear site data',
   /**
-   *@description Title of an action that clears all site data including 3rd party cookies
+   * @description Title of an action that clears all site data including 3rd party cookies
    */
   clearSiteDataIncludingThirdparty: 'Clear site data (including third-party cookies)',
   /**
-   *@description Title of an action under the Background Services category that can be invoked through the Command Menu
+   * @description Title of an action under the Background Services category that can be invoked through the Command Menu
    */
   startRecordingEvents: 'Start recording events',
   /**
-   *@description Title of an action under the Background Services category that can be invoked through the Command Menu
+   * @description Title of an action under the Background Services category that can be invoked through the Command Menu
    */
   stopRecordingEvents: 'Stop recording events',
 } as const;

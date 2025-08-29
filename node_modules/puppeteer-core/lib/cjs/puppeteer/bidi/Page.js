@@ -104,11 +104,14 @@ const EmulationManager_js_1 = require("../cdp/EmulationManager.js");
 const Tracing_js_1 = require("../cdp/Tracing.js");
 const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
+const FileChooser_js_1 = require("../common/FileChooser.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
+const Deferred_js_1 = require("../util/Deferred.js");
 const encoding_js_1 = require("../util/encoding.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
+const ElementHandle_js_1 = require("./ElementHandle.js");
 const Frame_js_1 = require("./Frame.js");
 const Input_js_1 = require("./Input.js");
 const util_js_2 = require("./util.js");
@@ -148,6 +151,7 @@ let BidiPage = (() => {
         coverage;
         #cdpEmulationManager;
         #emulatedNetworkConditions;
+        #fileChooserDeferreds = new Set();
         _client() {
             return this.#frame.client;
         }
@@ -332,7 +336,23 @@ let BidiPage = (() => {
             return this.#cdpEmulationManager.javascriptEnabled;
         }
         async setGeolocation(options) {
-            return await this.#cdpEmulationManager.setGeolocation(options);
+            const { longitude, latitude, accuracy = 0 } = options;
+            if (longitude < -180 || longitude > 180) {
+                throw new Error(`Invalid longitude "${longitude}": precondition -180 <= LONGITUDE <= 180 failed.`);
+            }
+            if (latitude < -90 || latitude > 90) {
+                throw new Error(`Invalid latitude "${latitude}": precondition -90 <= LATITUDE <= 90 failed.`);
+            }
+            if (accuracy < 0) {
+                throw new Error(`Invalid accuracy "${accuracy}": precondition 0 <= ACCURACY failed.`);
+            }
+            return await this.#frame.browsingContext.setGeolocationOverride({
+                coordinates: {
+                    latitude: options.latitude,
+                    longitude: options.longitude,
+                    accuracy: options.accuracy,
+                },
+            });
         }
         async setJavaScriptEnabled(enabled) {
             return await this.#cdpEmulationManager.setJavaScriptEnabled(enabled);
@@ -514,8 +534,39 @@ let BidiPage = (() => {
         target() {
             throw new Errors_js_1.UnsupportedOperation();
         }
-        waitForFileChooser() {
-            throw new Errors_js_1.UnsupportedOperation();
+        async waitForFileChooser(options = {}) {
+            const { timeout = this._timeoutSettings.timeout() } = options;
+            const deferred = Deferred_js_1.Deferred.create({
+                message: `Waiting for \`FileChooser\` failed: ${timeout}ms exceeded`,
+                timeout,
+            });
+            this.#fileChooserDeferreds.add(deferred);
+            if (options.signal) {
+                options.signal.addEventListener('abort', () => {
+                    deferred.reject(options.signal?.reason);
+                }, { once: true });
+            }
+            this.#frame.browsingContext.once('filedialogopened', info => {
+                if (!info.element) {
+                    return;
+                }
+                const chooser = new FileChooser_js_1.FileChooser(ElementHandle_js_1.BidiElementHandle.from({
+                    sharedId: info.element.sharedId,
+                    handle: info.element.handle,
+                    type: 'node',
+                }, this.#frame.mainRealm()), info.multiple);
+                for (const deferred of this.#fileChooserDeferreds) {
+                    deferred.resolve(chooser);
+                    this.#fileChooserDeferreds.delete(deferred);
+                }
+            });
+            try {
+                return await deferred.valueOrThrow();
+            }
+            catch (error) {
+                this.#fileChooserDeferreds.delete(deferred);
+                throw error;
+            }
         }
         workers() {
             return [...this.#workers];

@@ -15,19 +15,19 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Unattributed text for an unattributed entity.
+   * @description Unattributed text for an unattributed entity.
    */
   unattributed: '[unattributed]',
   /**
-   *@description Title for the name of either 1st or 3rd Party entities.
+   * @description Title for the name of either 1st or 3rd Party entities.
    */
   firstOrThirdPartyName: '1st / 3rd party',
   /**
-   *@description Title referencing transfer size.
+   * @description Title referencing transfer size.
    */
   transferSize: 'Transfer size',
   /**
-   *@description Title referencing main thread time.
+   * @description Title referencing main thread time.
    */
   mainThreadTime: 'Main thread time',
 } as const;
@@ -264,7 +264,7 @@ export class ThirdPartyTreeElement extends UI.Widget.WidgetElement<UI.Widget.Wid
   }
 
   override createWidget(): UI.Widget.Widget {
-    const containerWidget = new UI.Widget.Widget(false, undefined, this);
+    const containerWidget = new UI.Widget.Widget(this);
     containerWidget.contentElement.style.display = 'contents';
     if (this.#treeView) {
       this.#treeView.show(containerWidget.contentElement);

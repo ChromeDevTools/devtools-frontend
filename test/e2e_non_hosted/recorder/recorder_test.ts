@@ -8,9 +8,6 @@ import type {Page} from 'puppeteer-core';
 import type {StepChanged} from '../../../front_end/panels/recorder/components/StepView.js';
 import type {RecorderActions} from '../../../front_end/panels/recorder/recorder-actions/recorder-actions.js';
 import {
-  assertNotNullOrUndefined,
-} from '../../../test/shared/helper.js';
-import {
   changeNetworkConditions,
   fillCreateRecordingForm,
   getCurrentRecording,
@@ -1357,7 +1354,7 @@ describe('Recorder', function() {
       return steps.length === 5 ? steps : undefined;
     });
     const step = steps.pop();
-    assertNotNullOrUndefined(step);
+    assert.isOk(step);
     const title = await step.waitForSelector(':scope >>>> .main-title');
     await title!.click();
 

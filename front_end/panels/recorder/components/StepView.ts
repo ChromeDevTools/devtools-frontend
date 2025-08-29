@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 /* Some view input callbacks might be handled outside of Lit and we
    bind all of them upfront. We disable the lit_html_host_this since we
@@ -29,95 +28,95 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Title for the step type that configures the viewport
+   * @description Title for the step type that configures the viewport
    */
   setViewportClickTitle: 'Set viewport',
   /**
-   *@description Title for the customStep step type
+   * @description Title for the customStep step type
    */
   customStepTitle: 'Custom step',
   /**
-   *@description Title for the click step type
+   * @description Title for the click step type
    */
   clickStepTitle: 'Click',
   /**
-   *@description Title for the double click step type
+   * @description Title for the double click step type
    */
   doubleClickStepTitle: 'Double click',
   /**
-   *@description Title for the hover step type
+   * @description Title for the hover step type
    */
   hoverStepTitle: 'Hover',
   /**
-   *@description Title for the emulateNetworkConditions step type
+   * @description Title for the emulateNetworkConditions step type
    */
   emulateNetworkConditionsStepTitle: 'Emulate network conditions',
   /**
-   *@description Title for the change step type
+   * @description Title for the change step type
    */
   changeStepTitle: 'Change',
   /**
-   *@description Title for the close step type
+   * @description Title for the close step type
    */
   closeStepTitle: 'Close',
   /**
-   *@description Title for the scroll step type
+   * @description Title for the scroll step type
    */
   scrollStepTitle: 'Scroll',
   /**
-   *@description Title for the key up step type. `up` refers to the state of the keyboard key: it's released, i.e., up. It does not refer to the down arrow key specifically.
+   * @description Title for the key up step type. `up` refers to the state of the keyboard key: it's released, i.e., up. It does not refer to the down arrow key specifically.
    */
   keyUpStepTitle: 'Key up',
   /**
-   *@description Title for the navigate step type
+   * @description Title for the navigate step type
    */
   navigateStepTitle: 'Navigate',
   /**
-   *@description Title for the key down step type. `down` refers to the state of the keyboard key: it's pressed, i.e., down. It does not refer to the down arrow key specifically.
+   * @description Title for the key down step type. `down` refers to the state of the keyboard key: it's pressed, i.e., down. It does not refer to the down arrow key specifically.
    */
   keyDownStepTitle: 'Key down',
   /**
-   *@description Title for the waitForElement step type
+   * @description Title for the waitForElement step type
    */
   waitForElementStepTitle: 'Wait for element',
   /**
-   *@description Title for the waitForExpression step type
+   * @description Title for the waitForExpression step type
    */
   waitForExpressionStepTitle: 'Wait for expression',
   /**
-   *@description Title for elements with role button
+   * @description Title for elements with role button
    */
   elementRoleButton: 'Button',
   /**
-   *@description Title for elements with role input
+   * @description Title for elements with role input
    */
   elementRoleInput: 'Input',
   /**
-   *@description Default title for elements without a specific role
+   * @description Default title for elements without a specific role
    */
   elementRoleFallback: 'Element',
   /**
-   *@description The title of the button in the step's context menu that adds a new step before the current one.
+   * @description The title of the button in the step's context menu that adds a new step before the current one.
    */
   addStepBefore: 'Add step before',
   /**
-   *@description The title of the button in the step's context menu that adds a new step after the current one.
+   * @description The title of the button in the step's context menu that adds a new step after the current one.
    */
   addStepAfter: 'Add step after',
   /**
-   *@description The title of the button in the step's context menu that removes the step.
+   * @description The title of the button in the step's context menu that removes the step.
    */
   removeStep: 'Remove step',
   /**
-   *@description The title of the button that open the step's context menu.
+   * @description The title of the button that open the step's context menu.
    */
   openStepActions: 'Open step actions',
   /**
-   *@description The title of the button in the step's context menu that adds a breakpoint.
+   * @description The title of the button in the step's context menu that adds a breakpoint.
    */
   addBreakpoint: 'Add breakpoint',
   /**
-   *@description The title of the button in the step's context menu that removes a breakpoint.
+   * @description The title of the button in the step's context menu that removes a breakpoint.
    */
   removeBreakpoint: 'Remove breakpoint',
   /**

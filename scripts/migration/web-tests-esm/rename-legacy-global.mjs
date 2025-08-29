@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview A quick and dirty search & replace script to aid in the
+ * @file A quick and dirty search & replace script to aid in the
  * "*-legacy-ts" removal effort.
  *
  * It replaces each occurrence passed via "--from" to "--to" and adds the

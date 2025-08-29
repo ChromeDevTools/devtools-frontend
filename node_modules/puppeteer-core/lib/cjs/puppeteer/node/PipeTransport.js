@@ -33,7 +33,7 @@ class PipeTransport {
         const pipeWriteEmitter = this.#subscriptions.use(
         // NodeJS event emitters don't support `*` so we need to typecast
         // As long as we don't use it we should be OK.
-        new EventEmitter_js_1.EventEmitter(pipeRead));
+        new EventEmitter_js_1.EventEmitter(pipeWrite));
         pipeWriteEmitter.on('error', util_js_1.debugError);
     }
     send(message) {
@@ -49,15 +49,20 @@ class PipeTransport {
             return;
         }
         const message = this.#pendingMessage + buffer.toString(undefined, 0, end);
-        if (this.onmessage) {
-            this.onmessage.call(null, message);
-        }
+        setImmediate(() => {
+            if (this.onmessage) {
+                this.onmessage.call(null, message);
+            }
+        });
         let start = end + 1;
         end = buffer.indexOf('\0', start);
         while (end !== -1) {
-            if (this.onmessage) {
-                this.onmessage.call(null, buffer.toString(undefined, start, end));
-            }
+            const message = buffer.toString(undefined, start, end);
+            setImmediate(() => {
+                if (this.onmessage) {
+                    this.onmessage.call(null, message);
+                }
+            });
             start = end + 1;
             end = buffer.indexOf('\0', start);
         }

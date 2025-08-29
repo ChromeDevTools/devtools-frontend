@@ -20,11 +20,11 @@ const CHANGES_VIEW_URL = 'https://developer.chrome.com/docs/devtools/changes' as
 
 const UIStrings = {
   /**
-   *@description Text in Changes View of the Changes tab if no change has been made so far.
+   * @description Text in Changes View of the Changes tab if no change has been made so far.
    */
   noChanges: 'No changes yet',
   /**
-   *@description Text in Changes View of the Changes tab to explain the Changes panel.
+   * @description Text in Changes View of the Changes tab to explain the Changes panel.
    */
   changesViewDescription: 'On this page you can track code changes made within DevTools.',
 } as const;
@@ -40,10 +40,11 @@ export class ChangesView extends UI.Widget.VBox {
   private readonly combinedDiffView: CombinedDiffView.CombinedDiffView;
 
   constructor() {
-    super(true);
+    super({
+      jslog: `${VisualLogging.panel('changes').track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(changesViewStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.panel('changes').track({resize: true})}`);
 
     const splitWidget = new UI.SplitWidget.SplitWidget(true /* vertical */, false /* sidebar on left */);
     const mainWidget = new UI.Widget.VBox();

@@ -10,7 +10,7 @@ import * as Types from '../types/types.js';
 
 import {data as metaHandlerData, type MetaHandlerData} from './MetaHandler.js';
 import {data as networkRequestsHandlerData} from './NetworkRequestsHandler.js';
-import type {HandlerName} from './types.js';
+import type {FinalizeOptions, HandlerName} from './types.js';
 
 export interface ScriptsData {
   /** Note: this is only populated when the "Enhanced Traces" feature is enabled. */
@@ -26,7 +26,8 @@ export interface Script {
   url?: string;
   sourceUrl?: string;
   content?: string;
-  /** Note: this is the literal text given as the sourceMappingURL value. It has not been resolved relative to the script url.
+  /**
+   * Note: this is the literal text given as the sourceMappingURL value. It has not been resolved relative to the script url.
    * Since M138, data urls are never set here.
    */
   sourceMapUrl?: string;
@@ -118,6 +119,10 @@ function findFrame(meta: MetaHandlerData, frameId: string): Types.Events.TraceFr
 
 function findNetworkRequest(networkRequests: Types.Events.SyntheticNetworkRequest[], script: Script):
     Types.Events.SyntheticNetworkRequest|null {
+  if (!script.url) {
+    return null;
+  }
+
   return networkRequests.find(request => request.args.data.url === script.url) ?? null;
 }
 
@@ -249,7 +254,7 @@ function findCachedRawSourceMap(script: Script, options: Types.Configuration.Par
   return;
 }
 
-export async function finalize(options: Types.Configuration.ParseOptions): Promise<void> {
+export async function finalize(options: FinalizeOptions): Promise<void> {
   const meta = metaHandlerData();
   const networkRequests = [...networkRequestsHandlerData().byId.values()];
 

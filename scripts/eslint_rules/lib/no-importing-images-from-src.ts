@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview Prevent importing SVG urls from the `src` directory, and
+ * @file Prevent importing SVG urls from the `src` directory, and
  * ensure they are read from `Images/foo.svg`.
  * Images in the `src/` directory are minified and put into `Images/` as part
  * of the build process, so we should never import from 'src'.

@@ -53,182 +53,182 @@ import {Type} from './Target.js';
 // clang-format off
 const UIStrings = {
   /**
-   *@description Text in Network Request
+   * @description Text in Network Request
    */
   binary: '(binary)',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   secureOnly: 'This cookie was blocked because it had the "`Secure`" attribute and the connection was not secure.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   notOnPath: 'This cookie was blocked because its path was not an exact match for or a superdirectory of the request url\'s path.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   domainMismatch: 'This cookie was blocked because neither did the request URL\'s domain exactly match the cookie\'s domain, nor was the request URL\'s domain a subdomain of the cookie\'s Domain attribute value.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   sameSiteStrict: 'This cookie was blocked because it had the "`SameSite=Strict`" attribute and the request was made from a different site. This includes top-level navigation requests initiated by other sites.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   sameSiteLax: 'This cookie was blocked because it had the "`SameSite=Lax`" attribute and the request was made from a different site and was not initiated by a top-level navigation.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   sameSiteUnspecifiedTreatedAsLax: 'This cookie didn\'t specify a "`SameSite`" attribute when it was stored and was defaulted to "SameSite=Lax," and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with "`SameSite=None`" to enable cross-site usage.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   sameSiteNoneInsecure: 'This cookie was blocked because it had the "`SameSite=None`" attribute but was not marked "Secure". Cookies without SameSite restrictions must be marked "Secure" and sent over a secure connection.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   userPreferences: 'This cookie was blocked due to user preferences.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   thirdPartyPhaseout: 'This cookie was blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   unknownError: 'An unknown error was encountered when trying to send this cookie.',
   /**
-   *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+   * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
    */
   schemefulSameSiteStrict: 'This cookie was blocked because it had the "`SameSite=Strict`" attribute but the request was cross-site. This includes top-level navigation requests initiated by other sites. This request is considered cross-site because the URL has a different scheme than the current site.',
   /**
-   *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+   * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
    */
   schemefulSameSiteLax: 'This cookie was blocked because it had the "`SameSite=Lax`" attribute but the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.',
   /**
-   *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+   * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
    */
   schemefulSameSiteUnspecifiedTreatedAsLax: 'This cookie didn\'t specify a "`SameSite`" attribute when it was stored, was defaulted to "`SameSite=Lax"`, and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.',
   /**
-   *@description Tooltip to explain why a cookie was blocked due to SameParty
+   * @description Tooltip to explain why a cookie was blocked due to SameParty
    */
   samePartyFromCrossPartyContext: 'This cookie was blocked because it had the "`SameParty`" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource\'s URL and the domains of the resource\'s enclosing frames/documents are neither owners nor members in the same First-Party Set.',
   /**
-   *@description Tooltip to explain why a cookie was blocked due to exceeding the maximum size
+   * @description Tooltip to explain why a cookie was blocked due to exceeding the maximum size
    */
   nameValuePairExceedsMaxSize: 'This cookie was blocked because it was too large. The combined size of the name and value must be less than or equal to 4096 characters.',
   /**
-   *@description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
+   * @description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
    */
   thisSetcookieWasBlockedDueToUser: 'This attempt to set a cookie via a `Set-Cookie` header was blocked due to user preferences.',
   /**
-   *@description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
+   * @description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
    */
    thisSetcookieWasBlockedDueThirdPartyPhaseout: 'Setting this cookie was blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.',
   /**
-   *@description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
+   * @description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
    */
   thisSetcookieHadInvalidSyntax: 'This `Set-Cookie` header had invalid syntax.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   thisSetcookieHadADisallowedCharacter: 'This `Set-Cookie` header contained a disallowed character (a forbidden ASCII control character, or the tab character if it appears in the middle of the cookie name, value, an attribute name, or an attribute value).',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   theSchemeOfThisConnectionIsNot: 'The scheme of this connection is not allowed to store cookies.',
   /**
-   *@description Tooltip to explain why a cookie was blocked
+   * @description Tooltip to explain why a cookie was blocked
    */
   anUnknownErrorWasEncounteredWhenTrying: 'An unknown error was encountered when trying to store this cookie.',
   /**
-   *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
-   *@example {SameSite=Strict} PH1
+   * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+   * @example {SameSite=Strict} PH1
    */
   thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because it had the "{PH1}" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
   /**
-   *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+   * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
    */
   thisSetcookieDidntSpecifyASamesite: 'This `Set-Cookie` header didn\'t specify a "`SameSite`" attribute, was defaulted to "`SameSite=Lax"`, and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
   /**
-   *@description Tooltip to explain why a cookie was blocked due to SameParty
+   * @description Tooltip to explain why a cookie was blocked due to SameParty
    */
   thisSetcookieWasBlockedBecauseItHadTheSameparty: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because it had the "`SameParty`" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource\'s URL and the domains of the resource\'s enclosing frames/documents are neither owners nor members in the same First-Party Set.',
   /**
-   *@description Tooltip to explain why a cookie was blocked due to SameParty
+   * @description Tooltip to explain why a cookie was blocked due to SameParty
    */
   thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because it had the "`SameParty`" attribute but also had other conflicting attributes. Chrome requires cookies that use the "`SameParty`" attribute to also have the "Secure" attribute, and to not be restricted to "`SameSite=Strict`".',
   /**
-   *@description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
+   * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
   blockedReasonSecureOnly: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because it had the "Secure" attribute but was not received over a secure connection.',
   /**
-   *@description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
-   *@example {SameSite=Strict} PH1
+   * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
+   * @example {SameSite=Strict} PH1
    */
   blockedReasonSameSiteStrictLax: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because it had the "{PH1}" attribute but came from a cross-site response which was not the response to a top-level navigation.',
   /**
-   *@description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
+   * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
   blockedReasonSameSiteUnspecifiedTreatedAsLax: 'This `Set-Cookie` header didn\'t specify a "`SameSite`" attribute and was defaulted to "`SameSite=Lax,`" and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The `Set-Cookie` had to have been set with "`SameSite=None`" to enable cross-site usage.',
   /**
-   *@description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
+   * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
   blockedReasonSameSiteNoneInsecure: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because it had the "`SameSite=None`" attribute but did not have the "Secure" attribute, which is required in order to use "`SameSite=None`".',
   /**
-   *@description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
+   * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
   blockedReasonOverwriteSecure: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.',
   /**
-   *@description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
+   * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
   blockedReasonInvalidDomain: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because its Domain attribute was invalid with regards to the current host url.',
   /**
-   *@description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
+   * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
   blockedReasonInvalidPrefix: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because it used the "`__Secure-`" or "`__Host-`" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in `https://tools.ietf.org/html/draft-west-cookie-prefixes-05`.',
   /**
-   *@description Tooltip to explain why a cookie was blocked when the size of the #name plus the size of the value exceeds the max size.
+   * @description Tooltip to explain why a cookie was blocked when the size of the #name plus the size of the value exceeds the max size.
    */
   thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because the cookie was too large. The combined size of the name and value must be less than or equal to 4096 characters.',
   /**
-   *@description Text in Network Manager
-   *@example {https://example.com} PH1
+   * @description Text in Network Manager
+   * @example {https://example.com} PH1
    */
   setcookieHeaderIsIgnoredIn: 'Set-Cookie header is ignored in response from url: {PH1}. The combined size of the name and value must be less than or equal to 4096 characters.',
   /**
-   *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
+   * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
    */
    exemptionReasonUserSetting: 'This cookie is allowed by user preference.',
    /**
-    *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
+    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
    exemptionReasonTPCDMetadata: 'This cookie is allowed by a third-party cookie deprecation trial grace period. Learn more: goo.gle/dt-grace.',
    /**
-    *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
+    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
    exemptionReasonTPCDDeprecationTrial: 'This cookie is allowed by third-party cookie deprecation trial. Learn more: goo.gle/ps-dt.',
    /**
-    *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
+    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
   exemptionReasonTopLevelTPCDDeprecationTrial: 'This cookie is allowed by top-level third-party cookie deprecation trial. Learn more: goo.gle/ps-dt.',
    /**
-    *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
+    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
    exemptionReasonTPCDHeuristics: 'This cookie is allowed by third-party cookie heuristics. Learn more: goo.gle/hbe',
    /**
-    *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
+    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
    exemptionReasonEnterprisePolicy: 'This cookie is allowed by Chrome Enterprise policy. Learn more: goo.gle/ce-3pc',
    /**
-    *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
+    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
    exemptionReasonStorageAccessAPI: 'This cookie is allowed by the Storage Access API. Learn more: goo.gle/saa',
    /**
-    *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
+    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
    exemptionReasonTopLevelStorageAccessAPI: 'This cookie is allowed by the top-level Storage Access API. Learn more: goo.gle/saa-top',
    /**
-    *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
+    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
     exemptionReasonScheme: 'This cookie is allowed by the top-level url scheme',
 } as const;
@@ -349,6 +349,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   responseReceivedPromiseResolve?: () => void;
   directSocketInfo?: DirectSocketInfo;
   readonly #directSocketChunks: DirectSocketChunk[] = [];
+  #isIpProtectionUsed: boolean;
 
   constructor(
       requestId: string,
@@ -370,6 +371,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#loaderId = loaderId;
     this.#initiator = initiator;
     this.#hasUserGesture = hasUserGesture;
+    this.#isIpProtectionUsed = false;
   }
 
   static create(
@@ -1206,6 +1208,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#responseCookies;
   }
 
+  set responseCookies(responseCookies: Cookie[]) {
+    this.#responseCookies = responseCookies;
+  }
+
   responseLastModified(): string|undefined {
     return this.responseHeaderValue('last-modified');
   }
@@ -1648,12 +1654,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   addExtraRequestInfo(extraRequestInfo: ExtraRequestInfo): void {
     this.#blockedRequestCookies = extraRequestInfo.blockedRequestCookies;
-    this.#includedRequestCookies = extraRequestInfo.includedRequestCookies;
+    this.setIncludedRequestCookies(extraRequestInfo.includedRequestCookies);
     this.setRequestHeaders(extraRequestInfo.requestHeaders);
     this.#hasExtraRequestInfo = true;
     this.setRequestHeadersText('');  // Mark request headers as non-provisional
     this.#clientSecurityState = extraRequestInfo.clientSecurityState;
-    this.setConnectTimingFromExtraInfo(extraRequestInfo.connectTiming);
+    if (extraRequestInfo.connectTiming) {
+      this.setConnectTimingFromExtraInfo(extraRequestInfo.connectTiming);
+    }
     this.#siteHasCookieInOtherPartition = extraRequestInfo.siteHasCookieInOtherPartition ?? false;
 
     this.#hasThirdPartyCookiePhaseoutIssue = this.#blockedRequestCookies.some(
@@ -1669,6 +1677,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   blockedRequestCookies(): BlockedCookieWithReason[] {
     return this.#blockedRequestCookies;
+  }
+
+  setIncludedRequestCookies(includedRequestCookies: IncludedCookieWithReason[]): void {
+    this.#includedRequestCookies = includedRequestCookies;
   }
 
   includedRequestCookies(): IncludedCookieWithReason[] {
@@ -1858,6 +1870,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   isSameSite(): boolean|null {
     return this.#isSameSite;
+  }
+
+  setIsIpProtectionUsed(isIpProtectionUsed: boolean): void {
+    this.#isIpProtectionUsed = isIpProtectionUsed;
+  }
+
+  isIpProtectionUsed(): boolean|null {
+    return this.#isIpProtectionUsed;
   }
 
   getAssociatedData(key: string): object|null {

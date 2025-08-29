@@ -28,7 +28,7 @@ export class Namespace extends Container {
           [Constant.parse],
           [Operation.parse, { regular: true }],
         ],
-      }
+      },
     );
   }
 
@@ -53,7 +53,7 @@ for more information.`;
         message,
         {
           autofix: autofixAddExposedWindow(this),
-        }
+        },
       );
     }
     yield* super.validate(defs);

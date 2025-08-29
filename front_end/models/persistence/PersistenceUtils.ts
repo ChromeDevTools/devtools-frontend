@@ -17,13 +17,13 @@ import {Events, type PersistenceBinding, PersistenceImpl} from './PersistenceImp
 
 const UIStrings = {
   /**
-   *@description Text in Persistence Utils of the Workspace settings in Settings
-   *@example {example.url} PH1
+   * @description Text in Persistence Utils of the Workspace settings in Settings
+   * @example {example.url} PH1
    */
   linkedToSourceMapS: 'Linked to source map: {PH1}',
   /**
-   *@description Text to show something is linked to another
-   *@example {example.url} PH1
+   * @description Text to show something is linked to another
+   * @example {example.url} PH1
    */
   linkedToS: 'Linked to {PH1}',
 } as const;
@@ -52,7 +52,8 @@ export class PersistenceUtils {
         return null;
       }
       const icon = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'document', color: 'var(--icon-default)', width: '14px', height: '14px'};
+      icon.name = 'document';
+      icon.classList.add('small');
       UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(binding.network));
       if (NetworkPersistenceManager.instance().project() === binding.fileSystem.project()) {
         icon.classList.add('dot', 'purple');
@@ -69,13 +70,15 @@ export class PersistenceUtils {
 
     if (NetworkPersistenceManager.instance().isActiveHeaderOverrides(uiSourceCode)) {
       const icon = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'document', color: 'var(--icon-default)', width: '14px', height: '14px'};
+      icon.name = 'document';
+      icon.classList.add('small');
       icon.classList.add('dot', 'purple');
       return icon;
     }
 
     const icon = new IconButton.Icon.Icon();
-    icon.data = {iconName: 'document', color: 'var(--icon-default)', width: '14px', height: '14px'};
+    icon.name = 'document';
+    icon.classList.add('small');
     UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(uiSourceCode));
     return icon;
   }

@@ -63,6 +63,13 @@ export function createFilter(
 export function dataToEsm(data: unknown, options?: DataToEsmOptions): string;
 
 /**
+ * Constructs a RegExp that matches the exact string specified.
+ * @param str the string to match.
+ * @param flags flags for the RegExp.
+ */
+export function exactRegex(str: string, flags?: string): RegExp;
+
+/**
  * Extracts the names of all assignment targets based upon specified patterns.
  * @param param An `acorn` AST Node.
  */
@@ -78,21 +85,32 @@ export function makeLegalIdentifier(str: string): string;
  */
 export function normalizePath(filename: string): string;
 
+/**
+ * Constructs a RegExp that matches a value that has the specified prefix.
+ * @param str the string to match.
+ * @param flags flags for the RegExp.
+ */
+export function prefixRegex(str: string, flags?: string): RegExp;
+
 export type AddExtension = typeof addExtension;
 export type AttachScopes = typeof attachScopes;
 export type CreateFilter = typeof createFilter;
+export type ExactRegex = typeof exactRegex;
 export type ExtractAssignedNames = typeof extractAssignedNames;
 export type MakeLegalIdentifier = typeof makeLegalIdentifier;
 export type NormalizePath = typeof normalizePath;
 export type DataToEsm = typeof dataToEsm;
+export type PrefixRegex = typeof prefixRegex;
 
 declare const defaultExport: {
   addExtension: AddExtension;
   attachScopes: AttachScopes;
   createFilter: CreateFilter;
   dataToEsm: DataToEsm;
+  exactRegex: ExactRegex;
   extractAssignedNames: ExtractAssignedNames;
   makeLegalIdentifier: MakeLegalIdentifier;
   normalizePath: NormalizePath;
+  prefixRegex: PrefixRegex;
 };
 export default defaultExport;

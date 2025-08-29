@@ -75,7 +75,7 @@
 #console-messages {
   flex: 1 1;
   overflow-y: auto;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   user-select: text;
   transform: translateZ(0);
   overflow-anchor: none;  /* Chrome-specific scroll-anchoring opt-out */
@@ -214,13 +214,8 @@
   --console-color-lightcyan: #5ff;
   --console-color-white: #fff;
 
-  &:focus {
+  &.console-selected {
     background-color: var(--sys-color-tonal-container);
-
-    & ::selection {
-      background-color: var(--sys-color-state-focus-select);
-      color: currentcolor;
-    }
   }
 }
 
@@ -330,11 +325,12 @@
 .console-view-object-properties-section {
   padding: 0;
   position: relative;
-  vertical-align: baseline;
+  vertical-align: top;
   color: inherit;
   display: inline-block;
   overflow-wrap: break-word;
   max-width: 100%;
+  margin-top: -1.5px;
 }
 
 .info-note {
@@ -375,7 +371,7 @@
 
 .console-object-preview {
   white-space: normal;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   font-style: italic;
 }
 
@@ -395,20 +391,25 @@
     word-break: break-all;
   }
 
-  .formatted-stack-frame:has(.ignore-list-link) {
-    display: var(--display-ignored-formatted-stack-frame);
-    opacity: 60%;
+  .formatted-stack-frame {
+    display: var(--display-formatted-stack-frame-default);
 
-    /* Subsequent builtin stack frames are also treated as ignored */
-    & + .formatted-builtin-stack-frame {
+    &:has(.ignore-list-link) {
       display: var(--display-ignored-formatted-stack-frame);
       opacity: 60%;
+
+      /* Subsequent builtin stack frames are also treated as ignored */
+      & + .formatted-builtin-stack-frame {
+        display: var(--display-ignored-formatted-stack-frame);
+        opacity: 60%;
+      }
     }
   }
 }
 
 .console-message-stack-trace-wrapper {
   --override-display-stack-preview-toggle-link: none;
+  --display-formatted-stack-frame-default: block;
 
   flex: 1 1 auto;
   display: flex;
@@ -416,7 +417,7 @@
   align-items: stretch;
 
   &:has(div > .stack-preview-container.show-hidden-rows) {
-    --display-ignored-formatted-stack-frame: inherit;
+    --display-ignored-formatted-stack-frame: var(--display-formatted-stack-frame-default);
   }
 
   &:has(.formatted-stack-frame .ignore-list-link):has(.formatted-stack-frame .devtools-link:not(.ignore-list-link)) {

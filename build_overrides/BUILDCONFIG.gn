@@ -26,6 +26,9 @@ declare_args() {
   # separate flags.
   is_official_build = false
 
+  # Defined in Chromium and needed here as well
+  is_wasm = false
+
   # Whether we're a traditional desktop unix.
   is_desktop_linux = current_os == "linux"
 

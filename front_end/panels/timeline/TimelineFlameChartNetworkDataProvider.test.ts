@@ -224,7 +224,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
   it('persists track configurations to the setting if it is provided with one', async function() {
     const {Settings} = Common.Settings;
     const setting =
-        Settings.instance().createSetting<PerfUi.FlameChart.PersistedConfigPerTrace>('persist-flame-config', {});
+        Settings.instance().createSetting<PerfUi.FlameChart.PersistedGroupConfig[]|null>('persist-flame-config', null);
 
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
@@ -241,13 +241,13 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     dataProvider.handleTrackConfigurationChange(groups, [0]);
 
     const newSetting = setting.get();
-    const traceKey = Timeline.TrackConfiguration.keyForTraceConfig(parsedTrace);
-    assert.deepEqual(newSetting[traceKey], [
+    assert.deepEqual(newSetting, [
       {
         expanded: true,
         hidden: false,
         originalIndex: 0,
         visualIndex: 0,
+        trackName: 'Network',
       },
     ]);
   });

@@ -9,12 +9,14 @@ import * as Extensions from '../../../../panels/timeline/extensions/extensions.j
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {
+  allThreadEntriesInTrace,
   FakeFlameChartProvider,
   MockFlameChartDelegate,
   renderFlameChartIntoDOM,
   renderFlameChartWithFakeProvider,
 } from '../../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 import * as PerfUI from './perf_ui.js';
 
@@ -75,6 +77,15 @@ describeWithEnvironment('FlameChart', () => {
       });
     }
   }
+  it('adds JSLog context to the canvas element', async () => {
+    const provider = new FakeProvider();
+    const delegate = new MockFlameChartDelegate();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate, {canvasVELogContext: 'testing-flamechart'});
+    renderChart(chartInstance);
+    const expected = VisualLogging.canvas('testing-flamechart').track({hover: true}).toString();
+    const canvas = chartInstance.contentElement.querySelector('canvas');
+    assert.strictEqual(canvas?.getAttribute('jslog'), expected);
+  });
 
   it('notifies the delegate when the window has changed', async () => {
     const provider = new FakeProvider();
@@ -240,6 +251,156 @@ describeWithEnvironment('FlameChart', () => {
       // Ensure the argument to the last event listener call was -1
       const event = highlightedEventListener.args[1][0] as Common.EventTarget.EventTargetEvent<number>;
       assert.strictEqual(event.data, -1);
+    });
+  });
+
+  describe('applying track configuration', () => {
+    it('applies existing track configuration', async () => {
+      class TrackConfigurationProvider extends FakeFlameChartProvider {
+        static data = PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [0, 1, 2],
+          entryStartTimes: [5, 60, 80],
+          entryTotalTimes: [50, 10, 10],
+          groups:
+              [
+                {
+                  name: 'Group0' as Platform.UIString.LocalizedString,
+                  startLevel: 0,
+                  style: defaultGroupStyle,
+                  hidden: false,
+                },
+                {
+                  name: 'Group1' as Platform.UIString.LocalizedString,
+                  startLevel: 1,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+                {
+                  name: 'Group2' as Platform.UIString.LocalizedString,
+                  startLevel: 2,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+              ],
+        });
+
+        override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+          return TrackConfigurationProvider.data;
+        }
+      }
+
+      const persistedConfig: PerfUI.FlameChart.PersistedGroupConfig[] = [
+        {expanded: true, hidden: true, originalIndex: 0, visualIndex: 0, trackName: 'Group0'},
+        {expanded: true, hidden: true, originalIndex: 1, visualIndex: 1, trackName: 'Group1'},
+        {expanded: true, hidden: true, originalIndex: 2, visualIndex: 2, trackName: 'Group2'},
+      ];
+      const provider = new TrackConfigurationProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      chartInstance.setPersistedConfig(persistedConfig);
+      renderChart(chartInstance);
+      const data = chartInstance.timelineData();
+      assert.isOk(data);
+      // It should have applied the persisted config from above and each group
+      // is now hidden and expanded.
+      assert.isTrue(data.groups.every(g => g.expanded && g.hidden));
+    });
+
+    it('does not apply configuration if the group name does not match', async () => {
+      class TrackConfigurationProvider extends FakeFlameChartProvider {
+        static data = PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [0, 1, 2],
+          entryStartTimes: [5, 60, 80],
+          entryTotalTimes: [50, 10, 10],
+          groups:
+              [
+                {
+                  name: 'Group0' as Platform.UIString.LocalizedString,
+                  startLevel: 0,
+                  style: defaultGroupStyle,
+                  hidden: false,
+                },
+                {
+                  name: 'Group1' as Platform.UIString.LocalizedString,
+                  startLevel: 1,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+                {
+                  name: 'Group2' as Platform.UIString.LocalizedString,
+                  startLevel: 2,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+              ],
+        });
+
+        override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+          return TrackConfigurationProvider.data;
+        }
+      }
+
+      const persistedConfig: PerfUI.FlameChart.PersistedGroupConfig[] = [
+        {expanded: true, hidden: true, originalIndex: 0, visualIndex: 0, trackName: 'WRONG NON-MATCHING GROUP NAME'},
+        {expanded: true, hidden: true, originalIndex: 1, visualIndex: 1, trackName: 'Group1'},
+        {expanded: true, hidden: true, originalIndex: 2, visualIndex: 2, trackName: 'Group2'},
+      ];
+      const provider = new TrackConfigurationProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      chartInstance.setPersistedConfig(persistedConfig);
+      renderChart(chartInstance);
+      const data = chartInstance.timelineData();
+      assert.isOk(data);
+      assert.isFalse(data.groups[0].hidden);  // Because the name does not match.
+      assert.isTrue(data.groups[1].hidden);
+      assert.isTrue(data.groups[2].hidden);
+    });
+  });
+
+  describe('showAllGroups', () => {
+    it('updates each group to be expanded', async () => {
+      class ShowAllGroupsTestProvider extends FakeFlameChartProvider {
+        static data = PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [0, 1, 2],
+          entryStartTimes: [5, 60, 80],
+          entryTotalTimes: [50, 10, 10],
+          groups:
+              [
+                {
+                  name: 'Test Group 0' as Platform.UIString.LocalizedString,
+                  startLevel: 0,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+                {
+                  name: 'Test Group 1' as Platform.UIString.LocalizedString,
+                  startLevel: 1,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+                {
+                  name: 'Test Group 2' as Platform.UIString.LocalizedString,
+                  startLevel: 2,
+                  style: defaultGroupStyle,
+                  hidden: true,
+                },
+              ],
+        });
+
+        override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+          return ShowAllGroupsTestProvider.data;
+        }
+      }
+      const provider = new ShowAllGroupsTestProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      renderChart(chartInstance);
+      const data = chartInstance.timelineData();
+      assert.isOk(data);
+      assert.isTrue(data.groups.every(g => g.hidden === true));
+      chartInstance.showAllGroups();
+      assert.isTrue(data.groups.every(g => g.hidden === false));
     });
   });
 
@@ -1190,7 +1351,7 @@ describeWithEnvironment('FlameChart', () => {
 
     // This event is one that is deep into the main thread, so it forces the
     // flamechart to be vertically scrolled. That's why we pick this one.
-    const event = parsedTrace.Renderer.allTraceEntries.find(entry => {
+    const event = allThreadEntriesInTrace(parsedTrace).find(entry => {
       return entry.dur === 462 && entry.ts === 1020035043753 &&
           entry.name === Trace.Types.Events.Name.UPDATE_LAYOUT_TREE;
     });

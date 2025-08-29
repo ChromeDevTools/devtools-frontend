@@ -1,7 +1,7 @@
 {
   "name": "brace-expansion",
   "description": "Brace expansion as known from sh/bash",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "repository": {
     "type": "git",
     "url": "git://github.com/juliangruber/brace-expansion.git"
@@ -43,5 +43,8 @@
       "iphone/6.0..latest",
       "android-browser/4.2..latest"
     ]
+  },
+  "publishConfig": {
+    "tag": "1.x"
   }
 }

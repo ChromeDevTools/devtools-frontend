@@ -49,73 +49,73 @@ import sourcesNavigatorStyles from './sourcesNavigator.css.js';
 
 const UIStrings = {
   /**
-   *@description Text to show if no workspaces are set up. https://goo.gle/devtools-workspace
+   * @description Text to show if no workspaces are set up. https://goo.gle/devtools-workspace
    */
   noWorkspace: 'No workspaces set up',
   /**
-   *@description Text to explain the Workspace feature in the Sources panel. https://goo.gle/devtools-workspace
+   * @description Text to explain the Workspace feature in the Sources panel. https://goo.gle/devtools-workspace
    */
   explainWorkspace: 'Set up workspaces to sync edits directly to the sources you develop.',
   /**
-   *@description Text to show if no local overrides are set up. https://goo.gle/devtools-overrides
+   * @description Text to show if no local overrides are set up. https://goo.gle/devtools-overrides
    */
   noLocalOverrides: 'No local overrides set up',
   /**
-   *@description Text to explain the Local Overrides feature. https://goo.gle/devtools-overrides
+   * @description Text to explain the Local Overrides feature. https://goo.gle/devtools-overrides
    */
   explainLocalOverrides: 'Override network requests and web content locally to mock remote resources.',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon clear button in the Sources Navigator of the Sources panel
+   * @description Tooltip text that appears when hovering over the largeicon clear button in the Sources Navigator of the Sources panel
    */
   clearConfiguration: 'Clear configuration',
   /**
-   *@description Text in Sources Navigator of the Sources panel
+   * @description Text in Sources Navigator of the Sources panel
    */
   selectFolderForOverrides: 'Select folder for overrides',
   /**
-   *@description Text to show if no content scripts can be found in the Sources panel. https://developer.chrome.com/extensions/content_scripts
+   * @description Text to show if no content scripts can be found in the Sources panel. https://developer.chrome.com/extensions/content_scripts
    */
   noContentScripts: 'No content scripts detected',
   /**
-   *@description Text to explain the content scripts pane in the Sources panel
+   * @description Text to explain the content scripts pane in the Sources panel
    */
   explainContentScripts: 'View content scripts served by extensions.',
   /**
-   *@description Text to show if no snippets were created and saved in the Sources panel https://goo.gle/devtools-snippets
+   * @description Text to show if no snippets were created and saved in the Sources panel https://goo.gle/devtools-snippets
    */
   noSnippets: 'No snippets saved',
   /**
-   *@description Text to explain the Snippets feature in the Sources panel https://goo.gle/devtools-snippets
+   * @description Text to explain the Snippets feature in the Sources panel https://goo.gle/devtools-snippets
    */
   explainSnippets: 'Save the JavaScript code you run often in a snippet to run it again anytime.',
   /**
-   *@description Text in Sources Navigator of the Sources panel
+   * @description Text in Sources Navigator of the Sources panel
    */
   newSnippet: 'New snippet',
   /**
-   *@description Title of an action in the sources tool to create snippet
+   * @description Title of an action in the sources tool to create snippet
    */
   createNewSnippet: 'Create new snippet',
   /**
-   *@description A context menu item in the Sources Navigator of the Sources panel
+   * @description A context menu item in the Sources Navigator of the Sources panel
    */
   run: 'Run',
   /**
-   *@description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator View of the Sources panel
    */
   rename: 'Rename…',
   /**
-   *@description Label for an item to remove something
+   * @description Label for an item to remove something
    */
   remove: 'Remove',
   /**
-   *@description Text to save content as a specific file type
+   * @description Text to save content as a specific file type
    */
   saveAs: 'Save as…',
   /**
    * @description An error message logged to the Console panel when the user uses
    *              the "Save as…" context menu in the Sources panel and the operation
-   *              failes.
+   *              fails.
    */
   saveAsFailed: 'Failed to save file to disk.',
   /**
@@ -177,7 +177,7 @@ export class NetworkNavigatorView extends NavigatorView {
     if (event.data !== mainTarget) {
       return;
     }
-    const inspectedURL = mainTarget && mainTarget.inspectedURL();
+    const inspectedURL = mainTarget?.inspectedURL();
     if (!inspectedURL) {
       return;
     }
@@ -190,7 +190,7 @@ export class NetworkNavigatorView extends NavigatorView {
 
   override uiSourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const mainTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
-    const inspectedURL = mainTarget && mainTarget.inspectedURL();
+    const inspectedURL = mainTarget?.inspectedURL();
     if (!inspectedURL) {
       return;
     }

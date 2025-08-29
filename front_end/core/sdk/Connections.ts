@@ -13,23 +13,19 @@ import {RehydratingConnection} from './RehydratingConnection.js';
 
 const UIStrings = {
   /**
-   *@description Text on the remote debugging window to indicate the connection is lost
+   * @description Text on the remote debugging window to indicate the connection is lost
    */
   websocketDisconnected: 'WebSocket disconnected',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/Connections.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class MainConnection implements ProtocolClient.InspectorBackend.Connection {
-  onMessage: ((arg0: (Object|string)) => void)|null;
-  #onDisconnect: ((arg0: string) => void)|null;
-  #messageBuffer: string;
-  #messageSize: number;
+  onMessage: ((arg0: Object|string) => void)|null = null;
+  #onDisconnect: ((arg0: string) => void)|null = null;
+  #messageBuffer = '';
+  #messageSize = 0;
   readonly #eventListeners: Common.EventTarget.EventDescriptor[];
   constructor() {
-    this.onMessage = null;
-    this.#onDisconnect = null;
-    this.#messageBuffer = '';
-    this.#messageSize = 0;
     this.#eventListeners = [
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.DispatchMessage, this.dispatchMessage, this),
@@ -38,7 +34,7 @@ export class MainConnection implements ProtocolClient.InspectorBackend.Connectio
     ];
   }
 
-  setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
+  setOnMessage(onMessage: (arg0: Object|string) => void): void {
     this.onMessage = onMessage;
   }
 
@@ -87,11 +83,11 @@ export class MainConnection implements ProtocolClient.InspectorBackend.Connectio
 
 export class WebSocketConnection implements ProtocolClient.InspectorBackend.Connection {
   #socket: WebSocket|null;
-  onMessage: ((arg0: (Object|string)) => void)|null;
-  #onDisconnect: ((arg0: string) => void)|null;
+  onMessage: ((arg0: Object|string) => void)|null = null;
+  #onDisconnect: ((arg0: string) => void)|null = null;
   #onWebSocketDisconnect: ((message: Platform.UIString.LocalizedString) => void)|null;
-  #connected: boolean;
-  #messages: string[];
+  #connected = false;
+  #messages: string[] = [];
   constructor(
       url: Platform.DevToolsPath.UrlString,
       onWebSocketDisconnect: (message: Platform.UIString.LocalizedString) => void) {
@@ -105,14 +101,10 @@ export class WebSocketConnection implements ProtocolClient.InspectorBackend.Conn
     };
     this.#socket.onclose = this.onClose.bind(this);
 
-    this.onMessage = null;
-    this.#onDisconnect = null;
     this.#onWebSocketDisconnect = onWebSocketDisconnect;
-    this.#connected = false;
-    this.#messages = [];
   }
 
-  setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
+  setOnMessage(onMessage: (arg0: Object|string) => void): void {
     this.onMessage = onMessage;
   }
 
@@ -185,14 +177,10 @@ export class WebSocketConnection implements ProtocolClient.InspectorBackend.Conn
 }
 
 export class StubConnection implements ProtocolClient.InspectorBackend.Connection {
-  onMessage: ((arg0: (Object|string)) => void)|null;
-  #onDisconnect: ((arg0: string) => void)|null;
-  constructor() {
-    this.onMessage = null;
-    this.#onDisconnect = null;
-  }
+  onMessage: ((arg0: Object|string) => void)|null = null;
+  #onDisconnect: ((arg0: string) => void)|null = null;
 
-  setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
+  setOnMessage(onMessage: (arg0: Object|string) => void): void {
     this.onMessage = onMessage;
   }
 
@@ -233,13 +221,11 @@ export interface ParallelConnectionInterface extends ProtocolClient.InspectorBac
 export class ParallelConnection implements ParallelConnectionInterface {
   readonly #connection: ProtocolClient.InspectorBackend.Connection;
   #sessionId: string;
-  onMessage: ((arg0: Object) => void)|null;
-  #onDisconnect: ((arg0: string) => void)|null;
+  onMessage: ((arg0: Object) => void)|null = null;
+  #onDisconnect: ((arg0: string) => void)|null = null;
   constructor(connection: ProtocolClient.InspectorBackend.Connection, sessionId: string) {
     this.#connection = connection;
     this.#sessionId = sessionId;
-    this.onMessage = null;
-    this.#onDisconnect = null;
   }
 
   setOnMessage(onMessage: (arg0: Object) => void): void {

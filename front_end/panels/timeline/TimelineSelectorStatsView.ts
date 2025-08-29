@@ -1,7 +1,7 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import '../../ui/components/linkifier/linkifier.js';
@@ -22,95 +22,95 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Label for selector stats data table
+   * @description Label for selector stats data table
    */
   selectorStats: 'Selector stats',
   /**
-   *@description Column name and time unit for elapsed time spent computing a style rule
+   * @description Column name and time unit for elapsed time spent computing a style rule
    */
   elapsed: 'Elapsed (ms)',
   /**
-   *@description Tooltip description 'Elapsed (ms)'
+   * @description Tooltip description 'Elapsed (ms)'
    */
-  elapsedExplanation: 'Elapsed time spent computing a style rule in micro seconds',
+  elapsedExplanation: 'Elapsed time spent matching a selector against the DOM in milliseconds.',
   /**
-   *@description Column name and percentage of slow mach non-matches computing a style rule
+   * @description Column name and percentage of slow mach non-matches computing a style rule
    */
   slowPathNonMatches: '% of slow-path non-matches',
   /**
-   *@description Tooltip description '% of slow-path non-matches'
+   * @description Tooltip description '% of slow-path non-matches'
    */
   slowPathNonMatchesExplanation:
       'The percentage of non-matching nodes (Match Attempts - Match Count) that couldn\'t be quickly ruled out by the bloom filter due to high selector complexity. Lower is better.',
   /**
-   *@description Column name for count of elements that the engine attempted to match against a style rule
+   * @description Column name for count of elements that the engine attempted to match against a style rule
    */
   matchAttempts: 'Match attempts',
   /**
-   *@description Tooltip description 'Match attempts'
+   * @description Tooltip description 'Match attempts'
    */
-  matchAttemptsExplanation: 'Count of elements that the engine attempted to match against a style rule',
+  matchAttemptsExplanation: 'Count of nodes that the engine attempted to match against a style rule.',
   /**
-   *@description Column name for count of elements that matched a style rule
+   * @description Column name for count of elements that matched a style rule
    */
   matchCount: 'Match count',
   /**
-   *@description Tooltip description 'Match count'
+   * @description Tooltip description 'Match count'
    */
-  matchCountExplanation: 'Count of elements that matched a style rule',
+  matchCountExplanation: 'Count of nodes that matched a style rule.',
   /**
-   *@description Column name for a style rule's CSS selector text
+   * @description Column name for a style rule's CSS selector text
    */
   selector: 'Selector',
   /**
-   *@description Tooltip description 'Selector'
+   * @description Tooltip description 'Selector'
    */
-  selectorExplanation: 'CSS selector text of a style rule',
+  selectorExplanation: 'CSS selector text of a style rule.',
   /**
-   *@description Column name for a style rule's CSS selector text
+   * @description Column name for a style rule's CSS selector text
    */
   styleSheetId: 'Style Sheet',
   /**
-   *@description Tooltip description 'Style Sheet'
+   * @description Tooltip description 'Style Sheet'
    */
   styleSheetIdExplanation:
-      'Links to the selector rule defintion in the style sheets. Note that a selector rule could be defined in multiple places in a style sheet or defined in multiple style sheets. Selector rules from browser user-agent style sheet or dynamic style sheets don\'t have a link.',
+      'Links to the selector rule definition in the style sheets. Note that a selector rule could be defined in multiple places in a style sheet or defined in multiple style sheets. Selector rules from browser user-agent style sheet or dynamic style sheets don\'t have a link.',
   /**
-   *@description A context menu item in data grids to copy entire table to clipboard
+   * @description A context menu item in data grids to copy entire table to clipboard
    */
   copyTable: 'Copy table',
   /**
-   *@description A cell value displayed in table when no source file can be traced via css style
+   * @description A cell value displayed in table when no source file can be traced via css style
    */
   unableToLink: 'Unable to link',
   /**
-   *@description Tooltip for the cell that no source file can be traced via style sheet id
-   *@example {style-sheet-4} PH1
+   * @description Tooltip for the cell that no source file can be traced via style sheet id
+   * @example {style-sheet-4} PH1
    */
   unableToLinkViaStyleSheetId: 'Unable to link via {PH1}',
   /**
-   *@description Text for announcing that the entire table was copied to clipboard
+   * @description Text for announcing that the entire table was copied to clipboard
    */
   tableCopiedToClipboard: 'Table copied to clipboard',
   /**
-   *@description Text shown as the "Selectelector" cell value for one row of the Selector Stats table, however this particular row is the totals. While normally the Selector cell is values like "div.container", the parenthesis can denote this description is not an actual selector, but a general row description.
+   * @description Text shown as the "Selectelector" cell value for one row of the Selector Stats table, however this particular row is the totals. While normally the Selector cell is values like "div.container", the parenthesis can denote this description is not an actual selector, but a general row description.
    */
   totalForAllSelectors: '(Totals for all selectors)',
   /**
-   *@description Text for showing the location of a selector in the style sheet
-   *@example {256} PH1
-   *@example {14} PH2
+   * @description Text for showing the location of a selector in the style sheet
+   * @example {256} PH1
+   * @example {14} PH2
    */
   lineNumber: 'Line {PH1}:{PH2}',
   /**
-   *@description Count of invalidation for a specific selector. Note that a node can be invalidated multiple times.
+   * @description Count of invalidation for a specific selector. Note that a node can be invalidated multiple times.
    */
   invalidationCount: 'Invalidation count',
   /**
-   *@description Tooltip description 'Invalidation count'
+   * @description Tooltip description 'Invalidation count'
    */
   invalidationCountExplanation:
-      'Aggregated count of invalidations on nodes and subsequently had style recalculated, all of which are matched by this selector. Note that a node can be invalidated multiple times.',
+      'Aggregated count of invalidations on nodes and subsequently had style recalculated, all of which are matched by this selector. Note that a node can be invalidated multiple times and by multiple selectors.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineSelectorStatsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -213,11 +213,10 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       </devtools-data-grid>`,
         target, {host: this});
   }) {
-    super();
+    super({jslog: `${VisualLogging.pane('selector-stats').track({resize: true})}`});
     this.registerRequiredCSS(timelineSelectorStatsViewStyles);
 
     this.#view = view;
-    this.element.setAttribute('jslog', `${VisualLogging.pane('selector-stats').track({resize: true})}`);
     this.#selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
     this.#parsedTrace = parsedTrace;
 
@@ -471,7 +470,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
         return undefined;
       }
       const styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);
-      if (!styleSheetHeader || !styleSheetHeader.resourceURL()) {
+      if (!styleSheetHeader?.resourceURL()) {
         return undefined;
       }
 

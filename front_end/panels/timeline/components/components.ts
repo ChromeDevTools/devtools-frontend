@@ -6,6 +6,7 @@ import * as Breadcrumbs from './Breadcrumbs.js';
 import * as BreadcrumbsUI from './BreadcrumbsUI.js';
 import * as CPUThrottlingSelector from './CPUThrottlingSelector.js';
 import * as DetailsView from './DetailsView.js';
+import * as ExportTraceOptions from './ExportTraceOptions.js';
 import * as FieldSettingsDialog from './FieldSettingsDialog.js';
 import * as IgnoreListSetting from './IgnoreListSetting.js';
 import * as InteractionBreakdown from './InteractionBreakdown.js';
@@ -29,6 +30,7 @@ export {
   BreadcrumbsUI,
   CPUThrottlingSelector,
   DetailsView,
+  ExportTraceOptions,
   FieldSettingsDialog,
   IgnoreListSetting,
   InteractionBreakdown,

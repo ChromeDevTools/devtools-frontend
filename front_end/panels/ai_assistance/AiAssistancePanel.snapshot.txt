@@ -1,0 +1,32 @@
+Title: AI Assistance Panel getResponseMarkdown should generate correct markdown from a message object
+Content:
+## AI
+
+**Detail 1:**
+````
+*Some markdown text
+````
+
+**Detail 2:**
+````js
+Some text
+````
+
+### Step Title
+
+Step Thought
+
+**Code executed:**
+```
+console.log("hello");
+```
+
+**Data returned:**
+```
+hello
+```
+
+### Answer
+
+Final answer.
+=== end content

@@ -155,12 +155,6 @@ if(CXX_DEBUGGING_USE_SPLIT_DWARF)
   endif()
 endif()
 
-fix_sysroot(lldb-tblgen)
-fix_sysroot(clang-tblgen)
-fix_sysroot(llvm-tblgen)
-fix_sysroot(llvm-mc)
-fix_sysroot(llvm-dwp)
-
 if (CXX_DEBUGGING_BUILD_WASM)
   add_subdirectory(lib)
   add_subdirectory(src)

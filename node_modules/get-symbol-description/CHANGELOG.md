@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.0](https://github.com/inspect-js/get-symbol-description/compare/v1.0.2...v1.1.0) - 2024-12-17
+
+### Commits
+
+- [New] add types [`b957b65`](https://github.com/inspect-js/get-symbol-description/commit/b957b65e08bc1a6ac95fa5ab769ec241b9cac885)
+- [actions] split out node 10-20, and 20+ [`bfbcae2`](https://github.com/inspect-js/get-symbol-description/commit/bfbcae2ab7224fcf4328bc139ba79445d64030a6)
+- [Dev Deps] update `@ljharb/eslint-config`, `auto-changelog`, `es-value-fixtures`, `object-inspect`, tape` [`197ba80`](https://github.com/inspect-js/get-symbol-description/commit/197ba80ef87153e28f20ec353e8b926ddb145da0)
+- [Refactor] use `call-bound` directly [`9df4de4`](https://github.com/inspect-js/get-symbol-description/commit/9df4de4e8faae09e84c5ac97ec22b4f010d03fca)
+- [Deps] update `call-bind`, `get-intrinsic` [`44c1400`](https://github.com/inspect-js/get-symbol-description/commit/44c1400d5088429f6a32a5f81628d9f7270f68ca)
+- [Dev Deps] update `hasown`, `tape` [`44e2264`](https://github.com/inspect-js/get-symbol-description/commit/44e226470a83e89523bb4898e1ef7a0942e6cb3a)
+- [Tests] replace `aud` with `npm audit` [`62d9414`](https://github.com/inspect-js/get-symbol-description/commit/62d9414d316f7ba2320cb6fad8d9fd4d8b99c420)
+- [Deps] update `call-bind` [`396ee27`](https://github.com/inspect-js/get-symbol-description/commit/396ee2763238415c51eec62fbc41bf274c6552b2)
+- [Dev Deps] add missing peer dep [`cc4b9eb`](https://github.com/inspect-js/get-symbol-description/commit/cc4b9eb527504a49e91f560ee6d9cb942db4e46f)
+
 ## [v1.0.2](https://github.com/inspect-js/get-symbol-description/compare/v1.0.1...v1.0.2) - 2024-02-07
 
 ### Fixed

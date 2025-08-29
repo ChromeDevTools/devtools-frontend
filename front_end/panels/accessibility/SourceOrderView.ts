@@ -1,12 +1,13 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
-import * as Host from '../../core/host/host.js';
+import '../../ui/legacy/legacy.js';
+
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import type * as UI from '../../ui/legacy/legacy.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
@@ -19,11 +20,11 @@ const UIStrings = {
    */
   sourceOrderViewer: 'Source Order Viewer',
   /**
-   *@description Text in Source Order Viewer of the Accessibility panel shown when the selected node has no child elements
+   * @description Text in Source Order Viewer of the Accessibility panel shown when the selected node has no child elements
    */
   noSourceOrderInformation: 'No source order information available',
   /**
-   *@description Text in Source Order Viewer of the Accessibility panel shown when the selected node has many child elements
+   * @description Text in Source Order Viewer of the Accessibility panel shown when the selected node has many child elements
    */
   thereMayBeADelayInDisplaying: 'There may be a delay in displaying source order for elements with many children',
   /**
@@ -36,76 +37,109 @@ const str_ = i18n.i18n.registerUIStrings('panels/accessibility/SourceOrderView.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_CHILD_ELEMENTS_THRESHOLD = 300;
 
+interface ViewInput {
+  childCount: number;
+  showSourceOrder: boolean|undefined;
+  onShowSourceOrderChanged: (showSourceOrder: boolean) => void;
+}
+
+type View = (input: ViewInput, output: unknown, target: HTMLElement) => void;
+
+const DEFAULT_VIEW: View = (input, _output, target) => {
+  function onShowSourceOrderChanged(event: Event): void {
+    const checkbox = event.currentTarget as UI.UIUtils.CheckboxLabel;
+    input.onShowSourceOrderChanged(checkbox.checked);
+    event.consume();
+  }
+
+  // clang-format off
+  render(html`
+    ${input.showSourceOrder === undefined
+      ? html`
+        <div class="gray-info-message info-message-overflow">
+          ${i18nString(UIStrings.noSourceOrderInformation)}
+        </div>
+      `
+      : html`
+      ${input.childCount >= MAX_CHILD_ELEMENTS_THRESHOLD
+        ? html`
+          <div class="gray-info-message info-message-overflow"
+                id="source-order-warning">
+            ${i18nString(UIStrings.thereMayBeADelayInDisplaying)}
+          </div>
+        `
+        : nothing
+      }
+      <devtools-checkbox class="source-order-checkbox"
+                          jslog=${VisualLogging.toggle().track({click: true})}
+                          ?checked=${input.showSourceOrder}
+                          @change=${onShowSourceOrderChanged}>
+        ${i18nString(UIStrings.showSourceOrder)}
+      </devtools-checkbox>
+      `
+    }
+  `, target);
+  // clang-format on
+};
+
 export class SourceOrderPane extends AccessibilitySubPane {
-  private readonly noNodeInfo: Element;
-  private readonly warning: Element;
-  private checked: boolean;
-  private checkbox: UI.UIUtils.CheckboxLabel;
-  private overlayModel: SDK.OverlayModel.OverlayModel|null;
-  constructor() {
-    super(i18nString(UIStrings.sourceOrderViewer));
+  #childCount = 0;
+  #showSourceOrder: boolean|undefined = undefined;
+  readonly #view: View;
 
-    this.element.setAttribute('jslog', `${VisualLogging.section('source-order-viewer')}`);
-    this.noNodeInfo = this.createInfo(i18nString(UIStrings.noSourceOrderInformation));
-    this.warning = this.createInfo(i18nString(UIStrings.thereMayBeADelayInDisplaying));
-    this.warning.id = 'source-order-warning';
-    this.checked = false;
-    this.checkbox = UI.UIUtils.CheckboxLabel.create(
-        /* title */ i18nString(UIStrings.showSourceOrder), /* checked */ false);
-
-    this.checkbox.classList.add('source-order-checkbox');
-    this.checkbox.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
-    this.checkbox.addEventListener('click', this.checkboxClicked.bind(this), false);
-    this.element.appendChild(this.checkbox);
-
-    this.nodeInternal = null;
-    this.overlayModel = null;
+  constructor(view: View = DEFAULT_VIEW) {
+    super({
+      title: i18nString(UIStrings.sourceOrderViewer),
+      viewId: 'source-order-viewer',
+      jslog: `${VisualLogging.section('source-order-viewer')}`,
+    });
+    this.#view = view;
   }
 
   async setNodeAsync(node: SDK.DOMModel.DOMNode|null): Promise<void> {
-    if (!this.checkbox.classList.contains('hidden')) {
-      this.checked = this.checkbox.checked;
+    if (this.nodeInternal && this.#showSourceOrder) {
+      this.nodeInternal.domModel().overlayModel().hideSourceOrderInOverlay();
     }
-    this.checkbox.checked = false;
-    this.checkboxClicked();
     super.setNode(node);
-    if (!this.nodeInternal) {
-      this.overlayModel = null;
-      return;
-    }
-
-    let foundSourceOrder = false;
-    const childCount = this.nodeInternal.childNodeCount();
-    if (childCount > 0) {
+    this.#childCount = this.nodeInternal?.childNodeCount() ?? 0;
+    if (!this.nodeInternal || !this.#childCount) {
+      this.#showSourceOrder = undefined;
+    } else {
       if (!this.nodeInternal.children()) {
         await this.nodeInternal.getSubtree(1, false);
       }
       const children = this.nodeInternal.children() as SDK.DOMModel.DOMNode[];
-      foundSourceOrder = children.some(child => child.nodeType() === Node.ELEMENT_NODE);
+      if (!children.some(child => child.nodeType() === Node.ELEMENT_NODE)) {
+        this.#showSourceOrder = undefined;
+      } else if (this.#showSourceOrder === undefined) {
+        this.#showSourceOrder = false;
+      }
+      if (this.#showSourceOrder) {
+        this.nodeInternal.domModel().overlayModel().highlightSourceOrderInOverlay(this.nodeInternal);
+      }
     }
-
-    this.noNodeInfo.classList.toggle('hidden', foundSourceOrder);
-    this.warning.classList.toggle('hidden', childCount < MAX_CHILD_ELEMENTS_THRESHOLD);
-    this.checkbox.classList.toggle('hidden', !foundSourceOrder);
-    if (foundSourceOrder) {
-      this.overlayModel = this.nodeInternal.domModel().overlayModel();
-      this.checkbox.checked = this.checked;
-      this.checkboxClicked();
-    } else {
-      this.overlayModel = null;
-    }
+    this.requestUpdate();
   }
 
-  private checkboxClicked(): void {
-    if (!this.nodeInternal || !this.overlayModel) {
-      return;
-    }
-
-    if (this.checkbox.checked) {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SourceOrderViewActivated);
-      this.overlayModel.highlightSourceOrderInOverlay(this.nodeInternal);
-    } else {
-      this.overlayModel.hideSourceOrderInOverlay();
-    }
+  override async performUpdate(): Promise<void> {
+    const onShowSourceOrderChanged = (showSourceOrder: boolean): void => {
+      if (!this.nodeInternal) {
+        this.#showSourceOrder = undefined;
+        return;
+      }
+      if (showSourceOrder) {
+        this.nodeInternal.domModel().overlayModel().highlightSourceOrderInOverlay(this.nodeInternal);
+      } else {
+        this.nodeInternal.domModel().overlayModel().hideSourceOrderInOverlay();
+      }
+      this.#showSourceOrder = showSourceOrder;
+    };
+    const input = {
+      childCount: this.#childCount,
+      showSourceOrder: this.#showSourceOrder,
+      onShowSourceOrderChanged,
+    };
+    const output = undefined;
+    this.#view(input, output, this.contentElement);
   }
 }

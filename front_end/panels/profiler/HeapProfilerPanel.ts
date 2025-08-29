@@ -14,7 +14,7 @@ import {instance} from './ProfileTypeRegistry.js';
 
 const UIStrings = {
   /**
-   *@description A context menu item in the Heap Profiler Panel of a profiler tool
+   * @description A context menu item in the Heap Profiler Panel of a profiler tool
    */
   revealInSummaryView: 'Reveal in Summary view',
 } as const;

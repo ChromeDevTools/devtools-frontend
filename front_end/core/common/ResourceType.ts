@@ -38,119 +38,119 @@ import {ParsedURL} from './ParsedURL.js';
 
 const UIStrings = {
   /**
-   *@description Text that appears in a tooltip the fetch and xhr resource types filter.
+   * @description Text that appears in a tooltip the fetch and xhr resource types filter.
    */
   fetchAndXHR: '`Fetch` and `XHR`',
   /**
-   *@description Text that appears in a tooltip for the JavaScript types filter.
+   * @description Text that appears in a tooltip for the JavaScript types filter.
    */
   javascript: 'JavaScript',
   /**
-   *@description Text that appears on a button for the JavaScript resource type filter.
+   * @description Text that appears on a button for the JavaScript resource type filter.
    */
   js: 'JS',
   /**
-   *@description Text that appears on a button for the css resource type filter.
+   * @description Text that appears on a button for the css resource type filter.
    */
   css: 'CSS',
   /**
-   *@description Text that appears on a button for the image resource type filter.
+   * @description Text that appears on a button for the image resource type filter.
    */
   img: 'Img',
   /**
-   *@description Text that appears on a button for the media resource type filter.
+   * @description Text that appears on a button for the media resource type filter.
    */
   media: 'Media',
   /**
-   *@description Text that appears on a button for the font resource type filter.
+   * @description Text that appears on a button for the font resource type filter.
    */
   font: 'Font',
   /**
-   *@description Text that appears on a button for the document resource type filter.
+   * @description Text that appears on a button for the document resource type filter.
    */
   doc: 'Doc',
   /**
-   *@description Text that appears on a button for the websocket, webtransport, directsocket resource type filter.
+   * @description Text that appears on a button for the websocket, webtransport, directsocket resource type filter.
    */
   socketShort: 'Socket',
   /**
-   *@description Text that appears in a tooltip for the WebAssembly types filter.
+   * @description Text that appears in a tooltip for the WebAssembly types filter.
    */
   webassembly: 'WebAssembly',
   /**
-   *@description Text that appears on a button for the WebAssembly resource type filter.
+   * @description Text that appears on a button for the WebAssembly resource type filter.
    */
   wasm: 'Wasm',
   /**
-   *@description Text that appears on a button for the manifest resource type filter.
+   * @description Text that appears on a button for the manifest resource type filter.
    */
   manifest: 'Manifest',
   /**
-   *@description Text for other types of items
+   * @description Text for other types of items
    */
   other: 'Other',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   document: 'Document',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   stylesheet: 'Stylesheet',
   /**
-   *@description Text in Image View of the Sources panel
+   * @description Text in Image View of the Sources panel
    */
   image: 'Image',
   /**
-   *@description Label for a group of JavaScript files
+   * @description Label for a group of JavaScript files
    */
   script: 'Script',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   texttrack: 'TextTrack',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   fetch: 'Fetch',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   eventsource: 'EventSource',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   websocket: 'WebSocket',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   webtransport: 'WebTransport',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   directsocket: 'DirectSocket',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   signedexchange: 'SignedExchange',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   ping: 'Ping',
   /**
-   *@description Name of a network resource type
+   * @description Name of a network resource type
    */
   cspviolationreport: 'CSPViolationReport',
   /**
-   *@description Name of a network initiator type
+   * @description Name of a network initiator type
    */
   preflight: 'Preflight',
   /**
-   *@description Name of a network initiator type
+   * @description Name of a network initiator type
    */
   webbundle: 'WebBundle',
   /**
-   *@description Name of a network initiator type for FedCM requests
+   * @description Name of a network initiator type for FedCM requests
    */
   fedcm: 'FedCM',
 } as const;

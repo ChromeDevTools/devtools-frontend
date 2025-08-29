@@ -44,39 +44,39 @@ import screencastViewStyles from './screencastView.css.js';
 
 const UIStrings = {
   /**
-   *@description Accessible alt text for the screencast canvas rendering of the debug target webpage
+   * @description Accessible alt text for the screencast canvas rendering of the debug target webpage
    */
   screencastViewOfDebugTarget: 'Screencast view of debug target',
   /**
-   *@description Glass pane element text content in Screencast View of the Remote Devices tab when toggling screencast
+   * @description Glass pane element text content in Screencast View of the Remote Devices tab when toggling screencast
    */
   theTabIsInactive: 'The tab is inactive',
   /**
-   *@description Glass pane element text content in Screencast View of the Remote Devices tab when toggling screencast
+   * @description Glass pane element text content in Screencast View of the Remote Devices tab when toggling screencast
    */
   profilingInProgress: 'Profiling in progress',
   /**
-   *@description Accessible text for the screencast back button
+   * @description Accessible text for the screencast back button
    */
   back: 'back',
   /**
-   *@description Accessible text for the screencast forward button
+   * @description Accessible text for the screencast forward button
    */
   forward: 'forward',
   /**
-   *@description Accessible text for the screencast reload button
+   * @description Accessible text for the screencast reload button
    */
   reload: 'reload',
   /**
-   *@description Accessible text for the address bar in screencast view
+   * @description Accessible text for the address bar in screencast view
    */
   addressBar: 'Address bar',
   /**
-   *@description Accessible text for the touch emulation button.
+   * @description Accessible text for the touch emulation button.
    */
   touchInput: 'Use touch',
   /**
-   *@description Accessible text for the mouse emulation button.
+   * @description Accessible text for the mouse emulation button.
    */
   mouseInput: 'Use mouse',
 } as const;
@@ -694,7 +694,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.mouseInputToggle.disabled = true;
     {
       this.mouseInputToggleIcon = this.mouseInputToggle.appendChild(new IconButton.Icon.Icon());
-      this.mouseInputToggleIcon.data = {color: 'var(--icon-toggled)', iconName: 'mouse'};
+      this.mouseInputToggleIcon.name = 'mouse';
+      this.mouseInputToggleIcon.classList.toggle('toggled', true);
     }
     UI.ARIAUtils.setLabel(this.mouseInputToggle, i18nString(UIStrings.mouseInput));
 
@@ -767,14 +768,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     }
     this.mouseInputToggle.disabled = !value;
     this.touchInputToggle.disabled = value;
-    this.mouseInputToggleIcon.data = {
-      ...this.mouseInputToggleIcon.data,
-      color: this.mouseInputToggle.disabled ? 'var(--icon-toggled)' : 'var(--icon-default)',
-    };
-    this.touchInputToggleIcon.data = {
-      ...this.touchInputToggleIcon.data,
-      color: this.touchInputToggle.disabled ? 'var(--icon-toggled)' : 'var(--icon-default)',
-    };
+    this.mouseInputToggleIcon.classList.toggle('toggled', this.mouseInputToggle.disabled);
+    this.touchInputToggleIcon.classList.toggle('toggled', this.touchInputToggle.disabled);
     this.canvasContainerElement.classList.toggle('touchable', value);
   }
 

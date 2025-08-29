@@ -21,7 +21,7 @@ describeWithMockConnection('StylesPropertySection', () => {
 
   it('contains specificity information', async () => {
     const specificity = {a: 0, b: 1, c: 0};
-    const matchedStyles = await getMatchedStylesWithBlankRule(new SDK.CSSModel.CSSModel(createTarget()));
+    const matchedStyles = await getMatchedStylesWithBlankRule({cssModel: new SDK.CSSModel.CSSModel(createTarget())});
     const section = new Elements.StylePropertiesSection.StylePropertiesSection(
         new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
         matchedStyles.nodeStyles()[0], 0, new Map(), new Map());
@@ -32,7 +32,7 @@ describeWithMockConnection('StylesPropertySection', () => {
   });
 
   it('renders selectors correctly', async () => {
-    const matchedStyles = await getMatchedStylesWithBlankRule(new SDK.CSSModel.CSSModel(createTarget()));
+    const matchedStyles = await getMatchedStylesWithBlankRule({cssModel: new SDK.CSSModel.CSSModel(createTarget())});
     const section = new Elements.StylePropertiesSection.StylePropertiesSection(
         new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
         matchedStyles.nodeStyles()[0], 0, new Map(), new Map());
@@ -69,7 +69,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       matchingSelectors: [0],
     }];
     const matchedStyles =
-        await getMatchedStylesWithStylesheet(cssModel, origin, styleSheetId, header, {matchedPayload});
+        await getMatchedStylesWithStylesheet({cssModel, origin, styleSheetId, ...header, matchedPayload});
 
     const rule = matchedStyles.nodeStyles()[0].parentRule;
     const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
@@ -108,7 +108,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       content: url === header.sourceMapURL ? '{"sources": []}' : '',
     }));
     const matchedStyles =
-        await getMatchedStylesWithStylesheet(cssModel, origin, styleSheetId, header, {matchedPayload});
+        await getMatchedStylesWithStylesheet({cssModel, origin, styleSheetId, ...header, matchedPayload});
 
     const styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);
     assert.exists(styleSheetHeader);
@@ -152,7 +152,7 @@ describeWithMockConnection('StylesPropertySection', () => {
         matchingSelectors: [0],
       }];
       const matchedStyles =
-          await getMatchedStylesWithStylesheet(cssModel, origin, styleSheetId, {...range}, {matchedPayload});
+          await getMatchedStylesWithStylesheet({cssModel, origin, styleSheetId, ...range, matchedPayload});
       const declaration = matchedStyles.nodeStyles()[0];
       assert.exists(declaration);
       const section = new Elements.StylePropertiesSection.StylePropertiesSection(
@@ -175,7 +175,7 @@ describeWithMockConnection('StylesPropertySection', () => {
         matchingSelectors: [0],
       }];
       const matchedStyles =
-          await getMatchedStylesWithStylesheet(cssModel, origin, styleSheetId, {...range}, {matchedPayload});
+          await getMatchedStylesWithStylesheet({cssModel, origin, styleSheetId, ...range, matchedPayload});
       const declaration = matchedStyles.nodeStyles()[0];
       assert.exists(declaration);
       const section = new Elements.StylePropertiesSection.StylePropertiesSection(
@@ -216,8 +216,8 @@ describeWithMockConnection('StylesPropertySection', () => {
       matchingSelectors: [0],
     }];
 
-    const matchedStyles = await getMatchedStylesWithStylesheet(
-        cssModel, origin, styleSheetId, {...range}, {propertyRules, matchedPayload});
+    const matchedStyles =
+        await getMatchedStylesWithStylesheet({cssModel, origin, styleSheetId, ...range, propertyRules, matchedPayload});
 
     function assertIsPropertyRule(rule: SDK.CSSRule.CSSRule|null): asserts rule is SDK.CSSRule.CSSPropertyRule {
       assert.instanceOf(rule, SDK.CSSRule.CSSPropertyRule);
@@ -265,7 +265,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       },
     };
     const matchedStyles =
-        await getMatchedStylesWithStylesheet(cssModel, origin, styleSheetId, {...range}, {fontPaletteValuesRule});
+        await getMatchedStylesWithStylesheet({cssModel, origin, styleSheetId, ...range, fontPaletteValuesRule});
     const declaration = matchedStyles.fontPaletteValuesRule()?.style;
     assert.exists(declaration);
     const section = new Elements.StylePropertiesSection.FontPaletteValuesRuleSection(
@@ -309,7 +309,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       },
     ];
     const matchedStyles =
-        await getMatchedStylesWithStylesheet(cssModel, origin, styleSheetId, {...range}, {positionTryRules});
+        await getMatchedStylesWithStylesheet({cssModel, origin, styleSheetId, ...range, positionTryRules});
     const declaration1 = matchedStyles.positionTryRules()[0].style;
     const declaration2 = matchedStyles.positionTryRules()[1].style;
     assert.exists(declaration1);

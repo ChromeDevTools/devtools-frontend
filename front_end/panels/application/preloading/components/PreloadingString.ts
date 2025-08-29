@@ -12,118 +12,118 @@ import * as Bindings from '../../../../models/bindings/bindings.js';
 
 const UIStrings = {
   /**
-   *@description  Description text for Prefetch status PrefetchFailedIneligibleRedirect.
+   * @description  Description text for Prefetch status PrefetchFailedIneligibleRedirect.
    */
   PrefetchFailedIneligibleRedirect: 'The prefetch was redirected, but the redirect URL is not eligible for prefetch.',
   /**
-   *@description  Description text for Prefetch status PrefetchFailedInvalidRedirect.
+   * @description  Description text for Prefetch status PrefetchFailedInvalidRedirect.
    */
   PrefetchFailedInvalidRedirect: 'The prefetch was redirected, but there was a problem with the redirect.',
   /**
-   *@description  Description text for Prefetch status PrefetchFailedMIMENotSupported.
+   * @description  Description text for Prefetch status PrefetchFailedMIMENotSupported.
    */
   PrefetchFailedMIMENotSupported: 'The prefetch failed because the response\'s Content-Type header was not supported.',
   /**
-   *@description  Description text for Prefetch status PrefetchFailedNetError.
+   * @description  Description text for Prefetch status PrefetchFailedNetError.
    */
   PrefetchFailedNetError: 'The prefetch failed because of a network error.',
   /**
-   *@description  Description text for Prefetch status PrefetchFailedNon2XX.
+   * @description  Description text for Prefetch status PrefetchFailedNon2XX.
    */
   PrefetchFailedNon2XX: 'The prefetch failed because of a non-2xx HTTP response status code.',
   /**
-   *@description  Description text for Prefetch status PrefetchIneligibleRetryAfter.
+   * @description  Description text for Prefetch status PrefetchIneligibleRetryAfter.
    */
   PrefetchIneligibleRetryAfter:
       'A previous prefetch to the origin got a HTTP 503 response with an Retry-After header that has not elapsed yet.',
   /**
-   *@description  Description text for Prefetch status PrefetchIsPrivacyDecoy.
+   * @description  Description text for Prefetch status PrefetchIsPrivacyDecoy.
    */
   PrefetchIsPrivacyDecoy:
       'The URL was not eligible to be prefetched because there was a registered service worker or cross-site cookies for that origin, but the prefetch was put on the network anyways and not used, to disguise that the user had some kind of previous relationship with the origin.',
   /**
-   *@description  Description text for Prefetch status PrefetchIsStale.
+   * @description  Description text for Prefetch status PrefetchIsStale.
    */
   PrefetchIsStale: 'Too much time elapsed between the prefetch and usage, so the prefetch was discarded.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligibleBrowserContextOffTheRecord.
+   * @description  Description text for Prefetch status PrefetchNotEligibleBrowserContextOffTheRecord.
    */
   PrefetchNotEligibleBrowserContextOffTheRecord:
       'The prefetch was not performed because the browser is in Incognito or Guest mode.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligibleDataSaverEnabled.
+   * @description  Description text for Prefetch status PrefetchNotEligibleDataSaverEnabled.
    */
   PrefetchNotEligibleDataSaverEnabled:
       'The prefetch was not performed because the operating system is in Data Saver mode.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligibleExistingProxy.
+   * @description  Description text for Prefetch status PrefetchNotEligibleExistingProxy.
    */
   PrefetchNotEligibleExistingProxy:
       'The URL is not eligible to be prefetched, because in the default network context it is configured to use a proxy server.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligibleHostIsNonUnique.
+   * @description  Description text for Prefetch status PrefetchNotEligibleHostIsNonUnique.
    */
   PrefetchNotEligibleHostIsNonUnique:
       'The URL was not eligible to be prefetched because its host was not unique (e.g., a non publicly routable IP address or a hostname which is not registry-controlled), but the prefetch was required to be proxied.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligibleNonDefaultStoragePartition.
+   * @description  Description text for Prefetch status PrefetchNotEligibleNonDefaultStoragePartition.
    */
   PrefetchNotEligibleNonDefaultStoragePartition:
       'The URL was not eligible to be prefetched because it uses a non-default storage partition.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy.
+   * @description  Description text for Prefetch status PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy.
    */
   PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy:
       'The URL was not eligible to be prefetched because the default network context cannot be configured to use the prefetch proxy for a same-site cross-origin prefetch request.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligibleSchemeIsNotHttps.
+   * @description  Description text for Prefetch status PrefetchNotEligibleSchemeIsNotHttps.
    */
   PrefetchNotEligibleSchemeIsNotHttps: 'The URL was not eligible to be prefetched because its scheme was not https:.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligibleUserHasCookies.
+   * @description  Description text for Prefetch status PrefetchNotEligibleUserHasCookies.
    */
   PrefetchNotEligibleUserHasCookies:
       'The URL was not eligible to be prefetched because it was cross-site, but the user had cookies for that origin.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligibleUserHasServiceWorker.
+   * @description  Description text for Prefetch status PrefetchNotEligibleUserHasServiceWorker.
    */
   PrefetchNotEligibleUserHasServiceWorker:
       'The URL was not eligible to be prefetched because there was a registered service worker for that origin, which is currently not supported.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotUsedCookiesChanged.
+   * @description  Description text for Prefetch status PrefetchNotUsedCookiesChanged.
    */
   PrefetchNotUsedCookiesChanged:
       'The prefetch was not used because it was a cross-site prefetch, and cookies were added for that URL while the prefetch was ongoing, so the prefetched response is now out-of-date.',
   /**
-   *@description  Description text for Prefetch status PrefetchProxyNotAvailable.
+   * @description  Description text for Prefetch status PrefetchProxyNotAvailable.
    */
   PrefetchProxyNotAvailable:
       'A network error was encountered when trying to set up a connection to the prefetching proxy.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotUsedProbeFailed.
+   * @description  Description text for Prefetch status PrefetchNotUsedProbeFailed.
    */
   PrefetchNotUsedProbeFailed: 'The prefetch was blocked by your Internet Service Provider or network administrator.',
   /**
-   *@description  Description text for Prefetch status PrefetchEvictedForNewerPrefetch.
+   * @description  Description text for Prefetch status PrefetchEvictedForNewerPrefetch.
    */
   PrefetchEvictedForNewerPrefetch:
       'The prefetch was discarded because the initiating page has too many prefetches ongoing, and this was one of the oldest.',
   /**
-   *@description Description text for Prefetch status PrefetchEvictedAfterCandidateRemoved.
+   * @description Description text for Prefetch status PrefetchEvictedAfterCandidateRemoved.
    */
   PrefetchEvictedAfterCandidateRemoved:
       'The prefetch was discarded because no speculation rule in the initating page triggers a prefetch for this URL anymore.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligibleBatterySaverEnabled.
+   * @description  Description text for Prefetch status PrefetchNotEligibleBatterySaverEnabled.
    */
   PrefetchNotEligibleBatterySaverEnabled:
       'The prefetch was not performed because the Battery Saver setting was enabled.',
   /**
-   *@description  Description text for Prefetch status PrefetchNotEligiblePreloadingDisabled.
+   * @description  Description text for Prefetch status PrefetchNotEligiblePreloadingDisabled.
    */
   PrefetchNotEligiblePreloadingDisabled: 'The prefetch was not performed because speculative loading was disabled.',
   /**
-   *@description  Description text for Prefetch status PrefetchEvictedAfterBrowsingDataRemoved.
+   * @description  Description text for Prefetch status PrefetchEvictedAfterBrowsingDataRemoved.
    */
   PrefetchEvictedAfterBrowsingDataRemoved: 'The prefetch was discarded because browsing data was removed.',
 
@@ -148,8 +148,8 @@ const UIStrings = {
   prerenderFinalStatusNavigationRequestBlockedByCsp:
       'The prerendering navigation was blocked by a Content Security Policy.',
   /**
-   *@description Description text for PrerenderFinalStatus::kMojoBinderPolicy.
-   *@example {device.mojom.GamepadMonitor} PH1
+   * @description Description text for PrerenderFinalStatus::kMojoBinderPolicy.
+   * @example {device.mojom.GamepadMonitor} PH1
    */
   prerenderFinalStatusMojoBinderPolicy:
       'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: {PH1})',
@@ -191,7 +191,7 @@ const UIStrings = {
   /**
    *  Description text for PrerenderFinalStatus::kUaChangeRequiresReload.
    */
-  prerenderFinalStatusUaChangeRequiresReload: 'Changing User Agent occured in prerendering navigation.',
+  prerenderFinalStatusUaChangeRequiresReload: 'Changing User Agent occurred in prerendering navigation.',
   /**
    *  Description text for PrerenderFinalStatus::kBlockedByClient.
    */
@@ -382,27 +382,27 @@ const UIStrings = {
   prerenderFinalStatusBrowsingDataRemoved: 'The prerendered page was unloaded because browsing data was removed.',
 
   /**
-   *@description Text in grid and details: Preloading attempt is not yet triggered.
+   * @description Text in grid and details: Preloading attempt is not yet triggered.
    */
   statusNotTriggered: 'Not triggered',
   /**
-   *@description Text in grid and details: Preloading attempt is eligible but pending.
+   * @description Text in grid and details: Preloading attempt is eligible but pending.
    */
   statusPending: 'Pending',
   /**
-   *@description Text in grid and details: Preloading is running.
+   * @description Text in grid and details: Preloading is running.
    */
   statusRunning: 'Running',
   /**
-   *@description Text in grid and details: Preloading finished and the result is ready for the next navigation.
+   * @description Text in grid and details: Preloading finished and the result is ready for the next navigation.
    */
   statusReady: 'Ready',
   /**
-   *@description Text in grid and details: Ready, then used.
+   * @description Text in grid and details: Ready, then used.
    */
   statusSuccess: 'Success',
   /**
-   *@description Text in grid and details: Preloading failed.
+   * @description Text in grid and details: Preloading failed.
    */
   statusFailure: 'Failure',
 } as const;

@@ -21,39 +21,39 @@ const {render, html, Directives: {styleMap}} = Lit;
 
 const UIStrings = {
   /**
-   *@description Column header
+   * @description Column header
    */
   url: 'URL',
   /**
-   *@description Column header: Action of preloading (prefetch/prerender)
+   * @description Column header: Action of preloading (prefetch/prerender)
    */
   action: 'Action',
   /**
-   *@description Column header: Status of preloading attempt
+   * @description Column header: Status of preloading attempt
    */
   status: 'Status',
   /**
-   *@description Text in grid and details: Preloading attempt is not yet triggered.
+   * @description Text in grid and details: Preloading attempt is not yet triggered.
    */
   statusNotTriggered: 'Not triggered',
   /**
-   *@description Text in grid and details: Preloading attempt is eligible but pending.
+   * @description Text in grid and details: Preloading attempt is eligible but pending.
    */
   statusPending: 'Pending',
   /**
-   *@description Text in grid and details: Preloading is running.
+   * @description Text in grid and details: Preloading is running.
    */
   statusRunning: 'Running',
   /**
-   *@description Text in grid and details: Preloading finished and the result is ready for the next navigation.
+   * @description Text in grid and details: Preloading finished and the result is ready for the next navigation.
    */
   statusReady: 'Ready',
   /**
-   *@description Text in grid and details: Ready, then used.
+   * @description Text in grid and details: Ready, then used.
    */
   statusSuccess: 'Success',
   /**
-   *@description Text in grid and details: Preloading failed.
+   * @description Text in grid and details: Preloading failed.
    */
   statusFailure: 'Failure',
 } as const;

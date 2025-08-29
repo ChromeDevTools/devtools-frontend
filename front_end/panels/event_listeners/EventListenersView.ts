@@ -21,49 +21,49 @@ import eventListenersViewStyles from './eventListenersView.css.js';
 
 const UIStrings = {
   /**
-   *@description Empty holder text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   * @description Empty holder text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
    */
   noEventListeners: 'No event listeners',
   /**
-   *@description Empty holder text content in Event Listeners View of the Event Listener Debugging pane in the Elements panel
+   * @description Empty holder text content in Event Listeners View of the Event Listener Debugging pane in the Elements panel
    */
   eventListenersExplanation: 'On this page you will find registered event listeners',
   /**
-   *@description Delete button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   * @description Delete button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
    */
   deleteEventListener: 'Delete event listener',
   /**
-   *@description Passive button text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   * @description Passive button text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
    */
   togglePassive: 'Toggle Passive',
   /**
-   *@description Passive button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   * @description Passive button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
    */
   toggleWhetherEventListenerIs: 'Toggle whether event listener is passive or blocking',
   /**
-   *@description A context menu item to reveal a node in the DOM tree of the Elements Panel
+   * @description A context menu item to reveal a node in the DOM tree of the Elements Panel
    */
   openInElementsPanel: 'Open in Elements panel',
   /**
-   *@description Text in Event Listeners Widget of the Elements panel
+   * @description Text in Event Listeners Widget of the Elements panel
    */
   passive: 'Passive',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/event_listeners/EventListenersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class EventListenersView extends UI.Widget.VBox {
-  private changeCallback: () => void;
-  private enableDefaultTreeFocus: boolean;
-  treeOutline: UI.TreeOutline.TreeOutlineInShadow;
-  private emptyHolder: HTMLDivElement;
-  private linkifier: Components.Linkifier.Linkifier;
-  private readonly treeItemMap: Map<string, EventListenersTreeElement>;
-  constructor(changeCallback: () => void, enableDefaultTreeFocus: boolean|undefined = false) {
-    super();
-    this.registerRequiredCSS(eventListenersViewStyles);
-    this.changeCallback = changeCallback;
-    this.enableDefaultTreeFocus = enableDefaultTreeFocus;
 
+export class EventListenersView extends UI.Widget.VBox {
+  changeCallback = (): void => {};
+  enableDefaultTreeFocus = false;
+  treeOutline: UI.TreeOutline.TreeOutlineInShadow;
+  emptyHolder: HTMLDivElement;
+  objects: Array<SDK.RemoteObject.RemoteObject|null> = [];
+  filter: {showFramework: boolean, showPassive: boolean, showBlocking: boolean}|undefined;
+  #linkifier = new Components.Linkifier.Linkifier();
+  readonly #treeItemMap = new Map<string, EventListenersTreeElement>();
+  constructor(element?: HTMLElement) {
+    super(element);
+    this.registerRequiredCSS(eventListenersViewStyles);
     this.emptyHolder = this.element.createChild('div', 'placeholder hidden');
     this.emptyHolder.createChild('span', 'gray-info-message').textContent = i18nString(UIStrings.noEventListeners);
     const emptyWidget = new UI.EmptyWidget.EmptyWidget(
@@ -77,8 +77,6 @@ export class EventListenersView extends UI.Widget.VBox {
     this.treeOutline.setFocusable(true);
     this.treeOutline.registerRequiredCSS(eventListenersViewStyles, objectValueStyles);
     this.element.appendChild(this.treeOutline.element);
-    this.linkifier = new Components.Linkifier.Linkifier();
-    this.treeItemMap = new Map();
   }
 
   override focus(): void {
@@ -92,8 +90,21 @@ export class EventListenersView extends UI.Widget.VBox {
     }
   }
 
+  override async performUpdate(): Promise<void> {
+    await this.addObjects(this.objects);
+    if (this.filter) {
+      this.showFrameworkListeners(this.filter.showFramework, this.filter.showPassive, this.filter.showBlocking);
+    }
+  }
+
   async addObjects(objects: Array<SDK.RemoteObject.RemoteObject|null>): Promise<void> {
-    this.reset();
+    // Remove existing event listeners and reset linkifier first.
+    const eventTypes = this.treeOutline.rootElement().children();
+    for (const eventType of eventTypes) {
+      eventType.removeChildren();
+    }
+    this.#linkifier.reset();
+
     await Promise.all(objects.map(obj => obj ? this.addObject(obj) : Promise.resolve()));
     this.addEmptyHolderIfNeeded();
     this.eventListenersArrivedForTest();
@@ -205,10 +216,10 @@ export class EventListenersView extends UI.Widget.VBox {
   }
 
   private getOrCreateTreeElementForType(type: string): EventListenersTreeElement {
-    let treeItem = this.treeItemMap.get(type);
+    let treeItem = this.#treeItemMap.get(type);
     if (!treeItem) {
-      treeItem = new EventListenersTreeElement(type, this.linkifier, this.changeCallback);
-      this.treeItemMap.set(type, treeItem);
+      treeItem = new EventListenersTreeElement(type, this.#linkifier, this.changeCallback);
+      this.#treeItemMap.set(type, treeItem);
       treeItem.hidden = true;
       this.treeOutline.appendChild(treeItem);
     }
@@ -234,14 +245,6 @@ export class EventListenersView extends UI.Widget.VBox {
     }
 
     this.treeOutline.setFocusable(Boolean(firstVisibleChild));
-  }
-
-  reset(): void {
-    const eventTypes = this.treeOutline.rootElement().children();
-    for (const eventType of eventTypes) {
-      eventType.removeChildren();
-    }
-    this.linkifier.reset();
   }
 
   private eventListenersArrivedForTest(): void {

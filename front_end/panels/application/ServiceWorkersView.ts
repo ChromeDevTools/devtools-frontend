@@ -23,36 +23,36 @@ import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
 
 const UIStrings = {
   /**
-   *@description Text for linking to other Service Worker registrations
+   * @description Text for linking to other Service Worker registrations
    */
   serviceWorkersFromOtherOrigins: 'Service workers from other origins',
   /**
-   *@description Title of update on reload setting in service workers view of the application panel
+   * @description Title of update on reload setting in service workers view of the application panel
    */
   updateOnReload: 'Update on reload',
   /**
-   *@description Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel
+   * @description Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel
    */
   onPageReloadForceTheService: 'On page reload, force the `service worker` to update, and activate it',
   /**
-   *@description Title of bypass service worker setting in service workers view of the application panel
+   * @description Title of bypass service worker setting in service workers view of the application panel
    */
   bypassForNetwork: 'Bypass for network',
   /**
-   *@description Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel
+   * @description Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel
    */
   bypassTheServiceWorkerAndLoad: 'Bypass the `service worker` and load resources from the network',
   /**
-   *@description Screen reader title for a section of the Service Workers view of the Application panel
-   *@example {https://example.com} PH1
+   * @description Screen reader title for a section of the Service Workers view of the Application panel
+   * @example {https://example.com} PH1
    */
   serviceWorkerForS: '`Service worker` for {PH1}',
   /**
-   *@description Text in Service Workers View of the Application panel
+   * @description Text in Service Workers View of the Application panel
    */
   testPushMessageFromDevtools: 'Test push message from DevTools.',
   /**
-   *@description Button label for service worker network requests
+   * @description Button label for service worker network requests
    */
   networkRequests: 'Network requests',
   /**
@@ -61,23 +61,23 @@ const UIStrings = {
    */
   update: 'Update',
   /**
-   *@description Text in Service Workers View of the Application panel
+   * @description Text in Service Workers View of the Application panel
    */
   unregisterServiceWorker: 'Unregister service worker',
   /**
-   *@description Text in Service Workers View of the Application panel
+   * @description Text in Service Workers View of the Application panel
    */
   unregister: 'Unregister',
   /**
-   *@description Text for the source of something
+   * @description Text for the source of something
    */
   source: 'Source',
   /**
-   *@description Text for the status of something
+   * @description Text for the status of something
    */
   status: 'Status',
   /**
-   *@description Text in Service Workers View of the Application panel
+   * @description Text in Service Workers View of the Application panel
    */
   clients: 'Clients',
   /**
@@ -92,24 +92,24 @@ const UIStrings = {
    */
   pushData: 'Push data',
   /**
-   *@description Text in Service Workers View of the Application panel
+   * @description Text in Service Workers View of the Application panel
    */
   syncString: 'Sync',
   /**
-   *@description Placeholder text for the input box where a user is asked for a test tag to sync. This is used as a compound noun, not as a verb.
+   * @description Placeholder text for the input box where a user is asked for a test tag to sync. This is used as a compound noun, not as a verb.
    */
   syncTag: 'Sync tag',
   /**
-   *@description Text for button in Service Workers View of the Application panel that dispatches a periodicsync event
+   * @description Text for button in Service Workers View of the Application panel that dispatches a periodicsync event
    */
   periodicSync: 'Periodic sync',
   /**
-   *@description Default tag for a periodicsync event in Service Workers View of the Application panel
+   * @description Default tag for a periodicsync event in Service Workers View of the Application panel
    */
   periodicSyncTag: 'Periodic sync tag',
   /**
-   *@description Aria accessible name in Service Workers View of the Application panel
-   *@example {3} PH1
+   * @description Aria accessible name in Service Workers View of the Application panel
+   * @example {3} PH1
    */
   sRegistrationErrors: '{PH1} registration errors',
   /**
@@ -123,22 +123,22 @@ const UIStrings = {
    */
   routers: 'Routers',
   /**
-   *@description Text in Service Workers View of the Application panel
-   *@example {example.com} PH1
+   * @description Text in Service Workers View of the Application panel
+   * @example {example.com} PH1
    */
   sDeleted: '{PH1} - deleted',
   /**
-   *@description Text in Service Workers View of the Application panel
-   *@example {1} PH1
-   *@example {stopped} PH2
+   * @description Text in Service Workers View of the Application panel
+   * @example {1} PH1
+   * @example {stopped} PH2
    */
   sActivatedAndIsS: '#{PH1} activated and is {PH2}',
   /**
-   *@description Text in Service Workers View of the Application panel
+   * @description Text in Service Workers View of the Application panel
    */
   stopString: 'Stop',
   /**
-   *@description Text in Service Workers View of the Application panel
+   * @description Text in Service Workers View of the Application panel
    */
   startString: 'Start',
   /**
@@ -149,31 +149,31 @@ const UIStrings = {
    */
   sIsRedundant: '#{PH1} is redundant',
   /**
-   *@description Text in Service Workers View of the Application panel
-   *@example {2} PH1
+   * @description Text in Service Workers View of the Application panel
+   * @example {2} PH1
    */
   sWaitingToActivate: '#{PH1} waiting to activate',
   /**
-   *@description Text in Service Workers View of the Application panel
-   *@example {2} PH1
+   * @description Text in Service Workers View of the Application panel
+   * @example {2} PH1
    */
   sTryingToInstall: '#{PH1} trying to install',
   /**
-   *@description Text in Service Workers Update Timeline. Update is a noun.
+   * @description Text in Service Workers Update Timeline. Update is a noun.
    */
   updateCycle: 'Update Cycle',
   /**
-   *@description Text of a DOM element in Service Workers View of the Application panel
-   *@example {example.com} PH1
+   * @description Text of a DOM element in Service Workers View of the Application panel
+   * @example {example.com} PH1
    */
   workerS: 'Worker: {PH1}',
   /**
-   *@description Link text in Service Workers View of the Application panel. When the link is clicked,
+   * @description Link text in Service Workers View of the Application panel. When the link is clicked,
    * the focus is moved to the service worker's client page.
    */
   focus: 'focus',
   /**
-   *@description Link to view all the Service Workers that have been registered.
+   * @description Link to view all the Service Workers that have been registered.
    */
   seeAllRegistrations: 'See all registrations',
 } as const;
@@ -197,14 +197,16 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
       Map<SDK.ServiceWorkerManager.ServiceWorkerManager, Common.EventTarget.EventDescriptor[]>;
 
   constructor() {
-    super(true);
+    super({
+      jslog: `${VisualLogging.pane('service-workers')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(serviceWorkersViewStyles);
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.currentWorkersView = new UI.ReportView.ReportView(i18n.i18n.lockedString('Service workers'));
     this.currentWorkersView.setBodyScrollable(false);
     this.contentElement.classList.add('service-worker-list');
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('service-workers')}`);
     this.currentWorkersView.show(this.contentElement);
     this.currentWorkersView.element.classList.add('service-workers-this-origin');
     this.currentWorkersView.element.setAttribute('jslog', `${VisualLogging.section('this-origin')}`);

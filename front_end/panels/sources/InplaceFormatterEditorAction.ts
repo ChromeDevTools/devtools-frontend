@@ -22,12 +22,12 @@ import type {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {
   /**
-   *@description Title of the format button in the Sources panel
-   *@example {file name} PH1
+   * @description Title of the format button in the Sources panel
+   * @example {file name} PH1
    */
   formatS: 'Format {PH1}',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon pretty print button in the Inplace Formatter Editor Action of the Sources panel
+   * @description Tooltip text that appears when hovering over the largeicon pretty print button in the Inplace Formatter Editor Action of the Sources panel
    */
   format: 'Format',
 } as const;

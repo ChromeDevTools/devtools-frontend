@@ -11,7 +11,7 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-   *@description Noun for singular or plural number of affected element resource indication in issue view.
+   * @description Noun for singular or plural number of affected element resource indication in issue view.
    */
   nElements: '{n, plural, =1 {# element} other {# elements}}',
 } as const;

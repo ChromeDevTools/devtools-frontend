@@ -43,7 +43,6 @@ import time
 
 from pathlib import Path
 
-AUTOROLL_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"
 USE_PYTHON3 = True
 PRESUBMIT_VERSION = '2.0.0'
 
@@ -524,10 +523,16 @@ def CheckGenderNeutral(input_api, output_api):
 
 def CheckAuthorizedAuthor(input_api, output_api):
     return input_api.canned_checks.CheckAuthorizedAuthor(
-        input_api, output_api, bot_allowlist=[AUTOROLL_ACCOUNT])
+        input_api,
+        output_api,
+        bot_allowlist=[
+            'chrome-cherry-picker@chops-service-accounts.iam.gserviceaccount.com',
+            'devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com',
+        ])
 
 
 def CheckPanProjectChecksOnCommit(input_api, output_api):
     return input_api.canned_checks.PanProjectChecks(input_api,
                                                     output_api,
+                                                    license_header=".*",
                                                     maxlen=120)

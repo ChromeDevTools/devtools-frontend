@@ -48,6 +48,14 @@ A very barebones trace; contains info on browser processes and threads but very 
 
 A recording of a page load of the Lighthouse byte-efficiency tester. https://github.com/GoogleChrome/lighthouse/blob/main/cli/test/fixtures/byte-efficiency/tester.html
 
+### chrome-ext-sourcemap-script-content.json.gz
+
+Trace generated after installing https://chromewebstore.google.com/detail/react-developer-tools/. A regular trace that contains two sections
+not found in other traces:
+
+1. A sourcemap in the metadata array with a 'chrome-extension' protocol.
+2. 'V8SourceRundownSourcesScriptCatchupEvent' traces that have a 'chrome-extension' protocol with associated source text.
+
 ### dom-size.json.gz
 
 Generate from a recording of [this HTML file](https://gist.github.com/adamraine/bfdb3cecca2322bf74f1e725d9a4699d) with the following steps:

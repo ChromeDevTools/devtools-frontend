@@ -145,25 +145,35 @@ export class ExposableFunction {
                 return;
             }
             const dataHandle = __addDisposableResource(env_1, BidiJSHandle.from(params.data, realm), false);
-            const argsHandle = __addDisposableResource(env_1, await dataHandle.evaluateHandle(([, , args]) => {
-                return args;
-            }), false);
             const stack = __addDisposableResource(env_1, new DisposableStack(), false);
             const args = [];
-            for (const [index, handle] of await argsHandle.getProperties()) {
-                stack.use(handle);
-                // Element handles are passed as is.
-                if (handle instanceof BidiElementHandle) {
-                    args[+index] = handle;
-                    stack.use(handle);
-                    continue;
-                }
-                // Everything else is passed as the JS value.
-                args[+index] = handle.jsonValue();
-            }
             let result;
             try {
-                result = await this.#apply(...(await Promise.all(args)));
+                const env_2 = { stack: [], error: void 0, hasError: false };
+                try {
+                    const argsHandle = __addDisposableResource(env_2, await dataHandle.evaluateHandle(([, , args]) => {
+                        return args;
+                    }), false);
+                    for (const [index, handle] of await argsHandle.getProperties()) {
+                        stack.use(handle);
+                        // Element handles are passed as is.
+                        if (handle instanceof BidiElementHandle) {
+                            args[+index] = handle;
+                            stack.use(handle);
+                            continue;
+                        }
+                        // Everything else is passed as the JS value.
+                        args[+index] = handle.jsonValue();
+                    }
+                    result = await this.#apply(...(await Promise.all(args)));
+                }
+                catch (e_1) {
+                    env_2.error = e_1;
+                    env_2.hasError = true;
+                }
+                finally {
+                    __disposeResources(env_2);
+                }
             }
             catch (error) {
                 try {
@@ -197,8 +207,8 @@ export class ExposableFunction {
                 debugError(error);
             }
         }
-        catch (e_1) {
-            env_1.error = e_1;
+        catch (e_2) {
+            env_1.error = e_2;
             env_1.hasError = true;
         }
         finally {

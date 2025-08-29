@@ -267,8 +267,14 @@ def main():
     ] or []
     if opts.test_only:
         tsconfig['compilerOptions']['types'] = [
-            "mocha", "chai", "sinon", "karma-chai-sinon"
+            "mocha", "chai", "sinon",
         ]
+        # We only want to add these types for Unit test
+        # Else we will get run time errors if we don't import chai
+        if runs_in_node_environment is False:
+            tsconfig['compilerOptions']['types'].append(
+                "karma-chai-sinon"
+            )
         # Required for sinon global access.
         tsconfig['compilerOptions']['allowUmdGlobalAccess'] = True
         if runs_in_node_environment:

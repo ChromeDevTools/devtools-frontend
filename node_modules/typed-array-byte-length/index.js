@@ -8,12 +8,13 @@ var isTypedArray = require('is-typed-array');
 
 var typedArrays = require('available-typed-arrays')();
 
-/** @typedef {Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array | BigInt64Array | BigUint64Array} TypedArray */
-/** @typedef {import('possible-typed-array-names')[number]} TypedArrayNames */
-/** @typedef {(value: TypedArray) => number} Getter */
+/** @typedef {import('possible-typed-array-names')[number]} TypedArrayName */
+/** @typedef {(value: import('.').TypedArray) => number} Getter */
 
-/** @type {Object.<TypedArrayNames, Getter>} */
-var getters = {};
+/** @type {Partial<Record<TypedArrayName, Getter> & { __proto__: null }>} */
+var getters = {
+	__proto__: null
+};
 
 var oDP = Object.defineProperty;
 if (gOPD) {
@@ -24,7 +25,9 @@ if (gOPD) {
 	forEach(typedArrays, function (typedArray) {
 		// In Safari 7, Typed Array constructors are typeof object
 		if (typeof global[typedArray] === 'function' || typeof global[typedArray] === 'object') {
-			var Proto = global[typedArray].prototype;
+			var TA = global[typedArray];
+			/** @type {import('.').TypedArray} */
+			var Proto = TA.prototype;
 			// @ts-expect-error TS doesn't narrow properly inside callbacks
 			var descriptor = gOPD(Proto, 'byteLength');
 			if (!descriptor && hasProto) {
@@ -55,16 +58,20 @@ if (gOPD) {
 /** @type {Getter} */
 var tryTypedArrays = function tryAllTypedArrays(value) {
 	/** @type {number} */ var foundByteLength;
-	forEach(getters, /** @type {(getter: Getter) => void} */ function (getter) {
-		if (typeof foundByteLength !== 'number') {
-			try {
-				var byteLength = getter(value);
-				if (typeof byteLength === 'number') {
-					foundByteLength = byteLength;
-				}
-			} catch (e) {}
+	forEach(
+		// eslint-disable-next-line no-extra-parens
+		/** @type {Record<TypedArrayName, Getter>} */ (getters),
+		/** @type {(getter: Getter) => void} */ function (getter) {
+			if (typeof foundByteLength !== 'number') {
+				try {
+					var byteLength = getter(value);
+					if (typeof byteLength === 'number') {
+						foundByteLength = byteLength;
+					}
+				} catch (e) {}
+			}
 		}
-	});
+	);
 	// @ts-expect-error TS can't guarantee the callback is invoked sync
 	return foundByteLength;
 };

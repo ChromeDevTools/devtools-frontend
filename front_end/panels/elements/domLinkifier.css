@@ -4,50 +4,51 @@
  * found in the LICENSE file.
  */
 
-:host,
-.widget {
-  display: inline;
-}
-
-.node-link {
-  cursor: pointer;
-  display: inline;
-  pointer-events: auto;
-  outline-offset: 2px;
-
-  /* If the element has lots of classes, don't let the label get too wide */
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: min(100%, 550px);
-
-  &:focus-visible {
-    outline-width: unset;
+@scope to (devtools-widget > *) {
+  :scope {
+    display: inline;
   }
 
-  &.dynamic-link:hover {
-    text-decoration: underline;
-  }
-}
+  .node-link {
+    cursor: pointer;
+    display: inline;
+    pointer-events: auto;
+    outline-offset: 2px;
 
-.node-link.disabled {
-  .node-label-name,
+    /* If the element has lots of classes, don't let the label get too wide */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: min(100%, 550px);
+
+    &:focus-visible {
+      outline-width: unset;
+    }
+
+    &.dynamic-link:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .node-link.disabled {
+    .node-label-name,
+    .node-label-class,
+    .node-label-pseudo,
+    .node-label-name .dynamic-link,
+    .node-label-id {
+      color: var(--sys-color-state-disabled);
+    }
+  }
+
+  .node-label-name {
+    color: var(--sys-color-token-tag);
+
+    .dynamic-link & {
+      color: var(--text-link);
+    }
+  }
+
   .node-label-class,
-  .node-label-pseudo,
-  .node-label-name .dynamic-link,
-  .node-label-id {
-    color: var(--sys-color-state-disabled);
+  .node-label-pseudo {
+    color: var(--sys-color-token-attribute);
   }
-}
-
-.node-label-name {
-  color: var(--sys-color-token-tag);
-
-  .dynamic-link & {
-    color: var(--text-link);
-  }
-}
-
-.node-label-class,
-.node-label-pseudo {
-  color: var(--sys-color-token-attribute);
 }

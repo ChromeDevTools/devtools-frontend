@@ -437,7 +437,7 @@ describe('ConsoleFormat', () => {
       assert.isFalse(styles.has('background-image'));
 
       Console.ConsoleFormat.updateStyle(
-          styles, 'background-image:url(\'http://localhost/a.png\')');  // With single quots.
+          styles, 'background-image:url(\'http://localhost/a.png\')');  // With single quotes.
       assert.isFalse(styles.has('background-image'));
 
       Console.ConsoleFormat.updateStyle(

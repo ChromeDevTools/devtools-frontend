@@ -8,6 +8,7 @@ import type {Protocol} from 'devtools-protocol';
 
 import {
   concat,
+  distinctUntilChanged,
   EMPTY,
   filter,
   first,
@@ -258,6 +259,16 @@ export interface ScreenshotClip extends BoundingBox {
 /**
  * @public
  */
+export type ImageFormat = 'png' | 'jpeg' | 'webp';
+
+/**
+ * @public
+ */
+export type VideoFormat = 'webm' | 'gif' | 'mp4';
+
+/**
+ * @public
+ */
 export interface ScreenshotOptions {
   /**
    * @defaultValue `false`
@@ -266,7 +277,7 @@ export interface ScreenshotOptions {
   /**
    * @defaultValue `'png'`
    */
-  type?: 'png' | 'jpeg' | 'webp';
+  type?: ImageFormat;
   /**
    * Quality of the image, between 0-100. Not applicable to `png` images.
    */
@@ -295,7 +306,7 @@ export interface ScreenshotOptions {
    * relative to current working directory. If no path is provided, the image
    * won't be saved to the disk.
    */
-  path?: string;
+  path?: `${string}.${ImageFormat}`;
   /**
    * Specifies the region of the page/element to clip.
    */
@@ -316,24 +327,26 @@ export interface ScreenshotOptions {
 
 /**
  * @public
- */
-export type FileFormat = 'gif' | 'webm' | 'mp4';
-
-/**
- * @public
  * @experimental
  */
 export interface ScreencastOptions {
   /**
    * File path to save the screencast to.
    */
-  path?: `${string}.${FileFormat}`;
+  path?: `${string}.${VideoFormat}`;
+  /**
+   * Specifies whether to overwrite output file,
+   * or exit immediately if it already exists.
+   *
+   * @defaultValue `true`
+   */
+  overwrite?: boolean;
   /**
    * Specifies the output file format.
    *
-   * @defaultValue `webm`
+   * @defaultValue `'webm'`
    */
-  format?: FileFormat;
+  format?: VideoFormat;
   /**
    * Specifies the region of the viewport to crop.
    */
@@ -397,6 +410,8 @@ export interface ScreencastOptions {
    * Path to the {@link https://ffmpeg.org/ | ffmpeg}.
    *
    * Required if `ffmpeg` is not in your PATH.
+   *
+   * @defaultValue `'ffmpeg'`
    */
   ffmpegPath?: string;
 }
@@ -1865,6 +1880,9 @@ export abstract class Page extends EventEmitter<PageEvents> {
   /**
    * Waits for the network to be idle.
    *
+   * @remarks The function will always wait at least the
+   * set {@link WaitForNetworkIdleOptions.idleTime | IdleTime}.
+   *
    * @param options - Options to configure waiting behavior.
    * @returns A promise which resolves once the network is idle.
    */
@@ -1886,8 +1904,12 @@ export abstract class Page extends EventEmitter<PageEvents> {
     } = options;
 
     return this.#inflight$.pipe(
-      switchMap(inflight => {
-        if (inflight > concurrency) {
+      map(inflight => {
+        return inflight > concurrency;
+      }),
+      distinctUntilChanged(),
+      switchMap(isInflightOverConcurrency => {
+        if (isInflightOverConcurrency) {
           return EMPTY;
         }
         return timer(idleTime);
@@ -2459,7 +2481,6 @@ export abstract class Page extends EventEmitter<PageEvents> {
 
     const recorder = new ScreenRecorder(this, width, height, {
       ...options,
-      path: options.ffmpegPath,
       crop,
     });
     try {

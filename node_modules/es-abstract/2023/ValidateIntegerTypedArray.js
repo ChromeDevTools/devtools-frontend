@@ -8,6 +8,7 @@ var TypedArrayElementType = require('./TypedArrayElementType');
 var ValidateTypedArray = require('./ValidateTypedArray');
 
 var whichTypedArray = require('which-typed-array');
+var typedArrayBuffer = require('typed-array-buffer');
 
 // https://262.ecma-international.org/13.0/#sec-validateintegertypedarray
 
@@ -18,7 +19,8 @@ module.exports = function ValidateIntegerTypedArray(typedArray) {
 		throw new $TypeError('Assertion failed: `waitable` must be a Boolean');
 	}
 
-	var buffer = ValidateTypedArray(typedArray); // step 2
+	ValidateTypedArray(typedArray); // step 2
+	var buffer = typedArrayBuffer(typedArray); // step 3
 
 	if (waitable) { // step 5
 		var typeName = whichTypedArray(typedArray);

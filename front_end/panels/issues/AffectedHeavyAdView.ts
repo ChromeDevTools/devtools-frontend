@@ -12,19 +12,19 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-   *@description Label for number of affected resources indication in issue view
+   * @description Label for number of affected resources indication in issue view
    */
   nResources: '{n, plural, =1 {# resource} other {# resources}}',
   /**
-   *@description Title for a column in an Heavy Ads issue view
+   * @description Title for a column in an Heavy Ads issue view
    */
   limitExceeded: 'Limit exceeded',
   /**
-   *@description Title for a column in an Heavy Ads issue view
+   * @description Title for a column in an Heavy Ads issue view
    */
   resolutionStatus: 'Resolution Status',
   /**
-   *@description Title for a column in an Heavy Ads issue view
+   * @description Title for a column in an Heavy Ads issue view
    */
   frameUrl: 'Frame URL',
   /**
@@ -38,17 +38,17 @@ const UIStrings = {
    */
   warned: 'Warned',
   /**
-   *@description Reason for a Heavy Ad being flagged in issue view. The Ad has been flagged as a
+   * @description Reason for a Heavy Ad being flagged in issue view. The Ad has been flagged as a
    *Heavy Ad because it exceeded the set limit for peak CPU usage, e.g. it blocked the main thread
    *for more than 15 seconds in any 30-second window.
    */
   cpuPeakLimit: 'CPU peak limit',
   /**
-   *@description Reason for a Heavy Ad being flagged in issue view
+   * @description Reason for a Heavy Ad being flagged in issue view
    */
   cpuTotalLimit: 'CPU total limit',
   /**
-   *@description Reason for a Heavy Ad being flagged in issue view
+   * @description Reason for a Heavy Ad being flagged in issue view
    */
   networkLimit: 'Network limit',
 } as const;

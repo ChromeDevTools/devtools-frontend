@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview Library to identify and templatize manually construction of widgets.
+ * @file Library to identify and templatize manually construction of widgets.
  */
 import type {TSESTree} from '@typescript-eslint/utils';
 

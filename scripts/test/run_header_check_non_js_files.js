@@ -59,16 +59,12 @@ const EXEMPTED_FILES = new Set([
   ['front_end', 'ui', 'legacy', 'viewContainers.css'],
 ].map(fileLocation => fileLocation.join('/')));
 
-/**
- * @param {string} fileLocation
- * @returns {boolean}
- */
 function isPythonLikeFile(fileLocation) {
   return ['.gn', '.gni'].includes(path.extname(fileLocation));
 }
 
 /**
- * @param {string} fileLocation
+ * @param fileLocation
  */
 async function checkAndMaybeAddLicenseHeader(fileLocation) {
   const fileStream = fs.createReadStream(fileLocation);
@@ -108,7 +104,7 @@ async function checkAndMaybeAddLicenseHeader(fileLocation) {
 }
 
 /**
- * @param {string} fileLocation
+ * @param fileLocation
  */
 function fixLicenseHeaderForFile(fileLocation) {
   /** @type {!Array<string>} */

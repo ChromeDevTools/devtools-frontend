@@ -9,16 +9,11 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [
-    "audioContextSelector.css",
-    "webAudio.css",
-  ]
+  sources = [ "webAudio.css" ]
 }
 
 devtools_module("web_audio") {
   sources = [
-    "AudioContextContentBuilder.ts",
-    "AudioContextSelector.ts",
     "WebAudioModel.ts",
     "WebAudioView.ts",
   ]
@@ -30,7 +25,6 @@ devtools_module("web_audio") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../ui/legacy:bundle",
-    "graph_visualizer:bundle",
   ]
 }
 

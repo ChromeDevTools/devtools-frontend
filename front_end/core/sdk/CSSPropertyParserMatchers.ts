@@ -1193,3 +1193,40 @@ export class PositionTryMatcher extends matcherBase(PositionTryMatch) {
     return new PositionTryMatch(valueText, node, preamble, fallbacks);
   }
 }
+
+export class EnvFunctionMatch implements Match {
+  constructor(
+      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly varName: string,
+      readonly value: string|null, readonly varNameIsValid: boolean) {
+  }
+
+  computedText(): string|null {
+    return this.value;
+  }
+}
+
+// clang-format off
+export class EnvFunctionMatcher extends matcherBase(EnvFunctionMatch) {
+  // clang-format on
+  constructor(readonly matchedStyles: CSSMatchedStyles) {
+    super();
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): EnvFunctionMatch|null {
+    if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== 'env') {
+      return null;
+    }
+
+    const [valueNodes, ...fallbackNodes] = ASTUtils.callArgs(node);
+    if (!valueNodes?.length) {
+      return null;
+    }
+
+    const fallbackValue =
+        fallbackNodes.length > 0 ? matching.getComputedTextRange(...ASTUtils.range(fallbackNodes.flat())) : undefined;
+    const varName = matching.getComputedTextRange(...ASTUtils.range(valueNodes)).trim();
+    const value = this.matchedStyles.environmentVariable(varName);
+
+    return new EnvFunctionMatch(matching.ast.text(node), node, varName, value ?? fallbackValue ?? null, Boolean(value));
+  }
+}

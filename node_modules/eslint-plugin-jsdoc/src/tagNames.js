@@ -179,10 +179,10 @@ const {
   inheritdoc,
   internal,
   overload,
-  satisfies,
-
   // Will be inverted to prefer `return`
   returns,
+
+  satisfies,
   /* eslint-enable no-unused-vars */
   ...typeScriptTagsInClosure
 } = typeScriptTags;

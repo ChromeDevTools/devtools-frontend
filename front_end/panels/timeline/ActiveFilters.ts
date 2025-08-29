@@ -4,7 +4,8 @@
 import type * as Trace from '../../models/trace/trace.js';
 
 let instance: ActiveFilters|null = null;
-/** Singleton class that contains the set of active filters for the given trace
+/**
+ * Singleton class that contains the set of active filters for the given trace
  * file.
  */
 export class ActiveFilters {

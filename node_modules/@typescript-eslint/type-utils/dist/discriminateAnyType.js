@@ -62,7 +62,7 @@ function discriminateAnyTypeWorker(type, checker, program, tsNode, visited) {
     if ((0, predicates_1.isTypeAnyArrayType)(type, checker)) {
         return AnyType.AnyArray;
     }
-    for (const part of tsutils.typeParts(type)) {
+    for (const part of tsutils.typeConstituents(type)) {
         if (tsutils.isThenableType(checker, tsNode, part)) {
             const awaitedType = checker.getAwaitedType(part);
             if (awaitedType) {

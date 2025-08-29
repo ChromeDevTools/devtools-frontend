@@ -45,7 +45,7 @@ export class Includes extends Base {
         w.reference_token(this.tokens.mixin, this),
         w.token(this.tokens.termination),
       ]),
-      { data: this }
+      { data: this },
     );
   }
 }

@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.withoutProjectParserOptions = exports.version = exports.typescriptVersionIsAtLeast = exports.simpleTraverse = exports.parseAndGenerateServices = exports.parse = exports.TSError = exports.createProgram = exports.getCanonicalFileName = void 0;
+exports.withoutProjectParserOptions = exports.version = exports.typescriptVersionIsAtLeast = exports.simpleTraverse = exports.clearCandidateTSConfigRootDirs = exports.addCandidateTSConfigRootDir = exports.parseAndGenerateServices = exports.parse = exports.TSError = exports.createProgram = exports.getCanonicalFileName = void 0;
 __exportStar(require("./clear-caches"), exports);
 __exportStar(require("./create-program/getScriptKind"), exports);
 var shared_1 = require("./create-program/shared");
@@ -27,6 +27,9 @@ Object.defineProperty(exports, "TSError", { enumerable: true, get: function () {
 var parser_1 = require("./parser");
 Object.defineProperty(exports, "parse", { enumerable: true, get: function () { return parser_1.parse; } });
 Object.defineProperty(exports, "parseAndGenerateServices", { enumerable: true, get: function () { return parser_1.parseAndGenerateServices; } });
+var candidateTSConfigRootDirs_1 = require("./parseSettings/candidateTSConfigRootDirs");
+Object.defineProperty(exports, "addCandidateTSConfigRootDir", { enumerable: true, get: function () { return candidateTSConfigRootDirs_1.addCandidateTSConfigRootDir; } });
+Object.defineProperty(exports, "clearCandidateTSConfigRootDirs", { enumerable: true, get: function () { return candidateTSConfigRootDirs_1.clearCandidateTSConfigRootDirs; } });
 var simple_traverse_1 = require("./simple-traverse");
 Object.defineProperty(exports, "simpleTraverse", { enumerable: true, get: function () { return simple_traverse_1.simpleTraverse; } });
 __exportStar(require("./ts-estree"), exports);

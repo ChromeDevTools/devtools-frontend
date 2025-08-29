@@ -23,149 +23,149 @@ const {render, html, Directives: {ref}} = Lit;
 
 const UIStrings = {
   /**
-   *@description Title in the header for the third-party cookie report in the Security & Privacy Panel
+   * @description Title in the header for the third-party cookie report in the Security & Privacy Panel
    */
   title: 'Third-party cookies',
   /**
-   *@description Explanation in the header about the cookies listed in the report
+   * @description Explanation in the header about the cookies listed in the report
    */
   body: 'This site might not work if third-party cookies and other cookies are limited in Chrome.',
   /**
-   *@description A link the user can follow to learn more about third party cookie usage
+   * @description A link the user can follow to learn more about third party cookie usage
    */
   learnMoreLink: 'Learn more about how third-party cookies are used',
   /**
-   *@description Column header for Cookie Report table. This column will contain the name of the cookie
+   * @description Column header for Cookie Report table. This column will contain the name of the cookie
    */
   name: 'Name',
   /**
-   *@description Column header for Cookie Report table. This column will contain the domain of the cookie
+   * @description Column header for Cookie Report table. This column will contain the domain of the cookie
    */
   domain: 'Domain',
   /**
-   *@description Column header for Cookie Report table. This column will contain the type of the cookie. E.g. Advertisement, Marketing, etc.
+   * @description Column header for Cookie Report table. This column will contain the type of the cookie. E.g. Advertisement, Marketing, etc.
    */
   type: 'Type',
   /**
-   *@description Column header for Cookie Report table. This column will contain the third-party of the cookie. E.g. Amazon Analytics, etc.
+   * @description Column header for Cookie Report table. This column will contain the third-party of the cookie. E.g. Amazon Analytics, etc.
    */
   platform: 'Platform',
   /**
-   *@description Column header for Cookie Report table, This column will contain the actionable step the user can take (if any) for the cookie
+   * @description Column header for Cookie Report table, This column will contain the actionable step the user can take (if any) for the cookie
    */
   recommendation: 'Recommendation',
   /**
-   *@description Column header for Cookie Report table. This column will contain the blocked or allowed status of the cookie. See status strings below for more information on the different statuses
+   * @description Column header for Cookie Report table. This column will contain the blocked or allowed status of the cookie. See status strings below for more information on the different statuses
    */
   status: 'Status',
   /**
-   *@description Status string in the cookie report for a third-party cookie that is allowed without any sort of exception. This is also used as filter chip text to allow the user to filter the table based on cookie status
+   * @description Status string in the cookie report for a third-party cookie that is allowed without any sort of exception. This is also used as filter chip text to allow the user to filter the table based on cookie status
    */
   allowed: 'Allowed',
   /**
-   *@description Status string in the cookie report for a third-party cookie that is allowed due to a grace period or heuristic exception. Otherwise, this would have been blocked. This is also used as filter chip text to allow the user to filter the table based on cookie status
+   * @description Status string in the cookie report for a third-party cookie that is allowed due to a grace period or heuristic exception. Otherwise, this would have been blocked. This is also used as filter chip text to allow the user to filter the table based on cookie status
    */
   allowedByException: 'Allowed by exception',
   /**
-   *@description Status string in the cookie report for a third-party cookie that was blocked. This is also used as filter chip text to allow the user to filter the table based on cookie status
+   * @description Status string in the cookie report for a third-party cookie that was blocked. This is also used as filter chip text to allow the user to filter the table based on cookie status
    */
   blocked: 'Blocked',
   /**
-   *@description String in the Cookie Report table. This is used when any data could not be fetched and that cell is unknown
+   * @description String in the Cookie Report table. This is used when any data could not be fetched and that cell is unknown
    */
   unknown: 'Unknown',
   /**
-   *@description Display name for the Cookie Report table. This string is used by the data grid for accessibility.
+   * @description Display name for the Cookie Report table. This string is used by the data grid for accessibility.
    */
   report: 'Third-Party Cookie Report',
   /**
-   *@description The main string the user sees when there are no cookie issues to show. This will take place of the table
+   * @description The main string the user sees when there are no cookie issues to show. This will take place of the table
    */
   emptyReport: 'Not a crumb left',
   /**
-   *@description Explanation to the user that there were no third-party cookie related issues found which is why they are not seeing the table/report
+   * @description Explanation to the user that there were no third-party cookie related issues found which is why they are not seeing the table/report
    */
   emptyReportExplanation: 'No issues with third-party cookies found',
   /**
-   *@description String in Cookie Report table. This is used when a cookie's domain has an entry in the third-party cookie migration readiness list GitHub.
-   *@example {guidance} PH1
+   * @description String in Cookie Report table. This is used when a cookie's domain has an entry in the third-party cookie migration readiness list GitHub.
+   * @example {guidance} PH1
    */
   gitHubResource: 'Review {PH1} from third-party site',
   /**
-   *@description Label for a link to an entry in the third-party cookie migration readiness list GitHub.
+   * @description Label for a link to an entry in the third-party cookie migration readiness list GitHub.
    */
   guidance: 'guidance',
   /**
-   *@description String in Cookie Report table. This is used when a cookie has a grace period exception.
-   *@example {reported issues} PH1
+   * @description String in Cookie Report table. This is used when a cookie has a grace period exception.
+   * @example {reported issues} PH1
    */
   gracePeriod: 'Review {PH1}. Grace period exception is active.',
   /**
-   *@description Label for a link to third-party cookie site compatibility look-up.
+   * @description Label for a link to third-party cookie site compatibility look-up.
    */
   reportedIssues: 'reported issues',
   /**
-   *@description String in Cookie Report table. This is used when a cookie has a heuristics exception.
+   * @description String in Cookie Report table. This is used when a cookie has a heuristics exception.
    */
   heuristics: 'Action needed later. Heuristics based exception is active.',
   /**
-   *@description String in Cookie Report table. This is used when a cookie's domain does not have an entry in the third-party cookie migration readiness list Github nor a grace period nor heuristics exception.
+   * @description String in Cookie Report table. This is used when a cookie's domain does not have an entry in the third-party cookie migration readiness list Github nor a grace period nor heuristics exception.
    */
   other: 'Contact third-party site for more info',
   /**
-   *@description String representing the Advertising cookie type. Used to format 'ad' category from the Third Party Web dataset.
+   * @description String representing the Advertising cookie type. Used to format 'ad' category from the Third Party Web dataset.
    */
   adCookieTypeString: 'Advertising',
   /**
-   *@description String representing the Analytics cookie type. Used to format 'analytics' category from the Third Party Web dataset.
+   * @description String representing the Analytics cookie type. Used to format 'analytics' category from the Third Party Web dataset.
    */
   analyticsCookieTypeString: 'Analytics',
   /**
-   *@description String representing the Social cookie type. Used to format 'social' category from the Third Party Web dataset.
+   * @description String representing the Social cookie type. Used to format 'social' category from the Third Party Web dataset.
    */
   socialCookieTypeString: 'Social',
   /**
-   *@description String representing the Video cookie type. Used to format 'video' category from the Third Party Web dataset.
+   * @description String representing the Video cookie type. Used to format 'video' category from the Third Party Web dataset.
    */
   videoCookieTypeString: 'Video',
   /**
-   *@description String representing the Utility cookie type. Used to format 'utility' category from the Third Party Web dataset.
+   * @description String representing the Utility cookie type. Used to format 'utility' category from the Third Party Web dataset.
    */
   utilityCookieTypeString: 'Utility',
   /**
-   *@description String representing the Hosting cookie type. Used to format 'hosting' category from the Third Party Web dataset.
+   * @description String representing the Hosting cookie type. Used to format 'hosting' category from the Third Party Web dataset.
    */
   hostingCookieTypeString: 'Hosting',
   /**
-   *@description String representing the Marketing cookie type. Used to format 'marketing' category from the Third Party Web dataset.
+   * @description String representing the Marketing cookie type. Used to format 'marketing' category from the Third Party Web dataset.
    */
   marketingCookieTypeString: 'Marketing',
   /**
-   *@description String representing the Customer Success cookie type. Used to format 'customer-success' category from the Third Party Web dataset.
+   * @description String representing the Customer Success cookie type. Used to format 'customer-success' category from the Third Party Web dataset.
    */
   customerSuccessCookieTypeString: 'Customer Success',
   /**
-   *@description String representing the Content cookie type. Used to format 'content' category from the Third Party Web dataset.
+   * @description String representing the Content cookie type. Used to format 'content' category from the Third Party Web dataset.
    */
   contentCookieTypeString: 'Content',
   /**
-   *@description String representing the CDN cookie type. Used to format 'cdn' category from the Third Party Web dataset.
+   * @description String representing the CDN cookie type. Used to format 'cdn' category from the Third Party Web dataset.
    */
   cdnCookieTypeString: 'CDN',
   /**
-   *@description String representing the Tag Manager cookie type. Used to format 'tag-manager' category from the Third Party Web dataset.
+   * @description String representing the Tag Manager cookie type. Used to format 'tag-manager' category from the Third Party Web dataset.
    */
   tagManagerCookieTypeString: 'Tag Manager',
   /**
-   *@description String representing the Consent Provider cookie type. Used to format 'consent-provider' category from the Third Party Web dataset.
+   * @description String representing the Consent Provider cookie type. Used to format 'consent-provider' category from the Third Party Web dataset.
    */
   consentProviderCookieTypeString: 'Consent Provider',
   /**
-   *@description String representing the Other cookie type. Used to format 'other' category from the Third Party Web dataset.
+   * @description String representing the Other cookie type. Used to format 'other' category from the Third Party Web dataset.
    */
   otherCookieTypeString: 'Other',
   /**
-   *@description String that shows up in the context menu when right clicking one of the entries in the cookie report.
+   * @description String that shows up in the context menu when right clicking one of the entries in the cookie report.
    */
   showRequestsWithThisCookie: 'Show requests with this cookie',
 } as const;
@@ -270,7 +270,7 @@ export class CookieReportView extends UI.Widget.VBox {
                 <div class="empty-report">
                   <devtools-icon
                     class="cookie-off"
-                    .name=${'cookie_off'}
+                    name="cookie_off"
                   ></devtools-icon>
                   <div class="empty-report-title">
                     ${i18nString(UIStrings.emptyReport)}
@@ -286,7 +286,7 @@ export class CookieReportView extends UI.Widget.VBox {
     `, target, {host: this});
     // clang-format on
   }) {
-    super(true, undefined, element);
+    super(element, {useShadowDom: true});
     this.#view = view;
     this.registerRequiredCSS(cookieReportViewStyles);
     this.searchText = Common.Settings.Settings.instance().createSetting('cookie-report-search-query', '').get();

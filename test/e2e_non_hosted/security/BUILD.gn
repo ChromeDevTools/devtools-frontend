@@ -5,7 +5,10 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("security") {
-  sources = [ "security_test.ts" ]
+  sources = [
+    "privacy_test.ts",
+    "security_test.ts",
+  ]
 
   deps = [
     "../../e2e/helpers",

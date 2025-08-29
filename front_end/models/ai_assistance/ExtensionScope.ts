@@ -247,10 +247,7 @@ export class ExtensionScope {
   }
 
   static getSourceLocation(styleRule: SDK.CSSRule.CSSStyleRule): string|undefined {
-    if (!styleRule.styleSheetId) {
-      return;
-    }
-    const styleSheetHeader = styleRule.cssModel().styleSheetHeaderForId(styleRule.styleSheetId);
+    const styleSheetHeader = styleRule.header;
     if (!styleSheetHeader) {
       return;
     }

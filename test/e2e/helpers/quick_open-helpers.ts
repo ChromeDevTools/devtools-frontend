@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {platform} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -68,9 +70,9 @@ export const openFileWithQuickOpen =
       SourceFileEvents.SOURCE_FILE_LOADED,
       files => files.some(f => f.endsWith(sourceFile)),
       async () => {
-        await openFileQuickOpen();
-        await typeIntoQuickOpen(sourceFile);
-        const firstItem = await getMenuItemAtPosition(filePosition);
+        await openFileQuickOpen(devtoolsPage);
+        await typeIntoQuickOpen(sourceFile, undefined, devtoolsPage);
+        const firstItem = await getMenuItemAtPosition(filePosition, devtoolsPage);
         await firstItem.click();
       },
       devtoolsPage,
@@ -113,9 +115,7 @@ export async function getMenuItemAtPosition(
   await devtoolsPage.waitFor(QUICK_OPEN_ITEM_TITLE_SELECTOR);
   const itemsHandles = await devtoolsPage.$$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
   const item = itemsHandles[position];
-  if (!item) {
-    assert.fail(`Quick open: could not find item at position: ${position}.`);
-  }
+  assert.isOk(item, `Quick open: could not find item at position: ${position}.`);
   return item;
 }
 
@@ -125,9 +125,7 @@ export async function getMenuItemTitleAtPosition(
   await devtoolsPage.waitFor(QUICK_OPEN_ITEM_TITLE_SELECTOR);
   const itemsHandles = await devtoolsPage.$$(QUICK_OPEN_ITEM_TITLE_SELECTOR, quickOpenElement);
   const item = itemsHandles[position];
-  if (!item) {
-    assert.fail(`Quick open: could not find item at position: ${position}.`);
-  }
+  assert.isOk(item, `Quick open: could not find item at position: ${position}.`);
   const title = await item.evaluate(elem => elem.textContent);
   return title;
 }
@@ -140,9 +138,7 @@ export const getSelectedItemText = async (devToolsPage = getBrowserAndPagesWrapp
   const quickOpenElement = await devToolsPage.waitFor(QUICK_OPEN_SELECTOR);
   const selectedRow = await devToolsPage.waitFor(QUICK_OPEN_SELECTED_ITEM_SELECTOR, quickOpenElement);
   const textContent = await selectedRow.getProperty('textContent');
-  if (!textContent) {
-    assert.fail('Quick open: could not get selected item textContent');
-  }
+  assert.isOk(textContent, 'Quick open: could not get selected item textContent');
   return await textContent.jsonValue();
 };
 

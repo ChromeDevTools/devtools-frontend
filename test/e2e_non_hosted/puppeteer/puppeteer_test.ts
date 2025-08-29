@@ -6,8 +6,13 @@
 
 import {assert} from 'chai';
 
+import {expectError} from '../../conductor/events.js';
+
 describe('Puppeteer', () => {
   it('should connect to the browser via DevTools own connection', async ({browser, devToolsPage}) => {
+    expectError(/Protocol Error: the message with wrong session id/);
+    expectError(/Protocol Error: the message with wrong session id/);
+
     const version = await browser.browser.version();
     const result = await devToolsPage.evaluate(`(async () => {
       const puppeteer = await import('./third_party/puppeteer/puppeteer.js');
@@ -52,8 +57,10 @@ describe('Puppeteer', () => {
          * @param {() => void} cb
          */
         set onclose(cb) {
+          const prev = this._connection.getOnDisconnect();
           this._connection.setOnDisconnect(() => {
-            cb()
+            prev?.();
+            cb?.();
           });
         }
       }

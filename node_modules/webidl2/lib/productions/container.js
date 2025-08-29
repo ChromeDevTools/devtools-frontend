@@ -102,7 +102,7 @@ export class Container extends Base {
         w.token(this.tokens.colon),
         w.ts.trivia(this.tokens.inheritance.trivia),
         w.ts.inheritance(
-          w.reference(this.tokens.inheritance.value, { context: this })
+          w.reference(this.tokens.inheritance.value, { context: this }),
         ),
       ]);
     };
@@ -121,7 +121,7 @@ export class Container extends Base {
         w.token(this.tokens.close),
         w.token(this.tokens.termination),
       ]),
-      { data: this }
+      { data: this },
     );
   }
 }

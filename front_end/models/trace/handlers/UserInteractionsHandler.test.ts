@@ -397,7 +397,8 @@ describe('UserInteractionsHandler', function() {
       assert.isFalse(visibleEventInteractionIds.includes('keydown:3558'));
       assert.isFalse(visibleEventInteractionIds.includes('keyup:3558'));
 
-      /** This is a slightly offset block of events:
+      /**
+       * This is a slightly offset block of events:
        * ====[keydown 3572]=====
        *    =[keydown 3565]=====
        *          ====[keydown 3586]========
@@ -408,7 +409,8 @@ describe('UserInteractionsHandler', function() {
       assert.isTrue(visibleEventInteractionIds.includes('keydown:3586'));
       assert.isFalse(visibleEventInteractionIds.includes('keydown:3565'));
 
-      /** This is a block of events that have offset overlaps:
+      /**
+       * This is a block of events that have offset overlaps:
        * ====[keydown 3614]=====  =====[keydown 3621]======
        *       =====[keydown 3628]=========================
        * In this test we want to make sure that 3621 is collapsed as it fits

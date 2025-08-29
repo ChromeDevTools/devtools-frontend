@@ -7,7 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 
 Host.InspectorFrontendHost.InspectorFrontendHostInstance.isolatedFileSystem = function(name) {

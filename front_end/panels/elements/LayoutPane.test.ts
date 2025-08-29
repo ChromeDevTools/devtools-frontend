@@ -98,11 +98,16 @@ describeWithMockConnection('LayoutPane', () => {
   const ID_3 = 3 as Protocol.DOM.NodeId;
 
   it('renders grid elements', async () => {
-    getNodesByStyle.withArgs([{name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'}]).resolves([
-      ID_1,
-      ID_2,
-      ID_3,
-    ]);
+    getNodesByStyle
+        .withArgs([
+          {name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'},
+          {name: 'display', value: 'masonry'}, {name: 'display', value: 'inline-masonry'}
+        ])
+        .resolves([
+          ID_1,
+          ID_2,
+          ID_3,
+        ]);
     sinon.stub(domModel, 'nodeForId')
         .withArgs(ID_1)
         .returns(makeNode(ID_1))
@@ -136,9 +141,14 @@ describeWithMockConnection('LayoutPane', () => {
   });
 
   it('send an event when an element overlay is toggled', async () => {
-    getNodesByStyle.withArgs([{name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'}]).resolves([
-      ID_1,
-    ]);
+    getNodesByStyle
+        .withArgs([
+          {name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'},
+          {name: 'display', value: 'masonry'}, {name: 'display', value: 'inline-masonry'}
+        ])
+        .resolves([
+          ID_1,
+        ]);
     sinon.stub(domModel, 'nodeForId').withArgs(ID_1).returns(makeNode(ID_1));
     const highlightGrid = sinon.spy(overlayModel, 'highlightGridInPersistentOverlay');
 
@@ -151,9 +161,14 @@ describeWithMockConnection('LayoutPane', () => {
   });
 
   it('send an event when an element’s Show element button is pressed', async () => {
-    getNodesByStyle.withArgs([{name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'}]).resolves([
-      ID_1,
-    ]);
+    getNodesByStyle
+        .withArgs([
+          {name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'},
+          {name: 'display', value: 'masonry'}, {name: 'display', value: 'inline-masonry'}
+        ])
+        .resolves([
+          ID_1,
+        ]);
     const node = makeNode(ID_1);
     sinon.stub(domModel, 'nodeForId').withArgs(ID_1).returns(node);
     const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();

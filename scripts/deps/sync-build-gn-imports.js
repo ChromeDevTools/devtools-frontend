@@ -25,8 +25,8 @@ const {hideBin} = require('yargs/helpers');
  * This function gets given '["foo.js"]' and should return an array of all the
  * files found.
  *
- * @param {string} line
- * @returns {Array<string>}
+ * @param line
+ * @returns
  **/
 function parseSingleLineOfBuildGNFiles(line) {
   return line.split(',').map(item => item.replaceAll('"', '').trim()).filter(x => {
@@ -41,10 +41,9 @@ function parseSingleLineOfBuildGNFiles(line) {
  * We return an array of all the files we found, and the index of the end of
  * this set of files, so we can continue parsing the rest of the input.
  *
- * @param {Array<string>} lines
- * @param {number} startIndex
- *
- * @returns {{data: Array<string>, nextIndex: number}}
+ * @param lines
+ * @param startIndex
+ * @returns
  *
  **/
 function parseMultipleLineOfBuildGNFiles(lines, startIndex) {
@@ -77,11 +76,10 @@ function parseMultipleLineOfBuildGNFiles(lines, startIndex) {
  * {...} The section that is passed in is modified in place with the detected
  * `sources` and `deps`.
  *
- * @param {GNSection} section
- * @param {Array<string>} lines
- * @param {number} startIndex
- *
- * @returns {number} the index of the next line of input to parse future sections from
+ * @param section
+ * @param lines
+ * @param startIndex
+ * @returns the index of the next line of input to parse future sections from
  */
 function parseBuildGNSection(section, lines, startIndex) {
   let i = startIndex + 1;
@@ -128,8 +126,8 @@ function parseBuildGNSection(section, lines, startIndex) {
  * advantage of that fact that clang-format ensures our BUILD.gn files are
  * indented and structured consistently. Therefore a few regexes is all we need
  * to pull out the relevant information.
- * @param {string} input
- * @returns {Array<GNSection>} modules
+ * @param input
+ * @returns modules
  */
 function parseBuildGN(input) {
   const lines = input.split('\n');
@@ -167,10 +165,9 @@ function parseBuildGN(input) {
  *  => import * from './bar.js';
  *  We will return `['./foo.js', './bar.js']`
  *
- * @param {string} code
- * @param {string} fileName
- *
- * @returns {SourceFile}
+ * @param code
+ * @param fileName
+ * @returns
  */
 function parseSourceFileForImports(code, fileName) {
   const file = ts.createSourceFile(fileName, code);
@@ -200,8 +197,8 @@ function parseSourceFileForImports(code, fileName) {
 /**
  * Takes the result of parsing a BUILD.gn file along with the result of parsing
  * a source file and returns information about the dependencies.
- * @param {{buildGN: Array<GNSection>, sourceCode: SourceFile}} data
- * @returns {ComparisonResult}
+ * @param data
+ * @returns
  */
 function compareDeps({buildGN, sourceCode}) {
   const sourceImportsWithFileNameRemoved = sourceCode.imports
@@ -329,8 +326,8 @@ function compareDeps({buildGN, sourceCode}) {
 /**
  * Takes a path to a directory and validates that directory by checking each source code file that it finds against the BUILD.gn.
  * Note: this function does not recurse into sub-directories.
- * @param {string} dirPath
- * @returns {ValidateDirectoryResult}
+ * @param dirPath
+ * @returns
  */
 function validateDirectory(dirPath) {
   const buildGNPath = path.join(dirPath, 'BUILD.gn');

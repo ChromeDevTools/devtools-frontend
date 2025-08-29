@@ -41,12 +41,12 @@ import fontViewStyles from './fontView.css.js';
 
 const UIStrings = {
   /**
-   *@description Text that appears on a button for the font resource type filter.
+   * @description Text that appears on a button for the font resource type filter.
    */
   font: 'Font',
   /**
-   *@description Aria accessible name in Font View of the Sources panel
-   *@example {https://example.com} PH1
+   * @description Aria accessible name in Font View of the Sources panel
+   * @example {https://example.com} PH1
    */
   previewOfFontFromS: 'Preview of font from {PH1}',
 } as const;
@@ -61,10 +61,13 @@ export class FontView extends UI.View.SimpleView {
   fontStyleElement!: HTMLStyleElement|null;
   private inResize!: boolean|null;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
-    super(i18nString(UIStrings.font));
+    super({
+      title: i18nString(UIStrings.font),
+      viewId: 'font',
+      jslog: `${VisualLogging.pane('font-view')}`,
+    });
     this.registerRequiredCSS(fontViewStyles);
     this.element.classList.add('font-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('font-view')}`);
     this.url = contentProvider.contentURL();
     UI.ARIAUtils.setLabel(this.element, i18nString(UIStrings.previewOfFontFromS, {PH1: this.url}));
     this.contentProvider = contentProvider;

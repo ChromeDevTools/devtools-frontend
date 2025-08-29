@@ -333,7 +333,7 @@ let BidiPage = (() => {
             return this._timeoutSettings.navigationTimeout();
         }
         isJavaScriptEnabled() {
-            return this.#cdpEmulationManager.javascriptEnabled;
+            return this.#frame.browsingContext.isJavaScriptEnabled();
         }
         async setGeolocation(options) {
             const { longitude, latitude, accuracy = 0 } = options;
@@ -355,7 +355,7 @@ let BidiPage = (() => {
             });
         }
         async setJavaScriptEnabled(enabled) {
-            return await this.#cdpEmulationManager.setJavaScriptEnabled(enabled);
+            return await this.#frame.browsingContext.setJavaScriptEnabled(enabled);
         }
         async emulateMediaType(type) {
             return await this.#cdpEmulationManager.emulateMediaType(type);
@@ -367,7 +367,7 @@ let BidiPage = (() => {
             return await this.#cdpEmulationManager.emulateMediaFeatures(features);
         }
         async emulateTimezone(timezoneId) {
-            return await this.#cdpEmulationManager.emulateTimezone(timezoneId);
+            return await this.#frame.browsingContext.setTimezoneOverride(timezoneId);
         }
         async emulateIdleState(overrides) {
             return await this.#cdpEmulationManager.emulateIdleState(overrides);

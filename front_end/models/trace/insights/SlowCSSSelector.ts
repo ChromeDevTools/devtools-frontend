@@ -19,7 +19,7 @@ import {
 
 export const UIStrings = {
   /**
-   *@description Title of an insight that provides details about slow CSS selectors.
+   * @description Title of an insight that provides details about slow CSS selectors.
    */
   title: 'CSS Selector costs',
 
@@ -29,23 +29,23 @@ export const UIStrings = {
   description:
       'If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/devtools/performance/selector-stats) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.',
   /**
-   *@description Column name for count of elements that the engine attempted to match against a style rule
+   * @description Column name for count of elements that the engine attempted to match against a style rule
    */
   matchAttempts: 'Match attempts',
   /**
-   *@description Column name for count of elements that matched a style rule
+   * @description Column name for count of elements that matched a style rule
    */
   matchCount: 'Match count',
   /**
-   *@description Column name for elapsed time spent computing a style rule
+   * @description Column name for elapsed time spent computing a style rule
    */
   elapsed: 'Elapsed time',
   /**
-   *@description Column name for the selectors that took the longest amount of time/effort.
+   * @description Column name for the selectors that took the longest amount of time/effort.
    */
   topSelectors: 'Top selectors',
   /**
-   *@description Column name for a total sum.
+   * @description Column name for a total sum.
    */
   total: 'Total',
   /**
@@ -54,11 +54,11 @@ export const UIStrings = {
   enableSelectorData:
       'No CSS selector data was found. CSS selector stats need to be enabled in the performance panel settings.',
   /**
-   *@description top CSS selector when ranked by elapsed time in ms
+   * @description top CSS selector when ranked by elapsed time in ms
    */
   topSelectorElapsedTime: 'Top selector elaspsed time',
   /**
-   *@description top CSS selector when ranked by match attempt
+   * @description top CSS selector when ranked by match attempt
    */
   topSelectorMatchAttempt: 'Top selector match attempt',
 } as const;

@@ -16,9 +16,7 @@ export async function waitForSoftContextMenu(devToolsPage: DevToolsPage = getBro
 
 export async function assertTopLevelContextMenuItemsText(expectedOptions: string[]): Promise<void> {
   const contextMenu = await $('.soft-context-menu');
-  if (!contextMenu) {
-    assert.fail('Could not find context menu.');
-  }
+  assert.isOk(contextMenu, 'Could not find context menu.');
 
   const allItems = await $$('.soft-context-menu > .soft-context-menu-item');
   const allItemsText = await Promise.all(allItems.map(item => item.evaluate(div => div.textContent)));
@@ -57,16 +55,16 @@ export async function assertSubMenuItemsText(subMenuText: string, expectedOption
   // Each submenu is rendered as a separate context menu and is appended to
   // the DOM after the main context menu, hence the array index.
   const subMenuElement = allMenus[1];
-  if (!subMenuElement) {
-    assert.fail(`Could not find sub menu for ${subMenuText}`);
-  }
+  assert.isOk(subMenuElement, `Could not find sub menu for ${subMenuText}`);
   const subMenuItems = await $$('.soft-context-menu-item', subMenuElement);
   const subMenuItemsText = await Promise.all(subMenuItems.map(item => item.evaluate(div => div.textContent)));
   assert.deepEqual(subMenuItemsText, expectedOptions);
 }
 
-export async function openSoftContextMenuAndClickOnItem(
-    selector: string, label: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function openSoftContextMenuAndClickOnItem(selector: string, label: string, devToolsPage?: DevToolsPage) {
+  if (!devToolsPage) {
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage;
+  }
   // Find the selected node, right click.
   await devToolsPage.click(selector, {clickOptions: {button: 'right'}});
 

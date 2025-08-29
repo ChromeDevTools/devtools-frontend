@@ -52,7 +52,7 @@ class TestSearchView extends Search.SearchView.SearchView {
   readonly #scopeCreator: () => Search.SearchScope.SearchScope;
   /**
    * `SearchView` resets and lazily re-creates the search results pane for each search.
-   * To provide a fake instance we install a get/set accesssor for the original property
+   * To provide a fake instance we install a get/set accessor for the original property
    * that behaves normally with no override, but returns the mock if one is provided.
    */
   #searchResultsPane: Search.SearchResultsPane.SearchResultsPane|null = null;
@@ -68,7 +68,7 @@ class TestSearchView extends Search.SearchView.SearchView {
     this.#searchResultsPane = searchResultsPane ?? null;
     this.#overrideResultsPane = Boolean(searchResultsPane);
 
-    // Use 'Object.definePrroperty' or TS won't be happy that we replace a prop with an accessor.
+    // Use 'Object.defineProperty' or TS won't be happy that we replace a prop with an accessor.
     Object.defineProperty(this, 'searchResultsPane', {
       get: () => this.#searchResultsPane,
       set: (pane: Search.SearchResultsPane.SearchResultsPane|null) => {

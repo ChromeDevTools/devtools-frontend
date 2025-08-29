@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview Library to identify and templatize manually calls to DevTools DOM API extensions.
+ * @file Library to identify and templatize manually calls to DevTools DOM API extensions.
  */
 
 import {isIdentifier, type RuleCreator} from './ast.ts';

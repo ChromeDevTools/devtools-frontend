@@ -525,6 +525,15 @@ export class SamplesIntegrator {
       }
     };
   }
+
+  static extractCpuProfileFromFakeTrace(traceEvents: readonly Types.Events.Event[]): Protocol.Profiler.Profile {
+    const profileEvent = traceEvents.find(e => Types.Events.isSyntheticCpuProfile(e));
+    const profile = profileEvent?.args.data.cpuProfile;
+    if (!profile) {
+      throw new Error('Missing cpuProfile data');
+    }
+    return profile;
+  }
 }
 
 export namespace SamplesIntegrator {

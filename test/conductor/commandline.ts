@@ -52,8 +52,8 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
       })
       .option('headless', {
         type: 'boolean',
-        default: false,
-        desc: 'Run tests headless even when in debug mode',
+        default: undefined,
+        desc: 'Whether to run tests headless. If unspecified, the default depends on the `debug` option',
       })
       .option('coverage', {
         type: 'boolean',

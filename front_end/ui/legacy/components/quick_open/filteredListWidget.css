@@ -136,8 +136,10 @@ devtools-text-prompt {
 
 .filtered-list-widget-item.one-row {
   line-height: var(--sys-typescale-body3-line-height);
+  align-items: center;
   align-content: center;
   display: flex;
+  gap: var(--sys-size-4);
 }
 
 .filtered-list-widget-item.one-row .filtered-list-widget-title {

@@ -123,9 +123,7 @@ export async function setSearchFilter(text: string, devToolsPage = getBrowserAnd
   await triggerLocalFindDialog(devToolsPage);
   const SEARCH_QUERY = '[aria-label="Find"]';
   const inputElement = await devToolsPage.waitFor(SEARCH_QUERY);
-  if (!inputElement) {
-    assert.fail('Unable to find search input field');
-  }
+  assert.isOk(inputElement, 'Unable to find search input field');
   await inputElement.focus();
   await inputElement.type(text);
 }
@@ -209,12 +207,8 @@ export async function assertRetainerChainSatisfies(
     const retainer = retainerGridElements[i];
     const propertyName = await retainer.$eval('span.property-name', el => el.textContent);
     const rawRetainerClassName = await retainer.$eval('span.value', el => el.textContent);
-    if (!propertyName) {
-      assert.fail('Could not get retainer name');
-    }
-    if (!rawRetainerClassName) {
-      assert.fail('Could not get retainer value');
-    }
+    assert.isOk(propertyName, 'Could not get retainer name');
+    assert.isOk(rawRetainerClassName, 'Could not get retainer value');
     const retainerClassName = normalizRetainerName(rawRetainerClassName);
     retainerChain.push({propertyName, retainerClassName});
     if (await retainer.evaluate(el => !el.classList.contains('expanded'))) {

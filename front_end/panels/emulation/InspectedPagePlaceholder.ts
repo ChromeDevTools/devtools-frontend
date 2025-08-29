@@ -13,7 +13,7 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<Ev
     UI.Widget.Widget) {
   private updateId?: number;
   constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(inspectedPagePlaceholderStyles);
     UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZOOM_CHANGED, this.onResize, this);
     this.restoreMinimumSize();

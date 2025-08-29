@@ -4,12 +4,14 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("main") {
   sources = [
     "ExecutionContextSelector.ts",
+    "GlobalAiButton.ts",
     "MainImpl.ts",
     "SimpleApp.ts",
   ]
@@ -44,10 +46,17 @@ devtools_module("main") {
   ]
 }
 
+generate_css("css_files") {
+  sources = [ "./globalAiButton.css" ]
+}
+
 devtools_entrypoint("bundle") {
   entrypoint = "main.ts"
 
-  deps = [ ":main" ]
+  deps = [
+    ":css_files",
+    ":main",
+  ]
 
   visibility = [
     ":*",
@@ -89,6 +98,7 @@ ts_library("unittests") {
 
   sources = [
     "ExecutionContextSelector.test.ts",
+    "GlobalAiButton.test.ts",
     "MainImpl.test.ts",
   ]
 

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Uses Intl.NumberFormat.
+ * @file Uses Intl.NumberFormat.
  * @see go/cpq:i18n-units-design
  */
 

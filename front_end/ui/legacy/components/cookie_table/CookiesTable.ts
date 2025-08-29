@@ -84,48 +84,48 @@ const {repeat, ifDefined} = Directives;
 
 const UIStrings = {
   /**
-   *@description Cookie table cookies table expires session value in Cookies Table of the Cookies table in the Application panel
+   * @description Cookie table cookies table expires session value in Cookies Table of the Cookies table in the Application panel
    */
   session: 'Session',
   /**
-   *@description Text for the name of something
+   * @description Text for the name of something
    */
   name: 'Name',
   /**
-   *@description Text for the value of something
+   * @description Text for the value of something
    */
   value: 'Value',
   /**
-   *@description Text for the size of something
+   * @description Text for the size of something
    */
   size: 'Size',
   /**
-   *@description Data grid name for Editable Cookies data grid
+   * @description Data grid name for Editable Cookies data grid
    */
   editableCookies: 'Editable Cookies',
   /**
-   *@description Text for web cookies
+   * @description Text for web cookies
    */
   cookies: 'Cookies',
   /**
-   *@description Text for something not available
+   * @description Text for something not available
    */
   na: 'N/A',
   /**
-   *@description Text for Context Menu entry
+   * @description Text for Context Menu entry
    */
   showRequestsWithThisCookie: 'Show requests with this cookie',
   /**
-   *@description Text for Context Menu entry
+   * @description Text for Context Menu entry
    */
   showIssueAssociatedWithThis: 'Show issue associated with this cookie',
   /**
-   *@description Tooltip for the cell that shows the sourcePort property of a cookie in the cookie table. The source port is numberic attribute of a cookie.
+   * @description Tooltip for the cell that shows the sourcePort property of a cookie in the cookie table. The source port is numberic attribute of a cookie.
    */
   sourcePortTooltip:
       'Shows the source port (range 1-65535) the cookie was set on. If the port is unknown, this shows -1.',
   /**
-   *@description Tooltip for the cell that shows the sourceScheme property of a cookie in the cookie table. The source scheme is a trinary attribute of a cookie.
+   * @description Tooltip for the cell that shows the sourceScheme property of a cookie in the cookie table. The source scheme is a trinary attribute of a cookie.
    */
   sourceSchemeTooltip:
       'Shows the source scheme (`Secure`, `NonSecure`) the cookie was set on. If the scheme is unknown, this shows `Unset`.',
@@ -477,7 +477,7 @@ export class CookiesTable extends UI.Widget.VBox {
           i18nString(UIStrings.timeAfterTooltip, {seconds: cookie.expires(), date: new Date(maxTime).toISOString()});
     }
     data[SDK.Cookie.Attribute.PARTITION_KEY_SITE] =
-        cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey) : cookie.topLevelSite();
+        cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey).toString() : cookie.topLevelSite();
     data[SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR] = cookie.hasCrossSiteAncestor() ? 'true' : '';
     data[SDK.Cookie.Attribute.SIZE] = String(cookie.size());
     data[SDK.Cookie.Attribute.PRIORITY] = cookie.priority();
@@ -492,16 +492,12 @@ export class CookiesTable extends UI.Widget.VBox {
         if (attribute === SDK.Cookie.Attribute.NAME &&
             IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssue(cookie)) {
           data.icons[attribute].name = 'warning-filled';
-          data.icons[attribute].style.color = 'var(--icon-warning)';
-          data.icons[attribute].style.width = '14px';
-          data.icons[attribute].style.height = '14px';
           data.icons[attribute].onclick = () => IssuesManager.RelatedIssue.reveal(cookie);
           data.icons[attribute].style.cursor = 'pointer';
         } else {
           data.icons[attribute].name = 'info';
-          data.icons[attribute].style.width = '14px';
-          data.icons[attribute].style.height = '14px';
         }
+        data.icons[attribute].classList.add('small');
         data.icons[attribute].title = blockedReason.uiString;
       } else if (data.icons[attribute]) {
         data.icons[attribute].title += '\n' + blockedReason.uiString;
@@ -513,8 +509,7 @@ export class CookiesTable extends UI.Widget.VBox {
       data.flagged = true;
       data.icons.name = new IconButton.Icon.Icon();
       data.icons.name.name = 'info';
-      data.icons.name.style.width = '14px';
-      data.icons.name.style.height = '14px';
+      data.icons.name.classList.add('small');
       data.icons.name.title = exemptionReason;
     }
     data.key = cookie.key();

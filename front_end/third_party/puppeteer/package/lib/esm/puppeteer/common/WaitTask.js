@@ -18,6 +18,7 @@ export class WaitTask {
     #fn;
     #args;
     #timeout;
+    #genericError = new Error('Waiting failed');
     #timeoutError;
     #result = Deferred.create();
     #poller;
@@ -107,7 +108,8 @@ export class WaitTask {
             }
             const badError = this.getBadError(error);
             if (badError) {
-                await this.terminate(badError);
+                this.#genericError.cause = badError;
+                await this.terminate(this.#genericError);
             }
         }
     }

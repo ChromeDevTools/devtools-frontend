@@ -1280,14 +1280,8 @@
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "অসুরক্ষিত উৎসে getUserMedia() আর কাজ করে না। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
   },
-  "generated/Deprecation.ts | H1UserAgentFontSizeInSection": {
-    "message": "<article>, <aside>, <nav> বা <section>-এ একটি <h1> ট্যাগ পাওয় গেছে, যার মধ্যে নির্দিষ্ট কোনও ফন্ট সাইজ সেট করা নেই। অদূর ভবিষ্যতে এই ব্রাউজারে, এই হেডিং টেক্সটের সাইজ পরিববর্তন করা হবে। আরও তথ্যের জন্য https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 দেখুন।"
-  },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate বন্ধ করা হয়েছে। এর পরিবর্তে RTCPeerConnectionIceErrorEvent.address বা RTCPeerConnectionIceErrorEvent.port ব্যবহার করুন।"
-  },
-  "generated/Deprecation.ts | IdentityDigitalCredentials": {
-    "message": "ডিজিটাল ক্রিডেনশিয়ালের অনুরোধ করার জন্য এই ফর্ম্যাট navigator.credentials.get() বন্ধ করে দেওয়া হয়েছে, নতুন ফর্ম্যাট ব্যবহার করার জন্য আপনার কল আপডেট করুন।"
   },
   "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
     "message": "সার্ভিস ওয়ার্কার ইভেন্ট canmakepayment থেকে মার্চেন্টের সোর্স এবং আরবিট্রারি ডেটা বাতিল করা এবং সরানো হয়েছে: topOrigin, paymentRequestOrigin, methodData, modifiers।"
@@ -1327,6 +1321,9 @@
   },
   "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
     "message": "img, video ও canvas ট্যাগের মধ্যে overflow: visible-এর তথ্য প্রদান করার মাধ্যমে, এলিমেন্টের সীমার বাইরে ট্যাগ ভিজ্যুয়াল কন্টেন্ট তৈরি করতে পারে। https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md দেখুন।"
+  },
+  "generated/Deprecation.ts | OverrideFlashEmbedwithHTML": {
+    "message": "HTML iframe-এ পুরনো Flash ভিডিও এম্বেড রিরাইট করা হয়েছে। Flash অনেকদিন আগেই বন্ধ হয়ে গেছে, এই রিরাইটিং হ্যাক পুরনো হয়ে গেছে এবং ভবিষ্যতে সরিয়ে দেওয়া হতে পারে।"
   },
   "generated/Deprecation.ts | PaymentInstruments": {
     "message": "paymentManager.instruments বন্ধ করে দেওয়া হয়েছে। এর পরিবর্তে পেমেন্ট হ্যান্ডলারের জন্য জাস্ট-ইন-টাইম ইনস্টল ব্যবহার করুন।"
@@ -1397,9 +1394,6 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer ব্যবহার করা চালিয়ে যেতে ক্রস-অরিজিন আইসোলেশ থেকে এক্সটেনশন বেছে নিতে হবে। https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ দেখুন।"
   },
-  "generated/Deprecation.ts | WebGPUAdapterIsFallbackAdapter": {
-    "message": "GPUAdapter isFallbackAdapter অ্যাট্রিবিউট বন্ধ হয়ে গেছে, এর পরিবর্তে GPUAdapterInfo isFallbackAdapter অ্যাট্রিবিউট ব্যবহার করুন।"
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequest-এ প্রতিক্রিয়া json-মাধ্যমে UTF-16 কাজ করে না"
   },
@@ -1444,24 +1438,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] {PH2} -এর জন্য ডিবাগ চিহ্ন লোড করা হচ্ছে ({PH3}-এর মাধ্যমে)…"
-  },
-  "models/bindings/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
-    "message": "তালিকা এড়িয়ে যেতে সবকটি বেনামী স্ক্রিপ্ট যোগ করুন"
-  },
-  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "তালিকা উপেক্ষা করতে, সবকটি এক্সটেনশন স্ক্রিপ্ট যোগ করুন"
-  },
-  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
-    "message": "উপেক্ষা তালিকায় সব থার্ড-পার্টি স্ক্রিপ্ট যোগ করুন"
-  },
-  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
-    "message": "তালিকা উপেক্ষা করতে ডিরেক্টরি যোগ করুন"
-  },
-  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
-    "message": "উপেক্ষা তালিকায় স্ক্রিপ্ট যোগ করুন"
-  },
-  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
-    "message": "উপেক্ষা তালিকা থেকে সরান"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit কম্পাইল করা যায়নি: {PH1}"
@@ -1700,6 +1676,12 @@
   "models/persistence/IsolatedFileSystem.ts | cantReadFileSS": {
     "message": "ফাইল পড়া যাচ্ছে না: {PH1}: {PH2}"
   },
+  "models/persistence/IsolatedFileSystem.ts | createDirFailed": {
+    "message": "ওভাররাইড: {PH1} ডিরেক্টরি তৈরি করা যায়নি। ওভাররাইড বা ওয়ার্কস্পেস সঠিকভাবে কনফিগার করা হয়েছে?"
+  },
+  "models/persistence/IsolatedFileSystem.ts | createDirFailedBecausePathIsFile": {
+    "message": "ওভাররাইড: {PH1} ডিরেক্টরি তৈরি করা যায়নি, কারণ পাথ আগে থেকেই আছে এবং সেটি ফাইল।"
+  },
   "models/persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
     "message": "ফাইল সিস্টেম সংক্রান্ত সমস্যা: {PH1}"
   },
@@ -1796,9 +1778,6 @@
   "models/trace/insights/CLSCulprits.ts | description": {
     "message": "যেকোনও ব্যবহারকারীর ইন্ট্যার‍্যাকশন ছাড়া এলিমেন্ট সরে গেলে লেআউট শিফট ঘটে। [লেআউট শিফটের কারণগুলি খতিয়ে দেখুন](https://web.dev/articles/optimize-cls), যেমন পৃষ্ঠা লোড হওয়ার সময় এলিমেন্ট যোগ করা, সরানো বা তাদের ফন্টে পরিবর্তন হয়।"
   },
-  "models/trace/insights/CLSCulprits.ts | fontRequest": {
-    "message": "ফন্ট সংক্রান্ত অনুরোধ"
-  },
   "models/trace/insights/CLSCulprits.ts | injectedIframe": {
     "message": "ইনজেক্ট করা iframe"
   },
@@ -1819,6 +1798,9 @@
   },
   "models/trace/insights/CLSCulprits.ts | unsizedImage": {
     "message": "সাইজ না করা ইমেজের এলিমেন্ট"
+  },
+  "models/trace/insights/CLSCulprits.ts | webFont": {
+    "message": "ওয়েবফন্ট"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "সবচেয়ে খারাপ ক্লাস্টার"
@@ -1847,8 +1829,17 @@
   "models/trace/insights/DOMSize.ts | description": {
     "message": "বড় DOM স্টাইল গণনা করা ও লেআউট রিফ্লোর সময় বাড়িয়ে দিতে পারে, এর ফলে পৃষ্ঠার রেসপন্সিভনেস প্রভাবিত হয়। বড় DOM মেমরির ব্যবহারও বাড়িয়ে দেয়। [DOM-এর সাইজ যাতে অতিরিক্ত না হয়ে যায় তার জন্য কী করবেন জানুন](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)।"
   },
+  "models/trace/insights/DOMSize.ts | duration": {
+    "message": "সময়সীমা"
+  },
   "models/trace/insights/DOMSize.ts | element": {
     "message": "এলিমেন্ট"
+  },
+  "models/trace/insights/DOMSize.ts | largeLayout": {
+    "message": "লেআউট ({PH1} অবজেক্ট)"
+  },
+  "models/trace/insights/DOMSize.ts | largeStyleRecalc": {
+    "message": "স্টাইলের পুনর্গণনা ({PH1} এলিমেন্ট)"
   },
   "models/trace/insights/DOMSize.ts | maxChildren": {
     "message": "অধিকাংশ চিলড্রেন"
@@ -1861,6 +1852,9 @@
   },
   "models/trace/insights/DOMSize.ts | title": {
     "message": "DOM-এর সাইজ অপ্টিমাইজ করুন"
+  },
+  "models/trace/insights/DOMSize.ts | topUpdatesDescription": {
+    "message": "এগুলি হল বৃহত্তম লেআউট ও স্টাইল পুনর্গণনার ইভেন্ট। DOM-কে আরও সহজ করে দিলে এদের পারফর্ম্যান্সের প্রভাব কমে যেতে পারে।"
   },
   "models/trace/insights/DOMSize.ts | totalElements": {
     "message": "মোট এলিমেন্ট"
@@ -1929,7 +1923,7 @@
     "message": "(বেনামী)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
-    "message": "অনেক API, সাধারণত রিডিং লেআউট জিওমেট্রি, রেন্ডারিং ইঞ্জিনের স্ক্রিপ্ট এক্সেকিউশন জোর করে পজ করে, যাতে স্টাইল ও লেআউট গণনা করতে পারে। [জোরপূর্বক রিফ্লো](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) এবং এর নিরসন সম্পর্কে আরও জানুন।"
+    "message": "DOM অবস্থায় পরিবর্তনের ফলে স্টাইল ইনভ্যালিডেটেড হয়ে যাওয়ার পরে JavaScript জিওমেট্রিক প্রপার্টিকে (যেমন offsetWidth) প্রশ্ন করলে জোরপূর্বক রিফ্লো হয়। এর ফলে পারফর্ম্যান্স খারাপ হতে পারে। [জোরপূর্বক রিফ্লো](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) এবং এর সম্ভাব্য নিরসন সম্পর্কে আরও জানুন।"
   },
   "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
     "message": "স্ট্যাক ট্রেস"
@@ -1945,6 +1939,30 @@
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
     "message": "[অ্যাট্রিবিউট করা নয়]"
+  },
+  "models/trace/insights/INPBreakdown.ts | description": {
+    "message": "সবচেয়ে বড় সাবপার্ট থেকে অনুসন্ধান শুরু করুন। [দেরি হওয়া কমানো যেতে পারে](https://web.dev/articles/optimize-inp#optimize_interactions)। প্রসেসিংয়ের সময়সীমা কমাতে, [থ্রেডের মূল খরচ অপ্টিমাইজ করুন](https://web.dev/articles/optimize-long-tasks), এটি প্রায়শই JS-এর উপরে নির্ভর করে।"
+  },
+  "models/trace/insights/INPBreakdown.ts | duration": {
+    "message": "সময়সীমা"
+  },
+  "models/trace/insights/INPBreakdown.ts | inputDelay": {
+    "message": "ইনপুট দিতে দেরি"
+  },
+  "models/trace/insights/INPBreakdown.ts | noInteractions": {
+    "message": "কোনও ইন্টার‍্যাকশন শনাক্ত করা হয়নি"
+  },
+  "models/trace/insights/INPBreakdown.ts | presentationDelay": {
+    "message": "প্রেজেন্টেশনে দেরি"
+  },
+  "models/trace/insights/INPBreakdown.ts | processingDuration": {
+    "message": "প্রসেস করার সময়সীমা"
+  },
+  "models/trace/insights/INPBreakdown.ts | subpart": {
+    "message": "সাবপার্ট"
+  },
+  "models/trace/insights/INPBreakdown.ts | title": {
+    "message": "INP ব্রেকডাউন"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "ছবি ডাউনলোড করার সময় কম করা হলে, পৃষ্ঠা ও LCP লোড হওয়ার জন্য প্রয়োজনীয় সময় কম করা যেতে পারে। [ছবির সাইজ অপ্টিমাইজ করা সম্পর্কে আরও জানুন](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -1976,29 +1994,35 @@
   "models/trace/insights/ImageDelivery.ts | useVideoFormat": {
     "message": "GIF-এর পরিবর্তে ভিডিও ফর্ম্যাট ব্যবহার করা হলে ডাউনলোড করার সময় অ্যানিমেটেড কন্টেন্টের সাইজ তুলনায় ছোট হতে পারে।"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | description": {
-    "message": "সবচেয়ে বড় ফেজ থেকে অনুসন্ধান শুরু করুন। [দেরি হওয়া কমানো যেতে পারে](https://web.dev/articles/optimize-inp#optimize_interactions)। প্রসেসিংয়ের সময়সীমা কমাতে, [থ্রেডের মূল খরচ অপ্টিমাইজ করুন](https://web.dev/articles/optimize-long-tasks), এটি প্রায়শই JS-এর উপরে নির্ভর করে।"
+  "models/trace/insights/LCPBreakdown.ts | description": {
+    "message": "প্রতিটি [সাবপার্টের উন্নতির নির্দিষ্ট স্ট্র্যাটেজি আছে](https://web.dev/articles/optimize-lcp#lcp-breakdown)। আদর্শ পরিস্থিতিতে, LCP সময়ের বেশিরভাগ রিসোর্স লোড করার জন্য ব্যয় করা উচিত, বিলম্বের মধ্যে নয়।"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | duration": {
+  "models/trace/insights/LCPBreakdown.ts | duration": {
     "message": "সময়সীমা"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | inputDelay": {
-    "message": "ইনপুট দিতে দেরি"
+  "models/trace/insights/LCPBreakdown.ts | elementRenderDelay": {
+    "message": "এলিমেন্ট রেন্ডার করতে দেরি হয়েছে"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | noInteractions": {
-    "message": "কোনও ইন্টার‍্যাকশন শনাক্ত করা হয়নি"
+  "models/trace/insights/LCPBreakdown.ts | fieldDuration": {
+    "message": "ফিল্ড p75"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | phase": {
-    "message": "ফেজ"
+  "models/trace/insights/LCPBreakdown.ts | noLcp": {
+    "message": "কোনও LCP শনাক্ত করা হয়নি"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | presentationDelay": {
-    "message": "প্রেজেন্টেশনে দেরি"
+  "models/trace/insights/LCPBreakdown.ts | resourceLoadDelay": {
+    "message": "রিসোর্স লোড করতে দেরি হয়েছে"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | processingDuration": {
-    "message": "প্রসেস করার সময়সীমা"
+  "models/trace/insights/LCPBreakdown.ts | resourceLoadDuration": {
+    "message": "রিসোর্স লোড হওয়ার সময়সীমা"
   },
-  "models/trace/insights/InteractionToNextPaint.ts | title": {
-    "message": "ফেজ অনুযায়ী INP"
+  "models/trace/insights/LCPBreakdown.ts | subpart": {
+    "message": "সাবপার্ট"
+  },
+  "models/trace/insights/LCPBreakdown.ts | timeToFirstByte": {
+    "message": "Time to First Byte"
+  },
+  "models/trace/insights/LCPBreakdown.ts | title": {
+    "message": "LCP ব্রেকডাউন"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
     "message": "HTML থেকে অবিলম্বে LCP ইমেজকে [খুঁজে নেওয়ার যোগ্য](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) করে তুলে LCP অপ্টিমাইজ করুন এবং [ধীরে ধীরে লোড করার পদ্ধতি এড়িয়ে যান](https://web.dev/articles/lcp-lazy-loading)"
@@ -2027,36 +2051,6 @@
   "models/trace/insights/LCPDiscovery.ts | title": {
     "message": "LCP-এর জন্য অনুরোধ খুঁজে দেখা"
   },
-  "models/trace/insights/LCPPhases.ts | description": {
-    "message": "প্রতিটি [ফেজের উন্নতির নির্দিষ্ট কৌশল রয়েছে](https://web.dev/articles/optimize-lcp#lcp-breakdown)। সাধারণভাবে, LCP টাইম বেশিরভাগ ক্ষেত্রে রিসোর্স লোড করার জন্য ব্যবহার করা হয়, বিলম্বের কারণে নয়।"
-  },
-  "models/trace/insights/LCPPhases.ts | duration": {
-    "message": "সময়সীমা"
-  },
-  "models/trace/insights/LCPPhases.ts | elementRenderDelay": {
-    "message": "এলিমেন্ট রেন্ডার করতে দেরি হয়েছে"
-  },
-  "models/trace/insights/LCPPhases.ts | fieldDuration": {
-    "message": "ফিল্ড p75"
-  },
-  "models/trace/insights/LCPPhases.ts | noLcp": {
-    "message": "কোনও LCP শনাক্ত করা হয়নি"
-  },
-  "models/trace/insights/LCPPhases.ts | phase": {
-    "message": "ফেজ"
-  },
-  "models/trace/insights/LCPPhases.ts | resourceLoadDelay": {
-    "message": "রিসোর্স লোড করতে দেরি হয়েছে"
-  },
-  "models/trace/insights/LCPPhases.ts | resourceLoadDuration": {
-    "message": "রিসোর্স লোড হওয়ার সময়সীমা"
-  },
-  "models/trace/insights/LCPPhases.ts | timeToFirstByte": {
-    "message": "Time to First Byte"
-  },
-  "models/trace/insights/LCPPhases.ts | title": {
-    "message": "ফেজের হিসেবে LCP"
-  },
   "models/trace/insights/LegacyJavaScript.ts | columnScript": {
     "message": "স্ক্রিপ্ট"
   },
@@ -2073,7 +2067,7 @@
     "message": "HTTP/1.1-এর তুলনায় HTTP/2 ও HTTP/3 অনেক সুবিধা অফার করে, যেমন মাল্টিপ্লেক্সিং। [মডার্ন HTTP ব্যবহার করা সম্পর্কে আরও জানুন](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)।"
   },
   "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
-    "message": "HTTP/1.1-এর জন্য কোনও অনুরোধ নেই"
+    "message": "কোনও অনুরোধ HTTP/1.1 ব্যবহার করেনি বা সেটি যেভাবে HTTP/1.1 ব্যবহার করেছে তাতে অপ্টিমাইজেশনের সুযোগ যথেষ্ট নেই। ছয় বা তার চেয়ে বেশি স্ট্যাটিক অ্যাসেট একই উৎস থেকে এলে এবং স্থানীয় ডেভেলপমেন্ট এনভায়রনমেন্ট বা থার্ড-পার্টি সোর্স সেগুলিকে সার্ভ না করলে, তবেই কেবলমাত্র HTTP/1.1 অনুরোধ ফ্ল্যাগ করা হয়।"
   },
   "models/trace/insights/ModernHTTP.ts | protocol": {
     "message": "প্রোটোকল"
@@ -2174,6 +2168,12 @@
   "models/trace/insights/SlowCSSSelector.ts | title": {
     "message": "CSS বাছাইকারী সংক্রান্ত খরচ"
   },
+  "models/trace/insights/SlowCSSSelector.ts | topSelectorElapsedTime": {
+    "message": "সময় খরচ অনুযায়ী সেরা সিলেক্টর"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | topSelectorMatchAttempt": {
+    "message": "মেলানোর প্রচেষ্টা অনুযায়ী সেরা সিলেক্টর"
+  },
   "models/trace/insights/SlowCSSSelector.ts | topSelectors": {
     "message": "সেরা বাছাইকারী"
   },
@@ -2206,6 +2206,24 @@
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "মোবাইলের জন্য ভিউপোর্ট অপ্টিমাইজ করুন"
+  },
+  "models/workspace/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
+    "message": "তালিকা এড়িয়ে যেতে সবকটি বেনামী স্ক্রিপ্ট যোগ করুন"
+  },
+  "models/workspace/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "তালিকা উপেক্ষা করতে, সবকটি এক্সটেনশন স্ক্রিপ্ট যোগ করুন"
+  },
+  "models/workspace/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "উপেক্ষা তালিকায় সব থার্ড-পার্টি স্ক্রিপ্ট যোগ করুন"
+  },
+  "models/workspace/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "তালিকা উপেক্ষা করতে ডিরেক্টরি যোগ করুন"
+  },
+  "models/workspace/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "উপেক্ষা তালিকায় স্ক্রিপ্ট যোগ করুন"
+  },
+  "models/workspace/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "উপেক্ষা তালিকা থেকে সরান"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(ইনডেক্স)"
@@ -2639,9 +2657,6 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "স্থানীয় চ্যাট মুছুন"
   },
-  "panels/ai_assistance/AiAssistancePanel.ts | externalRequestReceived": {
-    "message": "DevTools একটি এক্সটার্নাল অনুরোধ পেয়েছে"
-  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "প্রশ্ন জিজ্ঞাসা করতে, উপরে উল্লেখ করা ধাপ অনুসরণ করুন"
   },
@@ -2674,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "AI-কে জিজ্ঞাসা করুন"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
+    "message": "AI-এর সাহায্যে ডিবাগ করুন"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "AI অ্যাসিস্ট্যান্ট চালু করুন"
@@ -3581,9 +3599,6 @@
   "panels/application/ServiceWorkersView.ts | focus": {
     "message": "ফোকাস"
   },
-  "panels/application/ServiceWorkersView.ts | inspect": {
-    "message": "পরীক্ষা করুন"
-  },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "নেটওয়ার্কের সাথে যুক্ত অনুরোধ"
   },
@@ -4117,6 +4132,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
     "message": "SharedWorker ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorkerMessage": {
+    "message": "পেজটি ক্যাশে থেকে বার করে দেওয়া হয়েছে কারণ সেটি SharedWorker থেকে মেসেজ পেয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
     "message": "SpeechRecognizer ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
@@ -5169,7 +5187,7 @@
     "message": "ইনিশিয়েটিং পেজ ব্যাকগ্রাউন্ডে পাঠানো হয়েছে, তাই আগে থেকে রেন্ডার করা পেজটি বাতিল করা হয়েছে।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "প্রিরেন্ডারিং নেভিগেশনে ব্যবহারকারী এজেন্ট পরিবর্তন করা হয়েছে।"
+    "message": "প্রিরেন্ডারিং নেভিগেশনে ইউজার এজেন্ট পরিবর্তন করা হয়েছে।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusWindowClosed": {
     "message": "window.close()-এ কল করার জন্য প্রিরেন্ডার করা পৃষ্ঠা আনলোড হয়েছে।"
@@ -5241,7 +5259,7 @@
     "message": "বর্তমান URL"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | detailsFailureReason": {
-    "message": "বাতিল হওয়ার কারণ"
+    "message": "ব্যর্থতার কারণ"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
     "message": "ইনিশিয়েটিং পেজ এই পৃষ্ঠার URL প্রিরেন্ডার করার চেষ্টা করেছে। প্রিরেন্ডার করা যায়নি, তবে ফলস্বরূপ রেসপন্স বডি এখনও প্রিফেচ হিসেবে ব্যবহার করা হয়েছে।"
@@ -5576,20 +5594,23 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "পরিবর্তনগুলি দেখুন"
   },
+  "panels/common/FreDialog.ts | cancel": {
+    "message": "বাতিল করুন"
+  },
+  "panels/common/FreDialog.ts | gotIt": {
+    "message": "বুঝেছি"
+  },
+  "panels/common/FreDialog.ts | learnMore": {
+    "message": "আরও জানুন"
+  },
+  "panels/common/FreDialog.ts | thingsToConsider": {
+    "message": "যা যা দেখে নেওয়া প্রয়োজন"
+  },
   "panels/common/common.ts | allow": {
     "message": "অনুমতি দিন"
   },
   "panels/common/common.ts | cancel": {
     "message": "বাতিল করুন"
-  },
-  "panels/common/common.ts | gotIt": {
-    "message": "বুঝেছি"
-  },
-  "panels/common/common.ts | learnMore": {
-    "message": "আরও জানুন"
-  },
-  "panels/common/common.ts | thingsToConsider": {
-    "message": "যা যা দেখে নেওয়া প্রয়োজন"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "এক্সটেনশন"
@@ -6470,6 +6491,9 @@
   "panels/elements/ElementIssueUtils.ts | interactiveContentOptionChild": {
     "message": "<option> এলিমেন্টে ইন্টার‍্যাক্টিভ এলিমেন্ট রয়েছে"
   },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentSummaryDescendant": {
+    "message": "<summary> এলিমেন্টে ইন্টার‍্যাক্টিভ এলিমেন্ট"
+  },
   "panels/elements/ElementIssueUtils.ts | nonPhrasingContentOptionChild": {
     "message": "<option> এলিমেন্টে নন-ফ্রেজিং কন্টেন্ট ব্যবহার করা হয়েছে"
   },
@@ -6548,8 +6572,23 @@
   "panels/elements/ElementsTreeElement.ts | addAttribute": {
     "message": "অ্যাট্রিবিউট যোগ করুন"
   },
+  "panels/elements/ElementsTreeElement.ts | addPadding": {
+    "message": "প্যাডিং যোগ করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | alignItems": {
+    "message": "আইটেমগুলি অ্যালাইন করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | assessVisibility": {
+    "message": "দৃশ্যমানতার মূল্যায়ন করুন"
+  },
   "panels/elements/ElementsTreeElement.ts | captureNodeScreenshot": {
     "message": "নোড স্ক্রিনশট ক্যাপচার করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | centerElement": {
+    "message": "এলিমেন্ট কেন্দ্রে রাখুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | changeParentProperties": {
+    "message": "প্যারেন্ট প্রপার্টিতে পরিবর্তন করুন"
   },
   "panels/elements/ElementsTreeElement.ts | children": {
     "message": "অধীনস্থ কন্টেন্ট:"
@@ -6596,6 +6635,9 @@
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "'স্ক্রল-স্ন্যাপ ওভারলে' ফিচার বন্ধ করুন"
   },
+  "panels/elements/ElementsTreeElement.ts | distributeItemsEvenly": {
+    "message": "আইটেমগুলি সমানভাবে বিতরণ করুন"
+  },
   "panels/elements/ElementsTreeElement.ts | duplicateElement": {
     "message": "এলিমেন্ট ডুপ্লিকেট করুন"
   },
@@ -6623,8 +6665,35 @@
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "বারবার বড় করা"
   },
+  "panels/elements/ElementsTreeElement.ts | explainContainerContext": {
+    "message": "কন্টেনার কনটেক্সট ব্যাখ্যা করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainContainerQueries": {
+    "message": "কন্টেনার কোয়েরি ব্যাখ্যা করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainContainerTypes": {
+    "message": "কন্টেনারের ধরনের ব্যাখ্যা করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainFlexbox": {
+    "message": "Flexbox-এর ব্যাখ্যা করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainGridLayout": {
+    "message": "গ্রিড লেআউটের ব্যাখ্যা করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainScrollbars": {
+    "message": "স্ক্রলবারের ব্যাখ্যা করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
+    "message": "সাবগ্রিডের ব্যাখ্যা করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
+    "message": "গ্রিডের সংজ্ঞা খুঁজুন"
+  },
   "panels/elements/ElementsTreeElement.ts | focus": {
     "message": "ফোকাস"
+  },
+  "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
+    "message": "এই পপ-ওভার খুলে রাখুন"
   },
   "panels/elements/ElementsTreeElement.ts | forceState": {
     "message": "ফোর্স স্টেট"
@@ -6637,6 +6706,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "পেস্ট করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | removeScrollbars": {
+    "message": "স্ক্রলবার সরান"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "ভিউতে স্ক্রল করুন"
@@ -6653,6 +6725,15 @@
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
     "message": "popovertarget অ্যাট্রিবিউটের সাথে সম্পর্কিত এলিমেন্ট দেখুন"
   },
+  "panels/elements/ElementsTreeElement.ts | startAChat": {
+    "message": "চ্যাট শুরু করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
+    "message": "এই পপ-ওভার খুলে রাখা বন্ধ করুন"
+  },
+  "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
+    "message": "স্টাইল স্ক্রলবার"
+  },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "এই ফ্রেমটি বিজ্ঞাপন ফ্রেম হিসেবে চিহ্নিত হয়েছে"
   },
@@ -6662,11 +6743,11 @@
   "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<এডিট করার পক্ষে অনেক বড় মান>"
   },
+  "panels/elements/ElementsTreeElement.ts | wrapTheseItems": {
+    "message": "এই আইটেমগুলি র‍্যাপ করুন"
+  },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "পৃষ্ঠা DOM"
-  },
-  "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "প্রকাশ করুন"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "সব নোড দেখুন (আরও {PH1}টি)"
@@ -6706,6 +6787,27 @@
   },
   "panels/elements/LayersWidget.ts | toggleCSSLayers": {
     "message": "CSS লেয়ার ভিউ টগল করুন"
+  },
+  "panels/elements/LayoutPane.ts | chooseElementOverlayColor": {
+    "message": "এই এলিমেন্টের জন্য ওভারলে রঙ বেছে নিন"
+  },
+  "panels/elements/LayoutPane.ts | colorPickerOpened": {
+    "message": "কালার পিকার খোলা হয়েছে।"
+  },
+  "panels/elements/LayoutPane.ts | flexbox": {
+    "message": "Flexbox"
+  },
+  "panels/elements/LayoutPane.ts | flexboxOverlays": {
+    "message": "ফ্লেক্সবক্স ওভারলে"
+  },
+  "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
+    "message": "এই পৃষ্ঠায় কোনও ফ্লেক্সবক্স লেআউট খুঁজে পাওয়া যায়নি"
+  },
+  "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
+    "message": "ওভারলে ডিসপ্লে সেটিংস"
+  },
+  "panels/elements/LayoutPane.ts | showElementInTheElementsPanel": {
+    "message": "এলিমেন্ট প্যানেলে এলিমেন্ট দেখান"
   },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM ব্রেকপয়েন্ট"
@@ -6751,6 +6853,9 @@
   },
   "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
     "message": "CSS প্রপার্টির ভ্যালু: {PH1}"
+  },
+  "panels/elements/ShortcutTreeElement.ts | reveal": {
+    "message": "প্রকাশ করুন"
   },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "তৈরি করা স্টাইলশিট"
@@ -6893,11 +6998,29 @@
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "আরও জানুন"
   },
+  "panels/elements/components/CSSPropertyDocsView.ts | browserOnPlatform": {
+    "message": "{PH2}-এ {PH1}"
+  },
   "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
     "message": "দেখতে চাই না"
   },
   "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "আরও জানুন"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | limitedAvailability": {
+    "message": "প্রধান ব্রাউজারগুলি জুড়ে সীমিত উপলভ্যতা"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | limitedAvailabilityInBrowsers": {
+    "message": "প্রধান ব্রাউজারগুলি জুড়ে সীমিতভাবে উপলভ্য ({PH1}-এ সম্পূর্ণ প্রয়োগ করা হয়নি)"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | newlyAvailableSince": {
+    "message": "প্রধান ব্রাউজারগুলি জুড়ে নতুন উপলভ্য ({PH1} থেকে Baseline)"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | unknownDate": {
+    "message": "অজানা তারিখ"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | widelyAvailableSince": {
+    "message": "প্রধান ব্রাউজারগুলি জুড়ে ব্যাপকভাবে উপলভ্য ({PH1} থেকে Baseline)"
   },
   "panels/elements/components/CSSVariableValueView.ts | invalidPropertyValue": {
     "message": "প্রপার্টির মান সঠিক নয়, আনুমানিক {type} ধরন"
@@ -6922,36 +7045,6 @@
   },
   "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
     "message": "বড় করে দেখুন"
-  },
-  "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "এই এলিমেন্টের জন্য ওভারলে রঙ বেছে নিন"
-  },
-  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
-    "message": "কালার পিকার খোলা হয়েছে।"
-  },
-  "panels/elements/components/LayoutPane.ts | flexbox": {
-    "message": "Flexbox"
-  },
-  "panels/elements/components/LayoutPane.ts | flexboxOverlays": {
-    "message": "ফ্লেক্সবক্স ওভারলে"
-  },
-  "panels/elements/components/LayoutPane.ts | grid": {
-    "message": "গ্রিড"
-  },
-  "panels/elements/components/LayoutPane.ts | gridOverlays": {
-    "message": "গ্রিড ওভারলে"
-  },
-  "panels/elements/components/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
-    "message": "এই পৃষ্ঠায় কোনও ফ্লেক্সবক্স লেআউট খুঁজে পাওয়া যায়নি"
-  },
-  "panels/elements/components/LayoutPane.ts | noGridLayoutsFoundOnThisPage": {
-    "message": "এই পৃষ্ঠায় কোনও গ্রিড লেআউট খুঁজে পাওয়া যায়নি"
-  },
-  "panels/elements/components/LayoutPane.ts | overlayDisplaySettings": {
-    "message": "ওভারলে ডিসপ্লে সেটিংস"
-  },
-  "panels/elements/components/LayoutPane.ts | showElementInTheElementsPanel": {
-    "message": "এলিমেন্ট প্যানেলে এলিমেন্ট দেখান"
   },
   "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
     "message": "{propertyName} সরান: {propertyValue}"
@@ -7084,12 +7177,6 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "এডিট করুন…"
-  },
-  "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeature": {
-    "message": "\"Experimental Web Platform Feature\" ফ্ল্যাগ চালু করা হয়েছে। বন্ধ করতে, ক্লিক করুন।"
-  },
-  "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeatureFlag": {
-    "message": "\"Experimental Web Platform Feature\" ফ্ল্যাগ বন্ধ করা আছে। চালু করতে ক্লিক করুন।"
   },
   "panels/emulation/DeviceModeToolbar.ts | fitToWindowF": {
     "message": "উইন্ডোতে ফিট করুন ({PH1}%)"
@@ -7805,7 +7892,7 @@
   "panels/layer_viewer/LayerDetailsView.ts | slowScrollRegions": {
     "message": "ধীরে স্ক্রল করার রিজিয়ন"
   },
-  "panels/layer_viewer/LayerDetailsView.ts | stickyAncenstorLayersS": {
+  "panels/layer_viewer/LayerDetailsView.ts | stickyAncestorLayersS": {
     "message": "{PH1}: {PH2} ({PH3})"
   },
   "panels/layer_viewer/LayerDetailsView.ts | stickyBoxRectangleDimensions": {
@@ -8426,6 +8513,9 @@
   "panels/media/PlayerPropertiesView.ts | hardwareEncoder": {
     "message": "হার্ডওয়্যার এনকোডার"
   },
+  "panels/media/PlayerPropertiesView.ts | hlsBufferedRanges": {
+    "message": "বাফার করা মিডিয়া রেঞ্জ"
+  },
   "panels/media/PlayerPropertiesView.ts | noDecoder": {
     "message": "কোনও ডিকোডার নেই"
   },
@@ -8519,12 +8609,6 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "প্রিসেট"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | add": {
-    "message": "যোগ করুন…"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | addS": {
-    "message": "{PH1} যোগ করুন"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "ক্যালিব্রেট করুন…"
   },
@@ -8546,6 +8630,9 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
     "message": "navigator.hardwareConcurrency রিপোর্ট করা ভ্যালু ওভাররাইড করুন"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | noSaveDataOverride": {
+    "message": "'Save-Data': ডিফল্ট"
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "অফলাইন আছে"
   },
@@ -8558,8 +8645,14 @@
   "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
     "message": "ডিফল্ট মানে রিসেট করুন"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | sS": {
-    "message": "{PH1}: {PH2}"
+  "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
+    "message": "'Save-Data': বন্ধ করো"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
+    "message": "'Save-Data': চালু করো"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
+    "message": "পেজে navigator.connection.saveData দ্বারা রিপোর্ট করা মান ওভাররাইড করুন"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | throttling": {
     "message": "থ্রটলিং"
@@ -8829,7 +8922,7 @@
     "message": "নেটওয়ার্কের অবস্থা দেখানো হয়েছে।"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
-    "message": "নেটওয়ার্ক থ্রটলিং"
+    "message": "নেটওয়ার্ক"
   },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
     "message": "ডিফল্ট ব্রাউজার ব্যবহার করুন"
@@ -8854,6 +8947,21 @@
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(বাতিল করা হয়েছে)"
+  },
+  "panels/network/NetworkDataGridNode.ts | coepFrameResourceNeedsCoepHeader": {
+    "message": "COEP-ফ্রেমড রিসোর্সের জন্য COEP হেডারের প্রয়োজন"
+  },
+  "panels/network/NetworkDataGridNode.ts | coopSandboxedIframeCannotNavigateToCoopPage": {
+    "message": "iframe-এর স্যান্ডবক্সড পপ-আপ COOP পেজে নেভিগেট করতে পারে না"
+  },
+  "panels/network/NetworkDataGridNode.ts | corpNotSameOrigin": {
+    "message": "CORP \"same-origin\" নয়"
+  },
+  "panels/network/NetworkDataGridNode.ts | corpNotSameOriginAfterDefaultedToSameOriginByCoep": {
+    "message": "COEP \"same-origin\"-এ ডিফল্ট করার পরে CORP \"same-origin\" নয়"
+  },
+  "panels/network/NetworkDataGridNode.ts | corpNotSameSite": {
+    "message": "CORP \"same-site\" নয়"
   },
   "panels/network/NetworkDataGridNode.ts | corsError": {
     "message": "CORS সংক্রান্ত সমস্যা"
@@ -8944,6 +9052,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "রিডাইরেক্ট করুন"
+  },
+  "panels/network/NetworkDataGridNode.ts | responseIsIpProtectedToolTip": {
+    "message": "IP প্রোটেকশন প্রক্সির মাধ্যমে এই অনুরোধ পাঠানো হয়েছে।"
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + প্রিফ্লাইট"
@@ -9080,6 +9191,9 @@
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowserCookies": {
     "message": "আপনি কি ব্রাউজার কুকি মুছে ফেলার ব্যাপারে নিশ্চিত?"
   },
+  "panels/network/NetworkLogView.ts | assessSecurityHeaders": {
+    "message": "নিরাপত্তা হেডারের মূল্যায়ন করুন"
+  },
   "panels/network/NetworkLogView.ts | blockRequestDomain": {
     "message": "ডোমেনের জন্য অনুরোধের সুবিধা ব্লক করুন"
   },
@@ -9194,6 +9308,15 @@
   "panels/network/NetworkLogView.ts | dropHarFilesHere": {
     "message": "HAR ফাইল এখানে রাখুন"
   },
+  "panels/network/NetworkLogView.ts | explainFailures": {
+    "message": "ব্যর্থতার ব্যাখ্যা দিন"
+  },
+  "panels/network/NetworkLogView.ts | explainPurpose": {
+    "message": "উদ্দেশ্য ব্যাখ্যা করুন"
+  },
+  "panels/network/NetworkLogView.ts | explainSlowness": {
+    "message": "ধীরে হওয়ার কারণ ব্যাখ্যা করুন"
+  },
   "panels/network/NetworkLogView.ts | finishS": {
     "message": "সম্পূর্ণ করুন: {PH1}"
   },
@@ -9215,6 +9338,9 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "সার্চ ফিল্টারকে ইনভার্ট করে"
   },
+  "panels/network/NetworkLogView.ts | ippRequests": {
+    "message": "IP প্রোটেক্টেড অনুরোধ"
+  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "লোড করুন: {PH1}"
   },
@@ -9229,6 +9355,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "শুধু ব্লক করা অনুরোধ দেখায়"
+  },
+  "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
+    "message": "(শুধু ছদ্মবেশী মোডে) IP প্রোটেকশন প্রক্সিতে পাঠানো অনুরোধ দেখুন"
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "শুধু ব্লক করা রেসপন্স কুকির অনুরোধই দেখব"
@@ -9289,6 +9418,9 @@
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "শুধু দেখান/অনুরোধ লুকান"
+  },
+  "panels/network/NetworkLogView.ts | startAChat": {
+    "message": "চ্যাট শুরু করুন"
   },
   "panels/network/NetworkLogView.ts | startRecording": {
     "message": "রেকর্ডিং শুরু করুন"
@@ -11543,23 +11675,14 @@
   "panels/security/CookieReportView.ts | gitHubResource": {
     "message": "থার্ড-পার্টি সাইট থেকে {PH1} পর্যালোচনা করুন"
   },
-  "panels/security/CookieReportView.ts | gitHubResourceInsightTypeString": {
-    "message": "Github"
-  },
   "panels/security/CookieReportView.ts | gracePeriod": {
     "message": "{PH1} পর্যালোচনা করুন। অতিরিক্ত সময়কাল সম্পর্কিত এক্সেপশন চালু আছে।"
-  },
-  "panels/security/CookieReportView.ts | gracePeriodInsightTypeString": {
-    "message": "অতিরিক্ত সময়কাল"
   },
   "panels/security/CookieReportView.ts | guidance": {
     "message": "নির্দেশিকা"
   },
   "panels/security/CookieReportView.ts | heuristics": {
     "message": "পরে ব্যবস্থা নিতে হবে। হিউরিস্টিকসের উপর ভিত্তি করে এক্সেপশন চালু করা আছে।"
-  },
-  "panels/security/CookieReportView.ts | heuristicsInisightTypeString": {
-    "message": "হিউরিস্টিকস"
   },
   "panels/security/CookieReportView.ts | hostingCookieTypeString": {
     "message": "হোস্টিং"
@@ -11577,9 +11700,6 @@
     "message": "আরও তথ্যের জন্য থার্ড-পার্টি সাইটের সাথে যোগাযোগ করুন"
   },
   "panels/security/CookieReportView.ts | otherCookieTypeString": {
-    "message": "অন্যান্য"
-  },
-  "panels/security/CookieReportView.ts | otherInsightTypeString": {
     "message": "অন্যান্য"
   },
   "panels/security/CookieReportView.ts | platform": {
@@ -12209,8 +12329,17 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "ব্যবহারকারী অ্যাক্টিভ নেই, স্ক্রিন লক করা নেই"
   },
+  "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
+    "message": "আপনি কনসোল বা সোর্স প্যানেলে টাইপ করার সময় কোডের সাজেশন পাবেন। একটি গ্রহণ করতে ট্যাব টিপুন।"
+  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "AI ব্যবহার করে আপনার প্রোডাক্টিভিটি আরও বাড়ান"
+  },
+  "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
+    "message": "কোডের সাজেশন জেনারেট করতে আপনার কনসোল ইনপুট, বর্তমান কনসোল সেশনের ইতিহাস এবং বর্তমানে খোলা ফাইলের কন্টেন্ট Google-এর সাথে শেয়ার করা হয়। এই ফিচার উন্নত করার জন্য এই ডেটা হিউম্যান রিভিউয়ার দেখতে পারেন।"
+  },
+  "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
+    "message": "কোডের সাজেশন জেনারেট করতে আপনার কনসোল ইনপুট, বর্তমান কনসোল সেশনের ইতিহাস এবং বর্তমানে খোলা ফাইলের কন্টেন্ট Google-এর সাথে শেয়ার করা হয়। এই ডেটা Google's AI মডেল উন্নত করতে ব্যবহার করা হবে না।"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "ব্যাখ্যা তৈরি করার জন্য কনসোল মেসেজ, অ্যাসোসিয়েট থাকা স্ট্যাক ট্রেস, সম্পর্কিত সোর্স কোড এবং অ্যাসোসিয়েট থাকা নেটওয়ার্ক হেডার Google-এ পাঠানো হয়। এই ফিচার উন্নত করার জন্য এই ডেটা হিউম্যান রিভিউয়ার দেখতে পারেন।"
@@ -12265,6 +12394,9 @@
   },
   "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
     "message": "পারফর্ম্যান্স প্যানেল অ্যানোটেশনের জন্য AI-এর সাজেশন পান"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
+    "message": "কোড সম্পূর্ণ করার ব্যাপারে সাহায্য পান"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "আপনাকে বুঝতে সাহায্য করে এবং কনসোল সংক্রান্ত সতর্কতা ও সমস্যার সমাধান করে"
@@ -12404,7 +12536,7 @@
   "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
     "message": "শর্টকাটে, পরিবর্তনগুলি প্রয়োগ করা হয়েছে"
   },
-  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscarded": {
     "message": "শর্টকাটে করা পরিবর্তনগুলি বাতিল করা হয়েছে"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
@@ -12554,8 +12686,35 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "ডিভাইসের প্রপার্টি"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorAutomotive": {
+    "message": "অটোমোটিভ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorDesktop": {
+    "message": "ডেস্কটপ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorEInk": {
+    "message": "EInk"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorMobile": {
+    "message": "মোবাইল"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorTablet": {
+    "message": "ট্যাবলেট"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorWatch": {
+    "message": "ঘড়ি"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorXR": {
+    "message": "XR"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorsGroupAriaLabel": {
+    "message": "উপলভ্য ফর্ম ফ্যাক্টর"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorsTitle": {
+    "message": "ফর্ম ফ্যাক্টর (Sec-CH-UA-Form-Factors)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "সম্পূর্ণ ব্রাউজার ভার্সন (Sec-CH-UA-Full-Browser-Version)"
+    "message": "সম্পূর্ণ ব্রাউজার ভার্সন (Sec-CH-UA-Full-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "সম্পূর্ণ ব্রাউজার ভার্সন (উদাহরণ, 87.0.4280.88)"
@@ -12700,6 +12859,63 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "শুধু সঠিক অবস্থা হলেই পজ করা হবে"
+  },
+  "panels/sources/BreakpointsView.ts | breakpointHit": {
+    "message": "ব্রেকপয়েন্ট হিট {PH1}"
+  },
+  "panels/sources/BreakpointsView.ts | checked": {
+    "message": "টিকচিহ্ন দেওয়া আছে"
+  },
+  "panels/sources/BreakpointsView.ts | conditionCode": {
+    "message": "শর্ত: {PH1}"
+  },
+  "panels/sources/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "সব ব্রেকপয়েন্ট বন্ধ করুন"
+  },
+  "panels/sources/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "ফাইলে সব ব্রেকপয়েন্ট বন্ধ করুন"
+  },
+  "panels/sources/BreakpointsView.ts | editCondition": {
+    "message": "কন্ডিশন এডিট করুন"
+  },
+  "panels/sources/BreakpointsView.ts | editLogpoint": {
+    "message": "লগপয়েন্ট এডিট করুন"
+  },
+  "panels/sources/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "সব ব্রেকপয়েন্ট চালু করুন"
+  },
+  "panels/sources/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "ফাইলে সব ব্রেকপয়েন্ট চালু করুন"
+  },
+  "panels/sources/BreakpointsView.ts | indeterminate": {
+    "message": "মিক্স"
+  },
+  "panels/sources/BreakpointsView.ts | logpointCode": {
+    "message": "লগপয়েন্ট: {PH1}"
+  },
+  "panels/sources/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "ব্যতিক্রম ধরা পড়লে পজ হবে"
+  },
+  "panels/sources/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "শনাক্ত করা হয়নি এমন এক্সেপশনের ক্ষেত্রে পজ করুন"
+  },
+  "panels/sources/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "সব ব্রেকপয়েন্ট সরান"
+  },
+  "panels/sources/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "ফাইলে সব ব্রেকপয়েন্ট সরান"
+  },
+  "panels/sources/BreakpointsView.ts | removeBreakpoint": {
+    "message": "ব্রেকপয়েন্ট সরান"
+  },
+  "panels/sources/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "অন্যান্য ব্রেকপয়েন্ট সরান"
+  },
+  "panels/sources/BreakpointsView.ts | revealLocation": {
+    "message": "লোকেশন দেখান"
+  },
+  "panels/sources/BreakpointsView.ts | unchecked": {
+    "message": "টিকচিহ্ন সরানো হয়েছে"
   },
   "panels/sources/CSSPlugin.ts | addSourceMap": {
     "message": "সোর্স ম্যাপ যোগ করুন…"
@@ -13163,6 +13379,9 @@
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ওভাররাইড করার জন্য ফোল্ডার বেছে নিন"
   },
+  "panels/sources/SourcesPanel.ts | assessPerformance": {
+    "message": "পারফর্ম্যান্সের মূল্যায়ন করুন"
+  },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "এখানে চালিয়ে যান"
   },
@@ -13186,6 +13405,12 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "ওয়ার্কস্পেস ফোল্ডার টেনে এনে এখানে রাখুন"
+  },
+  "panels/sources/SourcesPanel.ts | explainInputHandling": {
+    "message": "ইনপুট হ্যান্ডলিংয়ের ব্যাখ্যা করুন"
+  },
+  "panels/sources/SourcesPanel.ts | explainThisScript": {
+    "message": "স্ক্রিপ্ট ব্যাখ্যা করুন"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
     "message": "লেখক/ডেপ্লয়েড অনুযায়ী গ্রুপ করুন"
@@ -13231,6 +13456,9 @@
   },
   "panels/sources/SourcesPanel.ts | showNavigator": {
     "message": "নেভিগেটর দেখুন"
+  },
+  "panels/sources/SourcesPanel.ts | startAChat": {
+    "message": "চ্যাট শুরু করুন"
   },
   "panels/sources/SourcesPanel.ts | storeAsGlobalVariable": {
     "message": "গ্লোবাল ভেরিয়েবেল হিসেবে স্টোর করুন"
@@ -13294,63 +13522,6 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
     "message": "ওয়াচ এক্সপ্রেশন মুছে দেওয়া হয়েছে"
-  },
-  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
-    "message": "ব্রেকপয়েন্ট হিট {PH1}"
-  },
-  "panels/sources/components/BreakpointsView.ts | checked": {
-    "message": "টিকচিহ্ন দেওয়া আছে"
-  },
-  "panels/sources/components/BreakpointsView.ts | conditionCode": {
-    "message": "শর্ত: {PH1}"
-  },
-  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
-    "message": "সব ব্রেকপয়েন্ট বন্ধ করুন"
-  },
-  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
-    "message": "ফাইলে সব ব্রেকপয়েন্ট বন্ধ করুন"
-  },
-  "panels/sources/components/BreakpointsView.ts | editCondition": {
-    "message": "কন্ডিশন এডিট করুন"
-  },
-  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
-    "message": "লগপয়েন্ট এডিট করুন"
-  },
-  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
-    "message": "সব ব্রেকপয়েন্ট চালু করুন"
-  },
-  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
-    "message": "ফাইলে সব ব্রেকপয়েন্ট চালু করুন"
-  },
-  "panels/sources/components/BreakpointsView.ts | indeterminate": {
-    "message": "মিক্স"
-  },
-  "panels/sources/components/BreakpointsView.ts | logpointCode": {
-    "message": "লগপয়েন্ট: {PH1}"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
-    "message": "ব্যতিক্রম ধরা পড়লে পজ হবে"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
-    "message": "শনাক্ত করা হয়নি এমন এক্সেপশনের ক্ষেত্রে পজ করুন"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
-    "message": "সব ব্রেকপয়েন্ট সরান"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
-    "message": "ফাইলে সব ব্রেকপয়েন্ট সরান"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
-    "message": "ব্রেকপয়েন্ট সরান"
-  },
-  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
-    "message": "অন্যান্য ব্রেকপয়েন্ট সরান"
-  },
-  "panels/sources/components/BreakpointsView.ts | revealLocation": {
-    "message": "লোকেশন দেখান"
-  },
-  "panels/sources/components/BreakpointsView.ts | unchecked": {
-    "message": "টিকচিহ্ন সরানো হয়েছে"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "হেডার যোগ করুন"
@@ -13689,7 +13860,7 @@
     "message": "ডিবাগ সংক্রান্ত তথ্য ব্যবহার করে Wasm ডিবাগ করার সময়, সম্ভব হলে Wasm বাইটকোড পজ করবেন না"
   },
   "panels/sources/sources-meta.ts | watch": {
-    "message": "দেখুন"
+    "message": "ঘড়ি"
   },
   "panels/sources/sources-meta.ts | wordWrap": {
     "message": "ওয়ার্ড র‍্যাপ"
@@ -13760,11 +13931,8 @@
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "শুরু করার সময়"
   },
-  "panels/timeline/ExtensionTrackAppender.ts | customTrackDescription": {
-    "message": "এটি হল থার্ড-পার্টির যোগ করা কাস্টম ট্র্যাক।"
-  },
-  "panels/timeline/ExtensionTrackAppender.ts | customTrackName": {
-    "message": "{PH1} — কাস্টম ট্র্যাক"
+  "panels/timeline/ExtensionTrackAppender.ts | customTrackSubtitle": {
+    "message": "— কাস্টম"
   },
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
@@ -13916,8 +14084,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | addScriptToIgnoreList": {
     "message": "ইগনোর লিস্টে স্ক্রিপ্ট যোগ করুন"
   },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | assessThePurpose": {
+    "message": "উদ্দেশ্যের মূল্যায়ন করুন"
+  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "ড্রপ করা ফ্রেম"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | findImprovements": {
+    "message": "উন্নতি খুঁজুন"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "ফ্রেম"
@@ -13934,8 +14108,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | hideRepeatingChildren": {
     "message": "রিপিটিং চাইল্ড এন্ট্রি লুকান"
   },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | identifyTimeSpent": {
+    "message": "কত সময় খরচ হয়েছে তা শনাক্ত করুন"
+  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "অ্যাক্টিভ না থাকা ফ্রেম"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | labelEntry": {
+    "message": "লেবেল এন্ট্রি"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "আংশিকভাবে দেখানো হয়েছে এমন ফ্রেম"
@@ -13948,6 +14128,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | resetTrace": {
     "message": "ট্রেস রিসেট করুন"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | startAChat": {
+    "message": "চ্যাট শুরু করুন"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH2}-এ {PH1}"
@@ -14019,7 +14202,7 @@
     "message": "থার্ড-পার্টির চেকবক্সের উজ্জ্বলতা কমান"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
-    "message": "টাইমলাইন ফাইল বা ইউআরএল টেনে এনে এখানে রাখুন"
+    "message": "ট্রেস ফাইল বা URL এখানে এনে রাখুন"
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "উন্নত পেন্ট সরঞ্জাম (স্লো) চালু করুন"
@@ -14030,14 +14213,11 @@
   "panels/timeline/TimelinePanel.ts | eventSelected": {
     "message": "ইভেন্ট {PH1} বেছে নেওয়া হয়েছে"
   },
-  "panels/timeline/TimelinePanel.ts | exportEnhancedTraces": {
-    "message": "উন্নত পারফর্ম্যান্সের ট্রেস"
-  },
-  "panels/timeline/TimelinePanel.ts | exportNormalTraces": {
-    "message": "বেসিক পারফর্ম্যান্স ট্রেস"
-  },
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "ট্রেস এক্সপোর্ট করা যায়নি"
+  },
+  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
+    "message": "DevTools এক্সটার্নাল অনুরোধ পেয়েছে"
   },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "এর সমাধান করুন"
@@ -14048,17 +14228,17 @@
   "panels/timeline/TimelinePanel.ts | hideSidebar": {
     "message": "সাইডবার লুকান"
   },
-  "panels/timeline/TimelinePanel.ts | initializingProfiler": {
-    "message": "প্রোফাইলার শুরু করা হচ্ছে…"
+  "panels/timeline/TimelinePanel.ts | initializingTracing": {
+    "message": "ট্রেস শুরু করা হচ্ছে…"
   },
   "panels/timeline/TimelinePanel.ts | learnMore": {
     "message": "আরও জানুন"
   },
-  "panels/timeline/TimelinePanel.ts | loadProfile": {
-    "message": "প্রোফাইল লোড করুন…"
+  "panels/timeline/TimelinePanel.ts | loadTrace": {
+    "message": "ট্রেস লোড করুন…"
   },
-  "panels/timeline/TimelinePanel.ts | loadingProfile": {
-    "message": "প্রোফাইল লোড হচ্ছে…"
+  "panels/timeline/TimelinePanel.ts | loadingTrace": {
+    "message": "ট্রেস লোড করুন…"
   },
   "panels/timeline/TimelinePanel.ts | memory": {
     "message": "মেমরি"
@@ -14072,26 +14252,14 @@
   "panels/timeline/TimelinePanel.ts | processed": {
     "message": "প্রসেস করা হয়েছে"
   },
-  "panels/timeline/TimelinePanel.ts | processingProfile": {
-    "message": "প্রোফাইল প্রসেস করা হচ্ছে…"
-  },
-  "panels/timeline/TimelinePanel.ts | profiling": {
-    "message": "প্রোফাইল করা হচ্ছে…"
+  "panels/timeline/TimelinePanel.ts | processingTrace": {
+    "message": "ট্রেস প্রসেস করা হচ্ছে…"
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "রিসিভ করা হয়েছে"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "রেকর্ডিং করা যায়নি"
-  },
-  "panels/timeline/TimelinePanel.ts | saveProfile": {
-    "message": "প্রোফাইল সেভ করুন…"
-  },
-  "panels/timeline/TimelinePanel.ts | saveTraceWithAnnotationsMenuOption": {
-    "message": "ট্রেস সেভ করুন"
-  },
-  "panels/timeline/TimelinePanel.ts | saveTraceWithoutAnnotationsMenuOption": {
-    "message": "অ্যানোটেশন ছাড়া ট্রেস সেভ করুন"
   },
   "panels/timeline/TimelinePanel.ts | screenshots": {
     "message": "স্ক্রিনশট"
@@ -14132,11 +14300,23 @@
   "panels/timeline/TimelinePanel.ts | timelineZoom": {
     "message": "জুম করুন"
   },
+  "panels/timeline/TimelinePanel.ts | tracing": {
+    "message": "ট্রেস করা হচ্ছে…"
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "টেবিল কপি করুন"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | elapsed": {
     "message": "পেরিয়ে গেছে (এমএস)"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | elapsedExplanation": {
+    "message": "DOM-এর সাপেক্ষে কোনও সিলেক্টর মেলানোর জন্য মিলিসেকেন্ডে কত সময় খরচ হয়েছে।"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | invalidationCount": {
+    "message": "ইনভ্যালিডেশনের সংখ্যা"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | invalidationCountExplanation": {
+    "message": "এই সিলেক্টরের কারণে নোডে মোট কতবার ইনভ্যালিডেশন হয়েছে এবং ফলে ব্রাউজারকে স্টাইল পুনর্গণনা করতে হয়েছে। মনে রাখবেন, একাধিক সিলেক্টর একাধিকবার নোড ইনভ্যালিডেট করতে পারে।"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | lineNumber": {
     "message": "লাইন {PH1}:{PH2}"
@@ -14144,23 +14324,35 @@
   "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
     "message": "যতবার ম্যাচ করার চেষ্টা করা হয়েছে"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchAttemptsExplanation": {
+    "message": "ইঞ্জিন কোনও স্টাইল রুলের সাথে যতবার নোড মেলানোর চেষ্টা করেছে সেটির সংখ্যা।"
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
     "message": "যতবার ম্যাচ করা হয়েছে তার সংখ্যা"
   },
-  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "স্লো-পাথ নন ম্যাচের %"
-  },
-  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
-    "message": "ম্যাচ করছে না এমন নোডের শতকরা হার (কতবার ম্যাচ করার চেষ্টা করা হয়েছে - কতবার ম্যাচ করা হয়েছে) যেগুলি হাই সিলেক্টর জটিলতার কারণে ব্লুম ফিল্টার থেকে দ্রুত সরানো যায়নি। যত কম হবে ততই ভালো।"
+  "panels/timeline/TimelineSelectorStatsView.ts | matchCountExplanation": {
+    "message": "কোনও স্টাইল রুলের সাথে মেলে এমন নোডের সংখ্যা।"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "সিলেক্টর"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | selectorExplanation": {
+    "message": "কোনও স্টাইল রুলের CSS সিলেক্টর টেক্সট।"
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
     "message": "সিলেক্টরের পরিসংখ্যান"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatches": {
+    "message": "স্লো-পাথ নন ম্যাচের %"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatchesExplanation": {
+    "message": "ম্যাচ করছে না এমন নোডের শতকরা হার (কতবার ম্যাচ করার চেষ্টা করা হয়েছে - কতবার ম্যাচ করা হয়েছে) যেগুলি হাই সিলেক্টর জটিলতার কারণে ব্লুম ফিল্টার থেকে দ্রুত সরানো যায়নি। যত কম হবে ততই ভালো।"
+  },
   "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
     "message": "স্টাইল শিট"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | styleSheetIdExplanation": {
+    "message": "স্টাইল শিটে সিলেক্টর রুল সংজ্ঞায় লিঙ্ক। মনে রাখবেন, কোনও স্টাইল শিটের একাধিক জায়গায় বা একাধিক স্টাইল শিটে সিলেক্টর রুলের সংজ্ঞা দেওয়া প্রয়োজন। ব্রাউজার ইউজার এজেন্ট স্টাইল শিট বা ডায়নামিক স্টাইল থেকে সিলেক্টর রুলের লিঙ্ক থাকে না।"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
     "message": "ক্লিপবোর্ডে টেবিল কপি করা হয়েছে"
@@ -15278,12 +15470,6 @@
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
     "message": "সময়সীমা নির্দিষ্ট করুন"
   },
-  "panels/timeline/components/SidebarInsightsTab.ts | feedbackButton": {
-    "message": "মতামত"
-  },
-  "panels/timeline/components/SidebarInsightsTab.ts | feedbackTooltip": {
-    "message": "ইনসাইট হল একটি পরীক্ষামূলক ফিচার। আপনার মতামত এটির উন্নতি করতে আমাদের সাহায্য করবে।"
-  },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
     "message": "বাতিল করুন"
   },
@@ -15824,33 +16010,6 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome ফ্ল্যাগ করেছে অথবা ব্রাউজার কনফিগারেশনের কারণে কুকির জন্য করা এই অনুরোধ ব্লক করা হয়েছে। 'সমস্যা' প্যানেলে এর ব্যাপারে আরও জানুন।"
   },
-  "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
-    "message": "কলব্যাক বাফার সাইজ"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | callbackInterval": {
-    "message": "কলব্যাক ইন্টারভ্যাল"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | currentTime": {
-    "message": "বর্তমান সময়"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | maxOutputChannels": {
-    "message": "সর্বাধিক আউটপুট চ্যানেল"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | renderCapacity": {
-    "message": "রেন্ডার ক্যাপাসিটি"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | sampleRate": {
-    "message": "স্যাম্পেল রেট"
-  },
-  "panels/web_audio/AudioContextContentBuilder.ts | state": {
-    "message": "অবস্থা"
-  },
-  "panels/web_audio/AudioContextSelector.ts | audioContextS": {
-    "message": "অডিও কনটেক্সট: {PH1}"
-  },
-  "panels/web_audio/AudioContextSelector.ts | noRecordings": {
-    "message": "(কোনও রেকর্ডিং নেই)"
-  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "কোনও Web Audio API-এর ব্যবহার শনাক্ত করা যায়নি"
   },
@@ -15874,9 +16033,6 @@
   },
   "panels/webauthn/WebauthnPane.ts | add": {
     "message": "যোগ করুন"
-  },
-  "panels/webauthn/WebauthnPane.ts | addAuthenticator": {
-    "message": "যাচাইকারী যোগ করুন"
   },
   "panels/webauthn/WebauthnPane.ts | authenticatorS": {
     "message": "যাচাইকারী {PH1}"
@@ -16417,6 +16573,9 @@
   },
   "ui/legacy/UIUtils.ts | copyLinkAddress": {
     "message": "লিঙ্ক ঠিকানা কপি করুন"
+  },
+  "ui/legacy/UIUtils.ts | new": {
+    "message": "নতুন"
   },
   "ui/legacy/UIUtils.ts | ok": {
     "message": "ঠিক আছে"

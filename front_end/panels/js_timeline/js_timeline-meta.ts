@@ -9,27 +9,27 @@ import type * as Timeline from '../timeline/timeline.js';
 
 const UIStrings = {
   /**
-   *@description Text for the performance of something
+   * @description Text for the performance of something
    */
   performance: 'Performance',
   /**
-   *@description Command for showing the 'Performance' tool
+   * @description Command for showing the 'Performance' tool
    */
   showPerformance: 'Show Performance',
   /**
-   *@description Title of an action in the timeline tool to show history
+   * @description Title of an action in the timeline tool to show history
    */
   showRecentTimelineSessions: 'Show recent timeline sessions',
   /**
-   *@description Text to record a series of actions for analysis
+   * @description Text to record a series of actions for analysis
    */
   record: 'Record',
   /**
-   *@description Text of an item that stops the running task
+   * @description Text of an item that stops the running task
    */
   stop: 'Stop',
   /**
-   *@description Title of an action in the timeline tool to record a reload of the current page
+   * @description Title of an action in the timeline tool to record a reload of the current page
    */
   recordAndReload: 'Record and reload',
 } as const;

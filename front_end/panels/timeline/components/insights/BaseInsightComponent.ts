@@ -177,7 +177,12 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   #dispatchInsightToggle(): void {
     if (this.#selected) {
       this.dispatchEvent(new SidebarInsight.InsightDeactivated());
-      UI.Context.Context.instance().setFlavor(Utils.InsightAIContext.ActiveInsight, null);
+
+      // Clear agent (but only if currently focused on an insight).
+      const focus = UI.Context.Context.instance().flavor(Utils.AIContext.AgentFocus);
+      if (focus && focus.data.type === 'insight') {
+        UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, null);
+      }
       return;
     }
 
@@ -354,8 +359,8 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return;
     }
 
-    const context = new Utils.InsightAIContext.ActiveInsight(this.#model, this.data.bounds, this.#parsedTrace);
-    UI.Context.Context.instance().setFlavor(Utils.InsightAIContext.ActiveInsight, context);
+    const context = Utils.AIContext.AgentFocus.fromInsight(this.#parsedTrace, this.#model, this.data.bounds);
+    UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
 
     // Trigger the AI Assistance panel to open.
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);
@@ -363,10 +368,11 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   }
 
   #canShowAskAI(): boolean {
-    const aiDisabledByEnterprisePolicy = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
-        Root.Runtime.GenAiEnterprisePolicyValue.DISABLE;
+    const aiAvailable = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !==
+            Root.Runtime.GenAiEnterprisePolicyValue.DISABLE &&
+        this.#insightsAskAiEnabled && Root.Runtime.hostConfig.aidaAvailability?.enabled === true;
 
-    return !aiDisabledByEnterprisePolicy && this.#insightsAskAiEnabled && this.hasAskAiSupport();
+    return aiAvailable && this.hasAskAiSupport();
   }
 
   #renderInsightContent(insightModel: T): Lit.LitTemplate {
@@ -374,7 +380,11 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return Lit.nothing;
     }
 
-    const ariaLabel = `Ask AI about ${insightModel.title} insight`;
+    const aiLabel = Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled ||
+            Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled ?
+        'Debug with AI' :
+        'Ask AI';
+    const ariaLabel = `${aiLabel} about ${insightModel.title} insight`;
     // Only render the insight body content if it is selected.
     // To avoid re-rendering triggered from elsewhere.
     const content = this.renderContent();
@@ -392,7 +402,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
               jslog=${VisualLogging.action(`timeline.insight-ask-ai.${this.internalName}`).track({click: true})}
               @click=${this.#askAIButtonClick}
               aria-label=${ariaLabel}
-            >Ask AI</devtools-button>
+            >${aiLabel}</devtools-button>
           </div>
         `: Lit.nothing}
       </div>`;

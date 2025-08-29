@@ -61,7 +61,7 @@ export class IOModel extends SDKModel<void> {
     return strings.join('');
   }
 
-  async readToBuffer(handle: Protocol.IO.StreamHandle): Promise<Uint8Array> {
+  async readToBuffer(handle: Protocol.IO.StreamHandle): Promise<Uint8Array<ArrayBuffer>> {
     const items: Uint8Array[] = [];
     for (;;) {
       const data = await this.read(handle, 1024 * 1024);

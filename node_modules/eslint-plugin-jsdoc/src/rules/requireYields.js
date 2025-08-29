@@ -65,15 +65,15 @@ const checkTagName = (utils, report, tagName) => {
 };
 
 export default iterateJsdoc(({
+  context,
   report,
   utils,
-  context,
 }) => {
   const {
-    next = false,
-    nextWithGeneratorTag = false,
     forceRequireNext = false,
     forceRequireYields = false,
+    next = false,
+    nextWithGeneratorTag = false,
     withGeneratorTag = true,
   } = context.options[0] || {};
 

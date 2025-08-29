@@ -4,7 +4,7 @@
 
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
 
 import * as SDK from './sdk.js';
@@ -700,6 +700,7 @@ describe('CSSMatchedStyles', () => {
 
 describeWithMockConnection('NodeCascade', () => {
   it('correctly marks custom properties as Overloaded if they are registered as inherits: false', async () => {
+    setMockConnectionResponseHandler('CSS.getEnvironmentVariables', () => ({}));
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);

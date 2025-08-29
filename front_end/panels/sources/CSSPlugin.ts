@@ -27,25 +27,25 @@ import {Plugin} from './Plugin.js';
 
 const UIStrings = {
   /**
-   *@description Swatch icon element title in CSSPlugin of the Sources panel
+   * @description Swatch icon element title in CSSPlugin of the Sources panel
    */
   openColorPicker: 'Open color picker.',
   /**
-   *@description Text to open the cubic bezier editor
+   * @description Text to open the cubic bezier editor
    */
   openCubicBezierEditor: 'Open cubic bezier editor.',
   /**
-   *@description Text for a context menu item for attaching a sourcemap to the currently open css file
+   * @description Text for a context menu item for attaching a sourcemap to the currently open css file
    */
   addSourceMap: 'Add source map…',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CSSPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const dontCompleteIn = new Set(['ColorLiteral', 'NumberLiteral', 'StringLiteral', 'Comment', 'Important']);
+const doNotCompleteIn = new Set(['ColorLiteral', 'NumberLiteral', 'StringLiteral', 'Comment', 'Important']);
 
 function findPropertyAt(node: CodeMirror.SyntaxNode, pos: number): CodeMirror.SyntaxNode|null {
-  if (dontCompleteIn.has(node.name)) {
+  if (doNotCompleteIn.has(node.name)) {
     return null;
   }
   for (let cur: CodeMirror.SyntaxNode|null = node; cur; cur = cur.parent) {
@@ -490,7 +490,7 @@ export class CSSPlugin extends Plugin implements SDK.TargetManager.SDKModelObser
     const cssModel = this.#cssModel;
     const url = this.uiSourceCode.url();
     if (this.uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network && cssModel &&
-        !Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url)) {
+        !Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url)) {
       const addSourceMapURLLabel = i18nString(UIStrings.addSourceMap);
       contextMenu.debugSection().appendItem(
           addSourceMapURLLabel, () => addSourceMapURL(cssModel, url), {jslogContext: 'add-source-map'});

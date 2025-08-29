@@ -1,3 +1,6 @@
+import {
+  getJsdocProcessorPlugin,
+} from './getJsdocProcessorPlugin.js';
 import checkAccess from './rules/checkAccess.js';
 import checkAlignment from './rules/checkAlignment.js';
 import checkExamples from './rules/checkExamples.js';
@@ -56,17 +59,18 @@ import tagLines from './rules/tagLines.js';
 import textEscaping from './rules/textEscaping.js';
 import validTypes from './rules/validTypes.js';
 
-import { getJsdocProcessorPlugin } from './getJsdocProcessorPlugin.js';
-
+/* eslint-disable jsdoc/valid-types -- Bug */
 /**
  * @typedef {"recommended" | "stylistic" | "contents" | "logical" | "requirements"} ConfigGroups
  * @typedef {"" | "-typescript" | "-typescript-flavor"} ConfigVariants
  * @typedef {"" | "-error"} ErrorLevelVariants
  * @type {import('eslint').ESLint.Plugin & {
-*   configs: Record<`flat/${ConfigGroups}${ConfigVariants}${ErrorLevelVariants}`, import('eslint').Linter.Config>
-* }}
-*/
+ *   configs: Record<`flat/${ConfigGroups}${ConfigVariants}${ErrorLevelVariants}`,
+ *   import('eslint').Linter.Config>
+ * }}
+ */
 const index = {
+  /* eslint-enable jsdoc/valid-types -- Bug */
   // @ts-expect-error Ok
   configs: {},
   rules: {
@@ -137,7 +141,9 @@ const index = {
  */
 const createRecommendedRuleset = (warnOrError, flatName) => {
   return {
-    ...(flatName ? {name: 'jsdoc/' + flatName} : {}),
+    ...(flatName ? {
+      name: 'jsdoc/' + flatName,
+    } : {}),
     // @ts-expect-error Ok
     plugins:
       flatName ? {
@@ -219,7 +225,7 @@ const createRecommendedTypeScriptRuleset = (warnOrError, flatName) => {
     ...ruleset,
     rules: {
       ...ruleset.rules,
-      /* eslint-disable indent -- Extra indent to avoid use by auto-rule-editing */
+      /* eslint-disable @stylistic/indent -- Extra indent to avoid use by auto-rule-editing */
         'jsdoc/check-tag-names': [
           warnOrError, {
             typed: true,
@@ -230,7 +236,7 @@ const createRecommendedTypeScriptRuleset = (warnOrError, flatName) => {
         'jsdoc/require-param-type': 'off',
         'jsdoc/require-property-type': 'off',
         'jsdoc/require-returns-type': 'off',
-      /* eslint-enable indent */
+      /* eslint-enable @stylistic/indent */
     },
   };
 };
@@ -247,9 +253,9 @@ const createRecommendedTypeScriptFlavorRuleset = (warnOrError, flatName) => {
     ...ruleset,
     rules: {
       ...ruleset.rules,
-      /* eslint-disable indent -- Extra indent to avoid use by auto-rule-editing */
+      /* eslint-disable @stylistic/indent -- Extra indent to avoid use by auto-rule-editing */
         'jsdoc/no-undefined-types': 'off',
-      /* eslint-enable indent */
+      /* eslint-enable @stylistic/indent */
     },
   };
 };
@@ -266,26 +272,39 @@ const createStandaloneRulesetFactory = (ruleNames) => {
   return (warnOrError, flatName) => {
     return {
       name: 'jsdoc/' + flatName,
-      plugins: { jsdoc: index },
+      plugins: {
+        jsdoc: index,
+      },
       rules: Object.fromEntries(
         ruleNames.map(
-          ruleName =>
-            typeof ruleName === "string"
-              ? [ruleName, warnOrError]
-              : [ruleName[0], [warnOrError, ...ruleName.slice(1)]]
-        )
+          (ruleName) => {
+            return (typeof ruleName === 'string' ?
+              [
+                ruleName, warnOrError,
+              ] :
+              [
+                ruleName[0], [
+                  warnOrError, ...ruleName.slice(1),
+                ],
+              ]);
+          },
+        ),
       ),
     };
   };
-}
+};
 
 const contentsRules = [
   'jsdoc/informative-docs',
   'jsdoc/match-description',
   'jsdoc/no-blank-block-descriptions',
   'jsdoc/no-blank-blocks',
-  ['jsdoc/text-escaping', { escapeHTML: true }]
-]
+  [
+    'jsdoc/text-escaping', {
+      escapeHTML: true,
+    },
+  ],
+];
 
 const createContentsTypescriptRuleset = createStandaloneRulesetFactory(contentsRules);
 
@@ -346,7 +365,9 @@ const stylisticRules = [
   'jsdoc/multiline-blocks',
   'jsdoc/no-multi-asterisks',
   'jsdoc/require-asterisk-prefix',
-  ['jsdoc/require-hyphen-before-param-description', 'never'],
+  [
+    'jsdoc/require-hyphen-before-param-description', 'never',
+  ],
   'jsdoc/tag-lines',
 ];
 
@@ -392,16 +413,20 @@ index.configs['flat/stylistic-typescript-flavor-error'] = createStylisticTypeScr
 
 index.configs.examples = /** @type {import('eslint').Linter.FlatConfig[]} */ ([
   {
+    files: [
+      '**/*.js',
+    ],
     name: 'jsdoc/examples/processor',
-    files: ['**/*.js'],
     plugins: {
-      examples: getJsdocProcessorPlugin()
+      examples: getJsdocProcessorPlugin(),
     },
     processor: 'examples/examples',
   },
   {
+    files: [
+      '**/*.md/*.js',
+    ],
     name: 'jsdoc/examples/rules',
-    files: ['**/*.md/*.js'],
     rules: {
       // "always" newline rule at end unlikely in sample code
       'eol-last': 0,
@@ -436,26 +461,30 @@ index.configs.examples = /** @type {import('eslint').Linter.FlatConfig[]} */ ([
 
       // Can generally look nicer to pad a little even if code imposes more stringency
       'padded-blocks': 0,
-    }
-  }
+    },
+  },
 ]);
 
 index.configs['default-expressions'] = /** @type {import('eslint').Linter.FlatConfig[]} */ ([
   {
-    files: ['**/*.js'],
+    files: [
+      '**/*.js',
+    ],
     name: 'jsdoc/default-expressions/processor',
     plugins: {
       examples: getJsdocProcessorPlugin({
         checkDefaults: true,
         checkParams: true,
-        checkProperties: true
-      })
+        checkProperties: true,
+      }),
     },
-    processor: 'examples/examples'
+    processor: 'examples/examples',
   },
   {
+    files: [
+      '**/*.jsdoc-defaults', '**/*.jsdoc-params', '**/*.jsdoc-properties',
+    ],
     name: 'jsdoc/default-expressions/rules',
-    files: ['**/*.jsdoc-defaults', '**/*.jsdoc-params', '**/*.jsdoc-properties'],
     rules: {
       ...index.configs.examples[1].rules,
       'chai-friendly/no-unused-expressions': 0,
@@ -468,9 +497,9 @@ index.configs['default-expressions'] = /** @type {import('eslint').Linter.FlatCo
       semi: [
         'error', 'never',
       ],
-      strict: 0
+      strict: 0,
     },
-  }
+  },
 ]);
 
 index.configs['examples-and-default-expressions'] = /** @type {import('eslint').Linter.FlatConfig[]} */ ([
@@ -480,22 +509,22 @@ index.configs['examples-and-default-expressions'] = /** @type {import('eslint').
       examples: getJsdocProcessorPlugin({
         checkDefaults: true,
         checkParams: true,
-        checkProperties: true
-      })
+        checkProperties: true,
+      }),
     },
   },
   ...index.configs.examples.map((config) => {
     return {
       ...config,
-      plugins: {}
+      plugins: {},
     };
   }),
   ...index.configs['default-expressions'].map((config) => {
     return {
       ...config,
-      plugins: {}
+      plugins: {},
     };
-  })
+  }),
 ]);
 
 export default index;

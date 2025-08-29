@@ -5,7 +5,7 @@
 import * as Application from '../../panels/application/application.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 
 export const isStorageView = function(view) {

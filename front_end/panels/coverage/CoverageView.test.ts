@@ -37,12 +37,13 @@ const setupTargetAndModels = () => {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
   const targetManager = SDK.TargetManager.TargetManager.instance();
   const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+  const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+  Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
     forceNew: true,
     resourceMapping,
     targetManager,
+    ignoreListManager,
   });
-  Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
   Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({forceNew: true, resourceMapping, targetManager});
 
   const coverageModel = target.model(Coverage.CoverageModel.CoverageModel);

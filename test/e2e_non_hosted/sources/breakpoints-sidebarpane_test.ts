@@ -15,9 +15,6 @@ import {
 } from '../../e2e/helpers/sources-helpers.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {
-  assertNotNullOrUndefined,
-} from '../../shared/helper.js';
 
 const BREAKPOINT_VIEW_COMPONENT = '#devtools-breakpoint-view';
 const FIRST_BREAKPOINT_ITEM_SELECTOR = '[data-first-breakpoint]';
@@ -48,7 +45,7 @@ describe('The Breakpoints Sidebar', () => {
 
       // Set a breakpoint on the original source.
       const breakpointLineHandle = await getLineNumberElement(setBreakpointLine, devToolsPage);
-      assertNotNullOrUndefined(breakpointLineHandle);
+      assert.isOk(breakpointLineHandle);
       await devToolsPage.clickElement(breakpointLineHandle);
       await devToolsPage.waitForFunction(async () => await isBreakpointSet(expectedResolvedLineNumber, devToolsPage));
 
@@ -94,7 +91,7 @@ describe('The Breakpoints Sidebar', () => {
       const actualCodeSnippets = await Promise.all(breakpointItems.map(async breakpoint => {
         const codeSnippetHandle = await devToolsPage.waitFor(CODE_SNIPPET_SELECTOR, breakpoint);
         const content = await extractTextContentIfConnected(codeSnippetHandle);
-        assertNotNullOrUndefined(content);
+        assert.isOk(content);
         return content;
       }));
 
@@ -129,19 +126,19 @@ describe('The Breakpoints Sidebar', () => {
        const originalBreakpointLine = 3;
        const slidBreakpointLine = 5;
        const breakpointLine = await getLineNumberElement(originalBreakpointLine, devToolsPage);
-       assertNotNullOrUndefined(breakpointLine);
+       assert.isOk(breakpointLine);
        await devToolsPage.clickElement(breakpointLine);
        await devToolsPage.waitForFunction(async () => await isBreakpointSet(slidBreakpointLine, devToolsPage));
 
        const breakpointView = await devToolsPage.$(BREAKPOINT_VIEW_COMPONENT);
-       assertNotNullOrUndefined(breakpointView);
+       assert.isOk(breakpointView);
 
        // Click on the first breakpoint item to 1. disable and 2. focus.
        const breakpointItem = await devToolsPage.waitFor(FIRST_BREAKPOINT_ITEM_SELECTOR, breakpointView);
-       assertNotNullOrUndefined(breakpointItem);
+       assert.isOk(breakpointItem);
 
        const checkbox = await breakpointItem.$('input');
-       assertNotNullOrUndefined(checkbox);
+       assert.isOk(checkbox);
        await devToolsPage.clickElement(checkbox);
 
        // Wait until the click has propagated: the line is updated with the new location.

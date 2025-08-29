@@ -1,0 +1,6 @@
+node_modules/
+/third_party/
+front_end/core/i18n/locales/*.json
+front_end/third_party/lighthouse/locales/*.json
+front_end/third_party/puppeteer/package/lib/cjs/
+front_end/panels/timeline/fixtures/traces/

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview Rule to identify and templatize manually constructed DOM.
+ * @file Rule to identify and templatize manually constructed DOM.
  */
 
 import type {TSESTree} from '@typescript-eslint/utils';

@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import type * as Mocha from 'mocha';
-import * as os from 'os';
 
 import {AsyncScope} from './async-scope.js';
+import type {Platform} from './platform.js';
 import {getBrowserAndPages} from './puppeteer-state.js';
 import {ScreenshotError} from './screenshot-error.js';
 import {TestConfig} from './test_config.js';
@@ -16,22 +16,6 @@ declare global {
       skipOnPlatforms: (platforms: Platform[], title: string, fn: Mocha.AsyncFunc) => void;
     }
   }
-}
-
-export type Platform = 'mac'|'win32'|'linux';
-export let platform: Platform;
-switch (os.platform()) {
-  case 'darwin':
-    platform = 'mac';
-    break;
-
-  case 'win32':
-    platform = 'win32';
-    break;
-
-  default:
-    platform = 'linux';
-    break;
 }
 
 async function takeScreenshots(): Promise<{target?: string, frontend?: string}> {

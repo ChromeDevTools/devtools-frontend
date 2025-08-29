@@ -6,10 +6,9 @@ var $Object = require('es-object-atoms');
 var $StringPrototype = GetIntrinsic('%String.prototype%');
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
+var setProto = require('set-proto');
 
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
-
-var setProto = require('../helpers/setProto');
 
 // https://262.ecma-international.org/6.0/#sec-stringcreate
 

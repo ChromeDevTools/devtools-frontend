@@ -21,72 +21,72 @@ const defaultUselessWords = [
  */
 const getNamesFromNode = (node) => {
   switch (node?.type) {
-  case 'AccessorProperty':
-  case 'MethodDefinition':
-  case 'PropertyDefinition':
-  case 'TSAbstractAccessorProperty':
-  case 'TSAbstractMethodDefinition':
-  case 'TSAbstractPropertyDefinition':
-    return [
-      ...getNamesFromNode(
+    case 'AccessorProperty':
+    case 'MethodDefinition':
+    case 'PropertyDefinition':
+    case 'TSAbstractAccessorProperty':
+    case 'TSAbstractMethodDefinition':
+    case 'TSAbstractPropertyDefinition':
+      return [
+        ...getNamesFromNode(
         /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
-          node.parent
-        ).parent,
-      ),
-      ...getNamesFromNode(
+            node.parent
+          ).parent,
+        ),
+        ...getNamesFromNode(
         /** @type {import('@typescript-eslint/types').TSESTree.Node} */
-        (node.key),
-      ),
-    ];
+          (node.key),
+        ),
+      ];
 
-  case 'ExportDefaultDeclaration':
-  case 'ExportNamedDeclaration':
-    return getNamesFromNode(
-      /** @type {import('@typescript-eslint/types').TSESTree.ExportNamedDeclaration} */
-      (node).declaration
-    );
-  case 'ClassDeclaration':
-  case 'ClassExpression':
-  case 'FunctionDeclaration':
-  case 'FunctionExpression':
-  case 'TSModuleDeclaration':
-  case 'TSMethodSignature':
-  case 'TSDeclareFunction':
-  case 'TSEnumDeclaration':
-  case 'TSEnumMember':
-  case 'TSInterfaceDeclaration':
-  case 'TSTypeAliasDeclaration':
-    return getNamesFromNode(
+    case 'ClassDeclaration':
+    case 'ClassExpression':
+    case 'FunctionDeclaration':
+    case 'FunctionExpression':
+    case 'TSDeclareFunction':
+    case 'TSEnumDeclaration':
+    case 'TSEnumMember':
+    case 'TSInterfaceDeclaration':
+    case 'TSMethodSignature':
+    case 'TSModuleDeclaration':
+    case 'TSTypeAliasDeclaration':
+      return getNamesFromNode(
       /** @type {import('@typescript-eslint/types').TSESTree.ClassDeclaration} */
-      (node).id,
-    );
-  case 'Identifier':
-    return [
-      node.name,
-    ];
-  case 'Property':
-    return getNamesFromNode(
+        (node).id,
+      );
+    case 'ExportDefaultDeclaration':
+    case 'ExportNamedDeclaration':
+      return getNamesFromNode(
+      /** @type {import('@typescript-eslint/types').TSESTree.ExportNamedDeclaration} */
+        (node).declaration,
+      );
+    case 'Identifier':
+      return [
+        node.name,
+      ];
+    case 'Property':
+      return getNamesFromNode(
       /** @type {import('@typescript-eslint/types').TSESTree.Node} */
-      (node.key),
-    );
-  case 'VariableDeclaration':
-    return getNamesFromNode(
+        (node.key),
+      );
+    case 'VariableDeclaration':
+      return getNamesFromNode(
       /** @type {import('@typescript-eslint/types').TSESTree.Node} */
-      (node.declarations[0]),
-    );
-  case 'VariableDeclarator':
-    return [
-      ...getNamesFromNode(
+        (node.declarations[0]),
+      );
+    case 'VariableDeclarator':
+      return [
+        ...getNamesFromNode(
         /** @type {import('@typescript-eslint/types').TSESTree.Node} */
-        (node.id),
-      ),
-      ...getNamesFromNode(
+          (node.id),
+        ),
+        ...getNamesFromNode(
         /** @type {import('@typescript-eslint/types').TSESTree.Node} */
-        (node.init),
-      ),
-    ].filter(Boolean);
-  default:
-    return [];
+          (node.init),
+        ),
+      ].filter(Boolean);
+    default:
+      return [];
   }
 };
 /* eslint-enable complexity -- Temporary */

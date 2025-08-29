@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import {SnapshotTester} from '../../testing/SnapshotTester.js';
 
 import * as AiAssistance from './ai_assistance.js';
 
@@ -510,9 +511,8 @@ describe('AiHistoryStorage', () => {
         assert.lengthOf(imageHistory, 1);
         const historyWithoutImages = storage.getHistory();
         assert.lengthOf(historyWithoutImages, 2);
-        const conversationFromHistory = historyWithoutImages.map(item => {
-          return new AiAssistance.Conversation(item.type, item.history, item.id, true);
-        });
+        const conversationFromHistory =
+            historyWithoutImages.map(item => AiAssistance.Conversation.fromSerializedConversation(item));
         assert.lengthOf(conversationFromHistory, 2);
         assert.deepEqual(conversationFromHistory[0].history, [{
                            type: AiAssistance.ResponseType.USER_QUERY,
@@ -537,6 +537,83 @@ describe('AiHistoryStorage', () => {
                            imageId: 'image-id2',
                          }]);
       });
+    });
+  });
+
+  describe('getConversationMarkdown', () => {
+    let snapshotTester: SnapshotTester;
+    before(async () => {
+      snapshotTester = new SnapshotTester(import.meta);
+      await snapshotTester.load();
+    });
+
+    after(async () => {
+      await snapshotTester.finish();
+    });
+
+    it('should generate markdown from a conversation', function() {
+      const fakeTime = new Date('2024-01-01T00:00:00.000Z');
+      const clock = sinon.useFakeTimers(fakeTime);
+
+      const history: AiAssistance.ResponseData[] = [
+        {
+          type: AiAssistance.ResponseType.USER_QUERY,
+          query: 'What is the color of the sky?',
+        },
+        {
+          type: AiAssistance.ResponseType.CONTEXT,
+          title: 'Analyzing context',
+          details: [
+            {title: 'Detail 1', text: 'Some detail'},
+            {title: 'Detail 2', text: 'const a = 1;', codeLang: 'js'},
+          ],
+        },
+        {
+          type: AiAssistance.ResponseType.TITLE,
+          title: 'Thinking about it',
+        },
+        {
+          type: AiAssistance.ResponseType.THOUGHT,
+          thought: 'The user is asking about colors.',
+        },
+        {
+          type: AiAssistance.ResponseType.ACTION,
+          code: 'console.log("blue")',
+          output: 'blue',
+          canceled: false,
+        },
+        {
+          type: AiAssistance.ResponseType.ACTION,
+          code: 'console.log("red")',
+          output: 'Error: User denied code execution with side effects',
+          canceled: true,
+        },
+        {
+          type: AiAssistance.ResponseType.ACTION,
+          code: 'console.log("no output")',
+          canceled: false,
+        },
+        {
+          type: AiAssistance.ResponseType.ANSWER,
+          text: 'The sky is blue.',
+          complete: true,
+        },
+        {
+          type: AiAssistance.ResponseType.USER_QUERY,
+          query: 'And what about this image?',
+          imageInput: {inlineData: {data: 'test', mimeType: 'image/png'}},
+        },
+        {
+          type: AiAssistance.ResponseType.ANSWER,
+          text: 'This image contains a red apple.',
+          complete: true,
+        },
+      ];
+      const conversation = new AiAssistance.Conversation(AiAssistance.ConversationType.STYLING, history);
+      const markdown = conversation.getConversationMarkdown();
+
+      snapshotTester.assert(this, markdown);
+      clock.restore();
     });
   });
 });

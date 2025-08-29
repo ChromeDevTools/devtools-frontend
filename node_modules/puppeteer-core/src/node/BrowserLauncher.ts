@@ -74,11 +74,13 @@ export abstract class BrowserLauncher {
   async launch(options: LaunchOptions = {}): Promise<Browser> {
     const {
       dumpio = false,
+      enableExtensions = false,
       env = process.env,
       handleSIGINT = true,
       handleSIGTERM = true,
       handleSIGHUP = true,
       acceptInsecureCerts = false,
+      networkEnabled = true,
       defaultViewport = DEFAULT_VIEWPORT,
       downloadBehavior,
       slowMo = 0,
@@ -162,6 +164,7 @@ export abstract class BrowserLauncher {
             slowMo,
             defaultViewport,
             acceptInsecureCerts,
+            networkEnabled,
           },
         );
       } else {
@@ -186,6 +189,7 @@ export abstract class BrowserLauncher {
             {
               defaultViewport,
               acceptInsecureCerts,
+              networkEnabled,
             },
           );
         } else {
@@ -198,6 +202,9 @@ export abstract class BrowserLauncher {
             browserProcess.nodeProcess,
             browserCloseCallback,
             options.targetFilter,
+            undefined,
+            undefined,
+            networkEnabled,
           );
         }
       }
@@ -207,6 +214,20 @@ export abstract class BrowserLauncher {
         throw new TimeoutError(error.message);
       }
       throw error;
+    }
+
+    if (Array.isArray(enableExtensions)) {
+      if (this.#browser === 'chrome' && !usePipe) {
+        throw new Error(
+          'To use `enableExtensions` with a list of paths in Chrome, you must be connected with `--remote-debugging-pipe` (`pipe: true`).',
+        );
+      }
+
+      await Promise.all([
+        enableExtensions.map(path => {
+          return browser.installExtension(path);
+        }),
+      ]);
     }
 
     if (waitForInitialPage) {
@@ -344,6 +365,7 @@ export abstract class BrowserLauncher {
     opts: {
       defaultViewport: Viewport | null;
       acceptInsecureCerts?: boolean;
+      networkEnabled: boolean;
     },
   ): Promise<Browser> {
     const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
@@ -355,6 +377,7 @@ export abstract class BrowserLauncher {
       process: browserProcess.nodeProcess,
       defaultViewport: opts.defaultViewport,
       acceptInsecureCerts: opts.acceptInsecureCerts,
+      networkEnabled: opts.networkEnabled,
     });
   }
 
@@ -370,6 +393,7 @@ export abstract class BrowserLauncher {
       slowMo: number;
       defaultViewport: Viewport | null;
       acceptInsecureCerts?: boolean;
+      networkEnabled?: boolean;
     },
   ): Promise<Browser> {
     const browserWSEndpoint =
@@ -391,6 +415,7 @@ export abstract class BrowserLauncher {
       process: browserProcess.nodeProcess,
       defaultViewport: opts.defaultViewport,
       acceptInsecureCerts: opts.acceptInsecureCerts,
+      networkEnabled: opts.networkEnabled ?? true,
     });
   }
 

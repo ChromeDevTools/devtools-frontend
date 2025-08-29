@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Rule to ban usage of `adoptedStyleSheets`.
- * @author Benedikt Meurer
+ * @file Rule to ban usage of `adoptedStyleSheets`.
  * @see https://web.dev/articles/constructable-stylesheets
+ * @author Benedikt Meurer
  */
 
 import {createRule} from './utils/ruleCreator.ts';

@@ -47,12 +47,13 @@ describeWithMockConnection('NavigatorView', () => {
     workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({forceNew: true, resourceMapping, targetManager});
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
       targetManager,
+      ignoreListManager,
     });
-    Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});

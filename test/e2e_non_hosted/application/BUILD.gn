@@ -7,6 +7,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 ts_e2e_library("application") {
   sources = [
     "cookies_test.ts",
+    "frame-tree_test.ts",
     "manifest_test.ts",
     "reporting-api_test.ts",
     "service-worker-network_test.ts",

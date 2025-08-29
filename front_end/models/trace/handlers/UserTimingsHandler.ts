@@ -28,7 +28,7 @@ const performanceMarkEvents: Types.Events.PerformanceMark[] = [];
 
 const consoleTimings: Array<Types.Events.ConsoleTimeBegin|Types.Events.ConsoleTimeEnd> = [];
 
-const timestampEvents: Types.Events.ConsoleTimeStamp[] = [];
+let timestampEvents: Types.Events.ConsoleTimeStamp[] = [];
 
 export interface UserTimingsData {
   /**
@@ -112,11 +112,49 @@ const navTimingNames = [
 // flame chart).
 const ignoredNames = [...resourceTimingNames, ...navTimingNames];
 
+function getEventTimings(event: Types.Events.SyntheticEventPair|Types.Events.ConsoleTimeStamp):
+    {start: Types.Timing.Micro, end: Types.Timing.Micro} {
+  if ('dur' in event) {
+    // It's a SyntheticEventPair.
+    return {start: event.ts, end: Types.Timing.Micro(event.ts + (event.dur ?? 0))};
+  }
+
+  if (Types.Events.isConsoleTimeStamp(event)) {
+    const {start, end} = event.args.data || {};
+    if (typeof start === 'number' && typeof end === 'number') {
+      return {start: Types.Timing.Micro(start), end: Types.Timing.Micro(end)};
+    }
+  }
+
+  // A ConsoleTimeStamp without start/end is just a point in time, so dur is 0.
+  return {start: event.ts, end: event.ts};
+}
+
+function getEventTrack(event: Types.Events.SyntheticEventPair|Types.Events.ConsoleTimeStamp): string|undefined {
+  if (event.cat === 'blink.user_timing') {
+    // This is a SyntheticUserTimingPair
+    const detailString =
+        ((event as Types.Events.SyntheticUserTimingPair).args.data.beginEvent.args as {detail?: string})?.detail;
+    if (detailString) {
+      const details = Helpers.Trace.parseDevtoolsDetails(detailString, 'devtools');
+      if (details && 'track' in details) {
+        return details.track;
+      }
+    }
+  } else if (Types.Events.isConsoleTimeStamp(event)) {
+    const track = event.args.data?.track;
+    return typeof track === 'string' ? track : undefined;
+  }
+
+  // SyntheticConsoleTimingPair does not have track info.
+  return undefined;
+}
+
 /**
  * Similar to the default {@see Helpers.Trace.eventTimeComparator}
  * but with a twist:
- * In case of equal start and end times, always put the second event
- * first.
+ * In case of equal start and end times, put the second event (within a
+ * track) first.
  *
  * Explanation:
  * User timing entries come as trace events dispatched when
@@ -128,32 +166,30 @@ const ignoredNames = [...resourceTimingNames, ...navTimingNames];
  * performance.measure calls usually are done in bottom-up direction:
  * calls for children first and for parent later (because the call
  * is usually done when the measured task is over). This means that
- * when two user timing events have the start and end time, usually the
- * second event is the parent of the first. Hence the switch.
+ * when two user timing events have the same start and end time, usually
+ * the second event is the parent of the first. Hence the switch.
  *
  */
-function userTimingComparator(
-    a: Helpers.Trace.TimeSpan, b: Helpers.Trace.TimeSpan, originalArray: Helpers.Trace.TimeSpan[]): number {
-  const aBeginTime = a.ts;
-  const bBeginTime = b.ts;
-  if (aBeginTime < bBeginTime) {
-    return -1;
+export function userTimingComparator<T extends Types.Events.SyntheticEventPair|Types.Events.ConsoleTimeStamp>(
+    a: T, b: T, originalArray: readonly T[]): number {
+  const {start: aStart, end: aEnd} = getEventTimings(a);
+  const {start: bStart, end: bEnd} = getEventTimings(b);
+  const timeDifference = Helpers.Trace.compareBeginAndEnd(aStart, bStart, aEnd, bEnd);
+  if (timeDifference) {
+    return timeDifference;
   }
-  if (aBeginTime > bBeginTime) {
-    return 1;
+
+  // Never re-order entries across different tracks.
+  const aTrack = getEventTrack(a);
+  const bTrack = getEventTrack(b);
+  if (aTrack !== bTrack) {
+    return 0;  // Preserve current positions.
   }
-  const aDuration = a.dur ?? 0;
-  const bDuration = b.dur ?? 0;
-  const aEndTime = aBeginTime + aDuration;
-  const bEndTime = bBeginTime + bDuration;
-  if (aEndTime > bEndTime) {
-    return -1;
-  }
-  if (aEndTime < bEndTime) {
-    return 1;
-  }
+
   // Prefer the event located in a further position in the original array.
-  return originalArray.indexOf(b) - originalArray.indexOf(a);
+  const aIndex = originalArray.indexOf(a);
+  const bIndex = originalArray.indexOf(b);
+  return bIndex - aIndex;
 }
 
 export function handleEvent(event: Types.Events.Event): void {
@@ -182,6 +218,7 @@ export async function finalize(): Promise<void> {
   const asyncEvents = [...performanceMeasureEvents, ...consoleTimings];
   syntheticEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
   syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, [...syntheticEvents]));
+  timestampEvents = timestampEvents.sort((a, b) => userTimingComparator(a, b, [...timestampEvents]));
 }
 
 export function data(): UserTimingsData {

@@ -14,7 +14,7 @@ async function renderSharedStorageAccessGrid(events: Protocol.Storage.SharedStor
     Promise<ApplicationComponents.SharedStorageAccessGrid.SharedStorageAccessGrid> {
   const component = new ApplicationComponents.SharedStorageAccessGrid.SharedStorageAccessGrid();
   renderElementIntoDOM(component);
-  component.data = events;
+  component.events = events;
 
   // The data-grid's renderer is scheduled, so we need to wait until the coordinator
   // is done before we can test against it.
@@ -25,7 +25,7 @@ async function renderSharedStorageAccessGrid(events: Protocol.Storage.SharedStor
 
 function getInternalDataGridShadowRoot(
     component: ApplicationComponents.SharedStorageAccessGrid.SharedStorageAccessGrid): ShadowRoot {
-  const dataGrid = component.shadowRoot!.querySelector('devtools-data-grid')!;
+  const dataGrid = component.contentElement.querySelector('devtools-data-grid')!;
   assert.isNotNull(dataGrid.shadowRoot);
   return dataGrid.shadowRoot;
 }
@@ -75,10 +75,10 @@ describeWithLocale('SharedStorageAccessGrid', () => {
   it('hides shared storage event table when there are no events', async () => {
     const component = await renderSharedStorageAccessGrid([]);
 
-    const nullGridElement = component.shadowRoot!.querySelector('devtools-new-data');
+    const nullGridElement = component.contentElement.querySelector('devtools-new-data');
     assert.isNull(nullGridElement);
 
-    const noEventsElement = component.shadowRoot!.querySelector('.empty-state');
+    const noEventsElement = component.contentElement.querySelector('.empty-state');
     assert.instanceOf(noEventsElement, HTMLDivElement);
   });
 });

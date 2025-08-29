@@ -1,7 +1,7 @@
 'use strict';
 
 // var modulo = require('./modulo');
-var $floor = Math.floor;
+var $floor = require('math-intrinsics/floor');
 
 // http://262.ecma-international.org/5.1/#sec-5.2
 

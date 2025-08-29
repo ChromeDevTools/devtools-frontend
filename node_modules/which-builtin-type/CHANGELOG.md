@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.2.1](https://github.com/inspect-js/which-builtin-type/compare/v1.2.0...v1.2.1) - 2024-12-12
+
+### Commits
+
+- [meta] sort package.json [`8305bf9`](https://github.com/inspect-js/which-builtin-type/commit/8305bf9a47674564c84dde5856829444ac59e379)
+- [actions] re-add finishers [`67140db`](https://github.com/inspect-js/which-builtin-type/commit/67140dba99e8f204c6f1abce315711fae4239032)
+- [Dev Deps] update `@arethetypeswrong/cli`, `@ljharb/tsconfig`, `@types/function.prototype.name`, `@types/tape`, `has-symbols` [`5adff02`](https://github.com/inspect-js/which-builtin-type/commit/5adff02870f00eafe144250b0ea2181f59b0d337)
+- [Deps] update `call-bind`, `is-date-object`, `is-regex`, `which-boxed-primitive` [`87922d3`](https://github.com/inspect-js/which-builtin-type/commit/87922d3a0a21ee2b0991d9f3832123f5ff149eed)
+- [Refactor] use `call-bound` directly [`8f633bc`](https://github.com/inspect-js/which-builtin-type/commit/8f633bc7587f481877f3965fdf0c74885753d824)
+- [Deps] update `is-regex`, `which-typed-array` [`a912742`](https://github.com/inspect-js/which-builtin-type/commit/a9127421b702943a57927bf3e4d867cdc5862419)
+
 ## [v1.2.0](https://github.com/inspect-js/which-builtin-type/compare/v1.1.4...v1.2.0) - 2024-11-23
 
 ### Commits

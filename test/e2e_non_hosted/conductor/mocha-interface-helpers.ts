@@ -117,7 +117,7 @@ export class InstrumentedTestFunction {
     if (context.test) {
       (context.test as Mocha.Test).realDuration = Math.ceil(performance.now() - start);
     }
-    dumpCollectedErrors();
+
     return testResult;
   }
 
@@ -193,14 +193,21 @@ export class InstrumentedTestFunction {
         .then(
             () => {
               this.#abortController.abort();
+              AsyncScope.abortSignal = undefined;
             },
             async err => {
               this.#abortController.abort();
+              AsyncScope.abortSignal = undefined;
               throw await finalizeTestError(this.state, err);
             })
         .finally(async () => {
           cleanupTimeoutPromise?.();
           await this.#clearState();
+          // Under some situations we report error when
+          // we disconnect CDP sessions,
+          // because of this we want to keep this last
+          // else it will report the error for the next test
+          dumpCollectedErrors();
         });
   }
 

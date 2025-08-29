@@ -4,7 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $DateUTC = GetIntrinsic('%Date.UTC%');
 
-var $isFinite = require('../helpers/isFinite');
+var $isFinite = require('math-intrinsics/isFinite');
 
 var DateFromTime = require('./DateFromTime');
 var Day = require('./Day');

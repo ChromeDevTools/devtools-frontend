@@ -67,7 +67,12 @@ test('safe-array-concat', function (t) {
 	t.test('has isConcatSpreadable', { skip: !isConcatSpreadable }, function (st) {
 		// TS can't type narrow from tape's `skip`
 		if (isConcatSpreadable) {
-			st.teardown(mockProperty(String.prototype, isConcatSpreadable, { value: true }));
+			st.teardown(mockProperty(
+				// eslint-disable-next-line no-extra-parens
+				/** @type {Record<PropertyKey, unknown>} */ (/** @type {unknown} */ (String.prototype)),
+				isConcatSpreadable,
+				{ value: true }
+			));
 
 			var nonSpreadable = [1, 2];
 			// @ts-expect-error ts(7015) TS can't handle expandos on an array

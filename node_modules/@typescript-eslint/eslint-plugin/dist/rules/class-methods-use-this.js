@@ -21,7 +21,6 @@ exports.default = (0, util_1.createRule)({
                 properties: {
                     enforceForClassFields: {
                         type: 'boolean',
-                        default: true,
                         description: 'Enforces that functions used as instance field initializers utilize `this`.',
                     },
                     exceptMethods: {

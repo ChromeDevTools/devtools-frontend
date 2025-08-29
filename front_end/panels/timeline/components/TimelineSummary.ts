@@ -14,13 +14,13 @@ const {render, html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Text for total
+   * @description Text for total
    */
   total: 'Total',
   /**
-   *@description Range in Timeline Details View's Summary
-   *@example {1ms} PH1
-   *@example {10ms} PH2
+   * @description Range in Timeline Details View's Summary
+   * @example {1ms} PH1
+   * @example {10ms} PH2
    */
   rangeSS: 'Range:  {PH1} – {PH2}',
 } as const;

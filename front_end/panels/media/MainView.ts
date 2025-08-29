@@ -16,22 +16,22 @@ import {PlayerListView} from './PlayerListView.js';
 
 const UIStrings = {
   /**
-   *@description Text to show if no media player has been selected
+   * @description Text to show if no media player has been selected
    * A media player can be an audio and video source of a page.
    */
   noPlayerDetailsSelected: 'No media player selected',
   /**
-   *@description Text to instruct the user on how to view media player details
+   * @description Text to instruct the user on how to view media player details
    * A media player can be an audio and video source of a page.
    */
   selectToViewDetails: 'Select a media player to inspect its details.',
   /**
-   *@description Text to show if no player can be shown
+   * @description Text to show if no player can be shown
    * A media player can be an audio and video source of a page.
    */
   noMediaPlayer: 'No media player',
   /**
-   *@description Text to explain this panel
+   * @description Text to explain this panel
    * A media player can be an audio and video source of a page.
    */
   mediaPlayerDescription: 'On this page you can view and export media player details.',

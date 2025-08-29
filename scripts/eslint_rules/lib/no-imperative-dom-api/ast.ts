@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview A library for traversing the AST.
+ * @file A library for traversing the AST.
  */
 
 import type {TSESTree} from '@typescript-eslint/utils';

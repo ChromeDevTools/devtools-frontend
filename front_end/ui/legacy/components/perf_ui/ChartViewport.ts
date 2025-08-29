@@ -117,6 +117,10 @@ export class ChartViewport extends UI.Widget.VBox {
     return [this.vScrollElement];
   }
 
+  verticalScrollBarVisible(): boolean {
+    return !this.vScrollElement.classList.contains('hidden');
+  }
+
   private updateScrollBar(): void {
     const showScroll = this.alwaysShowVerticalScrollInternal || this.totalHeight > this.offsetHeight;
     if (this.vScrollElement.classList.contains('hidden') !== showScroll) {
@@ -175,7 +179,7 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   /**
-   * @param centered - If true, scrolls offset to where it is centered on the chart,
+   * @param centered If true, scrolls offset to where it is centered on the chart,
    * based on current the this.offsetHeight value.
    */
   setScrollOffset(offset: number, height?: number, centered?: boolean): void {
@@ -308,8 +312,8 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   /**
-   * @param startTime - the start time of the selection in MilliSeconds
-   * @param endTime - the end time of the selection in MilliSeconds
+   * @param startTime the start time of the selection in MilliSeconds
+   * @param endTime the end time of the selection in MilliSeconds
    * TODO(crbug.com/346312365): update the type definitions in ChartViewport.ts
    */
   setRangeSelection(startTime: number, endTime: number): void {

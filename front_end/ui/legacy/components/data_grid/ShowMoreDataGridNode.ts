@@ -51,8 +51,8 @@ const UIStrings = {
    */
   showDAfter: 'Show {PH1} after',
   /**
-   *@description In a data grid, for a list of items with omitted items, display all omitted items
-   *@example {50} PH1
+   * @description In a data grid, for a list of items with omitted items, display all omitted items
+   * @example {50} PH1
    */
   showAllD: 'Show all {PH1}',
 } as const;

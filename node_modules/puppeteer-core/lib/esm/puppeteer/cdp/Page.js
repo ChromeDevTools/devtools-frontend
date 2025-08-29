@@ -275,7 +275,7 @@ export class CdpPage extends Page {
         assert(session instanceof CdpCDPSession);
         this.#frameManager.onAttachedToTarget(session.target());
         if (session.target()._getTargetInfo().type === 'worker') {
-            const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), this.#addConsoleMessage.bind(this), this.#handleException.bind(this));
+            const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), this.#addConsoleMessage.bind(this), this.#handleException.bind(this), this.#frameManager.networkManager);
             this.#workers.set(session.id(), worker);
             this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }
@@ -308,7 +308,7 @@ export class CdpPage extends Page {
             assert(frame, 'This should never happen.');
             // This is guaranteed to be an HTMLInputElement handle by the event.
             const handle = __addDisposableResource(env_1, (await frame.worlds[MAIN_WORLD].adoptBackendNode(event.backendNodeId)), false);
-            const fileChooser = new FileChooser(handle.move(), event);
+            const fileChooser = new FileChooser(handle.move(), event.mode !== 'selectSingle');
             for (const promise of this.#fileChooserDeferreds) {
                 promise.resolve(fileChooser);
             }

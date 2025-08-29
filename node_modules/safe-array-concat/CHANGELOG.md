@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.3](https://github.com/ljharb/safe-array-concat/compare/v1.1.2...v1.1.3) - 2024-12-11
+
+### Commits
+
+- [Dev Deps] update `@arethetypeswrong/cli`, `@ljharb/eslint-config`, `@ljharb/tsconfig`, `@types/get-intrinsic`, `@types/tape`, `auto-changelog`, `mock-property`, `tape` [`9452ca7`](https://github.com/ljharb/safe-array-concat/commit/9452ca7dc6e22d89fb1bbf4f604d3e058a6813c0)
+- [actions] split out node 10-20, and 20+ [`8166059`](https://github.com/ljharb/safe-array-concat/commit/8166059134d555337faf7574f40c746deaecfa99)
+- [Deps] update `call-bind`, `get-intrinsic`, `has-symbols` [`d35014a`](https://github.com/ljharb/safe-array-concat/commit/d35014a2f8240ca70c336ef694744726b03a042b)
+- [Refactor] use `call-bound` directly [`0bdddbd`](https://github.com/ljharb/safe-array-concat/commit/0bdddbdbdd887f12ecc58ee9fd1f358ec13560d3)
+- [Tests] replace `aud` with `npm audit` [`c62dae0`](https://github.com/ljharb/safe-array-concat/commit/c62dae04b6eb56c460132fdd6e10de432228757e)
+- [Dev Deps] add missing peer dep [`4860aae`](https://github.com/ljharb/safe-array-concat/commit/4860aae938375ae69ecf1c8d6caf58632ca57715)
+
 ## [v1.1.2](https://github.com/ljharb/safe-array-concat/compare/v1.1.1...v1.1.2) - 2024-03-09
 
 ### Commits

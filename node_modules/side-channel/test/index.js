@@ -4,80 +4,101 @@ var test = require('tape');
 
 var getSideChannel = require('../');
 
-test('export', function (t) {
-	t.equal(typeof getSideChannel, 'function', 'is a function');
-	t.equal(getSideChannel.length, 0, 'takes no arguments');
+test('getSideChannel', function (t) {
+	t.test('export', function (st) {
+		st.equal(typeof getSideChannel, 'function', 'is a function');
 
-	var channel = getSideChannel();
-	t.ok(channel, 'is truthy');
-	t.equal(typeof channel, 'object', 'is an object');
+		st.equal(getSideChannel.length, 0, 'takes no arguments');
 
-	t.end();
-});
+		var channel = getSideChannel();
+		st.ok(channel, 'is truthy');
+		st.equal(typeof channel, 'object', 'is an object');
+		st.end();
+	});
 
-test('assert', function (t) {
-	var channel = getSideChannel();
-	t['throws'](
-		function () { channel.assert({}); },
-		TypeError,
-		'nonexistent value throws'
-	);
+	t.test('assert', function (st) {
+		var channel = getSideChannel();
+		st['throws'](
+			function () { channel.assert({}); },
+			TypeError,
+			'nonexistent value throws'
+		);
 
-	var o = {};
-	channel.set(o, 'data');
-	t.doesNotThrow(function () { channel.assert(o); }, 'existent value noops');
+		var o = {};
+		channel.set(o, 'data');
+		st.doesNotThrow(function () { channel.assert(o); }, 'existent value noops');
 
-	t.end();
-});
+		st.end();
+	});
 
-test('has', function (t) {
-	var channel = getSideChannel();
-	/** @type {unknown[]} */ var o = [];
+	t.test('has', function (st) {
+		var channel = getSideChannel();
+		/** @type {unknown[]} */ var o = [];
 
-	t.equal(channel.has(o), false, 'nonexistent value yields false');
+		st.equal(channel.has(o), false, 'nonexistent value yields false');
 
-	channel.set(o, 'foo');
-	t.equal(channel.has(o), true, 'existent value yields true');
+		channel.set(o, 'foo');
+		st.equal(channel.has(o), true, 'existent value yields true');
 
-	t.equal(channel.has('abc'), false, 'non object value non existent yields false');
+		st.equal(channel.has('abc'), false, 'non object value non existent yields false');
 
-	channel.set('abc', 'foo');
-	t.equal(channel.has('abc'), true, 'non object value that exists yields true');
+		channel.set('abc', 'foo');
+		st.equal(channel.has('abc'), true, 'non object value that exists yields true');
 
-	t.end();
-});
+		st.end();
+	});
 
-test('get', function (t) {
-	var channel = getSideChannel();
-	var o = {};
-	t.equal(channel.get(o), undefined, 'nonexistent value yields undefined');
+	t.test('get', function (st) {
+		var channel = getSideChannel();
+		var o = {};
+		st.equal(channel.get(o), undefined, 'nonexistent value yields undefined');
 
-	var data = {};
-	channel.set(o, data);
-	t.equal(channel.get(o), data, '"get" yields data set by "set"');
+		var data = {};
+		channel.set(o, data);
+		st.equal(channel.get(o), data, '"get" yields data set by "set"');
 
-	t.end();
-});
+		st.end();
+	});
 
-test('set', function (t) {
-	var channel = getSideChannel();
-	var o = function () {};
-	t.equal(channel.get(o), undefined, 'value not set');
+	t.test('set', function (st) {
+		var channel = getSideChannel();
+		var o = function () {};
+		st.equal(channel.get(o), undefined, 'value not set');
 
-	channel.set(o, 42);
-	t.equal(channel.get(o), 42, 'value was set');
+		channel.set(o, 42);
+		st.equal(channel.get(o), 42, 'value was set');
 
-	channel.set(o, Infinity);
-	t.equal(channel.get(o), Infinity, 'value was set again');
+		channel.set(o, Infinity);
+		st.equal(channel.get(o), Infinity, 'value was set again');
 
-	var o2 = {};
-	channel.set(o2, 17);
-	t.equal(channel.get(o), Infinity, 'o is not modified');
-	t.equal(channel.get(o2), 17, 'o2 is set');
+		var o2 = {};
+		channel.set(o2, 17);
+		st.equal(channel.get(o), Infinity, 'o is not modified');
+		st.equal(channel.get(o2), 17, 'o2 is set');
 
-	channel.set(o, 14);
-	t.equal(channel.get(o), 14, 'o is modified');
-	t.equal(channel.get(o2), 17, 'o2 is not modified');
+		channel.set(o, 14);
+		st.equal(channel.get(o), 14, 'o is modified');
+		st.equal(channel.get(o2), 17, 'o2 is not modified');
+
+		st.end();
+	});
+
+	t.test('delete', function (st) {
+		var channel = getSideChannel();
+		var o = {};
+		st.equal(channel['delete']({}), false, 'nonexistent value yields false');
+
+		channel.set(o, 42);
+		st.equal(channel.has(o), true, 'value is set');
+
+		st.equal(channel['delete']({}), false, 'nonexistent value still yields false');
+
+		st.equal(channel['delete'](o), true, 'deleted value yields true');
+
+		st.equal(channel.has(o), false, 'value is no longer set');
+
+		st.end();
+	});
 
 	t.end();
 });

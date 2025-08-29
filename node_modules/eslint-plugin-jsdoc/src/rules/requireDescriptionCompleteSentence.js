@@ -2,11 +2,11 @@ import iterateJsdoc from '../iterateJsdoc.js';
 import escapeStringRegexp from 'escape-string-regexp';
 
 const otherDescriptiveTags = new Set([
+  'classdesc', 'deprecated', 'exception', 'file', 'fileoverview', 'overview',
   // 'copyright' and 'see' might be good addition, but as the former may be
   //   sensitive text, and the latter may have just a link, they are not
   //   included by default
-  'summary', 'file', 'fileoverview', 'overview', 'classdesc', 'todo',
-  'deprecated', 'throws', 'exception', 'yields', 'yield',
+  'summary', 'throws', 'todo', 'yield', 'yields',
 ]);
 
 /**
@@ -112,7 +112,7 @@ const validateDescription = (
     return false;
   }
 
-  const descriptionNoHeadings = description.replaceAll(/^\s*#[^\n]*(\n|$)/gm, '');
+  const descriptionNoHeadings = description.replaceAll(/^\s*#[^\n]*(\n|$)/gmu, '');
 
   const paragraphs = extractParagraphs(descriptionNoHeadings).filter(Boolean);
 
@@ -123,7 +123,7 @@ const validateDescription = (
       let text = sourceCode.getText(jsdocNode);
 
       if (!/[.:?!]$/u.test(paragraph)) {
-        const line = paragraph.split('\n').filter(Boolean).pop();
+        const line = paragraph.split('\n').findLast(Boolean);
         text = text.replace(new RegExp(`${escapeStringRegexp(
           /** @type {string} */
           (line),
@@ -210,11 +210,11 @@ const validateDescription = (
 };
 
 export default iterateJsdoc(({
-  sourceCode,
   context,
   jsdoc,
-  report,
   jsdocNode,
+  report,
+  sourceCode,
   utils,
 }) => {
   const /** @type {{abbreviations: string[], newlineBeforeCapsAssumesBadSentenceEnd: boolean}} */ {

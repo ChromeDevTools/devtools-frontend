@@ -4,6 +4,22 @@ To stop mixing terms for UI elements across DevTools UI, its docs, and code, fam
 
 [TOC]
 
+## Main tab bar
+
+The primary tab bar at the top of the DevTools window. It contains the main
+panels, such as **Elements**, **Console**, **Sources**.
+
+You can reorder tabs, and move them between the main tab bar and the **Drawer**.
+
+## Drawer
+
+A container that can be shown or hidden at the bottom or right side of the
+DevTools window. It provides access to additional tools, such as the
+**Console**.
+
+You can toggle the drawer with the `Esc` key and move panels between the main
+tab bar and the drawer.
+
 ## Panel
 
 A top-level tab in the DevTools window, including tabs from the **Drawer**

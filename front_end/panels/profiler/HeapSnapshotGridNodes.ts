@@ -54,102 +54,102 @@ import type {DataDisplayDelegate} from './ProfileHeader.js';
 
 const UIStrings = {
   /**
-   *@description Generic text with two placeholders separated by a comma
-   *@example {1 613 680} PH1
-   *@example {44 %} PH2
+   * @description Generic text with two placeholders separated by a comma
+   * @example {1 613 680} PH1
+   * @example {44 %} PH2
    */
   genericStringsTwoPlaceholders: '{PH1}, {PH2}',
   /**
-   *@description Text in Heap Snapshot Grid Nodes of a profiler tool
+   * @description Text in Heap Snapshot Grid Nodes of a profiler tool
    */
   internalArray: '(internal array)[]',
   /**
-   *@description Text in Heap Snapshot Grid Nodes of a profiler tool
+   * @description Text in Heap Snapshot Grid Nodes of a profiler tool
    */
   userObjectReachableFromWindow: 'User object reachable from window',
   /**
-   *@description Text in Heap Snapshot Grid Nodes of a profiler tool
+   * @description Text in Heap Snapshot Grid Nodes of a profiler tool
    */
   detachedFromDomTree: 'Detached from DOM tree',
   /**
-   *@description Text in Heap Snapshot Grid Nodes of a profiler tool
+   * @description Text in Heap Snapshot Grid Nodes of a profiler tool
    */
   previewIsNotAvailable: 'Preview is not available',
   /**
-   *@description A context menu item in the Heap Profiler Panel of a profiler tool
+   * @description A context menu item in the Heap Profiler Panel of a profiler tool
    */
   revealInSummaryView: 'Reveal in Summary view',
   /**
-   *@description Text for the summary view
+   * @description Text for the summary view
    */
   summary: 'Summary',
   /**
-   *@description A context menu item in the Heap Profiler Panel of a profiler tool
-   *@example {SomeClassConstructor} PH1
-   *@example {12345} PH2
+   * @description A context menu item in the Heap Profiler Panel of a profiler tool
+   * @example {SomeClassConstructor} PH1
+   * @example {12345} PH2
    */
   revealObjectSWithIdSInSummary: 'Reveal object \'\'{PH1}\'\' with id @{PH2} in Summary view',
   /**
-   *@description Text to store an HTML element or JavaScript variable or expression result as a global variable
+   * @description Text to store an HTML element or JavaScript variable or expression result as a global variable
    */
   storeAsGlobalVariable: 'Store as global variable',
   /**
-   *@description Text to ignore an object shown in the Retainers pane
+   * @description Text to ignore an object shown in the Retainers pane
    */
   ignoreThisRetainer: 'Ignore this retainer',
   /**
-   *@description Text to undo the "Ignore this retainer" action
+   * @description Text to undo the "Ignore this retainer" action
    */
   stopIgnoringThisRetainer: 'Stop ignoring this retainer',
   /**
-   *@description Text indicating that a node has been ignored with the "Ignore this retainer" action
+   * @description Text indicating that a node has been ignored with the "Ignore this retainer" action
    */
   ignored: 'ignored',
   /**
-   *@description Text in Heap Snapshot Grid Nodes of a profiler tool that indicates an element contained in another
+   * @description Text in Heap Snapshot Grid Nodes of a profiler tool that indicates an element contained in another
    * element.
    */
   inElement: 'in',
   /**
-   *@description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#compiled-code
+   * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#compiled-code
    */
   compiledCodeSummary: 'Internal data which V8 uses to run functions defined by JavaScript or WebAssembly.',
   /**
-   *@description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#concatenated-string
+   * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#concatenated-string
    */
   concatenatedStringSummary: 'A string which represents the contents of two other strings joined together.',
   /**
-   *@description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#system-context
+   * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#system-context
    */
   contextSummary:
       'An internal object containing variables from a JavaScript scope which may be needed by a function created within that scope.',
   /**
-   *@description A short description of the data type internal type DescriptorArray, which is described more fully at https://v8.dev/blog/fast-properties
+   * @description A short description of the data type internal type DescriptorArray, which is described more fully at https://v8.dev/blog/fast-properties
    */
   descriptorArraySummary: 'A list of the property names used by a JavaScript Object.',
   /**
-   *@description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#array
+   * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#array
    */
   internalArraySummary: 'An internal array-like data structure (not a JavaScript Array).',
   /**
-   *@description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#internal-node
+   * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#internal-node
    */
   internalNodeSummary: 'An object allocated by a component other than V8, such as C++ objects defined by Blink.',
   /**
-   *@description A short description of the data type "system / Map" described at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#object-shape
+   * @description A short description of the data type "system / Map" described at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#object-shape
    */
   mapSummary: 'An internal object representing the shape of a JavaScript Object (not a JavaScript Map).',
   /**
-   *@description A short summary of the "(object elements)[]" described at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#array
+   * @description A short summary of the "(object elements)[]" described at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#array
    */
   objectElementsSummary:
       'An internal object which stores the indexed properties in a JavaScript Object, such as the contents of an Array.',
   /**
-   *@description A short summary of the "(object properties)[]" described at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#array
+   * @description A short summary of the "(object properties)[]" described at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#array
    */
   objectPropertiesSummary: 'An internal object which stores the named properties in a JavaScript Object.',
   /**
-   *@description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#sliced-string
+   * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#sliced-string
    */
   slicedStringSummary: 'A string which represents some of the characters from another string.',
 } as const;

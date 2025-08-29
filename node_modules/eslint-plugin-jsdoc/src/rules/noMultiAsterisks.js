@@ -24,17 +24,17 @@ export default iterateJsdoc(({
 
   // eslint-disable-next-line complexity -- Todo
   jsdoc.source.some(({
-    tokens,
     number,
+    tokens,
   }) => {
     const {
       delimiter,
-      tag,
-      name,
-      type,
       description,
       end,
+      name,
       postDelimiter,
+      tag,
+      type,
     } = tokens;
 
     if (

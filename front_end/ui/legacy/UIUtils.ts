@@ -36,6 +36,7 @@
 
 import './Toolbar.js';
 
+import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -43,8 +44,11 @@ import * as Root from '../../core/root/root.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
+import {Directives, type LitTemplate, render} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
+import * as ActionRegistration from './ActionRegistration.js';
+import {ActionRegistry} from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import checkboxTextLabelStyles from './checkboxTextLabel.css.js';
 import confirmDialogStyles from './confirmDialog.css.js';
@@ -72,49 +76,53 @@ declare global {
 
 const UIStrings = {
   /**
-   *@description label to open link externally
+   * @description label to open link externally
    */
   openInNewTab: 'Open in new tab',
   /**
-   *@description label to copy link address
+   * @description label to copy link address
    */
   copyLinkAddress: 'Copy link address',
   /**
-   *@description label to copy file name
+   * @description label to copy file name
    */
   copyFileName: 'Copy file name',
   /**
-   *@description label for the profiler control button
+   * @description label for the profiler control button
    */
   anotherProfilerIsAlreadyActive: 'Another profiler is already active',
   /**
-   *@description Text in UIUtils
+   * @description Text in UIUtils
    */
   promiseResolvedAsync: 'Promise resolved (async)',
   /**
-   *@description Text in UIUtils
+   * @description Text in UIUtils
    */
   promiseRejectedAsync: 'Promise rejected (async)',
   /**
-   *@description Text for the title of asynchronous function calls group in Call Stack
+   * @description Text for the title of asynchronous function calls group in Call Stack
    */
   asyncCall: 'Async Call',
   /**
-   *@description Text for the name of anonymous functions
+   * @description Text for the name of anonymous functions
    */
   anonymous: '(anonymous)',
   /**
-   *@description Text to close something
+   * @description Text to close something
    */
   close: 'Close',
   /**
-   *@description Text on a button for message dialog
+   * @description Text on a button for message dialog
    */
   ok: 'OK',
   /**
-   *@description Text to cancel something
+   * @description Text to cancel something
    */
   cancel: 'Cancel',
+  /**
+   * @description Text for the new badge appearing next to some menu items
+   */
+  new: 'NEW',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/UIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -239,8 +247,7 @@ class DragHandler {
 
     targetDocument.addEventListener('pointermove', this.elementDragMove, true);
     targetDocument.addEventListener('pointerup', this.elementDragEnd, true);
-    DragHandler.rootForMouseOut &&
-        DragHandler.rootForMouseOut.addEventListener('pointerout', this.mouseOutWhileDragging, {capture: true});
+    DragHandler.rootForMouseOut?.addEventListener('pointerout', this.mouseOutWhileDragging, {capture: true});
     if (this.dragEventsTargetDocumentTop && targetDocument !== this.dragEventsTargetDocumentTop) {
       this.dragEventsTargetDocumentTop.addEventListener('pointerup', this.elementDragEnd, true);
     }
@@ -292,7 +299,7 @@ class DragHandler {
       this.elementDragEnd(event);
       return;
     }
-    if (this.elementDraggingEventListener && this.elementDraggingEventListener(event)) {
+    if (this.elementDraggingEventListener?.(event)) {
       this.cancelDragEvents(event);
     }
   }
@@ -1676,8 +1683,8 @@ export function loadImage(url: string): Promise<HTMLImageElement|null> {
 
 /**
  * Creates a file selector element.
- * @param callback - the function that will be called with the file the user selected
- * @param accept - optionally used to set the [`accept`](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept) parameter to limit file-types the user can pick.
+ * @param callback the function that will be called with the file the user selected
+ * @param accept optionally used to set the [`accept`](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept) parameter to limit file-types the user can pick.
  */
 export function createFileSelectorElement(callback: (arg0: File) => void, accept?: string): HTMLInputElement {
   const fileSelectorElement = document.createElement('input');
@@ -2039,4 +2046,180 @@ export function openInNewTab(url: URL|string): void {
     }
   }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform.DevToolsPath.urlString`${url}`);
+}
+
+export interface PromotionDisplayState {
+  displayCount: number;
+  firstRegistered: number;
+  featureInteractionCount: number;
+}
+
+const MAX_DISPLAY_COUNT = 10;
+// 60 days in ms
+const MAX_DURATION = 60 * 24 * 60 * 60 * 1000;
+const MAX_INTERACTION_COUNT = 2;
+
+export class PromotionManager {
+  static #instance?: PromotionManager;
+
+  static instance(): PromotionManager {
+    if (!PromotionManager.#instance) {
+      PromotionManager.#instance = new PromotionManager();
+    }
+    return PromotionManager.#instance;
+  }
+
+  private getPromotionDisplayState(id: string): PromotionDisplayState|null {
+    const displayStateString = localStorage.getItem(id);
+    return displayStateString ? JSON.parse(displayStateString) : null;
+  }
+
+  private setPromotionDisplayState(id: string, promotionDisplayState: PromotionDisplayState): void {
+    localStorage.setItem(id, JSON.stringify(promotionDisplayState));
+  }
+
+  private registerPromotion(id: string): void {
+    this.setPromotionDisplayState(id, {
+      displayCount: 0,
+      firstRegistered: Date.now(),
+      featureInteractionCount: 0,
+    });
+  }
+
+  private recordPromotionShown(id: string): void {
+    const displayState = this.getPromotionDisplayState(id);
+    if (!displayState) {
+      throw new Error(`Cannot record promotion shown for unregistered promotion ${id}`);
+    }
+    this.setPromotionDisplayState(id, {
+      ...displayState,
+      displayCount: displayState.displayCount + 1,
+    });
+  }
+
+  canShowPromotion(id: string): boolean {
+    const displayState = this.getPromotionDisplayState(id);
+    if (!displayState) {
+      this.registerPromotion(id);
+      return true;
+    }
+    return displayState.displayCount < MAX_DISPLAY_COUNT && Date.now() - displayState.firstRegistered < MAX_DURATION &&
+        displayState.featureInteractionCount < MAX_INTERACTION_COUNT;
+  }
+
+  recordFeatureInteraction(id: string): void {
+    const displayState = this.getPromotionDisplayState(id);
+    if (!displayState) {
+      throw new Error(`Cannot record feature interaction for unregistered promotion ${id}`);
+    }
+    this.setPromotionDisplayState(id, {
+      ...displayState,
+      featureInteractionCount: displayState.featureInteractionCount + 1,
+    });
+  }
+
+  maybeShowPromotion(id: string): boolean {
+    if (this.canShowPromotion(id)) {
+      this.recordPromotionShown(id);
+      return true;
+    }
+    return false;
+  }
+}
+
+/**
+ * Creates a `<div>` element with the localized text NEW.
+ *
+ * The element is automatically styled correctly, as long as the core styles (in particular
+ * `inspectorCommon.css` is injected into the current document / shadow root). The lit
+ * equivalent of calling this method is:
+ *
+ * ```js
+ * const jslog = VisualLogging.badge('new-badge');
+ * html`<div class='new-badge' jsog=${jslog}>i18nString(UIStrings.new)</div>`
+ *
+ * @returns the newly created `HTMLDivElement` for the new badge.
+ */
+export function maybeCreateNewBadge(promotionId: string): HTMLDivElement|undefined {
+  const promotionManager = PromotionManager.instance();
+  if (promotionManager.maybeShowPromotion(promotionId)) {
+    const badge = document.createElement('div');
+    badge.className = 'new-badge';
+    badge.textContent = i18nString(UIStrings.new);
+    badge.setAttribute('jslog', `${VisualLogging.badge('new-badge')}`);
+    return badge;
+  }
+  return undefined;
+}
+
+export function bindToAction(actionName: string): ReturnType<typeof Directives.ref> {
+  const action = ActionRegistry.instance().getAction(actionName);
+
+  let setEnabled: (enabled: boolean) => void;
+  function actionEnabledChanged(event: Common.EventTarget.EventTargetEvent<boolean>): void {
+    setEnabled(event.data);
+  }
+
+  return Directives.ref((e: Element|undefined) => {
+    if (!e || !(e instanceof Buttons.Button.Button)) {
+      action.removeEventListener(ActionRegistration.Events.ENABLED, actionEnabledChanged);
+      return;
+    }
+
+    setEnabled = enabled => {
+      e.disabled = !enabled;
+    };
+
+    action.addEventListener(ActionRegistration.Events.ENABLED, actionEnabledChanged);
+
+    const title = action.title();
+    const iconName = action.icon();
+    const jslogContext = action.id();
+    if (iconName) {
+      e.data = {iconName, jslogContext, title, variant: Buttons.Button.Variant.ICON};
+    } else {
+      e.data = {jslogContext, title, variant: Buttons.Button.Variant.TEXT};
+    }
+    setEnabled(action.enabled());
+    e.onclick = () => action.execute();
+  });
+}
+
+export class HTMLElementWithLightDOMTemplate extends HTMLElement {
+  readonly #mutationObserver = new MutationObserver(this.#onChange.bind(this));
+  #contentTemplate: HTMLTemplateElement|null = null;
+
+  constructor() {
+    super();
+    this.#mutationObserver.observe(this, {childList: true, attributes: true, subtree: true, characterData: true});
+  }
+
+  set template(template: LitTemplate) {
+    if (!this.#contentTemplate) {
+      this.removeChildren();
+      this.#contentTemplate = this.createChild('template');
+      this.#mutationObserver.disconnect();
+      this.#mutationObserver.observe(
+          this.#contentTemplate.content, {childList: true, attributes: true, subtree: true, characterData: true});
+    }
+    // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
+    render(template, this.#contentTemplate.content);
+  }
+
+  #onChange(mutationList: MutationRecord[]): void {
+    for (const mutation of mutationList) {
+      this.removeNodes(mutation.removedNodes);
+      this.addNodes(mutation.addedNodes);
+      this.updateNodes(mutation.target, mutation.attributeName);
+    }
+  }
+
+  protected updateNodes(_node: Node, _attributeName: string|null): void {
+  }
+
+  protected addNodes(_nodes: NodeList|Node[]): void {
+  }
+
+  protected removeNodes(_nodes: NodeList): void {
+  }
 }

@@ -14,6 +14,7 @@ generate_css("css_files") {
 
 devtools_module("text_editor") {
   sources = [
+    "AiCodeCompletionTeaserPlaceholder.ts",
     "AutocompleteHistory.ts",
     "ExecutionPositionHighlighter.ts",
     "TextEditor.ts",
@@ -33,6 +34,7 @@ devtools_module("text_editor") {
     "../../../models/formatter:bundle",
     "../../../models/javascript_metadata:bundle",
     "../../../models/source_map_scopes:bundle",
+    "../../../panels/common:bundle",
     "../../../services/window_bounds:bundle",
     "../../legacy:bundle",
     "../../lit:bundle",
@@ -62,6 +64,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "AiCodeCompletionTeaserPlaceholder.test.ts",
     "AutocompleteHistory.test.ts",
     "ExecutionPositionHighlighter.test.ts",
     "TextEditor.test.ts",

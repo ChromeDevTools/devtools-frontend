@@ -15,9 +15,9 @@ import {Capability, type Target} from './Target.js';
 
 const UIStrings = {
   /**
-   *@description Text in Service Worker Cache Model
-   *@example {https://cache} PH1
-   *@example {error message} PH2
+   * @description Text in Service Worker Cache Model
+   * @example {https://cache} PH1
+   * @example {error message} PH2
    */
   serviceworkercacheagentError: '`ServiceWorkerCacheAgent` error deleting cache entry {PH1} in cache: {PH2}',
 } as const;

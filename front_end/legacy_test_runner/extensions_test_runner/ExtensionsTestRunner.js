@@ -4,7 +4,7 @@
 
 import * as UI from '../../ui/legacy/legacy.js';
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 self.ExtensionsTestRunner = self.ExtensionsTestRunner || {};
 

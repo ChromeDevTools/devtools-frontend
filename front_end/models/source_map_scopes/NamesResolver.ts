@@ -704,7 +704,7 @@ async function getFunctionNameFromScopeStart(
   }
 
   const mappingEntry = sourceMap.findEntry(lineNumber, columnNumber);
-  if (!mappingEntry || !mappingEntry.sourceURL) {
+  if (!mappingEntry?.sourceURL) {
     return null;
   }
 

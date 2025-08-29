@@ -3,246 +3,247 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-size: inherit;
-}
-
-.title-container {
-  /* 18px for 3 dot menu icon */
-  max-width: calc(100% - 18px);
-  font-size: 13px;
-  line-height: 16px;
-  letter-spacing: 0.03em;
-  display: flex;
-  flex-direction: row;
-  gap: 3px;
-  outline-offset: 3px;
-}
-
-.action {
-  display: flex;
-  align-items: flex-start;
-}
-
-.title {
-  flex: 1;
-  min-width: 0;
-}
-
-.is-start-of-group .title {
-  font-weight: bold;
-}
-
-.error-icon {
-  display: none;
-}
-
-.breakpoint-icon {
-  visibility: hidden;
-  cursor: pointer;
-  opacity: 0%;
-  fill: var(--sys-color-primary);
-  stroke: #1a73e8; /* stylelint-disable-line plugin/use_theme_colors */
-  transform: translate(-1.92px, -3px);
-}
-
-.circle-icon {
-  fill: var(--sys-color-primary);
-  stroke: var(--sys-color-cdt-base-container);
-  stroke-width: 4px;
-  r: 5px;
-  cx: 8px;
-  cy: 8px;
-}
-
-.is-start-of-group .circle-icon {
-  r: 7px;
-  fill: var(--sys-color-cdt-base-container);
-  stroke: var(--sys-color-primary);
-  stroke-width: 2px;
-}
-
-.step.is-success .circle-icon {
-  fill: var(--sys-color-primary);
-  stroke: var(--sys-color-primary);
-}
-
-.step.is-current .circle-icon {
-  stroke-dasharray: 24 10;
-  animation: rotate 1s linear infinite;
-  fill: var(--sys-color-cdt-base-container);
-  stroke: var(--sys-color-primary);
-  stroke-width: 2px;
-}
-
-.error {
-  margin: 16px 0 0;
-  padding: 8px;
-  background: var(--sys-color-error-container);
-  color: var(--sys-color-error);
-  position: relative;
-}
-
-@keyframes rotate {
-  0% {
-    transform: translate(8px, 8px) rotate(0) translate(-8px, -8px);
+@scope to (devtools-widget > *) {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: inherit;
   }
 
-  100% {
-    transform: translate(8px, 8px) rotate(360deg) translate(-8px, -8px);
-  }
-}
-
-.step.is-error .circle-icon {
-  fill: var(--sys-color-error);
-  stroke: var(--sys-color-error);
-}
-
-.step.is-error .error-icon {
-  display: block;
-  transform: translate(4px, 4px);
-}
-
-:host-context(.was-successful) .circle-icon {
-  animation: flash-circle 2s;
-}
-
-:host-context(.was-successful) .breakpoint-icon {
-  animation: flash-breakpoint-icon 2s;
-}
-
-@keyframes flash-circle {
-  25% {
-    fill: var(--override-color-recording-successful-text);
-    stroke: var(--override-color-recording-successful-text);
+  .title-container {
+    /* 18px for 3 dot menu icon */
+    max-width: calc(100% - 18px);
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 0.03em;
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+    outline-offset: 3px;
   }
 
-  75% {
-    fill: var(--override-color-recording-successful-text);
-    stroke: var(--override-color-recording-successful-text);
-  }
-}
-
-@keyframes flash-breakpoint-icon {
-  25% {
-    fill: var(--override-color-recording-successful-text);
-    stroke: var(--override-color-recording-successful-text);
+  .action {
+    display: flex;
+    align-items: flex-start;
   }
 
-  75% {
-    fill: var(--override-color-recording-successful-text);
-    stroke: var(--override-color-recording-successful-text);
+  .title {
+    flex: 1;
+    min-width: 0;
   }
-}
 
-.chevron {
-  width: 14px;
-  height: 14px;
-  transition: 200ms;
-  position: absolute;
-  top: 18px;
-  left: 24px;
-  transform: rotate(-90deg);
-  color: var(--sys-color-on-surface);
-}
+  .is-start-of-group .title {
+    font-weight: bold;
+  }
 
-.expanded .chevron {
-  transform: rotate(0deg);
-}
+  .error-icon {
+    display: none;
+  }
 
-.is-start-of-group .chevron {
-  top: 34px;
-}
+  .breakpoint-icon {
+    visibility: hidden;
+    cursor: pointer;
+    opacity: 0%;
+    fill: var(--sys-color-primary);
+    stroke: #1a73e8; /* stylelint-disable-line plugin/use_theme_colors */
+    transform: translate(-1.92px, -3px);
+  }
 
-.details {
-  display: none;
-  margin-top: 8px;
-  position: relative;
-}
+  .circle-icon {
+    fill: var(--sys-color-primary);
+    stroke: var(--sys-color-cdt-base-container);
+    stroke-width: 4px;
+    r: 5px;
+    cx: 8px;
+    cy: 8px;
+  }
 
-.expanded .details {
-  display: block;
-}
+  .is-start-of-group .circle-icon {
+    r: 7px;
+    fill: var(--sys-color-cdt-base-container);
+    stroke: var(--sys-color-primary);
+    stroke-width: 2px;
+  }
 
-.step-details {
-  overflow: auto;
-}
+  .step.is-success .circle-icon {
+    fill: var(--sys-color-primary);
+    stroke: var(--sys-color-primary);
+  }
 
-devtools-recorder-step-editor {
-  border: 1px solid var(--sys-color-neutral-outline);
-  padding: 3px 6px 6px;
-  margin-left: -6px;
-  border-radius: 3px;
-}
+  .step.is-current .circle-icon {
+    stroke-dasharray: 24 10;
+    animation: rotate 1s linear infinite;
+    fill: var(--sys-color-cdt-base-container);
+    stroke: var(--sys-color-primary);
+    stroke-width: 2px;
+  }
 
-devtools-recorder-step-editor:hover {
-  border: 1px solid var(--sys-color-neutral-outline);
-}
+  .error {
+    margin: 16px 0 0;
+    padding: 8px;
+    background: var(--sys-color-error-container);
+    color: var(--sys-color-error);
+    position: relative;
+  }
 
-devtools-recorder-step-editor.is-selected {
-  background-color: color-mix(in srgb, var(--sys-color-tonal-container), var(--sys-color-cdt-base-container) 50%);
-  border: 1px solid var(--sys-color-tonal-outline);
-}
+  @keyframes rotate {
+    0% {
+      transform: translate(8px, 8px) rotate(0) translate(-8px, -8px);
+    }
 
-.summary {
-  display: flex;
-  flex-flow: row nowrap;
-}
+    100% {
+      transform: translate(8px, 8px) rotate(360deg) translate(-8px, -8px);
+    }
+  }
 
-.filler {
-  flex-grow: 1;
-}
+  .step.is-error .circle-icon {
+    fill: var(--sys-color-error);
+    stroke: var(--sys-color-error);
+  }
 
-.subtitle {
-  font-weight: normal;
-  color: var(--sys-color-on-surface-subtle);
-  word-break: break-all;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .step.is-error .error-icon {
+    display: block;
+    transform: translate(4px, 4px);
+  }
 
-.main-title {
-  word-break: break-all;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  :host-context(.was-successful) .circle-icon {
+    animation: flash-circle 2s;
+  }
 
-.step-actions {
-  border: none;
-  border-radius: 0;
-  height: 24px;
+  :host-context(.was-successful) .breakpoint-icon {
+    animation: flash-breakpoint-icon 2s;
+  }
 
-  --override-select-menu-show-button-border-radius: 0;
-  --override-select-menu-show-button-outline: none;
-  --override-select-menu-show-button-padding: 0;
-}
+  @keyframes flash-circle {
+    25% {
+      fill: var(--override-color-recording-successful-text);
+      stroke: var(--override-color-recording-successful-text);
+    }
 
-.step.has-breakpoint .circle-icon {
-  visibility: hidden;
-}
+    75% {
+      fill: var(--override-color-recording-successful-text);
+      stroke: var(--override-color-recording-successful-text);
+    }
+  }
 
-.step:not(.is-start-of-group).has-breakpoint .breakpoint-icon {
-  visibility: visible;
-  opacity: 100%;
-}
+  @keyframes flash-breakpoint-icon {
+    25% {
+      fill: var(--override-color-recording-successful-text);
+      stroke: var(--override-color-recording-successful-text);
+    }
 
-.step:not(.is-start-of-group, .has-breakpoint) .icon:hover .circle-icon {
-  transition: opacity 0.2s;
-  opacity: 0%;
-}
+    75% {
+      fill: var(--override-color-recording-successful-text);
+      stroke: var(--override-color-recording-successful-text);
+    }
+  }
 
-.step:not(.is-start-of-group, .has-breakpoint) .icon:hover .error-icon {
-  visibility: hidden;
-}
+  .chevron {
+    width: 14px;
+    height: 14px;
+    transition: 200ms;
+    position: absolute;
+    top: 18px;
+    left: 24px;
+    transform: rotate(-90deg);
+    color: var(--sys-color-on-surface);
+  }
 
-.step:not(.is-start-of-group, .has-breakpoint) .icon:hover .breakpoint-icon {
-  transition: opacity 0.2s;
-  visibility: visible;
-  opacity: 50%;
+  .expanded .chevron {
+    transform: rotate(0deg);
+  }
+
+  .is-start-of-group .chevron {
+    top: 34px;
+  }
+
+  .details {
+    display: none;
+    margin-top: 8px;
+    position: relative;
+  }
+
+  .expanded .details {
+    display: block;
+  }
+
+  .step-details {
+    overflow: auto;
+  }
+
+  devtools-recorder-step-editor {
+    border: 1px solid var(--sys-color-neutral-outline);
+    padding: 3px 6px 6px;
+    margin-left: -6px;
+    border-radius: 3px;
+  }
+
+  devtools-recorder-step-editor:hover {
+    border: 1px solid var(--sys-color-neutral-outline);
+  }
+
+  devtools-recorder-step-editor.is-selected {
+    background-color: color-mix(in srgb, var(--sys-color-tonal-container), var(--sys-color-cdt-base-container) 50%);
+    border: 1px solid var(--sys-color-tonal-outline);
+  }
+
+  .summary {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
+  .filler {
+    flex-grow: 1;
+  }
+
+  .subtitle {
+    font-weight: normal;
+    color: var(--sys-color-on-surface-subtle);
+    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .main-title {
+    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .step-actions {
+    border: none;
+    border-radius: 0;
+    height: 24px;
+
+    --override-select-menu-show-button-border-radius: 0;
+    --override-select-menu-show-button-outline: none;
+    --override-select-menu-show-button-padding: 0;
+  }
+
+  .step.has-breakpoint .circle-icon {
+    visibility: hidden;
+  }
+
+  .step:not(.is-start-of-group).has-breakpoint .breakpoint-icon {
+    visibility: visible;
+    opacity: 100%;
+  }
+
+  .step:not(.is-start-of-group, .has-breakpoint) .icon:hover .circle-icon {
+    transition: opacity 0.2s;
+    opacity: 0%;
+  }
+
+  .step:not(.is-start-of-group, .has-breakpoint) .icon:hover .error-icon {
+    visibility: hidden;
+  }
+
+  .step:not(.is-start-of-group, .has-breakpoint) .icon:hover .breakpoint-icon {
+    transition: opacity 0.2s;
+    visibility: visible;
+    opacity: 50%;
+  }
 }

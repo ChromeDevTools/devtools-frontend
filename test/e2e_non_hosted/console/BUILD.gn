@@ -11,6 +11,7 @@ ts_e2e_library("console") {
     "console-accessors_test.ts",
     "console-autocomplete_test.ts",
     "console-clear_test.ts",
+    "console-context-menu_test.ts",
     "console-context-selector_test.ts",
     "console-errors_test.ts",
     "console-eval-blocked-by-CSP_test.ts",

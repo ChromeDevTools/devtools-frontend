@@ -9,11 +9,11 @@ import type * as Webauthn from './webauthn.js';
 
 const UIStrings = {
   /**
-   *@description Title of WebAuthn tab in bottom drawer.
+   * @description Title of WebAuthn tab in bottom drawer.
    */
   webauthn: 'WebAuthn',
   /**
-   *@description Command for showing the WebAuthn tab in bottom drawer.
+   * @description Command for showing the WebAuthn tab in bottom drawer.
    */
   showWebauthn: 'Show WebAuthn',
 } as const;

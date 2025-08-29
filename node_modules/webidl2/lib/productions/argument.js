@@ -23,7 +23,7 @@ export class Argument extends Base {
     /** @type {Base["tokens"]} */
     const tokens = {};
     const ret = autoParenter(
-      new Argument({ source: tokeniser.source, tokens })
+      new Argument({ source: tokeniser.source, tokens }),
     );
     ret.extAttrs = ExtendedAttributes.parse(tokeniser);
     tokens.optional = tokeniser.consume("optional");
@@ -73,7 +73,7 @@ export class Argument extends Base {
           this.tokens.name,
           this,
           "no-nullable-dict-arg",
-          message
+          message,
         );
       } else if (!this.optional) {
         if (
@@ -89,7 +89,7 @@ export class Argument extends Base {
             message,
             {
               autofix: autofixDictionaryArgumentOptionality(this),
-            }
+            },
           );
         }
       } else if (!this.default) {
@@ -101,7 +101,7 @@ export class Argument extends Base {
           message,
           {
             autofix: autofixOptionalDictionaryDefaultValue(this),
-          }
+          },
         );
       }
     }

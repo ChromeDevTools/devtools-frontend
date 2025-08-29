@@ -133,25 +133,24 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     setMockConnectionResponseHandler('Storage.setSharedStorageTracking', () => ({}));
   });
 
-  // Flaking on multiple bots on CQ.
-  it.skip('[crbug.com/40278557] shows cookies for all frames', async () => {
+  it('shows cookies for all frames', async () => {
     Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.exists(resourceTreeModel);
     sinon.stub(resourceTreeModel, 'frames').returns([
       {
-        url: 'http://www.example.com/',
+        url: 'https://example.com/',
         unreachableUrl: () => null,
         resourceTreeModel: () => resourceTreeModel,
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame,
       {
-        url: 'http://www.example.com/admin/',
+        url: 'https://example.com/admin/',
         unreachableUrl: () => null,
         resourceTreeModel: () => resourceTreeModel,
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame,
       {
-        url: 'http://www.example.org/',
+        url: 'https://example.org/',
         unreachableUrl: () => null,
         resourceTreeModel: () => resourceTreeModel,
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame,
@@ -160,8 +159,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
 
     assert.strictEqual(sidebar.cookieListTreeElement.childCount(), 2);
     assert.deepEqual(
-        sidebar.cookieListTreeElement.children().map(e => e.title),
-        ['http://www.example.com', 'http://www.example.org']);
+        sidebar.cookieListTreeElement.children().map(e => e.title), ['https://example.com', 'https://example.org']);
   });
 
   it('shows shared storages and events for origins using shared storage', async () => {

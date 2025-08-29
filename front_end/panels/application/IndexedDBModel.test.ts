@@ -43,7 +43,7 @@ describeWithMockConnection('IndexedDBModel', () => {
 
   describe('StorageKeyAdded', () => {
     it('registers database only when the model is enabled', async () => {
-      const databaseAdeddSpy = sinon.spy(indexedDBModel, 'dispatchEventToListeners');
+      const databaseAddedSpy = sinon.spy(indexedDBModel, 'dispatchEventToListeners');
       const dbNamePromise = new Promise<string>(resolve => {
         indexedDBModel.addEventListener(Resources.IndexedDBModel.Events.DatabaseAdded, event => {
           resolve(event.data.databaseId.name);
@@ -52,7 +52,7 @@ describeWithMockConnection('IndexedDBModel', () => {
       setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
 
       manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
-      assert.isFalse(databaseAdeddSpy.calledWithExactly(
+      assert.isFalse(databaseAddedSpy.calledWithExactly(
           Resources.IndexedDBModel.Events.DatabaseAdded as unknown as sinon.SinonMatcher,
           {model: indexedDBModel, databaseId: testDBId}));
 

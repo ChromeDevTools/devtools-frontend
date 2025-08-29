@@ -41,7 +41,7 @@ export class Panel extends VBox {
   protected panelName: string;
 
   constructor(name: string, useShadowDom?: boolean) {
-    super(useShadowDom);
+    super({useShadowDom});
 
     this.element.setAttribute('jslog', `${VisualLogging.panel().context(name).track({resize: true})}`);
     this.element.classList.add('panel');

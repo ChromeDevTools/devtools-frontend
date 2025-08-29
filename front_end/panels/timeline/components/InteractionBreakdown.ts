@@ -14,15 +14,15 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Text shown next to the interaction event's input delay time in the detail view.
+   * @description Text shown next to the interaction event's input delay time in the detail view.
    */
   inputDelay: 'Input delay',
   /**
-   *@description Text shown next to the interaction event's thread processing duration in the detail view.
+   * @description Text shown next to the interaction event's thread processing duration in the detail view.
    */
   processingDuration: 'Processing duration',
   /**
-   *@description Text shown next to the interaction event's presentation delay time in the detail view.
+   * @description Text shown next to the interaction event's presentation delay time in the detail view.
    */
   presentationDelay: 'Presentation delay',
 } as const;

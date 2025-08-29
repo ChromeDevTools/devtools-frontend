@@ -14,29 +14,29 @@ import {SharedStorageForOrigin} from './SharedStorageModel.js';
 
 const UIStrings = {
   /**
-   *@description Text in SharedStorage Items View of the Application panel
+   * @description Text in SharedStorage Items View of the Application panel
    */
   sharedStorage: 'Shared storage',
   /**
-   *@description Text for announcing that the "Shared Storage Items" table was cleared, that is, all
+   * @description Text for announcing that the "Shared Storage Items" table was cleared, that is, all
    * entries were deleted.
    */
   sharedStorageItemsCleared: 'Shared Storage items cleared',
   /**
-   *@description Text for announcing that the filtered "Shared Storage Items" table was cleared, that is,
+   * @description Text for announcing that the filtered "Shared Storage Items" table was cleared, that is,
    * all filtered entries were deleted.
    */
   sharedStorageFilteredItemsCleared: 'Shared Storage filtered items cleared',
   /**
-   *@description Text for announcing a Shared Storage key/value item has been deleted
+   * @description Text for announcing a Shared Storage key/value item has been deleted
    */
   sharedStorageItemDeleted: 'The storage item was deleted.',
   /**
-   *@description Text for announcing a Shared Storage key/value item has been edited
+   * @description Text for announcing a Shared Storage key/value item has been edited
    */
   sharedStorageItemEdited: 'The storage item was edited.',
   /**
-   *@description Text for announcing a Shared Storage key/value item edit request has been canceled
+   * @description Text for announcing a Shared Storage key/value item edit request has been canceled
    */
   sharedStorageItemEditCanceled: 'The storage item edit was canceled.',
 } as const;

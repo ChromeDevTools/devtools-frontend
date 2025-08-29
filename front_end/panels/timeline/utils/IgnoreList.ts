@@ -4,8 +4,8 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Trace from '../../../models/trace/trace.js';
+import * as Workspace from '../../../models/workspace/workspace.js';
 
 import {SourceMapsResolver} from './SourceMapsResolver.js';
 
@@ -32,7 +32,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/utils/IgnoreList.ts', 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 function getUrlAndIgnoreListOptions(entry: Trace.Types.Events.SyntheticProfileCall):
-    {url: Platform.DevToolsPath.UrlString, ignoreListOptions: Bindings.IgnoreListManager.IgnoreListGeneralRules} {
+    {url: Platform.DevToolsPath.UrlString, ignoreListOptions: Workspace.IgnoreListManager.IgnoreListGeneralRules} {
   const rawUrl = entry.callFrame.url as Platform.DevToolsPath.UrlString;
 
   const sourceMappedData = SourceMapsResolver.resolvedCodeLocationForEntry(entry);
@@ -41,7 +41,7 @@ function getUrlAndIgnoreListOptions(entry: Trace.Types.Events.SyntheticProfileCa
   const resolvedUrl = uiSourceCode?.url();
   const isKnownThirdParty = uiSourceCode?.isKnownThirdParty();
   const isContentScript = script?.isContentScript();
-  const ignoreListOptions: Bindings.IgnoreListManager.IgnoreListGeneralRules = {isContentScript, isKnownThirdParty};
+  const ignoreListOptions: Workspace.IgnoreListManager.IgnoreListGeneralRules = {isContentScript, isKnownThirdParty};
   const url = resolvedUrl || rawUrl;
   return {url, ignoreListOptions};
 }
@@ -55,8 +55,8 @@ export function isIgnoreListedEntry(entry: Trace.Types.Events.Event): boolean {
 }
 
 function isIgnoreListedURL(
-    url: Platform.DevToolsPath.UrlString, options?: Bindings.IgnoreListManager.IgnoreListGeneralRules): boolean {
-  return Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url, options);
+    url: Platform.DevToolsPath.UrlString, options?: Workspace.IgnoreListManager.IgnoreListGeneralRules): boolean {
+  return Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url, options);
 }
 
 /**
@@ -71,7 +71,7 @@ export function getIgnoredReasonString(entry: Trace.Types.Events.Event): string 
   }
   const {url, ignoreListOptions} = getUrlAndIgnoreListOptions(entry);
 
-  const ignoreListMgr = Bindings.IgnoreListManager.IgnoreListManager.instance();
+  const ignoreListMgr = Workspace.IgnoreListManager.IgnoreListManager.instance();
   if (ignoreListOptions.isContentScript && ignoreListMgr.skipContentScripts) {
     return i18nString(UIStrings.skipContentScripts);
   }

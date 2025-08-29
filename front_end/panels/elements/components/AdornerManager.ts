@@ -24,6 +24,7 @@ export interface RegisteredAdorner {
 export enum RegisteredAdorners {
   GRID = 'grid',
   SUBGRID = 'subgrid',
+  MASONRY = 'masonry',
   FLEX = 'flex',
   AD = 'ad',
   SCROLL_SNAP = 'scroll-snap',
@@ -49,6 +50,12 @@ export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorn
     case RegisteredAdorners.SUBGRID:
       return {
         name: 'subgrid',
+        category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+    case RegisteredAdorners.MASONRY:
+      return {
+        name: 'masonry',
         category: AdornerCategories.LAYOUT,
         enabledByDefault: true,
       };

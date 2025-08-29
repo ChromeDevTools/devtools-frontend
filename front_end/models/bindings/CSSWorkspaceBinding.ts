@@ -315,8 +315,4 @@ export class LiveLocation extends LiveLocationWithPool {
     super.dispose();
     this.#info.disposeLocation(this);
   }
-
-  override async isIgnoreListed(): Promise<boolean> {
-    return false;
-  }
 }

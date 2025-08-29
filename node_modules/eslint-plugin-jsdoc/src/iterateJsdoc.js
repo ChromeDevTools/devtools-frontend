@@ -594,8 +594,8 @@ const globalState = new Map();
  * @returns {BasicUtils}
  */
 const getBasicUtils = (context, {
-  tagNamePreference,
   mode,
+  tagNamePreference,
 }) => {
   /** @type {BasicUtils} */
   const utils = {};
@@ -706,23 +706,23 @@ const getUtils = (
   const utils = /** @type {Utils} */ (getBasicUtils(context, settings));
 
   const {
-    tagNamePreference,
-    overrideReplacesDocs,
+    augmentsExtendsReplacesDocs,
     ignoreReplacesDocs,
     implementsReplacesDocs,
-    augmentsExtendsReplacesDocs,
     maxLines,
     minLines,
     mode,
+    overrideReplacesDocs,
+    tagNamePreference,
   } = settings;
 
   /** @type {IsIteratingFunction} */
   utils.isIteratingFunction = () => {
     return !iteratingAll || [
-      'MethodDefinition',
       'ArrowFunctionExpression',
       'FunctionDeclaration',
       'FunctionExpression',
+      'MethodDefinition',
     ].includes(String(node && node.type));
   };
 
@@ -815,8 +815,8 @@ const getUtils = (
     jsdoc.source.some(({
       tokens: {
         description,
-        tag,
         end,
+        tag,
       },
     }, idx) => {
       if (tag) {
@@ -870,12 +870,12 @@ const getUtils = (
 
     jsdoc.source.some(({
       tokens: {
-        description,
-        start,
         delimiter,
-        postDelimiter,
-        tag,
+        description,
         end,
+        postDelimiter,
+        start,
+        tag,
       },
     }, idx) => {
       if (delimiter === '/**') {
@@ -927,8 +927,8 @@ const getUtils = (
     jsdoc.source.some(({
       tokens: {
         description,
-        tag,
         end,
+        tag,
       },
     }, idx) => {
       /* c8 ignore next 3 -- Already checked */
@@ -1003,8 +1003,8 @@ const getUtils = (
         let spliceCount = 1;
         tagSource.slice(tagIdx + 1).some(({
           tokens: {
-            tag,
             end: ending,
+            tag,
           },
         }) => {
           if (!tag && !ending) {
@@ -1058,7 +1058,8 @@ const getUtils = (
 
         return true;
       }
-      /* c8 ignore next */
+      /* c8 ignore next 2 */
+      // eslint-disable-next-line @stylistic/padding-line-between-statements -- c8
       return false;
     });
     for (const [
@@ -1211,7 +1212,8 @@ const getUtils = (
 
         return true;
       }
-      /* c8 ignore next */
+      /* c8 ignore next 2 */
+      // eslint-disable-next-line @stylistic/padding-line-between-statements -- c8
       return false;
     });
 
@@ -1233,11 +1235,11 @@ const getUtils = (
       ],
     } = jsdoc;
     const {
-      postDelimiter,
       description,
       lineEnd,
-      tag,
       name,
+      postDelimiter,
+      tag,
       type,
     } = tokens;
 
@@ -1308,7 +1310,7 @@ const getUtils = (
        */ (node).generator ||
       node.type === 'MethodDefinition' && node.value.generator ||
       [
-        'ExportNamedDeclaration', 'ExportDefaultDeclaration',
+        'ExportDefaultDeclaration', 'ExportNamedDeclaration',
       ].includes(node.type) &&
       /** @type {import('estree').FunctionDeclaration} */
       (
@@ -1342,8 +1344,11 @@ const getUtils = (
     return jsdocUtils.getPreferredTagName(
       jsdoc, {
         ...args,
-        context, mode, report, tagNamePreference,
-      }
+        context,
+        mode,
+        report,
+        tagNamePreference,
+      },
     );
   };
 
@@ -1536,7 +1541,7 @@ const getUtils = (
   /** @type {HasYieldValue} */
   utils.hasYieldValue = () => {
     if ([
-      'ExportNamedDeclaration', 'ExportDefaultDeclaration',
+      'ExportDefaultDeclaration', 'ExportNamedDeclaration',
     ].includes(/** @type {Node} */ (node).type)) {
       return jsdocUtils.hasYieldValue(
         /** @type {import('estree').Declaration|import('estree').Expression} */ (
@@ -1647,9 +1652,12 @@ const getUtils = (
   utils.forEachPreferredTag = (tagName, arrayHandler, skipReportingBlockedTag) => {
     return jsdocUtils.forEachPreferredTag(
       jsdoc, tagName, arrayHandler, {
+        context,
+        mode,
+        report,
         skipReportingBlockedTag,
-        context, mode, report, tagNamePreference
-      }
+        tagNamePreference,
+      },
     );
   };
 
@@ -1722,11 +1730,34 @@ const getUtils = (
  */
 
 /**
- * @param {import('eslint').Rule.RuleContext} context
+ * @typedef {{
+ *   settings?: {
+ *     jsdoc?: {
+ *       ignorePrivate: boolean,
+ *       ignoreInternal: boolean,
+ *       maxLines: Integer,
+ *       minLines: Integer,
+ *       tagNamePreference: import('./jsdocUtils.js').TagNamePreference,
+ *       preferredTypes: PreferredTypes,
+ *       structuredTags: StructuredTags,
+ *       overrideReplacesDocs: boolean,
+ *       ignoreReplacesDocs: boolean,
+ *       implementsReplacesDocs: boolean,
+ *       augmentsExtendsReplacesDocs: boolean,
+ *       exemptDestructuredRootsFromChecks: boolean,
+ *       mode: import('./jsdocUtils.js').ParserMode,
+ *       contexts: Context[],
+ *     }
+ *   }
+ * }} JSDocSettings
+ */
+
+/**
+ * @param {import('eslint').Rule.RuleContext & JSDocSettings} context
  * @returns {Settings|false}
  */
 const getSettings = (context) => {
-  /* dslint-disable canonical/sort-keys */
+  /* eslint-disable perfectionist/sort-objects */
   const settings = {
     // All rules
     ignorePrivate: Boolean(context.settings.jsdoc?.ignorePrivate),
@@ -1759,7 +1790,7 @@ const getSettings = (context) => {
     // Many rules
     contexts: context.settings.jsdoc?.contexts,
   };
-  /* dslint-enable canonical/sort-keys */
+  /* eslint-enable perfectionist/sort-objects */
 
   jsdocUtils.setTagStructure(settings.mode);
   try {
@@ -1822,7 +1853,6 @@ const makeReport = (context, commentNode) => {
         },
       };
 
-      // Todo: Remove ignore once `check-examples` can be restored for ESLint 8+
       if ('column' in jsdocLoc && typeof jsdocLoc.column === 'number') {
         const colNumber = /** @type {import('eslint').AST.SourceLocation} */ (
           commentNode.loc
@@ -2189,7 +2219,6 @@ const iterateAllJsdocs = (iterator, ruleConfig, contexts, additiveCommentContext
   };
 
   return {
-    // @ts-expect-error ESLint accepts
     create (context) {
       /* c8 ignore next -- Fallback to deprecated method */
       const {
@@ -2302,7 +2331,7 @@ const checkFile = (iterator, ruleConfig) => {
 export {
   getSettings,
   // dslint-disable-next-line unicorn/prefer-export-from -- Avoid experimental parser
-  parseComment,
+
 };
 
 /**
@@ -2313,7 +2342,7 @@ export {
 export default function iterateJsdoc (iterator, ruleConfig) {
   const metaType = ruleConfig?.meta?.type;
   if (!metaType || ![
-    'problem', 'suggestion', 'layout',
+    'layout', 'problem', 'suggestion',
   ].includes(metaType)) {
     throw new TypeError('Rule must include `meta.type` option (with value "problem", "suggestion", or "layout")');
   }
@@ -2483,3 +2512,7 @@ export default function iterateJsdoc (iterator, ruleConfig) {
     meta: ruleConfig.meta,
   };
 }
+
+export {
+  parseComment,
+} from '@es-joy/jsdoccomment';

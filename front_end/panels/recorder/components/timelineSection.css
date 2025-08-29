@@ -13,7 +13,7 @@
 
 .timeline-section {
   position: relative;
-  padding: 16px 0 16px 40px;
+  padding: 16px 0 0 40px;
   margin-left: 8px;
 
   --override-color-recording-successful-text: #36a854;

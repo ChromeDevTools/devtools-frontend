@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview A library to associate DOM fragments with their construction code.
+ * @file A library to associate DOM fragments with their construction code.
  */
 
 import type {TSESLint, TSESTree} from '@typescript-eslint/utils';

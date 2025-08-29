@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
   ensureResourceSectionIsExpanded,
   getAndExpandSpecificIssueByTitle,
@@ -9,9 +11,6 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
 } from '../../e2e/helpers/issues-helpers.js';
-import {
-  assertNotNullOrUndefined,
-} from '../../shared/helper.js';
 
 describe('Select element accessibility issues test', () => {
   it('should display issue when there is a disallowed child of a select element',
@@ -20,7 +19,7 @@ describe('Select element accessibility issues test', () => {
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
            await getAndExpandSpecificIssueByTitle('Invalid element or text node within <select>', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
 
        const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
        await ensureResourceSectionIsExpanded(section, devToolsPage);
@@ -36,7 +35,7 @@ describe('Select element accessibility issues test', () => {
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
            await getAndExpandSpecificIssueByTitle('Invalid element or text node within <optgroup>', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
 
        const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
        await ensureResourceSectionIsExpanded(section, devToolsPage);
@@ -52,7 +51,7 @@ describe('Select element accessibility issues test', () => {
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
            await getAndExpandSpecificIssueByTitle('Non-phrasing content used within an <option> element', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
 
        const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
        await ensureResourceSectionIsExpanded(section, devToolsPage);
@@ -68,7 +67,7 @@ describe('Select element accessibility issues test', () => {
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
            await getAndExpandSpecificIssueByTitle('Interactive element inside of an <option> element', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
 
        const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
        await ensureResourceSectionIsExpanded(section, devToolsPage);
@@ -84,7 +83,7 @@ describe('Select element accessibility issues test', () => {
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
            await getAndExpandSpecificIssueByTitle('Interactive element inside of a <legend> element', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
 
        const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
        await ensureResourceSectionIsExpanded(section, devToolsPage);
@@ -101,7 +100,7 @@ describe('Select element accessibility issues test', () => {
        await navigateToIssuesTab(devToolsPage);
        const issueElement = await getAndExpandSpecificIssueByTitle(
            'Element with invalid attributes within a <select> element', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
 
        const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
        await ensureResourceSectionIsExpanded(section, devToolsPage);
@@ -118,7 +117,7 @@ describe('Select element accessibility issues test', () => {
        await navigateToIssuesTab(devToolsPage);
        const issueElement =
            await getAndExpandSpecificIssueByTitle('Interactive element inside of a <summary> element', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
 
        const section = await getResourcesElement('1 element', issueElement, undefined, devToolsPage);
        await ensureResourceSectionIsExpanded(section, devToolsPage);

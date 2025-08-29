@@ -12,7 +12,7 @@
 export function idlTypeIncludesDictionary(
   idlType,
   defs,
-  { useNullableInner } = {}
+  { useNullableInner } = {},
 ) {
   if (!idlType.union) {
     const def = defs.unique.get(idlType.idlType);

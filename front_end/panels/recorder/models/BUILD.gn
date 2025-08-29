@@ -67,7 +67,7 @@ ts_library("unittests") {
 
   sources = [
     "RecorderSettings.test.ts",
-    "RecorderShorcutHelper.test.ts",
+    "RecorderShortcutHelper.test.ts",
     "RecordingPlayer.test.ts",
     "SchemaUtils.test.ts",
     "ScreenshotUtils.test.ts",

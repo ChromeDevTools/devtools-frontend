@@ -30,19 +30,19 @@ import {SelectWorkspaceDialog} from './SelectWorkspaceDialog.js';
 */
 const UIStringsNotTranslate = {
   /**
-   *@description Text displayed for showing patch widget view.
+   * @description Text displayed for showing patch widget view.
    */
   unsavedChanges: 'Unsaved changes',
   /**
-   *@description Loading text displayed as a summary title when the patch suggestion is getting loaded
+   * @description Loading text displayed as a summary title when the patch suggestion is getting loaded
    */
   applyingToWorkspace: 'Applying to workspace…',
   /**
-   *@description Button text for staging changes to workspace.
+   * @description Button text for staging changes to workspace.
    */
   applyToWorkspace: 'Apply to workspace',
   /**
-   *@description Button text to change the selected workspace
+   * @description Button text to change the selected workspace
    */
   change: 'Change',
   /**
@@ -51,58 +51,59 @@ const UIStringsNotTranslate = {
    */
   changeRootFolder: 'Change project root folder',
   /**
-   *@description Button text to cancel applying to workspace
+   * @description Button text to cancel applying to workspace
    */
   cancel: 'Cancel',
   /**
-   *@description Button text to discard the suggested changes and not save them to file system
+   * @description Button text to discard the suggested changes and not save them to file system
    */
   discard: 'Discard',
   /**
-   *@description Button text to save all the suggested changes to file system
+   * @description Button text to save all the suggested changes to file system
    */
   saveAll: 'Save all',
   /**
-   *@description Header text after the user saved the changes to the disk.
+   * @description Header text after the user saved the changes to the disk.
    */
   savedToDisk: 'Saved to disk',
   /**
-   *@description Disclaimer text shown for using code snippets with caution
+   * @description Disclaimer text shown for using code snippets with caution
    */
   codeDisclaimer: 'Use code snippets with caution',
   /**
-   *@description Tooltip text for the info icon beside the "Apply to workspace" button
+   * @description Tooltip text for the info icon beside the "Apply to workspace" button
    */
   applyToWorkspaceTooltip: 'Source code from the selected folder is sent to Google to generate code suggestions.',
   /**
-   *@description Tooltip text for the info icon beside the "Apply to workspace" button when enterprise logging is off
+   * @description Tooltip text for the info icon beside the "Apply to workspace" button when enterprise logging is off
    */
   applyToWorkspaceTooltipNoLogging:
       'Source code from the selected folder is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
   /**
-   *@description The footer disclaimer that links to more information
+   * @description The footer disclaimer that links to more information
    * about the AI feature. Same text as in ChatView.
    */
-  learnMore: 'Learn about AI in DevTools',
+  learnMore: 'Learn more',
   /**
-   *@description Header text for the AI-powered code suggestions disclaimer dialog.
+   * @description Header text for the AI-powered code suggestions disclaimer dialog.
    */
-  freDisclaimerHeader: 'Get AI-powered code suggestions for your workspace',
+  freDisclaimerHeader: 'Apply changes directly to your project’s source code',
   /**
-   *@description First disclaimer item text for the fre dialog.
+   * @description First disclaimer item text for the fre dialog.
    */
   freDisclaimerTextAiWontAlwaysGetItRight: 'This feature uses AI and won’t always get it right',
   /**
-   *@description Second disclaimer item text for the fre dialog.
+   * @description Second disclaimer item text for the fre dialog.
    */
-  freDisclaimerTextPrivacy: 'Source code from the selected folder is sent to Google to generate code suggestions',
+  freDisclaimerTextPrivacy:
+      'To generate code suggestions, source code from the selected folder is sent to Google. This data may be seen by human reviewers to improve this feature.',
   /**
-   *@description Second disclaimer item text for the fre dialog when enterprise logging is off.
+   * @description Second disclaimer item text for the fre dialog when enterprise logging is off.
    */
   freDisclaimerTextPrivacyNoLogging:
-      'Source code from the selected folder is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
+      'To generate code suggestions, source code from the selected folder is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
-   *@description Third disclaimer item text for the fre dialog.
+   * @description Third disclaimer item text for the fre dialog.
    */
   freDisclaimerTextUseWithCaution: 'Use generated code snippets with caution',
   /**
@@ -155,7 +156,7 @@ enum SelectedProjectType {
   /**
    * The selected project is a disconnected automatic workspace project
    */
-  AUTOMATIC_DISCONNECTED = 'automaticDisconncted',
+  AUTOMATIC_DISCONNECTED = 'automaticDisconnected',
   /**
    * The selected project is a connected automatic workspace project
    */
@@ -217,7 +218,7 @@ export class PatchWidget extends UI.Widget.Widget {
   constructor(element?: HTMLElement, view?: View, opts?: {
     aidaClient: Host.AidaClient.AidaClient,
   }) {
-    super(false, false, element);
+    super(element);
     this.#aidaClient = opts?.aidaClient ?? new Host.AidaClient.AidaClient();
     this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
@@ -248,7 +249,7 @@ export class PatchWidget extends UI.Widget.Widget {
       function renderHeader(): LitTemplate {
         if (input.savedToDisk) {
           return html`
-            <devtools-icon class="green-bright-icon summary-badge" .name=${'check-circle'}></devtools-icon>
+            <devtools-icon class="green-bright-icon summary-badge" name="check-circle"></devtools-icon>
             <span class="header-text">
               ${lockedString(UIStringsNotTranslate.savedToDisk)}
             </span>
@@ -257,25 +258,25 @@ export class PatchWidget extends UI.Widget.Widget {
 
         if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
           return html`
-            <devtools-icon class="on-tonal-icon summary-badge" .name=${'difference'}></devtools-icon>
+            <devtools-icon class="on-tonal-icon summary-badge" name="difference"></devtools-icon>
             <span class="header-text">
               ${lockedString(`File changes in ${input.projectName}`)}
             </span>
             <devtools-icon
               class="arrow"
-              .name=${'chevron-down'}
+              name="chevron-down"
             ></devtools-icon>
           `;
         }
 
         return html`
-          <devtools-icon class="on-tonal-icon summary-badge" .name=${'pen-spark'}></devtools-icon>
+          <devtools-icon class="on-tonal-icon summary-badge" name="pen-spark"></devtools-icon>
           <span class="header-text">
             ${lockedString(UIStringsNotTranslate.unsavedChanges)}
           </span>
           <devtools-icon
             class="arrow"
-            .name=${'chevron-down'}
+            name="chevron-down"
           ></devtools-icon>
         `;
       }
@@ -300,7 +301,7 @@ export class PatchWidget extends UI.Widget.Widget {
         ></devtools-code-block>
         ${input.patchSuggestionState === PatchSuggestionState.ERROR
           ? html`<div class="error-container">
-              <devtools-icon .name=${'cross-circle-filled'}></devtools-icon>${
+              <devtools-icon name="cross-circle-filled"></devtools-icon>${
               lockedString(UIStringsNotTranslate.genericErrorMessage)
               } ${renderSourcesLink()}
             </div>`

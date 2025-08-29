@@ -42,6 +42,7 @@ devtools-create-recording-view {
   border-bottom: 1px solid var(--sys-color-divider);
   padding: 0 5px;
   gap: 3px;
+  flex-shrink: 0;
 }
 
 .separator {

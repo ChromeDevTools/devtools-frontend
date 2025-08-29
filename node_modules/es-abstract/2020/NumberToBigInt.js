@@ -6,8 +6,7 @@ var $BigInt = GetIntrinsic('%BigInt%', true);
 var $RangeError = require('es-errors/range');
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
-
-var isInteger = require('../helpers/isInteger');
+var isInteger = require('math-intrinsics/isInteger');
 
 // https://262.ecma-international.org/11.0/#sec-numbertobigint
 

@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {createTestFilesystem, setupAutomaticFileSystem} from '../../testing/AiAssistanceHelpers.js';
 import {assertScreenshot, renderElementIntoDOM, setColorScheme} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -54,6 +56,12 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
   }
 
   describe('screenshots', () => {
+    beforeEach(() => {
+      updateHostConfig({
+        aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING},
+      });
+    });
+
     function renderViewForScreenshots() {
       const noop = () => {};
       const target = document.createElement('div');
@@ -74,6 +82,8 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
               }
             ],
             selectedIndex: 0,
+            selectProjectRootText: i18n.i18n.lockedString(
+                'Source code from the selected folder is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.'),
             showAutomaticWorkspaceNudge: false,
             onProjectSelected: noop,
             onSelectButtonClick: noop,

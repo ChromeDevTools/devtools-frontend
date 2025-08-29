@@ -192,10 +192,11 @@ export class IssuesPane extends UI.Widget.VBox {
   #issueViewUpdatePromise: Promise<void> = Promise.resolve();
 
   constructor() {
-    super(true);
+    super({
+      jslog: `${VisualLogging.panel('issues')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(issuesPaneStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.panel('issues')}`);
 
     this.contentElement.classList.add('issues-pane');
 
@@ -406,7 +407,7 @@ export class IssuesPane extends UI.Widget.VBox {
       if (preservedSet?.has(key)) {
         continue;
       }
-      view.parent && view.parent.removeChild(view);
+      view.parent?.removeChild(view);
       views.delete(key);
     }
   }

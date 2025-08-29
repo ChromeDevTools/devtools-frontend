@@ -235,7 +235,7 @@ export function generateInsight(
 
   const entityMappings = parsedTrace.NetworkRequests.entityMappings;
   const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
-  const firstPartyEntity = Handlers.Helpers.getEntityForUrl(firstPartyUrl, entityMappings.createdEntityCache);
+  const firstPartyEntity = Handlers.Helpers.getEntityForUrl(firstPartyUrl, entityMappings);
   const http1Requests = determineHttp1Requests(contextRequests, entityMappings, firstPartyEntity ?? null);
 
   return finalize({

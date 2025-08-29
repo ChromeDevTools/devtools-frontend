@@ -5,11 +5,13 @@
 
 import '../../../ui/components/chrome_link/chrome_link.js';
 import '../../../ui/components/settings/settings.js';
+import '../../../ui/components/tooltips/tooltips.js';
 
 import type * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
@@ -29,15 +31,15 @@ const UIStrings = {
    */
   preferencesSyncDisabled: 'To turn this setting on, you must first enable settings sync in Chrome.',
   /**
-   * @description Label for a link that take the user to the "Sync" section of the
-   * chrome settings. The link is shown in the DevTools Settings UI.
-   */
-  settings: 'Go to Settings',
-  /**
    * @description Label for the account email address. Shown in the DevTools Settings UI in
    * front of the email address currently used for Chrome Sync.
    */
   signedIn: 'Signed into Chrome as:',
+  /**
+   * @description Label for the account settings. Shown in the DevTools Settings UI in
+   * case the user is not logged in to Chrome.
+   */
+  notSignedIn: 'You\'re not signed into Chrome.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/components/SyncSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -61,7 +63,7 @@ export class SyncSection extends HTMLElement {
 
   #render(): void {
     if (!this.#syncSetting) {
-      throw new Error('SyncSection not properly initialized');
+      throw new Error('SyncSection is not properly initialized');
     }
 
     // TODO: this should not probably happen in render, instead, the setting
@@ -73,41 +75,72 @@ export class SyncSection extends HTMLElement {
     Lit.render(html`
       <style>${syncSectionStyles}</style>
       <fieldset>
-        ${renderAccountInfoOrWarning(this.#syncInfo)}
-        <setting-checkbox .data=${
-            {setting: this.#syncSetting}}>
-        </setting-checkbox>
+        ${renderAccountInfo(this.#syncInfo)}
+        ${renderSettingCheckboxIfNeeded(this.#syncInfo, this.#syncSetting)}
       </fieldset>
     `, this.#shadow, {host: this});
     // clang-format on
   }
 }
 
-/* x-link doesn't work with custom click/keydown handlers */
+function renderSettingCheckboxIfNeeded(
+    syncInfo: Host.InspectorFrontendHostAPI.SyncInformation,
+    syncSetting: Common.Settings.Setting<boolean>): Lit.LitTemplate {
+  if (!syncInfo.accountEmail) {
+    return Lit.nothing;
+  }
 
-function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.SyncInformation): Lit.TemplateResult {
-  if (!syncInfo.isSyncActive) {
-    const link = 'chrome://settings/syncSetup' as Platform.DevToolsPath.UrlString;
-    // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  return html`
+    <div class="setting-checkbox-container">
+      <setting-checkbox class="setting-checkbox" .data=${{setting: syncSetting}}>
+      </setting-checkbox>
+      ${renderWarningIfNeeded(syncInfo)}
+    </div>
+  `;
+  // clang-format on
+}
+
+function renderWarningIfNeeded(syncInfo: Host.InspectorFrontendHostAPI.SyncInformation): Lit.LitTemplate {
+  const hasWarning = !syncInfo.isSyncActive || !syncInfo.arePreferencesSynced;
+  if (!hasWarning) {
+    return Lit.nothing;
+  }
+
+  const warningLink = !syncInfo.isSyncActive ?
+      'chrome://settings/syncSetup' as Platform.DevToolsPath.UrlString :
+      'chrome://settings/syncSetup/advanced' as Platform.DevToolsPath.UrlString;
+  const warningText =
+      !syncInfo.isSyncActive ? i18nString(UIStrings.syncDisabled) : i18nString(UIStrings.preferencesSyncDisabled);
+  // clang-format off
+  return html`
+    <devtools-chrome-link .href=${warningLink}>
+      <devtools-button
+        aria-describedby=settings-sync-info
+        .iconName=${'info'}
+        .variant=${Buttons.Button.Variant.ICON}
+        .size=${Buttons.Button.Size.SMALL}>
+      </devtools-button>
+    </devtools-chrome-link>
+    <devtools-tooltip
+        id=settings-sync-info
+        variant=simple>
+      ${warningText}
+    </devtools-tooltip>
+  `;
+  // clang-format on
+}
+
+function renderAccountInfo(syncInfo: Host.InspectorFrontendHostAPI.SyncInformation): Lit.LitTemplate {
+  if (!syncInfo.accountEmail) {
     // clang-format off
     return html`
-      <span class="warning">
-        ${i18nString(UIStrings.syncDisabled)}
-        <devtools-chrome-link .href=${link}>${i18nString(UIStrings.settings)}</devtools-chrome-link>
-      </span>`;
+      <div class="not-signed-in">${i18nString(UIStrings.notSignedIn)}</div>
+    `;
     // clang-format on
   }
-  if (!syncInfo.arePreferencesSynced) {
-    const link = 'chrome://settings/syncSetup/advanced' as Platform.DevToolsPath.UrlString;
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <span class="warning">
-        ${i18nString(UIStrings.preferencesSyncDisabled)}
-        <devtools-chrome-link .href=${link}>${i18nString(UIStrings.settings)}</devtools-chrome-link>
-      </span>`;
-    // clang-format on
-  }
+
+  // clang-format off
   return html`
     <div class="account-info">
       <img src="data:image/png;base64, ${syncInfo.accountImage}" alt="Account avatar" />
@@ -116,6 +149,7 @@ function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.Sync
         <span>${syncInfo.accountEmail}</span>
       </div>
     </div>`;
+  // clang-format on
 }
 
 customElements.define('devtools-sync-section', SyncSection);

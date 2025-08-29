@@ -40,4 +40,22 @@ module.exports = function (flatMap, t) {
 
 		st.end();
 	});
+
+	t.test('test262: staging test from v8', function (st) {
+		var arr1 = [0, 1, 2, 3];
+		var f = function (e) {
+			arr1[4] = 42;
+			return e;
+		};
+		st.deepEqual(flatMap(arr1, f), [0, 1, 2, 3]);
+
+		var arr2 = [0, 1, 2, 3];
+		var g = function (e) {
+			arr2.length = 3;
+			return e;
+		};
+		st.deepEqual(flatMap(arr2, g), [0, 1, 2]);
+
+		st.end();
+	});
 };

@@ -19,9 +19,7 @@ async function assertThrowsAsync(fn: () => Promise<void>, errorMessage: string) 
     assert.strictEqual(e.message, errorMessage);
   }
 
-  if (!caught) {
-    assert.fail('Expected error but got none.');
-  }
+  assert.isOk(caught, 'Expected error but got none.');
 }
 
 async function assertNotThrowsAsync(fn: () => Promise<void>) {

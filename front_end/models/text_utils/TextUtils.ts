@@ -259,8 +259,7 @@ export class BalancedJSONTokenizer {
  * of code.
  *
  * @param lines The input document lines.
- * @return The indentation detected for the lines as string or `null` if it's inconclusive.
- *
+ * @returns The indentation detected for the lines as string or `null` if it's inconclusive.
  * @see https://heathermoor.medium.com/detecting-code-indentation-eff3ed0fb56b
  */
 export const detectIndentation = function(lines: Iterable<string>): string|null {
@@ -326,7 +325,7 @@ export const detectIndentation = function(lines: Iterable<string>): string|null 
  * line length for the whole text is 80 characters or more.
  *
  * @param text The input text to check.
- * @returns
+ * @returns `true` if the heuristic considers `text` to be minified.
  */
 export const isMinified = function(text: string): boolean {
   let lineCount = 0;

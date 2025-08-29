@@ -13,12 +13,12 @@ import imagePreviewStyles from './imagePreview.css.js';
 
 const UIStrings = {
   /**
-   *@description Alt text description of an image's source
+   * @description Alt text description of an image's source
    */
   unknownSource: 'unknown source',
   /**
-   *@description Text to indicate the source of an image
-   *@example {example.com} PH1
+   * @description Text to indicate the source of an image
+   * @example {example.com} PH1
    */
   imageFromS: 'Image from {PH1}',
   /**
@@ -86,7 +86,7 @@ export class ImagePreview {
 
     let resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(originalImageURL);
     let imageURL = originalImageURL;
-    if (!isImageResource(resource) && precomputedFeatures && precomputedFeatures.currentSrc) {
+    if (!isImageResource(resource) && precomputedFeatures?.currentSrc) {
       imageURL = precomputedFeatures.currentSrc;
       resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(imageURL);
     }

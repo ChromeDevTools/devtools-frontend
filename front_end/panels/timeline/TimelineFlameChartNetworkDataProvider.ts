@@ -22,7 +22,7 @@ import {
   selectionsEqual,
   type TimelineSelection,
 } from './TimelineSelection.js';
-import {buildPersistedConfig, keyForTraceConfig} from './TrackConfiguration.js';
+import {buildPersistedConfig} from './TrackConfiguration.js';
 import * as TimelineUtils from './utils/utils.js';
 
 export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
@@ -40,7 +40,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   #lastInitiatorEntry = -1;
   #lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
   #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
-  #persistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedConfigPerTrace>|null = null;
+  #persistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>|null = null;
 
   constructor() {
     this.reset();
@@ -310,7 +310,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
     // Draws left and right whiskers
     function drawTick(begin: number, end: number, y: number): void {
-      const /** @const */ tickHeightPx = 6;
+      const /** @constant */ tickHeightPx = 6;
       context.moveTo(begin, y - tickHeightPx / 2);
       context.lineTo(begin, y + tickHeightPx / 2);
       context.moveTo(begin, y);
@@ -330,15 +330,15 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     // Draw request URL as text
     const textStart = Math.max(sendStart, 0);
     const textWidth = finish - textStart;
-    const /** @const */ minTextWidthPx = 20;
+    const /** @constant */ minTextWidthPx = 20;
     if (textWidth >= minTextWidthPx) {
       let title = this.entryTitle(index) || '';
       if (event.args.data.fromServiceWorker) {
         title = '⚙ ' + title;
       }
       if (title) {
-        const /** @const */ textPadding = 4;
-        const /** @const */ textBaseline = 5;
+        const /** @constant */ textPadding = 4;
+        const /** @constant */ textBaseline = 5;
         const textBaseHeight = barHeight - textBaseline;
         const trimmedText = UI.UIUtils.trimTextEnd(context, title, textWidth - 2 * textPadding);
         context.fillStyle = '#333';
@@ -461,13 +461,11 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       return;
     }
     const persistedDataForTrace = buildPersistedConfig(groups, indexesInVisualOrder);
-    const traceKey = keyForTraceConfig(this.#parsedTrace);
-    const setting = this.#persistedGroupConfigSetting.get();
-    setting[traceKey] = persistedDataForTrace;
-    this.#persistedGroupConfigSetting.set(setting);
+    this.#persistedGroupConfigSetting.set(persistedDataForTrace);
   }
 
-  setPersistedGroupConfigSetting(setting: Common.Settings.Setting<PerfUI.FlameChart.PersistedConfigPerTrace>): void {
+  setPersistedGroupConfigSetting(setting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>):
+      void {
     this.#persistedGroupConfigSetting = setting;
   }
 

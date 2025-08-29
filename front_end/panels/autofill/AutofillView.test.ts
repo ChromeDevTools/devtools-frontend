@@ -2,294 +2,223 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../core/root/root.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
-import {assertGridContents} from '../../testing/DataGridHelpers.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
-import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Autofill from './autofill.js';
 
-const addressFormFilledEvent = {
-  addressUi: {
-    addressFields: [
-      {
-        fields: [
-          {name: 'NAME_FULL', value: 'Crocodile Middle Dundee'},
-        ],
-      },
-      {
-        fields: [
-          {name: 'COMPANY_NAME', value: 'Uluru Tours'},
-        ],
-      },
-      {
-        fields: [
-          {name: 'ADDRESS_HOME_STREET_ADDRESS', value: 'Outback Road 1'},
-        ],
-      },
-      {
-        fields: [
-          {name: 'ADDRESS_HOME_CITY', value: 'Bundaberg'},
-          {name: 'ADDRESS_HOME_STATE', value: 'Queensland'},
-          {name: 'ADDRESS_HOME_ZIP', value: '12345'},
-        ],
-      },
-    ],
-  },
-  filledFields: [
-    {
-      htmlType: 'text',
-      id: 'input1',
-      name: '',
-      value: 'Crocodile',
-      autofillType: 'First name',
-      fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
-      fieldId: 1 as Protocol.DOM.BackendNodeId,
-      frameId: '1' as Protocol.Page.FrameId,
-    },
-    {
-      htmlType: 'text',
-      id: '',
-      name: 'input2',
-      value: 'Dundee',
-      autofillType: 'Last name',
-      fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
-      fieldId: 2 as Protocol.DOM.BackendNodeId,
-      frameId: '1' as Protocol.Page.FrameId,
-    },
-    {
-      htmlType: 'text',
-      id: 'input3',
-      name: '',
-      value: 'Australia',
-      autofillType: 'Country',
-      fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
-      fieldId: 3 as Protocol.DOM.BackendNodeId,
-      frameId: '1' as Protocol.Page.FrameId,
-    },
-    {
-      htmlType: 'text',
-      id: 'input4',
-      name: '',
-      value: '12345',
-      autofillType: 'Zip code',
-      fillingStrategy: Protocol.Autofill.FillingStrategy.AutocompleteAttribute,
-      fieldId: 4 as Protocol.DOM.BackendNodeId,
-      frameId: '1' as Protocol.Page.FrameId,
-    },
-  ],
-};
+describeWithEnvironment('AutofillView', () => {
+  const frameId = 'frame#1' as Protocol.Page.FrameId;
 
-describeWithMockConnection('AutofillView', () => {
-  let target: SDK.Target.Target;
-  let autofillModel: SDK.AutofillModel.AutofillModel;
-  let showViewStub: sinon.SinonStub;
+  it('renders nothing if there\'s no last filled address form', async () => {
+    const view = createViewFunctionStub(Autofill.AutofillView.AutofillView);
+    const autofillManager = sinon.createStubInstance(AutofillManager.AutofillManager.AutofillManager);
+    const autofillView = new Autofill.AutofillView.AutofillView(autofillManager, view);
+    autofillManager.getLastFilledAddressForm.returns(null);
 
-  beforeEach(() => {
-    Root.Runtime.experiments.register('apca', '');
-    target = createTarget();
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    const maybeAutofillModel = target.model(SDK.AutofillModel.AutofillModel);
-    assert.exists(maybeAutofillModel);
-    autofillModel = maybeAutofillModel;
-    showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
-    AutofillManager.AutofillManager.AutofillManager.instance({forceNew: true});
+    renderElementIntoDOM(autofillView);
+
+    const input = await view.nextInput;
+    assert.isEmpty(input.address);
+    assert.isEmpty(input.filledFields);
+    assert.isEmpty(input.matches);
+    assert.isEmpty(input.highlightedMatches);
   });
 
-  afterEach(() => {
-    showViewStub.restore();
-  });
-
-  const renderAutofillView = async () => {
-    const view = new Autofill.AutofillView.AutofillView();
-    view.style.display = 'block';
-    view.style.width = '640px';
-    view.style.height = '480px';
-    renderElementIntoDOM(view);
-    await view.render();
-    await RenderCoordinator.done({waitForWork: true});
-    return view;
-  };
-
-  const assertViewShowsEventData = (view: Autofill.AutofillView.AutofillView) => {
-    const addressSpans = view.shadowRoot!.querySelectorAll('.address span');
-    const addressText = [...addressSpans].map(div => div.textContent);
-    assert.deepEqual(
-        addressText, ['Crocodile', ' Middle ', 'Dundee', 'Uluru ToursOutback Road 1Bundaberg Queensland ', '12345']);
-    const expectedHeaders = ['Form field', 'Predicted autofill value', 'Value'];
-    const expectedRows = [
-      ['#input1 (text)', 'First name\nheur', '"Crocodile"'],
-      ['input2 (text)', 'Last name\nheur', '"Dundee"'],
-      ['#input3 (text)', 'Country\nheur', '"Australia"'],
-      ['#input4 (text)', 'Zip code\nattr', '"12345"'],
+  it('correctly renders the last filled address form', async () => {
+    const address = 'Max Mustermann\nMusterstrasse 4\n12345 Musterstadt';
+    const filledFields: Protocol.Autofill.FilledField[] = [
+      {
+        htmlType: 'text',
+        id: 'name',
+        name: 'name',
+        value: 'Max Mustermann',
+        autofillType: 'FULL_NAME',
+        fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        frameId,
+        fieldId: 1 as Protocol.DOM.BackendNodeId,
+      },
+      {
+        htmlType: 'text',
+        id: 'street',
+        name: 'street',
+        value: 'Musterstrasse 4',
+        autofillType: 'STREET',
+        fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        frameId,
+        fieldId: 2 as Protocol.DOM.BackendNodeId,
+      },
+      {
+        htmlType: 'text',
+        id: 'city',
+        name: 'city',
+        value: 'Musterstadt',
+        autofillType: 'FULL_NAME',
+        fillingStrategy: Protocol.Autofill.FillingStrategy.AutocompleteAttribute,
+        frameId,
+        fieldId: 3 as Protocol.DOM.BackendNodeId,
+      },
     ];
-    assertGridContents(view, expectedHeaders, expectedRows);
-  };
-
-  it('renders autofilled address and filled fields and clears content on navigation', async () => {
-    const expectedPlaceholderHeader = 'No autofill detected';
-    const expectedPlaceholder = 'To start debugging autofill, use Chrome\'s autofill menu to fill an address form.';
-    const view = await renderAutofillView();
-    let placeholderHeader = view.shadowRoot!.querySelector('.empty-state-header')!.textContent!.trim();
-    assert.strictEqual(placeholderHeader, expectedPlaceholderHeader);
-
-    let placeholderText = view.shadowRoot!.querySelector('.empty-state-description > span')!.textContent!.trim();
-    assert.strictEqual(placeholderText, expectedPlaceholder);
-
-    autofillModel.addressFormFilled(addressFormFilledEvent);
-    await RenderCoordinator.done({waitForWork: true});
-    assertViewShowsEventData(view);
-
-    navigate(getMainFrame(target));
-
-    await RenderCoordinator.done();
-    placeholderHeader = view.shadowRoot!.querySelector('.empty-state-header')!.textContent!.trim();
-    assert.strictEqual(placeholderHeader, expectedPlaceholderHeader);
-
-    placeholderText = view.shadowRoot!.querySelector('.empty-state-description > span')!.textContent!.trim();
-    assert.strictEqual(placeholderText, expectedPlaceholder);
-  });
-
-  it('shows content if the view is created after the event was received', async () => {
-    autofillModel.addressFormFilled(addressFormFilledEvent);
-    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
-    const view = await renderAutofillView();
-    assert.isNotNull(view.shadowRoot);
-    assertViewShowsEventData(view);
-    await RenderCoordinator.done();
-  });
-
-  it('auto-open can be turned off/on', async () => {
-    const view = await renderAutofillView();
-
-    autofillModel.addressFormFilled(addressFormFilledEvent);
-    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
-    showViewStub.reset();
-
-    // The auto-opening checkbox is the second one.
-    const checkbox = view.shadowRoot!.querySelectorAll('devtools-checkbox')[1];
-    assert.isNotNull(checkbox);
-    assert.isTrue(checkbox.checked);
-    checkbox.checked = false;
-    let event = new Event('change');
-    checkbox.dispatchEvent(event);
-
-    autofillModel.addressFormFilled(addressFormFilledEvent);
-    sinon.assert.notCalled(showViewStub);
-
-    checkbox.checked = true;
-    event = new Event('change');
-    checkbox.dispatchEvent(event);
-
-    autofillModel.addressFormFilled(addressFormFilledEvent);
-    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
-    await RenderCoordinator.done();
-  });
-
-  it('showing test addresses in autofill menu can be turned off/on', async () => {
-    const view = await renderAutofillView();
-
-    autofillModel.addressFormFilled(addressFormFilledEvent);
-    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
-    showViewStub.reset();
-
-    // The show test addresses checkbox is the first one.
-    const checkbox = view.shadowRoot!.querySelectorAll('devtools-checkbox')[0];
-    assert.isNotNull(checkbox);
-    assert.isFalse(checkbox.checked);
-
-    const setAddressSpy = sinon.spy(autofillModel!.agent, 'invoke_setAddresses');
-    sinon.assert.notCalled(setAddressSpy);
-
-    checkbox.checked = true;
-    const event = new Event('change');
-    checkbox.dispatchEvent(event);
-    sinon.assert.calledOnce(setAddressSpy);
-
-    await RenderCoordinator.done();
-  });
-
-  it('highlights corresponding grid row when hovering over address span', async () => {
-    const monospaceStyles = 'font-family:var(--monospace-font-family);font-size:var(--monospace-font-size);';
-
-    autofillModel.addressFormFilled(addressFormFilledEvent);
-    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
-    const view = await renderAutofillView();
-    assertViewShowsEventData(view);
-
-    const addressSpans = view.shadowRoot!.querySelectorAll('.address span');
-    const crocodileSpan = addressSpans[0];
-    assert.strictEqual(crocodileSpan.textContent, 'Crocodile');
-    assert.isFalse(crocodileSpan.classList.contains('highlighted'));
-    const grid = view.shadowRoot!.querySelector('devtools-data-grid')!;
-    assert.isNotNull(grid.shadowRoot);
-    const firstGridRow = grid.shadowRoot.querySelector('tbody tr[jslog]')!;
-    let styles = firstGridRow.getAttribute('style') || '';
-    assert.strictEqual(styles.replace(/\s/g, ''), monospaceStyles);
-
-    crocodileSpan.dispatchEvent(new MouseEvent('mouseenter'));
-    await RenderCoordinator.done({waitForWork: true});
-    assert.isTrue(crocodileSpan.classList.contains('highlighted'));
-    styles = firstGridRow.getAttribute('style') || '';
-    assert.strictEqual(
-        styles.replace(/\s/g, ''), monospaceStyles + 'background-color:var(--sys-color-state-hover-on-subtle);');
-
-    crocodileSpan.dispatchEvent(new MouseEvent('mouseleave'));
-    await RenderCoordinator.done({waitForWork: true});
-    assert.isFalse(crocodileSpan.classList.contains('highlighted'));
-    styles = firstGridRow.getAttribute('style') || '';
-    assert.strictEqual(styles.replace(/\s/g, ''), monospaceStyles);
-  });
-
-  it('highlights corresponding address span and DOM node when hovering over grid row', async () => {
-    stubNoopSettings();
-    const mockFrame = {
-      resourceTreeModel: () => ({
-        target: () => target,
-      }),
-    } as SDK.ResourceTreeModel.ResourceTreeFrame;
-    const getFrameStub = sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getFrame').callsFake(frameId => {
-      return frameId === addressFormFilledEvent.filledFields[3].frameId ? mockFrame : null;
+    const matches: AutofillManager.AutofillManager.Match[] = [{
+      startIndex: 0,
+      endIndex: 14,
+      filledFieldIndex: 0,
+    }];
+    const view = createViewFunctionStub(Autofill.AutofillView.AutofillView);
+    const autofillManager = sinon.createStubInstance(AutofillManager.AutofillManager.AutofillManager);
+    const autofillView = new Autofill.AutofillView.AutofillView(autofillManager, view);
+    autofillManager.getLastFilledAddressForm.returns({
+      address,
+      filledFields,
+      matches,
     });
 
-    autofillModel.addressFormFilled(addressFormFilledEvent);
-    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
-    const view = await renderAutofillView();
-    assertViewShowsEventData(view);
+    renderElementIntoDOM(autofillView);
 
-    const domModel = target.model(SDK.DOMModel.DOMModel);
-    const overlayModel = domModel?.overlayModel();
-    assert.exists(overlayModel);
-    const overlaySpy = sinon.spy(overlayModel, 'highlightInOverlay');
-    const hideOverlaySpy = sinon.spy(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+    const input = await view.nextInput;
+    assert.strictEqual(input.address, address);
+    assert.strictEqual(input.filledFields, filledFields);
+    assert.strictEqual(input.matches, matches);
+    assert.isEmpty(input.highlightedMatches);
+  });
 
-    const addressSpans = view.shadowRoot!.querySelectorAll('.address span');
-    const zipCodeSpan = addressSpans[4];
-    assert.strictEqual(zipCodeSpan.textContent, '12345');
-    assert.isFalse(zipCodeSpan.classList.contains('highlighted'));
-    const grid = view.shadowRoot!.querySelector('devtools-data-grid')!;
-    assert.isNotNull(grid.shadowRoot);
-    const fourthGridRow = grid.shadowRoot.querySelector('tbody tr[jslog]:nth-child(5)')!;
-    fourthGridRow.dispatchEvent(new MouseEvent('mouseenter'));
-    await RenderCoordinator.done({waitForWork: true});
-    assert.isTrue(zipCodeSpan.classList.contains('highlighted'));
-    sinon.assert.calledOnce(overlaySpy);
-    const deferredNode =
-        (overlaySpy.getCall(0).args[0] as unknown as SDK.OverlayModel.HighlightDeferredNode).deferredNode;
-    assert.strictEqual(deferredNode.backendNodeId(), 4);
-    sinon.assert.notCalled(hideOverlaySpy);
+  it('correctly highlights matches in the address', async () => {
+    const address = 'Max Mustermann\nMusterstadt';
+    const filledFields: Protocol.Autofill.FilledField[] = [
+      {
+        htmlType: 'text',
+        id: 'firstname',
+        name: 'firstname',
+        value: 'Max',
+        autofillType: 'FIRST_NAME',
+        fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        frameId,
+        fieldId: 1 as Protocol.DOM.BackendNodeId,
+      },
+      {
+        htmlType: 'text',
+        id: 'lastname',
+        name: 'lastname',
+        value: 'Mustermann',
+        autofillType: 'LAST_NAME',
+        fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        frameId,
+        fieldId: 2 as Protocol.DOM.BackendNodeId,
+      },
+    ];
+    const matches: AutofillManager.AutofillManager.Match[] = [
+      {
+        startIndex: 0,
+        endIndex: 3,
+        filledFieldIndex: 0,
+      },
+      {
+        startIndex: 4,
+        endIndex: 14,
+        filledFieldIndex: 1,
+      },
+    ];
+    const view = createViewFunctionStub(Autofill.AutofillView.AutofillView);
+    const autofillManager = sinon.createStubInstance(AutofillManager.AutofillManager.AutofillManager);
+    const autofillView = new Autofill.AutofillView.AutofillView(autofillManager, view);
+    autofillManager.getLastFilledAddressForm.returns({
+      address,
+      filledFields,
+      matches,
+    });
+    renderElementIntoDOM(autofillView);
+    let input = await view.nextInput;
 
-    fourthGridRow.dispatchEvent(new MouseEvent('mouseleave'));
-    await RenderCoordinator.done({waitForWork: true});
-    assert.isFalse(zipCodeSpan.classList.contains('highlighted'));
-    sinon.assert.calledOnce(hideOverlaySpy);
-    getFrameStub.restore();
+    input.onHighlightMatchesInAddress(5);
+
+    input = await view.nextInput;
+    assert.deepEqual(input.highlightedMatches, [{startIndex: 4, endIndex: 14, filledFieldIndex: 1}]);
+
+    input.onClearHighlightedMatches();
+
+    input = await view.nextInput;
+    assert.isEmpty(input.highlightedMatches);
+  });
+
+  it('correctly rerenders upon AddressFormFilled events', async () => {
+    const address = 'Foo Bar';
+    const filledFields: Protocol.Autofill.FilledField[] = [];
+    const matches: AutofillManager.AutofillManager.Match[] = [];
+    const view = createViewFunctionStub(Autofill.AutofillView.AutofillView);
+    const autofillManager = sinon.createStubInstance(AutofillManager.AutofillManager.AutofillManager);
+    const autofillView = new Autofill.AutofillView.AutofillView(autofillManager, view);
+    autofillManager.getLastFilledAddressForm.returns(null);
+    renderElementIntoDOM(autofillView);
+    await view.nextInput;
+
+    Reflect.apply(autofillManager.addEventListener.lastCall.args[1], autofillView, [
+      {data: {address, filledFields, matches}},
+    ]);
+
+    const input = await view.nextInput;
+    assert.strictEqual(input.address, address);
+  });
+
+  it('correctly highlights DOM nodes for filled fields', async () => {
+    const address = 'John\nDenver';
+    const filledFields: Protocol.Autofill.FilledField[] = [
+      {
+        htmlType: 'text',
+        id: 'firstname',
+        name: 'firstname',
+        value: 'John',
+        autofillType: 'FIRST_NAME',
+        fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        frameId,
+        fieldId: 1 as Protocol.DOM.BackendNodeId,
+      },
+      {
+        htmlType: 'text',
+        id: 'city',
+        name: 'city',
+        value: 'Denver',
+        autofillType: 'CITY',
+        fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        frameId,
+        fieldId: 2 as Protocol.DOM.BackendNodeId,
+      },
+    ];
+    const matches: AutofillManager.AutofillManager.Match[] = [
+      {
+        startIndex: 0,
+        endIndex: 4,
+        filledFieldIndex: 0,
+      },
+      {
+        startIndex: 6,
+        endIndex: 12,
+        filledFieldIndex: 1,
+      },
+    ];
+    const view = createViewFunctionStub(Autofill.AutofillView.AutofillView);
+    const autofillManager = sinon.createStubInstance(AutofillManager.AutofillManager.AutofillManager);
+    const autofillView = new Autofill.AutofillView.AutofillView(autofillManager, view);
+    autofillManager.getLastFilledAddressForm.returns({
+      address,
+      filledFields,
+      matches,
+    });
+    renderElementIntoDOM(autofillView);
+    let input = await view.nextInput;
+
+    input.onHighlightMatchesInFilledFiels(1);
+
+    sinon.assert.calledOnceWithExactly(autofillManager.highlightFilledField, filledFields[1]);
+    input = await view.nextInput;
+    assert.deepEqual(input.highlightedMatches, [{startIndex: 6, endIndex: 12, filledFieldIndex: 1}]);
+
+    input.onClearHighlightedMatches();
+
+    sinon.assert.calledOnce(autofillManager.clearHighlightedFilledFields);
+    input = await view.nextInput;
+    assert.isEmpty(input.highlightedMatches);
   });
 });

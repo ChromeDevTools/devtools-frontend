@@ -27,7 +27,7 @@ async function renderPreloadingMismatchedHeadersGrid(data: SDK.PreloadingModel.P
 }
 
 async function testPreloadingMismatchedHeadersGrid(
-    recievedMismatchedHeaders: Protocol.Preload.PrerenderMismatchedHeaders[], rowExpected: string[][]): Promise<void> {
+    receivedMismatchedHeaders: Protocol.Preload.PrerenderMismatchedHeaders[], rowExpected: string[][]): Promise<void> {
   const data: SDK.PreloadingModel.PrerenderAttempt = {
     action: Protocol.Preload.SpeculationAction.Prerender,
     key: {
@@ -39,7 +39,7 @@ async function testPreloadingMismatchedHeadersGrid(
     status: SDK.PreloadingModel.PreloadingStatus.FAILURE,
     prerenderStatus: Protocol.Preload.PrerenderFinalStatus.ActivationNavigationParameterMismatch,
     disallowedMojoInterface: null,
-    mismatchedHeaders: recievedMismatchedHeaders,
+    mismatchedHeaders: receivedMismatchedHeaders,
     ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
     nodeIds: [1] as Protocol.DOM.BackendNodeId[],
   };

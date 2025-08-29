@@ -8,10 +8,16 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
+import {
+  describeWithEnvironment,
+  registerActions,
+  stubNoopSettings,
+  updateHostConfig
+} from '../../testing/EnvironmentHelpers.js';
+import {allThreadEntriesInTrace, setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as PerfUi from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
 
@@ -22,21 +28,19 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
     const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
       targetManager,
-    });
-    Bindings.IgnoreListManager.IgnoreListManager.instance({
-      forceNew: true,
-      debuggerWorkspaceBinding,
+      ignoreListManager,
     });
   });
   afterEach(() => {
     SDK.TargetManager.TargetManager.removeInstance();
     Workspace.Workspace.WorkspaceImpl.removeInstance();
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
-    Bindings.IgnoreListManager.IgnoreListManager.removeInstance();
+    Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
   });
 
   it('shows initiator arrows when an event that has them is selected', async function() {
@@ -48,7 +52,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     assert.lengthOf(timelineData1.initiatorsData, 0);
 
     // a postTask scheduled event - picked as it has an initiator
-    const event = parsedTrace.Renderer.allTraceEntries.find(event => {
+    const event = allThreadEntriesInTrace(parsedTrace).find(event => {
       return event.name === Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK && event.ts === 512724961655;
     });
     assert.exists(event);
@@ -71,7 +75,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.timelineData();
     // a postTask scheduled event - picked as it has an initiator
-    const event = parsedTrace.Renderer.allTraceEntries.find(event => {
+    const event = allThreadEntriesInTrace(parsedTrace).find(event => {
       return event.name === Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK && event.ts === 512724961655;
     });
     assert.exists(event);
@@ -92,7 +96,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.timelineData();
     // a RunTask event with no initiators
-    const event = parsedTrace.Renderer.allTraceEntries.find(event => {
+    const event = allThreadEntriesInTrace(parsedTrace).find(event => {
       return event.name === Trace.Types.Events.Name.RUN_TASK && event.ts === 512724754996;
     });
     assert.exists(event);
@@ -111,9 +115,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
       dataProvider.setModel(parsedTrace, entityMapper);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
-      if (!timingsTrackGroup) {
-        assert.fail('Could not find Timings track flame chart group');
-      }
+      assert.isOk(timingsTrackGroup, 'Could not find Timings track flame chart group');
       const groupTreeEvents = dataProvider.groupTreeEvents(timingsTrackGroup);
       const allTimingEvents = [
         ...parsedTrace.UserTimings.consoleTimings,
@@ -130,9 +132,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
       dataProvider.setModel(parsedTrace, entityMapper);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
-      if (!timingsTrackGroup) {
-        assert.fail('Could not find Timings track flame chart group');
-      }
+      assert.isOk(timingsTrackGroup, 'Could not find Timings track flame chart group');
       const groupTreeEvents = dataProvider.groupTreeEvents(timingsTrackGroup);
       assert.strictEqual(groupTreeEvents?.length, 6);
       const allEventsAreSync = groupTreeEvents?.every(event => !Trace.Types.Events.isPhaseAsync(event.ph));
@@ -158,26 +158,14 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
     const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
     dataProvider.setModel(parsedTrace, entityMapper);
-    const groupNames = dataProvider.timelineData().groups.map(g => g.name);
-    assert.deepEqual(
-        groupNames,
-        [
-          'Frames',
-          'Timings',
-          'Interactions',
-          'A track group — Custom track',
-          'Another Extension Track',
-          'An Extension Track — Custom track',
-          'TimeStamp track — Custom track',
-          'Main — http://localhost:3000/',
-          'Thread pool',
-          'Thread pool worker 1',
-          'Thread pool worker 2',
-          'Thread pool worker 3',
-          'StackSamplingProfiler',
-          'GPU',
-        ],
-    );
+    const groupNames = dataProvider.timelineData().groups.map(g => [g.name, g.subtitle]);
+    assert.deepEqual(groupNames, [
+      ['Frames', undefined], ['Timings', undefined], ['Interactions', undefined], ['A track group', '— Custom'],
+      ['Another Extension Track', undefined], ['An Extension Track', '— Custom'], ['TimeStamp track', '— Custom'],
+      ['Main — http://localhost:3000/', undefined], ['Thread pool', undefined], ['Thread pool worker 1', undefined],
+      ['Thread pool worker 2', undefined], ['Thread pool worker 3', undefined], ['StackSamplingProfiler', undefined],
+      ['GPU', undefined]
+    ]);
   });
 
   it('can return the FlameChart group for a given event', async function() {
@@ -287,6 +275,32 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     });
   });
 
+  it('shows Debug with AI submenu items', async function() {
+    updateHostConfig({
+      devToolsAiSubmenuPrompts: {
+        enabled: true,
+      },
+    });
+    stubNoopSettings();
+    registerActions([{
+      actionId: 'drjones.performance-panel-context',
+      title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
+      category: UI.ActionRegistration.ActionCategory.GLOBAL,
+    }]);
+
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    const contextMenu = dataProvider.customizedContextMenu(new MouseEvent('click'), 7, 0);
+    assert.exists(contextMenu);
+    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
+    assert.exists(debugWithAiItem);
+    assert.deepEqual(
+        debugWithAiItem?.subItems?.map(item => item.label),
+        ['Start a chat', 'Label entry', 'Assess the purpose', 'Identify time spent', 'Find improvements']);
+  });
+
   it('filters navigations to only return those that happen on the main frame', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
@@ -318,7 +332,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   it('persists track configurations to the setting if it is provided with one', async function() {
     const {Settings} = Common.Settings;
     const setting =
-        Settings.instance().createSetting<PerfUi.FlameChart.PersistedConfigPerTrace>('persist-flame-config', {});
+        Settings.instance().createSetting<PerfUi.FlameChart.PersistedGroupConfig[]|null>('persist-flame-config', null);
 
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
@@ -336,25 +350,27 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     dataProvider.handleTrackConfigurationChange(groups, newVisualOrder);
 
     const newSetting = setting.get();
-    const traceKey = Timeline.TrackConfiguration.keyForTraceConfig(parsedTrace);
-    assert.deepEqual(newSetting[traceKey], [
+    assert.deepEqual(newSetting, [
       {
         expanded: false,
         hidden: false,
         originalIndex: 0,
         visualIndex: 2,
+        trackName: 'Frames',
       },
       {
         expanded: false,
         hidden: false,
         originalIndex: 1,
         visualIndex: 0,
+        trackName: '',  // This is screenshots.
       },
       {
         expanded: false,
         hidden: false,
         originalIndex: 2,
         visualIndex: 1,
+        trackName: 'Animations',
       }
     ]);
   });

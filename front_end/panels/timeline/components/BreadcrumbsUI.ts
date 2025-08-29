@@ -17,12 +17,12 @@ const {render, html} = Lit;
 
 const UIStrings = {
   /**
-   *@description A context menu item in the Minimap Breadcrumb context menu.
+   * @description A context menu item in the Minimap Breadcrumb context menu.
    * This context menu option activates the breadcrumb that the context menu was opened on.
    */
   activateBreadcrumb: 'Activate breadcrumb',
   /**
-   *@description A context menu item in the Minimap Breadcrumb context menu.
+   * @description A context menu item in the Minimap Breadcrumb context menu.
    * This context menu option removed all the child breadcrumbs and activates
    * the breadcrumb that the context menu was opened on.
    */
@@ -118,15 +118,10 @@ export class BreadcrumbsUI extends HTMLElement {
           </div>
           ${breadcrumb.child !== null ?
             html`
-            <devtools-icon .data=${{
-              iconName: 'chevron-right',
-              color: 'var(--icon-default)',
-              width: '16px',
-              height: '16px',
-            }}>`
+            <devtools-icon name="chevron-right" class="medium">`
             : ''}
       `;
-              // clang-format on
+    // clang-format on
   }
 
   #render(): void {

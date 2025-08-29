@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -11,7 +13,6 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../../e2e/helpers/issues-helpers.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Cookie attribute exceeds max size issues test', () => {
   const clearCookies = async (inspectedPage: InspectedPage) => {
@@ -32,7 +33,7 @@ describe('Cookie attribute exceeds max size issues test', () => {
          await expandIssue(devToolsPage);
          const issueElement =
              await getIssueByTitle('Ensure cookie attribute values don’t exceed 1024 characters', devToolsPage);
-         assertNotNullOrUndefined(issueElement);
+         assert.isOk(issueElement);
          const section = await getResourcesElement('1 cookie', issueElement, '.affected-resource-label', devToolsPage);
          await ensureResourceSectionIsExpanded(section, devToolsPage);
          const expectedTableRows = [

@@ -4,6 +4,7 @@
 
 import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Timeline from './timeline.js';
@@ -21,41 +22,43 @@ describeWithEnvironment('Initiators', () => {
     beforeEach(async function() {
       parsedTrace = (await TraceLoader.traceEngine(this, 'async-js-calls.json.gz')).parsedTrace;
       setTimeoutCall =
-          parsedTrace.Renderer.allTraceEntries
+          allThreadEntriesInTrace(parsedTrace)
               .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'setTimeout')
               .at(-1) as Trace.Types.Events.SyntheticProfileCall;
       assert.exists(setTimeoutCall);
       assert.isTrue(Trace.Types.Events.isProfileCall(setTimeoutCall));
 
       functionCallBySetTimeout =
-          parsedTrace.Renderer.allTraceEntries.find(
-              e => Trace.Types.Events.isFunctionCall(e) && e.ts > setTimeoutCall.ts) as Trace.Types.Events.Event;
+          allThreadEntriesInTrace(parsedTrace)
+              .find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > setTimeoutCall.ts) as Trace.Types.Events.Event;
       assert.exists(functionCallBySetTimeout);
 
       rAFCall =
-          parsedTrace.Renderer.allTraceEntries
+          allThreadEntriesInTrace(parsedTrace)
               .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestAnimationFrame')
               .at(-1) as Trace.Types.Events.SyntheticProfileCall;
       assert.exists(rAFCall);
       assert.isTrue(Trace.Types.Events.isProfileCall(rAFCall));
 
       functionCallByRAF =
-          parsedTrace.Renderer.allTraceEntries.find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > rAFCall.ts) as
+          allThreadEntriesInTrace(parsedTrace).find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > rAFCall.ts) as
           Trace.Types.Events.Event;
       assert.exists(functionCallByRAF);
 
       requestIdleCallbackCall =
-          parsedTrace.Renderer.allTraceEntries
+          allThreadEntriesInTrace(parsedTrace)
               .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestIdleCallback')
               .at(-1) as Trace.Types.Events.SyntheticProfileCall;
       assert.exists(requestIdleCallbackCall);
       assert.isTrue(Trace.Types.Events.isProfileCall(requestIdleCallbackCall));
 
-      functionCallByrequestIdleCallback = parsedTrace.Renderer.allTraceEntries.find(
-                                              e => Trace.Types.Events.isFunctionCall(e) &&
-                                                  e.ts > requestIdleCallbackCall.ts) as Trace.Types.Events.Event;
+      functionCallByrequestIdleCallback =
+          allThreadEntriesInTrace(parsedTrace)
+              .find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestIdleCallbackCall.ts) as
+          Trace.Types.Events.Event;
       assert.exists(functionCallByrequestIdleCallback);
     });
+
     it('returns the initiator data', async function() {
       const initiatorData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, functionCallBySetTimeout, [], []);
       assert.deepEqual(initiatorData[0], {
@@ -67,8 +70,8 @@ describeWithEnvironment('Initiators', () => {
     it('can walk up the tree to find the first parent with an initiator', async function() {
       // Find any of the bar() calls; they have a parent event
       // (FunctionCall) that has an initiator.
-      const barCall = parsedTrace.Renderer.allTraceEntries.find(
-          e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'bar');
+      const barCall = allThreadEntriesInTrace(parsedTrace)
+                          .find(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'bar');
       assert.exists(barCall);
 
       // Find the initator data but starting at the fibonacci()
@@ -84,8 +87,8 @@ describeWithEnvironment('Initiators', () => {
     it('will walk back through the initiators to find the entire chain', async function() {
       // Find any of the baz() calls; they have a parent event
       // (FunctionCall) that has an initiator.
-      const bazCall = parsedTrace.Renderer.allTraceEntries.find(
-          e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'baz');
+      const bazCall = allThreadEntriesInTrace(parsedTrace)
+                          .find(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'baz');
       assert.exists(bazCall);
 
       // Find the initators data but starting at the baz()
@@ -112,10 +115,10 @@ describeWithEnvironment('Initiators', () => {
     });
 
     it('will walk forward to find the events initiated by the selected entry', async function() {
-      const initatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, rAFCall, [], []);
-      assert.lengthOf(initatorsData, 1);
-      assert.strictEqual(initatorsData[0].event, functionCallByRAF);
-      assert.strictEqual(initatorsData[0].initiator, rAFCall);
+      const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, rAFCall, [], []);
+      assert.lengthOf(initiatorsData, 1);
+      assert.strictEqual(initiatorsData[0].event, functionCallByRAF);
+      assert.strictEqual(initiatorsData[0].initiator, rAFCall);
     });
 
     it('will return the closest expandable ancestor as an initiator in a pair if the initiator itself is hidden',
@@ -126,8 +129,8 @@ describeWithEnvironment('Initiators', () => {
          const rAFParent = parsedTrace.Renderer.entryToNode.get(rAFCall)?.parent;
          assert.exists(rAFParent);
 
-         // Find the initatorData objects starting at the rAF
-         // call. We expect to find one initatorData here:
+         // Find the initiatorData objects starting at the rAF
+         // call. We expect to find one initiatorData here:
          // rAF callback initiated by rAF -> Parent of rAF because rAF is hidden
          const initiatorsData =
              Timeline.Initiators.initiatorsDataToDraw(parsedTrace, rAFCall, [rAFCall], [rAFParent?.entry]);

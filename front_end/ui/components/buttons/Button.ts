@@ -363,7 +363,7 @@ export class Button extends HTMLElement {
             </devtools-icon>`
             : ''}
           ${this.#props.longClickable ? html`
-              <devtools-icon name=${'triangle-bottom-right'} class="long-click">
+              <devtools-icon name="triangle-bottom-right" class="long-click">
               </devtools-icon>`
             : ''}
           ${this.#props.spinner ? html`<span class=${classMap(spinnerClasses)}></span>` : ''}

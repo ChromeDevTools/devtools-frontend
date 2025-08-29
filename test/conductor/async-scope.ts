@@ -4,7 +4,7 @@
 
 export class AsyncScope {
   static scopes = new Set<AsyncScope>();
-  static abortSignal: AbortSignal;
+  static abortSignal: AbortSignal|undefined;
   private asyncStack: Array<{description?: string, frames: string[]}> = [];
 
   get descriptions(): string[] {

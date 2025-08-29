@@ -16,40 +16,40 @@ import * as IssuesComponents from './components/components.js';
 
 const UIStrings = {
   /**
-   *@description Singular or plural label for number of affected CSP (content security policy,
+   * @description Singular or plural label for number of affected CSP (content security policy,
    * see https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) directives in issue view.
    */
   nDirectives: '{n, plural, =1 {# directive} other {# directives}}',
   /**
-   *@description Indicates that a CSP error should be treated as a warning
+   * @description Indicates that a CSP error should be treated as a warning
    */
   reportonly: 'report-only',
   /**
-   *@description The kind of resolution for a mixed content issue
+   * @description The kind of resolution for a mixed content issue
    */
   blocked: 'blocked',
   /**
-   *@description Tooltip for button linking to the Elements panel
+   * @description Tooltip for button linking to the Elements panel
    */
   clickToRevealTheViolatingDomNode: 'Click to reveal the violating DOM node in the Elements panel',
   /**
-   *@description Header for the section listing affected directives
+   * @description Header for the section listing affected directives
    */
   directiveC: 'Directive',
   /**
-   *@description Label for the column in the element list in the CSS overview report
+   * @description Label for the column in the element list in the CSS overview report
    */
   element: 'Element',
   /**
-   *@description Header for the source location column
+   * @description Header for the source location column
    */
   sourceLocation: 'Source location',
   /**
-   *@description Text for the status of something
+   * @description Text for the status of something
    */
   status: 'Status',
   /**
-   *@description Text that refers to the resources of the web page
+   * @description Text that refers to the resources of the web page
    */
   resourceC: 'Resource',
 } as const;

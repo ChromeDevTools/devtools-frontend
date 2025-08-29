@@ -15,7 +15,7 @@ import {
 
 const UIStrings = {
   /**
-   *@description Title for Client Hint specification url link
+   * @description Title for Client Hint specification url link
    */
   fedCm: 'Federated Credential Management API',
 } as const;

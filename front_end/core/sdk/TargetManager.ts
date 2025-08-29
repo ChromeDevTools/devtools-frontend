@@ -404,7 +404,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     for (const scopeChangeListener of this.#scopeChangeListeners) {
       scopeChangeListener();
     }
-    if (scopeTarget && scopeTarget.inspectedURL()) {
+    if (scopeTarget?.inspectedURL()) {
       this.onInspectedURLChange(scopeTarget);
     }
   }

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.2](https://github.com/inspect-js/is-data-view/compare/v1.0.1...v1.0.2) - 2024-12-11
+
+### Commits
+
+- [types] use shared config [`3a80072`](https://github.com/inspect-js/is-data-view/commit/3a800720dd322ea4656f29d28f1d28117fb94537)
+- [actions] split out node 10-20, and 20+ [`e2f37fd`](https://github.com/inspect-js/is-data-view/commit/e2f37fdf421c4629730406c2b61d5481dce4e448)
+- [Dev Deps] update `@ljharb/eslint-config`, `@ljharb/tsconfig`, `@types/node`, `@types/object-inspect`, `@types/tape`, `auto-changelog`, `es-value-fixtures`, `object-inspect`, `tape` [`6f8e9dd`](https://github.com/inspect-js/is-data-view/commit/6f8e9dda376e421d30dd94e891bea3fbae7967ee)
+- [Dev Deps] update `@types/node`, `available-typed-arrays`, `tape` [`37be591`](https://github.com/inspect-js/is-data-view/commit/37be59163c8df9abb016bbb4c7d76f3af549f1d2)
+- [Fix] add missing dependencies; use `call-bound` directly [`34de4b5`](https://github.com/inspect-js/is-data-view/commit/34de4b5f5448ca1bb95c34686c51b5351904a317)
+- [Tests] replace `aud` with `npm audit` [`aa7060a`](https://github.com/inspect-js/is-data-view/commit/aa7060ad77c9ba2d500b124b73662c3b069fc721)
+- [Dev Deps] add missing peer dep [`3d302d7`](https://github.com/inspect-js/is-data-view/commit/3d302d7dbf99d75fcf4a3de14687e423ec88728f)
+
 ## [v1.0.1](https://github.com/inspect-js/is-data-view/compare/v1.0.0...v1.0.1) - 2024-02-02
 
 ### Commits

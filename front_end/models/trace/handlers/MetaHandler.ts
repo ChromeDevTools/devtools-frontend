@@ -22,7 +22,7 @@ let browserProcessId: Types.Events.ProcessID = Types.Events.ProcessID(-1);
 let browserThreadId: Types.Events.ThreadID = Types.Events.ThreadID(-1);
 let gpuProcessId: Types.Events.ProcessID = Types.Events.ProcessID(-1);
 let gpuThreadId: Types.Events.ThreadID = Types.Events.ThreadID(-1);
-let viewportRect: DOMRect|null = null;
+let viewportRect: {x: number, y: number, width: number, height: number}|null = null;
 let devicePixelRatio: number|null = null;
 
 const processNames = new Map<Types.Events.ProcessID, Types.Events.ProcessName>();
@@ -181,7 +181,7 @@ export function handleEvent(event: Types.Events.Event): void {
     const viewportY = rectAsArray[1];
     const viewportWidth = rectAsArray[2];
     const viewportHeight = rectAsArray[5];
-    viewportRect = new DOMRect(viewportX, viewportY, viewportWidth, viewportHeight);
+    viewportRect = {x: viewportX, y: viewportY, width: viewportWidth, height: viewportHeight};
     devicePixelRatio = event.args.data.dpr;
   }
 
@@ -466,7 +466,7 @@ export interface MetaHandlerData {
   frameByProcessId: Map<Types.Events.ProcessID, Map<string, Types.Events.TraceFrame>>;
   mainFrameNavigations: Types.Events.NavigationStart[];
   gpuThreadId?: Types.Events.ThreadID;
-  viewportRect?: DOMRect;
+  viewportRect?: {x: number, y: number, width: number, height: number};
   devicePixelRatio?: number;
 }
 

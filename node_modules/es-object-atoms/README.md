@@ -15,6 +15,7 @@ ES Object-related atoms: Object, ToObject, RequireObjectCoercible.
 const assert = require('assert');
 
 const $Object = require('es-object-atoms');
+const isObject = require('es-object-atoms/isObject');
 const ToObject = require('es-object-atoms/ToObject');
 const RequireObjectCoercible = require('es-object-atoms/RequireObjectCoercible');
 
@@ -23,6 +24,12 @@ assert.throws(() => ToObject(null), TypeError);
 assert.throws(() => ToObject(undefined), TypeError);
 assert.throws(() => RequireObjectCoercible(null), TypeError);
 assert.throws(() => RequireObjectCoercible(undefined), TypeError);
+
+assert.equal(isObject(undefined), false);
+assert.equal(isObject(null), false);
+assert.equal(isObject({}), true);
+assert.equal(isObject([]), true);
+assert.equal(isObject(function () {}), true);
 
 assert.deepEqual(RequireObjectCoercible(true), true);
 assert.deepEqual(ToObject(true), Object(true));

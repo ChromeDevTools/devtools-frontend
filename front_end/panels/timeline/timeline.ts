@@ -10,11 +10,8 @@ import * as CLSLinkifier from './CLSLinkifier.js';
 import * as CompatibilityTracksAppender from './CompatibilityTracksAppender.js';
 import * as CountersGraph from './CountersGraph.js';
 import * as EntriesFilter from './EntriesFilter.js';
-import * as EventsSerializer from './EventsSerializer.js';
 import * as EventsTimelineTreeView from './EventsTimelineTreeView.js';
 import * as ExtensionTrackAppender from './ExtensionTrackAppender.js';
-import * as ExternalRequests from './ExternalRequests.js';
-import * as FreshRecording from './FreshRecording.js';
 import * as GPUTrackAppender from './GPUTrackAppender.js';
 import * as Initiators from './Initiators.js';
 import * as InteractionsTrackAppender from './InteractionsTrackAppender.js';
@@ -43,6 +40,7 @@ import * as TimelineSelection from './TimelineSelection.js';
 import * as TimelineTreeView from './TimelineTreeView.js';
 import * as TimelineUIUtils from './TimelineUIUtils.js';
 import * as TimingsTrackAppender from './TimingsTrackAppender.js';
+import * as TrackConfigBanner from './TrackConfigBanner.js';
 import * as TrackConfiguration from './TrackConfiguration.js';
 import * as UIDevtoolsController from './UIDevtoolsController.js';
 import * as UIDevtoolsUtils from './UIDevtoolsUtils.js';
@@ -57,11 +55,8 @@ export {
   CompatibilityTracksAppender,
   CountersGraph,
   EntriesFilter,
-  EventsSerializer,
   EventsTimelineTreeView,
   ExtensionTrackAppender,
-  ExternalRequests,
-  FreshRecording,
   GPUTrackAppender,
   Initiators,
   InteractionsTrackAppender,
@@ -90,6 +85,7 @@ export {
   TimelineTreeView,
   TimelineUIUtils,
   TimingsTrackAppender,
+  TrackConfigBanner,
   TrackConfiguration,
   UIDevtoolsController,
   UIDevtoolsUtils,

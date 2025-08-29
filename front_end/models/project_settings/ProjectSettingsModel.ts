@@ -88,7 +88,7 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<Eve
    * page is `localhost`. It doesn't however indicate whether or not the page is
    * actually providing a `com.chrome.devtools.json` or not.
    *
-   * @return `'available'` if the feature is enabled and the inspected page is
+   * @returns `'available'` if the feature is enabled and the inspected page is
    *         `localhost`, otherwise `'unavailable'`.
    */
   get availability(): ProjectSettingsAvailability {
@@ -98,7 +98,7 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<Eve
   /**
    * Yields the current project settings.
    *
-   * @return the current project settings.
+   * @returns the current project settings.
    */
   get projectSettings(): ProjectSettings {
     return this.#projectSettings;

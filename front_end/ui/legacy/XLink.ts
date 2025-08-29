@@ -137,7 +137,7 @@ export class ContextMenuProvider implements Provider<Node> {
     while (targetNode && !(targetNode instanceof XLink)) {
       targetNode = targetNode.parentNodeOrShadowHost();
     }
-    if (!targetNode || !targetNode.href) {
+    if (!targetNode?.href) {
       return;
     }
     const node: XLink = targetNode;

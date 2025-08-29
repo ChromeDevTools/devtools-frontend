@@ -4,10 +4,9 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $String = GetIntrinsic('%String%');
 var $RangeError = require('es-errors/range');
+var isInteger = require('math-intrinsics/isInteger');
 
 var StringPad = require('./StringPad');
-
-var isInteger = require('../helpers/isInteger');
 
 // https://262.ecma-international.org/13.0/#sec-tozeropaddeddecimalstring
 

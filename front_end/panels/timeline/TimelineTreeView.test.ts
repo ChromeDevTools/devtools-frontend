@@ -5,7 +5,7 @@
 import * as Trace from '../../models/trace/trace.js';
 import {assertScreenshot} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {renderWidgetInVbox} from '../../testing/TraceHelpers.js';
+import {allThreadEntriesInTrace, renderWidgetInVbox} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
@@ -222,7 +222,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Domain);
-      callTreeView.setModelWithEvents(parsedTrace.Renderer.allTraceEntries, parsedTrace);
+      callTreeView.setModelWithEvents(allThreadEntriesInTrace(parsedTrace), parsedTrace);
 
       const tree = callTreeView.buildTree();
       const topLevelGroupNodes = Array.from(tree.children().entries());
@@ -248,7 +248,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.ThirdParties);
-      callTreeView.setModelWithEvents(parsedTrace.Renderer.allTraceEntries, parsedTrace, mapper);
+      callTreeView.setModelWithEvents(allThreadEntriesInTrace(parsedTrace), parsedTrace, mapper);
 
       const tree = callTreeView.buildTree();
       const topLevelGroupNodes = Array.from(tree.children().entries());
@@ -274,7 +274,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Frame);
-      callTreeView.setModelWithEvents(parsedTrace.Renderer.allTraceEntries, parsedTrace);
+      callTreeView.setModelWithEvents(allThreadEntriesInTrace(parsedTrace), parsedTrace);
 
       const tree = callTreeView.buildTree();
       const topLevelGroupNodes = Array.from(tree.children().entries());
@@ -294,7 +294,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.URL);
-      callTreeView.setModelWithEvents(parsedTrace.Renderer.allTraceEntries, parsedTrace);
+      callTreeView.setModelWithEvents(allThreadEntriesInTrace(parsedTrace), parsedTrace);
 
       const tree = callTreeView.buildTree();
       const topLevelGroupNodes = Array.from(tree.children().entries());

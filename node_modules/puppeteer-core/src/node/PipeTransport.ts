@@ -47,7 +47,7 @@ export class PipeTransport implements ConnectionTransport {
       // NodeJS event emitters don't support `*` so we need to typecast
       // As long as we don't use it we should be OK.
       new EventEmitter(
-        pipeRead as unknown as EventEmitter<Record<string, any>>,
+        pipeWrite as unknown as EventEmitter<Record<string, any>>,
       ),
     );
     pipeWriteEmitter.on('error', debugError);
@@ -69,16 +69,21 @@ export class PipeTransport implements ConnectionTransport {
       return;
     }
     const message = this.#pendingMessage + buffer.toString(undefined, 0, end);
-    if (this.onmessage) {
-      this.onmessage.call(null, message);
-    }
+    setImmediate(() => {
+      if (this.onmessage) {
+        this.onmessage.call(null, message);
+      }
+    });
 
     let start = end + 1;
     end = buffer.indexOf('\0', start);
     while (end !== -1) {
-      if (this.onmessage) {
-        this.onmessage.call(null, buffer.toString(undefined, start, end));
-      }
+      const message = buffer.toString(undefined, start, end);
+      setImmediate(() => {
+        if (this.onmessage) {
+          this.onmessage.call(null, message);
+        }
+      });
       start = end + 1;
       end = buffer.indexOf('\0', start);
     }

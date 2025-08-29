@@ -43,11 +43,12 @@ export async function loadCodeLocationResolvingScenario(): Promise<{
   const targetManager = SDK.TargetManager.TargetManager.instance();
   const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
   const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
-      {forceNew: true, resourceMapping, targetManager});
-  Bindings.IgnoreListManager.IgnoreListManager.instance({
+  const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
     forceNew: true,
-    debuggerWorkspaceBinding,
+    resourceMapping,
+    targetManager,
+    ignoreListManager,
   });
 
   const backend = new MockProtocolBackend();

@@ -33,6 +33,7 @@ devtools_module("common") {
     "QueryParamHandler.ts",
     "ResolverBase.ts",
     "ResourceType.ts",
+    "ReturnToPanel.ts",
     "Revealer.ts",
     "Runnable.ts",
     "SegmentedRange.ts",

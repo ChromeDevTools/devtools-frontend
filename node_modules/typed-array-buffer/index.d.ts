@@ -1,16 +1,9 @@
-type TypedArray =
-	| Int8Array
-	| Uint8Array
-	| Uint8ClampedArray
-	| Int16Array
-	| Uint16Array
-	| Int32Array
-	| Uint32Array
-	| Float32Array
-	| Float64Array
-	| BigInt64Array
-	| BigUint64Array;
+import type { TypedArray } from 'is-typed-array';
 
-declare function typedArrayBuffer(x: TypedArray): ArrayBuffer;
+declare namespace typedArrayBuffer{
+	export type { TypedArray };
+}
+
+declare function typedArrayBuffer(x: typedArrayBuffer.TypedArray): ArrayBuffer;
 
 export = typedArrayBuffer;

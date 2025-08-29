@@ -371,7 +371,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     UI.InplaceEditor.InplaceEditor.startEditing(targetElement, config);
 
     const selection = targetElement.getComponentSelection();
-    selection && selection.selectAllChildren(targetElement);
+    selection?.selectAllChildren(targetElement);
   }
 
   private handleKeyDown(

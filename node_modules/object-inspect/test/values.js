@@ -5,6 +5,8 @@ var test = require('tape');
 var mockProperty = require('mock-property');
 var hasSymbols = require('has-symbols/shams')();
 var hasToStringTag = require('has-tostringtag/shams')();
+var forEach = require('for-each');
+var semver = require('semver');
 
 test('values', function (t) {
     t.plan(1);
@@ -206,6 +208,54 @@ test('RegExps', function (t) {
     var match = 'abc abc'.match(/[ab]+/);
     delete match.groups; // for node < 10
     t.equal(inspect(match), '[ \'ab\', index: 0, input: \'abc abc\' ]', 'RegExp match object shows properly');
+
+    t.end();
+});
+
+test('Proxies', { skip: typeof Proxy !== 'function' || !hasToStringTag }, function (t) {
+    var target = { proxy: true };
+    var fake = new Proxy(target, { has: function () { return false; } });
+
+    // needed to work around a weird difference in node v6.0 - v6.4 where non-present properties are not logged
+    var isNode60 = semver.satisfies(process.version, '6.0 - 6.4');
+
+    forEach([
+        'Boolean',
+        'Number',
+        'String',
+        'Symbol',
+        'Date'
+    ], function (tag) {
+        target[Symbol.toStringTag] = tag;
+
+        t.equal(
+            inspect(fake),
+            '{ ' + (isNode60 ? '' : 'proxy: true, ') + '[Symbol(Symbol.toStringTag)]: \'' + tag + '\' }',
+            'Proxy for + ' + tag + ' shows as the target, which has no slots'
+        );
+    });
+
+    t.end();
+});
+
+test('fakers', { skip: !hasToStringTag }, function (t) {
+    var target = { proxy: false };
+
+    forEach([
+        'Boolean',
+        'Number',
+        'String',
+        'Symbol',
+        'Date'
+    ], function (tag) {
+        target[Symbol.toStringTag] = tag;
+
+        t.equal(
+            inspect(target),
+            '{ proxy: false, [Symbol(Symbol.toStringTag)]: \'' + tag + '\' }',
+            'Object pretending to be ' + tag + ' does not trick us'
+        );
+    });
 
     t.end();
 });

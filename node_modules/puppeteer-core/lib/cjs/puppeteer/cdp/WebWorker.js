@@ -17,7 +17,7 @@ class CdpWebWorker extends WebWorker_js_1.WebWorker {
     #client;
     #id;
     #targetType;
-    constructor(client, url, targetId, targetType, consoleAPICalled, exceptionThrown) {
+    constructor(client, url, targetId, targetType, consoleAPICalled, exceptionThrown, networkManager) {
         super(url);
         this.#id = targetId;
         this.#client = client;
@@ -41,6 +41,7 @@ class CdpWebWorker extends WebWorker_js_1.WebWorker {
             this.#world.dispose();
         });
         // This might fail if the target is closed before we receive all execution contexts.
+        networkManager?.addClient(this.#client).catch(util_js_1.debugError);
         this.#client.send('Runtime.enable').catch(util_js_1.debugError);
     }
     mainRealm() {

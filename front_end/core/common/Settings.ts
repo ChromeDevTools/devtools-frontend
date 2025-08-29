@@ -179,9 +179,9 @@ export class Settings {
 
   /**
    * Get setting via key, and create a new setting if the requested setting does not exist.
-   * @param {string} key kebab-case string ID
-   * @param {T} defaultValue
-   * @param {SettingStorageType=} storageType If not specified, SettingStorageType.GLOBAL is used.
+   * @param key kebab-case string ID
+   * @param defaultValue
+   * @param storageType If not specified, SettingStorageType.GLOBAL is used.
    */
   createSetting<T>(key: string, defaultValue: T, storageType?: SettingStorageType): Setting<T> {
     const storage = this.storageFromType(storageType);
@@ -1496,13 +1496,17 @@ export class VersionController {
 export const enum SettingStorageType {
   /** Persists with the active Chrome profile but also syncs the settings across devices via Chrome Sync. */
   SYNCED = 'Synced',
-  /** Persists with the active Chrome profile, but not synchronized to other devices.
-   * The default SettingStorageType of createSetting(). */
+  /**
+   * Persists with the active Chrome profile, but not synchronized to other devices.
+   * The default SettingStorageType of createSetting().
+   */
   GLOBAL = 'Global',
   /** Uses Window.localStorage. Not recommended, legacy. */
   LOCAL = 'Local',
-  /** Session storage dies when DevTools window closes. Useful for atypical conditions that should be reverted when the
-   * user is done with their task. (eg Emulation modes, Debug overlays). These are also not carried into/out of incognito */
+  /**
+   * Session storage dies when DevTools window closes. Useful for atypical conditions that should be reverted when the
+   * user is done with their task. (eg Emulation modes, Debug overlays). These are also not carried into/out of incognito
+   */
   SESSION = 'Session',
 }
 

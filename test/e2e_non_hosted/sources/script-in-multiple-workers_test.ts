@@ -21,7 +21,6 @@ import {
   waitForLines,
   waitForSourceFiles,
 } from '../../e2e/helpers/sources-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
@@ -173,7 +172,7 @@ describe('Multi-Workers', function() {
 
         const bpEntry = await devToolsPage.waitFor(BREAKPOINT_ITEM_SELECTOR);
         const bpCheckbox = await bpEntry?.$('input');
-        assertNotNullOrUndefined(bpCheckbox);
+        assert.isOk(bpCheckbox);
         await bpCheckbox.click();
         await devToolsPage.waitFor('.cm-breakpoint-disabled');
 

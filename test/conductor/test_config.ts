@@ -109,7 +109,7 @@ export const TestConfig: Config = {
   chromeBinary: options['chrome-binary'] ?? defaultChromePath(),
   serverType: ServerType.HOSTED_MODE,
   debug: options['debug'],
-  headless: options['headless'],
+  headless: options['headless'] === undefined ? !options['debug'] : options['headless'],
   coverage: options['coverage'],
   repetitions: options['repeat'],
   onDiff: {

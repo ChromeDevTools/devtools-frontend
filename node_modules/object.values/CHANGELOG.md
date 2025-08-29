@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.2.1](https://github.com/ljharb/Object.values/compare/v1.2.0...v1.2.1) - 2024-12-18
+
+### Commits
+
+- [actions] split out node 10-20, and 20+ [`c13655c`](https://github.com/ljharb/Object.values/commit/c13655cf506b26151debf588ea8df116a8824697)
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `array.prototype.map`, `auto-changelog`, `tape` [`53dd34a`](https://github.com/ljharb/Object.values/commit/53dd34aa1df92d0eff7cb0c99d9137fd3525d342)
+- [Refactor] avoid needing call-bound push [`427c25f`](https://github.com/ljharb/Object.values/commit/427c25f3a4f9e11501e20f335ea0ae3a0649ab93)
+- [Refactor] use `call-bound` directly [`c8a03c7`](https://github.com/ljharb/Object.values/commit/c8a03c75c82338543c5b67c30486b7ce64044bf6)
+- [Tests] replace `aud` with `npm audit` [`44d93b1`](https://github.com/ljharb/Object.values/commit/44d93b16319764d7ec695e316b8151b5334f3bf5)
+- [Deps] update `call-bind` [`719d75c`](https://github.com/ljharb/Object.values/commit/719d75c73e664c4ec80c82da8a1be0089e76ea70)
+- [Dev Deps] add missing peer dep [`0a19681`](https://github.com/ljharb/Object.values/commit/0a19681a6185008d41f5734e8b9df18f8ece8860)
+
 ## [v1.2.0](https://github.com/ljharb/Object.values/compare/v1.1.7...v1.2.0) - 2024-03-18
 
 ### Commits

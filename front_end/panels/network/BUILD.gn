@@ -115,7 +115,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/*",
     "../../models/ai_assistance/*",
-    "../../panels/ai_assistance/*",
+    "../../panels/ai_assistance:unittests",
     "../../ui/components/request_link_icon/*",
     "../application/*",
   ]

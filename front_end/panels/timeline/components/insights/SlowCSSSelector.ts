@@ -32,7 +32,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
       return undefined;
     }
     const styleSheetHeader = cssModel.styleSheetHeaderForId(selector.style_sheet_id as Protocol.CSS.StyleSheetId);
-    if (!styleSheetHeader || !styleSheetHeader.resourceURL()) {
+    if (!styleSheetHeader?.resourceURL()) {
       return undefined;
     }
 

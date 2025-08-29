@@ -66,7 +66,7 @@ export class OriginMap extends UI.Widget.WidgetElement<UI.Widget.Widget> impleme
   }
 
   override createWidget(): UI.Widget.Widget {
-    const containerWidget = new UI.Widget.Widget(false, false, this);
+    const containerWidget = new UI.Widget.Widget(this);
 
     this.#list.registerRequiredCSS(originMapStyles);
     this.#list.show(containerWidget.contentElement);

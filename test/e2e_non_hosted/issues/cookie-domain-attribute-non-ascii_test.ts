@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -10,7 +12,6 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
 } from '../../e2e/helpers/issues-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Cookie domain attribute should not contain non-ASCII characters issue', () => {
   it('should display an issue when a cookie has a domain attribute with non-ASCII characters',
@@ -34,7 +35,7 @@ describe('Cookie domain attribute should not contain non-ASCII characters issue'
        await expandIssue(devToolsPage);
        const issueElement =
            await getIssueByTitle('Ensure cookie `Domain` attribute values only contain ASCII characters', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
        const section =
            await getResourcesElement('1 Raw Set-Cookie header', issueElement, '.affected-resource-label', devToolsPage);
        await ensureResourceSectionIsExpanded(section, devToolsPage);

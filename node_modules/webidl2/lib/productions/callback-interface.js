@@ -24,7 +24,7 @@ export class CallbackInterface extends Container {
           [Constant.parse],
           [Operation.parse, { regular: true }],
         ],
-      }
+      },
     );
   }
 

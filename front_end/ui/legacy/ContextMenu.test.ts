@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import {dispatchMouseUpEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
@@ -93,6 +93,29 @@ describeWithEnvironment('ContextMenu', () => {
     sinon.assert.called(showContextMenuAtPoint);
   });
 
+  it('records new badge usage', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showContextMenuAtPoint');
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const submenu1 = contextMenu.defaultSection().appendSubMenuItem('submenu', false, undefined, 'feature1');
+    submenu1.defaultSection().appendItem('item', () => {}, {featureName: 'feature2'});
+    submenu1.defaultSection().appendItem('item', () => {});
+
+    const submenu2 = contextMenu.defaultSection().appendSubMenuItem('submenu2', false, undefined, 'feature3');
+    submenu2.defaultSection().appendItem('item', () => {}, {featureName: 'feature4'});
+    const item = submenu2.defaultSection().appendItem('item', () => {}, {featureName: 'feature5'});
+
+    await contextMenu.show();
+    const newBadgeUsageStub =
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordNewBadgeUsage');
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
+        Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, item.id());
+    assert.deepEqual(newBadgeUsageStub.args, [['feature5'], ['feature3']]);
+  });
+
   it('logs impressions and clicks for hosted menu', async () => {
     const throttler = new Common.Throttler.Throttler(1000000000);
     await VisualLogging.startLogging({processingThrottler: throttler});
@@ -134,6 +157,42 @@ describeWithEnvironment('ContextMenu', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
     sinon.assert.calledOnce(recordClick);
     await VisualLogging.stopLogging();
+  });
+
+  it('can register an action menu item with a new badge', async () => {
+    const actionId = 'test-action';
+    registerNoopActions([actionId]);
+
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+
+    const showContextMenuAtPoint =
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showContextMenuAtPoint');
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    contextMenu.defaultSection().appendAction(actionId, 'mockLabel', false, undefined, 'mockFeature');
+    await contextMenu.show();
+    sinon.assert.calledOnce(showContextMenuAtPoint);
+
+    assert.strictEqual(showContextMenuAtPoint.args[0][2][0].featureName, 'mockFeature');
+  });
+
+  it('can register a submenu item with a new badge', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+
+    const showContextMenuAtPoint =
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showContextMenuAtPoint');
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const subMenu = contextMenu.defaultSection().appendSubMenuItem('mockLabel', false, undefined, 'mockFeature');
+    subMenu.defaultSection().appendItem('subMenuLabel', () => {});
+    await contextMenu.show();
+    sinon.assert.calledOnce(showContextMenuAtPoint);
+    assert.strictEqual(showContextMenuAtPoint.args[0][2][0].featureName, 'mockFeature');
+    assert.strictEqual(showContextMenuAtPoint.args[0][2][0].type, 'subMenu');
   });
 });
 

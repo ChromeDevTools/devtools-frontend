@@ -20,10 +20,12 @@ describeWithEnvironment('DebuggerPausedMessage', () => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
       targetManager,
+      ignoreListManager,
     });
     breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,

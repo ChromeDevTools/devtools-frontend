@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.0](https://github.com/ljharb/unbox-primitive/compare/v1.0.2...v1.1.0) - 2024-12-15
+
+### Commits
+
+- [meta] use `npmignore` to autogenerate an npmignore file [`348a5ad`](https://github.com/ljharb/unbox-primitive/commit/348a5ad5d353e7fcd6353934073ca3a982f40a4e)
+- [New] add types [`a324230`](https://github.com/ljharb/unbox-primitive/commit/a32423092f81bfbf3c4dff77a5fa549ffae87daa)
+- [Tests] use `es-value-fixtures` [`a321ae5`](https://github.com/ljharb/unbox-primitive/commit/a321ae56aaf30ea843c708bf6c6c13ee52eee205)
+- [actions] split out node 10-20, and 20+ [`04a0e0d`](https://github.com/ljharb/unbox-primitive/commit/04a0e0d09907c2643e25ad69b49864c1c34e59d0)
+- [Dev Deps] update `@ljharb/eslint-config`, `auto-changelog`, `npmignore`, `object-inspect`, `object-is`, `tape` [`7fff971`](https://github.com/ljharb/unbox-primitive/commit/7fff97161bf83ebe348290ef27992af630ca92e9)
+- [actions] update rebase action [`91d6807`](https://github.com/ljharb/unbox-primitive/commit/91d6807c562a39ce876feda777b641eb0ee64ce9)
+- [Deps] update `call-bind`, `has-symbols`, `which-boxed-primitive` [`f8b6597`](https://github.com/ljharb/unbox-primitive/commit/f8b6597e071d05f0792f6eef0e2fbc30ddfe43d4)
+- [Dev Deps] update `aud`, `object-inspect`, `tape` [`b3362a1`](https://github.com/ljharb/unbox-primitive/commit/b3362a164fdbee9006be765d99d5d835d6493326)
+- [Refactor] use `call-bound` directly [`e29ff5f`](https://github.com/ljharb/unbox-primitive/commit/e29ff5f4cbcc58d32e670bce11d5c3137eae0c44)
+- [meta] add missing `engines.node` [`d3420bc`](https://github.com/ljharb/unbox-primitive/commit/d3420bc8cda471cf62119e08d9581b72962f74f6)
+- [Tests] replace `aud` with `npm audit` [`5e6a6d0`](https://github.com/ljharb/unbox-primitive/commit/5e6a6d0459b6fa8a812d00362fe60854333f1b64)
+- [Deps] update `which-boxed-primitive` [`0ff873d`](https://github.com/ljharb/unbox-primitive/commit/0ff873dadf31962c2f00e24d8d7d30cfa8c60ac6)
+- [Dev Deps] update `aud` [`dd0e373`](https://github.com/ljharb/unbox-primitive/commit/dd0e3733bb9db65d254492d6c1d1b710005b932f)
+- [Dev Deps] add missing peer dep [`4f79b24`](https://github.com/ljharb/unbox-primitive/commit/4f79b240212d847276dba9a0044f356506eaeaa6)
+
 ## [v1.0.2](https://github.com/ljharb/unbox-primitive/compare/v1.0.1...v1.0.2) - 2022-04-24
 
 ### Commits

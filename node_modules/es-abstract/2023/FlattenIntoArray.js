@@ -2,7 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 
-var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
+var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 
 var Call = require('./Call');
 var CreateDataPropertyOrThrow = require('./CreateDataPropertyOrThrow');

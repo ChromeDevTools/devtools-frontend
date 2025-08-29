@@ -3,12 +3,13 @@
 # found in the LICENSE file.
 
 import("//build/config/devtools.gni")
+import("//build/toolchain/kythe.gni")
 
 declare_args() {
   # Whether we bundle module entrypoints into a single file or not.
   # The arg is declared here and not in "devtools_entrypoint.gni" because various
   # templates need to read it, as it affects the "grd_files" metadata field.
-  devtools_bundle = true
+  devtools_bundle = !enable_kythe_annotations
 }
 
 # Introduce a new variable to make sure that string

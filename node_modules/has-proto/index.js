@@ -5,11 +5,11 @@ var test = {
 	foo: {}
 };
 
-var $Object = Object;
+// @ts-expect-error: TS errors on an inherited property for some reason
+var result = { __proto__: test }.foo === test.foo
+	&& !(test instanceof Object);
 
 /** @type {import('.')} */
 module.exports = function hasProto() {
-	// @ts-expect-error: TS errors on an inherited property for some reason
-	return { __proto__: test }.foo === test.foo
-		&& !(test instanceof $Object);
+	return result;
 };

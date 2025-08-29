@@ -27,6 +27,10 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
     };
   }
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   createAggregatedTableRow(remaining: Trace.Insights.Models.ImageDelivery.OptimizableImage[]): TableDataRow {
     return {
       values: [renderOthersLabel(remaining.length)],

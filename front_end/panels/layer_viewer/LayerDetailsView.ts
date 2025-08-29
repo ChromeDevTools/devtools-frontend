@@ -49,20 +49,20 @@ import {
 
 const UIStrings = {
   /**
-   *@description Text in Layer Details View of the Layers panel
+   * @description Text in Layer Details View of the Layers panel
    */
   selectALayerToSeeItsDetails: 'Select a layer to see its details',
   /**
-   *@description Text in Layer Details View of the Layers panel if no layer is selected for viewing its content
+   * @description Text in Layer Details View of the Layers panel if no layer is selected for viewing its content
    */
   noLayerSelected: 'No layer selected',
   /**
-   *@description Element text content in Layer Details View of the Layers panel
-   *@example {Touch event handler} PH1
-   *@example {10} PH2
-   *@example {10} PH3
-   *@example {10} PH4
-   *@example {10} PH5
+   * @description Element text content in Layer Details View of the Layers panel
+   * @example {Touch event handler} PH1
+   * @example {10} PH2
+   * @example {10} PH3
+   * @example {10} PH4
+   * @example {10} PH5
    */
   scrollRectangleDimensions: '{PH1} {PH2} × {PH3} (at {PH4}, {PH5})',
   /**
@@ -71,27 +71,27 @@ const UIStrings = {
    */
   unnamed: '<unnamed>',
   /**
-   *@description Text in Layer Details View of the Layers panel
-   *@example {Nearest Layer Shifting Sticky Box} PH1
-   *@example {&lt;unnamed&gt;} PH2
-   *@example {5} PH3
+   * @description Text in Layer Details View of the Layers panel
+   * @example {Nearest Layer Shifting Sticky Box} PH1
+   * @example {&lt;unnamed&gt;} PH2
+   * @example {5} PH3
    */
-  stickyAncenstorLayersS: '{PH1}: {PH2} ({PH3})',
+  stickyAncestorLayersS: '{PH1}: {PH2} ({PH3})',
   /**
-   *@description Sticky box rect element text content in Layer Details View of the Layers panel
-   *@example {10} PH1
-   *@example {10} PH2
-   *@example {10} PH3
-   *@example {10} PH4
+   * @description Sticky box rect element text content in Layer Details View of the Layers panel
+   * @example {10} PH1
+   * @example {10} PH2
+   * @example {10} PH3
+   * @example {10} PH4
    */
   stickyBoxRectangleDimensions: 'Sticky Box {PH1} × {PH2} (at {PH3}, {PH4})',
   /**
    * @description Containing block rect element text content in Layer Details View of the Layers panel.
    * The placeholder are width, height, x position, and y position respectively.
-   *@example {10} PH1
-   *@example {10} PH2
-   *@example {10} PH3
-   *@example {10} PH4
+   * @example {10} PH1
+   * @example {10} PH2
+   * @example {10} PH3
+   * @example {10} PH4
    */
   containingBlocRectangleDimensions: 'Containing Block {PH1} × {PH2} (at {PH3}, {PH4})',
   /**
@@ -105,51 +105,51 @@ const UIStrings = {
    */
   nearestLayerShiftingContaining: 'Nearest Layer Shifting Containing Block',
   /**
-   *@description Size cell text content in Layer Details View of the Layers panel
-   *@example {10} PH1
-   *@example {10} PH2
-   *@example {10} PH3
-   *@example {10} PH4
+   * @description Size cell text content in Layer Details View of the Layers panel
+   * @example {10} PH1
+   * @example {10} PH2
+   * @example {10} PH3
+   * @example {10} PH4
    */
   updateRectangleDimensions: '{PH1} × {PH2} (at {PH3}, {PH4})',
   /**
-   *@description Text for the size of something
+   * @description Text for the size of something
    */
   size: 'Size',
   /**
-   *@description Text in Layer Details View of the Layers panel
+   * @description Text in Layer Details View of the Layers panel
    */
   compositingReasons: 'Compositing Reasons',
   /**
-   *@description Text in Layer Details View of the Layers panel
+   * @description Text in Layer Details View of the Layers panel
    */
   memoryEstimate: 'Memory estimate',
   /**
-   *@description Text in Layer Details View of the Layers panel
+   * @description Text in Layer Details View of the Layers panel
    */
   paintCount: 'Paint count',
   /**
-   *@description Text in Layer Details View of the Layers panel
+   * @description Text in Layer Details View of the Layers panel
    */
   slowScrollRegions: 'Slow scroll regions',
   /**
-   *@description Text in Layer Details View of the Layers panel
+   * @description Text in Layer Details View of the Layers panel
    */
   stickyPositionConstraint: 'Sticky position constraint',
   /**
-   *@description Title of the paint profiler, old name of the performance pane
+   * @description Title of the paint profiler, old name of the performance pane
    */
   paintProfiler: 'Paint Profiler',
   /**
-   *@description Text in Layer Details View of the Layers panel
+   * @description Text in Layer Details View of the Layers panel
    */
   nonFastScrollable: 'Non fast scrollable',
   /**
-   *@description Text in Layer Details View of the Layers panel
+   * @description Text in Layer Details View of the Layers panel
    */
   touchEventHandler: 'Touch event handler',
   /**
-   *@description Text in Layer Details View of the Layers panel
+   * @description Text in Layer Details View of the Layers panel
    */
   wheelEventHandler: 'Wheel event handler',
   /**
@@ -159,7 +159,7 @@ const UIStrings = {
    */
   repaintsOnScroll: 'Repaints on scroll',
   /**
-   *@description Text in Layer Details View of the Layers panel
+   * @description Text in Layer Details View of the Layers panel
    */
   mainThreadScrollingReason: 'Main thread scrolling reason',
 } as const;
@@ -183,9 +183,11 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
   private selection: Selection|null;
 
   constructor(layerViewHost: LayerViewHost) {
-    super(true);
+    super({
+      jslog: `${VisualLogging.pane('layers-details')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(layerDetailsViewStyles);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('layers-details')}`);
     this.contentElement.classList.add('layer-details-container');
 
     this.layerViewHost = layerViewHost;
@@ -263,7 +265,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
 
     const node = layer.nodeForSelfOrAncestor();
     const name = node ? node.simpleSelector() : i18nString(UIStrings.unnamed);
-    return i18nString(UIStrings.stickyAncenstorLayersS, {PH1: title, PH2: name, PH3: layer.id()});
+    return i18nString(UIStrings.stickyAncestorLayersS, {PH1: title, PH2: name, PH3: layer.id()});
   }
 
   private createStickyAncestorChild(title: string, layer: SDK.LayerTreeBase.Layer|null): void {

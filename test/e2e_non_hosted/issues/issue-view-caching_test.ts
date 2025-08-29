@@ -12,7 +12,6 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
 } from '../../e2e/helpers/issues-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('IssueView cache', () => {
   it('should correctly update the issue', async ({devToolsPage, inspectedPage}) => {
@@ -44,7 +43,7 @@ describe('IssueView cache', () => {
         await expandIssue(devToolsPage);
         const issueElement =
             await getIssueByTitle('Ensure CORS requests include credentials only when allowed', devToolsPage);
-        assertNotNullOrUndefined(issueElement);
+        assert.isOk(issueElement);
         const section =
             await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
         const text = await section.label.evaluate(el => el.textContent);
@@ -53,7 +52,7 @@ describe('IssueView cache', () => {
       });
       const issueElement =
           await getIssueByTitle('Ensure CORS requests include credentials only when allowed', devToolsPage);
-      assertNotNullOrUndefined(issueElement);
+      assert.isOk(issueElement);
       const section =
           await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
       await ensureResourceSectionIsExpanded(section, devToolsPage);

@@ -12,7 +12,7 @@ import {Plugin} from './Plugin.js';
 
 const UIStrings = {
   /**
-   *@description Infobar text announcing that the file contents have been changed by AI
+   * @description Infobar text announcing that the file contents have been changed by AI
    */
   aiContentWarning: 'This file contains AI-generated content',
 } as const;
@@ -66,13 +66,13 @@ export class AiWarningInfobarPlugin extends Plugin {
 
   attachInfobar(bar: UI.Infobar.Infobar): void {
     if (this.#editor) {
-      this.#editor.dispatch({effects: SourceFrame.SourceFrame.addInfobar.of(bar)});
+      this.#editor.dispatch({effects: SourceFrame.SourceFrame.addSourceFrameInfobar.of({element: bar.element})});
     }
   }
 
   removeInfobar(bar: UI.Infobar.Infobar|null): void {
     if (this.#editor && bar) {
-      this.#editor.dispatch({effects: SourceFrame.SourceFrame.removeInfobar.of(bar)});
+      this.#editor.dispatch({effects: SourceFrame.SourceFrame.removeSourceFrameInfobar.of({element: bar.element})});
     }
   }
 }

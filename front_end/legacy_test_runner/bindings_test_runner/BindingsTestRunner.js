@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 
 import * as Platform from '../../core/platform/platform.js';

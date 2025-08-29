@@ -51,51 +51,51 @@ import {Capability, type Target, Type} from './Target.js';
 
 const UIStrings = {
   /**
-   *@description Title of a section in the debugger showing local JavaScript variables.
+   * @description Title of a section in the debugger showing local JavaScript variables.
    */
   local: 'Local',
   /**
-   *@description Text that refers to closure as a programming term
+   * @description Text that refers to closure as a programming term
    */
   closure: 'Closure',
   /**
-   *@description Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.
+   * @description Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.
    */
   block: 'Block',
   /**
-   *@description Label for a group of JavaScript files
+   * @description Label for a group of JavaScript files
    */
   script: 'Script',
   /**
-   *@description Title of a section in the debugger showing JavaScript variables from the a 'with'
+   * @description Title of a section in the debugger showing JavaScript variables from the a 'with'
    *block. Block here means section of code, 'with' refers to a JavaScript programming concept and
    *is a fixed term.
    */
   withBlock: '`With` block',
   /**
-   *@description Title of a section in the debugger showing JavaScript variables from the a 'catch'
+   * @description Title of a section in the debugger showing JavaScript variables from the a 'catch'
    *block. Block here means section of code, 'catch' refers to a JavaScript programming concept and
    *is a fixed term.
    */
   catchBlock: '`Catch` block',
   /**
-   *@description Title of a section in the debugger showing JavaScript variables from the global scope.
+   * @description Title of a section in the debugger showing JavaScript variables from the global scope.
    */
   global: 'Global',
   /**
-   *@description Text for a JavaScript module, the programming concept
+   * @description Text for a JavaScript module, the programming concept
    */
   module: 'Module',
   /**
-   *@description Text describing the expression scope in WebAssembly
+   * @description Text describing the expression scope in WebAssembly
    */
   expression: 'Expression',
   /**
-   *@description Text in Scope Chain Sidebar Pane of the Sources panel
+   * @description Text in Scope Chain Sidebar Pane of the Sources panel
    */
   exception: 'Exception',
   /**
-   *@description Text in Scope Chain Sidebar Pane of the Sources panel
+   * @description Text in Scope Chain Sidebar Pane of the Sources panel
    */
   returnValue: 'Return value',
 } as const;
@@ -971,6 +971,50 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   getEvaluateOnCallFrameCallback():
       ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null {
     return this.evaluateOnCallFrameCallback;
+  }
+
+  /**
+   * Iterates the async stack trace parents.
+   *
+   * Retrieving cross-target async stack fragments requires CDP interaction, so this is an async generator.
+   *
+   * Important: This iterator will not yield the "synchronous" part of the stack trace, only the async parent chain.
+   */
+  async *
+      iterateAsyncParents(stackTraceOrPausedDetails: Protocol.Runtime.StackTrace|DebuggerPausedDetails):
+          AsyncGenerator<{stackTrace: Protocol.Runtime.StackTrace, target: Target}> {
+    // We make `DebuggerPausedDetails` look like a stack trace. We are only interested in `parent` and `parentId` in any case.
+    let stackTrace: Protocol.Runtime.StackTrace = stackTraceOrPausedDetails instanceof DebuggerPausedDetails ?
+        {
+          callFrames: [],
+          parent: stackTraceOrPausedDetails.asyncStackTrace,
+          parentId: stackTraceOrPausedDetails.asyncStackTraceId
+        } :
+        stackTraceOrPausedDetails;
+    let target = this.target();
+
+    while (true) {
+      if (stackTrace.parent) {
+        stackTrace = stackTrace.parent;
+      } else if (stackTrace.parentId) {
+        const model: DebuggerModel|null = stackTrace.parentId.debuggerId ?
+            await DebuggerModel.modelForDebuggerId(stackTrace.parentId.debuggerId) :
+            this;
+        if (!model) {
+          return;
+        }
+        const maybeStackTrace = await model.fetchAsyncStackTrace(stackTrace.parentId);
+        if (!maybeStackTrace) {
+          return;
+        }
+        stackTrace = maybeStackTrace;
+        target = model.target();
+      } else {
+        return;
+      }
+
+      yield {stackTrace, target};
+    }
   }
 }
 

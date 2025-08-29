@@ -35,6 +35,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       SDK.CSSMatchedStyles.CSSVariableValue|null>;
   let cssModel: SDK.CSSModel.CSSModel;
 
+  const environmentVariables = {a: 'A'};
+
   beforeEach(async () => {
     const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
     stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
@@ -49,8 +51,16 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       '--empty': '',
     };
 
-    matchedStyles = await getMatchedStylesWithBlankRule(
-        new SDK.CSSModel.CSSModel(createTarget()), undefined, {startLine: 0, startColumn: 0, endLine: 0, endColumn: 1});
+    matchedStyles = await getMatchedStylesWithBlankRule({
+      cssModel: new SDK.CSSModel.CSSModel(createTarget()),
+      range: {
+        startLine: 0,
+        startColumn: 0,
+        endLine: 0,
+        endColumn: 1,
+      },
+      getEnvironmentVariablesCallback: () => ({environmentVariables})
+    });
     sinon.stub(matchedStyles, 'availableCSSVariables').returns(Object.keys(mockVariableMap));
     fakeComputeCSSVariable = sinon.stub(matchedStyles, 'computeCSSVariable').callsFake((_style, name) => {
       const value = mockVariableMap[name];
@@ -1240,7 +1250,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.strictEqual(swatches[1].model().spreadRadius().asCSSText(), '8px');
     });
 
-    class StubSyntaxnode implements CodeMirror.SyntaxNode {
+    class StubSyntaxNode implements CodeMirror.SyntaxNode {
       parent: CodeMirror.SyntaxNode|null = null;
       firstChild: CodeMirror.SyntaxNode|null = null;
       lastChild: CodeMirror.SyntaxNode|null = null;
@@ -1290,10 +1300,10 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     it('shadow model renders text properties, authored properties, and computed text properties correctly', () => {
       const renderingContext = sinon.createStubInstance(Elements.PropertyRenderer.RenderingContext);
       const expansionContext = sinon.createStubInstance(Elements.PropertyRenderer.RenderingContext);
-      const y = new StubSyntaxnode();
-      const spread = new StubSyntaxnode();
-      const blur = new StubSyntaxnode();
-      const variable = new StubSyntaxnode();
+      const y = new StubSyntaxNode();
+      const spread = new StubSyntaxNode();
+      const blur = new StubSyntaxNode();
+      const variable = new StubSyntaxNode();
       const properties = [
         {
           value: '10px',
@@ -2058,6 +2068,33 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.deepEqual(
           Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')),
           [false, true, false, false, false]);
+    });
+  });
+
+  describe('EnvFunctionRenderer', () => {
+    it('strikes out non-selected values', async () => {
+      const stylePropertyTreeElement = getTreeElement('--env', 'env(a, b) env(c, b)');
+      stylePropertyTreeElement.updateTitle();
+
+      const args = stylePropertyTreeElement.valueElement?.querySelectorAll('span')
+                       .values()
+                       .filter(span => ['a', 'b', 'c'].includes(span.textContent ?? ''))
+                       .toArray();
+      assert.exists(args);
+      assert.lengthOf(args, 4);
+      assert.deepEqual(
+          Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')), [false, true, true, false]);
+    });
+
+    it('shows a value tracing tooltip', async () => {
+      const stylePropertyTreeElement = getTreeElement('--env', 'env(a, b) env(c, b)');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      const tooltips = stylePropertyTreeElement.valueElement.querySelectorAll('devtools-tooltip');
+      assert.lengthOf(tooltips, 2);
+      const anchors = stylePropertyTreeElement.valueElement.querySelectorAll('.tracing-anchor');
+      assert.lengthOf(anchors, 2);
+      assert.deepEqual(anchors.values().map(anchor => anchor.textContent).toArray(), ['env', 'env']);
     });
   });
 

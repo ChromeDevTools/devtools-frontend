@@ -7,6 +7,7 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
+import {calculateDocFirstByteTs} from './Common.js';
 import {
   type Checklist,
   InsightCategory,
@@ -19,11 +20,11 @@ import {
 
 export const UIStrings = {
   /**
-   *@description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it. Details how the LCP request was discoverable - in other words, the path necessary to load it (ex: network requests, JavaScript)
+   * @description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it. Details how the LCP request was discoverable - in other words, the path necessary to load it (ex: network requests, JavaScript)
    */
   title: 'LCP request discovery',
   /**
-   *@description Description of an insight that provides details about the LCP metric, and the network requests necessary to load it.
+   * @description Description of an insight that provides details about the LCP metric, and the network requests necessary to load it.
    */
   description:
       'Optimize LCP by making the LCP image [discoverable](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) from the HTML immediately, and [avoiding lazy-loading](https://web.dev/articles/lcp-lazy-loading)',
@@ -135,11 +136,8 @@ export function generateInsight(
 
   const imageLoadingAttr = lcpEvent.args.data?.loadingAttr;
   const imageFetchPriorityHint = lcpRequest?.args.data.fetchPriorityHint;
-  // This is the earliest discovery time an LCP request could have - it's TTFB.
-  const earliestDiscoveryTime = docRequest?.args.data.timing ?
-      Helpers.Timing.secondsToMicro(docRequest.args.data.timing.requestTime) +
-          Helpers.Timing.milliToMicro(docRequest.args.data.timing.receiveHeadersStart) :
-      undefined;
+  // This is the earliest discovery time an LCP request could have - it's TTFB (as an absolute timestamp).
+  const earliestDiscoveryTime = calculateDocFirstByteTs(docRequest);
 
   const priorityHintFound = imageFetchPriorityHint === 'high';
 
@@ -203,7 +201,7 @@ export function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscovery
 
 export function createOverlays(model: LCPDiscoveryInsightModel): Types.Overlays.Overlay[] {
   const imageResults = getImageData(model);
-  if (!imageResults || !imageResults.discoveryDelay) {
+  if (!imageResults?.discoveryDelay) {
     return [];
   }
 

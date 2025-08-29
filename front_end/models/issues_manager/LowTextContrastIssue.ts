@@ -11,7 +11,7 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
-   *@description Link title for the Low Text Contrast issue in the Issues panel
+   * @description Link title for the Low Text Contrast issue in the Issues panel
    */
   colorAndContrastAccessibility: 'Color and contrast accessibility',
 } as const;

@@ -16,7 +16,6 @@ devtools_module("bindings") {
     "DebuggerWorkspaceBinding.ts",
     "DefaultScriptMapping.ts",
     "FileUtils.ts",
-    "IgnoreListManager.ts",
     "LiveLocation.ts",
     "NetworkProject.ts",
     "PresentationConsoleMessageHelper.ts",
@@ -37,6 +36,8 @@ devtools_module("bindings") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../../models/stack_trace:bundle",
+    "../../models/stack_trace:impl",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
   ]
@@ -76,6 +77,7 @@ devtools_entrypoint("bundle") {
     "../issues_manager/*",
     "../persistence/*",
     "../source_map_scopes/*",
+    "../workspace/*",
   ]
 
   visibility += devtools_models_visibility
@@ -91,7 +93,6 @@ ts_library("unittests") {
     "DebuggerWorkspaceBinding.test.ts",
     "DefaultScriptMapping.test.ts",
     "FileUtils.test.ts",
-    "IgnoreListManager.test.ts",
     "LiveLocation.test.ts",
     "PresentationConsoleMessageHelper.test.ts",
     "ResourceMapping.test.ts",

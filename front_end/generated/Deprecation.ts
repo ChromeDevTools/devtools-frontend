@@ -67,17 +67,9 @@ export const UIStrings = {
    */
   GetUserMediaInsecureOrigin: "`getUserMedia()` no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details.",
   /**
-   * @description This warning occurs when a site uses <h1> inside <article>, <aside>, <nav>, or <section>. It means the behavior (font size) may change in a future Chrome release, when some special rules are removed from the browser.
-   */
-  H1UserAgentFontSizeInSection: "Found an `&lt;h1&gt;` tag within an `&lt;article&gt;`, `&lt;aside&gt;`, `&lt;nav&gt;`, or `&lt;section&gt;` which does not have a specified font-size. The size of this heading text will be changing in this browser in the near future. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 for more information.",
-  /**
    * @description A deprecation warning shown to developers in the DevTools Issues tab when code tries to use the deprecated hostCandidate field, guiding developers to use the equivalent information in the .address and .port fields instead.
    */
   HostCandidateAttributeGetter: "`RTCPeerConnectionIceErrorEvent.hostCandidate` is deprecated. Please use `RTCPeerConnectionIceErrorEvent.address` or `RTCPeerConnectionIceErrorEvent.port` instead.",
-  /**
-   * @description A deprecation warning shown in the DevTools Issues tab, when a request for digital credentials API is formatted using a deprecated format.
-   */
-  IdentityDigitalCredentials: "This format for the navigator.credentials.get() request for digital credentials is deprecated, please update your call to use the new format.",
   /**
    * @description A deprecation warning shown in the DevTools Issues tab, when a service worker reads one of the fields from an event named 'canmakepayment'.
    */
@@ -272,13 +264,6 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   "DataUrlInSvgUse": {
     "chromeStatusFeature": 5128825141198848,
     "milestone": 119
-  },
-  "H1UserAgentFontSizeInSection": {
-    "chromeStatusFeature": 6192419898654720,
-    "milestone": 136
-  },
-  "IdentityDigitalCredentials": {
-    "chromeStatusFeature": 5166035265650688
   },
   "IdentityInCanMakePaymentEvent": {
     "chromeStatusFeature": 5190978431352832

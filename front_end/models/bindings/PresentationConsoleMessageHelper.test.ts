@@ -120,8 +120,13 @@ describeWithMockConnection('PresentationConsoleMessageHelper', () => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = target.targetManager();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
-        {forceNew: true, resourceMapping, targetManager});
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+    });
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({forceNew: true, resourceMapping, targetManager});
   });
 

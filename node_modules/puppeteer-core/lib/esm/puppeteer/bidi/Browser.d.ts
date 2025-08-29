@@ -25,6 +25,7 @@ export interface BidiBrowserOptions {
     defaultViewport: Viewport | null;
     acceptInsecureCerts?: boolean;
     capabilities?: SupportedWebDriverCapabilities;
+    networkEnabled: boolean;
 }
 /**
  * @internal
@@ -44,14 +45,17 @@ export declare class BidiBrowser extends Browser {
     close(): Promise<void>;
     get connected(): boolean;
     process(): ChildProcess | null;
-    createBrowserContext(_options?: BrowserContextOptions): Promise<BidiBrowserContext>;
+    createBrowserContext(options?: BrowserContextOptions): Promise<BidiBrowserContext>;
     version(): Promise<string>;
     browserContexts(): BidiBrowserContext[];
     defaultBrowserContext(): BidiBrowserContext;
     newPage(): Promise<Page>;
+    installExtension(path: string): Promise<string>;
+    uninstallExtension(id: string): Promise<void>;
     targets(): Target[];
     target(): BidiBrowserTarget;
     disconnect(): Promise<void>;
     get debugInfo(): DebugInfo;
+    isNetworkEnabled(): boolean;
 }
 //# sourceMappingURL=Browser.d.ts.map

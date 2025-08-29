@@ -8,7 +8,7 @@ import {deepElementFromEvent, measuredScrollbarWidth} from './UIUtils.js';
 import {Widget} from './Widget.js';
 
 export class GlassPane {
-  private readonly widgetInternal = new Widget(true);
+  private readonly widgetInternal;
 
   element: typeof Widget.prototype.element;
   contentElement: typeof Widget.prototype.contentElement;
@@ -25,12 +25,10 @@ export class GlassPane {
   #ignoreLeftMargin = false;
 
   constructor(jslog?: string) {
+    this.widgetInternal = new Widget({jslog, useShadowDom: true});
     this.widgetInternal.markAsRoot();
     this.element = this.widgetInternal.element;
     this.contentElement = this.widgetInternal.contentElement;
-    if (jslog) {
-      this.contentElement.setAttribute('jslog', jslog);
-    }
 
     this.registerRequiredCSS(glassPaneStyles);
     this.setPointerEventsBehavior(PointerEventsBehavior.PIERCE_GLASS_PANE);

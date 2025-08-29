@@ -17,43 +17,43 @@ import layoutPaneStyles from './layoutPane.css.js';
 
 const UIStrings = {
   /**
-   *@description Title of the input to select the overlay color for an element using the color picker
+   * @description Title of the input to select the overlay color for an element using the color picker
    */
   chooseElementOverlayColor: 'Choose the overlay color for this element',
   /**
-   *@description Title of the show element button in the Layout pane of the Elements panel
+   * @description Title of the show element button in the Layout pane of the Elements panel
    */
   showElementInTheElementsPanel: 'Show element in the Elements panel',
   /**
-   *@description Title of a section on CSS Grid tooling
+   * @description Title of a section on CSS Grid/Masonry tooling
    */
-  grid: 'Grid',
+  gridOrMasonry: 'Grid / Masonry',
   /**
-   *@description Title of a section in the Layout Sidebar pane of the Elements panel
+   * @description Title of a section in the Layout Sidebar pane of the Elements panel
    */
   overlayDisplaySettings: 'Overlay display settings',
   /**
-   *@description Title of a section in Layout sidebar pane
+   * @description Title of a section in Layout sidebar pane
    */
-  gridOverlays: 'Grid overlays',
+  gridOrMasonryOverlays: 'Grid / Masonry overlays',
   /**
-   *@description Message in the Layout panel informing users that no CSS Grid layouts were found on the page
+   * @description Message in the Layout panel informing users that no CSS Grid/Masonry layouts were found on the page
    */
-  noGridLayoutsFoundOnThisPage: 'No grid layouts found on this page',
+  noGridOrMasonryLayoutsFoundOnThisPage: 'No grid or masonry layouts found on this page',
   /**
-   *@description Title of the Flexbox section in the Layout panel
+   * @description Title of the Flexbox section in the Layout panel
    */
   flexbox: 'Flexbox',
   /**
-   *@description Title of a section in the Layout panel
+   * @description Title of a section in the Layout panel
    */
   flexboxOverlays: 'Flexbox overlays',
   /**
-   *@description Text in the Layout panel, when no flexbox elements are found
+   * @description Text in the Layout panel, when no flexbox elements are found
    */
   noFlexboxLayoutsFoundOnThisPage: 'No flexbox layouts found on this page',
   /**
-   *@description Screen reader announcement when opening color picker tool.
+   * @description Screen reader announcement when opening color picker tool.
    */
   colorPickerOpened: 'Color picker opened.',
 } as const;
@@ -283,13 +283,13 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   render(html`
       <div style="min-width: min-content;" jslog=${VisualLogging.pane('layout').track({resize: true})}>
-        <style>${UI.Widget.widgetScoped(layoutPaneStyles)}</style>
-        <style>${UI.Widget.widgetScoped(UI.inspectorCommonStyles)}</style>
+        <style>${layoutPaneStyles}</style>
+        <style>${UI.inspectorCommonStyles}</style>
         <details open>
           <summary class="header"
             @keydown=${input.onSummaryKeyDown}
             jslog=${VisualLogging.sectionHeader('grid-settings').track({click: true})}>
-            ${i18nString(UIStrings.grid)}
+            ${i18nString(UIStrings.gridOrMasonry)}
           </summary>
           <div class="content-section" jslog=${VisualLogging.section('grid-settings')}>
             <h3 class="content-section-title">${i18nString(UIStrings.overlayDisplaySettings)}</h3>
@@ -327,8 +327,8 @@ const DEFAULT_VIEW: View = (input, output, target) => {
             html`<div class="content-section" jslog=${VisualLogging.section('grid-overlays')}>
               <h3 class="content-section-title">
                 ${input.gridElements.length ?
-                    i18nString(UIStrings.gridOverlays) :
-                    i18nString(UIStrings.noGridLayoutsFoundOnThisPage)}
+                    i18nString(UIStrings.gridOrMasonryOverlays) :
+                    i18nString(UIStrings.noGridOrMasonryLayoutsFoundOnThisPage)}
               </h3>
               ${input.gridElements.length ?
                   html`<div class="elements">${input.gridElements.map(renderElement)}</div>` :
@@ -359,7 +359,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
         : ''}
       </div>`,
       // clang-format on
-      target, {host: input});
+      target);
 };
 
 type View = (input: ViewInput, output: object, element: HTMLElement) => void;
@@ -370,7 +370,7 @@ export class LayoutPane extends UI.Widget.Widget {
   readonly #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.#settings = this.#makeSettings();
     this.#uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom');
     this.#domModels = [];
@@ -430,7 +430,10 @@ export class LayoutPane extends UI.Widget.Widget {
   }
 
   async #fetchGridNodes(): Promise<SDK.DOMModel.DOMNode[]> {
-    return await this.#fetchNodesByStyle([{name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'}]);
+    return await this.#fetchNodesByStyle([
+      {name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'}, {name: 'display', value: 'masonry'},
+      {name: 'display', value: 'inline-masonry'}
+    ]);
   }
 
   async #fetchFlexContainerNodes(): Promise<SDK.DOMModel.DOMNode[]> {

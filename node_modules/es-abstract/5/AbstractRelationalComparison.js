@@ -4,9 +4,9 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $Number = GetIntrinsic('%Number%');
 var $TypeError = require('es-errors/type');
+var $isNaN = require('math-intrinsics/isNaN');
+var $isFinite = require('math-intrinsics/isFinite');
 
-var $isNaN = require('../helpers/isNaN');
-var $isFinite = require('../helpers/isFinite');
 var isPrefixOf = require('../helpers/isPrefixOf');
 
 var ToNumber = require('./ToNumber');

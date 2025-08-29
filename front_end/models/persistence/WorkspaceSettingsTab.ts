@@ -23,23 +23,23 @@ import workspaceSettingsTabStyles from './workspaceSettingsTab.css.js';
 
 const UIStrings = {
   /**
-   *@description Text of a DOM element in Workspace Settings Tab of the Workspace settings in Settings
+   * @description Text of a DOM element in Workspace Settings Tab of the Workspace settings in Settings
    */
   workspace: 'Workspace',
   /**
-   *@description Text of a DOM element in Workspace Settings Tab of the Workspace settings in Settings
+   * @description Text of a DOM element in Workspace Settings Tab of the Workspace settings in Settings
    */
   mappingsAreInferredAutomatically: 'Mappings are inferred automatically.',
   /**
-   *@description Text of the add button in Workspace Settings Tab of the Workspace settings in Settings
+   * @description Text of the add button in Workspace Settings Tab of the Workspace settings in Settings
    */
   addFolder: 'Add folder',
   /**
-   *@description Label element text content in Workspace Settings Tab of the Workspace settings in Settings
+   * @description Label element text content in Workspace Settings Tab of the Workspace settings in Settings
    */
   folderExcludePattern: 'Exclude from workspace',
   /**
-   *@description Label for an item to remove something
+   * @description Label for an item to remove something
    */
   remove: 'Remove',
 } as const;
@@ -92,7 +92,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             @click=${input.onAddClicked}>${i18nString(UIStrings.addFolder)}</devtools-button>
         </div>
       </div>
-    </div>`, target, {host: input});
+    </div>`, target);
   // clang-format on
 };
 

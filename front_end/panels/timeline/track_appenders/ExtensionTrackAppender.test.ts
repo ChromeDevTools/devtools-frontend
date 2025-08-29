@@ -4,11 +4,10 @@
 
 import { // eslint-disable-line rulesdir/es-modules-import
   createTraceExtensionDataFromPerformanceAPITestInput,
-  type PerformanceAPIExtensionTestData,
 } from '../../../models/trace/handlers/ExtensionTraceDataHandler.test.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getBaseTraceParseModelData} from '../../../testing/TraceHelpers.js';
+import {getBaseTraceParseModelData, type PerformanceAPIExtensionTestData} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
@@ -51,13 +50,16 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
   describe('appendTrackAtLevel', function() {
     it('creates flamechart groups for the Extension tracks properly', function() {
       assert.lengthOf(flameChartData.groups, 4);
-      assert.strictEqual(flameChartData.groups[0].name, 'A track group — Custom track');
+      assert.strictEqual(flameChartData.groups[0].name, 'A track group');
+      assert.strictEqual(flameChartData.groups[0].subtitle, '— Custom');
       assert.strictEqual(flameChartData.groups[0].startLevel, 0);
       assert.strictEqual(flameChartData.groups[0].style.nestingLevel, 0);
       assert.strictEqual(flameChartData.groups[1].name, 'Another Extension Track');
+      assert.isUndefined(flameChartData.groups[1].subtitle);
       assert.strictEqual(flameChartData.groups[1].startLevel, 0);
       assert.strictEqual(flameChartData.groups[1].style.nestingLevel, 1);
-      assert.strictEqual(flameChartData.groups[2].name, 'An Extension Track — Custom track');
+      assert.strictEqual(flameChartData.groups[2].name, 'An Extension Track');
+      assert.strictEqual(flameChartData.groups[2].subtitle, '— Custom');
       assert.strictEqual(flameChartData.groups[2].startLevel, 1);
       assert.strictEqual(flameChartData.groups[2].style.nestingLevel, 0);
     });

@@ -14,17 +14,17 @@ import {type LazyUint8Array, LinearMemoryInspectorController} from './LinearMemo
 
 const UIStrings = {
   /**
-   *@description Label in the Linear Memory inspector tool that serves as a placeholder if no inspections are open (i.e. nothing to see here).
+   * @description Label in the Linear Memory inspector tool that serves as a placeholder if no inspections are open (i.e. nothing to see here).
    *             Inspection hereby refers to viewing, navigating and understanding the memory through this tool.
    */
   noOpenInspections: 'No open inspections',
   /**
-   *@description Label in the Linear Memory inspector tool that serves as a placeholder if no inspections are open (i.e. nothing to see here).
+   * @description Label in the Linear Memory inspector tool that serves as a placeholder if no inspections are open (i.e. nothing to see here).
    *             Inspection hereby refers to viewing, navigating and understanding the memory through this tool.
    */
   memoryInspectorExplanation: 'On this page you can inspect binary data.',
   /**
-   *@description Label in the Linear Memory inspector tool for a link.
+   * @description Label in the Linear Memory inspector tool for a link.
    */
   learnMore: 'Learn more',
 } as const;
@@ -40,8 +40,7 @@ export class LinearMemoryInspectorPane extends Common.ObjectWrapper.eventMixin<E
   readonly #tabbedPane: UI.TabbedPane.TabbedPane;
 
   constructor() {
-    super(false);
-    this.element.setAttribute('jslog', `${VisualLogging.panel('linear-memory-inspector').track({resize: true})}`);
+    super({jslog: `${VisualLogging.panel('linear-memory-inspector').track({resize: true})}`});
     this.#tabbedPane = new UI.TabbedPane.TabbedPane();
     this.#tabbedPane.setPlaceholderElement(this.createPlaceholder());
     this.#tabbedPane.setCloseableTabs(true);
@@ -131,7 +130,7 @@ export class LinearMemoryInspectorView extends UI.Widget.VBox {
 
   constructor(
       memoryWrapper: LazyUint8Array, address: number|undefined = 0, tabId: string, hideValueInspector?: boolean) {
-    super(false);
+    super();
 
     if (address < 0 || address >= memoryWrapper.length()) {
       throw new Error('Requested address is out of bounds.');

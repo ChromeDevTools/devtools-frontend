@@ -5,6 +5,11 @@
 
 export interface ConfigObject {
 	/**
+	 * The base path for files and ignores.
+	 */
+	basePath?: string;
+
+	/**
 	 * The files to include.
 	 */
 	files?: string[];

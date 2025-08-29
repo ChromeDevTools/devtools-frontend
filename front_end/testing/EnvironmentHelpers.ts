@@ -99,6 +99,15 @@ export function stubNoopSettings() {
   } as unknown as Common.Settings.Settings);
 }
 
+export function registerActions(actions: UIModule.ActionRegistration.ActionRegistration[]): void {
+  for (const action of actions) {
+    UI.ActionRegistration.maybeRemoveActionExtension(action.actionId);
+    UI.ActionRegistration.registerActionExtension(action);
+  }
+  const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+  UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+}
+
 export function registerNoopActions(actionIds: string[]): void {
   for (const actionId of actionIds) {
     UI.ActionRegistration.maybeRemoveActionExtension(actionId);
@@ -126,8 +135,10 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE,
   Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
   Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,
+  Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ,
+  Root.Runtime.ExperimentName.TIMELINE_ASK_AI_FULL_BUTTON,
   Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES,
-  Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
+  Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES,
   Root.Runtime.ExperimentName.VERTICAL_DRAWER,
 ];
 
@@ -301,6 +312,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.AI, 'ai-assistance-patching-fre-completed', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
+        Common.Settings.SettingCategory.AI, 'ai-code-completion-enabled', false, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
         Common.Settings.SettingCategory.MOBILE, 'emulation.show-device-outline', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
@@ -308,6 +321,10 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(
         Common.Settings.SettingCategory.PERFORMANCE, 'timeline.user-had-shortcuts-dialog-opened-once', false,
         Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.ELEMENTS, 'show-event-listeners-for-ancestors', true,
+        Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'global-ai-button-click-count', 0),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);
@@ -353,7 +370,7 @@ export async function deinitializeGlobalVars() {
   Common.Revealer.RevealerRegistry.removeInstance();
   Common.Console.Console.removeInstance();
   Workspace.Workspace.WorkspaceImpl.removeInstance();
-  Bindings.IgnoreListManager.IgnoreListManager.removeInstance();
+  Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
   Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
   Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
   IssuesManager.IssuesManager.IssuesManager.removeInstance();

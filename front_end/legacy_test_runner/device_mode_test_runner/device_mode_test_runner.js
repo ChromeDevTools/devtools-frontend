@@ -5,7 +5,7 @@
 import * as EmulationModel from '../../models/emulation/emulation.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 export const DeviceModeTestRunner = {};
 

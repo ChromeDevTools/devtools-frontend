@@ -2,13 +2,12 @@
 
 var ToNumber = require('./ToNumber');
 
-var $isNaN = require('../helpers/isNaN');
-var $isFinite = require('../helpers/isFinite');
-var $sign = require('../helpers/sign');
-
-var abs = require('./abs');
-var floor = require('./floor');
-var modulo = require('./modulo');
+var $isNaN = require('math-intrinsics/isNaN');
+var $isFinite = require('math-intrinsics/isFinite');
+var $sign = require('math-intrinsics/sign');
+var abs = require('math-intrinsics/abs');
+var floor = require('math-intrinsics/floor');
+var modulo = require('math-intrinsics/mod');
 
 // https://262.ecma-international.org/6.0/#sec-touint8
 

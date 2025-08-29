@@ -23,15 +23,15 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   layoutShifts: 'Layout shifts',
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   layoutShiftCluster: 'Layout shift cluster',
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   layoutShift: 'Layout shift',
 } as const;
@@ -63,7 +63,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * layout shifts track.
    * @param trackStartLevel the horizontal level of the flame chart events where
    * the track's events will start being appended.
-   * @param expanded wether the track should be rendered expanded.
+   * @param expanded whether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
@@ -240,7 +240,8 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
       return;
     }
 
-    /** 1 of 3 scaling factors.
+    /**
+     * 1 of 3 scaling factors.
      * The Layout Instability API in Blink, which reports the LayoutShift trace events, is not based on CSS pixels but
      * physical pixels. As such the values in the impacted_nodes field need to be normalized to CSS units in order to
      * map them to the viewport dimensions, which we get in CSS pixels. We do that by dividing the values by the devicePixelRatio.

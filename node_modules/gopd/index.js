@@ -1,8 +1,7 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
-var $gOPD = GetIntrinsic('%Object.getOwnPropertyDescriptor%', true);
+/** @type {import('.')} */
+var $gOPD = require('./gOPD');
 
 if ($gOPD) {
 	try {

@@ -56,7 +56,7 @@ export class Interface extends Container {
           [Attribute.parse],
           [Operation.parse],
         ],
-      }
+      },
     );
   }
 
@@ -82,11 +82,11 @@ for more information.`;
         message,
         {
           autofix: autofixAddExposedWindow(this),
-        }
+        },
       );
     }
     const oldConstructors = this.extAttrs.filter(
-      (extAttr) => extAttr.name === "Constructor"
+      (extAttr) => extAttr.name === "Constructor",
     );
     for (const constructor of oldConstructors) {
       const message = `Constructors should now be represented as a \`constructor()\` operation on the interface \
@@ -100,14 +100,14 @@ for more information.`;
         message,
         {
           autofix: autofixConstructor(this, constructor),
-        }
+        },
       );
     }
 
     const isGlobal = this.extAttrs.some((extAttr) => extAttr.name === "Global");
     if (isGlobal) {
       const factoryFunctions = this.extAttrs.filter(
-        (extAttr) => extAttr.name === "LegacyFactoryFunction"
+        (extAttr) => extAttr.name === "LegacyFactoryFunction",
       );
       for (const named of factoryFunctions) {
         const message = `Interfaces marked as \`[Global]\` cannot have factory functions.`;
@@ -115,12 +115,12 @@ for more information.`;
           named.tokens.name,
           this,
           "no-constructible-global",
-          message
+          message,
         );
       }
 
       const constructors = this.members.filter(
-        (member) => member.type === "constructor"
+        (member) => member.type === "constructor",
       );
       for (const named of constructors) {
         const message = `Interfaces marked as \`[Global]\` cannot have constructors.`;
@@ -128,7 +128,7 @@ for more information.`;
           named.tokens.base,
           this,
           "no-constructible-global",
-          message
+          message,
         );
       }
     }
@@ -144,13 +144,13 @@ function autofixConstructor(interfaceDef, constructorExtAttr) {
   interfaceDef = autoParenter(interfaceDef);
   return () => {
     const indentation = getLastIndentation(
-      interfaceDef.extAttrs.tokens.open.trivia
+      interfaceDef.extAttrs.tokens.open.trivia,
     );
     const memberIndent = interfaceDef.members.length
       ? getLastIndentation(getFirstToken(interfaceDef.members[0]).trivia)
       : getMemberIndentation(indentation);
     const constructorOp = Constructor.parse(
-      new Tokeniser(`\n${memberIndent}constructor();`)
+      new Tokeniser(`\n${memberIndent}constructor();`),
     );
     constructorOp.extAttrs = new ExtendedAttributes({
       source: interfaceDef.source,
@@ -160,7 +160,7 @@ function autofixConstructor(interfaceDef, constructorExtAttr) {
 
     const existingIndex = findLastIndex(
       interfaceDef.members,
-      (m) => m.type === "constructor"
+      (m) => m.type === "constructor",
     );
     interfaceDef.members.splice(existingIndex + 1, 0, constructorOp);
 

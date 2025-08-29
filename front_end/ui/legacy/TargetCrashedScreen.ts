@@ -10,11 +10,11 @@ import {VBox} from './Widget.js';
 
 const UIStrings = {
   /**
-   *@description Text in dialog box when the target page crashed
+   * @description Text in dialog box when the target page crashed
    */
   devtoolsWasDisconnectedFromThe: 'DevTools was disconnected from the page.',
   /**
-   *@description Text content of content element
+   * @description Text content of content element
    */
   oncePageIsReloadedDevtoolsWill: 'Once page is reloaded, DevTools will automatically reconnect.',
 } as const;
@@ -29,14 +29,14 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     <style>${targetCrashedScreenStyles}</style>
     <div class="message">${i18nString(UIStrings.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString(UIStrings.oncePageIsReloadedDevtoolsWill)}</div>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 
 export class TargetCrashedScreen extends VBox {
   private readonly hideCallback: () => void;
   constructor(hideCallback: () => void, view = DEFAULT_VIEW) {
-    super(true);
+    super({useShadowDom: true});
     view({}, {}, this.contentElement);
     this.hideCallback = hideCallback;
   }

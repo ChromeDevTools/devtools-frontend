@@ -20,39 +20,39 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Section heading in the Trust Token tab
+   * @description Section heading in the Trust Token tab
    */
   parameters: 'Parameters',
   /**
-   *@description Text that refers to some types
+   * @description Text that refers to some types
    */
   type: 'Type',
   /**
-   *@description Label for a Trust Token parameter
+   * @description Label for a Trust Token parameter
    */
   refreshPolicy: 'Refresh policy',
   /**
-   *@description Label for a list if origins in the Trust Token tab
+   * @description Label for a list if origins in the Trust Token tab
    */
   issuers: 'Issuers',
   /**
-   *@description Label for a report field in the Network panel
+   * @description Label for a report field in the Network panel
    */
   topLevelOrigin: 'Top level origin',
   /**
-   *@description Text for the issuer of an item
+   * @description Text for the issuer of an item
    */
   issuer: 'Issuer',
   /**
-   *@description Heading of a report section in the Network panel
+   * @description Heading of a report section in the Network panel
    */
   result: 'Result',
   /**
-   *@description Text for the status of something
+   * @description Text for the status of something
    */
   status: 'Status',
   /**
-   *@description Label for a field in the Network panel
+   * @description Label for a field in the Network panel
    */
   numberOfIssuedTokens: 'Number of issued tokens',
   /**
@@ -61,41 +61,41 @@ const UIStrings = {
    */
   success: 'Success',
   /**
-   *@description Text in the network panel for an error status
+   * @description Text in the network panel for an error status
    */
   failure: 'Failure',
   /**
-   *@description Detailed text for a success status in the Network panel
+   * @description Detailed text for a success status in the Network panel
    */
   theOperationsResultWasServedFrom: 'The operations result was served from cache.',
   /**
-   *@description Detailed text for a success status in the Network panel
+   * @description Detailed text for a success status in the Network panel
    */
   theOperationWasFulfilledLocally: 'The operation was fulfilled locally, no request was sent.',
   /**
-   *@description Text for an error status in the Network panel
+   * @description Text for an error status in the Network panel
    */
   theKeysForThisPSTIssuerAreUnavailable:
       'The keys for this PST issuer are unavailable. The issuer may need to be registered via the Chrome registration process.',
   /**
-   *@description Text for an error status in the Network panel
+   * @description Text for an error status in the Network panel
    */
   aClientprovidedArgumentWas: 'A client-provided argument was malformed or otherwise invalid.',
   /**
-   *@description Text for an error status in the Network panel
+   * @description Text for an error status in the Network panel
    */
   eitherNoInputsForThisOperation:
       'Either no inputs for this operation are available or the output exceeds the operations quota.',
   /**
-   *@description Text for an error status in the Network panel
+   * @description Text for an error status in the Network panel
    */
   theServersResponseWasMalformedOr: 'The servers response was malformed or otherwise invalid.',
   /**
-   *@description Text for an error status in the Network panel
+   * @description Text for an error status in the Network panel
    */
   theOperationFailedForAnUnknown: 'The operation failed for an unknown reason.',
   /**
-   *@description Text for an error status in the Network panel
+   * @description Text for an error status in the Network panel
    */
   perSiteLimit: 'Per-site issuer limit reached.',
 } as const;
@@ -201,7 +201,7 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
       <devtools-report-key>${i18nString(UIStrings.status)}</devtools-report-key>
       <devtools-report-value>
         <span>
-          <devtools-icon class="status-icon"
+          <devtools-icon class="status-icon medium"
             .data=${getIconForStatusCode(trustTokenResult.status)}>
           </devtools-icon>
           <strong>${getSimplifiedStatusTextForStatusCode(trustTokenResult.status)}</strong>
@@ -224,15 +224,11 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
 const SUCCESS_ICON_DATA: IconButton.Icon.IconWithName = {
   color: 'var(--icon-checkmark-green)',
   iconName: 'check-circle',
-  width: '16px',
-  height: '16px',
 };
 
 const FAILURE_ICON_DATA: IconButton.Icon.IconWithName = {
   color: 'var(--icon-error)',
   iconName: 'cross-circle-filled',
-  width: '16px',
-  height: '16px',
 };
 
 export function statusConsideredSuccess(status: Protocol.Network.TrustTokenOperationDoneEventStatus): boolean {

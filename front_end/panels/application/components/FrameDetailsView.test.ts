@@ -98,10 +98,12 @@ describeWithMockConnection('FrameDetailsView', () => {
   it('renders report keys and values', async () => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const targetManager = SDK.TargetManager.TargetManager.instance();
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping: new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace),
       targetManager,
+      ignoreListManager,
     });
 
     const target = createTarget();

@@ -14,7 +14,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import {getIssueKindIconData} from './IssueCounter.js';
+import {getIssueKindIconName} from './IssueCounter.js';
 import IssueLinkIconStyles from './issueLinkIcon.css.js';
 
 const {html} = Lit;
@@ -30,7 +30,7 @@ const UIStrings = {
    */
   clickToShowIssueWithTitle: 'Click to open the issue tab and show issue: {title}',
   /**
-   *@description Title for an link to show an issue that is unavailable because the issue couldn't be resolved
+   * @description Title for an link to show an issue that is unavailable because the issue couldn't be resolved
    */
   issueUnavailable: 'Issue unavailable at this time',
 } as const;
@@ -134,7 +134,7 @@ export class IssueLinkIcon extends HTMLElement {
     if (!this.#issue) {
       return 'issue-questionmark-filled';
     }
-    const {iconName} = getIssueKindIconData(this.#issue.getKind());
+    const iconName = getIssueKindIconName(this.#issue.getKind());
     return iconName;
   }
 

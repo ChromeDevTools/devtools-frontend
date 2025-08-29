@@ -31,6 +31,7 @@ import * as SharedDictionaryIssue from './SharedDictionaryIssue.js';
 import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 import * as SRIMessageSignatureIssue from './SRIMessageSignatureIssue.js';
 import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
+import * as UnencodedDigestIssue from './UnencodedDigestIssue.js';
 
 export {
   AttributionReportingIssue,
@@ -62,4 +63,5 @@ export {
   SourceFrameIssuesManager,
   SRIMessageSignatureIssue,
   StylesheetLoadingIssue,
+  UnencodedDigestIssue,
 };

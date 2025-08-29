@@ -10,7 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 /**
  * ImagePreviewPopover sets listeners on the container element to display
  * an image preview if needed. The image URL comes from the event (mouseover) target
- * in a propery identified by HrefSymbol. To enable preview for any child element
+ * in a property identified by HrefSymbol. To enable preview for any child element
  * set the property HrefSymbol.
  */
 export class ImagePreviewPopover {

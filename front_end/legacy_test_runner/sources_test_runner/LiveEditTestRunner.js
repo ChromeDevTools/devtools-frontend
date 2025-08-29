@@ -5,7 +5,7 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 
 export const replaceInSource = function(sourceFrame, string, replacement) {

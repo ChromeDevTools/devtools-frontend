@@ -5,6 +5,7 @@ var isDate = require('../');
 var hasToStringTag = require('has-tostringtag/shams')();
 
 test('not Dates', function (t) {
+	// @ts-expect-error
 	t.notOk(isDate(), 'undefined is not Date');
 	t.notOk(isDate(null), 'null is not Date');
 	t.notOk(isDate(false), 'false is not Date');
@@ -21,6 +22,7 @@ test('not Dates', function (t) {
 
 test('@@toStringTag', { skip: !hasToStringTag }, function (t) {
 	var realDate = new Date();
+	/** @type {{ toString(): unknown; valueOf(): unknown; [Symbol.toStringTag]?: string; }} */
 	var fakeDate = {
 		toString: function () { return String(realDate); },
 		valueOf: function () { return realDate.getTime(); }

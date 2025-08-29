@@ -11,6 +11,7 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../../testing/MockConnection.js';
+import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 import * as Utils from './utils.js';
@@ -23,7 +24,7 @@ describeWithMockConnection('EntryNodes', function() {
   describe('nodeIdsForEvent', () => {
     it('identifies node ids for a Layout event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      const layoutEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isLayout);
+      const layoutEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isLayout);
       assert.isOk(layoutEvent);
       const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, layoutEvent);
       assert.deepEqual(Array.from(nodeIds), [2]);
@@ -45,7 +46,7 @@ describeWithMockConnection('EntryNodes', function() {
 
     it('identifies node ids for a Paint event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const paintEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isPaint);
+      const paintEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isPaint);
       assert.isOk(paintEvent);
       const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, paintEvent);
       assert.deepEqual(Array.from(nodeIds), [75]);
@@ -53,7 +54,7 @@ describeWithMockConnection('EntryNodes', function() {
 
     it('identifies node ids for a PaintImage event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const paintImageEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isPaintImage);
+      const paintImageEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isPaintImage);
       assert.isOk(paintImageEvent);
       const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, paintImageEvent);
       assert.deepEqual(Array.from(nodeIds), [107]);
@@ -63,7 +64,7 @@ describeWithMockConnection('EntryNodes', function() {
       // This trace chosen as it happens to have ScrollLayer events, unlike the
       // web-dev traces used in tests above.
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
-      const scrollLayerEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isScrollLayer);
+      const scrollLayerEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isScrollLayer);
       assert.isOk(scrollLayerEvent);
       const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, scrollLayerEvent);
       assert.deepEqual(Array.from(nodeIds), [4]);
@@ -71,7 +72,7 @@ describeWithMockConnection('EntryNodes', function() {
 
     it('identifies node ids for a DecodeImage event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const decodeImageEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isDecodeImage);
+      const decodeImageEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isDecodeImage);
       assert.isOk(decodeImageEvent);
       const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, decodeImageEvent);
       assert.deepEqual(Array.from(nodeIds), [240]);
@@ -79,7 +80,7 @@ describeWithMockConnection('EntryNodes', function() {
 
     it('identifies node ids for a DrawLazyPixelRef event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const drawLazyPixelRefEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isDrawLazyPixelRef);
+      const drawLazyPixelRefEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isDrawLazyPixelRef);
       assert.isOk(drawLazyPixelRefEvent);
       const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, drawLazyPixelRefEvent);
       assert.deepEqual(Array.from(nodeIds), [212]);
@@ -106,7 +107,7 @@ describeWithMockConnection('EntryNodes', function() {
     it('returns the related DOM nodes', async function() {
       // Load in a trace and find an event that has one related node with an ID of 2.
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      const layoutEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isLayout);
+      const layoutEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isLayout);
       assert.isOk(layoutEvent);
       const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, layoutEvent);
       assert.deepEqual(Array.from(nodeIds), [2]);

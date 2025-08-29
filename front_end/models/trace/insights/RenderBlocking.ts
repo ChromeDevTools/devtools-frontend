@@ -36,7 +36,7 @@ export const UIStrings = {
    */
   renderBlockingRequest: 'Request',
   /**
-   *@description Label used for a time duration.
+   * @description Label used for a time duration.
    */
   duration: 'Duration',
   /**

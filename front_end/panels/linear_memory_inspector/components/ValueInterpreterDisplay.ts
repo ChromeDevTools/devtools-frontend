@@ -26,24 +26,24 @@ import {
 
 const UIStrings = {
   /**
-   *@description Tooltip text that appears when hovering over an unsigned interpretation of the memory under the Value Interpreter
+   * @description Tooltip text that appears when hovering over an unsigned interpretation of the memory under the Value Interpreter
    */
   unsignedValue: '`Unsigned` value',
   /**
-   *@description Tooltip text that appears when hovering over the element to change value type modes of under the Value Interpreter. Value type modes
+   * @description Tooltip text that appears when hovering over the element to change value type modes of under the Value Interpreter. Value type modes
    *             are different ways of viewing a certain value, e.g.: 10 (decimal) can be 0xa in hexadecimal mode, or 12 in octal mode.
    */
   changeValueTypeMode: 'Change mode',
   /**
-   *@description Tooltip text that appears when hovering over a signed interpretation of the memory under the Value Interpreter
+   * @description Tooltip text that appears when hovering over a signed interpretation of the memory under the Value Interpreter
    */
   signedValue: '`Signed` value',
   /**
-   *@description Tooltip text that appears when hovering over a 'jump-to-address' button that is next to a pointer (32-bit or 64-bit) under the Value Interpreter
+   * @description Tooltip text that appears when hovering over a 'jump-to-address' button that is next to a pointer (32-bit or 64-bit) under the Value Interpreter
    */
   jumpToPointer: 'Jump to address',
   /**
-   *@description Tooltip text that appears when hovering over a 'jump-to-address' button that is next to a pointer (32-bit or 64-bit) with an invalid address under the Value Interpreter.
+   * @description Tooltip text that appears when hovering over a 'jump-to-address' button that is next to a pointer (32-bit or 64-bit) with an invalid address under the Value Interpreter.
    */
   addressOutOfRange: 'Address out of memory range',
 
@@ -154,8 +154,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
               <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
                 jslog=${VisualLogging.action('linear-memory-inspector.jump-to-address').track({click: true})}
                 @click=${this.#onJumpToAddressClicked.bind(this, Number(address))}>
-                <devtools-icon .data=${
-                  {iconName: 'open-externally', color: iconColor, width: '16px'}}>
+                <devtools-icon name="open-externally" class="medium" style="color: ${iconColor}">
                 </devtools-icon>
               </button>`}
         </div>

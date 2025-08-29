@@ -21,7 +21,6 @@ import * as KeyValueStorageItemsView from './KeyValueStorageItemsView.js';
 import * as OpenedWindowDetailsView from './OpenedWindowDetailsView.js';
 import * as PreloadingView from './preloading/PreloadingView.js';
 import * as PreloadingTreeElement from './PreloadingTreeElement.js';
-import * as ReportingApiReportsView from './ReportingApiReportsView.js';
 import * as ReportingApiView from './ReportingApiView.js';
 import * as ResourcesPanel from './ResourcesPanel.js';
 import * as ServiceWorkerCacheViews from './ServiceWorkerCacheViews.js';
@@ -57,7 +56,6 @@ export {
   OpenedWindowDetailsView,
   PreloadingTreeElement,
   PreloadingView,
-  ReportingApiReportsView,
   ReportingApiView,
   ResourcesPanel,
   ServiceWorkerCacheViews,

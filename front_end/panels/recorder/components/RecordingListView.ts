@@ -1,13 +1,12 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
@@ -19,7 +18,7 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description The title of the page that contains a list of saved recordings that the user has..
+   * @description The title of the page that contains a list of saved recordings that the user has..
    */
   savedRecordings: 'Saved recordings',
   /**
@@ -59,28 +58,28 @@ declare global {
 export class CreateRecordingEvent extends Event {
   static readonly eventName = 'createrecording';
   constructor() {
-    super(CreateRecordingEvent.eventName);
+    super(CreateRecordingEvent.eventName, {composed: true, bubbles: true});
   }
 }
 
 export class DeleteRecordingEvent extends Event {
   static readonly eventName = 'deleterecording';
   constructor(public storageName: string) {
-    super(DeleteRecordingEvent.eventName);
+    super(DeleteRecordingEvent.eventName, {composed: true, bubbles: true});
   }
 }
 
 export class OpenRecordingEvent extends Event {
   static readonly eventName = 'openrecording';
   constructor(public storageName: string) {
-    super(OpenRecordingEvent.eventName);
+    super(OpenRecordingEvent.eventName, {composed: true, bubbles: true});
   }
 }
 
 export class PlayRecordingEvent extends Event {
   static readonly eventName = 'playrecording';
   constructor(public storageName: string) {
-    super(PlayRecordingEvent.eventName);
+    super(PlayRecordingEvent.eventName, {composed: true, bubbles: true});
   }
 }
 
@@ -89,105 +88,69 @@ interface Recording {
   name: string;
 }
 
-export class RecordingListView extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #props: {recordings: Recording[], replayAllowed: boolean} = {
-    recordings: [],
-    replayAllowed: true,
-  };
+interface ViewInput {
+  recordings: readonly Recording[];
+  replayAllowed: boolean;
+  onCreateClick: () => void;
+  onDeleteClick: (storageName: string, event: Event) => void;
+  onOpenClick: (storageName: string, event: Event) => void;
+  onPlayRecordingClick: (storageName: string, event: Event) => void;
+  onKeyDown: (storageName: string, event: Event) => void;
+}
 
-  connectedCallback(): void {
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
+export type ViewOutput = object;
 
-  set recordings(recordings: Recording[]) {
-    this.#props.recordings = recordings;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-
-  set replayAllowed(value: boolean) {
-    this.#props.replayAllowed = value;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-
-  #onCreateClick(): void {
-    this.dispatchEvent(new CreateRecordingEvent());
-  }
-
-  #onDeleteClick(storageName: string, event: Event): void {
-    event.stopPropagation();
-    this.dispatchEvent(new DeleteRecordingEvent(storageName));
-  }
-
-  #onOpenClick(storageName: string, event: Event): void {
-    event.stopPropagation();
-    this.dispatchEvent(new OpenRecordingEvent(storageName));
-  }
-
-  #onPlayRecordingClick(storageName: string, event: Event): void {
-    event.stopPropagation();
-    this.dispatchEvent(new PlayRecordingEvent(storageName));
-  }
-
-  #onKeyDown(storageName: string, event: Event): void {
-    if ((event as KeyboardEvent).key !== 'Enter') {
-      return;
-    }
-    this.#onOpenClick(storageName, event);
-  }
-
-  #stopPropagation(event: Event): void {
-    event.stopPropagation();
-  }
-
-  #render = (): void => {
-    // clang-format off
-    Lit.render(
-      html`
-        <style>${recordingListViewStyles}</style>
-        <div class="wrapper">
-          <div class="header">
-            <h1>${i18nString(UIStrings.savedRecordings)}</h1>
-            <devtools-button
-              .variant=${Buttons.Button.Variant.PRIMARY}
-              @click=${this.#onCreateClick}
-              title=${Models.Tooltip.getTooltipForActions(
-                i18nString(UIStrings.createRecording),
-                Actions.RecorderActions.CREATE_RECORDING,
-              )}
-              .jslogContext=${'create-recording'}
-            >
-              ${i18nString(UIStrings.createRecording)}
-            </devtools-button>
-          </div>
-          <div class="table">
-            ${this.#props.recordings.map(recording => {
-              return html`
-                  <div
-                    role="button"
-                    tabindex="0"
-                    aria-label=${i18nString(UIStrings.openRecording)}
-                    class="row"
-                    @keydown=${this.#onKeyDown.bind(
-                      this,
-                      recording.storageName,
-                    )}
-                    @click=${this.#onOpenClick.bind(
-                      this,
-                      recording.storageName,
-                    )}
-                    jslog=${VisualLogging.item()
-                      .track({ click: true })
-                      .context('recording')}>
-                    <div class="icon">
-                      <devtools-icon name="flow">
-                      </devtools-icon>
-                    </div>
-                    <div class="title">${recording.name}</div>
-                    <div class="actions">
-                      ${
-                        this.#props.replayAllowed
-                          ? html`
+export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
+  const {
+    recordings,
+    replayAllowed,
+    onCreateClick,
+    onDeleteClick,
+    onOpenClick,
+    onPlayRecordingClick,
+    onKeyDown,
+  } = input;
+  // clang-format off
+  Lit.render(
+    html`
+      <style>${recordingListViewStyles}</style>
+      <div class="wrapper">
+        <div class="header">
+          <h1>${i18nString(UIStrings.savedRecordings)}</h1>
+          <devtools-button
+            .variant=${Buttons.Button.Variant.PRIMARY}
+            @click=${onCreateClick}
+            title=${Models.Tooltip.getTooltipForActions(
+              i18nString(UIStrings.createRecording),
+              Actions.RecorderActions.CREATE_RECORDING,
+            )}
+            .jslogContext=${'create-recording'}
+          >
+            ${i18nString(UIStrings.createRecording)}
+          </devtools-button>
+        </div>
+        <div class="table">
+          ${recordings.map(recording => {
+            return html`
+                <div
+                  role="button"
+                  tabindex="0"
+                  aria-label=${i18nString(UIStrings.openRecording)}
+                  class="row"
+                  @keydown=${(event: Event) => onKeyDown(recording.storageName, event)}
+                  @click=${(event: Event) => onOpenClick(recording.storageName, event)}
+                  jslog=${VisualLogging.item()
+                    .track({ click: true })
+                    .context('recording')}>
+                  <div class="icon">
+                    <devtools-icon name="flow">
+                    </devtools-icon>
+                  </div>
+                  <div class="title">${recording.name}</div>
+                  <div class="actions">
+                    ${
+                      replayAllowed
+                        ? html`
                               <devtools-button
                                 title=${i18nString(UIStrings.playRecording)}
                                 .data=${
@@ -197,46 +160,99 @@ export class RecordingListView extends HTMLElement {
                                      jslogContext: 'play-recording',
                                   } as Buttons.Button.ButtonData
                                 }
-                                @click=${this.#onPlayRecordingClick.bind(
-                                  this,
-                                  recording.storageName,
-                                )}
-                                @keydown=${this.#stopPropagation}
+                                @click=${(event: Event) => onPlayRecordingClick(recording.storageName, event)}
+                                @keydown=${(event: Event) => event.stopPropagation()}
                               ></devtools-button>
                               <div class="divider"></div>`
-                          : ''
+                        : ''
+                    }
+                    <devtools-button
+                      class="delete-recording-button"
+                      title=${i18nString(UIStrings.deleteRecording)}
+                      .data=${
+                        {
+                          variant: Buttons.Button.Variant.ICON,
+                          iconName: 'bin',
+                          jslogContext: 'delete-recording',
+                        } as Buttons.Button.ButtonData
                       }
-                      <devtools-button
-                        class="delete-recording-button"
-                        title=${i18nString(UIStrings.deleteRecording)}
-                        .data=${
-                          {
-                            variant: Buttons.Button.Variant.ICON,
-                            iconName: 'bin',
-                            jslogContext: 'delete-recording',
-                          } as Buttons.Button.ButtonData
-                        }
-                        @click=${this.#onDeleteClick.bind(
-                          this,
-                          recording.storageName,
-                        )}
-                        @keydown=${this.#stopPropagation}
-                      ></devtools-button>
-                    </div>
+                      @click=${(event: Event) => onDeleteClick(recording.storageName, event)}
+                      @keydown=${(event: Event) => event.stopPropagation()}
+                    ></devtools-button>
                   </div>
-                `;
-            })}
-          </div>
+                </div>
+              `;
+          })}
         </div>
-      `,
-      this.#shadow,
-      { host: this },
-    );
-    // clang-format on
-  };
-}
+      </div>
+    `,
+    target,
+  );
+  // clang-format on
+};
 
-customElements.define(
-    'devtools-recording-list-view',
-    RecordingListView,
-);
+export class RecordingListView extends UI.Widget.Widget {
+  #recordings: readonly Recording[] = [];
+  #replayAllowed = true;
+  #view: typeof DEFAULT_VIEW;
+
+  constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view || DEFAULT_VIEW;
+  }
+
+  set recordings(recordings: readonly Recording[]) {
+    this.#recordings = recordings;
+    this.performUpdate();
+  }
+
+  set replayAllowed(value: boolean) {
+    this.#replayAllowed = value;
+    this.performUpdate();
+  }
+
+  #onCreateClick(): void {
+    this.contentElement.dispatchEvent(new CreateRecordingEvent());
+  }
+
+  #onDeleteClick(storageName: string, event: Event): void {
+    event.stopPropagation();
+    this.contentElement.dispatchEvent(new DeleteRecordingEvent(storageName));
+  }
+
+  #onOpenClick(storageName: string, event: Event): void {
+    event.stopPropagation();
+    this.contentElement.dispatchEvent(new OpenRecordingEvent(storageName));
+  }
+
+  #onPlayRecordingClick(storageName: string, event: Event): void {
+    event.stopPropagation();
+    this.contentElement.dispatchEvent(new PlayRecordingEvent(storageName));
+  }
+
+  #onKeyDown(storageName: string, event: Event): void {
+    if ((event as KeyboardEvent).key !== 'Enter') {
+      return;
+    }
+    this.#onOpenClick(storageName, event);
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          recordings: this.#recordings,
+          replayAllowed: this.#replayAllowed,
+          onCreateClick: this.#onCreateClick.bind(this),
+          onDeleteClick: this.#onDeleteClick.bind(this),
+          onOpenClick: this.#onOpenClick.bind(this),
+          onPlayRecordingClick: this.#onPlayRecordingClick.bind(this),
+          onKeyDown: this.#onKeyDown.bind(this),
+        },
+        {}, this.contentElement);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.performUpdate();
+  }
+}

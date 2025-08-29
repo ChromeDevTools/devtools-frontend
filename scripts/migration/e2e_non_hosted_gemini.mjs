@@ -45,7 +45,7 @@ Step by step instructions:
 9) Delete the original test file.
 10) Commit the changes with the message 'Migrate ${oldTestFilePath}'
 11) Run 'git cl presubmit --upload'
-12) Run 'git cl upload -a -s -d -f -x ${issueNumber}' to upload the change.
+12) Run 'git cl upload -a -s -d -f --hashtag=migration-ai -x ${issueNumber}' to upload the change.
 13) Fix any lint issues. You may have to re-commit if files changed. When re-committing, amend the initial commit to preserve the commit message.
 `;
 

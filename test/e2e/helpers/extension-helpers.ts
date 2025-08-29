@@ -5,13 +5,8 @@
 import type * as puppeteer from 'puppeteer-core';
 import type {CdpPage} from 'puppeteer-core/internal/cdp/Page.js';
 
-// Needed to make use of the global declaration in ExtensionAPI.js of window.chrome.
-// But if we make this a side-effect import, it will persist at compile type.
-// So we import a type that we don't use to make TS realise it's just an import
-// to declare some type, and it gets stripped at runtime.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {getBrowserAndPages, getDevToolsFrontendHostname, getResourcesPath, waitFor} from '../../shared/helper.js';
+import {getDevToolsFrontendHostname} from '../../shared/helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,24 +14,28 @@ const globalThis: any = global;
 
 let loadExtensionPromise: Promise<unknown> = Promise.resolve();
 
-export function getResourcesPathWithDevToolsHostname() {
-  return getResourcesPath(getDevToolsFrontendHostname());
+export function getResourcesPathWithDevToolsHostname(inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  return inspectedPage.getResourcesPath(getDevToolsFrontendHostname());
 }
 
-export async function loadExtension(name: string, startPage?: string, allowFileAccess?: boolean) {
-  startPage = startPage || `${getResourcesPathWithDevToolsHostname()}/extensions/empty_extension.html`;
-  const {frontend} = getBrowserAndPages();
+export async function loadExtension(
+    name: string, startPage?: string, allowFileAccess?: boolean,
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage): Promise<puppeteer.Frame> {
+  startPage = startPage || `${getResourcesPathWithDevToolsHostname(inspectedPage)}/extensions/empty_extension.html`;
   const extensionInfo = {startPage, name, allowFileAccess};
 
   // Because the injected script is shared across calls for the target, we cannot run multiple instances concurrently.
-  const load = loadExtensionPromise.then(() => doLoad(frontend, extensionInfo));
+  const load = loadExtensionPromise.then(() => doLoad(devToolsPage, extensionInfo));
   loadExtensionPromise = load.catch(() => {});
   return await load;
 
-  async function doLoad(frontend: puppeteer.Page, extensionInfo: {startPage: string, name: string}) {
-    const session = (frontend as unknown as CdpPage)._client();
+  async function doLoad(
+      devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+      extensionInfo: {startPage: string, name: string}): Promise<puppeteer.Frame> {
+    const session = (devToolsPage.page as unknown as CdpPage)._client();
     // TODO(chromium:1246836) remove once real extension tests are available
-    const injectedAPI = await frontend.evaluate(
+    const injectedAPI = await devToolsPage.evaluate(
         extensionInfo => globalThis.buildExtensionAPIInjectedScript(extensionInfo, undefined, 'default', []),
         extensionInfo);
 
@@ -50,7 +49,7 @@ export async function loadExtension(name: string, startPage?: string, allowFileA
         {source: `(${declareChrome})();${injectedAPI}('${extensionScriptId}')`});
 
     try {
-      await frontend.evaluate(extensionInfo => {
+      await devToolsPage.evaluate(extensionInfo => {
         globalThis.Extensions.extensionServer.addExtension(extensionInfo);
         const extensionIFrames = document.body.querySelectorAll(`[data-devtools-extension="${extensionInfo.name}"]`);
         if (extensionIFrames.length > 1) {
@@ -64,7 +63,7 @@ export async function loadExtension(name: string, startPage?: string, allowFileA
         });
       }, extensionInfo);
 
-      const iframe = await waitFor(`[data-devtools-extension="${name}"]`);
+      const iframe = await devToolsPage.waitFor(`[data-devtools-extension="${name}"]`);
       const frame = await iframe.contentFrame();
       if (!frame) {
         throw new Error('Installing the extension failed.');

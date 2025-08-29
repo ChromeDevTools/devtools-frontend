@@ -69,8 +69,8 @@ export class MediaModel extends SDK.SDKModel.SDKModel<EventTypes> implements Pro
     this.dispatchEventToListeners(Events.PLAYER_ERRORS_RAISED, event);
   }
 
-  playersCreated({players}: Protocol.Media.PlayersCreatedEvent): void {
-    this.dispatchEventToListeners(Events.PLAYERS_CREATED, players);
+  playerCreated({player: {playerId}}: Protocol.Media.PlayerCreatedEvent): void {
+    this.dispatchEventToListeners(Events.PLAYERS_CREATED, [playerId]);
   }
 }
 SDK.SDKModel.SDKModel.register(MediaModel, {capabilities: SDK.Target.Capability.MEDIA, autostart: false});

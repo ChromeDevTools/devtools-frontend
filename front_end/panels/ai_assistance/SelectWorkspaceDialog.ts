@@ -1,13 +1,12 @@
 // Copyright 2025 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -22,30 +21,35 @@ import selectWorkspaceDialogStyles from './selectWorkspaceDialog.css.js';
 */
 const UIStringsNotTranslate = {
   /**
-   *@description Heading of dialog box which asks user to select a workspace folder.
+   * @description Heading of dialog box which asks user to select a workspace folder.
    */
   selectFolder: 'Select folder',
   /**
-   *@description Heading of dialog box which asks user to select a workspace folder for a11y clients.
+   * @description Heading of dialog box which asks user to select a workspace folder for a11y clients.
    */
   selectFolderAccessibleLabel: 'Select a folder to apply changes',
   /**
-   *@description Button text for canceling workspace selection.
+   * @description Button text for canceling workspace selection.
    */
   cancel: 'Cancel',
   /**
-   *@description Button text for confirming the selected workspace folder.
+   * @description Button text for confirming the selected workspace folder.
    */
   select: 'Select',
-  /*
-   *@description Button text for adding a workspace folder.
+  /**
+   * @description Button text for adding a workspace folder.
    */
   addFolder: 'Add folder',
-  /*
-   *@description Explanation for selecting the correct workspace folder.
+  /**
+   * @description Explanation for selecting the correct workspace folder.
    */
   selectProjectRoot:
-      'To save patches directly to your project, select the project root folder containing the source files of the inspected page. Relevant code snippets will be sent to Google to generate code suggestions.',
+      'Source code from the selected folder is sent to Google. This data may be seen by human reviewers to improve this feature.',
+  /**
+   * @description Explanation for selecting the correct workspace folder when enterprise logging is off.
+   */
+  selectProjectRootNoLogging:
+      'Source code from the selected folder is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -60,6 +64,7 @@ interface Folder {
 interface ViewInput {
   folders: Folder[];
   selectedIndex: number;
+  selectProjectRootText: Platform.UIString.LocalizedString;
   showAutomaticWorkspaceNudge: boolean;
   onProjectSelected: (index: number) => void;
   onSelectButtonClick: () => void;
@@ -69,15 +74,16 @@ interface ViewInput {
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
-// clang-format off
-export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+
+export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW: View = (input, _output, target): void => {
   const hasFolders = input.folders.length > 0;
+  // clang-format off
   render(
     html`
       <style>${selectWorkspaceDialogStyles}</style>
       <h2 class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</h2>
       <div class="main-content">
-        <div class="select-project-root">${lockedString(UIStringsNotTranslate.selectProjectRoot)}</div>
+        <div class="select-project-root">${input.selectProjectRootText}</div>
         ${input.showAutomaticWorkspaceNudge ? html`
           <!-- Hardcoding, because there is no 'getFormatLocalizedString' equivalent for 'lockedString' -->
           <div>
@@ -107,7 +113,7 @@ export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input: ViewInput, _output: 
                 role="option"
                 tabindex=${index === input.selectedIndex ? '0' : '-1'}
               >
-                <devtools-icon class="folder-icon" .name=${'folder'}></devtools-icon>
+                <devtools-icon class="folder-icon" name="folder"></devtools-icon>
                 <span class="ellipsis">${folder.name}</span>
               </li>`;
           })}
@@ -138,11 +144,11 @@ export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input: ViewInput, _output: 
         ` : nothing}
       </div>
     `,
-    target,
-    {host: target}
+    target
   );
+  // clang-format on
 };
-// clang-format on
+
 export class SelectWorkspaceDialog extends UI.Widget.VBox {
   #view: View;
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -160,7 +166,6 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       },
       view?: View) {
     super();
-    this.element.classList.add('dialog-container');
     this.#onProjectSelected = options.onProjectSelected;
     this.#dialog = options.dialog;
     this.#updateProjectsAndFolders();
@@ -224,9 +229,14 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
+    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+
     const viewInput = {
       folders: this.#folders,
       selectedIndex: this.#selectedIndex,
+      selectProjectRootText: noLogging ? lockedString(UIStringsNotTranslate.selectProjectRootNoLogging) :
+                                         lockedString(UIStringsNotTranslate.selectProjectRoot),
       showAutomaticWorkspaceNudge: this.#automaticFileSystemManager.automaticFileSystem === null &&
           this.#automaticFileSystemManager.availability === 'available',
       onProjectSelected: (index: number) => {

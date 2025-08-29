@@ -22,7 +22,7 @@ import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {
   /**
-   *@description Error message for canceled source map loads
+   * @description Error message for canceled source map loads
    */
   loadCanceledDueToReloadOf: 'Load canceled due to reload of inspected page',
 } as const;
@@ -246,14 +246,14 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   }
 
   loadResource(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator, isBinary: true): Promise<{
-    content: Uint8Array,
+    content: Uint8Array<ArrayBuffer>,
   }>;
   loadResource(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator, isBinary?: false): Promise<{
     content: string,
   }>;
   async loadResource(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator, isBinary = false):
       Promise<{
-        content: string | Uint8Array,
+        content: string | Uint8Array<ArrayBuffer>,
       }> {
     if (isExtensionInitiator(initiator)) {
       throw new Error('Invalid initiator');
@@ -293,7 +293,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   private async dispatchLoad(
       url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator, isBinary: boolean): Promise<{
     success: boolean,
-    content: string|Uint8Array,
+    content: string|Uint8Array<ArrayBuffer>,
     errorDescription: Host.ResourceLoader.LoadErrorDescription,
   }> {
     if (isExtensionInitiator(initiator)) {
@@ -384,7 +384,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       target: Target, frameId: Protocol.Page.FrameId|null, url: Platform.DevToolsPath.UrlString,
       isBinary: boolean): Promise<{
     success: boolean,
-    content: string|Uint8Array,
+    content: string|Uint8Array<ArrayBuffer>,
     errorDescription: {
       statusCode: number,
       netError: number|undefined,

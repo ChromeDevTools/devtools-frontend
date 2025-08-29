@@ -28,7 +28,7 @@ const {html} = Lit;
 type BaseInsightComponent = BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>;
 
 /**
- * @fileoverview An interactive table component.
+ * @file An interactive table component.
  *
  * On hover:
  *           desaturates the relevant events (in both the minimap and the flamegraph), and

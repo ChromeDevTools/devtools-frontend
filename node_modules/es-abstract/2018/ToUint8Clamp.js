@@ -3,7 +3,7 @@
 var ToNumber = require('./ToNumber');
 var floor = require('./floor');
 
-var $isNaN = require('../helpers/isNaN');
+var $isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/6.0/#sec-touint8clamp
 

@@ -11,6 +11,7 @@ generate_css("css_files") {
   sources = [
     "breadcrumbsUI.css",
     "cpuThrottlingSelector.css",
+    "exportTraceOptions.css",
     "fieldSettingsDialog.css",
     "ignoreListSetting.css",
     "interactionBreakdown.css",
@@ -36,6 +37,7 @@ devtools_module("components") {
     "BreadcrumbsUI.ts",
     "CPUThrottlingSelector.ts",
     "DetailsView.ts",
+    "ExportTraceOptions.ts",
     "FieldSettingsDialog.ts",
     "IgnoreListSetting.ts",
     "InteractionBreakdown.ts",
@@ -65,6 +67,7 @@ devtools_module("components") {
     "../../../models/crux-manager:bundle",
     "../../../models/live-metrics:bundle",
     "../../../models/trace:bundle",
+    "../../../models/workspace:bundle",
     "../../../services/trace_bounds:bundle",
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/dialogs:bundle",
@@ -111,6 +114,7 @@ ts_library("unittests") {
   sources = [
     "BreadcrumbsUI.test.ts",
     "CPUThrottlingSelector.test.ts",
+    "ExportTraceOptions.test.ts",
     "FieldSettingsDialog.test.ts",
     "IgnoreListSetting.test.ts",
     "InteractionBreakdown.test.ts",

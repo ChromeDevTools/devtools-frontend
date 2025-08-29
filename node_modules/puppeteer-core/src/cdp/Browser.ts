@@ -55,6 +55,7 @@ export class CdpBrowser extends BrowserBase {
     targetFilterCallback?: TargetFilterCallback,
     isPageTargetCallback?: IsPageTargetCallback,
     waitForInitiallyDiscoveredTargets = true,
+    networkEnabled = true,
   ): Promise<CdpBrowser> {
     const browser = new CdpBrowser(
       connection,
@@ -65,6 +66,7 @@ export class CdpBrowser extends BrowserBase {
       targetFilterCallback,
       isPageTargetCallback,
       waitForInitiallyDiscoveredTargets,
+      networkEnabled,
     );
     if (acceptInsecureCerts) {
       await connection.send('Security.setIgnoreCertificateErrors', {
@@ -82,6 +84,7 @@ export class CdpBrowser extends BrowserBase {
   #isPageTargetCallback!: IsPageTargetCallback;
   #defaultContext: CdpBrowserContext;
   #contexts = new Map<string, CdpBrowserContext>();
+  #networkEnabled = true;
   #targetManager: TargetManager;
 
   constructor(
@@ -93,8 +96,10 @@ export class CdpBrowser extends BrowserBase {
     targetFilterCallback?: TargetFilterCallback,
     isPageTargetCallback?: IsPageTargetCallback,
     waitForInitiallyDiscoveredTargets = true,
+    networkEnabled = true,
   ) {
     super();
+    this.#networkEnabled = networkEnabled;
     this.#defaultViewport = defaultViewport;
     this.#process = process;
     this.#connection = connection;
@@ -360,6 +365,15 @@ export class CdpBrowser extends BrowserBase {
     return page;
   }
 
+  override async installExtension(path: string): Promise<string> {
+    const {id} = await this.#connection.send('Extensions.loadUnpacked', {path});
+    return id;
+  }
+
+  override uninstallExtension(id: string): Promise<void> {
+    return this.#connection.send('Extensions.uninstall', {id});
+  }
+
   override targets(): CdpTarget[] {
     return Array.from(
       this.#targetManager.getAvailableTargets().values(),
@@ -415,5 +429,9 @@ export class CdpBrowser extends BrowserBase {
     return {
       pendingProtocolErrors: this.#connection.getPendingProtocolErrors(),
     };
+  }
+
+  override isNetworkEnabled(): boolean {
+    return this.#networkEnabled;
   }
 }

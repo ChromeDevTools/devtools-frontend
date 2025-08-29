@@ -15,7 +15,18 @@ export default {
         importMetaAssets({
           async transform(assetBuffer, assetPath) {
             if (assetPath.endsWith('.svg')) {
-              const {data} = await optimize(assetBuffer.toString());
+              const {data} = await optimize(assetBuffer.toString(), {
+                plugins: [
+                  {
+                    name: 'preset-default',
+                    params: {
+                      overrides: {
+                        inlineStyles: false,
+                      },
+                    },
+                  },
+                ],
+              });
               return data;
             }
             return null;

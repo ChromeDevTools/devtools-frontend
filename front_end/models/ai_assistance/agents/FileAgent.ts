@@ -69,7 +69,7 @@ MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web
 */
 const UIStringsNotTranslate = {
   /**
-   *@description Title for thinking step of File agent.
+   * @description Title for thinking step of File agent.
    */
   analyzingFile: 'Analyzing file',
 } as const;

@@ -25,10 +25,14 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     const targetManager = SDK.TargetManager.TargetManager.instance();
     workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
-        {forceNew: true, resourceMapping, targetManager});
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+    });
     backend = new MockProtocolBackend();
-    Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
   });
 
   const waitForUISourceCodeAdded =
@@ -179,7 +183,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   it('creates separate UISourceCodes for content scripts', async () => {
     // By default content scripts are ignore listed, which will prevent processing the
     // source map. We need to disable that option.
-    Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListContentScripts();
+    Workspace.IgnoreListManager.IgnoreListManager.instance().unIgnoreListContentScripts();
 
     const target = createTarget();
 

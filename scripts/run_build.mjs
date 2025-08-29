@@ -85,7 +85,7 @@ if (watch) {
   const changes = new Set();
 
   function watchCallback(eventType, filename) {
-    if (eventType !== 'change') {
+    if (eventType !== 'change' && eventType !== 'rename') {
       return;
     }
     if (!/^(BUILD\.gn)|(.*\.(css|js|ts))$/.test(filename)) {

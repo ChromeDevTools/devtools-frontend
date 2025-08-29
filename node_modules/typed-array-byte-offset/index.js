@@ -6,11 +6,13 @@ var gPO = require('reflect.getprototypeof/polyfill')();
 
 var typedArrays = require('available-typed-arrays')();
 
-/** @typedef {Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array | BigInt64Array | BigUint64Array} TypedArray */
-/** @typedef {(x: TypedArray) => number} ByteOffsetGetter */
+/** @typedef {(x: import('.').TypedArray) => number} ByteOffsetGetter */
 
-/** @type {Object.<typeof typedArrays, ByteOffsetGetter>} */
-var getters = {};
+/** @type {Record<import('.').TypedArrayName, ByteOffsetGetter>} */
+var getters = {
+	// @ts-expect-error TS can't handle __proto__ or `satisfies` in jsdoc
+	__proto__: null
+};
 
 var gOPD = require('gopd');
 var oDP = Object.defineProperty;

@@ -12,31 +12,31 @@ import type {Widget} from './Widget.js';
 
 const UIStrings = {
   /**
-   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Elements' panel.
+   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Elements' panel.
    */
   elements: 'Elements',
   /**
-   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Drawer' panel.
+   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Drawer' panel.
    */
   drawer: 'Drawer',
   /**
-   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Drawer sidebar' panel.
+   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Drawer sidebar' panel.
    */
   drawer_sidebar: 'Drawer sidebar',
   /**
-   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Panel'.
+   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Panel'.
    */
   panel: 'Panel',
   /**
-   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Network' panel.
+   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Network' panel.
    */
   network: 'Network',
   /**
-   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Settings' panel.
+   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Settings' panel.
    */
   settings: 'Settings',
   /**
-   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Sources' panel.
+   * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Sources' panel.
    */
   sources: 'Sources',
 } as const;
@@ -154,6 +154,10 @@ export interface ViewRegistration {
    * Icon to be used next to view's title.
    */
   iconName?: string;
+  /**
+   * Whether a view needs to be promoted. A new badge is shown next to the menu items then.
+   */
+  featurePromotionId?: string;
 }
 
 const viewIdSet = new Set<string>();
@@ -170,6 +174,12 @@ export function registerViewExtension(registration: ViewRegistration): void {
   }
   viewIdSet.add(viewId);
   registeredViewExtensions.push(new PreRegisteredView(registration));
+}
+
+export function getRegisteredViewExtensionForID(id: string): PreRegisteredView|undefined {
+  return registeredViewExtensions.find(
+      view => view.viewId() === id &&
+          Root.Runtime.Runtime.isDescriptorEnabled({experiment: view.experiment(), condition: view.condition()}));
 }
 
 export function getRegisteredViewExtensions(): PreRegisteredView[] {

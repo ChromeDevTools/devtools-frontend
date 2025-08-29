@@ -1,0 +1,893 @@
+Title: PerformanceTraceFormatter formatCriticalRequests
+Content:
+Critical network requests:
+
+Network requests data:
+
+
+
+allUrls = [0: http://localhost:8000/, 1: https://code.jquery.com/jquery-3.7.1.js, 2: http://localhost:8000/render-blocking-stylesheet.css, 3: http://localhost:8000/render-blocking-script.js]
+
+0;1.50 ms;2.83 ms;575.96 ms;583.43 ms;581.93 ms;0.42 ms;7.48 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.0;f;;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:27 GMT|Content-type: text/html|Last-Modified: Fri, 07 Mar 2025 14:58:55 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+1;581.40 ms;584.53 ms;1,942.70 ms;1,944.05 ms;1,362.65 ms;775.53 ms;1.35 ms;200;application/javascript;High;High;High;t;h2;f;0;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]
+2;581.60 ms;583.11 ms;1,192.93 ms;1,193.16 ms;611.56 ms;0.19 ms;0.23 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;0;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+3;581.56 ms;583.25 ms;1,176.60 ms;1,177.86 ms;596.30 ms;0.36 ms;1.27 ms;200;text/javascript;High;High;High;t;http/1.0;f;0;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+=== end content
+
+Title: PerformanceTraceFormatter formatLongestTasks
+Content:
+Longest 3 tasks:
+- total time: 10.5 ms, event: (eventKey: r-62, ts: 2297273193336)
+- total time: 2.8 ms, event: (eventKey: r-723, ts: 2297274436743)
+- total time: 1.5 ms, event: (eventKey: r-631, ts: 2297274234151)
+=== end content
+
+Title: PerformanceTraceFormatter formatMainThreadBottomUpSummary
+Content:
+This is the bottom-up summary for the entire trace. Only the top 10 activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.
+
+- self: 186.2 ms, total: 192.6 ms, source: Compile code
+- self: 98.4 ms, total: 992.8 ms, source: Task
+- self: 55.6 ms, total: 70 ms, source: Compile script
+- self: 51.7 ms, total: 64 ms, source: setTimeout
+- self: 37.5 ms, total: 40.3 ms, source: aC (url: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js, line: 0, column: 19068)
+- self: 34.9 ms, total: 34.9 ms, source: Recalculate style (url: https://news.yahoo.com/, line: 57, column: 187957)
+- self: 33.7 ms, total: 33.7 ms, source: Layout (url: https://news.yahoo.com/, line: 57, column: 187957)
+- self: 31.3 ms, total: 33.9 ms, source: clearTimeout
+- self: 30.3 ms, total: 53.4 ms, source: Parse HTML
+- self: 25.9 ms, total: 258.9 ms, source: Function call
+=== end content
+
+Title: PerformanceTraceFormatter formatThirdPartySummary
+Content:
+Third party summary:
+- name: Google/Doubleclick Ads, main thread time: 53 ms, network transfer size: 259 kB
+- name: Taboola, main thread time: 42.7 ms, network transfer size: 394 kB
+- name: Google Tag Manager, main thread time: 18.7 ms, network transfer size: 124 kB
+- name: AOL / Oath / Verizon Media, main thread time: 4.7 ms, network transfer size: 42 kB
+- name: ay.delivery, main thread time: 4 ms, network transfer size: 123 kB
+=== end content
+
+Title: PerformanceTraceFormatter formatMainThreadTrackSummary
+Content:
+# Top-down main thread summary
+
+
+## All URLs:
+
+  * 0: https://consent.cmp.oath.com/version/7.0.0/cmp.js
+  * 1: https://securepubads.g.doubleclick.net/tag/js/gpt.js
+  * 2: https://cdn.taboola.com/libtrc/yahooweb-network/loader.js
+  * 3: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js
+  * 4: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js
+  * 5: https://s.yimg.com/aaq/prebid/prebid-2.0.js
+  * 6: https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202503250101/pubads_impl.js
+  * 7: https://news.yahoo.com/
+  * 8: https://www.googletagmanager.com/gtag/js?id=G-B40QGCQW3G
+  * 9: https://s.yimg.com/aaq/benji/benji-2.2.99.js
+
+## Call tree:
+
+1;Task;10.3;0;;18
+2;Task;32.5;0;;19
+3;Task;11.7;0.1;;20
+4;Task;23.4;0.3;;21
+5;Task;12.8;0.1;;22
+6;Task;14.1;0.1;;23
+7;Task;41;0.1;;24-26
+8;Task;87.7;0.1;;26
+9;Task;40.2;0;;27
+10;Task;10.4;0.1;;28
+11;Task;30.9;30.9;;
+12;Task;12.9;0;;29
+13;Task;23.3;0;;30
+14;Task;17.4;0.1;;31
+15;Task;10.2;0;;32
+16;Task;29.8;0.1;;33
+17;Task;24.7;0;;34
+18;Evaluate script;10.3;10.3;0;
+19;Timer fired;32.5;0;;35
+20;Evaluate script;11.6;1.3;1;36
+21;Evaluate script;23.1;11.6;2;37
+22;Evaluate script;12.7;2.6;3;38
+23;Evaluate script;14;1.5;4;39
+24;Evaluate script;27.1;5.9;5;40
+25;Event: load;13.9;0;;41
+26;Timer fired;87.6;1.9;;42
+27;Evaluate script;40.2;5.2;6;43-45
+28;Parse HTML;10.4;10.4;7;
+29;Evaluate script;12.8;12.8;8;
+30;Timer fired;23.3;0;;45
+31;Run microtasks;17.3;5.8;;46
+32;Run microtasks;10.2;0;;47
+33;Run microtasks;29.7;0.3;;48
+34;Timer fired;24.7;2.5;;49
+35;Function call;32.5;1.8;7;50
+36;(anonymous);10.4;10.4;1;
+37;Compile script;11.5;11.5;2;
+38;(anonymous);10.1;;3;51
+39;(anonymous);12.5;12.5;4;
+40;(anonymous);21.2;1.2;5;52
+41;Run microtasks;13.8;0.2;;53
+42;Function call;85.7;0.5;3;54-56
+43;(anonymous);14.9;;6;56
+44;Run microtasks;20.1;0.1;;57
+45;Function call;23.3;0.4;3;58
+46;(anonymous);11.5;;2;59
+47;(anonymous);10.1;;2;60
+48;(anonymous);29.5;;3;61
+49;Run microtasks;22.2;5.6;;62
+50;(anonymous);30.6;;7;63
+51;apiVersionSuffix;10.1;10.1;3;
+52;(anonymous);20;8;5;64
+53;(anonymous);13.6;2.8;9;65
+54;fg;74.2;;3;66
+55;fg;11;;3;67
+56;(anonymous);14.9;4;6;68
+57;b;20;7.2;6;69
+58;fg;22.9;;3;70
+59;u;11.5;;2;71
+60;fillEllipsis;10.1;;2;72
+61;(anonymous);29.5;;5;73
+62;b;16.6;;6;74
+63;ready;30.6;;7;75
+64;t;12;12;5;
+65;_setConfig;10.8;;9;76
+66;(anonymous);74.2;;9;77
+67;(anonymous);11;;9;78
+68;(anonymous);10.9;10.9;6;
+69;EB.next;12.7;;6;79
+70;rC;22.9;;8;80
+71;(anonymous);11.5;;2;81
+72;fillNativeEllipsis;10.1;0;2;82
+73;success;29.5;4.1;5;83
+74;EB.next;16.6;2.5;6;84
+75;(anonymous);30.6;10.7;7;85
+76;Z.cmd.push;10.8;;5;86
+77;_requestBids;74.2;;9;87
+78;_requestBids;11;;9;88
+79;CB;12.7;;6;89
+80;pC;22.9;0.1;8;90-92
+81;u;11.5;;2;92
+82;computeStyles;10.1;10.1;2;
+83;onResponse;25.4;0.1;5;93
+84;CB;14.1;;6;94
+85;ge;19.9;1.2;7;95
+86;(anonymous);10.8;;9;96
+87;Z.cmd.push;74.2;;5;97
+88;Z.cmd.push;11;;5;98
+89;(anonymous);12.7;0.8;6;99
+90;mC;12;1.2;8;100
+91;config;10.7;0.5;8;101
+92;(anonymous);11.5;;2;102
+93;(anonymous);25.3;0.1;5;103
+94;(anonymous);14.1;2.3;6;104
+95;e.init;18.7;;7;105
+96;v;10.8;;5;106
+97;(anonymous);74.2;;9;107
+98;(anonymous);11;;9;108
+99;PV.g;12;;6;109
+100;tB;10.9;10.9;8;
+101;Sp.push;10.2;;8;110
+102;(anonymous);11.5;11.5;2;
+103;(anonymous);25.2;;5;111
+104;i_.g;11.8;;6;112
+105;(anonymous);18.7;0.4;7;113
+106;A;10.8;;5;114
+107;(anonymous);74.2;;5;115
+108;(anonymous);11;;5;116
+109;M.id;12;0.4;6;117
+110;Sp.flush;10.2;;8;118
+111;(anonymous);25.2;;5;119
+112;sA;11.8;11.8;6;
+113;(anonymous);18.3;0.3;7;120
+114;(anonymous);10.8;10.8;5;
+115;y;74.2;;5;121
+116;y;11;;5;122
+117;mt;11.6;1.5;6;123
+118;Tp;10.2;;8;124
+119;(anonymous);25.2;;5;125
+120;(anonymous);18;8.4;7;126
+121;p;74.2;;5;127
+122;p;11;;5;128
+123;_.Xl;10.1;10.1;6;
+124;Om;10.2;;8;129
+125;adapterDone;25.2;;5;130
+126;Recalculate style;9.6;9.6;;
+127;(anonymous);74.2;;5;131
+128;(anonymous);11;;5;132
+129;w;10.2;;8;133
+130;finally;25.2;;5;134
+131;measureHookTime;74.2;;5;135
+132;measureHookTime;11;;5;136
+133;c;10.2;10.2;8;
+134;then;25.2;;5;137
+135;(anonymous);74.2;;5;138
+136;(anonymous);11;;5;139
+137;o;25.2;;5;140
+138;(anonymous);74.2;;5;141
+139;(anonymous);11;;5;142
+140;(anonymous);25.2;;5;143
+141;D;74.2;;5;144
+142;D;11;;5;145
+143;s;25.2;;5;146
+144;iab;74.2;;5;147
+145;iab;11;;5;148
+146;(anonymous);25.2;;5;149
+147;v;74.2;;5;150
+148;v;11;;5;151
+149;(anonymous);25.2;;5;152
+150;o;74.2;;5;153
+151;o;11;;5;154
+152;T;25.2;;5;155
+153;(anonymous);74.2;;5;156
+154;(anonymous);11;;5;157
+155;ae;25.2;0;5;158
+156;window.__uspapi;74.2;;0;159
+157;window.__uspapi;11;;0;160
+158;oe;25.2;5.9;5;161
+159;(anonymous);74.2;;5;162
+160;(anonymous);11;;5;163
+161;t.emit;19.2;;5;164
+162;consentDataCallback;74.2;;5;165
+163;consentDataCallback;11;;5;166
+164;(anonymous);19.2;;5;167
+165;h;74.2;;5;168
+166;h;11;;5;169
+167;(anonymous);19.2;2.7;5;170
+168;o;74.2;;5;171
+169;o;11;;5;172
+170;(anonymous);16.5;0.2;3;173
+171;(anonymous);74.2;;5;174
+172;(anonymous);11;;5;175
+173;d3.<computed>.<computed>;16.4;;3;176
+174;(anonymous);74.2;0.3;5;177
+175;(anonymous);11;;5;178
+176;(anonymous);16.4;16.4;3;
+177;p;74;;5;179
+178;p;11;;5;180
+179;(anonymous);74;;5;181
+180;(anonymous);11;;5;182
+181;measureHookTime;74;;5;183
+182;measureHookTime;11;;5;184
+183;(anonymous);74;;5;185
+184;(anonymous);11;;5;186
+185;(anonymous);74;;5;187
+186;(anonymous);11;;5;188
+187;t;74;;5;189
+188;t;11;;5;190
+189;(anonymous);74;;5;191
+190;(anonymous);11;;5;192
+191;p;74;;5;193
+192;p;11;;5;194
+193;(anonymous);74;;5;195
+194;(anonymous);11;;5;196
+195;measureHookTime;74;;5;197
+196;measureHookTime;11;;5;198
+197;(anonymous);74;;5;199
+198;(anonymous);11;;5;200
+199;(anonymous);74;;5;201
+200;(anonymous);11;;5;202
+201;n;74;;5;203
+202;n;11;;5;204
+203;(anonymous);74;;5;205
+204;(anonymous);11;;5;206
+205;p;74;;5;207
+206;p;11;;5;208
+207;(anonymous);74;;5;209
+208;(anonymous);11;;5;210
+209;measureHookTime;74;;5;211
+210;measureHookTime;11;;5;212
+211;(anonymous);74;;5;213
+212;(anonymous);11;;5;214
+213;(anonymous);74;;5;215
+214;(anonymous);11;;5;216
+215;z;74;0.7;5;217
+216;z;11;;5;218
+217;(anonymous);73.3;;5;219
+218;(anonymous);11;;5;220
+219;p;73.3;;5;221
+220;p;11;;5;222
+221;(anonymous);73.3;1.1;5;223
+222;(anonymous);11;;5;224
+223;p;72.1;;5;225
+224;p;11;;5;226
+225;(anonymous);72.1;;5;227
+226;(anonymous);11;;5;228
+227;measureHookTime;72.1;;5;229
+228;measureHookTime;11;;5;230
+229;(anonymous);72.1;;5;231
+230;(anonymous);11;;5;232
+231;(anonymous);72.1;0.3;5;233
+232;(anonymous);11;;5;234
+233;then;71.9;;5;235
+234;then;11;;5;236
+235;o;71.9;;5;237
+236;o;11;;5;238
+237;(anonymous);71.9;;5;239
+238;(anonymous);11;;5;240
+239;s;71.9;;5;241
+240;s;11;;5;242
+241;(anonymous);71.9;1;5;243
+242;(anonymous);11;;5;244
+243;(anonymous);70.9;;5;245
+244;(anonymous);11;;5;246
+245;p;70.9;;5;247
+246;p;11;;5;248
+247;o.<computed>;70.9;;5;249
+248;o.<computed>;11;;5;250
+249;(anonymous);70.9;1.9;5;251
+250;(anonymous);11;;5;252
+251;then;69;;5;253
+252;then;11;;5;254
+253;o;69;;5;255
+254;o;11;;5;256
+255;(anonymous);69;;5;257
+256;(anonymous);11;;5;258
+257;s;69;;5;259
+258;s;11;;5;260
+259;(anonymous);69;;5;261
+260;(anonymous);11;;5;262
+261;y;69;;5;263
+262;y;11;;5;264
+263;p;69;;5;265
+264;p;11;;5;266
+265;(anonymous);69;;5;267
+266;(anonymous);11;;5;268
+267;measureHookTime;69;;5;269
+268;measureHookTime;11;;5;270
+269;(anonymous);69;;5;271
+270;(anonymous);11;;5;272
+271;(anonymous);69;;5;273
+272;(anonymous);11;;5;274
+273;f;69;0.1;5;275
+274;f;11;;5;276
+275;(anonymous);68.9;0.1;5;277
+276;(anonymous);11;;5;278
+277;p;68.8;;5;279
+278;p;11;;5;280
+279;o.<computed>;68.8;;5;281
+280;o.<computed>;11;;5;282
+281;(anonymous);68.8;1.8;5;283
+282;(anonymous);11;;5;284
+283;callBids;67;;5;285-287
+284;callBids;11;;5;287
+285;measureTime;11.9;;5;288
+286;(anonymous);55;;5;289
+287;(anonymous);11;;5;290
+288;(anonymous);11.9;;5;291
+289;ce;55;;5;292
+290;ce;11;;5;293
+291;(anonymous);11.9;;5;294
+292;a;55;;5;295
+293;a;11;;5;296
+294;y;11.9;;5;297
+295;run;55;2.1;5;298
+296;run;11;;5;299
+297;p;11.9;;5;300
+298;R.callBids;53;;5;301
+299;R.callBids;11;;5;302
+300;f;11.9;1.9;5;303
+301;(anonymous);53;15;5;304
+302;(anonymous);11;;5;305
+303;p;10;;5;306
+304;T;38;38;5;
+305;T;11;1;5;307
+306;o.<computed>;10;;5;308
+307;callBids;10.1;;5;309
+308;(anonymous);10;10;5;
+309;(anonymous);10.1;10.1;5;
+
+## Node id to eventKey
+
+These node ids correspond to the call tree nodes listed in the above section.
+
+1: r-7065
+2: r-9670
+3: r-15016
+4: r-18571
+5: r-25964
+6: r-27315
+7: r-29582
+8: r-39347
+9: r-46082
+10: r-55191
+11: r-59836
+12: r-72507
+13: r-74575
+14: r-91872
+15: r-94858
+16: r-97269
+17: r-100787
+18: r-7070
+19: r-9671
+20: r-15021
+21: r-18573
+22: r-25966
+23: r-27320
+24: r-29586
+25: r-34263
+26: r-39348
+27: r-46084
+28: r-55192
+29: r-72510
+30: r-74576
+31: r-91873
+32: r-94864
+33: r-97270
+34: r-100788
+35: r-9676
+36: p-49575-15428179-2834-374
+37: r-18574
+38: p-49575-15428179-3407-1094
+39: p-49575-15428179-3505-1162
+40: p-49575-15428179-3719-1230
+41: r-34282
+42: r-39351
+43: p-49575-15428179-5391-2767
+44: r-49156
+45: r-74582
+46: p-49575-15428179-11417-6128
+47: p-49575-15428179--1-802
+48: p-49575-15428179-12694-3277
+49: r-101251
+50: p-49575-15428179-2409-265
+51: p-49575-15428179-3407-1095
+52: p-49575-15428179-3719-1231
+53: p-49575-15428179-3889-1540
+54: p-49575-15428179-4266-1907
+55: p-49575-15428179--1-1907
+56: p-49575-15428179-5391-2768
+57: p-49575-15428179-5508-3045
+58: p-49575-15428179-7577-1907
+59: p-49575-15428179-11417-6129
+60: p-49575-15428179--1-6287
+61: p-49575-15428179-12694-3331
+62: p-49575-15428179-13253-3045
+63: p-49575-15428179-2409-266
+64: p-49575-15428179-3781-1233
+65: p-49575-15428179-3896-1547
+66: p-49575-15428179-4266-1908
+67: p-49575-15428179--1-1908
+68: p-49575-15428179-5420-2783
+69: p-49575-15428179-5508-3046
+70: p-49575-15428179-7577-4811
+71: p-49575-15428179-11417-6130
+72: p-49575-15428179--1-6288
+73: p-49575-15428179-12694-6394
+74: p-49575-15428179-13253-3046
+75: p-49575-15428179-2409-267
+76: p-49575-15428179-3896-1548
+77: p-49575-15428179-4266-1909
+78: p-49575-15428179--1-1909
+79: p-49575-15428179-5508-3047
+80: p-49575-15428179-7577-4812
+81: p-49575-15428179-11417-6131
+82: p-49575-15428179--1-6291
+83: p-49575-15428179--1-6485
+84: p-49575-15428179-13253-3047
+85: p-49575-15428179--1-281
+86: p-49575-15428179-3896-1549
+87: p-49575-15428179-4266-1910
+88: p-49575-15428179--1-1910
+89: p-49575-15428179-5508-3048
+90: p-49575-15428179-7578-4819
+91: p-49575-15428179-7685-5087
+92: p-49575-15428179-11417-6132
+93: p-49575-15428179-12788-6496
+94: p-49575-15428179-13253-3058
+95: p-49575-15428179-2432-284
+96: p-49575-15428179-3896-1550
+97: p-49575-15428179-4266-1911
+98: p-49575-15428179--1-1911
+99: p-49575-15428179-5520-3068
+100: p-49575-15428179-7580-4824
+101: p-49575-15428179-7688-5089
+102: p-49575-15428179-11417-6133
+103: p-49575-15428179--1-6500
+104: p-49575-15428179-13265-6900
+105: p-49575-15428179-2432-296
+106: p-49575-15428179-3896-1552
+107: p-49575-15428179-4266-1912
+108: p-49575-15428179--1-1912
+109: p-49575-15428179-5520-3069
+110: p-49575-15428179-7688-5090
+111: p-49575-15428179--1-6501
+112: p-49575-15428179-13265-6901
+113: p-49575-15428179-2435-299
+114: p-49575-15428179-3896-1553
+115: p-49575-15428179-4266-1913
+116: p-49575-15428179--1-1913
+117: p-49575-15428179-5523-3075
+118: p-49575-15428179-7688-5094
+119: p-49575-15428179--1-6502
+120: p-49575-15428179--1-301
+121: p-49575-15428179-4266-1914
+122: p-49575-15428179--1-1914
+123: p-49575-15428179-5534-3091
+124: p-49575-15428179-7688-5095
+125: p-49575-15428179--1-6503
+126: r-10293
+127: p-49575-15428179-4266-1915
+128: p-49575-15428179--1-1915
+129: p-49575-15428179-7688-5096
+130: p-49575-15428179--1-6504
+131: p-49575-15428179-4266-1916
+132: p-49575-15428179--1-1916
+133: p-49575-15428179-7688-5097
+134: p-49575-15428179--1-6505
+135: p-49575-15428179-4266-1917
+136: p-49575-15428179--1-1917
+137: p-49575-15428179--1-6506
+138: p-49575-15428179-4266-1918
+139: p-49575-15428179--1-1918
+140: p-49575-15428179--1-6507
+141: p-49575-15428179-4266-1919
+142: p-49575-15428179--1-1919
+143: p-49575-15428179--1-6508
+144: p-49575-15428179-4266-1920
+145: p-49575-15428179--1-1920
+146: p-49575-15428179--1-6509
+147: p-49575-15428179-4266-1921
+148: p-49575-15428179--1-1921
+149: p-49575-15428179--1-6510
+150: p-49575-15428179-4266-1922
+151: p-49575-15428179--1-1922
+152: p-49575-15428179--1-6511
+153: p-49575-15428179-4266-1923
+154: p-49575-15428179--1-1923
+155: p-49575-15428179--1-6512
+156: p-49575-15428179-4266-1924
+157: p-49575-15428179--1-1924
+158: p-49575-15428179--1-6513
+159: p-49575-15428179-4266-1925
+160: p-49575-15428179--1-1925
+161: p-49575-15428179--1-6526
+162: p-49575-15428179-4266-1926
+163: p-49575-15428179--1-1926
+164: p-49575-15428179--1-6527
+165: p-49575-15428179-4266-1927
+166: p-49575-15428179--1-1927
+167: p-49575-15428179--1-6528
+168: p-49575-15428179-4266-1928
+169: p-49575-15428179--1-1928
+170: p-49575-15428179-12812-6554
+171: p-49575-15428179-4266-1929
+172: p-49575-15428179--1-1929
+173: p-49575-15428179-12812-6555
+174: p-49575-15428179-4266-1930
+175: p-49575-15428179--1-1930
+176: p-49575-15428179-12812-6556
+177: p-49575-15428179-4268-1932
+178: p-49575-15428179--1-1932
+179: p-49575-15428179-4268-1933
+180: p-49575-15428179--1-1933
+181: p-49575-15428179-4268-1934
+182: p-49575-15428179--1-1934
+183: p-49575-15428179-4268-1935
+184: p-49575-15428179--1-1935
+185: p-49575-15428179-4268-1936
+186: p-49575-15428179--1-1936
+187: p-49575-15428179-4268-1937
+188: p-49575-15428179--1-1937
+189: p-49575-15428179-4268-1938
+190: p-49575-15428179--1-1938
+191: p-49575-15428179-4268-1939
+192: p-49575-15428179--1-1939
+193: p-49575-15428179-4268-1940
+194: p-49575-15428179--1-1940
+195: p-49575-15428179-4268-1941
+196: p-49575-15428179--1-1941
+197: p-49575-15428179-4268-1942
+198: p-49575-15428179--1-1942
+199: p-49575-15428179-4268-1943
+200: p-49575-15428179--1-1943
+201: p-49575-15428179-4268-1944
+202: p-49575-15428179--1-1944
+203: p-49575-15428179-4268-1945
+204: p-49575-15428179--1-1945
+205: p-49575-15428179-4268-1946
+206: p-49575-15428179--1-1946
+207: p-49575-15428179-4268-1947
+208: p-49575-15428179--1-1947
+209: p-49575-15428179-4268-1948
+210: p-49575-15428179--1-1948
+211: p-49575-15428179-4268-1949
+212: p-49575-15428179--1-1949
+213: p-49575-15428179-4268-1950
+214: p-49575-15428179--1-1950
+215: p-49575-15428179-4268-1951
+216: p-49575-15428179--1-1951
+217: p-49575-15428179-4273-1956
+218: p-49575-15428179--1-1956
+219: p-49575-15428179-4273-1957
+220: p-49575-15428179--1-1957
+221: p-49575-15428179-4273-1958
+222: p-49575-15428179--1-1958
+223: p-49575-15428179-4300-1972
+224: p-49575-15428179--1-1972
+225: p-49575-15428179-4300-1973
+226: p-49575-15428179--1-1973
+227: p-49575-15428179-4300-1974
+228: p-49575-15428179--1-1974
+229: p-49575-15428179-4300-1975
+230: p-49575-15428179--1-1975
+231: p-49575-15428179-4300-1976
+232: p-49575-15428179--1-1976
+233: p-49575-15428179-4304-1982
+234: p-49575-15428179--1-1982
+235: p-49575-15428179-4304-1983
+236: p-49575-15428179--1-1983
+237: p-49575-15428179-4304-1984
+238: p-49575-15428179--1-1984
+239: p-49575-15428179-4304-1985
+240: p-49575-15428179--1-1985
+241: p-49575-15428179-4304-1986
+242: p-49575-15428179--1-1986
+243: p-49575-15428179--1-1999
+244: p-49575-15428179--1-1999
+245: p-49575-15428179--1-2000
+246: p-49575-15428179--1-2000
+247: p-49575-15428179--1-2001
+248: p-49575-15428179--1-2001
+249: p-49575-15428179--1-2002
+250: p-49575-15428179--1-2002
+251: p-49575-15428179--1-2045
+252: p-49575-15428179--1-2045
+253: p-49575-15428179--1-2046
+254: p-49575-15428179--1-2046
+255: p-49575-15428179--1-2047
+256: p-49575-15428179--1-2047
+257: p-49575-15428179--1-2048
+258: p-49575-15428179--1-2048
+259: p-49575-15428179--1-2049
+260: p-49575-15428179--1-2049
+261: p-49575-15428179--1-2050
+262: p-49575-15428179--1-2050
+263: p-49575-15428179--1-2051
+264: p-49575-15428179--1-2051
+265: p-49575-15428179--1-2052
+266: p-49575-15428179--1-2052
+267: p-49575-15428179--1-2053
+268: p-49575-15428179--1-2053
+269: p-49575-15428179--1-2054
+270: p-49575-15428179--1-2054
+271: p-49575-15428179--1-2055
+272: p-49575-15428179--1-2055
+273: p-49575-15428179--1-2056
+274: p-49575-15428179--1-2056
+275: p-49575-15428179-4331-2058
+276: p-49575-15428179--1-2058
+277: p-49575-15428179-4332-2066
+278: p-49575-15428179--1-2066
+279: p-49575-15428179-4332-2067
+280: p-49575-15428179--1-2067
+281: p-49575-15428179-4332-2068
+282: p-49575-15428179--1-2068
+283: p-49575-15428179-4344-2089
+284: p-49575-15428179--1-2089
+285: p-49575-15428179-4344-2090
+286: p-49575-15428179-4466-2230
+287: p-49575-15428179--1-2230
+288: p-49575-15428179-4344-2091
+289: p-49575-15428179-4466-2231
+290: p-49575-15428179--1-2231
+291: p-49575-15428179-4344-2092
+292: p-49575-15428179-4466-2232
+293: p-49575-15428179--1-2232
+294: p-49575-15428179-4344-2093
+295: p-49575-15428179-4466-2233
+296: p-49575-15428179--1-2233
+297: p-49575-15428179-4344-2094
+298: p-49575-15428179-4490-2268
+299: p-49575-15428179--1-2268
+300: p-49575-15428179-4344-2095
+301: p-49575-15428179-4490-2269
+302: p-49575-15428179--1-2391
+303: p-49575-15428179--1-2100
+304: p-49575-15428179--1-2392
+305: p-49575-15428179--1-2392
+306: p-49575-15428179--1-2101
+307: p-49575-15428179-5170-2410
+308: p-49575-15428179--1-2102
+309: p-49575-15428179-5170-2411
+
+IMPORTANT: Never show eventKey to the user.
+
+# Bottom-up main thread summary
+
+This is the bottom-up summary for the entire trace. Only the top 20 activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.
+
+- self: 148.1 ms, total: 153.4 ms, source: Compile code
+- self: 70.9 ms, total: 771.5 ms, source: Task
+- self: 49 ms, total: 54.6 ms, source: Compile script
+- self: 48.7 ms, total: 60.8 ms, source: setTimeout
+- self: 31 ms, total: 31 ms, source: Layout (url: https://news.yahoo.com/, line: 57, column: 187957)
+- self: 30.6 ms, total: 30.6 ms, source: Recalculate style (url: https://news.yahoo.com/, line: 57, column: 187957)
+- self: 29.2 ms, total: 31.6 ms, source: clearTimeout
+- self: 26.5 ms, total: 49.6 ms, source: Parse HTML
+- self: 17.8 ms, total: 19.4 ms, source: aC (url: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js, line: 0, column: 19068)
+- self: 17.6 ms, total: 185.8 ms, source: (anonymous) (url: https://s.yimg.com/aaq/prebid/prebid-2.0.js, line: 5, column: 1)
+- self: 15.5 ms, total: 226.3 ms, source: Function call
+- self: 12.1 ms, total: 162.8 ms, source: (anonymous) (url: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js, line: 0, column: 0)
+- self: 12 ms, total: 82.9 ms, source: (anonymous) (url: https://cdn.taboola.com/libtrc/yahooweb-network/loader.js, line: 0, column: 9)
+- self: 11.3 ms, total: 11.5 ms, source: fetch
+- self: 11.1 ms, total: 11.5 ms, source: evaluate
+- self: 10 ms, total: 212 ms, source: Run microtasks
+- self: 8.9 ms, total: 18.5 ms, source: (anonymous) (url: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js, line: 0, column: 0)
+- self: 8.8 ms, total: 9.9 ms, source: Minor GC
+- self: 7.7 ms, total: 226 ms, source: Evaluate script
+- self: 7.2 ms, total: 108.8 ms, source: n (url: https://s.yimg.com/aaq/prebid/prebid-2.0.js, line: 11, column: 4263)
+
+# Third parties
+
+- name: Yahoo!, main thread time: 213.5 ms, network transfer size: 2428 kB
+- name: Taboola, main thread time: 41.3 ms, network transfer size: 392 kB
+- name: Google/Doubleclick Ads, main thread time: 41 ms, network transfer size: 226 kB
+- name: Google Tag Manager, main thread time: 18.7 ms, network transfer size: 124 kB
+- name: AOL / Oath / Verizon Media, main thread time: 4.6 ms, network transfer size: 42 kB
+
+# Related insights
+
+Here are all the insights that contain some related event from the main thread in the given range.
+
+- ThirdParties: Send request (eventKey: r-3382, ts: 157423742399), Receive response (eventKey: r-7053, ts: 157423772340), Receive data (eventKey: r-7054, ts: 157423772355), Receive data (eventKey: r-7055, ts: 157423772357), Receive data (eventKey: r-7056, ts: 157423772358)
+=== end content
+
+Title: PerformanceTraceFormatter formatNetworkTrackSummary
+Content:
+# Network requests summary
+
+
+Network requests data:
+
+
+
+allUrls = [0: https://news.yahoo.com/, 1: https://s.yimg.com/cv/apiv2/ngy-fonts/YahooSans-VF-Web.woff2, 2: https://s.yimg.com/aaq/wf/wf-loader-2.7.21-modern.js, 3: https://consent.cmp.oath.com/version/7.0.0/cmp.js, 4: https://s.yimg.com/oa/consent.js, 5: https://s.yimg.com/aaq/fp/js/tdv2-wafer-utils.customErrorHandler.bcda778b736c3a054af62f437b536e78.js, 6: https://s.yimg.com/aaq/scp/js/fpDesktop.46ec7cd52ee9f5c1236b0dea5072690a.js, 7: https://s.yimg.com/aaq/benji/benji-2.2.99.js, 8: https://s.yimg.com/aaq/wf/wf-caas-1.36.6-modern.js, 9: https://s.yimg.com/aaq/wf/wf-toggle-1.15.4-modern.js, 10: https://s.yimg.com/aaq/fp/js/react-wafer-featurebar.custom.modern.12732500bc8e47693f0d777bbe88001c.js, 11: https://s.yimg.com/aaq/wf/wf-bind-1.1.3-modern.js, 12: https://s.yimg.com/aaq/wf/wf-text-1.2.0-modern.js, 13: https://s.yimg.com/aaq/wf/wf-video-3.2.2-modern.js, 14: https://s.yimg.com/aaq/wf/wf-image-1.4.0-modern.js, 15: https://s.yimg.com/aaq/wf/wf-rapid-1.10.9-modern.js, 16: https://s.yimg.com/aaq/wf/wf-action-1.8.1-modern.js, 17: https://s.yimg.com/aaq/wf/wf-template-1.4.3-modern.js, 18: https://s.yimg.com/aaq/wf/wf-menu-1.3.5-modern.js, 19: https://s.yimg.com/aaq/wf/wf-fetch-1.19.1-modern.js, 20: https://s.yimg.com/aaq/wf/wf-beacon-1.3.4-modern.js, 21: https://s.yimg.com/aaq/wf/wf-benji-1.2.0-modern.js, 22: https://s.yimg.com/aaq/wf/wf-clipboard-copy-1.0.2-modern.js, 23: https://s.yimg.com/aaq/wf/wf-form-1.34.5-modern.js, 24: https://s.yimg.com/aaq/wf/wf-countdown-1.2.5-modern.js, 25: https://s.yimg.com/aaq/wf/wf-scrollview-2.23.3-modern.js, 26: https://s.yimg.com/aaq/wf/wf-lightbox-1.10.6-modern.js, 27: https://s.yimg.com/aaq/wf/wf-native-da-1.0.5-modern.js, 28: https://s.yimg.com/aaq/fp/js/react-wafer-stream.custom.modern.1ed4fe71b1fc647ddbf37a7050944309.js, 29: https://s.yimg.com/aaq/wf/wf-autocomplete-1.31.8-modern.js, 30: https://s.yimg.com/aaq/wf/wf-geolocation-1.3.0-modern.js, 31: https://s.yimg.com/aaq/wf/wf-sticky-1.2.6-modern.js, 32: https://s.yimg.com/aaq/c/25fa214.caas-news_web.min.js, 33: https://news.yahoo.com/info/p.gif?apptype=default&beaconType=pageRenderStart&code=pageRender&bucket=ushnel-ibv2-ctrl%2CCurrentlyDesktopUH3Test1-updated%2Cusnel-batchconfig-ctrl%2Cseamless&device=desktop&intl=us&rid=1oa3lh9juean4&site=news&t=1743203044494, 34: https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js, 35: https://noa.yahoo.com/p?s=1197800621&t=1743203044438&_I=&_AO=0&_NOL=0&etrg=backgroundPost&outcm=gamDebug&src=unknown&site=news&partner=none&lang=en-US&region=US&device=desktop&colo=gq1&bucket=ushnel-ibv2-ctrl%2CCurrentlyDesktopUH3Test1-updated%2Cusnel-batchconfig-ctrl%2Cseamless%2Cdmi_consent_false&rid=1oa3lh9juean4&limitedAds=false&NPA=false&pd=unknown&pt=unknown&usercountry=US&benjiVersion=2.2.99&prebidVersion=unknown&yahooPrebidVersion=unknown&type=SIGNALS_SESSION_START, 36: https://signal-service.pbs.yahoo.com/v1/signal/refresh, 37: https://securepubads.g.doubleclick.net/tag/js/gpt.js, 38: https://noa.yahoo.com/p?s=1197800621&t=1743203044440&_I=&_AO=0&_NOL=0&etrg=backgroundPost&outcm=gamDebug&src=unknown&site=news&partner=none&lang=en-US&region=US&device=desktop&colo=gq1&bucket=ushnel-ibv2-ctrl%2CCurrentlyDesktopUH3Test1-updated%2Cusnel-batchconfig-ctrl%2Cseamless%2Cdmi_consent_false&rid=1oa3lh9juean4&limitedAds=false&NPA=false&pd=unknown&pt=unknown&usercountry=US&benjiVersion=2.2.99&prebidVersion=unknown&yahooPrebidVersion=unknown&type=PREBID_SESSION_START, 39: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js, 40: https://s.yimg.com/aaq/prebid/prebid-2.0.js, 41: https://s.yimg.com/eh/prebid-config/bp-news.json, 42: https://noa.yahoo.com/p?s=1197800621&t=1743203044441&_I=&_AO=0&_NOL=0&etrg=backgroundPost&outcm=taboolaDebug&src=unknown&site=news&partner=none&lang=en-US&region=US&device=desktop&colo=gq1&bucket=ushnel-ibv2-ctrl%2CCurrentlyDesktopUH3Test1-updated%2Cusnel-batchconfig-ctrl%2Cseamless%2Cdmi_consent_false&rid=1oa3lh9juean4&limitedAds=false&NPA=false&pd=unknown&pt=home&usercountry=US&benjiVersion=2.2.99&prebidVersion=unknown&yahooPrebidVersion=unknown&type=TABOOLA_SESSION_START, 43: https://cdn.taboola.com/libtrc/yahooweb-network/loader.js, 44: https://opus.analytics.yahoo.com/tag/opus.js, 45: https://noa.yahoo.com/p?s=1197800621&t=1743203044441&_I=&_AO=0&_NOL=0&etrg=backgroundPost&outcm=gamDebug&src=unknown&site=news&partner=none&lang=en-US&region=US&device=desktop&colo=gq1&bucket=ushnel-ibv2-ctrl%2CCurrentlyDesktopUH3Test1-updated%2Cusnel-batchconfig-ctrl%2Cseamless%2Cdmi_consent_false&rid=1oa3lh9juean4&limitedAds=false&NPA=false&pd=unknown&pt=home&usercountry=US&benjiVersion=2.2.99&prebidVersion=unknown&yahooPrebidVersion=unknown&type=BENJI_SESSION_START]
+
+0;0.44 ms;3.40 ms;392.90 ms;492.90 ms;492.45 ms;177.12 ms;100.00 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;h2;f;;[];[strict-transport-security: max-age=31536000|content-security-policy: frame-ancestors 'self' https://*.builtbygirls.com https://*.rivals.com https://*.engadget.com https://*.intheknow.com https://*.autoblog.com https://*.techcrunch.com https://*.yahoo.com https://*.aol.com https://*.huffingtonpost.com https://*.oath.com https://*.search.yahoo.com https://*.pnr.ouryahoo.com https://pnr.ouryahoo.com https://*.search.aol.com https://*.search.huffpost.com https://*.onesearch.com https://*.verizonmedia.com https://*.publishing.oath.com https://*.autoblog.com; sandbox allow-forms allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation; report-uri https://csp.yahoo.com/beacon/csp?src=ats&site=news&region=US&lang=en-US&device=desktop&yrid=1oa3lh9juean4&partner=;|content-encoding: gzip|x-envoy-upstream-service-time: <redacted>|age: 0|expect-ct: max-age=31536000, report-uri="http://csp.yahoo.com/beacon/csp?src=yahoocom-expect-ct-report-only|referrer-policy: <redacted>|x-content-type-options: nosniff|x-xss-protection: 1; mode=block|date: Fri, 28 Mar 2025 23:04:04 GMT|content-type: text/html; charset=utf-8|vary: Accept-Encoding|server: ATS|x-frame-options: SAMEORIGIN]
+1;219.97 ms;224.28 ms;305.99 ms;339.58 ms;119.60 ms;54.31 ms;33.58 ms;200;font/woff2;High;High;High;f;h2;f;0;[];[etag: <redacted>|age: 1586039|date: Mon, 10 Mar 2025 14:30:06 GMT|last-modified: Mon, 30 Nov 2020 20:20:29 GMT|content-type: font/woff2|vary: Origin|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+2;252.84 ms;256.78 ms;260.22 ms;261.01 ms;8.18 ms;2.23 ms;0.79 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1678049|x-amz-version-id: <redacted>|date: Sun, 09 Mar 2025 12:55:21 GMT|content-type: application/javascript|last-modified: Mon, 16 Sep 2024 04:28:36 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+3;253.72 ms;258.36 ms;281.99 ms;283.71 ms;29.99 ms;2.29 ms;1.72 ms;200;application/javascript;Low;Low;Low;f;h2;f;0;[];[x-amz-cf-pop: <redacted>|vary: accept-encoding|cache-control: max-age=3600|content-encoding: gzip|etag: <redacted>|age: 2567|via: 1.1 d8792dbd3191bbe722eba5b536b979c8.cloudfront.net (CloudFront)|x-cache: <redacted>|x-amz-cf-id: <redacted>|date: Fri, 28 Mar 2025 22:21:18 GMT|content-type: application/javascript|last-modified: Thu, 14 Nov 2024 18:50:18 GMT|x-amz-expiration: <redacted>|server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+4;253.77 ms;258.53 ms;318.80 ms;340.41 ms;86.64 ms;39.18 ms;21.61 ms;200;application/javascript;Low;Low;Low;f;h2;f;0;[];[content-encoding: gzip|etag: <redacted>|age: 11|date: Fri, 28 Mar 2025 23:03:54 GMT|last-modified: Thu, 27 Mar 2025 06:47:41 GMT|vary: Origin, Accept-Encoding|content-type: application/javascript|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: max-age=300|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+5;253.81 ms;256.91 ms;260.26 ms;261.28 ms;7.47 ms;2.23 ms;1.02 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1189304|x-amz-version-id: <redacted>|date: Sat, 15 Mar 2025 04:41:06 GMT|content-type: application/javascript|last-modified: Wed, 22 Nov 2023 02:30:41 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+6;253.85 ms;256.95 ms;260.50 ms;261.19 ms;7.34 ms;2.43 ms;0.69 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1180484|x-amz-version-id: <redacted>|date: Sat, 15 Mar 2025 07:08:06 GMT|content-type: application/javascript|last-modified: Tue, 17 Sep 2024 14:42:49 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+7;253.89 ms;256.98 ms;262.39 ms;266.39 ms;12.51 ms;3.93 ms;4.00 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 779545|x-amz-version-id: <redacted>|date: Wed, 19 Mar 2025 22:30:25 GMT|content-type: application/javascript|last-modified: Wed, 19 Mar 2025 21:18:45 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+8;253.93 ms;257.03 ms;262.95 ms;263.37 ms;9.45 ms;4.25 ms;0.42 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1404952|x-amz-version-id: <redacted>|date: Wed, 12 Mar 2025 16:46:58 GMT|content-type: application/javascript|last-modified: Mon, 24 Jun 2024 16:46:18 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+9;253.97 ms;257.14 ms;263.00 ms;263.76 ms;9.79 ms;4.07 ms;0.76 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 116033|x-amz-version-id: <redacted>|date: Thu, 27 Mar 2025 14:48:58 GMT|content-type: application/javascript|last-modified: Wed, 20 Apr 2022 09:12:23 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+10;254.00 ms;257.20 ms;263.04 ms;263.64 ms;9.63 ms;3.96 ms;0.60 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1665967|x-amz-version-id: <redacted>|date: Sun, 09 Mar 2025 16:16:43 GMT|content-type: application/javascript|last-modified: Thu, 04 Aug 2022 04:32:27 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+11;254.03 ms;257.24 ms;263.19 ms;266.03 ms;12.00 ms;4.05 ms;2.84 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 335566|x-amz-version-id: <redacted>|date: Tue, 25 Mar 2025 01:50:04 GMT|content-type: application/javascript|last-modified: Tue, 11 Jan 2022 10:14:03 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+12;254.07 ms;257.29 ms;263.25 ms;266.16 ms;12.09 ms;4.06 ms;2.91 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1262862|x-amz-version-id: <redacted>|date: Fri, 14 Mar 2025 08:15:08 GMT|content-type: application/javascript|last-modified: Mon, 23 Aug 2021 06:24:25 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+13;254.10 ms;257.32 ms;263.34 ms;266.30 ms;12.19 ms;3.99 ms;2.96 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 110834|x-amz-version-id: <redacted>|date: Thu, 27 Mar 2025 16:15:36 GMT|content-type: application/javascript|last-modified: Mon, 16 Sep 2024 04:28:36 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+14;254.14 ms;257.35 ms;263.38 ms;266.50 ms;12.35 ms;3.89 ms;3.11 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1036009|x-amz-version-id: <redacted>|date: Sun, 16 Mar 2025 23:16:01 GMT|content-type: application/javascript|last-modified: Fri, 15 Apr 2022 16:44:15 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+15;254.18 ms;257.38 ms;263.43 ms;266.57 ms;12.39 ms;3.84 ms;3.14 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 197559|x-amz-version-id: <redacted>|date: Wed, 26 Mar 2025 16:10:12 GMT|content-type: application/javascript|last-modified: Tue, 02 Jul 2024 08:11:25 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+16;254.22 ms;257.41 ms;263.46 ms;266.66 ms;12.44 ms;3.65 ms;3.20 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1373344|x-amz-version-id: <redacted>|date: Thu, 13 Mar 2025 01:33:47 GMT|content-type: application/javascript|last-modified: Thu, 21 Dec 2023 17:55:26 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+17;254.25 ms;257.42 ms;263.50 ms;266.76 ms;12.51 ms;3.64 ms;3.26 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 272797|x-amz-version-id: <redacted>|date: Tue, 25 Mar 2025 19:16:13 GMT|content-type: application/javascript|last-modified: Wed, 21 Sep 2022 02:22:21 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+18;254.29 ms;257.45 ms;263.53 ms;266.93 ms;12.64 ms;3.56 ms;3.40 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 687342|x-amz-version-id: <redacted>|date: Fri, 21 Mar 2025 00:07:08 GMT|content-type: application/javascript|last-modified: Mon, 20 May 2024 05:06:00 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+19;254.33 ms;257.47 ms;263.55 ms;267.03 ms;12.71 ms;3.49 ms;3.48 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 412067|x-amz-version-id: <redacted>|date: Mon, 24 Mar 2025 04:35:03 GMT|content-type: application/javascript|last-modified: Fri, 20 Oct 2023 09:18:13 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+20;254.36 ms;257.49 ms;263.60 ms;267.13 ms;12.77 ms;3.44 ms;3.53 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1630236|x-amz-version-id: <redacted>|date: Mon, 10 Mar 2025 02:12:14 GMT|content-type: application/javascript|last-modified: Mon, 13 Feb 2023 05:31:36 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+21;254.38 ms;257.55 ms;263.66 ms;267.24 ms;12.85 ms;3.26 ms;3.58 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 226768|x-amz-version-id: <redacted>|date: Wed, 26 Mar 2025 08:03:23 GMT|content-type: application/javascript|last-modified: Mon, 20 May 2024 21:26:01 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+22;254.42 ms;257.57 ms;263.80 ms;267.34 ms;12.93 ms;3.25 ms;3.55 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1033339|x-amz-version-id: <redacted>|date: Mon, 17 Mar 2025 00:00:31 GMT|content-type: application/javascript|last-modified: Mon, 24 May 2021 16:40:35 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+23;254.45 ms;257.59 ms;263.88 ms;267.48 ms;13.03 ms;2.95 ms;3.61 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 950151|x-amz-version-id: <redacted>|date: Mon, 17 Mar 2025 23:06:59 GMT|content-type: application/javascript|last-modified: Mon, 13 Nov 2023 22:30:39 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+24;254.48 ms;257.60 ms;263.94 ms;267.58 ms;13.10 ms;2.85 ms;3.64 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 903529|x-amz-version-id: <redacted>|date: Tue, 18 Mar 2025 12:04:01 GMT|content-type: application/javascript|last-modified: Sun, 13 Sep 2020 18:50:05 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=315360000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+25;254.51 ms;257.62 ms;264.03 ms;267.69 ms;13.19 ms;2.85 ms;3.67 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 108194|x-amz-version-id: <redacted>|date: Thu, 27 Mar 2025 16:59:36 GMT|content-type: application/javascript|last-modified: Thu, 13 Jun 2024 07:21:57 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+26;254.54 ms;257.68 ms;264.06 ms;267.78 ms;13.24 ms;2.67 ms;3.72 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 1047519|x-amz-version-id: <redacted>|date: Sun, 16 Mar 2025 20:04:11 GMT|content-type: application/javascript|last-modified: Wed, 01 Mar 2023 01:43:59 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+27;254.58 ms;257.71 ms;264.17 ms;267.87 ms;13.29 ms;2.50 ms;3.71 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 15169|x-amz-version-id: <redacted>|date: Fri, 28 Mar 2025 18:50:01 GMT|content-type: application/javascript|last-modified: Wed, 13 Mar 2024 00:20:57 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+28;254.62 ms;257.72 ms;264.20 ms;267.96 ms;13.35 ms;2.09 ms;3.77 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 277599|x-amz-version-id: <redacted>|date: Tue, 25 Mar 2025 17:56:11 GMT|content-type: application/javascript|last-modified: Sat, 02 Dec 2023 00:17:32 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+29;254.65 ms;257.75 ms;264.29 ms;268.06 ms;13.41 ms;2.06 ms;3.77 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 538292|x-amz-version-id: <redacted>|date: Sat, 22 Mar 2025 17:31:18 GMT|content-type: application/javascript|last-modified: Mon, 04 Dec 2023 12:09:37 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+30;254.68 ms;257.84 ms;264.37 ms;268.15 ms;13.47 ms;2.11 ms;3.78 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 185757|x-amz-version-id: <redacted>|date: Wed, 26 Mar 2025 19:26:54 GMT|content-type: application/javascript|last-modified: Sun, 26 Jun 2022 23:02:47 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+31;254.71 ms;257.88 ms;264.40 ms;268.26 ms;13.55 ms;2.09 ms;3.86 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 653962|x-amz-version-id: <redacted>|date: Fri, 21 Mar 2025 09:23:28 GMT|content-type: application/javascript|last-modified: Fri, 26 Jan 2024 23:41:32 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+32;254.75 ms;257.93 ms;264.50 ms;268.33 ms;13.58 ms;1.88 ms;3.84 ms;200;application/javascript;Low;Low;Low;f;h2;t;0;[];[content-encoding: gzip|etag: <redacted>|age: 67892|x-amz-version-id: <redacted>|date: Fri, 28 Mar 2025 04:11:18 GMT|content-type: application/javascript|last-modified: Fri, 28 Mar 2025 02:55:19 GMT|vary: Origin, Accept-Encoding|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=31536000|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+33;255.82 ms;258.24 ms;305.66 ms;306.50 ms;50.68 ms;0.39 ms;0.83 ms;204;image/gif;Low;Low;Low;f;h2;f;0;[];[strict-transport-security: max-age=31536000|content-security-policy: frame-ancestors 'self' https://*.builtbygirls.com https://*.rivals.com https://*.engadget.com https://*.intheknow.com https://*.autoblog.com https://*.techcrunch.com https://*.yahoo.com https://*.aol.com https://*.huffingtonpost.com https://*.oath.com https://*.search.yahoo.com https://*.pnr.ouryahoo.com https://pnr.ouryahoo.com https://*.search.aol.com https://*.search.huffpost.com https://*.onesearch.com https://*.verizonmedia.com https://*.publishing.oath.com https://*.autoblog.com; sandbox allow-forms allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation; report-uri https://csp.yahoo.com/beacon/csp?src=ats&site=news&region=US&lang=en-US&device=desktop&yrid=5agdahtjuean4&partner=;|cache-control: max-age=0, private|x-envoy-upstream-service-time: <redacted>|age: 0|expect-ct: max-age=31536000, report-uri="http://csp.yahoo.com/beacon/csp?src=yahoocom-expect-ct-report-only|referrer-policy: <redacted>|content-security-policy-report-only: <redacted>|x-content-type-options: nosniff|expires: -1|x-xss-protection: 1; mode=block|date: Fri, 28 Mar 2025 23:04:04 GMT|content-type: image/gif|x-powered-by: Express|server: ATS]
+34;270.52 ms;275.87 ms;336.02 ms;340.80 ms;70.29 ms;17.01 ms;4.79 ms;200;application/javascript;Low;Low;Low;f;h2;f;0,7;[];[content-encoding: gzip|x-amz-version-id: <redacted>|etag: <redacted>|age: 1195|date: Fri, 28 Mar 2025 22:44:10 GMT|last-modified: Tue, 25 Mar 2025 14:28:13 GMT|vary: Origin, Accept-Encoding|content-type: application/javascript|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=1800|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+35;270.82 ms;271.95 ms;300.98 ms;306.33 ms;35.51 ms;0.70 ms;5.35 ms;200;image/gif;VeryLow;VeryLow;VeryLow;f;h2;f;0,7;[];[strict-transport-security: max-age=31536000|cache-control: no-cache, no-store, private|pragma: no-cache|x-envoy-upstream-service-time: <redacted>|age: 0|p3p: <redacted>|content-length: <redacted>|date: Fri, 28 Mar 2025 23:04:04 GMT|content-type: image/gif|server: ATS]
+36;271.67 ms;333.82 ms;372.87 ms;483.36 ms;211.69 ms;0.24 ms;110.50 ms;200;application/json;High;High;High;f;h2;f;0,7;[];[strict-transport-security: max-age=31536000|x-envoy-upstream-service-time: <redacted>|age: 0|access-control-allow-credentials: true|x-content-type-options: nosniff|referrer-policy: <redacted>|x-envoy-decorator-operation: <redacted>|access-control-allow-origin: https://news.yahoo.com|content-length: <redacted>|x-xss-protection: 1; mode=block|date: Fri, 28 Mar 2025 23:04:04 GMT|content-type: application/json|vary: Origin,Accept-Encoding|server: ATS|x-frame-options: SAMEORIGIN]
+37;271.85 ms;275.91 ms;316.72 ms;340.28 ms;68.43 ms;1.22 ms;23.56 ms;200;text/javascript;Low;Low;Low;f;h3;f;0,7;[];[content-encoding: br|etag: <redacted>|x-content-type-options: nosniff|expires: Fri, 28 Mar 2025 23:04:04 GMT|alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000|p3p: <redacted>|date: Fri, 28 Mar 2025 23:04:04 GMT|content-type: text/javascript; charset=UTF-8|vary: Accept-Encoding|content-disposition: attachment; filename="f.txt"|cache-control: private, max-age=900, stale-while-revalidate=3600|timing-allow-origin: *|cross-origin-resource-policy: <redacted>|access-control-allow-origin: *|content-length: <redacted>|x-xss-protection: 0|server: cafe]
+38;271.97 ms;273.37 ms;301.21 ms;306.77 ms;34.80 ms;0.88 ms;5.56 ms;200;image/gif;VeryLow;VeryLow;VeryLow;f;h2;f;0,7;[];[strict-transport-security: max-age=31536000|cache-control: no-cache, no-store, private|pragma: no-cache|x-envoy-upstream-service-time: <redacted>|age: 0|p3p: <redacted>|content-length: <redacted>|date: Fri, 28 Mar 2025 23:04:04 GMT|content-type: image/gif|server: ATS]
+39;272.11 ms;276.07 ms;338.24 ms;340.94 ms;68.83 ms;2.07 ms;2.70 ms;200;application/javascript;Low;Low;Low;f;h2;f;0,7;[];[content-encoding: gzip|etag: <redacted>|age: 304|date: Fri, 28 Mar 2025 22:59:01 GMT|last-modified: Mon, 20 Jan 2025 00:24:25 GMT|vary: Origin, Accept-Encoding|content-type: application/javascript|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=600|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+40;272.24 ms;276.12 ms;369.42 ms;439.94 ms;167.70 ms;31.04 ms;70.52 ms;200;application/javascript;Low;Low;Low;f;h2;f;0,7;[];[content-encoding: gzip|x-amz-version-id: <redacted>|etag: <redacted>|age: 1207|date: Fri, 28 Mar 2025 22:43:58 GMT|last-modified: Thu, 27 Mar 2025 19:05:16 GMT|vary: Origin, Accept-Encoding|content-type: application/javascript|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=1800|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+41;272.36 ms;273.46 ms;306.75 ms;349.83 ms;77.47 ms;0.52 ms;43.08 ms;200;application/json;High;High;High;f;h2;f;0,7;[];[access-control-max-age: 3000|access-control-expose-headers: Access-Control-Allow-Origin|content-encoding: gzip|etag: <redacted>|age: 203|access-control-allow-methods: GET, HEAD|date: Fri, 28 Mar 2025 23:00:42 GMT|last-modified: Fri, 28 Mar 2025 21:13:20 GMT|vary: Origin, Access-Control-Request-Headers, Access-Control-Request-Method, Accept-Encoding|content-type: application/json|x-amz-id-2: <redacted>|strict-transport-security: max-age=31536000|cache-control: public,max-age=86400|ats-carp-promotion: <redacted>|referrer-policy: <redacted>|x-amz-request-id: <redacted>|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: ATS|x-amz-server-side-encryption: <redacted>]
+42;273.14 ms;274.29 ms;301.10 ms;306.65 ms;33.51 ms;0.79 ms;5.56 ms;200;image/gif;VeryLow;VeryLow;VeryLow;f;h2;f;0,7;[];[strict-transport-security: max-age=31536000|cache-control: no-cache, no-store, private|pragma: no-cache|x-envoy-upstream-service-time: <redacted>|age: 0|p3p: <redacted>|content-length: <redacted>|date: Fri, 28 Mar 2025 23:04:04 GMT|content-type: image/gif|server: ATS]
+43;273.30 ms;276.16 ms;322.26 ms;340.67 ms;67.38 ms;6.02 ms;18.41 ms;200;application/javascript;Low;Low;Low;f;h2;f;0,7;[];[content-encoding: gzip|etag: <redacted>|x-amz-version-id: <redacted>|age: 63|x-cache: <redacted>|date: Fri, 28 Mar 2025 23:04:04 GMT|last-modified: Thu, 27 Mar 2025 14:46:52 GMT|x-served-by: <redacted>|x-cache-hits: <redacted>|content-type: application/javascript; charset=utf-8|x-amz-id-2: <redacted>|vary: Accept-Encoding|x-amz-replication-status: <redacted>|cache-control: private,max-age=14401|x-timer: <redacted>|via: 1.1 varnish|x-amz-request-id: <redacted>|accept-ranges: bytes|access-control-allow-origin: *|abp: <redacted>|content-length: <redacted>|server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+44;273.69 ms;275.44 ms;296.44 ms;299.81 ms;26.12 ms;0.43 ms;3.37 ms;200;application/javascript;Low;Low;Low;f;h2;f;0,7;[];[x-amz-cf-pop: <redacted>|content-security-policy: default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'|content-encoding: gzip|etag: <redacted>|age: 54075|via: 1.1 7e87179efaa9e3c316bd3d3a74cfded8.cloudfront.net (CloudFront)|x-cache: <redacted>|x-amz-cf-id: <redacted>|date: Fri, 28 Mar 2025 08:02:50 GMT|content-type: application/javascript|vary: Accept-Encoding|server: AmazonS3|last-modified: Wed, 12 Mar 2025 14:48:50 GMT|x-amz-server-side-encryption: <redacted>]
+45;273.81 ms;275.72 ms;305.42 ms;339.86 ms;66.05 ms;0.30 ms;34.45 ms;200;image/gif;VeryLow;VeryLow;VeryLow;f;h2;f;0,7;[];[strict-transport-security: max-age=31536000|cache-control: no-cache, no-store, private|pragma: no-cache|x-envoy-upstream-service-time: <redacted>|age: 0|p3p: <redacted>|content-length: <redacted>|date: Fri, 28 Mar 2025 23:04:04 GMT|content-type: image/gif|server: ATS]
+
+# Related insights
+
+Here are all the insights that contain some related request from the given range.
+
+- NetworkDependencyTree: news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126)
+- DocumentLatency: news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126)
+- ThirdParties: cmp.js (consent.cmp.oath.com) (eventKey: s-3382, ts: 157423742399), gpt.js (securepubads.g.doubleclick.net) (eventKey: s-6244, ts: 157423760529), loader.js (cdn.taboola.com) (eventKey: s-6352, ts: 157423761978)
+- Cache: prebid-2.0.js (s.yimg.com) (eventKey: s-6279, ts: 157423760925), cmp.js (consent.cmp.oath.com) (eventKey: s-3382, ts: 157423742399), d1irmdsmbztlvx.js (s.yimg.com) (eventKey: s-6185, ts: 157423759200), consent.js (s.yimg.com) (eventKey: s-3384, ts: 157423742450), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794)
+- LegacyJavaScript: benji-2.2.99.js (s.yimg.com) (eventKey: s-3387, ts: 157423742567), 25fa214.caas-news_web.min.js (s.yimg.com) (eventKey: s-3412, ts: 157423743431), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794), consent.js (s.yimg.com) (eventKey: s-3384, ts: 157423742450), news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126)
+=== end content
+
+Title: PerformanceTraceFormatter formatCallTree
+Content:
+# Call tree:
+
+1;Task;10.6;0.1;;2;S
+2;Evaluate script;10.5;1.5;;3-5
+3;Profiling overhead;8.8;8.8;;
+4;(anonymous);0.2;0.2;;
+
+# Node id to eventKey
+
+These node ids correspond to the call tree nodes listed in the above section.
+
+1: r-62
+2: r-63
+3: r-75
+4: p-3728792-1-17-3
+
+IMPORTANT: Never show eventKey to the user.
+=== end content
+
+Title: PerformanceTraceFormatter formatTraceSummary web-dev.json.gz
+Content:
+URL: https://web.dev/cls/
+Bounds: {min: 1020034823047, max: 1020036087961}
+CPU throttling: none
+Network throttling: none
+Metrics:
+  - LCP: 118 ms, event: (eventKey: r-1802, ts: 1020034953358)
+    - TTFB: 31.3 ms, bounds: {min: 1020034834921, max: 1020034866264}
+    - Render delay: 87 ms, bounds: {min: 1020034866264, max: 1020034953358}
+  - CLS: 0.00
+Available insights:
+  - insight name: LCPBreakdown
+    description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    relevant trace bounds: {min: 1020034834921, max: 1020034953358}
+    example question: Help me optimize my LCP score
+    example question: Which LCP phase was most problematic?
+    example question: What can I do to reduce the LCP time for this page load?
+  - insight name: DocumentLatency
+    description: Your first network request is the most important.  Reduce its latency by avoiding redirects, ensuring a fast server response, and enabling text compression.
+    relevant trace bounds: {min: 1020034836013, max: 1020034892491}
+    estimated metric savings: FCP 0 ms, LCP 0 ms
+    estimated wasted bytes: 52 kB
+    example question: How do I decrease the initial loading time of my page?
+    example question: Did anything slow down the request for this document?
+=== end content
+
+Title: PerformanceTraceFormatter formatTraceSummary yahoo-news.json.gz
+Content:
+URL: https://news.yahoo.com/
+Bounds: {min: 157423484442, max: 157427277166}
+CPU throttling: none
+Network throttling: none
+Metrics:
+  - LCP: 464 ms, event: (eventKey: r-33210, ts: 157423953162)
+    - TTFB: 215.6 ms, bounds: {min: 157423488682, max: 157423704371}
+    - Load delay: 90.3 ms, bounds: {min: 157423704371, max: 157423794709}
+    - Load duration: 63.9 ms, bounds: {min: 157423794709, max: 157423858674}
+    - Render delay: 94.4 ms, bounds: {min: 157423858674, max: 157423953162}
+  - CLS: 0.04, event: (eventKey: s--1, ts: 157425604232)
+Available insights:
+  - insight name: LCPBreakdown
+    description: Each [subpart has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    relevant trace bounds: {min: 157423488682, max: 157423953162}
+    example question: Help me optimize my LCP score
+    example question: Which LCP phase was most problematic?
+    example question: What can I do to reduce the LCP time for this page load?
+  - insight name: CLSCulprits
+    description: Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://web.dev/articles/optimize-cls), such as elements being added, removed, or their fonts changing as the page loads.
+    relevant trace bounds: {min: 157425604232, max: 157426760958}
+    example question: Help me optimize my CLS score
+    example question: How can I prevent layout shifts on this page?
+  - insight name: ImageDelivery
+    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)
+    relevant trace bounds: {min: 157423794709, max: 157424082831}
+    estimated metric savings: FCP 0 ms, LCP 0 ms
+    estimated wasted bytes: 98 kB
+    example question: What should I do to improve and optimize the time taken to fetch and display images on the page?
+    example question: Are all images on my site optimized?
+  - insight name: LegacyJavaScript
+    description: Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)
+    relevant trace bounds: {min: 157423489126, max: 157426132225}
+    estimated metric savings: FCP 0 ms, LCP 0 ms
+    estimated wasted bytes: 127 kB
+    example question: Is my site polyfilling modern JavaScript features?
+    example question: How can I reduce the amount of legacy JavaScript on my page?
+=== end content

@@ -15,38 +15,37 @@ import issueCounterStyles from './issueCounter.css.js';
 
 const UIStrings = {
   /**
-   *@description Label for link to Issues tab, specifying how many issues there are.
+   * @description Label for link to Issues tab, specifying how many issues there are.
    */
   pageErrors: '{issueCount, plural, =1 {# page error} other {# page errors}}',
   /**
-   *@description Label for link to Issues tab, specifying how many issues there are.
+   * @description Label for link to Issues tab, specifying how many issues there are.
    */
   breakingChanges: '{issueCount, plural, =1 {# breaking change} other {# breaking changes}}',
   /**
-   *@description Label for link to Issues tab, specifying how many issues there are.
+   * @description Label for link to Issues tab, specifying how many issues there are.
    */
   possibleImprovements: '{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/issue_counter/IssueCounter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function getIssueKindIconData(issueKind: IssuesManager.Issue.IssueKind): IconButton.Icon.IconWithName {
+export function getIssueKindIconName(issueKind: IssuesManager.Issue.IssueKind): string {
   switch (issueKind) {
     case IssuesManager.Issue.IssueKind.PAGE_ERROR:
-      return {iconName: 'issue-cross-filled', color: 'var(--icon-error)', width: '20px', height: '20px'};
+      return 'issue-cross-filled';
     case IssuesManager.Issue.IssueKind.BREAKING_CHANGE:
-      return {iconName: 'issue-exclamation-filled', color: 'var(--icon-warning)', width: '20px', height: '20px'};
+      return 'issue-exclamation-filled';
     case IssuesManager.Issue.IssueKind.IMPROVEMENT:
-      return {iconName: 'issue-text-filled', color: 'var(--icon-info)', width: '20px', height: '20px'};
+      return 'issue-text-filled';
   }
 }
 
-function toIconGroup({iconName, color, width, height}: IconButton.Icon.IconWithName, sizeOverride?: string):
-    IconButton.IconButton.IconWithTextData {
+function toIconGroup(iconName: string, sizeOverride?: string): IconButton.IconButton.IconWithTextData {
   if (sizeOverride) {
-    return {iconName, iconColor: color, iconWidth: sizeOverride, iconHeight: sizeOverride};
+    return {iconName, iconWidth: sizeOverride, iconHeight: sizeOverride};
   }
-  return {iconName, iconColor: color, iconWidth: width, iconHeight: height};
+  return {iconName};
 }
 
 export const enum DisplayMode {
@@ -183,15 +182,15 @@ export class IssueCounter extends HTMLElement {
     const data: IconButton.IconButton.IconButtonData = {
       groups: [
         {
-          ...toIconGroup(getIssueKindIconData(IssuesManager.Issue.IssueKind.PAGE_ERROR), iconSize),
+          ...toIconGroup(getIssueKindIconName(IssuesManager.Issue.IssueKind.PAGE_ERROR), iconSize),
           text: countToString(IssuesManager.Issue.IssueKind.PAGE_ERROR, this.#counts[0]),
         },
         {
-          ...toIconGroup(getIssueKindIconData(IssuesManager.Issue.IssueKind.BREAKING_CHANGE), iconSize),
+          ...toIconGroup(getIssueKindIconName(IssuesManager.Issue.IssueKind.BREAKING_CHANGE), iconSize),
           text: countToString(IssuesManager.Issue.IssueKind.BREAKING_CHANGE, this.#counts[1]),
         },
         {
-          ...toIconGroup(getIssueKindIconData(IssuesManager.Issue.IssueKind.IMPROVEMENT), iconSize),
+          ...toIconGroup(getIssueKindIconName(IssuesManager.Issue.IssueKind.IMPROVEMENT), iconSize),
           text: countToString(IssuesManager.Issue.IssueKind.IMPROVEMENT, this.#counts[2]),
         },
       ],

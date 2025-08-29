@@ -22,5 +22,5 @@ module.exports = function ToNumber(argument) {
 	if (typeof value === 'string') {
 		return StringToNumber(value);
 	}
-	return $Number(value);
+	return +value;
 };

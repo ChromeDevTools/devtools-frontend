@@ -123,8 +123,18 @@ export interface TimingsMarkerFieldResult {
   pageScope: 'url'|'origin';
 }
 
+export interface BottomInfoBar {
+  type: 'BOTTOM_INFO_BAR';
+  // In DevTools, this infobar is a UI.Infobar.Infobar but we can't refer to
+  // the type here.
+  infobar: {
+    element: HTMLElement,
+    dispose: () => void,
+  };
+}
+
 /**
  * All supported overlay types.
  */
 export type Overlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|EntriesLink|TimespanBreakdown|
-    TimestampMarker|CandyStripedTimeRange|TimingsMarker;
+    TimestampMarker|CandyStripedTimeRange|TimingsMarker|BottomInfoBar;

@@ -4,6 +4,7 @@ var hasBigInts = require('has-bigints')();
 
 if (hasBigInts) {
 	var bigIntValueOf = BigInt.prototype.valueOf;
+	/** @type {(value: object) => value is BigInt} */
 	var tryBigInt = function tryBigIntObject(value) {
 		try {
 			bigIntValueOf.call(value);
@@ -13,6 +14,7 @@ if (hasBigInts) {
 		return false;
 	};
 
+	/** @type {import('.')} */
 	module.exports = function isBigInt(value) {
 		if (
 			value === null
@@ -32,6 +34,7 @@ if (hasBigInts) {
 		return tryBigInt(value);
 	};
 } else {
+	/** @type {import('.')} */
 	module.exports = function isBigInt(value) {
 		return false && value;
 	};

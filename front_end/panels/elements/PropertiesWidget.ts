@@ -96,7 +96,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         <div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>
       ` : nothing}
       ${input.treeOutlineElement}
-    </div>`, target, {host: input});
+    </div>`, target);
   // clang-format on
 };
 

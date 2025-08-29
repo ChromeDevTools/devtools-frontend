@@ -9,15 +9,15 @@ import type * as Media from './media.js';
 
 const UIStrings = {
   /**
-   *@description Text that appears on a button for the media resource type filter.
+   * @description Text that appears on a button for the media resource type filter.
    */
   media: 'Media',
   /**
-   *@description The type of media. Lower case.
+   * @description The type of media. Lower case.
    */
   video: 'video',
   /**
-   *@description Command for showing the media tool.
+   * @description Command for showing the media tool.
    */
   showMedia: 'Show Media',
 } as const;

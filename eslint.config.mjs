@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import stylisticPlugin from '@stylistic/eslint-plugin';
-import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import mochaPlugin from 'eslint-plugin-mocha';
+import {defineConfig, globalIgnores} from 'eslint/config';
 import globals from 'globals';
-import { join } from 'path';
+import {join} from 'path';
 import typescriptEslint from 'typescript-eslint';
 
 import rulesdirPlugin from './scripts/eslint_rules/rules-dir.mjs';
@@ -93,7 +93,7 @@ export default defineConfig([
         'single',
         {
           avoidEscape: true,
-          allowTemplateLiterals: false,
+          allowTemplateLiterals: 'always',
         },
       ],
 
@@ -122,7 +122,7 @@ export default defineConfig([
 
       curly: 'error',
       '@stylistic/new-parens': 'error',
-      '@stylistic/func-call-spacing': 'error',
+      '@stylistic/function-call-spacing': 'error',
       '@stylistic/arrow-parens': ['error', 'as-needed'],
       '@stylistic/eol-last': 'error',
       'object-shorthand': ['error', 'properties'],
@@ -193,7 +193,7 @@ export default defineConfig([
       radix: 'error',
       'valid-typeof': 'error',
       'no-return-assign': ['error', 'always'],
-      'no-implicit-coercion': ['error', { allow: ['!!'] }],
+      'no-implicit-coercion': ['error', {allow: ['!!']}],
 
       'no-array-constructor': 'error',
 
@@ -287,10 +287,32 @@ export default defineConfig([
       'rulesdir/no-commented-out-import': 'error',
       'rulesdir/check-license-header': 'error',
       /**
-       * Ensures that JS Doc comments are properly aligned - all the starting
-       * `*` are in the right place.
+       * Enforce some consistency and usefulness of JSDoc comments, to make sure
+       * we actually benefit from them.
        */
       'jsdoc/check-alignment': 'error',
+      'jsdoc/check-tag-names': [
+        'error',
+        {
+          definedTags: [
+            'attribute',  // @attribute is used by lit-analyzer (through web-component-analyzer)
+            'meaning',    // @meaning is used by localization
+          ],
+        },
+      ],
+      'jsdoc/empty-tags': 'error',
+      'jsdoc/multiline-blocks': 'error',
+      'jsdoc/no-bad-blocks': 'error',
+      'jsdoc/no-blank-blocks': [
+        'error',
+        {
+          enableFixer: true,
+        },
+      ],
+      'jsdoc/require-asterisk-prefix': 'error',
+      'jsdoc/require-param-name': 'error',
+      'jsdoc/require-hyphen-before-param-description': ['error', 'never'],
+      'jsdoc/sort-tags': 'error',
     },
   },
   {
@@ -305,11 +327,11 @@ export default defineConfig([
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-          import.meta.dirname,
-          'config',
-          'typescript',
-          'tsconfig.eslint.json',
-        ),
+            import.meta.dirname,
+            'config',
+            'typescript',
+            'tsconfig.eslint.json',
+            ),
       },
     },
 
@@ -554,17 +576,22 @@ export default defineConfig([
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-            import.meta.dirname,
-            'front_end',
-            'models',
-            'trace',
-            'trace.js',
-          ),
+              import.meta.dirname,
+              'front_end',
+              'models',
+              'trace',
+              'trace.js',
+              ),
           importName: 'Trace',
         },
       ],
 
       'rulesdir/validate-timing-types': 'error',
+
+      // Disallow redundant (and potentially conflicting) type information
+      // within JSDoc comments.
+      'jsdoc/no-types': 'error',
+      'jsdoc/require-returns-description': 'error',
     },
   },
   {
@@ -665,13 +692,10 @@ export default defineConfig([
     ],
 
     rules: {
-      // errors on it('test') with no body
-      'mocha/no-pending-tests': 'error',
-
       // errors on {describe, it}.only
       'mocha/no-exclusive-tests': 'error',
 
-      'mocha/no-async-describe': 'error',
+      'mocha/no-async-suite': 'error',
       'mocha/no-global-tests': 'error',
       'mocha/no-nested-tests': 'error',
 
@@ -715,22 +739,22 @@ export default defineConfig([
         {
           name: 'describeWithDevtoolsExtension',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interface: 'BDD',
         },
         {
           name: 'describeWithEnvironment',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interface: 'BDD',
         },
         {
           name: 'describeWithLocale',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interface: 'BDD',
         },
         {
           name: 'describeWithMockConnection',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interface: 'BDD',
         },
       ],
     },
@@ -795,7 +819,7 @@ export default defineConfig([
     },
   },
   {
-    name: 'No SDK in models/trace',
+    name: 'Keep models/trace isolated',
     files: ['front_end/models/trace/**/*.ts'],
     ignores: ['front_end/models/trace/**/*.test.ts'],
     rules: {
@@ -805,13 +829,23 @@ export default defineConfig([
           bannedImportPaths: [
             {
               bannedPath: join(
-                import.meta.dirname,
-                'front_end',
-                'core',
-                'sdk',
-                'sdk.js',
-              ),
+                  import.meta.dirname,
+                  'front_end',
+                  'core',
+                  'sdk',
+                  'sdk.js',
+                  ),
               allowTypeImports: true,
+            },
+            {
+              bannedPath: join(
+                  import.meta.dirname,
+                  'front_end',
+                  'ui',
+                  'legacy',
+                  'legacy.js',
+                  ),
+              allowTypeImports: false,
             },
           ],
         },

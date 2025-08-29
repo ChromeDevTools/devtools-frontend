@@ -13,8 +13,8 @@ const fs = require('fs');
  * unchanged. This would preserve the original file timestamps and hence GN can correctly conclude
  * the file output hasn't changed.
  *
- * @param {string} generatedFileLocation Location to write to
- * @param {string} newContents The contents to write (or noop if unchanged with previous content)
+ * @param generatedFileLocation Location to write to
+ * @param newContents The contents to write (or noop if unchanged with previous content)
  */
 module.exports.writeIfChanged = (generatedFileLocation, newContents) => {
   if (fs.existsSync(generatedFileLocation)) {

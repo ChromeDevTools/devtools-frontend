@@ -30,6 +30,10 @@ const eventToInitiatorMap = new Map<Types.Events.Event, Types.Events.Event>();
 // multiple events, hence why the value for this map is an array.
 const initiatorToEventsMap = new Map<Types.Events.Event, Types.Events.Event[]>();
 
+const requestAnimationFrameEventsById = new Map<number, Types.Events.RequestAnimationFrame>();
+const timerInstallEventsById = new Map<number, Types.Events.TimerInstall>();
+const requestIdleCallbackEventsById = new Map<number, Types.Events.RequestIdleCallback>();
+
 const webSocketCreateEventsById = new Map<number, Types.Events.WebSocketCreate>();
 const schedulePostTaskCallbackEventsById = new Map<number, Types.Events.SchedulePostTaskCallback>();
 
@@ -37,8 +41,11 @@ export function reset(): void {
   lastScheduleStyleRecalcByFrame.clear();
   lastInvalidationEventForFrame.clear();
   lastUpdateLayoutTreeByFrame.clear();
+  timerInstallEventsById.clear();
   eventToInitiatorMap.clear();
   initiatorToEventsMap.clear();
+  requestAnimationFrameEventsById.clear();
+  requestIdleCallbackEventsById.clear();
   webSocketCreateEventsById.clear();
   schedulePostTaskCallbackEventsById.clear();
 }
@@ -117,6 +124,23 @@ export function handleEvent(event: Types.Events.Event): void {
     }
     // Now clear the last invalidation for the frame: the last invalidation has been linked to a Layout event, so it cannot be the initiator for any future layouts.
     lastInvalidationEventForFrame.delete(event.args.beginData.frame);
+  } else if (Types.Events.isTimerInstall(event)) {
+    timerInstallEventsById.set(event.args.data.timerId, event);
+  } else if (Types.Events.isTimerFire(event)) {
+    const matchingInstall = timerInstallEventsById.get(event.args.data.timerId);
+    if (matchingInstall) {
+      storeInitiator({event, initiator: matchingInstall});
+    }
+  } else if (Types.Events.isRequestIdleCallback(event)) {
+    requestIdleCallbackEventsById.set(event.args.data.id, event);
+  } else if (Types.Events.isFireIdleCallback(event)) {
+    const matchingRequestEvent = requestIdleCallbackEventsById.get(event.args.data.id);
+    if (matchingRequestEvent) {
+      storeInitiator({
+        event,
+        initiator: matchingRequestEvent,
+      });
+    }
   } else if (Types.Events.isWebSocketCreate(event)) {
     webSocketCreateEventsById.set(event.args.data.identifier, event);
   } else if (Types.Events.isWebSocketInfo(event) || Types.Events.isWebSocketTransfer(event)) {

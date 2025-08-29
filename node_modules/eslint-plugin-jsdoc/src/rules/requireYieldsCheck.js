@@ -77,8 +77,8 @@ export default iterateJsdoc(({
   }
 
   const {
-    next = false,
     checkGeneratorsOnly = false,
+    next = false,
   } = context.options[0] || {};
 
   const [

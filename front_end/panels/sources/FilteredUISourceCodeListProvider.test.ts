@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
@@ -15,8 +14,8 @@ import * as Sources from './sources.js';
 const {urlString} = Platform.DevToolsPath;
 const setUpEnvironmentWithUISourceCode =
     (url: string, resourceType: Common.ResourceType.ResourceType, project?: Workspace.Workspace.Project) => {
-      const {workspace, debuggerWorkspaceBinding} = setUpEnvironment();
-      Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: false, debuggerWorkspaceBinding});
+      const {workspace} = setUpEnvironment();
+      Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: false});
 
       if (!project) {
         project = {id: () => url, type: () => Workspace.Workspace.projectTypes.Network} as Workspace.Workspace.Project;
@@ -97,7 +96,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
 
     // ignore the uiSourceCode
     Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE, true);
-    Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiSourceCode);
+    Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiSourceCode);
 
     const filteredUISourceCodeListProvider =
         new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider('test');

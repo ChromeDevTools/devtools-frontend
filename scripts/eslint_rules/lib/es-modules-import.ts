@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Rule to check ES import usage
+ * @file Rule to check ES import usage
  * @author Tim van der Lippe
  */
 
@@ -349,7 +349,8 @@ export default createRule<[], MessageIds>({
                   ['testing', 'test_setup.ts'].join(path.sep),
                   ) &&
               importPath.includes([path.sep, 'testing', path.sep].join(''))) {
-            /** Within test files we allow the direct import of test helpers.
+            /**
+             * Within test files we allow the direct import of test helpers.
              * The entry point detection detects test_setup.ts as an
              * entrypoint, but we don't treat it as such, it's just a file
              * that Karma runs to setup the environment.

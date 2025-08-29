@@ -27,5 +27,6 @@ module.exports = {
 		$Uint32: 4,
 		$Float32: 4,
 		$Float64: 8
-	}
+	},
+	choices: '"Int8", "Uint8", "Uint8C", "Int16", "Uint16", "Int32", "Uint32", "Float32", or "Float64"'
 };

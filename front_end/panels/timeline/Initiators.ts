@@ -10,6 +10,22 @@ export interface InitiatorData {
   isEntryHidden?: boolean;
   isInitiatorHidden?: boolean;
 }
+
+export interface InitiatorDataOptions {
+  /**
+   * Used to limit how far back through the chain we go; some large JS apps can
+   * have vast amounts of initiator stacks and it's hard to render them
+   * efficiently, and also not very useful to the user if we just show loads of
+   * them.
+   */
+  predecessorLimit: number;
+}
+
+// We limit the amount of predecessors to 10; on large traces with large JS
+// stacks there can be a huge number of these. It's not super useful to
+// walk back too far and if we draw too many arrows on the timeline, the view becomes very cluttered and noisy.
+const MAX_PREDECESSOR_INITIATOR_LIMIT = 10;
+
 /**
  * Given an event that the user has selected, this function returns all the
  * data of events and their initiators that need to be drawn on the flamechart.
@@ -18,11 +34,9 @@ export interface InitiatorData {
  * work backwards to draw each one, as well as the events initiated directly by the entry.
  */
 export function initiatorsDataToDraw(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
-    selectedEvent: Trace.Types.Events.Event,
+    parsedTrace: Trace.Handlers.Types.ParsedTrace, selectedEvent: Trace.Types.Events.Event,
     hiddenEntries: Trace.Types.Events.Event[],
-    expandableEntries: Trace.Types.Events.Event[],
-    ): readonly InitiatorData[] {
+    expandableEntries: Trace.Types.Events.Event[]): readonly InitiatorData[] {
   const initiatorsData = [
     ...findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.Initiators.eventToInitiator),
     ...findInitiatorDataDirectSuccessors(selectedEvent, parsedTrace.Initiators.initiatorToEvents),
@@ -49,13 +63,12 @@ function findInitiatorDataPredecessors(
     eventToInitiator: Map<Trace.Types.Events.Event, Trace.Types.Events.Event>,
     ): readonly InitiatorData[] {
   const initiatorsData: InitiatorData[] = [];
-
   let currentEvent: Trace.Types.Events.Event|null = selectedEvent;
   const visited = new Set<Trace.Types.Events.Event>();
   visited.add(currentEvent);
 
   // Build event initiator data up to the selected one
-  while (currentEvent) {
+  while (currentEvent && initiatorsData.length < MAX_PREDECESSOR_INITIATOR_LIMIT) {
     const currentInitiator = eventToInitiator.get(currentEvent);
 
     if (currentInitiator) {

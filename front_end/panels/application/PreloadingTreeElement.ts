@@ -14,15 +14,15 @@ import type {ResourcesPanel} from './ResourcesPanel.js';
 
 const UIStrings = {
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   speculativeLoads: 'Speculative loads',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   rules: 'Rules',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   speculations: 'Speculations',
 } as const;

@@ -7,7 +7,7 @@
     "outDir": "ignored",
     "checkJs": true,
     "noEmit": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "allowImportingTsExtensions": true,
     "erasableSyntaxOnly": true
   }

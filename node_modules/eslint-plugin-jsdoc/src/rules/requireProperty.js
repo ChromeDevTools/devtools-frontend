@@ -7,7 +7,7 @@ export default iterateJsdoc(({
     tag,
   }) => {
     return [
-      'typedef', 'namespace',
+      'namespace', 'typedef',
     ].includes(tag);
   });
   if (!propertyAssociatedTags.length) {

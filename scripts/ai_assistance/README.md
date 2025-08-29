@@ -9,6 +9,7 @@ Mainly, `auto-run/auto-run.ts` script takes example URLs, runs the examples and 
 **Prerequisites**
 * You need to have at least Node v22 to run Auto AI Assistance.
 * You need to have a version of Chrome that contains the AI Assistance feature. (i.e. you also need to be logged in & have sync enabled)
+* You must have enabled AI Assistance logging. To do this, load up DevTools-on-DevTools and in the console run `setAiAssistanceStructuredLogEnabled(true)`.
 
 **Steps**
 1. Run a AI Assistance enabled Chrome executable with `--remote-debugging-port 9222`, `--user-data-dir=/tmp/aida` and `--auto-open-devtools-for-tabs` targeting `about:blank` and login with a Google account. For example:

@@ -54,39 +54,39 @@ import watchExpressionsSidebarPaneStyles from './watchExpressionsSidebarPane.css
 
 const UIStrings = {
   /**
-   *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
    */
   addWatchExpression: 'Add watch expression',
   /**
-   *@description Tooltip/screen reader label of a button in the Sources panel that refreshes all watch expressions.
+   * @description Tooltip/screen reader label of a button in the Sources panel that refreshes all watch expressions.
    */
   refreshWatchExpressions: 'Refresh watch expressions',
   /**
-   *@description Empty element text content in Watch Expressions Sidebar Pane of the Sources panel
+   * @description Empty element text content in Watch Expressions Sidebar Pane of the Sources panel
    */
   noWatchExpressions: 'No watch expressions',
   /**
-   *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
    */
   deleteAllWatchExpressions: 'Delete all watch expressions',
   /**
-   *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
    */
   addPropertyPathToWatch: 'Add property path to watch',
   /**
-   *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
+   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel
    */
   deleteWatchExpression: 'Delete watch expression',
   /**
-   *@description Value element text content in Watch Expressions Sidebar Pane of the Sources panel
+   * @description Value element text content in Watch Expressions Sidebar Pane of the Sources panel
    */
   notAvailable: '<not available>',
   /**
-   *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+   * @description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
    */
   copyValue: 'Copy value',
   /**
-   *@description announcement for when watch expression is deleted
+   * @description announcement for when watch expression is deleted
    */
   watchExpressionDeleted: 'Watch expression deleted',
 } as const;
@@ -132,7 +132,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.contentElement.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
     this.treeOutline.registerRequiredCSS(watchExpressionsSidebarPaneStyles);
-    this.treeOutline.hideOverflow();
+    this.treeOutline.setHideOverflow(true);
 
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.expandController =

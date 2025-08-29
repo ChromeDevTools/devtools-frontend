@@ -13,6 +13,7 @@ devtools_module("ai_assistance") {
     "AiHistoryStorage.ts",
     "AiUtils.ts",
     "ChangeManager.ts",
+    "ConversationHandler.ts",
     "EvaluateAction.ts",
     "ExtensionScope.ts",
     "agents/AiAgent.ts",
@@ -21,11 +22,11 @@ devtools_module("ai_assistance") {
     "agents/PatchAgent.ts",
     "agents/PerformanceAgent.ts",
     "agents/PerformanceAnnotationsAgent.ts",
-    "agents/PerformanceInsightsAgent.ts",
     "agents/StylingAgent.ts",
     "data_formatters/FileFormatter.ts",
     "data_formatters/NetworkRequestFormatter.ts",
     "data_formatters/PerformanceInsightFormatter.ts",
+    "data_formatters/PerformanceTraceFormatter.ts",
     "debug.ts",
     "injected.ts",
   ]
@@ -73,6 +74,7 @@ ts_library("unittests") {
     "AgentProject.test.ts",
     "AiHistoryStorage.test.ts",
     "ChangeManager.test.ts",
+    "ConversationHandler.test.ts",
     "EvaluateAction.test.ts",
     "ExtensionScope.test.ts",
     "agents/AiAgent.test.ts",
@@ -81,11 +83,11 @@ ts_library("unittests") {
     "agents/PatchAgent.test.ts",
     "agents/PerformanceAgent.test.ts",
     "agents/PerformanceAnnotationsAgent.test.ts",
-    "agents/PerformanceInsightsAgent.test.ts",
     "agents/StylingAgent.test.ts",
     "data_formatters/FileFormatter.test.ts",
     "data_formatters/NetworkRequestFormatter.test.ts",
     "data_formatters/PerformanceInsightFormatter.test.ts",
+    "data_formatters/PerformanceTraceFormatter.test.ts",
   ]
 
   deps = [
@@ -98,5 +100,13 @@ ts_library("unittests") {
     "../../testing",
     "../bindings:bundle",
     "../trace:bundle",
+  ]
+}
+
+copy_to_gen("snapshots") {
+  sources = [
+    "AiHistoryStorage.snapshot.txt",
+    "data_formatters/PerformanceInsightFormatter.snapshot.txt",
+    "data_formatters/PerformanceTraceFormatter.snapshot.txt",
   ]
 }

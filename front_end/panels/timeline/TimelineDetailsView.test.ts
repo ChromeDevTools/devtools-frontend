@@ -5,9 +5,10 @@
 import * as Trace from '../../models/trace/trace.js';
 import {doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
-import * as Components from './components/components.js';
+import type * as Components from './components/components.js';
 import * as Timeline from './timeline.js';
 
 class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
@@ -56,10 +57,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
     await raf();
 
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
-    assert.instanceOf(
-        detailsContentElement.querySelector('devtools-performance-network-request-details'),
-        Components.NetworkRequestDetails.NetworkRequestDetails);
-    assert.instanceOf(detailsContentElement.querySelector('.insight-label'), HTMLElement);
+    assert.isNotNull(detailsContentElement.querySelector('[data-network-request-details]'));
   });
 
   it('displays the details for a frame correctly', async function() {
@@ -108,7 +106,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
     // Assert that the right component is rendered. This component has its own
     // tests for its contents so no need to duplicate those here.
-    const layoutShiftDetails = detailsContentElement.querySelector('devtools-performance-layout-shift-details');
+    const layoutShiftDetails = detailsContentElement.querySelector('[data-layout-shift-details]');
     assert.isNotNull(layoutShiftDetails);
   });
 
@@ -131,8 +129,34 @@ describeWithEnvironment('TimelineDetailsView', function() {
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
     // Assert that the right component is rendered. This component has its own
     // tests for its contents so no need to duplicate those here.
-    const layoutShiftDetails = detailsContentElement.querySelector('devtools-performance-layout-shift-details');
+    const layoutShiftDetails = detailsContentElement.querySelector('[data-layout-shift-details]');
     assert.isNotNull(layoutShiftDetails);
+  });
+
+  it('renders information for a generic event on the main thread', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+    renderElementIntoDOM(detailsView);
+    const evalScriptEvent = allThreadEntriesInTrace(parsedTrace).find(event => {
+      return event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.dur && event.dur > 2000;
+    });
+    assert.isOk(evalScriptEvent);
+    await detailsView.setModel({
+      parsedTrace,
+      selectedEvents: null,
+      traceInsightsSets: null,
+      eventToRelatedInsightsMap: null,
+      entityMapper: null
+    });
+    const selection = Timeline.TimelineSelection.selectionFromEvent(evalScriptEvent);
+    await detailsView.setSelection(selection);
+    const detailsContentElement = detailsView.getDetailsContentElementForTest();
+
+    assert.strictEqual(
+        detailsContentElement.querySelector<HTMLElement>('.timeline-details-chip-title')?.innerText, 'Evaluate script');
+
+    // Ensure we show the pie chart time breakdown
+    assert.isTrue(detailsContentElement.innerText.includes('Aggregated time'));
   });
 
   it('updates the range details when the user has a range selected', async function() {
@@ -143,7 +167,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
       parsedTrace,
       // We have to set selected events for the range selection UI to be drawn
       // (without the set of events we can't generate the range stats)
-      selectedEvents: parsedTrace.Renderer.allTraceEntries,
+      selectedEvents: allThreadEntriesInTrace(parsedTrace),
       traceInsightsSets: null,
       eventToRelatedInsightsMap: null,
       entityMapper: null

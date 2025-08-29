@@ -162,7 +162,6 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             '--disable-crash-reporter', // No crash reporting in CfT.
             '--disable-default-apps',
             '--disable-dev-shm-usage',
-            '--disable-extensions',
             '--disable-hang-monitor',
             '--disable-infobars',
             '--disable-ipc-flooding-protection',
@@ -184,7 +183,7 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
         ].filter(arg => {
             return arg !== '';
         });
-        const { devtools = false, headless = !devtools, args = [], userDataDir, } = options;
+        const { devtools = false, headless = !devtools, args = [], userDataDir, enableExtensions = false, } = options;
         if (userDataDir) {
             chromeArguments.push(`--user-data-dir=${node_path_1.default.resolve(userDataDir)}`);
         }
@@ -194,6 +193,9 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
         if (headless) {
             chromeArguments.push(headless === 'shell' ? '--headless' : '--headless=new', '--hide-scrollbars', '--mute-audio');
         }
+        chromeArguments.push(enableExtensions
+            ? '--enable-unsafe-extension-debugging'
+            : '--disable-extensions');
         if (args.every(arg => {
             return arg.startsWith('-');
         })) {

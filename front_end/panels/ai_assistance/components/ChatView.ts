@@ -39,41 +39,41 @@ const UIStrings = {
    */
   settingsLink: 'AI assistance in Settings',
   /**
-   *@description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
-   *@example {AI assistance in Settings} PH1
+   * @description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
+   * @example {AI assistance in Settings} PH1
    */
   turnOnForStyles: 'Turn on {PH1} to get help with understanding CSS styles',
   /**
-   *@description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
-   *@example {AI assistance in Settings} PH1
+   * @description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
+   * @example {AI assistance in Settings} PH1
    */
   turnOnForStylesAndRequests: 'Turn on {PH1} to get help with styles and network requests',
   /**
-   *@description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
-   *@example {AI assistance in Settings} PH1
+   * @description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
+   * @example {AI assistance in Settings} PH1
    */
   turnOnForStylesRequestsAndFiles: 'Turn on {PH1} to get help with styles, network requests, and files',
   /**
-   *@description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
-   *@example {AI assistance in Settings} PH1
+   * @description Text for asking the user to turn the AI assistance feature in settings first before they are able to use it.
+   * @example {AI assistance in Settings} PH1
    */
   turnOnForStylesRequestsPerformanceAndFiles:
       'Turn on {PH1} to get help with styles, network requests, performance, and files',
   /**
-   *@description The footer disclaimer that links to more information about the AI feature.
+   * @description The footer disclaimer that links to more information about the AI feature.
    */
   learnAbout: 'Learn about AI in DevTools',
   /**
-   *@description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
+   * @description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
    */
   notAvailableInIncognitoMode: 'AI assistance is not available in Incognito mode or Guest mode',
 
   /**
-   *@description Label added to the text input to describe the context for screen readers. Not shown visibly on screen.
+   * @description Label added to the text input to describe the context for screen readers. Not shown visibly on screen.
    */
   inputTextAriaDescription: 'You can also use one of the suggested prompts above to start your conversation',
   /**
-   *@description Label added to the button that reveals the selected context item in DevTools
+   * @description Label added to the button that reveals the selected context item in DevTools
    */
   revealContextDescription: 'Reveal the selected context item in DevTools',
 } as const;
@@ -83,27 +83,27 @@ const UIStrings = {
 */
 const UIStringsNotTranslate = {
   /**
-   *@description Title for the send icon button.
+   * @description Title for the send icon button.
    */
   sendButtonTitle: 'Send',
   /**
-   *@description Title for the start new chat
+   * @description Title for the start new chat
    */
   startNewChat: 'Start new chat',
   /**
-   *@description Title for the cancel icon button.
+   * @description Title for the cancel icon button.
    */
   cancelButtonTitle: 'Cancel',
   /**
-   *@description Label for the "select an element" button.
+   * @description Label for the "select an element" button.
    */
   selectAnElement: 'Select an element',
   /**
-   *@description Label for the "select an element" button.
+   * @description Label for the "select an element" button.
    */
   noElementSelected: 'No element selected',
   /**
-   *@description Text for the empty state of the AI assistance panel.
+   * @description Text for the empty state of the AI assistance panel.
    */
   emptyStateText: 'How can I help you?',
   /**
@@ -116,7 +116,7 @@ const UIStringsNotTranslate = {
    */
   maxStepsError: 'Seems like I am stuck with the investigation. It would be better if you start over.',
   /**
-   *@description Displayed when the user stop the response
+   * @description Displayed when the user stop the response
    */
   stoppedResponse: 'You stopped this response',
   /**
@@ -132,75 +132,75 @@ const UIStringsNotTranslate = {
    */
   negativeSideEffectConfirmation: 'Cancel',
   /**
-   *@description The generic name of the AI agent (do not translate)
+   * @description The generic name of the AI agent (do not translate)
    */
   ai: 'AI',
   /**
-   *@description The fallback text when we can't find the user full name
+   * @description The fallback text when we can't find the user full name
    */
   you: 'You',
   /**
-   *@description The fallback text when a step has no title yet
+   * @description The fallback text when a step has no title yet
    */
   investigating: 'Investigating',
   /**
-   *@description Prefix to the title of each thinking step of a user action is required to continue
+   * @description Prefix to the title of each thinking step of a user action is required to continue
    */
   paused: 'Paused',
   /**
-   *@description Heading text for the code block that shows the executed code.
+   * @description Heading text for the code block that shows the executed code.
    */
   codeExecuted: 'Code executed',
   /**
-   *@description Heading text for the code block that shows the code to be executed after side effect confirmation.
+   * @description Heading text for the code block that shows the code to be executed after side effect confirmation.
    */
   codeToExecute: 'Code to execute',
   /**
-   *@description Heading text for the code block that shows the returned data.
+   * @description Heading text for the code block that shows the returned data.
    */
   dataReturned: 'Data returned',
   /**
-   *@description Aria label for the check mark icon to be read by screen reader
+   * @description Aria label for the check mark icon to be read by screen reader
    */
   completed: 'Completed',
   /**
-   *@description Aria label for the cancel icon to be read by screen reader
+   * @description Aria label for the cancel icon to be read by screen reader
    */
   canceled: 'Canceled',
   /**
-   *@description Text displayed when the chat input is disabled due to reading past conversation.
+   * @description Text displayed when the chat input is disabled due to reading past conversation.
    */
   pastConversation: 'You\'re viewing a past conversation.',
   /**
-   *@description Title for the take screenshot button.
+   * @description Title for the take screenshot button.
    */
   takeScreenshotButtonTitle: 'Take screenshot',
   /**
-   *@description Title for the remove image input button.
+   * @description Title for the remove image input button.
    */
   removeImageInputButtonTitle: 'Remove image input',
   /**
-   *@description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
+   * @description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
    */
   imageInputSentToTheModel: 'Image input sent to the model',
   /**
-   *@description Alt text for the account avatar.
+   * @description Alt text for the account avatar.
    */
   accountAvatar: 'Account avatar',
   /**
-   *@description Title for the x-link which wraps the image input rendered in chat messages.
+   * @description Title for the x-link which wraps the image input rendered in chat messages.
    */
   openImageInNewTab: 'Open image in a new tab',
   /**
-   *@description Alt text for image when it is not available.
+   * @description Alt text for image when it is not available.
    */
   imageUnavailable: 'Image unavailable',
   /**
-   *@description Title for the add image button.
+   * @description Title for the add image button.
    */
   addImageButtonTitle: 'Add image',
   /**
-   *@description Disclaimer text right after the chat input.
+   * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
 } as const;
@@ -273,6 +273,7 @@ export interface Props {
   onCancelClick: () => void;
   onContextClick: () => void;
   onNewConversation: () => void;
+  onCopyResponseClick: (message: ModelChatMessage) => void;
   onTakeScreenshot?: () => void;
   onRemoveImageInput?: () => void;
   onTextInputChange: (input: string) => void;
@@ -529,8 +530,9 @@ export class ChatView extends HTMLElement {
       return;
     }
 
-    // Go to a new line only when Shift + Enter is pressed.
-    if (ev.key === 'Enter' && !ev.shiftKey) {
+    // Go to a new line on Shift+Enter. On Enter, submit unless the
+    // user is in IME composition.
+    if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
       ev.preventDefault();
       if (!ev.target?.value || this.#props.imageInput?.isLoading) {
         return;
@@ -625,6 +627,7 @@ export class ChatView extends HTMLElement {
             onSuggestionClick: this.#handleSuggestionClick,
             onFeedbackSubmit: this.#props.onFeedbackSubmit,
             onMessageContainerRef: this.#handleMessageContainerRef,
+            onCopyResponseClick: this.#props.onCopyResponseClick,
           })}
           ${this.#props.isReadOnly
             ? renderReadOnlySection({
@@ -830,7 +833,7 @@ function renderStep({step, isLoading, markdownRenderer, isLast}: {
           ${renderTitle(step)}
           <devtools-icon
             class="arrow"
-            .name=${'chevron-down'}
+            name="chevron-down"
           ></devtools-icon>
         </div>
       </summary>
@@ -911,6 +914,7 @@ function renderChatMessage({
   markdownRenderer,
   onSuggestionClick,
   onFeedbackSubmit,
+  onCopyResponseClick,
 }: {
   message: ChatMessage,
   isLoading: boolean,
@@ -921,13 +925,14 @@ function renderChatMessage({
   markdownRenderer: MarkdownRendererWithCodeBlock,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+  onCopyResponseClick: (message: ModelChatMessage) => void,
 }): Lit.TemplateResult {
   if (message.entity === ChatMessageEntity.USER) {
     const name = userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
     const image = userInfo.accountImage ?
         html`<img src="data:image/png;base64, ${userInfo.accountImage}" alt=${UIStringsNotTranslate.accountAvatar} />` :
         html`<devtools-icon
-          .name=${'profile'}
+          name="profile"
         ></devtools-icon>`;
     const imageInput = message.imageInput && 'inlineData' in message.imageInput ?
         renderImageChatMessage(message.imageInput.inlineData) :
@@ -989,6 +994,7 @@ function renderChatMessage({
             },
             suggestions: (isLast && !isReadOnly) ? message.suggestions : undefined,
             onSuggestionClick,
+            onCopyResponseClick: () => onCopyResponseClick(message),
             canShowFeedbackForm,
           })}></devtools-widget>`
       }
@@ -1101,6 +1107,7 @@ function renderMessages({
   changeManager,
   onSuggestionClick,
   onFeedbackSubmit,
+  onCopyResponseClick,
   onMessageContainerRef,
 }: {
   messages: ChatMessage[],
@@ -1111,6 +1118,7 @@ function renderMessages({
   markdownRenderer: MarkdownRendererWithCodeBlock,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+  onCopyResponseClick: (message: ModelChatMessage) => void,
   onMessageContainerRef: (el: Element|undefined) => void,
   changeSummary?: string,
   changeManager?: AiAssistanceModel.ChangeManager,
@@ -1144,6 +1152,7 @@ function renderMessages({
           markdownRenderer,
           onSuggestionClick,
           onFeedbackSubmit,
+          onCopyResponseClick,
         }),
       )}
       ${renderPatchWidget()}
@@ -1482,7 +1491,7 @@ function renderChatInput({
         @keydown=${onTextAreaKeyDown}
         @input=${(event: KeyboardEvent) => onTextInputChange((event.target as HTMLInputElement).value)}
         placeholder=${inputPlaceholder}
-        jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
+        jslog=${VisualLogging.textField('query').track({change: true, keydown: 'Enter'})}
         aria-description=${i18nString(UIStrings.inputTextAriaDescription)}
       ></textarea>
       <div class="chat-input-actions">
@@ -1567,7 +1576,7 @@ function renderDisabledState(contents: Lit.TemplateResult): Lit.TemplateResult {
       <div class="disabled-view">
         <div class="disabled-view-icon-container">
           <devtools-icon
-            .name=${'smart-assistant'}
+            name="smart-assistant"
           ></devtools-icon>
         </div>
         <div>
@@ -1595,6 +1604,7 @@ function renderMainContents({
   changeManager,
   onSuggestionClick,
   onFeedbackSubmit,
+  onCopyResponseClick,
   onMessageContainerRef,
 }: {
   state: State,
@@ -1610,6 +1620,7 @@ function renderMainContents({
   changeManager: AiAssistanceModel.ChangeManager,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+  onCopyResponseClick: (message: ModelChatMessage) => void,
   onMessageContainerRef: (el: Element|undefined) => void,
   conversationType?: AiAssistanceModel.ConversationType,
   changeSummary?: string,
@@ -1639,7 +1650,7 @@ function renderMainContents({
       onSuggestionClick,
       onFeedbackSubmit,
       onMessageContainerRef,
-
+      onCopyResponseClick
     });
   }
 

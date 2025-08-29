@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {TSESTree} from '@typescript-eslint/utils';
+
 import {createRule} from './utils/ruleCreator.ts';
 
 /**
- * @fileoverview Disallow usage of `assert.deepStrictEqual`.
+ * @file Disallow usage of `assert.deepStrictEqual`.
  *
  * In chai, `deepStrictEqual` is an alias for `deepEqual`, and we want to
  * consistently use the latter to not leave developers wondering what's
@@ -33,26 +35,25 @@ export default createRule({
   },
   defaultOptions: [],
   create(context) {
-    function isAssertDeepStrictEqual(calleeNode): boolean {
-      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
-          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
-          calleeNode.property.name === 'deepStrictEqual';
+    function isAssertDeepStrictEqual(node: TSESTree.Expression): node is TSESTree.MemberExpression&{
+      property: TSESTree.Identifier,
     }
-
-    function reportError(node) {
-      context.report({
-        node,
-        messageId: 'unexpectedAssertDeepStrictEqual',
-        fix(fixer) {
-          return fixer.replaceText(node.callee.property, 'deepEqual');
-        }
-      });
+    {
+      return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
+          node.property.type === 'Identifier' && node.property.name === 'deepStrictEqual';
     }
 
     return {
       CallExpression(node) {
-        if (isAssertDeepStrictEqual(node.callee)) {
-          reportError(node);
+        const callee = node.callee;
+        if (isAssertDeepStrictEqual(callee)) {
+          context.report({
+            node,
+            messageId: 'unexpectedAssertDeepStrictEqual',
+            fix(fixer) {
+              return fixer.replaceText(callee.property, 'deepEqual');
+            }
+          });
         }
       }
     };

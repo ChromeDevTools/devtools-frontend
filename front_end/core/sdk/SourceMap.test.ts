@@ -4,7 +4,8 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {encodeSourceMap, GeneratedRangeBuilder, OriginalScopeBuilder} from '../../testing/SourceMapEncoder.js';
+import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
+import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
@@ -1239,33 +1240,29 @@ describeWithEnvironment('SourceMap', () => {
     it('can resolve generated positions with inlineFrameIndex', () => {
       Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES);
       // 'foo' calls 'bar', 'bar' calls 'baz'. 'bar' and 'baz' are inlined into 'foo'.
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global'})
-                                  .start(10, 0, {kind: 'function', name: 'foo'})
-                                  .end(20, 0)
-                                  .start(30, 0, {kind: 'function', name: 'bar'})
-                                  .end(40, 0)
-                                  .start(50, 0, {kind: 'function', name: 'baz'})
-                                  .end(60, 0)
-                                  .end(70, 0)
-                                  .build()];
+      const builder = new ScopesCodec.ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(10, 0, {kind: 'function', key: 'foo', name: 'foo'})
+          .endScope(20, 0)
+          .startScope(30, 0, {kind: 'function', key: 'bar', name: 'bar'})
+          .endScope(40, 0)
+          .startScope(50, 0, {kind: 'function', key: 'baz', name: 'baz'})
+          .endScope(60, 0)
+          .endScope(70, 0);
 
-      const generatedRanges =
-          new GeneratedRangeBuilder(names)
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
-              .start(0, 5, {definition: {sourceIdx: 0, scopeIdx: 3}, callsite: {sourceIdx: 0, line: 15, column: 0}})
-              .start(0, 5, {definition: {sourceIdx: 0, scopeIdx: 5}, callsite: {sourceIdx: 0, line: 35, column: 0}})
-              .end(0, 10)
-              .end(0, 10)
-              .end(0, 10)
-              .end(0, 10)
-              .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'foo', isStackFrame: true})
+          .startRange(0, 5, {scopeKey: 'bar', callSite: {sourceIndex: 0, line: 15, column: 0}})
+          .startRange(0, 5, {scopeKey: 'baz', callSite: {sourceIndex: 0, line: 35, column: 0}})
+          .endRange(0, 10)
+          .endRange(0, 10)
+          .endRange(0, 10)
+          .endRange(0, 10);
 
       const sourceMap = new SDK.SourceMap.SourceMap(
           compiledUrl, sourceMapJsonUrl,
-          {version: 3, sources: ['foo.ts'], mappings: '', names, originalScopes, generatedRanges});
+          ScopesCodec.encode(builder.build(), {version: 3, sources: ['foo.ts'], mappings: ''}) as
+              SDK.SourceMap.SourceMapV3Object);
 
       assert.isNull(
           sourceMap.findEntry(0, 7, 0));  // We don't have mappings, so inlineFrameIndex = 0 ('baz') has no entry.
@@ -1284,57 +1281,42 @@ describeWithEnvironment('SourceMap', () => {
 
   it('combines "scopes" proposal scopes appropriately for index maps', () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES);
-    const names1: string[] = [];
-    const originalScopes1 = [new OriginalScopeBuilder(names1)
-                                 .start(0, 0, {kind: 'global'})
-                                 .start(10, 0, {name: 'foo', kind: 'function', isStackFrame: true})
-                                 .end(20, 0)
-                                 .end(30, 0)
-                                 .build()];
-    const generatedRanges1 = new GeneratedRangeBuilder(names1)
-                                 .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                 .start(0, 7, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
-                                 .end(0, 14)
-                                 .end(0, 21)
-                                 .build();
-    const names2: string[] = [];
-    const originalScopes2 = [new OriginalScopeBuilder(names2)
-                                 .start(0, 0, {kind: 'global'})
-                                 .start(10, 0, {name: 'bar', kind: 'function', isStackFrame: true})
-                                 .end(20, 0)
-                                 .end(30, 0)
-                                 .build()];
-    const generatedRanges2 = new GeneratedRangeBuilder(names2)
-                                 .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                 .start(0, 7, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
-                                 .end(0, 14)
-                                 .end(0, 21)
-                                 .build();
+    const info1 = new ScopesCodec.ScopeInfoBuilder()
+                      .startScope(0, 0, {kind: 'global', key: 'global'})
+                      .startScope(10, 0, {name: 'foo', key: 'foo', kind: 'function', isStackFrame: true})
+                      .endScope(20, 0)
+                      .endScope(30, 0)
+                      .startRange(0, 0, {scopeKey: 'global'})
+                      .startRange(0, 7, {scopeKey: 'foo', isStackFrame: true})
+                      .endRange(0, 14)
+                      .endRange(0, 21)
+                      .build();
+    const map1 = ScopesCodec.encode(info1, {
+      version: 3,
+      sources: ['foo.ts'],
+      mappings: '',
+    });
+
+    const info2 = new ScopesCodec.ScopeInfoBuilder()
+                      .startScope(0, 0, {kind: 'global', key: 'global'})
+                      .startScope(10, 0, {name: 'bar', key: 'bar', kind: 'function', isStackFrame: true})
+                      .endScope(20, 0)
+                      .endScope(30, 0)
+                      .startRange(0, 0, {scopeKey: 'global'})
+                      .startRange(0, 7, {scopeKey: 'bar', isStackFrame: true})
+                      .endRange(0, 14)
+                      .endRange(0, 21)
+                      .build();
+    const map2 = ScopesCodec.encode(info2, {
+      version: 3,
+      sources: ['bar.ts'],
+      mappings: '',
+    });
     const indexMap: SDK.SourceMap.SourceMapV3 = {
       version: 3,
       sections: [
-        {
-          offset: {line: 0, column: 0},
-          map: {
-            version: 3,
-            sources: ['foo.ts'],
-            names: names1,
-            originalScopes: originalScopes1,
-            generatedRanges: generatedRanges1,
-            mappings: '',
-          },
-        },
-        {
-          offset: {line: 1, column: 100},
-          map: {
-            version: 3,
-            sources: ['bar.ts'],
-            names: names2,
-            originalScopes: originalScopes2,
-            generatedRanges: generatedRanges2,
-            mappings: '',
-          },
-        }
+        {offset: {line: 0, column: 0}, map: map1 as SDK.SourceMap.SourceMapV3Object},
+        {offset: {line: 1, column: 100}, map: map2 as SDK.SourceMap.SourceMapV3Object},
       ],
     };
 

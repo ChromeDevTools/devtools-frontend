@@ -18,23 +18,23 @@ import {NodeMainImpl} from './NodeMain.js';                      // eslint-disab
 
 const UIStrings = {
   /**
-   *@description Text that refers to the network connection
+   * @description Text that refers to the network connection
    */
   connection: 'Connection',
   /**
-   *@description A tag of Node.js Connection Panel that can be searched in the command menu
+   * @description A tag of Node.js Connection Panel that can be searched in the command menu
    */
   node: 'node',
   /**
-   *@description Command for showing the Connection tool
+   * @description Command for showing the Connection tool
    */
   showConnection: 'Show Connection',
   /**
-   *@description Title of the 'Node' tool in the Network Navigator View, which is part of the Sources tool
+   * @description Title of the 'Node' tool in the Network Navigator View, which is part of the Sources tool
    */
   networkTitle: 'Node',
   /**
-   *@description Command for showing the 'Node' tool in the Network Navigator View, which is part of the Sources tool
+   * @description Command for showing the 'Node' tool in the Network Navigator View, which is part of the Sources tool
    */
   showNode: 'Show Node',
 } as const;

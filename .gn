@@ -18,4 +18,6 @@ check_targets = [ "*" ]
 script_executable = "python3"
 
 default_args = {
+  # Use Siso instead of Ninja.
+  use_siso = true
 }

@@ -20,7 +20,8 @@ const isNewPromiseExpression = (node) => {
  */
 const isVoidPromise = (node) => {
   return /** @type {import('@typescript-eslint/types').TSESTree.TSTypeReference} */ (node)?.typeArguments?.params?.[0]?.type === 'TSVoidKeyword'
-    /* c8 ignore next 4 */
+    /* c8 ignore next 5 */
+    // eslint-disable-next-line @stylistic/operator-linebreak -- c8
     || /** @type {import('@typescript-eslint/types').TSESTree.TSTypeReference} */ (
       node
     // @ts-expect-error Ok
@@ -28,7 +29,7 @@ const isVoidPromise = (node) => {
 };
 
 const undefinedKeywords = new Set([
-  'TSVoidKeyword', 'TSUndefinedKeyword', 'TSNeverKeyword',
+  'TSNeverKeyword', 'TSUndefinedKeyword', 'TSVoidKeyword',
 ]);
 
 /**
@@ -45,83 +46,87 @@ const hasReturnValue = (node, throwOnNullReturn, promFilter) => {
   }
 
   switch (node.type) {
-  case 'TSDeclareFunction':
-  case 'TSFunctionType':
-  case 'TSMethodSignature': {
-    const type = node?.returnType?.typeAnnotation?.type;
-    return type && !undefinedKeywords.has(type);
-  }
-
-  case 'MethodDefinition':
-    return hasReturnValue(node.value, throwOnNullReturn, promFilter);
-  case 'FunctionExpression':
-  case 'FunctionDeclaration':
-  case 'ArrowFunctionExpression': {
-    return 'expression' in node && node.expression && (!isNewPromiseExpression(
-      node.body,
-    ) || !isVoidPromise(node.body)) ||
+    case 'ArrowFunctionExpression':
+    case 'FunctionDeclaration':
+    case 'FunctionExpression': {
+      return 'expression' in node && node.expression && (!isNewPromiseExpression(
+        node.body,
+      ) || !isVoidPromise(node.body)) ||
       hasReturnValue(node.body, throwOnNullReturn, promFilter);
-  }
+    }
 
-  case 'BlockStatement': {
-    return node.body.some((bodyNode) => {
-      return bodyNode.type !== 'FunctionDeclaration' && hasReturnValue(bodyNode, throwOnNullReturn, promFilter);
-    });
-  }
+    case 'BlockStatement': {
+      return node.body.some((bodyNode) => {
+        return bodyNode.type !== 'FunctionDeclaration' && hasReturnValue(bodyNode, throwOnNullReturn, promFilter);
+      });
+    }
 
-  case 'LabeledStatement':
-  case 'WhileStatement':
-  case 'DoWhileStatement':
-  case 'ForStatement':
-  case 'ForInStatement':
-  case 'ForOfStatement':
-  case 'WithStatement': {
-    return hasReturnValue(node.body, throwOnNullReturn, promFilter);
-  }
+    case 'DoWhileStatement':
+    case 'ForInStatement':
+    case 'ForOfStatement':
 
-  case 'IfStatement': {
-    return hasReturnValue(node.consequent, throwOnNullReturn, promFilter) ||
+    case 'ForStatement':
+
+    case 'LabeledStatement':
+    case 'WhileStatement':
+    case 'WithStatement': {
+      return hasReturnValue(node.body, throwOnNullReturn, promFilter);
+    }
+
+    case 'IfStatement': {
+      return hasReturnValue(node.consequent, throwOnNullReturn, promFilter) ||
       hasReturnValue(node.alternate, throwOnNullReturn, promFilter);
-  }
+    }
 
-  case 'TryStatement': {
-    return hasReturnValue(node.block, throwOnNullReturn, promFilter) ||
-      hasReturnValue(node.handler && node.handler.body, throwOnNullReturn, promFilter) ||
-      hasReturnValue(node.finalizer, throwOnNullReturn, promFilter);
-  }
-
-  case 'SwitchStatement': {
-    return node.cases.some(
-      (someCase) => {
-        return someCase.consequent.some((nde) => {
-          return hasReturnValue(nde, throwOnNullReturn, promFilter);
-        });
-      },
-    );
-  }
-
-  case 'ReturnStatement': {
+    case 'MethodDefinition':
+      return hasReturnValue(node.value, throwOnNullReturn, promFilter);
+    case 'ReturnStatement': {
     // void return does not count.
-    if (node.argument === null) {
-      if (throwOnNullReturn) {
-        throw new Error('Null return');
+      if (node.argument === null) {
+        if (throwOnNullReturn) {
+          throw new Error('Null return');
+        }
+
+        return false;
       }
 
-      return false;
-    }
-
-    if (promFilter && isNewPromiseExpression(node.argument)) {
+      if (promFilter && isNewPromiseExpression(node.argument)) {
       // Let caller decide how to filter, but this is, at the least,
       //   a return of sorts and truthy
-      return promFilter(node.argument);
+        return promFilter(node.argument);
+      }
+
+      return true;
     }
 
-    return true;
-  }
+    case 'SwitchStatement': {
+      return node.cases.some(
+        (someCase) => {
+          return someCase.consequent.some((nde) => {
+            return hasReturnValue(nde, throwOnNullReturn, promFilter);
+          });
+        },
+      );
+    }
 
-  default: {
-    return false;
-  }
+    case 'TryStatement': {
+      return hasReturnValue(node.block, throwOnNullReturn, promFilter) ||
+      hasReturnValue(node.handler && node.handler.body, throwOnNullReturn, promFilter) ||
+      hasReturnValue(node.finalizer, throwOnNullReturn, promFilter);
+    }
+
+    case 'TSDeclareFunction':
+
+    case 'TSFunctionType':
+
+    case 'TSMethodSignature': {
+      const type = node?.returnType?.typeAnnotation?.type;
+      return type && !undefinedKeywords.has(type);
+    }
+
+    default: {
+      return false;
+    }
   }
 };
 
@@ -138,66 +143,92 @@ const allBrancheshaveReturnValues = (node, promFilter) => {
   }
 
   switch (node.type) {
-  case 'TSDeclareFunction':
-  case 'TSFunctionType':
-  case 'TSMethodSignature': {
-    const type = node?.returnType?.typeAnnotation?.type;
-    return type && !undefinedKeywords.has(type);
-  }
-
-  // case 'MethodDefinition':
-  //   return allBrancheshaveReturnValues(node.value, promFilter);
-  case 'FunctionExpression':
-  case 'FunctionDeclaration':
-  case 'ArrowFunctionExpression': {
-    return 'expression' in node && node.expression && (!isNewPromiseExpression(node.body) || !isVoidPromise(node.body)) ||
+    // case 'MethodDefinition':
+    //   return allBrancheshaveReturnValues(node.value, promFilter);
+    case 'ArrowFunctionExpression':
+    case 'FunctionDeclaration':
+    case 'FunctionExpression': {
+      return 'expression' in node && node.expression && (!isNewPromiseExpression(node.body) || !isVoidPromise(node.body)) ||
       allBrancheshaveReturnValues(node.body, promFilter) ||
       /** @type {import('@typescript-eslint/types').TSESTree.BlockStatement} */
       (node.body).body.some((nde) => {
         return nde.type === 'ReturnStatement';
       });
-  }
+    }
 
-  case 'BlockStatement': {
-    const lastBodyNode = node.body.slice(-1)[0];
-    return allBrancheshaveReturnValues(lastBodyNode, promFilter);
-  }
+    case 'BlockStatement': {
+      const lastBodyNode = node.body.slice(-1)[0];
+      return allBrancheshaveReturnValues(lastBodyNode, promFilter);
+    }
 
-  case 'WhileStatement':
-  case 'DoWhileStatement':
-    if (
+    case 'DoWhileStatement':
+    case 'WhileStatement':
+      if (
       /**
        * @type {import('@typescript-eslint/types').TSESTree.Literal}
        */
-      (node.test).value === true
-    ) {
+        (node.test).value === true
+      ) {
       // If this is an infinite loop, we assume only one branch
       //   is needed to provide a return
-      return hasReturnValue(node.body, false, promFilter);
-    }
+        return hasReturnValue(node.body, false, promFilter);
+      }
 
     // Fallthrough
-  case 'ForStatement':
-    if (node.test === null) {
+    case 'ForStatement':
+      if (node.test === null) {
       // If this is an infinite loop, we assume only one branch
       //   is needed to provide a return
-      return hasReturnValue(node.body, false, promFilter);
+        return hasReturnValue(node.body, false, promFilter);
+      }
+
+    case 'ForInStatement':
+    case 'ForOfStatement':
+
+    case 'LabeledStatement':
+
+    case 'WithStatement': {
+      return allBrancheshaveReturnValues(node.body, promFilter);
     }
-  case 'LabeledStatement':
-  case 'ForInStatement':
-  case 'ForOfStatement':
-  case 'WithStatement': {
-    return allBrancheshaveReturnValues(node.body, promFilter);
-  }
 
-  case 'IfStatement': {
-    return allBrancheshaveReturnValues(node.consequent, promFilter) &&
+    case 'IfStatement': {
+      return allBrancheshaveReturnValues(node.consequent, promFilter) &&
       allBrancheshaveReturnValues(node.alternate, promFilter);
-  }
+    }
 
-  case 'TryStatement': {
+    case 'ReturnStatement': {
+    // void return does not count.
+      if (node.argument === null) {
+        return false;
+      }
+
+      if (promFilter && isNewPromiseExpression(node.argument)) {
+      // Let caller decide how to filter, but this is, at the least,
+      //   a return of sorts and truthy
+        return promFilter(node.argument);
+      }
+
+      return true;
+    }
+
+    case 'SwitchStatement': {
+      return /** @type {import('@typescript-eslint/types').TSESTree.SwitchStatement} */ (node).cases.every(
+        (someCase) => {
+          return !someCase.consequent.some((consNode) => {
+            return consNode.type === 'BreakStatement' ||
+            consNode.type === 'ReturnStatement' && consNode.argument === null;
+          });
+        },
+      );
+    }
+
+    case 'ThrowStatement': {
+      return true;
+    }
+
+    case 'TryStatement': {
     // If `finally` returns, all return
-    return node.finalizer && allBrancheshaveReturnValues(node.finalizer, promFilter) ||
+      return node.finalizer && allBrancheshaveReturnValues(node.finalizer, promFilter) ||
       // Return in `try`/`catch` may still occur despite `finally`
       allBrancheshaveReturnValues(node.block, promFilter) &&
         (!node.handler ||
@@ -209,48 +240,28 @@ const allBrancheshaveReturnValues = (node, promFilter) => {
               if (/** @type {Error} */ (error).message === 'Null return') {
                 return false;
               }
-              /* c8 ignore next 2 */
+              /* c8 ignore next 3 */
+              // eslint-disable-next-line @stylistic/padding-line-between-statements -- c8
               throw error;
             }
 
             // As long as not an explicit empty return, then return true
             return true;
           })());
-  }
+    }
 
-  case 'SwitchStatement': {
-    return /** @type {import('@typescript-eslint/types').TSESTree.SwitchStatement} */ (node).cases.every(
-      (someCase) => {
-        return !someCase.consequent.some((consNode) => {
-          return consNode.type === 'BreakStatement' ||
-            consNode.type === 'ReturnStatement' && consNode.argument === null;
-        });
-      },
-    );
-  }
+    case 'TSDeclareFunction':
 
-  case 'ThrowStatement': {
-    return true;
-  }
+    case 'TSFunctionType':
 
-  case 'ReturnStatement': {
-    // void return does not count.
-    if (node.argument === null) {
+    case 'TSMethodSignature': {
+      const type = node?.returnType?.typeAnnotation?.type;
+      return type && !undefinedKeywords.has(type);
+    }
+
+    default: {
       return false;
     }
-
-    if (promFilter && isNewPromiseExpression(node.argument)) {
-      // Let caller decide how to filter, but this is, at the least,
-      //   a return of sorts and truthy
-      return promFilter(node.argument);
-    }
-
-    return true;
-  }
-
-  default: {
-    return false;
-  }
   }
 };
 
@@ -280,17 +291,55 @@ const hasNonEmptyResolverCall = (node, resolverName) => {
 
   // Arrow function without block
   switch (node.type) {
-  /* c8 ignore next 2 -- In Babel? */
-  // @ts-expect-error Babel?
-  case 'OptionalCallExpression':
-  case 'CallExpression':
-    return /** @type {import('@typescript-eslint/types').TSESTree.Identifier} */ (
-      node.callee
-    ).name === resolverName && (
+    case 'ArrayExpression':
+    case 'ArrayPattern':
+      return node.elements.some((element) => {
+        return hasNonEmptyResolverCall(element, resolverName);
+      });
+    case 'ArrowFunctionExpression':
+    case 'FunctionDeclaration':
+    case 'FunctionExpression': {
+    // Shadowing
+      if (/** @type {import('@typescript-eslint/types').TSESTree.Identifier} */ (
+        node.params[0]
+      )?.name === resolverName) {
+        return false;
+      }
+
+      return hasNonEmptyResolverCall(node.body, resolverName);
+    }
+
+    case 'AssignmentExpression':
+    case 'BinaryExpression':
+    case 'LogicalExpression': {
+      return hasNonEmptyResolverCall(node.left, resolverName) ||
+      hasNonEmptyResolverCall(node.right, resolverName);
+    }
+
+    case 'AssignmentPattern':
+      return hasNonEmptyResolverCall(node.right, resolverName);
+    case 'AwaitExpression':
+
+    case 'SpreadElement':
+    case 'UnaryExpression':
+    case 'YieldExpression':
+      return hasNonEmptyResolverCall(node.argument, resolverName);
+    case 'BlockStatement':
+    case 'ClassBody':
+      return node.body.some((bodyNode) => {
+        return hasNonEmptyResolverCall(bodyNode, resolverName);
+      });
+      /* c8 ignore next 2 -- In Babel? */
+    case 'CallExpression':
+      // @ts-expect-error Babel?
+    case 'OptionalCallExpression':
+      return /** @type {import('@typescript-eslint/types').TSESTree.Identifier} */ (
+        node.callee
+      ).name === resolverName && (
 
       // Implicit or explicit undefined
-      node.arguments.length > 1 || node.arguments[0] !== undefined
-    ) ||
+        node.arguments.length > 1 || node.arguments[0] !== undefined
+      ) ||
       node.arguments.some((nde) => {
         // Being passed in to another function (which might invoke it)
         return nde.type === 'Identifier' && nde.name === resolverName ||
@@ -298,170 +347,135 @@ const hasNonEmptyResolverCall = (node, resolverName) => {
           // Handle nested items
           hasNonEmptyResolverCall(nde, resolverName);
       });
-  case 'ChainExpression':
-  case 'Decorator':
-  case 'ExpressionStatement':
-    return hasNonEmptyResolverCall(node.expression, resolverName);
-  case 'ClassBody':
-  case 'BlockStatement':
-    return node.body.some((bodyNode) => {
-      return hasNonEmptyResolverCall(bodyNode, resolverName);
-    });
-  case 'FunctionExpression':
-  case 'FunctionDeclaration':
-  case 'ArrowFunctionExpression': {
-    // Shadowing
-    if (/** @type {import('@typescript-eslint/types').TSESTree.Identifier} */ (
-      node.params[0]
-    )?.name === resolverName) {
-      return false;
-    }
 
-    return hasNonEmptyResolverCall(node.body, resolverName);
-  }
+    case 'ChainExpression':
+    case 'Decorator':
 
-  case 'LabeledStatement':
-  case 'WhileStatement':
-  case 'DoWhileStatement':
-  case 'ForStatement':
-  case 'ForInStatement':
-  case 'ForOfStatement':
-  case 'WithStatement': {
-    return hasNonEmptyResolverCall(node.body, resolverName);
-  }
+    case 'ExpressionStatement':
+      return hasNonEmptyResolverCall(node.expression, resolverName);
 
-  case 'ConditionalExpression':
-  case 'IfStatement': {
-    return hasNonEmptyResolverCall(node.test, resolverName) ||
-      hasNonEmptyResolverCall(node.consequent, resolverName) ||
-      hasNonEmptyResolverCall(node.alternate, resolverName);
-  }
+    case 'ClassDeclaration':
 
-  case 'TryStatement': {
-    return hasNonEmptyResolverCall(node.block, resolverName) ||
-      hasNonEmptyResolverCall(node.handler && node.handler.body, resolverName) ||
-      hasNonEmptyResolverCall(node.finalizer, resolverName);
-  }
+    case 'ClassExpression':
+      return hasNonEmptyResolverCall(node.body, resolverName);
+      /* c8 ignore next 2 -- In Babel? */
+      // @ts-expect-error Babel?
+    case 'ClassMethod':
 
-  case 'SwitchStatement': {
-    return node.cases.some(
-      (someCase) => {
-        return someCase.consequent.some((nde) => {
-          return hasNonEmptyResolverCall(nde, resolverName);
-        });
-      },
-    );
-  }
-
-  case 'ArrayPattern':
-  case 'ArrayExpression':
-    return node.elements.some((element) => {
-      return hasNonEmptyResolverCall(element, resolverName);
-    });
-
-  case 'AssignmentPattern':
-    return hasNonEmptyResolverCall(node.right, resolverName);
-
-  case 'AssignmentExpression':
-  case 'BinaryExpression':
-  case 'LogicalExpression': {
-    return hasNonEmptyResolverCall(node.left, resolverName) ||
-      hasNonEmptyResolverCall(node.right, resolverName);
-  }
-
-  // Comma
-  case 'SequenceExpression':
-  case 'TemplateLiteral':
-    return node.expressions.some((subExpression) => {
-      return hasNonEmptyResolverCall(subExpression, resolverName);
-    });
-
-  case 'ObjectPattern':
-  case 'ObjectExpression':
-    return node.properties.some((property) => {
-      return hasNonEmptyResolverCall(property, resolverName);
-    });
-  /* c8 ignore next 2 -- In Babel? */
-  // @ts-expect-error Babel?
-  case 'ClassMethod':
-  case 'MethodDefinition':
-    return node.decorators && node.decorators.some((decorator) => {
-      return hasNonEmptyResolverCall(decorator, resolverName);
-    }) ||
+    case 'MethodDefinition':
+      return node.decorators && node.decorators.some((decorator) => {
+        return hasNonEmptyResolverCall(decorator, resolverName);
+      }) ||
       node.computed && hasNonEmptyResolverCall(node.key, resolverName) ||
       hasNonEmptyResolverCall(node.value, resolverName);
 
-  /* c8 ignore next 2 -- In Babel? */
-  // @ts-expect-error Babel?
-  case 'ObjectProperty':
-  /* eslint-disable no-fallthrough */
-  /* c8 ignore next -- In Babel? */
-  case 'PropertyDefinition':
-  /* c8 ignore next 2 -- In Babel? */
-  // @ts-expect-error Babel?
-  case 'ClassProperty':
-  case 'Property':
-  /* eslint-enable no-fallthrough */
-    return node.computed && hasNonEmptyResolverCall(node.key, resolverName) ||
+    /* c8 ignore next 2 -- In Babel? */
+      // @ts-expect-error Babel?
+    case 'ClassProperty':
+    /* c8 ignore next 2 -- In Babel? */
+    // @ts-expect-error Babel?
+    case 'ObjectProperty':
+    case 'Property':
+
+    case 'PropertyDefinition':
+      return node.computed && hasNonEmptyResolverCall(node.key, resolverName) ||
       hasNonEmptyResolverCall(node.value, resolverName);
-  /* c8 ignore next 2 -- In Babel? */
-  // @ts-expect-error Babel?
-  case 'ObjectMethod':
+    case 'ConditionalExpression':
+
+    case 'IfStatement': {
+      return hasNonEmptyResolverCall(node.test, resolverName) ||
+      hasNonEmptyResolverCall(node.consequent, resolverName) ||
+      hasNonEmptyResolverCall(node.alternate, resolverName);
+    }
+
+    case 'DoWhileStatement':
+    case 'ForInStatement':
+    case 'ForOfStatement':
+
+    case 'ForStatement':
+    case 'LabeledStatement':
+    case 'WhileStatement':
+    case 'WithStatement': {
+      return hasNonEmptyResolverCall(node.body, resolverName);
+    }
+
+    /* c8 ignore next 2 -- In Babel? */
+    // @ts-expect-error Babel?
+    case 'Import':
+
+    case 'ImportExpression':
+      return hasNonEmptyResolverCall(node.source, resolverName);
+      // ?.
+      /* c8 ignore next 2 -- In Babel? */
+    case 'MemberExpression':
+
+    // @ts-expect-error Babel?
+    case 'OptionalMemberExpression':
+      return hasNonEmptyResolverCall(node.object, resolverName) ||
+      hasNonEmptyResolverCall(node.property, resolverName);
+    case 'ObjectExpression':
+    case 'ObjectPattern':
+      return node.properties.some((property) => {
+        return hasNonEmptyResolverCall(property, resolverName);
+      });
+    /* c8 ignore next 2 -- In Babel? */
+      // @ts-expect-error Babel?
+    case 'ObjectMethod':
     /* c8 ignore next 6 -- In Babel? */
     // @ts-expect-error
-    return node.computed && hasNonEmptyResolverCall(node.key, resolverName) ||
+      return node.computed && hasNonEmptyResolverCall(node.key, resolverName) ||
       // @ts-expect-error
       node.arguments.some((nde) => {
         return hasNonEmptyResolverCall(nde, resolverName);
       });
 
-  case 'ClassExpression':
-  case 'ClassDeclaration':
-    return hasNonEmptyResolverCall(node.body, resolverName);
+    case 'ReturnStatement': {
+      if (node.argument === null) {
+        return false;
+      }
 
-  case 'AwaitExpression':
-  case 'SpreadElement':
-  case 'UnaryExpression':
-  case 'YieldExpression':
-    return hasNonEmptyResolverCall(node.argument, resolverName);
-
-  case 'VariableDeclaration': {
-    return node.declarations.some((nde) => {
-      return hasNonEmptyResolverCall(nde, resolverName);
-    });
-  }
-
-  case 'VariableDeclarator': {
-    return hasNonEmptyResolverCall(node.id, resolverName) ||
-      hasNonEmptyResolverCall(node.init, resolverName);
-  }
-
-  case 'TaggedTemplateExpression':
-    return hasNonEmptyResolverCall(node.quasi, resolverName);
-
-  // ?.
-  /* c8 ignore next 2 -- In Babel? */
-  // @ts-expect-error Babel?
-  case 'OptionalMemberExpression':
-  case 'MemberExpression':
-    return hasNonEmptyResolverCall(node.object, resolverName) ||
-      hasNonEmptyResolverCall(node.property, resolverName);
-
-  /* c8 ignore next 2 -- In Babel? */
-  // @ts-expect-error Babel?
-  case 'Import':
-  case 'ImportExpression':
-    return hasNonEmptyResolverCall(node.source, resolverName);
-
-  case 'ReturnStatement': {
-    if (node.argument === null) {
-      return false;
+      return hasNonEmptyResolverCall(node.argument, resolverName);
     }
 
-    return hasNonEmptyResolverCall(node.argument, resolverName);
-  }
+    // Comma
+    case 'SequenceExpression':
 
-  /*
+    case 'TemplateLiteral':
+      return node.expressions.some((subExpression) => {
+        return hasNonEmptyResolverCall(subExpression, resolverName);
+      });
+
+    case 'SwitchStatement': {
+      return node.cases.some(
+        (someCase) => {
+          return someCase.consequent.some((nde) => {
+            return hasNonEmptyResolverCall(nde, resolverName);
+          });
+        },
+      );
+    }
+
+    case 'TaggedTemplateExpression':
+      return hasNonEmptyResolverCall(node.quasi, resolverName);
+
+    case 'TryStatement': {
+      return hasNonEmptyResolverCall(node.block, resolverName) ||
+      hasNonEmptyResolverCall(node.handler && node.handler.body, resolverName) ||
+      hasNonEmptyResolverCall(node.finalizer, resolverName);
+    }
+
+    case 'VariableDeclaration': {
+      return node.declarations.some((nde) => {
+        return hasNonEmptyResolverCall(nde, resolverName);
+      });
+    }
+
+    case 'VariableDeclarator': {
+      return hasNonEmptyResolverCall(node.id, resolverName) ||
+      hasNonEmptyResolverCall(node.init, resolverName);
+    }
+
+    /*
   // Shouldn't need to parse literals/literal components, etc.
 
   case 'Identifier':
@@ -469,8 +483,8 @@ const hasNonEmptyResolverCall = (node, resolverName) => {
   case 'Super':
   // Exports not relevant in this context
   */
-  default:
-    return false;
+    default:
+      return false;
   }
 };
 
@@ -498,7 +512,8 @@ const hasValueOrExecutorHasNonEmptyResolveValue = (node, anyPromiseAsReturn, all
         if (/** @type {Error} */ (error).message === 'Null return') {
           return false;
         }
-        /* c8 ignore next 2 */
+        /* c8 ignore next 3 */
+        // eslint-disable-next-line @stylistic/padding-line-between-statements -- c8
         throw error;
       }
 
@@ -525,8 +540,8 @@ const hasValueOrExecutorHasNonEmptyResolveValue = (node, anyPromiseAsReturn, all
     }
 
     const {
-      params,
       body,
+      params,
     } =
     /**
      * @type {import('@typescript-eslint/types').TSESTree.FunctionExpression|

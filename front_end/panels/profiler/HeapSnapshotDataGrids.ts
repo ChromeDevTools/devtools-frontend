@@ -51,31 +51,31 @@ import type {DataDisplayDelegate} from './ProfileHeader.js';
 
 const UIStrings = {
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   distanceFromWindowObject: 'Distance from window object',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   sizeOfTheObjectItselfInBytes: 'Size of the object itself in bytes',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   sizeOfTheObjectPlusTheGraphIt: 'Size of the object plus the graph it retains in bytes',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   object: 'Object',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   distance: 'Distance',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool. Shallow size is the size of just this node, not including children/retained size.
+   * @description Text in Heap Snapshot Data Grids of a profiler tool. Shallow size is the size of just this node, not including children/retained size.
    */
   shallowSize: 'Shallow Size',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   retainedSize: 'Retained Size',
   /**
@@ -85,20 +85,20 @@ const UIStrings = {
    */
   heapSnapshotRetainment: 'Heap Snapshot Retainment',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   constructorString: 'Constructor',
   /**
-   *@description Data grid name for Heap Snapshot Constructors data grids
+   * @description Data grid name for Heap Snapshot Constructors data grids
    */
   heapSnapshotConstructors: 'Heap Snapshot Constructors',
   /**
-   *@description Column header in a table displaying the diff between two Heap Snapshots. This
+   * @description Column header in a table displaying the diff between two Heap Snapshots. This
    * column is number of new objects in snapshot #2 compared to snapshot #1.
    */
   New: '# New',
   /**
-   *@description Column header in a table displaying the diff between two Heap Snapshots. This
+   * @description Column header in a table displaying the diff between two Heap Snapshots. This
    * column is number of deleted objects in snapshot #2 compared to snapshot #1.
    */
   Deleted: '# Deleted',
@@ -108,11 +108,11 @@ const UIStrings = {
    */
   Delta: '# Delta',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   allocSize: 'Alloc. Size',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   freedSize: 'Freed Size',
   /**
@@ -121,31 +121,31 @@ const UIStrings = {
    */
   sizeDelta: 'Size Delta',
   /**
-   *@description Data grid name for Heap Snapshot Diff data grids
+   * @description Data grid name for Heap Snapshot Diff data grids
    */
   heapSnapshotDiff: 'Heap Snapshot Diff',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   liveCount: 'Live Count',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   count: 'Count',
   /**
-   *@description Text in Heap Snapshot Data Grids of a profiler tool
+   * @description Text in Heap Snapshot Data Grids of a profiler tool
    */
   liveSize: 'Live Size',
   /**
-   *@description Text for the size of something
+   * @description Text for the size of something
    */
   size: 'Size',
   /**
-   *@description Text for a programming function
+   * @description Text for a programming function
    */
   function: 'Function',
   /**
-   *@description Text in Heap Snapshot View of a profiler tool
+   * @description Text in Heap Snapshot View of a profiler tool
    */
   allocation: 'Allocation',
 } as const;

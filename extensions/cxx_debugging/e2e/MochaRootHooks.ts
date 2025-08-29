@@ -44,7 +44,6 @@ async function beforeAll() {
       `--window-size=${defaultViewport.width + 20, defaultViewport.height + 100}`,
       `--custom-devtools-frontend=${new URL(`${DEVTOOLS_DIR}/front_end`, 'file://').href}`,
       '--disable-features=RenderDocument',
-      '--enable-features=DevToolsVeLogging:testing/true',
     ],
   });
 
@@ -63,6 +62,9 @@ async function beforeAll() {
     throw new Error('Could not find frontend page');
   }
   await frontend.setViewport(defaultViewport);
+  const devToolsVeLogging = {enabled: true, testing: true};
+  await frontend.evaluateOnNewDocument(`globalThis.hostConfigForTesting = ${JSON.stringify({devToolsVeLogging})};`);
+  await frontend.reload();
 
   setBrowserAndPages({frontend, target, browser: conn});
 }

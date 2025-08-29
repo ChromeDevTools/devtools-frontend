@@ -13,15 +13,15 @@ import dialogStyles from './dialog.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in Add Source Map URLDialog of the Sources panel
+   * @description Text in Add Source Map URLDialog of the Sources panel
    */
   sourceMapUrl: 'Source map URL: ',
   /**
-   *@description Text in Add Debug Info URL Dialog of the Sources panel
+   * @description Text in Add Debug Info URL Dialog of the Sources panel
    */
   debugInfoUrl: 'DWARF symbols URL: ',
   /**
-   *@description Text to add something
+   * @description Text to add something
    */
   add: 'Add',
 } as const;
@@ -51,7 +51,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         @keydown=${input.onKeyDown} ${ref(e => { output.input = e as HTMLInputElement; })}>
     <devtools-button @click=${input.apply} .jslogContext=${'add'}
         .variant=${Buttons.Button.Variant.OUTLINED}>${i18nString(UIStrings.add)}</devtools-button>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 
@@ -62,7 +62,7 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
   private constructor(
       label: Platform.UIString.LocalizedString, jslogContext: string,
       callback: (arg0: Platform.DevToolsPath.UrlString) => void, view = DEFAULT_VIEW) {
-    super(/* useShadowDom */ true);
+    super({useShadowDom: true});
 
     const viewInput = {
       label,

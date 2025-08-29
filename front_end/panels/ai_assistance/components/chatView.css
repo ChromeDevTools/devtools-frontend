@@ -819,11 +819,6 @@ main {
     }
   }
 
-  /* TODO(b/412621009): Remove this once the bug is fixed on the VE logging side */
-  &:not(.saved-to-disk, &[open]) > *:not(summary) {
-    display: none;
-  }
-
   &:not(.saved-to-disk, &[open]):hover::after {
     content: '';
     height: 100%;
@@ -859,10 +854,6 @@ main {
     align-items: center;
     gap: var(--sys-size-3);
     color: var(--sys-color-error);
-
-    devtools-icon {
-      color: var(--sys-color-error);
-    }
   }
 
   .footer {

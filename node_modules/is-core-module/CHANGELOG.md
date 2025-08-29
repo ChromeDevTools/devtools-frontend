@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.16.1](https://github.com/inspect-js/is-core-module/compare/v2.16.0...v2.16.1) - 2024-12-21
+
+### Fixed
+
+- [Fix] `node:sqlite` is available in node ^22.13 [`#17`](https://github.com/inspect-js/is-core-module/issues/17)
+
+## [v2.16.0](https://github.com/inspect-js/is-core-module/compare/v2.15.1...v2.16.0) - 2024-12-13
+
+### Commits
+
+- [New] add `node:sqlite` [`1ee94d2`](https://github.com/inspect-js/is-core-module/commit/1ee94d20857e22cdb24e9b4bb1a2097f2e03e26f)
+- [Dev Deps] update `auto-changelog`, `tape` [`aa84aa3`](https://github.com/inspect-js/is-core-module/commit/aa84aa34face677f14e08ec1c737f0c4bba27260)
+
 ## [v2.15.1](https://github.com/inspect-js/is-core-module/compare/v2.15.0...v2.15.1) - 2024-08-21
 
 ### Commits

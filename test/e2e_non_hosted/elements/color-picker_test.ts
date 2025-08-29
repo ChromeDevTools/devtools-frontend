@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {getColorSwatch, goToResourceAndWaitForStyleSection} from '../../e2e/helpers/elements-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('ColorPicker', () => {
   it('scrolls to the bottom when previewing palettes', async ({devToolsPage, inspectedPage}) => {
@@ -21,7 +22,7 @@ describe('ColorPicker', () => {
 
     // Need to wait for the spectrum overlay to disappear (i.e., finish its transition) for it to not eat our next click
     const overlay = await devToolsPage.$('.spectrum-overlay');
-    assertNotNullOrUndefined(overlay);
+    assert.isOk(overlay);
 
     await devToolsPage.clickElement(palette);
     await devToolsPage.waitForFunction(

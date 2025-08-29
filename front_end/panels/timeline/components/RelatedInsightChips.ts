@@ -13,7 +13,7 @@ const {html, render} = Lit;
 
 const UIStrings = {
   /**
-   *@description prefix shown next to related insight chips
+   * @description prefix shown next to related insight chips
    */
   insightKeyword: 'Insight',
   /**
@@ -50,7 +50,7 @@ export class RelatedInsightChips extends UI.Widget.Widget {
   #eventToInsightsMap: EventToRelatedInsightsMap = new Map();
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.#view = view;
   }
 
@@ -86,7 +86,7 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
       const {activeEvent, eventToInsightsMap} = input;
       const relatedInsights = activeEvent ? eventToInsightsMap.get(activeEvent) ?? [] : [];
       if (!activeEvent || eventToInsightsMap.size === 0 || relatedInsights.length === 0) {
-        render(html``, target, {host: input});
+        render(html``, target);
         return;
       }
 
@@ -131,6 +131,6 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
       render(html`<style>${relatedInsightsStyles}</style>
         <ul>${insightMessages}</ul>
         <ul>${insightChips}</ul>`,
-      target, {host: input});
+      target);
       // clang-format on
     };

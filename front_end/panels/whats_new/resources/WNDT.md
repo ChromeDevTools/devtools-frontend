@@ -1,10 +1,8 @@
-### [A more reliable and productive Chrome DevTools](reliable-devtools)
-In Chrome 139, DevTools prioritized product excellence and developer experience. We tackled numerous known issues, including some years-old ones, and also made improvements to newer features. Behind the scenes, we enhanced our test coverage and migrated tests to more robust foundations.
+### [Ask AI about more insights](ai-insights)
+You can now ask Gemini about more performance insights: image delivery, legacy JavaScript, duplicate JavaScript, and modern HTTP.
 
-We hope you will experience these numerous subtle fixes across various panels, making your daily debugging and development workflows smoother, more reliable, and more productive.
+### [Emulate the 'Save-Data' header](save-data)
+In 'Network conditions', you can now emulate the 'Save-Data' request header that indicates the client's preference for reduced data usage.
 
-### [Upload images in AI assistance for styling](multimodal-input)
-To provide additional visual context to your prompts, you can now upload arbitrary images in the AI assistance panel when you [start your conversation from the Elements panel](from-elements) with a [DOM element selected as context](element-context).
-
-### [Check out the highlights from I/O](devtools-io)
-Check out the features we announced at Google I/O 2025, including features with Gemini integration: [modify and save CSS changes to your workspace](ai-styling), [ask about performance insights](ai-insights), [annotate performance findings](ai-annotations), and more.
+### [Debug complex CSS values easier](debug-css)
+See also, from version 138: The Elements > Styles tab can now show you a tooltip with a breakdown of the definition chain and step-by-step evaluations of complex CSS variables, so you can find bugs quicker and gain a deeper understanding of how a value is computed.

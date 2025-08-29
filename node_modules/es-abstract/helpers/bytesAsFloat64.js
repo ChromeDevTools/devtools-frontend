@@ -1,8 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
-var $pow = GetIntrinsic('%Math.pow%');
+var $pow = require('math-intrinsics/pow');
 
 module.exports = function bytesAsFloat64(rawBytes) {
 	// return new $Float64Array(new $Uint8Array(rawBytes).buffer)[0];

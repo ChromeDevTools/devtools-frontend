@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview A library to identify and templatize UI.Fragment and related calls.
+ * @file A library to identify and templatize UI.Fragment and related calls.
  */
 
 import {isIdentifier, isIdentifierChain, type RuleCreator} from './ast.ts';

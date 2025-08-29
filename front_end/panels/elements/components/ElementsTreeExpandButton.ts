@@ -13,7 +13,7 @@ import elementsTreeExpandButtonStyles from './elementsTreeExpandButton.css.js';
 
 const UIStrings = {
   /**
-   *@description Aria label for a button expanding collapsed subtree
+   * @description Aria label for a button expanding collapsed subtree
    */
   expand: 'Expand',
 } as const;

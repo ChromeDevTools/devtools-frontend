@@ -17,7 +17,7 @@ import {
 
 const UIStrings = {
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   animations: 'Animations',
 } as const;

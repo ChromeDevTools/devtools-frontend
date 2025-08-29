@@ -47,7 +47,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     sinon.assert.calledOnce(mockAidaClient.completeCode);
     const request = mockAidaClient.completeCode.firstCall.args[0];
     assert.strictEqual(request.client, 'CHROME_DEVTOOLS');
-    assert.strictEqual(request.prefix, 'prefix');
+    assert.strictEqual(request.prefix, '\nprefix');
     assert.strictEqual(request.suffix, 'suffix');
     assert.deepEqual(request.options, {
       temperature: 0.5,
@@ -133,7 +133,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
 
     await clock.tickAsync(AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
     sinon.assert.calledOnce(mockAidaClient.completeCode);
-    assert.strictEqual(mockAidaClient.completeCode.firstCall.args[0].prefix, 'pre');
+    assert.strictEqual(mockAidaClient.completeCode.firstCall.args[0].prefix, '\npre');
   });
 
   it('does not dispatch suggestion or citation if recitation action is BLOCK', async () => {

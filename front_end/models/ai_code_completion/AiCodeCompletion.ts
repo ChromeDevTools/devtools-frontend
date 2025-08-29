@@ -172,6 +172,8 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     function validTemperature(temperature: number|undefined): number|undefined {
       return typeof temperature === 'number' && temperature >= 0 ? temperature : undefined;
     }
+    // As a temporary fix for b/441221870 we are prepending a newline for each prefix.
+    prefix = '\n' + prefix;
 
     const additionalFiles = this.#panel === Panel.CONSOLE ? [{
       path: 'devtools-console-context.js',

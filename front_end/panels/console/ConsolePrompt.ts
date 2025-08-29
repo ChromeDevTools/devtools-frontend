@@ -512,9 +512,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.detachAiCodeCompletionTeaser();
       this.teaser = undefined;
     }
-    // We are prioritizing single line suggestions in Console panel to reduce noise.
     this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
-        {aidaClient: this.aidaClient}, this.editor, AiCodeCompletion.AiCodeCompletion.Panel.CONSOLE, ['\n']);
+        {aidaClient: this.aidaClient}, this.editor, AiCodeCompletion.AiCodeCompletion.Panel.CONSOLE);
     this.aiCodeCompletion.addEventListener(AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED, event => {
       this.aiCodeCompletionCitations = event.data.citations;
       this.dispatchEventToListeners(Events.AI_CODE_COMPLETION_RESPONSE_RECEIVED, event.data);

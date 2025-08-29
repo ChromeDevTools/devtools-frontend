@@ -4,10 +4,10 @@
 
 import * as Types from '../types/types.js';
 
-const frames = new Map<string, Types.Events.TraceFrame>();
+let frames = new Map<string, Types.Events.TraceFrame>();
 
 export function reset(): void {
-  frames.clear();
+  frames = new Map();
 }
 
 export function handleEvent(event: Types.Events.Event): void {

@@ -46,8 +46,8 @@ export interface WebSocketTraceDataForWorker {
 }
 export type WebSocketTraceData = WebSocketTraceDataForFrame|WebSocketTraceDataForWorker;
 
-const webSocketData = new Map<number, WebSocketTraceData>();
-const linkPreconnectEvents: Types.Events.LinkPreconnect[] = [];
+let webSocketData = new Map<number, WebSocketTraceData>();
+let linkPreconnectEvents: Types.Events.LinkPreconnect[] = [];
 
 interface NetworkRequestData {
   byId: Map<string, Types.Events.SyntheticNetworkRequest>;
@@ -58,19 +58,19 @@ interface NetworkRequestData {
   linkPreconnectEvents: Types.Events.LinkPreconnect[];
 }
 
-const requestMap = new Map<string, TraceEventsForNetworkRequest>();
-const requestsById = new Map<string, Types.Events.SyntheticNetworkRequest>();
-const requestsByTime: Types.Events.SyntheticNetworkRequest[] = [];
+let requestMap = new Map<string, TraceEventsForNetworkRequest>();
+let requestsById = new Map<string, Types.Events.SyntheticNetworkRequest>();
+let requestsByTime: Types.Events.SyntheticNetworkRequest[] = [];
 
-const networkRequestEventByInitiatorUrl = new Map<string, Types.Events.SyntheticNetworkRequest[]>();
-const eventToInitiatorMap = new Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>();
+let networkRequestEventByInitiatorUrl = new Map<string, Types.Events.SyntheticNetworkRequest[]>();
+let eventToInitiatorMap = new Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>();
 
 /**
  * These are to store ThirdParty data relationships between entities and events. To reduce iterating through data
  * more than we have to, here we start building the caches. After this, the RendererHandler will update
  * the relationships. When handling ThirdParty references, use the one in the RendererHandler instead.
  */
-const entityMappings: HandlerHelpers.EntityMappings = {
+let entityMappings: HandlerHelpers.EntityMappings = {
   eventsByEntity: new Map<HandlerHelpers.Entity, Types.Events.Event[]>(),
   entityByEvent: new Map<Types.Events.Event, HandlerHelpers.Entity>(),
   createdEntityCache: new Map<string, HandlerHelpers.Entity>(),
@@ -111,17 +111,19 @@ function firstPositiveValueInList(entries: Array<number|null>): number {
 }
 
 export function reset(): void {
-  requestsById.clear();
-  requestMap.clear();
-  requestsByTime.length = 0;
-  networkRequestEventByInitiatorUrl.clear();
-  eventToInitiatorMap.clear();
-  webSocketData.clear();
-  entityMappings.eventsByEntity.clear();
-  entityMappings.entityByEvent.clear();
-  entityMappings.createdEntityCache.clear();
-  entityMappings.entityByUrlCache.clear();
-  linkPreconnectEvents.length = 0;
+  requestsById = new Map();
+  requestMap = new Map();
+  requestsByTime = [];
+  networkRequestEventByInitiatorUrl = new Map();
+  eventToInitiatorMap = new Map();
+  webSocketData = new Map();
+  entityMappings = {
+    eventsByEntity: new Map<HandlerHelpers.Entity, Types.Events.Event[]>(),
+    entityByEvent: new Map<Types.Events.Event, HandlerHelpers.Entity>(),
+    createdEntityCache: new Map<string, HandlerHelpers.Entity>(),
+    entityByUrlCache: new Map<string, HandlerHelpers.Entity>(),
+  };
+  linkPreconnectEvents = [];
 }
 
 export function handleEvent(event: Types.Events.Event): void {
@@ -581,10 +583,10 @@ export function data(): NetworkRequestData {
     eventToInitiator: eventToInitiatorMap,
     webSocket: [...webSocketData.values()],
     entityMappings: {
-      entityByEvent: new Map(entityMappings.entityByEvent),
-      eventsByEntity: new Map(entityMappings.eventsByEntity),
-      createdEntityCache: new Map(entityMappings.createdEntityCache),
-      entityByUrlCache: new Map(entityMappings.entityByUrlCache),
+      entityByEvent: entityMappings.entityByEvent,
+      eventsByEntity: entityMappings.eventsByEntity,
+      createdEntityCache: entityMappings.createdEntityCache,
+      entityByUrlCache: entityMappings.entityByUrlCache,
     },
     linkPreconnectEvents,
   };

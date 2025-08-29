@@ -234,39 +234,12 @@ export class TraceProcessor extends EventTarget {
       this.dispatchEvent(new TraceParseProgressEvent({percent}));
     }
 
-    // Handlers that depend on other handlers do so via .data(), which used to always
-    // return a shallow clone of its internal data structures. However, that pattern
-    // easily results in egregious amounts of allocation. Now .data() does not do any
-    // cloning, and it happens here instead so that users of the trace processor may
-    // still assume that the parsed data is theirs.
-    // See: crbug/41484172
-    const shallowClone = (value: unknown, recurse = true): unknown => {
-      if (value instanceof Map) {
-        return new Map(value);
-      }
-      if (value instanceof Set) {
-        return new Set(value);
-      }
-      if (Array.isArray(value)) {
-        return [...value];
-      }
-      if (typeof value === 'object' && value && recurse) {
-        const obj: Record<string, unknown> = {};
-        for (const [key, v] of Object.entries(value)) {
-          obj[key] = shallowClone(v, false);
-        }
-        return obj;
-      }
-      return value;
-    };
-
-    options.logger?.start('parse:clone');
+    options.logger?.start('parse:handler.data()');
     const parsedTrace = {};
     for (const [name, handler] of Object.entries(this.#traceHandlers)) {
-      const data = shallowClone(handler.data());
-      Object.assign(parsedTrace, {[name]: data});
+      Object.assign(parsedTrace, {[name]: handler.data()});
     }
-    options.logger?.end('parse:clone');
+    options.logger?.end('parse:handler.data()');
 
     this.dispatchEvent(new TraceParseProgressEvent({percent: ProgressPhase.CLONE}));
 

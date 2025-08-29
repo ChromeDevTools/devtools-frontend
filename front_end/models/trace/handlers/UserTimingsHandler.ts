@@ -22,11 +22,11 @@ let syntheticEvents: Array<Types.Events.SyntheticEventPair<Types.Events.Pairable
 // overridden timestamp and duration. To prevent breaking potential deps
 // created since then, a second event was added instead of changing the
 // params of the first.
-const measureTraceByTraceId = new Map<number, Types.Events.UserTimingMeasure>();
-const performanceMeasureEvents: Types.Events.PerformanceMeasure[] = [];
-const performanceMarkEvents: Types.Events.PerformanceMark[] = [];
+let measureTraceByTraceId = new Map<number, Types.Events.UserTimingMeasure>();
+let performanceMeasureEvents: Types.Events.PerformanceMeasure[] = [];
+let performanceMarkEvents: Types.Events.PerformanceMark[] = [];
 
-const consoleTimings: Array<Types.Events.ConsoleTimeBegin|Types.Events.ConsoleTimeEnd> = [];
+let consoleTimings: Array<Types.Events.ConsoleTimeBegin|Types.Events.ConsoleTimeEnd> = [];
 
 let timestampEvents: Types.Events.ConsoleTimeStamp[] = [];
 
@@ -60,12 +60,12 @@ export interface UserTimingsData {
 }
 
 export function reset(): void {
-  syntheticEvents.length = 0;
-  performanceMeasureEvents.length = 0;
-  performanceMarkEvents.length = 0;
-  consoleTimings.length = 0;
-  timestampEvents.length = 0;
-  measureTraceByTraceId.clear();
+  syntheticEvents = [];
+  performanceMeasureEvents = [];
+  performanceMarkEvents = [];
+  consoleTimings = [];
+  timestampEvents = [];
+  measureTraceByTraceId = new Map();
 }
 
 const resourceTimingNames = [

@@ -8,28 +8,28 @@ import * as Types from '../types/types.js';
 import {data as metaHandlerData} from './MetaHandler.js';
 import type {HandlerName} from './types.js';
 
-const paintEvents: Types.Events.Paint[] = [];
-const snapshotEvents: Types.Events.DisplayItemListSnapshot[] = [];
-const paintToSnapshotMap = new Map<Types.Events.Paint, Types.Events.DisplayItemListSnapshot>();
+let paintEvents: Types.Events.Paint[] = [];
+let snapshotEvents: Types.Events.DisplayItemListSnapshot[] = [];
+let paintToSnapshotMap = new Map<Types.Events.Paint, Types.Events.DisplayItemListSnapshot>();
 
 let lastPaintForLayerId: Record<number, Types.Events.Paint> = {};
 
 let currentMainFrameLayerTreeId: number|null = null;
-const updateLayerEvents: Types.Events.UpdateLayer[] = [];
+let updateLayerEvents: Types.Events.UpdateLayer[] = [];
 
 type RelevantLayerTreeEvent =
     Types.Events.Paint|Types.Events.DisplayItemListSnapshot|Types.Events.UpdateLayer|Types.Events.SetLayerTreeId;
 
-const relevantEvents: RelevantLayerTreeEvent[] = [];
+let relevantEvents: RelevantLayerTreeEvent[] = [];
 export function reset(): void {
-  paintEvents.length = 0;
-  snapshotEvents.length = 0;
-  paintToSnapshotMap.clear();
+  paintEvents = [];
+  snapshotEvents = [];
+  paintToSnapshotMap = new Map();
 
   lastPaintForLayerId = {};
   currentMainFrameLayerTreeId = null;
-  updateLayerEvents.length = 0;
-  relevantEvents.length = 0;
+  updateLayerEvents = [];
+  relevantEvents = [];
 }
 
 export function handleEvent(event: Types.Events.Event): void {

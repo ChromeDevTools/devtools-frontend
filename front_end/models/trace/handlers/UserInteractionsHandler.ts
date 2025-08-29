@@ -16,10 +16,10 @@ import type {HandlerName} from './types.js';
 
 // We don't need to know which process / thread these events occurred in,
 // because they are effectively global, so we just track all that we find.
-const allEvents: Types.Events.EventTimingBeginOrEnd[] = [];
+let allEvents: Types.Events.EventTimingBeginOrEnd[] = [];
 
-const beginCommitCompositorFrameEvents: Types.Events.BeginCommitCompositorFrame[] = [];
-const parseMetaViewportEvents: Types.Events.ParseMetaViewport[] = [];
+let beginCommitCompositorFrameEvents: Types.Events.BeginCommitCompositorFrame[] = [];
+let parseMetaViewportEvents: Types.Events.ParseMetaViewport[] = [];
 
 export const LONG_INTERACTION_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.Milli(200));
 
@@ -62,19 +62,19 @@ export interface UserInteractionsData {
 
 let longestInteractionEvent: Types.Events.SyntheticInteractionPair|null = null;
 
-const interactionEvents: Types.Events.SyntheticInteractionPair[] = [];
-const interactionEventsWithNoNesting: Types.Events.SyntheticInteractionPair[] = [];
-const eventTimingEndEventsById = new Map<string, Types.Events.EventTimingEnd>();
-const eventTimingStartEventsForInteractions: Types.Events.EventTimingBegin[] = [];
+let interactionEvents: Types.Events.SyntheticInteractionPair[] = [];
+let interactionEventsWithNoNesting: Types.Events.SyntheticInteractionPair[] = [];
+let eventTimingEndEventsById = new Map<string, Types.Events.EventTimingEnd>();
+let eventTimingStartEventsForInteractions: Types.Events.EventTimingBegin[] = [];
 
 export function reset(): void {
-  allEvents.length = 0;
-  beginCommitCompositorFrameEvents.length = 0;
-  parseMetaViewportEvents.length = 0;
-  interactionEvents.length = 0;
-  eventTimingStartEventsForInteractions.length = 0;
-  eventTimingEndEventsById.clear();
-  interactionEventsWithNoNesting.length = 0;
+  allEvents = [];
+  beginCommitCompositorFrameEvents = [];
+  parseMetaViewportEvents = [];
+  interactionEvents = [];
+  eventTimingStartEventsForInteractions = [];
+  eventTimingEndEventsById = new Map();
+  interactionEventsWithNoNesting = [];
   longestInteractionEvent = null;
 }
 

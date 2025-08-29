@@ -8,46 +8,44 @@ import * as Types from '../types/types.js';
 import {data as AsyncJSCallsHandlerData} from './AsyncJSCallsHandler.js';
 import {data as flowsHandlerData} from './FlowsHandler.js';
 
-const lastScheduleStyleRecalcByFrame = new Map<string, Types.Events.ScheduleStyleRecalculation>();
+let lastScheduleStyleRecalcByFrame = new Map<string, Types.Events.ScheduleStyleRecalculation>();
 
 // This tracks the last event that is considered to have invalidated the layout
 // for a given frame.
 // Note that although there is an InvalidateLayout event, there are also other
 // events (ScheduleStyleRecalculation) that could be the reason a layout was
 // invalidated.
-const lastInvalidationEventForFrame = new Map<string, Types.Events.Event>();
+let lastInvalidationEventForFrame = new Map<string, Types.Events.Event>();
 
 // Important: although the event is called UpdateLayoutTree, in the UI we
 // present these to the user as "Recalculate Style". So don't get confused!
 // These are the same - just UpdateLayoutTree is what the event from Chromium
 // is called.
-const lastUpdateLayoutTreeByFrame = new Map<string, Types.Events.UpdateLayoutTree>();
+let lastUpdateLayoutTreeByFrame = new Map<string, Types.Events.UpdateLayoutTree>();
 
 // These two maps store the same data but in different directions.
 // For a given event, tell me what its initiator was. An event can only have one initiator.
-const eventToInitiatorMap = new Map<Types.Events.Event, Types.Events.Event>();
+let eventToInitiatorMap = new Map<Types.Events.Event, Types.Events.Event>();
 // For a given event, tell me what events it initiated. An event can initiate
 // multiple events, hence why the value for this map is an array.
-const initiatorToEventsMap = new Map<Types.Events.Event, Types.Events.Event[]>();
+let initiatorToEventsMap = new Map<Types.Events.Event, Types.Events.Event[]>();
 
-const requestAnimationFrameEventsById = new Map<number, Types.Events.RequestAnimationFrame>();
-const timerInstallEventsById = new Map<number, Types.Events.TimerInstall>();
-const requestIdleCallbackEventsById = new Map<number, Types.Events.RequestIdleCallback>();
+let timerInstallEventsById = new Map<number, Types.Events.TimerInstall>();
+let requestIdleCallbackEventsById = new Map<number, Types.Events.RequestIdleCallback>();
 
-const webSocketCreateEventsById = new Map<number, Types.Events.WebSocketCreate>();
-const schedulePostTaskCallbackEventsById = new Map<number, Types.Events.SchedulePostTaskCallback>();
+let webSocketCreateEventsById = new Map<number, Types.Events.WebSocketCreate>();
+let schedulePostTaskCallbackEventsById = new Map<number, Types.Events.SchedulePostTaskCallback>();
 
 export function reset(): void {
-  lastScheduleStyleRecalcByFrame.clear();
-  lastInvalidationEventForFrame.clear();
-  lastUpdateLayoutTreeByFrame.clear();
-  timerInstallEventsById.clear();
-  eventToInitiatorMap.clear();
-  initiatorToEventsMap.clear();
-  requestAnimationFrameEventsById.clear();
-  requestIdleCallbackEventsById.clear();
-  webSocketCreateEventsById.clear();
-  schedulePostTaskCallbackEventsById.clear();
+  lastScheduleStyleRecalcByFrame = new Map();
+  lastInvalidationEventForFrame = new Map();
+  lastUpdateLayoutTreeByFrame = new Map();
+  timerInstallEventsById = new Map();
+  eventToInitiatorMap = new Map();
+  initiatorToEventsMap = new Map();
+  requestIdleCallbackEventsById = new Map();
+  webSocketCreateEventsById = new Map();
+  schedulePostTaskCallbackEventsById = new Map();
 }
 
 function storeInitiator(data: {initiator: Types.Events.Event, event: Types.Events.Event}): void {

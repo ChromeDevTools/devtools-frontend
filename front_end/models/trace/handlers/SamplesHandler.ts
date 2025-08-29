@@ -8,10 +8,8 @@ import * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-const events = new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.Complete[]>>();
-
-const profilesInProcess = new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, ProfileData>>();
-const entryToNode = new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>();
+let profilesInProcess = new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, ProfileData>>();
+let entryToNode = new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>();
 
 // The profile head, containing its metadata like its start
 // time, comes in a "Profile" event. The sample data comes in
@@ -22,7 +20,7 @@ const entryToNode = new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNo
 // For this reason, we have a preprocessed data structure, where events
 // are matched by profile id, which we then finish processing to export
 // events matched by thread id.
-const preprocessedData = new Map<Types.Events.ProcessID, Map<Types.Events.ProfileID, PreprocessedData>>();
+let preprocessedData = new Map<Types.Events.ProcessID, Map<Types.Events.ProfileID, PreprocessedData>>();
 
 function parseCPUProfileData(parseOptions: Types.Configuration.ParseOptions): void {
   for (const [processId, profiles] of preprocessedData) {
@@ -109,10 +107,9 @@ function parseCPUProfileData(parseOptions: Types.Configuration.ParseOptions): vo
 }
 
 export function reset(): void {
-  events.clear();
-  preprocessedData.clear();
-  profilesInProcess.clear();
-  entryToNode.clear();
+  preprocessedData = new Map();
+  profilesInProcess = new Map();
+  entryToNode = new Map();
 }
 
 export function handleEvent(event: Types.Events.Event): void {

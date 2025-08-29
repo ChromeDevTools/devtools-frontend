@@ -8,13 +8,13 @@ import * as Types from '../types/types.js';
 import type {HandlerName} from './types.js';
 import {data as userTimingsData} from './UserTimingsHandler.js';
 
-const extensionTrackEntries: Types.Extensions.SyntheticExtensionTrackEntry[] = [];
-const extensionTrackData: Types.Extensions.ExtensionTrackData[] = [];
-const extensionMarkers: Types.Extensions.SyntheticExtensionMarker[] = [];
-const entryToNode = new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>();
-const timeStampByName = new Map<string, Types.Events.ConsoleTimeStamp>();
+let extensionTrackEntries: Types.Extensions.SyntheticExtensionTrackEntry[] = [];
+let extensionTrackData: Types.Extensions.ExtensionTrackData[] = [];
+let extensionMarkers: Types.Extensions.SyntheticExtensionMarker[] = [];
+let entryToNode = new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>();
+let timeStampByName = new Map<string, Types.Events.ConsoleTimeStamp>();
 
-const syntheticConsoleEntriesForTimingsTrack: Types.Events.SyntheticConsoleTimeStamp[] = [];
+let syntheticConsoleEntriesForTimingsTrack: Types.Events.SyntheticConsoleTimeStamp[] = [];
 
 export interface ExtensionTraceData {
   extensionTrackData: readonly Types.Extensions.ExtensionTrackData[];
@@ -29,12 +29,12 @@ export function handleEvent(_event: Types.Events.Event): void {
 }
 
 export function reset(): void {
-  extensionTrackEntries.length = 0;
-  syntheticConsoleEntriesForTimingsTrack.length = 0;
-  extensionTrackData.length = 0;
-  extensionMarkers.length = 0;
-  entryToNode.clear();
-  timeStampByName.clear();
+  extensionTrackEntries = [];
+  syntheticConsoleEntriesForTimingsTrack = [];
+  extensionTrackData = [];
+  extensionMarkers = [];
+  entryToNode = new Map();
+  timeStampByName = new Map();
 }
 
 export async function finalize(): Promise<void> {

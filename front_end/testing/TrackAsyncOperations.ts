@@ -15,6 +15,9 @@ interface AsyncActivity {
 const asyncActivity: AsyncActivity[] = [];
 
 export function startTrackingAsyncActivity() {
+  // Reset everything before starting a new tracking session.
+  // Do this in case something went wrong with cleanup
+  stopTrackingAsyncActivity();
   // We are tracking all asynchronous activity but let it run normally during
   // the test.
   stub('requestAnimationFrame', trackingRequestAnimationFrame);
@@ -28,7 +31,7 @@ export function startTrackingAsyncActivity() {
   stub('Promise', TrackingPromise);
 }
 
-export async function checkForPendingActivity() {
+export async function checkForPendingActivity(testName = '') {
   let stillPending: AsyncActivity[] = [];
   const wait = 5;
   let retries = 20;
@@ -80,7 +83,7 @@ export async function checkForPendingActivity() {
   }
   if (stillPending.length) {
     throw new Error(
-        'The test has completed, but there are still pending async operations\n' +
+        `The test "${testName}" has completed, but there are still pending async operations\n` +
         stillPending.map(a => `Pending '${a.type}' created at: \n${a.stack}`).join('\n\n'));
   }
 }
@@ -216,17 +219,17 @@ const TrackingPromise: PromiseConstructor = Object.assign(
         pending: false,
       };
       promise.then = function<TResult1 = T, TResult2 = never>(
-          onFullfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)|undefined|null,
+          onFulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)|undefined|null,
           onRejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>)|undefined|
           null): Promise<TResult1|TResult2> {
         activity.pending = true;
         return originalPromiseType.prototype.then.apply(this, [
           result => {
-            if (!onFullfilled) {
+            if (!onFulfilled) {
               return this;
             }
             activity.pending = false;
-            return onFullfilled(result);
+            return onFulfilled(result);
           },
           result => {
             if (!onRejected) {

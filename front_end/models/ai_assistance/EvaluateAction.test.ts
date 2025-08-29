@@ -43,10 +43,6 @@ describe('FreestylerEvaluateAction', () => {
       };
     }
 
-    beforeEach(() => {
-      sinon.restore();
-    });
-
     it('should serialize a CDP error as a string', async () => {
       assert.strictEqual(await executeWithResult({error: 'errorMessage'}), 'Error: errorMessage');
     });

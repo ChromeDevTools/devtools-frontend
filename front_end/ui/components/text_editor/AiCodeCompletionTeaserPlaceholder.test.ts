@@ -25,10 +25,6 @@ describeWithEnvironment('AiCodeCompletionTeaserPlaceholder', () => {
         .resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
   });
 
-  afterEach(() => {
-    sinon.restore();
-  });
-
   function createEditor(doc: string, teaser: PanelCommon.AiCodeCompletionTeaser): TextEditor.TextEditor.TextEditor {
     const editor = new TextEditor.TextEditor.TextEditor(
         CodeMirror.EditorState.create({

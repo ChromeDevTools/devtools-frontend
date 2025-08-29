@@ -27,7 +27,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
   });
 
   afterEach(() => {
-    sinon.restore();
+    clock.restore();
   });
 
   it('builds a request and calls the AIDA client on text changed', async () => {

@@ -98,12 +98,10 @@ export const cleanTestDOM = () => {
     removeChildren(previousContainer);
     previousContainer.remove();
   }
-  // Tests are run in light mode by default.
-  setColorScheme('light');
 };
 
 /**
- * Asserts that all emenents of `nodeList` are at least of type `T`.
+ * Asserts that all elements of `nodeList` are at least of type `T`.
  */
 export function assertElements<T extends Element>(
     nodeList: NodeListOf<Element>,

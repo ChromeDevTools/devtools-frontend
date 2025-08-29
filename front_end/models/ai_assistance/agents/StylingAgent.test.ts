@@ -125,10 +125,6 @@ describeWithEnvironment('StylingAgent', () => {
       sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
     });
 
-    afterEach(() => {
-      sinon.restore();
-    });
-
     it('builds a request with a model id', async () => {
       mockHostConfig('test model');
       const agent = new StylingAgent({

@@ -203,8 +203,8 @@ export class AiCodeCompletionPlugin extends Plugin {
       this.#detachAiCodeCompletionTeaser();
       this.#teaser = undefined;
     }
-    this.#aiCodeCompletion =
-        new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({aidaClient: this.#aidaClient}, this.#editor);
+    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
+        {aidaClient: this.#aidaClient}, this.#editor, AiCodeCompletion.AiCodeCompletion.Panel.SOURCES);
     this.#aiCodeCompletion.addEventListener(
         AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED, this.#onAiRequestTriggered, this);
     this.#aiCodeCompletion.addEventListener(

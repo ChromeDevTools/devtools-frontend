@@ -37,6 +37,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         sinon.createStubInstance(TextEditor.TextEditor.TextEditor),
+        AiCodeCompletion.Panel.CONSOLE,
         ['\n'],
     );
 
@@ -71,6 +72,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         editor,
+        AiCodeCompletion.Panel.CONSOLE,
     );
 
     aiCodeCompletion.onTextChanged('prefix', '\n', 1);
@@ -100,6 +102,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         editor,
+        AiCodeCompletion.Panel.CONSOLE,
     );
 
     aiCodeCompletion.onTextChanged('console.log(', ');\n', 1);
@@ -121,6 +124,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         sinon.createStubInstance(TextEditor.TextEditor.TextEditor),
+        AiCodeCompletion.Panel.CONSOLE,
     );
 
     aiCodeCompletion.onTextChanged('p', '', 1);
@@ -151,6 +155,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         editor,
+        AiCodeCompletion.Panel.CONSOLE,
     );
     const dispatchSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
 
@@ -183,6 +188,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         editor,
+        AiCodeCompletion.Panel.CONSOLE,
     );
     const dispatchSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
 
@@ -210,6 +216,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         editor,
+        AiCodeCompletion.Panel.CONSOLE,
     );
 
     aiCodeCompletion.onTextChanged('prefix', 'suffix', 1);
@@ -252,6 +259,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         editor,
+        AiCodeCompletion.Panel.CONSOLE,
     );
 
     aiCodeCompletion.onTextChanged('prefix ', 'suffix', 1);
@@ -289,6 +297,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         editor,
+        AiCodeCompletion.Panel.CONSOLE,
     );
 
     aiCodeCompletion.onTextChanged('prefix', 'suffix', 1);
@@ -315,6 +324,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
         editor,
+        AiCodeCompletion.Panel.CONSOLE,
     );
 
     aiCodeCompletion.onTextChanged('prefix', 'suffix', 1);

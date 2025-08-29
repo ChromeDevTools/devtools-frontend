@@ -228,6 +228,27 @@ export enum EditType {
   ACCEPT_COMPLETION = 6,
 }
 
+export enum Reason {
+  // Unknown reason.
+  UNKNOWN = 0,
+
+  // The file is currently open.
+  CURRENTLY_OPEN = 1,
+
+  // The file is opened recently.
+  RECENTLY_OPENED = 2,
+
+  // The file is edited recently.
+  RECENTLY_EDITED = 3,
+
+  // The file is located within the same directory.
+  COLOCATED = 4,
+
+  // Included based on relation to code around the cursor (e.g: could be
+  // provided by local IDE analysis)
+  RELATED_FILE = 5,
+}
+
 /* eslint-disable @typescript-eslint/naming-convention */
 export interface CompletionRequest {
   client: string;
@@ -236,6 +257,11 @@ export interface CompletionRequest {
   options?: CompleteCodeOptions;
   metadata: RequestMetadata;
   last_user_action?: EditType;
+  additional_files?: Array<{
+    path: string,
+    content: string,
+    included_reason: Reason,
+  }>;
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

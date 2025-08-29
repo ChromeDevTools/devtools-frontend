@@ -309,11 +309,8 @@ export class TimelineDetailsPane extends
   /**
    * Updates the UI shown in the Summary tab, and updates the UI to select the
    * summary tab.
-   * @param node this is passed as an additional piece of DOM that will be
-   *     rendered in the summary view. This is a temporary ability to allow
-   *     incremental migration to the UI Eng vision.
    */
-  private async updateSummaryAndSelectTab(node: Node|null): Promise<void> {
+  private async updateSummaryPane(): Promise<void> {
     const allTabs = this.tabbedPane.otherTabs(Tab.Details);
     for (let i = 0; i < allTabs.length; ++i) {
       if (!this.rangeDetailViews.has(allTabs[i])) {
@@ -321,7 +318,6 @@ export class TimelineDetailsPane extends
       }
     }
 
-    this.#summaryContent.node = node ?? null;
     this.#summaryContent.requestUpdate();
     await this.#summaryContent.updateComplete;
   }
@@ -365,7 +361,7 @@ export class TimelineDetailsPane extends
    */
   private scheduleUpdateContentsFromWindow(forceImmediateUpdate = false): void {
     if (!this.#parsedTrace) {
-      void this.updateSummaryAndSelectTab(null);
+      void this.updateSummaryPane();
       return;
     }
     if (forceImmediateUpdate) {
@@ -413,11 +409,12 @@ export class TimelineDetailsPane extends
       return;
     }
 
+    this.#summaryContent.selectedRange = null;
     this.#summaryContent.selectedEvent = event;
     this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
     this.#summaryContent.linkifier = this.detailsLinkifier;
     this.#summaryContent.target = targetForEvent(this.#parsedTrace, event);
-    await this.updateSummaryAndSelectTab(null);
+    await this.updateSummaryPane();
     this.appendExtraDetailsTabsForTraceEvent(event);
   }
 
@@ -546,12 +543,13 @@ export class TimelineDetailsPane extends
       return;
     }
 
-    const minBoundsMilli = Trace.Helpers.Timing.traceWindowMilliSeconds(this.#parsedTrace.Meta.traceBounds).min;
-    const aggregatedStats = TimelineUIUtils.statsForTimeRange(this.#selectedEvents, startTime, endTime);
-    const startOffset = startTime - minBoundsMilli;
-    const endOffset = endTime - minBoundsMilli;
-    const summaryDetailElem = TimelineUIUtils.generateSummaryDetails(
-        aggregatedStats, startOffset, endOffset, this.#selectedEvents, this.#thirdPartyTree);
+    this.#summaryContent.selectedEvent = null;
+    this.#summaryContent.selectedRange = {
+      events: this.#selectedEvents,
+      thirdPartyTree: this.#thirdPartyTree,
+      startTime,
+      endTime,
+    };
 
     // This is a bit of a hack as we are midway through migrating this to
     // the new UI Eng vision.
@@ -560,7 +558,7 @@ export class TimelineDetailsPane extends
     // (so the 3P Tree View is attached to the DOM) and then we tell it to
     // update.
     // This will be fixed once we migrate this component fully to the new vision (b/407751379)
-    void this.updateSummaryAndSelectTab(summaryDetailElem).then(() => {
+    void this.updateSummaryPane().then(() => {
       this.#thirdPartyTree.updateContents(this.selection || selectionFromRangeMilliSeconds(startTime, endTime));
     });
 
@@ -592,15 +590,14 @@ export enum Tab {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
+interface SelectedRange {
+  startTime: Trace.Types.Timing.Milli;
+  endTime: Trace.Types.Timing.Milli;
+  events: Trace.Types.Events.Event[];
+  thirdPartyTree: ThirdPartyTreeViewWidget;
+}
+
 interface SummaryViewInput {
-  // This is a helper to allow an incremental migration to the new UI Eng vision.
-  // Currently, this is used in two scenarios:
-  // 1. When the user selects a TimelineFrame (screenshot).
-  // 2. When no trace event is selected, and the user is looking at a range.
-  // Both of these scenarios need to be updated to use the new UI Eng Vision,
-  // and then we can remove the ability for this UI to take an arbitrary DOM
-  // Node to render.
-  node: Node|null;
   selectedEvent: Trace.Types.Events.Event|null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null;
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
@@ -609,6 +606,7 @@ interface SummaryViewInput {
   target: SDK.Target.Target|null;
   linkifier: Components.Linkifier.Linkifier|null;
   filmStrip: Trace.Extras.FilmStrip.Data|null;
+  selectedRange: SelectedRange|null;
 }
 
 type View = (input: SummaryViewInput, output: object, target: HTMLElement) => void;
@@ -617,8 +615,8 @@ const SUMMARY_DEFAULT_VIEW: View = (input, _output, target) => {
   render(
       html`
         <style>${detailsViewStyles}</style>
-        ${input.node ?? nothing}
         ${Directives.until(renderSelectedEventDetails(input))}
+        ${input.selectedRange ? generateRangeSummaryDetails(input) : nothing}
         <devtools-widget data-related-insight-chips .widgetConfig=${
           UI.Widget.widgetConfig(TimelineComponents.RelatedInsightChips.RelatedInsightChips, {
             activeEvent: input.selectedEvent,
@@ -631,7 +629,6 @@ const SUMMARY_DEFAULT_VIEW: View = (input, _output, target) => {
 
 class SummaryView extends UI.Widget.Widget {
   #view: View;
-  node: Node|null = null;
   selectedEvent: Trace.Types.Events.Event|null = null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
@@ -640,6 +637,7 @@ class SummaryView extends UI.Widget.Widget {
   target: SDK.Target.Target|null = null;
   linkifier: Components.Linkifier.Linkifier|null = null;
   filmStrip: Trace.Extras.FilmStrip.Data|null = null;
+  selectedRange: SelectedRange|null = null;
 
   constructor(element?: HTMLElement, view = SUMMARY_DEFAULT_VIEW) {
     super(element);
@@ -649,7 +647,6 @@ class SummaryView extends UI.Widget.Widget {
   override performUpdate(): void {
     this.#view(
         {
-          node: this.node,
           selectedEvent: this.selectedEvent,
           eventToRelatedInsightsMap: this.eventToRelatedInsightsMap,
           parsedTrace: this.parsedTrace,
@@ -657,10 +654,28 @@ class SummaryView extends UI.Widget.Widget {
           entityMapper: this.entityMapper,
           target: this.target,
           linkifier: this.linkifier,
-          filmStrip: this.filmStrip
+          filmStrip: this.filmStrip,
+          selectedRange: this.selectedRange,
         },
         {}, this.contentElement);
   }
+}
+
+function generateRangeSummaryDetails(input: SummaryViewInput): LitTemplate {
+  const {parsedTrace, selectedRange} = input;
+
+  if (!selectedRange || !parsedTrace) {
+    return nothing;
+  }
+
+  const minBoundsMilli = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+  const {events, startTime, endTime, thirdPartyTree} = selectedRange;
+  const aggregatedStats = TimelineUIUtils.statsForTimeRange(events, startTime, endTime);
+  const startOffset = startTime - minBoundsMilli;
+  const endOffset = endTime - minBoundsMilli;
+  const summaryDetailElem =
+      TimelineUIUtils.generateSummaryDetails(aggregatedStats, startOffset, endOffset, events, thirdPartyTree);
+  return html`${summaryDetailElem}`;
 }
 
 async function renderSelectedEventDetails(

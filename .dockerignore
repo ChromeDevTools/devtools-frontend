@@ -1,0 +1,60 @@
+# Git files
+.git
+.gitignore
+.github
+
+# Build outputs (if building locally first)
+out/
+build/
+
+# Node modules (will be installed fresh in container)
+node_modules/
+**/node_modules/
+
+# Documentation
+*.md
+docs/
+LICENSE
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test files
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Docker files themselves (prevent recursion when building from root)
+docker/Dockerfile
+docker/.dockerignore
+
+# Development scripts that aren't needed for build
+scripts/test/
+scripts/migration/
+
+# Large unnecessary directories
+.cipd/
+.gclient_entries
+
+# Depot tools (will be cloned fresh in container)
+third_party/depot_tools/

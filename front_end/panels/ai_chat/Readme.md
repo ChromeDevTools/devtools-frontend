@@ -2,6 +2,18 @@
 
 This panel is a Multi-Agent Framework that allows a user to connect an existing LLM with the chromium browser.
 
+### Docker
+```sh
+# assuming you are running from the root "browser-operator-core" directory
+docker build -f docker/Dockerfile -t devtools-frontend .
+docker run -d -p 8000:8000 --name devtools-frontend devtools-frontend
+<path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --disable-infobars --custom-devtools-frontend=http://localhost:8000/
+
+# MacOS Example
+/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --custom-devtools-frontend=http://localhost:8000/
+```
+
+
 ### Steps to run project
 
 1. Setup the depot_tools to fetch the chromium dev tools using the instructions provided [here](https://www.chromium.org/developers/how-tos/get-the-code/)
@@ -25,7 +37,7 @@ npm run build
 
 3. Update the code to this fork implementation
 ```sh
-git remote add upstream git@github.com:tysonthomas9/browser-operator-devtools-frontend.git
+git remote add upstream https://github.com/BrowserOperator/browser-operator-core.git
 git fetch upstream
 git checkout upstream/main
 ```

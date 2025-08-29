@@ -38,11 +38,17 @@ WORKDIR /workspace/devtools/devtools-frontend
 
 RUN gclient sync
 RUN /workspace/depot_tools/ensure_bootstrap
+
+# Build standard DevTools first
 RUN npm run build
 
-# Copy Browser Operator files over built DevTools
-COPY . /tmp/browser-operator
-RUN cp -r /tmp/browser-operator/front_end/* ./out/Default/gen/front_end/ || true
+# Add Browser Operator fork and switch to it
+RUN git remote add upstream https://github.com/BrowserOperator/browser-operator-core.git
+RUN git fetch upstream
+RUN git checkout upstream/main
+
+# Build Browser Operator version
+RUN npm run build
 
 # Production stage
 FROM --platform=linux/amd64 nginx:alpine

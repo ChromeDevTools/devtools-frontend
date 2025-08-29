@@ -68,7 +68,7 @@ export class StateProvider {
     }
 
     if (!browser?.connected) {
-      browser = await Launcher.browserSetup(browserSettings);
+      browser = await Launcher.browserSetup(browserSettings, StateProvider.serverPort);
       this.#settingToBrowser.set(browserKey, browser);
     }
     this.#suiteToBrowser.set(suite, browser);

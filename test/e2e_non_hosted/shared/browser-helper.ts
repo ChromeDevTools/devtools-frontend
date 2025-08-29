@@ -77,13 +77,13 @@ export class BrowserWrapper {
   }
 }
 export class Launcher {
-  static async browserSetup(settings: BrowserSettings) {
-    const browser = await Launcher.launchChrome(settings);
+  static async browserSetup(settings: BrowserSettings, serverPort: number) {
+    const browser = await Launcher.launchChrome(settings, serverPort);
     setupBrowserProcessIO(browser);
     return new BrowserWrapper(browser);
   }
 
-  private static launchChrome(settings: BrowserSettings) {
+  private static launchChrome(settings: BrowserSettings, serverPort: number) {
     const frontEndDirectory = url.pathToFileURL(path.join(GEN_DIR, 'front_end'));
     const disabledFeatures = settings.disabledFeatures?.slice() ?? [];
     const launchArgs = [
@@ -101,6 +101,7 @@ export class Launcher {
       '--enable-crash-reporter',
       // This has no effect (see https://crbug.com/435638630)
       `--crash-dumps-dir=${TestConfig.artifactsDir}`,
+      `--privacy-sandbox-enrollment-overrides=https://localhost:${serverPort}`,
     ];
     const headless = TestConfig.headless;
     // CDP commands in e2e and interaction should not generally take

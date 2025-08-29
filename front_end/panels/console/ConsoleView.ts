@@ -308,7 +308,8 @@ export class ConsoleView extends UI.Widget.VBox implements
   private messagesCountElement: HTMLElement;
   private viewportThrottler: Common.Throttler.Throttler;
   private pendingBatchResize: boolean;
-  private readonly onMessageResizedBound: (e: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void;
+  private readonly onMessageResizedBound:
+      (e: Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>) => void;
   private readonly promptElement: HTMLElement;
   private readonly linkifier: Components.Linkifier.Linkifier;
   private consoleMessages: ConsoleViewMessage[];
@@ -522,7 +523,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     this.viewportThrottler = new Common.Throttler.Throttler(viewportThrottlerTimeout);
     this.pendingBatchResize = false;
-    this.onMessageResizedBound = (e: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => {
+    this.onMessageResizedBound = (e: Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>) => {
       void this.onMessageResized(e);
     };
 
@@ -1112,19 +1113,18 @@ export class ConsoleView extends UI.Widget.VBox implements
     }
   }
 
-  private async onMessageResized(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>):
+  private async onMessageResized(event: Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>):
       Promise<void> {
-    const treeElement = event.data;
-    if (this.pendingBatchResize || !treeElement.treeOutline) {
+    const treeElement = event.data instanceof UI.TreeOutline.TreeElement ? event.data.treeOutline?.element : event.data;
+    if (this.pendingBatchResize || !treeElement) {
       return;
     }
     this.pendingBatchResize = true;
     await Promise.resolve();
-    const treeOutlineElement = treeElement.treeOutline.element;
     this.viewport.setStickToBottom(this.isScrolledToBottom());
     // Scroll, in case mutations moved the element below the visible area.
-    if (treeOutlineElement.offsetHeight <= this.messagesElement.offsetHeight) {
-      treeOutlineElement.scrollIntoViewIfNeeded();
+    if (treeElement.offsetHeight <= this.messagesElement.offsetHeight) {
+      treeElement.scrollIntoViewIfNeeded();
     }
 
     this.pendingBatchResize = false;

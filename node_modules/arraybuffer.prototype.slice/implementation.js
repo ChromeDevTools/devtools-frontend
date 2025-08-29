@@ -5,12 +5,12 @@ var GetIntrinsic = require('get-intrinsic');
 var $ArrayBuffer = GetIntrinsic('%ArrayBuffer%', true);
 var $Uint8Array = GetIntrinsic('%Uint8Array%', true);
 
-var IsDetachedBuffer = require('es-abstract/2023/IsDetachedBuffer');
-var IsSharedArrayBuffer = require('es-abstract/2023/IsSharedArrayBuffer');
-var max = require('es-abstract/2023/max');
-var min = require('es-abstract/2023/min');
-var SpeciesConstructor = require('es-abstract/2023/SpeciesConstructor');
-var ToIntegerOrInfinity = require('es-abstract/2023/ToIntegerOrInfinity');
+var IsDetachedBuffer = require('es-abstract/2024/IsDetachedBuffer');
+var IsSharedArrayBuffer = require('es-abstract/2024/IsSharedArrayBuffer');
+var max = require('es-abstract/2024/max');
+var min = require('es-abstract/2024/min');
+var SpeciesConstructor = require('es-abstract/2024/SpeciesConstructor');
+var ToIntegerOrInfinity = require('es-abstract/2024/ToIntegerOrInfinity');
 
 var arrayBufferByteLength = require('array-buffer-byte-length');
 var isArrayBuffer = require('is-array-buffer');

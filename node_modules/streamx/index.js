@@ -5,6 +5,9 @@ const PREMATURE_CLOSE = new Error('Premature close')
 const FIFO = require('fast-fifo')
 const TextDecoder = require('text-decoder')
 
+// if we do a future major, expect queue microtask to be there always, for now a bit defensive
+const qmt = typeof queueMicrotask === 'undefined' ? fn => global.process.nextTick(fn) : queueMicrotask
+
 /* eslint-disable no-multi-spaces */
 
 // 29 bits used total (4 from shared, 14 from read, and 11 from write)
@@ -232,7 +235,7 @@ class WritableState {
   updateNextTick () {
     if ((this.stream._duplexState & WRITE_NEXT_TICK) !== 0) return
     this.stream._duplexState |= WRITE_NEXT_TICK
-    if ((this.stream._duplexState & WRITE_UPDATING) === 0) queueMicrotask(this.afterUpdateNextTick)
+    if ((this.stream._duplexState & WRITE_UPDATING) === 0) qmt(this.afterUpdateNextTick)
   }
 }
 
@@ -420,13 +423,13 @@ class ReadableState {
   updateNextTickIfOpen () {
     if ((this.stream._duplexState & READ_NEXT_TICK_OR_OPENING) !== 0) return
     this.stream._duplexState |= READ_NEXT_TICK
-    if ((this.stream._duplexState & READ_UPDATING) === 0) queueMicrotask(this.afterUpdateNextTick)
+    if ((this.stream._duplexState & READ_UPDATING) === 0) qmt(this.afterUpdateNextTick)
   }
 
   updateNextTick () {
     if ((this.stream._duplexState & READ_NEXT_TICK) !== 0) return
     this.stream._duplexState |= READ_NEXT_TICK
-    if ((this.stream._duplexState & READ_UPDATING) === 0) queueMicrotask(this.afterUpdateNextTick)
+    if ((this.stream._duplexState & READ_UPDATING) === 0) qmt(this.afterUpdateNextTick)
   }
 }
 

@@ -56,6 +56,11 @@ interface Scheduler {
 
 interface Window {
   readonly scheduler: Scheduler;
+
+  // Chromium only feature so not exposed on TypeScript lib.dom
+  showSaveFilePicker(opts: {
+    suggestedName: string,
+  }): Promise<FileSystemFileHandle>;
 }
 
 interface WorkerGlobalScope {

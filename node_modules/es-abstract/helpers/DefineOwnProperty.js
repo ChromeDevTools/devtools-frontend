@@ -9,7 +9,7 @@ var hasArrayLengthDefineBug = hasPropertyDescriptors.hasArrayLengthDefineBug();
 // eslint-disable-next-line global-require
 var isArray = hasArrayLengthDefineBug && require('../helpers/IsArray');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 

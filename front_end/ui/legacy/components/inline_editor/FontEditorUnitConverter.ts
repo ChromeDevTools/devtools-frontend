@@ -30,7 +30,7 @@ async function getEmMultiplier(isFontSizeProperty?: boolean): Promise<number> {
 async function getRemMultiplier(): Promise<number> {
   const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
   const htmlNode = findHtmlNode(selectedNode);
-  if (!htmlNode || !htmlNode.id) {
+  if (!htmlNode?.id) {
     return 16;
   }
   const [model] =

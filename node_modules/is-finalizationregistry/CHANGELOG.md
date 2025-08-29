@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.1](https://github.com/inspect-js/is-finalizationregistry/compare/v1.1.0...v1.1.1) - 2024-12-16
+
+### Commits
+
+- [actions] re-add finishers [`0f41639`](https://github.com/inspect-js/is-finalizationregistry/commit/0f41639657eb79da783ab99246ffbab97ce52785)
+- [Dev Deps] update `@arethetypeswrong/cli`, `@ljharb/tsconfig`, `@types/tape` [`1467f11`](https://github.com/inspect-js/is-finalizationregistry/commit/1467f11d2b638ae72ab5fff33a72c88143ed9546)
+- [meta] sort package.json [`bd48b68`](https://github.com/inspect-js/is-finalizationregistry/commit/bd48b686cf499ae590404729b4d3a6fca9c9d0f3)
+- [Refactor] use `call-bound` directly [`ce9dcd4`](https://github.com/inspect-js/is-finalizationregistry/commit/ce9dcd4abea4d17ca63b2d46385d78bebaf05d84)
+- [Deps] update `call-bind` [`9b8daac`](https://github.com/inspect-js/is-finalizationregistry/commit/9b8daac5237a420ec8de65222d1b14e56de55b50)
+- [meta] add `sideEffects` flag [`c5cb18b`](https://github.com/inspect-js/is-finalizationregistry/commit/c5cb18b51f22a52dcdc17afc3ce02a1ace41d418)
+
 ## [v1.1.0](https://github.com/inspect-js/is-finalizationregistry/compare/v1.0.2...v1.1.0) - 2024-11-23
 
 ### Commits

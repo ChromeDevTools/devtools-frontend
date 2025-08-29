@@ -9,11 +9,11 @@ import type * as Layers from './layers.js';
 
 const UIStrings = {
   /**
-   *@description Title of the Layers tool
+   * @description Title of the Layers tool
    */
   layers: 'Layers',
   /**
-   *@description Command for showing the Layers tool
+   * @description Command for showing the Layers tool
    */
   showLayers: 'Show Layers',
 } as const;

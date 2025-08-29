@@ -58,11 +58,11 @@ import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {
   /**
-   *@description Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel
+   * @description Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel
    */
   dropWorkspaceFolderHere: 'Drop workspace folder here',
   /**
-   *@description Text to show more options
+   * @description Text to show more options
    */
   moreOptions: 'More options',
   /**
@@ -102,71 +102,88 @@ const UIStrings = {
    */
   hideDebugger: 'Hide debugger',
   /**
-   *@description Text in Sources Panel of the Sources panel
+   * @description Text in Sources Panel of the Sources panel
    */
   groupByFolder: 'Group by folder',
   /**
-   *@description Text in Sources Panel of the Sources panel
+   * @description Text in Sources Panel of the Sources panel
    */
   groupByAuthored: 'Group by Authored/Deployed',
   /**
-   *@description Text in Sources Panel of the Sources panel
+   * @description Text in Sources Panel of the Sources panel
    */
   hideIgnoreListed: 'Hide ignore-listed sources',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel
+   * @description Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel
    */
   resumeWithAllPausesBlockedForMs: 'Resume with all pauses blocked for 500 ms',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon terminate execution button in the Sources Panel of the Sources panel
+   * @description Tooltip text that appears when hovering over the largeicon terminate execution button in the Sources Panel of the Sources panel
    */
   terminateCurrentJavascriptCall: 'Terminate current JavaScript call',
   /**
-   *@description Text in Sources Panel of the Sources panel
+   * @description Text in Sources Panel of the Sources panel
    */
   pauseOnCaughtExceptions: 'Pause on caught exceptions',
   /**
-   *@description A context menu item in the Sources Panel of the Sources panel
+   * @description A context menu item in the Sources Panel of the Sources panel
    */
   revealInSidebar: 'Reveal in navigator sidebar',
   /**
-   *@description A context menu item in the Sources Panel of the Sources panel when debugging JS code.
+   * @description A context menu item in the Sources Panel of the Sources panel when debugging JS code.
    * When clicked, the execution is resumed until it reaches the line specified by the right-click that
    * opened the context menu.
    */
   continueToHere: 'Continue to here',
   /**
-   *@description A context menu item in the Console that stores selection as a temporary global variable
+   * @description A context menu item in the Console that stores selection as a temporary global variable
    */
   storeAsGlobalVariable: 'Store as global variable',
   /**
-   *@description A context menu item in the Console, Sources, and Network panel
-   *@example {string} PH1
+   * @description A context menu item in the Console, Sources, and Network panel
+   * @example {string} PH1
    */
   copyS: 'Copy {PH1}',
   /**
-   *@description A context menu item for strings in the Console, Sources, and Network panel.
+   * @description A context menu item for strings in the Console, Sources, and Network panel.
    * When clicked, the raw contents of the string is copied to the clipboard.
    */
   copyStringContents: 'Copy string contents',
   /**
-   *@description A context menu item for strings in the Console, Sources, and Network panel.
+   * @description A context menu item for strings in the Console, Sources, and Network panel.
    * When clicked, the string is copied to the clipboard as a valid JavaScript literal.
    */
   copyStringAsJSLiteral: 'Copy string as JavaScript literal',
   /**
-   *@description A context menu item for strings in the Console, Sources, and Network panel.
+   * @description A context menu item for strings in the Console, Sources, and Network panel.
    * When clicked, the string is copied to the clipboard as a valid JSON literal.
    */
   copyStringAsJSONLiteral: 'Copy string as JSON literal',
   /**
-   *@description A context menu item in the Sources Panel of the Sources panel
+   * @description A context menu item in the Sources Panel of the Sources panel
    */
   showFunctionDefinition: 'Show function definition',
   /**
-   *@description Text in Sources Panel of the Sources panel
+   * @description Text in Sources Panel of the Sources panel
    */
   openInSourcesPanel: 'Open in Sources panel',
+  /**
+   * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
+   */
+  startAChat: 'Start a chat',
+  /**
+   * @description Text of a context menu item to redirect to the AI assistance panel and directly execute
+   * a prompt to assess the performance of a script.
+   */
+  assessPerformance: 'Assess performance',
+  /**
+   * @description Context menu item in Sources panel to explain a script via AI.
+   */
+  explainThisScript: 'Explain this script',
+  /**
+   * @description Context menu item in Sources panel to explain input handling in a script via AI.
+   */
+  explainInputHandling: 'Explain input handling',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -521,7 +538,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
     const byOverlayButton = !document.hasFocus();
-    // In the overlary we show two buttons: resume and step over. Both trigger
+    // In the overlay we show two buttons: resume and step over. Both trigger
     // the Debugger.resumed event. The latter however will trigger
     // Debugger.paused shortly after, while the former won't. Here we guess
     // which one was clicked by checking if we are paused again after 0.5s.
@@ -937,7 +954,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     if (!uiSourceCode.project().isServiceProject() &&
         !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) &&
         !(Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE) &&
-          Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+          Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
               uiSourceCode))) {
       contextMenu.revealSection().appendItem(
           i18nString(UIStrings.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
@@ -945,13 +962,33 @@ export class SourcesPanel extends UI.Panel.Panel implements
           });
     }
 
-    if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-panel-context')) {
+    const openAiAssistanceId = 'drjones.sources-panel-context';
+    if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
       const editorElement = this.element.querySelector('devtools-text-editor');
       if (!eventTarget.isSelfOrDescendant(editorElement) && uiSourceCode.contentType().isTextType()) {
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
-        contextMenu.footerSection().appendAction(
-            'drjones.sources-panel-context',
-        );
+        if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
+          const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+          const submenu = contextMenu.footerSection().appendSubMenuItem(
+              action.title(), false, openAiAssistanceId,
+              Root.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.featureName);
+          submenu.defaultSection().appendAction('drjones.sources-panel-context', i18nString(UIStrings.startAChat));
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.assessPerformance), 'Is this script optimized for performance?',
+              openAiAssistanceId + '.performance');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.explainThisScript), 'What does this script do?',
+              openAiAssistanceId + '.script');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.explainInputHandling), 'Does the script handle user input safely',
+              openAiAssistanceId + '.input');
+        } else if (Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
+          contextMenu.footerSection().appendAction(
+              openAiAssistanceId, undefined, false, undefined,
+              Root.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.featureName);
+        } else {
+          contextMenu.footerSection().appendAction(openAiAssistanceId);
+        }
       }
     }
 
@@ -961,6 +998,13 @@ export class SourcesPanel extends UI.Panel.Panel implements
             .scriptsForUISourceCode(uiSourceCode)
             .every(script => script.isJavaScript())) {
       this.callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
+    }
+
+    function appendSubmenuPromptAction(
+        submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action, label: Common.UIString.LocalizedString,
+        prompt: string, jslogContext: string): void {
+      submenu.defaultSection().appendItem(
+          label, () => action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
     }
   }
 
@@ -1213,8 +1257,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
       void this.sidebarPaneStack.showView(jsBreakpoints);
       void this.sidebarPaneStack.showView(this.callstackPane);
 
-      const tabbedLocation =
-          UI.ViewManager.ViewManager.instance().createTabbedLocation(this.revealDebuggerSidebar.bind(this));
+      const tabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(
+          this.revealDebuggerSidebar.bind(this), 'sources-panel-debugger-sidebar');
       splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());
       this.tabbedLocationHeader = tabbedLocation.tabbedPane().headerElement();
       this.splitWidget.installResizer(this.tabbedLocationHeader);
@@ -1432,9 +1476,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 export class QuickSourceView extends UI.Widget.VBox {
   private readonly view: SourcesView;
   constructor() {
-    super();
+    super({jslog: `${VisualLogging.panel('sources.quick').track({resize: true})}`});
     this.element.classList.add('sources-view-wrapper');
-    this.element.setAttribute('jslog', `${VisualLogging.panel('sources.quick').track({resize: true})}`);
     this.view = SourcesPanel.instance().sourcesView();
   }
 

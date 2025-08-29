@@ -94,9 +94,8 @@ export class WrapperView extends UI.Widget.VBox {
   private readonly view: ConsoleView;
 
   private constructor() {
-    super();
+    super({jslog: `${VisualLogging.panel('console').track({resize: true})}`});
     this.view = ConsoleView.instance();
-    this.element.setAttribute('jslog', `${VisualLogging.panel('console').track({resize: true})}`);
   }
 
   static instance(): WrapperView {

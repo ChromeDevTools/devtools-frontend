@@ -431,7 +431,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   private tryResolvePreflightRequests(request: SDK.NetworkRequest.NetworkRequest): void {
     if (request.isPreflightRequest()) {
       const initiator = request.initiator();
-      if (initiator && initiator.requestId) {
+      if (initiator?.requestId) {
         const [initiatorRequest] = this.requestsForId(initiator.requestId);
         if (initiatorRequest) {
           request.setPreflightInitiatorRequest(initiatorRequest);

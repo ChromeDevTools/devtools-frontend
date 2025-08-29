@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.3.3](https://github.com/es-shims/Array.prototype.flatMap/compare/v1.3.2...v1.3.3) - 2024-12-15
+
+### Commits
+
+- [actions] split out node 10-20, and 20+ [`8727281`](https://github.com/es-shims/Array.prototype.flatMap/commit/87272812ed6ade6935c7429ee1daf1cfa54115ef)
+- [Tests] add test coverage [`6e78327`](https://github.com/es-shims/Array.prototype.flatMap/commit/6e7832790c36b320880f4b6d38dc31388d1fae3a)
+- [Deps] update `call-bind`, `es-abstract` [`e027dd1`](https://github.com/es-shims/Array.prototype.flatMap/commit/e027dd10ee63b3c3a98cc7e6ce8ad42b1100bdc9)
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `auto-changelog`, `object-inspect`, `tape` [`7322d84`](https://github.com/es-shims/Array.prototype.flatMap/commit/7322d841e87ab17e4b929e92e73e8a20c3daf544)
+- [Dev Deps] update `aud`, `npmignore`, `object-inspect`, `tape` [`958bf5c`](https://github.com/es-shims/Array.prototype.flatMap/commit/958bf5c982cb0c4941dc2a6e873883e9f2c8d535)
+- [Deps] update `call-bind`, `define-properties`, `es-abstract`, `es-shim-unscopables` [`b3698fb`](https://github.com/es-shims/Array.prototype.flatMap/commit/b3698fb2320992f5ab85a486d1adef0105f739aa)
+- [Tests] replace `aud` with `npm audit` [`e0461ed`](https://github.com/es-shims/Array.prototype.flatMap/commit/e0461ed2288d37e2d878e3e64569313c04af6a64)
+- [Dev Deps] add missing peer dep [`e7160b5`](https://github.com/es-shims/Array.prototype.flatMap/commit/e7160b5ef9d624300cc189696e8019adaf6d67fc)
+
 ## [v1.3.2](https://github.com/es-shims/Array.prototype.flatMap/compare/v1.3.1...v1.3.2) - 2023-09-06
 
 ### Commits

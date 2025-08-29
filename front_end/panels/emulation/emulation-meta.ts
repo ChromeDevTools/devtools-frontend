@@ -11,11 +11,11 @@ import type * as Emulation from './emulation.js';
 
 const UIStrings = {
   /**
-   *@description Title of an action in the emulation tool to toggle device mode
+   * @description Title of an action in the emulation tool to toggle device mode
    */
   toggleDeviceToolbar: 'Toggle device toolbar',
   /**
-   *@description Title of an action in the emulation tool to capture screenshot
+   * @description Title of an action in the emulation tool to capture screenshot
    */
   captureScreenshot: 'Capture screenshot',
   /**
@@ -39,24 +39,24 @@ const UIStrings = {
    */
   device: 'device',
   /**
-   *@description Command in the Device Mode Toolbar, to hide media query boundaries in the UI.
+   * @description Command in the Device Mode Toolbar, to hide media query boundaries in the UI.
    * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
    */
   hideMediaQueries: 'Hide media queries',
   /**
-   *@description Command that shows measuring rulers next to the emulated device.
+   * @description Command that shows measuring rulers next to the emulated device.
    */
   showRulers: 'Show rulers in the Device Mode toolbar',
   /**
-   *@description Command that hides measuring rulers next to the emulated device.
+   * @description Command that hides measuring rulers next to the emulated device.
    */
   hideRulers: 'Hide rulers in the Device Mode toolbar',
   /**
-   *@description Command that shows a frame (like a picture frame) around the emulated device.
+   * @description Command that shows a frame (like a picture frame) around the emulated device.
    */
   showDeviceFrame: 'Show device frame',
   /**
-   *@description Command that hides a frame (like a picture frame) around the emulated device.
+   * @description Command that hides a frame (like a picture frame) around the emulated device.
    */
   hideDeviceFrame: 'Hide device frame',
 

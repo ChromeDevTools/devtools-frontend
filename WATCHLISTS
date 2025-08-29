@@ -21,9 +21,6 @@
     },
     'third_party': {
       'filepath': 'front_end/third_party/',
-    },
-    'uielements': {
-      'filepath': 'front_end/ui/components/',
     }
   },
 
@@ -32,6 +29,5 @@
     'chromedriver': ['johnchen+watch@chromium.org'],
     'lighthouse': ['lighthouse-eng+devtools-cl@google.com'],
     'third_party': ['devtools-reviews+third_party@chromium.org'],
-    'uielements': ['devtools-gm3-reviewer@rotations.google.com'],
   },
 }

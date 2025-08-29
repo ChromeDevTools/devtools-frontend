@@ -35,7 +35,7 @@
  */
 
 /**
- * @fileoverview Allows a local ESLint rules directory to be used without a command-line flag
+ * @file Allows a local ESLint rules directory to be used without a command-line flag
  * @author Teddy Katz
  */
 
@@ -47,6 +47,9 @@ const RULES_DIR = join(import.meta.dirname, 'lib');
 
 const ruleExtensions = new Set(['.js', '.cjs', '.mjs', '.ts', '.cts', '.mts']);
 
+/**
+ * @type {Record<string, unknown>}
+ */
 const rulesModules = {};
 
 for (const filename of readdirSync(RULES_DIR)) {

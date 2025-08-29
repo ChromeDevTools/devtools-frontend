@@ -30,13 +30,13 @@ export const LANDING_PAGE_INDEX_DROPDOWN_CHOICE = Infinity;
 
 const UIStrings = {
   /**
-   *@description Screen reader label for the Timeline History dropdown button
-   *@example {example.com #3} PH1
-   *@example {Show recent timeline sessions} PH2
+   * @description Screen reader label for the Timeline History dropdown button
+   * @example {example.com #3} PH1
+   * @example {Show recent timeline sessions} PH2
    */
   currentSessionSS: 'Current session: {PH1}. {PH2}',
   /**
-   *@description the title shown when the user is viewing the landing page which is showing live performance metrics that are updated automatically.
+   * @description the title shown when the user is viewing the landing page which is showing live performance metrics that are updated automatically.
    */
   landingPageTitle: 'Live metrics',
   /**
@@ -44,13 +44,13 @@ const UIStrings = {
    */
   nodeLandingPageTitle: 'New recording',
   /**
-   *@description Text in Timeline History Manager of the Performance panel
-   *@example {example.com} PH1
-   *@example {2} PH2
+   * @description Text in Timeline History Manager of the Performance panel
+   * @example {example.com} PH1
+   * @example {2} PH2
    */
   sD: '{PH1} #{PH2}',
   /**
-   *@description Accessible label for the timeline session selection menu
+   * @description Accessible label for the timeline session selection menu
    */
   selectTimelineSession: 'Select timeline session',
   /**

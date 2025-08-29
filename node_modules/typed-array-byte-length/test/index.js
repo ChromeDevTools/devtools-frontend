@@ -66,6 +66,7 @@ test('Typed Arrays', { skip: availableTypedArrays.length === 0 }, function (t) {
 		var buffer = new ArrayBuffer(length);
 		var TypedArray = global[typedArray];
 		if (isCallable(TypedArray)) {
+			// @ts-expect-error TS doesn't seem to know about the second TA arg
 			var arr = new TypedArray(buffer, byteLength);
 			t.equal(typedArrayByteLength(arr), byteLength, 'new ' + typedArray + '(new ArrayBuffer(' + length + '), ' + byteLength + ') is typed array of byte Length ' + byteLength);
 		} else {

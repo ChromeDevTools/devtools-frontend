@@ -28,7 +28,6 @@
   --icon-file-image: var(--sys-color-green-bright);
   --icon-file-script: var(--sys-color-orange-bright);
   --icon-file-styles: var(--sys-color-purple-bright);
-  --icon-fold-marker: var(--sys-color-on-surface-subtle);
   --icon-folder-authored: var(--sys-color-orange);
   --icon-folder-primary: var(--sys-color-on-surface-subtle);
   --icon-folder-deployed: var(--sys-color-primary-bright);
@@ -228,6 +227,13 @@
    * Color for input driver for AI assistance chat
    */
   --app-color-ai-assistance-input-divider: rgb(0 0 0 / 10%);
+
+  /**
+  * Gradient colors for Google AI, used in the Global AI button in promotion enabled state
+  */
+  --app-color-google-ai-blue: #4285f4;
+  --app-color-google-ai-green: #2daeb8;
+  --app-gradient-google-ai: linear-gradient(46deg, var(--app-color-google-ai-blue) 32.34%, var(--app-color-google-ai-green) 98.11%);
 
   &.baseline-default {
     /**

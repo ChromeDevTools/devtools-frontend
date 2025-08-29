@@ -156,7 +156,7 @@ exports.default = (0, util_1.createRule)({
                     continue;
                 }
                 // RegExps also contain ts.TypeFlags.Any & ts.TypeFlags.Object
-                for (const subBaseType of tsutils.unionTypeParts(baseType)) {
+                for (const subBaseType of tsutils.unionConstituents(baseType)) {
                     const typeName = (0, util_1.getTypeName)(typeChecker, subBaseType);
                     if (typeName === 'RegExp'
                         ? !allowRegExp ||
@@ -221,11 +221,11 @@ exports.default = (0, util_1.createRule)({
 });
 function isDeeplyObjectType(type) {
     return type.isIntersection()
-        ? tsutils.intersectionTypeParts(type).every(tsutils.isObjectType)
-        : tsutils.unionTypeParts(type).every(tsutils.isObjectType);
+        ? tsutils.intersectionConstituents(type).every(tsutils.isObjectType)
+        : tsutils.unionConstituents(type).every(tsutils.isObjectType);
 }
 function isTypeFlagSetInUnion(type, flag) {
     return tsutils
-        .unionTypeParts(type)
+        .unionConstituents(type)
         .some(subType => tsutils.isTypeFlagSet(subType, flag));
 }

@@ -20,7 +20,6 @@ generate_css("css_files") {
     "infobar.css",
     "inlineButton.css",
     "inspectorCommon.css",
-    "inspectorViewTabbedPane.css",
     "listWidget.css",
     "popover.css",
     "progressIndicator.css",
@@ -147,6 +146,7 @@ devtools_entrypoint("bundle") {
     "../components/copy_to_clipboard:*",
     "../components/data_grid:*",
     "../components/docs/combo_box/*",
+    "../components/docs/context_menu/*",
     "../components/docs/performance_panel/*",
     "../components/docs/radio_button/*",
     "../components/docs/slider/*",
@@ -162,6 +162,10 @@ devtools_entrypoint("bundle") {
     # Required for x-link
     "../components/panel_feedback/*",
     "../components/text_editor/*",
+
+    # Required for correct button styling in the Computed tab
+    # (http://crbug.com/435601104).
+    "../components/tree_outline:*",
   ]
 
   visibility += devtools_ui_legacy_visibility
@@ -180,6 +184,7 @@ ts_library("unittests") {
     "Fragment.test.ts",
     "Geometry.test.ts",
     "Infobar.test.ts",
+    "InspectorView.test.ts",
     "KeyboardShortcut.test.ts",
     "ListModel.test.ts",
     "ListWidget.test.ts",
@@ -191,6 +196,7 @@ ts_library("unittests") {
     "Treeoutline.test.ts",
     "UIUtils.test.ts",
     "View.test.ts",
+    "ViewManager.test.ts",
     "ViewRegistration.test.ts",
     "Widget.test.ts",
     "XLink.test.ts",

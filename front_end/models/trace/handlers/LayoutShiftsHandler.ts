@@ -352,23 +352,26 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       // event type. Can we make this typing stronger? In the meantime, we allow
       // `navigationId` to include undefined values.
 
-      clusters.push({
-        name: 'SyntheticLayoutShiftCluster',
-        events: [],
-        clusterWindow: traceWindowFromTime(clusterStartTime),
-        clusterCumulativeScore: 0,
-        scoreWindows: {
-          good: traceWindowFromTime(clusterStartTime),
-        },
-        navigationId,
-        // Set default Event so that this event is treated accordingly for the track appender.
-        ts: event.ts,
-        pid: event.pid,
-        tid: event.tid,
-        ph: Types.Events.Phase.COMPLETE,
-        cat: '',
-        dur: Types.Timing.Micro(-1),  // This `cluster.dur` is updated below.
-      });
+      clusters.push(Helpers.SyntheticEvents.SyntheticEventsManager
+                        .registerSyntheticEvent<Types.Events.SyntheticLayoutShiftCluster>({
+                          name: 'SyntheticLayoutShiftCluster',
+                          // Will be replaced by the worst layout shift in the next for loop.
+                          rawSourceEvent: event,
+                          events: [],
+                          clusterWindow: traceWindowFromTime(clusterStartTime),
+                          clusterCumulativeScore: 0,
+                          scoreWindows: {
+                            good: traceWindowFromTime(clusterStartTime),
+                          },
+                          navigationId,
+                          // Set default Event so that this event is treated accordingly for the track appender.
+                          ts: event.ts,
+                          pid: event.pid,
+                          tid: event.tid,
+                          ph: Types.Events.Phase.COMPLETE,
+                          cat: '',
+                          dur: Types.Timing.Micro(-1),  // This `cluster.dur` is updated below.
+                        }));
 
       firstShiftTime = clusterStartTime;
     }
@@ -497,6 +500,7 @@ async function buildLayoutShiftsClusters(): Promise<void> {
     // Update the cluster's worst layout shift.
     if (worstShiftEvent) {
       cluster.worstShiftEvent = worstShiftEvent;
+      cluster.rawSourceEvent = worstShiftEvent;
     }
 
     // layout shifts are already sorted by time ascending.

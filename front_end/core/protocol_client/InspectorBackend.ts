@@ -179,9 +179,9 @@ export class InspectorBackend {
 let connectionFactory: () => Connection;
 
 export class Connection {
-  onMessage!: ((arg0: Object) => void)|null;
+  declare onMessage: ((arg0: Object) => void)|null;
 
-  setOnMessage(_onMessage: (arg0: (Object|string)) => void): void {
+  setOnMessage(_onMessage: (arg0: Object|string) => void): void {
   }
 
   setOnDisconnect(_onDisconnect: (arg0: string) => void): void {
@@ -246,26 +246,26 @@ export const test = {
 const LongPollingMethods = new Set<string>(['CSS.takeComputedStyleUpdates']);
 
 export class SessionRouter {
-  readonly #connectionInternal: Connection;
+  readonly #connection: Connection;
   #lastMessageId = 1;
   #pendingResponsesCount = 0;
   readonly #pendingLongPollingMessageIds = new Set<number>();
   readonly #sessions = new Map<string, {
     target: TargetBase,
     callbacks: Map<number, CallbackWithDebugInfo>,
-    proxyConnection: ((Connection | undefined)|null),
+    proxyConnection: Connection|undefined|null,
   }>();
   #pendingScripts: Array<() => void> = [];
 
   constructor(connection: Connection) {
-    this.#connectionInternal = connection;
+    this.#connection = connection;
 
     test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
     test.sendRawMessage = this.sendRawMessageForTesting.bind(this);
 
-    this.#connectionInternal.setOnMessage(this.onMessage.bind(this));
+    this.#connection.setOnMessage(this.onMessage.bind(this));
 
-    this.#connectionInternal.setOnDisconnect(reason => {
+    this.#connection.setOnDisconnect(reason => {
       const session = this.#sessions.get('');
       if (session) {
         session.target.dispose(reason);
@@ -312,7 +312,7 @@ export class SessionRouter {
   }
 
   connection(): Connection {
-    return this.#connectionInternal;
+    return this.#connection;
   }
 
   sendMessage(sessionId: string, domain: string, method: QualifiedName, params: Object|null, callback: Callback): void {
@@ -350,7 +350,7 @@ export class SessionRouter {
       return;
     }
     session.callbacks.set(messageId, {callback, method});
-    this.#connectionInternal.sendRawMessage(JSON.stringify(messageObject));
+    this.#connection.sendRawMessage(JSON.stringify(messageObject));
   }
 
   private sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null, sessionId = ''):

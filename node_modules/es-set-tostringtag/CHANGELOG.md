@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.1.0](https://github.com/es-shims/es-set-tostringtag/compare/v2.0.3...v2.1.0) - 2025-01-01
+
+### Commits
+
+- [actions] split out node 10-20, and 20+ [`ede033c`](https://github.com/es-shims/es-set-tostringtag/commit/ede033cc4e506c3966d2d482d4ac5987e329162a)
+- [types] use shared config [`28ef164`](https://github.com/es-shims/es-set-tostringtag/commit/28ef164ad7c5bc21837c79f7ef25542a1f258ade)
+- [New] add `nonConfigurable` option [`3bee3f0`](https://github.com/es-shims/es-set-tostringtag/commit/3bee3f04caddd318f3932912212ed20b2d62aad7)
+- [Fix] validate boolean option argument [`3c8a609`](https://github.com/es-shims/es-set-tostringtag/commit/3c8a609c795a305ccca163f0ff6956caa88cdc0e)
+- [Dev Deps] update `@arethetypeswrong/cli`, `@ljharb/eslint-config`, `@ljharb/tsconfig`, `@types/get-intrinsic`, `@types/tape`, `auto-changelog`, `tape` [`501a969`](https://github.com/es-shims/es-set-tostringtag/commit/501a96998484226e07f5ffd447e8f305a998f1d8)
+- [Tests] add coverage [`18af289`](https://github.com/es-shims/es-set-tostringtag/commit/18af2897b4e937373c9b8c8831bc338932246470)
+- [readme] document `force` option [`bd446a1`](https://github.com/es-shims/es-set-tostringtag/commit/bd446a107b71a2270278442e5124f45590d3ee64)
+- [Tests] use `@arethetypeswrong/cli` [`7c2c2fa`](https://github.com/es-shims/es-set-tostringtag/commit/7c2c2fa3cca0f4d263603adb75426b239514598f)
+- [Tests] replace `aud` with `npm audit` [`9e372d7`](https://github.com/es-shims/es-set-tostringtag/commit/9e372d7e6db3dab405599a14d9074a99a03b8242)
+- [Deps] update `get-intrinsic` [`7df1216`](https://github.com/es-shims/es-set-tostringtag/commit/7df12167295385c2a547410e687cb0c04f3a34b9)
+- [Deps] update `hasown` [`993a7d2`](https://github.com/es-shims/es-set-tostringtag/commit/993a7d200e2059fd857ec1a25d0a49c2c34ae6e2)
+- [Dev Deps] add missing peer dep [`148ed8d`](https://github.com/es-shims/es-set-tostringtag/commit/148ed8db99a7a94f9af3823fd083e6e437fa1587)
+
 ## [v2.0.3](https://github.com/es-shims/es-set-tostringtag/compare/v2.0.2...v2.0.3) - 2024-02-20
 
 ### Commits

@@ -2,10 +2,9 @@
 
 var CodePointAt = require('./CodePointAt');
 
-var isInteger = require('../helpers/isInteger');
-var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
-
 var $TypeError = require('es-errors/type');
+var isInteger = require('math-intrinsics/isInteger');
+var MAX_SAFE_INTEGER = require('math-intrinsics/constants/maxSafeInteger');
 
 // https://262.ecma-international.org/11.0/#sec-advancestringindex
 

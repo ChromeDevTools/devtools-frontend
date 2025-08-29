@@ -12,7 +12,7 @@ const {render, html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Example string description
+   * @description Example string description
    */
   exampleI18nString: 'Example string, please remove',
 } as const;

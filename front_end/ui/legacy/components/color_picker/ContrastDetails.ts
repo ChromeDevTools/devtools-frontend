@@ -17,49 +17,49 @@ import {type ContrastInfo, Events as ContrastInfoEvents} from './ContrastInfo.js
 
 const UIStrings = {
   /**
-   *@description Label for when no contrast information is available in the color picker
+   * @description Label for when no contrast information is available in the color picker
    */
   noContrastInformationAvailable: 'No contrast information available',
   /**
-   *@description Text of a DOM element in Contrast Details of the Color Picker
+   * @description Text of a DOM element in Contrast Details of the Color Picker
    */
   contrastRatio: 'Contrast ratio',
   /**
-   *@description Text to show more content
+   * @description Text to show more content
    */
   showMore: 'Show more',
   /**
-   *@description Choose bg color text content in Contrast Details of the Color Picker
+   * @description Choose bg color text content in Contrast Details of the Color Picker
    */
   pickBackgroundColor: 'Pick background color',
   /**
-   *@description Tooltip text that appears when hovering over largeicon eyedropper button in Contrast Details of the Color Picker
+   * @description Tooltip text that appears when hovering over largeicon eyedropper button in Contrast Details of the Color Picker
    */
   toggleBackgroundColorPicker: 'Toggle background color picker',
   /**
-   *@description Text of a button in Contrast Details of the Color Picker
-   *@example {rgba(0 0 0 / 100%) } PH1
+   * @description Text of a button in Contrast Details of the Color Picker
+   * @example {rgba(0 0 0 / 100%) } PH1
    */
   useSuggestedColorStoFixLow: 'Use suggested color {PH1}to fix low contrast',
   /**
-   *@description Label for the APCA contrast in Color Picker
+   * @description Label for the APCA contrast in Color Picker
    */
   apca: 'APCA',
   /**
-   *@description Label aa text content in Contrast Details of the Color Picker
+   * @description Label aa text content in Contrast Details of the Color Picker
    */
   aa: 'AA',
   /**
-   *@description Text that starts with a colon and includes a placeholder
-   *@example {3.0} PH1
+   * @description Text that starts with a colon and includes a placeholder
+   * @example {3.0} PH1
    */
   placeholderWithColon: ': {PH1}',
   /**
-   *@description Label aaa text content in Contrast Details of the Color Picker
+   * @description Label aaa text content in Contrast Details of the Color Picker
    */
   aaa: 'AAA',
   /**
-   *@description Text to show less content
+   * @description Text to show less content
    */
   showLess: 'Show less',
 } as const;
@@ -274,13 +274,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         this.contrastPassFailAPCA.createChild('span').textContent = `: ${apcaThreshold.toFixed(2)}%`;
       }
       if (passesAPCA) {
-        const iconCheckmark = new IconButton.Icon.Icon();
-        iconCheckmark
-            .data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '20px', height: '14px'};
+        const iconCheckmark = createIconCheckmark();
         this.contrastPassFailAPCA.appendChild(iconCheckmark);
       } else {
-        const iconNo = new IconButton.Icon.Icon();
-        iconNo.data = {iconName: 'clear', color: 'var(--icon-error)', width: '14px', height: '14px'};
+        const iconNo = createIconNo();
         this.contrastPassFailAPCA.appendChild(iconNo);
         const suggestedColor = this.computeSuggestedColor('APCA');
         if (suggestedColor) {
@@ -324,12 +321,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.contrastPassFailAA.createChild('span').textContent =
         i18nString(UIStrings.placeholderWithColon, {PH1: aa.toFixed(1)});
     if (this.passesAA) {
-      const iconCheckmark = new IconButton.Icon.Icon();
-      iconCheckmark.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '20px', height: '14px'};
+      const iconCheckmark = createIconCheckmark();
       this.contrastPassFailAA.appendChild(iconCheckmark);
     } else {
-      const iconNo = new IconButton.Icon.Icon();
-      iconNo.data = {iconName: 'clear', color: 'var(--icon-error)', width: '14px', height: '14px'};
+      const iconNo = createIconNo();
       this.contrastPassFailAA.appendChild(iconNo);
       const suggestedColor = this.computeSuggestedColor('aa');
       if (suggestedColor) {
@@ -347,12 +342,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.contrastPassFailAAA.createChild('span').textContent =
         i18nString(UIStrings.placeholderWithColon, {PH1: aaa.toFixed(1)});
     if (passesAAA) {
-      const iconCheckmark = new IconButton.Icon.Icon();
-      iconCheckmark.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '20px', height: '14px'};
+      const iconCheckmark = createIconCheckmark();
       this.contrastPassFailAAA.appendChild(iconCheckmark);
     } else {
-      const iconNo = new IconButton.Icon.Icon();
-      iconNo.data = {iconName: 'clear', color: 'var(--icon-error)', width: '14px', height: '14px'};
+      const iconNo = createIconNo();
       this.contrastPassFailAAA.appendChild(iconNo);
       const suggestedColor = this.computeSuggestedColor('aaa');
       if (suggestedColor) {
@@ -496,4 +489,21 @@ export class Swatch {
     // Show border if the swatch is white.
     this.swatchElement.classList.toggle('swatch-inner-white', bgColor.as(Common.Color.Format.HSL).l > 0.9);
   }
+}
+
+function createIconCheckmark(): IconButton.Icon.Icon {
+  const icon = new IconButton.Icon.Icon();
+  icon.name = 'checkmark';
+  icon.style.color = 'var(--icon-checkmark-green)';
+  icon.style.width = 'var(--sys-size-9)';
+  icon.style.height = 'var(--sys-size-7)';
+  return icon;
+}
+
+function createIconNo(): IconButton.Icon.Icon {
+  const icon = new IconButton.Icon.Icon();
+  icon.name = 'clear';
+  icon.style.color = 'var(--icon-error)';
+  icon.classList.add('small');
+  return icon;
 }

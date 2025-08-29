@@ -5,7 +5,7 @@ var $concat = GetIntrinsic('%Array.prototype.concat%');
 
 var callBind = require('call-bind');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 var $slice = callBound('Array.prototype.slice');
 
 var hasSymbols = require('has-symbols/shams')();

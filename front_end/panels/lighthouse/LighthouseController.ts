@@ -16,84 +16,84 @@ import type {RunnerResult} from './LighthouseReporterTypes.js';
 
 const UIStrings = {
   /**
-   *@description Explanation for user that Ligthhouse can only audit HTTP/HTTPS pages
+   * @description Explanation for user that Ligthhouse can only audit HTTP/HTTPS pages
    */
   canOnlyAuditHttphttpsPages: 'Can only audit pages on HTTP or HTTPS. Navigate to a different page.',
   /**
-   *@description Text when stored data in one location may affect Lighthouse run
-   *@example {IndexedDB} PH1
+   * @description Text when stored data in one location may affect Lighthouse run
+   * @example {IndexedDB} PH1
    */
   thereMayBeStoredDataAffectingSingular:
       'There may be stored data affecting loading performance in this location: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores.',
   /**
-   *@description Text when stored data in multiple locations may affect Lighthouse run
-   *@example {IndexedDB, WebSQL} PH1
+   * @description Text when stored data in multiple locations may affect Lighthouse run
+   * @example {IndexedDB, WebSQL} PH1
    */
   thereMayBeStoredDataAffectingLoadingPlural:
       'There may be stored data affecting loading performance in these locations: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores.',
   /**
-   *@description Help text in Lighthouse Controller
+   * @description Help text in Lighthouse Controller
    */
   multipleTabsAreBeingControlledBy:
       'Multiple tabs are being controlled by the same `service worker`. Close your other tabs on the same origin to audit this page.',
   /**
-   *@description Help text in Lighthouse Controller
+   * @description Help text in Lighthouse Controller
    */
   atLeastOneCategoryMustBeSelected: 'At least one category must be selected.',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   localStorage: 'Local storage',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   indexeddb: 'IndexedDB',
   /**
-   *@description Text in Application Panel Sidebar of the Application panel
+   * @description Text in Application Panel Sidebar of the Application panel
    */
   webSql: 'Web SQL',
   /**
-   *@description Text of checkbox to include running the performance audits in Lighthouse
+   * @description Text of checkbox to include running the performance audits in Lighthouse
    */
   performance: 'Performance',
   /**
-   *@description Tooltip text of checkbox to include running the performance audits in Lighthouse
+   * @description Tooltip text of checkbox to include running the performance audits in Lighthouse
    */
   howLongDoesThisAppTakeToShow: 'How long does this app take to show content and become usable',
   /**
-   *@description Text of checkbox to include running the Best Practices audits in Lighthouse
+   * @description Text of checkbox to include running the Best Practices audits in Lighthouse
    */
   bestPractices: 'Best practices',
   /**
-   *@description Tooltip text of checkbox to include running the Best Practices audits in Lighthouse
+   * @description Tooltip text of checkbox to include running the Best Practices audits in Lighthouse
    */
   doesThisPageFollowBestPractices: 'Does this page follow best practices for modern web development',
   /**
-   *@description Text of checkbox to include running the Accessibility audits in Lighthouse
+   * @description Text of checkbox to include running the Accessibility audits in Lighthouse
    */
   accessibility: 'Accessibility',
   /**
-   *@description Tooltip text of checkbox to include running the Accessibility audits in Lighthouse
+   * @description Tooltip text of checkbox to include running the Accessibility audits in Lighthouse
    */
   isThisPageUsableByPeopleWith: 'Is this page usable by people with disabilities or impairments',
   /**
-   *@description Text of checkbox to include running the Search Engine Optimization audits in Lighthouse
+   * @description Text of checkbox to include running the Search Engine Optimization audits in Lighthouse
    */
   seo: 'SEO',
   /**
-   *@description Tooltip text of checkbox to include running the Search Engine Optimization audits in Lighthouse
+   * @description Tooltip text of checkbox to include running the Search Engine Optimization audits in Lighthouse
    */
   isThisPageOptimizedForSearch: 'Is this page optimized for search engine results ranking',
   /**
-   *@description ARIA label for a radio button input to emulate mobile device behavior when running audits in Lighthouse.
+   * @description ARIA label for a radio button input to emulate mobile device behavior when running audits in Lighthouse.
    */
   applyMobileEmulation: 'Apply mobile emulation',
   /**
-   *@description Tooltip text of checkbox to emulate mobile device behavior when running audits in Lighthouse
+   * @description Tooltip text of checkbox to emulate mobile device behavior when running audits in Lighthouse
    */
   applyMobileEmulationDuring: 'Apply mobile emulation during auditing',
   /**
-   *@description Tooltip text of checkbox to emulate desktop device behavior when running audits in Lighthouse
+   * @description Tooltip text of checkbox to emulate desktop device behavior when running audits in Lighthouse
    */
   applyDesktopEmulationDuring: 'Apply desktop emulation during auditing',
   /**
@@ -129,11 +129,11 @@ const UIStrings = {
    */
   snapshotTooltip: 'Snapshot mode analyzes the page in a particular state, typically after user interactions.',
   /**
-   *@description Text for the mobile platform, as opposed to desktop
+   * @description Text for the mobile platform, as opposed to desktop
    */
   mobile: 'Mobile',
   /**
-   *@description Text for the desktop platform, as opposed to mobile
+   * @description Text for the desktop platform, as opposed to mobile
    */
   desktop: 'Desktop',
   /**
@@ -154,7 +154,7 @@ const UIStrings = {
   simulateASlowerPageLoadBasedOn:
       'Simulated throttling simulates a slower page load based on data from an initial unthrottled load. DevTools throttling actually slows down the page.',
   /**
-   *@description Text of checkbox to reset storage features prior to running audits in Lighthouse
+   * @description Text of checkbox to reset storage features prior to running audits in Lighthouse
    */
   clearStorage: 'Clear storage',
   /**
@@ -174,7 +174,7 @@ const UIStrings = {
   enableJavaScriptSampling:
       'Enable JavaScript sampling during the Lighthouse run. This will provide more execution details in the performance panel when you view the trace, but has higher CPU overhead and may impact the performance of the page.',
   /**
-   *@description Explanation for user that Lighthouse can only audit when JavaScript is enabled
+   * @description Explanation for user that Lighthouse can only audit when JavaScript is enabled
    */
   javaScriptDisabled:
       'JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript.',
@@ -264,7 +264,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
 
     const inspectedURL = Common.ParsedURL.ParsedURL.fromString(mainTarget.inspectedURL());
-    const inspectedOrigin = inspectedURL && inspectedURL.securityOrigin();
+    const inspectedOrigin = inspectedURL?.securityOrigin();
     for (const registration of this.manager.registrations().values()) {
       if (registration.securityOrigin !== inspectedOrigin) {
         continue;
@@ -290,7 +290,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
 
     const mainTarget = this.manager.target();
-    const inspectedURL = mainTarget && mainTarget.inspectedURL();
+    const inspectedURL = mainTarget?.inspectedURL();
     /*
      * The full history of Lighthouse panel + extensions et al:
      *

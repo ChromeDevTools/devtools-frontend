@@ -40,6 +40,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CdpFrame = void 0;
+exports.referrerPolicyToProtocol = referrerPolicyToProtocol;
 const Frame_js_1 = require("../api/Frame.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
@@ -147,7 +148,7 @@ let CdpFrame = (() => {
             let ensureNewDocumentNavigation = false;
             const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
             let error = await Deferred_js_1.Deferred.race([
-                navigate(this.#client, url, referer, referrerPolicy, this._id),
+                navigate(this.#client, url, referer, referrerPolicy ? referrerPolicyToProtocol(referrerPolicy) : undefined, this._id),
                 watcher.terminationPromise(),
             ]);
             if (!error) {
@@ -347,4 +348,15 @@ let CdpFrame = (() => {
     };
 })();
 exports.CdpFrame = CdpFrame;
+/**
+ * @internal
+ */
+function referrerPolicyToProtocol(referrerPolicy) {
+    // See
+    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#type-ReferrerPolicy
+    // We need to conver from Web-facing phase to CDP's camelCase.
+    return referrerPolicy.replaceAll(/-./g, match => {
+        return match[1].toUpperCase();
+    });
+}
 //# sourceMappingURL=Frame.js.map

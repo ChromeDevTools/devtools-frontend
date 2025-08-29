@@ -63,6 +63,15 @@ export const enum ColorScheme {
   DARK = 'dark',
 }
 
+export interface LayoutProperties {
+  isFlex: boolean;
+  isGrid: boolean;
+  isSubgrid: boolean;
+  isMasonry: boolean;
+  isContainer: boolean;
+  hasScroll: boolean;
+}
+
 export class CSSModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.CSSApi;
   readonly #domModel: DOMModel;
@@ -400,13 +409,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     return await this.#styleLoader.computedStylePromise(nodeId);
   }
 
-  async getLayoutPropertiesFromComputedStyle(nodeId: Protocol.DOM.NodeId): Promise<{
-    isFlex: boolean,
-    isGrid: boolean,
-    isSubgrid: boolean,
-    isContainer: boolean,
-    hasScroll: boolean,
-  }|null> {
+  async getLayoutPropertiesFromComputedStyle(nodeId: Protocol.DOM.NodeId): Promise<LayoutProperties|null> {
     const styles = await this.getComputedStyle(nodeId);
     if (!styles) {
       return null;
@@ -419,6 +422,7 @@ export class CSSModel extends SDKModel<EventTypes> {
                        (styles.get('grid-template-columns')?.startsWith('subgrid') ||
                         styles.get('grid-template-rows')?.startsWith('subgrid'))) ??
         false;
+    const isMasonry = display === 'masonry' || display === 'inline-masonry';
     const containerType = styles.get('container-type');
     const isContainer = Boolean(containerType) && containerType !== '' && containerType !== 'normal';
     const hasScroll = Boolean(styles.get('scroll-snap-type')) && styles.get('scroll-snap-type') !== 'none';
@@ -427,9 +431,18 @@ export class CSSModel extends SDKModel<EventTypes> {
       isFlex,
       isGrid,
       isSubgrid,
+      isMasonry,
       isContainer,
       hasScroll,
     };
+  }
+
+  async getEnvironmentVariales(): Promise<Record<string, string>> {
+    const response = await this.agent.invoke_getEnvironmentVariables();
+    if (response.getError()) {
+      return {};
+    }
+    return response.environmentVariables;
   }
 
   async getBackgroundColors(nodeId: Protocol.DOM.NodeId): Promise<ContrastInfo|null> {

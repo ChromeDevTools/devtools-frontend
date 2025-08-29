@@ -21,8 +21,8 @@
  * Where X is the prompt and Y is the explanation. To avoid having to update a
  * lot of examples, this parser also supports this format.
  *
- * @param {string} comment The comment string to split.
- * @return {Record<string, string>} An object containing the found keys and their values.
+ * @param comment The comment string to split.
+ * @returns An object containing the found keys and their values.
  */
 export function parseComment(comment: string): Record<string, string> {
   // Tracks which section of the comment we are in so we know where to

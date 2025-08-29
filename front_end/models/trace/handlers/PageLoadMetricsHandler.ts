@@ -159,7 +159,7 @@ function storePageLoadMetricAgainstNavigationId(
   if (Types.Events.isLargestContentfulPaintCandidate(event)) {
     const candidateIndex = event.args.data?.candidateIndex;
     if (!candidateIndex) {
-      throw new Error('Largest Contenful Paint unexpectedly had no candidateIndex.');
+      throw new Error('Largest Contentful Paint unexpectedly had no candidateIndex.');
     }
     const lcpTime = Types.Timing.Micro(event.ts - navigation.ts);
     const lcp = {

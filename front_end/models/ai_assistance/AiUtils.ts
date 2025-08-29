@@ -22,7 +22,7 @@ const UIStrings = {
    */
   offline: 'This feature is only available with an active internet connection.',
   /**
-   *@description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
+   * @description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
    */
   notAvailableInIncognitoMode: 'AI assistance is not available in Incognito mode or Guest mode.',
 } as const;

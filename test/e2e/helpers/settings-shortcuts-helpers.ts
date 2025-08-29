@@ -69,9 +69,7 @@ export const getShortcutListItemElement =
       break;
     }
   }
-  if (!titleElement) {
-    assert.fail('shortcut element not found');
-  }
+  assert.isOk(titleElement, 'shortcut element not found');
   const listItemElement = await titleElement.getProperty('parentElement');
   return listItemElement.asElement();
 };
@@ -89,9 +87,7 @@ export const editShortcutListItem =
 export const shortcutsForAction =
     async (shortcutText: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const listItemElement = await getShortcutListItemElement(shortcutText, devToolsPage);
-  if (!listItemElement) {
-    assert.fail(`Could not find shortcut item with text ${shortcutText}`);
-  }
+  assert.isOk(listItemElement, `Could not find shortcut item with text ${shortcutText}`);
   const shortcutElements = await listItemElement.$$(SHORTCUT_DISPLAY_SELECTOR);
   const shortcutElementsTextContent =
       await Promise.all(shortcutElements.map(element => element.getProperty('textContent')));
@@ -101,9 +97,7 @@ export const shortcutsForAction =
 
 export const shortcutInputValues = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const shortcutInputs = await devToolsPage.$$(SHORTCUT_INPUT_SELECTOR);
-  if (!shortcutInputs.length) {
-    assert.fail('shortcut input not found');
-  }
+  assert.isOk(shortcutInputs.length, 'shortcut input not found');
   const shortcutValues = await Promise.all(shortcutInputs.map(async input => await input.getProperty('value')));
   return await Promise.all(shortcutValues.map(async value => value ? await value.jsonValue() : []));
 };
@@ -118,9 +112,7 @@ export const clickAddShortcutLink = async (devToolsPage = getBrowserAndPagesWrap
       break;
     }
   }
-  if (!addShortcutLinkElement) {
-    assert.fail('could not find add shortcut link');
-  }
+  assert.isOk(addShortcutLinkElement, 'could not find add shortcut link');
 
   await devToolsPage.clickElement(addShortcutLinkElement);
 };

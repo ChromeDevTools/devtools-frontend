@@ -51,11 +51,11 @@ import requestPayloadViewStyles from './requestPayloadView.css.js';
 
 const UIStrings = {
   /**
-   *@description A context menu item Payload View of the Network panel to copy a parsed value.
+   * @description A context menu item Payload View of the Network panel to copy a parsed value.
    */
   copyValue: 'Copy value',
   /**
-   *@description A context menu item Payload View of the Network panel to copy the payload.
+   * @description A context menu item Payload View of the Network panel to copy the payload.
    */
   copyPayload: 'Copy',
   /**
@@ -64,31 +64,31 @@ const UIStrings = {
    */
   requestPayload: 'Request Payload',
   /**
-   *@description Text in Request Payload View of the Network panel
+   * @description Text in Request Payload View of the Network panel
    */
   unableToDecodeValue: '(unable to decode value)',
   /**
-   *@description Text in Request Payload View of the Network panel
+   * @description Text in Request Payload View of the Network panel
    */
   queryStringParameters: 'Query String Parameters',
   /**
-   *@description Text in Request Payload View of the Network panel
+   * @description Text in Request Payload View of the Network panel
    */
   formData: 'Form Data',
   /**
-   *@description Text to show more content
+   * @description Text to show more content
    */
   showMore: 'Show more',
   /**
-   *@description Text for toggling the view of payload data (e.g. query string parameters) from source to parsed in the payload tab
+   * @description Text for toggling the view of payload data (e.g. query string parameters) from source to parsed in the payload tab
    */
   viewParsed: 'View parsed',
   /**
-   *@description Text to show an item is empty
+   * @description Text to show an item is empty
    */
   empty: '(empty)',
   /**
-   *@description Text for toggling the view of payload data (e.g. query string parameters) from parsed to source in the payload tab
+   * @description Text for toggling the view of payload data (e.g. query string parameters) from parsed to source in the payload tab
    */
   viewSource: 'View source',
   /**
@@ -98,7 +98,7 @@ const UIStrings = {
    */
   viewUrlEncoded: 'View URL-encoded',
   /**
-   *@description Text for toggling payload data (e.g. query string parameters) from encoded to decoded in the payload tab or in the cookies preview
+   * @description Text for toggling payload data (e.g. query string parameters) from encoded to decoded in the payload tab or in the cookies preview
    */
   viewDecoded: 'View decoded',
 } as const;
@@ -112,10 +112,9 @@ export class RequestPayloadView extends UI.Widget.VBox {
   private requestPayloadCategory: Category;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    super();
+    super({jslog: `${VisualLogging.pane('payload').track({resize: true})}`});
     this.registerRequiredCSS(requestPayloadViewStyles);
     this.element.classList.add('request-payload-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('payload').track({resize: true})}`);
 
     this.request = request;
     this.decodeRequestParameters = true;
@@ -128,7 +127,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     const root = new UI.TreeOutline.TreeOutlineInShadow();
     root.registerRequiredCSS(objectValueStyles, objectPropertiesSectionStyles, requestPayloadTreeStyles);
     root.element.classList.add('request-payload-tree');
-    root.makeDense();
+    root.setDense(true);
     this.element.appendChild(root.element);
 
     this.queryStringCategory = new Category(root, 'query-string');

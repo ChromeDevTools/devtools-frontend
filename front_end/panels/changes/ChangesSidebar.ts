@@ -16,8 +16,8 @@ import changesSidebarStyles from './changesSidebar.css.js';
 
 const UIStrings = {
   /**
-   *@description Name of an item from source map
-   *@example {compile.html} PH1
+   * @description Name of an item from source map
+   * @example {compile.html} PH1
    */
   sFromSourceMap: '{PH1} (from source map)',
 } as const;
@@ -30,22 +30,22 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly treeElements: Map<Workspace.UISourceCode.UISourceCode, UISourceCodeTreeElement>;
   private readonly workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   constructor(workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl) {
-    super();
+    super({jslog: `${VisualLogging.pane('sidebar').track({resize: true})}`});
+
     this.treeoutline = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.treeoutline.registerRequiredCSS(changesSidebarStyles);
     this.treeoutline.setFocusable(false);
-    this.treeoutline.hideOverflow();
+    this.treeoutline.setHideOverflow(true);
     this.treeoutline.addEventListener(UI.TreeOutline.Events.ElementSelected, this.selectionChanged, this);
     UI.ARIAUtils.markAsTablist(this.treeoutline.contentElement);
 
     this.element.appendChild(this.treeoutline.element);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
 
     this.treeElements = new Map();
     this.workspaceDiff = workspaceDiff;
     this.workspaceDiff.modifiedUISourceCodes().forEach(this.addUISourceCode.bind(this));
     this.workspaceDiff.addEventListener(
-        WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.uiSourceCodeMofiedStatusChanged, this);
+        WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.uiSourceCodeModifiedStatusChanged, this);
   }
 
   selectedUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
@@ -57,7 +57,7 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.dispatchEventToListeners(Events.SELECTED_UI_SOURCE_CODE_CHANGED);
   }
 
-  private uiSourceCodeMofiedStatusChanged(
+  private uiSourceCodeModifiedStatusChanged(
       event: Common.EventTarget.EventTargetEvent<WorkspaceDiff.WorkspaceDiff.ModifiedStatusChangedEvent>): void {
     if (event.data.isModified) {
       this.addUISourceCode(event.data.uiSourceCode);

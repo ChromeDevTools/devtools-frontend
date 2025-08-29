@@ -88,7 +88,7 @@ describeWithEnvironment('Common', function() {
 
     it('should return transferSize when asset matches and is encoded', () => {
       const resourceType = Protocol.Network.ResourceType.Stylesheet;
-      const request = makeRequest({transferSize: 1234, resourceType, responseHeaders: encoding});
+      const request = makeRequest({transferSize: 1234, resourceSize: 10000, resourceType, responseHeaders: encoding});
       const result = estimate(request, 10000, resourceType);
       assert.strictEqual(result, 1234);
     });
@@ -112,14 +112,14 @@ describeWithEnvironment('Common', function() {
       const resourceType = Protocol.Network.ResourceType.Other;
       const request = makeRequest({transferSize: 1000, resourceType, responseHeaders: []});
       const result = estimate(request, 100, Protocol.Network.ResourceType.Script);
-      assert.strictEqual(result, 100);
+      assert.strictEqual(result, 33);  // uses default compression ratio.
     });
 
     it('should not error when resource size is 0', () => {
       const resourceType = Protocol.Network.ResourceType.Other;
       const request = makeRequest({transferSize: 1000, resourceSize: 0, resourceType, responseHeaders: []});
       const result = estimate(request, 100, Protocol.Network.ResourceType.Script);
-      assert.strictEqual(result, 100);
+      assert.strictEqual(result, 33);  // uses default compression ratio.
     });
   });
 });

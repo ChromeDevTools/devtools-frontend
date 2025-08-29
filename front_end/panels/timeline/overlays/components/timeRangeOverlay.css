@@ -71,12 +71,13 @@
   display: -webkit-box;
   white-space: break-spaces;
   background: var(--sys-color-cdt-base-container);
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
 .duration {
-  background: var(--sys-color-cdt-base-container) ;
+  background: var(--sys-color-cdt-base-container);
 }
 
 .label-text[contenteditable='true'] {

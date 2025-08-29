@@ -40,7 +40,7 @@ const UIStrings = {
    */
   forceElementSpecificStates: 'Force specific element state',
   /**
-   *@description Text that is usually a hyperlink to more documentation
+   * @description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
 } as const;
@@ -132,7 +132,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               .map(state => createElementStateCheckbox(state))}
         </div>
       </details>
-    </div>`, target, {host: input});
+    </div>`, target);
   // clang-format on
 };
 
@@ -143,7 +143,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
   readonly #view: View;
 
   constructor(view: View = DEFAULT_VIEW) {
-    super(true);
+    super({useShadowDom: true});
     this.#view = view;
     this.#duals = new Map();
     const setDualStateCheckboxes = (first: SpecificPseudoStates, second: SpecificPseudoStates): void => {

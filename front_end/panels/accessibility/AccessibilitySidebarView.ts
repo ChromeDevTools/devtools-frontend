@@ -20,12 +20,13 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
   private axNodeInternal: SDK.AccessibilityModel.AccessibilityNode|null;
   private skipNextPullNode: boolean;
   private readonly sidebarPaneStack: UI.View.ViewLocation;
-  private readonly breadcrumbsSubPane: AXBreadcrumbsPane|null = null;
+  private readonly breadcrumbsSubPane: AXBreadcrumbsPane;
   private readonly ariaSubPane: ARIAAttributesPane;
   private readonly axNodeSubPane: AXNodeSubPane;
   private readonly sourceOrderSubPane: SourceOrderPane;
   private constructor(throttlingTimeout?: number) {
     super(false /* useShadowDom */, throttlingTimeout);
+    this.element.classList.add('accessibility-sidebar-view');
     this.nodeInternal = null;
     this.axNodeInternal = null;
     this.skipNextPullNode = false;
@@ -80,21 +81,15 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
       this.sidebarPaneStack.removeView(this.ariaSubPane);
     }
 
-    if (this.axNodeSubPane) {
-      this.axNodeSubPane.setAXNode(axNode);
-    }
-    if (this.breadcrumbsSubPane) {
-      this.breadcrumbsSubPane.setAXNode(axNode);
-    }
+    this.axNodeSubPane.setAXNode(axNode);
+    this.breadcrumbsSubPane.setAXNode(axNode);
   }
 
   override async doUpdate(): Promise<void> {
     const node = this.node();
     this.axNodeSubPane.setNode(node);
     this.ariaSubPane.setNode(node);
-    if (this.breadcrumbsSubPane) {
-      this.breadcrumbsSubPane.setNode(node);
-    }
+    this.breadcrumbsSubPane.setNode(node);
     void this.sourceOrderSubPane.setNodeAsync(node);
     if (!node) {
       return;
@@ -145,8 +140,9 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.setNode(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
   }
 
-  private onNodeChange(event: Common.EventTarget
-                           .EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}|SDK.DOMModel.DOMNode>): void {
+  private onNodeChange(
+      event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}|SDK.DOMModel.DOMNode>):
+      void {
     if (!this.node()) {
       return;
     }

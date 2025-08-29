@@ -119,23 +119,23 @@ const UIStrings = {
    */
   learnMore: 'Learn more',
   /**
-   *@description Headline of warning shown to users when users import a recording into DevTools Recorder.
+   * @description Headline of warning shown to users when users import a recording into DevTools Recorder.
    */
   doYouTrustThisCode: 'Do you trust this recording?',
   /**
-   *@description Warning shown to users when imports code into DevTools Recorder.
-   *@example {allow importing} PH1
+   * @description Warning shown to users when imports code into DevTools Recorder.
+   * @example {allow importing} PH1
    */
   doNotImport:
       'Don\'t import recordings you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \'\'{PH1}\'\' below to allow importing.',
   /**
-   *@description Text a user needs to type in order to confirm that they
+   * @description Text a user needs to type in order to confirm that they
    *are aware of the danger of import code into the DevTools Recorder.
    */
   allowImporting: 'allow importing',
   /**
-   *@description Input box placeholder which instructs the user to type 'allow importing' into the input box.
-   *@example {allow importing} PH1
+   * @description Input box placeholder which instructs the user to type 'allow importing' into the input box.
+   * @example {allow importing} PH1
    */
   typeAllowImporting: 'Type \'\'{PH1}\'\'',
 } as const;
@@ -150,19 +150,6 @@ const FEEDBACK_URL = 'https://goo.gle/recorder-feedback' as Platform.DevToolsPat
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-recorder-controller': RecorderController;
-  }
-
-  interface FileSystemWritableFileStream extends WritableStream {
-    write(data: unknown): Promise<void>;
-    close(): Promise<void>;
-  }
-
-  interface FileSystemHandle {
-    createWritable(): Promise<FileSystemWritableFileStream>;
-  }
-
-  interface Window {
-    showSaveFilePicker(opts: unknown): Promise<FileSystemHandle>;
   }
 }
 
@@ -1163,18 +1150,20 @@ export class RecorderController extends LitElement {
     const recordings = this.#storage.getRecordings();
     // clang-format off
     return html`
-      <devtools-recording-list-view
-        .recordings=${recordings.map(recording => ({
-          storageName: recording.storageName,
-          name: recording.flow.title,
-        }))}
-        .replayAllowed=${this.#replayAllowed}
+      <devtools-widget
+        .widgetConfig=${UI.Widget.widgetConfig(Components.RecordingListView.RecordingListView, {
+          recordings: recordings.map(recording => ({
+            storageName: recording.storageName,
+            name: recording.flow.title,
+          })),
+          replayAllowed: this.#replayAllowed,
+        })}
         @createrecording=${this.#onCreateNewRecording}
         @deleterecording=${this.#onDeleteRecording}
         @openrecording=${this.#onRecordingSelected}
         @playrecording=${this.#onPlayRecordingByName}
-        >
-      </devtools-recording-list-view>
+      >
+      </devtools-widget>
     `;
     // clang-format on
   }

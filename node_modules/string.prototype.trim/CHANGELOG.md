@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.2.10](https://github.com/es-shims/String.prototype.trim/compare/v1.2.9...v1.2.10) - 2024-12-11
+
+### Commits
+
+- [actions] split out node 10-20, and 20+ [`335d99a`](https://github.com/es-shims/String.prototype.trim/commit/335d99a408ee623eb60ca53af13da1813d3ee1b8)
+- [Refactor] use `define-data-property` and `has-property-descriptors` directly [`2e0c2e9`](https://github.com/es-shims/String.prototype.trim/commit/2e0c2e9979c9368b13a90a31ae79ca8b1f2fa01a)
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `auto-changelog`, `tape` [`138d3db`](https://github.com/es-shims/String.prototype.trim/commit/138d3db824e6fed5a0f9c81ae06534ef4e20b969)
+- [Deps] update `call-bind`, `es-abstract` [`3a06731`](https://github.com/es-shims/String.prototype.trim/commit/3a0673152cc347f42feed04a6936d824ffb2bb57)
+- [Refactor] use `call-bound` directly [`9499206`](https://github.com/es-shims/String.prototype.trim/commit/9499206837e054fac9b48db0f63c09dd1e955e11)
+- [Tests] replace `aud` with `npm audit` [`c88a935`](https://github.com/es-shims/String.prototype.trim/commit/c88a935c098d8a9809812af68c1fc51ab65854cb)
+- [Dev Deps] add missing dev dep [`9667c7d`](https://github.com/es-shims/String.prototype.trim/commit/9667c7d04de2dff034cde13f41aca9e203947d43)
+- [Dev Deps] add missing peer dep [`6417c72`](https://github.com/es-shims/String.prototype.trim/commit/6417c727c94acb568ad4f5b4674996401f5ee531)
+
 ## [v1.2.9](https://github.com/es-shims/String.prototype.trim/compare/v1.2.8...v1.2.9) - 2024-03-16
 
 ### Commits

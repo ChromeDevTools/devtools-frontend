@@ -58,7 +58,7 @@ export class Field extends Base {
         this.default ? this.default.write(w) : "",
         w.token(this.tokens.termination),
       ]),
-      { data: this, parent }
+      { data: this, parent },
     );
   }
 }

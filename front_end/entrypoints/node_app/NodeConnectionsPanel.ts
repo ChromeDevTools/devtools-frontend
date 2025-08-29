@@ -13,25 +13,25 @@ import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
+   * @description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
    */
   nodejsDebuggingGuide: 'Node.js debugging guide',
   /**
-   *@description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
-   *@example {Node.js debugging guide} PH1
+   * @description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
+   * @example {Node.js debugging guide} PH1
    */
   specifyNetworkEndpointAnd:
       'Specify network endpoint and DevTools will connect to it automatically. Read {PH1} to learn more.',
   /**
-   *@description Placeholder text content in Node Connections Panel of the Sources panel when debugging a Node.js app
+   * @description Placeholder text content in Node Connections Panel of the Sources panel when debugging a Node.js app
    */
   noConnectionsSpecified: 'No connections specified',
   /**
-   *@description Text of add network target button in Node Connections Panel of the Sources panel when debugging a Node.js app
+   * @description Text of add network target button in Node Connections Panel of the Sources panel when debugging a Node.js app
    */
   addConnection: 'Add connection',
   /**
-   *@description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
+   * @description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
    */
   networkAddressEgLocalhost: 'Network address (e.g. localhost:9229)',
 } as const;

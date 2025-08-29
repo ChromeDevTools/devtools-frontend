@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.4](https://github.com/inspect-js/is-shared-array-buffer/compare/v1.0.3...v1.0.4) - 2024-12-18
+
+### Commits
+
+- [types] use shared config [`2966419`](https://github.com/inspect-js/is-shared-array-buffer/commit/2966419ac786ee171a38b80e77b21becc59fd7be)
+- [actions] split out node 10-20, and 20+ [`9961138`](https://github.com/inspect-js/is-shared-array-buffer/commit/9961138844e05cf66846597410110aa92dfbf5cb)
+- [Dev Deps] update `@arethetypeswrong/cli`, `@ljharb/eslint-config`, `@ljharb/tsconfig`, `@types/node`, `@types/object-inspect`, `@types/tape auto-changelog`, `es-value-fixtures`, `object-inspect`, `tape` [`a808a5d`](https://github.com/inspect-js/is-shared-array-buffer/commit/a808a5d53445f9d498d6d445b728fde63eac3fdb)
+- [Refactor] use `call-bound` directly [`5235143`](https://github.com/inspect-js/is-shared-array-buffer/commit/5235143ef80f1c2e5f5168fd445db386a3b82224)
+- [Tests] replace `aud` with `npm audit` [`954a0c7`](https://github.com/inspect-js/is-shared-array-buffer/commit/954a0c7c4922f8c034b7d7258b1f28337dc59746)
+- [Tests] use `@arethetypeswrong/cli` [`0ba297a`](https://github.com/inspect-js/is-shared-array-buffer/commit/0ba297a7b243380179d982761cd96a04aa33e108)
+- [Deps] update `call-bind` [`d5c5bab`](https://github.com/inspect-js/is-shared-array-buffer/commit/d5c5babb76e502c00d8982e6c551dddd648f2bcd)
+- [Dev Deps] update `@types/node` [`705f5c7`](https://github.com/inspect-js/is-shared-array-buffer/commit/705f5c7dd5605fb4ac09fcb1041b3336f245bfb4)
+- [Dev Deps] add missing peer dep [`4123434`](https://github.com/inspect-js/is-shared-array-buffer/commit/412343426cc6a264a5d7dcbfa673b4ca4248291d)
+
 ## [v1.0.3](https://github.com/inspect-js/is-shared-array-buffer/compare/v1.0.2...v1.0.3) - 2024-02-20
 
 ### Commits

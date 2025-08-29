@@ -24,6 +24,7 @@ export class ConfigArray extends Array<any> {
      * @param {Object} [options.schema] The additional schema
      *      definitions to use for the ConfigArray schema.
      * @param {Array<string>} [options.extraConfigTypes] List of config types supported.
+     * @throws {TypeError} When the `basePath` is not a non-empty string,
      */
     constructor(configs: Iterable<any> | Function | any, { basePath, normalized, schema: customSchema, extraConfigTypes, }?: {
         basePath?: string;
@@ -56,9 +57,9 @@ export class ConfigArray extends Array<any> {
      * the matching `files` fields in any configs. This is necessary to mimic
      * the behavior of things like .gitignore and .eslintignore, allowing a
      * globbing operation to be faster.
-     * @returns {string[]} An array of string patterns and functions to be ignored.
+     * @returns {Object[]} An array of config objects representing global ignores.
      */
-    get ignores(): string[];
+    get ignores(): any[];
     /**
      * Indicates if the config array has been normalized.
      * @returns {boolean} True if the config array is normalized, false if not.

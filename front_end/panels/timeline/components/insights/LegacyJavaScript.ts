@@ -29,6 +29,10 @@ export class LegacyJavaScript extends BaseInsightComponent<LegacyJavaScriptInsig
     return this.model?.metricSavings?.FCP ?? null;
   }
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   async #revealLocation(script: Trace.Handlers.ModelHandlers.Scripts.Script, match: PatternMatchResult): Promise<void> {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {

@@ -16,74 +16,74 @@ import settingsScreenStyles from './settingsScreen.css.js';
 
 const UIStrings = {
   /**
-   *@description Header text content in Framework Ignore List Settings Tab of the Settings for enabling or disabling ignore listing
+   * @description Header text content in Framework Ignore List Settings Tab of the Settings for enabling or disabling ignore listing
    */
   frameworkIgnoreList: 'Ignore listing',
   /**
-   *@description Checkbox label in Framework Ignore List Settings Tab of the Settings
+   * @description Checkbox label in Framework Ignore List Settings Tab of the Settings
    */
   ignoreListingDescription:
       'When enabled, the debugger will skip over ignore-listed scripts and will ignore exceptions that only affect them and the Performance panel will collapse matching flamechart items.',
   /**
-   *@description Text in Framework Ignore List Settings Tab of the Settings
+   * @description Text in Framework Ignore List Settings Tab of the Settings
    */
   ignoreListContentScripts: 'Content scripts injected by extensions',
   /**
-   *@description Text in Framework Ignore List Settings Tab of the Settings
+   * @description Text in Framework Ignore List Settings Tab of the Settings
    */
   ignoreListAnonymousScripts: 'Anonymous scripts from eval or console',
   /**
-   *@description Text in Framework Ignore List Settings Tab of the Settings
+   * @description Text in Framework Ignore List Settings Tab of the Settings
    */
   automaticallyIgnoreListKnownThirdPartyScripts: 'Known third-party scripts from source maps',
   /**
-   *@description Text in Framework Ignore List Settings Tab of the Settings
+   * @description Text in Framework Ignore List Settings Tab of the Settings
    */
   enableIgnoreListing: 'Enable ignore listing',
   /**
-   *@description Text in Framework Ignore List Settings Tab of the Settings
+   * @description Text in Framework Ignore List Settings Tab of the Settings
    */
   enableIgnoreListingTooltip: 'Uncheck to disable all ignore listing',
   /**
-   *@description Text in Framework Ignore List Settings Tab of the Settings
+   * @description Text in Framework Ignore List Settings Tab of the Settings
    */
   generalExclusionRules: 'General exclusion rules',
   /**
-   *@description Text in Framework Ignore List Settings Tab of the Settings
+   * @description Text in Framework Ignore List Settings Tab of the Settings
    */
   customExclusionRules: 'Custom exclusion rules',
   /**
-   *@description Text of the add pattern button in Framework Ignore List Settings Tab of the Settings
+   * @description Text of the add pattern button in Framework Ignore List Settings Tab of the Settings
    */
   addPattern: 'Add regex rule',
   /**
-   *@description Aria accessible name in Framework Ignore List Settings Tab of the Settings
+   * @description Aria accessible name in Framework Ignore List Settings Tab of the Settings
    */
   addFilenamePattern: 'Add a regular expression rule for the script\'s URL',
   /**
-   *@description Pattern title in Framework Ignore List Settings Tab of the Settings
-   *@example {ad.*?} PH1
+   * @description Pattern title in Framework Ignore List Settings Tab of the Settings
+   * @example {ad.*?} PH1
    */
   ignoreScriptsWhoseNamesMatchS: 'Ignore scripts whose names match \'\'{PH1}\'\'',
   /**
-   *@description Aria accessible name in Framework Ignore List Settings Tab of the Settings. It labels the input
+   * @description Aria accessible name in Framework Ignore List Settings Tab of the Settings. It labels the input
    * field used to add new or edit existing regular expressions that match file names to ignore in the debugger.
    */
   pattern: 'Add a regular expression rule for the script\'s URL',
   /**
-   *@description Error message in Framework Ignore List settings pane that declares pattern must not be empty
+   * @description Error message in Framework Ignore List settings pane that declares pattern must not be empty
    */
   patternCannotBeEmpty: 'Rule can\'t be empty',
   /**
-   *@description Error message in Framework Ignore List settings pane that declares pattern already exits
+   * @description Error message in Framework Ignore List settings pane that declares pattern already exits
    */
   patternAlreadyExists: 'Rule already exists',
   /**
-   *@description Error message in Framework Ignore List settings pane that declares pattern must be a valid regular expression
+   * @description Error message in Framework Ignore List settings pane that declares pattern must be a valid regular expression
    */
   patternMustBeAValidRegular: 'Rule must be a valid regular expression',
   /**
-   *@description Text that is usually a hyperlink to more documentation
+   * @description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
 } as const;
@@ -97,9 +97,11 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
   private editor?: UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>;
 
   constructor() {
-    super(true);
+    super({
+      jslog: `${VisualLogging.pane('blackbox')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(frameworkIgnoreListSettingsTabStyles, settingsScreenStyles);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('blackbox')}`);
 
     const settingsContent =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');

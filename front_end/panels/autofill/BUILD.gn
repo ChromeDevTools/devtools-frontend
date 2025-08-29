@@ -16,13 +16,17 @@ devtools_module("autofill") {
   sources = [ "AutofillView.ts" ]
 
   deps = [
+    "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../models/autofill_manager:bundle",
-    "../../ui/components/legacy_wrapper:bundle",
+    "../../ui/components/adorners:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
+    "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 
@@ -49,7 +53,6 @@ devtools_entrypoint("meta") {
     ":bundle",
     "../../core/i18n:bundle",
     "../../core/root:bundle",
-    "../../ui/components/legacy_wrapper:bundle",
     "../../ui/legacy:bundle",
   ]
 
@@ -63,7 +66,8 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../generated:protocol",
+    "../../models/autofill_manager:bundle",
     "../../testing",
-    "../../ui/legacy:bundle",
   ]
 }

@@ -35,12 +35,16 @@ import * as Platform from '../../core/platform/platform.js';
 
 import type {FilesChangedData} from './FileSystemWorkspaceBinding.js';
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
-import {type PlatformFileSystem, PlatformFileSystemType} from './PlatformFileSystem.js';
+import {
+  Events as PlatformFileSystemEvents,
+  type PlatformFileSystem,
+  PlatformFileSystemType
+} from './PlatformFileSystem.js';
 
 const UIStrings = {
   /**
-   *@description Text in Isolated File System Manager of the Workspace settings in Settings
-   *@example {folder does not exist} PH1
+   * @description Text in Isolated File System Manager of the Workspace settings in Settings
+   * @example {folder does not exist} PH1
    */
   unableToAddFilesystemS: 'Unable to add filesystem: {PH1}',
 } as const;
@@ -191,6 +195,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
         return null;
       }
       this.fileSystemsInternal.set(fileSystemURL, fileSystem);
+      fileSystem.addEventListener(PlatformFileSystemEvents.FILE_SYSTEM_ERROR, this.#onFileSystemError, this);
       if (dispatchEvent) {
         this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
       }
@@ -200,6 +205,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
 
   addPlatformFileSystem(fileSystemURL: Platform.DevToolsPath.UrlString, fileSystem: PlatformFileSystem): void {
     this.fileSystemsInternal.set(fileSystemURL, fileSystem);
+    fileSystem.addEventListener(PlatformFileSystemEvents.FILE_SYSTEM_ERROR, this.#onFileSystemError, this);
     this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
   }
 
@@ -225,6 +231,10 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
+  #onFileSystemError(event: Common.EventTarget.EventTargetEvent<string>): void {
+    this.dispatchEventToListeners(Events.FileSystemError, event.data);
+  }
+
   private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent<Platform.DevToolsPath.RawPathString>): void {
     const embedderPath = event.data;
     const fileSystemPath = Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath);
@@ -233,6 +243,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       return;
     }
     this.fileSystemsInternal.delete(fileSystemPath);
+    isolatedFileSystem.removeEventListener(PlatformFileSystemEvents.FILE_SYSTEM_ERROR, this.#onFileSystemError, this);
     isolatedFileSystem.fileSystemRemoved();
     this.dispatchEventToListeners(Events.FileSystemRemoved, isolatedFileSystem);
   }
@@ -349,6 +360,7 @@ export enum Events {
   FileSystemFilesChanged = 'FileSystemFilesChanged',
   ExcludedFolderAdded = 'ExcludedFolderAdded',
   ExcludedFolderRemoved = 'ExcludedFolderRemoved',
+  FileSystemError = 'FileSystemError',
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -358,6 +370,7 @@ export interface EventTypes {
   [Events.FileSystemFilesChanged]: FilesChangedData;
   [Events.ExcludedFolderAdded]: Platform.DevToolsPath.EncodedPathString;
   [Events.ExcludedFolderRemoved]: Platform.DevToolsPath.EncodedPathString;
+  [Events.FileSystemError]: string;
 }
 
 let lastRequestId = 0;

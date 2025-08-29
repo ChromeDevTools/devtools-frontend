@@ -4,7 +4,7 @@ var $TypeError = require('es-errors/type');
 
 var GetV = require('./GetV');
 var IsCallable = require('./IsCallable');
-var IsPropertyKey = require('./IsPropertyKey');
+var isPropertyKey = require('../helpers/isPropertyKey');
 
 var inspect = require('object-inspect');
 
@@ -12,8 +12,8 @@ var inspect = require('object-inspect');
 
 module.exports = function GetMethod(O, P) {
 	// 7.3.9.1
-	if (!IsPropertyKey(P)) {
-		throw new $TypeError('Assertion failed: IsPropertyKey(P) is not true');
+	if (!isPropertyKey(P)) {
+		throw new $TypeError('Assertion failed: P is not a Property Key');
 	}
 
 	// 7.3.9.2

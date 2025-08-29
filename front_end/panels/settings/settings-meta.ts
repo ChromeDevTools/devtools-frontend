@@ -14,51 +14,51 @@ import type * as Settings from './settings.js';
 
 const UIStrings = {
   /**
-   *@description Text for keyboard shortcuts
+   * @description Text for keyboard shortcuts
    */
   shortcuts: 'Shortcuts',
   /**
-   *@description Text in Settings Screen of the Settings
+   * @description Text in Settings Screen of the Settings
    */
   preferences: 'Preferences',
   /**
-   *@description Text in Settings Screen of the Settings
+   * @description Text in Settings Screen of the Settings
    */
   experiments: 'Experiments',
   /**
-   *@description Title of Ignore list settings
+   * @description Title of Ignore list settings
    */
   ignoreList: 'Ignore list',
   /**
-   *@description Command for showing the keyboard shortcuts in Settings
+   * @description Command for showing the keyboard shortcuts in Settings
    */
   showShortcuts: 'Show Shortcuts',
   /**
-   *@description Command for showing the preference tab in the Settings Screen
+   * @description Command for showing the preference tab in the Settings Screen
    */
   showPreferences: 'Show Preferences',
   /**
-   *@description Command for showing the experiments tab in the Settings Screen
+   * @description Command for showing the experiments tab in the Settings Screen
    */
   showExperiments: 'Show Experiments',
   /**
-   *@description Command for showing the Ignore list settings
+   * @description Command for showing the Ignore list settings
    */
   showIgnoreList: 'Show Ignore list',
   /**
-   *@description Name of the Settings view
+   * @description Name of the Settings view
    */
   settings: 'Settings',
   /**
-   *@description Text for the documentation of something
+   * @description Text for the documentation of something
    */
   documentation: 'Documentation',
   /**
-   *@description Text for AI innovation settings
+   * @description Text for AI innovation settings
    */
   aiInnovations: 'AI innovations',
   /**
-   *@description Command for showing the AI innovation settings
+   * @description Command for showing the AI innovation settings
    */
   showAiInnovations: 'Show AI innovations',
 } as const;

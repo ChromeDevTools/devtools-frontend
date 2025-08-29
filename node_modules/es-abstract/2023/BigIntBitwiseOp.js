@@ -2,7 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 // var $BigInt = GetIntrinsic('%BigInt%', true);
-// var $pow = GetIntrinsic('%Math.pow%');
+// var $pow = require('math-intrinsics/pow');
 
 // var BinaryAnd = require('./BinaryAnd');
 // var BinaryOr = require('./BinaryOr');

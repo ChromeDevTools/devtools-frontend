@@ -11,7 +11,7 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
-   *@description Link title for the Quirks Mode issue in the Issues panel
+   * @description Link title for the Quirks Mode issue in the Issues panel
    */
   documentCompatibilityMode: 'Document compatibility mode',
 } as const;

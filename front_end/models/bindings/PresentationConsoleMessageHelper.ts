@@ -280,10 +280,6 @@ class FrozenLiveLocation extends LiveLocationWithPool {
     this.#uiLocation = uiLocation;
   }
 
-  override async isIgnoreListed(): Promise<boolean> {
-    return false;
-  }
-
   override async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
     return this.#uiLocation;
   }

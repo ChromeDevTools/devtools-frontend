@@ -98,7 +98,7 @@ describeWithEnvironment('NetworkLogView', () => {
     assert.isNull(marker);
   });
 
-  it('adds an error red icon to the left of the failed requests', async () => {
+  it('adds an error icon to the left of the failed requests', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 404;
@@ -111,9 +111,6 @@ describeWithEnvironment('NetworkLogView', () => {
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('cross-circle-filled', iconImage);
-
-    const backgroundColorOfIcon = iconElement.style.color.toString();
-    assert.strictEqual(backgroundColorOfIcon, 'var(--icon-error)');
   });
 
   it('show document icon', async () => {
@@ -131,8 +128,6 @@ describeWithEnvironment('NetworkLogView', () => {
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-document', iconImage);
 
-    const backgroundColorOfIcon = iconElement.style.color.toString();
-    assert.strictEqual(backgroundColorOfIcon, 'var(--icon-file-document)');
     // TODO(barrypollard): Would be good to test the value of --icon-file-document
     // is correctly set to --sys-color-blue-bright. See https://crbug.com/346714111
   });
@@ -309,6 +304,24 @@ describeWithEnvironment('NetworkLogView', () => {
     assert.strictEqual('file-json', iconImage);
   });
 
+  it('shows ip protection icon for ipp requests', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/api/list`, urlString``, null, null,
+        null);
+    request.setResourceType(Common.ResourceType.resourceTypes.Fetch);
+    request.mimeType = 'application/json';
+    request.setIsIpProtectionUsed(true);
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+
+    networkRequestNode.renderCell(el, 'name');
+    const iconElement = el.querySelector('.icon') as HTMLElement;
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('shield', iconImage);
+  });
+
   it('shows the corresponding status text of a status code', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
@@ -457,7 +470,5 @@ describeWithEnvironment('NetworkLogView', () => {
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('warning-filled', iconImage);
-    const backgroundColorOfIcon = iconElement.style.color.toString();
-    assert.strictEqual(backgroundColorOfIcon, 'var(--icon-warning)');
   });
 });

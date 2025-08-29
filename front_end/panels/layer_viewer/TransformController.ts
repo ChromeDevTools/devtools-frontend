@@ -13,15 +13,15 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
-   *@description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
+   * @description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
    */
   panModeX: 'Pan mode (X)',
   /**
-   *@description Tooltip text that appears when hovering over largeicon rotate button in Transform Controller of the Layers panel
+   * @description Tooltip text that appears when hovering over largeicon rotate button in Transform Controller of the Layers panel
    */
   rotateModeV: 'Rotate mode (V)',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon center button in the Transform Controller of the Layers panel
+   * @description Tooltip text that appears when hovering over the largeicon center button in the Transform Controller of the Layers panel
    */
   resetTransform: 'Reset transform (0)',
 } as const;
@@ -220,7 +220,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
     const rotateStepInDegrees = 5;
 
     if (this.mode === Modes.ROTATE) {
-      // Sic! onRotate treats X and Y as "rotate around X" and "rotate around Y", so swap X/Y multiplers.
+      // Sic! onRotate treats X and Y as "rotate around X" and "rotate around Y", so swap X/Y multipliers.
       this.onRotate(
           this.rotateXInternal + yMultiplier * rotateStepInDegrees,
           this.rotateYInternal + xMultiplier * rotateStepInDegrees);
@@ -231,9 +231,9 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 
   private onMouseWheel(event: Event): void {
-    /** @const */
+    /** @constant */
     const zoomFactor = 1.1;
-    /** @const */
+    /** @constant */
     const wheelZoomSpeed = 1 / 53;
     const mouseEvent = event as WheelEvent;
     const scaleFactor = Math.pow(zoomFactor, -mouseEvent.deltaY * wheelZoomSpeed);

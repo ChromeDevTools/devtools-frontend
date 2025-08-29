@@ -100,8 +100,8 @@ const KEYS = {
         "attributes"
     ],
     ExportSpecifier: [
-        "exported",
-        "local"
+        "local",
+        "exported"
     ],
     ExpressionStatement: [
         "expression"

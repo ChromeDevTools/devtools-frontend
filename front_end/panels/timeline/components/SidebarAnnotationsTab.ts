@@ -14,7 +14,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Utils from '../utils/utils.js';
 
-import {RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
+import {AnnotationHoverOut, HoverAnnotation, RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
 import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
 
 const {html, render} = Lit;
@@ -71,20 +71,20 @@ const UIStrings = {
   deleteButton: 'Delete annotation: {PH1}',
   /**
    * @description label used to describe an annotation on an entry
-   *@example {Paint} PH1
-   *@example {"Hello world"} PH2
+   * @example {Paint} PH1
+   * @example {"Hello world"} PH2
    */
   entryLabelDescriptionLabel: 'A "{PH1}" event annotated with the text "{PH2}"',
   /**
    * @description label used to describe a time range annotation
-   *@example {2.5 milliseconds} PH1
-   *@example {13.5 milliseconds} PH2
+   * @example {2.5 milliseconds} PH1
+   * @example {13.5 milliseconds} PH2
    */
   timeRangeDescriptionLabel: 'A time range starting at {PH1} and ending at {PH2}',
   /**
    * @description label used to describe a link from one entry to another.
-   *@example {Paint} PH1
-   *@example {Recalculate styles} PH2
+   * @example {Paint} PH1
+   * @example {Recalculate styles} PH2
    */
   entryLinkDescriptionLabel: 'A link between a "{PH1}" event and a "{PH2}" event',
 } as const;
@@ -97,6 +97,8 @@ export interface SidebarAnnotationsTabViewInput {
   annotationsHiddenSetting: Common.Settings.Setting<boolean>;
   annotationEntryToColorMap: ReadonlyMap<Trace.Types.Events.Event|Trace.Types.Events.LegacyTimelineFrame, string>;
   onAnnotationClick: (annotation: Trace.Types.File.Annotation) => void;
+  onAnnotationHover: (annotation: Trace.Types.File.Annotation) => void;
+  onAnnotationHoverOut: () => void;
   onAnnotationDelete: (annotation: Trace.Types.File.Annotation) => void;
 }
 
@@ -207,6 +209,12 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
       onAnnotationClick: (annotation: Trace.Types.File.Annotation) => {
         this.contentElement.dispatchEvent(new RevealAnnotation(annotation));
       },
+      onAnnotationHover: (annotation: Trace.Types.File.Annotation) => {
+        this.contentElement.dispatchEvent(new HoverAnnotation(annotation));
+      },
+      onAnnotationHoverOut: () => {
+        this.contentElement.dispatchEvent(new AnnotationHoverOut());
+      },
       onAnnotationDelete: (annotation: Trace.Types.File.Annotation) => {
         this.contentElement.dispatchEvent(new RemoveAnnotation(annotation));
       },
@@ -313,12 +321,7 @@ function renderAnnotationIdentifier(
           <span class="annotation-identifier" style=${Lit.Directives.styleMap(styleForFromAnnotationIdentifier)}>
             ${entryFromName}
           </span>
-          <devtools-icon class="inline-icon" .data=${{
-            iconName: 'arrow-forward',
-            color: 'var(--icon-default)',
-            width: '18px',
-            height: '18px',
-          }}>
+          <devtools-icon name="arrow-forward" class="inline-icon large">
           </devtools-icon>
           ${renderEntryToIdentifier(annotation, annotationEntryToColorMap)}
         </div>
@@ -417,6 +420,8 @@ export const DEFAULT_VIEW: (input: SidebarAnnotationsTabViewInput, output: objec
               return html`
                 <div class="annotation-container"
                   @click=${() => input.onAnnotationClick(annotation)}
+                  @mouseover=${() => (annotation.type === 'ENTRY_LABEL') ? input.onAnnotationHover(annotation): null}
+                  @mouseout=${() => (annotation.type === 'ENTRY_LABEL') ? input.onAnnotationHoverOut() : null}
                   aria-label=${label}
                   tabindex="0"
                   jslog=${VisualLogging.item(`timeline.annotation-sidebar.annotation-${jslogForAnnotation(annotation)}`).track({click: true})}
@@ -433,15 +438,7 @@ export const DEFAULT_VIEW: (input: SidebarAnnotationsTabViewInput, output: objec
                     event.stopPropagation();
                     input.onAnnotationDelete(annotation);
                   }} jslog=${VisualLogging.action('timeline.annotation-sidebar.delete').track({click: true})}>
-                    <devtools-icon
-                      class="bin-icon"
-                      .data=${{
-                        iconName: 'bin',
-                        color: 'var(--icon-default)',
-                        width: '20px',
-                        height: '20px',
-                      }}
-                    ></devtools-icon>
+                    <devtools-icon class="bin-icon extra-large" name="bin"></devtools-icon>
                   </button>
                 </div>`;
             })}

@@ -92,6 +92,9 @@ test('core modules', function (t) {
 			if (semver.satisfies(process.version, '^20.12 || >= 21.7')) {
 				libs = libs.concat('node:sea');
 			}
+			if (semver.satisfies(process.version, '>= 23.4')) {
+				libs = libs.concat('node:sqlite');
+			}
 
 			for (var i = 0; i < libs.length; ++i) {
 				var mod = libs[i];

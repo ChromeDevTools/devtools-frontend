@@ -174,6 +174,7 @@ const checkNotAlignedPerTag = (utils, tag, customSpacings) => {
  */
 const checkAlignment = ({
   customSpacings,
+  disableWrapIndent,
   indent,
   jsdoc,
   jsdocNode,
@@ -182,16 +183,15 @@ const checkAlignment = ({
   tags,
   utils,
   wrapIndent,
-  disableWrapIndent,
 }) => {
   const transform = commentFlow(
     alignTransform({
       customSpacings,
+      disableWrapIndent,
       indent,
       preserveMainDescriptionPostDelimiter,
       tags,
       wrapIndent,
-      disableWrapIndent,
     }),
   );
   const transformedJsdoc = transform(jsdoc);
@@ -217,21 +217,21 @@ const checkAlignment = ({
 };
 
 export default iterateJsdoc(({
+  context,
   indent,
   jsdoc,
   jsdocNode,
   report,
-  context,
   utils,
 }) => {
   const {
+    customSpacings,
+    disableWrapIndent = false,
+    preserveMainDescriptionPostDelimiter,
     tags: applicableTags = [
       'param', 'arg', 'argument', 'property', 'prop', 'returns', 'return',
     ],
-    preserveMainDescriptionPostDelimiter,
-    customSpacings,
     wrapIndent = '',
-    disableWrapIndent = false,
   } = context.options[1] || {};
 
   if (context.options[0] === 'always') {
@@ -249,6 +249,7 @@ export default iterateJsdoc(({
 
     checkAlignment({
       customSpacings,
+      disableWrapIndent,
       indent,
       jsdoc,
       jsdocNode,
@@ -257,7 +258,6 @@ export default iterateJsdoc(({
       tags: applicableTags,
       utils,
       wrapIndent,
-      disableWrapIndent,
     });
 
     return;
@@ -347,6 +347,9 @@ export default iterateJsdoc(({
               },
             },
           },
+          disableWrapIndent: {
+            type: 'boolean',
+          },
           preserveMainDescriptionPostDelimiter: {
             default: false,
             type: 'boolean',
@@ -359,9 +362,6 @@ export default iterateJsdoc(({
           },
           wrapIndent: {
             type: 'string',
-          },
-          disableWrapIndent: {
-            type: 'boolean',
           },
         },
         type: 'object',

@@ -39,6 +39,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -64,6 +65,7 @@ import {
   type NetworkLogViewInterface,
   type NetworkNode,
   NetworkRequestNode,
+  RequestPanelBehavior,
 } from './NetworkDataGridNode.js';
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import networkLogViewStyles from './networkLogView.css.js';
@@ -77,19 +79,19 @@ import {
 
 const UIStrings = {
   /**
-   *@description Text in Network Log View of the Network panel
+   * @description Text in Network Log View of the Network panel
    */
   invertFilter: 'Invert',
   /**
-   *@description Tooltip for the 'invert' checkbox in the Network panel.
+   * @description Tooltip for the 'invert' checkbox in the Network panel.
    */
   invertsFilter: 'Inverts the search filter',
   /**
-   *@description Text in Network Log View of the Network panel
+   * @description Text in Network Log View of the Network panel
    */
   hideDataUrls: 'Hide data URLs',
   /**
-   *@description Data urlfilter ui element title in Network Log View of the Network panel
+   * @description Data urlfilter ui element title in Network Log View of the Network panel
    */
   hidesDataAndBlobUrls: 'Hide \'data:\' and \'blob:\' URLs',
   /**
@@ -101,55 +103,63 @@ const UIStrings = {
    */
   hideChromeExtension: 'Hide \'chrome-extension://\' URLs',
   /**
-   *@description Aria accessible name in Network Log View of the Network panel
+   * @description Aria accessible name in Network Log View of the Network panel
    */
   requestTypesToInclude: 'Request types to include',
   /**
-   *@description Label for a checkbox in the Network panel. When checked, only requests with
+   * @description Label for a checkbox in the Network panel. When checked, only requests with
    *             blocked response cookies are shown.
    */
   hasBlockedCookies: 'Blocked response cookies',
   /**
-   *@description Tooltip for a checkbox in the Network panel. The response to a network request may include a
+   * @description Tooltip for a checkbox in the Network panel. The response to a network request may include a
    *             cookie (https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies). Such response cookies can
    *             be malformed or otherwise invalid and the browser may choose to ignore or not accept invalid cookies.
    */
   onlyShowRequestsWithBlockedCookies: 'Show only requests with blocked response cookies',
   /**
-   *@description Label for a filter in the Network panel
+   * @description Label for a filter in the Network panel
    */
   blockedRequests: 'Blocked requests',
   /**
-   *@description Tooltip for a filter in the Network panel
+   * @description Tooltip for a filter in the Network panel
    */
   onlyShowBlockedRequests: 'Show only blocked requests',
   /**
-   *@description Label for a filter in the Network panel
+   * @description Label for a filter in the Network panel
    */
   thirdParty: '3rd-party requests',
   /**
-   *@description Tooltip for a filter in the Network panel
+   * @description Tooltip for a filter in the Network panel
    */
   onlyShowThirdPartyRequests: 'Show only requests with origin different from page origin',
   /**
-   *@description Text that appears when user drag and drop something (for example, a file) in Network Log View of the Network panel
+   * @description Label for a filter in the Network panel
+   */
+  ippRequests: 'IP Protected requests',
+  /**
+   * @description Tooltip for a filter in the Network panel
+   */
+  onlyShowIPProtectedRequests: 'Show only requests sent to IP Protection proxies. Has no effect in regular browsing.',
+  /**
+   * @description Text that appears when user drag and drop something (for example, a file) in Network Log View of the Network panel
    */
   dropHarFilesHere: 'Drop HAR files here',
   /**
-   *@description Recording text content in Network Log View of the Network panel
+   * @description Recording text content in Network Log View of the Network panel
    */
   recordingNetworkActivity: 'Currently recording network activity',
   /**
-   *@description Shown in the Network Log View of the Network panel when the user has not yet
+   * @description Shown in the Network Log View of the Network panel when the user has not yet
    *             recorded any network activity. This is an instruction to the user to reload the page in order to
    *             show network activity in the current UI.
-   *@example {Reload page} PH1
-   *@example {Ctrl + R} PH2
+   * @example {Reload page} PH1
+   * @example {Ctrl + R} PH2
    */
   performARequestOrHitSToRecordThe:
       'Perform a request or reload the page by using the "{PH1}" button or by pressing {PH2}.',
   /**
-   *@description Shown in the Network Log View of the Network panel when the user has not yet
+   * @description Shown in the Network Log View of the Network panel when the user has not yet
    * recorded any network activity. This is an instruction to the user to start recording in order to
    * show network activity in the current UI.
    * @example {Start recording} PH1
@@ -158,41 +168,41 @@ const UIStrings = {
   recordToDisplayNetworkActivity:
       'Record network log to display network activity by using the "{PH1}" button or by pressing {PH2}.',
   /**
-   *@description Label of a button in the Network Log View of the Network panel.
+   * @description Label of a button in the Network Log View of the Network panel.
    */
   reloadPage: 'Reload page',
   /**
-   *@description Label of a button in the Network Log View of the Network panel.
+   * @description Label of a button in the Network Log View of the Network panel.
    */
   startRecording: 'Start recording',
   /**
-   *@description Shown in the Network Log View of the Network panel when the user has not yet
+   * @description Shown in the Network Log View of the Network panel when the user has not yet
    *             recorded any network activity.
    */
   noNetworkActivityRecorded: 'No network activity recorded',
   /**
-   *@description Text to announce to screen readers that network data is available.
+   * @description Text to announce to screen readers that network data is available.
    */
   networkDataAvailable: 'Network Data Available',
   /**
-   *@description Text in Network Log View of the Network panel
-   *@example {3} PH1
-   *@example {5} PH2
+   * @description Text in Network Log View of the Network panel
+   * @example {3} PH1
+   * @example {5} PH2
    */
   sSRequests: '{PH1} / {PH2} requests',
   /**
-   *@description Message in the summary toolbar at the bottom of the Network log that shows the compressed size of the
+   * @description Message in the summary toolbar at the bottom of the Network log that shows the compressed size of the
    * resources transferred during a selected time frame over the compressed size of all resources transferred during
    * the whole network log.
-   *@example {5 B} PH1
-   *@example {10 B} PH2
+   * @example {5 B} PH1
+   * @example {10 B} PH2
    */
   sSTransferred: '{PH1} / {PH2} transferred',
   /**
-   *@description Message in a tooltip that shows the compressed size of the resources transferred during a selected
+   * @description Message in a tooltip that shows the compressed size of the resources transferred during a selected
    * time frame over the compressed size of all resources transferred during the whole network log.
-   *@example {10} PH1
-   *@example {15} PH2
+   * @example {10} PH1
+   * @example {15} PH2
    */
   sBSBTransferredOverNetwork: '{PH1} B / {PH2} B transferred over network',
   /**
@@ -204,75 +214,75 @@ const UIStrings = {
    */
   sSResources: '{PH1} / {PH2} resources',
   /**
-   *@description Text in Network Log View of the Network panel
-   *@example {40} PH1
-   *@example {50} PH2
+   * @description Text in Network Log View of the Network panel
+   * @example {40} PH1
+   * @example {50} PH2
    */
   sBSBResourcesLoadedByThePage: '{PH1} B / {PH2} B resources loaded by the page',
   /**
-   *@description Text in Network Log View of the Network panel
-   *@example {6} PH1
+   * @description Text in Network Log View of the Network panel
+   * @example {6} PH1
    */
   sRequests: '{PH1} requests',
   /**
-   *@description Message in the summary toolbar at the bottom of the Network log that shows the compressed size of
+   * @description Message in the summary toolbar at the bottom of the Network log that shows the compressed size of
    * all resources transferred over network during a network activity log.
-   *@example {4 B} PH1
+   * @example {4 B} PH1
    */
   sTransferred: '{PH1} transferred',
   /**
-   *@description Message in a tooltip that shows the compressed size of all resources transferred over network during
+   * @description Message in a tooltip that shows the compressed size of all resources transferred over network during
    * a network activity log.
-   *@example {4} PH1
+   * @example {4} PH1
    */
   sBTransferredOverNetwork: '{PH1} B transferred over network',
   /**
-   *@description Text in Network Log View of the Network panel
-   *@example {4} PH1
+   * @description Text in Network Log View of the Network panel
+   * @example {4} PH1
    */
   sResources: '{PH1} resources',
   /**
-   *@description Text in Network Log View of the Network panel
-   *@example {10} PH1
+   * @description Text in Network Log View of the Network panel
+   * @example {10} PH1
    */
   sBResourcesLoadedByThePage: '{PH1} B resources loaded by the page',
   /**
-   *@description Text in Network Log View of the Network panel
-   *@example {120ms} PH1
+   * @description Text in Network Log View of the Network panel
+   * @example {120ms} PH1
    */
   finishS: 'Finish: {PH1}',
   /**
-   *@description Text in Network Log View of the Network panel
-   *@example {3000ms} PH1
+   * @description Text in Network Log View of the Network panel
+   * @example {3000ms} PH1
    */
   domcontentloadedS: 'DOMContentLoaded: {PH1}',
   /**
-   *@description Text in Network Log View of the Network panel
-   *@example {40ms} PH1
+   * @description Text in Network Log View of the Network panel
+   * @example {40ms} PH1
    */
   loadS: 'Load: {PH1}',
   /**
-   *@description Text for copying
+   * @description Text for copying
    */
   copy: 'Copy',
   /**
-   *@description A context menu command in the Network panel, for copying the URL of the selected request to the clipboard.
+   * @description A context menu command in the Network panel, for copying the URL of the selected request to the clipboard.
    */
   copyURL: 'Copy URL',
   /**
-   *@description Text in Network Log View of the Network panel
+   * @description Text in Network Log View of the Network panel
    */
   copyRequestHeaders: 'Copy request headers',
   /**
-   *@description Text in Network Log View of the Network panel
+   * @description Text in Network Log View of the Network panel
    */
   copyResponseHeaders: 'Copy response headers',
   /**
-   *@description Text in Network Log View of the Network panel
+   * @description Text in Network Log View of the Network panel
    */
   copyResponse: 'Copy response',
   /**
-   *@description Text in Network Log View of the Network panel
+   * @description Text in Network Log View of the Network panel
    */
   copyStacktrace: 'Copy stack trace',
   /**
@@ -281,7 +291,7 @@ const UIStrings = {
    */
   copyAsPowershell: 'Copy as `PowerShell`',
   /**
-   *@description A context menu command in the Network panel, for copying to the clipboard. 'fetch'
+   * @description A context menu command in the Network panel, for copying to the clipboard. 'fetch'
    * refers to the format the data will be copied as, which is compatible with the fetch web API.
    */
   copyAsFetch: 'Copy as `fetch`',
@@ -293,100 +303,100 @@ const UIStrings = {
    */
   copyAsNodejsFetch: 'Copy as `fetch` (`Node.js`)',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with cURL (a program, not
    *translatable).
    */
   copyAsCurlCmd: 'Copy as `cURL` (`cmd`)',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a Bash script.
    */
   copyAsCurlBash: 'Copy as `cURL` (`bash`)',
   /**
-   *@description A context menu command in the Network panel, for copying the URLs of all requestes to the clipboard.
+   * @description A context menu command in the Network panel, for copying the URLs of all requestes to the clipboard.
    */
   copyAllURLs: 'Copy all URLs',
   /**
-   *@description A context menu command in the Network panel, for copying the URLs of all requestes
-   (after applying the Network filter) to the clipboard.
+   * @description A context menu command in the Network panel, for copying the URLs of all requestes
+   * (after applying the Network filter) to the clipboard.
    */
   copyAllListedURLs: 'Copy all listed URLs',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a PowerShell script to
    *represent all network requests.
    */
   copyAllAsPowershell: 'Copy all as `PowerShell`',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a PowerShell script to
    *represent all network requests (after applying the Network filter).
    */
   copyAllListedAsPowershell: 'Copy all listed as `PowerShell`',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a 'fetch' command (fetch
    *should not be translated) to represent all network requests.
    */
   copyAllAsFetch: 'Copy all as `fetch`',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a 'fetch' command (fetch
    *should not be translated) to represent all network requests (after applying the Network filter).
    */
   copyAllListedAsFetch: 'Copy all listed as `fetch`',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a Node.js 'fetch' command
    *(fetch and Node.js should not be translated) to represent all network requests.
    */
   copyAllAsNodejsFetch: 'Copy all as `fetch` (`Node.js`)',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a Node.js 'fetch' command
    *(fetch and Node.js should not be translated) to represent all network requests (after applying
    *the Network filter).
    */
   copyAllListedAsNodejsFetch: 'Copy all listed as `fetch` (`Node.js`)',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with cURL (a program, not
    *translatable) to represent all network requests.
    */
   copyAllAsCurlCmd: 'Copy all as `cURL` (`cmd`)',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with cURL (a program, not
    *translatable) to represent all network requests (after applying the Network filter).
    */
   copyAllListedAsCurlCmd: 'Copy all listed as `cURL` (`cmd`)',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a Bash script to represent
    *all network requests.
    */
   copyAllAsCurlBash: 'Copy all as `cURL` (`bash`)',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with a Bash script to represent
    *all network requests (after applying the Network filter).
    */
   copyAllListedAsCurlBash: 'Copy all listed as `cURL` (`bash`)',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with cURL (a program, not
    *translatable).
    */
   copyAsCurl: 'Copy as `cURL`',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with cURL (a program, not
    *translatable) to represent all network requests.
    */
   copyAllAsCurl: 'Copy all as `cURL`',
   /**
-   *@description Text in Network Log View of the Network panel. An action that copies a command to
+   * @description Text in Network Log View of the Network panel. An action that copies a command to
    *the clipboard. It will copy the command in the format compatible with cURL (a program, not
    *translatable) to represent all network requests (after applying the Network filter).
    */
@@ -420,40 +430,40 @@ const UIStrings = {
    */
   copyAllListedAsHarWithSensitiveData: 'Copy all listed as `HAR` (with sensitive data)',
   /**
-   *@description A context menu item in the Network Log View of the Network panel
+   * @description A context menu item in the Network Log View of the Network panel
    */
   clearBrowserCache: 'Clear browser cache',
   /**
-   *@description A context menu item in the Network Log View of the Network panel
+   * @description A context menu item in the Network Log View of the Network panel
    */
   clearBrowserCookies: 'Clear browser cookies',
   /**
-   *@description A context menu item in the Network Log View of the Network panel
+   * @description A context menu item in the Network Log View of the Network panel
    */
   blockRequestUrl: 'Block request URL',
   /**
-   *@description A context menu item in the Network Log View of the Network panel
-   *@example {example.com} PH1
+   * @description A context menu item in the Network Log View of the Network panel
+   * @example {example.com} PH1
    */
   unblockS: 'Unblock {PH1}',
   /**
-   *@description A context menu item in the Network Log View of the Network panel
+   * @description A context menu item in the Network Log View of the Network panel
    */
   blockRequestDomain: 'Block request domain',
   /**
-   *@description Text to replay an XHR request
+   * @description Text to replay an XHR request
    */
   replayXhr: 'Replay XHR',
   /**
-   *@description Text in Network Log View of the Network panel
+   * @description Text in Network Log View of the Network panel
    */
   areYouSureYouWantToClearBrowser: 'Are you sure you want to clear browser cache?',
   /**
-   *@description Text in Network Log View of the Network panel
+   * @description Text in Network Log View of the Network panel
    */
   areYouSureYouWantToClearBrowserCookies: 'Are you sure you want to clear browser cookies?',
   /**
-   *@description A context menu item in the Network Log View of the Network panel
+   * @description A context menu item in the Network Log View of the Network panel
    * for creating a header override
    */
   overrideHeaders: 'Override headers',
@@ -465,6 +475,26 @@ const UIStrings = {
    * @description Text for the Show only/Hide requests dropdown button of the filterbar
    */
   moreFilters: 'More filters',
+  /**
+   * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
+   */
+  startAChat: 'Start a chat',
+  /**
+   * @description Context menu item in Network panel to explain the purpose of a request via AI.
+   */
+  explainPurpose: 'Explain purpose',
+  /**
+   * @description Context menu item in Network panel to explain why a request is slow via AI.
+   */
+  explainSlowness: 'Explain slowness',
+  /**
+   * @description Context menu item in Network panel to explain why a request is failing via AI.
+   */
+  explainFailures: 'Explain failures',
+  /**
+   * @description Context menu item in Network panel to assess security headers of a request via AI.
+   */
+  assessSecurityHeaders: 'Assess security headers',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -484,6 +514,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly networkOnlyThirdPartySetting: Common.Settings.Setting<boolean>;
   private readonly networkResourceTypeFiltersSetting: Common.Settings.Setting<Record<string, boolean>>;
   private readonly networkShowOptionsToGenerateHarWithSensitiveData: Common.Settings.Setting<boolean>;
+  private readonly networkOnlyIPProtectedRequestsSetting: Common.Settings.Setting<boolean>;
   private readonly progressBarContainer: Element;
   private readonly networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
   private rowHeightInternal: number;
@@ -539,6 +570,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         Common.Settings.Settings.instance().createSetting('network-only-blocked-requests', false);
     this.networkOnlyThirdPartySetting =
         Common.Settings.Settings.instance().createSetting('network-only-third-party-setting', false);
+    this.networkOnlyIPProtectedRequestsSetting =
+        Common.Settings.Settings.instance().createSetting('network-only-ip-protected-requests', false);
     this.networkResourceTypeFiltersSetting =
         Common.Settings.Settings.instance().createSetting('network-resource-type-filters', {});
     this.networkShowOptionsToGenerateHarWithSensitiveData = Common.Settings.Settings.instance().createSetting(
@@ -1104,7 +1137,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.dataGrid.setName('network-log');
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
     this.dataGrid.element.classList.add('network-log-grid');
-    this.dataGrid.element.addEventListener('mousedown', this.dataGridMouseDown.bind(this), true);
     this.dataGrid.element.addEventListener('mousemove', this.dataGridMouseMove.bind(this), true);
     this.dataGrid.element.addEventListener('mouseleave', () => this.setHoveredNode(null), true);
     this.dataGrid.element.addEventListener('keydown', event => {
@@ -1116,7 +1148,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       }
 
       if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
-        this.dispatchEventToListeners(Events.RequestActivated, {showPanel: true, takeFocus: true});
+        this.dispatchEventToListeners(
+            Events.RequestActivated, {showPanel: RequestPanelBehavior.ShowPanel, takeFocus: true});
         event.consume(true);
       }
     });
@@ -1156,13 +1189,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.hoveredNodeInternal = node;
     if (this.hoveredNodeInternal) {
       this.hoveredNodeInternal.setHovered(true, Boolean(highlightInitiatorChain));
-    }
-  }
-
-  private dataGridMouseDown(event: Event): void {
-    const mouseEvent = (event as MouseEvent);
-    if (!this.dataGrid.selectedNode && mouseEvent.button) {
-      mouseEvent.consume();
     }
   }
 
@@ -1525,7 +1551,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   private reset(): void {
-    this.dispatchEventToListeners(Events.RequestActivated, {showPanel: false});
+    this.dispatchEventToListeners(Events.RequestActivated, {showPanel: RequestPanelBehavior.HidePanel});
 
     this.setHoveredNode(null);
     this.columnsInternal.reset();
@@ -1560,6 +1586,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.networkOnlyBlockedRequestsSetting.set(false);
     this.networkOnlyThirdPartySetting.set(false);
     this.networkHideChromeExtensions.set(false);
+    this.networkOnlyIPProtectedRequestsSetting.set(false);
     this.resourceCategoryFilterUI.reset();
   }
 
@@ -1674,11 +1701,41 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const filtered = this.filterBar.hasActiveFilter();
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString(UIStrings.copy), false, 'copy');
     if (request) {
-      if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.network-panel-context')) {
+      const openAiAssistanceId = 'drjones.network-panel-context';
+      if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+        function appendSubmenuPromptAction(
+            submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action,
+            label: Common.UIString.LocalizedString, prompt: string, jslogContext: string): void {
+          submenu.defaultSection().appendItem(
+              label, () => action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
+        }
+
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, request);
-        contextMenu.footerSection().appendAction(
-            'drjones.network-panel-context',
-        );
+        if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
+          const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+          const submenu = contextMenu.footerSection().appendSubMenuItem(
+              action.title(), false, openAiAssistanceId,
+              Root.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.featureName);
+          submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.explainPurpose), 'What is the purpose of this request?',
+              openAiAssistanceId + '.purpose');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.explainSlowness), 'Why is this request taking so long?',
+              openAiAssistanceId + '.slowness');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.explainFailures), 'Why is the request failing?',
+              openAiAssistanceId + '.failures');
+          appendSubmenuPromptAction(
+              submenu, action, i18nString(UIStrings.assessSecurityHeaders), 'Are there any security headers present?',
+              openAiAssistanceId + '.security');
+        } else if (Root.Runtime.hostConfig.devToolsAiDebugWithAi?.enabled) {
+          contextMenu.footerSection().appendAction(
+              openAiAssistanceId, undefined, false, undefined,
+              Root.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.featureName);
+        } else {
+          contextMenu.footerSection().appendAction(openAiAssistanceId);
+        }
       }
       copyMenu.defaultSection().appendItem(
           i18nString(UIStrings.copyURL),
@@ -1909,8 +1966,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       return;
     }
 
-    const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
-    this.progressBarContainer.appendChild(progressIndicator.element);
+    const progressIndicator = this.progressBarContainer.createChild('devtools-progress');
     await HAR.Writer.Writer.write(stream, this.harRequests(), options, progressIndicator);
     progressIndicator.done();
     void stream.close();
@@ -1919,15 +1975,15 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   async #handleCreateResponseHeaderOverrideClick(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
     const requestLocation =
         NetworkForward.UIRequestLocation.UIRequestLocation.responseHeaderMatch(request, {name: '', value: ''});
-    const networkPersistanceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
-    if (networkPersistanceManager.project()) {
+    const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
+    if (networkPersistenceManager.project()) {
       Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(true);
-      await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
+      await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
       await Common.Revealer.reveal(requestLocation);
     } else {  // If folder for local overrides has not been provided yet
       UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
-        await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
+        await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
         await Common.Revealer.reveal(requestLocation);
       });
     }
@@ -1953,12 +2009,16 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     if (!this.resourceCategoryFilterUI.accept(categoryName)) {
       return false;
     }
-    const [hideDataURL, blockedCookies, blockedRequests, thirdParty, hideExtensionURL] = [
+    const [hideDataURL, blockedCookies, blockedRequests, thirdParty, hideExtensionURL, ippRequests] = [
       this.networkHideDataURLSetting.get(),
       this.networkShowBlockedCookiesOnlySetting.get(),
       this.networkOnlyBlockedRequestsSetting.get(),
       this.networkOnlyThirdPartySetting.get(),
       this.networkHideChromeExtensions.get(),
+      // TODO(crbug.com/425645896): Remove this guard once IP Protection is fully launched.
+      Root.Runtime.hostConfig.devToolsIpProtectionInDevTools?.enabled ?
+          this.networkOnlyIPProtectedRequestsSetting.get() :
+          false,
     ];
 
     if (hideDataURL && (request.parsedURL.isDataURL() || request.parsedURL.isBlobURL())) {
@@ -1975,6 +2035,12 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     }
     if (hideExtensionURL && request.scheme === 'chrome-extension') {
       return false;
+    }
+    // TODO(crbug.com/425645896): Remove this guard once IP Protection is fully launched.
+    if (Root.Runtime.hostConfig.devToolsIpProtectionInDevTools?.enabled) {
+      if (ippRequests && !request.isIpProtectionUsed()) {
+        return false;
+      }
     }
     for (let i = 0; i < this.filters.length; ++i) {
       if (!this.filters[i](request)) {
@@ -2337,6 +2403,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
               .replace(/"/g, '\\"')
               .replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;()*`]/g, '^$&')
               .replace(/%(?=[a-zA-Z0-9_])/g, '%^')
+              .replace(/[^\S \r\n]/g, '^$&')
               .replace(/\r?\n|\r/g, '^\n\n') +
           encapsChars;
     }
@@ -2584,6 +2651,7 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper<UI
   private networkShowBlockedCookiesOnlySetting: Common.Settings.Setting<boolean>;
   private networkOnlyBlockedRequestsSetting: Common.Settings.Setting<boolean>;
   private networkOnlyThirdPartySetting: Common.Settings.Setting<boolean>;
+  private networkOnlyIPProtectedRequestsSetting: Common.Settings.Setting<boolean>;
   private activeFiltersCount: HTMLElement;
   private activeFiltersCountAdorner: Adorners.Adorner.Adorner;
 
@@ -2599,6 +2667,8 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper<UI
         Common.Settings.Settings.instance().createSetting('network-only-blocked-requests', false);
     this.networkOnlyThirdPartySetting =
         Common.Settings.Settings.instance().createSetting('network-only-third-party-setting', false);
+    this.networkOnlyIPProtectedRequestsSetting =
+        Common.Settings.Settings.instance().createSetting('network-only-ip-protected-requests', false);
 
     this.filterElement = document.createElement('div');
     this.filterElement.setAttribute('aria-label', 'Show only/hide requests dropdown');
@@ -2635,6 +2705,10 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper<UI
     this.networkShowBlockedCookiesOnlySetting.addChangeListener(this.#onSettingChanged.bind(this));
     this.networkOnlyBlockedRequestsSetting.addChangeListener(this.#onSettingChanged.bind(this));
     this.networkOnlyThirdPartySetting.addChangeListener(this.#onSettingChanged.bind(this));
+    // TODO(crbug.com/425645896): Remove this guard once IP Protection is fully launched.
+    if (Root.Runtime.hostConfig.devToolsIpProtectionInDevTools?.enabled) {
+      this.networkOnlyIPProtectedRequestsSetting.addChangeListener(this.#onSettingChanged.bind(this));
+    }
 
     contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.hideDataUrls),
@@ -2666,6 +2740,17 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper<UI
           tooltip: i18nString(UIStrings.onlyShowBlockedRequests),
           jslogContext: 'only-blocked-requests',
         });
+    // Disable this filter if in regular browsing, as IP Protection is only available in incognito mode.
+    // TODO(crbug.com/425645896): Remove this guard once IP Protection is fully launched.
+    if (Root.Runtime.hostConfig.devToolsIpProtectionInDevTools?.enabled) {
+      contextMenu.defaultSection().appendCheckboxItem(
+          i18nString(UIStrings.ippRequests),
+          () => this.networkOnlyIPProtectedRequestsSetting.set(!this.networkOnlyIPProtectedRequestsSetting.get()), {
+            checked: this.networkOnlyIPProtectedRequestsSetting.get(),
+            tooltip: i18nString(UIStrings.onlyShowIPProtectedRequests),
+            jslogContext: 'only-ip-protected-requests',
+          });
+    }
     contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.thirdParty),
         () => this.networkOnlyThirdPartySetting.set(!this.networkOnlyThirdPartySetting.get()), {
@@ -2682,6 +2767,10 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper<UI
       ...this.networkShowBlockedCookiesOnlySetting.get() ? [i18nString(UIStrings.hasBlockedCookies)] : [],
       ...this.networkOnlyBlockedRequestsSetting.get() ? [i18nString(UIStrings.blockedRequests)] : [],
       ...this.networkOnlyThirdPartySetting.get() ? [i18nString(UIStrings.thirdParty)] : [],
+      ...Root.Runtime.hostConfig.devToolsIpProtectionInDevTools?.enabled &&
+              this.networkOnlyIPProtectedRequestsSetting.get() ?
+          [i18nString(UIStrings.ippRequests)] :
+          [],
     ];
     return filters;
   }

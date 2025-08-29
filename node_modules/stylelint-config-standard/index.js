@@ -23,6 +23,7 @@ module.exports = {
 			},
 		],
 		'at-rule-no-vendor-prefix': true,
+		'block-no-redundant-nested-style-rules': true,
 		'color-function-alias-notation': 'without-alpha',
 		'color-function-notation': 'modern',
 		'color-hex-length': 'short',

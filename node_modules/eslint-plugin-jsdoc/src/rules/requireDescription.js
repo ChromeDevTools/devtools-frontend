@@ -13,10 +13,10 @@ const checkDescription = (description) => {
 };
 
 export default iterateJsdoc(({
+  context,
   jsdoc,
   report,
   utils,
-  context,
 }) => {
   if (utils.avoidDocs()) {
     return;

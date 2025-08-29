@@ -52,7 +52,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           csp="default-src 'none';img-src data:;style-src 'unsafe-inline'" src=${input.dataURL}
           tabindex="-1" role="presentation"></iframe>` : nothing}
     </div>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 
@@ -60,7 +60,7 @@ export class RequestHTMLView extends UI.Widget.VBox {
   readonly #dataURL: string;
   readonly #view: View;
   private constructor(dataURL: string, view = DEFAULT_VIEW) {
-    super(true);
+    super({useShadowDom: true});
 
     this.#dataURL = dataURL;
     this.#view = view;

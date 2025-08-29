@@ -15,22 +15,22 @@ import {
 
 const UIStrings = {
   /**
-   *@description title for autofill documentation page
+   * @description title for autofill documentation page
    */
   howDoesAutofillWorkPageTitle: 'How does autofill work?',
 
   /**
-   *@description title for label form elements usage example page
+   * @description title for label form elements usage example page
    */
   labelFormlementsPageTitle: 'The label elements',
 
   /**
-   *@description title for input form elements usage example page
+   * @description title for input form elements usage example page
    */
   inputFormElementPageTitle: 'The form input element',
 
   /**
-   *@description title for autocomplete attribute documentation page.
+   * @description title for autocomplete attribute documentation page.
    */
   autocompleteAttributePageTitle: 'HTML attribute: autocomplete',
 

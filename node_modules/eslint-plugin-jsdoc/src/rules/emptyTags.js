@@ -2,22 +2,26 @@ import iterateJsdoc from '../iterateJsdoc.js';
 
 const defaultEmptyTags = new Set([
   'abstract', 'async', 'generator', 'global', 'hideconstructor',
-  'ignore', 'inner', 'instance', 'override', 'readonly',
 
   // jsdoc doesn't use this form in its docs, but allow for compatibility with
   //  TypeScript which allows and Closure which requires
-  'inheritDoc',
+  'ignore',
 
   // jsdoc doesn't use but allow for TypeScript
+  'inheritDoc', 'inner', 'instance',
   'internal',
+
   'overload',
+
+  'override',
+  'readonly',
 ]);
 
 const emptyIfNotClosure = new Set([
-  'package', 'private', 'protected', 'public', 'static',
-
   // Closure doesn't allow with this casing
-  'inheritdoc',
+  'inheritdoc', 'package', 'private', 'protected', 'public',
+
+  'static',
 ]);
 
 const emptyIfClosure = new Set([
@@ -25,8 +29,8 @@ const emptyIfClosure = new Set([
 ]);
 
 export default iterateJsdoc(({
-  settings,
   jsdoc,
+  settings,
   utils,
 }) => {
   const emptyTags = utils.filterTags(({
@@ -42,7 +46,10 @@ export default iterateJsdoc(({
       settings.mode !== 'closure' && emptyIfNotClosure.has(tagName);
   });
 
-  for (const [key, tag] of emptyTags.entries()) {
+  for (const [
+    key,
+    tag,
+  ] of emptyTags.entries()) {
     const content = tag.name || tag.description || tag.type;
     if (content.trim() && (
       // Allow for JSDoc-block final asterisks

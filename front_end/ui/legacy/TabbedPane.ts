@@ -51,32 +51,32 @@ import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
 const UIStrings = {
   /**
-   *@description The aria label for the button to open more tabs at the right tabbed pane in Elements tools
+   * @description The aria label for the button to open more tabs at the right tabbed pane in Elements tools
    */
   moreTabs: 'More tabs',
   /**
-   *@description Text in Tabbed Pane
-   *@example {tab} PH1
+   * @description Text in Tabbed Pane
+   * @example {tab} PH1
    */
   closeS: 'Close {PH1}',
   /**
-   *@description Text to close something
+   * @description Text to close something
    */
   close: 'Close',
   /**
-   *@description Text on a menu option to close other drawers when right click on a drawer title
+   * @description Text on a menu option to close other drawers when right click on a drawer title
    */
   closeOthers: 'Close others',
   /**
-   *@description Text on a menu option to close the drawer to the right when right click on a drawer title
+   * @description Text on a menu option to close the drawer to the right when right click on a drawer title
    */
   closeTabsToTheRight: 'Close tabs to the right',
   /**
-   *@description Text on a menu option to close all the drawers except Console when right click on a drawer title
+   * @description Text on a menu option to close all the drawers except Console when right click on a drawer title
    */
   closeAll: 'Close all',
   /**
-   *@description Indicates that a tab contains a preview feature (i.e., a beta / experimental feature).
+   * @description Indicates that a tab contains a preview feature (i.e., a beta / experimental feature).
    */
   previewFeature: 'Preview feature',
   /**
@@ -121,7 +121,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private automaticReorder?: boolean;
 
   constructor(element?: HTMLElement) {
-    super(true, undefined, element);
+    super(element, {useShadowDom: true});
     this.registerRequiredCSS(tabbedPaneStyles);
     this.element.classList.add('tabbed-pane');
     this.contentElement.classList.add('tabbed-pane-shadow');
@@ -532,6 +532,11 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.selectTab(effectiveTab.id);
     }
     this.updateTabElements();
+    this.dispatchEventToListeners(Events.PaneVisibilityChanged, {isVisible: true});
+  }
+
+  override wasHidden(): void {
+    this.dispatchEventToListeners(Events.PaneVisibilityChanged, {isVisible: false});
   }
 
   makeTabSlider(): void {
@@ -1018,6 +1023,7 @@ export enum Events {
   TabSelected = 'TabSelected',
   TabClosed = 'TabClosed',
   TabOrderChanged = 'TabOrderChanged',
+  PaneVisibilityChanged = 'PaneVisibilityChanged',
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -1026,6 +1032,7 @@ export interface EventTypes {
   [Events.TabSelected]: EventData;
   [Events.TabClosed]: EventData;
   [Events.TabOrderChanged]: EventData;
+  [Events.PaneVisibilityChanged]: {isVisible: boolean};
 }
 
 export class TabbedPaneTab {
@@ -1268,19 +1275,15 @@ export class TabbedPaneTab {
   }
 
   private createPreviewIcon(): HTMLDivElement {
-    const previewIcon = document.createElement('div');
-    previewIcon.classList.add('preview-icon');
-    const closeIcon = new IconButton.Icon.Icon();
-    closeIcon.data = {
-      iconName: 'experiment',
-      color: 'var(--override-tabbed-pane-preview-icon-color)',
-      height: '14px',
-      width: '14px',
-    };
-    previewIcon.appendChild(closeIcon);
-    previewIcon.setAttribute('title', i18nString(UIStrings.previewFeature));
-    previewIcon.setAttribute('aria-label', i18nString(UIStrings.previewFeature));
-    return previewIcon;
+    const iconContainer = document.createElement('div');
+    iconContainer.classList.add('preview-icon');
+    const previewIcon = new IconButton.Icon.Icon();
+    previewIcon.name = 'experiment';
+    previewIcon.classList.add('small');
+    iconContainer.appendChild(previewIcon);
+    iconContainer.setAttribute('title', i18nString(UIStrings.previewFeature));
+    iconContainer.setAttribute('aria-label', i18nString(UIStrings.previewFeature));
+    return iconContainer;
   }
 
   private isCloseIconClicked(element: HTMLElement): boolean {

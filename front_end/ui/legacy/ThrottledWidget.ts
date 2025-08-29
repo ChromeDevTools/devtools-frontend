@@ -12,7 +12,7 @@ export class ThrottledWidget extends VBox {
   protected lastUpdatePromise: Promise<void> = Promise.resolve();
 
   constructor(useShadowDom?: boolean, timeout?: number) {
-    super(useShadowDom);
+    super({useShadowDom});
     this.updateThrottler = new Common.Throttler.Throttler(timeout === undefined ? 100 : timeout);
     this.updateWhenVisible = false;
   }

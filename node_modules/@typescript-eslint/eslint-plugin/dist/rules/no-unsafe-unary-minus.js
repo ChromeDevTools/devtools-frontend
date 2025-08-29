@@ -61,7 +61,7 @@ exports.default = util.createRule({
                 const argType = util.getConstrainedTypeAtLocation(services, node.argument);
                 const checker = services.program.getTypeChecker();
                 if (tsutils
-                    .unionTypeParts(argType)
+                    .unionConstituents(argType)
                     .some(type => !tsutils.isTypeFlagSet(type, ts.TypeFlags.Any |
                     ts.TypeFlags.Never |
                     ts.TypeFlags.BigIntLike |

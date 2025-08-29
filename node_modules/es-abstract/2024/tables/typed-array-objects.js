@@ -31,5 +31,6 @@ module.exports = {
 		$BIGUINT64: 8,
 		$FLOAT32: 4,
 		$FLOAT64: 8
-	}
+	},
+	choices: '"INT8", "UINT8", "UINT8C", "INT16", "UINT16", "INT32", "UINT32", "BIGINT64", "BIGUINT64", "FLOAT32", or "FLOAT64"'
 };

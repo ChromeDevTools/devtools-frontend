@@ -39,7 +39,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       overviewData: input.overviewData,
       target: input.target,
     })}></devtools-widget>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 

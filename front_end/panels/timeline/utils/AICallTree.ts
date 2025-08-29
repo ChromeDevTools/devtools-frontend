@@ -25,6 +25,7 @@ export interface FromTimeOnThreadOptions {
   parsedTrace: Trace.Handlers.Types.ParsedTrace;
   bounds: Trace.Types.Timing.TraceWindowMicro;
 }
+
 export class AICallTree {
   constructor(
       public selectedNode: Trace.Extras.TraceTree.Node|null,
@@ -34,18 +35,36 @@ export class AICallTree {
   ) {
   }
 
+  static findEventsForThread({thread, parsedTrace, bounds}: FromTimeOnThreadOptions): Trace.Types.Events.Event[]|null {
+    const threadEvents = parsedTrace.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
+    if (!threadEvents) {
+      return null;
+    }
+
+    return threadEvents.filter(e => Trace.Helpers.Timing.eventIsInBounds(e, bounds));
+  }
+
+  static findMainThreadTasks({thread, parsedTrace, bounds}: FromTimeOnThreadOptions):
+      Trace.Types.Events.RunTask[]|null {
+    const threadEvents = parsedTrace.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
+    if (!threadEvents) {
+      return null;
+    }
+
+    return threadEvents.filter(Trace.Types.Events.isRunTask)
+        .filter(e => Trace.Helpers.Timing.eventIsInBounds(e, bounds));
+  }
+
   /**
    * Builds a call tree representing all calls within the given timeframe for
    * the provided thread.
    * Events that are less than 0.05% of the range duration are removed.
    */
   static fromTimeOnThread({thread, parsedTrace, bounds}: FromTimeOnThreadOptions): AICallTree|null {
-    const threadEvents = parsedTrace.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
-
-    if (!threadEvents) {
+    const overlappingEvents = this.findEventsForThread({thread, parsedTrace, bounds});
+    if (!overlappingEvents) {
       return null;
     }
-    const overlappingEvents = threadEvents.filter(e => Trace.Helpers.Timing.eventIsInBounds(e, bounds));
 
     const visibleEventsFilter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleTypes());
 
@@ -234,9 +253,9 @@ export class AICallTree {
     }
   }
 
-  /* This is a new serialization format that is currently only used in tests.
-   * TODO: replace the current format with this one. */
-  serialize(): string {
+  serialize(headerLevel = 1): string {
+    const header = '#'.repeat(headerLevel);
+
     // Keep a map of URLs. We'll output a LUT to keep size down.
     const allUrls: string[] = [];
 
@@ -249,9 +268,9 @@ export class AICallTree {
     let output = '';
     if (allUrls.length) {
       // Output lookup table of URLs within this tree
-      output += '\n# All URL #s:\n\n' + allUrls.map((url, index) => `  * ${index}: ${url}`).join('\n');
+      output += `\n${header} All URLs:\n\n` + allUrls.map((url, index) => `  * ${index}: ${url}`).join('\n');
     }
-    output += '\n\n# Call tree:\n' + nodesStr;
+    output += `\n\n${header} Call tree:\n${nodesStr}`;
     return output;
   }
 

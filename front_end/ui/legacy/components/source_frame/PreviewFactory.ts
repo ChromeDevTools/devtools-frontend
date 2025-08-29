@@ -15,11 +15,11 @@ import {XMLView} from './XMLView.js';
 
 const UIStrings = {
   /**
-   *@description Text in Preview Factory of the Sources panel if the data to preview can't be shown due to an error
+   * @description Text in Preview Factory of the Sources panel if the data to preview can't be shown due to an error
    */
   failedToLoadData: 'Failed to load data',
   /**
-   *@description Text in Preview Factory of the Sources panel if there's no data to preview
+   * @description Text in Preview Factory of the Sources panel if there's no data to preview
    */
   nothingToPreview: 'Nothing to preview',
 } as const;

@@ -47,25 +47,25 @@ import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-   *@description Text in Linkifier
+   * @description Text in Linkifier
    */
   unknown: '(unknown)',
   /**
-   *@description Text short for automatic
+   * @description Text short for automatic
    */
   auto: 'auto',
   /**
-   *@description Text in Linkifier
-   *@example {Sources panel} PH1
+   * @description Text in Linkifier
+   * @example {Sources panel} PH1
    */
   revealInS: 'Reveal in {PH1}',
   /**
-   *@description Text for revealing an item in its destination
+   * @description Text for revealing an item in its destination
    */
   reveal: 'Reveal',
   /**
-   *@description A context menu item in the Linkifier
-   *@example {Extension} PH1
+   * @description A context menu item in the Linkifier
+   * @example {Extension} PH1
    */
   openUsingS: 'Open using {PH1}',
   /**
@@ -480,17 +480,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     }
     const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation) {
-      if (liveLocation instanceof Bindings.CSSWorkspaceBinding.LiveLocation) {
-        const header = (liveLocation).header();
-        if (header?.ownerNode) {
-          anchor.addEventListener('click', event => {
-            event.consume(true);
-            void Common.Revealer.reveal(header.ownerNode || null);
-          }, false);
-          Linkifier.setTrimmedText(anchor, '<style>');
-        }
-      }
-
       anchor.classList.add('invalid-link');
       anchor.removeAttribute('role');
       return;
@@ -521,7 +510,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       }
     }
     UI.Tooltip.Tooltip.install(anchor, titleText);
-    anchor.classList.toggle('ignore-list-link', await liveLocation.isIgnoreListed());
+    const isIgnoreListed = Boolean(uiLocation?.isIgnoreListed());
+    anchor.classList.toggle('ignore-list-link', isIgnoreListed);
     Linkifier.updateLinkDecorations(anchor);
   }
 

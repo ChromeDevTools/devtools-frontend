@@ -2,9 +2,9 @@ import iterateJsdoc from '../iterateJsdoc.js';
 
 export default iterateJsdoc(({
   context,
+  indent,
   jsdoc,
   utils,
-  indent,
 }) => {
   const [
     defaultRequireValue = 'always',
@@ -28,9 +28,9 @@ export default iterateJsdoc(({
   }) => {
     const {
       delimiter,
-      tag,
-      end,
       description,
+      end,
+      tag,
     } = tokens;
 
     /**

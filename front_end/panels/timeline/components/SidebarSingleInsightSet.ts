@@ -5,7 +5,6 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -25,15 +24,15 @@ const {html} = Lit.StaticHtml;
 
 const UIStrings = {
   /**
-   *@description title used for a metric value to tell the user about its score classification
-   *@example {INP} PH1
-   *@example {1.2s} PH2
-   *@example {poor} PH3
+   * @description title used for a metric value to tell the user about its score classification
+   * @example {INP} PH1
+   * @example {1.2s} PH2
+   * @example {poor} PH3
    */
   metricScore: '{PH1}: {PH2} {PH3} score',
   /**
-   *@description title used for a metric value to tell the user that the data is unavailable
-   *@example {INP} PH1
+   * @description title used for a metric value to tell the user that the data is unavailable
+   * @example {INP} PH1
    */
   metricScoreUnavailable: '{PH1}: unavailable',
   /**
@@ -81,13 +80,6 @@ export interface SidebarSingleInsightSetData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   traceMetadata: Trace.Types.File.MetaData|null;
 }
-
-/**
- * These are WIP Insights that are only shown if the user has turned on the
- * "enable experimental performance insights" experiment. This is used to enable
- * us to ship incrementally without turning insights on by default for all
- * users. */
-const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([]);
 
 type InsightNameToComponentMapping =
     Record<string, typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>>;
@@ -232,9 +224,14 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   #getLocalMetrics(insightSetKey: string) {
-    const lcp = Trace.Insights.Common.getLCP(this.#data.insights, insightSetKey);
-    const cls = Trace.Insights.Common.getCLS(this.#data.insights, insightSetKey);
-    const inp = Trace.Insights.Common.getINP(this.#data.insights, insightSetKey);
+    const insightSet = this.#data.insights?.get(insightSetKey);
+    if (!insightSet) {
+      return {};
+    }
+
+    const lcp = Trace.Insights.Common.getLCP(insightSet);
+    const cls = Trace.Insights.Common.getCLS(insightSet);
+    const inp = Trace.Insights.Common.getINP(insightSet);
 
     return {lcp, cls, inp};
   }
@@ -290,7 +287,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
     const lcpEl = this.#renderMetricValue('LCP', local.lcp?.value ?? null, local.lcp?.event ?? null);
     const inpEl = this.#renderMetricValue('INP', local.inp?.value ?? null, local.inp?.event ?? null);
-    const clsEl = this.#renderMetricValue('CLS', local.cls.value ?? null, local.cls?.worstClusterEvent ?? null);
+    const clsEl = this.#renderMetricValue('CLS', local.cls?.value ?? null, local.cls?.worstClusterEvent ?? null);
 
     const localMetricsTemplateResult = html`
       <div class="metrics-row">
@@ -379,10 +376,6 @@ export class SidebarSingleInsightSet extends HTMLElement {
       insightSetKey: string,
       activeCategory: Trace.Insights.Types.InsightCategory,
       ): {shownInsights: CategorizedInsightData[], passedInsights: CategorizedInsightData[]} {
-    const includeExperimental = Root.Runtime.experiments.isEnabled(
-        Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
-    );
-
     const insightSet = insightSets?.get(insightSetKey);
     if (!insightSet) {
       return {shownInsights: [], passedInsights: []};
@@ -394,10 +387,6 @@ export class SidebarSingleInsightSet extends HTMLElement {
     for (const [name, model] of Object.entries(insightSet.model)) {
       const componentClass = INSIGHT_NAME_TO_COMPONENT[name as keyof Trace.Insights.Types.InsightModels];
       if (!componentClass) {
-        continue;
-      }
-
-      if (!includeExperimental && EXPERIMENTAL_INSIGHTS.has(name)) {
         continue;
       }
 

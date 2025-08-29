@@ -17,44 +17,44 @@ import * as UI from '../../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-   *@description Text in the Performance panel for a forced style and layout calculation of elements
+   * @description Text in the Performance panel for a forced style and layout calculation of elements
    * in a page. See https://developer.mozilla.org/en-US/docs/Glossary/Reflow
    */
   forcedReflow: 'Forced reflow',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   *@example {Forced reflow} PH1
+   * @description Text in Timeline UIUtils of the Performance panel
+   * @example {Forced reflow} PH1
    */
   sIsALikelyPerformanceBottleneck: '{PH1} is a likely performance bottleneck.',
   /**
-   *@description Text in the Performance panel for a function called during a time the browser was
+   * @description Text in the Performance panel for a function called during a time the browser was
    * idle (inactive), which to longer to execute than a predefined deadline.
-   *@example {10ms} PH1
+   * @example {10ms} PH1
    */
   idleCallbackExecutionExtended: 'Idle callback execution extended beyond deadline by {PH1}',
   /**
-   *@description Text in the Performance panel which describes how long a task took.
-   *@example {task} PH1
-   *@example {10ms} PH2
+   * @description Text in the Performance panel which describes how long a task took.
+   * @example {task} PH1
+   * @example {10ms} PH2
    */
   sTookS: '{PH1} took {PH2}.',
   /**
-   *@description Text in the Performance panel for a task that took long. See
+   * @description Text in the Performance panel for a task that took long. See
    * https://developer.mozilla.org/en-US/docs/Glossary/Long_task
    */
   longTask: 'Long task',
   /**
-   *@description Text used to highlight a long interaction and link to web.dev/inp
+   * @description Text used to highlight a long interaction and link to web.dev/inp
    */
   longInteractionINP: 'Long interaction',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel when the
+   * @description Text in Timeline UIUtils of the Performance panel when the
    *             user clicks on a long interaction.
-   *@example {Long interaction} PH1
+   * @example {Long interaction} PH1
    */
   sIsLikelyPoorPageResponsiveness: '{PH1} is indicating poor page responsiveness.',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
+   * @description Text in Timeline UIUtils of the Performance panel
    */
   websocketProtocol: 'WebSocket protocol',
   /**

@@ -21,19 +21,19 @@ const UIStrings = {
    */
   auctionWorklet: 'Ad Auction Worklet',
   /**
-   *@description Text that refers to the animation of the web page
+   * @description Text that refers to the animation of the web page
    */
   animation: 'Animation',
   /**
-   *@description Screen reader description of a hit breakpoint in the Sources panel
+   * @description Screen reader description of a hit breakpoint in the Sources panel
    */
   breakpointHit: 'breakpoint hit',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   canvas: 'Canvas',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   clipboard: 'Clipboard',
   /**
@@ -41,87 +41,87 @@ const UIStrings = {
    */
   control: 'Control',
   /**
-   *@description Text that refers to device such as a phone
+   * @description Text that refers to device such as a phone
    */
   device: 'Device',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   domMutation: 'DOM Mutation',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   dragDrop: 'Drag / drop',
   /**
-   *@description Title for a group of cities
+   * @description Title for a group of cities
    */
   geolocation: 'Geolocation',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   keyboard: 'Keyboard',
   /**
-   *@description Text to load something
+   * @description Text to load something
    */
   load: 'Load',
   /**
-   *@description Text that appears on a button for the media resource type filter.
+   * @description Text that appears on a button for the media resource type filter.
    */
   media: 'Media',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   mouse: 'Mouse',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   notification: 'Notification',
   /**
-   *@description Text to parse something
+   * @description Text to parse something
    */
   parse: 'Parse',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   pictureinpicture: 'Picture-in-Picture',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   pointer: 'Pointer',
   /**
-   *@description Label for a group of JavaScript files
+   * @description Label for a group of JavaScript files
    */
   script: 'Script',
   /**
-   *@description Category of breakpoints
+   * @description Category of breakpoints
    */
   sharedStorageWorklet: 'Shared Storage Worklet',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   timer: 'Timer',
   /**
-   *@description Text for the touch type to simulate on a device
+   * @description Text for the touch type to simulate on a device
    */
   touch: 'Touch',
   /**
-   *@description Title for a category of breakpoints on Trusted Type violations
+   * @description Title for a category of breakpoints on Trusted Type violations
    */
   trustedTypeViolations: 'Trusted Type Violations',
   /**
-   *@description Title of the WebAudio tool
+   * @description Title of the WebAudio tool
    */
   webaudio: 'WebAudio',
   /**
-   *@description Text in DOMDebugger Model
+   * @description Text in DOMDebugger Model
    */
   window: 'Window',
   /**
-   *@description Text for the service worker type.
+   * @description Text for the service worker type.
    */
   worker: 'Worker',
   /**
-   *@description Text that appears on a button for the xhr resource type filter.
+   * @description Text that appears on a button for the xhr resource type filter.
    */
   xhr: 'XHR',
 } as const;
@@ -149,7 +149,7 @@ const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): v
         ></devtools-toolbar-input>
     </devtools-toolbar>`,
       // clang-format on
-      target, {host: input});
+      target);
 };
 
 export class FilterToolbar extends Common.ObjectWrapper.eventMixin<FilterToolbar.EventTypes, typeof UI.Widget.VBox>(
@@ -157,7 +157,7 @@ export class FilterToolbar extends Common.ObjectWrapper.eventMixin<FilterToolbar
   readonly #view: View;
   #filterText: string|null = null;
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.#view = view;
 
     this.performUpdate();
@@ -198,7 +198,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   constructor(
       breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[], viewId: string,
       detailsPausedReason: Protocol.Debugger.PausedEventReason) {
-    super(true);
+    super({useShadowDom: true});
     this.filterToolbar = new FilterToolbar();
     this.filterToolbar.addEventListener(FilterToolbar.Events.FILTER_CHANGED, this.#onFilterChanged.bind(this));
     this.filterToolbar.show(this.contentElement);

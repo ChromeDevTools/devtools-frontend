@@ -20,9 +20,7 @@ export class SettingDeprecationWarning extends HTMLElement {
   }
 
   #render({disabled, warning, experiment}: Common.Settings.Deprecation): void {
-    const iconData = {iconName: 'info', color: 'var(--icon-default)', width: '16px'};
-
-    const classes = {clickable: false};
+    const classes = {clickable: false, medium: true};
     let onclick: (() => void)|undefined;
     if (disabled && experiment) {
       classes.clickable = true;
@@ -34,7 +32,7 @@ export class SettingDeprecationWarning extends HTMLElement {
     Lit.render(
         html`
         <style>${settingDeprecationWarningStyles}</style>
-        <devtools-icon class=${Lit.Directives.classMap(classes)} .data=${iconData} title=${warning} @click=${
+        <devtools-icon class=${Lit.Directives.classMap(classes)} name="info" title=${warning} @click=${
             onclick}></devtools-icon>`,
         this.#shadow, {host: this});
   }

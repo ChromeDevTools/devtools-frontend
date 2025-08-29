@@ -51,39 +51,39 @@ const UIStrings = {
    */
   sOpcodeS: '{PH1} (Opcode {PH2})',
   /**
-   *@description Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel
+   * @description Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel
    */
   continuationFrame: 'Continuation Frame',
   /**
-   *@description Op codes text frame of map in Resource Web Socket Frame View of the Network panel
+   * @description Op codes text frame of map in Resource Web Socket Frame View of the Network panel
    */
   textMessage: 'Text Message',
   /**
-   *@description Op codes binary frame of map in Resource Web Socket Frame View of the Network panel
+   * @description Op codes binary frame of map in Resource Web Socket Frame View of the Network panel
    */
   binaryMessage: 'Binary Message',
   /**
-   *@description Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel indicating that the web socket connection has been closed.
+   * @description Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel indicating that the web socket connection has been closed.
    */
   connectionCloseMessage: 'Connection Close Message',
   /**
-   *@description Op codes ping frame of map in Resource Web Socket Frame View of the Network panel
+   * @description Op codes ping frame of map in Resource Web Socket Frame View of the Network panel
    */
   pingMessage: 'Ping Message',
   /**
-   *@description Op codes pong frame of map in Resource Web Socket Frame View of the Network panel
+   * @description Op codes pong frame of map in Resource Web Socket Frame View of the Network panel
    */
   pongMessage: 'Pong Message',
   /**
-   *@description Data grid name for Web Socket Frame data grids
+   * @description Data grid name for Web Socket Frame data grids
    */
   webSocketFrame: 'Web Socket Frame',
   /**
-   *@description Text for something not available
+   * @description Text for something not available
    */
   na: 'N/A',
   /**
-   *@description Example for placeholder text
+   * @description Example for placeholder text
    */
   filterUsingRegex: 'Filter using regex (example: (web)?socket)',
 } as const;

@@ -110,7 +110,7 @@ export default iterateJsdoc(({
     Boolean(
       !exemptGenerators || !node ||
       !('generator' in /** @type {import('../iterateJsdoc.js').Node} */ (node)) ||
-      !(/** @type {import('@typescript-eslint/types').TSESTree.FunctionDeclaration} */ (node)).generator
+      !(/** @type {import('@typescript-eslint/types').TSESTree.FunctionDeclaration} */ (node)).generator,
     )
   ) {
     report(`JSDoc @${tagName} declaration present but return expression not available in function.`);

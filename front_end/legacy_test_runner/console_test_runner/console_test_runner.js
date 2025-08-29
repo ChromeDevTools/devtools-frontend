@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 
 export const ConsoleTestRunner = {};
@@ -33,7 +33,7 @@ ConsoleTestRunner.dumpConsoleMessages = async function(printOriginatingCommand, 
  * @param {boolean=} printOriginatingCommand
  * @param {boolean=} dumpClassNames
  * @param {!ConsoleTestRunner.Formatter=} formatter
- * @return {!Promise<!Array<string>>}
+ * @returns {!Promise<!Array<string>>}
  */
 ConsoleTestRunner.dumpConsoleMessagesIntoArray = async function(printOriginatingCommand, dumpClassNames, formatter) {
   formatter = formatter || ConsoleTestRunner.prepareConsoleMessageText;
@@ -98,7 +98,7 @@ ConsoleTestRunner.dumpConsoleMessagesIntoArray = async function(printOriginating
 
 /**
  * @param {!Element} messageElement
- * @return {string}
+ * @returns {string}
  */
 ConsoleTestRunner.prepareConsoleMessageText = function(messageElement) {
   let messageText = messageElement.deepTextContent().replace(/\u200b/g, '');
@@ -118,7 +118,7 @@ ConsoleTestRunner.prepareConsoleMessageText = function(messageElement) {
 
 /**
  * @param {!Element} messageElement
- * @return {string}
+ * @returns {string}
  */
 ConsoleTestRunner.prepareConsoleMessageTextTrimmed = function(messageElement) {
   return ConsoleTestRunner.prepareConsoleMessageText(messageElement).replace(/[ ]+/g, ' ');
@@ -128,7 +128,7 @@ ConsoleTestRunner.prepareConsoleMessageTextTrimmed = function(messageElement) {
  * @param {!Console.ConsoleViewMessage.ConsoleViewMessage} viewMessage
  * @param {boolean} forceInvalidate
  * @param {!Array<string>} results
- * @return {boolean}
+ * @returns {boolean}
  */
 ConsoleTestRunner.dumpConsoleTableMessage = function(viewMessage, forceInvalidate, results) {
   if (forceInvalidate) {
@@ -237,7 +237,7 @@ ConsoleTestRunner.evaluateInConsole = function(code, callback, dontForceMainCont
 /**
  * @param {string} code
  * @param {boolean=} dontForceMainContext
- * @return {!Promise}
+ * @returns {!Promise}
  */
 ConsoleTestRunner.evaluateInConsolePromise = function(code, dontForceMainContext) {
   return new Promise(fulfill => ConsoleTestRunner.evaluateInConsole(code, fulfill, dontForceMainContext));
@@ -277,14 +277,14 @@ ConsoleTestRunner.evaluateInConsoleAndDump = function(code, callback, dontForceM
 /**
  * @param {string} code
  * @param {boolean=} dontForceMainContext
- * @return {!Promise}
+ * @returns {!Promise}
  */
 ConsoleTestRunner.evaluateInConsoleAndDumpPromise = function(code, dontForceMainContext) {
   return new Promise(fulfill => ConsoleTestRunner.evaluateInConsoleAndDump(code, fulfill, dontForceMainContext));
 };
 
 /**
- * @return {number}
+ * @returns {number}
  */
 ConsoleTestRunner.consoleMessagesCount = function() {
   const consoleView = Console.ConsoleView.ConsoleView.instance();
@@ -294,7 +294,7 @@ ConsoleTestRunner.consoleMessagesCount = function() {
 /**
  * @param {function(!Element):string|undefined} messageFormatter
  * @param {!Element} node
- * @return {string}
+ * @returns {string}
  */
 ConsoleTestRunner.formatterIgnoreStackFrameUrls = function(messageFormatter, node) {
   /**
@@ -321,7 +321,7 @@ ConsoleTestRunner.formatterIgnoreStackFrameUrls = function(messageFormatter, nod
 /**
  * @param {!Element} element
  * @param {!SDK.ConsoleModel.ConsoleMessage} message
- * @return {string}
+ * @returns {string}
  */
 ConsoleTestRunner.simpleFormatter = function(element, message) {
   return message.messageText + ':' + message.line + ':' + message.column;
@@ -453,7 +453,7 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
 /**
  * @param {function(!Element):boolean} deepFilter
  * @param {function(!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection):boolean} sectionFilter
- * @return {!Promise}
+ * @returns {!Promise}
  */
 ConsoleTestRunner.expandConsoleMessagesPromise = function(deepFilter, sectionFilter) {
   return new Promise(fulfill => ConsoleTestRunner.expandConsoleMessages(fulfill, deepFilter, sectionFilter));
@@ -519,14 +519,14 @@ ConsoleTestRunner.waitForRemoteObjectsConsoleMessages = function(callback) {
 };
 
 /**
- * @return {!Promise}
+ * @returns {!Promise}
  */
 ConsoleTestRunner.waitForRemoteObjectsConsoleMessagesPromise = function() {
   return new Promise(resolve => ConsoleTestRunner.waitForRemoteObjectsConsoleMessages(resolve));
 };
 
 /**
- * @return {!Promise}
+ * @returns {!Promise}
  */
 ConsoleTestRunner.waitUntilConsoleEditorLoaded = function() {
   let fulfill;
@@ -551,7 +551,7 @@ ConsoleTestRunner.waitUntilMessageReceived = function(callback) {
 };
 
 /**
- * @return {!Promise}
+ * @returns {!Promise}
  */
 ConsoleTestRunner.waitUntilMessageReceivedPromise = function() {
   return new Promise(fulfill => ConsoleTestRunner.waitUntilMessageReceived(fulfill));
@@ -574,7 +574,7 @@ ConsoleTestRunner.waitUntilNthMessageReceived = function(count, callback) {
 
 /**
  * @param {number} count
- * @return {!Promise}
+ * @returns {!Promise}
  */
 ConsoleTestRunner.waitUntilNthMessageReceivedPromise = function(count) {
   return new Promise(fulfill => ConsoleTestRunner.waitUntilNthMessageReceived(count, fulfill));
@@ -614,7 +614,7 @@ ConsoleTestRunner.waitForConsoleMessages = function(expectedCount, callback) {
 
 /**
  * @param {number} expectedCount
- * @return {!Promise}
+ * @returns {!Promise}
  */
 ConsoleTestRunner.waitForConsoleMessagesPromise = async function(expectedCount) {
   await new Promise(fulfill => ConsoleTestRunner.waitForConsoleMessages(expectedCount, fulfill));
@@ -640,7 +640,7 @@ ConsoleTestRunner.selectConsoleMessages = async function(fromMessage, fromTextOf
   /**
    * @param {!Node} container
    * @param {number} offset
-   * @return {?{container: !Node, offset: number}}
+   * @returns {?{container: !Node, offset: number}}
    */
   function selectionContainerAndOffset(container, offset) {
     /** @type {?Node} */
@@ -672,7 +672,7 @@ ConsoleTestRunner.addConsoleSniffer = function(override, opt_sticky) {
 
 /**
  * @param {!Function} func
- * @return {!Function}
+ * @returns {!Function}
  */
 ConsoleTestRunner.wrapListener = function(func) {
   /**
@@ -705,7 +705,7 @@ ConsoleTestRunner.dumpStackTraces = function() {
 };
 
 /**
- * @return {!{first: number, last: number, count: number}}
+ * @returns {!{first: number, last: number, count: number}}
  */
 ConsoleTestRunner.visibleIndices = function() {
   const consoleView = Console.ConsoleView.ConsoleView.instance();

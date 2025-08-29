@@ -9,8 +9,8 @@ module.exports = function loadCSS() {
   return {
     name: 'loadCSS',
     /**
-     * @param {!Object} code
-     * @param {string} id
+     * @param code
+     * @param id
      */
     transform(code, id) {
       if (id.endsWith('.css')) {

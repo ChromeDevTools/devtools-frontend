@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../generated/protocol.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
+
 import * as SDK from './sdk.js';
 
 const {getPhysicalAxisFromQueryAxis, getQueryAxisFromContainerType, PhysicalAxis, QueryAxis} = SDK.CSSContainerQuery;
@@ -47,6 +51,17 @@ describe('CSSContainerQuery', () => {
       assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.BOTH, 'horizontal-tb'), PhysicalAxis.BOTH);
       assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.BOTH, 'vertical-lr'), PhysicalAxis.BOTH);
       assert.strictEqual(getPhysicalAxisFromQueryAxis(QueryAxis.BOTH, 'vertical-rl'), PhysicalAxis.BOTH);
+    });
+  });
+
+  describeWithMockConnection('Construction from protocol payload', () => {
+    it('anchored()', () => {
+      const target = createTarget();
+      const cssModel = new SDK.CSSModel.CSSModel(target);
+      const query = new SDK.CSSContainerQuery.CSSContainerQuery(
+          cssModel, {queriesAnchored: true} as Protocol.CSS.CSSContainerQuery);
+      assert.isTrue(query.queriesAnchored);
+      assert.isUndefined(query.queriesScrollState);
     });
   });
 });

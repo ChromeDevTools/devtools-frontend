@@ -7,7 +7,7 @@ import { filter, from, fromEvent, map, mergeMap, NEVER, Observable, timer, } fro
 import { environment } from '../environment.js';
 import { packageVersion } from '../generated/version.js';
 import { assert } from '../util/assert.js';
-import { mergeUint8Arrays } from '../util/encoding.js';
+import { mergeUint8Arrays, stringToTypedArray } from '../util/encoding.js';
 import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
 import { paperFormats } from './PDFOptions.js';
@@ -190,19 +190,10 @@ export async function getReadableAsTypedArray(readable, path) {
 export async function getReadableFromProtocolStream(client, handle) {
     return new ReadableStream({
         async pull(controller) {
-            function getUnit8Array(data, isBase64) {
-                if (isBase64) {
-                    return Uint8Array.from(atob(data), m => {
-                        return m.codePointAt(0);
-                    });
-                }
-                const encoder = new TextEncoder();
-                return encoder.encode(data);
-            }
             const { data, base64Encoded, eof } = await client.send('IO.read', {
                 handle,
             });
-            controller.enqueue(getUnit8Array(data, base64Encoded ?? false));
+            controller.enqueue(stringToTypedArray(data, base64Encoded ?? false));
             if (eof) {
                 await client.send('IO.close', { handle });
                 controller.close();

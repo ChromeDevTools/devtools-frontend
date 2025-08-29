@@ -13,7 +13,7 @@ import hideIssuesMenuStyles from './hideIssuesMenu.css.js';
 
 const UIStrings = {
   /**
-   *@description Title for the tooltip of the (3 dots) Hide Issues menu icon.
+   * @description Title for the tooltip of the (3 dots) Hide Issues menu icon.
    */
   tooltipTitle: 'Hide issues',
 } as const;

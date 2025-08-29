@@ -3,7 +3,6 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type { Protocol } from 'devtools-protocol';
 import type { ElementHandle } from '../api/ElementHandle.js';
 /**
  * File choosers let you react to the page requesting for a file.
@@ -32,7 +31,7 @@ export declare class FileChooser {
     /**
      * @internal
      */
-    constructor(element: ElementHandle<HTMLInputElement>, event: Protocol.Page.FileChooserOpenedEvent);
+    constructor(element: ElementHandle<HTMLInputElement>, multiple: boolean);
     /**
      * Whether file chooser allow for
      * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#attr-multiple | multiple}

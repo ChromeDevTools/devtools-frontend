@@ -66,7 +66,7 @@ export class StartView extends UI.Widget.Widget {
   changeFormMode?: (mode: string) => void;
 
   constructor(controller: LighthouseController, panel: LighthousePanel) {
-    super(true /* useShadowDom */);
+    super({useShadowDom: true});
     this.registerRequiredCSS(lighthouseStartViewStyles);
 
     this.controller = controller;

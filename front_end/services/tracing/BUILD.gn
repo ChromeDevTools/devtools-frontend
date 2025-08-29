@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("tracing") {
   sources = [
+    "ExternalRequests.ts",
     "PerformanceTracing.ts",
     "TracingManager.ts",
   ]
@@ -15,6 +16,7 @@ devtools_module("tracing") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../models/trace:bundle",
+    "../../panels/timeline/utils:bundle",
   ]
 }
 
@@ -29,7 +31,10 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "TracingManager.test.ts" ]
+  sources = [
+    "ExternalRequests.test.ts",
+    "TracingManager.test.ts",
+  ]
 
   deps = [
     ":bundle",

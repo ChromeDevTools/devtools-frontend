@@ -2,9 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {TSESTree} from '@typescript-eslint/utils';
+
 import {createRule} from './utils/ruleCreator.ts';
 
 const EQUALITY_ASSERTIONS = new Set(['deepEqual', 'deepStrictEqual', 'equal', 'strictEqual']);
+
+function isAssertEquality(node: TSESTree.Expression) {
+  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
+      node.property.type === 'Identifier' && EQUALITY_ASSERTIONS.has(node.property.name);
+}
+
+function isLengthProperty(node: TSESTree.CallExpressionArgument): node is TSESTree.MemberExpression {
+  return node.type === 'MemberExpression' && node.property.type === 'Identifier' && node.property.name === 'length';
+}
+
+function isNumberLiteral(node: TSESTree.Node) {
+  return node.type === 'Literal' && typeof node.value === 'number';
+}
 
 export default createRule({
   name: 'prefer-assert-length-of',
@@ -22,22 +37,7 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    function isAssertEquality(calleeNode) {
-      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
-          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
-          EQUALITY_ASSERTIONS.has(calleeNode.property.name);
-    }
-
-    function isLengthProperty(argumentNode) {
-      return argumentNode.type === 'MemberExpression' && argumentNode.property.type === 'Identifier' &&
-          argumentNode.property.name === 'length';
-    }
-
-    function isNumberLiteral(argumentNode) {
-      return argumentNode.type === 'Literal' && typeof argumentNode.value === 'number';
-    }
-
-    function reportError(node) {
+    function reportError(node: TSESTree.CallExpression) {
       context.report({
         node,
         messageId: 'useAssertLengthOf',
@@ -45,7 +45,14 @@ export default createRule({
           const {sourceCode} = context;
           const calleeNode = node.callee;
           const [firstArgNode, secondArgNode] = node.arguments;
-          const objectNode = (isLengthProperty(firstArgNode) ? firstArgNode : secondArgNode).object;
+
+          const objectParentNode = isLengthProperty(firstArgNode) ? firstArgNode : secondArgNode;
+          const objectNode = objectParentNode.type === 'MemberExpression' ? objectParentNode.object : null;
+
+          if (!objectNode) {
+            return [];
+          }
+
           const lengthNode = isNumberLiteral(firstArgNode) ? firstArgNode : secondArgNode;
           return [
             fixer.replaceText(calleeNode, 'assert.lengthOf'),

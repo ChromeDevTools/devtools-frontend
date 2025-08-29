@@ -125,6 +125,7 @@ export declare class BrowsingContext extends EventEmitter<{
     addIntercept(options: AddInterceptOptions): Promise<string>;
     removePreloadScript(script: string): Promise<void>;
     setGeolocationOverride(options: SetGeoLocationOverrideOptions): Promise<void>;
+    setTimezoneOverride(timezoneId?: string): Promise<void>;
     getCookies(options?: GetCookiesOptions): Promise<Bidi.Network.Cookie[]>;
     setCookie(cookie: Bidi.Storage.PartialCookie): Promise<void>;
     setFiles(element: Bidi.Script.SharedReference, files: string[]): Promise<void>;
@@ -133,5 +134,7 @@ export declare class BrowsingContext extends EventEmitter<{
     [disposeSymbol](): void;
     deleteCookie(...cookieFilters: Bidi.Storage.CookieFilter[]): Promise<void>;
     locateNodes(locator: Bidi.BrowsingContext.Locator, startNodes: [Bidi.Script.SharedReference, ...Bidi.Script.SharedReference[]]): Promise<Bidi.Script.NodeRemoteValue[]>;
+    setJavaScriptEnabled(enabled: boolean): Promise<void>;
+    isJavaScriptEnabled(): boolean;
 }
 //# sourceMappingURL=BrowsingContext.d.ts.map

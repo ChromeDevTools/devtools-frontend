@@ -43,73 +43,73 @@ import domBreakpointsSidebarPaneStyles from './domBreakpointsSidebarPane.css.js'
 
 const UIStrings = {
   /**
-   *@description Header text to indicate there are no breakpoints
+   * @description Header text to indicate there are no breakpoints
    */
   noBreakpoints: 'No DOM breakpoints',
   /**
-   *@description DOM breakpoints description that shows if no DOM breakpoints are set
+   * @description DOM breakpoints description that shows if no DOM breakpoints are set
    */
   domBreakpointsDescription: 'DOM breakpoints pause on the code that changes a DOM node or its children.',
   /**
-   *@description Accessibility label for the DOM breakpoints list in the Sources panel
+   * @description Accessibility label for the DOM breakpoints list in the Sources panel
    */
   domBreakpointsList: 'DOM Breakpoints list',
   /**
-   *@description Text with two placeholders separated by a colon
-   *@example {Node removed} PH1
-   *@example {div#id1} PH2
+   * @description Text with two placeholders separated by a colon
+   * @example {Node removed} PH1
+   * @example {div#id1} PH2
    */
   sS: '{PH1}: {PH2}',
   /**
-   *@description Text with three placeholders separated by a colon and a comma
-   *@example {Node removed} PH1
-   *@example {div#id1} PH2
-   *@example {checked} PH3
+   * @description Text with three placeholders separated by a colon and a comma
+   * @example {Node removed} PH1
+   * @example {div#id1} PH2
+   * @example {checked} PH3
    */
   sSS: '{PH1}: {PH2}, {PH3}',
   /**
-   *@description Text exposed to screen readers on checked items.
+   * @description Text exposed to screen readers on checked items.
    */
   checked: 'checked',
   /**
-   *@description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
+   * @description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
    */
   unchecked: 'unchecked',
   /**
-   *@description Accessibility label for hit breakpoints in the Sources panel.
-   *@example {checked} PH1
+   * @description Accessibility label for hit breakpoints in the Sources panel.
+   * @example {checked} PH1
    */
   sBreakpointHit: '{PH1} breakpoint hit',
   /**
-   *@description Screen reader description of a hit breakpoint in the Sources panel
+   * @description Screen reader description of a hit breakpoint in the Sources panel
    */
   breakpointHit: 'breakpoint hit',
   /**
-   *@description A context menu item in the DOM Breakpoints sidebar that reveals the node on which the current breakpoint is set.
+   * @description A context menu item in the DOM Breakpoints sidebar that reveals the node on which the current breakpoint is set.
    */
   revealDomNodeInElementsPanel: 'Reveal DOM node in Elements panel',
   /**
-   *@description Text to remove a breakpoint
+   * @description Text to remove a breakpoint
    */
   removeBreakpoint: 'Remove breakpoint',
   /**
-   *@description A context menu item in the DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+   * @description A context menu item in the DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
    */
   removeAllDomBreakpoints: 'Remove all DOM breakpoints',
   /**
-   *@description Text in DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+   * @description Text in DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
    */
   subtreeModified: 'Subtree modified',
   /**
-   *@description Text in DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+   * @description Text in DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
    */
   attributeModified: 'Attribute modified',
   /**
-   *@description Text in DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+   * @description Text in DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
    */
   nodeRemoved: 'Node removed',
   /**
-   *@description Entry in context menu of the elements pane, allowing developers to select a DOM
+   * @description Entry in context menu of the elements pane, allowing developers to select a DOM
    * breakpoint for the element that they have right-clicked on. Short for the action 'set a
    * breakpoint on this DOM Element'. A breakpoint pauses the website when the code reaches a
    * specified line, or when a specific action happen (in this case, when the DOM Element is
@@ -117,11 +117,11 @@ const UIStrings = {
    */
   breakOn: 'Break on',
   /**
-   *@description Screen reader description for removing a DOM breakpoint.
+   * @description Screen reader description for removing a DOM breakpoint.
    */
   breakpointRemoved: 'Breakpoint removed',
   /**
-   *@description Screen reader description for setting a DOM breakpoint.
+   * @description Screen reader description for setting a DOM breakpoint.
    */
   breakpointSet: 'Breakpoint set',
 } as const;
@@ -143,7 +143,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
   #highlightedBreakpoint: SDK.DOMDebuggerModel.DOMBreakpoint|null;
 
   private constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(domBreakpointsSidebarPaneStyles);
 
     this.elementToCheckboxes = new WeakMap();

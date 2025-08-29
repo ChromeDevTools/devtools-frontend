@@ -52,7 +52,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Search from '../search/search.js';
 
-import {Events, type RequestActivatedEvent} from './NetworkDataGridNode.js';
+import {Events, type RequestActivatedEvent, RequestPanelBehavior} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkOverview} from './NetworkOverview.js';
@@ -62,63 +62,63 @@ import {type NetworkTimeCalculator, NetworkTransferTimeCalculator} from './Netwo
 
 const UIStrings = {
   /**
-   *@description Text to close something
+   * @description Text to close something
    */
   close: 'Close',
   /**
-   *@description Title of a search bar or tool
+   * @description Title of a search bar or tool
    */
   search: 'Search',
   /**
-   *@description Tooltip text that appears on the setting to preserve log when hovering over the item
+   * @description Tooltip text that appears on the setting to preserve log when hovering over the item
    */
   doNotClearLogOnPageReload: 'Do not clear log on page reload / navigation',
   /**
-   *@description Text to preserve the log after refreshing
+   * @description Text to preserve the log after refreshing
    */
   preserveLog: 'Preserve log',
   /**
-   *@description Text to disable cache while DevTools is open
+   * @description Text to disable cache while DevTools is open
    */
   disableCacheWhileDevtoolsIsOpen: 'Disable cache while DevTools is open',
   /**
-   *@description Text in Network Config View of the Network panel
+   * @description Text in Network Config View of the Network panel
    */
   disableCache: 'Disable cache',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in network panel of the network panel
+   * @description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in network panel of the network panel
    */
   networkSettings: 'Network settings',
   /**
-   *@description Tooltip for expanding network request row setting
+   * @description Tooltip for expanding network request row setting
    */
   showMoreInformationInRequestRows: 'Show more information in request rows',
   /**
-   *@description Text in Network Panel used to toggle the "big request rows" setting.
+   * @description Text in Network Panel used to toggle the "big request rows" setting.
    */
   useLargeRequestRows: 'Big request rows',
   /**
-   *@description Tooltip text for network request overview setting
+   * @description Tooltip text for network request overview setting
    */
   showOverviewOfNetworkRequests: 'Show overview of network requests',
   /**
-   *@description Text in Network Panel used to show the overview for a given network request.
+   * @description Text in Network Panel used to show the overview for a given network request.
    */
   showOverview: 'Overview',
   /**
-   *@description Tooltip for group by frame network setting
+   * @description Tooltip for group by frame network setting
    */
   groupRequestsByTopLevelRequest: 'Group requests by top level request frame',
   /**
-   *@description Text for group by frame network setting
+   * @description Text for group by frame network setting
    */
   groupByFrame: 'Group by frame',
   /**
-   *@description Tooltip for capture screenshot network setting
+   * @description Tooltip for capture screenshot network setting
    */
   captureScreenshotsWhenLoadingA: 'Capture screenshots when loading a page',
   /**
-   *@description Text to take screenshots
+   * @description Text to take screenshots
    */
   captureScreenshots: 'Screenshots',
   /**
@@ -153,12 +153,12 @@ const UIStrings = {
    */
   exportHarWithSensitiveData: 'Export `HAR` (with sensitive data)…',
   /**
-   *@description Text for throttling the network
+   * @description Text for throttling the network
    */
   throttling: 'Throttling',
   /**
-   *@description Text in Network Panel to tell the user to reload the page to capture screenshots.
-   *@example {Ctrl + R} PH1
+   * @description Text in Network Panel to tell the user to reload the page to capture screenshots.
+   * @example {Ctrl + R} PH1
    */
   hitSToReloadAndCaptureFilmstrip: 'Press {PH1} to reload and capture filmstrip.',
   /**
@@ -175,11 +175,11 @@ const UIStrings = {
    */
   openInNetworkPanelMissingRequest: 'Open in Network panel (missing request)',
   /**
-   *@description Text in Network Panel that is displayed whilst the recording is in progress.
+   * @description Text in Network Panel that is displayed whilst the recording is in progress.
    */
   recordingFrames: 'Recording frames…',
   /**
-   *@description Text in Network Panel that is displayed when frames are being fetched.
+   * @description Text in Network Panel that is displayed when frames are being fetched.
    */
   fetchingFrames: 'Fetching frames…',
   /**
@@ -222,7 +222,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   private readonly closeButtonElement: UI.UIUtils.DevToolsCloseButton;
   private preserveLogSetting: Common.Settings.Setting<boolean>;
   recordLogSetting: Common.Settings.Setting<boolean>;
-  private readonly throttlingSelect: UI.Toolbar.ToolbarComboBox;
+  private readonly throttlingSelect: UI.Toolbar.ToolbarItem;
   private readonly displayScreenshotDelay: number;
 
   constructor(displayScreenshotDelay: number) {
@@ -408,7 +408,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     return UI.ViewManager.ViewManager.instance().showView('network');
   }
 
-  throttlingSelectForTest(): UI.Toolbar.ToolbarComboBox {
+  throttlingSelectForTest(): UI.Toolbar.ToolbarItem {
     return this.throttlingSelect;
   }
 
@@ -519,10 +519,12 @@ export class NetworkPanel extends UI.Panel.Panel implements
     updateShowOptionsToGenerateHarWithSensitiveData();
   }
 
-  private createThrottlingConditionsSelect(): UI.Toolbar.ToolbarComboBox {
-    const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, i18nString(UIStrings.throttling));
+  private createThrottlingConditionsSelect(): UI.Toolbar.ToolbarItem {
+    const toolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
     toolbarItem.setMaxWidth(160);
-    MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(toolbarItem.element);
+
+    MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
+        toolbarItem.element, i18nString(UIStrings.throttling));
     return toolbarItem;
   }
 
@@ -692,9 +694,9 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
   private onRequestActivated(event: Common.EventTarget.EventTargetEvent<RequestActivatedEvent>): void {
     const {showPanel, tab, takeFocus} = event.data;
-    if (showPanel) {
+    if (showPanel === RequestPanelBehavior.ShowPanel) {
       this.showRequestPanel(tab, takeFocus);
-    } else {
+    } else if (showPanel === RequestPanelBehavior.HidePanel) {
       this.hideRequestPanel();
     }
   }

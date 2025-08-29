@@ -17,7 +17,6 @@ import {
   navigateToIssuesTab,
   toggleGroupByKind,
 } from '../../e2e/helpers/issues-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Hide issues menu', () => {
   it('should become visible on hovering over the issue header', async ({devToolsPage}) => {
@@ -56,7 +55,7 @@ describe('Hide issues menu', () => {
     await navigateToIssuesTab(devToolsPage);
     const issueTitle = 'Deprecated feature used';
     const issueHeader = await getIssueHeaderByTitle(issueTitle, devToolsPage);
-    assertNotNullOrUndefined(issueHeader);
+    assert.isOk(issueHeader);
     const hideIssuesMenu = await getHideIssuesMenu(issueHeader, devToolsPage);
     let menuDisplay = await hideIssuesMenu.evaluate(
         node => window.getComputedStyle(node as HTMLElement).getPropertyValue('visibility'));
@@ -86,7 +85,7 @@ describe('Hide issues menu', () => {
     await hideIssuesMenu.click();
     const menuItem = await getHideIssuesMenuItem(devToolsPage);
     const content = await menuItem!.evaluate(node => node.textContent);
-    assertNotNullOrUndefined(content);
+    assert.isOk(content);
     assert.include(content, 'Hide issues like this');
   });
 

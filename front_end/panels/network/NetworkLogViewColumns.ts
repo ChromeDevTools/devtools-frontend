@@ -23,131 +23,131 @@ import {RequestInitiatorView} from './RequestInitiatorView.js';
 
 const UIStrings = {
   /**
-   *@description Data grid name for Network Log data grids
+   * @description Data grid name for Network Log data grids
    */
   networkLog: 'Network Log',
   /**
-   *@description Inner element text content in Network Log View Columns of the Network panel
+   * @description Inner element text content in Network Log View Columns of the Network panel
    */
   waterfall: 'Waterfall',
   /**
-   *@description A context menu item in the Network Log View Columns of the Network panel
+   * @description A context menu item in the Network Log View Columns of the Network panel
    */
   responseHeaders: 'Response Headers',
   /**
-   *@description A context menu item in the Network Log View Columns of the Network panel
+   * @description A context menu item in the Network Log View Columns of the Network panel
    */
   requestHeaders: 'Request Headers',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   manageHeaderColumns: 'Manage Header Columns…',
   /**
-   *@description Text for the start time of an activity
+   * @description Text for the start time of an activity
    */
   startTime: 'Start Time',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   responseTime: 'Response Time',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   endTime: 'End Time',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   totalDuration: 'Total Duration',
   /**
-   *@description Text for the latency of a task
+   * @description Text for the latency of a task
    */
   latency: 'Latency',
   /**
-   *@description Text for the name of something
+   * @description Text for the name of something
    */
   name: 'Name',
   /**
-   *@description Text that refers to a file path
+   * @description Text that refers to a file path
    */
   path: 'Path',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
+   * @description Text in Timeline UIUtils of the Performance panel
    */
   url: 'Url',
   /**
-   *@description Text for one or a group of functions
+   * @description Text for one or a group of functions
    */
   method: 'Method',
   /**
-   *@description Text for the status of something
+   * @description Text for the status of something
    */
   status: 'Status',
   /**
-   *@description Generic label for any text
+   * @description Generic label for any text
    */
   text: 'Text',
   /**
-   *@description Text for security or network protocol
+   * @description Text for security or network protocol
    */
   protocol: 'Protocol',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   scheme: 'Scheme',
   /**
-   *@description Text for the domain of a website
+   * @description Text for the domain of a website
    */
   domain: 'Domain',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   remoteAddress: 'Remote Address',
   /**
-   *@description Text that refers to some types
+   * @description Text that refers to some types
    */
   type: 'Type',
   /**
-   *@description Text for the initiator of something
+   * @description Text for the initiator of something
    */
   initiator: 'Initiator',
   /**
-   *@description Column header in the Network log view of the Network panel
+   * @description Column header in the Network log view of the Network panel
    */
   hasOverrides: 'Has overrides',
   /**
-   *@description Column header in the Network log view of the Network panel
+   * @description Column header in the Network log view of the Network panel
    */
   initiatorAddressSpace: 'Initiator Address Space',
   /**
-   *@description Text for web cookies
+   * @description Text for web cookies
    */
   cookies: 'Cookies',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   setCookies: 'Set Cookies',
   /**
-   *@description Text for the size of something
+   * @description Text for the size of something
    */
   size: 'Size',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   content: 'Content',
   /**
-   *@description Noun that refers to a duration in milliseconds.
+   * @description Noun that refers to a duration in milliseconds.
    */
   time: 'Time',
   /**
-   *@description Text to show the priority of an item
+   * @description Text to show the priority of an item
    */
   priority: 'Priority',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   connectionId: 'Connection ID',
   /**
-   *@description Text in Network Log View Columns of the Network panel
+   * @description Text in Network Log View Columns of the Network panel
    */
   remoteAddressSpace: 'Remote Address Space',
 } as const;
@@ -277,11 +277,6 @@ export class NetworkLogViewColumns {
       deleteCallback: undefined,
       refreshCallback: undefined,
     }));
-    this.dataGridInternal.element.addEventListener('mousedown', event => {
-      if (!this.dataGridInternal.selectedNode && event.button) {
-        event.consume();
-      }
-    }, true);
     this.dataGridScroller = (this.dataGridInternal.scrollContainer as HTMLDivElement);
 
     this.updateColumns();
@@ -804,8 +799,10 @@ export class NetworkLogViewColumns {
 
   private addCustomHeader(headerTitle: string, headerId?: string, index?: number): Descriptor|null {
     if (!headerId) {
-      headerId = headerTitle.toLowerCase();
+      headerId = headerTitle;
     }
+    headerId = headerId.toLowerCase();
+
     if (index === undefined) {
       index = this.columns.length - 1;
     }
@@ -887,7 +884,7 @@ export class NetworkLogViewColumns {
         if (!content) {
           return false;
         }
-        popover.contentElement.appendChild(content.element);
+        content.show(popover.contentElement);
         return true;
       },
       hide: this.popupLinkifier.reset.bind(this.popupLinkifier),
@@ -1135,30 +1132,6 @@ const DEFAULT_COLUMNS = [
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'vary'),
   },
   {
-    id: 'request-header-content-type',
-    isRequestHeader: true,
-    title: i18n.i18n.lockedLazyString('Content-Type'),
-    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'Content-Type'),
-  },
-  {
-    id: 'request-header-referer',
-    isRequestHeader: true,
-    title: i18n.i18n.lockedLazyString('Referer'),
-    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'referer'),
-  },
-  {
-    id: 'request-header-origin',
-    isRequestHeader: true,
-    title: i18n.i18n.lockedLazyString('Origin'),
-    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'origin'),
-  },
-  {
-    id: 'request-header-user-agent',
-    isRequestHeader: true,
-    title: i18n.i18n.lockedLazyString('User-Agent'),
-    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'user-agent'),
-  },
-  {
     id: 'request-header-accept',
     isRequestHeader: true,
     title: i18n.i18n.lockedLazyString('Accept'),
@@ -1177,6 +1150,24 @@ const DEFAULT_COLUMNS = [
     sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'accept-language'),
   },
   {
+    id: 'request-header-content-type',
+    isRequestHeader: true,
+    title: i18n.i18n.lockedLazyString('Content-Type'),
+    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'Content-Type'),
+  },
+  {
+    id: 'request-header-origin',
+    isRequestHeader: true,
+    title: i18n.i18n.lockedLazyString('Origin'),
+    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'origin'),
+  },
+  {
+    id: 'request-header-referer',
+    isRequestHeader: true,
+    title: i18n.i18n.lockedLazyString('Referer'),
+    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'referer'),
+  },
+  {
     id: 'request-header-sec-fetch-dest',
     isRequestHeader: true,
     title: i18n.i18n.lockedLazyString('Sec-Fetch-Dest'),
@@ -1187,6 +1178,12 @@ const DEFAULT_COLUMNS = [
     isRequestHeader: true,
     title: i18n.i18n.lockedLazyString('Sec-Fetch-Mode'),
     sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'sec-fetch-mode'),
+  },
+  {
+    id: 'request-header-user-agent',
+    isRequestHeader: true,
+    title: i18n.i18n.lockedLazyString('User-Agent'),
+    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'user-agent'),
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
   {

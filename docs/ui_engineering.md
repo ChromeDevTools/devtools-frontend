@@ -24,11 +24,17 @@ We should however strive to expose a “HTML-native” API: e.g. toolbar doesn�
 
 ## Model-View-Presenter architecture
 
-We should strictly separate business logic, from UI logic and presentation. This means that most of the UI code should be centered around a presenter (subclass of a `UI.Widget`) that gets a view function injected. All the logic that is not related to the DevTools UI (i.e. that would stay the same if we rewrite DevTools as a command-line tool), should belong to the model layer.
+We should strictly separate business logic from UI logic and presentation. This means that most of the UI code should be centered around a presenter (a subclass of `UI.Widget`) that gets a view function injected. All the logic that is not related to the DevTools UI (i.e., that would stay the same if we were to rewrite DevTools as a command-line tool) should belong to the model layer.
 
-The presenter code should make no assumptions about the details of model or view code. It should not care what race conditions CDP exposes or how many layers of `<div class=”wrapper”>` does the markup have. However, for simplicity, the injected view function should have a default implementation inlined with a presenter (see an example below).
+The presenter should make no assumptions about the details of the model or view code. It should not care what race conditions CDP exposes or how many layers of `<div class="wrapper">` the markup has.
 
-In tests, we use a simple stub as a view function, which allows us to test the presenter logic without any DOM manipulation. To test the view function itself we should use screenshot and e2e tests.
+For testability and simplicity, the view function should be injectable into the presenter's constructor. The presenter should also provide a default view. The recommended pattern is to define the default rendering logic in a separate, exported function named `DEFAULT_VIEW`. The presenter's constructor can then use this as the default value for its `view` parameter.
+
+This approach has two main benefits:
+1.  **Testability**: In unit tests, we can pass a simple stub as the view function, which allows us to test the presenter's logic without any DOM manipulation.
+2.  **Clarity**: It cleanly separates the presenter's logic from its rendering logic.
+
+To test the `DEFAULT_VIEW` function itself, we should use screenshot and e2e tests.
 
 ## Declarative and orchestrated DOM updates
 
@@ -38,21 +44,41 @@ To embed another presenter (`UI.Widget`) in the lit-html template, use `<devtool
 
 This will instantiate a `Widget` class with the web component as its `element` and, optionally, will set the properties provided in the second parameter. The widget won’t be re-instantiated on the subsequent template renders, but the properties would be updated. For this to work, the widget needs to accept `HTMLElement` as a sole constructor parameter and properties need to be public members or setters.
 
-For backwards compatibility, the first argument to `widgetConfig` can also be a factory function: `<devtools-widget .widgetConfig=${widgetConfig(element => new MyWidget(foo, bar, element))}>`. Similar to the class constructor version, `element` is the actual `<devtools-widget>` so the following two invocations of `widgetConfig` are equivalent: `widgetConfig(MyWidget)` and `widgetConfig(element = new MyWidget(element))`.
+For backwards compatibility, the first argument to `widgetConfig` can also be a factory function: `<devtools-widget .widgetConfig=${widgetConfig(element => new MyWidget(foo, bar, element))}>`. Similar to the class constructor version, `element` is the actual `<devtools-widget>` so the following two invocations of `widgetConfig` are equivalent: `widgetConfig(MyWidget)` and `widgetConfig(element => new MyWidget(element))`.
 
 ## Styling
 To prevent style conflicts in widgets without relying on shadow DOM, we use the CSS [`@scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/@scope) at-rule for style encapsulation. This ensures that styles defined for a widget do not leak out and affect other components.
 
-To simplify this process, a helper function, `UI.Widget.widgetScoped`, is provided. This function automatically wraps the given CSS rules in an `@scope to (devtools-widget)` block. The to (devtools-widget) part is crucial, as it establishes a "lower boundary," preventing the styles from cascading into any nested child widgets (which are rendered as <devtools-widget> elements).
+The convention is to add the `@scope` rule directly into the widget's .css file. The scope's "lower boundary" is set to `(devtools-widget > *)`. This prevents the styles from cascading into the contents of any nested child widgets, while still allowing the parent to style the `<devtools-widget>` element itself.
 
+First, define the styles within an @scope block in your CSS file:
+
+```css
+/* my-widget.css */
+@scope to (devtools-widget > *) {
+  /* Use :scope to style the widget's container element itself. */
+  :scope {
+    width: 100%;
+    box-shadow: none;
+  }
+
+  .title {
+    font-size: 1.2em;
+    color: var(--sys-color-tonal-on-container);
+  }
+}
+```
+
+Then, import and use these styles in your widget's view function:
 ```ts
+/* myWidget.ts */
 import {html} from 'lit-html';
 import * as UI from '../../ui/legacy/legacy.js';
 import myWidgetStyles from './myWidget.css.js';
 
 render(html`
   <style>
-    ${UI.Widget.widgetScoped(myWidgetStyles)}
+    ${myWidgetStyles}
   </style>
   <div class="container">
     <h3 class="title">My Widget</h3>
@@ -62,7 +88,7 @@ render(html`
 `, this.element);
 ```
 
-In this example, styles like `.title` will apply within the parent widget but will not apply to any elements inside the nested `<devtools-widget>`.
+In this example, the `.title` style will apply within the parent widget but will not leak into the nested `<devtools-widget>`. Because this convention relies on developer discipline, it is important to verify its correct application during code reviews.
 
 ## Examples
 
@@ -80,22 +106,33 @@ In this example, styles like `.title` will apply within the parent widget but wi
 ```
 
 ```ts
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+const DEFAULT_VIEW = (input, output, target) => {
+  render(html`
+    <devtools-widget .widgetConfig=${widgetConfig(MetricsPane, {element: input.element})}>
+    </devtools-widget>
+    <devtools-toolbar>
+      <devtools-filter-input @change=${input.onFilter}></devtools-filter-input>
+      <devtools-checkbox @change=${input.onShowAll}>Show All</devtools-checkbox>
+      <devtools-checkbox @change=${input.onGroup}>Group</devtools-checkbox>
+    </devtools-toolbar>
+    <devtools-tree-outline>
+      ${input.properties.map(p => html`<li>
+        <dt>${p.key}</dt><dd>${renderValue(p.value)}</dd>
+        <ol>${p.subproperties.map(...)}
+        </li>`)}
+    </devtools-tree-outline>
+  `, target);
+};
+
 class StylesPane extends UI.Widget {
-  constructor(element, view = (input, output, target) => {
-    render(html`
-      <devtools-widget .widgetConfig=${widgetConfig(MetricsPane, {element: input.element})}>
-      </devtools-widget>
-      <devtools-toolbar>
-        <devtools-filter-input @change=${input.onFilter}></devtools-filter-input>
-        <devtools-checkbox @change=${input.onShowAll}>Show All</devtools-checkbox>
-        <devtools-checkbox @change=${input.onGroup}>Group</devtools-checkbox>
-      </devtools-toolbar>
-      <devtools-tree-outline>
-        ${input.properties.map(p => html`<li>
-          <dt>${p.key}</dt><dd>${renderValue(p.value)}</dd>
-          <ol>${p.subproperties.map(...)}
-          </li>`)}
-      </devtools-tree-outline>`
+  #view: View;
+  constructor(element, view = DEFAULT_VIEW) {
+    this.#view = view;
+  }
+
+  performUpdate() {
+    this.#view(inputPlaceholder, this.#outputPlaceholder, this.contentElement);
   }
 }
 ```

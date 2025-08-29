@@ -526,7 +526,7 @@ export enum Action {
   AiAssistanceOpenedFromNetworkPanel = 170,
   AiAssistanceOpenedFromSourcesPanel = 171,
   AiAssistanceOpenedFromSourcesPanelFloatingButton = 172,
-  AiAssistanceOpenedFromPerformancePanel = 173,
+  AiAssistanceOpenedFromPerformancePanelCallTree = 173,
   AiAssistanceOpenedFromNetworkPanelFloatingButton = 174,
   AiAssistancePanelOpened = 175,
   AiAssistanceQuerySubmitted = 176,
@@ -536,7 +536,9 @@ export enum Action {
   AiAssistanceSideEffectRejected = 180,
   AiAssistanceError = 181,
   AiAssistanceOpenedFromPerformanceInsight = 182,
-  MAX_VALUE = 183,
+  AiAssistanceOpenedFromPerformanceFullButton = 183,
+  AiCodeCompletionResponseServedFromCache = 184,
+  MAX_VALUE = 185,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -823,15 +825,16 @@ export enum DevtoolsExperiments {
   'highlight-errors-elements-panel' = 73,
   'use-source-map-scopes' = 76,
   'timeline-show-postmessage-events' = 86,
+  'timeline-save-as-gz' = 108,
+  'timeline-ask-ai-full-button' = 109,
   'timeline-enhanced-traces' = 90,
   'timeline-compiled-sources' = 91,
   'timeline-debug-mode' = 93,
-  'timeline-experimental-insights' = 102,
   'vertical-drawer' = 107,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 108,
+  MAX_VALUE = 110,
 }
 
 // Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added.

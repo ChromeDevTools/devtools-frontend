@@ -9,10 +9,10 @@ const trimStart = (string) => {
 };
 
 export default iterateJsdoc(({
-  sourceCode,
+  indent,
   jsdocNode,
   report,
-  indent,
+  sourceCode,
 }) => {
   // `indent` is whitespace from line 1 (`/**`), so slice and account for "/".
   const indentLevel = indent.length + 1;

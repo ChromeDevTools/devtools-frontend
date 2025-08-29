@@ -29,6 +29,7 @@ generate_css("css_files") {
 devtools_module("sources") {
   sources = [
     "AddSourceMapURLDialog.ts",
+    "AiCodeCompletionPlugin.ts",
     "AiWarningInfobarPlugin.ts",
     "BreakpointEditDialog.ts",
     "BreakpointsView.ts",
@@ -68,7 +69,9 @@ devtools_module("sources") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../models/ai_code_completion:bundle",
     "../../models/bindings:bundle",
     "../../models/breakpoints:bundle",
     "../../models/extensions:bundle",
@@ -115,7 +118,6 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/*",
-    "../../panels/ai_assistance/*",
     "../../panels/explain/*",
     "../../panels/network/*",
     "../browser_debugger/*",
@@ -148,6 +150,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "AiCodeCompletionPlugin.test.ts",
     "BreakpointEditDialog.test.ts",
     "BreakpointsView.test.ts",
     "BreakpointsViewUtils.test.ts",
@@ -161,6 +164,7 @@ ts_library("unittests") {
     "OutlineQuickOpen.test.ts",
     "ResourceOriginPlugin.test.ts",
     "SourcesNavigator.test.ts",
+    "SourcesPanel.test.ts",
     "SourcesView.test.ts",
     "TabbedEditorContainer.test.ts",
     "UISourceCodeFrame.test.ts",

@@ -323,9 +323,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       const authenticatorId = 'authenticator-1' as Protocol.WebAuthn.AuthenticatorId;
       let panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
       let transport = panel.contentElement.querySelector<HTMLSelectElement>('#transport');
-      if (!transport) {
-        assert.fail('Transport select is not present');
-      }
+      assert.isOk(transport, 'Transport select is not present');
       let internalTransportIndex = -1;
       for (let i = 0; i < transport.options.length; ++i) {
         if (transport.options[i].value === Protocol.WebAuthn.AuthenticatorTransport.Internal) {
@@ -354,9 +352,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       // Restoring the authenticator when loading the panel again should also cause "internal" to be disabled.
       panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
       transport = panel.contentElement.querySelector<HTMLSelectElement>('#transport');
-      if (!transport) {
-        assert.fail('Transport select is not present');
-      }
+      assert.isOk(transport, 'Transport select is not present');
       assert.isTrue(transport.options[internalTransportIndex].disabled);
 
       // Removing the internal authenticator should re-enable the option.

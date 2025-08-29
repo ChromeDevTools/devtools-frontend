@@ -2,9 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// We use ts-ignore here because the error is about the imported file not being
+// part of this project. We do not want to make it part of the project & start
+// pulling in half of DevTools, so we import the types but ignore the error.
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import type {AidaRequest} from '../../front_end/core/host/AidaClient.ts';
+import type {DoConversationRequest, DoConversationResponse} from '../../front_end/core/host/AidaClient.ts';
+
+export type {RpcGlobalId} from '../../front_end/core/host/AidaClient.ts';
 
 declare global {
   interface Window {
@@ -44,8 +49,8 @@ export interface ExecutedExample {
  * The result of making a single request to Aida.
  */
 export interface IndividualPromptRequestResponse {
-  request: AidaRequest|string;
-  response: string|object;
+  request: string|DoConversationRequest;
+  aidaResponse: string|DoConversationResponse;
   exampleId: string;
   /** Automatically computed score [0-1]. */
   score?: number;

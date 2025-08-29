@@ -4,6 +4,7 @@
 
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 import * as TimelineComponents from './components.js';
@@ -11,7 +12,7 @@ import * as TimelineComponents from './components.js';
 describeWithEnvironment('TimelineComponents Invalidations', () => {
   it('processes and groups invalidations correctly', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'style-invalidation-change-attribute.json.gz');
-    const updateLayoutTreeEvent = parsedTrace.Renderer.allTraceEntries.find(event => {
+    const updateLayoutTreeEvent = allThreadEntriesInTrace(parsedTrace).find(event => {
       return Trace.Types.Events.isUpdateLayoutTree(event) &&
           event.args.beginData?.stackTrace?.[0].functionName === 'testFuncs.changeAttributeAndDisplay';
     });

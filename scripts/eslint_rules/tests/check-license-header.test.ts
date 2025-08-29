@@ -115,7 +115,7 @@ main()
       code: 'import * as Action from \'./Action.js\';',
       filename: 'front_end/ui/ui.js',
       errors: [{messageId: 'missingLicense'}],
-      output: `// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
+      output: `// Copyright ${CURRENT_YEAR} The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -130,7 +130,7 @@ import * as Action from './Action.js';
       filename: 'front_end/ui/ui.js',
       errors: [{messageId: 'incorrectLineLicense'}],
       output: `
-// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -146,7 +146,7 @@ import * as Action from './Action.js';
 (async function() {})();`,
       filename: 'test/webtests/http/tests/devtools/a11y-axe-core/sources/call-stack-a11y-test.js',
       errors: [{messageId: 'incorrectLineLicense'}],
-      output: `// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
+      output: `// Copyright ${CURRENT_YEAR} The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -167,7 +167,7 @@ import * as Action from './Action.js';
       filename: 'front_end/ui/ui.js',
       errors: [{messageId: 'incorrectLineLicense'}],
       output: `
-// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -190,7 +190,7 @@ import * as Action from './Action.js';
       filename: 'front_end/ui/ui.js',
       errors: [{messageId: 'incorrectBlockLicense'}],
       output: `
-// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -224,7 +224,7 @@ interface String {
       filename: 'front_end/legacy/legacy-defs.d.ts',
       errors: [{messageId: 'missingLicense'}],
       output: `
-// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -257,7 +257,7 @@ main()
       errors: [{messageId: 'missingLicense'}],
       output: `#!/usr/bin/env node
 
-// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -278,7 +278,7 @@ main()
       errors: [{messageId: 'incorrectLineLicense'}],
       output: `#!/usr/bin/env node
 
-// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 

@@ -15,7 +15,6 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as ReportView from '../../../ui/components/report_view/report_view.js';
@@ -52,7 +51,7 @@ const UIStrings = {
   unknown: 'Unknown Status',
   /**
    * @description Status text for the status of the back/forward cache status indicating that
-   * the back/forward cache was not used and a normal navigation occured instead.
+   * the back/forward cache was not used and a normal navigation occurred instead.
    */
   normalNavigation:
       'Not served from back/forward cache: to trigger back/forward cache, use Chrome\'s back/forward buttons, or use the test button below to automatically navigate away and back.',
@@ -137,8 +136,8 @@ const UIStrings = {
    */
   framesPerIssue: '{n, plural, =1 {# frame} other {# frames}}',
   /**
-   *@description Title for a frame in the frame tree that doesn't have a URL. Placeholder indicates which number frame with a blank URL it is.
-   *@example {3} PH1
+   * @description Title for a frame in the frame tree that doesn't have a URL. Placeholder indicates which number frame with a blank URL it is.
+   * @example {3} PH1
    */
   blankURLTitle: 'Blank URL [{PH1}]',
   /**
@@ -310,8 +309,8 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     // clang-format on
   }
 
-  #maybeRenderFrameTree(explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|
-                        undefined): Lit.LitTemplate {
+  #maybeRenderFrameTree(explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|undefined):
+      Lit.LitTemplate {
     if (!explanationTree || (explanationTree.explanations.length === 0 && explanationTree.children.length === 0)) {
       return Lit.nothing;
     }
@@ -321,12 +320,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       return html`
         <div class="text-ellipsis">
           ${node.treeNodeData.iconName ? html`
-            <devtools-icon class="inline-icon" style="margin-bottom: -3px;" .data=${{
-              iconName: node.treeNodeData.iconName,
-              color: 'var(--icon-default)',
-              width: '20px',
-              height: '20px',
-            } as IconButton.Icon.IconData}>
+            <devtools-icon class="inline-icon extra-large" .name=${node.treeNodeData.iconName} style="margin-bottom: -3px;">
             </devtools-icon>
           ` : Lit.nothing}
           ${node.treeNodeData.text}
@@ -427,13 +421,8 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         // clang-format off
         return html`
           <devtools-report-section>
-            <div class="status">
-              <devtools-icon class="inline-icon" .data=${{
-                iconName: 'check-circle',
-                color: 'var(--icon-checkmark-green)',
-                width: '20px',
-                height: '20px',
-                } as IconButton.Icon.IconData}>
+            <div class="status extra-large">
+              <devtools-icon class="inline-icon extra-large" name="check-circle" style="color: var(--icon-checkmark-green);">
               </devtools-icon>
             </div>
             ${i18nString(UIStrings.restoredFromBFCache)}
@@ -445,12 +434,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         return html`
           <devtools-report-section>
             <div class="status">
-              <devtools-icon class="inline-icon" .data=${{
-                  iconName: 'clear',
-                  color: 'var(--icon-default)',
-                  width: '20px',
-                  height: '20px',
-                  } as IconButton.Icon.IconData}>
+              <devtools-icon class="inline-icon extra-large" name="clear">
               </devtools-icon>
             </div>
             ${i18nString(UIStrings.normalNavigation)}
@@ -529,12 +513,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         <devtools-report-section-header>
           ${category}
           <div class="help-outline-icon">
-            <devtools-icon class="inline-icon" .data=${{
-              iconName: 'help',
-              color: 'var(--icon-default)',
-              width: '16px',
-              height: '16px',
-              } as IconButton.Icon.IconData} title=${explainerText}>
+            <devtools-icon class="inline-icon medium" name="help" title=${explainerText}>
             </devtools-icon>
           </div>
         </devtools-report-section-header>
@@ -621,12 +600,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         ${(explanation.reason in NotRestoredReasonDescription) ?
           html`
             <div class="circled-exclamation-icon">
-              <devtools-icon class="inline-icon" .data=${{
-                iconName: 'warning',
-                color: 'var(--icon-warning)',
-                width: '16px',
-                height: '16px',
-              } as IconButton.Icon.IconData}>
+              <devtools-icon class="inline-icon medium" style="color: var(--icon-warning)" name="warning">
               </devtools-icon>
             </div>
             <div>

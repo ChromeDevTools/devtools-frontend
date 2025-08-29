@@ -92,6 +92,7 @@ There have been many features added and changes made to the `file-entry-cache` c
 
 # FileEntryCache Options (FileEntryCacheOptions)
 - `currentWorkingDirectory?` - The current working directory. Used when resolving relative paths.
+- `useModifiedTime?` - If `true` it will use the modified time to determine if the file has changed. Default is `true`
 - `useCheckSum?` - If `true` it will use a checksum to determine if the file has changed. Default is `false`
 - `hashAlgorithm?` - The algorithm to use for the checksum. Default is `md5` but can be any algorithm supported by `crypto.createHash`
 - `cache.ttl?` - The time to live for the cache in milliseconds. Default is `0` which means no expiration
@@ -117,7 +118,7 @@ There have been many features added and changes made to the `file-entry-cache` c
 - `removeEntry(filePath: string): void` - Removes an entry from the cache. This can be `relative` or `absolute` paths.
 - `reconcile(): void` - Saves the cache to disk and removes any files that are no longer found.
 - `hasFileChanged(filePath: string): boolean` - Checks if the file has changed. This will return `true` if the file has changed.
-- `getFileDescriptor(filePath: string, options?: { useCheckSum?: boolean, currentWorkingDirectory?: string }): FileEntryDescriptor` - Gets the file descriptor for the file. Please refer to the entire section on `Get File Descriptor` for more information.
+- `getFileDescriptor(filePath: string, options?: { useModifiedTime?: boolean, useCheckSum?: boolean, currentWorkingDirectory?: string }): FileEntryDescriptor` - Gets the file descriptor for the file. Please refer to the entire section on `Get File Descriptor` for more information.
 - `normalizeEntries(entries: FileEntryDescriptor[]): FileEntryDescriptor[]` - Normalizes the entries to have the correct paths. This is used when loading the cache from disk.
 - `analyzeFiles(files: string[])` will return `AnalyzedFiles` object with `changedFiles`, `notFoundFiles`, and `notChangedFiles` as FileDescriptor arrays.
 - `getUpdatedFiles(files: string[])` will return an array of `FileEntryDescriptor` objects that have changed.

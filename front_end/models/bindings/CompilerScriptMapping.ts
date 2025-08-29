@@ -31,12 +31,12 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import type {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
-import {IgnoreListManager} from './IgnoreListManager.js';
 import {NetworkProject} from './NetworkProject.js';
 
 /**
@@ -131,7 +131,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     // Find the source location for the raw location.
     const {lineNumber, columnNumber} = script.rawLocationToRelativeLocation(rawLocation);
     const entry = sourceMap.findEntry(lineNumber, columnNumber);
-    if (!entry || !entry.sourceURL) {
+    if (!entry?.sourceURL) {
       return [];
     }
 
@@ -215,7 +215,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     }
 
     const entry = sourceMap.findEntry(lineNumber, columnNumber, rawLocation.inlineFrameIndex);
-    if (!entry || !entry.sourceURL) {
+    if (!entry?.sourceURL) {
       return null;
     }
 
@@ -291,12 +291,19 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     return ranges;
   }
 
+  translateRawFramesStep(
+      _rawFrames: StackTraceImpl.Trie.RawFrame[],
+      _translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): boolean {
+    // TODO(crbug.com/433162438): Implement source map stack trace translation.
+    return false;
+  }
+
   /**
    * Computes the set of line numbers which are source-mapped to a script within the
    * given {@link uiSourceCode}.
    *
    * @param uiSourceCode the source mapped entity.
-   * @return a set of source-mapped line numbers or `null` if the {@link uiSourceCode}
+   * @returns a set of source-mapped line numbers or `null` if the {@link uiSourceCode}
    *         is not provided by this {@link CompilerScriptMapping} instance.
    */
   getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Set<number>|null {
@@ -329,7 +336,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     // Create stub UISourceCode for the time source mapping is being loaded.
     this.addStubUISourceCode(script);
     void this.#debuggerWorkspaceBinding.updateLocations(script);
-    if (IgnoreListManager.instance().isUserIgnoreListedURL(
+    if (Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(
             script.sourceURL, {isContentScript: script.isContentScript()})) {
       this.#sourceMapManager.cancelAttachSourceMap(script);
     }

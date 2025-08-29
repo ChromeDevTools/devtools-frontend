@@ -3,7 +3,7 @@
  * Copyright 2024 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { disposeSymbol } from '../../util/disposable.js';
 import type { BrowsingContext } from './BrowsingContext.js';
@@ -41,6 +41,7 @@ export declare class Request extends EventEmitter<{
     continueRequest({ url, method, headers, cookies, body, }: Omit<Bidi.Network.ContinueRequestParameters, 'request'>): Promise<void>;
     failRequest(): Promise<void>;
     provideResponse({ statusCode, reasonPhrase, headers, body, }: Omit<Bidi.Network.ProvideResponseParameters, 'request'>): Promise<void>;
+    getResponseContent(): Promise<Uint8Array>;
     continueWithAuth(parameters: Bidi.Network.ContinueWithAuthCredentials | Bidi.Network.ContinueWithAuthNoCredentials): Promise<void>;
     private dispose;
     [disposeSymbol](): void;

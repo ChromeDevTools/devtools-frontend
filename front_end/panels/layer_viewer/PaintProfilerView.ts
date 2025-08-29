@@ -42,31 +42,31 @@ import paintProfilerStyles from './paintProfiler.css.js';
 
 const UIStrings = {
   /**
-   *@description Text to indicate the progress of a profile
+   * @description Text to indicate the progress of a profile
    */
   profiling: 'Profiling…',
   /**
-   *@description Text in Paint Profiler View of the Layers panel
+   * @description Text in Paint Profiler View of the Layers panel
    */
   shapes: 'Shapes',
   /**
-   *@description Text in Paint Profiler View of the Layers panel
+   * @description Text in Paint Profiler View of the Layers panel
    */
   bitmap: 'Bitmap',
   /**
-   *@description Generic label for any text
+   * @description Generic label for any text
    */
   text: 'Text',
   /**
-   *@description Text in Paint Profiler View of the Layers panel
+   * @description Text in Paint Profiler View of the Layers panel
    */
   misc: 'Misc',
   /**
-   *@description ARIA label for a pie chart that shows the results of the paint profiler
+   * @description ARIA label for a pie chart that shows the results of the paint profiler
    */
   profilingResults: 'Profiling results',
   /**
-   *@description Label for command log tree in the Profiler tab
+   * @description Label for command log tree in the Profiler tab
    */
   commandLog: 'Command Log',
 } as const;
@@ -99,7 +99,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
   private updateImageTimer?: number;
 
   constructor(showImageCallback: (arg0?: string|undefined) => void) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(paintProfilerStyles);
 
     this.contentElement.classList.add('paint-profiler-overview');

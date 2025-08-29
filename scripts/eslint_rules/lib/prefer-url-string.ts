@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Prefer `urlString` helper over sprinkling casts to
+ * @file Prefer `urlString` helper over sprinkling casts to
  * `UrlString` across the codebase..
  */
 

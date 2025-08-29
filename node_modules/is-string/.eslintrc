@@ -5,15 +5,5 @@
 
 	"rules": {
 		"func-name-matching": 0,
-		"max-statements": [2, 15]
 	},
-
-	"overrides": [
-		{
-			"files": ["test.js"],
-			"rules": {
-				"no-magic-numbers": 0,
-			},
-		},
-	],
 }

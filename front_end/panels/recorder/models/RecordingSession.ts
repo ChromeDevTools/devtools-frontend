@@ -38,7 +38,7 @@ interface TargetInfoChangedEvent {
   target: SDK.Target.Target;
 }
 
-interface TargerCreatedRecorderEvent {
+interface TargetCreatedRecorderEvent {
   type: 'targetCreated';
   event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>;
   target: SDK.Target.Target;
@@ -58,7 +58,7 @@ interface BindingCalledRecorderEvent {
 }
 
 type RecorderEvent =
-    |TargetInfoChangedEvent|TargerCreatedRecorderEvent|TargetClosedRecorderEvent|BindingCalledRecorderEvent;
+    |TargetInfoChangedEvent|TargetCreatedRecorderEvent|TargetClosedRecorderEvent|BindingCalledRecorderEvent;
 
 const unrelatedNavigationTypes = new Set([
   'typed',
@@ -652,7 +652,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
     });
   }
 
-  async #handleTargetCreated(event: TargerCreatedRecorderEvent): Promise<void> {
+  async #handleTargetCreated(event: TargetCreatedRecorderEvent): Promise<void> {
     if (event.event.data.type !== 'page' && event.event.data.type !== 'iframe') {
       return;
     }

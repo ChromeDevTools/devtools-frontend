@@ -166,11 +166,11 @@ interface RecordingSnapshotOptions {
   /**
    * Whether to keep the offsets for recording or not.
    *
-   * @defaultValue `false`
+   * @default false
    */
   offsets?: boolean;
   /**
-   * @defaultValue `true`
+   * @default true
    */
   expectCommon?: boolean;
   resource?: string;

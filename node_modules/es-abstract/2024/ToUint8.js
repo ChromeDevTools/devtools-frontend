@@ -1,6 +1,6 @@
 'use strict';
 
-var isFinite = require('../helpers/isFinite');
+var isFinite = require('math-intrinsics/isFinite');
 
 var modulo = require('./modulo');
 var ToNumber = require('./ToNumber');

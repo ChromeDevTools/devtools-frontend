@@ -19,96 +19,96 @@ import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit
-   *@example {conditional breakpoint} PH1
+   * @description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit
+   * @example {conditional breakpoint} PH1
    */
   pausedOnS: 'Paused on {PH1}',
   /**
-   *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a child is added to the subtree
-   *@example {node} PH1
+   * @description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a child is added to the subtree
+   * @example {node} PH1
    */
   childSAdded: 'Child {PH1} added',
   /**
-   *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is added
-   *@example {node} PH1
+   * @description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is added
+   * @example {node} PH1
    */
   descendantSAdded: 'Descendant {PH1} added',
   /**
-   *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is removed
-   *@example {node} PH1
+   * @description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is removed
+   * @example {node} PH1
    */
   descendantSRemoved: 'Descendant {PH1} removed',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   pausedOnEventListener: 'Paused on event listener',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   pausedOnXhrOrFetch: 'Paused on XHR or fetch',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   pausedOnException: 'Paused on exception',
   /**
-   *@description We pause exactly when the promise rejection is happening, so that the user can see where in the code it comes from.
+   * @description We pause exactly when the promise rejection is happening, so that the user can see where in the code it comes from.
    * A Promise is a Web API object (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise),
    * that will either be 'fulfilled' or 'rejected' at some unknown time in the future.
    * The subject of the term is omited but it is "Execution", that is, "Execution was paused on <event>".
    */
   pausedOnPromiseRejection: 'Paused on `promise` rejection',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   pausedOnAssertion: 'Paused on assertion',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   pausedOnDebuggedFunction: 'Paused on debugged function',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   pausedBeforePotentialOutofmemory: 'Paused before potential out-of-memory crash',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   pausedOnCspViolation: 'Paused on CSP violation',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel specifying cause of break
+   * @description Text in Debugger Paused Message of the Sources panel specifying cause of break
    */
   trustedTypeSinkViolation: '`Trusted Type` Sink Violation',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel specifying cause of break
+   * @description Text in Debugger Paused Message of the Sources panel specifying cause of break
    */
   trustedTypePolicyViolation: '`Trusted Type` Policy Violation',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   pausedOnBreakpoint: 'Paused on breakpoint',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   debuggerPaused: 'Debugger paused',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   subtreeModifications: 'subtree modifications',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   attributeModifications: 'attribute modifications',
   /**
-   *@description Text in Debugger Paused Message of the Sources panel
+   * @description Text in Debugger Paused Message of the Sources panel
    */
   nodeRemoval: 'node removal',
   /**
-   *@description Error message text
-   *@example {Snag Error} PH1
+   * @description Error message text
+   * @example {Snag Error} PH1
    */
   webglErrorFiredS: 'WebGL Error Fired ({PH1})',
   /**
-   *@description Text in DOMDebugger Model
-   *@example {"script-src 'self'"} PH1
+   * @description Text in DOMDebugger Model
+   * @example {"script-src 'self'"} PH1
    */
   scriptBlockedDueToContent: 'Script blocked due to Content Security Policy directive: {PH1}',
 } as const;
@@ -159,12 +159,9 @@ export class DebuggerPausedMessage {
 
     const mainElement = messageWrapper.createChild('div', 'status-main');
     const mainIcon = new IconButton.Icon.Icon();
-    mainIcon.data = {
-      iconName: 'info',
-      color: 'var(--sys-color-on-yellow-container)',
-      width: '16px',
-      height: '16px',
-    };
+    mainIcon.name = 'info';
+    mainIcon.style.color = 'var(--sys-color-on-yellow-container)';
+    mainIcon.classList.add('medium');
     mainElement.appendChild(mainIcon);
     const breakpointType = BreakpointTypeNouns.get(data.type);
     mainElement.appendChild(document.createTextNode(
@@ -294,12 +291,9 @@ export class DebuggerPausedMessage {
       const messageWrapper = document.createElement('span');
       const mainElement = messageWrapper.createChild('div', 'status-main');
       const mainIcon = new IconButton.Icon.Icon();
-      mainIcon.data = {
-        iconName: errorLike ? 'cross-circle-filled' : 'info',
-        color: errorLike ? 'var(--icon-error)' : 'var(--sys-color-on-yellow-container)',
-        width: '16px',
-        height: '16px',
-      };
+      mainIcon.name = errorLike ? 'cross-circle-filled' : 'info';
+      mainIcon.style.color = errorLike ? 'var(--icon-error)' : 'var(--sys-color-on-yellow-container)';
+      mainIcon.classList.add('medium');
       mainElement.appendChild(mainIcon);
       mainElement.appendChild(document.createTextNode(mainText));
       if (subText) {

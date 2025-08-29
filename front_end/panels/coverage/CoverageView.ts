@@ -23,95 +23,95 @@ import coverageViewStyles from './coverageView.css.js';
 
 const UIStrings = {
   /**
-   *@description Tooltip in Coverage List View of the Coverage tab for selecting JavaScript coverage mode
+   * @description Tooltip in Coverage List View of the Coverage tab for selecting JavaScript coverage mode
    */
   chooseCoverageGranularityPer:
       'Choose coverage granularity: Per function has low overhead, per block has significant overhead.',
   /**
-   *@description Text in Coverage List View of the Coverage tab
+   * @description Text in Coverage List View of the Coverage tab
    */
   perFunction: 'Per function',
   /**
-   *@description Text in Coverage List View of the Coverage tab
+   * @description Text in Coverage List View of the Coverage tab
    */
   perBlock: 'Per block',
   /**
-   *@description Text in Coverage View of the Coverage tab
+   * @description Text in Coverage View of the Coverage tab
    */
   filterByUrl: 'Filter by URL',
   /**
-   *@description Label for the type filter in the Converage Panel
+   * @description Label for the type filter in the Coverage Panel
    */
   filterCoverageByType: 'Filter coverage by type',
   /**
-   *@description Text for everything
+   * @description Text for everything
    */
   all: 'All',
   /**
-   *@description Text that appears on a button for the css resource type filter.
+   * @description Text that appears on a button for the css resource type filter.
    */
   css: 'CSS',
   /**
-   *@description Text in Timeline Tree View of the Performance panel
+   * @description Text in Timeline Tree View of the Performance panel
    */
   javascript: 'JavaScript',
   /**
-   *@description Tooltip text that appears on the setting when hovering over it in Coverage View of the Coverage tab
+   * @description Tooltip text that appears on the setting when hovering over it in Coverage View of the Coverage tab
    */
   includeExtensionContentScripts: 'Include extension content scripts',
   /**
-   *@description Title for a type of source files
+   * @description Title for a type of source files
    */
   contentScripts: 'Content scripts',
   /**
-   *@description Message in Coverage View of the Coverage tab
+   * @description Message in Coverage View of the Coverage tab
    */
   noCoverageData: 'No coverage data',
   /**
-   *@description Message in Coverage View of the Coverage tab
+   * @description Message in Coverage View of the Coverage tab
    */
   reloadPage: 'Reload page',
   /**
-   *@description Message in Coverage View of the Coverage tab
+   * @description Message in Coverage View of the Coverage tab
    */
   startRecording: 'Start recording',
 
   /**
-   *@description Message in Coverage View of the Coverage tab
-   *@example {Reload page} PH1
+   * @description Message in Coverage View of the Coverage tab
+   * @example {Reload page} PH1
    */
   clickTheReloadButtonSToReloadAnd: 'Click the "{PH1}" button to reload and start capturing coverage.',
   /**
-   *@description Message in Coverage View of the Coverage tab
-   *@example {Start recording} PH1
+   * @description Message in Coverage View of the Coverage tab
+   * @example {Start recording} PH1
    */
   clickTheRecordButtonSToStart: 'Click the "{PH1}" button to start capturing coverage.',
   /**
-   *@description Message in the Coverage View explaining that DevTools could not capture coverage.
+   * @description Message in the Coverage View explaining that DevTools could not capture coverage.
    */
   bfcacheNoCapture: 'Could not capture coverage info because the page was served from the back/forward cache.',
   /**
-   *@description  Message in the Coverage View explaining that DevTools could not capture coverage.
+   * @description  Message in the Coverage View explaining that DevTools could not capture coverage.
    */
   activationNoCapture: 'Could not capture coverage info because the page was prerendered in the background.',
   /**
-   *@description  Message in the Coverage View prompting the user to reload the page.
-   *@example {reload button icon} PH1
+   * @description  Message in the Coverage View prompting the user to reload the page.
+   * @example {reload button icon} PH1
    */
   reloadPrompt: 'Click the reload button {PH1} to reload and get coverage.',
 
   /**
-   *@description Footer message in Coverage View of the Coverage tab
-   *@example {300k used, 600k unused} PH1
-   *@example {500k used, 800k unused} PH2
+   * @description Footer message in Coverage View of the Coverage tab
+   * @example {300k used, 600k unused} PH1
+   * @example {500k used, 800k unused} PH2
    */
   filteredSTotalS: 'Filtered: {PH1}  Total: {PH2}',
   /**
-   *@description Footer message in Coverage View of the Coverage tab
-   *@example {1.5 MB} PH1
-   *@example {2.1 MB} PH2
-   *@example {71%} PH3
-   *@example {29%} PH4
+   * @description Footer message in Coverage View of the Coverage tab
+   * @example {1.5 MB} PH1
+   * @example {2.1 MB} PH2
+   * @example {71%} PH3
+   * @example {29%} PH4
    */
   sOfSSUsedSoFarSUnused: '{PH1} of {PH2} ({PH3}%) used so far, {PH4} unused.',
 } as const;
@@ -146,10 +146,11 @@ export class CoverageView extends UI.Widget.VBox {
   private statusMessageElement: HTMLElement;
 
   constructor() {
-    super(true);
+    super({
+      jslog: `${VisualLogging.panel('coverage').track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(coverageViewStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.panel('coverage').track({resize: true})}`);
 
     this.model = null;
     this.decorationManager = null;
@@ -506,7 +507,7 @@ export class CoverageView extends UI.Widget.VBox {
     }
 
     this.model.reset();
-    this.decorationManager && this.decorationManager.reset();
+    this.decorationManager?.reset();
     this.listView.reset();
     void this.model.startPolling();
   }
@@ -515,7 +516,7 @@ export class CoverageView extends UI.Widget.VBox {
     this.updateStats();
     this.listView.update(this.model?.entries() || []);
     this.exportAction.setEnabled(this.model !== null && this.model.entries().length > 0);
-    this.decorationManager && this.decorationManager.update(updatedEntries);
+    this.decorationManager?.update(updatedEntries);
   }
 
   private updateStats(): void {

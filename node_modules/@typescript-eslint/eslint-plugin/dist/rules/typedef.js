@@ -18,6 +18,10 @@ exports.default = (0, util_1.createRule)({
     name: 'typedef',
     meta: {
         type: 'suggestion',
+        deprecated: {
+            deprecatedSince: '8.33.0',
+            message: 'This is an old rule that is no longer recommended for use.',
+        },
         docs: {
             description: 'Require type annotations in certain places',
         },

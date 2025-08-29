@@ -89,7 +89,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { concat, EMPTY, filter, first, firstValueFrom, from, map, merge, mergeMap, mergeScan, of, raceWith, ReplaySubject, startWith, switchMap, take, takeUntil, timer, } from '../../third_party/rxjs/rxjs.js';
+import { concat, distinctUntilChanged, EMPTY, filter, first, firstValueFrom, from, map, merge, mergeMap, mergeScan, of, raceWith, ReplaySubject, startWith, switchMap, take, takeUntil, timer, } from '../../third_party/rxjs/rxjs.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, } from '../common/EventEmitter.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
@@ -679,6 +679,9 @@ let Page = (() => {
         /**
          * Waits for the network to be idle.
          *
+         * @remarks The function will always wait at least the
+         * set {@link WaitForNetworkIdleOptions.idleTime | IdleTime}.
+         *
          * @param options - Options to configure waiting behavior.
          * @returns A promise which resolves once the network is idle.
          */
@@ -690,8 +693,10 @@ let Page = (() => {
          */
         waitForNetworkIdle$(options = {}) {
             const { timeout: ms = this._timeoutSettings.timeout(), idleTime = NETWORK_IDLE_TIME, concurrency = 0, signal, } = options;
-            return this.#inflight$.pipe(switchMap(inflight => {
-                if (inflight > concurrency) {
+            return this.#inflight$.pipe(map(inflight => {
+                return inflight > concurrency;
+            }), distinctUntilChanged(), switchMap(isInflightOverConcurrency => {
+                if (isInflightOverConcurrency) {
                     return EMPTY;
                 }
                 return timer(idleTime);
@@ -896,7 +901,6 @@ let Page = (() => {
             }
             const recorder = new ScreenRecorder(this, width, height, {
                 ...options,
-                path: options.ffmpegPath,
                 crop,
             });
             try {

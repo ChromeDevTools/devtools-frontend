@@ -92,7 +92,6 @@ describe('The row\'s icon bucket', function() {
     const expectedMessages = [
       'Refused to create a TrustedTypePolicy named \'policy2\' because it violates the following Content Security Policy directive: "trusted-types policy1".',
       'Uncaught TypeError: Failed to execute \'createPolicy\' on \'TrustedTypePolicyFactory\': Policy "policy2" disallowed.',
-
     ];
     for (const iconComponent of iconComponents) {
       await devToolsPage.hoverElement(iconComponent);

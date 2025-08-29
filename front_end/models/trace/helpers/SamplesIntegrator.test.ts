@@ -5,7 +5,7 @@
 import type * as Protocol from '../../../generated/protocol.js';
 import * as CPUProfile from '../../../models/cpu_profile/cpu_profile.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {makeCompleteEvent, makeInstantEvent} from '../../../testing/TraceHelpers.js';
+import {allThreadEntriesInTrace, makeCompleteEvent, makeInstantEvent} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -101,7 +101,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const parsedProfile = cpuProfileData.parsedProfile;
       const samplesIntegrator =
           new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
-      const traceEvents = parsedTrace.Renderer.allTraceEntries.filter(event => event.pid === pid && event.tid === tid);
+      const traceEvents = allThreadEntriesInTrace(parsedTrace).filter(event => event.pid === pid && event.tid === tid);
       if (!traceEvents) {
         throw new Error('Trace events were unexpectedly not found.');
       }
@@ -350,7 +350,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const parsedProfile = cpuProfileData.parsedProfile;
       const samplesIntegrator =
           new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
-      const traceEvents = parsedTrace.Renderer.allTraceEntries.filter(event => event.pid === pid && event.tid === tid);
+      const traceEvents = allThreadEntriesInTrace(parsedTrace).filter(event => event.pid === pid && event.tid === tid);
       if (!traceEvents) {
         throw new Error('Trace events were unexpectedly not found.');
       }

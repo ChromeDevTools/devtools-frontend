@@ -47,10 +47,12 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
   private previousTarget: SDK.DOMModel.DOMNode|null;
 
   constructor() {
-    super(true);
+    super({
+      jslog: `${VisualLogging.pane('elements-classes')}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(classesPaneWidgetStyles);
     this.contentElement.className = 'styles-element-classes-pane';
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('elements-classes')}`);
     const container = this.contentElement.createChild('div', 'title-container');
     this.input = container.createChild('div', 'new-class-input monospace');
     this.setDefaultFocusedElement(this.input);

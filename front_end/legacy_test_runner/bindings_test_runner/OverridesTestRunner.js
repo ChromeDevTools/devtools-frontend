@@ -10,7 +10,7 @@ import {TestFileSystem} from './IsolatedFilesystemTestRunner.js';
 
 /**
  * @param {string} folderPath
- * @return {!Promise<!{isolatedFileSystem: !Persistence.IsolatedFileSystem.IsolatedFileSystem, project: !Workspace.Workspace.Project, testFileSystem: !BindingsTestRunner.TestFileSystem}>}
+ * @returns {!Promise<!{isolatedFileSystem: !Persistence.IsolatedFileSystem.IsolatedFileSystem, project: !Workspace.Workspace.Project, testFileSystem: !BindingsTestRunner.TestFileSystem}>}
  */
 export const createOverrideProject = async function(folderPath) {
   const testFileSystem = new TestFileSystem(folderPath);

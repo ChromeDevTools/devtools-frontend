@@ -55,56 +55,56 @@ import {ResourceWebSocketFrameView} from './ResourceWebSocketFrameView.js';
 
 const UIStrings = {
   /**
-   *@description Text for network request headers
+   * @description Text for network request headers
    */
   headers: 'Headers',
   /**
-   *@description Text for network connection info. In case the request is not made over http.
+   * @description Text for network connection info. In case the request is not made over http.
    */
   connectionInfo: 'Connection Info',
   /**
-   *@description Text in Network Item View of the Network panel
+   * @description Text in Network Item View of the Network panel
    */
   payload: 'Payload',
   /**
-   *@description Text in Network Item View of the Network panel
+   * @description Text in Network Item View of the Network panel
    */
   messages: 'Messages',
   /**
-   *@description Text in Network Item View of the Network panel
+   * @description Text in Network Item View of the Network panel
    */
   websocketMessages: 'WebSocket messages',
   /**
-   *@description Text in Network Item View of the Network panel
+   * @description Text in Network Item View of the Network panel
    */
   directsocketMessages: 'DirectSocket messages',
   /**
-   *@description Text in Network Item View of the Network panel
+   * @description Text in Network Item View of the Network panel
    */
   eventstream: 'EventStream',
   /**
-   *@description Text for previewing items
+   * @description Text for previewing items
    */
   preview: 'Preview',
   /**
-   *@description Text in Network Item View of the Network panel
+   * @description Text in Network Item View of the Network panel
    */
   responsePreview: 'Response preview',
   /**
-   *@description Icon title in Network Item View of the Network panel
+   * @description Icon title in Network Item View of the Network panel
    */
   signedexchangeError: 'SignedExchange error',
   /**
-   *@description Title of a tab in the Network panel. A Network response refers to the act of acknowledging a
-  network request. Should not be confused with answer.
+   * @description Title of a tab in the Network panel. A Network response refers to the act of acknowledging a
+   * network request. Should not be confused with answer.
    */
   response: 'Response',
   /**
-   *@description Text in Network Item View of the Network panel
+   * @description Text in Network Item View of the Network panel
    */
   rawResponseData: 'Raw response data',
   /**
-   *@description Text for the initiator of something
+   * @description Text for the initiator of something
    */
   initiator: 'Initiator',
   /**
@@ -114,40 +114,40 @@ const UIStrings = {
    */
   requestInitiatorCallStack: 'Request initiator call stack',
   /**
-   *@description Title of a tab in Network Item View of the Network panel.
+   * @description Title of a tab in Network Item View of the Network panel.
    *The tab displays the duration breakdown of a network request.
    */
   timing: 'Timing',
   /**
-   *@description Text in Network Item View of the Network panel
+   * @description Text in Network Item View of the Network panel
    */
   requestAndResponseTimeline: 'Request and response timeline',
   /**
-   *@description Tooltip to explain the warning icon of the Cookies panel
+   * @description Tooltip to explain the warning icon of the Cookies panel
    */
   thirdPartyPhaseout: 'Cookies blocked due to third-party cookie phaseout.',
   /**
-   *@description Label of a tab in the network panel. Previously known as 'Trust Tokens'.
+   * @description Label of a tab in the network panel. Previously known as 'Trust Tokens'.
    */
   trustTokens: 'Private state tokens',
   /**
-   *@description Title of the Private State Token tab in the Network panel. Previously known as 'Trust Token tab'.
+   * @description Title of the Private State Token tab in the Network panel. Previously known as 'Trust Token tab'.
    */
   trustTokenOperationDetails: 'Private State Token operation details',
   /**
-   *@description Text for web cookies
+   * @description Text for web cookies
    */
   cookies: 'Cookies',
   /**
-   *@description Text in Network Item View of the Network panel
+   * @description Text in Network Item View of the Network panel
    */
   requestAndResponseCookies: 'Request and response cookies',
   /**
-   *@description Tooltip text explaining that DevTools has overridden the response's headers
+   * @description Tooltip text explaining that DevTools has overridden the response's headers
    */
   containsOverriddenHeaders: 'This response contains headers which are overridden by DevTools',
   /**
-   *@description Tooltip text explaining that DevTools has overridden the response
+   * @description Tooltip text explaining that DevTools has overridden the response
    */
   responseIsOverridden: 'This response is overridden by DevTools',
 } as const;
@@ -235,7 +235,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       const signedExchangeInfo = request.signedExchangeInfo();
       if (signedExchangeInfo?.errors?.length) {
         const icon = new IconButton.Icon.Icon();
-        icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};
+        icon.name = 'cross-circle-filled';
+        icon.classList.add('small');
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.signedexchangeError));
         this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.PREVIEW, icon);
       }
@@ -285,7 +286,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     // Only select the initial tab the first time the view is shown after construction.
     // When the view is re-shown (without re-constructing) users or revealers might have changed
     // the selected tab in the mean time. Show the previously selected tab in that
-    // case instead, by simply doing nohting.
+    // case instead, by simply doing nothing.
     if (this.#initialTab) {
       this.selectTabInternal(this.#initialTab);
       this.#initialTab = undefined;
@@ -317,7 +318,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
     if (this.#request.hasThirdPartyCookiePhaseoutIssue()) {
       const icon = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
+      icon.name = 'warning-filled';
+      icon.classList.add('small');
       icon.title = i18nString(UIStrings.thirdPartyPhaseout);
       this.setTrailingTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.COOKIES, icon);
     }
@@ -341,7 +343,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     if (trustTokenResult &&
         !NetworkComponents.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)) {
       const icon = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};
+      icon.name = 'cross-circle-filled';
+      icon.classList.add('small');
       this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.TRUST_TOKENS, icon);
     }
   }

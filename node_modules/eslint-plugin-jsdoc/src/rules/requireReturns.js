@@ -36,6 +36,7 @@ const canSkip = (utils) => {
 };
 
 export default iterateJsdoc(({
+  context,
   info: {
     comment,
   },
@@ -43,7 +44,6 @@ export default iterateJsdoc(({
   report,
   settings,
   utils,
-  context,
 }) => {
   const {
     contexts,

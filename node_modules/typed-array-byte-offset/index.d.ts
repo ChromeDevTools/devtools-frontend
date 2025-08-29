@@ -1,17 +1,14 @@
-type TypedArray =
-	| Int8Array
-	| Uint8Array
-	| Uint8ClampedArray
-	| Int16Array
-	| Uint16Array
-	| Int32Array
-	| Uint32Array
-	| Float32Array
-	| Float64Array
-	| BigInt64Array
-	| BigUint64Array;
+import TypedArrayNames from 'possible-typed-array-names';
 
-declare function typedArrayByteOffset(value: TypedArray): number;
+declare namespace typedArrayByteOffset {
+    export type TypedArrayName = typeof TypedArrayNames[number];
+
+	export type TypedArrayConstructor = typeof globalThis[TypedArrayName];
+
+	export type TypedArray = TypedArrayConstructor['prototype'];
+}
+
+declare function typedArrayByteOffset(value: typedArrayByteOffset.TypedArray): number;
 declare function typedArrayByteOffset(value: unknown): false;
 
 export = typedArrayByteOffset;

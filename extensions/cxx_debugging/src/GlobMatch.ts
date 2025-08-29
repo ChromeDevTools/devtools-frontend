@@ -40,7 +40,7 @@ function globToRegExp(glob: string): RegExp {
  *
  * @param pattern the wildcard pattern
  * @param subject the subject URL to test against
- * @return whether the `subject` matches the given `pattern`.
+ * @returns whether the `subject` matches the given `pattern`.
  */
 export function globMatch(pattern: string, subject: string): boolean {
   const regexp = globToRegExp(pattern);

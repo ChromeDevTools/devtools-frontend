@@ -26,7 +26,7 @@ export class ReportView extends VBox {
   private subtitleElement?: HTMLElement;
   private urlElement?: HTMLElement;
   constructor(title?: string) {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(reportViewStyles);
 
     this.contentBox = this.contentElement.createChild('div', 'report-content-box');

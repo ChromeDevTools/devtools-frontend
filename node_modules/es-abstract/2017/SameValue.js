@@ -1,6 +1,6 @@
 'use strict';
 
-var $isNaN = require('../helpers/isNaN');
+var $isNaN = require('math-intrinsics/isNaN');
 
 // http://262.ecma-international.org/5.1/#sec-9.12
 

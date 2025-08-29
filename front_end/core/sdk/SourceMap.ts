@@ -33,13 +33,13 @@
  */
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
-import {decodeScopes, type OriginalScope, type Position as GeneratedPosition} from './SourceMapScopes.js';
 import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
 /**
@@ -61,6 +61,7 @@ export interface SourceMapV3Object {
 
   names?: string[];
   ignoreList?: number[];
+  scopes?: string;
   originalScopes?: string[];
   generatedRanges?: string;
   x_google_linecount?: number;
@@ -560,21 +561,23 @@ export class SourceMap {
       if (!this.#scopesInfo) {
         this.#scopesInfo = new SourceMapScopesInfo(this, {scopes: [], ranges: []});
       }
-      if (map.originalScopes && map.generatedRanges) {
-        const {originalScopes, generatedRanges} = decodeScopes(map, {line: baseLineNumber, column: baseColumnNumber});
-        this.#scopesInfo.addOriginalScopes(originalScopes);
-        this.#scopesInfo.addGeneratedRanges(generatedRanges);
+      if (map.scopes) {
+        const {scopes, ranges} = ScopesCodec.decode(
+            map as ScopesCodec.SourceMapJson,
+            {mode: ScopesCodec.DecodeMode.LAX, generatedOffset: {line: baseLineNumber, column: baseColumnNumber}});
+        this.#scopesInfo.addOriginalScopes(scopes);
+        this.#scopesInfo.addGeneratedRanges(ranges);
       } else if (map.x_com_bloomberg_sourcesFunctionMappings) {
         const originalScopes = this.parseBloombergScopes(map);
         this.#scopesInfo.addOriginalScopes(originalScopes);
       } else {
         // Keep the OriginalScope[] tree array consistent with sources.
-        this.#scopesInfo.addOriginalScopes(new Array(map.sources.length));
+        this.#scopesInfo.addOriginalScopes(new Array(map.sources.length).fill(null));
       }
     }
   }
 
-  private parseBloombergScopes(map: SourceMapV3Object): Array<OriginalScope|undefined> {
+  private parseBloombergScopes(map: SourceMapV3Object): Array<ScopesCodec.OriginalScope|null> {
     const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
     if (!scopeList) {
       throw new Error('Cant decode pasta scopes without x_com_bloomberg_sourcesFunctionMappings field');
@@ -585,7 +588,7 @@ export class SourceMap {
 
     return scopeList.map(rawScopes => {
       if (!rawScopes) {
-        return undefined;
+        return null;
       }
       const ranges = decodePastaRanges(rawScopes, names);
       return buildOriginalScopes(ranges);
@@ -764,7 +767,7 @@ export class SourceMap {
     return this.#scopesInfo.resolveMappedScopeChain(frame);
   }
 
-  findOriginalFunctionName(position: GeneratedPosition): string|null {
+  findOriginalFunctionName(position: ScopesCodec.Position): string|null {
     this.#ensureMappingsProcessed();
     return this.#scopesInfo?.findOriginalFunctionName(position) ?? null;
   }

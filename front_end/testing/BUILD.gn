@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../scripts/build/ninja/copy.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
 ts_library("testing") {
@@ -27,6 +28,7 @@ ts_library("testing") {
     "MockNetworkLog.ts",
     "MockScopeChain.test.ts",
     "MockScopeChain.ts",
+    "MockSettingStorage.ts",
     "MutationHelpers.test.ts",
     "MutationHelpers.ts",
     "NetworkHelpers.ts",
@@ -34,9 +36,12 @@ ts_library("testing") {
     "PersistenceHelpers.ts",
     "PropertyParser.ts",
     "ResourceTreeHelpers.ts",
+    "SnapshotTester.test.ts",
+    "SnapshotTester.ts",
     "SourceMapEncoder.test.ts",
     "SourceMapEncoder.ts",
     "SourceMapHelpers.ts",
+    "StackTraceHelpers.ts",
     "StorageItemsViewHelpers.ts",
     "StubIssue.ts",
     "StyleHelpers.ts",
@@ -66,6 +71,7 @@ ts_library("testing") {
     "../models/bindings:bundle",
     "../models/extensions:bundle",
     "../models/issues_manager:bundle",
+    "../models/stack_trace:bundle",
     "../models/text_utils:bundle",
     "../models/trace:bundle",
     "../models/workspace:bundle",
@@ -81,4 +87,8 @@ ts_library("testing") {
     "../ui/lit:bundle",
     "../ui/visual_logging:testing",
   ]
+}
+
+copy_to_gen("snapshots") {
+  sources = [ "SnapshotTester.snapshot.txt" ]
 }

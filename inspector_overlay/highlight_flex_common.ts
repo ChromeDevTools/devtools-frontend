@@ -735,7 +735,7 @@ function segmentToPath(segment: [Position, Position]): PathCommands {
 /**
  * Transform a path array (as returned by the backend) that corresponds to a rectangle into a quad.
  * @param commands
- * @return The quad object
+ * @returns The quad object
  */
 function rectPathToQuad(commands: PathCommands): Quad {
   return {
@@ -841,7 +841,7 @@ export function growQuadToEdgesOf(innerQuad: Quad, outerQuad: Quad, horizontally
  * Return the x/y intersection of the 2 segments
  * @param segment1
  * @param segment2
- * @return the point where the segments intersect
+ * @returns the point where the segments intersect
  */
 export function intersectSegments([p1, p2]: Position[], [p3, p4]: Position[]): Position {
   const x = (((p1.x * p2.y - p1.y * p2.x) * (p3.x - p4.x)) - ((p1.x - p2.x) * (p3.x * p4.y - p3.y * p4.x))) /

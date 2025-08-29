@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {TSESTree} from '@typescript-eslint/utils';
+
 import {createRule} from './utils/ruleCreator.ts';
 
 export default createRule({
@@ -22,7 +24,7 @@ export default createRule({
   create: function(context) {
     const sourceCode = context.sourceCode;
 
-    function checkCommentAndReportError(comment) {
+    function checkCommentAndReportError(comment: TSESTree.Comment) {
       const trimmed = comment.value.trim();
       if (trimmed.startsWith('console.log(')) {
         context.report({

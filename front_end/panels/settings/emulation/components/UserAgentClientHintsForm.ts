@@ -167,7 +167,7 @@ const UIStrings = {
    */
   update: 'Update',
   /**
-   *@description Field Error message in the Device settings pane that shows that the entered value has characters that can't be represented in the corresponding User Agent Client Hints
+   * @description Field Error message in the Device settings pane that shows that the entered value has characters that can't be represented in the corresponding User Agent Client Hints
    */
   notRepresentable: 'Not representable as structured headers string.',
   /**
@@ -186,7 +186,7 @@ const UIStrings = {
    */
   deletedBrand: 'Deleted brand row',
   /**
-   *@description Text that is usually a hyperlink to more documentation
+   * @description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
 } as const;
@@ -662,11 +662,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         change: true,
       })}
           />
-          <devtools-icon
-            .data=${{
-        color: 'var(--icon-default)', iconName: 'bin', width: '16px', height: '16px',
-      }
-      }
+          <devtools-icon name="bin" class="medium"
             title=${i18nString(UIStrings.brandUserAgentDelete)}
             class="delete-icon"
             tabindex="0"
@@ -692,12 +688,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         @keypress=${this.#handleAddUseragentBrandKeyPress}
       >
         <devtools-icon
-          aria-hidden="true"
-          .data=${{
-      color: 'var(--icon-default)', iconName: 'plus', width: '16px',
-    }
-    }
-        >
+          aria-hidden="true" name="plus" class="medium">
         </devtools-icon>
         ${i18nString(UIStrings.addBrand)}
       </div>
@@ -766,11 +757,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         change: true,
       })}
           />
-          <devtools-icon
-            .data=${{
-        color: 'var(--icon-default)', iconName: 'bin', width: '16px', height: '16px',
-      }
-      }
+          <devtools-icon name="bin" class="medium"
             title=${i18nString(UIStrings.brandFullVersionListDelete)}
             class="delete-icon"
             tabindex="0"
@@ -795,13 +782,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
         @click=${this.#handleAddFullVersionListBrandClick}
         @keypress=${this.#handleAddFullVersionListBrandKeyPress}
       >
-        <devtools-icon
-          aria-hidden="true"
-          .data=${{
-      color: 'var(--icon-default)', iconName: 'plus', width: '16px',
-    }
-    }
-        >
+        <devtools-icon name="plus" class="medium"
+          aria-hidden="true">
         </devtools-icon>
         ${i18nString(UIStrings.addBrand)}
       </div>
@@ -929,7 +911,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
   validate = (): UI.ListWidget.ValidatorResult => {
     for (const [metaDataKey, metaDataValue] of Object.entries(this.#metaData)) {
       if (metaDataKey === 'brands' || metaDataKey === 'fullVersionList') {
-        // for sturctured fields, check each individual brand/version
+        // for structured fields, check each individual brand/version
         const isBrandValid = this.#metaData.brands?.every(({brand, version}) => {
           const brandNameResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
               brand, i18nString(UIStrings.notRepresentable));

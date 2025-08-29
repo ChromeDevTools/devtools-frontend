@@ -19,19 +19,19 @@ const {ref, styleMap, ifDefined} = Directives;
 
 const UIStrings = {
   /**
-   *@description Tooltip to explain the resource's overridden status
+   * @description Tooltip to explain the resource's overridden status
    */
   requestContentHeadersOverridden: 'Both request content and headers are overridden',
   /**
-   *@description Tooltip to explain the resource's overridden status
+   * @description Tooltip to explain the resource's overridden status
    */
   requestContentOverridden: 'Request content is overridden',
   /**
-   *@description Tooltip to explain the resource's overridden status
+   * @description Tooltip to explain the resource's overridden status
    */
   requestHeadersOverridden: 'Request headers are overridden',
   /**
-   *@description Tooltip to explain why the request has warning icon
+   * @description Tooltip to explain why the request has warning icon
    */
   thirdPartyPhaseout:
       'Cookies for this request are blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.',
@@ -70,19 +70,16 @@ export class PanelUtils {
 
     if (PanelUtils.isFailedNetworkRequest(request)) {
       let iconName: string;
-      let color: string;
       // Failed prefetch network requests are displayed as warnings instead of errors.
       if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch) {
         iconName = 'warning-filled';
-        color = 'var(--icon-warning)';
       } else {
         iconName = 'cross-circle-filled';
-        color = 'var(--icon-error)';
       }
 
       // clang-format off
       return html`<devtools-icon
-          class="icon" name=${iconName} title=${type.title()} style=${styleMap({color})}>
+          class="icon" name=${iconName} title=${type.title()}>
         </devtools-icon>`;
       // clang-format on
     }
@@ -91,7 +88,6 @@ export class PanelUtils {
       // clang-format off
       return html`<devtools-icon
           class="icon" name="warning-filled" title=${i18nString(UIStrings.thirdPartyPhaseout)}
-          style="color:var(--icon-warning)">
         </devtools-icon>`;
       // clang-format on
     }
@@ -161,45 +157,45 @@ export class PanelUtils {
     // clang-format on
   }
 
-  static iconDataForResourceType(resourceType: Common.ResourceType.ResourceType): {iconName: string, color: string} {
+  static iconDataForResourceType(resourceType: Common.ResourceType.ResourceType): {iconName: string, color?: string} {
     if (resourceType.isDocument()) {
-      return {iconName: 'file-document', color: 'var(--icon-file-document)'};
+      return {iconName: 'file-document'};
     }
     if (resourceType.isImage()) {
       return {iconName: 'file-image', color: 'var(--icon-file-image)'};
     }
     if (resourceType.isFont()) {
-      return {iconName: 'file-font', color: 'var(--icon-file-font)'};
+      return {iconName: 'file-font'};
     }
     if (resourceType.isScript()) {
-      return {iconName: 'file-script', color: 'var(--icon-file-script)'};
+      return {iconName: 'file-script'};
     }
     if (resourceType.isStyleSheet()) {
-      return {iconName: 'file-stylesheet', color: 'var(--icon-file-styles)'};
+      return {iconName: 'file-stylesheet'};
     }
     if (resourceType.name() === Common.ResourceType.resourceTypes.Manifest.name()) {
-      return {iconName: 'file-manifest', color: 'var(--icon-default)'};
+      return {iconName: 'file-manifest'};
     }
     if (resourceType.name() === Common.ResourceType.resourceTypes.Wasm.name()) {
-      return {iconName: 'file-wasm', color: 'var(--icon-default)'};
+      return {iconName: 'file-wasm'};
     }
     if (resourceType.name() === Common.ResourceType.resourceTypes.WebSocket.name() ||
         resourceType.name() === Common.ResourceType.resourceTypes.DirectSocket.name()) {
-      return {iconName: 'file-websocket', color: 'var(--icon-default)'};
+      return {iconName: 'file-websocket'};
     }
     if (resourceType.name() === Common.ResourceType.resourceTypes.Media.name()) {
-      return {iconName: 'file-media', color: 'var(--icon-file-media)'};
+      return {iconName: 'file-media'};
     }
     if (resourceType.isWebbundle()) {
-      return {iconName: 'bundle', color: 'var(--icon-default)'};
+      return {iconName: 'bundle'};
     }
 
     if (resourceType.name() === Common.ResourceType.resourceTypes.Fetch.name() ||
         resourceType.name() === Common.ResourceType.resourceTypes.XHR.name()) {
-      return {iconName: 'file-fetch-xhr', color: 'var(--icon-default)'};
+      return {iconName: 'file-fetch-xhr'};
     }
 
-    return {iconName: 'file-generic', color: 'var(--icon-default)'};
+    return {iconName: 'file-generic'};
   }
 
   static getIconForSourceFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): TemplateResult {

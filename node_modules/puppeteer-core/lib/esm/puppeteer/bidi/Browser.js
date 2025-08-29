@@ -42,6 +42,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
 import { Browser, } from '../api/Browser.js';
+import { ProtocolError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
 import { bubble } from '../util/decorators.js';
@@ -70,6 +71,7 @@ let BidiBrowser = (() => {
             'network',
             'log',
             'script',
+            'input',
         ];
         static subscribeCdpEvents = [
             // Coverage
@@ -100,9 +102,31 @@ let BidiBrowser = (() => {
                     'goog:prerenderingDisabled': true,
                 },
             });
-            await session.subscribe(session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
+            await session.subscribe((session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
                 ? BidiBrowser.subscribeModules
-                : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]);
+                : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]).filter(module => {
+                if (!opts.networkEnabled) {
+                    return (module !== 'network' &&
+                        module !== 'goog:cdp.Network.requestWillBeSent');
+                }
+                return true;
+            }));
+            try {
+                await session.send('network.addDataCollector', {
+                    dataTypes: ["response" /* Bidi.Network.DataType.Response */],
+                    // Buffer size of 20 MB is equivalent to the CDP:
+                    maxEncodedDataSize: 20 * 1000 * 1000, // 20 MB
+                });
+            }
+            catch (err) {
+                if (err instanceof ProtocolError) {
+                    // Ignore protocol errors, as the data collectors can be not implemented.
+                    debugError(err);
+                }
+                else {
+                    throw err;
+                }
+            }
             const browser = new BidiBrowser(session.browser, opts);
             browser.#initialize();
             return browser;
@@ -117,6 +141,7 @@ let BidiBrowser = (() => {
         #browserContexts = new WeakMap();
         #target = new BidiBrowserTarget(this);
         #cdpConnection;
+        #networkEnabled;
         constructor(browserCore, opts) {
             super();
             this.#process = opts.process;
@@ -124,6 +149,7 @@ let BidiBrowser = (() => {
             this.#browserCore = browserCore;
             this.#defaultViewport = opts.defaultViewport;
             this.#cdpConnection = opts.cdpConnection;
+            this.#networkEnabled = opts.networkEnabled;
         }
         #initialize() {
             // Initializing existing contexts.
@@ -199,8 +225,8 @@ let BidiBrowser = (() => {
         process() {
             return this.#process ?? null;
         }
-        async createBrowserContext(_options) {
-            const userContext = await this.#browserCore.createUserContext();
+        async createBrowserContext(options = {}) {
+            const userContext = await this.#browserCore.createUserContext(options);
             return this.#createBrowserContext(userContext);
         }
         async version() {
@@ -216,6 +242,12 @@ let BidiBrowser = (() => {
         }
         newPage() {
             return this.defaultBrowserContext().newPage();
+        }
+        installExtension(path) {
+            return this.#browserCore.installExtension(path);
+        }
+        async uninstallExtension(id) {
+            await this.#browserCore.uninstallExtension(id);
         }
         targets() {
             return [
@@ -244,6 +276,9 @@ let BidiBrowser = (() => {
             return {
                 pendingProtocolErrors: this.connection.getPendingProtocolErrors(),
             };
+        }
+        isNetworkEnabled() {
+            return this.#networkEnabled;
         }
     };
 })();

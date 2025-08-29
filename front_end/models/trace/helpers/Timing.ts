@@ -167,6 +167,8 @@ export function traceWindowFromOverlay(overlay: Types.Overlays.Overlay): Types.T
       return traceWindowFromMicroSeconds(overlay.timestamp, overlay.timestamp);
     case 'TIMINGS_MARKER':
       return traceWindowFromMicroSeconds(overlay.adjustedTimestamp, overlay.adjustedTimestamp);
+    case 'BOTTOM_INFO_BAR':
+      return null;
 
     default:
       Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);

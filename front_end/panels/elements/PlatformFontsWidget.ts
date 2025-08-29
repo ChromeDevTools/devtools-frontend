@@ -38,31 +38,31 @@ import platformFontsWidgetStyles from './platformFontsWidget.css.js';
 
 const UIStrings = {
   /**
-   *@description Section title text content in Platform Fonts Widget of the Elements panel
+   * @description Section title text content in Platform Fonts Widget of the Elements panel
    */
   renderedFonts: 'Rendered Fonts',
   /**
-   *@description Font property title text content in Platform Fonts Widget of the Elements panel
+   * @description Font property title text content in Platform Fonts Widget of the Elements panel
    */
   familyName: 'Family name',
   /**
-   *@description Font property title text content in Platform Fonts Widget of the Elements panel
+   * @description Font property title text content in Platform Fonts Widget of the Elements panel
    */
   postScriptName: 'PostScript name',
   /**
-   *@description Font property title text content in Platform Fonts Widget of the Elements panel
+   * @description Font property title text content in Platform Fonts Widget of the Elements panel
    */
   fontOrigin: 'Font origin',
   /**
-   *@description Text in Platform Fonts Widget of the Elements panel
+   * @description Text in Platform Fonts Widget of the Elements panel
    */
   networkResource: 'Network resource',
   /**
-   *@description Text in Platform Fonts Widget of the Elements panel
+   * @description Text in Platform Fonts Widget of the Elements panel
    */
   localFile: 'Local file',
   /**
-   *@description Text in Platform Fonts Widget of the Elements panel. Indicates a number of glyphs (characters) .
+   * @description Text in Platform Fonts Widget of the Elements panel. Indicates a number of glyphs (characters) .
    */
   dGlyphs: '{n, plural, =1 {(# glyph)} other {(# glyphs)}}',
 } as const;
@@ -99,7 +99,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         </div>
       `}
     </div>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 

@@ -1,0 +1,45 @@
+<!--
+  Copyright 2025 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Context menu example</title>
+    <style>
+      body {
+        overflow: auto  !important; /* stylelint-disable-line declaration-no-important */
+      }
+
+      div:not(.vbox) {
+        width: 500px;
+        padding: 25px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        background-color: var(--sys-color-neutral-container);
+        border-radius: var(--sys-shape-corner-medium);
+        text-align: center;
+
+        p {
+          vertical-align: middle;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>DevTools menu button (lit-html)</header>
+    <div id="menu-button"></div>
+    <header>Various simple menu items (imperative API)</header>
+    <div id="simple-items"><p>Right-click here</p></div>
+    <header>Custom sections (imperative API)</header>
+    <div id="custom-section"><p>Right-click here</p></div>
+    <header>Sub menu (imperative API)</header>
+    <div id="sub-menu"><p>Right-click here</p></div>
+    <script type="module" src="./basic.js"></script>
+  </body>
+</html>

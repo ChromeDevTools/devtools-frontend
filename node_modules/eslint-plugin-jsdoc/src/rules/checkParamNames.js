@@ -87,6 +87,7 @@ const validateParameterNames = (
 
       return true;
     }
+
     if (
       typeof functionParameterName === 'object' &&
         'name' in functionParameterName &&
@@ -98,6 +99,7 @@ const validateParameterNames = (
         thisOffset--;
         return false;
       }
+
       report(
         `Expected @${targetTagName} name to be "${expectedName}". Got "${actualName}".`,
         null,
@@ -118,10 +120,10 @@ const validateParameterNames = (
       const [
         parameterName,
         {
-          names: properties,
-          hasPropertyRest,
-          rests,
           annotationParamName,
+          hasPropertyRest,
+          names: properties,
+          rests,
         },
       ] =
         /**
@@ -191,8 +193,8 @@ const validateParameterNames = (
       const hasMissing = missingProperties.length;
       if (hasMissing) {
         for (const {
-          tagPlacement,
           name: missingProperty,
+          tagPlacement,
         } of missingProperties) {
           report(`Missing @${targetTagName} "${missingProperty}"`, null, tagPlacement);
         }
@@ -271,8 +273,14 @@ const validateParameterNames = (
       // When disableMissingParamChecks is true tag names can be omitted.
       // Report when the tag names do not match the expected names or they are used out of order.
       if (disableMissingParamChecks) {
-        const usedExpectedNames = expectedNames.map(a => a?.toString()).filter(expectedName => expectedName && actualNames.includes(expectedName));
-        const usedInOrder = actualNames.every((actualName, idx) => actualName === usedExpectedNames[idx]);
+        const usedExpectedNames = expectedNames.map((a) => {
+          return a?.toString();
+        }).filter((expectedName) => {
+          return expectedName && actualNames.includes(expectedName);
+        });
+        const usedInOrder = actualNames.every((actualName, idx) => {
+          return actualName === usedExpectedNames[idx];
+        });
         if (usedInOrder) {
           return false;
         }
@@ -283,9 +291,9 @@ const validateParameterNames = (
           expectedNames.map((expectedName) => {
             return typeof expectedName === 'object' &&
               'name' in expectedName &&
-              expectedName.restElement
-              ? '...' + expectedName.name
-              : expectedName;
+              expectedName.restElement ?
+              '...' + expectedName.name :
+              expectedName;
           }).join(', ')
         }". Got "${actualNames.join(', ')}".`,
         null,
@@ -318,8 +326,8 @@ const validateParameterNamesDeep = (
   let lastRealParameter;
 
   return jsdocParameterNames.some(({
-    name: jsdocParameterName,
     idx,
+    name: jsdocParameterName,
   }) => {
     const isPropertyPath = jsdocParameterName.includes('.');
 
@@ -356,26 +364,26 @@ const validateParameterNamesDeep = (
 
 const allowedNodes = [
   'ArrowFunctionExpression', 'FunctionDeclaration', 'FunctionExpression', 'TSDeclareFunction',
-    // Add this to above defaults
-    'TSMethodSignature'
+  // Add this to above defaults
+  'TSMethodSignature',
 ];
 
 export default iterateJsdoc(({
   context,
   jsdoc,
+  node,
   report,
   utils,
-  node,
 }) => {
   const {
     allowExtraTrailingParamDocs,
     checkDestructured = true,
     checkRestProperty = false,
     checkTypesPattern = '/^(?:[oO]bject|[aA]rray|PlainObject|Generic(?:Object|Array))$/',
-    enableFixer = false,
-    useDefaultObjectProperties = false,
     disableExtraPropertyReporting = false,
     disableMissingParamChecks = false,
+    enableFixer = false,
+    useDefaultObjectProperties = false,
   } = context.options[0] || {};
 
   // Although we might just remove global settings contexts from applying to

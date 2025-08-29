@@ -4,6 +4,7 @@
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../../../core/common/common.js';
+import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
@@ -20,14 +21,14 @@ const RECOMPUTE_INDENT_MAX_SIZE = 200;
 
 const UIStrings = {
   /**
-   *@description Label text for the editor
+   * @description Label text for the editor
    */
   codeEditor: 'Code editor',
   /**
-   *@description Aria alert to read the suggestion for the suggestion box when typing in text editor
-   *@example {name} PH1
-   *@example {2} PH2
-   *@example {5} PH3
+   * @description Aria alert to read the suggestion for the suggestion box when typing in text editor
+   * @example {name} PH1
+   * @example {2} PH2
+   * @example {5} PH3
    */
   sSuggestionSOfS: '{PH1}, suggestion {PH2} of {PH3}',
 } as const;
@@ -131,6 +132,7 @@ function moveCompletionSelectionIfNotConservative(
     if (CM.completionStatus(view.state) !== 'active') {
       return false;
     }
+    view.dispatch({effects: setAiAutoCompleteSuggestion.of(null)});
     if (view.state.field(conservativeCompletion, false)) {
       view.dispatch({effects: disableConservativeCompletion.of(null)});
       announceSelectedCompletionInfo(view);
@@ -147,6 +149,7 @@ function moveCompletionSelectionBackwardWrapper(): ((view: CM.EditorView) => boo
     if (CM.completionStatus(view.state) !== 'active') {
       return false;
     }
+    view.dispatch({effects: setAiAutoCompleteSuggestion.of(null)});
     CM.moveCompletionSelection(false)(view);
     announceSelectedCompletionInfo(view);
     return true;
@@ -199,12 +202,8 @@ export const codeFolding = DynamicSetting.bool('text-editor-code-folding', [
       const icon = new Icon.Icon.Icon();
       icon.setAttribute('class', open ? 'cm-foldGutterElement' : 'cm-foldGutterElement cm-foldGutterElement-folded');
       icon.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
-      icon.data = {
-        iconName,
-        color: 'var(--icon-fold-marker)',
-        width: '14px',
-        height: '14px',
-      };
+      icon.name = iconName;
+      icon.classList.add('small');
       return icon;
     },
   }),
@@ -482,11 +481,13 @@ export function contentIncludingHint(view: CM.EditorView): string {
   return content;
 }
 
-export const setAiAutoCompleteSuggestion = CM.StateEffect.define<string|null>();
+export const setAiAutoCompleteSuggestion = CM.StateEffect.define<ActiveSuggestion|null>();
 
 interface ActiveSuggestion {
   text: string;
   from: number;
+  sampleId?: number;
+  rpcGlobalId?: Host.AidaClient.RpcGlobalId;
 }
 
 export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggestion|null>({
@@ -495,7 +496,7 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
     for (const effect of tr.effects) {
       if (effect.is(setAiAutoCompleteSuggestion)) {
         if (effect.value) {
-          return {text: effect.value, from: tr.state.selection.main.head};
+          return effect.value;
         }
         return null;
       }
@@ -505,9 +506,23 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
       return value;
     }
 
-    // If a change happened before the position from which suggestion was generated, set to null.
+    // A suggestion from an effect can be stale if the document was changed
+    // between when the request was sent and the response was received.
+    // We check if the position is still valid before trying to map it.
+    if (value.from > tr.startState.doc.length) {
+      return null;
+    }
+
+    // If deletion occurs, set to null. Otherwise, the mapping might fail if
+    // the position is inside the deleted range.
+    if (tr.docChanged && tr.state.doc.length < tr.startState.doc.length) {
+      return null;
+    }
+
     const from = tr.changes.mapPos(value.from);
     const {head} = tr.state.selection.main;
+
+    // If a change happened before the position from which suggestion was generated, set to null.
     if (tr.changes.touchesRange(0, from - 1) || head < from) {
       return null;
     }
@@ -518,17 +533,22 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
   },
 });
 
-export function acceptAiAutoCompleteSuggestion(view: CM.EditorView): boolean {
+export function hasActiveAiSuggestion(state: CM.EditorState): boolean {
+  return state.field(aiAutoCompleteSuggestionState) !== null;
+}
+
+export function acceptAiAutoCompleteSuggestion(view: CM.EditorView):
+    {accepted: boolean, suggestion?: ActiveSuggestion} {
   const suggestion = view.state.field(aiAutoCompleteSuggestionState);
   if (!suggestion) {
-    return false;
+    return {accepted: false};
   }
 
   const {text, from} = suggestion;
   const {head} = view.state.selection.main;
   const typedText = view.state.doc.sliceString(from, head);
   if (!text.startsWith(typedText)) {
-    return false;
+    return {accepted: false};
   }
 
   const remainingText = text.slice(typedText.length);
@@ -538,7 +558,7 @@ export function acceptAiAutoCompleteSuggestion(view: CM.EditorView): boolean {
     effects: setAiAutoCompleteSuggestion.of(null),
     userEvent: 'input.complete',
   });
-  return true;
+  return {accepted: true, suggestion};
 }
 
 export const aiAutoCompleteSuggestion: CM.Extension = [

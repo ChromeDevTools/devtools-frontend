@@ -34,7 +34,7 @@ export function* checkInterfaceMemberDuplication(defs, i) {
           addition.tokens.name,
           ext,
           "no-cross-overload",
-          message
+          message,
         );
       }
     }
@@ -55,10 +55,10 @@ export function* checkInterfaceMemberDuplication(defs, i) {
     const ops = getOperations(i);
     return {
       statics: new Set(
-        ops.filter((op) => op.special === "static").map((op) => op.name)
+        ops.filter((op) => op.special === "static").map((op) => op.name),
       ),
       nonstatics: new Set(
-        ops.filter((op) => op.special !== "static").map((op) => op.name)
+        ops.filter((op) => op.special !== "static").map((op) => op.name),
       ),
     };
   }

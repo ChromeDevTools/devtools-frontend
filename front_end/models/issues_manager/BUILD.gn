@@ -42,6 +42,7 @@ devtools_module("issues_manager") {
     "SharedDictionaryIssue.ts",
     "SourceFrameIssuesManager.ts",
     "StylesheetLoadingIssue.ts",
+    "UnencodedDigestIssue.ts",
     "UserReidentificationIssue.ts",
   ]
 
@@ -242,6 +243,10 @@ devtools_issue_description_files = [
   "placeholderDescriptionForInvisibleIssues.md",
   "fetchingPartitionedBlobURL.md",
   "navigatingPartitionedBlobURL.md",
+  "unencodedDigestIncorrectDigestLength.md",
+  "unencodedDigestIncorrectDigestType.md",
+  "unencodedDigestMalformedDictionary.md",
+  "unencodedDigestUnknownAlgorithm.md",
   "userReidentificationBlocked.md",
 ]
 
@@ -303,6 +308,7 @@ ts_library("unittests") {
     "SRIMessageSignatureIssue.test.ts",
     "SharedDictionaryIssue.test.ts",
     "StylesheetLoadingIssue.test.ts",
+    "UnencodedDigestIssue.test.ts",
   ]
 
   deps = [

@@ -14,8 +14,8 @@ const UIStrings = {
    * @description Text in the Performance panel to show how long was spent in a particular part of the code.
    * The first placeholder is the total time taken for this node and all children, the second is the self time
    * (time taken in this node, without children included).
-   *@example {10ms} PH1
-   *@example {10ms} PH2
+   * @example {10ms} PH1
+   * @example {10ms} PH2
    */
   sSelfS: '{PH1} (self {PH2})',
 } as const;

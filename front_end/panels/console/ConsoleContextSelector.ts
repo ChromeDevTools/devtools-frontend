@@ -13,16 +13,16 @@ import consoleContextSelectorStyles from './consoleContextSelector.css.js';
 
 const UIStrings = {
   /**
-   *@description Title of toolbar item in console context selector of the console panel
+   * @description Title of toolbar item in console context selector of the console panel
    */
   javascriptContextNotSelected: 'JavaScript context: Not selected',
   /**
-   *@description Text in Console Context Selector of the Console panel
+   * @description Text in Console Context Selector of the Console panel
    */
   extension: 'Extension',
   /**
-   *@description Text in Console Context Selector of the Console panel
-   *@example {top} PH1
+   * @description Text in Console Context Selector of the Console panel
+   * @example {top} PH1
    */
   javascriptContextS: 'JavaScript context: {PH1}',
 } as const;
@@ -77,7 +77,7 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
       _from: SDK.RuntimeModel.ExecutionContext|null, to: SDK.RuntimeModel.ExecutionContext|null,
       fromElement: Element|null, toElement: Element|null): void {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-    if (to && to.frameId) {
+    if (to?.frameId) {
       const frame = SDK.FrameManager.FrameManager.instance().getFrame(to.frameId);
       if (frame && !frame.isOutermostFrame()) {
         void frame.highlight();

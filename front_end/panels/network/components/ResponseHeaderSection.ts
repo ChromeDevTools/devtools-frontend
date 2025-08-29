@@ -37,41 +37,41 @@ import responseHeaderSectionStyles from './ResponseHeaderSection.css.js';
 
 const UIStrings = {
   /**
-   *@description Label for a button which allows adding an HTTP header.
+   * @description Label for a button which allows adding an HTTP header.
    */
   addHeader: 'Add header',
   /**
-   *@description Explanation text for which cross-origin policy to set.
+   * @description Explanation text for which cross-origin policy to set.
    */
   chooseThisOptionIfTheResourceAnd:
       'Choose this option if the resource and the document are served from the same site.',
   /**
-   *@description Explanation text for which cross-origin policy to set.
+   * @description Explanation text for which cross-origin policy to set.
    */
   onlyChooseThisOptionIfAn:
       'Only choose this option if an arbitrary website including this resource does not impose a security risk.',
   /**
-   *@description Message in the Headers View of the Network panel when a cross-origin opener policy blocked loading a sandbox iframe.
+   * @description Message in the Headers View of the Network panel when a cross-origin opener policy blocked loading a sandbox iframe.
    */
   thisDocumentWasBlockedFrom:
       'The document was blocked from loading in a popup opened by a sandboxed iframe because this document specified a cross-origin opener policy.',
   /**
-   *@description Message in the Headers View of the Network panel when a cross-origin embedder policy header needs to be set.
+   * @description Message in the Headers View of the Network panel when a cross-origin embedder policy header needs to be set.
    */
   toEmbedThisFrameInYourDocument:
       'To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:',
   /**
-   *@description Message in the Headers View of the Network panel when a cross-origin resource policy header needs to be set.
+   * @description Message in the Headers View of the Network panel when a cross-origin resource policy header needs to be set.
    */
   toUseThisResourceFromADifferent:
       'To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:',
   /**
-   *@description Message in the Headers View of the Network panel when the cross-origin resource policy header is too strict.
+   * @description Message in the Headers View of the Network panel when the cross-origin resource policy header is too strict.
    */
   toUseThisResourceFromADifferentOrigin:
       'To use this resource from a different origin, the server may relax the cross-origin resource policy response header:',
   /**
-   *@description Message in the Headers View of the Network panel when the cross-origin resource policy header is too strict.
+   * @description Message in the Headers View of the Network panel when the cross-origin resource policy header is too strict.
    */
   toUseThisResourceFromADifferentSite:
       'To use this resource from a different site, the server may relax the cross-origin resource policy response header:',
@@ -563,14 +563,14 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideEnableEditingClicked);
     const requestUrl = this.#request.url();
-    const networkPersistanceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
-    if (networkPersistanceManager.project()) {
+    const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
+    if (networkPersistenceManager.project()) {
       Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(true);
-      await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
+      await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
     } else {  // If folder for local overrides has not been provided yet
       UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
-        await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
+        await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
       });
     }
   }

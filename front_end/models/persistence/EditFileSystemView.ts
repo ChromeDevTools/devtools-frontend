@@ -42,19 +42,19 @@ const {styleMap} = Directives;
 
 const UIStrings = {
   /**
-   *@description Text in Edit File System View of the Workspace settings in Settings to indicate that the following string is a folder URL
+   * @description Text in Edit File System View of the Workspace settings in Settings to indicate that the following string is a folder URL
    */
   url: 'URL',
   /**
-   *@description Text in Edit File System View of the Workspace settings in Settings
+   * @description Text in Edit File System View of the Workspace settings in Settings
    */
   excludedFolders: 'Excluded sub-folders',
   /**
-   *@description Error message when a file system path is an empty string.
+   * @description Error message when a file system path is an empty string.
    */
   enterAPath: 'Enter a path',
   /**
-   *@description Error message when a file system path is identical to an existing path.
+   * @description Error message when a file system path is identical to an existing path.
    */
   enterAUniquePath: 'Enter a unique path',
 } as const;
@@ -126,7 +126,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         </devtools-data-grid>
         ${input.excludedFolderPaths.filter(({status}) => status !== ExcludedFolderStatus.VALID).map(({status}) =>
           html`<span class="excluded-folder-error">${statusString(status)}</span>`)}
-    </div>`, target, {host: input});
+    </div>`, target);
   // clang-format on
 };
 
@@ -136,7 +136,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
   readonly #view: View;
 
   constructor(element: HTMLElement|undefined, view: View = DEFAULT_VIEW) {
-    super(undefined, undefined, element);
+    super(element);
     this.#view = view;
   }
 

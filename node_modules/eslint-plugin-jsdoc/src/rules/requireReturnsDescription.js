@@ -8,7 +8,7 @@ export default iterateJsdoc(({
     const type = jsdocTag.type && jsdocTag.type.trim();
 
     if ([
-      'void', 'undefined', 'Promise<void>', 'Promise<undefined>',
+      'Promise<undefined>', 'Promise<void>', 'undefined', 'void',
     ].includes(type)) {
       return;
     }

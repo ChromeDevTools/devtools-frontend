@@ -29,7 +29,7 @@
  */
 
 /**
- * @fileoverview This file contains small testing framework along with the
+ * @file This file contains small testing framework along with the
  * test suite for the frontend. These tests are a part of the continues build
  * and are executed by the devtools_browsertest.cc as a part of the
  * Interactive UI Test suite.
@@ -53,7 +53,7 @@
   const TestSuite = class {
     /**
      * Test suite for interactive UI tests.
-     * @param {Object} domAutomationController DomAutomationController instance.
+     * @param domAutomationController DomAutomationController instance.
      */
     constructor(domAutomationController) {
       this.domAutomationController_ = domAutomationController;
@@ -72,7 +72,7 @@
 
   /**
    * Reports test failure.
-   * @param {string} message Failure description.
+   * @param message Failure description.
    */
   TestSuite.prototype.fail = function(message) {
     if (this.controlTaken_) {
@@ -84,9 +84,9 @@
 
   /**
    * Equals assertion tests that expected === actual.
-   * @param {!Object|boolean} expected Expected object.
-   * @param {!Object|boolean} actual Actual object.
-   * @param {string} opt_message User message to print if the test fails.
+   * @param expected Expected object.
+   * @param actual Actual object.
+   * @param opt_message User message to print if the test fails.
    */
   TestSuite.prototype.assertEquals = function(expected, actual, opt_message) {
     if (expected !== actual) {
@@ -100,8 +100,8 @@
 
   /**
    * True assertion tests that value == true.
-   * @param {!Object} value Actual object.
-   * @param {string} opt_message User message to print if the test fails.
+   * @param value Actual object.
+   * @param opt_message User message to print if the test fails.
    */
   TestSuite.prototype.assertTrue = function(value, opt_message) {
     this.assertEquals(true, Boolean(value), opt_message);
@@ -109,7 +109,7 @@
 
   /**
    * Takes control over execution.
-   * @param {{slownessFactor:number}=} options
+   * @param options
    */
   TestSuite.prototype.takeControl = function(options) {
     const {slownessFactor} = {slownessFactor: 1, ...options};
@@ -180,7 +180,7 @@
 
   /**
    * Run specified test on a fresh instance of the test suite.
-   * @param {Array<string>} args method name followed by its parameters.
+   * @param args method name followed by its parameters.
    */
   TestSuite.prototype.dispatchOnTestSuite = async function(args) {
     const methodName = args.shift();
@@ -197,7 +197,7 @@
   /**
    * Wrap an async method with TestSuite.{takeControl(), releaseControl()}
    * and invoke TestSuite.reportOk_ upon completion.
-   * @param {Array<string>} args method name followed by its parameters.
+   * @param args method name followed by its parameters.
    */
   TestSuite.prototype.waitForAsync = function(var_args) {
     const args = Array.prototype.slice.call(arguments);
@@ -208,11 +208,11 @@
 
   /**
    * Overrides the method with specified name until it's called first time.
-   * @param {!Object} receiver An object whose method to override.
-   * @param {string} methodName Name of the method to override.
-   * @param {!Function} override A function that should be called right after the
+   * @param receiver An object whose method to override.
+   * @param methodName Name of the method to override.
+   * @param override A function that should be called right after the
    *     overridden method returns.
-   * @param {?boolean} opt_sticky Whether restore original method after first run
+   * @param opt_sticky Whether restore original method after first run
    *     or not.
    */
   TestSuite.prototype.addSniffer = function(receiver, methodName, override, opt_sticky) {
@@ -242,8 +242,8 @@
 
   /**
    * Waits for current throttler invocations, if any.
-   * @param {!Common.Throttler} throttler
-   * @param {function()} callback
+   * @param throttler
+   * @param callback
    */
   TestSuite.prototype.waitForThrottler = function(throttler, callback) {
     const test = this;
@@ -274,7 +274,7 @@
   };
 
   /**
-   * @param {string} panelName Name of the panel to show.
+   * @param panelName Name of the panel to show.
    */
   TestSuite.prototype.showPanel = function(panelName) {
     return UI.InspectorView.InspectorView.instance().showPanel(panelName);
@@ -1201,8 +1201,8 @@
   };
 
   /**
-   * @param {string} url
-   * @return {!Promise<!SDK.Target.Target>}
+   * @param url
+   * @returns
    */
   async function createIsolatedTarget(url, opt_browserContextIds) {
     const targetAgent = SDK.TargetManager.TargetManager.instance().rootTarget()?.targetAgent();
@@ -1377,8 +1377,8 @@
 
   /**
    * Serializes array of uiSourceCodes to string.
-   * @param {!Array.<!Workspace.UISourceCode>} uiSourceCodes
-   * @return {string}
+   * @param uiSourceCodes
+   * @returns
    */
   TestSuite.prototype.uiSourceCodesToString_ = function(uiSourceCodes) {
     const names = [];
@@ -1416,11 +1416,11 @@
 
   /**
    * Returns all loaded non anonymous uiSourceCodes.
-   * @return {!Array.<!Workspace.UISourceCode>}
+   * @returns
    */
   TestSuite.prototype.nonAnonymousUISourceCodes_ = function() {
     /**
-     * @param {!Workspace.UISourceCode} uiSourceCode
+     * @param uiSourceCode
      */
     function filterOutService(uiSourceCode) {
       return !uiSourceCode.project().isServiceProject();
@@ -1430,12 +1430,12 @@
     return uiSourceCodes.filter(filterOutService);
   };
 
-  /*
- * Evaluates the code in the console as if user typed it manually and invokes
- * the callback when the result message is received and added to the console.
- * @param {string} code
- * @param {function(string)} callback
- */
+  /**
+   * Evaluates the code in the console as if user typed it manually and invokes
+   * the callback when the result message is received and added to the console.
+   * @param {string} code
+   * @param {function(string)} callback
+   */
   TestSuite.prototype.evaluateInConsole_ = function(code, callback) {
     function innerEvaluate() {
       UI.Context.Context.instance().removeFlavorChangeListener(
@@ -1463,9 +1463,9 @@
   /**
    * Checks that all expected scripts are present in the scripts list
    * in the Scripts panel.
-   * @param {!Array.<string>} expected Regular expressions describing
+   * @param expected Regular expressions describing
    *     expected script names.
-   * @return {boolean} Whether all the scripts are in "scripts-files" select
+   * @returns Whether all the scripts are in "scripts-files" select
    *     box
    */
   TestSuite.prototype._scriptsAreParsed = function(expected) {
@@ -1485,7 +1485,7 @@
 
   /**
    * Waits for script pause, checks expectations, and invokes the callback.
-   * @param {function():void} callback
+   * @param callback
    */
   TestSuite.prototype._waitForScriptPause = function(callback) {
     this.addSniffer(SDK.DebuggerModel.DebuggerModel.prototype, 'pausedScript', callback);

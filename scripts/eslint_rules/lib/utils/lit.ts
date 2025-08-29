@@ -5,8 +5,8 @@
 import type {TSESTree} from '@typescript-eslint/utils';
 
 /**
- * @param node - a TaggedTemplateExpression node from the AST of the parsed code.
- * @returns {boolean} - `true` if the code matches Lit.html`` or html``, and false otherwise.
+ * @param node a TaggedTemplateExpression node from the AST of the parsed code.
+ * @returns - `true` if the code matches Lit.html`` or html``, and false otherwise.
  */
 export function isLitHtmlTemplateCall(node: TSESTree.Node): node is TSESTree.TaggedTemplateExpression {
   if (node.type !== 'TaggedTemplateExpression') {
@@ -32,8 +32,8 @@ export function isLitHtmlTemplateCall(node: TSESTree.Node): node is TSESTree.Tag
 }
 
 /**
- * @param node - a CallExpression node from the AST of the parsed code.
- * @returns {boolean} - `true` if the code matches Lit.render() or render(), and false otherwise.
+ * @param node a CallExpression node from the AST of the parsed code.
+ * @returns - `true` if the code matches Lit.render() or render(), and false otherwise.
  */
 export function isLitHtmlRenderCall(node: TSESTree.Node): node is TSESTree.CallExpression {
   if (node.type !== 'CallExpression') {

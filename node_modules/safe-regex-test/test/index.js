@@ -11,7 +11,11 @@ test('regex tester', function (t) {
 	t.equal(typeof regexTester, 'function', 'is a function');
 
 	t.test('non-regexes', function (st) {
-		forEach(v.primitives.concat(v.objects), function (val) {
+		forEach([].concat(
+			// @ts-expect-error TS sucks with concat
+			v.primitives,
+			v.objects
+		), function (val) {
 			st['throws'](
 				function () { regexTester(val); },
 				TypeError,

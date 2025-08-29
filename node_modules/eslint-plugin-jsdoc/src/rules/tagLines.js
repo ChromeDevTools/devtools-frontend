@@ -8,10 +8,10 @@ export default iterateJsdoc(({
   const [
     alwaysNever = 'never',
     {
+      applyToEndTag = true,
       count = 1,
       endLines = 0,
       startLines = 0,
-      applyToEndTag = true,
       tags = {},
     } = {},
   ] = context.options;
@@ -34,11 +34,11 @@ export default iterateJsdoc(({
       idx,
       {
         tokens: {
-          tag,
-          name,
-          type,
           description,
           end,
+          name,
+          tag,
+          type,
         },
       },
     ] of tg.source.entries()) {
@@ -48,7 +48,7 @@ export default iterateJsdoc(({
       }
 
       if (lastTag && [
-        'any', 'always',
+        'always', 'any',
       ].includes(tags[lastTag.slice(1)]?.lines)) {
         continue;
       }
@@ -160,11 +160,11 @@ export default iterateJsdoc(({
       {
         number,
         tokens: {
-          tag,
-          name,
-          type,
           description,
           end,
+          name,
+          tag,
+          type,
         },
       },
     ] of tg.source.entries()) {

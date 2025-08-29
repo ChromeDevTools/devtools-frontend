@@ -2,40 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {TSESTree} from '@typescript-eslint/utils';
+
 import {createRule} from './utils/ruleCreator.ts';
 
-function hasPublicMethodForUnderscoredProperty(node) {
+function hasPublicMethodForUnderscoredProperty(node: TSESTree.PropertyDefinition|TSESTree.MethodDefinition) {
+  if (node.key.type !== 'Identifier') {
+    return false;
+  }
   const nodeName = node.key.name;
   // We allow a property to start with an underscore if the class defines a public getter without an underscore.
-  const methodsDeclared =
-      node.parent.body.filter(item => item.type === 'MethodDefinition' && item.key.type === 'Identifier');
+  const methodsDeclared = node.parent.body.filter(item => item.type === 'MethodDefinition');
   const hasMethodDeclaredWithNonUnderscoredName = methodsDeclared.find(method => {
+    if (method.key.type !== 'Identifier') {
+      return false;
+    }
     const methodName = method.key.name;
-    return (nodeName.slice(1) === methodName);
+    return nodeName.slice(1) === methodName;
   });
   return hasMethodDeclaredWithNonUnderscoredName;
-}
-
-function checkNodeForUnderscoredProperties(context, node, typeOfNode) {
-  if (node.key.type !== 'Identifier') {
-    return;
-  }
-
-  const nodeName = node.key.name;
-  if (!nodeName.startsWith('_')) {
-    return;
-  }
-
-  // We allow a property to start with an underscore if the class defines a public getter without an underscore.
-  if (hasPublicMethodForUnderscoredProperty(node)) {
-    return;
-  }
-
-  context.report({
-    node,
-    data: {propName: nodeName, typeOfNode},
-    messageId: 'underscorePrefix',
-  });
 }
 
 export default createRule({
@@ -54,16 +39,39 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
+    function checkNodeForUnderscoredProperties(
+        node: TSESTree.PropertyDefinition|TSESTree.MethodDefinition, typeOfNode: string) {
+      if (node.key.type !== 'Identifier') {
+        return;
+      }
+
+      const nodeName = node.key.name;
+      if (!nodeName.startsWith('_')) {
+        return;
+      }
+
+      // We allow a property to start with an underscore if the class defines a public getter without an underscore.
+      if (hasPublicMethodForUnderscoredProperty(node)) {
+        return;
+      }
+
+      context.report({
+        node,
+        data: {propName: nodeName, typeOfNode},
+        messageId: 'underscorePrefix',
+      });
+    }
+
     return {
       PropertyDefinition(node) {
-        checkNodeForUnderscoredProperties(context, node, 'property');
+        checkNodeForUnderscoredProperties(node, 'property');
       },
       MethodDefinition(node) {
         if (node.parent.type !== 'ClassBody') {
           // We only want to check method declarations within classes.
           return;
         }
-        checkNodeForUnderscoredProperties(context, node, 'method');
+        checkNodeForUnderscoredProperties(node, 'method');
       }
     };
   }

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Rule to enforce that operations on Trace.Types.Timing numeric values are type-safe.
+ * @file Rule to enforce that operations on Trace.Types.Timing numeric values are type-safe.
  * @author Connor Clark
  */
 
@@ -27,11 +27,17 @@
 
 import type {TSESTree} from '@typescript-eslint/typescript-estree';
 import {ESLintUtils} from '@typescript-eslint/utils';
+import type {Type} from 'typescript';
 
 import {createRule} from './utils/ruleCreator.ts';
 
-function isTimingType(typeName) {
-  return ['Micro', 'Milli', 'Seconds'].includes(typeName);
+function isTimingType(typeName: string|null): typeName is string {
+  return ['Micro', 'Milli', 'Seconds'].includes(typeName ?? '');
+}
+
+function getNameFromType(type: Type): string {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return type.symbol?.getName() ?? type?.aliasSymbol?.getName() ?? (type as any).intrinsicName;
 }
 
 export default createRule({
@@ -66,23 +72,21 @@ export default createRule({
         return left === right ? left : null;
       }
 
-      const resolve = type => type.symbol?.getName() ?? type?.aliasSymbol?.getName() ?? type.intrinsicName;
-
       const type = checker.getTypeAtLocation(services.esTreeNodeToTSNodeMap.get(node));
       if (type.isLiteral()) {
         return null;
       }
 
-      let name = resolve(type);
+      let name = getNameFromType(type);
 
       // For unions, just find one timing type. If multiple exit then ignore this node.
       if (!name && type.isUnionOrIntersection()) {
-        const timingTypes = type.types.filter(type => isTimingType(resolve(type)));
+        const timingTypes = type.types.filter(type => isTimingType(getNameFromType(type)));
         if (timingTypes.length !== 1) {
           return null;
         }
 
-        name = resolve(timingTypes[0]);
+        name = getNameFromType(timingTypes[0]);
       }
 
       if (!name) {
@@ -302,13 +306,18 @@ export default createRule({
       },
       AssignmentExpression(node) {
         const expectedResultType = getTypeName(node.left);
-        if (expectedResultType && isTimingType(expectedResultType)) {
+        if (isTimingType(expectedResultType)) {
           validateTimingResult(node.right, expectedResultType);
         }
       },
       BinaryExpression(node) {
         const leftType = getTypeName(node.left);
         const rightType = getTypeName(node.right);
+
+        if (!leftType || !rightType) {
+          return;
+        }
+
         if (isTimingType(leftType) && isTimingType(rightType)) {
           validateBinaryExpression(node);
         }

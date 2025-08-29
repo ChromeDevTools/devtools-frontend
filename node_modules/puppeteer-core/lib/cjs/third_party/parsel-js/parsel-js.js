@@ -144,7 +144,7 @@ function tokenizeBy(text, grammar = TOKENS) {
   }
   return tokens;
 }
-var STRING_PATTERN = /(['"])([^\\\n]+?)\1/g;
+var STRING_PATTERN = /(['"])([^\\\n]*?)\1/g;
 var ESCAPE_PATTERN = /\\./g;
 function tokenize(selector, grammar = TOKENS) {
   selector = selector.trim();

@@ -33,11 +33,12 @@ export class PageWrapper {
    */
   async waitForFunction<T>(
       fn: () => T | undefined | Promise<T|undefined>, asyncScope = new AsyncScope(), description?: string) {
+    const signal = AsyncScope.abortSignal;
     const innerFunction = async () => {
       while (true) {
-        AsyncScope.abortSignal?.throwIfAborted();
+        signal?.throwIfAborted();
         const result = await fn();
-        AsyncScope.abortSignal?.throwIfAborted();
+        signal?.throwIfAborted();
         if (result) {
           return result;
         }

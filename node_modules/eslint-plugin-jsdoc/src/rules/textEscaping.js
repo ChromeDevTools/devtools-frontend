@@ -76,6 +76,7 @@ export default iterateJsdoc(({
       if (tag.tag === 'example') {
         continue;
       }
+
       if (/** @type {string[]} */ (
         utils.getTagDescription(tag, true)
       ).some((desc) => {
@@ -106,6 +107,7 @@ export default iterateJsdoc(({
     if (tag.tag === 'example') {
       continue;
     }
+
     if (/** @type {string[]} */ (
       utils.getTagDescription(tag, true)
     ).some((desc) => {

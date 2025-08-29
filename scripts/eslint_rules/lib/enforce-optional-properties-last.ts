@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Rule to enforce that within TypeScript Types, optional properties should come last.
+ * @file Rule to enforce that within TypeScript Types, optional properties should come last.
  * This is to avoid a bug where clang-format will incorrectly indent a type that's failing this.
  * @author Paul Irish
  */

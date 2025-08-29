@@ -12,7 +12,7 @@ import iconStyles from './icon.css.js';
  */
 export interface IconWithName {
   iconName: string;
-  color: string;
+  color?: string;
   width?: string;
   height?: string;
 }
@@ -22,7 +22,7 @@ export interface IconWithName {
  */
 export type IconData = IconWithName|{
   iconPath: string,
-  color: string,
+  color?: string,
   width?: string,
   height?: string,
 };
@@ -60,11 +60,11 @@ export type IconData = IconWithName|{
  * the default dimensions are 14px times 14px, and the default `vertical-align` is
  * `baseline` (instead of `sub`).
  *
- * @attr name - The basename of the icon file (not including the `.svg` suffix). For
+ * @property name - The `"name"` attribute is reflected as property.
+ * @property data - Deprecated way to set dimensions, color and name at once.
+ * @attribute name - The basename of the icon file (not including the `.svg` suffix). For
  *              backwards compatibility we also support a full URL here, but that
  *              should not be used in newly written code.
- * @prop {String} name - The `"name"` attribute is reflected as property.
- * @prop {IconData} data - Deprecated way to set dimensions, color and name at once.
  */
 export class Icon extends HTMLElement {
   static readonly observedAttributes = ['name'];
@@ -98,10 +98,16 @@ export class Icon extends HTMLElement {
    * @deprecated use `name` and CSS instead.
    */
   set data(data: IconData) {
-    const {color, width = '20px', height = '20px'} = data;
-    this.style.color = color;
-    this.style.width = width;
-    this.style.height = height;
+    const {color, width, height} = data;
+    if (color) {
+      this.style.color = color;
+    }
+    if (width) {
+      this.style.width = width;
+    }
+    if (height) {
+      this.style.height = height;
+    }
     if ('iconName' in data && data.iconName) {
       this.name = data.iconName;
     } else if ('iconPath' in data && data.iconPath) {
@@ -157,7 +163,7 @@ export class Icon extends HTMLElement {
  *
  * @param name the name of the icon to use.
  * @param className optional CSS class name(s) to put onto the element.
- * @return the newly created `Icon` instance.
+ * @returns the newly created `Icon` instance.
  */
 export const create = (name: string, className?: string): Icon => {
   const icon = new Icon();

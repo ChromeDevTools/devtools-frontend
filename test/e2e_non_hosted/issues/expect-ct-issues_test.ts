@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -10,7 +12,6 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
 } from '../../e2e/helpers/issues-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Expect-CT Issue', () => {
   it('should display deprecation issue for Expect-CT header', async ({devToolsPage}) => {
@@ -35,7 +36,7 @@ describe('Expect-CT Issue', () => {
 
     await expandIssue(devToolsPage);
     const issueElement = await getIssueByTitle('Deprecated feature used', devToolsPage);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label', devToolsPage);
     await ensureResourceSectionIsExpanded(section, devToolsPage);
     const expectedTableRows = [

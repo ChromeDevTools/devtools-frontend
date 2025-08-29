@@ -4,7 +4,6 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
@@ -208,11 +207,11 @@ describeWithEnvironment('TextEditor', () => {
 
       const text = 'hello';
       editor.dispatch({
-        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(text),
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({text, from: 0}),
       });
 
       const actualSuggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
-      assertNotNullOrUndefined(actualSuggestion);
+      assert.isOk(actualSuggestion);
       assert.strictEqual(actualSuggestion.text, text);
       editor.remove();
     });
@@ -222,15 +221,15 @@ describeWithEnvironment('TextEditor', () => {
       renderElementIntoDOM(editor);
 
       editor.dispatch({
-        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of('hello'),
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({text: 'hello', from: 0}),
       });
-      assertNotNullOrUndefined(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+      assert.isOk(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
 
       editor.dispatch({
         changes: {from: 0, insert: 'he'},
         selection: {anchor: 2},
       });
-      assertNotNullOrUndefined(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+      assert.isOk(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
       editor.remove();
     });
 
@@ -239,9 +238,9 @@ describeWithEnvironment('TextEditor', () => {
       renderElementIntoDOM(editor);
 
       editor.dispatch({
-        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of('hello'),
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({text: 'hello', from: 0}),
       });
-      assertNotNullOrUndefined(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+      assert.isOk(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
 
       editor.dispatch({changes: {from: 0, insert: 'a'}, selection: {anchor: 1}});
       assert.isNull(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
@@ -253,11 +252,12 @@ describeWithEnvironment('TextEditor', () => {
       renderElementIntoDOM(editor);
       const text = 'hello';
       editor.dispatch({
-        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(text),
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({text, from: 0}),
       });
 
-      const accepted = TextEditor.Config.acceptAiAutoCompleteSuggestion(editor.editor);
+      const {accepted, suggestion} = TextEditor.Config.acceptAiAutoCompleteSuggestion(editor.editor);
       assert.isTrue(accepted);
+      assert.strictEqual(suggestion?.text, text);
 
       assert.strictEqual(editor.state.doc.toString(), text);
       assert.isNull(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
@@ -294,9 +294,13 @@ describeWithMockConnection('TextEditor autocompletion', () => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-
-    const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
-        {forceNew: true, targetManager, resourceMapping});
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+    });
     const testScript = debuggerModel.parsedScriptSource(
         '1' as Protocol.Runtime.ScriptId, urlString`script://1`, 0, 0, 0, 0, executionContext.id, '', undefined, false,
         undefined, false, false, 0, null, null, null, null, null, null, null);
@@ -332,6 +336,5 @@ describeWithMockConnection('TextEditor autocompletion', () => {
     const result =
         await TextEditor.JavaScript.javascriptCompletionSource(new CodeMirror.CompletionContext(state, 1, false));
     assert.isNull(result);
-
   });
 });

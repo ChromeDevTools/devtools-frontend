@@ -1,5 +1,3 @@
-// Todo: When replace `CLIEngine` with `ESLint` when feature set complete per https://github.com/eslint/eslint/issues/14745
-// https://github.com/eslint/eslint/blob/master/docs/user-guide/migrating-to-7.0.0.md#-the-cliengine-class-has-been-deprecated
 import iterateJsdoc from '../iterateJsdoc.js';
 import eslint, {
   ESLint,
@@ -110,10 +108,10 @@ const getLinesCols = (text) => {
 };
 
 export default iterateJsdoc(({
-  report,
-  utils,
   context,
   globalState,
+  report,
+  utils,
 }) => {
   if (semver.gte(ESLint.version, '8.0.0')) {
     report(
@@ -143,21 +141,21 @@ export default iterateJsdoc(({
     rejectExampleCodeRegex = null,
   } = options;
   const {
+    allowInlineConfig = true,
+    baseConfig = {},
+    captionRequired = false,
     checkDefaults = false,
+    checkEslintrc = true,
     checkParams = false,
     checkProperties = false,
-    noDefaultExampleRules = false,
-    checkEslintrc = true,
+    configFile,
     matchingFileName = null,
     matchingFileNameDefaults = null,
     matchingFileNameParams = null,
     matchingFileNameProperties = null,
+    noDefaultExampleRules = false,
     paddedIndent = 0,
-    baseConfig = {},
-    configFile,
-    allowInlineConfig = true,
     reportUnusedDisableDirectives = true,
-    captionRequired = false,
   } = options;
 
   // Make this configurable?
@@ -201,18 +199,18 @@ export default iterateJsdoc(({
    * }} cfg
    */
   const checkSource = ({
-    filename,
-    defaultFileName,
-    rules = expressionRules,
-    lines = 0,
     cols = 0,
+    defaultFileName,
+    filename,
+    lines = 0,
+    rules = expressionRules,
     skipInit,
     source,
-    targetTagName,
     sources = [],
     tag = {
       line: 0,
     },
+    targetTagName,
   }) => {
     if (!skipInit) {
       sources.push({
@@ -221,8 +219,6 @@ export default iterateJsdoc(({
         string: source,
       });
     }
-
-    // Todo: Make fixable
 
     /**
      * @param {{
@@ -305,11 +301,11 @@ export default iterateJsdoc(({
       const codeStartCol = likelyNestedJSDocIndentSpace;
 
       for (const {
-        message,
-        line,
         column,
-        severity,
+        line,
+        message,
         ruleId,
+        severity,
       } of messages) {
         const startLine = codeStartLine + line + zeroBasedLineIndexAdjust;
         const startCol = codeStartCol + (
@@ -450,9 +446,9 @@ export default iterateJsdoc(({
       exampleCodeRegex.lastIndex = 0;
       while ((exampleCode = exampleCodeRegex.exec(source)) !== null) {
         const {
-          index,
           '0': n0,
           '1': n1,
+          index,
         } = exampleCode;
 
         // Count anything preceding user regex match (can affect line numbering)

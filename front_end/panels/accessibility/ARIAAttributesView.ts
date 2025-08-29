@@ -14,11 +14,11 @@ import {ariaMetadata} from './ARIAMetadata.js';
 
 const UIStrings = {
   /**
-   *@description Text in ARIAAttributes View of the Accessibility panel
+   * @description Text in ARIAAttributes View of the Accessibility panel
    */
   ariaAttributes: 'ARIA Attributes',
   /**
-   *@description Text in ARIAAttributes View of the Accessibility panel
+   * @description Text in ARIAAttributes View of the Accessibility panel
    */
   noAriaAttributes: 'No ARIA attributes',
 } as const;
@@ -27,12 +27,16 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ARIAAttributesPane extends AccessibilitySubPane {
   private readonly noPropertiesInfo: Element;
   private readonly treeOutline: UI.TreeOutline.TreeOutline;
+
   constructor() {
-    super(i18nString(UIStrings.ariaAttributes));
+    super({
+      title: i18nString(UIStrings.ariaAttributes),
+      viewId: 'aria-attributes',
+      jslog: `${VisualLogging.section('aria-attributes')}`,
+    });
 
     this.noPropertiesInfo = this.createInfo(i18nString(UIStrings.noAriaAttributes));
     this.treeOutline = this.createTreeOutline();
-    this.element.setAttribute('jslog', `${VisualLogging.section('aria-attributes')}`);
   }
 
   override setNode(node: SDK.DOMModel.DOMNode|null): void {
@@ -55,6 +59,10 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
     const foundAttributes = (this.treeOutline.rootElement().childCount() !== 0);
     this.noPropertiesInfo.classList.toggle('hidden', foundAttributes);
     this.treeOutline.element.classList.toggle('hidden', !foundAttributes);
+  }
+
+  getTreeOutlineForTesting(): Readonly<UI.TreeOutline.TreeOutline>|undefined {
+    return this.treeOutline;
   }
 
   private isARIAAttribute(attribute: SDK.DOMModel.Attribute): boolean {
@@ -89,6 +97,10 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
   override onattach(): void {
     this.populateListItem();
     this.listItemElement.addEventListener('click', this.mouseClick.bind(this));
+  }
+
+  getPromptForTesting(): Readonly<ARIAAttributePrompt>|undefined {
+    return this.prompt;
   }
 
   private populateListItem(): void {

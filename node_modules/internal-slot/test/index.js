@@ -9,6 +9,7 @@ var SLOT = require('../');
 test('assert', function (t) {
 	forEach([null, undefined, true, false, 'foo', '', 42, 0], function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SLOT.assert(primitive, ''); },
 			TypeError,
 			inspect(primitive) + ' is not an Object'
@@ -17,6 +18,7 @@ test('assert', function (t) {
 
 	forEach([null, undefined, true, false, 42, 0, {}, [], function () {}, /a/g], function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SLOT.assert({}, nonString); },
 			TypeError,
 			inspect(nonString) + ' is not a String'
@@ -24,7 +26,7 @@ test('assert', function (t) {
 	});
 
 	t['throws'](
-		function () { SLOT.assert({}, 'whatever'); },
+		function () { SLOT.assert({}, '[[whatever]]'); },
 		TypeError,
 		'nonexistent slot throws'
 	);
@@ -40,6 +42,7 @@ test('assert', function (t) {
 test('has', function (t) {
 	forEach([null, undefined, true, false, 'foo', '', 42, 0], function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SLOT.has(primitive, ''); },
 			TypeError,
 			inspect(primitive) + ' is not an Object'
@@ -48,6 +51,7 @@ test('has', function (t) {
 
 	forEach([null, undefined, true, false, 42, 0, {}, [], function () {}, /a/g], function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SLOT.has({}, nonString); },
 			TypeError,
 			inspect(nonString) + ' is not a String'
@@ -56,7 +60,7 @@ test('has', function (t) {
 
 	var o = {};
 
-	t.equal(SLOT.has(o, 'nonexistent'), false, 'nonexistent slot yields false');
+	t.equal(SLOT.has(o, '[[nonexistent]]'), false, 'nonexistent slot yields false');
 
 	SLOT.set(o, 'foo');
 	t.equal(SLOT.has(o, 'foo'), true, 'existent slot yields true');
@@ -67,6 +71,7 @@ test('has', function (t) {
 test('get', function (t) {
 	forEach([null, undefined, true, false, 'foo', '', 42, 0], function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SLOT.get(primitive, ''); },
 			TypeError,
 			inspect(primitive) + ' is not an Object'
@@ -75,6 +80,7 @@ test('get', function (t) {
 
 	forEach([null, undefined, true, false, 42, 0, {}, [], function () {}, /a/g], function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SLOT.get({}, nonString); },
 			TypeError,
 			inspect(nonString) + ' is not a String'
@@ -94,6 +100,7 @@ test('get', function (t) {
 test('set', function (t) {
 	forEach([null, undefined, true, false, 'foo', '', 42, 0], function (primitive) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SLOT.set(primitive, ''); },
 			TypeError,
 			inspect(primitive) + ' is not an Object'
@@ -102,6 +109,7 @@ test('set', function (t) {
 
 	forEach([null, undefined, true, false, 42, 0, {}, [], function () {}, /a/g], function (nonString) {
 		t['throws'](
+			// @ts-expect-error
 			function () { SLOT.set({}, nonString); },
 			TypeError,
 			inspect(nonString) + ' is not a String'

@@ -6,6 +6,7 @@ var isBoolean = require('is-boolean-object');
 var isSymbol = require('is-symbol');
 var isBigInt = require('is-bigint');
 
+/** @type {import('.')} */
 // eslint-disable-next-line consistent-return
 module.exports = function whichBoxedPrimitive(value) {
 	// eslint-disable-next-line eqeqeq

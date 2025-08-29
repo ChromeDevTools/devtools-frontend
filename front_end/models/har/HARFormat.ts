@@ -263,7 +263,7 @@ class HARResponse extends HARBase {
   }
 }
 
-class HARCookie extends HARBase {
+export class HARCookie extends HARBase {
   name: string;
   value: string;
   path: string|undefined;

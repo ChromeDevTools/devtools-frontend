@@ -3,8 +3,8 @@
 var ToNumber = require('./ToNumber');
 var truncate = require('./truncate');
 
-var $isNaN = require('../helpers/isNaN');
-var $isFinite = require('../helpers/isFinite');
+var $isNaN = require('math-intrinsics/isNaN');
+var $isFinite = require('math-intrinsics/isFinite');
 
 // https://262.ecma-international.org/14.0/#sec-tointegerorinfinity
 

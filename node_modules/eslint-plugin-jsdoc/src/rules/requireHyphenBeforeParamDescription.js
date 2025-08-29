@@ -1,12 +1,9 @@
 import iterateJsdoc from '../iterateJsdoc.js';
 
 export default iterateJsdoc(({
-  sourceCode,
-  utils,
-  report,
   context,
   jsdoc,
-  jsdocNode,
+  utils,
 }) => {
   const [
     mainCircumstance,
@@ -62,7 +59,7 @@ export default iterateJsdoc(({
                 break;
               }
             }
-          }
+          },
         );
       }
     } else if (startsWithHyphen) {

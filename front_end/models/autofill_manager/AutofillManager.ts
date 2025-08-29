@@ -35,12 +35,6 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return autofillManagerInstance;
   }
 
-  onShowAutofillTestAddressesSettingsChanged(): void {
-    for (const autofillModel of SDK.TargetManager.TargetManager.instance().models(SDK.AutofillModel.AutofillModel)) {
-      autofillModel.setTestAddresses();
-    }
-  }
-
   async #addressFormFilled({data}: Common.EventTarget.EventTargetEvent<
                            SDK.AutofillModel.EventTypes[SDK.AutofillModel.Events.ADDRESS_FORM_FILLED]>): Promise<void> {
     if (this.#autoOpenViewSetting.get()) {
@@ -56,7 +50,6 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         address: this.#address,
         filledFields: this.#filledFields,
         matches: this.#matches,
-        autofillModel: this.#autofillModel,
       });
     }
   }
@@ -69,8 +62,23 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       address: this.#address,
       filledFields: this.#filledFields,
       matches: this.#matches,
-      autofillModel: this.#autofillModel,
     };
+  }
+
+  highlightFilledField(filledField: Protocol.Autofill.FilledField): void {
+    const backendNodeId = filledField.fieldId;
+    const target = SDK.FrameManager.FrameManager.instance().getFrame(filledField.frameId)?.resourceTreeModel().target();
+    if (target) {
+      const deferredNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      if (deferredNode && domModel) {
+        domModel.overlayModel().highlightInOverlay({deferredNode}, 'all');
+      }
+    }
+  }
+
+  clearHighlightedFilledFields(): void {
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
   }
 
   #processAddressFormFilledData({addressUi, filledFields}: Protocol.Autofill.AddressFormFilledEvent): void {
@@ -121,7 +129,6 @@ export interface AddressFormFilledEvent {
   address: string;
   filledFields: Protocol.Autofill.FilledField[];
   matches: Match[];
-  autofillModel: SDK.AutofillModel.AutofillModel;
 }
 
 export interface EventTypes {

@@ -225,49 +225,49 @@ const attributesByType = deepFreeze<{
 
 const UIStrings = {
   /**
-   *@description The text that is disabled when the steps were not saved due to an error. The error message itself is always in English and not translated.
-   *@example {Saving failed} error
+   * @description The text that is disabled when the steps were not saved due to an error. The error message itself is always in English and not translated.
+   * @example {Saving failed} error
    */
   notSaved: 'Not saved: {error}',
   /**
-   *@description The button title that adds a new attribute to the form.
-   *@example {timeout} attributeName
+   * @description The button title that adds a new attribute to the form.
+   * @example {timeout} attributeName
    */
   addAttribute: 'Add {attributeName}',
   /**
-   *@description The title of a button that deletes an attribute from the form.
+   * @description The title of a button that deletes an attribute from the form.
    */
   deleteRow: 'Delete row',
   /**
-   *@description The title of a button that allows you to select an element on the page and update CSS/ARIA selectors.
+   * @description The title of a button that allows you to select an element on the page and update CSS/ARIA selectors.
    */
   selectorPicker: 'Select an element in the page to update selectors',
   /**
-   *@description The title of a button that adds a new input field for the entry of the frame index. Frame index is the number of the frame within the page's frame tree.
+   * @description The title of a button that adds a new input field for the entry of the frame index. Frame index is the number of the frame within the page's frame tree.
    */
   addFrameIndex: 'Add frame index within the frame tree',
   /**
-   *@description The title of a button that removes a frame index field from the form.
+   * @description The title of a button that removes a frame index field from the form.
    */
   removeFrameIndex: 'Remove frame index',
   /**
-   *@description The title of a button that adds a field to input a part of a selector in the editor form.
+   * @description The title of a button that adds a field to input a part of a selector in the editor form.
    */
   addSelectorPart: 'Add a selector part',
   /**
-   *@description The title of a button that removes a field to input a part of a selector in the editor form.
+   * @description The title of a button that removes a field to input a part of a selector in the editor form.
    */
   removeSelectorPart: 'Remove a selector part',
   /**
-   *@description The title of a button that adds a field to input a selector in the editor form.
+   * @description The title of a button that adds a field to input a selector in the editor form.
    */
   addSelector: 'Add a selector',
   /**
-   *@description The title of a button that removes a field to input a selector in the editor form.
+   * @description The title of a button that removes a field to input a selector in the editor form.
    */
   removeSelector: 'Remove a selector',
   /**
-   *@description The error message display when a user enters a type in the input not associates with any existing types.
+   * @description The error message display when a user enters a type in the input not associates with any existing types.
    */
   unknownActionType: 'Unknown action type.',
 } as const;

@@ -78,7 +78,6 @@ import * as SourceMap from './SourceMap.js';
 import * as SourceMapFunctionRanges from './SourceMapFunctionRanges.js';
 import * as SourceMapManager from './SourceMapManager.js';
 import * as SourceMapScopeChainEntry from './SourceMapScopeChainEntry.js';
-import * as SourceMapScopes from './SourceMapScopes.js';
 import * as SourceMapScopesInfo from './SourceMapScopesInfo.js';
 import * as StorageBucketsModel from './StorageBucketsModel.js';
 import * as StorageKeyManager from './StorageKeyManager.js';
@@ -157,7 +156,6 @@ export {
   SourceMapFunctionRanges,
   SourceMapManager,
   SourceMapScopeChainEntry,
-  SourceMapScopes,
   SourceMapScopesInfo,
   StorageBucketsModel,
   StorageKeyManager,

@@ -56,9 +56,9 @@ exports.default = (0, util_1.createRule)({
         const checker = services.program.getTypeChecker();
         function isArrayType(type) {
             return tsutils
-                .unionTypeParts(type)
+                .unionConstituents(type)
                 .every(unionPart => tsutils
-                .intersectionTypeParts(unionPart)
+                .intersectionConstituents(unionPart)
                 .every(t => checker.isArrayType(t) || checker.isTupleType(t)));
         }
         return {

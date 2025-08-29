@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.1.9](https://github.com/es-shims/array-includes/compare/v3.1.8...v3.1.9) - 2025-06-01
+
+### Commits
+
+- [Deps] update `call-bind`, `es-abstract`, `es-object-atoms`, `get-intrinsic`, `is-string` [`3b934ae`](https://github.com/es-shims/array-includes/commit/3b934ae87a602798775c04dbeb4cb9e9f1805610)
+- [Refactor] use `call-bound` and `math-intrinsics` directly [`160ea60`](https://github.com/es-shims/array-includes/commit/160ea60f7d9b205e516915558b503d078945dea3)
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `auto-changelog`, `hastrict-mode`, `tape` [`4e4c67d`](https://github.com/es-shims/array-includes/commit/4e4c67dd976b7ee56e12b7eabb3ad4ab4881f4e5)
+- [Tests] replace `aud` with `npm audit` [`9c5ec1c`](https://github.com/es-shims/array-includes/commit/9c5ec1c160e0f7adeebb78350675465003b2d888)
+- [Dev Deps] add missing peer dep [`863d207`](https://github.com/es-shims/array-includes/commit/863d207753789757edded151ab3d62ae5033c021)
+
 ## [v3.1.8](https://github.com/es-shims/array-includes/compare/v3.1.7...v3.1.8) - 2024-03-20
 
 ### Commits

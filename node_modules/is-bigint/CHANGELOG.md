@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.0](https://github.com/inspect-js/is-bigint/compare/v1.0.4...v1.1.0) - 2024-12-02
+
+### Commits
+
+- [actions] reuse common workflows [`0e63a44`](https://github.com/inspect-js/is-bigint/commit/0e63a44e5d1f26783bd5a40d7aa32c14b50fd567)
+- [meta] use `npmignore` to autogenerate an npmignore file [`47584ee`](https://github.com/inspect-js/is-bigint/commit/47584ee7ac726a5c7f5f2f5f34b97529134cf602)
+- [Tests] use `for-each` and `es-value-fixtures` [`f226864`](https://github.com/inspect-js/is-bigint/commit/f22686422b46334c64b3658fba1237751d24460c)
+- [New] add types [`78e2c47`](https://github.com/inspect-js/is-bigint/commit/78e2c473ff73d73eef27b7eb27695393667360e1)
+- [actions] split out node 10-20, and 20+ [`4395a8d`](https://github.com/inspect-js/is-bigint/commit/4395a8d340b1aa3c4e68b37092fcbcace14de41f)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `has-symbols`, `object-inspect`, `tape` [`c188501`](https://github.com/inspect-js/is-bigint/commit/c188501f67f4c220fcdf8d280c99e1f6af5d217e)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `object-inspect`, `safe-publish-latest`, `tape` [`5360d32`](https://github.com/inspect-js/is-bigint/commit/5360d32eee0e29f09b02d3adb51086dc71160939)
+- [actions] update rebase action to use reusable workflow [`d5c1775`](https://github.com/inspect-js/is-bigint/commit/d5c1775e437be97099a7e63b9bd68852b28e0ba7)
+- [actions] update codecov uploader [`c7478c7`](https://github.com/inspect-js/is-bigint/commit/c7478c74498ab954917bd6a561d0ee7d0ba60a6a)
+- [Dev Deps] update `@ljharb/eslint-config`, `auto-changelog`, `npmignore`, `object-inspect`, `tape` [`6fbce66`](https://github.com/inspect-js/is-bigint/commit/6fbce66ebab2ef471bfe841c8436eba3dce118c6)
+- [meta] add missing `engines.node` [`6f9ed42`](https://github.com/inspect-js/is-bigint/commit/6f9ed42ed8cb00b3fccdb62d4fcc8e7ab074e194)
+- [Tests] replace `aud` with `npm audit` [`21846c3`](https://github.com/inspect-js/is-bigint/commit/21846c305e5d662ec81b4922cbc57e9324ccd222)
+- [Dev Deps] remove unused `has-symbols`, add missing `has-tostringtag` [`b378d94`](https://github.com/inspect-js/is-bigint/commit/b378d942933ae97ab9610d83d69b52380d6a137c)
+- [Deps] update `has-bigints` [`f46c35b`](https://github.com/inspect-js/is-bigint/commit/f46c35be813c05549865477bd771300c2595496e)
+- [Dev Deps] add missing peer dep [`2b9be16`](https://github.com/inspect-js/is-bigint/commit/2b9be16ab6150d588f00d037b55050d8372953a3)
+
 ## [v1.0.4](https://github.com/inspect-js/is-bigint/compare/v1.0.3...v1.0.4) - 2021-08-11
 
 ### Commits

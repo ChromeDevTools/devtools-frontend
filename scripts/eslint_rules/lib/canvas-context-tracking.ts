@@ -82,7 +82,7 @@ export default createRule({
 
     /**
      * Updates the counter for the current scope.
-     * @param {'save'|'restore'} methodName
+     * @param methodName
      **/
     function trackContextCall(methodName: CanvasCall): void {
       const currentScopeNode = stack.at(-1);

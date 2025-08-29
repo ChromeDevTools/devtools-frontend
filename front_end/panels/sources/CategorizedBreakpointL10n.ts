@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview The sources panel (via DebuggerPausedMessage) and the
+ * @file The sources panel (via DebuggerPausedMessage) and the
  * "browser_debugger" module both require localized CategorizedBreakpoint
  * names. We put them "upstream" into "panels/sources" so they are
  * available to both.
@@ -39,60 +39,60 @@ const UIStrings = {
    */
   beforeSellerWorkletReportingStart: 'Seller Reporting Phase Start',
   /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
-   *@example {setTimeout} PH1
+   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @example {setTimeout} PH1
    */
   setTimeoutOrIntervalFired: '{PH1} fired',
   /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
    */
   scriptFirstStatement: 'Script First Statement',
   /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
    */
   scriptBlockedByContentSecurity: 'Script Blocked by Content Security Policy',
   /**
-   *@description Text for the request animation frame event
+   * @description Text for the request animation frame event
    */
   requestAnimationFrame: 'Request Animation Frame',
   /**
-   *@description Text to cancel the animation frame
+   * @description Text to cancel the animation frame
    */
   cancelAnimationFrame: 'Cancel Animation Frame',
   /**
-   *@description Text for the event that an animation frame is fired
+   * @description Text for the event that an animation frame is fired
    */
   animationFrameFired: 'Animation Frame Fired',
   /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
    */
   webglErrorFired: 'WebGL Error Fired',
   /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
    */
   webglWarningFired: 'WebGL Warning Fired',
   /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   * @description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
    */
   setInnerhtml: 'Set `innerHTML`',
   /**
-   *@description Name of a breakpoint type in the Sources Panel.
+   * @description Name of a breakpoint type in the Sources Panel.
    */
   createCanvasContext: 'Create canvas context',
   /**
-   *@description Name of a breakpoint type in the Sources Panel.
+   * @description Name of a breakpoint type in the Sources Panel.
    */
   createAudiocontext: 'Create `AudioContext`',
   /**
-   *@description Name of a breakpoint type in the Sources Panel. Close is a verb.
+   * @description Name of a breakpoint type in the Sources Panel. Close is a verb.
    */
   closeAudiocontext: 'Close `AudioContext`',
   /**
-   *@description Name of a breakpoint type in the Sources Panel. Resume is a verb.
+   * @description Name of a breakpoint type in the Sources Panel. Resume is a verb.
    */
   resumeAudiocontext: 'Resume `AudioContext`',
   /**
-   *@description Name of a breakpoint type in the Sources Panel.
+   * @description Name of a breakpoint type in the Sources Panel.
    */
   suspendAudiocontext: 'Suspend `AudioContext`',
   /**
@@ -103,7 +103,7 @@ const UIStrings = {
    */
   sinkViolations: 'Sink Violations',
   /**
-   *@description Title for a checkbox that turns on breakpoints on Trusted Type policy violations
+   * @description Title for a checkbox that turns on breakpoints on Trusted Type policy violations
    */
   policyViolations: 'Policy Violations',
 } as const;
@@ -154,7 +154,7 @@ const LOCALIZED_INSTRUMENTATION_NAMES:
           i18n.i18n.lockedLazyString('getCurrentPosition'),
       [SDK.EventBreakpointsModel.InstrumentationNames.GEOLOCATION_WATCH_POSITION]:
           i18n.i18n.lockedLazyString('watchPosition'),
-      [SDK.EventBreakpointsModel.InstrumentationNames.NOTIFCATION_REQUEST_PERMISSION]:
+      [SDK.EventBreakpointsModel.InstrumentationNames.NOTIFICATION_REQUEST_PERMISSION]:
           i18n.i18n.lockedLazyString('requestPermission'),
       [SDK.EventBreakpointsModel.InstrumentationNames.DOM_WINDOW_CLOSE]: i18n.i18n.lockedLazyString('window.close'),
       [SDK.EventBreakpointsModel.InstrumentationNames.DOCUMENT_WRITE]: i18n.i18n.lockedLazyString('document.write'),

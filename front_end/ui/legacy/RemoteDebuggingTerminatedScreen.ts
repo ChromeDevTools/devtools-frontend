@@ -19,8 +19,8 @@ const UIStrings = {
    */
   debuggingConnectionWasClosed: 'Debugging connection was closed',
   /**
-   *@description Text in a dialog box in DevTools stating the reason for remote debugging being terminated.
-   *@example {target_closed} PH1
+   * @description Text in a dialog box in DevTools stating the reason for remote debugging being terminated.
+   * @example {target_closed} PH1
    */
   connectionClosedReason: 'Reason: {PH1}.',
   /**
@@ -63,13 +63,13 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             .variant=${Buttons.Button.Variant.OUTLINED}>${i18nString(UIStrings.reconnectDevtools)}</devtools-button>
       </div>
     </div>`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 
 export class RemoteDebuggingTerminatedScreen extends VBox {
   constructor(reason: string, view: View = DEFAULT_VIEW) {
-    super(true);
+    super({useShadowDom: true});
     const input = {
       reason,
       onReconnect: () => {

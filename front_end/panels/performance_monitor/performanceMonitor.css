@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-.perfmon-pane {
+:host {
   overflow: hidden;
 
   --override-color-perf-monitor-cpu: var(--sys-color-yellow-bright);
@@ -23,29 +23,26 @@
   --override-color-perf-monitor-recalc-style-count: var(--sys-color-pink);
 }
 
-:host-context(.theme-with-dark-background) .perfmon-pane {
+:host-context(.theme-with-dark-background) {
   --override-color-perf-monitor-jsheap-total-size: var(--ref-palette-purple50);
   --override-color-perf-monitor-js-event-listeners: var(--ref-palette-green50);
 }
 
-.perfmon-pane.suspended {
+.suspended {
   opacity: 40%;
   pointer-events: none;
 }
 
-.perfmon-pane .perfmon-chart-suspend-overlay {
-  display: none;
+.perfmon-chart-suspend-overlay {
+  display: flex;
   font-size: 26px;
   align-items: center;
   justify-content: center;
 }
 
-.perfmon-pane.suspended .perfmon-chart-suspend-overlay {
-  display: flex;
-}
-
 .perfmon-control-pane {
   display: flex;
+  flex: initial;
   flex-direction: column;
   padding: 6px 0;
   overflow: hidden auto;

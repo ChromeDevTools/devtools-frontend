@@ -23,19 +23,19 @@ const {live, classMap, repeat} = Directives;
 
 const UIStrings = {
   /**
-   *@description The title of a button that deletes a parameter.
+   * @description The title of a button that deletes a parameter.
    */
   deleteParameter: 'Delete parameter',
   /**
-   *@description The title of a button that adds a parameter.
+   * @description The title of a button that adds a parameter.
    */
   addParameter: 'Add a parameter',
   /**
-   *@description The title of a button that reset the value of a paremeters to its default value.
+   * @description The title of a button that reset the value of a parameters to its default value.
    */
   resetDefaultValue: 'Reset to default value',
   /**
-   *@description The title of a button to add custom key/value pairs to object parameters with no keys defined
+   * @description The title of a button to add custom key/value pairs to object parameters with no keys defined
    */
   addCustomProperty: 'Add custom property',
   /**
@@ -130,11 +130,11 @@ interface ViewInput {
   onParameterValueBlur: (event: Event) => void;
 }
 
-export type View = (input: ViewInput, output: object, targer: HTMLElement) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 const splitDescription = (description: string): [string, string] => {
   // If the description is too long we make the UI a bit better by highlighting the first sentence
-  // which contains the most informations.
+  // which contains the most information.
   // The number 150 has been chosen arbitrarily
   if (description.length > 150) {
     const [firstSentence, restOfDescription] = description.split('.');
@@ -178,7 +178,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #view: View;
 
   constructor(element: HTMLElement, view = DEFAULT_VIEW) {
-    super(/* useShadowDom=*/ true, undefined, element);
+    super(element, {useShadowDom: true});
     this.#view = view;
     this.registerRequiredCSS(editorWidgetStyles);
   }
@@ -1021,15 +1021,7 @@ function renderInlineButton(opts: {
 }
 
 function renderWarningIcon(): Lit.TemplateResult|undefined {
-  return html`<devtools-icon
-    .data=${{
-    iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px',
-  }
-  }
-    class=${classMap({
-    'warning-icon': true,
-  })}
-  >
+  return html`<devtools-icon name='warning-filled' class='warning-icon small'>
   </devtools-icon>`;
 }
 
@@ -1270,6 +1262,6 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                         .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
                         @click=${input.onCommandSend}></devtools-button>
       </devtools-toolbar>
-    </div>`, target, {host: input});
+    </div>`, target);
   // clang-format on
 };

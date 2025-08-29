@@ -5,25 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("elements") {
-  sources = [
-    "accessibility-pane_test.ts",
-    "add-view-transition-pseudo-styles_test.ts",
-    "at-function-sections_test.ts",
-    "at-property-sections_test.ts",
-    "css-hints_test.ts",
-    "dom-breakpoints_test.ts",
-    "element-breadcrumbs_test.ts",
-    "filter-matched-styles_test.ts",
-    "layout-pane_test.ts",
-    "oopif-elements_test.ts",
-    "reveal-correct-node_test.ts",
-    "selection-after-delete_test.ts",
-    "shadowroot-styles_test.ts",
-    "sidebar-event-listeners-remove_test.ts",
-    "sidebar-event-listeners_test.ts",
-    "style-pane-properties_test.ts",
-    "styles-disable-inherited_test.ts",
-  ]
+  sources = [ "style-pane-properties_test.ts" ]
 
   deps = [
     "../../shared",

@@ -8,7 +8,6 @@ import '../../../ui/components/expandable_list/expandable_list.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -20,19 +19,19 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Error message stating that something went wrong when tring to render stack trace
+   * @description Error message stating that something went wrong when trying to render stack trace
    */
   cannotRenderStackTrace: 'Cannot render stack trace',
   /**
-   *@description A link to show more frames in the stack trace if more are available. Never 0.
+   * @description A link to show more frames in the stack trace if more are available. Never 0.
    */
   showSMoreFrames: '{n, plural, =1 {Show # more frame} other {Show # more frames}}',
   /**
-   *@description A link to rehide frames that are by default hidden.
+   * @description A link to rehide frames that are by default hidden.
    */
   showLess: 'Show less',
   /**
-   *@description Label for a stack trace. If a frame is created programmatically (i.e. via JavaScript), there is a
+   * @description Label for a stack trace. If a frame is created programmatically (i.e. via JavaScript), there is a
    * stack trace for the line of code which caused the creation of the iframe. This is the stack trace we are showing here.
    */
   creationStackTrace: 'Frame Creation `Stack Trace`',
@@ -170,18 +169,13 @@ export class StackTrace extends HTMLElement {
       // and is handled again in the linkifier live location update callback.
       if ('link' in item && item.link) {
         const uiLocation = Components.Linkifier.Linkifier.uiLocation(item.link);
-        if (uiLocation &&
-            Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
-                uiLocation.uiSourceCode)) {
-          ignoreListHide = true;
-        }
+        ignoreListHide = Boolean(uiLocation?.isIgnoreListed());
       }
       if (this.#showHidden || !ignoreListHide) {
         if ('functionName' in item) {
           expandableRows.push(html`
           <devtools-stack-trace-row data-stack-trace-row .data=${{
-            stackTraceRowItem:
-              item,
+            stackTraceRowItem: item,
           }}></devtools-stack-trace-row>`);
         }
         if ('asyncDescription' in item) {

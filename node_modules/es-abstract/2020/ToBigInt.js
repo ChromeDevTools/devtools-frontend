@@ -10,7 +10,7 @@ var $SyntaxError = require('es-errors/syntax');
 var StringToBigInt = require('./StringToBigInt');
 var ToPrimitive = require('./ToPrimitive');
 
-var isNaN = require('../helpers/isNaN');
+var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/11.0/#sec-tobigint
 

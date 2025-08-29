@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
-import * as AiAssistance from '../../panels/ai_assistance/ai_assistance.js';
 import {getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
@@ -61,28 +61,27 @@ describeWithMockConnection('MainMenuItem', () => {
   });
 
   describe('handleExternalRequest', () => {
-    const {handleExternalRequest} = Main.MainImpl;
+    const {handleExternalRequestGenerator} = Main.MainImpl;
 
-    it('calls into the AiAssistance Panel for LIVE_STYLE_DEBUGGER', async () => {
-      const panel = sinon.createStubInstance(AiAssistance.AiAssistancePanel);
-      sinon.stub(AiAssistance.AiAssistancePanel, 'instance').callsFake(() => Promise.resolve(panel));
+    it('calls into the AiAssistanceModel ConversationHandler for LIVE_STYLE_DEBUGGER', async () => {
+      const handler = AiAssistanceModel.ConversationHandler.instance({
+        aidaClient: new Host.AidaClient.AidaClient(),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      });
+      const spy = sinon.spy(handler, 'handleExternalRequest');
 
-      await handleExternalRequest({kind: 'LIVE_STYLE_DEBUGGER', args: {prompt: 'test', selector: '#test'}});
-      sinon.assert.calledWith(
-          panel.handleExternalRequest,
-          {prompt: 'test', conversationType: AiAssistanceModel.ConversationType.STYLING, selector: '#test'});
+      await handleExternalRequestGenerator({kind: 'LIVE_STYLE_DEBUGGER', args: {prompt: 'test', selector: '#test'}});
+      sinon.assert.calledOnceWithExactly(
+          spy, {prompt: 'test', conversationType: AiAssistanceModel.ConversationType.STYLING, selector: '#test'});
     });
 
-    it('throws an error for file assistance requests', async () => {
-      const panel = sinon.createStubInstance(AiAssistance.AiAssistancePanel);
-      sinon.stub(AiAssistance.AiAssistancePanel, 'instance').callsFake(() => Promise.resolve(panel));
-      try {
-        // @ts-expect-error
-        await handleExternalRequest({kind: 'FILE_DEBUGGER', args: {prompt: 'test'}});
-        assert.fail('Expected `handleExternalRequest` to throw');
-      } catch (err) {
-        assert.strictEqual(err.message, 'Debugging with an agent of type \'FILE_DEBUGGER\' is not implemented yet.');
-      }
+    it('returns an error for file assistance requests', async () => {
+      // @ts-expect-error
+      const generator = await handleExternalRequestGenerator({kind: 'FILE_DEBUGGER', args: {prompt: 'test'}});
+      const iteratorResponse = await generator.next();
+      assert.strictEqual(iteratorResponse.value.type, 'error');
+      assert.strictEqual(
+          iteratorResponse.value.message, 'Debugging with an agent of type \'FILE_DEBUGGER\' is not implemented yet.');
     });
   });
 });

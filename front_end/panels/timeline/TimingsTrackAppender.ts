@@ -20,7 +20,7 @@ import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   timings: 'Timings',
 } as const;
@@ -65,7 +65,7 @@ export class TimingsTrackAppender implements TrackAppender {
    * timings track.
    * @param trackStartLevel the horizontal level of the flame chart events where
    * the track's events will start being appended.
-   * @param expanded wether the track should be rendered expanded.
+   * @param expanded whether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
@@ -115,8 +115,7 @@ export class TimingsTrackAppender implements TrackAppender {
    * extension markers (the first available level to append more data).
    */
   #appendExtensionsAtLevel(currentLevel: number): number {
-    let markers: Trace.Types.Extensions.SyntheticExtensionMarker[] = [];
-    markers = markers.concat(this.#extensionMarkers).sort((m1, m2) => m1.ts - m2.ts);
+    const markers = this.#extensionMarkers.toSorted((m1, m2) => m1.ts - m2.ts);
     if (markers.length === 0) {
       return currentLevel;
     }
@@ -256,12 +255,18 @@ export class TimingsTrackAppender implements TrackAppender {
   }
 
   setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
-    // If an event is a marker event, rather than show a duration of 0, we can instead show the time that the event happened, which is much more useful. We do this currently for:
+    // If an event is a marker event, rather than show a duration of 0, we can
+    // instead show the time that the event happened, which is much more
+    // useful. We do this currently for:
     // Page load events: DCL, FCP and LCP
-    // performance.mark() events
+    // performance.mark() events (including extensibility events)
     // console.timestamp() events
+
+    const isExtensibilityMarker = Trace.Types.Extensions.isSyntheticExtensionEntry(event) &&
+        Trace.Types.Extensions.isExtensionPayloadMarker(event.args);
+
     if (Trace.Types.Events.isMarkerEvent(event) || Trace.Types.Events.isPerformanceMark(event) ||
-        Trace.Types.Events.isConsoleTimeStamp(event)) {
+        Trace.Types.Events.isConsoleTimeStamp(event) || isExtensibilityMarker) {
       const timeOfEvent = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
           event,
           this.#parsedTrace.Meta.traceBounds,

@@ -275,17 +275,20 @@ describeWithMockConnection('DebuggerModel', () => {
   describe('pause', () => {
     let target: SDK.Target.Target;
     let backend: MockProtocolBackend;
-    let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
 
     beforeEach(() => {
       target = createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
       const targetManager = target.targetManager();
       const workspace = Workspace.Workspace.WorkspaceImpl.instance();
       const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
-          {forceNew: false, resourceMapping, targetManager});
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+        forceNew: true,
+        resourceMapping,
+        targetManager,
+        ignoreListManager,
+      });
       backend = new MockProtocolBackend();
-      Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: false, debuggerWorkspaceBinding});
     });
 
     it('with empty call frame list will invoke plain step-into', async () => {

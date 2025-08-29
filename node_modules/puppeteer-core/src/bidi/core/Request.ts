@@ -4,11 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 
+import {ProtocolError} from '../../common/Errors.js';
 import {EventEmitter} from '../../common/EventEmitter.js';
 import {inertIfDisposed} from '../../util/decorators.js';
 import {DisposableStack, disposeSymbol} from '../../util/disposable.js';
+import {stringToTypedArray} from '../../util/encoding.js';
 
 import type {BrowsingContext} from './BrowsingContext.js';
 
@@ -34,6 +36,7 @@ export class Request extends EventEmitter<{
     return request;
   }
 
+  #responseContentPromise: Promise<Uint8Array<ArrayBufferLike>> | null = null;
   #error?: string;
   #redirect?: Request;
   #response?: Bidi.Network.ResponseData;
@@ -216,6 +219,38 @@ export class Request extends EventEmitter<{
       headers,
       body,
     });
+  }
+
+  async getResponseContent(): Promise<Uint8Array> {
+    if (!this.#responseContentPromise) {
+      this.#responseContentPromise = (async () => {
+        try {
+          const data = await this.#session.send('network.getData', {
+            dataType: Bidi.Network.DataType.Response,
+            request: this.id,
+          });
+
+          return stringToTypedArray(
+            data.result.bytes.value,
+            data.result.bytes.type === 'base64',
+          );
+        } catch (error) {
+          if (
+            error instanceof ProtocolError &&
+            error.originalMessage.includes(
+              'No resource with given identifier found',
+            )
+          ) {
+            throw new ProtocolError(
+              'Could not load body for this request. This might happen if the request is a preflight request.',
+            );
+          }
+
+          throw error;
+        }
+      })();
+    }
+    return await this.#responseContentPromise;
   }
 
   async continueWithAuth(

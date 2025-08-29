@@ -5,6 +5,7 @@ var isString = require('../');
 var hasToStringTag = require('has-tostringtag/shams')();
 
 test('not Strings', function (t) {
+	// @ts-expect-error
 	t.notOk(isString(), 'undefined is not String');
 	t.notOk(isString(null), 'null is not String');
 	t.notOk(isString(false), 'false is not String');
@@ -23,6 +24,7 @@ test('not Strings', function (t) {
 });
 
 test('@@toStringTag', { skip: !hasToStringTag }, function (t) {
+	/** @type {{ toString(): unknown; valueOf(): unknown; [Symbol.toStringTag]?: string; }} */
 	var fakeString = {
 		toString: function () { return '7'; },
 		valueOf: function () { return '42'; }

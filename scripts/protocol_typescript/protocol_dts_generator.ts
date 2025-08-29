@@ -86,7 +86,7 @@ const emitGlobalTypeDefs = () => {
 const emitDomain = (domain: Protocol.Domain) => {
   const domainName = toTitleCase(domain.domain);
   emitLine();
-  emitDescription(domain.description);
+  emitTsComment(domain);
   emitOpenBlock(`export namespace ${domainName}`);
   if (domain.types) {
     domain.types.forEach(emitDomainType.bind(null, domain));
@@ -101,14 +101,25 @@ const emitDomain = (domain: Protocol.Domain) => {
 };
 
 const getCommentLines = (description: string) => {
-  const lines = description.split(/\r?\n/g).map(line => line && ` * ${line}` || ' *');
-  return ['/**', ...lines, ' */'];
+  return description.split(/\r?\n/g).map(l => l ? l : '');
 };
 
-const emitDescription = (description?: string) => {
-  if (description) {
-    getCommentLines(description).map(l => emitLine(l));
-  }
+const emitTsComment =
+    (object: Protocol.Event|Protocol.PropertyType|Protocol.DomainType|Protocol.Command|Protocol.Domain) => {
+      const commentLines = object.description ? getCommentLines(object.description) : [];
+      if ('deprecated' in object && object.deprecated) {
+        commentLines.push('@deprecated');
+      }
+
+      if (commentLines.length) {
+        emitDescription(commentLines);
+      }
+    };
+
+const emitDescription = (lines: string[]) => {
+  emitLine('/**');
+  lines.map(l => l ? emitLine(` * ${l}`) : emitLine(' *'));
+  emitLine(' */');
 };
 
 const isPropertyInlineEnum = (prop: Protocol.ProtocolType): boolean => {
@@ -154,7 +165,7 @@ const getPropertyType = (interfaceName: string, prop: Protocol.ProtocolType): st
 };
 
 const emitProperty = (interfaceName: string, prop: Protocol.PropertyType) => {
-  emitDescription(prop.description);
+  emitTsComment(prop);
   emitLine(`${getPropertyDef(interfaceName, prop)};`);
 };
 
@@ -230,7 +241,7 @@ const emitDomainType = (domain: Protocol.Domain, type: Protocol.DomainType) => {
   emitInlineEnumForDomainType(type);
 
   emitLine();
-  emitDescription(type.description);
+  emitTsComment(type);
 
   if (type.type === 'object') {
     emitInterface(type.id, type.properties);
@@ -278,7 +289,7 @@ const emitEvent = (event: Protocol.Event) => {
   emitInlineEnumsForEvents(event);
 
   emitLine();
-  emitDescription(event.description);
+  emitTsComment(event);
   emitInterface(toEventPayloadName(event.name), event.parameters);
 };
 
@@ -330,7 +341,7 @@ const getCommandMapping = (command: Protocol.Command, domainName: string,
 const emitMapping = (moduleName: string, protocolModuleName: string, domains: Protocol.Domain[]) => {
   moduleName = toTitleCase(moduleName);
   emitHeaderComments();
-  emitDescription('Mappings from protocol event and command names to the types required for them.');
+  emitDescription(['Mappings from protocol event and command names to the types required for them.']);
   emitOpenBlock(`export namespace ${moduleName}`);
 
   const protocolModulePrefix = toTitleCase(protocolModuleName);
@@ -359,7 +370,7 @@ const emitMapping = (moduleName: string, protocolModuleName: string, domains: Pr
 
 const emitApiCommand = (command: Protocol.Command, domainName: string, modulePrefix: string) => {
   const prefix = `${modulePrefix}.${domainName}.`;
-  emitDescription(command.description);
+  emitTsComment(command);
   const params = command.parameters ? `params: ${prefix}${toCmdRequestName(command.name)}` : '';
   const response =
       command.returns ? `${prefix}${toCmdResponseName(command.name)}` : 'Protocol.ProtocolResponseWithError';
@@ -369,7 +380,7 @@ const emitApiCommand = (command: Protocol.Command, domainName: string, modulePre
 
 const emitApiEvent = (event: Protocol.Event, domainName: string, modulePrefix: string) => {
   const prefix = `${modulePrefix}.${domainName}.`;
-  emitDescription(event.description);
+  emitTsComment(event);
   const params = event.parameters ? `params: ${prefix}${toEventPayloadName(event.name)}` : '';
   emitLine(`${event.name}(${params}): void;`);
   emitLine();
@@ -400,7 +411,7 @@ const emitApi = (moduleName: string, protocolModuleName: string, domains: Protoc
   emitLine();
   emitLine('import type * as Protocol from \'./protocol.js\'');
   emitLine();
-  emitDescription('API generated from Protocol commands and events.');
+  emitDescription(['API generated from Protocol commands and events.']);
   emitOpenBlock(`declare namespace ${moduleName}`);
 
   emitLine();

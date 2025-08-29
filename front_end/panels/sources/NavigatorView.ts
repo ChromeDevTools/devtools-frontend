@@ -54,102 +54,102 @@ import {SearchSources} from './SearchSourcesView.js';
 
 const UIStrings = {
   /**
-   *@description Text in Navigator View of the Sources panel
+   * @description Text in Navigator View of the Sources panel
    */
   searchInFolder: 'Search in folder',
   /**
-   *@description Search label in Navigator View of the Sources panel
+   * @description Search label in Navigator View of the Sources panel
    */
   searchInAllFiles: 'Search in all files',
   /**
-   *@description Text in Navigator View of the Sources panel
+   * @description Text in Navigator View of the Sources panel
    */
   noDomain: '(no domain)',
   /**
-   *@description Text in Navigator View of the Sources panel
+   * @description Text in Navigator View of the Sources panel
    */
   authored: 'Authored',
   /**
-   *@description Text in Navigator View of the Sources panel
+   * @description Text in Navigator View of the Sources panel
    */
   authoredTooltip: 'Contains original sources',
   /**
-   *@description Text in Navigator View of the Sources panel
+   * @description Text in Navigator View of the Sources panel
    */
   deployed: 'Deployed',
   /**
-   *@description Text in Navigator View of the Sources panel
+   * @description Text in Navigator View of the Sources panel
    */
   deployedTooltip: 'Contains final sources the browser sees',
   /**
-   *@description Text in Navigator View of the Sources panel
+   * @description Text in Navigator View of the Sources panel
    */
   excludeThisFolder: 'Exclude this folder?',
   /**
-   *@description Text in a dialog which appears when users click on 'Exclude from Workspace' menu item
+   * @description Text in a dialog which appears when users click on 'Exclude from Workspace' menu item
    */
   folderWillNotBeShown: 'This folder and its contents will not be shown in workspace.',
   /**
-   *@description Text in Navigator View of the Sources panel
+   * @description Text in Navigator View of the Sources panel
    */
   deleteThisFile: 'Delete this file?',
   /**
-   *@description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator View of the Sources panel
    */
   rename: 'Rename…',
   /**
-   *@description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator View of the Sources panel
    */
   makeACopy: 'Make a copy…',
   /**
-   *@description Text to delete something
+   * @description Text to delete something
    */
   delete: 'Delete',
   /**
-   *@description A button text to confirm an action to remove a folder. This is not the same as delete. It removes the folder from UI but do not delete them.
+   * @description A button text to confirm an action to remove a folder. This is not the same as delete. It removes the folder from UI but do not delete them.
    */
   remove: 'Remove',
   /**
-   *@description Text in Navigator View of the Sources panel
+   * @description Text in Navigator View of the Sources panel
    */
   deleteFolder: 'Delete this folder and its contents?',
   /**
-   *@description Text in Navigator View of the Sources panel. A confirmation message on action to delete a folder or file.
+   * @description Text in Navigator View of the Sources panel. A confirmation message on action to delete a folder or file.
    */
   actionCannotBeUndone: 'This action cannot be undone.',
   /**
-   *@description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator View of the Sources panel
    */
   openFolder: 'Open folder',
   /**
-   *@description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator View of the Sources panel
    */
   newFile: 'New file',
   /**
-   *@description A context menu item in the Navigator View of the Sources panel to exclude a folder from workspace
+   * @description A context menu item in the Navigator View of the Sources panel to exclude a folder from workspace
    */
   excludeFolder: 'Exclude from workspace',
   /**
-   *@description A context menu item in the Navigator View of the Sources panel
+   * @description A context menu item in the Navigator View of the Sources panel
    */
   removeFolderFromWorkspace: 'Remove from workspace',
   /**
-   *@description Text in Navigator View of the Sources panel
+   * @description Text in Navigator View of the Sources panel
    * @example {a-folder-name} PH1
    */
   areYouSureYouWantToRemoveThis: 'Remove ‘{PH1}’ from Workspace?',
   /**
-   *@description Text in Navigator View of the Sources panel. Warning message when user remove a folder.
+   * @description Text in Navigator View of the Sources panel. Warning message when user remove a folder.
    */
   workspaceStopSyncing: 'This will stop syncing changes from DevTools to your sources.',
   /**
-   *@description Name of an item from source map
-   *@example {compile.html} PH1
+   * @description Name of an item from source map
+   * @example {compile.html} PH1
    */
   sFromSourceMap: '{PH1} (from source map)',
   /**
-   *@description Name of an item that is on the ignore list
-   *@example {compile.html} PH1
+   * @description Name of an item that is on the ignore list
+   * @example {compile.html} PH1
    */
   sIgnoreListed: '{PH1} (ignore listed)',
   /**
@@ -212,17 +212,19 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private groupByDomain?: boolean;
   private groupByFolder?: boolean;
   constructor(jslogContext: string, enableAuthoredGrouping?: boolean) {
-    super(true);
+    super({
+      jslog: `${VisualLogging.pane(jslogContext).track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(navigatorViewStyles);
 
     this.placeholder = null;
     this.scriptsTree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.scriptsTree.registerRequiredCSS(navigatorTreeStyles);
 
-    this.scriptsTree.hideOverflow();
+    this.scriptsTree.setHideOverflow(true);
     this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
     this.scriptsTree.setFocusable(false);
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane(jslogContext).track({resize: true})}`);
     this.contentElement.appendChild(this.scriptsTree.element);
     this.setDefaultFocusedElement(this.scriptsTree.element);
 
@@ -244,7 +246,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       this.navigatorGroupByAuthoredExperiment = Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
     }
 
-    Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
+    Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
 
     this.initGrouping();
 
@@ -485,7 +487,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   private addUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE) &&
-        Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+        Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
             uiSourceCode)) {
       return;
     }
@@ -1122,7 +1124,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
         isKnownThirdParty: node.recursiveProperties.exclusivelyThirdParty || false,
         isCurrentlyIgnoreListed: node.recursiveProperties.exclusivelyIgnored || false,
       };
-      for (const {text, callback, jslogContext} of Bindings.IgnoreListManager.IgnoreListManager.instance()
+      for (const {text, callback, jslogContext} of Workspace.IgnoreListManager.IgnoreListManager.instance()
                .getIgnoreListFolderContextMenuItems(url, options)) {
         contextMenu.defaultSection().appendItem(text, callback, {jslogContext});
       }
@@ -1758,7 +1760,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
 
   override updateTitle(ignoreIsDirty?: boolean): void {
     const isIgnoreListed =
-        Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+        Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
             this.uiSourceCodeInternal);
     if (this.uiSourceCodeInternal.contentType().isScript() || isIgnoreListed) {
       this.recursiveProperties.exclusivelyIgnored = isIgnoreListed;

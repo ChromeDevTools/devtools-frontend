@@ -74,56 +74,56 @@ import {WebCustomData} from './WebCustomData.js';
 
 const UIStrings = {
   /**
-   *@description No matches element text content in Styles Sidebar Pane of the Elements panel
+   * @description No matches element text content in Styles Sidebar Pane of the Elements panel
    */
   noMatchingSelectorOrStyle: 'No matching selector or style',
   /**
-  /**
-   *@description Text to announce the result of the filter input in the Styles Sidebar Pane of the Elements panel
+   * /**
+   * @description Text to announce the result of the filter input in the Styles Sidebar Pane of the Elements panel
    */
   visibleSelectors: '{n, plural, =1 {# visible selector listed below} other {# visible selectors listed below}}',
   /**
-   *@description Separator element text content in Styles Sidebar Pane of the Elements panel
-   *@example {scrollbar-corner} PH1
+   * @description Separator element text content in Styles Sidebar Pane of the Elements panel
+   * @example {scrollbar-corner} PH1
    */
   pseudoSElement: 'Pseudo ::{PH1} element',
   /**
-   *@description Text of a DOM element in Styles Sidebar Pane of the Elements panel
+   * @description Text of a DOM element in Styles Sidebar Pane of the Elements panel
    */
   inheritedFroms: 'Inherited from ',
   /**
-   *@description Text of an inherited psuedo element in Styles Sidebar Pane of the Elements panel
-   *@example {highlight} PH1
+   * @description Text of an inherited pseudo element in Styles Sidebar Pane of the Elements panel
+   * @example {highlight} PH1
    */
   inheritedFromSPseudoOf: 'Inherited from ::{PH1} pseudo of ',
   /**
-   *@description Title of  in styles sidebar pane of the elements panel
-   *@example {Ctrl} PH1
-   *@example {Alt} PH2
+   * @description Title of  in styles sidebar pane of the elements panel
+   * @example {Ctrl} PH1
+   * @example {Alt} PH2
    */
   incrementdecrementWithMousewheelOne:
       'Increment/decrement with mousewheel or up/down keys. {PH1}: R ±1, Shift: G ±1, {PH2}: B ±1',
   /**
-   *@description Title of  in styles sidebar pane of the elements panel
-   *@example {Ctrl} PH1
-   *@example {Alt} PH2
+   * @description Title of  in styles sidebar pane of the elements panel
+   * @example {Ctrl} PH1
+   * @example {Alt} PH2
    */
   incrementdecrementWithMousewheelHundred:
       'Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, {PH2}: ±0.1',
   /**
-   *@description Tooltip text that appears when hovering over the rendering button in the Styles Sidebar Pane of the Elements panel
+   * @description Tooltip text that appears when hovering over the rendering button in the Styles Sidebar Pane of the Elements panel
    */
   toggleRenderingEmulations: 'Toggle common rendering emulations',
   /**
-   *@description Rendering emulation option for toggling the automatic dark mode
+   * @description Rendering emulation option for toggling the automatic dark mode
    */
   automaticDarkMode: 'Automatic dark mode',
   /**
-   *@description Text displayed on layer separators in the styles sidebar pane.
+   * @description Text displayed on layer separators in the styles sidebar pane.
    */
   layer: 'Layer',
   /**
-   *@description Tooltip text for the link in the sidebar pane layer separators that reveals the layer in the layer tree view.
+   * @description Tooltip text for the link in the sidebar pane layer separators that reveals the layer in the layer tree view.
    */
   clickToRevealLayer: 'Click to reveal layer in layer tree',
 } as const;
@@ -1241,16 +1241,16 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const range = TextUtils.TextRange.TextRange.createFromLocation(lines.length - 1, lines[lines.length - 1].length);
 
     if (this.sectionBlocks && this.sectionBlocks.length > 0) {
-      this.addBlankSection(this.sectionBlocks[0].sections[0], styleSheetHeader.id, range);
+      this.addBlankSection(this.sectionBlocks[0].sections[0], styleSheetHeader, range);
     }
   }
 
   addBlankSection(
-      insertAfterSection: StylePropertiesSection, styleSheetId: Protocol.CSS.StyleSheetId,
+      insertAfterSection: StylePropertiesSection, styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader,
       ruleLocation: TextUtils.TextRange.TextRange): void {
     const node = this.node();
     const blankSection = new BlankStylePropertiesSection(
-        this, insertAfterSection.matchedStyles, node ? node.simpleSelector() : '', styleSheetId, ruleLocation,
+        this, insertAfterSection.matchedStyles, node ? node.simpleSelector() : '', styleSheetHeader, ruleLocation,
         insertAfterSection.style(), 0);
 
     this.sectionsContainer.contentElement.insertBefore(blankSection.element, insertAfterSection.element.nextSibling);
@@ -1955,17 +1955,11 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         continue;
       }
       const icon = new IconButton.Icon.Icon();
-      const width = '12.5px';
-      const height = '12.5px';
-      icon.data = {
-        iconName: iconInfo.iconName,
-        width,
-        height,
-        color: 'var(--icon-default)',
-      };
+      icon.name = iconInfo.iconName;
+      icon.classList.add('extra-small');
       icon.style.transform = `rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX * 1.1}, ${iconInfo.scaleY * 1.1})`;
-      icon.style.maxHeight = height;
-      icon.style.maxWidth = width;
+      icon.style.maxHeight = 'var(--sys-size-6)';
+      icon.style.maxWidth = 'var(--sys-size-6)';
       result.iconElement = icon;
     }
 

@@ -146,10 +146,9 @@ export function handleEvent(event: Types.Events.Event): void {
   if (Types.Events.isProfileChunk(event)) {
     const profileData = getOrCreatePreProcessedData(event.pid, event.id);
     const cdpProfile = profileData.rawProfile;
-    const nodesAndSamples: Types.Events.PartialProfile|undefined = event.args?.data?.cpuProfile || {samples: []};
+    const nodesAndSamples: Types.Events.PartialProfile = event.args?.data?.cpuProfile || {samples: []};
     const samples = nodesAndSamples?.samples || [];
     const traceIds = event.args?.data?.cpuProfile?.trace_ids;
-    const nodes: CPUProfile.CPUProfileDataModel.ExtendedProfileNode[] = [];
     for (const n of nodesAndSamples?.nodes || []) {
       const lineNumber = typeof n.callFrame.lineNumber === 'undefined' ? -1 : n.callFrame.lineNumber;
       const columnNumber = typeof n.callFrame.columnNumber === 'undefined' ? -1 : n.callFrame.columnNumber;
@@ -166,22 +165,22 @@ export function handleEvent(event: Types.Events.Event): void {
           scriptId,
         },
       };
-      nodes.push(node);
+      cdpProfile.nodes.push(node);
     }
 
     const timeDeltas = event.args.data?.timeDeltas || [];
     const lines = event.args.data?.lines || Array(samples.length).fill(0);
-    cdpProfile.nodes.push(...nodes);
     cdpProfile.samples?.push(...samples);
     cdpProfile.timeDeltas?.push(...timeDeltas);
     cdpProfile.lines?.push(...lines);
 
     if (traceIds) {
-      cdpProfile.traceIds = cdpProfile.traceIds || {};
-      for (const [key, value] of Object.entries(traceIds)) {
-        cdpProfile.traceIds[key] = value;
+      cdpProfile.traceIds ??= {};
+      for (const key in traceIds) {
+        cdpProfile.traceIds[key] = traceIds[key];
       }
     }
+
     if (cdpProfile.samples && cdpProfile.timeDeltas && cdpProfile.samples.length !== cdpProfile.timeDeltas.length) {
       console.error('Failed to parse CPU profile.');
       return;

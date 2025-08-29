@@ -40,11 +40,11 @@ import {Events, LayerTreeModel} from './LayerTreeModel.js';
 
 const UIStrings = {
   /**
-   *@description Text for the details of something
+   * @description Text for the details of something
    */
   details: 'Details',
   /**
-   *@description Title of the Profiler tool
+   * @description Title of the Profiler tool
    */
   profiler: 'Profiler',
 } as const;
@@ -166,7 +166,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
         const mainFrame = resourceModel.mainFrame;
         if (mainFrame) {
           const url = mainFrame.url;
-          // Add the currently visualized url as an attribute to make it accessibles to e2e tests
+          // Add the currently visualized url as an attribute to make it accessible to e2e tests
           this.element.setAttribute('test-current-url', url);
         }
       }

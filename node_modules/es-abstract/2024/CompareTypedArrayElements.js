@@ -6,7 +6,7 @@ var Call = require('./Call');
 var SameValue = require('./SameValue');
 var ToNumber = require('./ToNumber');
 
-var isNaN = require('../helpers/isNaN');
+var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/14.0/#sec-comparetypedarrayelements
 

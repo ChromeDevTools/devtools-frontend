@@ -122,8 +122,8 @@ exports.default = (0, util_1.createRule)({
                 caseTypes.add(caseType);
             }
             const missingLiteralBranchTypes = [];
-            for (const unionPart of tsutils.unionTypeParts(discriminantType)) {
-                for (const intersectionPart of tsutils.intersectionTypeParts(unionPart)) {
+            for (const unionPart of tsutils.unionConstituents(discriminantType)) {
+                for (const intersectionPart of tsutils.intersectionConstituents(unionPart)) {
                     if (caseTypes.has(intersectionPart) ||
                         !isTypeLiteralLikeType(intersectionPart)) {
                         continue;
@@ -284,8 +284,8 @@ function isTypeLiteralLikeType(type) {
  */
 function doesTypeContainNonLiteralType(type) {
     return tsutils
-        .unionTypeParts(type)
+        .unionConstituents(type)
         .some(type => tsutils
-        .intersectionTypeParts(type)
+        .intersectionConstituents(type)
         .every(subType => !isTypeLiteralLikeType(subType)));
 }

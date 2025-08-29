@@ -9,7 +9,7 @@ import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {createTarget} from '../../../testing/EnvironmentHelpers.js';
+import {createTarget, registerActions} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -153,16 +153,18 @@ describeWithMockConnection('LiveMetricsView', () => {
   beforeEach(async () => {
     mockHandleAction.reset();
 
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'timeline.toggle-recording',
-      category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-      loadActionDelegate: async () => ({handleAction: mockHandleAction}),
-    });
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'timeline.record-reload',
-      category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-      loadActionDelegate: async () => ({handleAction: mockHandleAction}),
-    });
+    registerActions([
+      {
+        actionId: 'timeline.toggle-recording',
+        category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+        loadActionDelegate: async () => ({handleAction: mockHandleAction}),
+      },
+      {
+        actionId: 'timeline.record-reload',
+        category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+        loadActionDelegate: async () => ({handleAction: mockHandleAction}),
+      }
+    ]);
 
     const dummyStorage = new Common.Settings.SettingsStorage({});
     Common.Settings.Settings.instance({
@@ -172,19 +174,9 @@ describeWithMockConnection('LiveMetricsView', () => {
       localStorage: dummyStorage,
     });
 
-    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
     LiveMetrics.LiveMetrics.instance({forceNew: true});
     CrUXManager.CrUXManager.instance({forceNew: true});
     EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
-  });
-
-  afterEach(async () => {
-    UI.ActionRegistry.ActionRegistry.reset();
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
-
-    UI.ActionRegistration.maybeRemoveActionExtension('timeline.toggle-recording');
-    UI.ActionRegistration.maybeRemoveActionExtension('timeline.record-reload');
   });
 
   it('should show interactions', async () => {

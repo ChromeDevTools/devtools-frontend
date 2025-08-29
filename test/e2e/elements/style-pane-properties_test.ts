@@ -7,7 +7,6 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {
   $$,
-  assertNotNullOrUndefined,
   click,
   getBrowserAndPages,
   goToHtml,
@@ -554,7 +553,7 @@ describe('The Styles pane', () => {
     await click('aria/overrule[role="button"]');
 
     const treeElement = await waitFor('[data-node-key="2: overrule"]');
-    assertNotNullOrUndefined(treeElement);
+    assert.isOk(treeElement);
   });
 
   it('can display inherited CSS highlight pseudo styles', async () => {
@@ -1031,77 +1030,73 @@ describe('The Styles pane', () => {
     assert.deepEqual(inspectedRulesBefore, expectedInspectedRulesBefore);
   });
 
-  // Fails on Mac-arm64
-  it.skipOnPlatforms(
-      ['mac'],
-      '[crbug.com/362505638]:(shows styles from injected user stylesheets for a injected iframe (ported layout test)',
-      async () => {
-        const {target} = getBrowserAndPages();
-        await goToResourceAndWaitForStyleSection('elements/css-inject-stylesheet.html');
-        await prepareElementsTab();
+  it('shows styles from injected user stylesheets for a injected iframe (ported layout test)', async () => {
+    const {target} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-inject-stylesheet.html');
+    await prepareElementsTab();
 
-        await target.evaluate(async () => {
-          const iframe = document.createElement('iframe');
-          iframe.src = 'css-inject-stylesheet-iframe-data.html';
-          document.getElementById('main')?.appendChild(iframe);
-        });
+    await target.evaluate(async () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = 'css-inject-stylesheet-iframe-data.html';
+      document.getElementById('main')?.appendChild(iframe);
+    });
 
-        await expandSelectedNodeRecursively();
-        await target.evaluate(async () => {
-          const iframe = document.querySelector('iframe');
-          if (!iframe?.contentDocument) {
-            return;
-          }
-          const style = iframe.contentDocument.createElement('style');
-          style.textContent = '#iframeBody { background: red }';
-          iframe.contentDocument.head.append(style);
-        });
+    await expandSelectedNodeRecursively();
+    await target.evaluate(async () => {
+      const iframe = document.querySelector('iframe');
+      if (!iframe?.contentDocument) {
+        return;
+      }
+      const style = iframe.contentDocument.createElement('style');
+      style.textContent = '#iframeBody { background: red }';
+      iframe.contentDocument.head.append(style);
+    });
 
-        await waitForAndClickTreeElementWithPartialText('id=\u200B"iframeBody"');
-        await waitForStyleRule('#iframeBody');
-        const inspectedRulesAfter = await getDisplayedStyleRulesCompact();
-        const expectedInspectedRulesAfter = [
-          {
-            selectorText: 'element.style',
-            propertyNames: [],
-          },
-          {
-            selectorText: '#iframeBody',
-            propertyNames: [
-              'background',
-              'background-image',
-              'background-position-x',
-              'background-position-y',
-              'background-size',
-              'background-repeat',
-              'background-attachment',
-              'background-origin',
-              'background-clip',
-              'background-color',
-            ],
-          },
-          {
-            selectorText: 'body',
-            propertyNames: [
-              'background',
-              'background-image',
-              'background-position-x',
-              'background-position-y',
-              'background-size',
-              'background-repeat',
-              'background-attachment',
-              'background-origin',
-              'background-clip',
-              'background-color',
-            ],
-          },
-          {
-            selectorText: 'body',
-            propertyNames: ['display', 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left'],
-          },
-        ];
-        assert.deepEqual(inspectedRulesAfter, expectedInspectedRulesAfter);
-      });
+    await waitForAndClickTreeElementWithPartialText('id=\u200B"iframeBody"');
+    await waitForStyleRule('#iframeBody');
+    const inspectedRulesAfter = await getDisplayedStyleRulesCompact();
+    const expectedInspectedRulesAfter = [
+      {
+        selectorText: 'element.style',
+        propertyNames: [],
+      },
+      {
+        selectorText: '#iframeBody',
+        propertyNames: [
+          'background',
+          'background-image',
+          'background-position-x',
+          'background-position-y',
+          'background-size',
+          'background-repeat',
+          'background-attachment',
+          'background-origin',
+          'background-clip',
+          'background-color',
+        ],
+      },
+      {
+        selectorText: 'body',
+        propertyNames: [
+          'background',
+          'background-image',
+          'background-position-x',
+          'background-position-y',
+          'background-size',
+          'background-repeat',
+          'background-attachment',
+          'background-origin',
+          'background-clip',
+          'background-color',
+        ],
+      },
+      {
+        selectorText: 'body',
+        propertyNames: ['display', 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left'],
+      },
+    ];
+    assert.deepEqual(inspectedRulesAfter, expectedInspectedRulesAfter);
+  });
 
   it('can parse webkit css region styling (ported layout test)', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-webkit-region.html');

@@ -12,6 +12,7 @@ generate_css("css_files") {
   sources = [
     "cookieControlsView.css",
     "cookieReportView.css",
+    "ipProtectionView.css",
     "lockIcon.css",
     "mainView.css",
     "originView.css",
@@ -25,6 +26,8 @@ devtools_module("security") {
     "CookieControlsView.ts",
     "CookieReportTreeElement.ts",
     "CookieReportView.ts",
+    "IPProtectionTreeElement.ts",
+    "IPProtectionView.ts",
     "OriginTreeElement.ts",
     "SecurityModel.ts",
     "SecurityPanel.ts",

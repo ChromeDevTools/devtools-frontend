@@ -26,7 +26,7 @@ const {styleMap} = Directives;
 const {widgetConfig, widgetRef} = UI.Widget;
 const UIStrings = {
   /**
-   *@description Text for one or a group of functions
+   * @description Text for one or a group of functions
    */
   method: 'Method',
   /**
@@ -40,65 +40,65 @@ const UIStrings = {
    */
   request: 'Request',
   /**
-   *@description Title of a cell content in protocol monitor. A Network response refers to the act of acknowledging a
-  network request. Should not be confused with answer.
+   * @description Title of a cell content in protocol monitor. A Network response refers to the act of acknowledging a
+   * network request. Should not be confused with answer.
    */
   response: 'Response',
   /**
-   *@description Text for timestamps of items
+   * @description Text for timestamps of items
    */
   timestamp: 'Timestamp',
   /**
-   *@description Title of a cell content in protocol monitor. It describes the time between sending a request and receiving a response.
+   * @description Title of a cell content in protocol monitor. It describes the time between sending a request and receiving a response.
    */
   elapsedTime: 'Elapsed time',
   /**
-   *@description Text in Protocol Monitor of the Protocol Monitor tab
+   * @description Text in Protocol Monitor of the Protocol Monitor tab
    */
   target: 'Target',
   /**
-   *@description Text to record a series of actions for analysis
+   * @description Text to record a series of actions for analysis
    */
   record: 'Record',
   /**
-   *@description Text to clear everything
+   * @description Text to clear everything
    */
   clearAll: 'Clear all',
   /**
-   *@description Text to filter result items
+   * @description Text to filter result items
    */
   filter: 'Filter',
   /**
-   *@description Text for the documentation of something
+   * @description Text for the documentation of something
    */
   documentation: 'Documentation',
   /**
-   *@description Text to open the CDP editor with the selected command
+   * @description Text to open the CDP editor with the selected command
    */
   editAndResend: 'Edit and resend',
   /**
-   *@description Cell text content in Protocol Monitor of the Protocol Monitor tab
-   *@example {30} PH1
+   * @description Cell text content in Protocol Monitor of the Protocol Monitor tab
+   * @example {30} PH1
    */
   sMs: '{PH1} ms',
   /**
-   *@description Text in Protocol Monitor of the Protocol Monitor tab
+   * @description Text in Protocol Monitor of the Protocol Monitor tab
    */
   noMessageSelected: 'No message selected',
   /**
-   *@description Text in Protocol Monitor of the Protocol Monitor tab if no message is selected
+   * @description Text in Protocol Monitor of the Protocol Monitor tab if no message is selected
    */
   selectAMessageToView: 'Select a message to see its details',
   /**
-   *@description Text in Protocol Monitor for the save button
+   * @description Text in Protocol Monitor for the save button
    */
   save: 'Save',
   /**
-   *@description Text in Protocol Monitor to describe the sessions column
+   * @description Text in Protocol Monitor to describe the sessions column
    */
   session: 'Session',
   /**
-   *@description A placeholder for an input in Protocol Monitor. The input accepts commands that are sent to the backend on Enter. CDP stands for Chrome DevTools Protocol.
+   * @description A placeholder for an input in Protocol Monitor. The input accepts commands that are sent to the backend on Enter. CDP stands for Chrome DevTools Protocol.
    */
   sendRawCDPCommand: 'Send a raw `CDP` command',
   /**
@@ -279,11 +279,11 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                           style="--override-data-grid-row-background-color: var(--sys-color-surface3)">
                         ${'id' in message ? html`
                           <td title="sent">
-                            <devtools-icon name="arrow-up-down" style="color: var(--icon-request-response); width: 16px; height: 16px;">
+                            <devtools-icon name="arrow-up-down" class="medium" style="color: var(--icon-request-response);">
                             </devtools-icon>
                           </td>` : html`
                           <td title="received">
-                            <devtools-icon name="arrow-down" style="color: var(--icon-request); width: 16px; height: 16px;">
+                            <devtools-icon name="arrow-down" class="medium" style="color: var(--icon-request);">
                             </devtools-icon>
                           </td>`}
                         <td>${message.method}</td>
@@ -291,7 +291,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                         <td>
                           ${message.result    ? html`<code>${JSON.stringify(message.result)}</code>` :
                                 message.error ? html`<code>${JSON.stringify(message.error)}</code>` :
-                                                '(pending)'}
+                              'id' in message ? '(pending)' : ''}
                         </td>
                         <td data-value=${message.elapsedTime || 0}>
                           ${!('id' in message)  ? '' :
@@ -354,8 +354,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               ${widgetRef(JSONEditor, e => {output.editorWidget = e;})}>
           </devtools-widget>
         </devtools-split-view>`,
-        target,
-        {host: input}
+        target
     );
   // clang-format on
 };
@@ -668,7 +667,7 @@ export class InfoWidget extends UI.Widget.VBox {
   type: 'sent'|'received'|undefined;
   selectedTab: 'request'|'response'|undefined;
   constructor(element: HTMLElement) {
-    super(undefined, undefined, element);
+    super(element);
     this.tabbedPane = new UI.TabbedPane.TabbedPane();
     this.tabbedPane.appendTab('request', i18nString(UIStrings.request), new UI.Widget.Widget());
     this.tabbedPane.appendTab('response', i18nString(UIStrings.response), new UI.Widget.Widget());

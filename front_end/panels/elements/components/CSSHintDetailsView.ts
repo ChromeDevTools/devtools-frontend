@@ -12,7 +12,7 @@ import cssHintDetailsViewStyles from './cssHintDetailsView.css.js';
 
 const UIStrings = {
   /**
-   *@description Text for button that redirects to CSS property documentation.
+   * @description Text for button that redirects to CSS property documentation.
    */
   learnMore: 'Learn More',
 } as const;

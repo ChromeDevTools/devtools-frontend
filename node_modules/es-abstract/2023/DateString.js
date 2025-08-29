@@ -5,7 +5,7 @@ var $TypeError = require('es-errors/type');
 var weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-var $isNaN = require('../helpers/isNaN');
+var $isNaN = require('math-intrinsics/isNaN');
 var padTimeComponent = require('../helpers/padTimeComponent');
 
 var DateFromTime = require('./DateFromTime');

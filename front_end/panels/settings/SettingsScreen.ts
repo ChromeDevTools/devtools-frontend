@@ -53,35 +53,35 @@ import settingsScreenStyles from './settingsScreen.css.js';
 const UIStrings = {
 
   /**
-   *@description Card header in Experiments settings tab that list all available unstable experiments that can be turned on or off.
+   * @description Card header in Experiments settings tab that list all available unstable experiments that can be turned on or off.
    */
   unstableExperiments: 'Unstable experiments',
   /**
-   *@description Name of the Settings view
+   * @description Name of the Settings view
    */
   settings: 'Settings',
   /**
-   *@description Text for keyboard shortcuts
+   * @description Text for keyboard shortcuts
    */
   shortcuts: 'Shortcuts',
   /**
-   *@description Text of button in Settings Screen of the Settings
+   * @description Text of button in Settings Screen of the Settings
    */
   restoreDefaultsAndReload: 'Restore defaults and reload',
   /**
-   *@description Card header in Experiments settings tab that list all available stable experiments that can be turned on or off.
+   * @description Card header in Experiments settings tab that list all available stable experiments that can be turned on or off.
    */
   experiments: 'Experiments',
   /**
-   *@description Message shown in the experiments panel to warn users about any possible unstable features.
+   * @description Message shown in the experiments panel to warn users about any possible unstable features.
    */
   theseExperimentsCouldBeUnstable: 'Warning: These experiments could be unstable or unreliable.',
   /**
-   *@description Message text content in Settings Screen of the Settings
+   * @description Message text content in Settings Screen of the Settings
    */
   theseExperimentsAreParticularly: 'Warning: These experiments are particularly unstable. Enable at your own risk.',
   /**
-   *@description Message to display if a setting change requires a reload of DevTools
+   * @description Message to display if a setting change requires a reload of DevTools
    */
   oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect',
   /**
@@ -90,15 +90,15 @@ const UIStrings = {
    */
   noResults: 'No experiments match the filter',
   /**
-   *@description Text that is usually a hyperlink to more documentation
+   * @description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
   /**
-   *@description Text that is usually a hyperlink to a feedback form
+   * @description Text that is usually a hyperlink to a feedback form
    */
   sendFeedback: 'Send feedback',
   /**
-   *@description Placeholder text in search bar
+   * @description Placeholder text in search bar
    */
   searchExperiments: 'Search experiments',
 } as const;
@@ -120,7 +120,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
   private reportTabOnReveal: boolean;
 
   private constructor() {
-    super(true);
+    super({useShadowDom: true});
     this.registerRequiredCSS(settingsScreenStyles);
 
     this.contentElement.classList.add('settings-window-main');
@@ -252,13 +252,12 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
   #updateSyncSectionTimerId = -1;
 
   constructor() {
-    super();
+    super({jslog: `${VisualLogging.pane('preferences')}`});
     this.element.classList.add('settings-tab-container');
     this.element.id = 'preferences-tab-content';
     this.containerElement =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane('preferences')}`);
     this.containerElement.classList.add('settings-multicolumn-card-container');
 
     // AI, GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
@@ -276,7 +275,7 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
       Common.Settings.SettingCategory.PERSISTENCE,
       Common.Settings.SettingCategory.DEBUGGER,
       Common.Settings.SettingCategory.GLOBAL,
-      Common.Settings.SettingCategory.SYNC,
+      Common.Settings.SettingCategory.ACCOUNT,
     ];
 
     // Some settings define their initial ordering.
@@ -361,9 +360,9 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
     // Always create the EXTENSIONS section and append the link handling control.
     if (category === Common.Settings.SettingCategory.EXTENSIONS) {
       this.createExtensionSection(settings);
-    } else if (category === Common.Settings.SettingCategory.SYNC && settings.length > 0) {
+    } else if (category === Common.Settings.SettingCategory.ACCOUNT && settings.length > 0) {
       const syncCard = createSettingsCard(
-          Common.SettingRegistration.getLocalizedSettingsCategory(Common.SettingRegistration.SettingCategory.SYNC),
+          Common.SettingRegistration.getLocalizedSettingsCategory(Common.SettingRegistration.SettingCategory.ACCOUNT),
           this.syncSection);
       this.containerElement.appendChild(syncCard);
     } else if (settings.length > 0) {
@@ -408,13 +407,12 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTa
   private readonly containerElement: HTMLElement;
 
   constructor() {
-    super();
+    super({jslog: `${VisualLogging.pane('experiments')}`});
     this.element.classList.add('settings-tab-container');
     this.element.id = 'experiments-tab-content';
     this.containerElement =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
     this.containerElement.classList.add('settings-card-container');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('experiments')}`);
 
     const filterSection = this.containerElement.createChild('div');
     filterSection.classList.add('experiments-filter');

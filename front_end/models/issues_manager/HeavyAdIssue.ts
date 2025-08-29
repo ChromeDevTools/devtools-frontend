@@ -11,7 +11,7 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
-   *@description Title for a learn more link in Heavy Ads issue description
+   * @description Title for a learn more link in Heavy Ads issue description
    */
   handlingHeavyAdInterventions: 'Handling Heavy Ad Interventions',
 } as const;

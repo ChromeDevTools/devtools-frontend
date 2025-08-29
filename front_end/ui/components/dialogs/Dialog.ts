@@ -105,6 +105,12 @@ interface DialogData {
    * match the selector will not cause the dialog to close.
    */
   expectedMutationsSelector?: string;
+
+  /**
+   * The current state of the dialog (expanded or collapsed).
+   * Defaults to COLLAPSED.
+   */
+  state?: DialogState;
 }
 
 type DialogAnchor = HTMLElement|DOMRect|DOMPoint;
@@ -128,6 +134,7 @@ export class Dialog extends HTMLElement {
     closeButton: false,
     dialogTitle: '',
     jslogContext: '',
+    state: DialogState.EXPANDED,
   };
 
   #dialog: HTMLDialogElement|null = null;
@@ -257,6 +264,11 @@ export class Dialog extends HTMLElement {
     this.#onStateChange();
   }
 
+  set state(state: DialogState) {
+    this.#props.state = state;
+    this.#onStateChange();
+  }
+
   #updateDialogBounds(): void {
     this.#dialogClientRect = this.#getDialog().getBoundingClientRect();
   }
@@ -300,9 +312,12 @@ export class Dialog extends HTMLElement {
 
   async setDialogVisible(show: boolean): Promise<void> {
     if (show) {
+      this.state = DialogState.EXPANDED;
       await this.#showDialog();
       return;
     }
+
+    this.state = DialogState.COLLAPSED;
     this.#closeDialog();
   }
 
@@ -445,6 +460,9 @@ export class Dialog extends HTMLElement {
         const dialog = this.#getDialog();
         dialog.style.visibility = 'hidden';
         if (this.#isPendingShowDialog && !dialog.hasAttribute('open')) {
+          if (!dialog.isConnected) {
+            return;
+          }
           dialog.showModal();
           this.setAttribute('open', '');
           this.#isPendingShowDialog = false;
@@ -565,6 +583,9 @@ export class Dialog extends HTMLElement {
     await RenderCoordinator.done();
     this.#isPendingShowDialog = false;
     const dialog = this.#getDialog();
+    if (!dialog.isConnected) {
+      return;
+    }
     // Make the dialog visible now.
     if (!dialog.hasAttribute('open')) {
       dialog.showModal();
@@ -680,17 +701,26 @@ export class Dialog extends HTMLElement {
       return;
     }
 
-    // clang-format off
-    Lit.render(html`
-      <style>${dialogStyles}</style>
-      <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel} @animationend=${this.#animationEndedEvent}
-              jslog=${VisualLogging.dialog(this.#props.jslogContext).track({resize: true, keydown: 'Escape'}).parent('mapped')}>
-        <div id="content">
+    let dialogContent = html``;
+
+    // If state is expanded content should be shown, do not render it otherwise.
+    if (this.#props.state === DialogState.EXPANDED) {
+      dialogContent = html`
+    <div id="content">
           <div class="dialog-header">${this.#renderHeaderRow()}</div>
           <div class='dialog-content'>
             <slot></slot>
           </div>
-        </div>
+    </div>
+    `;
+    }
+
+    // clang-format off
+    Lit.render(html`
+      <style>${dialogStyles}</style>
+      <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel} @animationend=${this.#animationEndedEvent}
+              jslog=${VisualLogging.dialog(this.#props.jslogContext).track({ resize: true, keydown: 'Escape' }).parent('mapped')}>
+        ${dialogContent}
       </dialog>
     `, this.#shadow, { host: this });
     VisualLogging.setMappedParent(this.#getDialog(), this.parentElementOrShadowHost() as HTMLElement);
@@ -741,6 +771,11 @@ export const enum DialogVerticalPosition {
   TOP = 'top',
   BOTTOM = 'bottom',
   AUTO = 'auto',
+}
+
+export const enum DialogState {
+  EXPANDED = 'expanded',
+  COLLAPSED = 'collapsed'
 }
 
 export const enum DialogHorizontalAlignment {

@@ -7,7 +7,7 @@ import * as Application from '../../panels/application/application.js';
 import {ConsoleTestRunner} from '../console_test_runner/console_test_runner.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 
 export const dumpIndexedDBTree = async function() {

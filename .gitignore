@@ -28,6 +28,8 @@ npm-debug.log
 /scripts/ai_assistance/auto-run/data
 /scripts/ai_assistance/performance-trace-downloads
 /scripts/ai_assistance/auto-run/performance-trace-downloads
+# This folder is populated from the GCP bucket and managed by gclient sync.
+/scripts/ai_assistance/suite/outputs
 
 /build
 /buildtools

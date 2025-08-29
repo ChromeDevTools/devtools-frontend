@@ -268,17 +268,20 @@ slider.addEventListener('change', event => onChange(event))
 
 ### Usage
 
-#### Designer guidelines
+#### Design guidelines
 
 Find an exhaustive collection of icons currently used in DevTools [here](https://drive.google.com/corp/drive/folders/1EpmxLRjvdHn5Ia8iT3aicgIEPEvhXY_D?resourcekey=0-QseNsNRsF4w8F5EKz7ncnA)
 
 #### Developer guidelines
 
+For some frequently used icons e.g. cross-circle, warning-filled etc. colors are auto-set in the component. See full list [here](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/components/icon_button/icon.css;l=47)
+
 ##### Dos and Don'ts
 
 ###### Do
 
-  * Set class and change color and / or size in .css files
+  * Set class and change color in .css files
+  * Set one of the predefined classes to change icon size e.g. extra-small for 12px
 
 ###### Don't
 
@@ -299,3 +302,188 @@ Usage with the imperative API:
 ```js
 const someIcon = IconButton.Icon.create('some-icon-name', 'some-class');
 ```
+
+## Context menus
+
+![Context menu with various simple menu items](images/context-menu-example.png)
+
+Context Menu allows us to display contextual actions to the user, typically triggered by a right-click or via a dedicated menu button.
+
+### General information
+
+#### ContextMenu Class
+
+The primary class for creating and managing context menus.
+It can render as a "soft" menu (custom HTML-based implementation, offering extra functionality like keeping the menu open) or a native menu. The preferred and default way is the native menu, soft menu should ONLY be used in exceptional cases where native menu lacks features.
+Typically instantiated in response to a user event (e.g. contextmenu mouse event).
+
+#### Item Class
+
+Represents an individual entry within a context menu.
+Types:
+  * 'item': A standard clickable menu item.
+  * 'checkbox': An item that can be toggled on or off.
+  * 'separator': A visual line to group related items.
+Items can have labels, handlers, be enabled/disabled. Optionally can also display shortcuts or tooltips (both are exceptions and not recommended).
+
+#### Section Class
+
+Groups related Items within a ContextMenu or SubMenu.
+Helps organize the menu structure and often introduces visual separation.
+Predefined section names (e.g. 'header', 'clipboard', 'default', 'footer') are available on ContextMenu and SubMenu instances.
+
+#### SubMenu Class
+
+A special type of Item that, when clicked or hovered, opens another nested menu.
+SubMenus contain their own Sections and Items, allowing for hierarchical menu structures.
+
+#### MenuButton Component
+
+A custom HTML element (`<devtools-menu-button>`) that renders as a button (currently an icon button only, though we plan to extend it to text buttons too).
+When clicked, it instantiates and displays a ContextMenu.
+Configured via HTML attributes (e.g. `icon-name`, `title`) and a `populateMenuCall` property to define the menu's content.
+
+
+#### Providers
+
+A mechanism to dynamically add context-specific menu items.
+Providers are registered with `ContextMenu.registerProvider()` and are associated with specific object types.
+When a context menu is shown for a particular target object, relevant providers are invoked to append their items.
+
+
+#### Registered Items
+
+A way to add menu items (linked to actions from the `ActionRegistry`) to predefined locations within the DevTools UI (e.g. the main menu, navigator context menus).
+Items are registered using `ContextMenu.registerItem()` with a specific `ItemLocation`.
+
+### Usage
+
+#### Design Guidelines
+
+Generally, we do not recommend using shortcuts in context menus since this goes against Mac platform guidelines and we do not want to have them on some platforms, but not the others. Try to find an alternative solution, however if none is possible and showing shortcuts is critical for a smooth user flow, reach out to kimanh@ or kprokopenko@.
+
+#### Developer guidelines
+
+##### Dos and Don'ts
+
+###### Do
+
+  * Use `new ContextMenu(event, options?)` to create and show menus in response to user interactions (e.g. contextmenu event on an element).
+  * Use `<devtools-menu-button>` to create buttons that should trigger a context menu.
+
+###### Don't
+
+  * Forget to call `contextMenu.show()` after populating the menu; otherwise, it won't open.
+
+##### Developer examples
+
+Usage with lit-html (left-click on a `<devtools-menu-button>` opens a menu):
+
+```js
+html`
+<devtools-menu-button
+  icon-name="some-icon-name"
+  .populateMenuCall=${(menu: UI.ContextMenu.ContextMenu) => {
+    menu.defaultSection().appendItem('Item', () => {
+      console.log('Item clicked');
+    }, {jslogContext: 'item'});
+  }}
+  jslogContext="my-menu-button"
+></devtools-menu-button>
+`
+```
+
+Usage with the imperative API (menu shows on a right-click)
+
+Various simple menu items:
+
+```js
+const element = this.shadowRoot.querySelector('.element-to-add-menu-to');
+element.addEventListener('contextmenu', (event: MouseEvent) => {
+  const contextMenu = new UI.ContextMenu.ContextMenu(event);
+
+// Regular item
+  contextMenu.defaultSection().appendItem('Regular item', () => {
+    console.log('Regular item clicked ');
+  }, { jslogContext: 'regular-item' });
+
+// Disabled item
+  contextMenu.defaultSection().appendItem('Disabled item', () => {
+    console.log('Will not be printed');
+  }, { jslogContext: 'disabled-item',
+       disabled: true });
+
+// Experimental item
+  const item = contextMenu.defaultSection().appendItem('Experimental item', () => {
+    console.log('Experimental item clicked');
+  }, { jslogContext: 'experimental-item',
+       isPreviewFeature: true });
+
+// Separator
+  contextMenu.defaultSection().appendSeparator();
+
+// Checkbox item
+  contextMenu.defaultSection().appendCheckboxItem('Checkbox item', () => {
+    console.log('Checkbox item clicked');
+  }, { checked: true, jslogContext: 'checkbox-item' });
+
+  void contextMenu.show();
+});
+```
+
+Custom section:
+
+```js
+  const customSection = contextMenu.section('Custom section');
+  customSection.appendItem('Section inner item 1', () => { /* ... */ }, {jslogContext: 'my-inner-item-1'});
+
+  customSection.appendItem('Section inner item 2', () => { /* ... */ }, {jslogContext: 'my-inner-item-2'});
+```
+
+Sub menu:
+
+```js
+const subMenu = contextMenu.defaultSection().appendSubMenuItem('Item to open sub menu', /* disabled */ false, 'my-sub-menu');
+subMenu.defaultSection().appendItem('Sub menu inner item 1', () => { /* ... */ }, {jslogContext: 'my-inner-item-1'});
+subMenu.defaultSection().appendItem('Sub menu inner item 2', () => { /* ... */ }, {jslogContext: 'my-inner-item-2'});
+```
+
+Context menu provider registration (adds items dynamically based on the context menu’s target):
+
+```js
+// Define provider
+class MyCustomNodeProvider implements UI.ContextMenu.Provider<SomeTarget|SomeOtherTarget> {
+  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: SomeTarget|SomeOtherTarget) {
+    if (target instanceof SomeTarget) {
+      contextMenu.defaultSection().appendItem('Item 1', () => {
+        console.log('Item 1 clicked');}, {jsLogContext: 'my-item-1'});
+    } else {
+      contextMenu.defaultSection().appendItem('Item 2', () => {
+        console.log('Item 2 clicked');}, {jsLogContext: 'my-item-2'});
+    }
+  }
+}
+```
+
+```js
+// Register provider
+UI.ContextMenu.registerProvider<SDK.DOMModel.DOMNode>({
+  contextTypes: () => [SomeTarget, SomeOtherTarget],
+  loadProvider: async () => {
+    const myModule = await loadMyModule();
+    return new myModule.MyCustomNodeProvider();
+  },
+  experiment: undefined, // or name of experiment this is behind
+});
+```
+
+Static menu item registration via ItemLocation (adds an action to a predefined menu location):
+
+```js
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.NAVIGATOR_MENU_DEFAULT,
+  actionId: 'quick-open.show',
+  order: undefined,
+});
+```
+This will automatically add the "Open file" action to the context menu that appears when clicking the Elements panel's 3-dot button.

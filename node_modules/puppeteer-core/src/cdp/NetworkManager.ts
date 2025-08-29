@@ -17,7 +17,9 @@ import {
 import {debugError, isString} from '../common/util.js';
 import {assert} from '../util/assert.js';
 import {DisposableStack} from '../util/disposable.js';
+import {isErrorLike} from '../util/ErrorLike.js';
 
+import {isTargetClosedError} from './Connection.js';
 import {CdpHTTPRequest} from './HTTPRequest.js';
 import {CdpHTTPResponse} from './HTTPResponse.js';
 import {
@@ -86,14 +88,23 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
   ] as const;
 
   #clients = new Map<CDPSession, DisposableStack>();
+  #networkEnabled = true;
 
-  constructor(frameManager: FrameProvider) {
+  constructor(frameManager: FrameProvider, networkEnabled?: boolean) {
     super();
     this.#frameManager = frameManager;
+    this.#networkEnabled = networkEnabled ?? true;
+  }
+
+  #canIgnoreError(error: unknown) {
+    return (
+      isErrorLike(error) &&
+      (isTargetClosedError(error) || error.message.includes('Not supported'))
+    );
   }
 
   async addClient(client: CDPSession): Promise<void> {
-    if (this.#clients.has(client)) {
+    if (!this.#networkEnabled || this.#clients.has(client)) {
       return;
     }
     const subscriptions = new DisposableStack();
@@ -106,14 +117,21 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
       });
     }
 
-    await Promise.all([
-      client.send('Network.enable'),
-      this.#applyExtraHTTPHeaders(client),
-      this.#applyNetworkConditions(client),
-      this.#applyProtocolCacheDisabled(client),
-      this.#applyProtocolRequestInterception(client),
-      this.#applyUserAgent(client),
-    ]);
+    try {
+      await Promise.all([
+        client.send('Network.enable'),
+        this.#applyExtraHTTPHeaders(client),
+        this.#applyNetworkConditions(client),
+        this.#applyProtocolCacheDisabled(client),
+        this.#applyProtocolRequestInterception(client),
+        this.#applyUserAgent(client),
+      ]);
+    } catch (error) {
+      if (this.#canIgnoreError(error)) {
+        return;
+      }
+      throw error;
+    }
   }
 
   async #removeClient(client: CDPSession) {
@@ -151,9 +169,16 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     if (this.#extraHTTPHeaders === undefined) {
       return;
     }
-    await client.send('Network.setExtraHTTPHeaders', {
-      headers: this.#extraHTTPHeaders,
-    });
+    try {
+      await client.send('Network.setExtraHTTPHeaders', {
+        headers: this.#extraHTTPHeaders,
+      });
+    } catch (error) {
+      if (this.#canIgnoreError(error)) {
+        return;
+      }
+      throw error;
+    }
   }
 
   extraHTTPHeaders(): Record<string, string> {
@@ -213,12 +238,19 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     if (this.#emulatedNetworkConditions === undefined) {
       return;
     }
-    await client.send('Network.emulateNetworkConditions', {
-      offline: this.#emulatedNetworkConditions.offline,
-      latency: this.#emulatedNetworkConditions.latency,
-      uploadThroughput: this.#emulatedNetworkConditions.upload,
-      downloadThroughput: this.#emulatedNetworkConditions.download,
-    });
+    try {
+      await client.send('Network.emulateNetworkConditions', {
+        offline: this.#emulatedNetworkConditions.offline,
+        latency: this.#emulatedNetworkConditions.latency,
+        uploadThroughput: this.#emulatedNetworkConditions.upload,
+        downloadThroughput: this.#emulatedNetworkConditions.download,
+      });
+    } catch (error) {
+      if (this.#canIgnoreError(error)) {
+        return;
+      }
+      throw error;
+    }
   }
 
   async setUserAgent(
@@ -234,10 +266,17 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     if (this.#userAgent === undefined) {
       return;
     }
-    await client.send('Network.setUserAgentOverride', {
-      userAgent: this.#userAgent,
-      userAgentMetadata: this.#userAgentMetadata,
-    });
+    try {
+      await client.send('Network.setUserAgentOverride', {
+        userAgent: this.#userAgent,
+        userAgentMetadata: this.#userAgentMetadata,
+      });
+    } catch (error) {
+      if (this.#canIgnoreError(error)) {
+        return;
+      }
+      throw error;
+    }
   }
 
   async setCacheEnabled(enabled: boolean): Promise<void> {
@@ -261,19 +300,26 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     if (this.#userCacheDisabled === undefined) {
       this.#userCacheDisabled = false;
     }
-    if (this.#protocolRequestInterceptionEnabled) {
-      await Promise.all([
-        this.#applyProtocolCacheDisabled(client),
-        client.send('Fetch.enable', {
-          handleAuthRequests: true,
-          patterns: [{urlPattern: '*'}],
-        }),
-      ]);
-    } else {
-      await Promise.all([
-        this.#applyProtocolCacheDisabled(client),
-        client.send('Fetch.disable'),
-      ]);
+    try {
+      if (this.#protocolRequestInterceptionEnabled) {
+        await Promise.all([
+          this.#applyProtocolCacheDisabled(client),
+          client.send('Fetch.enable', {
+            handleAuthRequests: true,
+            patterns: [{urlPattern: '*'}],
+          }),
+        ]);
+      } else {
+        await Promise.all([
+          this.#applyProtocolCacheDisabled(client),
+          client.send('Fetch.disable'),
+        ]);
+      }
+    } catch (error) {
+      if (this.#canIgnoreError(error)) {
+        return;
+      }
+      throw error;
     }
   }
 
@@ -281,9 +327,16 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     if (this.#userCacheDisabled === undefined) {
       return;
     }
-    await client.send('Network.setCacheDisabled', {
-      cacheDisabled: this.#userCacheDisabled,
-    });
+    try {
+      await client.send('Network.setCacheDisabled', {
+        cacheDisabled: this.#userCacheDisabled,
+      });
+    } catch (error) {
+      if (this.#canIgnoreError(error)) {
+        return;
+      }
+      throw error;
+    }
   }
 
   #onRequestWillBeSent(
@@ -674,7 +727,7 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
       return;
     }
 
-    this.#maybeReassignOOPIFRequestClient(client, request);
+    this.#adoptCdpSessionIfNeeded(client, request);
 
     // Under certain conditions we never get the Network.responseReceived
     // event from protocol. @see https://crbug.com/883475
@@ -711,7 +764,7 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     if (!request) {
       return;
     }
-    this.#maybeReassignOOPIFRequestClient(client, request);
+    this.#adoptCdpSessionIfNeeded(client, request);
     request._failureText = event.errorText;
     const response = request.response();
     if (response) {
@@ -721,16 +774,14 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     this.emit(NetworkManagerEvent.RequestFailed, request);
   }
 
-  #maybeReassignOOPIFRequestClient(
-    client: CDPSession,
-    request: CdpHTTPRequest,
-  ): void {
-    // Document requests for OOPIFs start in the parent frame but are adopted by their
-    // child frame, meaning their loadingFinished and loadingFailed events are fired on
-    // the child session. In this case we reassign the request CDPSession to ensure all
-    // subsequent actions use the correct session (e.g. retrieving response body in
-    // HTTPResponse).
-    if (client !== request.client && request.isNavigationRequest()) {
+  #adoptCdpSessionIfNeeded(client: CDPSession, request: CdpHTTPRequest): void {
+    // Document requests for OOPIFs start in the parent frame but are
+    // adopted by their child frame, meaning their loadingFinished and
+    // loadingFailed events are fired on the child session. In this case
+    // we reassign the request CDPSession to ensure all subsequent
+    // actions use the correct session (e.g. retrieving response body in
+    // HTTPResponse). The same applies to main worker script requests.
+    if (client !== request.client) {
       request.client = client;
     }
   }

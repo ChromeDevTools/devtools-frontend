@@ -183,7 +183,7 @@ body {
 .element-description {
   flex: 1 1;
   font-weight: bold;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   word-break: break-all;
 }
 

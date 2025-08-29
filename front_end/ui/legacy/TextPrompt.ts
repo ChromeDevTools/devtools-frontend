@@ -724,7 +724,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     }
   }
 
-  /** -1 if no caret can be found in text prompt
+  /**
+   * -1 if no caret can be found in text prompt
    */
   private getCaretPosition(): number {
     if (!this.element().hasFocus()) {

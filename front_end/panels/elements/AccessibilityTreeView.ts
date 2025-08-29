@@ -54,7 +54,8 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
         deferredNode.resolve(domNode => {
           if (domNode) {
             this.inspectedDOMNode = domNode;
-            void ElementsPanel.instance().revealAndSelectNode(domNode, true, false);
+            void ElementsPanel.instance().revealAndSelectNode(
+                domNode, {showPanel: true, focusNode: true, highlightInOverlay: true});
           }
         });
       }

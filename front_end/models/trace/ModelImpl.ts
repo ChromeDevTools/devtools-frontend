@@ -77,7 +77,6 @@ export class Model extends EventTarget {
    * // Awaiting the parse method() to block until parsing complete
    * await this.traceModel.parse(events);
    * const data = this.traceModel.parsedTrace(0)
-   *
    * @example
    * // Using an event listener to be notified when tracing is complete.
    * this.traceModel.addEventListener(Trace.ModelUpdateEvent.eventName, (event) => {
@@ -113,12 +112,26 @@ export class Model extends EventTarget {
     try {
       // Wait for all outstanding promises before finishing the async execution,
       // but perform all tasks in parallel.
-      await this.#processor.parse(traceEvents, {
+      const parseConfig: Types.Configuration.ParseOptions = {
         isFreshRecording,
         isCPUProfile,
         metadata,
         resolveSourceMap: config?.resolveSourceMap,
-      });
+      };
+      if (!parseConfig.logger &&
+          (window.location.href.includes('devtools/bundled') || window.location.search.includes('debugFrontend'))) {
+        // Someone is debugging DevTools, enable the logger.
+        const times: Record<string, number> = {};
+        parseConfig.logger = {
+          start(id) {
+            times[id] = performance.now();
+          },
+          end(id) {
+            performance.measure(id, {start: times[id]});
+          },
+        };
+      }
+      await this.#processor.parse(traceEvents, parseConfig);
       this.#storeParsedFileData(file, this.#processor.parsedTrace, this.#processor.insights);
       // We only push the file onto this.#traces here once we know it's valid
       // and there's been no errors in the parsing.

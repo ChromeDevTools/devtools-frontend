@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -111,51 +110,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
 
     const passedInsightTitles = getPassedInsights(component);
     // Does not include "font display", which is experimental.
-    assert.deepEqual(passedInsightTitles, [
-      'INP breakdown',
-      'LCP request discovery',
-      'Render blocking requests',
-      'Document request latency',
-      'Optimize viewport for mobile',
-      'Optimize DOM size',
-      'Duplicated JavaScript',
-      'CSS Selector costs',
-      'Forced reflow',
-      'Modern HTTP',
-      'Legacy JavaScript',
-    ]);
-  });
-
-  it('renders experimental insights if the experiment is turned on', async function() {
-    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'font-display.json.gz');
-    const component = new Components.SidebarSingleInsightSet.SidebarSingleInsightSet();
-    Root.Runtime.experiments.enableForTest(
-        Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
-    );
-    renderElementIntoDOM(component);
-    const firstNavigation = parsedTrace.Meta.mainFrameNavigations.at(0)?.args.data?.navigationId;
-    assert.isOk(firstNavigation);
-    component.data = {
-      insights,
-      insightSetKey: firstNavigation,
-      activeCategory: Trace.Insights.Types.InsightCategory.ALL,
-      activeInsight: null,
-      parsedTrace,
-      traceMetadata: metadata,
-    };
-    await RenderCoordinator.done();
-    const userVisibleTitles = getUserVisibleInsights(component);
-    assert.deepEqual(userVisibleTitles, [
-      'LCP breakdown',
-      'Layout shift culprits',
-      'Network dependency tree',
-      'Improve image delivery',
-      'Font display',
-      '3rd parties',
-      'Use efficient cache lifetimes',
-    ]);
-
-    const passedInsightTitles = getPassedInsights(component);
     assert.deepEqual(passedInsightTitles, [
       'INP breakdown',
       'LCP request discovery',

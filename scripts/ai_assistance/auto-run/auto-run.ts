@@ -10,7 +10,8 @@ import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
 import type {
-  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RunResult, TestTarget} from '../types';
+  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId, RunResult, TestTarget} from
+  '../types';
 
 import {createTargetExecutor} from './targets/factory.ts';
 import type {TargetExecutor, TargetPreparationResult} from './targets/interface.ts';
@@ -105,16 +106,16 @@ class Logger {
 
   /**
    * Logs a header message to the console.
-   * @param {string} text The header text to log.
+   * @param text The header text to log.
    */
   head(text: string) {
     this.log('head', -1, `${text}\n`);
   }
 
   /**
-   * @param {string} id
-   * @param {number} index
-   * @param {string} text
+   * @param id
+   * @param index
+   * @param text
    */
   log(id: string, index: number, text: string) {
     this.#updateElapsedTime();
@@ -223,8 +224,42 @@ export class Example {
 
       await this.#page.close();
 
+      /**
+       * Because we collect the set of structured logs after each user prompt, that means that we can duplicate responses. E.g. imagine a conversation with:
+       *
+       * Query A
+       * Query B
+       * Query C
+       *
+       * When we log after A, the logs are [A]
+       * When we log after B, the logs are [A, B]
+       * When we log after C, the logs are [A, B, C]
+       * But, what we want is a final log of [A, B, C].
+       * More generally, we want to avoid duplicate responses.
+       * We could do this by only capturing the log after Query C, but we want
+       * to be robust to problems or errors during the process, and in that
+       * case we still want to capture as much as we had. So it's safer to
+       * capture everything and filter it later.
+       * Luckily for us, the "rpcGlobalId" is a reliable way to spot duplicated data.
+       */
+      const seenRPCIds = new Set<RpcGlobalId>();
+      const filteredResults = results.filter(result => {
+        if (typeof result.aidaResponse === 'string') {
+          return true;
+        }
+        const id = result.aidaResponse.metadata.rpcGlobalId;
+        if (!id) {
+          return false;
+        }
+        if (seenRPCIds.has(id)) {
+          return false;
+        }
+        seenRPCIds.add(id);
+        return true;
+      });
+
       return {
-        results,
+        results: filteredResults,
         metadata: {exampleId: this.id(), explanation: this.#preparationResult.explanation},
       };
 

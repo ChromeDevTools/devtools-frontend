@@ -35,6 +35,7 @@ describeWithEnvironment('Cache', function() {
         createdEntityCache: new Map(),
         entityByEvent: new Map(),
         eventsByEntity: new Map(),
+        entityByUrlCache: new Map(),
       };
       for (const event of events) {
         Trace.Handlers.Helpers.addEventToEntityMapping(event, entityMappings);

@@ -19,8 +19,8 @@ export default iterateJsdoc(({
   } = context.options[0];
 
   const {
-    foundContext,
     contextStr,
+    foundContext,
   } = utils.findContext(contexts, comment);
 
   // We are not on the *particular* matching context/comment, so don't assume

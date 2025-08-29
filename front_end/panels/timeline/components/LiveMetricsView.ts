@@ -1188,7 +1188,7 @@ class LiveMetricsLogs extends UI.Widget.WidgetElement<UI.Widget.Widget> {
     //
     // Any children of the root element `this` will be matched to the slots defined within the container
     // widget's shadow DOM.
-    const containerWidget = new UI.Widget.Widget(true, undefined, this);
+    const containerWidget = new UI.Widget.Widget(this, {useShadowDom: true});
     containerWidget.contentElement.style.display = 'contents';
 
     this.#tabbedPane = new UI.TabbedPane.TabbedPane();

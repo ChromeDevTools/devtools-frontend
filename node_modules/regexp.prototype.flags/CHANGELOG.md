@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.5.4](https://github.com/es-shims/RegExp.prototype.flags/compare/v1.5.3...v1.5.4) - 2025-01-02
+
+### Commits
+
+- [Refactor] use `get-proto` and `es-errors` [`6355772`](https://github.com/es-shims/RegExp.prototype.flags/commit/6355772344db0465e11c58e387f968de0cf4e4fa)
+- [Deps] update `call-bind` [`c630183`](https://github.com/es-shims/RegExp.prototype.flags/commit/c6301838b07f3e71b3dc1d5b2cfa88f88b9f6a6d)
+- [Dev Deps] update `object-inspect` [`c0201af`](https://github.com/es-shims/RegExp.prototype.flags/commit/c0201af97cb849947d5246fa7d9f9a8ea5bc5b36)
+
 ## [v1.5.3](https://github.com/es-shims/RegExp.prototype.flags/compare/v1.5.2...v1.5.3) - 2024-10-03
 
 ### Fixed

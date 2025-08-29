@@ -48,7 +48,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ScreenRecorder = void 0;
 const node_child_process_1 = require("node:child_process");
+const node_fs_1 = __importDefault(require("node:fs"));
 const node_os_1 = __importDefault(require("node:os"));
+const node_path_1 = require("node:path");
 const node_stream_1 = require("node:stream");
 const debug_1 = __importDefault(require("debug"));
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
@@ -90,8 +92,9 @@ let ScreenRecorder = (() => {
         /**
          * @internal
          */
-        constructor(page, width, height, { speed, scale, crop, format, fps, loop, delay, quality, colors, path, } = {}) {
+        constructor(page, width, height, { ffmpegPath, speed, scale, crop, format, fps, loop, delay, quality, colors, path, overwrite, } = {}) {
             super({ allowHalfOpen: false });
+            ffmpegPath ??= 'ffmpeg';
             format ??= 'webm';
             fps ??= DEFAULT_FPS;
             // Maps 0 to -1 as ffmpeg maps 0 to infinity.
@@ -99,10 +102,10 @@ let ScreenRecorder = (() => {
             delay ??= -1;
             quality ??= CRF_VALUE;
             colors ??= 256;
-            path ??= 'ffmpeg';
+            overwrite ??= true;
             this.#fps = fps;
             // Tests if `ffmpeg` exists.
-            const { error } = (0, node_child_process_1.spawnSync)(path);
+            const { error } = (0, node_child_process_1.spawnSync)(ffmpegPath);
             if (error) {
                 throw error;
             }
@@ -124,7 +127,11 @@ let ScreenRecorder = (() => {
             if (vf !== -1) {
                 filters.push(formatArgs.splice(vf, 2).at(-1) ?? '');
             }
-            this.#process = (0, node_child_process_1.spawn)(path, 
+            // Ensure provided output directory path exists.
+            if (path) {
+                node_fs_1.default.mkdirSync((0, node_path_1.dirname)(path), { recursive: overwrite });
+            }
+            this.#process = (0, node_child_process_1.spawn)(ffmpegPath, 
             // See https://trac.ffmpeg.org/wiki/Encode/VP9 for more information on flags.
             [
                 ['-loglevel', 'error'],
@@ -143,9 +150,9 @@ let ScreenRecorder = (() => {
                 ],
                 // Forces input to be read from standard input, and forces png input
                 // image format.
-                ['-f', 'image2pipe', '-c:v', 'png', '-i', 'pipe:0'],
-                // Overwrite output and no audio.
-                ['-y', '-an'],
+                ['-f', 'image2pipe', '-vcodec', 'png', '-i', 'pipe:0'],
+                // No audio
+                ['-an'],
                 // This drastically reduces stalling when cpu is overbooked. By default
                 // VP9 tries to use all available threads?
                 ['-threads', '1'],
@@ -158,6 +165,8 @@ let ScreenRecorder = (() => {
                 // Filters to ensure the images are piped correctly,
                 // combined with any format-specific filters.
                 ['-vf', filters.join()],
+                // Overwrite output, or exit immediately if file already exists.
+                [overwrite ? '-y' : '-n'],
                 'pipe:1',
             ].flat(), { stdio: ['pipe', 'pipe', 'pipe'] });
             this.#process.stdout.pipe(this);
@@ -189,8 +198,7 @@ let ScreenRecorder = (() => {
         }
         #getFormatArgs(format, fps, loop, delay, quality, colors) {
             const libvpx = [
-                // Sets the codec to use.
-                ['-c:v', 'vp9'],
+                ['-vcodec', 'vp9'],
                 // Sets the quality. Lower the better.
                 ['-crf', `${quality}`],
                 // Sets the quality and how efficient the compression will be.

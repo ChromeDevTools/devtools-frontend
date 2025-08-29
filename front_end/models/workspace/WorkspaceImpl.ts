@@ -76,7 +76,7 @@ export interface Project {
    * {@link UISourceCode}s while iterating, these will no longer show up, and will have no effect
    * on the other entries.
    *
-   * @return an iterator for the sources provided by this project.
+   * @returns an iterator for the sources provided by this project.
    */
   uiSourceCodes(): Iterable<UISourceCode>;
 }

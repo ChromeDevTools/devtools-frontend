@@ -8,6 +8,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -16,6 +17,7 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelCommon from '../common/common.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
 import consolePromptStyles from './consolePrompt.css.js';
@@ -24,22 +26,25 @@ const {Direction} = TextEditor.TextEditorHistory;
 
 const UIStrings = {
   /**
-   *@description Text in Console Prompt of the Console panel
+   * @description Text in Console Prompt of the Console panel
    */
   consolePrompt: 'Console prompt',
   /**
-   *@description Warning shown to users when pasting text into the DevTools console.
-   *@example {allow pasting} PH1
+   * @description Warning shown to users when pasting text into the DevTools console.
+   * @example {allow pasting} PH1
    */
   selfXssWarning:
       'Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type ‘{PH1}’ below and press Enter to allow pasting.',
   /**
-   *@description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
   allowPasting: 'allow pasting',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePrompt.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const AI_CODE_COMPLETION_CHARACTER_LIMIT = 20_000;
+
 export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
     UI.Widget.Widget) {
   private addCompletionsFromHistory: boolean;
@@ -65,6 +70,14 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #selfXssWarningShown = false;
   #javaScriptCompletionCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
 
+  private aidaClient?: Host.AidaClient.AidaClient;
+  private aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
+  private teaser?: PanelCommon.AiCodeCompletionTeaser;
+  private placeholderCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
+  private aiCodeCompletionSetting =
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
+  private aiCodeCompletionCitations?: Host.AidaClient.Citation[] = [];
+
   #getJavaScriptCompletionExtensions(): CodeMirror.Extension {
     if (this.#selfXssWarningShown) {
       // No (JavaScript) completions at all while showing the self-XSS warning.
@@ -86,7 +99,12 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   constructor() {
-    super();
+    super({
+      jslog: `${VisualLogging.textField('console-prompt').track({
+        change: true,
+        keydown: 'Enter|ArrowUp|ArrowDown|PageUp',
+      })}`,
+    });
     this.registerRequiredCSS(consolePromptStyles);
     this.addCompletionsFromHistory = true;
     this.historyInternal = new TextEditor.AutocompleteHistory.AutocompleteHistory(
@@ -99,16 +117,17 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.requestPreviewBound = this.requestPreview.bind(this);
     this.innerPreviewElement = this.eagerPreviewElement.createChild('div', 'console-eager-inner-preview');
     const previewIcon = new IconButton.Icon.Icon();
-    previewIcon.data = {iconName: 'chevron-left-dot', color: 'var(--icon-default)', width: '16px', height: '16px'};
-    previewIcon.classList.add('preview-result-icon');
+    previewIcon.name = 'chevron-left-dot';
+    previewIcon.classList.add('preview-result-icon', 'medium');
     this.eagerPreviewElement.appendChild(previewIcon);
 
     const editorContainerElement = this.element.createChild('div', 'console-prompt-editor-container');
     this.element.appendChild(this.eagerPreviewElement);
 
     this.promptIcon = new IconButton.Icon.Icon();
-    this.promptIcon.data = {iconName: 'chevron-right', color: 'var(--icon-action)', width: '16px', height: '16px'};
-    this.promptIcon.classList.add('console-prompt-icon');
+    this.promptIcon.name = 'chevron-right';
+    this.promptIcon.style.color = 'var(--icon-action)';
+    this.promptIcon.classList.add('console-prompt-icon', 'medium');
     this.element.appendChild(this.promptIcon);
     this.iconThrottler = new Common.Throttler.Throttler(0);
 
@@ -142,10 +161,23 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       CodeMirror.autocompletion({aboveCursor: true}),
       this.#javaScriptCompletionCompartment.of(this.#getJavaScriptCompletionExtensions()),
     ];
+
+    if (this.isAiCodeCompletionEnabled()) {
+      const aiCodeCompletionTeaserDismissedSetting =
+          Common.Settings.Settings.instance().createSetting('ai-code-completion-teaser-dismissed', false);
+      if (!this.aiCodeCompletionSetting.get() && !aiCodeCompletionTeaserDismissedSetting.get()) {
+        this.teaser = new PanelCommon.AiCodeCompletionTeaser({onDetach: this.detachAiCodeCompletionTeaser.bind(this)});
+        extensions.push(this.placeholderCompartment.of(
+            TextEditor.AiCodeCompletionTeaserPlaceholder.aiCodeCompletionTeaserPlaceholder(this.teaser)));
+      }
+      extensions.push(TextEditor.Config.aiAutoCompleteSuggestion);
+    }
+
     const doc = this.initialText;
     const editorState = CodeMirror.EditorState.create({doc, extensions});
 
     this.editor = new TextEditor.TextEditor.TextEditor(editorState);
+
     this.editor.addEventListener('keydown', event => {
       if (event.defaultPrevented) {
         event.stopPropagation();
@@ -164,10 +196,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // Record the console tool load time after the console prompt constructor is complete.
     Host.userMetrics.panelLoaded('console', 'DevTools.Launch.Console');
 
-    this.element.setAttribute('jslog', `${VisualLogging.textField('console-prompt').track({
-                                change: true,
-                                keydown: 'Enter|ArrowUp|ArrowDown|PageUp',
-                              })}`);
+    if (this.isAiCodeCompletionEnabled()) {
+      this.aiCodeCompletionSetting.addChangeListener(this.onAiCodeCompletionSettingChanged.bind(this));
+      this.onAiCodeCompletionSettingChanged();
+    }
   }
 
   private eagerSettingChanged(): void {
@@ -182,7 +214,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return this.eagerPreviewElement;
   }
 
-  private onTextChanged(): void {
+  private onTextChanged(docContentChanged?: boolean): void {
     // ConsoleView and prompt both use a throttler, so we clear the preview
     // ASAP to avoid inconsistency between a fresh viewport and stale preview.
     if (this.eagerEvalSetting.get()) {
@@ -191,8 +223,44 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
           this.requestPreviewBound,
           asSoonAsPossible ? Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE : Common.Throttler.Scheduling.DEFAULT);
     }
+    if (docContentChanged && this.aiCodeCompletion && this.isAiCodeCompletionEnabled()) {
+      // Only trigger when doc content changes.
+      // This ensures that it is not triggered when user is going through the options in existing completion menu.
+      this.triggerAiCodeCompletion();
+    }
     this.updatePromptIcon();
     this.dispatchEventToListeners(Events.TEXT_CHANGED);
+  }
+
+  triggerAiCodeCompletion(): void {
+    const {doc, selection} = this.editor.state;
+    const query = doc.toString();
+    const cursor = selection.main.head;
+    const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+    let prefix = query.substring(0, cursor);
+    if (currentExecutionContext) {
+      const consoleModel = currentExecutionContext.target().model(SDK.ConsoleModel.ConsoleModel);
+      if (consoleModel) {
+        let lastMessage = '';
+        let consoleMessages = '';
+        for (const message of consoleModel.messages()) {
+          if (message.type !== SDK.ConsoleModel.FrontendMessageType.Command || message.messageText === lastMessage) {
+            continue;
+          }
+          lastMessage = message.messageText;
+          consoleMessages = consoleMessages + message.messageText + '\n\n';
+        }
+        prefix = consoleMessages + prefix;
+      }
+    }
+    let suffix = query.substring(cursor);
+    if (prefix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
+      prefix = prefix.substring(prefix.length - AI_CODE_COMPLETION_CHARACTER_LIMIT);
+    }
+    if (suffix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
+      suffix = suffix.substring(0, AI_CODE_COMPLETION_CHARACTER_LIMIT);
+    }
+    this.aiCodeCompletion?.onTextChanged(prefix, suffix, cursor);
   }
 
   private async requestPreview(): Promise<void> {
@@ -257,16 +325,14 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private editorKeymap(): readonly CodeMirror.KeyBinding[] {
-    return [
+    const keymap = [
       {key: 'ArrowUp', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD)},
       {key: 'ArrowDown', run: () => this.#editorHistory.moveHistory(Direction.FORWARD)},
       {mac: 'Ctrl-p', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
       {mac: 'Ctrl-n', run: () => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
       {
         key: 'Escape',
-        run: () => {
-          return TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
-        },
+        run: () => this.runOnEscape(),
       },
       {
         key: 'Ctrl-Enter',
@@ -284,6 +350,38 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         shift: CodeMirror.insertNewlineAndIndent,
       },
     ];
+
+    if (this.isAiCodeCompletionEnabled()) {
+      keymap.push({
+        key: 'Tab',
+        run: (): boolean => {
+          const {accepted, suggestion} = TextEditor.Config.acceptAiAutoCompleteSuggestion(this.editor.editor);
+          if (accepted) {
+            this.dispatchEventToListeners(
+                Events.AI_CODE_COMPLETION_SUGGESTION_ACCEPTED, {citations: this.aiCodeCompletionCitations});
+            if (suggestion?.rpcGlobalId && suggestion?.sampleId) {
+              this.aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
+            }
+          }
+          return accepted;
+        },
+      });
+    }
+
+    return keymap;
+  }
+
+  private runOnEscape(): boolean {
+    if (TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState)) {
+      return true;
+    }
+    if (this.aiCodeCompletion && TextEditor.Config.hasActiveAiSuggestion(this.editor.state)) {
+      this.editor.dispatch({
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(null),
+      });
+      return true;
+    }
+    return false;
   }
 
   private async enterWillEvaluate(forceEvaluate?: boolean): Promise<boolean> {
@@ -335,6 +433,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         changes: {from: 0, to: this.editor.state.doc.length},
         scrollIntoView: true,
       });
+      if (this.teaser) {
+        this.detachAiCodeCompletionTeaser();
+        this.teaser = undefined;
+      }
     } else if (this.editor.state.doc.length) {
       CodeMirror.insertNewlineAndIndent(this.editor.editor);
     } else {
@@ -389,7 +491,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private editorUpdate(update: CodeMirror.ViewUpdate): void {
     if (update.docChanged ||
         CodeMirror.selectedCompletion(update.state) !== CodeMirror.selectedCompletion(update.startState)) {
-      this.onTextChanged();
+      const docContentChanged = update.state.doc !== update.startState.doc;
+      this.onTextChanged(docContentChanged);
     } else if (update.selectionSet) {
       this.updatePromptIcon();
     }
@@ -399,14 +502,80 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.editor.focus();
   }
 
+  // TODO(b/435654172): Refactor and move aiCodeCompletion model one level up to avoid
+  // defining additional listeners and events.
+  private setAiCodeCompletion(): void {
+    if (!this.aidaClient) {
+      this.aidaClient = new Host.AidaClient.AidaClient();
+    }
+    if (this.teaser) {
+      this.detachAiCodeCompletionTeaser();
+      this.teaser = undefined;
+    }
+    // We are prioritizing single line suggestions in Console panel to reduce noise.
+    this.aiCodeCompletion =
+        new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({aidaClient: this.aidaClient}, this.editor, ['\n']);
+    this.aiCodeCompletion.addEventListener(AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED, event => {
+      this.aiCodeCompletionCitations = event.data.citations;
+      this.dispatchEventToListeners(Events.AI_CODE_COMPLETION_RESPONSE_RECEIVED, event.data);
+    });
+    this.aiCodeCompletion.addEventListener(AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED, event => {
+      this.dispatchEventToListeners(Events.AI_CODE_COMPLETION_REQUEST_TRIGGERED, event.data);
+    });
+  }
+
+  private onAiCodeCompletionSettingChanged(): void {
+    if (this.aiCodeCompletionSetting.get() && this.isAiCodeCompletionEnabled()) {
+      this.setAiCodeCompletion();
+    } else if (this.aiCodeCompletion) {
+      this.aiCodeCompletion.remove();
+      this.aiCodeCompletion = undefined;
+    }
+  }
+
+  async onAiCodeCompletionTeaserActionKeyDown(event: Event): Promise<void> {
+    if (this.teaser?.isShowing()) {
+      await this.teaser?.onAction(event);
+      void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-completion-teaser.fre');
+    }
+  }
+
+  onAiCodeCompletionTeaserDismissKeyDown(event: Event): void {
+    if (this.teaser?.isShowing()) {
+      this.teaser?.onDismiss(event);
+      void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-completion-teaser.dismiss');
+    }
+  }
+
+  private detachAiCodeCompletionTeaser(): void {
+    this.editor.dispatch({
+      effects: this.placeholderCompartment.reconfigure([]),
+    });
+  }
+
+  private isAiCodeCompletionEnabled(): boolean {
+    return Boolean(Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+  }
+
   private editorSetForTest(): void {
+  }
+
+  setAidaClientForTest(aidaClient: Host.AidaClient.AidaClient): void {
+    this.aidaClient = aidaClient;
   }
 }
 
 export const enum Events {
   TEXT_CHANGED = 'TextChanged',
+  AI_CODE_COMPLETION_SUGGESTION_ACCEPTED = 'AiCodeCompletionSuggestionAccepted',
+  AI_CODE_COMPLETION_RESPONSE_RECEIVED = 'AiCodeCompletionResponseReceived',
+  AI_CODE_COMPLETION_REQUEST_TRIGGERED = 'AiCodeCompletionRequestTriggered'
 }
 
 export interface EventTypes {
   [Events.TEXT_CHANGED]: void;
+  [Events.AI_CODE_COMPLETION_SUGGESTION_ACCEPTED]: AiCodeCompletion.AiCodeCompletion.ResponseReceivedEvent;
+  [Events.AI_CODE_COMPLETION_RESPONSE_RECEIVED]: AiCodeCompletion.AiCodeCompletion.ResponseReceivedEvent;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  [Events.AI_CODE_COMPLETION_REQUEST_TRIGGERED]: {};
 }

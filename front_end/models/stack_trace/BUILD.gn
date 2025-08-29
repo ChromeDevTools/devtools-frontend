@@ -1,0 +1,69 @@
+# Copyright 2025 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("stack_trace") {
+  sources = [ "StackTrace.ts" ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../workspace:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "stack_trace.ts"
+
+  deps = [ ":stack_trace" ]
+
+  visibility = [ "*" ]
+}
+
+devtools_module("stack_trace_impl") {
+  sources = [
+    "StackTraceImpl.ts",
+    "StackTraceModel.ts",
+    "Trie.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
+  ]
+}
+
+devtools_entrypoint("impl") {
+  entrypoint = "stack_trace_impl.ts"
+
+  deps = [ ":stack_trace_impl" ]
+
+  # IMPORTANT: Besides tests and bindings, no other module is allowed access.
+  #            If you have a use-case where you need access to stack trace internals,
+  #            consult one of the OWNERS before drilling holes.
+  visibility = [
+    ":unittests",
+    "../bindings",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "StackTraceImpl.test.ts",
+    "StackTraceModel.test.ts",
+    "Trie.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    ":impl",
+    "../../core/sdk:bundle",
+    "../../generated",
+    "../../testing",
+  ]
+}

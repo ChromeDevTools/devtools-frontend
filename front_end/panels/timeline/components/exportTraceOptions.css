@@ -1,0 +1,26 @@
+/*
+ * Copyright 2025 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+.export-trace-options-content {
+  max-width: var(--sys-size-36);
+}
+
+.export-trace-options-row {
+  display: flex;
+
+  /* The tag name of CheckboxLabel element */
+  devtools-checkbox {
+    flex: auto;
+  }
+
+  devtools-button {
+    height: 24px;
+  }
+
+  .export-trace-blank {
+    flex: 1;
+    min-width: var(--sys-size-25)
+  }
+}

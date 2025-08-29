@@ -39,7 +39,6 @@ import {
   waitUntilRetainerChainSatisfies,
 } from '../../e2e/helpers/memory-helpers.js';
 import {
-  assertNotNullOrUndefined,
   step,
 } from '../../shared/helper.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
@@ -154,14 +153,14 @@ describe('The Memory Panel', function() {
     await devToolsPage.waitForFunction(async () => {
       const pendingActivitiesSpan =
           await devToolsPage.waitFor('//span[text()="Pending activities"]', undefined, undefined, 'xpath');
-      const pendingActiviesRow =
+      const pendingActivitiesRow =
           await devToolsPage.waitFor('ancestor-or-self::tr', pendingActivitiesSpan, undefined, 'xpath');
       try {
         await devToolsPage.clickElement(pendingActivitiesSpan);
       } catch {
         return false;
       }
-      const res = await pendingActiviesRow.evaluate(x => x.classList.toString());
+      const res = await pendingActivitiesRow.evaluate(x => x.classList.toString());
       return res.includes('selected');
     });
     await devToolsPage.page.keyboard.press('ArrowRight');
@@ -176,8 +175,8 @@ describe('The Memory Panel', function() {
     });
     await devToolsPage.page.keyboard.press('ArrowRight');
     await devToolsPage.waitForFunction(async () => {
-      const pendingActiviesChildren = await devToolsPage.waitForElementsWithTextContent('MediaQueryList');
-      return pendingActiviesChildren.length === 2;
+      const pendingActivitiesChildren = await devToolsPage.waitForElementsWithTextContent('MediaQueryList');
+      return pendingActivitiesChildren.length === 2;
     });
   });
 
@@ -234,9 +233,7 @@ describe('The Memory Panel', function() {
           return findPromises.find(result => result !== null);
         });
 
-        if (!sharedInLeakingElementRow) {
-          assert.fail('Could not find data-grid row with "shared in leaking()" text.');
-        }
+        assert.isOk(sharedInLeakingElementRow, 'Could not find data-grid row with "shared in leaking()" text.');
 
         const textOfEl = await sharedInLeakingElementRow.evaluate(e => e.textContent || '');
         // Double check we got the right element to avoid a confusing text failure
@@ -252,8 +249,8 @@ describe('The Memory Panel', function() {
 
         // check that we found two V8EventListener objects
         await devToolsPage.waitForFunction(async () => {
-          const pendingActiviesChildren = await devToolsPage.waitForElementsWithTextContent('V8EventListener');
-          return pendingActiviesChildren.length === 2;
+          const pendingActivitiesChildren = await devToolsPage.waitForElementsWithTextContent('V8EventListener');
+          return pendingActivitiesChildren.length === 2;
         });
 
         // Now we want to get the two rows below the "shared in leaking()" row and assert on them.
@@ -261,14 +258,10 @@ describe('The Memory Panel', function() {
         // So the best way to get at them is to grab the two subsequent siblings of the "shared in leaking()" row.
         const nextRow = (await sharedInLeakingElementRow.evaluateHandle(e => e.nextSibling)).asElement() as
             puppeteer.ElementHandle<HTMLElement>;
-        if (!nextRow) {
-          assert.fail('Could not find row below "shared in leaking()" row');
-        }
+        assert.isOk(nextRow, 'Could not find row below "shared in leaking()" row');
         const nextNextRow =
             (await nextRow.evaluateHandle(e => e.nextSibling)).asElement() as puppeteer.ElementHandle<HTMLElement>;
-        if (!nextNextRow) {
-          assert.fail('Could not find 2nd row below "shared in leaking()" row');
-        }
+        assert.isOk(nextNextRow, 'Could not find 2nd row below "shared in leaking()" row');
 
         const childText =
             await Promise.all([nextRow, nextNextRow].map(async row => await row.evaluate(r => r.innerText)));
@@ -390,7 +383,7 @@ describe('The Memory Panel', function() {
           break;
         }
       }
-      assertNotNullOrUndefined(row);
+      assert.isOk(row);
       // Expand the constructor sub-tree.
       await devToolsPage.clickElement(row);
       await devToolsPage.page.keyboard.press('ArrowRight');
@@ -405,7 +398,7 @@ describe('The Memory Panel', function() {
         return {objectElement, objectName};
       });
       let element = objectElement;
-      assertNotNullOrUndefined(element);
+      assert.isOk(element);
       // Verify we have the object with the matching name.
       assert.strictEqual(objectName, entry.constructor);
       // Get the right property of the object if required.
@@ -435,7 +428,7 @@ describe('The Memory Panel', function() {
           }
           return undefined;
         });
-        assertNotNullOrUndefined(element);
+        assert.isOk(element);
       }
 
       // Verify the link to the source code.

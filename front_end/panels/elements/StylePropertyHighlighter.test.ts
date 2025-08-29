@@ -5,6 +5,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {getMatchedStyles} from '../../testing/StyleHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelUtils from '../utils/utils.js';
 
@@ -19,27 +20,8 @@ describeWithMockConnection('StylePropertyHighlighter', () => {
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, sinon.createStubInstance(SDK.DOMModel.DOMNode));
     const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
-    const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
-      cssModel: target.model(SDK.CSSModel.CSSModel)!,
-      node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,
-      inlinePayload: null,
-      attributesPayload: null,
-      matchedPayload: [],
-      pseudoPayload: [],
-      inheritedPayload: [],
-      inheritedPseudoPayload: [],
-      animationsPayload: [],
-      parentLayoutNodeId: undefined,
-      positionTryRules: [],
-      propertyRules: [],
-      cssPropertyRegistrations: [],
-      fontPaletteValuesRule: undefined,
-      activePositionFallbackIndex: -1,
-      animationStylesPayload: [],
-      transitionsStylePayload: null,
-      inheritedAnimatedPayload: [],
-      functionRules: [],
-    });
+    const matchedStyles = await getMatchedStyles(
+        {node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode, cssModel: target.model(SDK.CSSModel.CSSModel)!});
     return {
       stylesSidebarPane,
       matchedStyles,

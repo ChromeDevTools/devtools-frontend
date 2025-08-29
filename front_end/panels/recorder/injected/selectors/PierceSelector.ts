@@ -54,10 +54,10 @@ class PierceSelectorRangeOpts implements RangeOps<QueryableNode, string[][]> {
 /**
  * Computes the pierce CSS selector for a node.
  *
- * @param node - The node to compute.
+ * @internal
+ * @param node The node to compute.
  * @returns The computed pierce CSS selector.
  *
- * @internal
  */
 export const computePierceSelector = (
     node: Node,

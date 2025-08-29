@@ -14,17 +14,17 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text that refers to the main target
+   * @description Text that refers to the main target
    */
   main: 'Main',
   /**
-   *@description Text in Node Main of the Sources panel when debugging a Node.js app
-   *@example {example.com} PH1
+   * @description Text in Node Main of the Sources panel when debugging a Node.js app
+   * @example {example.com} PH1
    */
   nodejsS: 'Node.js: {PH1}',
   /**
-   *@description Text in DevTools window title when debugging a Node.js app
-   *@example {example.com} PH1
+   * @description Text in DevTools window title when debugging a Node.js app
+   * @example {example.com} PH1
    */
   NodejsTitleS: 'DevTools - Node.js: {PH1}',
 } as const;
@@ -149,7 +149,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
 export class NodeConnection implements ProtocolClient.InspectorBackend.Connection {
   readonly #targetAgent: ProtocolProxyApi.TargetApi;
   readonly #sessionId: Protocol.Target.SessionID;
-  onMessage: ((arg0: (Object|string)) => void)|null;
+  onMessage: ((arg0: Object|string) => void)|null;
   #onDisconnect: ((arg0: string) => void)|null;
   constructor(targetAgent: ProtocolProxyApi.TargetApi, sessionId: Protocol.Target.SessionID) {
     this.#targetAgent = targetAgent;
@@ -158,7 +158,7 @@ export class NodeConnection implements ProtocolClient.InspectorBackend.Connectio
     this.#onDisconnect = null;
   }
 
-  setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
+  setOnMessage(onMessage: (arg0: Object|string) => void): void {
     this.onMessage = onMessage;
   }
 

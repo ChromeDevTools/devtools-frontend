@@ -223,7 +223,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     // We use flatten protocol.
   }
 
-  async createParallelConnection(onMessage: (arg0: (Object|string)) => void):
+  async createParallelConnection(onMessage: (arg0: Object|string) => void):
       Promise<{connection: ProtocolClient.InspectorBackend.Connection, sessionId: string}> {
     // The main Target id is actually just `main`, instead of the real targetId.
     // Get the real id (requires an async operation) so that it can be used synchronously later.

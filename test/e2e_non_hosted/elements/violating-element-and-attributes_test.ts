@@ -38,13 +38,13 @@ describe('Element has violating properties', function() {
     const popupParent = await devToolsPage.waitFor('div.vbox.flex-auto.no-pointer-events');
     const popupText = await popupParent.evaluate(async node => {
       if (!node.shadowRoot) {
-        assert.fail('Node shadow root not found.');
+        throw new Error('Node shadow root not found.');
       }
-      const popup = node.shadowRoot.querySelector('div.widget');
+      const popup = node.shadowRoot.querySelector('div.widget') as HTMLElement | null;
       if (!popup) {
-        assert.fail('Popup not found.');
+        throw new Error('Popup not found.');
       }
-      return (popup as HTMLElement).innerText;
+      return popup.innerText;
     });
 
     assert.strictEqual(popupText, 'View Issue:\nA form field element should have an id or name attribute');

@@ -4,7 +4,7 @@ var modulo = require('./modulo');
 var ToNumber = require('./ToNumber');
 var truncate = require('./truncate');
 
-var isFinite = require('../helpers/isFinite');
+var isFinite = require('math-intrinsics/isFinite');
 
 // https://262.ecma-international.org/14.0/#sec-toint16
 

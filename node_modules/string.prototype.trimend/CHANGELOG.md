@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.9](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.8...v1.0.9) - 2024-12-11
+
+### Commits
+
+- [actions] split out node 10-20, and 20+ [`7e5ffdc`](https://github.com/es-shims/String.prototype.trimEnd/commit/7e5ffdc2ab30b09e19773f35df5dceffddc660d4)
+- [meta] sort package.json mildly [`2f99c8b`](https://github.com/es-shims/String.prototype.trimEnd/commit/2f99c8bc69d50dc0c56af3900cc31129ef42bc1b)
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `auto-changelog`, `tape` [`2774fe6`](https://github.com/es-shims/String.prototype.trimEnd/commit/2774fe6660c9de92eacf2a8173f494aa151b1fc1)
+- [Refactor] use `call-bound` directly [`9e3bbec`](https://github.com/es-shims/String.prototype.trimEnd/commit/9e3bbec66695b715ec38f832aa472e1a82ffe095)
+- [Tests] replace `aud` with `npm audit` [`cb9a462`](https://github.com/es-shims/String.prototype.trimEnd/commit/cb9a4623b86d2a91cb0a5b704739b6fe43078abd)
+- [meta] add missing `engines.node` [`f46c829`](https://github.com/es-shims/String.prototype.trimEnd/commit/f46c829985a3c78e92482247fe30800781b4a9e3)
+- [Deps] update `call-bind` [`e892c32`](https://github.com/es-shims/String.prototype.trimEnd/commit/e892c32d30aaaee372c8159b7ac94d564cf7f0e9)
+- [Dev Deps] add missing peer dep [`e1a59da`](https://github.com/es-shims/String.prototype.trimEnd/commit/e1a59da39cc18bbe546371b12d39f86b4c947896)
+
 ## [v1.0.8](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.7...v1.0.8) - 2024-03-16
 
 ### Commits

@@ -15,12 +15,12 @@ import reportingApiGridStyles from './reportingApiGrid.css.js';
 
 const UIStrings = {
   /**
-   *@description Placeholder text when there are no Reporting API endpoints.
+   * @description Placeholder text when there are no Reporting API endpoints.
    *(https://developers.google.com/web/updates/2018/09/reportingapi#tldr)
    */
   noEndpointsToDisplay: 'No endpoints to display',
   /**
-   *@description Placeholder text when there are no Reporting API endpoints.
+   * @description Placeholder text when there are no Reporting API endpoints.
    *(https://developers.google.com/web/updates/2018/09/reportingapi#tldr)
    */
   endpointsDescription: 'Here you will find the list of endpoints that receive the reports'
@@ -46,6 +46,10 @@ export class EndpointsGrid extends HTMLElement {
   set data(data: EndpointsGridData) {
     this.#endpoints = data.endpoints;
     this.#render();
+  }
+
+  get data(): EndpointsGridData {
+    return {endpoints: this.#endpoints};
   }
 
   #render(): void {

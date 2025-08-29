@@ -259,7 +259,7 @@ const EXTENDED_KEBAB_CASE_REGEXP = /^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[
  * for `'Another.AmazingLiteral'` or '`another_amazing_literal'`.
  *
  * @param inputStr the input string to test.
- * @return `true` if the `inputStr` follows the extended Kebab Case convention.
+ * @returns `true` if the `inputStr` follows the extended Kebab Case convention.
  */
 export const isExtendedKebabCase = (inputStr: string): boolean => {
   return EXTENDED_KEBAB_CASE_REGEXP.test(inputStr);
@@ -517,15 +517,41 @@ export const toKebabCase = function(input: string): Lowercase<string> {
       Lowercase<string>;
 };
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export function toKebabCaseKeys(settingValue: Record<string, any>): Record<string, any> {
-  const result: Record<string, any> = {};
-  for (const [key, value] of Object.entries(settingValue)) {
-    result[toKebabCase(key)] = value;
+export function toKebabCaseKeys<T>(settingValue: Record<string, T>): Record<string, T> {
+  return Object.fromEntries(Object.entries(settingValue).map(([key, value]) => [toKebabCase(key), value]));
+}
+
+/**
+ * Converts a given string to snake_case.
+ * This function handles camelCase, PascalCase, and acronyms, including transitions between letters and numbers.
+ * It uses Unicode-aware regular expressions (`\p{L}`, `\p{N}`, `\p{Lu}`, `\p{Ll}` with the `u` flag)
+ * to correctly process letters and numbers from various languages.
+ *
+ * @param text The input string to convert to snake_case.
+ * @returns The snake_case version of the input string.
+ */
+export function toSnakeCase(text: string): string {
+  if (!text) {
+    return '';
   }
+  // First, handle case-based transformations to insert underscores correctly.
+  // 1. Add underscore between a letter and a number.
+  //    e.g., "version2" -> "version_2"
+  // 2. Add underscore between an uppercase letter sequence and a following uppercase+lowercase sequence.
+  //    e.g., "APIFlags" -> "API_Flags"
+  // 3. Add underscore between a lowercase/number and an uppercase letter.
+  //    e.g., "lastName" -> "last_Name", "version_2Update" -> "version_2_Update"
+  // 4. Replace sequences of non-alphanumeric with a single underscore
+  // 5. Remove any leading or trailing underscores.
+  const result = text.replace(/(\p{L})(\p{N})/gu, '$1_$2')           // 1
+                     .replace(/(\p{Lu}+)(\p{Lu}\p{Ll})/gu, '$1_$2')  // 2
+                     .replace(/(\p{Ll}|\p{N})(\p{Lu})/gu, '$1_$2')   // 3
+                     .toLowerCase()
+                     .replace(/[^\p{L}\p{N}]+/gu, '_')  // 4
+                     .replace(/^_|_$/g, '');            // 5
+
   return result;
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 // Replaces the last ocurrence of parameter `search` with parameter `replacement` in `input`
 export const replaceLast = function(input: string, search: string, replacement: string): string {

@@ -3,13 +3,12 @@
 var $RangeError = require('es-errors/range');
 var $TypeError = require('es-errors/type');
 
+var isInteger = require('math-intrinsics/isInteger');
 var isTypedArray = require('is-typed-array');
 var typedArrayBuffer = require('typed-array-buffer');
 var typedArrayByteOffset = require('typed-array-byte-offset');
 var typedArrayLength = require('typed-array-length');
 var whichTypedArray = require('which-typed-array');
-
-var isInteger = require('../helpers/isInteger');
 
 var Get = require('./Get');
 var IsBigIntElementType = require('./IsBigIntElementType');

@@ -19,7 +19,7 @@ module.exports = function UTF16Encoding(cp) {
 	if (cp <= 65535) {
 		return $fromCharCode(cp);
 	}
-	var cu1 = floor((cp - 65536) / 1024) + 0xD800;
-	var cu2 = modulo(cp - 65536, 1024) + 0xDC00;
-	return $fromCharCode(cu1) + $fromCharCode(cu2);
+	var cu1 = $fromCharCode(floor((cp - 65536) / 1024) + 0xD800);
+	var cu2 = $fromCharCode(modulo(cp - 65536, 1024) + 0xDC00);
+	return cu1 + cu2;
 };

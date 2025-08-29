@@ -5,6 +5,13 @@
 /* eslint-disable @stylistic/quotes, @stylistic/quote-props */
 export const generatedProperties = [
  {
+  "longhands": [
+   "max-lines",
+   "continue"
+  ],
+  "name": "-alternative-webkit-line-clamp"
+ },
+ {
   "inherited": true,
   "name": "-webkit-border-horizontal-spacing"
  },
@@ -427,6 +434,7 @@ export const generatedProperties = [
    "container-type",
    "content",
    "content-visibility",
+   "continue",
    "corner-bottom-left-shape",
    "corner-bottom-right-shape",
    "corner-end-end-shape",
@@ -484,7 +492,7 @@ export const generatedProperties = [
    "font-variation-settings",
    "font-weight",
    "forced-color-adjust",
-   "gap-rule-paint-order",
+   "gap-rule-overlap",
    "grid-auto-columns",
    "grid-auto-flow",
    "grid-auto-rows",
@@ -521,7 +529,6 @@ export const generatedProperties = [
    "letter-spacing",
    "lighting-color",
    "line-break",
-   "line-clamp",
    "line-gap-override",
    "line-height",
    "list-style-image",
@@ -554,6 +561,7 @@ export const generatedProperties = [
    "max-block-size",
    "max-height",
    "max-inline-size",
+   "max-lines",
    "max-width",
    "min-block-size",
    "min-height",
@@ -1746,7 +1754,9 @@ export const generatedProperties = [
  {
   "longhands": [
    "column-width",
-   "column-count"
+   "column-count",
+   "column-height",
+   "column-wrap"
   ],
   "name": "columns"
  },
@@ -1823,6 +1833,14 @@ export const generatedProperties = [
    "hidden"
   ],
   "name": "content-visibility"
+ },
+ {
+  "keywords": [
+   "auto",
+   "collapse",
+   "-webkit-legacy"
+  ],
+  "name": "continue"
  },
  {
   "longhands": [
@@ -2502,7 +2520,7 @@ export const generatedProperties = [
    "row-over-column",
    "column-over-row"
   ],
-  "name": "gap-rule-paint-order"
+  "name": "gap-rule-overlap"
  },
  {
   "longhands": [
@@ -2794,9 +2812,9 @@ export const generatedProperties = [
   "name": "line-break"
  },
  {
-  "keywords": [
-   "none",
-   "auto"
+  "longhands": [
+   "max-lines",
+   "continue"
   ],
   "name": "line-clamp"
  },
@@ -3077,6 +3095,12 @@ export const generatedProperties = [
    "none"
   ],
   "name": "max-inline-size"
+ },
+ {
+  "keywords": [
+   "none"
+  ],
+  "name": "max-lines"
  },
  {
   "keywords": [
@@ -4092,7 +4116,8 @@ export const generatedProperties = [
    "-webkit-right",
    "-webkit-center",
    "start",
-   "end"
+   "end",
+   "match-parent"
   ],
   "name": "text-align"
  },
@@ -4105,7 +4130,8 @@ export const generatedProperties = [
    "left",
    "right",
    "center",
-   "justify"
+   "justify",
+   "match-parent"
   ],
   "name": "text-align-last"
  },
@@ -5349,6 +5375,13 @@ export const generatedPropertyValues = {
    "hidden"
   ]
  },
+ "continue": {
+  "values": [
+   "auto",
+   "collapse",
+   "-webkit-legacy"
+  ]
+ },
  "corner-bottom-left-shape": {
   "values": [
    "notch",
@@ -5759,7 +5792,7 @@ export const generatedPropertyValues = {
    "preserve-parent-color"
   ]
  },
- "gap-rule-paint-order": {
+ "gap-rule-overlap": {
   "values": [
    "row-over-column",
    "column-over-row"
@@ -5909,12 +5942,6 @@ export const generatedPropertyValues = {
    "anywhere"
   ]
  },
- "line-clamp": {
-  "values": [
-   "none",
-   "auto"
-  ]
- },
  "line-height": {
   "values": [
    "normal"
@@ -6055,6 +6082,11 @@ export const generatedPropertyValues = {
   ]
  },
  "max-inline-size": {
+  "values": [
+   "none"
+  ]
+ },
+ "max-lines": {
   "values": [
    "none"
   ]
@@ -6575,7 +6607,8 @@ export const generatedPropertyValues = {
    "-webkit-right",
    "-webkit-center",
    "start",
-   "end"
+   "end",
+   "match-parent"
   ]
  },
  "text-align-last": {
@@ -6586,7 +6619,8 @@ export const generatedPropertyValues = {
    "left",
    "right",
    "center",
-   "justify"
+   "justify",
+   "match-parent"
   ]
  },
  "text-anchor": {

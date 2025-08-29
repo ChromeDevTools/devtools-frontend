@@ -48,374 +48,6 @@ describeWithEnvironment('StylingAgent', () => {
     element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
   });
 
-  describe('parseResponse', () => {
-    const agent = new StylingAgent({
-      aidaClient: {} as Host.AidaClient.AidaClient,
-    });
-
-    function getParsedTextResponse(explanation: string): AiAssistance.ParsedResponse {
-      return agent.parseTextResponse(explanation);
-    }
-
-    it('parses a thought', async () => {
-      const payload = 'some response';
-      assert.deepEqual(
-          getParsedTextResponse(`THOUGHT: ${payload}`),
-          {
-            title: undefined,
-            thought: payload,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(`   THOUGHT: ${payload}`),
-          {
-            title: undefined,
-            thought: payload,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(`Something\n   THOUGHT: ${payload}`),
-          {
-            title: undefined,
-            thought: payload,
-          },
-      );
-    });
-    it('parses a answer', async () => {
-      const payload = 'some response';
-      assert.deepEqual(
-          getParsedTextResponse(`ANSWER: ${payload}`),
-          {
-            answer: payload,
-            suggestions: undefined,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(`   ANSWER: ${payload}`),
-          {
-            answer: payload,
-            suggestions: undefined,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(`Something\n   ANSWER: ${payload}`),
-          {
-            answer: payload,
-            suggestions: undefined,
-          },
-      );
-    });
-    it('parses a multiline answer', async () => {
-      const payload = `a
-b
-c`;
-      assert.deepEqual(
-          getParsedTextResponse(`ANSWER: ${payload}`),
-          {
-            answer: payload,
-            suggestions: undefined,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(`   ANSWER: ${payload}`),
-          {
-            answer: payload,
-            suggestions: undefined,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(`Something\n   ANSWER: ${payload}`),
-          {
-            answer: payload,
-            suggestions: undefined,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(`ANSWER: ${payload}\nTHOUGHT: thought`),
-          {
-            answer: payload,
-            suggestions: undefined,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(
-              `ANSWER: ${payload}\nOBSERVATION: observation`,
-              ),
-          {
-            answer: payload,
-            suggestions: undefined,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(
-              `ANSWER: ${payload}\nACTION\naction\nSTOP`,
-              ),
-          {
-            action: 'action',
-            title: undefined,
-            thought: undefined,
-          },
-      );
-    });
-    it('parses an action', async () => {
-      const payload = `const data = {
-  someKey: "value",
-}`;
-      assert.deepEqual(
-          getParsedTextResponse(`ACTION\n${payload}\nSTOP`),
-          {
-            action: payload,
-            title: undefined,
-            thought: undefined,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(`ACTION\n${payload}`),
-          {
-            action: payload,
-            title: undefined,
-            thought: undefined,
-          },
-      );
-      assert.deepEqual(
-          getParsedTextResponse(`ACTION\n\n${payload}\n\nSTOP`),
-          {
-            action: payload,
-            title: undefined,
-            thought: undefined,
-          },
-      );
-
-      assert.deepEqual(
-          getParsedTextResponse(`ACTION\n\n${payload}\n\nANSWER: answer`),
-          {
-            action: payload,
-            title: undefined,
-            thought: undefined,
-          },
-      );
-    });
-    it('parses an action where the last line of the code block ends with STOP keyword', async () => {
-      const payload = `const styles = window.getComputedStyle($0);
-        const data = {
-          styles
-        };`;
-      assert.deepEqual(
-          getParsedTextResponse(`ACTION\n${payload}STOP`),
-          {
-            action: payload,
-            title: undefined,
-            thought: undefined,
-          },
-      );
-    });
-    it('parses a thought and title', async () => {
-      const payload = 'some response';
-      const title = 'this is the title';
-      assert.deepEqual(
-          getParsedTextResponse(`THOUGHT: ${payload}\nTITLE: ${title}`),
-          {
-            thought: payload,
-            title,
-          },
-      );
-    });
-
-    it('parses an action with backticks in the code', async () => {
-      const payload = `const data = {
-  someKey: "value",
-}`;
-      assert.deepEqual(
-          getParsedTextResponse(
-              `ACTION\n\`\`\`\n${payload}\n\`\`\`\nSTOP`,
-              ),
-          {
-            action: payload,
-            title: undefined,
-            thought: undefined,
-          },
-      );
-    });
-
-    it('parses an action with 5 backticks in the code language tag', async () => {
-      const payload = `const data = {
-  someKey: "value",
-}`;
-      assert.deepEqual(
-          getParsedTextResponse(
-              `ACTION\n\`\`\`\`\`js\n${payload}\n\`\`\`\`\`\nSTOP`,
-              ),
-          {
-            action: payload,
-            title: undefined,
-            thought: undefined,
-          },
-      );
-    });
-
-    it('parses an action with 5 backticks in the code and `js` text in the prelude', async () => {
-      const payload = `const data = {
-  someKey: "value",
-}`;
-      assert.deepEqual(
-          getParsedTextResponse(
-              `ACTION\n\`\`\`\`\`\njs\n${payload}\n\`\`\`\`\`\nSTOP`,
-              ),
-          {
-            action: payload,
-            title: undefined,
-            thought: undefined,
-          },
-      );
-    });
-
-    it('parses a thought and an action', async () => {
-      const actionPayload = `const data = {
-  someKey: "value",
-}`;
-      const thoughtPayload = 'thought';
-      assert.deepEqual(
-          getParsedTextResponse(
-              `THOUGHT:${thoughtPayload}\nACTION\n${actionPayload}\nSTOP`,
-              ),
-          {
-            action: actionPayload,
-            title: undefined,
-            thought: thoughtPayload,
-          },
-      );
-    });
-
-    it('parses a thought and an answer', async () => {
-      const answerPayload = 'answer';
-      const thoughtPayload = 'thought';
-      assert.deepEqual(
-          getParsedTextResponse(
-              `THOUGHT:${thoughtPayload}\nANSWER:${answerPayload}`,
-              ),
-          {
-            answer: answerPayload,
-            suggestions: undefined,
-          },
-      );
-    });
-
-    it('parses an answer and suggestions', async () => {
-      const answerPayload = 'answer';
-      const suggestions = ['suggestion'] as [string];
-      const suggestionsText = JSON.stringify(suggestions);
-      assert.deepEqual(
-          getParsedTextResponse(
-              `ANSWER:${answerPayload}\nSUGGESTIONS: ${suggestionsText}`,
-              ),
-          {
-            answer: answerPayload,
-            suggestions,
-          },
-      );
-    });
-
-    it('parses a thought, title, action and answer from same response', async () => {
-      const answerPayload = 'answer';
-      const thoughtPayload = 'thought';
-      const actionPayload = `const data = {
-  someKey: "value",
-}`;
-      const title = 'title';
-      assert.deepEqual(
-          getParsedTextResponse(
-              `THOUGHT: ${thoughtPayload}\nTITLE: ${title}\nACTION\n${actionPayload}\nSTOP\nANSWER:${answerPayload}`,
-              ),
-          {
-            thought: thoughtPayload,
-            action: actionPayload,
-            title,
-          },
-      );
-    });
-    it('parses an action when STOP appearing in its last line and has ANSWER after that', async () => {
-      const answerPayload = 'answer';
-      const suggestions = ['suggestion'];
-      const payload = `const styles = window.getComputedStyle($0);
-        const data = {
-          styles
-        };`;
-      assert.deepEqual(
-          getParsedTextResponse(
-              `ACTION\n${payload}STOP\nANSWER:${answerPayload}\nSUGGESTIONS: ${JSON.stringify(suggestions)}`),
-          {
-            action: payload,
-            thought: undefined,
-            title: undefined,
-          },
-      );
-    });
-    it('parses an action when STOP appearing in its last line and has OBSERVATION after that', async () => {
-      const payload = `const styles = window.getComputedStyle($0);
-        const data = {
-          styles
-        };`;
-      assert.deepEqual(
-          getParsedTextResponse(`ACTION\n${payload}STOP\nOBSERVATION:{styles: {}}`),
-          {
-            action: payload,
-            thought: undefined,
-            title: undefined,
-          },
-      );
-    });
-    it('parses an action when STOP appearing in its last line and has THOUGHT after that', async () => {
-      const payload = `const styles = window.getComputedStyle($0);
-        const data = {
-          styles
-        };`;
-      const thoughtPayload = 'thought';
-      assert.deepEqual(
-          getParsedTextResponse(`ACTION\n${payload}STOP\nTHOUGHT:${thoughtPayload}`),
-          {
-            action: payload,
-            thought: thoughtPayload,
-            title: undefined,
-          },
-      );
-    });
-
-    it('parses a response as an answer', async () => {
-      assert.deepEqual(
-          getParsedTextResponse(
-              'This is also an answer',
-              ),
-          {
-            answer: 'This is also an answer',
-            suggestions: undefined,
-          },
-      );
-    });
-
-    it('parses a response with no instruction tags as an answer and correctly parses suggestions', async () => {
-      assert.deepEqual(
-          getParsedTextResponse(
-              'This is also an answer\nSUGGESTIONS: [\"suggestion\"]',
-              ),
-          {
-            answer: 'This is also an answer',
-            suggestions: ['suggestion'],
-          },
-      );
-    });
-
-    it('parses multi line thoughts', () => {
-      const thoughtText = 'first line\nsecond line';
-      assert.deepEqual(
-          getParsedTextResponse(`THOUGHT: ${thoughtText}`),
-          {
-            thought: thoughtText,
-            title: undefined,
-          },
-      );
-    });
-  });
-
   describe('describeElement', () => {
     it('should describe an element with no children, siblings, or parent', async () => {
       element.simpleSelector.returns('div#myElement');
@@ -547,35 +179,46 @@ c`;
                 text: 'test input',
               },
               Host.AidaClient.Role.USER),
+
           {
-            current_message: {role: Host.AidaClient.Role.USER, parts: [{text: 'test input'}]},
             client: 'CHROME_DEVTOOLS',
-            preamble: undefined,
-            historical_contexts: [
-              {
-                role: 1,
-                parts: [{text: 'QUERY: question'}],
-              },
-              {
-                role: 2,
-                parts: [{text: 'ANSWER: answer'}],
-              },
-            ],
-            facts: undefined,
+            current_message: {parts: [{text: 'test input'}], role: 1},
+            historical_contexts: [{parts: [{text: 'QUERY: question'}], role: 1}, {parts: [{text: 'answer'}], role: 2}],
+            function_declarations: [{
+              name: 'executeJavaScript',
+              description:
+                  'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.',
+              parameters: {
+                type: 6,
+                description: '',
+                nullable: false,
+                properties: {
+                  code: {
+                    type: 1,
+                    description:
+                        'JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.\n\n# Instructions\n\n* To return data, define a top-level `data` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to `data`.\n* If you modify styles on an element, ALWAYS call the pre-defined global `async setElementStyles(el: Element, styles: object)` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.\n* Use `window.getComputedStyle` to gather **computed** styles and make sure that you take the distinction between authored styles and computed styles into account.\n* **CRITICAL** Only get styles that might be relevant to the user request.\n* **CRITICAL** Call `window.getComputedStyle` only once per element and store results into a local variable. Never try to return all the styles of the element in `data`.\n* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.\n* **CRITICAL** Consider that `data` variable from the previous function calls are not available in a new function call.\n\nFor example, the code to return basic styles:\n\n```\nconst styles = window.getComputedStyle($0);\nconst data = {\n    display: styles[\'display\'],\n    visibility: styles[\'visibility\'],\n    position: styles[\'position\'],\n    left: styles[\'right\'],\n    top: styles[\'top\'],\n    width: styles[\'width\'],\n    height: styles[\'height\'],\n    zIndex: styles[\'z-index\']\n};\n```\n\nFor example, the code to change element styles:\n\n```\nawait setElementStyles($0, {\n  color: \'blue\',\n});\n```\n\nFor example, the code to get current and parent styles at once:\n\n```\nconst styles = window.getComputedStyle($0);\nconst parentStyles = window.getComputedStyle($0.parentElement);\nconst data = {\n    currentElementStyles: {\n      display: styles[\'display\'],\n      visibility: styles[\'visibility\'],\n      position: styles[\'position\'],\n      left: styles[\'right\'],\n      top: styles[\'top\'],\n      width: styles[\'width\'],\n      height: styles[\'height\'],\n      zIndex: styles[\'z-index\'],\n    },\n    parentElementStyles: {\n      display: parentStyles[\'display\'],\n      visibility: parentStyles[\'visibility\'],\n      position: parentStyles[\'position\'],\n      left: parentStyles[\'right\'],\n      top: parentStyles[\'top\'],\n      width: parentStyles[\'width\'],\n      height: parentStyles[\'height\'],\n      zIndex: parentStyles[\'z-index\'],\n    },\n};\n```\n\nFor example, the code to get check siblings and overlapping elements:\n\n```\nconst computedStyles = window.getComputedStyle($0);\nconst parentComputedStyles = window.getComputedStyle($0.parentElement);\nconst data = {\n  numberOfChildren: $0.children.length,\n  numberOfSiblings: $0.parentElement.children.length,\n  hasPreviousSibling: !!$0.previousElementSibling,\n  hasNextSibling: !!$0.nextElementSibling,\n  elementStyles: {\n    display: computedStyles[\'display\'],\n    visibility: computedStyles[\'visibility\'],\n    position: computedStyles[\'position\'],\n    clipPath: computedStyles[\'clip-path\'],\n    zIndex: computedStyles[\'z-index\']\n  },\n  parentStyles: {\n    display: parentComputedStyles[\'display\'],\n    visibility: parentComputedStyles[\'visibility\'],\n    position: parentComputedStyles[\'position\'],\n    clipPath: parentComputedStyles[\'clip-path\'],\n    zIndex: parentComputedStyles[\'z-index\']\n  },\n  overlappingElements: Array.from(document.querySelectorAll(\'*\'))\n    .filter(el => {\n      const rect = el.getBoundingClientRect();\n      const popupRect = $0.getBoundingClientRect();\n      return (\n        el !== $0 &&\n        rect.left < popupRect.right &&\n        rect.right > popupRect.left &&\n        rect.top < popupRect.bottom &&\n        rect.bottom > popupRect.top\n      );\n    })\n    .map(el => ({\n      tagName: el.tagName,\n      id: el.id,\n      className: el.className,\n      zIndex: window.getComputedStyle(el)[\'z-index\']\n    }))\n};\n```\n'
+                  },
+                  thought: {type: 1, description: 'Explain why you want to run this code'},
+                  title: {
+                    type: 1,
+                    description:
+                        'Provide a summary of what the code does. For example, "Checking related element styles".'
+                  }
+                }
+              }
+            }],
+            options: {model_id: 'test model', temperature: undefined},
             metadata: {
               disable_user_content_logging: false,
               string_session_id: 'sessionId',
               user_tier: 2,
-              client_version: 'unit_test',
+              client_version: 'unit_test+function_calling'
             },
-            options: {
-              model_id: 'test model',
-              temperature: undefined,
-            },
+            functionality_type: 5,
             client_feature: 2,
-            functionality_type: 1,
-          },
-      );
+            facts: undefined,
+            preamble: undefined,
+          });
       restoreUserAgentForTesting();
     });
 
@@ -585,11 +228,8 @@ c`;
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([
           [{
-            explanation: `THOUGHT: thought2
-TITLE: title2
-ACTION
-action2
-STOP`
+            functionCalls: [{name: 'executeJavaScript', args: {title: 'title2', thought: 'thought2', code: 'action2'}}],
+            explanation: '',
           }],
           [{explanation: 'answer2'}]
         ]),
@@ -608,22 +248,14 @@ STOP`
       const request = agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER);
       assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
       assert.deepEqual(request.historical_contexts, [
-        {
-          parts: [{text: 'QUERY: test2'}],
-          role: 1,
+        {parts: [{text: 'QUERY: test2'}], role: 1}, {
+          parts: [
+            {functionCall: {name: 'executeJavaScript', args: {title: 'title2', thought: 'thought2', code: 'action2'}}}
+          ],
+          role: 2
         },
-        {
-          role: 2,
-          parts: [{text: 'THOUGHT: thought2\nTITLE: title2\nACTION\naction2\nSTOP'}],
-        },
-        {
-          role: 1,
-          parts: [{text: 'OBSERVATION: result2'}],
-        },
-        {
-          role: 2,
-          parts: [{text: 'ANSWER: answer2'}],
-        },
+        {parts: [{functionResponse: {name: 'executeJavaScript', response: {result: 'result2'}}}], role: 0},
+        {parts: [{text: 'answer2'}], role: 2}
       ]);
     });
   });
@@ -638,12 +270,11 @@ STOP`
         const agent = new StylingAgent({
           aidaClient: mockAidaClient([
             [{
-              explanation: `ACTION
-$0.style.backgroundColor = 'red'
-STOP`,
+              functionCalls: [{name: 'executeJavaScript', args: {code: '$0.style.backgroundColor = \'red\''}}],
+              explanation: '',
             }],
             [{
-              explanation: 'ANSWER: This is the answer',
+              explanation: 'This is the answer',
             }]
           ]),
           createExtensionScope,
@@ -667,12 +298,11 @@ STOP`,
         const agent = new StylingAgent({
           aidaClient: mockAidaClient([
             [{
-              explanation: `ACTION
-            $0.style.backgroundColor = 'red'
-            STOP`,
+              functionCalls: [{name: 'executeJavaScript', args: {code: '$0.style.backgroundColor = \'red\''}}],
+              explanation: '',
             }],
             [{
-              explanation: 'ANSWER: This is the answer',
+              explanation: 'This is the answer',
             }]
           ]),
           createExtensionScope,
@@ -695,12 +325,11 @@ STOP`,
         const agent = new StylingAgent({
           aidaClient: mockAidaClient([
             [{
-              explanation: `ACTION
-$0.style.backgroundColor = 'red'
-STOP`,
+              functionCalls: [{name: 'executeJavaScript', args: {code: '$0.style.backgroundColor = \'red\''}}],
+              explanation: '',
             }],
             [{
-              explanation: 'ANSWER: This is the answer',
+              explanation: 'This is the answer',
             }]
           ]),
           createExtensionScope,
@@ -723,9 +352,8 @@ STOP`,
         const sideEffectConfirmationPromise = Promise.withResolvers();
         const agent = new StylingAgent({
           aidaClient: mockAidaClient([[{
-            explanation: `ACTION
-$0.style.backgroundColor = 'red'
-STOP`,
+            functionCalls: [{name: 'executeJavaScript', args: {code: '$0.style.backgroundColor = \'red\''}}],
+            explanation: '',
           }]]),
           createExtensionScope,
           confirmSideEffectForTest: sinon.stub().returns(sideEffectConfirmationPromise),
@@ -758,12 +386,14 @@ STOP`,
         const agent = new StylingAgent({
           aidaClient: mockAidaClient([
             [{
-              explanation: `ACTION
-$0.style.backgroundColor = 'red';
-STOP`,
+              functionCalls: [{
+                name: 'executeJavaScript',
+                args: {code: '$0.style.backgroundColor = \'red\';'},
+              }],
+              explanation: '',
             }],
             [{
-              explanation: 'ANSWER: This is the answer',
+              explanation: 'This is the answer',
             }]
           ]),
           createExtensionScope,
@@ -783,7 +413,7 @@ STOP`,
     it('generates an answer immediately', async () => {
       const execJs = sinon.spy();
       const agent = new StylingAgent({
-        aidaClient: mockAidaClient([[{explanation: 'ANSWER: this is the answer'}]]),
+        aidaClient: mockAidaClient([[{explanation: 'this is the answer'}]]),
         execJs,
       });
 
@@ -824,7 +454,7 @@ STOP`,
         },
         {
           role: 2,
-          parts: [{text: 'ANSWER: this is the answer'}],
+          parts: [{text: 'this is the answer'}],
         },
       ]);
     });
@@ -834,14 +464,14 @@ STOP`,
       execJs.onCall(0).returns('test data');
       const aidaClient = mockAidaClient([
         [{
-          explanation: `THOUGHT: I am thinking.
-TITLE: thinking
-ACTION
-const data = {"test": "observation"};
-STOP`,
+          functionCalls: [{
+            name: 'executeJavaScript',
+            args: {code: 'const data = {"test": "observation"}', thought: 'I am thinking.', title: 'thinking'},
+          }],
+          explanation: '',
         }],
         [{
-          explanation: 'ANSWER: this is the actual answer',
+          explanation: 'this is the actual answer',
         }]
       ]);
       const agent = new StylingAgent({
@@ -875,8 +505,14 @@ STOP`,
             {
               role: 2,
               parts: [{
-                text:
-                    'THOUGHT: I am thinking.\nTITLE: thinking\nACTION\nconst data = {\"test\": \"observation\"};\nSTOP',
+                functionCall: {
+                  args: {
+                    code: 'const data = {"test": "observation"}',
+                    thought: 'I am thinking.',
+                    title: 'thinking',
+                  },
+                  name: 'executeJavaScript',
+                },
               }],
             },
           ],
@@ -884,14 +520,21 @@ STOP`,
       assert.exists(requests[1].current_message);
       assert.lengthOf(requests[1].current_message.parts, 1);
       assert.deepEqual(
-          requests[1].current_message.parts[0], {text: 'OBSERVATION: test data'},
+          requests[1].current_message.parts[0], {
+            functionResponse: {
+              name: 'executeJavaScript',
+              response: {
+                result: 'test data',
+              }
+            }
+          },
           'Unexpected input in the follow-up request');
     });
 
     it('generates an rpcId for the answer', async () => {
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([[{
-          explanation: 'ANSWER: this is the answer',
+          explanation: 'this is the answer',
           metadata: {
             rpcGlobalId: 123,
           },
@@ -935,10 +578,10 @@ STOP`,
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([[
           {
-            explanation: 'ANSWER: this is the partial answer',
+            explanation: 'this is the partial answer',
           },
           {
-            explanation: 'ANSWER: this is the partial answer and now it\'s complete',
+            explanation: 'this is the partial answer and now it\'s complete',
             metadata: {
               attributionMetadata: {
                 attributionAction: Host.AidaClient.RecitationAction.BLOCK,
@@ -986,7 +629,7 @@ STOP`,
     it('does not throw an error based on attribution metadata not including RecitationAction.BLOCK', async () => {
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([[{
-          explanation: 'ANSWER: this is the answer',
+          explanation: 'this is the answer',
           metadata: {
             rpcGlobalId: 123,
             attributionMetadata: {
@@ -1028,35 +671,6 @@ STOP`,
           rpcId: 123,
         },
       ]);
-    });
-
-    it('should execute an action only once even when the partial response contains an action', async () => {
-      const execJs = sinon.spy();
-      const agent = new StylingAgent({
-        aidaClient: mockAidaClient([[
-          {
-            explanation: `THOUGHT: I am thinking.
-
-ACTION
-console.log('hel
-          `,
-          },
-          {
-            explanation: `THOUGHT: I am thinking.
-
-ACTION
-console.log('hello');
-STOP
-          `,
-          }
-        ]]),
-        createExtensionScope,
-        execJs,
-      });
-      await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
-
-      sinon.assert.calledOnce(execJs);
-      assert.include(execJs.lastCall.args[0], 'console.log(\'hello\');');
     });
 
     it('generates a response if nothing is returned', async () => {
@@ -1101,16 +715,14 @@ STOP
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([
           [{
-            explanation: `THOUGHT: I am thinking.
-
-          ACTION
-          console.log('hello');
-          STOP
-
-          ANSWER: this is the answer`,
+            functionCalls: [{
+              name: 'executeJavaScript',
+              args: {thought: 'I am thinking.', code: 'console.log(\'hello\');'},
+            }],
+            explanation: 'this is the answer',
           }],
           [{
-            explanation: 'ANSWER: this is the actual answer',
+            explanation: 'this is the actual answer',
             metadata: {},
           }]
         ]),
@@ -1168,17 +780,27 @@ STOP
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([
           [{
-            explanation: 'THOUGHT: thought 1\nTITLE:test\nACTION\nconsole.log(\'test\')\nSTOP\n',
+            functionCalls: [{
+              name: 'executeJavaScript',
+              args: {thought: 'thought 1', title: 'test', code: 'console.log(\'test\')'},
+            }],
+            explanation: '',
           }],
           [{
-            explanation: 'THOUGHT: thought 2\nTITLE:test\nACTION\nconsole.log(\'test\')\nSTOP\n',
+            functionCalls: [{
+              name: 'executeJavaScript',
+              args: {thought: 'thought 2', title: 'test', code: 'console.log(\'test\')'},
+            }],
+            explanation: '',
           }],
           [{
-            explanation: 'THOUGHT: thought 3\nTITLE:test\nACTION\nconsole.log(\'test\')\nSTOP\n',
+            functionCalls: [{
+              name: 'executeJavaScript',
+              args: {thought: 'thought 3', title: 'test', code: 'console.log(\'test\')'},
+            }],
+            explanation: '',
           }],
-          [{
-            explanation: 'ANSWER: this is the answer',
-          }]
+          [{explanation: 'this is the answer'}]
         ]),
         createExtensionScope,
         execJs,
@@ -1194,31 +816,58 @@ STOP
         },
         {
           role: 2,
-          parts: [{text: 'THOUGHT: thought 1\nTITLE: test\nACTION\nconsole.log(\'test\')\nSTOP'}],
+          parts: [{
+            functionCall: {
+              args: {
+                code: 'console.log(\'test\')',
+                thought: 'thought 1',
+                title: 'test',
+              },
+              name: 'executeJavaScript',
+            },
+          }],
         },
         {
-          role: 1,
-          parts: [{text: 'OBSERVATION: undefined'}],
-        },
-        {
-          role: 2,
-          parts: [{text: 'THOUGHT: thought 2\nTITLE: test\nACTION\nconsole.log(\'test\')\nSTOP'}],
-        },
-        {
-          role: 1,
-          parts: [{text: 'OBSERVATION: undefined'}],
-        },
-        {
-          role: 2,
-          parts: [{text: 'THOUGHT: thought 3\nTITLE: test\nACTION\nconsole.log(\'test\')\nSTOP'}],
-        },
-        {
-          role: 1,
-          parts: [{text: 'OBSERVATION: undefined'}],
+          role: 0,
+          parts: [{functionResponse: {name: 'executeJavaScript', response: {result: 'undefined'}}}],
         },
         {
           role: 2,
-          parts: [{text: 'ANSWER: this is the answer'}],
+          parts: [{
+            functionCall: {
+              args: {
+                code: 'console.log(\'test\')',
+                thought: 'thought 2',
+                title: 'test',
+              },
+              name: 'executeJavaScript',
+            },
+          }],
+        },
+        {
+          role: 0,
+          parts: [{functionResponse: {name: 'executeJavaScript', response: {result: 'undefined'}}}],
+        },
+        {
+          role: 2,
+          parts: [{
+            functionCall: {
+              args: {
+                code: 'console.log(\'test\')',
+                thought: 'thought 3',
+                title: 'test',
+              },
+              name: 'executeJavaScript',
+            },
+          }],
+        },
+        {
+          role: 0,
+          parts: [{functionResponse: {name: 'executeJavaScript', response: {result: 'undefined'}}}],
+        },
+        {
+          role: 2,
+          parts: [{text: 'this is the answer'}],
         },
       ]);
     });
@@ -1228,17 +877,27 @@ STOP
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([
           [{
-            explanation: 'THOUGHT: thought 1\nTITLE:test\nACTION\nconsole.log(\'test\')\nSTOP\n',
+            functionCalls: [{
+              name: 'executeJavaScript',
+              args: {thought: 'thought 1', title: 'test', code: 'console.log(\'test\')'},
+            }],
+            explanation: '',
           }],
           [{
-            explanation: 'THOUGHT: thought 2\nTITLE:test\nACTION\nconsole.log(\'test\')\nSTOP\n',
+            functionCalls: [{
+              name: 'executeJavaScript',
+              args: {thought: 'thought 2', title: 'test', code: 'console.log(\'test\')'},
+            }],
+            explanation: '',
           }],
           [{
-            explanation: 'THOUGHT: thought 3\nTITLE:test\nACTION\nconsole.log(\'test\')\nSTOP\n',
+            functionCalls: [{
+              name: 'executeJavaScript',
+              args: {thought: 'thought 3', title: 'test', code: 'console.log(\'test\')'},
+            }],
+            explanation: '',
           }],
-          [{
-            explanation: 'ANSWER: this is the answer',
-          }]
+          [{explanation: 'this is the answer'}]
         ]),
         createExtensionScope,
         execJs,
@@ -1352,12 +1011,11 @@ QUERY: test query`,
     function getMockClient() {
       return mockAidaClient([
         [{
-          explanation: `ACTION
-$0.style.backgroundColor = 'red'
-STOP`,
+          functionCalls: [{name: 'executeJavaScript', args: {code: '$0.style.backgroundColor = \'red\''}}],
+          explanation: '',
         }],
         [{
-          explanation: 'ANSWER: This is the answer',
+          explanation: 'This is the answer',
         }]
       ]);
     }

@@ -29,94 +29,94 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Header for preloading status.
+   * @description Header for preloading status.
    */
   speculativeLoadingStatusForThisPage: 'Speculative loading status for this page',
   /**
-   *@description Label for failure reason of preloeading
+   * @description Label for failure reason of preloading
    */
   detailsFailureReason: 'Failure reason',
   /**
-   *@description Message that tells this page was prerendered.
+   * @description Message that tells this page was prerendered.
    */
   downgradedPrefetchUsed:
       'The initiating page attempted to prerender this page\'s URL. The prerender failed, but the resulting response body was still used as a prefetch.',
   /**
-   *@description Message that tells this page was prefetched.
+   * @description Message that tells this page was prefetched.
    */
   prefetchUsed: 'This page was successfully prefetched.',
   /**
-   *@description Message that tells this page was prerendered.
+   * @description Message that tells this page was prerendered.
    */
   prerenderUsed: 'This page was successfully prerendered.',
   /**
-   *@description Message that tells this page was prefetched.
+   * @description Message that tells this page was prefetched.
    */
   prefetchFailed:
       'The initiating page attempted to prefetch this page\'s URL, but the prefetch failed, so a full navigation was performed instead.',
   /**
-   *@description Message that tells this page was prerendered.
+   * @description Message that tells this page was prerendered.
    */
   prerenderFailed:
       'The initiating page attempted to prerender this page\'s URL, but the prerender failed, so a full navigation was performed instead.',
   /**
-   *@description Message that tells this page was not preloaded.
+   * @description Message that tells this page was not preloaded.
    */
   noPreloads: 'The initiating page did not attempt to speculatively load this page\'s URL.',
   /**
-   *@description Header for current URL.
+   * @description Header for current URL.
    */
   currentURL: 'Current URL',
   /**
-   *@description Header for mismatched preloads.
+   * @description Header for mismatched preloads.
    */
   preloadedURLs: 'URLs being speculatively loaded by the initiating page',
   /**
-   *@description Header for summary.
+   * @description Header for summary.
    */
   speculationsInitiatedByThisPage: 'Speculations initiated by this page',
   /**
-   *@description Link text to reveal rules.
+   * @description Link text to reveal rules.
    */
   viewAllRules: 'View all speculation rules',
   /**
-   *@description Link text to reveal preloads.
+   * @description Link text to reveal preloads.
    */
   viewAllSpeculations: 'View all speculations',
   /**
-   *@description Link to learn more about Preloading
+   * @description Link to learn more about Preloading
    */
   learnMore: 'Learn more: Speculative loading on developer.chrome.com',
   /**
-   *@description Header for the table of mismatched network request header.
+   * @description Header for the table of mismatched network request header.
    */
   mismatchedHeadersDetail: 'Mismatched HTTP request headers',
   /**
-   *@description Label for badge, indicating speculative load successfully used for this page.
+   * @description Label for badge, indicating speculative load successfully used for this page.
    */
   badgeSuccess: 'Success',
   /**
-   *@description Label for badge, indicating speculative load failed for this page.
+   * @description Label for badge, indicating speculative load failed for this page.
    */
   badgeFailure: 'Failure',
   /**
-   *@description Label for badge, indicating no speculative loads used for this page.
+   * @description Label for badge, indicating no speculative loads used for this page.
    */
   badgeNoSpeculativeLoads: 'No speculative loads',
   /**
-   *@description Label for badge, indicating how many not triggered speculations there are.
+   * @description Label for badge, indicating how many not triggered speculations there are.
    */
   badgeNotTriggeredWithCount: '{n, plural, =1 {# not triggered} other {# not triggered}}',
   /**
-   *@description Label for badge, indicating how many in progress speculations there are.
+   * @description Label for badge, indicating how many in progress speculations there are.
    */
   badgeInProgressWithCount: '{n, plural, =1 {# in progress} other {# in progress}}',
   /**
-   *@description Label for badge, indicating how many succeeded speculations there are.
+   * @description Label for badge, indicating how many succeeded speculations there are.
    */
   badgeSuccessWithCount: '{n, plural, =1 {# success} other {# success}}',
   /**
-   *@description Label for badge, indicating how many failed speculations there are.
+   * @description Label for badge, indicating how many failed speculations there are.
    */
   badgeFailureWithCount: '{n, plural, =1 {# failure} other {# failures}}',
 } as const;
@@ -141,7 +141,6 @@ export const enum UsedKind {
 // TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
 // This also shows summary of speculations initiated by this page.
 export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: UsedPreloadingViewData = {
     pageURL: '' as Platform.DevToolsPath.UrlString,

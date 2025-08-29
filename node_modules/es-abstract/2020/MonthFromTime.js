@@ -1,5 +1,7 @@
 'use strict';
 
+var $RangeError = require('es-errors/range');
+
 var DayWithinYear = require('./DayWithinYear');
 var InLeapYear = require('./InLeapYear');
 
@@ -44,4 +46,6 @@ module.exports = function MonthFromTime(t) {
 	if ((334 + leap) <= day && day < (365 + leap)) {
 		return 11;
 	}
+
+	throw new $RangeError('Assertion failed: `day` is out of range');
 };

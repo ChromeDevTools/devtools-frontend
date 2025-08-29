@@ -9,10 +9,10 @@ const commentRegexp = /^\/\*(?!\*)/u;
 const extraAsteriskCommentRegexp = /^\/\*{3,}/u;
 
 export default iterateJsdoc(({
-  context,
-  sourceCode,
   allComments,
+  context,
   makeReport,
+  sourceCode,
 }) => {
   const [
     {
@@ -34,7 +34,7 @@ export default iterateJsdoc(({
 
     const initialText = commentText.replace(commentRegexp, '').trimStart();
     if ([
-      'eslint'
+      'eslint',
     ].some((directive) => {
       return initialText.startsWith(directive);
     })) {

@@ -22,6 +22,7 @@ devtools_module("components") {
     "../../../ui/components/chrome_link:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/settings:bundle",
+    "../../../ui/components/tooltips:bundle",
     "../../../ui/lit:bundle",
   ]
 }

@@ -33,7 +33,7 @@ const fileContentsCache = new Map<string, Trace.Types.File.Contents>();
 const traceEngineCache = new Map<string, Map<string, {
                                    parsedTrace: Trace.Handlers.Types.ParsedTrace,
                                    insights: Trace.Insights.Types.TraceInsightSets | null,
-                                   metadata: Trace.Types.File.MetaData | null,
+                                   metadata: Trace.Types.File.MetaData,
                                    model: Trace.TraceModel.Model,
                                  }>>();
 
@@ -77,12 +77,18 @@ export class TraceLoader {
     if (cached) {
       return cached;
     }
-    // Required URLs differ across the component server and the unit tests, so try both.
     const urlForTest = new URL(`../panels/timeline/fixtures/traces/${name}`, import.meta.url);
 
     const contents = await TraceLoader.loadTraceFileFromURL(urlForTest);
     fileContentsCache.set(name, contents);
     return contents;
+  }
+
+  static async traceFile(context: Mocha.Context|Mocha.Suite|null, name: string): Promise<Trace.Types.File.TraceFile> {
+    const contents = await TraceLoader.fixtureContents(context, name);
+    const traceEvents = 'traceEvents' in contents ? contents.traceEvents : contents;
+    const metadata = 'metadata' in contents ? contents.metadata : {};
+    return {traceEvents, metadata} as Trace.Types.File.TraceFile;
   }
 
   /**
@@ -128,15 +134,12 @@ export class TraceLoader {
    * takes up longer than the default Mocha timeout, which is 2s. So we have to
    * increase this test's timeout. It might be null when we only render a
    * component example. See TraceLoader.setTestTimeout.
-   *
    * @param file The name of the trace file to be loaded.
    * The trace file should be in ../panels/timeline/fixtures/traces folder.
-   *
    * @param options Additional trace options.
    * @param options.initTraceBounds (defaults to `true`) after the trace is
    * loaded, the TraceBounds manager will automatically be initialised using
    * the bounds from the trace.
-   *
    * @param config The config the new trace engine should run with. Optional,
    * will fall back to the Default config if not provided.
    */
@@ -145,7 +148,7 @@ export class TraceLoader {
       config: Trace.Types.Configuration.Configuration = Trace.Types.Configuration.defaults()): Promise<{
     parsedTrace: Trace.Handlers.Types.ParsedTrace,
     insights: Trace.Insights.Types.TraceInsightSets|null,
-    metadata: Trace.Types.File.MetaData|null,
+    metadata: Trace.Types.File.MetaData,
   }> {
     if (context) {
       TraceLoader.setTestTimeout(context);
@@ -187,7 +190,7 @@ export class TraceLoader {
     const cacheByName = traceEngineCache.get(name) ?? new Map<string, {
                           parsedTrace: Trace.Handlers.Types.ParsedTrace,
                           insights: Trace.Insights.Types.TraceInsightSets | null,
-                          metadata: Trace.Types.File.MetaData | null,
+                          metadata: Trace.Types.File.MetaData,
                           model: Trace.TraceModel.Model,
                         }>();
     cacheByName.set(configCacheKey, parsedTraceData);

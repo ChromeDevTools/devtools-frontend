@@ -9,7 +9,7 @@ import type * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-   *@description Text in Layer View Host of the Layers panel
+   * @description Text in Layer View Host of the Layers panel
    */
   showInternalLayers: 'Show internal layers',
 } as const;

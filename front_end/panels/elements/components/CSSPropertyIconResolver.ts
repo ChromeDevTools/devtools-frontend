@@ -262,7 +262,7 @@ function gridAlignSelfIcon(iconName: string): (parentStyles: ComputedStyles) => 
   return getIcon;
 }
 
-export function roateFlexWrapIcon(iconName: string, direction: PhysicalDirection): IconInfo {
+export function rotateFlexWrapIcon(iconName: string, direction: PhysicalDirection): IconInfo {
   return {
     iconName,
     rotate: direction === PhysicalDirection.BOTTOM_TO_TOP || direction === PhysicalDirection.TOP_TO_BOTTOM ? 90 : 0,
@@ -275,7 +275,7 @@ function flexWrapIcon(iconName: string): (styles: ComputedStyles) => IconInfo {
   function getIcon(computedStyles: ComputedStyles): IconInfo {
     const directions = getPhysicalDirections(computedStyles);
     const computedFlexDirection = computedStyles.get('flex-direction') || 'row';
-    return roateFlexWrapIcon(iconName, directions[computedFlexDirection]);
+    return rotateFlexWrapIcon(iconName, directions[computedFlexDirection]);
   }
   return getIcon;
 }

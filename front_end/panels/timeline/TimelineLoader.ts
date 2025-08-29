@@ -16,8 +16,8 @@ import type {Client} from './TimelineController.js';
 
 const UIStrings = {
   /**
-   *@description Text in Timeline Loader of the Performance panel
-   *@example {Unknown JSON format} PH1
+   * @description Text in Timeline Loader of the Performance panel
+   * @example {Unknown JSON format} PH1
    */
   malformedTimelineDataS: 'Malformed timeline data: {PH1}',
 } as const;

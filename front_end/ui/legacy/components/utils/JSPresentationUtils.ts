@@ -36,9 +36,10 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
-import * as Bindings from '../../../../models/bindings/bindings.js';
+import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -47,11 +48,11 @@ import {Events as LinkifierEvents, Linkifier} from './Linkifier.js';
 
 const UIStrings = {
   /**
-   *@description Text to stop preventing the debugger from stepping into library code
+   * @description Text to stop preventing the debugger from stepping into library code
    */
   removeFromIgnore: 'Remove from ignore list',
   /**
-   *@description Text for scripts that should not be stepped into when debugging
+   * @description Text for scripts that should not be stepped into when debugging
    */
   addToIgnore: 'Add script to ignore list',
   /**
@@ -63,7 +64,7 @@ const UIStrings = {
    */
   showLess: 'Show less',
   /**
-   *@description Text indicating that source url of a link is currently unknown
+   * @description Text indicating that source url of a link is currently unknown
    */
   unknownSource: 'unknown',
 } as const;
@@ -75,17 +76,18 @@ function populateContextMenu(link: Element, event: Event): void {
   event.consume(true);
   const uiLocation = Linkifier.uiLocation(link);
   if (uiLocation &&
-      Bindings.IgnoreListManager.IgnoreListManager.instance().canIgnoreListUISourceCode(uiLocation.uiSourceCode)) {
-    if (Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiLocation.uiSourceCode.url())) {
+      Workspace.IgnoreListManager.IgnoreListManager.instance().canIgnoreListUISourceCode(uiLocation.uiSourceCode)) {
+    if (Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiLocation.uiSourceCode.url())) {
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.removeFromIgnore),
-          () =>
-              Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiLocation.uiSourceCode),
+          () => Workspace.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(
+              uiLocation.uiSourceCode),
           {jslogContext: 'remove-from-ignore-list'});
     } else {
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.addToIgnore),
-          () => Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiLocation.uiSourceCode),
+          () =>
+              Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiLocation.uiSourceCode),
           {jslogContext: 'add-to-ignore-list'});
     }
   }
@@ -156,29 +158,6 @@ export function buildStackTraceRows(
   return stackTraceRows;
 }
 
-export function buildStackTracePreviewContents(
-    target: SDK.Target.Target|null, linkifier: Linkifier, options: Options = {
-      widthConstrained: false,
-      stackTrace: undefined,
-      tabStops: undefined,
-    }): {element: HTMLElement, links: HTMLElement[]} {
-  const {stackTrace, tabStops} = options;
-  const element = document.createElement('span');
-  element.classList.add('monospace');
-  element.classList.add('stack-preview-container');
-  element.classList.toggle('width-constrained', options.widthConstrained);
-  element.style.display = 'inline-block';
-  const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: jsUtilsStyles});
-  const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
-  contentElement.classList.toggle('width-constrained', options.widthConstrained);
-
-  const updateCallback = renderStackTraceTable.bind(null, contentElement, element);
-  const stackTraceRows = buildStackTraceRows(
-      stackTrace ?? {callFrames: []}, target, linkifier, tabStops, updateCallback, options.showColumnNumber);
-  const links = renderStackTraceTable(contentElement, element, stackTraceRows);
-  return {element, links};
-}
-
 function renderStackTraceTable(
     container: Element, parent: Element,
     stackTraceRows: Array<StackTraceRegularRow|StackTraceAsyncRow>): HTMLElement[] {
@@ -245,8 +224,8 @@ function renderStackTraceTable(
 }
 
 export interface Options {
-  stackTrace: Protocol.Runtime.StackTrace|undefined;
-  tabStops: boolean|undefined;
+  stackTrace?: Protocol.Runtime.StackTrace;
+  tabStops?: boolean;
   // Whether the width of stack trace preview
   // is constrained to its container or whether
   // it can grow the container.
@@ -261,4 +240,67 @@ export interface StackTraceRegularRow {
 
 export interface StackTraceAsyncRow {
   asyncDescription: string;
+}
+
+export class StackTracePreviewContent extends UI.Widget.Widget {
+  #target?: SDK.Target.Target;
+  #linkifier?: Linkifier;
+  #options: Options;
+  #links: HTMLElement[] = [];
+
+  readonly #table: HTMLElement;
+
+  constructor(element?: HTMLElement, target?: SDK.Target.Target, linkifier?: Linkifier, options?: Options) {
+    super(element, {useShadowDom: true});
+
+    this.#target = target;
+    this.#linkifier = linkifier;
+    this.#options = options || {
+      widthConstrained: false,
+    };
+
+    this.element.classList.add('monospace');
+    this.element.classList.add('stack-preview-container');
+    this.element.classList.toggle('width-constrained', this.#options.widthConstrained ?? false);
+    this.element.style.display = 'inline-block';
+
+    Platform.DOMUtilities.appendStyle(this.element.shadowRoot as ShadowRoot, jsUtilsStyles);
+
+    this.#table = this.contentElement.createChild('table', 'stack-preview-container');
+    this.#table.classList.toggle('width-constrained', this.#options.widthConstrained ?? false);
+
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    if (!this.#linkifier) {
+      return;
+    }
+
+    const {stackTrace, tabStops} = this.#options;
+    const updateCallback = renderStackTraceTable.bind(null, this.#table, this.element);
+    const stackTraceRows = buildStackTraceRows(
+        stackTrace ?? {callFrames: []}, this.#target ?? null, this.#linkifier, tabStops, updateCallback,
+        this.#options.showColumnNumber);
+    this.#links = renderStackTraceTable(this.#table, this.element, stackTraceRows);
+  }
+
+  get linkElements(): readonly HTMLElement[] {
+    return this.#links;
+  }
+
+  set target(target: SDK.Target.Target|undefined) {
+    this.#target = target;
+    this.requestUpdate();
+  }
+
+  set linkifier(linkifier: Linkifier) {
+    this.#linkifier = linkifier;
+    this.requestUpdate();
+  }
+
+  set options(options: Options) {
+    this.#options = options;
+    this.requestUpdate();
+  }
 }

@@ -26,27 +26,27 @@ const {html, Directives: {styleMap}} = Lit;
 
 const UIStrings = {
   /**
-   *@description Column header: Short URL of rule set.
+   * @description Column header: Short URL of rule set.
    */
   ruleSet: 'Rule set',
   /**
-   *@description Column header: Show how many preloads are associated if valid, error counts if invalid.
+   * @description Column header: Show how many preloads are associated if valid, error counts if invalid.
    */
   status: 'Status',
   /**
-   *@description button: Title of button to reveal the corresponding request of rule set in Elements panel
+   * @description button: Title of button to reveal the corresponding request of rule set in Elements panel
    */
   clickToOpenInElementsPanel: 'Click to open in Elements panel',
   /**
-   *@description button: Title of button to reveal the corresponding request of rule set in Network panel
+   * @description button: Title of button to reveal the corresponding request of rule set in Network panel
    */
   clickToOpenInNetworkPanel: 'Click to open in Network panel',
   /**
-   *@description Value of status, specifying rule set contains how many errors.
+   * @description Value of status, specifying rule set contains how many errors.
    */
   errors: '{errorCount, plural, =1 {# error} other {# errors}}',
   /**
-   *@description button: Title of button to reveal preloading attempts with filter by selected rule set
+   * @description button: Title of button to reveal preloading attempts with filter by selected rule set
    */
   buttonRevealPreloadsAssociatedWithRuleSet: 'Reveal speculative loads associated with this rule set',
 } as const;
@@ -163,11 +163,9 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
                                 .action(revealInElements ? 'reveal-in-elements' : 'reveal-in-network')
                                 .track({click: true})}
                           >
-                            <devtools-icon name=${revealInElements ? 'code-circle' : 'arrow-up-down-circle'}
+                            <devtools-icon name=${revealInElements ? 'code-circle' : 'arrow-up-down-circle'} class="medium"
                               style=${styleMap({
                                 color: 'var(--icon-link)',
-                                width: '16px',
-                                height: '16px',
                                 'vertical-align': 'sub',
                               })}
                             ></devtools-icon>
@@ -179,7 +177,9 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
                     ${ruleSet.errorType !== undefined ? html`
                       <span style=${styleMap({color: 'var(--sys-color-error)'})}>
                         ${i18nString(UIStrings.errors, {errorCount: 1})}
-                      </span>` : ''} ${ruleSet.errorType !== Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject ? html`
+                      </span>` : ''} ${ruleSet.errorType !== Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject &&
+                      ruleSet.errorType !== Protocol.Preload.RuleSetErrorType.InvalidRulesetLevelTag ?
+                      html`
                       <button class="link" role="link"
                         @click=${() => this.#revealAttemptViewWithFilter(ruleSet)}
                         title=${i18nString(UIStrings.buttonRevealPreloadsAssociatedWithRuleSet)}

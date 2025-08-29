@@ -77,4 +77,8 @@ export declare class CdpFrame extends Frame {
     exposeFunction(): never;
     frameElement(): Promise<ElementHandle<HTMLIFrameElement> | null>;
 }
+/**
+ * @internal
+ */
+export declare function referrerPolicyToProtocol(referrerPolicy: string): Protocol.Page.ReferrerPolicy;
 //# sourceMappingURL=Frame.d.ts.map

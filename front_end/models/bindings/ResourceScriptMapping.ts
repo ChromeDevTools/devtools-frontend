@@ -43,15 +43,15 @@ import {metadataForURL} from './ResourceUtils.js';
 
 const UIStrings = {
   /**
-   *@description Error text displayed in the console when editing a live script fails. LiveEdit is
+   * @description Error text displayed in the console when editing a live script fails. LiveEdit is
    *the name of the feature for editing code that is already running.
-   *@example {warning} PH1
+   * @example {warning} PH1
    */
   liveEditFailed: '`LiveEdit` failed: {PH1}',
   /**
-   *@description Error text displayed in the console when compiling a live-edited script fails. LiveEdit is
+   * @description Error text displayed in the console when compiling a live-edited script fails. LiveEdit is
    *the name of the feature for editing code that is already running.
-   *@example {connection lost} PH1
+   * @example {connection lost} PH1
    */
   liveEditCompileFailed: '`LiveEdit` compile failed: {PH1}',
 } as const;

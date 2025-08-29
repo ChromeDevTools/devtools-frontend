@@ -5,7 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 var $ArrayBuffer = GetIntrinsic('%ArrayBuffer%');
 var $DataView = GetIntrinsic('%DataView%', true);
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 // node <= 0.10, < 0.11.4 has a nonconfigurable own property instead of a prototype getter
 var $dataViewBuffer = callBound('DataView.prototype.buffer', true);

@@ -12,7 +12,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 /**
- * @fileoverview using private properties isn't a Closure violation in tests.
+ * @file using private properties isn't a Closure violation in tests.
  */
 self.ElementsTestRunner = self.ElementsTestRunner || {};
 
@@ -30,7 +30,7 @@ ElementsTestRunner.selectNodeWithId = function(idValue, callback) {
 
 /**
  * @param {!Object} node
- * @return {!Promise.<undefined>}
+ * @returns {!Promise.<undefined>}
  */
 ElementsTestRunner.selectNode = function(node) {
   return Common.Revealer.reveal(node);
@@ -105,7 +105,7 @@ ElementsTestRunner.findNode = async function(matchFunction, callback) {
 
 /**
  * @param {function(!Element): boolean} matchFunction
- * @param {!Promise}
+ * @returns {!Promise}
  */
 ElementsTestRunner.findNodePromise = function(matchFunction) {
   return new Promise(resolve => ElementsTestRunner.findNode(matchFunction, resolve));
@@ -174,7 +174,7 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
 /**
  * @param {!EventListeners.EventListenersView.EventListenersView} eventListenersView
  * @param {boolean=} force
- * @return {!Promise}
+ * @returns {!Promise}
  */
 ElementsTestRunner.expandAndDumpEventListenersPromise = function(eventListenersView, force) {
   return new Promise(resolve => ElementsTestRunner.expandAndDumpEventListeners(eventListenersView, resolve, force));
@@ -398,7 +398,7 @@ ElementsTestRunner.selectNodeAndWaitForStylesWithComputed = function(idValue, ca
 };
 
 ElementsTestRunner.firstElementsTreeOutline = function() {
-  return Elements.ElementsPanel.ElementsPanel.instance().treeOutlines.values().next().value;
+  return Elements.ElementsPanel.ElementsPanel.instance().getTreeOutlineForTesting();
 };
 
 ElementsTestRunner.filterMatchedStyles = function(text) {
@@ -599,7 +599,7 @@ ElementsTestRunner.showEventListenersWidget = function() {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  */
 ElementsTestRunner.showComputedStyles = function() {
   Elements.ElementsPanel.ElementsPanel.instance().sidebarPaneView.tabbedPane().selectTab('computed', true);
@@ -831,62 +831,6 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
   const treeOutline = ElementsTestRunner.firstElementsTreeOutline();
   treeOutline.runPendingUpdates();
   print((rootNode ? treeOutline.findTreeElement(rootNode) : treeOutline.rootElement()), '', depth || 10000);
-};
-
-ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth) {
-  let hasHighlights = false;
-  TestRunner.addSniffer(Elements.ElementsTreeOutline.ElementsTreeOutline.prototype, 'updateModifiedNodes', didUpdate);
-
-  function didUpdate() {
-    const treeOutline = ElementsTestRunner.firstElementsTreeOutline();
-    print((rootNode ? treeOutline.findTreeElement(rootNode) : treeOutline.rootElement()), '', depth || 10000);
-
-    if (!hasHighlights) {
-      TestRunner.addResult('<No highlights>');
-    }
-
-    if (callback) {
-      callback();
-    }
-  }
-
-  function print(treeItem, prefix, depth) {
-    if (!treeItem.root) {
-      const elementXPath = Elements.DOMPath.xPath(treeItem.node(), true);
-      const highlightedElements = treeItem.listItemElement.querySelectorAll('.dom-update-highlight');
-
-      for (let i = 0; i < highlightedElements.length; ++i) {
-        const element = highlightedElements[i];
-        const classList = element.classList;
-        let xpath = elementXPath;
-
-        if (classList.contains('webkit-html-attribute-name')) {
-          xpath += '/@' + element.textContent + ' (empty)';
-        } else if (classList.contains('webkit-html-attribute-value')) {
-          const name = element.parentElement.querySelector('.webkit-html-attribute-name').textContent;
-          xpath += '/@' + name + ' ' + element.textContent;
-        } else if (classList.contains('webkit-html-text-node')) {
-          xpath += '/text() "' + element.textContent + '"';
-        }
-
-        TestRunner.addResult(prefix + xpath);
-        hasHighlights = true;
-      }
-    }
-
-    if (!treeItem.expanded) {
-      return;
-    }
-
-    const children = treeItem.children();
-    const newPrefix = (treeItem.root ? '' : prefix + '    ');
-
-    for (let i = 0; depth && children && i < children.length; ++i) {
-      if (!children[i].isClosingTag || !children[i].isClosingTag()) {
-        print(children[i], newPrefix, depth - 1);
-      }
-    }
-  }
 };
 
 ElementsTestRunner.expandElementsTree = function(callback) {

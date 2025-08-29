@@ -30,9 +30,9 @@ const yargsObject = yargs(hideBin(process.argv))
                         .parseSync();
 
 /**
- * @param {string} outputDirectory
- * @param {string} locale
- * @param {Record<string, CtcMessage>} strings
+ * @param outputDirectory
+ * @param locale
+ * @param strings
  */
 function convertCtcToLhLAndSave(outputDirectory, locale, strings) {
   const outputPath = path.join(outputDirectory, `${locale}.json`);

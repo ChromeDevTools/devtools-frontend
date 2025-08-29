@@ -75,9 +75,9 @@ exports.default = (0, util_1.createRule)({
                     const mergedWithClassDeclaration = scope.set
                         .get(node.id.name)
                         ?.defs.some(def => def.node.type === utils_1.AST_NODE_TYPES.ClassDeclaration);
-                    const isInAmbientDeclaration = !!((0, util_1.isDefinitionFile)(context.filename) &&
+                    const isInAmbientDeclaration = (0, util_1.isDefinitionFile)(context.filename) &&
                         scope.type === scope_manager_1.ScopeType.tsModule &&
-                        scope.block.declare);
+                        scope.block.declare;
                     const useAutoFix = !(isInAmbientDeclaration || mergedWithClassDeclaration);
                     context.report({
                         node: node.id,

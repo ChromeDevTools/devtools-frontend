@@ -51,7 +51,7 @@ const util_js_1 = require("../common/util.js");
  * @internal
  */
 async function _connectToBiDiBrowser(connectionTransport, url, options) {
-    const { acceptInsecureCerts = false, defaultViewport = util_js_1.DEFAULT_VIEWPORT } = options;
+    const { acceptInsecureCerts = false, networkEnabled = true, defaultViewport = util_js_1.DEFAULT_VIEWPORT, } = options;
     const { bidiConnection, cdpConnection, closeCallback } = await getBiDiConnection(connectionTransport, url, options);
     const BiDi = await Promise.resolve().then(() => __importStar(require(/* webpackIgnore: true */ './bidi.js')));
     const bidiBrowser = await BiDi.BidiBrowser.create({
@@ -61,6 +61,7 @@ async function _connectToBiDiBrowser(connectionTransport, url, options) {
         process: undefined,
         defaultViewport: defaultViewport,
         acceptInsecureCerts: acceptInsecureCerts,
+        networkEnabled,
         capabilities: options.capabilities,
     });
     return bidiBrowser;

@@ -10,6 +10,7 @@ test('defineProperty: supported', { skip: !$defineProperty }, function (t) {
 
 	t.equal(typeof $defineProperty, 'function', 'defineProperty is supported');
 	if ($defineProperty && gOPD) { // this `if` check is just to shut TS up
+		/** @type {{ a: number, b?: number, c?: number }} */
 		var o = { a: 1 };
 
 		$defineProperty(o, 'b', { enumerable: true, value: 2 });

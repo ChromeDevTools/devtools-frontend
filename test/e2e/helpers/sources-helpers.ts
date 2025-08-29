@@ -12,22 +12,13 @@ import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js'
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   $$,
-  assertNotNullOrUndefined,
   click,
   clickMoreTabsButton,
-  drainFrontendTaskQueue,
   getBrowserAndPages,
-  getPendingEvents,
   platform,
   pressKey,
-  setCheckBox,
-  step,
   typeText,
   waitFor,
-  waitForAria,
-  waitForFunction,
-  waitForNone,
-  waitForVisible,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -102,8 +93,8 @@ export async function waitForSourcesPanel(devToolsPage: DevToolsPage = getBrowse
 export async function openSourcesPanel(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // Locate the button for switching to the sources tab.
   await devToolsPage.click('#tab-sources');
-
   await waitForSourcesPanel(devToolsPage);
+  return await devToolsPage.waitForAria('sources');
 }
 
 export async function openFileInSourcesPanel(
@@ -169,11 +160,11 @@ export async function openWorkspaceSubPane() {
   await waitFor('[aria-label="Workspace panel"]');
 }
 
-export async function openOverridesSubPane() {
-  const root = await waitFor('.navigator-tabbed-pane');
-  await clickMoreTabsButton(root);
-  await click('[aria-label="Overrides"]');
-  await waitFor('[aria-label="Overrides panel"]');
+export async function openOverridesSubPane(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const root = await devToolsPage.waitFor('.navigator-tabbed-pane');
+  await clickMoreTabsButton(root, devToolsPage);
+  await devToolsPage.click('[aria-label="Overrides"]');
+  await devToolsPage.waitFor('[aria-label="Overrides panel"]');
 }
 
 export async function openFileInEditor(
@@ -197,13 +188,13 @@ export async function getSelectedSource(): Promise<string> {
   return await (sourceTabs.evaluate(node => node.getAttribute('aria-label')) as Promise<string>);
 }
 
-export async function getBreakpointHitLocation() {
-  const breakpointHitHandle = await waitFor('.breakpoint-item.hit');
-  const locationHandle = await waitFor('.location', breakpointHitHandle);
+export async function getBreakpointHitLocation(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const breakpointHitHandle = await devToolsPage.waitFor('.breakpoint-item.hit');
+  const locationHandle = await devToolsPage.waitFor('.location', breakpointHitHandle);
   const locationText = await locationHandle.evaluate(location => location.textContent);
 
   const groupHandle = await breakpointHitHandle.evaluateHandle(x => x.parentElement!);
-  const groupHeaderTitleHandle = await waitFor('.group-header-title', groupHandle);
+  const groupHeaderTitleHandle = await devToolsPage.waitFor('.group-header-title', groupHandle);
   const groupHeaderTitle = await groupHeaderTitleHandle?.evaluate(header => header.textContent);
 
   return `${groupHeaderTitle}:${locationText}`;
@@ -231,19 +222,19 @@ export async function waitForHighlightedLine(
   });
 }
 
-export async function getToolbarText() {
-  const toolbar = await waitFor('.sources-toolbar');
+export async function getToolbarText(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const toolbar = await devToolsPage.waitFor('.sources-toolbar');
   if (!toolbar) {
     return [];
   }
-  const textNodes = await $$('.toolbar-text', toolbar);
+  const textNodes = await devToolsPage.$$('.toolbar-text', toolbar);
   return await Promise.all(textNodes.map(node => node.evaluate(node => node.textContent, node)));
 }
 
 export async function addBreakpointForLine(
     index: number|string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const breakpointLine = await getLineNumberElement(index, devToolsPage);
-  assertNotNullOrUndefined(breakpointLine);
+  assert.isOk(breakpointLine);
 
   await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
   await devToolsPage.clickElement(breakpointLine);
@@ -254,7 +245,7 @@ export async function addBreakpointForLine(
 export async function removeBreakpointForLine(
     index: number|string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const breakpointLine = await getLineNumberElement(index, devToolsPage);
-  assertNotNullOrUndefined(breakpointLine);
+  assert.isOk(breakpointLine);
 
   await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
   await devToolsPage.clickElement(breakpointLine);
@@ -264,7 +255,7 @@ export async function removeBreakpointForLine(
 export async function addLogpointForLine(
     index: number, condition: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const breakpointLine = await getLineNumberElement(index, devToolsPage);
-  assertNotNullOrUndefined(breakpointLine);
+  assert.isOk(breakpointLine);
 
   await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
   await devToolsPage.clickElement(breakpointLine, {clickOptions: {button: 'right'}});
@@ -323,14 +314,13 @@ export async function disableInlineBreakpointForLine(
   }
 }
 
-export async function checkBreakpointDidNotActivate() {
-  await step('check that the script did not pause', async () => {
-    // TODO(almuthanna): make sure this check happens at a point where the pause indicator appears if it was active
+export async function checkBreakpointDidNotActivate(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  // TODO(almuthanna): make sure this check happens at a point where the pause indicator appears if it was active
 
-    // TODO: it should actually wait for rendering to finish.
-    await drainFrontendTaskQueue();
-    await waitForNone(PAUSE_INDICATOR_SELECTOR);
-  });
+  // TODO: it should actually wait for rendering to finish.
+  await devToolsPage.drainTaskQueue();
+  await devToolsPage.waitForNone(PAUSE_INDICATOR_SELECTOR);
 }
 
 export async function getBreakpointDecorators(
@@ -341,10 +331,10 @@ export async function getBreakpointDecorators(
       breakpointDecorators.map(breakpointDecorator => breakpointDecorator.evaluate(n => Number(n.textContent))));
 }
 
-export async function getNonBreakableLines() {
+export async function getNonBreakableLines(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = '.cm-nonBreakableLine';
-  await waitFor(selector);
-  const unbreakableLines = await $$(selector);
+  await devToolsPage.waitFor(selector);
+  const unbreakableLines = await devToolsPage.$$(selector);
   return await Promise.all(
       unbreakableLines.map(unbreakableLine => unbreakableLine.evaluate(n => Number(n.textContent))));
 }
@@ -365,10 +355,10 @@ export async function getCallFrameNames(devToolsPage: DevToolsPage = getBrowserA
   return results;
 }
 
-export async function getCallFrameLocations() {
+export async function getCallFrameLocations(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = '.call-frame-item:not(.hidden) .call-frame-location';
-  await waitFor(selector);
-  const items = await $$(selector);
+  await devToolsPage.waitFor(selector);
+  const items = await devToolsPage.$$(selector);
   const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
   const results = [];
   for (const promise of promises) {
@@ -377,10 +367,11 @@ export async function getCallFrameLocations() {
   return results;
 }
 
-export async function switchToCallFrame(index: number) {
+export async function switchToCallFrame(
+    index: number, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = `.call-frame-item[aria-posinset="${index}"]`;
-  await click(selector);
-  await waitFor(selector + '[aria-selected="true"]');
+  await devToolsPage.click(selector);
+  await devToolsPage.waitFor(selector + '[aria-selected="true"]');
 }
 
 export async function retrieveTopCallFrameScriptLocation(
@@ -429,20 +420,21 @@ export async function waitForStackTopMatch(matcher: RegExp, devToolsPage = getBr
   return stepLocation;
 }
 
-export async function setEventListenerBreakpoint(groupName: string, eventName: string) {
-  const {frontend} = getBrowserAndPages();
-  const eventListenerBreakpointsSection = await waitForAria('Event Listener Breakpoints');
+export async function setEventListenerBreakpoint(
+    groupName: string, eventName: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const eventListenerBreakpointsSection = await devToolsPage.waitForAria('Event Listener Breakpoints');
   const expanded = await eventListenerBreakpointsSection.evaluate(el => el.getAttribute('aria-expanded'));
   if (expanded !== 'true') {
-    await click('[aria-label="Event Listener Breakpoints"]');
-    await waitFor('[aria-label="Event Listener Breakpoints"][aria-expanded="true"]');
+    await devToolsPage.click('[aria-label="Event Listener Breakpoints"]');
+    await devToolsPage.waitFor('[aria-label="Event Listener Breakpoints"][aria-expanded="true"]');
   }
 
   const eventSelector = `input[type="checkbox"][title="${eventName}"]`;
   const groupSelector = `input[type="checkbox"][title="${groupName}"]`;
-  const groupCheckbox = await waitFor(groupSelector);
-  await waitForVisible(groupSelector);
-  const eventCheckbox = await waitFor(eventSelector);
+  const groupCheckbox = await devToolsPage.waitFor(groupSelector);
+  await devToolsPage.scrollElementIntoView(groupSelector);
+  await devToolsPage.waitForVisible(groupSelector);
+  const eventCheckbox = await devToolsPage.waitFor(eventSelector);
   if (!(await eventCheckbox.evaluate(x => x.checkVisibility()))) {
     // Unfortunately the shadow DOM makes it hard to find the expander element
     // we are attempting to click on, so we click to the left of the checkbox
@@ -452,11 +444,11 @@ export async function setEventListenerBreakpoint(groupName: string, eventName: s
       return {left, top, width, height};
     });
 
-    await frontend.mouse.click(rectData.left - 10, rectData.top + rectData.height * .5);
-    await waitForVisible(eventSelector);
+    await devToolsPage.page.mouse.click(rectData.left - 10, rectData.top + rectData.height * .5);
+    await devToolsPage.waitForVisible(eventSelector);
   }
 
-  await setCheckBox(eventSelector, true);
+  await devToolsPage.setCheckBox(eventSelector, true);
 }
 
 declare global {
@@ -498,14 +490,14 @@ export async function waitForSourceFiles<T>(
   await devToolsPage.waitForFunction(async () => {
     const files = await devToolsPage.evaluate(
         eventHandlerId => window.__sourceFileEvents.get(eventHandlerId)?.files, eventHandlerId);
-    assertNotNullOrUndefined(files);
+    assert.isOk(files);
     return await waitCondition(files);
   });
 
   await devToolsPage.evaluate((eventName, eventHandlerId) => {
     const handler = window.__sourceFileEvents.get(eventHandlerId);
     if (!handler) {
-      throw new Error('handler unexpectandly unregistered');
+      throw new Error('handler unexpectedly unregistered');
     }
     window.__sourceFileEvents.delete(eventHandlerId);
     window.removeEventListener(eventName, handler.handler);
@@ -595,58 +587,57 @@ export async function expandFileTree(
   return await devToolsPage.waitFor(selectors.fileSelector);
 }
 
-export async function readSourcesTreeView(): Promise<string[]> {
-  const items = await $$('.navigator-folder-tree-item,.navigator-file-tree-item');
+export async function readSourcesTreeView(devToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<string[]> {
+  const items = await devToolsPage.$$('.navigator-folder-tree-item,.navigator-file-tree-item');
   const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
   const results = await Promise.all(promises);
   return results.map(item => item.replace(/localhost:[0-9]+/, 'localhost:XXXX'));
 }
 
-export async function readIgnoreListedSources(): Promise<string[]> {
-  const items = await $$('.navigator-folder-tree-item.is-ignore-listed,.navigator-file-tree-item.is-ignore-listed');
+export async function readIgnoreListedSources(devToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<string[]> {
+  const items =
+      await devToolsPage.$$('.navigator-folder-tree-item.is-ignore-listed,.navigator-file-tree-item.is-ignore-listed');
   const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
   const results = await Promise.all(promises);
   return results.map(item => item.replace(/localhost:[0-9]+/, 'localhost:XXXX'));
 }
 
-async function hasPausedEvents(frontend: puppeteer.Page): Promise<boolean> {
-  const events = await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
+async function hasPausedEvents(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<boolean> {
+  const events = await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
   return Boolean(events?.length);
 }
 
-export async function stepThroughTheCode() {
-  const {frontend} = getBrowserAndPages();
-  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
-  await frontend.keyboard.press('F9');
-  await waitForFunction(() => hasPausedEvents(frontend));
-  await waitFor(PAUSE_INDICATOR_SELECTOR);
+export async function stepThroughTheCode(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
+  await devToolsPage.page.keyboard.press('F9');
+  await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
+  await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
-export async function stepIn() {
-  const {frontend} = getBrowserAndPages();
-  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
-  await frontend.keyboard.press('F11');
-  await waitForFunction(() => hasPausedEvents(frontend));
-  await waitFor(PAUSE_INDICATOR_SELECTOR);
+export async function stepIn(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
+  await devToolsPage.page.keyboard.press('F11');
+  await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
+  await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
-export async function stepOver() {
-  const {frontend} = getBrowserAndPages();
-  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
-  await frontend.keyboard.press('F10');
-  await waitForFunction(() => hasPausedEvents(frontend));
-  await waitFor(PAUSE_INDICATOR_SELECTOR);
+export async function stepOver(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
+  await devToolsPage.page.keyboard.press('F10');
+  await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
+  await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
-export async function stepOut() {
-  const {frontend} = getBrowserAndPages();
-  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
-  await frontend.keyboard.down('Shift');
-  await frontend.keyboard.press('F11');
-  await frontend.keyboard.up('Shift');
-  await waitForFunction(() => hasPausedEvents(frontend));
+export async function stepOut(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
+  await devToolsPage.page.keyboard.down('Shift');
+  await devToolsPage.page.keyboard.press('F11');
+  await devToolsPage.page.keyboard.up('Shift');
+  await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
 
-  await waitFor(PAUSE_INDICATOR_SELECTOR);
+  await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
 export async function openNestedWorkerFile(
@@ -657,10 +648,12 @@ export async function openNestedWorkerFile(
   await devToolsPage.click(selectors.fileSelector);
 }
 
-export async function inspectMemory(variableName: string) {
+export async function inspectMemory(
+    variableName: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await openSoftContextMenuAndClickOnItem(
       `[data-object-property-name-for-test="${variableName}"]`,
       'Open in Memory inspector panel',
+      devToolsPage,
   );
 }
 
@@ -702,9 +695,7 @@ export async function getValuesForScope(
 
 export async function getPausedMessages(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const messageElement = await devToolsPage.page.waitForSelector('.paused-message');
-  if (!messageElement) {
-    assert.fail('getPausedMessages: did not find .paused-message element.');
-  }
+  assert.isOk(messageElement, 'getPausedMessages: did not find .paused-message element.');
   const statusMain = await devToolsPage.waitFor('.status-main', messageElement);
   const statusSub = await devToolsPage.waitFor('.status-sub', messageElement);
   return {
@@ -751,11 +742,10 @@ export async function addSelectedTextToWatches(devToolsPage = getBrowserAndPages
   await devToolsPage.pressKey('A', {control: true, shift: true});
 }
 
-export async function enableLocalOverrides() {
-  await clickMoreTabsButton();
-  await click(OVERRIDES_TAB_SELECTOR);
-  await click(ENABLE_OVERRIDES_SELECTOR);
-  await waitFor(CLEAR_CONFIGURATION_SELECTOR);
+export async function enableLocalOverrides(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await openOverridesSubPane(devToolsPage);
+  await devToolsPage.click(ENABLE_OVERRIDES_SELECTOR);
+  await devToolsPage.waitFor(CLEAR_CONFIGURATION_SELECTOR);
 }
 
 export interface LabelMapping {
@@ -806,7 +796,7 @@ export class WasmLocationLabels {
       const labelLine = m.originalLine;
       const labelColumn = m.originalColumn;
       const sourceLine = labels.get(`${m.source}:${labelLine}:${labelColumn}`);
-      assertNotNullOrUndefined(sourceLine);
+      assert.isOk(sourceLine);
       entry.push({
         label: m.source,
         moduleOffset: m.generatedColumn,
@@ -824,7 +814,7 @@ export class WasmLocationLabels {
     const pausedLine = this.#mappings.get(label)!.find(
         line => pauseLocation === `${path.basename(this.#wasm)}:0x${line.moduleOffset.toString(16)}` ||
             pauseLocation === `${path.basename(this.#source)}:${line.sourceLine}`);
-    assertNotNullOrUndefined(pausedLine);
+    assert.isOk(pausedLine);
     return pausedLine;
   }
 

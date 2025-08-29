@@ -40,48 +40,28 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 80,
-  header: 'What\'s new in DevTools 139',
+  version: 81,
+  header: 'What\'s new in DevTools 140',
   markdownLinks: [
     {
-      key: 'reliable-devtools',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-139/#reliable-devtools',
-    },
-    {
-      key: 'multimodal-input',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-139/#multimodal-input',
-    },
-    {
-      key: 'from-elements',
-      link: 'https://developer.chrome.com/docs/devtools/ai-assistance/styling#from_the_elements_panel',
-    },
-    {
-      key: 'element-context',
-      link: 'https://developer.chrome.com/docs/devtools/ai-assistance/styling#conversation_context',
-    },
-    {
-      key: 'devtools-io',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137',
-    },
-    {
-      key: 'ai-styling',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137#ai-styling',
-    },
-    {
       key: 'ai-insights',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137#ai-insights',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-140/#ai-insights',
     },
     {
-      key: 'ai-annotations',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137#ai-annotations',
+      key: 'save-data',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-140/#save-data',
+    },
+    {
+      key: 'debug-css',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-138#debug-css-values',
     },
   ],
   videoLinks: [
     {
-      description: 'See past highlights from Chrome 138',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-138' as Platform.DevToolsPath.UrlString,
+      description: 'See past highlights from Chrome 139',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-139' as Platform.DevToolsPath.UrlString,
       type: VideoType.WHATS_NEW,
     },
   ],
-  link: 'https://developer.chrome.com/blog/new-in-devtools-139/',
+  link: 'https://developer.chrome.com/blog/new-in-devtools-140/',
 };

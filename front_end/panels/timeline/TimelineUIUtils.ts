@@ -54,7 +54,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {getDurationString} from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
 import * as Extensions from './extensions/extensions.js';
-import {Tracker} from './FreshRecording.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {targetForEvent} from './TargetForEvent.js';
 import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
@@ -64,58 +63,58 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text that only contain a placeholder
-   *@example {100ms (at 200ms)} PH1
+   * @description Text that only contain a placeholder
+   * @example {100ms (at 200ms)} PH1
    */
   emptyPlaceholder: '{PH1}',  // eslint-disable-line rulesdir/l10n-no-locked-or-placeholder-only-phrase
   /**
-   *@description Text for timestamps of items
+   * @description Text for timestamps of items
    */
   timestamp: 'Timestamp',
   /**
-   *@description Text shown next to the interaction event's ID in the detail view.
+   * @description Text shown next to the interaction event's ID in the detail view.
    */
   interactionID: 'ID',
   /**
-   *@description Text shown next to the interaction event's input delay time in the detail view.
+   * @description Text shown next to the interaction event's input delay time in the detail view.
    */
   inputDelay: 'Input delay',
   /**
-   *@description Text shown next to the interaction event's thread processing duration in the detail view.
+   * @description Text shown next to the interaction event's thread processing duration in the detail view.
    */
   processingDuration: 'Processing duration',
   /**
-   *@description Text shown next to the interaction event's presentation delay time in the detail view.
+   * @description Text shown next to the interaction event's presentation delay time in the detail view.
    */
   presentationDelay: 'Presentation delay',
   /**
-   *@description Text shown when the user has selected an event that represents script compiliation.
+   * @description Text shown when the user has selected an event that represents script compiliation.
    */
   compile: 'Compile',
   /**
-   *@description Text shown when the user selects an event that represents script parsing.
+   * @description Text shown when the user selects an event that represents script parsing.
    */
   parse: 'Parse',
   /**
-   *@description Text with two placeholders separated by a colon
-   *@example {Node removed} PH1
-   *@example {div#id1} PH2
+   * @description Text with two placeholders separated by a colon
+   * @example {Node removed} PH1
+   * @example {div#id1} PH2
    */
   sS: '{PH1}: {PH2}',
   /**
-   *@description Text that is usually a hyperlink to more documentation
+   * @description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
   /**
-   *@description Text referring to the status of the browser's compilation cache.
+   * @description Text referring to the status of the browser's compilation cache.
    */
   compilationCacheStatus: 'Compilation cache status',
   /**
-   *@description Text referring to the size of the browser's compiliation cache.
+   * @description Text referring to the size of the browser's compiliation cache.
    */
   compilationCacheSize: 'Compilation cache size',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel. "Compilation
+   * @description Text in Timeline UIUtils of the Performance panel. "Compilation
    * cache" refers to the code cache described at
    * https://v8.dev/blog/code-caching-for-devs . This label is followed by the
    * type of code cache data used, either "normal" or "full" as described in the
@@ -123,203 +122,203 @@ const UIStrings = {
    */
   compilationCacheKind: 'Compilation cache kind',
   /**
-   *@description Text used to inform the user that the script they are looking
+   * @description Text used to inform the user that the script they are looking
    *             at was loaded from the browser's cache.
    */
   scriptLoadedFromCache: 'script loaded from cache',
   /**
-   *@description Text to inform the user that the script they are looking at
+   * @description Text to inform the user that the script they are looking at
    *             was unable to be loaded from the browser's cache.
    */
   failedToLoadScriptFromCache: 'failed to load script from cache',
   /**
-   *@description Text to inform the user that the script they are looking at was not eligible to be loaded from the browser's cache.
+   * @description Text to inform the user that the script they are looking at was not eligible to be loaded from the browser's cache.
    */
   scriptNotEligibleToBeLoadedFromCache: 'script not eligible',
   /**
-   *@description Label in the summary view in the Performance panel for a number which indicates how much managed memory has been reclaimed by performing Garbage Collection
+   * @description Label in the summary view in the Performance panel for a number which indicates how much managed memory has been reclaimed by performing Garbage Collection
    */
   collected: 'Collected',
   /**
-   *@description Text for a programming function
+   * @description Text for a programming function
    */
   function: 'Function',
   /**
-   *@description Text for referring to the ID of a timer.
+   * @description Text for referring to the ID of a timer.
    */
   timerId: 'Timer ID',
   /**
-   *@description Text for referring to a timer that has timed-out and therefore is being removed.
+   * @description Text for referring to a timer that has timed-out and therefore is being removed.
    */
   timeout: 'Timeout',
   /**
-   *@description Text used to indicate that a timer is repeating (e.g. every X seconds) rather than a one off.
+   * @description Text used to indicate that a timer is repeating (e.g. every X seconds) rather than a one off.
    */
   repeats: 'Repeats',
   /**
-   *@description Text for referring to the ID of a callback function installed by an event.
+   * @description Text for referring to the ID of a callback function installed by an event.
    */
   callbackId: 'Callback ID',
   /**
-   *@description Text for a module, the programming concept
+   * @description Text for a module, the programming concept
    */
   module: 'Module',
   /**
-   *@description Label for a group of JavaScript files
+   * @description Label for a group of JavaScript files
    */
   script: 'Script',
   /**
-   *@description Text used to tell a user that a compilation trace event was streamed.
+   * @description Text used to tell a user that a compilation trace event was streamed.
    */
   streamed: 'Streamed',
   /**
-   *@description Text to indicate if a compilation event was eager.
+   * @description Text to indicate if a compilation event was eager.
    */
   eagerCompile: 'Compiling all functions eagerly',
   /**
-   *@description Text to refer to the URL associated with a given event.
+   * @description Text to refer to the URL associated with a given event.
    */
   url: 'Url',
   /**
-   *@description Text to indicate to the user the size of the cache (as a filesize - e.g. 5mb).
+   * @description Text to indicate to the user the size of the cache (as a filesize - e.g. 5mb).
    */
   producedCacheSize: 'Produced cache size',
   /**
-   *@description Text to indicate to the user the amount of the cache (as a filesize - e.g. 5mb) that has been used.
+   * @description Text to indicate to the user the amount of the cache (as a filesize - e.g. 5mb) that has been used.
    */
   consumedCacheSize: 'Consumed cache size',
   /**
-   *@description Related node label in Timeline UIUtils of the Performance panel
+   * @description Related node label in Timeline UIUtils of the Performance panel
    */
   layerRoot: 'Layer root',
   /**
-   *@description Related node label in Timeline UIUtils of the Performance panel
+   * @description Related node label in Timeline UIUtils of the Performance panel
    */
   ownerElement: 'Owner element',
   /**
-   *@description Text used to show the user the URL of the image they are viewing.
+   * @description Text used to show the user the URL of the image they are viewing.
    */
   imageUrl: 'Image URL',
   /**
-   *@description Text used to show the user that the URL they are viewing is loading a CSS stylesheet.
+   * @description Text used to show the user that the URL they are viewing is loading a CSS stylesheet.
    */
   stylesheetUrl: 'Stylesheet URL',
   /**
-   *@description Text used next to a number to show the user how many elements were affected.
+   * @description Text used next to a number to show the user how many elements were affected.
    */
   elementsAffected: 'Elements affected',
   /**
-   *@description Text used next to a number to show the user how many nodes required the browser to update and re-layout the page.
+   * @description Text used next to a number to show the user how many nodes required the browser to update and re-layout the page.
    */
   nodesThatNeedLayout: 'Nodes that need layout',
   /**
-   *@description Text used to show the amount in a subset - e.g. "2 of 10".
-   *@example {2} PH1
-   *@example {10} PH2
+   * @description Text used to show the amount in a subset - e.g. "2 of 10".
+   * @example {2} PH1
+   * @example {10} PH2
    */
   sOfS: '{PH1} of {PH2}',
   /**
-   *@description Related node label in Timeline UIUtils of the Performance panel
+   * @description Related node label in Timeline UIUtils of the Performance panel
    */
   layoutRoot: 'Layout root',
   /**
-   *@description Text used when viewing an event that can have a custom message attached.
+   * @description Text used when viewing an event that can have a custom message attached.
    */
   message: 'Message',
   /**
-   *@description Text used to tell the user they are viewing an event that has a function embedded in it, which is referred to as the "callback function".
+   * @description Text used to tell the user they are viewing an event that has a function embedded in it, which is referred to as the "callback function".
    */
   callbackFunction: 'Callback function',
   /**
-   *@description Text used to show the relevant range of a file - e.g. "lines 2-10".
+   * @description Text used to show the relevant range of a file - e.g. "lines 2-10".
    */
   range: 'Range',
   /**
-   *@description Text used to refer to the amount of time some event or code was given to complete within.
+   * @description Text used to refer to the amount of time some event or code was given to complete within.
    */
   allottedTime: 'Allotted time',
   /**
-   *@description Text used to tell a user that a particular event or function was automatically run by a timeout.
+   * @description Text used to tell a user that a particular event or function was automatically run by a timeout.
    */
   invokedByTimeout: 'Invoked by timeout',
   /**
-   *@description Text that refers to some types
+   * @description Text that refers to some types
    */
   type: 'Type',
   /**
-   *@description Text for the size of something
+   * @description Text for the size of something
    */
   size: 'Size',
   /**
-   *@description Text for the details of something
+   * @description Text for the details of something
    */
   details: 'Details',
   /**
-   *@description Text to indicate an item is a warning
+   * @description Text to indicate an item is a warning
    */
   warning: 'Warning',
   /**
-   *@description Text that indicates a particular HTML element or node is related to what the user is viewing.
+   * @description Text that indicates a particular HTML element or node is related to what the user is viewing.
    */
   relatedNode: 'Related node',
   /**
-   *@description Text for previewing items
+   * @description Text for previewing items
    */
   preview: 'Preview',
   /**
-   *@description Text used to refer to the total time summed up across multiple events.
+   * @description Text used to refer to the total time summed up across multiple events.
    */
   aggregatedTime: 'Aggregated time',
   /**
-   *@description Text for the duration of something
+   * @description Text for the duration of something
    */
   duration: 'Duration',
   /**
-   *@description Text for the stack trace of the initiator of something. The Initiator is the event or factor that directly triggered or precipitated a subsequent action.
+   * @description Text for the stack trace of the initiator of something. The Initiator is the event or factor that directly triggered or precipitated a subsequent action.
    */
   initiatorStackTrace: 'Initiator stack trace',
   /**
-   *@description Text for the event initiated by another one
+   * @description Text for the event initiated by another one
    */
   initiatedBy: 'Initiated by',
   /**
-   *@description Text for the event that is an initiator for another one
+   * @description Text for the event that is an initiator for another one
    */
   initiatorFor: 'Initiator for',
   /**
-   *@description Text for the underlying data behing a specific flamechart selection. Trace events are the browser instrumentation that are emitted as JSON objects.
+   * @description Text for the underlying data behing a specific flamechart selection. Trace events are the browser instrumentation that are emitted as JSON objects.
    */
   traceEvent: 'Trace event',
   /**
-   *@description Call site stack label in Timeline UIUtils of the Performance panel
+   * @description Call site stack label in Timeline UIUtils of the Performance panel
    */
   timerInstalled: 'Timer installed',
   /**
-   *@description Call site stack label in Timeline UIUtils of the Performance panel
+   * @description Call site stack label in Timeline UIUtils of the Performance panel
    */
   animationFrameRequested: 'Animation frame requested',
   /**
-   *@description Call site stack label in Timeline UIUtils of the Performance panel
+   * @description Call site stack label in Timeline UIUtils of the Performance panel
    */
   idleCallbackRequested: 'Idle callback requested',
   /**
-   *@description Stack label in Timeline UIUtils of the Performance panel
+   * @description Stack label in Timeline UIUtils of the Performance panel
    */
   recalculationForced: 'Recalculation forced',
   /**
-   *@description Call site stack label in Timeline UIUtils of the Performance panel
+   * @description Call site stack label in Timeline UIUtils of the Performance panel
    */
   firstLayoutInvalidation: 'First layout invalidation',
   /**
-   *@description Stack label in Timeline UIUtils of the Performance panel
+   * @description Stack label in Timeline UIUtils of the Performance panel
    */
   layoutForced: 'Layout forced',
   /**
-   *@description Label in front of CSS property (eg `opacity`) being animated or a CSS animation name (eg `layer-4-fade-in-out`)
+   * @description Label in front of CSS property (eg `opacity`) being animated or a CSS animation name (eg `layer-4-fade-in-out`)
    */
   animating: 'Animating',
   /**
-   *@description Label in front of reasons why a CSS animation wasn't composited (aka hardware accelerated)
+   * @description Label in front of reasons why a CSS animation wasn't composited (aka hardware accelerated)
    */
   compositingFailed: 'Compositing failed',
   /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to accelerated animations being disabled. Shown in a table with a list of other potential failure reasons.  */
@@ -369,11 +368,11 @@ const UIStrings = {
   compositingFailedUnknownReason: 'Unknown Reason',
 
   /**
-   *@description Text for the execution stack trace
+   * @description Text for the execution stack trace
    */
   stackTrace: 'Stack trace',
   /**
-   *@description Text used to show any invalidations for a particular event that caused the browser to have to do more work to update the page.
+   * @description Text used to show any invalidations for a particular event that caused the browser to have to do more work to update the page.
    * @example {2} PH1
    */
   invalidations: 'Invalidations ({PH1} total)',
@@ -384,59 +383,59 @@ const UIStrings = {
    */
   pendingFor: 'Pending for',
   /**
-   *@description Noun label for a stack trace which indicates the first time some condition was invalidated.
+   * @description Noun label for a stack trace which indicates the first time some condition was invalidated.
    */
   firstInvalidated: 'First invalidated',
   /**
-   *@description Title of the paint profiler, old name of the performance pane
+   * @description Title of the paint profiler, old name of the performance pane
    */
   paintProfiler: 'Paint profiler',
   /**
-   *@description Text in Timeline Flame Chart View of the Performance panel
-   *@example {Frame} PH1
-   *@example {10ms} PH2
+   * @description Text in Timeline Flame Chart View of the Performance panel
+   * @example {Frame} PH1
+   * @example {10ms} PH2
    */
   sAtS: '{PH1} at {PH2}',
   /**
-   *@description Text used next to a time to indicate that the particular event took that much time itself. In context this might look like "3ms blink.console (self)"
-   *@example {blink.console} PH1
+   * @description Text used next to a time to indicate that the particular event took that much time itself. In context this might look like "3ms blink.console (self)"
+   * @example {blink.console} PH1
    */
   sSelf: '{PH1} (self)',
   /**
-   *@description Text used next to a time to indicate that the event's children took that much time. In context this might look like "3ms blink.console (children)"
-   *@example {blink.console} PH1
+   * @description Text used next to a time to indicate that the event's children took that much time. In context this might look like "3ms blink.console (children)"
+   * @example {blink.console} PH1
    */
   sChildren: '{PH1} (children)',
   /**
-   *@description Text used to show the user how much time the browser spent on rendering (drawing the page onto the screen).
+   * @description Text used to show the user how much time the browser spent on rendering (drawing the page onto the screen).
    */
   timeSpentInRendering: 'Time spent in rendering',
   /**
-   *@description Text for a rendering frame
+   * @description Text for a rendering frame
    */
   frame: 'Frame',
   /**
-   *@description Text used to refer to the duration of an event at a given offset - e.g. "2ms at 10ms" which can be read as "2ms starting after 10ms".
-   *@example {10ms} PH1
-   *@example {10ms} PH2
+   * @description Text used to refer to the duration of an event at a given offset - e.g. "2ms at 10ms" which can be read as "2ms starting after 10ms".
+   * @example {10ms} PH1
+   * @example {10ms} PH2
    */
   sAtSParentheses: '{PH1} (at {PH2})',
   /**
-   *@description Text of a DOM element in Timeline UIUtils of the Performance panel
+   * @description Text of a DOM element in Timeline UIUtils of the Performance panel
    */
   UnknownNode: '[ unknown node ]',
   /**
-   *@description Text used to refer to a particular element and the file it was referred to in.
-   *@example {node} PH1
-   *@example {app.js} PH2
+   * @description Text used to refer to a particular element and the file it was referred to in.
+   * @example {node} PH1
+   * @example {app.js} PH2
    */
   invalidationWithCallFrame: '{PH1} at {PH2}',
   /**
-   *@description Text indicating that something is outside of the Performace Panel Timeline Minimap range
+   * @description Text indicating that something is outside of the Performace Panel Timeline Minimap range
    */
   outsideBreadcrumbRange: '(outside of the breadcrumb range)',
   /**
-   *@description Text indicating that something is hidden from the Performace Panel Timeline
+   * @description Text indicating that something is hidden from the Performace Panel Timeline
    */
   entryIsHidden: '(entry is hidden)',
   /**
@@ -948,8 +947,9 @@ export class TimelineUIUtils {
       }
     }
 
-    // Add timestamp to user timings.
-    if (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.UserTiming)) {
+    // Add timestamp to user timings, including custom extensibility markers
+    if (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.UserTiming) ||
+        Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
       const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(
           event,
           parsedTrace,
@@ -1020,7 +1020,8 @@ export class TimelineUIUtils {
       }
     }
 
-    const isFreshRecording = Boolean(parsedTrace && Tracker.instance().recordingIsFresh(parsedTrace));
+    const isFreshRecording =
+        Boolean(parsedTrace && Utils.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace));
 
     switch (event.name) {
       case Trace.Types.Events.Name.GC:
@@ -1467,8 +1468,7 @@ export class TimelineUIUtils {
     }
 
     const stats: TimeRangeCategoryStats = {};
-    const showPieChart =
-        canShowPieChart && parsedTrace && TimelineUIUtils.aggregatedStatsForTraceEvent(stats, parsedTrace, event);
+    const showPieChart = canShowPieChart && TimelineUIUtils.aggregatedStatsForTraceEvent(stats, parsedTrace, event);
     if (showPieChart) {
       contentHelper.addSection(i18nString(UIStrings.aggregatedTime));
       const pieChart = TimelineUIUtils.generatePieChart(stats, TimelineUIUtils.eventStyle(event).category, selfTime);
@@ -1840,48 +1840,42 @@ export class TimelineUIUtils {
   private static aggregatedStatsForTraceEvent(
       total: TimeRangeCategoryStats, parsedTrace: Trace.Handlers.Types.ParsedTrace,
       event: Trace.Types.Events.Event): boolean {
-    const events = parsedTrace.Renderer?.allTraceEntries || [];
-    const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
-    function eventComparator(startTime: number, e: Trace.Types.Events.Event): number {
-      return startTime - e.ts;
-    }
-    // Find index of selected event amongst allTraceEntries.
-    const index = Platform.ArrayUtilities.binaryIndexOf(events, startTime, eventComparator);
-    // Not a main thread event?
-    if (index < 0) {
+    const node = parsedTrace.Renderer.entryToNode.get(event);
+    if (!node) {
       return false;
     }
-    let hasChildren = false;
-    if (endTime) {
-      for (let i = index; i < events.length; i++) {
-        const nextEvent = events[i];
-        if (nextEvent.ts >= endTime) {
-          break;
-        }
-        const nextEventSelfTime = getEventSelfTime(nextEvent, parsedTrace);
-        if (!nextEventSelfTime) {
-          continue;
-        }
-        if (nextEvent.tid !== event.tid) {
-          continue;
-        }
-        if (i > index) {
-          hasChildren = true;
-        }
-        const categoryName = TimelineUIUtils.eventStyle(nextEvent).category.name;
-        total[categoryName] = (total[categoryName] || 0) + nextEventSelfTime;
-      }
-    }
-    if (Trace.Types.Events.isPhaseAsync(event.ph)) {
-      if (endTime) {
-        let aggregatedTotal = 0;
-        for (const categoryName in total) {
-          aggregatedTotal += total[categoryName];
-        }
 
-        const deltaInMicro = (endTime - startTime) as Trace.Types.Timing.Micro;
-        total['idle'] = Math.max(0, deltaInMicro - aggregatedTotal);
+    // If the event has no children, we cannot calculate a pie chart.
+    if (node.children.length === 0) {
+      return false;
+    }
+
+    const childNodesToVisit: Trace.Helpers.TreeHelpers.TraceEntryNode[] = [...node.children];
+
+    while (childNodesToVisit.length) {
+      // Traversal order doesn't matter, pop() is more efficient than shift().
+      const childNode = childNodesToVisit.pop();
+      if (!childNode) {
+        continue;
       }
+      const childSelfTime = childNode.selfTime ?? 0;
+      if (childSelfTime > 0) {
+        const categoryName = TimelineUIUtils.eventStyle(childNode.entry).category.name;
+        total[categoryName] = (total[categoryName] || 0) + childSelfTime;
+      }
+
+      childNodesToVisit.push(...childNode.children);
+    }
+
+    if (Trace.Types.Events.isPhaseAsync(event.ph)) {
+      let aggregatedTotal = 0;
+      for (const categoryName in total) {
+        aggregatedTotal += total[categoryName];
+      }
+
+      const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
+      const deltaInMicro = (endTime - startTime) as Trace.Types.Timing.Micro;
+      total['idle'] = Math.max(0, deltaInMicro - aggregatedTotal);
       return false;
     }
 
@@ -1891,7 +1885,7 @@ export class TimelineUIUtils {
       total[categoryName] = Trace.Helpers.Timing.microToMilli(value);
     }
 
-    return hasChildren;
+    return true;
   }
 
   static async buildPicturePreviewContent(
@@ -2406,9 +2400,11 @@ export class TimelineDetailsContentHelper {
     }
     const stackTraceElement =
         this.tableElement.createChild('div', 'timeline-details-view-row timeline-details-stack-values');
-    const callFrameContents = LegacyComponents.JSPresentationUtils.buildStackTracePreviewContents(
-        this.target, this.linkifierInternal, {stackTrace: resolvedStackTrace, tabStops: true, showColumnNumber: true});
-    stackTraceElement.appendChild(callFrameContents.element);
+    const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(
+        undefined, this.target ?? undefined, this.linkifierInternal,
+        {stackTrace: resolvedStackTrace, tabStops: true, showColumnNumber: true});
+    callFrameContents.markAsRoot();
+    callFrameContents.show(stackTraceElement);
   }
 }
 

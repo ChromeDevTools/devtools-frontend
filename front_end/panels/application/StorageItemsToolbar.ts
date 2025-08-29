@@ -16,19 +16,19 @@ import * as ApplicationComponents from './components/components.js';
 
 const UIStrings = {
   /**
-   *@description Text to refresh the page
+   * @description Text to refresh the page
    */
   refresh: 'Refresh',
   /**
-   *@description Text to clear everything
+   * @description Text to clear everything
    */
   clearAll: 'Clear All',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
+   * @description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
    */
   deleteSelected: 'Delete Selected',
   /**
-   *@description Text that informs screen reader users that the storage table has been refreshed
+   * @description Text that informs screen reader users that the storage table has been refreshed
    */
   refreshedStatus: 'Table refreshed',
 } as const;
@@ -90,7 +90,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElem
       </devtools-toolbar>
       ${input.metadataView}`,
       // clang-format on
-      target, {host: input});
+      target);
 };
 
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
@@ -108,7 +108,7 @@ export class StorageItemsToolbar extends
   #mainToolbarItems: UI.Toolbar.ToolbarItem[] = [];
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(false, false, element);
+    super(element);
     this.#view = view;
     this.filterRegex = null;
   }

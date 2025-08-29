@@ -10,6 +10,7 @@ import("../visibility.gni")
 devtools_module("workspace") {
   sources = [
     "FileManager.ts",
+    "IgnoreListManager.ts",
     "SearchConfig.ts",
     "UISourceCode.ts",
     "WorkspaceImpl.ts",
@@ -20,6 +21,7 @@ devtools_module("workspace") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../core/sdk:bundle",
     "../../models/text_utils:bundle",
   ]
 }
@@ -63,6 +65,7 @@ devtools_entrypoint("bundle") {
     "../issues_manager/*",
     "../persistence/*",
     "../source_map_scopes/*",
+    "../stack_trace/*",
     "../workspace_diff/*",
   ]
 
@@ -73,6 +76,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "IgnoreListManager.test.ts",
     "SearchConfig.test.ts",
     "UISourceCode.test.ts",
     "WorkspaceImpl.test.ts",
@@ -82,6 +86,7 @@ ts_library("unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../testing",
+    "../bindings:bundle",
     "../persistence:bundle",
   ]
 }

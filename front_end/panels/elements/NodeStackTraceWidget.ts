@@ -12,7 +12,7 @@ import nodeStackTraceWidgetStyles from './nodeStackTraceWidget.css.js';
 
 const UIStrings = {
   /**
-   *@description Message displayed when no JavaScript stack trace is available for the DOM node in the Stack Trace widget of the Elements panel
+   * @description Message displayed when no JavaScript stack trace is available for the DOM node in the Stack Trace widget of the Elements panel
    */
   noStackTraceAvailable: 'No stack trace available',
 } as const;
@@ -20,19 +20,25 @@ const str_ = i18n.i18n.registerUIStrings('panels/elements/NodeStackTraceWidget.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface ViewInput {
-  stackTracePreview: HTMLElement|null;
+  target?: SDK.Target.Target;
+  linkifier: Components.Linkifier.Linkifier;
+  options: Components.JSPresentationUtils.Options;
 }
 
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const {target: sdkTarget, linkifier, options} = input;
   // clang-format off
   render(html`
     <style>${nodeStackTraceWidgetStyles}</style>
-    ${input.stackTracePreview ?
-         html`<div class="stack-trace">${input.stackTracePreview}</div>` :
+    ${target && options.stackTrace ?
+         html`<devtools-widget
+                class="stack-trace"
+                .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, {target: sdkTarget, linkifier, options})}>
+              </devtools-widget>` :
          html`<div class="gray-info-message">${i18nString(UIStrings.noStackTraceAvailable)}</div>`}`,
-    target, {host: input});
+    target);
   // clang-format on
 };
 
@@ -58,15 +64,11 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
   override async doUpdate(): Promise<void> {
     const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
-    const creationStackTrace = node ? await node.creationStackTrace() : null;
-    const stackTracePreview = node && creationStackTrace ?
-        Components.JSPresentationUtils
-            .buildStackTracePreviewContents(
-                node.domModel().target(), this.#linkifier, {stackTrace: creationStackTrace, tabStops: undefined})
-            .element :
-        null;
-    const input = {
-      stackTracePreview,
+    const stackTrace = await node?.creationStackTrace() ?? undefined;
+    const input: ViewInput = {
+      target: node?.domModel().target(),
+      linkifier: this.#linkifier,
+      options: {stackTrace},
     };
     this.#view(input, {}, this.contentElement);
   }

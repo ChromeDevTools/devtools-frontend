@@ -69,9 +69,9 @@ below.**
 
 Formats all code using clang-format.
 
-`npm run check`
+`npm test`
 
-Runs all static analysis checks on DevTools code.
+Runs all tests on DevTools code.
 
 
 ## Creating Documentation

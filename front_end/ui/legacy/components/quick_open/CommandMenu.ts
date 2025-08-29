@@ -73,6 +73,7 @@ export class CommandMenu {
       userActionCode,
       deprecationWarning,
       isPanelOrDrawer,
+      featurePromotionId,
     } = options;
 
     let handler = executeHandler;
@@ -81,10 +82,12 @@ export class CommandMenu {
       handler = () => {
         Host.userMetrics.actionTaken(actionCode);
         executeHandler();
+        // not here
       };
     }
     return new Command(
-        category, title, keys, shortcut, jslogContext, handler, availableHandler, deprecationWarning, isPanelOrDrawer);
+        category, title, keys, shortcut, jslogContext, handler, availableHandler, deprecationWarning, isPanelOrDrawer,
+        featurePromotionId);
   }
 
   static createSettingCommand<V>(setting: Common.Settings.Setting<V>, title: Common.UIString.LocalizedString, value: V):
@@ -156,7 +159,7 @@ export class CommandMenu {
   }
 
   static createRevealViewCommand(options: RevealViewCommandOptions): Command {
-    const {title, tags, category, userActionCode, id} = options;
+    const {title, tags, category, userActionCode, id, featurePromotionId} = options;
     if (!category) {
       throw new Error(`Creating '${title}' reveal view command failed. Reveal view has no category.`);
     }
@@ -171,6 +174,9 @@ export class CommandMenu {
       if (id === 'issues-pane') {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.COMMAND_MENU);
       }
+      if (featurePromotionId) {
+        UI.UIUtils.PromotionManager.instance().recordFeatureInteraction(featurePromotionId);
+      }
       return UI.ViewManager.ViewManager.instance().showView(id, /* userGesture */ true);
     };
 
@@ -184,6 +190,7 @@ export class CommandMenu {
       userActionCode,
       availableHandler: undefined,
       isPanelOrDrawer: panelOrDrawer,
+      featurePromotionId,
     });
   }
 
@@ -207,6 +214,7 @@ export class CommandMenu {
         tags: view.tags() || '',
         category,
         id: view.viewId(),
+        featurePromotionId: view.featurePromotionId(),
       };
       this.commandsInternal.push(CommandMenu.createRevealViewCommand(options));
     }
@@ -239,6 +247,7 @@ export interface RevealViewCommandOptions {
   tags: string;
   category: UI.ViewManager.ViewLocationCategory;
   userActionCode?: number;
+  featurePromotionId?: string;
 }
 
 export interface CreateCommandOptions {
@@ -252,6 +261,7 @@ export interface CreateCommandOptions {
   userActionCode?: number;
   deprecationWarning?: Platform.UIString.LocalizedString;
   isPanelOrDrawer?: PanelOrDrawer;
+  featurePromotionId?: string;
 }
 
 export const enum PanelOrDrawer {
@@ -313,6 +323,12 @@ export class CommandMenuProvider extends Provider {
   override itemScoreAt(itemIndex: number, query: string): number {
     const command = this.commands[itemIndex];
     let score = Diff.Diff.DiffWrapper.characterScore(query.toLowerCase(), command.title.toLowerCase());
+    // Increase score of promoted items so that these appear on top of the list
+    const promotionId = command.featurePromotionId;
+    if (promotionId && UI.UIUtils.PromotionManager.instance().canShowPromotion(promotionId)) {
+      score = Number.MAX_VALUE;
+      return score;
+    }
 
     // Score panel/drawer reveals above regular actions.
     if (command.isPanelOrDrawer === PanelOrDrawer.PANEL) {
@@ -332,6 +348,13 @@ export class CommandMenuProvider extends Provider {
     titleElement.parentElement?.parentElement?.insertBefore(icon, titleElement.parentElement);
     UI.UIUtils.createTextChild(titleElement, command.title);
     FilteredListWidget.highlightRanges(titleElement, query, true);
+
+    if (command.featurePromotionId) {
+      const badge = UI.UIUtils.maybeCreateNewBadge(command.featurePromotionId);
+      if (badge) {
+        titleElement.parentElement?.insertBefore(badge, subtitleElement);
+      }
+    }
 
     subtitleElement.textContent = command.shortcut;
 
@@ -398,6 +421,7 @@ export class Command {
   readonly jslogContext: string;
   readonly deprecationWarning?: Platform.UIString.LocalizedString;
   readonly isPanelOrDrawer?: PanelOrDrawer;
+  readonly featurePromotionId?: string;
 
   readonly #executeHandler: () => unknown;
   readonly #availableHandler?: () => boolean;
@@ -405,7 +429,8 @@ export class Command {
   constructor(
       category: Common.UIString.LocalizedString, title: Common.UIString.LocalizedString, key: string, shortcut: string,
       jslogContext: string, executeHandler: () => unknown, availableHandler?: () => boolean,
-      deprecationWarning?: Platform.UIString.LocalizedString, isPanelOrDrawer?: PanelOrDrawer) {
+      deprecationWarning?: Platform.UIString.LocalizedString, isPanelOrDrawer?: PanelOrDrawer,
+      featurePromotionId?: string) {
     this.category = category;
     this.title = title;
     this.key = category + '\0' + title + '\0' + key;
@@ -415,6 +440,7 @@ export class Command {
     this.#availableHandler = availableHandler;
     this.deprecationWarning = deprecationWarning;
     this.isPanelOrDrawer = isPanelOrDrawer;
+    this.featurePromotionId = featurePromotionId;
   }
 
   available(): boolean {

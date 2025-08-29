@@ -26,17 +26,17 @@ assert.equal(arr.buffer, typedArrayBuffer(arr));
 Simply clone the repo, `npm install`, and run `npm test`
 
 [package-url]: https://npmjs.org/package/typed-array-buffer
-[npm-version-svg]: https://versionbadg.es/ljharb/typed-array-buffer.svg
-[deps-svg]: https://david-dm.org/ljharb/typed-array-buffer.svg
-[deps-url]: https://david-dm.org/ljharb/typed-array-buffer
-[dev-deps-svg]: https://david-dm.org/ljharb/typed-array-buffer/dev-status.svg
-[dev-deps-url]: https://david-dm.org/ljharb/typed-array-buffer#info=devDependencies
+[npm-version-svg]: https://versionbadg.es/inspect-js/typed-array-buffer.svg
+[deps-svg]: https://david-dm.org/inspect-js/typed-array-buffer.svg
+[deps-url]: https://david-dm.org/inspect-js/typed-array-buffer
+[dev-deps-svg]: https://david-dm.org/inspect-js/typed-array-buffer/dev-status.svg
+[dev-deps-url]: https://david-dm.org/inspect-js/typed-array-buffer#info=devDependencies
 [npm-badge-png]: https://nodei.co/npm/typed-array-buffer.png?downloads=true&stars=true
 [license-image]: https://img.shields.io/npm/l/typed-array-buffer.svg
 [license-url]: LICENSE
 [downloads-image]: https://img.shields.io/npm/dm/typed-array-buffer.svg
 [downloads-url]: https://npm-stat.com/charts.html?package=typed-array-buffer
-[codecov-image]: https://codecov.io/gh/ljharb/typed-array-buffer/branch/main/graphs/badge.svg
-[codecov-url]: https://app.codecov.io/gh/ljharb/typed-array-buffer/
-[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/ljharb/typed-array-buffer
-[actions-url]: https://github.com/ljharb/typed-array-buffer/actions
+[codecov-image]: https://codecov.io/gh/inspect-js/typed-array-buffer/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/inspect-js/typed-array-buffer/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/inspect-js/typed-array-buffer
+[actions-url]: https://github.com/inspect-js/typed-array-buffer/actions

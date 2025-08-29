@@ -355,6 +355,8 @@ export interface InspectorFrontendHostAPI {
 
   recordUserMetricsAction(umaName: string): void;
 
+  recordNewBadgeUsage(featureName: string): void;
+
   sendMessageToBackend(message: string): void;
 
   setDevicesDiscoveryConfig(config: Adb.Config): void;
@@ -428,6 +430,8 @@ export interface ContextMenuDescriptor {
   subItems?: ContextMenuDescriptor[];
   shortcut?: string;
   jslogContext?: string;
+  /** Setting the featureName requests showing a new badge tied to that feature . */
+  featureName?: string;
 }
 export interface LoadNetworkResourceResult {
   statusCode: number;

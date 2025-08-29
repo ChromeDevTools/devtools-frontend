@@ -19,27 +19,27 @@ import axBreadcrumbsStyles from './axBreadcrumbs.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in AXBreadcrumbs Pane of the Accessibility panel
+   * @description Text in AXBreadcrumbs Pane of the Accessibility panel
    */
   accessibilityTree: 'Accessibility Tree',
   /**
-   *@description Text to scroll the displayed content into view
+   * @description Text to scroll the displayed content into view
    */
   scrollIntoView: 'Scroll into view',
   /**
-   *@description Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel
+   * @description Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel
    */
   ignored: 'Ignored',
   /**
-   *@description Name for experimental tree toggle.
+   * @description Name for experimental tree toggle.
    */
   fullTreeExperimentName: 'Enable full-page accessibility tree',
   /**
-   *@description Description text for experimental tree toggle.
+   * @description Description text for experimental tree toggle.
    */
   fullTreeExperimentDescription: 'The accessibility tree moved to the top right corner of the DOM tree.',
   /**
-   *@description Message saying that DevTools must be restarted before the experiment is enabled.
+   * @description Message saying that DevTools must be restarted before the experiment is enabled.
    */
   reloadRequired: 'Reload required before the change takes effect',
 } as const;
@@ -55,12 +55,15 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
   #legacyTreeDisabled = false;
 
   constructor(axSidebarView: AccessibilitySidebarView) {
-    super(i18nString(UIStrings.accessibilityTree));
+    super({
+      title: i18nString(UIStrings.accessibilityTree),
+      viewId: 'accessibility-tree',
+      jslog: `${VisualLogging.section('accessibility-tree')}`,
+    });
     this.registerRequiredCSS(axBreadcrumbsStyles);
 
     this.element.classList.add('ax-subpane');
     this.element.tabIndex = -1;
-    this.element.setAttribute('jslog', `${VisualLogging.section('accessibility-tree')}`);
 
     this.axSidebarView = axSidebarView;
     this.preselectedBreadcrumb = null;
@@ -362,7 +365,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     const node = this.node();
     if (breadcrumb) {
       breadcrumb.setHovered(true);
-    } else if (node && node.id) {
+    } else if (node?.id) {
       // Highlight and scroll into view the currently inspected node.
       node.domModel().overlayModel().nodeHighlightRequested({nodeId: node.id});
     }

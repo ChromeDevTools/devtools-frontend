@@ -1,8 +1,6 @@
 'use strict';
 
 var callBind = require('../');
-var bind = require('function-bind');
-var gOPD = require('gopd');
 var hasStrictMode = require('has-strict-mode')();
 var forEach = require('for-each');
 var inspect = require('object-inspect');
@@ -14,11 +12,7 @@ var test = require('tape');
  * older engines have length nonconfigurable
  * in io.js v3, it is configurable except on bound functions, hence the .bind()
  */
-var functionsHaveConfigurableLengths = !!(
-	gOPD
-	&& Object.getOwnPropertyDescriptor
-	&& Object.getOwnPropertyDescriptor(bind.call(function () {}), 'length').configurable
-);
+var boundFnsHaveConfigurableLengths = require('set-function-length/env').boundFnsHaveConfigurableLengths;
 
 test('callBind', function (t) {
 	forEach(v.nonFunctions, function (nonFunction) {
@@ -40,19 +34,19 @@ test('callBind', function (t) {
 	t.deepEqual(func(1, 2, 3), [undefined, 1, 2], 'unbound func with too many args');
 
 	var bound = callBind(func);
-	t.equal(bound.length, func.length + 1, 'function length is preserved', { skip: !functionsHaveConfigurableLengths });
+	t.equal(bound.length, func.length + 1, 'function length is preserved', { skip: !boundFnsHaveConfigurableLengths });
 	t.deepEqual(bound(), [undefined, undefined, undefined], 'bound func with too few args');
 	t.deepEqual(bound(1, 2), [hasStrictMode ? 1 : Object(1), 2, undefined], 'bound func with right args');
 	t.deepEqual(bound(1, 2, 3), [hasStrictMode ? 1 : Object(1), 2, 3], 'bound func with too many args');
 
 	var boundR = callBind(func, sentinel);
-	t.equal(boundR.length, func.length, 'function length is preserved', { skip: !functionsHaveConfigurableLengths });
+	t.equal(boundR.length, func.length, 'function length is preserved', { skip: !boundFnsHaveConfigurableLengths });
 	t.deepEqual(boundR(), [sentinel, undefined, undefined], 'bound func with receiver, with too few args');
 	t.deepEqual(boundR(1, 2), [sentinel, 1, 2], 'bound func with receiver, with right args');
 	t.deepEqual(boundR(1, 2, 3), [sentinel, 1, 2], 'bound func with receiver, with too many args');
 
 	var boundArg = callBind(func, sentinel, 1);
-	t.equal(boundArg.length, func.length - 1, 'function length is preserved', { skip: !functionsHaveConfigurableLengths });
+	t.equal(boundArg.length, func.length - 1, 'function length is preserved', { skip: !boundFnsHaveConfigurableLengths });
 	t.deepEqual(boundArg(), [sentinel, 1, undefined], 'bound func with receiver and arg, with too few args');
 	t.deepEqual(boundArg(2), [sentinel, 1, 2], 'bound func with receiver and arg, with right arg');
 	t.deepEqual(boundArg(2, 3), [sentinel, 1, 2], 'bound func with receiver and arg, with too many args');

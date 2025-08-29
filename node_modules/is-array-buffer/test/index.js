@@ -23,7 +23,6 @@ test('isArrayBuffer', function (t) {
 	});
 
 	t.test('actual ArrayBuffer instances', { skip: typeof ArrayBuffer === 'undefined' }, function (st) {
-		// @ts-expect-error TS grumbles about 0 args
 		var ab = new ArrayBuffer();
 		st.equal(isArrayBuffer(ab), true, inspect(ab) + ' is an ArrayBuffer');
 

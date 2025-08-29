@@ -46,15 +46,15 @@ import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-   *@description Text for the source of something
+   * @description Text for the source of something
    */
   source: 'Source',
   /**
-   *@description Text to pretty print a file
+   * @description Text to pretty print a file
    */
   prettyPrint: 'Pretty print',
   /**
-   *@description Text when something is loading
+   * @description Text when something is loading
    */
   loading: 'Loading…',
   /**
@@ -70,39 +70,39 @@ const UIStrings = {
    */
   bytecodePositionXs: 'Bytecode position `0x`{PH1}',
   /**
-   *@description Text in Source Frame of the Sources panel
-   *@example {2} PH1
-   *@example {2} PH2
+   * @description Text in Source Frame of the Sources panel
+   * @example {2} PH1
+   * @example {2} PH2
    */
   lineSColumnS: 'Line {PH1}, Column {PH2}',
   /**
-   *@description Text in Source Frame of the Sources panel
-   *@example {2} PH1
+   * @description Text in Source Frame of the Sources panel
+   * @example {2} PH1
    */
   dCharactersSelected: '{PH1} characters selected',
   /**
-   *@description Text in Source Frame of the Sources panel
-   *@example {2} PH1
-   *@example {2} PH2
+   * @description Text in Source Frame of the Sources panel
+   * @example {2} PH1
+   * @example {2} PH2
    */
   dLinesDCharactersSelected: '{PH1} lines, {PH2} characters selected',
   /**
-   *@description Headline of warning shown to users when pasting text/code into DevTools.
+   * @description Headline of warning shown to users when pasting text/code into DevTools.
    */
   doYouTrustThisCode: 'Do you trust this code?',
   /**
-   *@description Warning shown to users when pasting text/code into DevTools.
-   *@example {allow pasting} PH1
+   * @description Warning shown to users when pasting text/code into DevTools.
+   * @example {allow pasting} PH1
    */
   doNotPaste:
       'Don\'t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \'\'{PH1}\'\' below to allow pasting.',
   /**
-   *@description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
   allowPasting: 'allow pasting',
   /**
-   *@description Input box placeholder which instructs the user to type 'allow pasting' into the input box.
-   *@example {allow pasting} PH1
+   * @description Input box placeholder which instructs the user to type 'allow pasting' into the input box.
+   * @example {allow pasting} PH1
    */
   typeAllowPasting: 'Type \'\'{PH1}\'\'',
   /**
@@ -181,7 +181,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   constructor(
       lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>,
       private readonly options: SourceFrameOptions = {}) {
-    super(i18nString(UIStrings.source));
+    super({
+      title: i18nString(UIStrings.source),
+      viewId: 'source',
+    });
 
     this.lazyContent = lazyContent;
 
@@ -311,7 +314,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
           activeDark: 'var(--sys-color-divider-prominent)',
         },
       }),
-      infobarState,
+      sourceFrameInfobarState,
     ];
   }
 
@@ -548,10 +551,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   protected async setContentDataOrError(contentDataPromise: Promise<TextUtils.ContentData.ContentDataOrError>):
       Promise<void> {
-    const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
+    const progressIndicator = document.createElement('devtools-progress');
     progressIndicator.setTitle(i18nString(UIStrings.loading));
     progressIndicator.setTotalWork(100);
-    this.progressToolbarItem.element.appendChild(progressIndicator.element);
+    this.progressToolbarItem.element.appendChild(progressIndicator);
 
     progressIndicator.setWorked(1);
     const contentData = await contentDataPromise;
@@ -1246,21 +1249,26 @@ const sourceFrameTheme = CodeMirror.EditorView.theme({
 export type RevealPosition = number|{lineNumber: number, columnNumber?: number}|
     {from: {lineNumber: number, columnNumber: number}, to: {lineNumber: number, columnNumber: number}};
 
+// This is usually an Infobar but is also used for AiCodeCompletionSummaryToolbar
+export interface SourceFrameInfobar {
+  element: HTMLElement;
+  order?: number;
+}
+
 // Infobar panel state, used to show additional panels below the editor.
+export const addSourceFrameInfobar = CodeMirror.StateEffect.define<SourceFrameInfobar>();
+export const removeSourceFrameInfobar = CodeMirror.StateEffect.define<SourceFrameInfobar>();
 
-export const addInfobar = CodeMirror.StateEffect.define<UI.Infobar.Infobar>();
-export const removeInfobar = CodeMirror.StateEffect.define<UI.Infobar.Infobar>();
-
-const infobarState = CodeMirror.StateField.define<UI.Infobar.Infobar[]>({
-  create(): UI.Infobar.Infobar[] {
+const sourceFrameInfobarState = CodeMirror.StateField.define<SourceFrameInfobar[]>({
+  create(): SourceFrameInfobar[] {
     return [];
   },
-  update(current, tr): UI.Infobar.Infobar[] {
+  update(current, tr): SourceFrameInfobar[] {
     for (const effect of tr.effects) {
-      if (effect.is(addInfobar)) {
+      if (effect.is(addSourceFrameInfobar)) {
         current = current.concat(effect.value);
-      } else if (effect.is(removeInfobar)) {
-        current = current.filter(b => b !== effect.value);
+      } else if (effect.is(removeSourceFrameInfobar)) {
+        current = current.filter(b => b.element !== effect.value.element);
       }
     }
     return current;
@@ -1268,5 +1276,7 @@ const infobarState = CodeMirror.StateField.define<UI.Infobar.Infobar[]>({
   provide: (field): CodeMirror.Extension => CodeMirror.showPanel.computeN(
       [field],
       (state): Array<() => CodeMirror.Panel> =>
-          state.field(field).map((bar): (() => CodeMirror.Panel) => (): CodeMirror.Panel => ({dom: bar.element}))),
+          state.field(field)
+              .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+              .map((bar): (() => CodeMirror.Panel) => (): CodeMirror.Panel => ({dom: bar.element}))),
 });

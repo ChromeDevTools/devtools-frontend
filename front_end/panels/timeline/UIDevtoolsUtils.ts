@@ -35,63 +35,63 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
+   * @description Text in Timeline UIUtils of the Performance panel
    */
   frameStart: 'Frame start',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
+   * @description Text in Timeline UIUtils of the Performance panel
    */
   drawFrame: 'Draw frame',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
+   * @description Text in Timeline UIUtils of the Performance panel
    */
   layout: 'Layout',
   /**
-   *@description Text in UIDevtools Utils of the Performance panel
+   * @description Text in UIDevtools Utils of the Performance panel
    */
   rasterizing: 'Rasterizing',
   /**
-   *@description Text in UIDevtools Utils of the Performance panel
+   * @description Text in UIDevtools Utils of the Performance panel
    */
   drawing: 'Drawing',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
+   * @description Text in Timeline UIUtils of the Performance panel
    */
   painting: 'Painting',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
+   * @description Text in Timeline UIUtils of the Performance panel
    */
   system: 'System',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
+   * @description Text in Timeline UIUtils of the Performance panel
    */
   idle: 'Idle',
   /**
-   *@description Category in the Summary view of the Performance panel to indicate time spent to load resources
+   * @description Category in the Summary view of the Performance panel to indicate time spent to load resources
    */
   loading: 'Loading',
   /**
-   *@description Text in Timeline for the Experience title
+   * @description Text in Timeline for the Experience title
    */
   experience: 'Experience',
   /**
-   *@description Category in the Summary view of the Performance panel to indicate time spent in script execution
+   * @description Category in the Summary view of the Performance panel to indicate time spent in script execution
    */
   scripting: 'Scripting',
   /**
-   *@description Category in the Summary view of the Performance panel to indicate time spent in rendering the web page
+   * @description Category in the Summary view of the Performance panel to indicate time spent in rendering the web page
    */
   rendering: 'Rendering',
   /**
-   *@description Event category in the Performance panel for time spent in the GPU
+   * @description Event category in the Performance panel for time spent in the GPU
    */
   gpu: 'GPU',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
+   * @description Text in Timeline UIUtils of the Performance panel
    */
   async: 'Async',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
+   * @description Text in Timeline UIUtils of the Performance panel
    */
   messaging: 'Messaging',
 } as const;

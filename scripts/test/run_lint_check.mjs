@@ -149,7 +149,7 @@ async function runStylelint(files) {
  * The configuration for the `lit-analyzer` is parsed from the options for
  * the "ts-lit-plugin" from the toplevel `tsconfig.json` file.
  *
- * @param {string[]} files the input files to analyze.
+ * @param files the input files to analyze.
  */
 async function runLitAnalyzer(files) {
   debugLogging('[lint]: Running LitAnalyzer...');
@@ -170,12 +170,7 @@ async function runLitAnalyzer(files) {
     return tsLitPluginOptions;
   };
 
-  const { rules } = readLitAnalyzerConfigFromCompilerOptions();
-  /**
-   *
-   * @param {string[]} subsetFiles
-   * @returns {Promise<{output: string, error: string, status:boolean}>}
-   */
+  const {rules} = readLitAnalyzerConfigFromCompilerOptions();
   const getLitAnalyzerResult = async subsetFiles => {
     const args = [
       litAnalyzerExecutablePath(),
@@ -255,11 +250,6 @@ async function runLitAnalyzer(files) {
 }
 
 const DEVTOOLS_ROOT_DIR = resolve(import.meta.dirname, '..', '..');
-/**
- *
- * @param {string} path
- * @returns {boolean}
- */
 function shouldIgnoreFile(path) {
   const resolvedPath = resolve(path);
   const relativePath = relative(DEVTOOLS_ROOT_DIR, resolvedPath);
@@ -285,7 +275,7 @@ async function runEslintRulesTypeCheck(_files) {
   );
   const args = [tscPath, '-b', tsConfigEslintRules];
   /**
-   * @returns {Promise<{output: string, error: string, status:boolean}>}
+   * @returns
    */
   async function runTypeCheck() {
     const result = {

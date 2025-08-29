@@ -17,35 +17,35 @@ import networkConfigViewStyles from './networkConfigView.css.js';
 
 const UIStrings = {
   /**
-   *@description Text in the Network conditions panel shown in the dropdown where the user chooses the user agent.
+   * @description Text in the Network conditions panel shown in the dropdown where the user chooses the user agent.
    */
   custom: 'Custom…',
   /**
-   *@description Placeholder text shown in the input box where a user is expected to add a custom user agent.
+   * @description Placeholder text shown in the input box where a user is expected to add a custom user agent.
    */
   enterACustomUserAgent: 'Enter a custom user agent',
   /**
-   *@description Error message when the custom user agent field is empty.
+   * @description Error message when the custom user agent field is empty.
    */
   customUserAgentFieldIsRequired: 'Custom user agent field is required',
   /**
-   *@description Header for the caching settings within the network conditions panel.
+   * @description Header for the caching settings within the network conditions panel.
    */
   caching: 'Caching',
   /**
-   *@description Option in the network conditions panel to disable the cache.
+   * @description Option in the network conditions panel to disable the cache.
    */
   disableCache: 'Disable cache',
   /**
-   *@description Header in Network conditions panel for the network throttling and emulation settings.
+   * @description Header in Network conditions panel for the network throttling and emulation settings.
    */
   networkThrottling: 'Network',
   /**
-   *@description Header in the network conditions panel for the user agent settings.
+   * @description Header in the network conditions panel for the user agent settings.
    */
   userAgent: 'User agent',
   /**
-   *@description User agent setting in the network conditions panel to use the browser's default value.
+   * @description User agent setting in the network conditions panel to use the browser's default value.
    */
   selectAutomatically: 'Use browser default',
   /**
@@ -69,10 +69,11 @@ let networkConfigViewInstance: NetworkConfigView;
 
 export class NetworkConfigView extends UI.Widget.VBox {
   constructor() {
-    super(true);
+    super({
+      jslog: `${VisualLogging.panel('network-conditions').track({resize: true})}`,
+      useShadowDom: true,
+    });
     this.registerRequiredCSS(networkConfigViewStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.panel('network-conditions').track({resize: true})}`);
 
     this.contentElement.classList.add('network-config');
 
@@ -196,7 +197,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     return {select: userAgentSelectElement, input: otherUserAgentElement, error: errorElement};
   }
 
-  private createSection(title: string, className?: string): Element {
+  private createSection(title: string, className?: string): HTMLElement {
     const section = this.contentElement.createChild('section', 'network-config-group');
     if (className) {
       section.classList.add(className);
@@ -214,9 +215,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
   private createNetworkThrottlingSection(): void {
     const title = i18nString(UIStrings.networkThrottling);
     const section = this.createSection(title, 'network-config-throttling');
-    const networkThrottlingSelect = section.createChild('select');
-    MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(networkThrottlingSelect);
-    UI.ARIAUtils.setLabel(networkThrottlingSelect, title);
+    MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(section, title);
     const saveDataSelect =
         MobileThrottling.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector('chrome-select').element;
     section.appendChild(saveDataSelect);

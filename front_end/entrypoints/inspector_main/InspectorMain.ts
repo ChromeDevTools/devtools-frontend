@@ -264,6 +264,9 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
 
     this.#emulatePageFocusSetting = Common.Settings.Settings.instance().moduleSetting('emulate-page-focus');
     this.#emulatePageFocusSetting.addChangeListener(this.#update, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TARGET_INFO_CHANGED,
+        this.#targetInfoChanged, this);
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
@@ -284,6 +287,15 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
     for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
       this.#updateTarget(target);
     }
+  }
+
+  #targetInfoChanged(event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>): void {
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const target = targetManager.targetById(event.data.targetId);
+    if (!target || target.outermostTarget() !== target) {
+      return;
+    }
+    this.#updateTarget(target);
   }
 
   targetAdded(target: SDK.Target.Target): void {

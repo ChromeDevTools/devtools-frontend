@@ -42,11 +42,12 @@ function detectLockfile() {
   let lockfileShrinkwrap = join(packageDir, 'npm-shrinkwrap.json')
   let lockfileYarn = join(packageDir, 'yarn.lock')
   let lockfilePnpm = join(packageDir, 'pnpm-lock.yaml')
-  let lockfileBun = join(packageDir, 'bun.lockb')
+  let lockfileBun = join(packageDir, 'bun.lock')
+  let lockfileBunBinary = join(packageDir, 'bun.lockb')
 
   if (existsSync(lockfilePnpm)) {
     return { file: lockfilePnpm, mode: 'pnpm' }
-  } else if (existsSync(lockfileBun)) {
+  } else if (existsSync(lockfileBun) || existsSync(lockfileBunBinary)) {
     return { file: lockfileBun, mode: 'bun' }
   } else if (existsSync(lockfileNpm)) {
     return { file: lockfileNpm, mode: 'npm' }

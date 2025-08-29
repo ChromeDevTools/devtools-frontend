@@ -683,6 +683,9 @@ let Page = (() => {
         /**
          * Waits for the network to be idle.
          *
+         * @remarks The function will always wait at least the
+         * set {@link WaitForNetworkIdleOptions.idleTime | IdleTime}.
+         *
          * @param options - Options to configure waiting behavior.
          * @returns A promise which resolves once the network is idle.
          */
@@ -694,8 +697,10 @@ let Page = (() => {
          */
         waitForNetworkIdle$(options = {}) {
             const { timeout: ms = this._timeoutSettings.timeout(), idleTime = util_js_1.NETWORK_IDLE_TIME, concurrency = 0, signal, } = options;
-            return this.#inflight$.pipe((0, rxjs_js_1.switchMap)(inflight => {
-                if (inflight > concurrency) {
+            return this.#inflight$.pipe((0, rxjs_js_1.map)(inflight => {
+                return inflight > concurrency;
+            }), (0, rxjs_js_1.distinctUntilChanged)(), (0, rxjs_js_1.switchMap)(isInflightOverConcurrency => {
+                if (isInflightOverConcurrency) {
                     return rxjs_js_1.EMPTY;
                 }
                 return (0, rxjs_js_1.timer)(idleTime);
@@ -900,7 +905,6 @@ let Page = (() => {
             }
             const recorder = new ScreenRecorder(this, width, height, {
                 ...options,
-                path: options.ffmpegPath,
                 crop,
             });
             try {

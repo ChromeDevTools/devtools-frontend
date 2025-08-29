@@ -2,7 +2,7 @@
 
 var truncate = require('./truncate');
 
-var $isFinite = require('../helpers/isFinite');
+var $isFinite = require('math-intrinsics/isFinite');
 
 // https://262.ecma-international.org/14.0/#sec-isintegralnumber
 

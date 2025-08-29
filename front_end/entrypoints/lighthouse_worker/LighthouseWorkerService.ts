@@ -26,7 +26,7 @@ class ConnectionProxy implements SDK.Connections.ParallelConnectionInterface {
     this.onDisconnect = null;
   }
 
-  setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
+  setOnMessage(onMessage: (arg0: Object|string) => void): void {
     this.onMessage = onMessage;
   }
 

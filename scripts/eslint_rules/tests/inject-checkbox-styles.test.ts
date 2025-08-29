@@ -75,29 +75,6 @@ export class SettingCheckbox extends HTMLElement {
       filename: 'front_end/ui/components/settings/SettingsCheckbox.ts',
     },
     {
-      code: `import * as ComponentHelpers from '../../components/helpers/helpers.js';
-import * as Lit from '../../lit/lit.js';
-import * as Input from '../input/input.js';
-
-
-export class SettingCheckbox extends HTMLElement {
-  static readonly litTagName = Lit.literal\`setting-checkbox\`;
-  readonly #shadow = this.attachShadow({mode: 'open'});
-
-  #render(): void {
-    Lit.render(
-        Lit.html\`
-      <style>\${UI.Widget.widgetScoped(Input.checkboxStyles)}</style>
-      <p>
-        <label>
-          <input type="checkbox" />
-        </label>
-      </p>\`, this.#shadow, {host: this});
-  }
-}`,
-      filename: 'front_end/ui/components/settings/SettingsCheckbox.ts',
-    },
-    {
       code: `import * as Input from '../input/input.js';
       export class Test extends HTMLElement {
         private readonly shadow = this.attachShadow({mode: 'open'});

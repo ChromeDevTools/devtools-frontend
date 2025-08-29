@@ -11,7 +11,6 @@ import {
   navigateToIssuesTab,
   RESOURCES_LABEL,
 } from '../../e2e/helpers/issues-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Partitioning Blob URL Issue', () => {
   it('should display the blocked fetching Blob URL and description based on partitioning info',
@@ -34,7 +33,7 @@ describe('Partitioning Blob URL Issue', () => {
          window.addIssueForTest(issue);
        });
        const issueElement = await getAndExpandSpecificIssueByTitle('Fetching Partitioned Blob URL Issue', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
      });
 
   it('should display the enforced noopener for navigation Blob URL and description based on partitioning info',
@@ -58,7 +57,7 @@ describe('Partitioning Blob URL Issue', () => {
        });
        const issueElement =
            await getAndExpandSpecificIssueByTitle('Navigating Partitioned Blob URL Issue', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
      });
 
   it('partitioning blob resource view is hidden if there is no resource', async ({devToolsPage, inspectedPage}) => {
@@ -69,7 +68,7 @@ describe('Partitioning Blob URL Issue', () => {
     await expandIssue(devToolsPage);
     const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
     const issueElement = await getIssueByTitle(issueTitle, devToolsPage);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const childElements = await devToolsPage.$$(RESOURCES_LABEL, issueElement);
     let foundBlobResourceElement = false;
     let foundQuirkyElement = false;

@@ -39,7 +39,6 @@ devtools_module("components") {
     "../../../../ui/legacy/theme_support:bundle",
     "../../../../ui/lit:bundle",
     "../../../../ui/visual_logging:bundle",
-    "../../../common:bundle",
     "../../utils:bundle",
   ]
 }

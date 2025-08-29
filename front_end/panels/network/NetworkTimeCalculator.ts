@@ -39,15 +39,15 @@ import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 const UIStrings = {
   /**
-   *@description Latency download total format in Network Time Calculator of the Network panel
-   *@example {20ms} PH1
-   *@example {20ms} PH2
-   *@example {40ms} PH3
+   * @description Latency download total format in Network Time Calculator of the Network panel
+   * @example {20ms} PH1
+   * @example {20ms} PH2
+   * @example {40ms} PH3
    */
   sLatencySDownloadSTotal: '{PH1} latency, {PH2} download ({PH3} total)',
   /**
-   *@description Latency format in Network Time Calculator of the Network panel
-   *@example {20ms} PH1
+   * @description Latency format in Network Time Calculator of the Network panel
+   * @example {20ms} PH1
    */
   sLatency: '{PH1} latency',
   /**
@@ -56,13 +56,13 @@ const UIStrings = {
    */
   sDownload: '{PH1} download',
   /**
-   *@description From service worker format in Network Time Calculator of the Network panel
-   *@example {20ms latency} PH1
+   * @description From service worker format in Network Time Calculator of the Network panel
+   * @example {20ms latency} PH1
    */
   sFromServiceworker: '{PH1} (from `ServiceWorker`)',
   /**
-   *@description From cache format in Network Time Calculator of the Network panel
-   *@example {20ms latency} PH1
+   * @description From cache format in Network Time Calculator of the Network panel
+   * @example {20ms latency} PH1
    */
   sFromCache: '{PH1} (from cache)',
 } as const;
@@ -90,29 +90,26 @@ export class NetworkTimeBoundary {
 
 export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.TimelineGrid.Calculator {
+  #minimumBoundary = -1;
+  #maximumBoundary = -1;
+  readonly #boundaryChangedEventThrottler = new Common.Throttler.Throttler(0);
+  #window: NetworkTimeBoundary|null = null;
+  #workingArea?: number;
+
   startAtZero: boolean;
-  private minimumBoundaryInternal: number;
-  private maximumBoundaryInternal: number;
-  private readonly boundryChangedEventThrottler: Common.Throttler.Throttler;
-  private window: NetworkTimeBoundary|null;
-  private workingArea?: number;
 
   constructor(startAtZero: boolean) {
     super();
     this.startAtZero = startAtZero;
-    this.minimumBoundaryInternal = -1;
-    this.maximumBoundaryInternal = -1;
-    this.boundryChangedEventThrottler = new Common.Throttler.Throttler(0);
-    this.window = null;
   }
 
   setWindow(window: NetworkTimeBoundary|null): void {
-    this.window = window;
+    this.#window = window;
     this.boundaryChanged();
   }
 
   computePosition(time: number): number {
-    return (time - this.minimumBoundary()) / this.boundarySpan() * (this.workingArea || 0);
+    return (time - this.minimumBoundary()) / this.boundarySpan() * (this.#workingArea || 0);
   }
 
   formatValue(value: number, precision?: number): string {
@@ -120,15 +117,15 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   minimumBoundary(): number {
-    return this.window ? this.window.minimum : this.minimumBoundaryInternal;
+    return this.#window ? this.#window.minimum : this.#minimumBoundary;
   }
 
   zeroTime(): number {
-    return this.minimumBoundaryInternal;
+    return this.#minimumBoundary;
   }
 
   maximumBoundary(): number {
-    return this.window ? this.window.maximum : this.maximumBoundaryInternal;
+    return this.#window ? this.#window.maximum : this.#maximumBoundary;
   }
 
   boundary(): NetworkTimeBoundary {
@@ -140,8 +137,8 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   reset(): void {
-    this.minimumBoundaryInternal = -1;
-    this.maximumBoundaryInternal = -1;
+    this.#minimumBoundary = -1;
+    this.#maximumBoundary = -1;
     this.boundaryChanged();
   }
 
@@ -150,7 +147,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   setDisplayWidth(clientWidth: number): void {
-    this.workingArea = clientWidth;
+    this.#workingArea = clientWidth;
   }
 
   computeBarGraphPercentages(request: SDK.NetworkRequest.NetworkRequest): {
@@ -189,7 +186,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   boundaryChanged(): void {
-    void this.boundryChangedEventThrottler.schedule(async () => {
+    void this.#boundaryChangedEventThrottler.schedule(async () => {
       this.dispatchEventToListeners(Events.BOUNDARIES_CHANGED);
     });
   }
@@ -199,8 +196,8 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
       return;
     }
 
-    if (this.maximumBoundaryInternal === undefined || eventTime > this.maximumBoundaryInternal) {
-      this.maximumBoundaryInternal = eventTime;
+    if (this.#maximumBoundary === undefined || eventTime > this.#maximumBoundary) {
+      this.#maximumBoundary = eventTime;
       this.boundaryChanged();
     }
   }
@@ -252,19 +249,17 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   extendBoundariesToIncludeTimestamp(timestamp: number): boolean {
-    const previousMinimumBoundary = this.minimumBoundaryInternal;
-    const previousMaximumBoundary = this.maximumBoundaryInternal;
+    const previousMinimumBoundary = this.#minimumBoundary;
+    const previousMaximumBoundary = this.#maximumBoundary;
     const minOffset = MINIMUM_SPREAD;
-    if (this.minimumBoundaryInternal === -1 || this.maximumBoundaryInternal === -1) {
-      this.minimumBoundaryInternal = timestamp;
-      this.maximumBoundaryInternal = timestamp + minOffset;
+    if (this.#minimumBoundary === -1 || this.#maximumBoundary === -1) {
+      this.#minimumBoundary = timestamp;
+      this.#maximumBoundary = timestamp + minOffset;
     } else {
-      this.minimumBoundaryInternal = Math.min(timestamp, this.minimumBoundaryInternal);
-      this.maximumBoundaryInternal =
-          Math.max(timestamp, this.minimumBoundaryInternal + minOffset, this.maximumBoundaryInternal);
+      this.#minimumBoundary = Math.min(timestamp, this.#minimumBoundary);
+      this.#maximumBoundary = Math.max(timestamp, this.#minimumBoundary + minOffset, this.#maximumBoundary);
     }
-    return previousMinimumBoundary !== this.minimumBoundaryInternal ||
-        previousMaximumBoundary !== this.maximumBoundaryInternal;
+    return previousMinimumBoundary !== this.#minimumBoundary || previousMaximumBoundary !== this.#maximumBoundary;
   }
 
   lowerBound(_request: SDK.NetworkRequest.NetworkRequest): number {

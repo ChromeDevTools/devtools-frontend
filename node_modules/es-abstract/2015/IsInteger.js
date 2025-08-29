@@ -1,6 +1,6 @@
 'use strict';
 
-var isInteger = require('../helpers/isInteger');
+var isInteger = require('math-intrinsics/isInteger');
 
 // https://262.ecma-international.org/6.0/#sec-isinteger
 

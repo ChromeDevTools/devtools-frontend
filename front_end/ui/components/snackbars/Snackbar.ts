@@ -39,18 +39,18 @@ export const DEFAULT_AUTO_DISMISS_MS = 5000;
 const LONG_ACTION_THRESHOLD = 15;
 
 /**
- * @attr dismiss-timeout - Timeout in ms after which the snackbar is dismissed (if closable is false).
- * @attr message - The message to display in the snackbar.
- * @attr closable - If true, the snackbar will have a dismiss button. This cancels the auto dismiss behavior.
- * @attr action-button-label - The text for the action button.
- * @attr action-button-title - The title for the action button.
+ * @property actionButtonClickHandler - Function to be triggered when action button is clicked.
+ * @property dismissTimeout - reflects the `"dismiss-timeout"` attribute.
+ * @property message - reflects the `"message"` attribute.
+ * @property closable - reflects the `"closable"` attribute.
+ * @property actionButtonLabel - reflects the `"action-button-label"` attribute.
+ * @property actionButtonTitle - reflects the `"action-button-title"` attribute.
+ * @attribute dismiss-timeout - Timeout in ms after which the snackbar is dismissed (if closable is false).
+ * @attribute message - The message to display in the snackbar.
+ * @attribute closable - If true, the snackbar will have a dismiss button. This cancels the auto dismiss behavior.
+ * @attribute action-button-label - The text for the action button.
+ * @attribute action-button-title - The title for the action button.
  *
- * @prop {Number} dismissTimeout - reflects the `"dismiss-timeout"` attribute.
- * @prop {String} message - reflects the `"message"` attribute.
- * @prop {Boolean} closable - reflects the `"closable"` attribute.
- * @prop {String} actionButtonLabel - reflects the `"action-button-label"` attribute.
- * @prop {String} actionButtonTitle - reflects the `"action-button-title"` attribute.
- * @prop {Function} actionButtonClickHandler - Function to be triggered when action button is clicked.
  */
 export class Snackbar extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -134,7 +134,7 @@ export class Snackbar extends HTMLElement {
 
   /**
    * Sets the function to be triggered when the action button is clicked.
-   * @param {Function} actionButtonClickHandler
+   * @param actionButtonClickHandler
    */
   set actionButtonClickHandler(actionButtonClickHandler: () => void) {
     this.#actionButtonClickHandler = actionButtonClickHandler;

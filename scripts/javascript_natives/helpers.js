@@ -39,7 +39,7 @@ export function parseTSFunction(func, node) {
 }
 
 /**
- * @param {WebIDL2.IDLRootType} thing
+ * @param thing
  * */
 export function walkRoot(thing) {
   switch (thing.type) {
@@ -57,7 +57,7 @@ export function walkRoot(thing) {
 }
 
 /**
- * @param {WebIDL2.IncludesType} thing
+ * @param thing
  * */
 function walkIncludes(thing) {
   if (includes.has(thing.includes)) {
@@ -67,7 +67,7 @@ function walkIncludes(thing) {
   }
 }
 /**
- * @param {WebIDL2.InterfaceType} thing
+ * @param thing
  * */
 function walkInterface(thing) {
   thing.members.forEach(member => {
@@ -86,7 +86,7 @@ function walkInterface(thing) {
 }
 
 /**
- * @param {WebIDL2.NamespaceType | WebIDL2.InterfaceMixinType} thing
+ * @param thing
  * */
 function walkMembers(thing) {
   thing.members.forEach(member => {
@@ -97,14 +97,14 @@ function walkMembers(thing) {
 }
 
 /**
- * @param {WebIDL2.OperationMemberType} member
+ * @param member
  * */
 function handleOperation(member) {
   storeMethod(member.parent.name, member.name, member.arguments.map(argName));
 }
 
 /**
- * @param {WebIDL2.Argument} a
+ * @param a
  * */
 function argName(a) {
   let name = a.name;
@@ -118,9 +118,9 @@ function argName(a) {
 }
 
 /**
- * @param {string} parent
- * @param {string} name
- * @param {Array<string>} args
+ * @param parent
+ * @param name
+ * @param args
  * */
 function storeMethod(parent, name, args) {
   if (!methods.has(name)) {

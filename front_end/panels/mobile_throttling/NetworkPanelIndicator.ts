@@ -9,19 +9,19 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-   *@description Icon title in Network Panel Indicator of the Network panel
+   * @description Icon title in Network Panel Indicator of the Network panel
    */
   networkThrottlingIsEnabled: 'Network throttling is enabled',
   /**
-   *@description Icon title in Network Panel Indicator of the Network panel
+   * @description Icon title in Network Panel Indicator of the Network panel
    */
   requestsMayBeOverridden: 'Requests may be overridden locally, see the Sources panel',
   /**
-   *@description Icon title in Network Panel Indicator of the Network panel
+   * @description Icon title in Network Panel Indicator of the Network panel
    */
   requestsMayBeBlocked: 'Requests may be blocked, see the Network request blocking panel',
   /**
-   * @description Title of an icon in the Network panel that indicates that accepted content encodings have been overriden.
+   * @description Title of an icon in the Network panel that indicates that accepted content encodings have been overridden.
    */
   acceptedEncodingOverrideSet:
       'The set of accepted `Content-Encoding` headers has been modified by DevTools, see the Network conditions panel',

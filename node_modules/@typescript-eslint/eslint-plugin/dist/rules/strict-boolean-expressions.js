@@ -237,7 +237,7 @@ exports.default = (0, util_1.createRule)({
                 return type;
             });
             const flattenTypes = [
-                ...new Set(returnTypes.flatMap(type => tsutils.unionTypeParts(type))),
+                ...new Set(returnTypes.flatMap(type => tsutils.unionConstituents(type))),
             ];
             const types = inspectVariantTypes(flattenTypes);
             const reportType = determineReportType(types);
@@ -774,7 +774,7 @@ exports.default = (0, util_1.createRule)({
          */
         function checkNode(node) {
             const type = (0, util_1.getConstrainedTypeAtLocation)(services, node);
-            const types = inspectVariantTypes(tsutils.unionTypeParts(type));
+            const types = inspectVariantTypes(tsutils.unionConstituents(type));
             const reportType = determineReportType(types);
             if (reportType != null) {
                 context.report({
@@ -799,7 +799,7 @@ exports.default = (0, util_1.createRule)({
             // If incoming type is either "true" or "false", there will be one type
             // object with intrinsicName set accordingly
             // If incoming type is boolean, there will be two type objects with
-            // intrinsicName set "true" and "false" each because of ts-api-utils.unionTypeParts()
+            // intrinsicName set "true" and "false" each because of ts-api-utils.unionConstituents()
             if (booleans.length === 1) {
                 variantTypes.add(tsutils.isTrueLiteralType(booleans[0]) ? 'truthy boolean' : 'boolean');
             }

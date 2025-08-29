@@ -5,7 +5,7 @@ var GetIntrinsic = require('get-intrinsic');
 var $Number = GetIntrinsic('%Number%');
 var $TypeError = require('es-errors/type');
 
-var $isNaN = require('../helpers/isNaN');
+var $isNaN = require('math-intrinsics/isNaN');
 
 var IsStringPrefix = require('./IsStringPrefix');
 var StringToBigInt = require('./StringToBigInt');

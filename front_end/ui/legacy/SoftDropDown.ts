@@ -20,7 +20,7 @@ import {createShadowRootWithCoreStyles} from './UIUtils.js';
 
 const UIStrings = {
   /**
-   *@description Placeholder text in Soft Drop Down
+   * @description Placeholder text in Soft Drop Down
    */
   noItemSelected: '(no item selected)',
 } as const;

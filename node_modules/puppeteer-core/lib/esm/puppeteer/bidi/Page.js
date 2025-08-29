@@ -96,11 +96,14 @@ import { EmulationManager } from '../cdp/EmulationManager.js';
 import { Tracing } from '../cdp/Tracing.js';
 import { UnsupportedOperation } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
+import { FileChooser } from '../common/FileChooser.js';
 import { evaluationString, isString, parsePDFOptions, timeout, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { bubble } from '../util/decorators.js';
+import { Deferred } from '../util/Deferred.js';
 import { stringToTypedArray } from '../util/encoding.js';
 import { isErrorLike } from '../util/ErrorLike.js';
+import { BidiElementHandle } from './ElementHandle.js';
 import { BidiFrame } from './Frame.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
 import { rewriteNavigationError } from './util.js';
@@ -140,6 +143,7 @@ let BidiPage = (() => {
         coverage;
         #cdpEmulationManager;
         #emulatedNetworkConditions;
+        #fileChooserDeferreds = new Set();
         _client() {
             return this.#frame.client;
         }
@@ -324,7 +328,23 @@ let BidiPage = (() => {
             return this.#cdpEmulationManager.javascriptEnabled;
         }
         async setGeolocation(options) {
-            return await this.#cdpEmulationManager.setGeolocation(options);
+            const { longitude, latitude, accuracy = 0 } = options;
+            if (longitude < -180 || longitude > 180) {
+                throw new Error(`Invalid longitude "${longitude}": precondition -180 <= LONGITUDE <= 180 failed.`);
+            }
+            if (latitude < -90 || latitude > 90) {
+                throw new Error(`Invalid latitude "${latitude}": precondition -90 <= LATITUDE <= 90 failed.`);
+            }
+            if (accuracy < 0) {
+                throw new Error(`Invalid accuracy "${accuracy}": precondition 0 <= ACCURACY failed.`);
+            }
+            return await this.#frame.browsingContext.setGeolocationOverride({
+                coordinates: {
+                    latitude: options.latitude,
+                    longitude: options.longitude,
+                    accuracy: options.accuracy,
+                },
+            });
         }
         async setJavaScriptEnabled(enabled) {
             return await this.#cdpEmulationManager.setJavaScriptEnabled(enabled);
@@ -506,8 +526,39 @@ let BidiPage = (() => {
         target() {
             throw new UnsupportedOperation();
         }
-        waitForFileChooser() {
-            throw new UnsupportedOperation();
+        async waitForFileChooser(options = {}) {
+            const { timeout = this._timeoutSettings.timeout() } = options;
+            const deferred = Deferred.create({
+                message: `Waiting for \`FileChooser\` failed: ${timeout}ms exceeded`,
+                timeout,
+            });
+            this.#fileChooserDeferreds.add(deferred);
+            if (options.signal) {
+                options.signal.addEventListener('abort', () => {
+                    deferred.reject(options.signal?.reason);
+                }, { once: true });
+            }
+            this.#frame.browsingContext.once('filedialogopened', info => {
+                if (!info.element) {
+                    return;
+                }
+                const chooser = new FileChooser(BidiElementHandle.from({
+                    sharedId: info.element.sharedId,
+                    handle: info.element.handle,
+                    type: 'node',
+                }, this.#frame.mainRealm()), info.multiple);
+                for (const deferred of this.#fileChooserDeferreds) {
+                    deferred.resolve(chooser);
+                    this.#fileChooserDeferreds.delete(deferred);
+                }
+            });
+            try {
+                return await deferred.valueOrThrow();
+            }
+            catch (error) {
+                this.#fileChooserDeferreds.delete(deferred);
+                throw error;
+            }
         }
         workers() {
             return [...this.#workers];

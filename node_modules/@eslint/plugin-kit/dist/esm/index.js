@@ -26,6 +26,7 @@ const validSeverities = new Set([0, 1, 2, "off", "warn", "error"]);
 /**
  * Determines if the severity in the rule configuration is valid.
  * @param {RuleConfig} ruleConfig A rule's configuration.
+ * @returns {boolean} `true` if the severity is valid, otherwise `false`.
  */
 function isSeverityValid(ruleConfig) {
 	const severity = Array.isArray(ruleConfig) ? ruleConfig[0] : ruleConfig;
@@ -150,7 +151,7 @@ class ConfigCommentParser {
 		 * But we are supporting that. So this is a fallback for that.
 		 */
 		const normalizedString = string
-			.replace(/([-a-zA-Z0-9/]+):/gu, '"$1":')
+			.replace(/(?<![-a-zA-Z0-9/])([-a-zA-Z0-9/]+):/gu, '"$1":')
 			.replace(/(\]|[0-9])\s+(?=")/u, "$1,");
 
 		try {
@@ -254,13 +255,17 @@ class ConfigCommentParser {
 
 /** @typedef {import("@eslint/core").VisitTraversalStep} VisitTraversalStep */
 /** @typedef {import("@eslint/core").CallTraversalStep} CallTraversalStep */
-/** @typedef {import("@eslint/core").TextSourceCode} TextSourceCode */
 /** @typedef {import("@eslint/core").TraversalStep} TraversalStep */
 /** @typedef {import("@eslint/core").SourceLocation} SourceLocation */
 /** @typedef {import("@eslint/core").SourceLocationWithOffset} SourceLocationWithOffset */
 /** @typedef {import("@eslint/core").SourceRange} SourceRange */
 /** @typedef {import("@eslint/core").Directive} IDirective */
 /** @typedef {import("@eslint/core").DirectiveType} DirectiveType */
+/** @typedef {import("@eslint/core").SourceCodeBaseTypeOptions} SourceCodeBaseTypeOptions */
+/**
+ * @typedef {import("@eslint/core").TextSourceCode<Options>} TextSourceCode<Options>
+ * @template {SourceCodeBaseTypeOptions} [Options=SourceCodeBaseTypeOptions]
+ */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -455,7 +460,8 @@ class Directive {
 
 /**
  * Source Code Base Object
- * @implements {TextSourceCode}
+ * @template {SourceCodeBaseTypeOptions & {SyntaxElementWithLoc: object}} [Options=SourceCodeBaseTypeOptions & {SyntaxElementWithLoc: object}]
+ * @implements {TextSourceCode<Options>}
  */
 class TextSourceCodeBase {
 	/**
@@ -466,7 +472,7 @@ class TextSourceCodeBase {
 
 	/**
 	 * The AST of the source code.
-	 * @type {object}
+	 * @type {Options['RootNode']}
 	 */
 	ast;
 
@@ -480,7 +486,7 @@ class TextSourceCodeBase {
 	 * Creates a new instance.
 	 * @param {Object} options The options for the instance.
 	 * @param {string} options.text The source code text.
-	 * @param {object} options.ast The root AST node.
+	 * @param {Options['RootNode']} options.ast The root AST node.
 	 * @param {RegExp} [options.lineEndingPattern] The pattern to match lineEndings in the source code.
 	 */
 	constructor({ text, ast, lineEndingPattern = /\r?\n/u }) {
@@ -491,8 +497,9 @@ class TextSourceCodeBase {
 
 	/**
 	 * Returns the loc information for the given node or token.
-	 * @param {object} nodeOrToken The node or token to get the loc information for.
+	 * @param {Options['SyntaxElementWithLoc']} nodeOrToken The node or token to get the loc information for.
 	 * @returns {SourceLocation} The loc information for the node or token.
+	 * @throws {Error} If the node or token does not have loc information.
 	 */
 	getLoc(nodeOrToken) {
 		if (hasESTreeStyleLoc(nodeOrToken)) {
@@ -510,8 +517,9 @@ class TextSourceCodeBase {
 
 	/**
 	 * Returns the range information for the given node or token.
-	 * @param {object} nodeOrToken The node or token to get the range information for.
+	 * @param {Options['SyntaxElementWithLoc']} nodeOrToken The node or token to get the range information for.
 	 * @returns {SourceRange} The range information for the node or token.
+	 * @throws {Error} If the node or token does not have range information.
 	 */
 	getRange(nodeOrToken) {
 		if (hasESTreeStyleRange(nodeOrToken)) {
@@ -533,8 +541,9 @@ class TextSourceCodeBase {
 	/* eslint-disable no-unused-vars -- Required to complete interface. */
 	/**
 	 * Returns the parent of the given node.
-	 * @param {object} node The node to get the parent of.
-	 * @returns {object|undefined} The parent of the node.
+	 * @param {Options['SyntaxElementWithLoc']} node The node to get the parent of.
+	 * @returns {Options['SyntaxElementWithLoc']|undefined} The parent of the node.
+	 * @throws {Error} If the method is not implemented in the subclass.
 	 */
 	getParent(node) {
 		throw new Error("Not implemented.");
@@ -543,8 +552,8 @@ class TextSourceCodeBase {
 
 	/**
 	 * Gets all the ancestors of a given node
-	 * @param {object} node The node
-	 * @returns {Array<object>} All the ancestor nodes in the AST, not including the provided node, starting
+	 * @param {Options['SyntaxElementWithLoc']} node The node
+	 * @returns {Array<Options['SyntaxElementWithLoc']>} All the ancestor nodes in the AST, not including the provided node, starting
 	 * from the root node at index 0 and going inwards to the parent node.
 	 * @throws {TypeError} When `node` is missing.
 	 */
@@ -568,7 +577,7 @@ class TextSourceCodeBase {
 
 	/**
 	 * Gets the source code for the given node.
-	 * @param {object} [node] The AST node to get the text for.
+	 * @param {Options['SyntaxElementWithLoc']} [node] The AST node to get the text for.
 	 * @param {number} [beforeCount] The number of characters before the node to retrieve.
 	 * @param {number} [afterCount] The number of characters after the node to retrieve.
 	 * @returns {string} The text representing the AST node.

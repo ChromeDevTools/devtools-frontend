@@ -21,7 +21,6 @@ import {
   openSourceCodeEditorForFile,
 } from '../../e2e/helpers/sources-helpers.js';
 import {
-  assertNotNullOrUndefined,
   replacePuppeteerUrl,
 } from '../../shared/helper.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
@@ -457,7 +456,7 @@ describe('The Console Tab', () => {
          // Confirm that the second memory icon is next to the `buffer`.
          const arrayBufferProperty = await devToolsPage.waitFor('.object-value-arraybuffer');
          const arrayBufferMemoryIcon = await devToolsPage.$(MEMORY_ICON_SELECTOR, arrayBufferProperty);
-         assertNotNullOrUndefined(arrayBufferMemoryIcon);
+         assert.isOk(arrayBufferMemoryIcon);
        });
 
     it('shows two memory icons to open memory inspector for a DataView (description, buffer)',
@@ -480,7 +479,7 @@ describe('The Console Tab', () => {
          // Confirm that the second memory icon is next to the `buffer`.
          const arrayBufferProperty = await devToolsPage.waitFor('.object-value-arraybuffer');
          const arrayBufferMemoryIcon = await devToolsPage.$(MEMORY_ICON_SELECTOR, arrayBufferProperty);
-         assertNotNullOrUndefined(arrayBufferMemoryIcon);
+         assert.isOk(arrayBufferMemoryIcon);
        });
 
     it('shows two memory icons to open memory inspector for WebAssembly memory (description, buffer)',
@@ -503,7 +502,7 @@ describe('The Console Tab', () => {
          // Confirm that the second memory icon is next to the `buffer`.
          const arrayBufferProperty = await devToolsPage.waitFor('.object-value-arraybuffer');
          const arrayBufferMemoryIcon = await devToolsPage.$(MEMORY_ICON_SELECTOR, arrayBufferProperty);
-         assertNotNullOrUndefined(arrayBufferMemoryIcon);
+         assert.isOk(arrayBufferMemoryIcon);
        });
   });
 });

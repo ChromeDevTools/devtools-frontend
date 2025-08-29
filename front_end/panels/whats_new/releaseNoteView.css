@@ -3,118 +3,119 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-.whatsnew {
-  background: var(--sys-color-header-container);
-  flex-grow: 1;
-  flex-shrink: 0;
-  display: flex;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  justify-content: center;
-}
-
-.whatsnew-content {
-  max-width: var(--sys-size-35);
-  padding: var(--sys-size-9) 0 0;
-
-  >* {
-    padding: 0 var(--sys-size-9) var(--sys-size-9) var(--sys-size-9);
-  }
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  font: var(--sys-typescale-headline4);
-
-  &::before {
-    content: "";
-    width: var(--sys-size-9);
-    height: var(--sys-size-9);
-    transform: scale(1.6);
-    margin: 0 var(--sys-size-8) 0 var(--sys-size-4);
-    background-image: var(--image-file-devtools);
+@scope to (devtools-widget > *) {
+  .whatsnew {
+    background: var(--sys-color-header-container);
+    flex-grow: 1;
     flex-shrink: 0;
-  }
-}
-
-.feature-container {
-  flex-grow: 1;
-  padding: 0;
-  background-color: var(--sys-color-surface);
-  border-radius: var(--sys-shape-corner-large) var(--sys-shape-corner-large) 0 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.feature {
-  background-color: var(--sys-color-surface3);
-  padding: 0 var(--sys-size-8) var(--sys-size-8);
-  border-radius: var(--sys-shape-corner-medium);
-  margin: 0 var(--sys-size-9) var(--sys-size-9);
-}
-
-.video-container {
-  margin-bottom: var(--sys-size-9);
-
-  &:has(.video) {
-    --video-bottom-padding: var(--sys-size-6);
-
-    overflow: auto;
     display: flex;
-    flex-direction: row;
-    gap: var(--sys-size-5);
-    padding: var(--sys-size-9) var(--sys-size-9) var(--video-bottom-padding);
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    justify-content: center;
+  }
 
-    /* This extra margin makes sure that we have some space between
-       the scrollable container for videos and the cards below it. */
-    margin-bottom: calc(var(--sys-size-9) - var(--video-bottom-padding));
+  .whatsnew-content {
+    max-width: var(--sys-size-35);
+    padding: var(--sys-size-9) 0 0;
 
-    > * {
-      min-width: auto;
+    >* {
+      padding: 0 var(--sys-size-9) var(--sys-size-9) var(--sys-size-9);
     }
   }
-}
 
-.video {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  border-radius: var(--sys-shape-corner-medium);
-  background-color: var(--sys-color-surface3);
-  font: var(--sys-typescale-body5-regular);
-  min-width: var(--sys-size-29);
-  max-width: var(--sys-size-32);
-  overflow: hidden;
-  height: 72px;
+  .header {
+    display: flex;
+    align-items: center;
+    font: var(--sys-typescale-headline4);
 
-  &:hover {
-    box-shadow: var(--sys-elevation-level3);
+    &::before {
+      content: "";
+      width: var(--sys-size-9);
+      height: var(--sys-size-9);
+      transform: scale(1.6);
+      margin: 0 var(--sys-size-8) 0 var(--sys-size-4);
+      background-image: var(--image-file-devtools);
+      flex-shrink: 0;
+    }
   }
 
-  .thumbnail {
-    border-radius: var(--sys-shape-corner-medium) 0 0 var(--sys-shape-corner-medium);
-    flex-shrink: 0;
+  .feature-container {
+    flex-grow: 1;
+    padding: 0;
+    background-color: var(--sys-color-surface);
+    border-radius: var(--sys-shape-corner-large) var(--sys-shape-corner-large) 0 0;
+    display: flex;
+    flex-direction: column;
   }
 
-  .thumbnail-description {
-    --description-margin: var(--sys-size-6);
-
-    margin: var(--description-margin);
-    height: calc(100% - var(--description-margin) * 2);
-    overflow: hidden;
+  .feature {
+    background-color: var(--sys-color-surface3);
+    padding: 0 var(--sys-size-8) var(--sys-size-8);
+    border-radius: var(--sys-shape-corner-medium);
+    margin: 0 var(--sys-size-9) var(--sys-size-9);
   }
-}
 
-x-link:focus .video {
-  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-}
+  .video-container {
+    margin-bottom: var(--sys-size-9);
 
-@media (forced-colors: active) {
-  .feature,
+    &:has(.video) {
+      --video-bottom-padding: var(--sys-size-6);
+
+      overflow: auto;
+      display: flex;
+      flex-direction: row;
+      gap: var(--sys-size-5);
+      padding: var(--sys-size-9) var(--sys-size-9) var(--video-bottom-padding);
+
+      /* This extra margin makes sure that we have some space between
+        the scrollable container for videos and the cards below it. */
+      margin-bottom: calc(var(--sys-size-9) - var(--video-bottom-padding));
+
+      > * {
+        min-width: auto;
+      }
+    }
+  }
+
   .video {
-    border: var(--sys-size-1) solid ButtonText;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    border-radius: var(--sys-shape-corner-medium);
+    background-color: var(--sys-color-surface3);
+    font: var(--sys-typescale-body5-regular);
+    min-width: var(--sys-size-29);
+    max-width: var(--sys-size-32);
+    overflow: hidden;
+    height: 72px;
+
+    &:hover {
+      box-shadow: var(--sys-elevation-level3);
+    }
+
+    .thumbnail {
+      border-radius: var(--sys-shape-corner-medium) 0 0 var(--sys-shape-corner-medium);
+      flex-shrink: 0;
+    }
+
+    .thumbnail-description {
+      --description-margin: var(--sys-size-6);
+
+      margin: var(--description-margin);
+      height: calc(100% - var(--description-margin) * 2);
+      overflow: hidden;
+    }
+  }
+
+  x-link:focus .video {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  }
+
+  @media (forced-colors: active) {
+    .feature,
+    .video {
+      border: var(--sys-size-1) solid ButtonText;
+    }
   }
 }

@@ -3,25 +3,26 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+@scope to (devtools-widget > *) {
+  .header {
+    padding-top: var(--sys-size-3);
+    margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
+    font: var(--sys-typescale-body2-medium);
+  }
 
-.header {
-  padding-top: var(--sys-size-3);
-  margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
-  font: var(--sys-typescale-body2-medium);
-}
+  .close-button {
+    margin: var(--sys-size-3);
+  }
 
-.close-button {
-  margin: var(--sys-size-3);
-}
+  .content {
+    margin: 0 var(--sys-size-8);
+  }
 
-.content {
-  margin: 0 var(--sys-size-8);
-}
+  .button-container {
+    margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
+  }
 
-.button-container {
-  margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
-}
-
-.reason {
-  color: var(--sys-color-error);
+  .reason {
+    color: var(--sys-color-error);
+  }
 }

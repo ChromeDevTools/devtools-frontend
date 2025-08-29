@@ -8,7 +8,7 @@ When the user interacts with AI via the AI Assistance Panel, they are having a _
 
 Each agent has a _context_ defined, which represents the selected data that forms the context of the conversation the user is having with that agent. For example:
 
-- The `PerformanceInsightsAgent` has an individual performance insight as its context.
+- The `PerformanceAgent` has an individual performance trace and a specific focus (an insight, or a call tree) as its context.
 - The `StylingAgent` has a DOM Node as its context.
 
 When defining a context, they must extend the `ConversationContext` interface, which defines a few methods which must be implemented, including:
@@ -24,6 +24,10 @@ To deal with the work to take an object that is the AI agent's context and turn 
 
 ## Performance specific documentation
 
+### `TimelineUtils.AIContext.AgentFocus`
+
+The context for `PerformanceAgent` is `AgentFocus`, which supports different behavior for different entry-points of the "Ask AI" feature for a trace. The two entry-points now are "insight" and "call-tree". The agent modifies its capabilities based on this focus.
+
 ### Adding "Ask AI" to a new Insight
 
 The process for adding "Ask AI" support to a new insight is mostly limited to updating the `PerformanceInsightFormatter` to support the new insight. There are a few methods with `switch` statements that will need updating:
@@ -34,19 +38,13 @@ The process for adding "Ask AI" support to a new insight is mostly limited to up
 
 Once you've done that, you will need to update the UI component to tell it that it can render the "Ask AI" button. To do this, override the `hasAskAiSupport()` method in the component and return `true`.
 
-### `InsightAIContext` and time bounds for insights
+### Time bounds for insights
 
-The `PerformanceInsightsAgent` has the ability to make function calls to be informed about network and main thread activity. When this happens we determine the time bounds that are relevant for the selected Insight. For example, for any LCP based Insights we limit the time frame to be:
+The `PerformanceAgent` has the ability to make function calls to be informed about network and main thread activity. When this happens we determine the time bounds that are relevant for the selected insight.
 
-- **Start time**: navigation start or trace start
-- **End time**: the LCP timestamp
+In general, the trace bounds are defined by the insight's overlays. If there are none, we use the insight set's navigation bounds.
 
-For all other Insights, we use:
-
-- **Start time**: navigation start or trace start
-- **End time**: the next navigation start or the trace end
-
-You can override this if you need to; see the `insightBounds` function in `InsightAIContext.ts`.
+See the `insightBounds` function in `InsightAIContext.ts`.
 
 
 ### Testing the new Insight

@@ -17,17 +17,10 @@ node_ts_library("tests") {
   deps = [
     "application",
     "console",
-    "cross_tool_integration",
     "elements",
-    "emulation",
     "extensions",
-    "host",
-    "issues",
     "lighthouse",
-    "network",
-    "panels",
     "performance",
-    "security",
     "sources",
   ]
   sources = [ "mocharc.ts" ]

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -10,7 +12,6 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
 } from '../../e2e/helpers/issues-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Bounce Tracking issue', () => {
   it('should display correct information', async ({devToolsPage, inspectedPage}) => {
@@ -41,7 +42,7 @@ describe('Bounce Tracking issue', () => {
     await expandIssue(devToolsPage);
     const issueElement = await getIssueByTitle(
         'Chrome may soon delete state for intermediate websites in a recent navigation chain', devToolsPage);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section = await getResourcesElement('2 potentially tracking websites', issueElement, undefined, devToolsPage);
     await ensureResourceSectionIsExpanded(section, devToolsPage);
     const expectedTableRows = [

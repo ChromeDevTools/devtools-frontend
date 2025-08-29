@@ -12,7 +12,6 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
 } from '../../e2e/helpers/issues-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('CORS issues', () => {
   it('should display CORS violations with the correct affected resources', async ({devToolsPage, inspectedPage}) => {
@@ -24,7 +23,7 @@ describe('CORS issues', () => {
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
     const issueElement = await getIssueByTitle('Ensure CORS response header values are valid', devToolsPage);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section =
         await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
     const text = await section.label.evaluate(el => el.textContent);
@@ -83,7 +82,7 @@ describe('CORS issues', () => {
        await expandIssue(devToolsPage);
        const issueElement = await getIssueByTitle(
            'Ensure credentialed requests are not sent to CORS resources with origin wildcards', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
        const section =
            await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
        const text = await section.label.evaluate(el => el.textContent);
@@ -131,7 +130,7 @@ describe('CORS issues', () => {
        await navigateToIssuesTab(devToolsPage);
        await expandIssue(devToolsPage);
        const issueElement = await getIssueByTitle('Ensure preflight responses are valid', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
        const section =
            await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
        const text = await section.label.evaluate(el => el.textContent);
@@ -185,7 +184,7 @@ describe('CORS issues', () => {
        await expandIssue(devToolsPage);
        const issueElement =
            await getIssueByTitle('Ensure CORS requesting origin matches resource\'s allowed origin', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
        const section =
            await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
        const text = await section.label.evaluate(el => el.textContent);
@@ -242,7 +241,7 @@ describe('CORS issues', () => {
        await expandIssue(devToolsPage);
        const issueElement =
            await getIssueByTitle('Ensure CORS requests include credentials only when allowed', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
        const section =
            await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
        const text = await section.label.evaluate(el => el.textContent);
@@ -290,7 +289,7 @@ describe('CORS issues', () => {
        await navigateToIssuesTab(devToolsPage);
        await expandIssue(devToolsPage);
        const issueElement = await getIssueByTitle('Ensure CORS request uses allowed method', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
        const section =
            await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
        const text = await section.label.evaluate(el => el.textContent);
@@ -331,7 +330,7 @@ describe('CORS issues', () => {
        await navigateToIssuesTab(devToolsPage);
        await expandIssue(devToolsPage);
        const issueElement = await getIssueByTitle('Ensure CORS request includes only allowed headers', devToolsPage);
-       assertNotNullOrUndefined(issueElement);
+       assert.isOk(issueElement);
        const section =
            await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
        const text = await section.label.evaluate(el => el.textContent);
@@ -370,7 +369,7 @@ describe('CORS issues', () => {
     await expandIssue(devToolsPage);
     const issueElement =
         await getIssueByTitle('Ensure CORS requests are not redirected to URLs containing credentials', devToolsPage);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section =
         await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
     const text = await section.label.evaluate(el => el.textContent);
@@ -402,7 +401,7 @@ describe('CORS issues', () => {
     await expandIssue(devToolsPage);
     const issueElement = await getIssueByTitle(
         'Ensure only same-origin resources are fetched with same-origin request mode', devToolsPage);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section =
         await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
     const text = await section.label.evaluate(el => el.textContent);
@@ -439,7 +438,7 @@ describe('CORS issues', () => {
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
     const issueElement = await getIssueByTitle('Ensure CORS requests are made on supported schemes', devToolsPage);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section =
         await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
     const text = await section.label.evaluate(el => el.textContent);
@@ -478,7 +477,7 @@ describe('CORS issues', () => {
     await navigateToIssuesTab(devToolsPage);
     await expandIssue(devToolsPage);
     const issueElement = await getIssueByTitle('Ensure no-cors requests configure redirect mode follow', devToolsPage);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section =
         await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label', devToolsPage);
     const text = await section.label.evaluate(el => el.textContent);

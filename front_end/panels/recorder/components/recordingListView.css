@@ -3,92 +3,93 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+@scope to (devtools-widget > *) {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: inherit;
+  }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-size: inherit;
-}
+  *:focus,
+  *:focus-visible {
+    outline: none;
+  }
 
-*:focus,
-*:focus-visible {
-  outline: none;
-}
+  .wrapper {
+    padding: 24px;
+  }
 
-.wrapper {
-  padding: 24px;
-}
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
+  h1 {
+    font-size: 16px;
+    line-height: 19px;
+    color: var(--sys-color-on-surface);
+    font-weight: normal;
+  }
 
-h1 {
-  font-size: 16px;
-  line-height: 19px;
-  color: var(--sys-color-on-surface);
-  font-weight: normal;
-}
+  .icon,
+  .icon devtools-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--sys-color-primary);
+  }
 
-.icon,
-.icon devtools-icon {
-  width: 20px;
-  height: 20px;
-  color: var(--sys-color-primary);
-}
+  .table {
+    margin-top: 35px;
+  }
 
-.table {
-  margin-top: 35px;
-}
+  .title {
+    font-size: 13px;
+    color: var(--sys-color-on-surface);
+    margin-left: 10px;
+    flex: 1;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 
-.title {
-  font-size: 13px;
-  color: var(--sys-color-on-surface);
-  margin-left: 10px;
-  flex: 1;
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+  .row {
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
+    height: 28px;
+    border-bottom: 1px solid var(--sys-color-divider);
+  }
 
-.row {
-  display: flex;
-  align-items: center;
-  padding-right: 5px;
-  height: 28px;
-  border-bottom: 1px solid var(--sys-color-divider);
-}
+  .row:focus-within,
+  .row:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
 
-.row:focus-within,
-.row:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
+  .row:last-child {
+    border-bottom: none;
+  }
 
-.row:last-child {
-  border-bottom: none;
-}
+  .actions {
+    display: flex;
+    align-items: center;
+  }
 
-.actions {
-  display: flex;
-  align-items: center;
-}
+  .actions button {
+    border: none;
+    background-color: transparent;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
 
-.actions button {
-  border: none;
-  background-color: transparent;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-}
-
-.actions .divider {
-  width: 1px;
-  height: 17px;
-  background-color: var(--sys-color-divider);
-  margin: 0 6px;
+  .actions .divider {
+    width: 1px;
+    height: 17px;
+    background-color: var(--sys-color-divider);
+    margin: 0 6px;
+  }
 }

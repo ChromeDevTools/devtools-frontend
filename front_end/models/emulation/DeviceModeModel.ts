@@ -96,7 +96,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #appliedDeviceSizeInternal: UI.Geometry.Size;
   #appliedDeviceScaleFactorInternal: number;
   #appliedUserAgentTypeInternal: UA;
-  readonly #webPlatformExperimentalFeaturesEnabledInternal: boolean;
   readonly #scaleSettingInternal: Common.Settings.Setting<number>;
   #scaleInternal: number;
   #widthSetting: Common.Settings.Setting<number>;
@@ -125,8 +124,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#appliedDeviceSizeInternal = new UI.Geometry.Size(1, 1);
     this.#appliedDeviceScaleFactorInternal = window.devicePixelRatio;
     this.#appliedUserAgentTypeInternal = UA.DESKTOP;
-    this.#webPlatformExperimentalFeaturesEnabledInternal =
-        window.visualViewport ? 'segments' in window.visualViewport : false;
 
     this.#scaleSettingInternal = Common.Settings.Settings.instance().createSetting('emulation.device-scale', 1);
     // We've used to allow zero before.
@@ -565,7 +562,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       this.applyDeviceMetrics(
           new UI.Geometry.Size(orientation.width, orientation.height), insets, outline,
           this.#scaleSettingInternal.get(), this.#deviceInternal.deviceScaleFactor, mobile,
-          this.getScreenOrientationType(), resetPageScaleFactor, this.#webPlatformExperimentalFeaturesEnabledInternal);
+          this.getScreenOrientationType(), resetPageScaleFactor);
       this.applyUserAgent(this.#deviceInternal.userAgent, this.#deviceInternal.userAgentMetadata);
       this.applyTouch(this.#deviceInternal.touch(), mobile);
     } else if (this.#typeInternal === Type.None) {
@@ -646,8 +643,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private applyDeviceMetrics(
       screenSize: UI.Geometry.Size, insets: Insets, outline: Insets, scale: number, deviceScaleFactor: number,
-      mobile: boolean, screenOrientation: Protocol.Emulation.ScreenOrientationType|null, resetPageScaleFactor: boolean,
-      forceMetricsOverride: boolean|undefined = false): void {
+      mobile: boolean, screenOrientation: Protocol.Emulation.ScreenOrientationType|null,
+      resetPageScaleFactor: boolean): void {
     screenSize.width = Math.max(1, Math.floor(screenSize.width));
     screenSize.height = Math.max(1, Math.floor(screenSize.height));
 
@@ -673,7 +670,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         Math.min(pageWidth * scale, this.#availableSize.width - this.#screenRectInternal.left - positionX * scale),
         Math.min(pageHeight * scale, this.#availableSize.height - this.#screenRectInternal.top - positionY * scale));
     this.#scaleInternal = scale;
-    if (!forceMetricsOverride) {
+    const displayFeature = this.getDisplayFeature();
+    if (!displayFeature) {
       // When sending displayFeature, we cannot use the optimization below due to backend restrictions.
       if (scale === 1 && this.#availableSize.width >= screenSize.width &&
           this.#availableSize.height >= screenSize.height) {
@@ -697,8 +695,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (resetPageScaleFactor) {
       void this.#emulationModel.resetPageScaleFactor();
     }
-    if (pageWidth || pageHeight || mobile || deviceScaleFactor || scale !== 1 || screenOrientation ||
-        forceMetricsOverride) {
+    if (pageWidth || pageHeight || mobile || deviceScaleFactor || scale !== 1 || screenOrientation || displayFeature) {
       const metrics: Protocol.Emulation.SetDeviceMetricsOverrideRequest = {
         width: pageWidth,
         height: pageHeight,
@@ -714,7 +711,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         devicePosture: undefined,
         screenOrientation: undefined,
       };
-      const displayFeature = this.getDisplayFeature();
       if (displayFeature) {
         metrics.displayFeature = displayFeature;
         metrics.devicePosture = {type: Protocol.Emulation.DevicePostureType.Folded};
@@ -735,14 +731,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (overlayModel) {
       overlayModel.showHingeForDualScreen(null);
     }
-  }
-
-  webPlatformExperimentalFeaturesEnabled(): boolean {
-    return this.#webPlatformExperimentalFeaturesEnabledInternal;
-  }
-
-  shouldReportDisplayFeature(): boolean {
-    return this.#webPlatformExperimentalFeaturesEnabledInternal;
   }
 
   async captureScreenshot(fullSize: boolean, clip?: Protocol.Page.Viewport): Promise<string|null> {
@@ -833,10 +821,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private getDisplayFeature(): Protocol.Emulation.DisplayFeature|null {
-    if (!this.shouldReportDisplayFeature()) {
-      return null;
-    }
-
     if (!this.#deviceInternal || !this.#modeInternal ||
         (this.#modeInternal.orientation !== VerticalSpanned && this.#modeInternal.orientation !== HorizontalSpanned)) {
       return null;

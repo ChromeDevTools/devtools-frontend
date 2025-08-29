@@ -20,7 +20,7 @@ export class Dictionary extends Container {
       {
         inheritable: !partial,
         allowedMembers: [...extMembers, [Field.parse]],
-      }
+      },
     );
   }
 

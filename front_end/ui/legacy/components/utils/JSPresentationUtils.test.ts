@@ -15,15 +15,15 @@ describeWithMockConnection('JSPresentationUtils', () => {
     const linkifier = new Components.Linkifier.Linkifier(100, false);
     linkifier.targetAdded(target);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const forceNew = true;
     const targetManager = target.targetManager();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew,
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
       resourceMapping,
       targetManager,
+      ignoreListManager,
     });
-    Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew, debuggerWorkspaceBinding});
     return {target, linkifier};
   }
 
@@ -32,7 +32,8 @@ describeWithMockConnection('JSPresentationUtils', () => {
     const callFrame = {scriptId: 'scriptId', functionName: 'func', url, lineNumber: 0, columnNumber: 0};
     const stackTrace = {callFrames: [callFrame]};
     const options = {tabStops: false, stackTrace} as Components.JSPresentationUtils.Options;
-    const {links} = Components.JSPresentationUtils.buildStackTracePreviewContents(target, linkifier, options);
+    const {linkElements: links} =
+        new Components.JSPresentationUtils.StackTracePreviewContent(undefined, target, linkifier, options);
     assert.lengthOf(links, 1);
     assert.strictEqual(links[0].textContent, expectedLinkContent);
   }

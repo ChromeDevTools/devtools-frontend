@@ -4,7 +4,7 @@ var $TypeError = require('es-errors/type');
 
 var IsInteger = require('./IsInteger');
 
-var isNegativeZero = require('../helpers/isNegativeZero');
+var isNegativeZero = require('math-intrinsics/isNegativeZero');
 
 var isTypedArray = require('is-typed-array');
 var typedArrayBuffer = require('typed-array-buffer');

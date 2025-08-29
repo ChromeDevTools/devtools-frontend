@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @fileoverview Disallow `assert.strictEqual` and `assert.notStrictEqual`
+ * @file Disallow `assert.strictEqual` and `assert.notStrictEqual`
  * with array or object literals.
  */
 

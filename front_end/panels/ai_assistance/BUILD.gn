@@ -41,9 +41,7 @@ devtools_module("ai_assistance") {
     "../../models/workspace_diff:bundle",
     "../../panels/changes:bundle",
     "../../panels/common:bundle",
-    "../../panels/elements:bundle",
-    "../../panels/network:bundle",
-    "../../panels/sources:bundle",
+    "../../panels/network/forward:bundle",
     "../../panels/timeline:bundle",
     "../../panels/timeline/utils:bundle",
     "../../third_party/marked:bundle",
@@ -98,8 +96,13 @@ ts_library("unittests") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../../panels/network:bundle",
     "../../panels/timeline/utils:bundle",
     "../../testing",
     "../../ui/legacy:bundle",
   ]
+}
+
+copy_to_gen("snapshots") {
+  sources = [ "AiAssistancePanel.snapshot.txt" ]
 }

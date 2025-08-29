@@ -29,7 +29,7 @@ export class Mixin extends Container {
           [Attribute.parse, { noInherit: true }],
           [Operation.parse, { regular: true }],
         ],
-      }
+      },
     );
   }
 

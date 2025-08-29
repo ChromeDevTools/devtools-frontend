@@ -158,6 +158,9 @@ export class BrowsingContext extends EventEmitter<{
   readonly parent: BrowsingContext | undefined;
   readonly userContext: UserContext;
   readonly originalOpener: string | null;
+  readonly #emulationState: {
+    javaScriptEnabled: boolean;
+  } = {javaScriptEnabled: true};
 
   private constructor(
     context: UserContext,
@@ -584,6 +587,25 @@ export class BrowsingContext extends EventEmitter<{
     // SAFETY: Disposal implies this exists.
     return context.#reason!;
   })
+  async setTimezoneOverride(timezoneId?: string): Promise<void> {
+    if (timezoneId?.startsWith('GMT')) {
+      // CDP requires `GMT` prefix before timezone offset, while BiDi does not. Remove the
+      // `GMT` for interop between CDP and BiDi.
+      timezoneId = timezoneId?.replace('GMT', '');
+    }
+    await this.userContext.browser.session.send(
+      'emulation.setTimezoneOverride',
+      {
+        timezone: timezoneId ?? null,
+        contexts: [this.id],
+      },
+    );
+  }
+
+  @throwIfDisposed<BrowsingContext>(context => {
+    // SAFETY: Disposal implies this exists.
+    return context.#reason!;
+  })
   async getCookies(
     options: GetCookiesOptions = {},
   ): Promise<Bidi.Network.Cookie[]> {
@@ -688,5 +710,21 @@ export class BrowsingContext extends EventEmitter<{
       startNodes: startNodes.length ? startNodes : undefined,
     });
     return result.result.nodes;
+  }
+
+  async setJavaScriptEnabled(enabled: boolean): Promise<void> {
+    await this.userContext.browser.session.send(
+      'emulation.setScriptingEnabled',
+      {
+        // Enabled `null` means `default`, `false` means `disabled`.
+        enabled: enabled ? null : false,
+        contexts: [this.id],
+      },
+    );
+    this.#emulationState.javaScriptEnabled = enabled;
+  }
+
+  isJavaScriptEnabled(): boolean {
+    return this.#emulationState.javaScriptEnabled;
   }
 }

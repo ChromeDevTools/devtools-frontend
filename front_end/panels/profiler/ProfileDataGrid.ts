@@ -45,9 +45,9 @@ const UIStrings = {
    */
   notOptimizedS: 'Not optimized: {PH1}',
   /**
-   *@description Generic text with two placeholders separated by a comma
-   *@example {1 613 680} PH1
-   *@example {44 %} PH2
+   * @description Generic text with two placeholders separated by a comma
+   * @example {1 613 680} PH1
+   * @example {44 %} PH2
    */
   genericTextTwoPlaceholders: '{PH1}, {PH2}',
 } as const;
@@ -204,8 +204,8 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
         if (this.deoptReason) {
           cell.classList.add('not-optimized');
           const warningIcon = new IconButton.Icon.Icon();
-          warningIcon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
-          warningIcon.classList.add('profile-warn-marker');
+          warningIcon.name = 'warning-filled';
+          warningIcon.classList.add('profile-warn-marker', 'small');
           UI.Tooltip.Tooltip.install(warningIcon, i18nString(UIStrings.notOptimizedS, {PH1: this.deoptReason}));
           cell.appendChild(warningIcon);
         }

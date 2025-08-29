@@ -11,6 +11,10 @@
 		"es2022": true,
 	},
 
+	"globals": {
+		"Float16Array": false,
+	},
+
 	"rules": {
 		"array-bracket-newline": 0,
 		"complexity": 0,

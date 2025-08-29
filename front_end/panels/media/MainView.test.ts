@@ -32,7 +32,7 @@ describeWithMockConnection('MediaMainView', () => {
     renderElementIntoDOM(mainView);
     const model = target.model(Media.MediaModel.MediaModel);
     assert.exists(model);
-    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYERS_CREATED, [PLAYER_ID]);
+    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
     const field = [{name: 'kResolution', value: '{}', data: {}, stack: [], cause: []}];
     const data = {playerId: PLAYER_ID, properties: field, events: field, messages: field, errors: field};
     model.dispatchEventToListeners(
@@ -76,7 +76,7 @@ describeWithMockConnection('MediaMainView', () => {
     const mainView = new Media.MainView.MainView();
     renderElementIntoDOM(mainView);
 
-    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYERS_CREATED, [PLAYER_ID]);
+    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
     assert.exists(mainView.contentElement.querySelector('.empty-state'));
     assert.deepEqual(
         mainView.contentElement.querySelector('.empty-state-header')?.textContent, 'No media player selected');
@@ -94,7 +94,7 @@ describeWithMockConnection('MediaMainView', () => {
     const mainView = new Media.MainView.MainView();
     renderElementIntoDOM(mainView);
 
-    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYERS_CREATED, [PLAYER_ID]);
+    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
     mainView.markPlayerForDeletion(PLAYER_ID);
 
     assert.exists(mainView.contentElement.querySelector('.empty-state'));
@@ -113,7 +113,7 @@ describeWithMockConnection('MediaMainView', () => {
     const mainView = new Media.MainView.MainView();
     renderElementIntoDOM(mainView);
 
-    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYERS_CREATED, [PLAYER_ID]);
+    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
     mainView.renderMainPanel(PLAYER_ID);
     assert.isNull(mainView.contentElement.querySelector('.empty-state'));
     mainView.markPlayerForDeletion(PLAYER_ID);

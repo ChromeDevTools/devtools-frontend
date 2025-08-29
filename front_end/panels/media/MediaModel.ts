@@ -17,7 +17,7 @@ export const enum Events {
   PLAYER_EVENTS_ADDED = 'PlayerEventsAdded',
   PLAYER_MESSAGES_LOGGED = 'PlayerMessagesLogged',
   PLAYER_ERRORS_RAISED = 'PlayerErrorsRaised',
-  PLAYERS_CREATED = 'PlayersCreated',
+  PLAYER_CREATED = 'PlayerCreated',
 }
 
 export interface EventTypes {
@@ -25,7 +25,7 @@ export interface EventTypes {
   [Events.PLAYER_EVENTS_ADDED]: Protocol.Media.PlayerEventsAddedEvent;
   [Events.PLAYER_MESSAGES_LOGGED]: Protocol.Media.PlayerMessagesLoggedEvent;
   [Events.PLAYER_ERRORS_RAISED]: Protocol.Media.PlayerErrorsRaisedEvent;
-  [Events.PLAYERS_CREATED]: Protocol.Media.PlayerId[];
+  [Events.PLAYER_CREATED]: Protocol.Media.Player;
 }
 
 export class MediaModel extends SDK.SDKModel.SDKModel<EventTypes> implements ProtocolProxyApi.MediaDispatcher {
@@ -69,8 +69,8 @@ export class MediaModel extends SDK.SDKModel.SDKModel<EventTypes> implements Pro
     this.dispatchEventToListeners(Events.PLAYER_ERRORS_RAISED, event);
   }
 
-  playerCreated({player: {playerId}}: Protocol.Media.PlayerCreatedEvent): void {
-    this.dispatchEventToListeners(Events.PLAYERS_CREATED, [playerId]);
+  playerCreated({player}: Protocol.Media.PlayerCreatedEvent): void {
+    this.dispatchEventToListeners(Events.PLAYER_CREATED, player);
   }
 }
 SDK.SDKModel.SDKModel.register(MediaModel, {capabilities: SDK.Target.Capability.MEDIA, autostart: false});

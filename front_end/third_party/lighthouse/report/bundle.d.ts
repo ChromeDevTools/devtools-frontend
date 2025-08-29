@@ -106,15 +106,15 @@ declare var ne: {
         _saveFile(e: any): void;
     };
 };
-declare namespace zt {
-    export { At as registerLocaleData };
-    export { Lt as hasLocale };
+declare namespace Lt {
+    export { Ct as registerLocaleData };
+    export { At as hasLocale };
 }
-declare function St(o: any, e?: {}): HTMLElement;
-declare function Ct(o: any, e: any): {
+declare function Et(o: any, e?: {}): HTMLElement;
+declare function St(o: any, e: any): {
     lhr: any;
     missingIcuMessageIds: any[];
 };
-declare function At(o: any, e: any): void;
-declare function Lt(o: any): boolean;
-export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, zt as format, St as renderReport, Ct as swapLocale };
+declare function Ct(o: any, e: any): void;
+declare function At(o: any): boolean;
+export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, Lt as format, Et as renderReport, St as swapLocale };

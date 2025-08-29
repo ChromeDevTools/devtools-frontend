@@ -571,6 +571,7 @@ export const knownContextValues = new Set([
   'black-berry-play-book-2.1',
   'blackbox',
   'ble',
+  'block-ellipsis',
   'block-request-domain',
   'block-request-url',
   'block-size',

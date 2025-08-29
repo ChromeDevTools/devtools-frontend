@@ -1812,6 +1812,10 @@ export function formatTimestamp(timestamp: number, full: boolean): string {
 export interface Options {
   title?: string|Element;
   editable?: boolean;
+  /**
+   * Should the resulting object be expanded.
+   */
+  expand?: boolean;
 }
 
 export interface HighlightChange {

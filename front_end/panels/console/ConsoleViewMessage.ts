@@ -943,7 +943,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
         return;
       }
-      const renderResult = await UI.UIUtils.Renderer.render((node as Object));
+      const renderResult = await UI.UIUtils.Renderer.render(node);
       if (renderResult) {
         if (renderResult.tree) {
           this.selectableChildren.push(renderResult.tree);

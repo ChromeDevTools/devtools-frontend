@@ -50,7 +50,7 @@ export class Renderer implements UI.UIUtils.Renderer {
     return rendererInstance;
   }
 
-  async render(object: Object): Promise<{
+  async render(object: Object, options?: UI.UIUtils.Options): Promise<{
     node: Node,
     tree: UI.TreeOutline.TreeOutline|null,
   }|null> {
@@ -75,6 +75,9 @@ export class Renderer implements UI.UIUtils.Renderer {
     // @ts-expect-error used in console_test_runner
     treeOutline.element.treeElementForTest = treeOutline.firstChild();
     treeOutline.setShowSelectionOnKeyboardFocus(/* show: */ true, /* preventTabOrder: */ true);
+    if (options?.expand) {
+      treeOutline.firstChild()?.expand();
+    }
     return {node: treeOutline.element, tree: treeOutline};
   }
 }

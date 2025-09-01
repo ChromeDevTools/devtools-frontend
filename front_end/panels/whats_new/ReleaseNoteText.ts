@@ -40,28 +40,28 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 81,
-  header: 'What\'s new in DevTools 140',
+  version: 82,
+  header: 'What\'s new in DevTools 141',
   markdownLinks: [
     {
-      key: 'ai-insights',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-140/#ai-insights',
+      key: 'ai-insight',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-141/#ai-insight',
     },
     {
-      key: 'save-data',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-140/#save-data',
+      key: 'ai-chat-export',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-141/#ai-chat-export',
     },
     {
-      key: 'debug-css',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-138#debug-css-values',
+      key: 'ipp',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-141/#ipp',
     },
   ],
   videoLinks: [
     {
-      description: 'See past highlights from Chrome 139',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-139' as Platform.DevToolsPath.UrlString,
+      description: 'See past highlights from Chrome 140',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-140' as Platform.DevToolsPath.UrlString,
       type: VideoType.WHATS_NEW,
     },
   ],
-  link: 'https://developer.chrome.com/blog/new-in-devtools-140/',
+  link: 'https://developer.chrome.com/blog/new-in-devtools-141/',
 };

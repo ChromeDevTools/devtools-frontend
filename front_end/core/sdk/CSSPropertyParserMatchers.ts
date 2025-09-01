@@ -40,6 +40,20 @@ export class BaseVariableMatch implements Match {
   computedText(): string|null {
     return this.computedTextCallback(this, this.matching);
   }
+
+  fallbackValue(): string|null {
+    // Fallback can be missing but it can be also be empty: var(--v,)
+    if (!this.fallback) {
+      return null;
+    }
+    if (this.fallback.length === 0) {
+      return '';
+    }
+    if (this.matching.hasUnresolvedSubstitutionsRange(this.fallback[0], this.fallback[this.fallback.length - 1])) {
+      return null;
+    }
+    return this.matching.getComputedTextRange(this.fallback[0], this.fallback[this.fallback.length - 1]);
+  }
 }
 
 // This matcher provides matching for var() functions and basic computedText support. Computed text is resolved by a
@@ -57,33 +71,19 @@ export class BaseVariableMatcher extends matcherBase(BaseVariableMatch) {
 
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): BaseVariableMatch|null {
     const callee = node.getChild('Callee');
-    const args = node.getChild('ArgList');
-    if (node.name !== 'CallExpression' || !callee || (matching.ast.text(callee) !== 'var') || !args) {
+    if (node.name !== 'CallExpression' || !callee || (matching.ast.text(callee) !== 'var')) {
       return null;
     }
 
-    const [lparenNode, nameNode, ...fallbackOrRParenNodes] = ASTUtils.children(args);
-
-    if (lparenNode?.name !== '(' || nameNode?.name !== 'VariableName') {
+    const args = ASTUtils.callArgs(node).map(args => Array.from(ASTUtils.stripComments(args)));
+    if (args.length < 1 || args[0].length !== 1) {
       return null;
     }
+    const nameNode = args[0][0];
+    const fallback = args.length === 2 ? args[1] : undefined;
 
-    if (fallbackOrRParenNodes.length <= 1 && fallbackOrRParenNodes[0]?.name !== ')') {
+    if (nameNode?.name !== 'VariableName') {
       return null;
-    }
-
-    let fallback;
-    if (fallbackOrRParenNodes.length > 1) {
-      if (fallbackOrRParenNodes.shift()?.name !== ',') {
-        return null;
-      }
-      if (fallbackOrRParenNodes.pop()?.name !== ')') {
-        return null;
-      }
-      fallback = fallbackOrRParenNodes;
-      if (fallback.some(n => n.name === ',')) {
-        return null;
-      }
     }
 
     const varName = matching.ast.text(nameNode);
@@ -112,20 +112,6 @@ export class VariableMatch extends BaseVariableMatch {
   resolveVariable(): CSSVariableValue|null {
     return this.matchedStyles.computeCSSVariable(this.style, this.name);
   }
-
-  fallbackValue(): string|null {
-    // Fallback can be missing but it can be also be empty: var(--v,)
-    if (!this.fallback) {
-      return null;
-    }
-    if (this.fallback.length === 0) {
-      return '';
-    }
-    if (this.matching.hasUnresolvedVarsRange(this.fallback[0], this.fallback[this.fallback.length - 1])) {
-      return null;
-    }
-    return this.matching.getComputedTextRange(this.fallback[0], this.fallback[this.fallback.length - 1]);
-  }
 }
 
 // clang-format off
@@ -141,6 +127,158 @@ export class VariableMatcher extends matcherBase(VariableMatch) {
         new VariableMatch(
             match.text, match.node, match.name, match.fallback, match.matching, this.matchedStyles, this.style) :
         null;
+  }
+}
+
+export class AttributeMatch extends BaseVariableMatch {
+  constructor(
+      text: string,
+      node: CodeMirror.SyntaxNode,
+      name: string,
+      fallback: CodeMirror.SyntaxNode[]|undefined,
+      matching: BottomUpTreeMatching,
+      readonly type: string|null,
+      readonly isCSSTokens: boolean,
+      readonly isValidType: boolean,
+      readonly rawValue: string|null,
+      readonly substitutionText: string|null,
+      readonly matchedStyles: CSSMatchedStyles,
+      readonly style: CSSStyleDeclaration,
+      computedTextCallback: (match: AttributeMatch, matching: BottomUpTreeMatching) => string | null,
+  ) {
+    super(text, node, name, fallback, matching, (_, matching) => computedTextCallback(this, matching));
+  }
+
+  rawAttributeValue(): string|null {
+    return this.rawValue;
+  }
+
+  cssType(): string {
+    return this.type ?? RAW_STRING_TYPE;
+  }
+
+  resolveAttributeValue(): string|null {
+    return this.matchedStyles.computeAttribute(
+        this.style, this.name, {type: this.cssType(), isCSSTokens: this.isCSSTokens});
+  }
+}
+
+let cssEvaluationElement: HTMLElement|null = null;
+function getCssEvaluationElement(): HTMLElement {
+  const id = 'css-evaluation-element';
+  if (!cssEvaluationElement) {
+    cssEvaluationElement = document.getElementById(id);
+    if (!cssEvaluationElement) {
+      cssEvaluationElement = document.createElement('div');
+      cssEvaluationElement.setAttribute('id', id);
+      cssEvaluationElement.setAttribute('style', 'hidden: true; --evaluation: attr(data-custom-expr type(*))');
+      document.body.appendChild(cssEvaluationElement);
+    }
+  }
+  return cssEvaluationElement;
+}
+
+// These functions use an element in the frontend to evaluate CSS. The advantage
+// of this is that it is synchronous and doesn't require a CDP method. The
+// disadvantage is it lacks context that would allow substitutions such as
+// `var()` and `calc()` to be resolved correctly, and if the user is doing
+// remote debugging there is a possibility that the CSS behavior is different
+// between the two browser versions. We use it for type checking after
+// substitutions (but not for actual evaluation) and for applying units.
+export function localEvalCSS(value: string, type: string): string|null {
+  const element = getCssEvaluationElement();
+  element.setAttribute('data-value', value);
+  element.setAttribute('data-custom-expr', `attr(data-value ${type})`);
+  return element.computedStyleMap().get('--evaluation')?.toString() ?? null;
+}
+
+// It is important to establish whether a type is valid, because if it is not,
+// the current behavior of blink is to ignore the fallback and parse as a
+// raw string, returning '' if the attribute is not set.
+export function isValidCSSType(type: string): boolean {
+  const element = getCssEvaluationElement();
+  element.setAttribute('data-custom-expr', `attr(data-nonexistent ${type}, "good")`);
+  return '"good"' === (element.computedStyleMap().get('--evaluation')?.toString() ?? null);
+}
+
+export function defaultValueForCSSType(type: string|null): string|null {
+  const element = getCssEvaluationElement();
+  element.setAttribute('data-custom-expr', `attr(data-nonexistent ${type ?? ''})`);
+  return element.computedStyleMap().get('--evaluation')?.toString() ?? null;
+}
+
+export const RAW_STRING_TYPE = 'raw-string';
+
+// This matcher provides matching for attr() functions and basic computedText support. Computed text is resolved by a
+// callback.
+// clang-format off
+export class AttributeMatcher extends matcherBase(AttributeMatch) {
+  // clang-format on
+  constructor(
+      private readonly matchedStyles: CSSMatchedStyles,
+      private readonly style: CSSStyleDeclaration,
+      private readonly computedTextCallback?: (match: AttributeMatch, matching: BottomUpTreeMatching) => string | null,
+
+  ) {
+    super();
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): AttributeMatch|null {
+    const callee = node.getChild('Callee');
+    if (node.name !== 'CallExpression' || !callee || (matching.ast.text(callee) !== 'attr')) {
+      return null;
+    }
+
+    const args = ASTUtils.callArgs(node).map(args => Array.from(ASTUtils.stripComments(args)));
+    if (args.length < 1) {
+      return null;
+    }
+    const nameNode = args[0][0];
+
+    if (args[0].length < 1 || args[0].length > 2 || nameNode?.name !== 'ValueName') {
+      return null;
+    }
+
+    const fallback = args.length === 2 ? args[1] : undefined;
+    let type: string|null = null;
+    let isCSSTokens = false;
+    if (args[0].length === 2) {
+      const typeNode = args[0][1] as CodeMirror.SyntaxNode;
+      type = matching.ast.text(typeNode);
+      if (typeNode.name === 'CallExpression') {
+        if (matching.ast.text(typeNode.getChild('Callee')) !== 'type') {
+          return null;
+        }
+        isCSSTokens = true;
+      } else if (typeNode.name !== 'ValueName' && type !== '%') {
+        return null;
+      }
+    }
+
+    const isValidType = type === null || isValidCSSType(type);
+    isCSSTokens = isCSSTokens && isValidType;
+
+    const attrName = matching.ast.text(nameNode);
+
+    let substitutionText: string|null = null;
+    const domNode = this.matchedStyles.nodeForStyle(this.style) ?? this.matchedStyles.node();
+    const rawValue = domNode.getAttribute(attrName) ?? null;
+    if (rawValue !== null) {
+      substitutionText = isCSSTokens ? rawValue : localEvalCSS(rawValue, type ?? RAW_STRING_TYPE);
+    } else if (!fallback) {
+      // In the case of unspecified type, there is a default value
+      substitutionText = defaultValueForCSSType(type);
+    }
+
+    return new AttributeMatch(
+        matching.ast.text(node), node, attrName, fallback, matching, type, isCSSTokens, isValidType, rawValue,
+        substitutionText, this.matchedStyles, this.style, this.computedTextCallback ?? defaultComputeText);
+
+    function defaultComputeText(match: AttributeMatch, _matching: BottomUpTreeMatching): string|null {
+      // Don't fall back if the type is invalid.
+      return match.resolveAttributeValue() ??
+          (isValidType ? match.fallbackValue() : defaultValueForCSSType(match.type));
+    }
   }
 }
 
@@ -393,7 +531,7 @@ export class ColorMatcher extends matcherBase(ColorMatch) {
         // colorText holds the fully substituted parenthesized expression, so colorFunc + colorText is the color
         // function call.
         const isRelativeColorSyntax = Boolean(
-            colorText.match(/^[^)]*\(\W*from\W+/) && !matching.hasUnresolvedVars(node) &&
+            colorText.match(/^[^)]*\(\W*from\W+/) && !matching.hasUnresolvedSubstitutions(node) &&
             CSS.supports('color', colorFunc + colorText));
         if (!isRelativeColorSyntax) {
           return new ColorMatch(text, node);
@@ -899,7 +1037,7 @@ export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
       return null;
     }
     const args = ASTUtils.callArgs(node);
-    if (args.some(arg => arg.length === 0 || matching.hasUnresolvedVarsRange(arg[0], arg[arg.length - 1]))) {
+    if (args.some(arg => arg.length === 0 || matching.hasUnresolvedSubstitutionsRange(arg[0], arg[arg.length - 1]))) {
       return null;
     }
     const text = matching.ast.text(node);
@@ -959,7 +1097,7 @@ export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
     return cssMetadata().isGridAreaDefiningProperty(propertyName);
   }
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): GridTemplateMatch|null {
-    if (node.name !== 'Declaration' || matching.hasUnresolvedVars(node)) {
+    if (node.name !== 'Declaration' || matching.hasUnresolvedSubstitutions(node)) {
       return null;
     }
 

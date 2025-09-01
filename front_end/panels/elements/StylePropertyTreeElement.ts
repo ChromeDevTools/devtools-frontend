@@ -51,7 +51,7 @@ import {
   StylesSidebarPane,
 } from './StylesSidebarPane.js';
 
-const {html, nothing, render, Directives: {classMap}} = Lit;
+const {html, nothing, render, Directives: {classMap, ifDefined}} = Lit;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -382,6 +382,104 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
 }
 
 // clang-format off
+export class AttributeRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.AttributeMatch) {
+  // clang-format on
+  readonly #stylesPane: StylesSidebarPane;
+  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+  readonly #computedStyles: Map<string, string>;
+  constructor(
+      stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement|null,
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>) {
+    super();
+    this.#treeElement = treeElement;
+    this.#stylesPane = stylesPane;
+    this.#matchedStyles = matchedStyles;
+    this.#computedStyles = computedStyles;
+  }
+
+  override render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): Node[] {
+    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
+      return Renderer.render(ASTUtils.children(match.node), context).nodes;
+    }
+
+    const rawValue = match.rawAttributeValue();
+    const attributeValue = match.resolveAttributeValue();
+    const fromFallback = attributeValue === null;
+    const attributeMissing = rawValue === null;
+    const typeError = fromFallback && !attributeMissing;
+    const attributeClass = attributeMissing ? 'inactive' : '';
+    const typeClass = typeError ? 'inactive' : '';
+    const fallbackClass = fromFallback ? '' : 'inactive';
+    const computedValue = attributeValue ?? match.fallbackValue();
+    const varSwatch = document.createElement('span');
+
+    const substitution = context.tracing?.substitution({match, context});
+    if (substitution) {
+      // TODO(b/441945435): If we combine these conditions, we can, when no fallback is
+      // specified but the type check fails, render a series of substitutions
+      // which may help debug why the type check failed. However, we can't
+      // distinguish ordinary type mismatch from cycles, and we need a way
+      // to handle cycles. And we may want UI for showing the substitutions
+      // anyway, even when a fallback is specified.
+      if (fromFallback) {
+        if (match.fallback) {
+          return Renderer.render(match.fallback, substitution.renderingContext(context)).nodes;
+        }
+      } else if (match.substitutionText !== null) {
+        const matching = SDK.CSSPropertyParser.matchDeclaration(
+            '--property', match.substitutionText,
+            this.#matchedStyles.propertyMatchers(match.style, this.#computedStyles));
+        return Renderer
+            .renderValueNodes(
+                {name: '--property', value: match.substitutionText}, matching,
+                getPropertyRenderers(
+                    '--property', match.style, this.#stylesPane, this.#matchedStyles, null, this.#computedStyles),
+                substitution)
+            .nodes;
+      }
+    }
+
+    const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
+
+    const attrCall =
+        this.#treeElement?.getTracingTooltip('attr', match.node, this.#matchedStyles, this.#computedStyles, context);
+    const tooltipId = attributeMissing ? undefined : this.#treeElement?.getTooltipId('custom-attribute');
+    // clang-format off
+    render(html`
+        <span data-title=${computedValue || ''}
+              jslog=${VisualLogging.link('css-variable').track({click: true, hover: true})}
+        >${attrCall ?? 'attr'}(<span class=${attributeClass} aria-details=${ifDefined(tooltipId)}>${match.name}</span>${
+            match.type ? html` <span class=${typeClass}>${match.type}</span>` : nothing
+        }${renderedFallback ? html`, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing
+        })</span>${tooltipId ? html`
+          <devtools-tooltip
+            id=${tooltipId}
+            variant=rich
+            jslogContext=elements.css-var
+          >${JSON.stringify(rawValue)}</devtools-tooltip>` : ''}`, varSwatch);
+    // clang-format on
+
+    const color = computedValue && Common.Color.parse(computedValue);
+    if (!color) {
+      return [varSwatch];
+    }
+
+    const colorSwatch = new ColorRenderer(this.#stylesPane, this.#treeElement).renderColorSwatch(color, varSwatch);
+    context.addControl('color', colorSwatch);
+
+    if (fromFallback) {
+      renderedFallback?.cssControls.get('color')?.forEach(
+          innerSwatch => innerSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
+            colorSwatch.setColor(ev.data.color);
+          }));
+    }
+
+    return [colorSwatch, varSwatch];
+  }
+}
+
+// clang-format off
 export class LinearGradientRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.LinearGradientMatch) {
   // clang-format on
   override render(match: SDK.CSSPropertyParserMatchers.LinearGradientMatch, context: RenderingContext): Node[] {
@@ -636,7 +734,7 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
     const {cssControls: lightControls} = Renderer.renderInto(match.light, context, light);
     const {cssControls: darkControls} = Renderer.renderInto(match.dark, context, dark);
 
-    if (context.matchedResult.hasUnresolvedVars(match.node)) {
+    if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
       return [content];
     }
 
@@ -770,7 +868,7 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     const color1Controls = color1.cssControls.get('color') ?? [];
     const color2Controls = color2.cssControls.get('color') ?? [];
 
-    if (context.matchedResult.hasUnresolvedVars(match.node) || color1Controls.length !== 1 ||
+    if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || color1Controls.length !== 1 ||
         color2Controls.length !== 1) {
       return [contentChild];
     }
@@ -1295,7 +1393,7 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
         }
         const matches = SDK.CSSPropertyParser.BottomUpTreeMatching.walkExcludingSuccessors(
             computedValueAst, [new SDK.CSSPropertyParserMatchers.ColorMatcher()]);
-        if (matches.hasUnresolvedVars(matches.ast.tree)) {
+        if (matches.hasUnresolvedSubstitutions(matches.ast.tree)) {
           return null;
         }
         queue.unshift(
@@ -1775,6 +1873,7 @@ export function getPropertyRenderers(
     new AutoBaseRenderer(computedStyles),
     new BinOpRenderer(),
     new RelativeColorChannelRenderer(treeElement),
+    new AttributeRenderer(stylesPane, treeElement, matchedStyles, computedStyles),
   ];
 }
 
@@ -2139,16 +2238,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  // Resolves a CSS expression to its computed value with `var()` calls updated.
-  // Still returns the string even when a `var()` call is not resolved.
+  // Resolves a CSS expression to its computed value with `var()` and `attr()` calls updated.
+  // Still returns the string even when a `var()` or `attr()` call is not resolved.
   #computeCSSExpression(style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, text: string): string|null {
     const ast = SDK.CSSPropertyParser.tokenizeDeclaration('--unused', text);
     if (!ast) {
       return null;
     }
 
-    const matching: SDK.CSSPropertyParser.BottomUpTreeMatching = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(
-        ast, [new SDK.CSSPropertyParserMatchers.VariableMatcher(this.matchedStylesInternal, style)]);
+    const matching: SDK.CSSPropertyParser.BottomUpTreeMatching = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [
+      new SDK.CSSPropertyParserMatchers.VariableMatcher(this.matchedStylesInternal, style),
+      new SDK.CSSPropertyParserMatchers.AttributeMatcher(this.matchedStylesInternal, style),
+      new SDK.CSSPropertyParserMatchers.EnvFunctionMatcher(this.matchedStylesInternal),
+    ]);
 
     const decl = SDK.CSSPropertyParser.ASTUtils.siblings(SDK.CSSPropertyParser.ASTUtils.declValue(matching.ast.tree));
     return decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]) : '';

@@ -249,12 +249,12 @@ export class BottomUpTreeMatching extends TreeWalker {
     return this.#matchedNodes.get(this.#key(node));
   }
 
-  hasUnresolvedVars(node: CodeMirror.SyntaxNode): boolean {
-    return this.hasUnresolvedVarsRange(node, node);
+  hasUnresolvedSubstitutions(node: CodeMirror.SyntaxNode): boolean {
+    return this.hasUnresolvedSubstitutionsRange(node, node);
   }
 
-  hasUnresolvedVarsRange(from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode): boolean {
-    return this.computedText.hasUnresolvedVars(from.from - this.ast.tree.from, to.to - this.ast.tree.from);
+  hasUnresolvedSubstitutionsRange(from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode): boolean {
+    return this.computedText.hasUnresolvedSubstitutions(from.from - this.ast.tree.from, to.to - this.ast.tree.from);
   }
 
   getComputedText(node: CodeMirror.SyntaxNode, substitutionHook?: (match: Match) => string | null): string {
@@ -274,9 +274,9 @@ export class BottomUpTreeMatching extends TreeWalker {
     return this.computedText.countTopLevelValues(from.from - this.ast.tree.from, to.from - this.ast.tree.from);
   }
 
-  getComputedPropertyValueText(): string {
+  getComputedPropertyValueText(substitutionHook?: (match: Match) => string | null): string {
     const [from, to] = ASTUtils.range(ASTUtils.siblings(ASTUtils.declValue(this.ast.tree)));
-    return this.getComputedTextRange(from ?? this.ast.tree, to ?? this.ast.tree);
+    return this.getComputedTextRange(from ?? this.ast.tree, to ?? this.ast.tree, substitutionHook);
   }
 
   getComputedTextRange(
@@ -415,7 +415,7 @@ export class ComputedText {
     }
   }
 
-  hasUnresolvedVars(begin: number, end: number): boolean {
+  hasUnresolvedSubstitutions(begin: number, end: number): boolean {
     for (const chunk of this.#range(begin, end)) {
       if (chunk.computedText === null) {
         return true;

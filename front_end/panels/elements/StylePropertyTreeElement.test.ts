@@ -791,7 +791,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
                      stylePropertyTreeElement.matchedStyles(), stylePropertyTreeElement.property.ownerStyle)]);
 
         const res = {
-          hasUnresolvedVars: matching.hasUnresolvedVars(ast.tree),
+          hasUnresolvedVars: matching.hasUnresolvedSubstitutions(ast.tree),
           computedText: matching.getComputedText(ast.tree),
         };
         return res;

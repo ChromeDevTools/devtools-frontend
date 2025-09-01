@@ -339,6 +339,8 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
       this.syncSection.data = {
         syncInfo,
         syncSetting: Common.Settings.moduleSetting('sync-preferences') as Common.Settings.Setting<boolean>,
+        receiveBadgesSetting: Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges'),
+        gdpProfile: undefined,
       };
       if (!syncInfo.isSyncActive || !syncInfo.arePreferencesSynced) {
         this.#updateSyncSectionTimerId = window.setTimeout(this.updateSyncSection.bind(this), 500);

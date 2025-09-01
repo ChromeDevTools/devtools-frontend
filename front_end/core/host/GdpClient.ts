@@ -5,7 +5,7 @@
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import type {DispatchHttpRequestRequest, DispatchHttpRequestResult} from './InspectorFrontendHostAPI.js';
 
-enum SubscriptionStatus {
+export enum SubscriptionStatus {
   ENABLED = 'SUBSCRIPTION_STATE_ENABLED',
   PENDING = 'SUBSCRIPTION_STATE_PENDING',
   CANCELED = 'SUBSCRIPTION_STATE_CANCELED',
@@ -14,7 +14,7 @@ enum SubscriptionStatus {
   ON_HOLD = 'SUBSCRIPTION_STATE_ACCOUNT_ON_HOLD',
 }
 
-enum SubscriptionTier {
+export enum SubscriptionTier {
   PREMIUM_ANNUAL = 'SUBSCRIPTION_TIER_PREMIUM_ANNUAL',
   PREMIUM_MONTHLY = 'SUBSCRIPTION_TIER_PREMIUM_MONTHLY',
   PRO_ANNUAL = 'SUBSCRIPTION_TIER_PRO_ANNUAL',
@@ -35,13 +35,15 @@ interface CheckElibigilityResponse {
   createProfile: EligibilityStatus;
 }
 
-interface Profile {
+export interface Profile {
   // Resource name of the profile.
   // Format: profiles/{obfuscated_profile_id}
   name: string;
   activeSubscription?: {
     subscriptionStatus: SubscriptionStatus,
-    subscrionTier: SubscriptionTier,
+    // To ensure forward compatibility, we accept any string, allowing the server to
+    // introduce new subscription tiers without breaking older clients.
+    subscriptionTier: SubscriptionTier|string,
   };
 }
 

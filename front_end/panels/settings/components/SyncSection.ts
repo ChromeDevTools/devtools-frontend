@@ -8,16 +8,15 @@ import '../../../ui/components/settings/settings.js';
 import '../../../ui/components/tooltips/tooltips.js';
 
 import type * as Common from '../../../core/common/common.js';
-import type * as Host from '../../../core/host/host.js';
+import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import * as Root from '../../../core/root/root.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
 import syncSectionStyles from './syncSection.css.js';
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -40,13 +39,84 @@ const UIStrings = {
    * case the user is not logged in to Chrome.
    */
   notSignedIn: 'You\'re not signed into Chrome.',
+  /**
+   * @description Label for the Google Developer Program profile status that corresponds to
+   * standard plan (No subscription).
+   */
+  gdpStandardPlan: 'Standard plan',
+  /**
+   * @description Label for the Google Developer Program subscription status that corresponds to
+   * `PREMIUM_ANNUAL` plan.
+   */
+  gdpPremiumAnnualSubscription: 'Premium (Annual)',
+  /**
+   * @description Label for the Google Developer Program subscription status that corresponds to
+   * `PREMIUM_MONTHLY` plan.
+   */
+  gdpPremiumMonthlySubscription: 'Premium (Monthly)',
+  /**
+   * @description Label for the Google Developer Program subscription status that corresponds to
+   * `PRO_ANNUAL` plan.
+   */
+  gdpProAnnualSubscription: 'Pro (Annual)',
+  /**
+   * @description Label for the Google Developer Program subscription status that corresponds to
+   * `PRO_MONTHLY` plan.
+   */
+  gdpProMonthlySubscription: 'Pro (Monthly)',
+  /**
+   * @description Label for the Google Developer Program subscription status that corresponds
+   * to a plan not known by the client.
+   */
+  gdpUnknownSubscription: 'Unknown plan',
+  /**
+   * @description Label for Sign-Up button for the Google Developer Program profiles.
+   */
+  signUp: 'Sign up',
+  /**
+   * @description Text for the data notice right after the settings checkbox.
+   */
+  relevantDataDisclaimer: '(Relevant data is sent to Google)',
+  /**
+   * @description Link text for opening the Google Developer Program profile page.
+   */
+  viewProfile: 'View profile',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/components/SyncSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const lockedString = i18n.i18n.lockedString;
+
+const {html} = Lit;
+
+function getGdpSubscriptionText(profile: Host.GdpClient.Profile): Platform.UIString.LocalizedString {
+  if (!profile.activeSubscription ||
+      profile.activeSubscription.subscriptionStatus !== Host.GdpClient.SubscriptionStatus.ENABLED) {
+    return i18nString(UIStrings.gdpStandardPlan);
+  }
+
+  switch (profile.activeSubscription.subscriptionTier) {
+    case Host.GdpClient.SubscriptionTier.PREMIUM_ANNUAL:
+      return i18nString(UIStrings.gdpPremiumAnnualSubscription);
+    case Host.GdpClient.SubscriptionTier.PREMIUM_MONTHLY:
+      return i18nString(UIStrings.gdpPremiumMonthlySubscription);
+    case Host.GdpClient.SubscriptionTier.PRO_ANNUAL:
+      return i18nString(UIStrings.gdpProAnnualSubscription);
+    case Host.GdpClient.SubscriptionTier.PRO_MONTHLY:
+      return i18nString(UIStrings.gdpProMonthlySubscription);
+    default:
+      return i18nString(UIStrings.gdpUnknownSubscription);
+  }
+}
+
+const GDP_LOGO_IMAGE_URL = new URL('../../../Images/gdp-logo-standalone.svg', import.meta.url).toString();
+// TODO(crbug.com/441679275): Update once the API is enabled for prod.
+const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.devsite.corp.google.com/profile/u/';
 
 export interface SyncSectionData {
   syncInfo: Host.InspectorFrontendHostAPI.SyncInformation;
   syncSetting: Common.Settings.Setting<boolean>;
+  receiveBadgesSetting: Common.Settings.Setting<boolean>;
+  gdpProfile?: Host.GdpClient.Profile;
 }
 
 export class SyncSection extends HTMLElement {
@@ -54,10 +124,14 @@ export class SyncSection extends HTMLElement {
 
   #syncInfo: Host.InspectorFrontendHostAPI.SyncInformation = {isSyncActive: false};
   #syncSetting?: Common.Settings.Setting<boolean>;
+  #receiveBadgesSetting?: Common.Settings.Setting<boolean>;
+  #gdpProfile?: Host.GdpClient.Profile;
 
   set data(data: SyncSectionData) {
     this.#syncInfo = data.syncInfo;
     this.#syncSetting = data.syncSetting;
+    this.#receiveBadgesSetting = data.receiveBadgesSetting;
+    this.#gdpProfile = data.gdpProfile;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
@@ -77,6 +151,7 @@ export class SyncSection extends HTMLElement {
       <fieldset>
         ${renderAccountInfo(this.#syncInfo)}
         ${renderSettingCheckboxIfNeeded(this.#syncInfo, this.#syncSetting)}
+        ${renderGdpSectionIfNeeded({ receiveBadgesSetting: this.#receiveBadgesSetting, gdpProfile: this.#gdpProfile })}
       </fieldset>
     `, this.#shadow, {host: this});
     // clang-format on
@@ -151,6 +226,64 @@ function renderAccountInfo(syncInfo: Host.InspectorFrontendHostAPI.SyncInformati
     </div>`;
   // clang-format on
 }
+
+function renderGdpSectionIfNeeded({
+  receiveBadgesSetting,
+  gdpProfile,
+}: {
+  receiveBadgesSetting?: Common.Settings.Setting<boolean>,
+  gdpProfile?: Host.GdpClient.Profile,
+}): Lit.LitTemplate {
+  // clang-format off
+  if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled) {
+    return Lit.nothing;
+  }
+
+  function renderBrand(): Lit.LitTemplate {
+    return html`
+      <div class="gdp-profile-header">
+        <img src=${GDP_LOGO_IMAGE_URL} class="gdp-logo" alt="Google Developer Program">
+        ${lockedString('Google Developer Program')}
+      </div>
+    `;
+  }
+
+  return html`
+    <div class="gdp-profile-container">
+      <div class="divider"></div>
+      ${gdpProfile ? html`
+        <div class="gdp-profile-details-content">
+          ${renderBrand()}
+          <div class="plan-details">
+            ${getGdpSubscriptionText(gdpProfile)}
+            &nbsp;·&nbsp;
+            <x-link class="link" href=${GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK}>
+              ${i18nString(UIStrings.viewProfile)}
+            </x-link></div>
+            ${receiveBadgesSetting ? html`
+              <div class="setting-container">
+                <setting-checkbox class="setting-checkbox" .data=${{setting: receiveBadgesSetting}}></setting-checkbox>
+                <span>${i18nString(UIStrings.relevantDataDisclaimer)}</span>
+              </div>` : Lit.nothing}
+        </div>
+      ` : html`
+        <div class="gdp-profile-sign-up-content">
+          ${renderBrand()}
+          <devtools-button
+            @click=${() => {
+              // TODO(crbug.com/441467083): Render sign-up flow.
+              // no-op for now.
+            }}
+            .jslogContext=${'gdp.sign-up'}
+            .variant=${Buttons.Button.Variant.OUTLINED}>
+              ${i18nString(UIStrings.signUp)}
+          </devtools-button>
+        </div>
+      `}
+    </div>
+  `;
+}
+// clang-format on
 
 customElements.define('devtools-sync-section', SyncSection);
 

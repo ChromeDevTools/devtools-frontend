@@ -474,6 +474,11 @@ interface GlobalAiButton {
   promotionEnabled: boolean;
 }
 
+interface GdpProfiles {
+  enabled: boolean;
+  starterBadgeEnabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -515,6 +520,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAiSubmenuPrompts: AiSubmenuPrompts,
   devToolsIpProtectionInDevTools: IpProtectionInDevTools,
   devToolsGlobalAiButton: GlobalAiButton,
+  devToolsGdpProfiles: GdpProfiles,
 }>;
 
 /**

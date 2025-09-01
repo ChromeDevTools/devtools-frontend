@@ -162,6 +162,7 @@ devtools_svg_sources = [
   "frame-crossed.svg",
   "frame-icon.svg",
   "frame.svg",
+  "gdp-logo-standalone.svg",
   "gear-filled.svg",
   "gear.svg",
   "gears.svg",

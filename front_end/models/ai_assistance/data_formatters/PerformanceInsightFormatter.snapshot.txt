@@ -6,18 +6,18 @@ Content:
 This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 239.85 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 239.8 ms.
 The LCP element (IMG) is an image fetched from `https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp`.
 ## LCP resource network request: https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp
 Timings:
-- Queued at: 54.57 ms
-- Request sent at: 60.05 ms
-- Download complete at: 220.25 ms
-- Main thread processing completed at: 220.46 ms
+- Queued at: 54.6 ms
+- Request sent at: 60.1 ms
+- Download complete at: 220.2 ms
+- Main thread processing completed at: 220.5 ms
 Durations:
-- Download time: 8.60 ms
-- Main thread processing time: 0.21 ms
-- Total duration: 165.89 ms
+- Download time: 8.6 ms
+- Main thread processing time: 0.2 ms
+- Total duration: 165.9 ms
 Initiator: file:///Users/cjamcl/surge/misc/display-dpr/index.html
 Redirects: no redirects
 Status code: 200
@@ -46,10 +46,10 @@ Response headers
 
 We can break this time down into the 4 phases that combine to make the LCP time:
 
-- Time to first byte: 1.58 ms (0.7% of total LCP time)
-- Resource load delay: 52.98 ms (22.1% of total LCP time)
-- Resource load duration: 165.68 ms (69.1% of total LCP time)
-- Element render delay: 19.60 ms (8.2% of total LCP time)
+- Time to first byte: 1.6 ms (0.7% of total LCP time)
+- Resource load delay: 53.0 ms (22.1% of total LCP time)
+- Resource load duration: 165.7 ms (69.1% of total LCP time)
+- Element render delay: 19.6 ms (8.2% of total LCP time)
 
 ## Estimated savings: none
 
@@ -66,18 +66,18 @@ Content:
 This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 129.21 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 129.2 ms.
 The LCP element is an image fetched from `https://web-dev.imgix.net/image/kheDArv5csY6rvQUJDbWRscckLr1/4i7JstVZvgTFk9dxCe4a.svg`.
 ## LCP resource network request: https://web-dev.imgix.net/image/kheDArv5csY6rvQUJDbWRscckLr1/4i7JstVZvgTFk9dxCe4a.svg
 Timings:
-- Queued at: 41.10 ms
-- Request sent at: 46.56 ms
-- Download complete at: 55.80 ms
-- Main thread processing completed at: 58.15 ms
+- Queued at: 41.1 ms
+- Request sent at: 46.6 ms
+- Download complete at: 55.8 ms
+- Main thread processing completed at: 58.2 ms
 Durations:
-- Download time: 0.30 ms
-- Main thread processing time: 2.35 ms
-- Total duration: 17.05 ms
+- Download time: 0.3 ms
+- Main thread processing time: 2.3 ms
+- Total duration: 17.1 ms
 Redirects: no redirects
 Status code: 200
 MIME Type: image/svg+xml
@@ -90,10 +90,10 @@ Initiators (root request to the request that directly loaded this one): none
 
 We can break this time down into the 4 phases that combine to make the LCP time:
 
-- Time to first byte: 7.94 ms (6.1% of total LCP time)
-- Resource load delay: 33.16 ms (25.7% of total LCP time)
-- Resource load duration: 14.70 ms (11.4% of total LCP time)
-- Element render delay: 73.41 ms (56.8% of total LCP time)
+- Time to first byte: 7.9 ms (6.1% of total LCP time)
+- Resource load delay: 33.2 ms (25.7% of total LCP time)
+- Resource load duration: 14.7 ms (11.4% of total LCP time)
+- Element render delay: 73.4 ms (56.8% of total LCP time)
 
 ## Estimated savings: none
 
@@ -110,13 +110,13 @@ Content:
 This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 106.48 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 106.5 ms.
 The LCP element is text and was not fetched from the network.
 
 We can break this time down into the 2 phases that combine to make the LCP time:
 
-- Time to first byte: 6.12 ms (5.7% of total LCP time)
-- Element render delay: 100.37 ms (94.3% of total LCP time)
+- Time to first byte: 6.1 ms (5.7% of total LCP time)
+- Element render delay: 100.4 ms (94.3% of total LCP time)
 
 ## Estimated savings: none
 
@@ -159,9 +159,9 @@ Network requests data:
 
 allUrls = [0: https://code.jquery.com/jquery-3.7.1.js, 1: http://localhost:8000/, 2: http://localhost:8000/render-blocking-stylesheet.css, 3: http://localhost:8000/render-blocking-script.js]
 
-0;581.40 ms;584.53 ms;1,942.70 ms;1,944.05 ms;1,362.65 ms;775.53 ms;1.35 ms;200;application/javascript;High;High;High;t;h2;f;1;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]
-2;581.60 ms;583.11 ms;1,192.93 ms;1,193.16 ms;611.56 ms;0.19 ms;0.23 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
-3;581.56 ms;583.25 ms;1,176.60 ms;1,177.86 ms;596.30 ms;0.36 ms;1.27 ms;200;text/javascript;High;High;High;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+0;581.4 ms;584.5 ms;1,942.7 ms;1,944.1 ms;1,362.7 ms;775.5 ms;1.3 ms;200;application/javascript;High;High;High;t;h2;f;1;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]
+2;581.6 ms;583.1 ms;1,192.9 ms;1,193.2 ms;611.6 ms;0.2 ms;0.2 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+3;581.6 ms;583.3 ms;1,176.6 ms;1,177.9 ms;596.3 ms;0.4 ms;1.3 ms;200;text/javascript;High;High;High;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
 
 ## Estimated savings: FCP 2015 ms, LCP 0 ms
 
@@ -183,18 +183,18 @@ This insight analyzes the time taken to discover the LCP resource and request it
 It is important that all of these checks pass to minimize the delay between the initial page load and the LCP resource being loaded.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 1,077.06 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 1,077.1 ms.
 The LCP element is an image fetched from `http://localhost:8787/lcp-discovery-delay/lcp-image.jpg`.
 ## LCP resource network request: http://localhost:8787/lcp-discovery-delay/lcp-image.jpg
 Timings:
-- Queued at: 1,010.10 ms
-- Request sent at: 1,011.46 ms
-- Download complete at: 1,013.70 ms
-- Main thread processing completed at: 1,016.93 ms
+- Queued at: 1,010.1 ms
+- Request sent at: 1,011.5 ms
+- Download complete at: 1,013.7 ms
+- Main thread processing completed at: 1,016.9 ms
 Durations:
-- Download time: 1.00 ms
-- Main thread processing time: 3.23 ms
-- Total duration: 6.83 ms
+- Download time: 1.0 ms
+- Main thread processing time: 3.2 ms
+- Total duration: 6.8 ms
 Initiator: http://localhost:8787/lcp-discovery-delay/index.html
 Redirects: no redirects
 Status code: 200
@@ -239,29 +239,29 @@ This insight checks that the first request is responded to promptly. We use the 
 3. Was there compression applied to the response to minimize the transfer size?
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 3,604.15 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 3,604.1 ms.
 The LCP element is text and was not fetched from the network.
 
 ## Document network request: http://localhost:3000/redirect3
 Timings:
-- Queued at: 3.04 ms
-- Request sent at: 1,529.47 ms
-- Download complete at: 3,532.63 ms
-- Main thread processing completed at: 3,537.75 ms
+- Queued at: 3.0 ms
+- Request sent at: 1,529.5 ms
+- Download complete at: 3,532.6 ms
+- Main thread processing completed at: 3,537.8 ms
 Durations:
-- Download time: 0.13 ms
-- Main thread processing time: 5.12 ms
-- Total duration: 3,534.71 ms
+- Download time: 0.1 ms
+- Main thread processing time: 5.1 ms
+- Total duration: 3,534.7 ms
 Redirects:
 #### Redirect 1: http://localhost:3000/
-- Start time: 3.04 ms
-- Duration: 512.02 ms
+- Start time: 3.0 ms
+- Duration: 512.0 ms
 #### Redirect 2: http://localhost:3000/redirect1
-- Start time: 515.06 ms
-- Duration: 505.67 ms
+- Start time: 515.1 ms
+- Duration: 505.7 ms
 #### Redirect 3: http://localhost:3000/redirect2
-- Start time: 1,020.73 ms
-- Duration: 507.09 ms
+- Start time: 1,020.7 ms
+- Duration: 507.1 ms
 Status code: 200
 MIME Type: text/html
 Protocol: http/1.1
@@ -298,32 +298,32 @@ Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shift
 - Bad: over 0.25
 
 ## Detailed analysis:
-The worst layout shift cluster was the cluster that started at 471.76 ms and ended at 3,342.83 ms, with a duration of 2,871.07 ms.
+The worst layout shift cluster was the cluster that started at 471.8 ms and ended at 3,342.8 ms, with a duration of 2,871.1 ms.
 The score for this cluster is 0.7656.
 
 Layout shifts in this cluster:
 ### Layout shift 1:
-- Start time: 471.76 ms
+- Start time: 471.8 ms
 - Score: 0.0003
 - Potential root causes:
   - A font that was loaded over the network (https://fonts.gstatic.com/s/specialgothicexpandedone/v2/IurO6Zxk74-YaYk1r3HOet4g75ENmBxUmOK61tA0Iu5QmJF_.woff2).
 ### Layout shift 2:
-- Start time: 857.25 ms
+- Start time: 857.3 ms
 - Score: 0.0844
 - Potential root causes:
   - An iframe (id: 8AF3A9ADB81CA7B35302D07E0B591104, url: https://www.google.com/ was injected into the page)
 ### Layout shift 3:
-- Start time: 1,352.45 ms
+- Start time: 1,352.5 ms
 - Score: 0.0068
 - Potential root causes:
   - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png).
 ### Layout shift 4:
-- Start time: 1,537.46 ms
+- Start time: 1,537.5 ms
 - Score: 0.3344
 - Potential root causes:
   - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png).
 ### Layout shift 5:
-- Start time: 2,342.83 ms
+- Start time: 2,342.8 ms
 - Score: 0.3396
 - No potential root causes identified
 
@@ -352,11 +352,11 @@ For a given slow interaction, we can break it down into 3 phases:
 The sum of these three phases is the total latency. It is important to optimize each of these phases to ensure interactions take as little time as possible. Focusing on the phase that has the largest score is a good way to start optimizing.
 
 ## Detailed analysis:
-The longest interaction on the page was a `click` which had a total duration of `979.97 ms`. The timings of each of the three phases were:
+The longest interaction on the page was a `click` which had a total duration of `980.0 ms`. The timings of each of the three phases were:
 
-1. Input delay: 1.00 ms
-2. Processing duration: 977.00 ms
-3. Presentation delay: 1.97 ms.
+1. Input delay: 1.0 ms
+2. Processing duration: 977.0 ms
+3. Presentation delay: 2.0 ms.
 
 ## Estimated savings: none
 
@@ -413,13 +413,13 @@ Network requests data:
 
 allUrls = [0: https://ads.jetpackdigital.com/sites/_uploads/1742278386bg_opt_640x350-avif.avif, 1: http://localhost/old-http.html, 2: https://ads.jetpackdigital.com/sites/_uploads/1583540859Play.png, 3: https://ads.jetpackdigital.com/sites/_uploads/1583540859Muted.png, 4: https://ads.jetpackdigital.com/h5media/sites/_uploads/1742363510mm_allthefeels_20_mob.mp4, 5: https://ads.jetpackdigital.com/sites/_uploads/1583540860Pause.png, 6: https://ads.jetpackdigital.com/tracking_pixel.gif?8852762616, 7: https://ads.jetpackdigital.com/tracking_pixel.gif?7753243273]
 
-0;8.08 ms;12.43 ms;25.72 ms;25.81 ms;17.74 ms;1.58 ms;0.09 ms;200;image/avif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 18 Mar 2025 06:13:07 GMT|Content-Type: image/avif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-2;8.20 ms;12.53 ms;24.00 ms;24.30 ms;16.10 ms;0.60 ms;0.29 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-3;8.30 ms;12.57 ms;24.64 ms;24.98 ms;16.68 ms;1.15 ms;0.34 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-4;8.36 ms;12.82 ms;24.47 ms;24.48 ms;16.12 ms;0.36 ms;0.01 ms;200;video/mp4;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Wed, 19 Mar 2025 05:51:52 GMT|Content-Type: video/mp4|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-5;8.40 ms;12.86 ms;24.74 ms;25.02 ms;16.62 ms;1.28 ms;0.28 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:18 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-6;8.43 ms;24.40 ms;38.53 ms;38.71 ms;30.28 ms;0.10 ms;0.18 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-7;8.44 ms;24.87 ms;37.75 ms;38.00 ms;29.56 ms;0.23 ms;0.25 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+0;8.1 ms;12.4 ms;25.7 ms;25.8 ms;17.7 ms;1.6 ms;0.1 ms;200;image/avif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 18 Mar 2025 06:13:07 GMT|Content-Type: image/avif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+2;8.2 ms;12.5 ms;24.0 ms;24.3 ms;16.1 ms;0.6 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+3;8.3 ms;12.6 ms;24.6 ms;25.0 ms;16.7 ms;1.2 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+4;8.4 ms;12.8 ms;24.5 ms;24.5 ms;16.1 ms;0.4 ms;0.0 ms;200;video/mp4;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Wed, 19 Mar 2025 05:51:52 GMT|Content-Type: video/mp4|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+5;8.4 ms;12.9 ms;24.7 ms;25.0 ms;16.6 ms;1.3 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:18 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+6;8.4 ms;24.4 ms;38.5 ms;38.7 ms;30.3 ms;0.1 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+7;8.4 ms;24.9 ms;37.8 ms;38.0 ms;29.6 ms;0.2 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
 
 ## Estimated savings: FCP 0 ms, LCP 0 ms
 
@@ -431,14 +431,14 @@ Title: PerformanceInsightFormatter Formatting TraceEvents formats network reques
 Content:
 ## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
 Timings:
-- Queued at: 37.62 ms
-- Request sent at: 41.71 ms
-- Download complete at: 48.04 ms
-- Main thread processing completed at: 51.55 ms
+- Queued at: 37.6 ms
+- Request sent at: 41.7 ms
+- Download complete at: 48.0 ms
+- Main thread processing completed at: 51.5 ms
 Durations:
-- Download time: 4.79 ms
-- Main thread processing time: 3.51 ms
-- Total duration: 13.93 ms
+- Download time: 4.8 ms
+- Main thread processing time: 3.5 ms
+- Total duration: 13.9 ms
 Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Redirects: no redirects
 Status code: 200
@@ -470,14 +470,14 @@ Title: PerformanceInsightFormatter Formatting TraceEvents defaults to verbose mo
 Content:
 ## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
 Timings:
-- Queued at: 37.62 ms
-- Request sent at: 41.71 ms
-- Download complete at: 48.04 ms
-- Main thread processing completed at: 51.55 ms
+- Queued at: 37.6 ms
+- Request sent at: 41.7 ms
+- Download complete at: 48.0 ms
+- Main thread processing completed at: 51.5 ms
 Durations:
-- Download time: 4.79 ms
-- Main thread processing time: 3.51 ms
-- Total duration: 13.93 ms
+- Download time: 4.8 ms
+- Main thread processing time: 3.5 ms
+- Total duration: 13.9 ms
 Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Redirects: no redirects
 Status code: 200
@@ -767,12 +767,12 @@ This insight analyzes the network dependency tree to identify:
 ## Detailed analysis:
 The network dependency tree checks found one or more problems.
 
-Max critical path latency is 5,014.91 ms
+Max critical path latency is 5,014.9 ms
 
 The following is the critical request chain:
-- http://localhost:8787/lcp-iframes/index.html (5,005.59 ms) (longest chain)
-  - http://localhost:8787/lcp-iframes/app.js (5,014.91 ms) (longest chain)
-  - http://localhost:8787/lcp-iframes/app.css (5,010.12 ms)
+- http://localhost:8787/lcp-iframes/index.html (5,005.6 ms) (longest chain)
+  - http://localhost:8787/lcp-iframes/app.js (5,014.9 ms) (longest chain)
+  - http://localhost:8787/lcp-iframes/app.css (5,010.1 ms)
 
 no origins were preconnected.
 

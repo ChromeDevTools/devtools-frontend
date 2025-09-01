@@ -20,6 +20,7 @@ import * as Trace from '../../trace/trace.js';
 import {
   type ActionResponse,
   ConversationType,
+  PERF_AGENT_UNIT_FORMATTERS,
   PerformanceAgent,
   PerformanceInsightFormatter,
   PerformanceTraceContext,
@@ -350,7 +351,9 @@ code
         }]])
       });
 
-      const expectedDetailText = new PerformanceInsightFormatter(FAKE_PARSED_TRACE, FAKE_LCP_MODEL).formatInsight();
+      const expectedDetailText =
+          new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, FAKE_PARSED_TRACE, FAKE_LCP_MODEL)
+              .formatInsight();
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       assert.deepEqual(responses, [
@@ -388,7 +391,9 @@ code
       });
 
       const context = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS);
-      const extraContext = new PerformanceInsightFormatter(FAKE_PARSED_TRACE, FAKE_LCP_MODEL).formatInsight();
+      const extraContext =
+          new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, FAKE_PARSED_TRACE, FAKE_LCP_MODEL)
+              .formatInsight();
 
       const finalQuery = await agent.enhanceQuery('What is this?', context);
       const expected = `${extraContext}
@@ -461,7 +466,8 @@ Help me understand?`;
         return match;
       });
 
-      const expectedRequestsOutput = TraceEventFormatter.networkRequests(requests, parsedTrace);
+      const expectedRequestsOutput =
+          TraceEventFormatter.networkRequests(PERF_AGENT_UNIT_FORMATTERS, requests, parsedTrace);
 
       const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestsOutput);
       sinon.assert.calledWith(metricsSpy, expectedBytesSize);
@@ -505,7 +511,8 @@ Help me understand?`;
       const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
       assert.isOk(request);
 
-      const expectedRequestOutput = TraceEventFormatter.networkRequests([request], parsedTrace, {verbose: true});
+      const expectedRequestOutput =
+          TraceEventFormatter.networkRequests(PERF_AGENT_UNIT_FORMATTERS, [request], parsedTrace, {verbose: true});
       const expectedOutput = JSON.stringify({request: expectedRequestOutput});
 
       const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestOutput);

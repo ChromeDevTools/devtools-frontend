@@ -524,13 +524,13 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
    * @internal
    */
   @throwIfDetached
-  locator<Selector extends string, Ret>(
-    selectorOrFunc: Selector | (() => Awaitable<Ret>),
-  ): Locator<NodeFor<Selector>> | Locator<Ret> {
-    if (typeof selectorOrFunc === 'string') {
-      return NodeLocator.create(this, selectorOrFunc);
+  locator<Selector extends string, Ret, T extends Node>(
+    input: Selector | (() => Awaitable<Ret>),
+  ): Locator<NodeFor<Selector>> | Locator<Ret> | Locator<T> {
+    if (typeof input === 'string') {
+      return NodeLocator.create(this, input);
     } else {
-      return FunctionLocator.create(this, selectorOrFunc);
+      return FunctionLocator.create(this, input);
     }
   }
   /**

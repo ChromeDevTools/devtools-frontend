@@ -54,6 +54,10 @@ export declare class BidiPage extends Page {
     browser(): BidiBrowser;
     browserContext(): BidiBrowserContext;
     mainFrame(): BidiFrame;
+    resize(_params: {
+        contentWidth: number;
+        contentHeight: number;
+    }): Promise<void>;
     focusedFrame(): Promise<BidiFrame>;
     frames(): BidiFrame[];
     isClosed(): boolean;

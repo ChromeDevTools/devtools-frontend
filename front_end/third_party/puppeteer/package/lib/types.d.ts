@@ -2262,6 +2262,12 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      */
     scrollIntoView(this: ElementHandle<Element>): Promise<void>;
     /**
+     * Creates a locator based on an ElementHandle. This would not allow
+     * refreshing the element handle if it is stale but it allows re-using other
+     * locator pre-conditions.
+     */
+    asLocator(this: ElementHandle<Element>): Locator<Element>;
+    /**
      * If the element is a form input, you can use {@link ElementHandle.autofill}
      * to test if the form is compatible with the browser's autofill
      * implementation. Throws an error if the form cannot be autofilled.
@@ -6375,6 +6381,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      */
     abstract waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
+
 
 
 }

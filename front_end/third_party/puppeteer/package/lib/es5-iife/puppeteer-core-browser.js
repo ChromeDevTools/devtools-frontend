@@ -2951,7 +2951,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.17.1';
+  const packageVersion = '24.18.0';
 
   /**
    * @license
@@ -4413,7 +4413,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     try {
       // stripped
     } catch (err) {
-      if (err.message.includes(`Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive`)) {
+      if (err.message.includes(`Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive`) || err.message.includes('Evaluating a string as JavaScript violates the following Content Security Policy')) {
         // The content security policy does not allow Function eval. Let's
         // assume the value might be valid as is.
         return value;
@@ -5003,7 +5003,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   }) => {
     return cssQuerySelectorAll(element, selector);
   });
-  const source = "\"use strict\";var g=Object.defineProperty;var X=Object.getOwnPropertyDescriptor;var B=Object.getOwnPropertyNames;var Y=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)g(t,r,{get:e[r],enumerable:!0})},J=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of B(e))!Y.call(t,n)&&n!==r&&g(t,n,{get:()=>e[n],enumerable:!(o=X(e,n))||o.enumerable});return t};var z=t=>J(g({},\"__esModule\",{value:!0}),t);var pe={};l(pe,{default:()=>he});module.exports=z(pe);var N=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},p=class extends N{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#n&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#o;#t;#a=new Promise(e=>{this.#t=e});#n;#i;constructor(e){e&&e.timeout>0&&(this.#i=new p(e.message),this.#n=setTimeout(()=>{this.reject(this.#i)},e.timeout))}#l(e){clearTimeout(this.#n),this.#o=e,this.#t()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#l(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#l(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#o}#s;valueOrThrow(){return this.#s||(this.#s=(async()=>{if(await this.#a,this.#r)throw this.#o;return this.#o})()),this.#s}};var L=new Map,F=t=>{let e=L.get(t);return e||(e=new Function(`return ${t}`)(),L.set(t,e),e)};var x={};l(x,{ariaQuerySelector:()=>G,ariaQuerySelectorAll:()=>b});var G=(t,e)=>globalThis.__ariaQuerySelector(t,e),b=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var E={};l(E,{cssQuerySelector:()=>K,cssQuerySelectorAll:()=>Z});var K=(t,e)=>t.querySelector(e),Z=function(t,e){return t.querySelectorAll(e)};var A={};l(A,{customQuerySelectors:()=>P});var v=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},P=new v;var R={};l(R,{pierceQuerySelector:()=>ee,pierceQuerySelectorAll:()=>te});var ee=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},te=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var u=(t,e)=>{if(!t)throw new Error(e)};var y=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=new MutationObserver(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())}),this.#o.observe(this.#r,{childList:!0,subtree:!0,attributes:!0})}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(this.#o.disconnect(),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}},w=class{#e;#r;constructor(e){this.#e=e}async start(){let e=this.#r=c.create(),r=await this.#e();if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){u(this.#r,\"Polling never started.\"),this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\"))}result(){return u(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},S=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(clearInterval(this.#o),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}};var _={};l(_,{PCombinator:()=>H,pQuerySelector:()=>fe,pQuerySelectorAll:()=>$});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var C={};l(C,{textQuerySelectorAll:()=>m});var re=new Set([\"checkbox\",\"image\",\"radio\"]),oe=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!re.has(t.type),ne=new Set([\"SCRIPT\",\"STYLE\"]),f=t=>!ne.has(t.nodeName)&&!document.head?.contains(t),I=new WeakMap,j=t=>{for(;t;)I.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},W=new WeakSet,se=new MutationObserver(t=>{for(let e of t)j(e.target)}),d=t=>{let e=I.get(t);if(e||(e={full:\"\",immediate:[]},!f(t)))return e;let r=\"\";if(oe(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{j(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=d(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=d(t.shadowRoot).full),W.has(t)||(se.observe(t,{childList:!0,characterData:!0,subtree:!0}),W.add(t))}return I.set(t,e),e};var m=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&f(o)){let n;o.shadowRoot?n=m(o.shadowRoot,e):n=m(o,e);for(let i of n)yield i,r=!0}r||t instanceof Element&&f(t)&&d(t).full.includes(e)&&(yield t)};var k={};l(k,{checkVisibility:()=>le,pierce:()=>T,pierceAll:()=>O});var ie=[\"hidden\",\"collapse\"],le=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement:t,o=window.getComputedStyle(r),n=o&&!ie.includes(o.visibility)&&!ae(r);return e===n?t:!1};function ae(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var ce=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*T(t){ce(t)?yield t.shadowRoot:yield t}function*O(t){t=T(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var Q={};l(Q,{xpathQuerySelectorAll:()=>q});var q=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let h=0;h<i.length;h++)s=i[h],yield s,delete i[h]};var ue=/[-\\w\\P{ASCII}*]/u,H=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(H||{}),V=t=>\"querySelectorAll\"in t,M=class{#e;#r=[];#o=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#t()}async run(){if(typeof this.#o==\"string\")switch(this.#o.trimStart()){case\":scope\":this.#t();break}for(;this.#o!==void 0;this.#t()){let e=this.#o;typeof e==\"string\"?e[0]&&ue.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){V(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!V(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*m(r,e.value);break;case\"xpath\":yield*q(r,e.value);break;case\"aria\":yield*b(r,e.value);break;default:let o=P.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#t(){if(this.#r.length!==0){this.#o=this.#r.shift();return}if(this.#e.length===0){this.#o=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,T),this.#t();break}case\">>>\":{this.elements=a.flatMap(this.elements,O),this.#t();break}default:this.#r=e,this.#t();break}}},D=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},U=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?U(o,i):r<n?-1:1},de=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new D;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>U(o,n)).map(([o])=>o)},$=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return de(a.flatMap(r,o=>{let n=new M(t,o);return n.run(),n.elements}))},fe=async function(t,e){for await(let r of $(t,e))return r;return null};var me=Object.freeze({...x,...A,...R,..._,...C,...k,...Q,...E,Deferred:c,createFunction:F,createTextContent:d,IntervalPoller:S,isSuitableNodeForTextMatching:f,MutationPoller:y,RAFPoller:w}),he=me;\n";
+  const source = "\"use strict\";var g=Object.defineProperty;var X=Object.getOwnPropertyDescriptor;var B=Object.getOwnPropertyNames;var J=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)g(t,r,{get:e[r],enumerable:!0})},Y=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of B(e))!J.call(t,n)&&n!==r&&g(t,n,{get:()=>e[n],enumerable:!(o=X(e,n))||o.enumerable});return t};var z=t=>Y(g({},\"__esModule\",{value:!0}),t);var pe={};l(pe,{default:()=>he});module.exports=z(pe);var N=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},p=class extends N{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#n&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#o;#t;#a=new Promise(e=>{this.#t=e});#n;#i;constructor(e){e&&e.timeout>0&&(this.#i=new p(e.message),this.#n=setTimeout(()=>{this.reject(this.#i)},e.timeout))}#l(e){clearTimeout(this.#n),this.#o=e,this.#t()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#l(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#l(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#o}#s;valueOrThrow(){return this.#s||(this.#s=(async()=>{if(await this.#a,this.#r)throw this.#o;return this.#o})()),this.#s}};var L=new Map,F=t=>{let e=L.get(t);return e||(e=new Function(`return ${t}`)(),L.set(t,e),e)};var x={};l(x,{ariaQuerySelector:()=>G,ariaQuerySelectorAll:()=>b});var G=(t,e)=>globalThis.__ariaQuerySelector(t,e),b=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var E={};l(E,{cssQuerySelector:()=>K,cssQuerySelectorAll:()=>Z});var K=(t,e)=>t.querySelector(e),Z=function(t,e){return t.querySelectorAll(e)};var A={};l(A,{customQuerySelectors:()=>P});var v=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},P=new v;var R={};l(R,{pierceQuerySelector:()=>ee,pierceQuerySelectorAll:()=>te});var ee=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},te=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var u=(t,e)=>{if(!t)throw new Error(e)};var y=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=new MutationObserver(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())}),this.#o.observe(this.#r,{childList:!0,subtree:!0,attributes:!0})}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(this.#o.disconnect(),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}},w=class{#e;#r;constructor(e){this.#e=e}async start(){let e=this.#r=c.create(),r=await this.#e();if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){u(this.#r,\"Polling never started.\"),this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\"))}result(){return u(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},S=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(clearInterval(this.#o),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}};var _={};l(_,{PCombinator:()=>H,pQuerySelector:()=>fe,pQuerySelectorAll:()=>$});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var C={};l(C,{textQuerySelectorAll:()=>m});var re=new Set([\"checkbox\",\"image\",\"radio\"]),oe=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!re.has(t.type),ne=new Set([\"SCRIPT\",\"STYLE\"]),f=t=>!ne.has(t.nodeName)&&!document.head?.contains(t),I=new WeakMap,j=t=>{for(;t;)I.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},W=new WeakSet,se=new MutationObserver(t=>{for(let e of t)j(e.target)}),d=t=>{let e=I.get(t);if(e||(e={full:\"\",immediate:[]},!f(t)))return e;let r=\"\";if(oe(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{j(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=d(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=d(t.shadowRoot).full),W.has(t)||(se.observe(t,{childList:!0,characterData:!0,subtree:!0}),W.add(t))}return I.set(t,e),e};var m=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&f(o)){let n;o.shadowRoot?n=m(o.shadowRoot,e):n=m(o,e);for(let i of n)yield i,r=!0}r||t instanceof Element&&f(t)&&d(t).full.includes(e)&&(yield t)};var k={};l(k,{checkVisibility:()=>le,pierce:()=>T,pierceAll:()=>O});var ie=[\"hidden\",\"collapse\"],le=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement:t,o=window.getComputedStyle(r),n=o&&!ie.includes(o.visibility)&&!ae(r);return e===n?t:!1};function ae(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var ce=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*T(t){ce(t)?yield t.shadowRoot:yield t}function*O(t){t=T(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var Q={};l(Q,{xpathQuerySelectorAll:()=>q});var q=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let h=0;h<i.length;h++)s=i[h],yield s,delete i[h]};var ue=/[-\\w\\P{ASCII}*]/u,H=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(H||{}),V=t=>\"querySelectorAll\"in t,M=class{#e;#r=[];#o=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#t()}async run(){if(typeof this.#o==\"string\")switch(this.#o.trimStart()){case\":scope\":this.#t();break}for(;this.#o!==void 0;this.#t()){let e=this.#o;typeof e==\"string\"?e[0]&&ue.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){V(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!V(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*m(r,e.value);break;case\"xpath\":yield*q(r,e.value);break;case\"aria\":yield*b(r,e.value);break;default:let o=P.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#t(){if(this.#r.length!==0){this.#o=this.#r.shift();return}if(this.#e.length===0){this.#o=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,T),this.#t();break}case\">>>\":{this.elements=a.flatMap(this.elements,O),this.#t();break}default:this.#r=e,this.#t();break}}},D=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},U=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?U(o,i):r<n?-1:1},de=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new D;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>U(o,n)).map(([o])=>o)},$=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return de(a.flatMap(r,o=>{let n=new M(t,o);return n.run(),n.elements}))},fe=async function(t,e){for await(let r of $(t,e))return r;return null};var me=Object.freeze({...x,...A,...R,..._,...C,...k,...Q,...E,Deferred:c,createFunction:F,createTextContent:d,IntervalPoller:S,isSuitableNodeForTextMatching:f,MutationPoller:y,RAFPoller:w}),he=me;\n";
 
   /**
    * @license
@@ -6059,6 +6059,752 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     })();
     return _classThis;
   })();
+  var __addDisposableResource$8 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+      if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+      var dispose, inner;
+      if (async) {
+        if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+        dispose = value[Symbol.asyncDispose];
+      }
+      if (dispose === void 0) {
+        if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+        dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
+      }
+      if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
+      env.stack.push({
+        value: value,
+        dispose: dispose,
+        async: async
+      });
+    } else if (async) {
+      env.stack.push({
+        async: true
+      });
+    }
+    return value;
+  };
+  var __disposeResources$8 = undefined && undefined.__disposeResources || function (SuppressedError) {
+    return function (env) {
+      function fail(e) {
+        env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+        env.hasError = true;
+      }
+      var r,
+        s = 0;
+      function next() {
+        while (r = env.stack.pop()) {
+          try {
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
+          } catch (e) {
+            fail(e);
+          }
+        }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
+        if (env.hasError) throw env.error;
+      }
+      return next();
+    };
+  }(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+  });
+  /**
+   * All the events that a locator instance may emit.
+   *
+   * @public
+   */
+  exports.LocatorEvent = void 0;
+  (function (LocatorEvent) {
+    /**
+     * Emitted every time before the locator performs an action on the located element(s).
+     */
+    LocatorEvent["Action"] = "action";
+  })(exports.LocatorEvent || (exports.LocatorEvent = {}));
+  /**
+   * Locators describe a strategy of locating objects and performing an action on
+   * them. If the action fails because the object is not ready for the action, the
+   * whole operation is retried. Various preconditions for a successful action are
+   * checked automatically.
+   *
+   * See {@link https://pptr.dev/guides/page-interactions#locators} for details.
+   *
+   * @public
+   */
+  var _ensureElementIsInTheViewport = /*#__PURE__*/new WeakMap();
+  var _waitForEnabled = /*#__PURE__*/new WeakMap();
+  var _waitForStableBoundingBox = /*#__PURE__*/new WeakMap();
+  var _waitForEnabledIfNeeded = /*#__PURE__*/new WeakMap();
+  var _waitForStableBoundingBoxIfNeeded = /*#__PURE__*/new WeakMap();
+  var _ensureElementIsInTheViewportIfNeeded = /*#__PURE__*/new WeakMap();
+  var _Locator_brand = /*#__PURE__*/new WeakSet();
+  class Locator extends EventEmitter {
+    constructor(...args) {
+      super(...args);
+      _classPrivateMethodInitSpec(this, _Locator_brand);
+      /**
+       * @internal
+       */
+      _defineProperty(this, "visibility", null);
+      /**
+       * @internal
+       */
+      _defineProperty(this, "_timeout", 30000);
+      _classPrivateFieldInitSpec(this, _ensureElementIsInTheViewport, true);
+      _classPrivateFieldInitSpec(this, _waitForEnabled, true);
+      _classPrivateFieldInitSpec(this, _waitForStableBoundingBox, true);
+      /**
+       * @internal
+       */
+      _defineProperty(this, "operators", {
+        conditions: (conditions, signal) => {
+          return mergeMap(handle => {
+            return merge(...conditions.map(condition => {
+              return condition(handle, signal);
+            })).pipe(defaultIfEmpty(handle));
+          });
+        },
+        retryAndRaceWithSignalAndTimer: (signal, cause) => {
+          const candidates = [];
+          if (signal) {
+            candidates.push(fromAbortSignal(signal, cause));
+          }
+          candidates.push(timeout(this._timeout, cause));
+          return pipe(retry({
+            delay: RETRY_DELAY
+          }), raceWith(...candidates));
+        }
+      });
+      /**
+       * If the element has a "disabled" property, wait for the element to be
+       * enabled.
+       */
+      _classPrivateFieldInitSpec(this, _waitForEnabledIfNeeded, (handle, signal) => {
+        if (!_classPrivateFieldGet(_waitForEnabled, this)) {
+          return EMPTY;
+        }
+        return from(handle.frame.waitForFunction(element => {
+          if (!(element instanceof HTMLElement)) {
+            return true;
+          }
+          const isNativeFormControl = ['BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'OPTION', 'OPTGROUP'].includes(element.nodeName);
+          return !isNativeFormControl || !element.hasAttribute('disabled');
+        }, {
+          timeout: this._timeout,
+          signal
+        }, handle)).pipe(ignoreElements());
+      });
+      /**
+       * Compares the bounding box of the element for two consecutive animation
+       * frames and waits till they are the same.
+       */
+      _classPrivateFieldInitSpec(this, _waitForStableBoundingBoxIfNeeded, handle => {
+        if (!_classPrivateFieldGet(_waitForStableBoundingBox, this)) {
+          return EMPTY;
+        }
+        return defer(() => {
+          // Note we don't use waitForFunction because that relies on RAF.
+          return from(handle.evaluate(element => {
+            return new Promise(resolve => {
+              window.requestAnimationFrame(() => {
+                const rect1 = element.getBoundingClientRect();
+                window.requestAnimationFrame(() => {
+                  const rect2 = element.getBoundingClientRect();
+                  resolve([{
+                    x: rect1.x,
+                    y: rect1.y,
+                    width: rect1.width,
+                    height: rect1.height
+                  }, {
+                    x: rect2.x,
+                    y: rect2.y,
+                    width: rect2.width,
+                    height: rect2.height
+                  }]);
+                });
+              });
+            });
+          }));
+        }).pipe(first(([rect1, rect2]) => {
+          return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
+        }), retry({
+          delay: RETRY_DELAY
+        }), ignoreElements());
+      });
+      /**
+       * Checks if the element is in the viewport and auto-scrolls it if it is not.
+       */
+      _classPrivateFieldInitSpec(this, _ensureElementIsInTheViewportIfNeeded, handle => {
+        if (!_classPrivateFieldGet(_ensureElementIsInTheViewport, this)) {
+          return EMPTY;
+        }
+        return from(handle.isIntersectingViewport({
+          threshold: 0
+        })).pipe(filter(isIntersectingViewport => {
+          return !isIntersectingViewport;
+        }), mergeMap(() => {
+          return from(handle.scrollIntoView());
+        }), mergeMap(() => {
+          return defer(() => {
+            return from(handle.isIntersectingViewport({
+              threshold: 0
+            }));
+          }).pipe(first(identity), retry({
+            delay: RETRY_DELAY
+          }), ignoreElements());
+        }));
+      });
+    }
+    /**
+     * Creates a race between multiple locators trying to locate elements in
+     * parallel but ensures that only a single element receives the action.
+     *
+     * @public
+     */
+    static race(locators) {
+      return RaceLocator.create(locators);
+    }
+    // Determines when the locator will timeout for actions.
+    get timeout() {
+      return this._timeout;
+    }
+    /**
+     * Creates a new locator instance by cloning the current locator and setting
+     * the total timeout for the locator actions.
+     *
+     * Pass `0` to disable timeout.
+     *
+     * @defaultValue `Page.getDefaultTimeout()`
+     */
+    setTimeout(timeout) {
+      const locator = this._clone();
+      locator._timeout = timeout;
+      return locator;
+    }
+    /**
+     * Creates a new locator instance by cloning the current locator with the
+     * visibility property changed to the specified value.
+     */
+    setVisibility(visibility) {
+      const locator = this._clone();
+      locator.visibility = visibility;
+      return locator;
+    }
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether to wait for input elements to become enabled before the
+     * action. Applicable to `click` and `fill` actions.
+     *
+     * @defaultValue `true`
+     */
+    setWaitForEnabled(value) {
+      const locator = this._clone();
+      _classPrivateFieldSet(_waitForEnabled, locator, value);
+      return locator;
+    }
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether the locator should scroll the element into viewport if
+     * it is not in the viewport already.
+     *
+     * @defaultValue `true`
+     */
+    setEnsureElementIsInTheViewport(value) {
+      const locator = this._clone();
+      _classPrivateFieldSet(_ensureElementIsInTheViewport, locator, value);
+      return locator;
+    }
+    /**
+     * Creates a new locator instance by cloning the current locator and
+     * specifying whether the locator has to wait for the element's bounding box
+     * to be same between two consecutive animation frames.
+     *
+     * @defaultValue `true`
+     */
+    setWaitForStableBoundingBox(value) {
+      const locator = this._clone();
+      _classPrivateFieldSet(_waitForStableBoundingBox, locator, value);
+      return locator;
+    }
+    /**
+     * @internal
+     */
+    copyOptions(locator) {
+      this._timeout = locator._timeout;
+      this.visibility = locator.visibility;
+      _classPrivateFieldSet(_waitForEnabled, this, _classPrivateFieldGet(_waitForEnabled, locator));
+      _classPrivateFieldSet(_ensureElementIsInTheViewport, this, _classPrivateFieldGet(_ensureElementIsInTheViewport, locator));
+      _classPrivateFieldSet(_waitForStableBoundingBox, this, _classPrivateFieldGet(_waitForStableBoundingBox, locator));
+      return this;
+    }
+    /**
+     * Clones the locator.
+     */
+    clone() {
+      return this._clone();
+    }
+    /**
+     * Waits for the locator to get a handle from the page.
+     *
+     * @public
+     */
+    async waitHandle(options) {
+      const cause = new Error('Locator.waitHandle');
+      return await firstValueFrom(this._wait(options).pipe(this.operators.retryAndRaceWithSignalAndTimer(options?.signal, cause)));
+    }
+    /**
+     * Waits for the locator to get the serialized value from the page.
+     *
+     * Note this requires the value to be JSON-serializable.
+     *
+     * @public
+     */
+    async wait(options) {
+      const env_1 = {
+        stack: [],
+        error: void 0,
+        hasError: false
+      };
+      try {
+        const handle = __addDisposableResource$8(env_1, await this.waitHandle(options), false);
+        return await handle.jsonValue();
+      } catch (e_1) {
+        env_1.error = e_1;
+        env_1.hasError = true;
+      } finally {
+        __disposeResources$8(env_1);
+      }
+    }
+    /**
+     * Maps the locator using the provided mapper.
+     *
+     * @public
+     */
+    map(mapper) {
+      return new MappedLocator(this._clone(), handle => {
+        // SAFETY: TypeScript cannot deduce the type.
+        return handle.evaluateHandle(mapper);
+      });
+    }
+    /**
+     * Creates an expectation that is evaluated against located values.
+     *
+     * If the expectations do not match, then the locator will retry.
+     *
+     * @public
+     */
+    filter(predicate) {
+      return new FilteredLocator(this._clone(), async (handle, signal) => {
+        await handle.frame.waitForFunction(predicate, {
+          signal,
+          timeout: this._timeout
+        }, handle);
+        return true;
+      });
+    }
+    /**
+     * Creates an expectation that is evaluated against located handles.
+     *
+     * If the expectations do not match, then the locator will retry.
+     *
+     * @internal
+     */
+    filterHandle(predicate) {
+      return new FilteredLocator(this._clone(), predicate);
+    }
+    /**
+     * Maps the locator using the provided mapper.
+     *
+     * @internal
+     */
+    mapHandle(mapper) {
+      return new MappedLocator(this._clone(), mapper);
+    }
+    /**
+     * Clicks the located element.
+     */
+    click(options) {
+      return firstValueFrom(_assertClassBrand(_Locator_brand, this, _click).call(this, options));
+    }
+    /**
+     * Fills out the input identified by the locator using the provided value. The
+     * type of the input is determined at runtime and the appropriate fill-out
+     * method is chosen based on the type. `contenteditable`, select, textarea and
+     * input elements are supported.
+     */
+    fill(value, options) {
+      return firstValueFrom(_assertClassBrand(_Locator_brand, this, _fill).call(this, value, options));
+    }
+    /**
+     * Hovers over the located element.
+     */
+    hover(options) {
+      return firstValueFrom(_assertClassBrand(_Locator_brand, this, _hover).call(this, options));
+    }
+    /**
+     * Scrolls the located element.
+     */
+    scroll(options) {
+      return firstValueFrom(_assertClassBrand(_Locator_brand, this, _scroll).call(this, options));
+    }
+  }
+  /**
+   * @internal
+   */
+  function _click(options) {
+    const signal = options?.signal;
+    const cause = new Error('Locator.click');
+    return this._wait(options).pipe(this.operators.conditions([_classPrivateFieldGet(_ensureElementIsInTheViewportIfNeeded, this), _classPrivateFieldGet(_waitForStableBoundingBoxIfNeeded, this), _classPrivateFieldGet(_waitForEnabledIfNeeded, this)], signal), tap(() => {
+      return this.emit(exports.LocatorEvent.Action, undefined);
+    }), mergeMap(handle => {
+      return from(handle.click(options)).pipe(catchError(err => {
+        void handle.dispose().catch(debugError);
+        throw err;
+      }));
+    }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
+  }
+  function _fill(value, options) {
+    const signal = options?.signal;
+    const cause = new Error('Locator.fill');
+    return this._wait(options).pipe(this.operators.conditions([_classPrivateFieldGet(_ensureElementIsInTheViewportIfNeeded, this), _classPrivateFieldGet(_waitForStableBoundingBoxIfNeeded, this), _classPrivateFieldGet(_waitForEnabledIfNeeded, this)], signal), tap(() => {
+      return this.emit(exports.LocatorEvent.Action, undefined);
+    }), mergeMap(handle => {
+      return from(handle.evaluate(el => {
+        if (el instanceof HTMLSelectElement) {
+          return 'select';
+        }
+        if (el instanceof HTMLTextAreaElement) {
+          return 'typeable-input';
+        }
+        if (el instanceof HTMLInputElement) {
+          if (new Set(['textarea', 'text', 'url', 'tel', 'search', 'password', 'number', 'email']).has(el.type)) {
+            return 'typeable-input';
+          } else {
+            return 'other-input';
+          }
+        }
+        if (el.isContentEditable) {
+          return 'contenteditable';
+        }
+        return 'unknown';
+      })).pipe(mergeMap(inputType => {
+        switch (inputType) {
+          case 'select':
+            return from(handle.select(value).then(noop));
+          case 'contenteditable':
+          case 'typeable-input':
+            return from(handle.evaluate((input, newValue) => {
+              const currentValue = input.isContentEditable ? input.innerText : input.value;
+              // Clear the input if the current value does not match the filled
+              // out value.
+              if (newValue.length <= currentValue.length || !newValue.startsWith(input.value)) {
+                if (input.isContentEditable) {
+                  input.innerText = '';
+                } else {
+                  input.value = '';
+                }
+                return newValue;
+              }
+              const originalValue = input.isContentEditable ? input.innerText : input.value;
+              // If the value is partially filled out, only type the rest. Move
+              // cursor to the end of the common prefix.
+              if (input.isContentEditable) {
+                input.innerText = '';
+                input.innerText = originalValue;
+              } else {
+                input.value = '';
+                input.value = originalValue;
+              }
+              return newValue.substring(originalValue.length);
+            }, value)).pipe(mergeMap(textToType => {
+              return from(handle.type(textToType));
+            }));
+          case 'other-input':
+            return from(handle.focus()).pipe(mergeMap(() => {
+              return from(handle.evaluate((input, value) => {
+                input.value = value;
+                input.dispatchEvent(new Event('input', {
+                  bubbles: true
+                }));
+                input.dispatchEvent(new Event('change', {
+                  bubbles: true
+                }));
+              }, value));
+            }));
+          case 'unknown':
+            throw new Error(`Element cannot be filled out.`);
+        }
+      })).pipe(catchError(err => {
+        void handle.dispose().catch(debugError);
+        throw err;
+      }));
+    }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
+  }
+  function _hover(options) {
+    const signal = options?.signal;
+    const cause = new Error('Locator.hover');
+    return this._wait(options).pipe(this.operators.conditions([_classPrivateFieldGet(_ensureElementIsInTheViewportIfNeeded, this), _classPrivateFieldGet(_waitForStableBoundingBoxIfNeeded, this)], signal), tap(() => {
+      return this.emit(exports.LocatorEvent.Action, undefined);
+    }), mergeMap(handle => {
+      return from(handle.hover()).pipe(catchError(err => {
+        void handle.dispose().catch(debugError);
+        throw err;
+      }));
+    }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
+  }
+  function _scroll(options) {
+    const signal = options?.signal;
+    const cause = new Error('Locator.scroll');
+    return this._wait(options).pipe(this.operators.conditions([_classPrivateFieldGet(_ensureElementIsInTheViewportIfNeeded, this), _classPrivateFieldGet(_waitForStableBoundingBoxIfNeeded, this)], signal), tap(() => {
+      return this.emit(exports.LocatorEvent.Action, undefined);
+    }), mergeMap(handle => {
+      return from(handle.evaluate((el, scrollTop, scrollLeft) => {
+        if (scrollTop !== undefined) {
+          el.scrollTop = scrollTop;
+        }
+        if (scrollLeft !== undefined) {
+          el.scrollLeft = scrollLeft;
+        }
+      }, options?.scrollTop, options?.scrollLeft)).pipe(catchError(err => {
+        void handle.dispose().catch(debugError);
+        throw err;
+      }));
+    }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
+  }
+  var _pageOrFrame = /*#__PURE__*/new WeakMap();
+  var _func = /*#__PURE__*/new WeakMap();
+  class FunctionLocator extends Locator {
+    static create(pageOrFrame, func) {
+      return new FunctionLocator(pageOrFrame, func).setTimeout('getDefaultTimeout' in pageOrFrame ? pageOrFrame.getDefaultTimeout() : pageOrFrame.page().getDefaultTimeout());
+    }
+    constructor(pageOrFrame, func) {
+      super();
+      _classPrivateFieldInitSpec(this, _pageOrFrame, void 0);
+      _classPrivateFieldInitSpec(this, _func, void 0);
+      _classPrivateFieldSet(_pageOrFrame, this, pageOrFrame);
+      _classPrivateFieldSet(_func, this, func);
+    }
+    _clone() {
+      return new FunctionLocator(_classPrivateFieldGet(_pageOrFrame, this), _classPrivateFieldGet(_func, this));
+    }
+    _wait(options) {
+      const signal = options?.signal;
+      return defer(() => {
+        return from(_classPrivateFieldGet(_pageOrFrame, this).waitForFunction(_classPrivateFieldGet(_func, this), {
+          timeout: this.timeout,
+          signal
+        }));
+      }).pipe(throwIfEmpty());
+    }
+  }
+  /**
+   * @internal
+   */
+  var _delegate = /*#__PURE__*/new WeakMap();
+  class DelegatedLocator extends Locator {
+    constructor(delegate) {
+      super();
+      _classPrivateFieldInitSpec(this, _delegate, void 0);
+      _classPrivateFieldSet(_delegate, this, delegate);
+      this.copyOptions(_classPrivateFieldGet(_delegate, this));
+    }
+    get delegate() {
+      return _classPrivateFieldGet(_delegate, this);
+    }
+    setTimeout(timeout) {
+      const locator = super.setTimeout(timeout);
+      _classPrivateFieldSet(_delegate, locator, _classPrivateFieldGet(_delegate, this).setTimeout(timeout));
+      return locator;
+    }
+    setVisibility(visibility) {
+      const locator = super.setVisibility(visibility);
+      _classPrivateFieldSet(_delegate, locator, _classPrivateFieldGet(_delegate, locator).setVisibility(visibility));
+      return locator;
+    }
+    setWaitForEnabled(value) {
+      const locator = super.setWaitForEnabled(value);
+      _classPrivateFieldSet(_delegate, locator, _classPrivateFieldGet(_delegate, this).setWaitForEnabled(value));
+      return locator;
+    }
+    setEnsureElementIsInTheViewport(value) {
+      const locator = super.setEnsureElementIsInTheViewport(value);
+      _classPrivateFieldSet(_delegate, locator, _classPrivateFieldGet(_delegate, this).setEnsureElementIsInTheViewport(value));
+      return locator;
+    }
+    setWaitForStableBoundingBox(value) {
+      const locator = super.setWaitForStableBoundingBox(value);
+      _classPrivateFieldSet(_delegate, locator, _classPrivateFieldGet(_delegate, this).setWaitForStableBoundingBox(value));
+      return locator;
+    }
+  }
+  /**
+   * @internal
+   */
+  var _predicate = /*#__PURE__*/new WeakMap();
+  class FilteredLocator extends DelegatedLocator {
+    constructor(base, predicate) {
+      super(base);
+      _classPrivateFieldInitSpec(this, _predicate, void 0);
+      _classPrivateFieldSet(_predicate, this, predicate);
+    }
+    _clone() {
+      return new FilteredLocator(this.delegate.clone(), _classPrivateFieldGet(_predicate, this)).copyOptions(this);
+    }
+    _wait(options) {
+      return this.delegate._wait(options).pipe(mergeMap(handle => {
+        return from(Promise.resolve(_classPrivateFieldGet(_predicate, this).call(this, handle, options?.signal))).pipe(filter(value => {
+          return value;
+        }), map(() => {
+          // SAFETY: It passed the predicate, so this is correct.
+          return handle;
+        }));
+      }), throwIfEmpty());
+    }
+  }
+  /**
+   * @internal
+   */
+  var _mapper = /*#__PURE__*/new WeakMap();
+  class MappedLocator extends DelegatedLocator {
+    constructor(base, mapper) {
+      super(base);
+      _classPrivateFieldInitSpec(this, _mapper, void 0);
+      _classPrivateFieldSet(_mapper, this, mapper);
+    }
+    _clone() {
+      return new MappedLocator(this.delegate.clone(), _classPrivateFieldGet(_mapper, this)).copyOptions(this);
+    }
+    _wait(options) {
+      return this.delegate._wait(options).pipe(mergeMap(handle => {
+        return from(Promise.resolve(_classPrivateFieldGet(_mapper, this).call(this, handle, options?.signal)));
+      }));
+    }
+  }
+  /**
+   * @internal
+   */
+  var _pageOrFrame2 = /*#__PURE__*/new WeakMap();
+  var _selectorOrHandle = /*#__PURE__*/new WeakMap();
+  var _waitForVisibilityIfNeeded = /*#__PURE__*/new WeakMap();
+  class NodeLocator extends Locator {
+    static create(pageOrFrame, selector) {
+      return new NodeLocator(pageOrFrame, selector).setTimeout('getDefaultTimeout' in pageOrFrame ? pageOrFrame.getDefaultTimeout() : pageOrFrame.page().getDefaultTimeout());
+    }
+    static createFromHandle(pageOrFrame, handle) {
+      return new NodeLocator(pageOrFrame, handle).setTimeout('getDefaultTimeout' in pageOrFrame ? pageOrFrame.getDefaultTimeout() : pageOrFrame.page().getDefaultTimeout());
+    }
+    constructor(pageOrFrame, selectorOrHandle) {
+      super();
+      _classPrivateFieldInitSpec(this, _pageOrFrame2, void 0);
+      _classPrivateFieldInitSpec(this, _selectorOrHandle, void 0);
+      /**
+       * Waits for the element to become visible or hidden. visibility === 'visible'
+       * means that the element has a computed style, the visibility property other
+       * than 'hidden' or 'collapse' and non-empty bounding box. visibility ===
+       * 'hidden' means the opposite of that.
+       */
+      _classPrivateFieldInitSpec(this, _waitForVisibilityIfNeeded, handle => {
+        if (!this.visibility) {
+          return EMPTY;
+        }
+        return (() => {
+          switch (this.visibility) {
+            case 'hidden':
+              return defer(() => {
+                return from(handle.isHidden());
+              });
+            case 'visible':
+              return defer(() => {
+                return from(handle.isVisible());
+              });
+          }
+        })().pipe(first(identity), retry({
+          delay: RETRY_DELAY
+        }), ignoreElements());
+      });
+      _classPrivateFieldSet(_pageOrFrame2, this, pageOrFrame);
+      _classPrivateFieldSet(_selectorOrHandle, this, selectorOrHandle);
+    }
+    _clone() {
+      return new NodeLocator(_classPrivateFieldGet(_pageOrFrame2, this),
+      // @ts-expect-error TSC does cannot parse private overloads.
+      _classPrivateFieldGet(_selectorOrHandle, this)).copyOptions(this);
+    }
+    _wait(options) {
+      const signal = options?.signal;
+      return defer(() => {
+        if (typeof _classPrivateFieldGet(_selectorOrHandle, this) === 'string') {
+          return from(_classPrivateFieldGet(_pageOrFrame2, this).waitForSelector(_classPrivateFieldGet(_selectorOrHandle, this), {
+            visible: false,
+            timeout: this._timeout,
+            signal
+          }));
+        } else {
+          return of(_classPrivateFieldGet(_selectorOrHandle, this));
+        }
+      }).pipe(filter(value => {
+        return value !== null;
+      }), throwIfEmpty(), this.operators.conditions([_classPrivateFieldGet(_waitForVisibilityIfNeeded, this)], signal));
+    }
+  }
+  function checkLocatorArray(locators) {
+    for (const locator of locators) {
+      if (!(locator instanceof Locator)) {
+        throw new Error('Unknown locator for race candidate');
+      }
+    }
+    return locators;
+  }
+  /**
+   * @internal
+   */
+  var _locators = /*#__PURE__*/new WeakMap();
+  class RaceLocator extends Locator {
+    static create(locators) {
+      const array = checkLocatorArray(locators);
+      return new RaceLocator(array);
+    }
+    constructor(locators) {
+      super();
+      _classPrivateFieldInitSpec(this, _locators, void 0);
+      _classPrivateFieldSet(_locators, this, locators);
+    }
+    _clone() {
+      return new RaceLocator(_classPrivateFieldGet(_locators, this).map(locator => {
+        return locator.clone();
+      })).copyOptions(this);
+    }
+    _wait(options) {
+      return race(..._classPrivateFieldGet(_locators, this).map(locator => {
+        return locator._wait(options);
+      }));
+    }
+  }
+  /**
+   * For observables coming from promises, a delay is needed, otherwise RxJS will
+   * never yield in a permanent failure for a promise.
+   *
+   * We also don't want RxJS to do promise operations to often, so we bump the
+   * delay up to 100ms.
+   *
+   * @internal
+   */
+  const RETRY_DELAY = 100;
 
   /**
    * @license
@@ -6108,7 +6854,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$8 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$7 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -6141,7 +6887,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     }
     return value;
   };
-  var __disposeResources$8 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$7 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -6297,6 +7043,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     let _screenshot_decorators;
     let _isIntersectingViewport_decorators;
     let _scrollIntoView_decorators;
+    let _asLocator_decorators;
     return _ElementHandle_brand = /*#__PURE__*/new WeakSet(), _ElementHandle = class ElementHandle extends _classSuper {
       /**
        * @internal
@@ -6493,7 +7240,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         };
         try {
           pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
-          const elementHandle = __addDisposableResource$8(env_1, await this.$(selector), false);
+          const elementHandle = __addDisposableResource$7(env_1, await this.$(selector), false);
           if (!elementHandle) {
             throw new Error(`Error: failed to find element matching selector "${selector}"`);
           }
@@ -6502,7 +7249,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           env_1.error = e_1;
           env_1.hasError = true;
         } finally {
-          __disposeResources$8(env_1);
+          __disposeResources$7(env_1);
         }
       }
       /**
@@ -6561,7 +7308,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         try {
           pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
           const results = await this.$$(selector);
-          const elements = __addDisposableResource$8(env_2, await this.evaluateHandle((_, ...elements) => {
+          const elements = __addDisposableResource$7(env_2, await this.evaluateHandle((_, ...elements) => {
             return elements;
           }, ...results), false);
           const [result] = await Promise.all([elements.evaluate(pageFunction, ...args), ...results.map(results => {
@@ -6572,7 +7319,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           env_2.error = e_2;
           env_2.hasError = true;
         } finally {
-          __disposeResources$8(env_2);
+          __disposeResources$7(env_2);
         }
       }
       /**
@@ -7217,7 +7964,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           await this.assertConnectedElement();
           // eslint-disable-next-line rulesdir/use-using -- Returns `this`.
           const handle = await _assertClassBrand(_ElementHandle_brand, this, _asSVGElementHandle).call(this);
-          const target = __addDisposableResource$8(env_5, handle && (await _assertClassBrand(_ElementHandle_brand, handle, _getOwnerSVGElement).call(handle)), false);
+          const target = __addDisposableResource$7(env_5, handle && (await _assertClassBrand(_ElementHandle_brand, handle, _getOwnerSVGElement).call(handle)), false);
           return await (target ?? this).evaluate(async (element, threshold) => {
             const visibleRatio = await new Promise(resolve => {
               const observer = new IntersectionObserver(entries => {
@@ -7232,7 +7979,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           env_5.error = e_5;
           env_5.hasError = true;
         } finally {
-          __disposeResources$8(env_5);
+          __disposeResources$7(env_5);
         }
       }
       /**
@@ -7248,6 +7995,14 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
             behavior: 'instant'
           });
         });
+      }
+      /**
+       * Creates a locator based on an ElementHandle. This would not allow
+       * refreshing the element handle if it is stale but it allows re-using other
+       * locator pre-conditions.
+       */
+      asLocator() {
+        return NodeLocator.createFromHandle(this.frame, this);
       }
       /**
        * Returns true if an element is an SVGElement (included svg, path, rect
@@ -7286,6 +8041,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       _screenshot_decorators = [throwIfDisposed(), bindIsolatedHandle];
       _isIntersectingViewport_decorators = [throwIfDisposed(), bindIsolatedHandle];
       _scrollIntoView_decorators = [throwIfDisposed(), bindIsolatedHandle];
+      _asLocator_decorators = [throwIfDisposed()];
       __esDecorate$5(_ElementHandle, null, _getProperty_decorators, {
         kind: "method",
         name: "getProperty",
@@ -7631,6 +8387,17 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
+      __esDecorate$5(_ElementHandle, null, _asLocator_decorators, {
+        kind: "method",
+        name: "asLocator",
+        static: false,
+        private: false,
+        access: {
+          has: obj => "asLocator" in obj,
+          get: obj => obj.asLocator
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
       if (_metadata) Object.defineProperty(_ElementHandle, Symbol.metadata, {
         enumerable: true,
         configurable: true,
@@ -7687,7 +8454,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$8(env_3, await frame.frameElement(), false);
+          const handle = __addDisposableResource$7(env_3, await frame.frameElement(), false);
           if (!handle) {
             throw new Error('Unsupported frame type');
           }
@@ -7716,7 +8483,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           env_3.error = e_3;
           env_3.hasError = true;
         } finally {
-          __disposeResources$8(env_3);
+          __disposeResources$7(env_3);
         }
       }
       const box = boxes.find(box => {
@@ -7760,7 +8527,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$8(env_4, await frame.frameElement(), false);
+          const handle = __addDisposableResource$7(env_4, await frame.frameElement(), false);
           if (!handle) {
             throw new Error('Unsupported frame type');
           }
@@ -7786,7 +8553,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           env_4.error = e_4;
           env_4.hasError = true;
         } finally {
-          __disposeResources$8(env_4);
+          __disposeResources$7(env_4);
         }
       }
       return point;
@@ -7823,743 +8590,6 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     box.x = Math.max(box.x, 0);
     box.y = Math.max(box.y, 0);
   }
-  var __addDisposableResource$7 = undefined && undefined.__addDisposableResource || function (env, value, async) {
-    if (value !== null && value !== void 0) {
-      if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose, inner;
-      if (async) {
-        if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
-        dispose = value[Symbol.asyncDispose];
-      }
-      if (dispose === void 0) {
-        if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
-        dispose = value[Symbol.dispose];
-        if (async) inner = dispose;
-      }
-      if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
-      if (inner) dispose = function () {
-        try {
-          inner.call(this);
-        } catch (e) {
-          return Promise.reject(e);
-        }
-      };
-      env.stack.push({
-        value: value,
-        dispose: dispose,
-        async: async
-      });
-    } else if (async) {
-      env.stack.push({
-        async: true
-      });
-    }
-    return value;
-  };
-  var __disposeResources$7 = undefined && undefined.__disposeResources || function (SuppressedError) {
-    return function (env) {
-      function fail(e) {
-        env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
-        env.hasError = true;
-      }
-      var r,
-        s = 0;
-      function next() {
-        while (r = env.stack.pop()) {
-          try {
-            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
-            if (r.dispose) {
-              var result = r.dispose.call(r.value);
-              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
-                fail(e);
-                return next();
-              });
-            } else s |= 1;
-          } catch (e) {
-            fail(e);
-          }
-        }
-        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
-        if (env.hasError) throw env.error;
-      }
-      return next();
-    };
-  }(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-    var e = new Error(message);
-    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
-  });
-  /**
-   * All the events that a locator instance may emit.
-   *
-   * @public
-   */
-  exports.LocatorEvent = void 0;
-  (function (LocatorEvent) {
-    /**
-     * Emitted every time before the locator performs an action on the located element(s).
-     */
-    LocatorEvent["Action"] = "action";
-  })(exports.LocatorEvent || (exports.LocatorEvent = {}));
-  /**
-   * Locators describe a strategy of locating objects and performing an action on
-   * them. If the action fails because the object is not ready for the action, the
-   * whole operation is retried. Various preconditions for a successful action are
-   * checked automatically.
-   *
-   * See {@link https://pptr.dev/guides/page-interactions#locators} for details.
-   *
-   * @public
-   */
-  var _ensureElementIsInTheViewport = /*#__PURE__*/new WeakMap();
-  var _waitForEnabled = /*#__PURE__*/new WeakMap();
-  var _waitForStableBoundingBox = /*#__PURE__*/new WeakMap();
-  var _waitForEnabledIfNeeded = /*#__PURE__*/new WeakMap();
-  var _waitForStableBoundingBoxIfNeeded = /*#__PURE__*/new WeakMap();
-  var _ensureElementIsInTheViewportIfNeeded = /*#__PURE__*/new WeakMap();
-  var _Locator_brand = /*#__PURE__*/new WeakSet();
-  class Locator extends EventEmitter {
-    constructor(...args) {
-      super(...args);
-      _classPrivateMethodInitSpec(this, _Locator_brand);
-      /**
-       * @internal
-       */
-      _defineProperty(this, "visibility", null);
-      /**
-       * @internal
-       */
-      _defineProperty(this, "_timeout", 30000);
-      _classPrivateFieldInitSpec(this, _ensureElementIsInTheViewport, true);
-      _classPrivateFieldInitSpec(this, _waitForEnabled, true);
-      _classPrivateFieldInitSpec(this, _waitForStableBoundingBox, true);
-      /**
-       * @internal
-       */
-      _defineProperty(this, "operators", {
-        conditions: (conditions, signal) => {
-          return mergeMap(handle => {
-            return merge(...conditions.map(condition => {
-              return condition(handle, signal);
-            })).pipe(defaultIfEmpty(handle));
-          });
-        },
-        retryAndRaceWithSignalAndTimer: (signal, cause) => {
-          const candidates = [];
-          if (signal) {
-            candidates.push(fromAbortSignal(signal, cause));
-          }
-          candidates.push(timeout(this._timeout, cause));
-          return pipe(retry({
-            delay: RETRY_DELAY
-          }), raceWith(...candidates));
-        }
-      });
-      /**
-       * If the element has a "disabled" property, wait for the element to be
-       * enabled.
-       */
-      _classPrivateFieldInitSpec(this, _waitForEnabledIfNeeded, (handle, signal) => {
-        if (!_classPrivateFieldGet(_waitForEnabled, this)) {
-          return EMPTY;
-        }
-        return from(handle.frame.waitForFunction(element => {
-          if (!(element instanceof HTMLElement)) {
-            return true;
-          }
-          const isNativeFormControl = ['BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'OPTION', 'OPTGROUP'].includes(element.nodeName);
-          return !isNativeFormControl || !element.hasAttribute('disabled');
-        }, {
-          timeout: this._timeout,
-          signal
-        }, handle)).pipe(ignoreElements());
-      });
-      /**
-       * Compares the bounding box of the element for two consecutive animation
-       * frames and waits till they are the same.
-       */
-      _classPrivateFieldInitSpec(this, _waitForStableBoundingBoxIfNeeded, handle => {
-        if (!_classPrivateFieldGet(_waitForStableBoundingBox, this)) {
-          return EMPTY;
-        }
-        return defer(() => {
-          // Note we don't use waitForFunction because that relies on RAF.
-          return from(handle.evaluate(element => {
-            return new Promise(resolve => {
-              window.requestAnimationFrame(() => {
-                const rect1 = element.getBoundingClientRect();
-                window.requestAnimationFrame(() => {
-                  const rect2 = element.getBoundingClientRect();
-                  resolve([{
-                    x: rect1.x,
-                    y: rect1.y,
-                    width: rect1.width,
-                    height: rect1.height
-                  }, {
-                    x: rect2.x,
-                    y: rect2.y,
-                    width: rect2.width,
-                    height: rect2.height
-                  }]);
-                });
-              });
-            });
-          }));
-        }).pipe(first(([rect1, rect2]) => {
-          return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
-        }), retry({
-          delay: RETRY_DELAY
-        }), ignoreElements());
-      });
-      /**
-       * Checks if the element is in the viewport and auto-scrolls it if it is not.
-       */
-      _classPrivateFieldInitSpec(this, _ensureElementIsInTheViewportIfNeeded, handle => {
-        if (!_classPrivateFieldGet(_ensureElementIsInTheViewport, this)) {
-          return EMPTY;
-        }
-        return from(handle.isIntersectingViewport({
-          threshold: 0
-        })).pipe(filter(isIntersectingViewport => {
-          return !isIntersectingViewport;
-        }), mergeMap(() => {
-          return from(handle.scrollIntoView());
-        }), mergeMap(() => {
-          return defer(() => {
-            return from(handle.isIntersectingViewport({
-              threshold: 0
-            }));
-          }).pipe(first(identity), retry({
-            delay: RETRY_DELAY
-          }), ignoreElements());
-        }));
-      });
-    }
-    /**
-     * Creates a race between multiple locators trying to locate elements in
-     * parallel but ensures that only a single element receives the action.
-     *
-     * @public
-     */
-    static race(locators) {
-      return RaceLocator.create(locators);
-    }
-    // Determines when the locator will timeout for actions.
-    get timeout() {
-      return this._timeout;
-    }
-    /**
-     * Creates a new locator instance by cloning the current locator and setting
-     * the total timeout for the locator actions.
-     *
-     * Pass `0` to disable timeout.
-     *
-     * @defaultValue `Page.getDefaultTimeout()`
-     */
-    setTimeout(timeout) {
-      const locator = this._clone();
-      locator._timeout = timeout;
-      return locator;
-    }
-    /**
-     * Creates a new locator instance by cloning the current locator with the
-     * visibility property changed to the specified value.
-     */
-    setVisibility(visibility) {
-      const locator = this._clone();
-      locator.visibility = visibility;
-      return locator;
-    }
-    /**
-     * Creates a new locator instance by cloning the current locator and
-     * specifying whether to wait for input elements to become enabled before the
-     * action. Applicable to `click` and `fill` actions.
-     *
-     * @defaultValue `true`
-     */
-    setWaitForEnabled(value) {
-      const locator = this._clone();
-      _classPrivateFieldSet(_waitForEnabled, locator, value);
-      return locator;
-    }
-    /**
-     * Creates a new locator instance by cloning the current locator and
-     * specifying whether the locator should scroll the element into viewport if
-     * it is not in the viewport already.
-     *
-     * @defaultValue `true`
-     */
-    setEnsureElementIsInTheViewport(value) {
-      const locator = this._clone();
-      _classPrivateFieldSet(_ensureElementIsInTheViewport, locator, value);
-      return locator;
-    }
-    /**
-     * Creates a new locator instance by cloning the current locator and
-     * specifying whether the locator has to wait for the element's bounding box
-     * to be same between two consecutive animation frames.
-     *
-     * @defaultValue `true`
-     */
-    setWaitForStableBoundingBox(value) {
-      const locator = this._clone();
-      _classPrivateFieldSet(_waitForStableBoundingBox, locator, value);
-      return locator;
-    }
-    /**
-     * @internal
-     */
-    copyOptions(locator) {
-      this._timeout = locator._timeout;
-      this.visibility = locator.visibility;
-      _classPrivateFieldSet(_waitForEnabled, this, _classPrivateFieldGet(_waitForEnabled, locator));
-      _classPrivateFieldSet(_ensureElementIsInTheViewport, this, _classPrivateFieldGet(_ensureElementIsInTheViewport, locator));
-      _classPrivateFieldSet(_waitForStableBoundingBox, this, _classPrivateFieldGet(_waitForStableBoundingBox, locator));
-      return this;
-    }
-    /**
-     * Clones the locator.
-     */
-    clone() {
-      return this._clone();
-    }
-    /**
-     * Waits for the locator to get a handle from the page.
-     *
-     * @public
-     */
-    async waitHandle(options) {
-      const cause = new Error('Locator.waitHandle');
-      return await firstValueFrom(this._wait(options).pipe(this.operators.retryAndRaceWithSignalAndTimer(options?.signal, cause)));
-    }
-    /**
-     * Waits for the locator to get the serialized value from the page.
-     *
-     * Note this requires the value to be JSON-serializable.
-     *
-     * @public
-     */
-    async wait(options) {
-      const env_1 = {
-        stack: [],
-        error: void 0,
-        hasError: false
-      };
-      try {
-        const handle = __addDisposableResource$7(env_1, await this.waitHandle(options), false);
-        return await handle.jsonValue();
-      } catch (e_1) {
-        env_1.error = e_1;
-        env_1.hasError = true;
-      } finally {
-        __disposeResources$7(env_1);
-      }
-    }
-    /**
-     * Maps the locator using the provided mapper.
-     *
-     * @public
-     */
-    map(mapper) {
-      return new MappedLocator(this._clone(), handle => {
-        // SAFETY: TypeScript cannot deduce the type.
-        return handle.evaluateHandle(mapper);
-      });
-    }
-    /**
-     * Creates an expectation that is evaluated against located values.
-     *
-     * If the expectations do not match, then the locator will retry.
-     *
-     * @public
-     */
-    filter(predicate) {
-      return new FilteredLocator(this._clone(), async (handle, signal) => {
-        await handle.frame.waitForFunction(predicate, {
-          signal,
-          timeout: this._timeout
-        }, handle);
-        return true;
-      });
-    }
-    /**
-     * Creates an expectation that is evaluated against located handles.
-     *
-     * If the expectations do not match, then the locator will retry.
-     *
-     * @internal
-     */
-    filterHandle(predicate) {
-      return new FilteredLocator(this._clone(), predicate);
-    }
-    /**
-     * Maps the locator using the provided mapper.
-     *
-     * @internal
-     */
-    mapHandle(mapper) {
-      return new MappedLocator(this._clone(), mapper);
-    }
-    /**
-     * Clicks the located element.
-     */
-    click(options) {
-      return firstValueFrom(_assertClassBrand(_Locator_brand, this, _click).call(this, options));
-    }
-    /**
-     * Fills out the input identified by the locator using the provided value. The
-     * type of the input is determined at runtime and the appropriate fill-out
-     * method is chosen based on the type. `contenteditable`, select, textarea and
-     * input elements are supported.
-     */
-    fill(value, options) {
-      return firstValueFrom(_assertClassBrand(_Locator_brand, this, _fill).call(this, value, options));
-    }
-    /**
-     * Hovers over the located element.
-     */
-    hover(options) {
-      return firstValueFrom(_assertClassBrand(_Locator_brand, this, _hover).call(this, options));
-    }
-    /**
-     * Scrolls the located element.
-     */
-    scroll(options) {
-      return firstValueFrom(_assertClassBrand(_Locator_brand, this, _scroll).call(this, options));
-    }
-  }
-  /**
-   * @internal
-   */
-  function _click(options) {
-    const signal = options?.signal;
-    const cause = new Error('Locator.click');
-    return this._wait(options).pipe(this.operators.conditions([_classPrivateFieldGet(_ensureElementIsInTheViewportIfNeeded, this), _classPrivateFieldGet(_waitForStableBoundingBoxIfNeeded, this), _classPrivateFieldGet(_waitForEnabledIfNeeded, this)], signal), tap(() => {
-      return this.emit(exports.LocatorEvent.Action, undefined);
-    }), mergeMap(handle => {
-      return from(handle.click(options)).pipe(catchError(err => {
-        void handle.dispose().catch(debugError);
-        throw err;
-      }));
-    }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
-  }
-  function _fill(value, options) {
-    const signal = options?.signal;
-    const cause = new Error('Locator.fill');
-    return this._wait(options).pipe(this.operators.conditions([_classPrivateFieldGet(_ensureElementIsInTheViewportIfNeeded, this), _classPrivateFieldGet(_waitForStableBoundingBoxIfNeeded, this), _classPrivateFieldGet(_waitForEnabledIfNeeded, this)], signal), tap(() => {
-      return this.emit(exports.LocatorEvent.Action, undefined);
-    }), mergeMap(handle => {
-      return from(handle.evaluate(el => {
-        if (el instanceof HTMLSelectElement) {
-          return 'select';
-        }
-        if (el instanceof HTMLTextAreaElement) {
-          return 'typeable-input';
-        }
-        if (el instanceof HTMLInputElement) {
-          if (new Set(['textarea', 'text', 'url', 'tel', 'search', 'password', 'number', 'email']).has(el.type)) {
-            return 'typeable-input';
-          } else {
-            return 'other-input';
-          }
-        }
-        if (el.isContentEditable) {
-          return 'contenteditable';
-        }
-        return 'unknown';
-      })).pipe(mergeMap(inputType => {
-        switch (inputType) {
-          case 'select':
-            return from(handle.select(value).then(noop));
-          case 'contenteditable':
-          case 'typeable-input':
-            return from(handle.evaluate((input, newValue) => {
-              const currentValue = input.isContentEditable ? input.innerText : input.value;
-              // Clear the input if the current value does not match the filled
-              // out value.
-              if (newValue.length <= currentValue.length || !newValue.startsWith(input.value)) {
-                if (input.isContentEditable) {
-                  input.innerText = '';
-                } else {
-                  input.value = '';
-                }
-                return newValue;
-              }
-              const originalValue = input.isContentEditable ? input.innerText : input.value;
-              // If the value is partially filled out, only type the rest. Move
-              // cursor to the end of the common prefix.
-              if (input.isContentEditable) {
-                input.innerText = '';
-                input.innerText = originalValue;
-              } else {
-                input.value = '';
-                input.value = originalValue;
-              }
-              return newValue.substring(originalValue.length);
-            }, value)).pipe(mergeMap(textToType => {
-              return from(handle.type(textToType));
-            }));
-          case 'other-input':
-            return from(handle.focus()).pipe(mergeMap(() => {
-              return from(handle.evaluate((input, value) => {
-                input.value = value;
-                input.dispatchEvent(new Event('input', {
-                  bubbles: true
-                }));
-                input.dispatchEvent(new Event('change', {
-                  bubbles: true
-                }));
-              }, value));
-            }));
-          case 'unknown':
-            throw new Error(`Element cannot be filled out.`);
-        }
-      })).pipe(catchError(err => {
-        void handle.dispose().catch(debugError);
-        throw err;
-      }));
-    }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
-  }
-  function _hover(options) {
-    const signal = options?.signal;
-    const cause = new Error('Locator.hover');
-    return this._wait(options).pipe(this.operators.conditions([_classPrivateFieldGet(_ensureElementIsInTheViewportIfNeeded, this), _classPrivateFieldGet(_waitForStableBoundingBoxIfNeeded, this)], signal), tap(() => {
-      return this.emit(exports.LocatorEvent.Action, undefined);
-    }), mergeMap(handle => {
-      return from(handle.hover()).pipe(catchError(err => {
-        void handle.dispose().catch(debugError);
-        throw err;
-      }));
-    }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
-  }
-  function _scroll(options) {
-    const signal = options?.signal;
-    const cause = new Error('Locator.scroll');
-    return this._wait(options).pipe(this.operators.conditions([_classPrivateFieldGet(_ensureElementIsInTheViewportIfNeeded, this), _classPrivateFieldGet(_waitForStableBoundingBoxIfNeeded, this)], signal), tap(() => {
-      return this.emit(exports.LocatorEvent.Action, undefined);
-    }), mergeMap(handle => {
-      return from(handle.evaluate((el, scrollTop, scrollLeft) => {
-        if (scrollTop !== undefined) {
-          el.scrollTop = scrollTop;
-        }
-        if (scrollLeft !== undefined) {
-          el.scrollLeft = scrollLeft;
-        }
-      }, options?.scrollTop, options?.scrollLeft)).pipe(catchError(err => {
-        void handle.dispose().catch(debugError);
-        throw err;
-      }));
-    }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
-  }
-  var _pageOrFrame = /*#__PURE__*/new WeakMap();
-  var _func = /*#__PURE__*/new WeakMap();
-  class FunctionLocator extends Locator {
-    static create(pageOrFrame, func) {
-      return new FunctionLocator(pageOrFrame, func).setTimeout('getDefaultTimeout' in pageOrFrame ? pageOrFrame.getDefaultTimeout() : pageOrFrame.page().getDefaultTimeout());
-    }
-    constructor(pageOrFrame, func) {
-      super();
-      _classPrivateFieldInitSpec(this, _pageOrFrame, void 0);
-      _classPrivateFieldInitSpec(this, _func, void 0);
-      _classPrivateFieldSet(_pageOrFrame, this, pageOrFrame);
-      _classPrivateFieldSet(_func, this, func);
-    }
-    _clone() {
-      return new FunctionLocator(_classPrivateFieldGet(_pageOrFrame, this), _classPrivateFieldGet(_func, this));
-    }
-    _wait(options) {
-      const signal = options?.signal;
-      return defer(() => {
-        return from(_classPrivateFieldGet(_pageOrFrame, this).waitForFunction(_classPrivateFieldGet(_func, this), {
-          timeout: this.timeout,
-          signal
-        }));
-      }).pipe(throwIfEmpty());
-    }
-  }
-  /**
-   * @internal
-   */
-  var _delegate = /*#__PURE__*/new WeakMap();
-  class DelegatedLocator extends Locator {
-    constructor(delegate) {
-      super();
-      _classPrivateFieldInitSpec(this, _delegate, void 0);
-      _classPrivateFieldSet(_delegate, this, delegate);
-      this.copyOptions(_classPrivateFieldGet(_delegate, this));
-    }
-    get delegate() {
-      return _classPrivateFieldGet(_delegate, this);
-    }
-    setTimeout(timeout) {
-      const locator = super.setTimeout(timeout);
-      _classPrivateFieldSet(_delegate, locator, _classPrivateFieldGet(_delegate, this).setTimeout(timeout));
-      return locator;
-    }
-    setVisibility(visibility) {
-      const locator = super.setVisibility(visibility);
-      _classPrivateFieldSet(_delegate, locator, _classPrivateFieldGet(_delegate, locator).setVisibility(visibility));
-      return locator;
-    }
-    setWaitForEnabled(value) {
-      const locator = super.setWaitForEnabled(value);
-      _classPrivateFieldSet(_delegate, locator, _classPrivateFieldGet(_delegate, this).setWaitForEnabled(value));
-      return locator;
-    }
-    setEnsureElementIsInTheViewport(value) {
-      const locator = super.setEnsureElementIsInTheViewport(value);
-      _classPrivateFieldSet(_delegate, locator, _classPrivateFieldGet(_delegate, this).setEnsureElementIsInTheViewport(value));
-      return locator;
-    }
-    setWaitForStableBoundingBox(value) {
-      const locator = super.setWaitForStableBoundingBox(value);
-      _classPrivateFieldSet(_delegate, locator, _classPrivateFieldGet(_delegate, this).setWaitForStableBoundingBox(value));
-      return locator;
-    }
-  }
-  /**
-   * @internal
-   */
-  var _predicate = /*#__PURE__*/new WeakMap();
-  class FilteredLocator extends DelegatedLocator {
-    constructor(base, predicate) {
-      super(base);
-      _classPrivateFieldInitSpec(this, _predicate, void 0);
-      _classPrivateFieldSet(_predicate, this, predicate);
-    }
-    _clone() {
-      return new FilteredLocator(this.delegate.clone(), _classPrivateFieldGet(_predicate, this)).copyOptions(this);
-    }
-    _wait(options) {
-      return this.delegate._wait(options).pipe(mergeMap(handle => {
-        return from(Promise.resolve(_classPrivateFieldGet(_predicate, this).call(this, handle, options?.signal))).pipe(filter(value => {
-          return value;
-        }), map(() => {
-          // SAFETY: It passed the predicate, so this is correct.
-          return handle;
-        }));
-      }), throwIfEmpty());
-    }
-  }
-  /**
-   * @internal
-   */
-  var _mapper = /*#__PURE__*/new WeakMap();
-  class MappedLocator extends DelegatedLocator {
-    constructor(base, mapper) {
-      super(base);
-      _classPrivateFieldInitSpec(this, _mapper, void 0);
-      _classPrivateFieldSet(_mapper, this, mapper);
-    }
-    _clone() {
-      return new MappedLocator(this.delegate.clone(), _classPrivateFieldGet(_mapper, this)).copyOptions(this);
-    }
-    _wait(options) {
-      return this.delegate._wait(options).pipe(mergeMap(handle => {
-        return from(Promise.resolve(_classPrivateFieldGet(_mapper, this).call(this, handle, options?.signal)));
-      }));
-    }
-  }
-  /**
-   * @internal
-   */
-  var _pageOrFrame2 = /*#__PURE__*/new WeakMap();
-  var _selector = /*#__PURE__*/new WeakMap();
-  var _waitForVisibilityIfNeeded = /*#__PURE__*/new WeakMap();
-  class NodeLocator extends Locator {
-    static create(pageOrFrame, selector) {
-      return new NodeLocator(pageOrFrame, selector).setTimeout('getDefaultTimeout' in pageOrFrame ? pageOrFrame.getDefaultTimeout() : pageOrFrame.page().getDefaultTimeout());
-    }
-    constructor(pageOrFrame, selector) {
-      super();
-      _classPrivateFieldInitSpec(this, _pageOrFrame2, void 0);
-      _classPrivateFieldInitSpec(this, _selector, void 0);
-      /**
-       * Waits for the element to become visible or hidden. visibility === 'visible'
-       * means that the element has a computed style, the visibility property other
-       * than 'hidden' or 'collapse' and non-empty bounding box. visibility ===
-       * 'hidden' means the opposite of that.
-       */
-      _classPrivateFieldInitSpec(this, _waitForVisibilityIfNeeded, handle => {
-        if (!this.visibility) {
-          return EMPTY;
-        }
-        return (() => {
-          switch (this.visibility) {
-            case 'hidden':
-              return defer(() => {
-                return from(handle.isHidden());
-              });
-            case 'visible':
-              return defer(() => {
-                return from(handle.isVisible());
-              });
-          }
-        })().pipe(first(identity), retry({
-          delay: RETRY_DELAY
-        }), ignoreElements());
-      });
-      _classPrivateFieldSet(_pageOrFrame2, this, pageOrFrame);
-      _classPrivateFieldSet(_selector, this, selector);
-    }
-    _clone() {
-      return new NodeLocator(_classPrivateFieldGet(_pageOrFrame2, this), _classPrivateFieldGet(_selector, this)).copyOptions(this);
-    }
-    _wait(options) {
-      const signal = options?.signal;
-      return defer(() => {
-        return from(_classPrivateFieldGet(_pageOrFrame2, this).waitForSelector(_classPrivateFieldGet(_selector, this), {
-          visible: false,
-          timeout: this._timeout,
-          signal
-        }));
-      }).pipe(filter(value => {
-        return value !== null;
-      }), throwIfEmpty(), this.operators.conditions([_classPrivateFieldGet(_waitForVisibilityIfNeeded, this)], signal));
-    }
-  }
-  function checkLocatorArray(locators) {
-    for (const locator of locators) {
-      if (!(locator instanceof Locator)) {
-        throw new Error('Unknown locator for race candidate');
-      }
-    }
-    return locators;
-  }
-  /**
-   * @internal
-   */
-  var _locators = /*#__PURE__*/new WeakMap();
-  class RaceLocator extends Locator {
-    static create(locators) {
-      const array = checkLocatorArray(locators);
-      return new RaceLocator(array);
-    }
-    constructor(locators) {
-      super();
-      _classPrivateFieldInitSpec(this, _locators, void 0);
-      _classPrivateFieldSet(_locators, this, locators);
-    }
-    _clone() {
-      return new RaceLocator(_classPrivateFieldGet(_locators, this).map(locator => {
-        return locator.clone();
-      })).copyOptions(this);
-    }
-    _wait(options) {
-      return race(..._classPrivateFieldGet(_locators, this).map(locator => {
-        return locator._wait(options);
-      }));
-    }
-  }
-  /**
-   * For observables coming from promises, a delay is needed, otherwise RxJS will
-   * never yield in a permanent failure for a promise.
-   *
-   * We also don't want RxJS to do promise operations to often, so we bump the
-   * delay up to 100ms.
-   *
-   * @internal
-   */
-  const RETRY_DELAY = 100;
 
   /**
    * @license
@@ -8891,11 +8921,11 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       /**
        * @internal
        */
-      locator(selectorOrFunc) {
-        if (typeof selectorOrFunc === 'string') {
-          return NodeLocator.create(this, selectorOrFunc);
+      locator(input) {
+        if (typeof input === 'string') {
+          return NodeLocator.create(this, input);
         } else {
-          return FunctionLocator.create(this, selectorOrFunc);
+          return FunctionLocator.create(this, input);
         }
       }
       /**
@@ -10766,11 +10796,11 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       get accessibility() {
         return this.mainFrame().accessibility;
       }
-      locator(selectorOrFunc) {
-        if (typeof selectorOrFunc === 'string') {
-          return NodeLocator.create(this, selectorOrFunc);
+      locator(input) {
+        if (typeof input === 'string') {
+          return NodeLocator.create(this, input);
         } else {
-          return FunctionLocator.create(this, selectorOrFunc);
+          return FunctionLocator.create(this, input);
         }
       }
       /**
@@ -20810,6 +20840,17 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       }).catch(debugError);
       _assertClassBrand(_CdpPage_brand, this, _setupPrimaryTargetListeners).call(this);
       _assertClassBrand(_CdpPage_brand, this, _attachExistingTargets).call(this);
+    }
+    async resize(params) {
+      const {
+        windowId
+      } = await _classPrivateFieldGet(_primaryTargetClient, this).send('Browser.getWindowForTarget');
+      // @ts-expect-error Not available in stable yet.
+      await _classPrivateFieldGet(_primaryTargetClient, this).send('Browser.setContentsSize', {
+        windowId,
+        width: params.contentWidth,
+        height: params.contentHeight
+      });
     }
     _client() {
       return _classPrivateFieldGet(_primaryTargetClient, this);

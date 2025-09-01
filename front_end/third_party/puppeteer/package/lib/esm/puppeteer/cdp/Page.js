@@ -298,6 +298,15 @@ export class CdpPage extends Page {
             }
         }
     }
+    async resize(params) {
+        const { windowId } = await this.#primaryTargetClient.send('Browser.getWindowForTarget');
+        // @ts-expect-error Not available in stable yet.
+        await this.#primaryTargetClient.send('Browser.setContentsSize', {
+            windowId,
+            width: params.contentWidth,
+            height: params.contentHeight,
+        });
+    }
     async #onFileChooser(event) {
         const env_1 = { stack: [], error: void 0, hasError: false };
         try {

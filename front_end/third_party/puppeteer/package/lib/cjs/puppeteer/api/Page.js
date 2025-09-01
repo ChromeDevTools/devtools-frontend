@@ -244,12 +244,12 @@ let Page = (() => {
         get accessibility() {
             return this.mainFrame().accessibility;
         }
-        locator(selectorOrFunc) {
-            if (typeof selectorOrFunc === 'string') {
-                return locators_js_1.NodeLocator.create(this, selectorOrFunc);
+        locator(input) {
+            if (typeof input === 'string') {
+                return locators_js_1.NodeLocator.create(this, input);
             }
             else {
-                return locators_js_1.FunctionLocator.create(this, selectorOrFunc);
+                return locators_js_1.FunctionLocator.create(this, input);
             }
         }
         /**

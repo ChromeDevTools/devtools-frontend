@@ -363,12 +363,12 @@ let Frame = (() => {
         /**
          * @internal
          */
-        locator(selectorOrFunc) {
-            if (typeof selectorOrFunc === 'string') {
-                return NodeLocator.create(this, selectorOrFunc);
+        locator(input) {
+            if (typeof input === 'string') {
+                return NodeLocator.create(this, input);
             }
             else {
-                return FunctionLocator.create(this, selectorOrFunc);
+                return FunctionLocator.create(this, input);
             }
         }
         /**

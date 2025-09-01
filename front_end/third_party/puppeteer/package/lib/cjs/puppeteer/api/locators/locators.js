@@ -654,12 +654,17 @@ class NodeLocator extends Locator {
             ? pageOrFrame.getDefaultTimeout()
             : pageOrFrame.page().getDefaultTimeout());
     }
+    static createFromHandle(pageOrFrame, handle) {
+        return new NodeLocator(pageOrFrame, handle).setTimeout('getDefaultTimeout' in pageOrFrame
+            ? pageOrFrame.getDefaultTimeout()
+            : pageOrFrame.page().getDefaultTimeout());
+    }
     #pageOrFrame;
-    #selector;
-    constructor(pageOrFrame, selector) {
+    #selectorOrHandle;
+    constructor(pageOrFrame, selectorOrHandle) {
         super();
         this.#pageOrFrame = pageOrFrame;
-        this.#selector = selector;
+        this.#selectorOrHandle = selectorOrHandle;
     }
     /**
      * Waits for the element to become visible or hidden. visibility === 'visible'
@@ -685,16 +690,23 @@ class NodeLocator extends Locator {
         })().pipe((0, rxjs_js_1.first)(rxjs_js_1.identity), (0, rxjs_js_1.retry)({ delay: exports.RETRY_DELAY }), (0, rxjs_js_1.ignoreElements)());
     };
     _clone() {
-        return new NodeLocator(this.#pageOrFrame, this.#selector).copyOptions(this);
+        return new NodeLocator(this.#pageOrFrame, 
+        // @ts-expect-error TSC does cannot parse private overloads.
+        this.#selectorOrHandle).copyOptions(this);
     }
     _wait(options) {
         const signal = options?.signal;
         return (0, rxjs_js_1.defer)(() => {
-            return (0, rxjs_js_1.from)(this.#pageOrFrame.waitForSelector(this.#selector, {
-                visible: false,
-                timeout: this._timeout,
-                signal,
-            }));
+            if (typeof this.#selectorOrHandle === 'string') {
+                return (0, rxjs_js_1.from)(this.#pageOrFrame.waitForSelector(this.#selectorOrHandle, {
+                    visible: false,
+                    timeout: this._timeout,
+                    signal,
+                }));
+            }
+            else {
+                return (0, rxjs_js_1.of)(this.#selectorOrHandle);
+            }
         }).pipe((0, rxjs_js_1.filter)((value) => {
             return value !== null;
         }), (0, rxjs_js_1.throwIfEmpty)(), this.operators.conditions([this.#waitForVisibilityIfNeeded], signal));

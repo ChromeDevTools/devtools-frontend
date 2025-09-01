@@ -1105,13 +1105,14 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
    */
   locator<Ret>(func: () => Awaitable<Ret>): Locator<Ret>;
-  locator<Selector extends string, Ret>(
-    selectorOrFunc: Selector | (() => Awaitable<Ret>),
-  ): Locator<NodeFor<Selector>> | Locator<Ret> {
-    if (typeof selectorOrFunc === 'string') {
-      return NodeLocator.create(this, selectorOrFunc);
+
+  locator<Selector extends string, Ret, T extends Node>(
+    input: Selector | (() => Awaitable<Ret>),
+  ): Locator<NodeFor<Selector>> | Locator<Ret> | Locator<T> {
+    if (typeof input === 'string') {
+      return NodeLocator.create(this, input);
     } else {
-      return FunctionLocator.create(this, selectorOrFunc);
+      return FunctionLocator.create(this, input);
     }
   }
 
@@ -3131,6 +3132,18 @@ export abstract class Page extends EventEmitter<PageEvents> {
   abstract waitForDevicePrompt(
     options?: WaitTimeoutOptions,
   ): Promise<DeviceRequestPrompt>;
+
+  /**
+   * Resizes the browser window the page is in so that the content area
+   * (excluding browser UI) is according to the specified widht and height.
+   *
+   * @experimental
+   * @internal
+   */
+  abstract resize(params: {
+    contentWidth: number;
+    contentHeight: number;
+  }): Promise<void>;
 
   /** @internal */
   override [disposeSymbol](): void {

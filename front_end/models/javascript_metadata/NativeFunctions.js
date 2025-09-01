@@ -6082,10 +6082,6 @@ export const NativeFunctions = [
     receivers: ["Navigation"]
   },
   {
-    name: "AnimationTrigger",
-    signatures: [["?options"]]
-  },
-  {
     name: "addAnimation",
     signatures: [["animation"]]
   },
@@ -6107,6 +6103,10 @@ export const NativeFunctions = [
   },
   {
     name: "ScrollTimeline",
+    signatures: [["?options"]]
+  },
+  {
+    name: "TimelineTrigger",
     signatures: [["?options"]]
   },
   {

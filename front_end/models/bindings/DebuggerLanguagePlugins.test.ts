@@ -108,7 +108,7 @@ describe('DebuggerLanguagePluginManager', () => {
 
       const location = sinon.createStubInstance(SDK.DebuggerModel.Location);
       const result = await pluginManager.getFunctionInfo(script, location);
-      Platform.assertNotNullOrUndefined(result);
+      assert.exists(result);
       assert.deepEqual(result, {missingSymbolFiles: [MISSING_DEBUG_FILES]});
     });
 
@@ -121,7 +121,7 @@ describe('DebuggerLanguagePluginManager', () => {
       const location = sinon.createStubInstance(SDK.DebuggerModel.Location);
 
       const result = await pluginManager.getFunctionInfo(script, location);
-      Platform.assertNotNullOrUndefined(result);
+      assert.exists(result);
       assert.deepEqual(result, {frames: [{name: FUNCTION_NAME}]});
     });
 
@@ -135,7 +135,7 @@ describe('DebuggerLanguagePluginManager', () => {
       const location = sinon.createStubInstance(SDK.DebuggerModel.Location);
 
       const result = await pluginManager.getFunctionInfo(script, location);
-      Platform.assertNotNullOrUndefined(result);
+      assert.exists(result);
       assert.deepEqual(result, {frames: [{name: FUNCTION_NAME}], missingSymbolFiles: [MISSING_DEBUG_FILES]});
     });
   });

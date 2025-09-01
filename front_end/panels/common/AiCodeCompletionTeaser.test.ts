@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
@@ -43,7 +42,7 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
     const showSnackbar = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
 
     assert.isTrue(widget.isShowing());
-    assertNotNullOrUndefined(view.input.onDismiss);
+    assert.exists(view.input.onDismiss);
     view.input.onDismiss(new Event('click'));
     await widget.updateComplete;
 
@@ -56,12 +55,12 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
     const {view, widget} = await createTeaser();
     const showSnackbar = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
     const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
-    assertNotNullOrUndefined(view.input.onDismiss);
+    assert.exists(view.input.onDismiss);
     view.input.onDismiss(new Event('click'));
 
     sinon.assert.calledOnce(showSnackbar);
     const snackbarOptions = showSnackbar.firstCall.args[0];
-    assertNotNullOrUndefined(snackbarOptions.actionProperties);
+    assert.exists(snackbarOptions.actionProperties);
     snackbarOptions.actionProperties.onClick();
 
     assert.isTrue(showViewStub.calledOnceWith('chrome-ai'));

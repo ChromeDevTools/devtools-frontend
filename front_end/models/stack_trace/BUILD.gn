@@ -48,6 +48,7 @@ devtools_entrypoint("impl") {
   visibility = [
     ":unittests",
     "../bindings",
+    "../bindings:unittests",
   ]
 }
 

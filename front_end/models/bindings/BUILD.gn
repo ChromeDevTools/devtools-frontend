@@ -105,6 +105,7 @@ ts_library("unittests") {
     "../../core/common:bundle",
     "../../testing",
     "../persistence:bundle",
+    "../stack_trace:impl",
     "../text_utils:bundle",
     "../workspace:bundle",
   ]

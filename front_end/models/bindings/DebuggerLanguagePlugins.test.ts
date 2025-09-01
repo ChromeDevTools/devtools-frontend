@@ -9,6 +9,11 @@ import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {protocolCallFrame, stringifyFrame} from '../../testing/StackTraceHelpers.js';
+import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import * as StackTrace from '../stack_trace/stack_trace.js';
+import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
@@ -137,6 +142,173 @@ describe('DebuggerLanguagePluginManager', () => {
       const result = await pluginManager.getFunctionInfo(script, location);
       assert.exists(result);
       assert.deepEqual(result, {frames: [{name: FUNCTION_NAME}], missingSymbolFiles: [MISSING_DEBUG_FILES]});
+    });
+  });
+
+  describeWithMockConnection('translateRawFramesStep', () => {
+    function setup() {
+      const target = createTarget();
+      const backend = new MockProtocolBackend();
+      const debuggerWorkspaceBinding =
+          sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+      const workspace = sinon.createStubInstance(Workspace.Workspace.WorkspaceImpl);
+      const pluginManager = new Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager(
+          target.targetManager(), workspace, debuggerWorkspaceBinding);
+      return {target, backend, pluginManager};
+    }
+
+    it('returns false if no plugin is registered for the top-most frame', async () => {
+      const {target, backend, pluginManager} = setup();
+      const script = await backend.addScript(target, {url: urlString`foo.js`, content: ''}, null);
+      const rawFrames = [protocolCallFrame(`${script.sourceURL}:${script.scriptId}:foo:1:10`)];
+
+      assert.isFalse(await pluginManager.translateRawFramesStep(rawFrames, [], target));
+      assert.lengthOf(rawFrames, 1);
+    });
+
+    it('identity maps the frame with a NO_INFO status when the plugin returns an empty array', async () => {
+      const {target, backend, pluginManager} = setup();
+      const script = await backend.addScript(target, {url: urlString`foo.js`, content: ''}, null);
+      const plugin = new (class extends TestPlugin {
+        override getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation):
+            Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: string[]}|
+                    {frames: Chrome.DevTools.FunctionInfo[]}|{missingSymbolFiles: string[]}> {
+          return Promise.resolve({frames: []});
+        }
+        override handleScript(_: SDK.Script.Script) {
+          return true;
+        }
+      })('TestPlugin');
+      pluginManager.addPlugin(plugin);
+      const rawFrames = [protocolCallFrame(`${script.sourceURL}:${script.scriptId}:foo:1:10`)];
+      const translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>> = [];
+
+      assert.isTrue(await pluginManager.translateRawFramesStep(rawFrames, translatedFrames, target));
+
+      assert.lengthOf(rawFrames, 0);
+      assert.lengthOf(translatedFrames, 1);
+      assert.strictEqual(translatedFrames[0].map(stringifyFrame).join('\n'), 'at foo (foo.js:1:10)');
+      assert.strictEqual(
+          translatedFrames[0][0].missingDebugInfo?.type, StackTrace.StackTrace.MissingDebugInfoType.NO_INFO);
+    });
+
+    it('identity maps the frame with a PARTIAL_INFO status when the plugin returns missing debug symbols', async () => {
+      const {target, backend, pluginManager} = setup();
+      const script = await backend.addScript(target, {url: urlString`foo.js`, content: ''}, null);
+      const plugin = new (class extends TestPlugin {
+        override getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation):
+            Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: string[]}|
+                    {frames: Chrome.DevTools.FunctionInfo[]}|{missingSymbolFiles: string[]}> {
+          return Promise.resolve({missingSymbolFiles: ['foo.dwo']});
+        }
+        override handleScript(_: SDK.Script.Script) {
+          return true;
+        }
+      })('TestPlugin');
+      pluginManager.addPlugin(plugin);
+      const rawFrames = [protocolCallFrame(`${script.sourceURL}:${script.scriptId}:foo:1:10`)];
+      const translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>> = [];
+
+      assert.isTrue(await pluginManager.translateRawFramesStep(rawFrames, translatedFrames, target));
+
+      assert.lengthOf(rawFrames, 0);
+      assert.lengthOf(translatedFrames, 1);
+      assert.strictEqual(translatedFrames[0].map(stringifyFrame).join('\n'), 'at foo (foo.js:1:10)');
+      assert.deepEqual(translatedFrames[0][0].missingDebugInfo, {
+        type: StackTrace.StackTrace.MissingDebugInfoType.PARTIAL_INFO,
+        missingDebugFiles: [{resourceUrl: urlString`foo.dwo`, initiator: plugin.createPageResourceLoadInitiator()}],
+      });
+    });
+
+    it('translates one frame at a time', async () => {
+      const {target, backend, pluginManager} = setup();
+      sinon.stub(pluginManager, 'uiSourceCodeForURL')
+          .callsFake(
+              (_model, url) => createContentProviderUISourceCode({url, target, mimeType: 'text/plain'}).uiSourceCode);
+      const script = await backend.addScript(target, {url: urlString`foo.js`, content: ''}, null);
+      const plugin = new (class extends TestPlugin {
+        override getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation):
+            Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: string[]}|
+                    {frames: Chrome.DevTools.FunctionInfo[]}|{missingSymbolFiles: string[]}> {
+          const name = rawLocation.codeOffset === 10 ? 'foo' : rawLocation.codeOffset === 20 ? 'bar' : 'unknown';
+          return Promise.resolve({frames: [{name}]});
+        }
+        override handleScript(_: SDK.Script.Script) {
+          return true;
+        }
+        override rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation):
+            Promise<Chrome.DevTools.SourceLocation[]> {
+          const sourceFileURL = rawLocation.codeOffset === 10 ? 'foo.cc' :
+              rawLocation.codeOffset === 20                   ? 'bar.cc' :
+                                                                'unknown';
+          return Promise.resolve([{
+            rawModuleId: rawLocation.rawModuleId,
+            sourceFileURL,
+            lineNumber: rawLocation.codeOffset / 10,
+            columnNumber: rawLocation.codeOffset / 2,
+          }]);
+        }
+      })('TestPlugin');
+      pluginManager.addPlugin(plugin);
+      const rawFrames = [
+        `${script.sourceURL}:${script.scriptId}::0:10`,
+        `${script.sourceURL}:${script.scriptId}::0:20`,
+      ].map(protocolCallFrame);
+      const translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>> = [];
+
+      assert.isTrue(await pluginManager.translateRawFramesStep(rawFrames, translatedFrames, target));
+
+      assert.lengthOf(rawFrames, 1);
+      assert.lengthOf(translatedFrames, 1);
+      assert.strictEqual(translatedFrames[0].map(stringifyFrame).join('\n'), 'at foo (foo.cc:1:5)');
+
+      assert.isTrue(await pluginManager.translateRawFramesStep(rawFrames, translatedFrames, target));
+
+      assert.lengthOf(rawFrames, 0);
+      assert.lengthOf(translatedFrames, 2);
+      assert.strictEqual(translatedFrames[1].map(stringifyFrame).join('\n'), 'at bar (bar.cc:2:10)');
+    });
+
+    it('translates inlined frames correctly', async () => {
+      const {target, backend, pluginManager} = setup();
+      sinon.stub(pluginManager, 'uiSourceCodeForURL')
+          .callsFake(
+              (_model, url) => createContentProviderUISourceCode({url, target, mimeType: 'text/plain'}).uiSourceCode);
+      const script = await backend.addScript(target, {url: urlString`foo.js`, content: ''}, null);
+      const plugin = new (class extends TestPlugin {
+        override getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation):
+            Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: string[]}|
+                    {frames: Chrome.DevTools.FunctionInfo[]}|{missingSymbolFiles: string[]}> {
+          return Promise.resolve({frames: [{name: 'foo'}, {name: 'bar'}]});
+        }
+        override handleScript(_: SDK.Script.Script) {
+          return true;
+        }
+        override rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation):
+            Promise<Chrome.DevTools.SourceLocation[]> {
+          const sourceFileURL = rawLocation.inlineFrameIndex === 0 ? 'foo.cc' :
+              rawLocation.inlineFrameIndex === 1                   ? 'bar.cc' :
+                                                                     'unknown';
+          return Promise.resolve([{
+            rawModuleId: rawLocation.rawModuleId,
+            sourceFileURL,
+            lineNumber: (rawLocation.inlineFrameIndex + 1) * 2,
+            columnNumber: (rawLocation.inlineFrameIndex + 1) * 5,
+          }]);
+        }
+      })('TestPlugin');
+      pluginManager.addPlugin(plugin);
+      const rawFrames = [protocolCallFrame(`${script.sourceURL}:${script.scriptId}::0:10`)];
+      const translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>> = [];
+
+      assert.isTrue(await pluginManager.translateRawFramesStep(rawFrames, translatedFrames, target));
+
+      assert.lengthOf(rawFrames, 0);
+      assert.lengthOf(translatedFrames, 1);
+      assert.deepEqual(translatedFrames[0].map(stringifyFrame), [
+        'at foo (foo.cc:2:5)',
+        'at bar (bar.cc:4:10)',
+      ]);
     });
   });
 });

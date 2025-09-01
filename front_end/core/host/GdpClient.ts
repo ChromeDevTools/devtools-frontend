@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../root/root.js';
+
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import type {DispatchHttpRequestRequest, DispatchHttpRequestResult} from './InspectorFrontendHostAPI.js';
 
@@ -47,7 +49,11 @@ export interface Profile {
   };
 }
 
-async function dispatchHttpRequestPromise<R extends object>(request: DispatchHttpRequestRequest): Promise<R|null> {
+async function makeHttpRequest<R extends object>(request: DispatchHttpRequestRequest): Promise<R|null> {
+  if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled) {
+    return null;
+  }
+
   const response = await new Promise<DispatchHttpRequestResult>(resolve => {
     InspectorFrontendHostInstance.dispatchHttpRequest(request, resolve);
   });
@@ -78,12 +84,17 @@ export class GdpClient {
     return gdpClientInstance;
   }
 
+  async initialize(): Promise<void> {
+    void this.getProfile();
+    void this.checkEligibility();
+  }
+
   async getProfile(): Promise<Profile|null> {
     if (this.#cachedProfilePromise) {
       return await this.#cachedProfilePromise;
     }
 
-    this.#cachedProfilePromise = dispatchHttpRequestPromise({
+    this.#cachedProfilePromise = makeHttpRequest({
       service: SERVICE_NAME,
       path: '/v1beta1/profile:get',
       method: 'GET',
@@ -97,13 +108,13 @@ export class GdpClient {
     }
 
     this.#cachedEligibilityPromise =
-        dispatchHttpRequestPromise({service: SERVICE_NAME, path: '/v1beta1/eligibility:check', method: 'GET'});
+        makeHttpRequest({service: SERVICE_NAME, path: '/v1beta1/eligibility:check', method: 'GET'});
 
     return await this.#cachedEligibilityPromise;
   }
 
   createProfile({user, emailPreference}: {user: string, emailPreference: EmailPreference}): Promise<Profile|null> {
-    return dispatchHttpRequestPromise({
+    return makeHttpRequest({
       service: SERVICE_NAME,
       path: '/v1beta1/profiles',
       method: 'POST',

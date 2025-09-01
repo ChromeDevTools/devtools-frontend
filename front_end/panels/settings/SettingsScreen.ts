@@ -335,17 +335,25 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
       window.clearTimeout(this.#updateSyncSectionTimerId);
       this.#updateSyncSectionTimerId = -1;
     }
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(syncInfo => {
-      this.syncSection.data = {
-        syncInfo,
-        syncSetting: Common.Settings.moduleSetting('sync-preferences') as Common.Settings.Setting<boolean>,
-        receiveBadgesSetting: Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges'),
-        gdpProfile: undefined,
-      };
-      if (!syncInfo.isSyncActive || !syncInfo.arePreferencesSynced) {
-        this.#updateSyncSectionTimerId = window.setTimeout(this.updateSyncSection.bind(this), 500);
-      }
-    });
+
+    void Promise
+        .all([
+          new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
+              resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve)),
+          Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled ? Host.GdpClient.GdpClient.instance().getProfile() :
+                                                                 Promise.resolve(undefined),
+        ])
+        .then(([syncInfo, gdpProfile]) => {
+          this.syncSection.data = {
+            syncInfo,
+            syncSetting: Common.Settings.moduleSetting('sync-preferences') as Common.Settings.Setting<boolean>,
+            receiveBadgesSetting: Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges'),
+            gdpProfile: gdpProfile ?? undefined,
+          };
+          if (!syncInfo.isSyncActive || !syncInfo.arePreferencesSynced) {
+            this.#updateSyncSectionTimerId = window.setTimeout(this.updateSyncSection.bind(this), 500);
+          }
+        });
   }
 
   private createExtensionSection(settings: Common.Settings.SettingRegistration[]): void {

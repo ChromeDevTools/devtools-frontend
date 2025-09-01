@@ -524,6 +524,11 @@ export class MainImpl {
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
     this.#registerMessageSinkListener();
 
+    // Initialize `GDPClient` for Google Developer Program integration
+    if (Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled) {
+      void Host.GdpClient.GdpClient.instance().initialize();
+    }
+
     MainImpl.timeEnd('Main._createAppUI');
 
     const appProvider = Common.AppProvider.getRegisteredAppProviders()[0];

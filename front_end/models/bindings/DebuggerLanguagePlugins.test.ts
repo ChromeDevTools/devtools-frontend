@@ -15,130 +15,128 @@ import * as Bindings from './bindings.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describe('DebuggerLanguagePlugins', () => {
-  describe('ExtensionRemoteObject', () => {
-    describe('isLinearMemoryInspectable', () => {
-      it('yields false when the extension object has no linear memory address', () => {
-        const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
-        const extensionObject: Chrome.DevTools.RemoteObject = {
-          type: 'object',
-          hasChildren: false,
-        };
-        const plugin = new TestPlugin('TestPlugin');
-        const remoteObject =
-            new Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject(callFrame, extensionObject, plugin);
-        assert.isFalse(remoteObject.isLinearMemoryInspectable());
-      });
+describe('ExtensionRemoteObject', () => {
+  describe('isLinearMemoryInspectable', () => {
+    it('yields false when the extension object has no linear memory address', () => {
+      const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+      const extensionObject: Chrome.DevTools.RemoteObject = {
+        type: 'object',
+        hasChildren: false,
+      };
+      const plugin = new TestPlugin('TestPlugin');
+      const remoteObject =
+          new Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject(callFrame, extensionObject, plugin);
+      assert.isFalse(remoteObject.isLinearMemoryInspectable());
+    });
 
-      it('yields true when the extension object has a linear memory address', () => {
-        const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
-        const extensionObject: Chrome.DevTools.RemoteObject = {
-          type: 'object',
-          linearMemoryAddress: 42,
-          hasChildren: false,
-        };
-        const plugin = new TestPlugin('TestPlugin');
-        const remoteObject =
-            new Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject(callFrame, extensionObject, plugin);
-        assert.isTrue(remoteObject.isLinearMemoryInspectable());
-      });
+    it('yields true when the extension object has a linear memory address', () => {
+      const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+      const extensionObject: Chrome.DevTools.RemoteObject = {
+        type: 'object',
+        linearMemoryAddress: 42,
+        hasChildren: false,
+      };
+      const plugin = new TestPlugin('TestPlugin');
+      const remoteObject =
+          new Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject(callFrame, extensionObject, plugin);
+      assert.isTrue(remoteObject.isLinearMemoryInspectable());
     });
   });
+});
 
-  describe('DebuggerLanguagePluginManager', () => {
-    describeWithMockConnection('getFunctionInfo', () => {
-      let target: SDK.Target.Target;
-      let pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager;
+describe('DebuggerLanguagePluginManager', () => {
+  describeWithMockConnection('getFunctionInfo', () => {
+    let target: SDK.Target.Target;
+    let pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager;
 
-      const MISSING_DWO_FILE = 'test.dwo';
-      const MISSING_DEBUG_FILES: SDK.DebuggerModel.MissingDebugFiles = {
-        resourceUrl: urlString`${MISSING_DWO_FILE}`,
-        initiator: {
-          target: null,
-          frameId: null,
-          extensionId: 'chrome-extension-id',
-          initiatorUrl: urlString`chrome-extension-id`,
-        },
-      };
-      const FUNCTION_NAME = 'test';
+    const MISSING_DWO_FILE = 'test.dwo';
+    const MISSING_DEBUG_FILES: SDK.DebuggerModel.MissingDebugFiles = {
+      resourceUrl: urlString`${MISSING_DWO_FILE}`,
+      initiator: {
+        target: null,
+        frameId: null,
+        extensionId: 'chrome-extension-id',
+        initiatorUrl: urlString`chrome-extension-id`,
+      },
+    };
+    const FUNCTION_NAME = 'test';
 
-      class Plugin extends TestPlugin {
-        override getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation):
-            Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: string[]}|
-                    {frames: Chrome.DevTools.FunctionInfo[]}|{missingSymbolFiles: string[]}> {
-          return Promise.resolve({missingSymbolFiles: []});
-        }
-        override handleScript(_: SDK.Script.Script) {
-          return true;
-        }
-        override addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):
-            Promise<string[]> {
-          return Promise.resolve(['https://script-host/script.js']);
-        }
+    class Plugin extends TestPlugin {
+      override getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation):
+          Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: string[]}|
+                  {frames: Chrome.DevTools.FunctionInfo[]}|{missingSymbolFiles: string[]}> {
+        return Promise.resolve({missingSymbolFiles: []});
       }
-
-      beforeEach(() => {
-        target = createTarget();
-        const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-        const targetManager = target.targetManager();
-        const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-        const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-        const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-          forceNew: true,
-          resourceMapping,
-          targetManager,
-          ignoreListManager,
-        });
-        pluginManager = debuggerWorkspaceBinding.pluginManager;
-      });
-
-      function createAndRegisterScript(): SDK.Script.Script {
-        const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
-        const scriptUrl = urlString`https://script-host/script.js`;
-        return debuggerModel.parsedScriptSource(
-            '0' as Protocol.Runtime.ScriptId, scriptUrl, 0, 0, 0, 0, 0, '', null, false, undefined, false, false, 0,
-            null, null, null, null, null, null, null);
+      override handleScript(_: SDK.Script.Script) {
+        return true;
       }
+      override addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):
+          Promise<string[]> {
+        return Promise.resolve(['https://script-host/script.js']);
+      }
+    }
 
-      it('correctly processes missing debug info if available', async () => {
-        const plugin = new Plugin('TestPlugin');
-        sinon.stub(plugin, 'getFunctionInfo').returns(Promise.resolve({missingSymbolFiles: [MISSING_DWO_FILE]}));
-        pluginManager.addPlugin(plugin);
-
-        const script = createAndRegisterScript();
-
-        const location = sinon.createStubInstance(SDK.DebuggerModel.Location);
-        const result = await pluginManager.getFunctionInfo(script, location);
-        Platform.assertNotNullOrUndefined(result);
-        assert.deepEqual(result, {missingSymbolFiles: [MISSING_DEBUG_FILES]});
+    beforeEach(() => {
+      target = createTarget();
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+      const targetManager = target.targetManager();
+      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+        forceNew: true,
+        resourceMapping,
+        targetManager,
+        ignoreListManager,
       });
+      pluginManager = debuggerWorkspaceBinding.pluginManager;
+    });
 
-      it('correctly returns frames if available', async () => {
-        const plugin = new Plugin('TestPlugin');
-        sinon.stub(plugin, 'getFunctionInfo').returns(Promise.resolve({frames: [{name: FUNCTION_NAME}]}));
-        pluginManager.addPlugin(plugin);
+    function createAndRegisterScript(): SDK.Script.Script {
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
+      const scriptUrl = urlString`https://script-host/script.js`;
+      return debuggerModel.parsedScriptSource(
+          '0' as Protocol.Runtime.ScriptId, scriptUrl, 0, 0, 0, 0, 0, '', null, false, undefined, false, false, 0, null,
+          null, null, null, null, null, null);
+    }
 
-        const script = createAndRegisterScript();
-        const location = sinon.createStubInstance(SDK.DebuggerModel.Location);
+    it('correctly processes missing debug info if available', async () => {
+      const plugin = new Plugin('TestPlugin');
+      sinon.stub(plugin, 'getFunctionInfo').returns(Promise.resolve({missingSymbolFiles: [MISSING_DWO_FILE]}));
+      pluginManager.addPlugin(plugin);
 
-        const result = await pluginManager.getFunctionInfo(script, location);
-        Platform.assertNotNullOrUndefined(result);
-        assert.deepEqual(result, {frames: [{name: FUNCTION_NAME}]});
-      });
+      const script = createAndRegisterScript();
 
-      it('correctly returns frames and missing debug info if both are available', async () => {
-        const plugin = new Plugin('TestPlugin');
-        sinon.stub(plugin, 'getFunctionInfo')
-            .returns(Promise.resolve({frames: [{name: FUNCTION_NAME}], missingSymbolFiles: [MISSING_DWO_FILE]}));
-        pluginManager.addPlugin(plugin);
+      const location = sinon.createStubInstance(SDK.DebuggerModel.Location);
+      const result = await pluginManager.getFunctionInfo(script, location);
+      Platform.assertNotNullOrUndefined(result);
+      assert.deepEqual(result, {missingSymbolFiles: [MISSING_DEBUG_FILES]});
+    });
 
-        const script = createAndRegisterScript();
-        const location = sinon.createStubInstance(SDK.DebuggerModel.Location);
+    it('correctly returns frames if available', async () => {
+      const plugin = new Plugin('TestPlugin');
+      sinon.stub(plugin, 'getFunctionInfo').returns(Promise.resolve({frames: [{name: FUNCTION_NAME}]}));
+      pluginManager.addPlugin(plugin);
 
-        const result = await pluginManager.getFunctionInfo(script, location);
-        Platform.assertNotNullOrUndefined(result);
-        assert.deepEqual(result, {frames: [{name: FUNCTION_NAME}], missingSymbolFiles: [MISSING_DEBUG_FILES]});
-      });
+      const script = createAndRegisterScript();
+      const location = sinon.createStubInstance(SDK.DebuggerModel.Location);
+
+      const result = await pluginManager.getFunctionInfo(script, location);
+      Platform.assertNotNullOrUndefined(result);
+      assert.deepEqual(result, {frames: [{name: FUNCTION_NAME}]});
+    });
+
+    it('correctly returns frames and missing debug info if both are available', async () => {
+      const plugin = new Plugin('TestPlugin');
+      sinon.stub(plugin, 'getFunctionInfo')
+          .returns(Promise.resolve({frames: [{name: FUNCTION_NAME}], missingSymbolFiles: [MISSING_DWO_FILE]}));
+      pluginManager.addPlugin(plugin);
+
+      const script = createAndRegisterScript();
+      const location = sinon.createStubInstance(SDK.DebuggerModel.Location);
+
+      const result = await pluginManager.getFunctionInfo(script, location);
+      Platform.assertNotNullOrUndefined(result);
+      assert.deepEqual(result, {frames: [{name: FUNCTION_NAME}], missingSymbolFiles: [MISSING_DEBUG_FILES]});
     });
   });
 });

@@ -101,8 +101,8 @@ export class ExtensionTrackAppender implements TrackAppender {
   }
 
   setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
-    info.title = Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText ?
-        event.args.tooltipText :
+    info.title = Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.devtoolsObj.tooltipText ?
+        event.devtoolsObj.tooltipText :
         this.titleForEvent(event);
     info.formattedTime = getDurationString(event.dur);
   }

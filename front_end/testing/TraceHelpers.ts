@@ -925,7 +925,7 @@ export function allThreadEntriesInTrace(parsedTrace: Trace.Handlers.Types.Parsed
 }
 
 export interface PerformanceAPIExtensionTestData {
-  detail: {devtools?: Trace.Types.Extensions.ExtensionDataPayload};
+  detail: {devtools?: Trace.Types.Extensions.DevToolsObj};
   name: string;
   start?: string|number;
   end?: string|number;

@@ -811,8 +811,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
       const mutableEntry: Trace.Types.Extensions.SyntheticExtensionEntry = {
         ...extensionEntry,
-        args: {
-          ...extensionEntry.args,
+        devtoolsObj: {
+          ...extensionEntry.devtoolsObj,
           // Note: we do not support this, but bad values can come in via mistakes in user code.
           properties: [['key', null]]
         }
@@ -1024,7 +1024,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         ts: function3.ts,
         pid: function3.pid,
         tid: function3.tid,
-        args: {},
+        devtoolsObj: {},
         rawSourceEvent: mark,
       } as unknown as Trace.Types.Extensions.SyntheticExtensionEntry;
 
@@ -1050,7 +1050,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         ts: function2.ts,
         pid: function2.pid,
         tid: function2.tid,
-        args: {},
+        devtoolsObj: {},
         rawSourceEvent: {
           cat: 'blink.user_timing',
           args: {traceId: measure.args.traceId},

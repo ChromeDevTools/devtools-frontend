@@ -67,11 +67,14 @@ describeWithEnvironment('TimingTrackAppender', function() {
       const performanceMeasures = parsedTrace.UserTimings.performanceMeasures;
       const consoleTimings = parsedTrace.UserTimings.consoleTimings;
       const consoleTimestamps = parsedTrace.UserTimings.timestampEvents;
-      for (const event of [...performanceMarks, ...performanceMeasures, ...consoleTimings, ...consoleTimestamps]) {
+      const events = [...performanceMarks, ...performanceMeasures, ...consoleTimings, ...consoleTimestamps];
+      const expectedStartTimes = events.map(event => Trace.Helpers.Timing.microToMilli(event.ts));
+      const actualStartTimes = events.map(event => {
         const markerIndex = entryData.indexOf(event);
         assert.exists(markerIndex);
-        assert.strictEqual(flameChartData.entryStartTimes[markerIndex], Trace.Helpers.Timing.microToMilli(event.ts));
-      }
+        return flameChartData.entryStartTimes[markerIndex];
+      });
+      assert.deepEqual(actualStartTimes, expectedStartTimes);
     });
     it('adds total times correctly', () => {
       const performanceMarks = parsedTrace.UserTimings.performanceMarks;
@@ -282,9 +285,20 @@ describeWithEnvironment('TimingTrackAppender', function() {
       const extensionMarkers = parsedTrace.ExtensionTraceData.extensionMarkers;
       assert.lengthOf(extensionMarkers, 1);
       for (const event of extensionMarkers) {
-        // tooltipText is supplied, so the title should be that.
-        assert.notStrictEqual(timingsTrackAppender.titleForEvent(event), event.name);
-        if (event.args.color === 'error') {
+        const popoverInfo: Timeline.CompatibilityTracksAppender.PopoverInfo = {
+          title: 'title',
+          formattedTime: 'time',
+          warningElements: [],
+          additionalElements: [],
+          url: null,
+        };
+        timingsTrackAppender.setPopoverInfo(event, popoverInfo);
+
+        // Both tooltipText and name are supplied, but we use name for the event's flamechart title.
+        assert.strictEqual(timingsTrackAppender.titleForEvent(event), event.name);
+        assert.notStrictEqual(timingsTrackAppender.titleForEvent(event), popoverInfo.title);
+
+        if (event.devtoolsObj.color === 'error') {
           // "error" color category is mapped to --ref-palette-error50
           // which is faked out to 10, 10, 10
           assert.strictEqual(timingsTrackAppender.colorForEvent(event), 'rgb(10 10 10)');
@@ -298,14 +312,14 @@ describeWithEnvironment('TimingTrackAppender', function() {
     });
     it('sets a default value when a color is not set or is set an unknown value', function() {
       const mockExtensionEntryNoColor = {
-        args: {
+        devtoolsObj: {
           dataType: 'marker',
         },
         cat: 'devtools.extension',
       } as unknown as Trace.Types.Events.Event;
 
       const mockExtensionEntryUnknownColor = {
-        args: {
+        devtoolsObj: {
           color: 'anUnknownColor',
           dataType: 'marker',
         },

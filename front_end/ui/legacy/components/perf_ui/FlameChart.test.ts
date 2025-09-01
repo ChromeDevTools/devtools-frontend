@@ -1603,7 +1603,7 @@ describeWithEnvironment('FlameChart', () => {
       override entryColor(entryIndex: number): string {
         const color = colorPalette[entryIndex % paletteLength];
         return Extensions.ExtensionUI.extensionEntryColor(
-            {args: {color}} as Trace.Types.Extensions.SyntheticExtensionEntry);
+            {devtoolsObj: {color}} as Trace.Types.Extensions.SyntheticExtensionEntry);
       }
       override maxStackDepth(): number {
         return paletteLength + 1;

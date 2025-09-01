@@ -40,6 +40,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
@@ -872,19 +873,59 @@ export class TimelineUIUtils {
     }
   }
 
-  static maybeCreateLinkElement(link: Trace.Types.Extensions.ExtensionTrackEntryPayloadDeeplink): HTMLElement|null {
-    const protocol = URL.parse(link.url)?.protocol;
-    if (protocol && protocol.length > 0) {
-      const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(link.url);
-      if (splitResult) {
-        const {lineNumber, columnNumber} = splitResult;
-        const options = {text: link.url, lineNumber, columnNumber} as LegacyComponents.Linkifier.LinkifyURLOptions;
-        const linkElement = LegacyComponents.Linkifier.Linkifier.linkifyURL(link.url, (options));
-        return linkElement;
-      }
+  static maybeCreateLinkElement(url: string): HTMLElement|null {
+    const protocol = URL.parse(url)?.protocol;
+    if (!protocol || protocol.length === 0) {
+      return null;
     }
 
-    return null;
+    const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(url);
+    if (!splitResult) {
+      return null;
+    }
+    const {lineNumber, columnNumber} = splitResult;
+    const options = {text: url, lineNumber, columnNumber} as LegacyComponents.Linkifier.LinkifyURLOptions;
+    const linkElement =
+        LegacyComponents.Linkifier.Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, (options));
+    return linkElement;
+  }
+
+  static linkTokenizers: {regexes: RegExp[], types: string[]}|null = null;
+
+  /**
+   * Takes an input string and parses it to look for links. It does this by
+   * looking for URLs in the input string. The returned fragment will contain
+   * the same string but with any links wrapped in clickable links. The text
+   * of the link is the URL, so the visible string to the user is unchanged.
+   */
+  static parseStringForLinks(rawString: string): DocumentFragment {
+    // Tokenizers/getOrCreateTokenizers are adapted from ConsoleViewMessage.
+    function getOrCreateLinkTokenizers(): {regexes: RegExp[], types: string[]} {
+      if (TimelineUIUtils.linkTokenizers) {
+        return TimelineUIUtils.linkTokenizers;
+      }
+
+      const linkStringRegex = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/|data:|www\.)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
+      const pathLineRegex = /(?:\/[\w\.-]*)+:[\d]+/;
+      TimelineUIUtils.linkTokenizers = {
+        regexes: [linkStringRegex, pathLineRegex],
+        types: ['url', 'url'],
+      };
+      return TimelineUIUtils.linkTokenizers;
+    }
+
+    const {regexes, types} = getOrCreateLinkTokenizers();
+    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(rawString, regexes);
+    const tokens = results.map(result => ({text: result.value, type: types[result.regexIndex]}));
+    const linkifiedTokens = tokens.map(token => {
+      if (token.type === 'url') {
+        return TimelineUIUtils.maybeCreateLinkElement(token.text) ?? token.text;
+      }
+      return token.text;
+    });
+    const frag = document.createDocumentFragment();
+    frag.append(...linkifiedTokens.filter(token => token !== null));
+    return frag;
   }
 
   static async buildTraceEventDetails(
@@ -1009,18 +1050,36 @@ export class TimelineUIUtils {
     }
 
     if (Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
-      const additionalContext = 'additionalContext' in event.args ? event.args.additionalContext : null;
-      if (additionalContext) {
-        if (Boolean(Root.Runtime.hostConfig.devToolsDeepLinksViaExtensibilityApi?.enabled)) {
-          const linkElement = this.maybeCreateLinkElement(additionalContext);
+      // isSyntheticExtensionEntries can be any of: perf.measure, perf.mark or console.timeStamp.
+      const userDetail = structuredClone(event.userDetail) as Record<string, Trace.Types.Extensions.JsonValue>;
+      if (userDetail && Object.keys(userDetail).length) {
+        // E.g. console.timeStamp(name, start, end, track, trackGroup, color,
+        // {url: 'foo-extension://node/1', description: 'Node'});
+        const hasExclusiveLink = typeof userDetail === 'object' && typeof userDetail.url === 'string' &&
+            typeof userDetail.description === 'string';
+        if (hasExclusiveLink && Boolean(Root.Runtime.hostConfig.devToolsDeepLinksViaExtensibilityApi?.enabled)) {
+          const linkElement = this.maybeCreateLinkElement(String(userDetail.url));
           if (linkElement) {
-            contentHelper.appendElementRow(additionalContext.description, linkElement);
+            contentHelper.appendElementRow(String(userDetail.description), linkElement);
+            // Now remove so we don't render them in renderObjectJson.
+            delete userDetail.url;
+            delete userDetail.description;
           }
+        }
+        if (Object.keys(userDetail).length) {
+          // E.g., performance.measure(name, {detail: {important: 42, devtools: {}}})
+          const detailContainer = TimelineUIUtils.renderObjectJson(userDetail);
+          contentHelper.appendElementRow(i18nString(UIStrings.details), detailContainer);
         }
       }
 
-      for (const [key, value] of event.args.properties as Array<[string, string]>|| []) {
-        contentHelper.appendTextRow(key, String(value));
+      // E.g. performance.measure(name, {detail: {devtools: {properties: ['Key', 'Value']}}})
+      if (event.devtoolsObj.properties) {
+        for (const [key, value] of event.devtoolsObj.properties || []) {
+          const renderedValue = typeof value === 'string' ? TimelineUIUtils.parseStringForLinks(value) :
+                                                            TimelineUIUtils.renderObjectJson(value);
+          contentHelper.appendElementRow(key, renderedValue);
+        }
       }
     }
 
@@ -1617,7 +1676,7 @@ export class TimelineUIUtils {
     contentHelper.appendElementRow('', highlightContainer);
   }
 
-  private static renderObjectJson(obj: Object): HTMLDivElement {
+  private static renderObjectJson(obj: Object|Trace.Types.Extensions.JsonValue): HTMLDivElement {
     const indentLength = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get().length;
     // Elide if the data is huge. Then remove the initial new-line for a denser UI
     const eventStr = JSON.stringify(obj, null, indentLength).slice(0, 10_000).replace(/{\n  /, '{ ');
@@ -1628,7 +1687,23 @@ export class TimelineUIUtils {
     const elem = shadowRoot.createChild('div');
     elem.classList.add('monospace', 'source-code');
     elem.textContent = eventStr;
-    void CodeHighlighter.CodeHighlighter.highlightNode(elem, 'text/javascript');
+    // Highlighting is done async (shrug), but we'll return the container immediately.
+    void CodeHighlighter.CodeHighlighter.highlightNode(elem, 'text/javascript').then(() => {
+      // Linkify any URLs within the text nodes.
+      // Use a TreeWalker to find all our text nodes
+      function* iterateTreeWalker(walker: TreeWalker): IterableIterator<Node> {
+        while (walker.nextNode()) {
+          yield walker.currentNode;
+        }
+      }
+      const walker = document.createTreeWalker(elem, NodeFilter.SHOW_TEXT);
+      // Gather all the nodes first, then we'll potentially replace them.
+      for (const node of Array.from(iterateTreeWalker(walker))) {
+        const frag = TimelineUIUtils.parseStringForLinks(node.textContent || '');
+        node.parentNode?.replaceChild(frag, node);
+      }
+    });
+
     return highlightContainer;
   }
 

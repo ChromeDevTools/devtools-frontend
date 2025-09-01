@@ -187,7 +187,7 @@ export function mergeEventsInOrder<T1 extends Types.Events.Event, T2 extends Typ
   return result;
 }
 
-export function parseDevtoolsDetails(timingDetail: string, key: string): Types.Extensions.ExtensionDataPayload|
+export function parseDevtoolsDetails(timingDetail: string, key: string): Types.Extensions.DevToolsObj|
     Types.Extensions.ExtensionTrackEntryPayloadDeeplink|null {
   try {
     // Attempt to parse the detail as an object that might be coming from a
@@ -233,8 +233,8 @@ export function getNavigationForTraceEvent(
   return navigations[eventNavigationIndex];
 }
 
-export function extractId(event: Types.Events.PairableAsync|
-                          Types.Events.SyntheticEventPair<Types.Events.PairableAsync>): string|undefined {
+export function extractId(
+    event: Types.Events.PairableAsync|Types.Events.SyntheticEventPair<Types.Events.PairableAsync>): string|undefined {
   return event.id ?? event.id2?.global ?? event.id2?.local;
 }
 

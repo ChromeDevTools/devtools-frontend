@@ -72,11 +72,12 @@ export class TimingsTrackAppender implements TrackAppender {
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
     const extensionMarkersAreEmpty = this.#extensionMarkers.length === 0;
     const performanceMarks = this.#parsedTrace.UserTimings.performanceMarks.filter(
-        m => !Trace.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(m));
+        m => !Trace.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(m).devtoolsObj);
     const performanceMeasures = this.#parsedTrace.UserTimings.performanceMeasures.filter(
-        m => !Trace.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(m));
+        m => !Trace.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(m).devtoolsObj);
     const timestampEvents = this.#parsedTrace.UserTimings.timestampEvents.filter(
-        timeStamp => !Trace.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInConsoleTimeStamp(timeStamp));
+        timeStamp =>
+            !Trace.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInConsoleTimeStamp(timeStamp).devtoolsObj);
     const consoleTimings = this.#parsedTrace.UserTimings.consoleTimings;
     if (extensionMarkersAreEmpty && performanceMarks.length === 0 && performanceMeasures.length === 0 &&
         timestampEvents.length === 0 && consoleTimings.length === 0) {
@@ -248,9 +249,7 @@ export class TimingsTrackAppender implements TrackAppender {
     if (Trace.Types.Events.isPerformanceMark(event)) {
       return `[mark]: ${event.name}`;
     }
-    if (Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText) {
-      return event.args.tooltipText;
-    }
+    // Trace.Types.Extensions.isSyntheticExtensionEntry(event) can fall through to event.name.
     return event.name;
   }
 
@@ -263,7 +262,11 @@ export class TimingsTrackAppender implements TrackAppender {
     // console.timestamp() events
 
     const isExtensibilityMarker = Trace.Types.Extensions.isSyntheticExtensionEntry(event) &&
-        Trace.Types.Extensions.isExtensionPayloadMarker(event.args);
+        Trace.Types.Extensions.isExtensionPayloadMarker(event.devtoolsObj);
+
+    if (isExtensibilityMarker) {
+      info.title = event.devtoolsObj.tooltipText || event.name;
+    }
 
     if (Trace.Types.Events.isMarkerEvent(event) || Trace.Types.Events.isPerformanceMark(event) ||
         Trace.Types.Events.isConsoleTimeStamp(event) || isExtensibilityMarker) {

@@ -24,7 +24,6 @@ export interface EvalFileOutput {
   metadata: {
     createdAt: string,
     id: string,
-    label: string,
   };
   conversations: Conversation[];
 }

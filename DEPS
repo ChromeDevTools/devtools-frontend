@@ -222,10 +222,10 @@ deps = {
     "bucket": "chrome-devtools-ai-evals",
     "objects": [
       {
-        "object_name": "f0e8e7b99dc61f7a943bfdf284552982c63bdf8d6217091f5260bc8ebd84ca9f",
-        "sha256sum": "af579f30f2384089e1bece67db9afb71b902aa6ff99cb9749d4694ce53783670",
-        "size_bytes": 3582,
-        "generation": 1755705853621054
+        "object_name": "8aaaea341cac9e6dad90a0685f4eeae39fabb9f655761eed9c3af16795a40f14",
+        "sha256sum": "c2e5b18a77095451dbaae27cea913aace1fc267e8e9e0f0b4f297a6215eb5299",
+        "size_bytes": 6801,
+        "generation": 1756718606230139
       }
     ]
   },

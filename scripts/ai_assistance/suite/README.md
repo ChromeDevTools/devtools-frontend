@@ -6,7 +6,7 @@ At this time, this is being heavily iterated on and may change rapidly. Chat to 
 
 ## Getting started
 
-### 1: get the outputs from GCP
+### 1: download the outputs from GCP
 
 The actual output files you need to run the suite are hosted in a GCP bucket. The contents are fetched for you by `gclient sync` but only if you set the `checkout_ai_evals` arg in your `.gclient` config:
 
@@ -37,7 +37,9 @@ Run `cd scripts/ai_assistance && npm run eval-suite` to execute the suite.
 
 ## Adding new outputs
 
-Once you have new outputs you want to put into the set, move them into the right place in the `suite/outputs/outputs` folder.:
+To get outputs, you should use the auto-run tool but pass the `--eval` flag. This will cause it to output a secondary file named `*.eval.json` that contains the output in the format the evaluation suiteexpects.
+
+Once you have new outputs you want to put into the set, move them into the right place in the `suite/outputs/outputs` folder.
 
 The structure of files in this folder is like so: `outputs/type/YYYY-MM-DD/label-XYZ.json`.
 
@@ -51,7 +53,12 @@ Then, run (from the DevTools root directory in this case, but it doesn't matter)
 node scripts/ai_assistance/suite/upload_to_gcp.ts
 ```
 
-This will upload the changes to the GCP bucket and update the `DEPS` file for you, which you should ensure you commit in a CL.
+This will upload the changes to the GCP bucket and update the `DEPS` file for you, which you should ensure you commit in a CL. The best workflow is:
+
+1. Generate your new output file(s).
+2. Move any new files into `suites/outputs/...`.
+3. Use the `upload_to_gcp.ts` script.
+4. Commit the `DEPS` change and send the CL for review.
 
 If you get any authorisation errors, run `gsutil.py config` to refresh your authentication status.
 

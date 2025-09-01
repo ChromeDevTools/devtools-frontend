@@ -4,6 +4,9 @@ This directory contains scripts for the prompt iteration & evaluation process fo
 
 Mainly, `auto-run/auto-run.ts` script takes example URLs, runs the examples and outputs the results to the `auto-run/data/` directory. Then, the HTML page in `eval/` folder takes these results and presents them in a UI for evaluation.
 
+**NOTE: looking for the automatic evaluation suite?**
+As of September 2025, we also have an evaluation suite where we can define evaluations to apply to an output and have them automatically evaluated, including using an LLM as judge. See the README in `suites/` for more detail on this.
+
 ## Running
 
 **Prerequisites**

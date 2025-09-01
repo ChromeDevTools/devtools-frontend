@@ -11,25 +11,8 @@ import yargs from 'yargs/yargs';
 
 import type {Conversation, EvalFileOutput, ProcessedQuery} from './types';
 
-const userArgs =
-    yargs(hideBin(process.argv))
-        .option('file', {type: 'string', demandOption: true, description: 'The raw JSON file from Auto Run.'})
-        .option('label', {type: 'string', demandOption: true, desc: 'A human readable, short label to use.'})
-        .option('pretty', {
-          type: 'boolean',
-          demandOption: false,
-          default: false,
-          description: 'Output formatted JSON rather than minified.'
-        })
-        .parseSync();
-
-const inputPath = path.isAbsolute(userArgs.file) ? userArgs.file : path.join(process.cwd(), userArgs.file);
-const contents = fs.readFileSync(inputPath, 'utf8');
-
-const INPUT_HASH = hash(contents, null);
-
 // Note: non-exhaustive.
-interface RawOutput {
+export interface RawOutput {
   metadata: Array<{exampleId: string, explanation: string}>;
   examples: Array<{
     exampleId: string,
@@ -59,8 +42,8 @@ interface RawOutput {
     },
     aidaResponse: {
       metadata: {
-        rcpGlobalId: string,
-        inferenceOptionMetadata: {
+        rcpGlobalId?: string,
+        inferenceOptionMetadata?: {
           modelId: string,
           modelVersion: string,
         },
@@ -72,87 +55,108 @@ interface RawOutput {
   }>;
 }
 
-const json = JSON.parse(contents) as RawOutput;
+interface RawToEvalOptions {
+  inputFromAutoRun: RawOutput;
+  label: string;
+}
 
-const examples = json.metadata.map(m => m.exampleId);
+export function convertRawOutputToEval(opts: RawToEvalOptions): EvalFileOutput {
+  const inputHash = hash(JSON.stringify(opts.inputFromAutoRun));
+  const exampleIds = opts.inputFromAutoRun.metadata.map(m => m.exampleId);
 
-const processedExamples: Conversation[] =
-    examples
-        .map((exampleIdFromInput, index) => {
-          const data = json.examples.filter(e => e.exampleId === exampleIdFromInput);
-          if (!data.length) {
-            return null;
-          }
-
-          const exampleMetadata = json.metadata[index];
-
-          const id = INPUT_HASH + '-' + index;
-          const chromeVersion = data.at(0)?.request.metadata.client_version;
-          assert.ok(chromeVersion, 'No client_version');
-          const modelData = data.at(0)?.aidaResponse.metadata.inferenceOptionMetadata;
-          assert.ok(modelData, 'No inferenceOptionMetadata');
-          const processed: Conversation = {
-            id,
-            chromeVersion,
-            explanation: exampleMetadata?.explanation ?? '',
-            model: {
-              id: modelData?.modelId,
-              version: modelData?.modelVersion,
-            },
-            queries: [],
-          };
-
-          for (const {request, aidaResponse} of data) {
-            if (!aidaResponse.completed) {
-              continue;
+  const processedExamples: Conversation[] =
+      exampleIds
+          .map((exampleIdFromInput, index) => {
+            const data = opts.inputFromAutoRun.examples.filter(e => e.exampleId === exampleIdFromInput);
+            if (!data.length) {
+              return null;
             }
+            const exampleMetadata = opts.inputFromAutoRun.metadata[index];
 
-            const responseText = aidaResponse.explanation?.trim() ?? undefined;
-
-            const query: ProcessedQuery = {
-              request: {
-                prompt: request.current_message.parts[0].text,
-                functionCallResponse: request.current_message.parts[0].functionResponse?.name,
-                availableFunctionNames: request.function_declarations.map(dec => dec.name),
+            const id = inputHash + '-' + index;
+            const chromeVersion = data.at(0)?.request.metadata.client_version;
+            assert.ok(chromeVersion, 'No client_version');
+            const modelData = data.at(0)?.aidaResponse.metadata.inferenceOptionMetadata;
+            assert.ok(modelData, 'No inferenceOptionMetadata');
+            const processed: Conversation = {
+              id,
+              chromeVersion,
+              explanation: exampleMetadata?.explanation ?? '',
+              model: {
+                id: modelData?.modelId,
+                version: modelData?.modelVersion,
               },
-              response: {
-                rpcGlobalId: aidaResponse.metadata.rcpGlobalId,
-                text: responseText,
-                functionCallRequests: aidaResponse.functionCalls?.map(call => {
-                  return {
-                    name: call.name,
-                    args: call.args,
-                  };
-                }),
-              }
+              queries: [],
             };
-            processed.queries.push(query);
-          }
-          return processed;
-        })
-        .filter(x => x !== null);
 
-const finalOutput: EvalFileOutput = {
-  metadata: {
-    createdAt: new Date().toISOString(),
-    id: hash(processedExamples.map(x => x.id).join(''), 16),
-    label: userArgs.label,
-  },
-  conversations: processedExamples,
-};
+            for (const {request, aidaResponse} of data) {
+              if (!aidaResponse.completed) {
+                continue;
+              }
 
-const stringified = userArgs.pretty ? JSON.stringify(finalOutput, null, 2) : JSON.stringify(finalOutput);
+              const responseText = aidaResponse.explanation?.trim() ?? undefined;
 
-const fileName = `${slug(userArgs.label)}-${finalOutput.metadata.id}.json`;
-fs.writeFileSync(path.join(process.cwd(), fileName), stringified, 'utf8');
-console.log(`Wrote ${fileName} to disk.`);
+              const query: ProcessedQuery = {
+                request: {
+                  prompt: request.current_message.parts[0].text,
+                  functionCallResponse: request.current_message.parts[0].functionResponse?.name,
+                  availableFunctionNames: request.function_declarations.map(dec => dec.name),
+                },
+                response: {
+                  rpcGlobalId: aidaResponse.metadata.rcpGlobalId ?? '',
+                  text: responseText,
+                  functionCallRequests: aidaResponse.functionCalls?.map(call => {
+                    return {
+                      name: call.name,
+                      args: call.args,
+                    };
+                  }),
+                }
+              };
+              processed.queries.push(query);
+            }
+            return processed;
+          })
+          .filter(x => x !== null);
+  const finalOutput: EvalFileOutput = {
+    metadata: {
+      createdAt: new Date().toISOString(),
+      id: hash(processedExamples.map(x => x.id).join('')),
+    },
+    conversations: processedExamples,
+  };
+  return finalOutput;
+}
 
-function hash(str: string, length: number|null) {
+const isBeingRunOnCommandLine = process.argv[1] === import.meta.url.replace('file://', '');
+
+if (isBeingRunOnCommandLine) {
+  const userArgs =
+      yargs(hideBin(process.argv))
+          .option('file', {type: 'string', demandOption: true, description: 'The raw JSON file from Auto Run.'})
+          .option('label', {type: 'string', demandOption: true, desc: 'A human readable, short label to use.'})
+          .option('pretty', {
+            type: 'boolean',
+            demandOption: false,
+            default: false,
+            description: 'Output formatted JSON rather than minified.'
+          })
+          .parseSync();
+
+  const inputPath = path.isAbsolute(userArgs.file) ? userArgs.file : path.join(process.cwd(), userArgs.file);
+  const contents = fs.readFileSync(inputPath, 'utf8');
+  const finalOutput =
+      convertRawOutputToEval({inputFromAutoRun: JSON.parse(contents) as RawOutput, label: userArgs.label});
+
+  const stringified = userArgs.pretty ? JSON.stringify(finalOutput, null, 2) : JSON.stringify(finalOutput);
+  const fileName = `${slug(userArgs.label)}-${finalOutput.metadata.id}.json`;
+  fs.writeFileSync(path.join(process.cwd(), fileName), stringified, 'utf8');
+  console.log(`Wrote ${fileName} to disk.`);
+}
+
+function hash(str: string) {
   const hash = crypto.createHash('md5').update(str).digest('hex');
-  if (length) {
-    return hash.substring(0, length);
-  }
-  return hash;
+  return hash.substring(0, 15);
 }
 
 function slug(str: string): string {

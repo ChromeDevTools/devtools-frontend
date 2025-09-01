@@ -517,7 +517,7 @@ describeWithEnvironment('Overlays', () => {
          // This dialog should be visible
          assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
 
-         const customLearnMoreButtonTitle = showFreDialogStub.lastCall.args[0].learnMoreButtonTitle;
+         const customLearnMoreButtonTitle = showFreDialogStub.lastCall.args[0].learnMoreButtonText;
          assert.exists(
              customLearnMoreButtonTitle, 'Expected FreDialog to have a custom button title but it\'s not provided');
          assert.deepEqual(customLearnMoreButtonTitle.toString(), 'Learn more');

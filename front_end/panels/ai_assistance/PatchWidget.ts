@@ -599,7 +599,7 @@ export class PatchWidget extends UI.Widget.Widget {
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
       },
       ariaLabel: lockedString(UIStringsNotTranslate.freDisclaimerHeader),
-      learnMoreButtonTitle: lockedString(UIStringsNotTranslate.learnMore),
+      learnMoreButtonText: lockedString(UIStringsNotTranslate.learnMore),
     });
 
     if (result) {

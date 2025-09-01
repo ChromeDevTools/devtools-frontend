@@ -8646,10 +8646,10 @@
     "message": "Reset to the default value"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "'Save-Data': Force off"
+    "message": "'Save-Data': off"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "'Save-Data': Force on"
+    "message": "'Save-Data': on"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "Override the value reported by navigator.connection.saveData on the page"

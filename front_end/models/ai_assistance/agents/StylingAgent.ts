@@ -239,6 +239,10 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
   }
 }
 
+type Relation = 'currentElement'|'parentElement';
+
+const enableDedicatedStyleFunctions = false;
+
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
@@ -325,6 +329,108 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         this.onPrimaryPageChanged,
         this,
     );
+
+    if (enableDedicatedStyleFunctions) {
+      this.declareFunction<{
+        relations: Relation[],
+        properties: string[],
+        thought: string,
+      }>('getComputedStyles', {
+        description:
+            'Call this function to get the computed styles for the current or the parent element. Use executeJavaScript for more complex queries.',
+        parameters: {
+          type: Host.AidaClient.ParametersTypes.OBJECT,
+          description: '',
+          nullable: false,
+          properties: {
+            thought: {
+              type: Host.AidaClient.ParametersTypes.STRING,
+              description: 'Explain why you want to get computed styles',
+            },
+            relations: {
+              type: Host.AidaClient.ParametersTypes.ARRAY,
+              description: 'A list of relations describing which elements to query.',
+              items: {
+                type: Host.AidaClient.ParametersTypes.STRING,
+                description: 'Which element to query. Either \'currentElement\' or \'parentElement\'',
+              }
+            },
+            properties: {
+              type: Host.AidaClient.ParametersTypes.ARRAY,
+              description: 'One or more style property names to fetch',
+              nullable: false,
+              items: {
+                type: Host.AidaClient.ParametersTypes.STRING,
+                description: 'A computed style property name to retrieve. For example, \'background-color\'.'
+              }
+            },
+          }
+        },
+        displayInfoFromArgs: params => {
+          return {
+            title: 'Reading computed styles',
+            thought: params.thought,
+            action: `getComputedStyles(${JSON.stringify(params.relations)}, ${JSON.stringify(params.properties)})`,
+          };
+        },
+        handler: async (
+            params,
+            options,
+            ) => {
+          return await this.getComputedStyles(params.relations, params.properties, options);
+        },
+      });
+
+      this.declareFunction<{
+        relations: Relation[],
+        properties: string[],
+        thought: string,
+      }>('getAuthoredStyles', {
+        description: 'Call this function to get the styles as specified by the page author.',
+        parameters: {
+          type: Host.AidaClient.ParametersTypes.OBJECT,
+          description: '',
+          nullable: false,
+          properties: {
+            thought: {
+              type: Host.AidaClient.ParametersTypes.STRING,
+              description: 'Explain why you want to get computed styles',
+            },
+            relations: {
+              type: Host.AidaClient.ParametersTypes.ARRAY,
+              description:
+                  'A list of relations describing which elements to query. Possible values: \'currentElement\', \'parentElement\'',
+              items: {
+                type: Host.AidaClient.ParametersTypes.STRING,
+                description: 'Which element to query. Either \'currentElement\' or \'parentElement\'',
+              }
+            },
+            properties: {
+              type: Host.AidaClient.ParametersTypes.ARRAY,
+              description: 'One or more style property names to fetch',
+              nullable: false,
+              items: {
+                type: Host.AidaClient.ParametersTypes.STRING,
+                description: 'A computed style property name to retrieve. For example, \'background-color\'.'
+              }
+            },
+          }
+        },
+        displayInfoFromArgs: params => {
+          return {
+            title: 'Reading authored styles',
+            thought: params.thought,
+            action: `getAuthoredStyles(${JSON.stringify(params.relations)}, ${JSON.stringify(params.properties)})`,
+          };
+        },
+        handler: async (
+            params,
+            options,
+            ) => {
+          return await this.getAuthoredStyles(params.relations, params.properties, options);
+        },
+      });
+    }
 
     this.declareFunction<{
       title: string,
@@ -630,6 +736,80 @@ const data = {
     return output.trim();
   }
 
+  #getSelectedNode(): SDK.DOMModel.DOMNode|null {
+    return UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+  }
+
+  async getComputedStyles(relations: Relation[], properties: string[], _options?: {
+    signal?: AbortSignal,
+    approved?: boolean,
+  }): Promise<FunctionCallHandlerResult<unknown>> {
+    const result: Record<string, Record<string, string|undefined>|undefined> = {};
+    for (const relation of relations) {
+      result[relation] = {};
+      debugLog(`Action to execute: ${relation}`);
+      let selectedNode = this.#getSelectedNode();
+      if (!selectedNode) {
+        return {error: 'Error: Could not find the currently selected element.'};
+      }
+      if (relation === 'parentElement') {
+        selectedNode = selectedNode.parentNode;
+      }
+      if (!selectedNode) {
+        return {error: 'Error: Could not find the parent element.'};
+      }
+      const styles = await selectedNode.domModel().cssModel().getComputedStyle(selectedNode.id);
+      if (!styles) {
+        return {error: 'Error: Could not get computed styles.'};
+      }
+      for (const prop of properties) {
+        result[relation][prop] = styles.get(prop);
+      }
+    }
+    return {
+      result: JSON.stringify(result, null, 2),
+    };
+  }
+
+  async getAuthoredStyles(relations: Relation[], properties: string[], _options?: {
+    signal?: AbortSignal,
+    approved?: boolean,
+  }): Promise<FunctionCallHandlerResult<unknown>> {
+    const result: Record<string, Record<string, string|undefined>|undefined> = {};
+    for (const relation of relations) {
+      result[relation] = {};
+      debugLog(`Action to execute: ${relation}`);
+      let selectedNode = this.#getSelectedNode();
+      if (!selectedNode) {
+        return {error: 'Error: Could not find the currently selected element.'};
+      }
+      if (relation === 'parentElement') {
+        selectedNode = selectedNode.parentNode;
+      }
+      if (!selectedNode) {
+        return {error: 'Error: Could not find the parent element.'};
+      }
+      const matchedStyles = await selectedNode.domModel().cssModel().getMatchedStyles(selectedNode.id);
+      if (!matchedStyles) {
+        return {error: 'Error: Could not get computed styles.'};
+      }
+      for (const style of matchedStyles.nodeStyles()) {
+        for (const property of style.allProperties()) {
+          if (!properties.includes(property.name)) {
+            continue;
+          }
+          const state = matchedStyles.propertyState(property);
+          if (state === SDK.CSSMatchedStyles.PropertyState.ACTIVE) {
+            result[relation][property.name] = property.value;
+          }
+        }
+      }
+    }
+    return {
+      result: JSON.stringify(result, null, 2),
+    };
+  }
+
   async executeAction(action: string, options?: {signal?: AbortSignal, approved?: boolean}):
       Promise<FunctionCallHandlerResult<unknown>> {
     debugLog(`Action to execute: ${action}`);
@@ -646,7 +826,7 @@ const data = {
       };
     }
 
-    const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    const selectedNode = this.#getSelectedNode();
     const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
     if (target?.model(SDK.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
       return {

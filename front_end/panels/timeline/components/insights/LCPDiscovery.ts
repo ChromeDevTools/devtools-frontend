@@ -45,8 +45,7 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
 
     const timespanOverlaySection = overlays.find(overlay => overlay.type === 'TIMESPAN_BREAKDOWN')?.sections[0];
     if (timespanOverlaySection) {
-      timespanOverlaySection.label =
-          html`<div class="discovery-delay"> ${this.#renderDiscoveryDelay(imageResults.discoveryDelay)}</div>`;
+      timespanOverlaySection.label = this.#renderDiscoveryDelay(imageResults.discoveryDelay);
     }
 
     return overlays;
@@ -60,7 +59,7 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     return getImageData(this.model)?.estimatedSavings ?? null;
   }
 
-  #renderDiscoveryDelay(delay: Trace.Types.Timing.Micro): Element {
+  #renderDiscoveryDelay(delay: Trace.Types.Timing.Micro): HTMLElement {
     const timeWrapper = document.createElement('span');
     timeWrapper.classList.add('discovery-time-ms');
     timeWrapper.innerText = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(delay);

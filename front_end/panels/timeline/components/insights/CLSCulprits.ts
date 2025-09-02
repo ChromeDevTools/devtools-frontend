@@ -30,17 +30,7 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
       return [];
     }
 
-    const overlays = this.model.createOverlays?.();
-    if (!overlays) {
-      return [];
-    }
-
-    const timespanOverlaySection = overlays.find(overlay => overlay.type === 'TIMESPAN_BREAKDOWN')?.sections[0];
-    if (timespanOverlaySection) {
-      timespanOverlaySection.label = html`<div>${i18nString(UIStrings.worstLayoutShiftCluster)}</div>`;
-    }
-
-    return overlays;
+    return this.model.createOverlays?.() ?? [];
   }
 
   #clickEvent(event: Trace.Types.Events.Event): void {

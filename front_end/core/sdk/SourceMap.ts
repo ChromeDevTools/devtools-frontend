@@ -62,8 +62,7 @@ export interface SourceMapV3Object {
   names?: string[];
   ignoreList?: number[];
   scopes?: string;
-  originalScopes?: string[];
-  generatedRanges?: string;
+  debugId?: string;
   x_google_linecount?: number;
   x_google_ignoreList?: number[];
   x_com_bloomberg_sourcesFunctionMappings?: string[];
@@ -111,6 +110,8 @@ export function parseSourceMap(content: string): SourceMapV3 {
   }
   return JSON.parse(content) as SourceMapV3;
 }
+
+export type DebugId = Platform.Brand.Brand<string, 'DebugId'>;
 
 export class SourceMapEntry {
   readonly lineNumber: number;
@@ -162,6 +163,8 @@ export class SourceMap {
 
   #scopesInfo: SourceMapScopesInfo|null = null;
 
+  readonly #debugId?: DebugId;
+
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
    * for format description.
@@ -173,6 +176,7 @@ export class SourceMap {
     this.#compiledURLInternal = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
     this.#baseURL = (Common.ParsedURL.schemeIs(sourceMappingURL, 'data:')) ? compiledURL : sourceMappingURL;
+    this.#debugId = 'debugId' in payload ? (payload.debugId as DebugId | undefined) : undefined;
 
     this.#mappingsInternal = null;
     if ('sections' in this.#json) {
@@ -219,6 +223,10 @@ export class SourceMap {
 
   url(): Platform.DevToolsPath.UrlString {
     return this.#sourceMappingURL;
+  }
+
+  debugId(): DebugId|null {
+    return this.#debugId ?? null;
   }
 
   sourceURLs(): Platform.DevToolsPath.UrlString[] {

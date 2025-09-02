@@ -22,3 +22,4 @@ export * from './data_formatters/PerformanceInsightFormatter.js';
 export * from './data_formatters/PerformanceTraceFormatter.js';
 export * from './data_formatters/Types.js';
 export * from './ConversationHandler.js';
+export * from './injected.js';

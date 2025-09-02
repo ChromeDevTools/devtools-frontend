@@ -10,7 +10,12 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import * as Workspace from '../../../models/workspace/workspace.js';
+import * as ElementsPanel from '../../../panels/elements/elements.js';
+import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
+import * as PanelUtils from '../../../panels/utils/utils.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
@@ -1022,6 +1027,43 @@ function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitT
   // clang-format on
 }
 
+function renderContextIcon(context: AiAssistanceModel.ConversationContext<unknown>|null): Lit.LitTemplate {
+  if (!context) {
+    return Lit.nothing;
+  }
+  const item = context.getItem();
+  // FIXME: move this to presenter once PanelUtils are declartive. The instance
+  // checking should be in the presenter and the rendering in the view function.
+  if (item instanceof SDK.NetworkRequest.NetworkRequest) {
+    return PanelUtils.PanelUtils.getIconForNetworkRequest(item);
+  }
+  if (item instanceof Workspace.UISourceCode.UISourceCode) {
+    return PanelUtils.PanelUtils.getIconForSourceFile(item);
+  }
+  if (item instanceof TimelineUtils.AIContext.AgentFocus) {
+    return html`<devtools-icon name="performance" title="Performance"></devtools-icon>`;
+  }
+  if (item instanceof SDK.DOMModel.DOMNode) {
+    return Lit.nothing;
+  }
+  return Lit.nothing;
+}
+
+function renderContextTitle(
+    context: AiAssistanceModel.ConversationContext<unknown>, disabled: boolean): Lit.TemplateResult|string {
+  const item = context.getItem();
+  if (item instanceof SDK.DOMModel.DOMNode) {
+    // FIXME: move this to the model code.
+    const hiddenClassList =
+        item.classNames().filter(className => className.startsWith(AiAssistanceModel.AI_ASSISTANCE_CSS_CLASS_NAME));
+    return html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ElementsPanel.DOMLinkifier.DOMNodeLink, {
+      node: item,
+      options: {hiddenClassList, disabled}
+    })}></devtools-widget>`;
+  }
+  return context.getTitle();
+}
+
 function renderSelection({
   selectedContext,
   inspectElementToggled,
@@ -1089,8 +1131,8 @@ function renderSelection({
       @keydown=${handleKeyDown}
       aria-description=${i18nString(UIStrings.revealContextDescription)}
     >
-      ${selectedContext?.getIcon() ? html`${selectedContext?.getIcon()}` : Lit.nothing}
-      <span class="title">${selectedContext?.getTitle({ disabled: isTextInputDisabled }) ?? lockedString(UIStringsNotTranslate.noElementSelected)}</span>
+      ${renderContextIcon(selectedContext)}
+      <span class="title">${selectedContext ? renderContextTitle(selectedContext, isTextInputDisabled) : lockedString(UIStringsNotTranslate.noElementSelected)}</span>
     </div>
   </div>`;
   // clang-format on

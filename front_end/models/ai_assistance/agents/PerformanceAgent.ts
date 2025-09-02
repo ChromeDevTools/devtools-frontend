@@ -11,7 +11,6 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
-import {html, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as Trace from '../../trace/trace.js';
 import {ConversationType} from '../AiHistoryStorage.js';
 import {
@@ -371,10 +370,6 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
 
   override getItem(): TimelineUtils.AIContext.AgentFocus {
     return this.#focus;
-  }
-
-  override getIcon(): TemplateResult {
-    return html`<devtools-icon name="performance" title="Performance"></devtools-icon>`;
   }
 
   override getTitle(): string {

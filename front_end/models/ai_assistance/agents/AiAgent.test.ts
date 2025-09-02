@@ -7,7 +7,6 @@ import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   describeWithEnvironment,
 } from '../../../testing/EnvironmentHelpers.js';
-import {html, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 const {AiAgent, ResponseType, ConversationContext, ErrorType} = AiAssistance;
@@ -20,10 +19,6 @@ function mockConversationContext(): AiAssistance.ConversationContext<unknown> {
 
     override getItem(): unknown {
       return null;
-    }
-
-    override getIcon(): TemplateResult {
-      return html`<span></span>`;
     }
 
     override getTitle(): string {
@@ -377,9 +372,6 @@ describeWithEnvironment('AiAgent', () => {
   describe('ConversationContext', () => {
     function getTestContext(origin: string) {
       class TestContext extends ConversationContext<undefined> {
-        override getIcon(): TemplateResult {
-          throw new Error('Method not implemented.');
-        }
         override getTitle(): string {
           throw new Error('Method not implemented.');
         }

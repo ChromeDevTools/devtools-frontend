@@ -7,14 +7,12 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as ElementsPanel from '../../../panels/elements/elements.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import {html, type TemplateResult} from '../../../ui/lit/lit.js';
 import {ChangeManager} from '../ChangeManager.js';
 import {debugLog} from '../debug.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
 import {ExtensionScope} from '../ExtensionScope.js';
-import {AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_WORLD_NAME} from '../injected.js';
+import {FREESTYLER_WORLD_NAME} from '../injected.js';
 
 import {
   type AgentOptions as BaseAgentOptions,
@@ -179,17 +177,8 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
     return this.#node;
   }
 
-  override getIcon(): undefined {
-  }
-
-  override getTitle(opts: {disabled: boolean}): string|TemplateResult {
-    const hiddenClassList =
-        this.#node.classNames().filter(className => className.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME));
-    const {DOMNodeLink} = ElementsPanel.DOMLinkifier;
-    const {widgetConfig} = UI.Widget;
-    return html`<devtools-widget .widgetConfig=${
-        widgetConfig(
-            DOMNodeLink, {node: this.#node, options: {hiddenClassList, disabled: opts.disabled}})}></devtools-widget>`;
+  override getTitle(): string|'dom-link' {
+    return 'dom-link';
   }
 
   override async getSuggestions(): Promise<[ConversationSuggestion, ...ConversationSuggestion[]]|undefined> {

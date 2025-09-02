@@ -4,7 +4,6 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
-import type * as Lit from '../../../ui/lit/lit.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 
 export const enum ResponseType {
@@ -176,8 +175,7 @@ export type ExternalRequestResponse = ExternalRequestAnswer|ExternalRequestNotif
 export abstract class ConversationContext<T> {
   abstract getOrigin(): string;
   abstract getItem(): T;
-  abstract getIcon(): Lit.TemplateResult|undefined;
-  abstract getTitle(opts?: {disabled: boolean}): string|ReturnType<typeof Lit.Directives.until>;
+  abstract getTitle(): string|'dom-link';
 
   isOriginAllowed(agentOrigin: string|undefined): boolean {
     if (!agentOrigin) {

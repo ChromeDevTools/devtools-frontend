@@ -7,6 +7,8 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+// TODO(crbug.com/442509324): remove UI dependency
+// eslint-disable-next-line rulesdir/no-imports-in-directory
 import * as UI from '../../../ui/legacy/legacy.js';
 import {ChangeManager} from '../ChangeManager.js';
 import {debugLog} from '../debug.js';
@@ -73,12 +75,14 @@ First, examine the provided context, then use the functions to gather additional
 * **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.`;
 /* clang-format on */
 
-const promptForScreenshot = `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
+const promptForScreenshot =
+    `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
 
 * Try to connect the screenshot to actual DOM elements in the page.
 `;
 
-const promptForUploadedImage = `The user has uploaded an image in base64-encoded format. You SHOULD use it while answering user's queries.
+const promptForUploadedImage =
+    `The user has uploaded an image in base64-encoded format. You SHOULD use it while answering user's queries.
 `;
 
 const considerationsForMultimodalInputEvaluation = `# Considerations for evaluating image:

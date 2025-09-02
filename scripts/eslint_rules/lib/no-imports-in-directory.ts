@@ -24,7 +24,7 @@ export default createRule<Options[], 'invalidImport'>({
       category: 'Possible Errors',
     },
     messages: {
-      invalidImport: 'It is banned to import this module from this file\'s directory',
+      invalidImport: 'It is banned to import {{bannedPath}} from this file\'s directory',
     },
     schema: [
       {
@@ -75,7 +75,13 @@ export default createRule<Options[], 'invalidImport'>({
             continue;
           }
 
-          context.report({node, messageId: 'invalidImport'});
+          context.report({
+            node,
+            messageId: 'invalidImport',
+            data: {
+              bannedPath: path.relative(context.cwd, bannedPath),
+            },
+          });
           break;
         }
       },

@@ -853,6 +853,40 @@ export default defineConfig([
     },
   },
   {
+    name: 'No UI in models',
+    files: ['front_end/models/**/*.ts'],
+    ignores: ['front_end/models/**/*.test.ts'],
+    rules: {
+      'rulesdir/no-imports-in-directory': [
+        'error',
+        {
+          bannedImportPaths: [
+            {
+              bannedPath: join(
+                  import.meta.dirname,
+                  'front_end',
+                  'ui',
+                  'legacy',
+                  'legacy.js',
+                  ),
+              allowTypeImports: false,
+            },
+            {
+              bannedPath: join(
+                  import.meta.dirname,
+                  'front_end',
+                  'ui',
+                  'lit',
+                  'lit.js',
+                  ),
+              allowTypeImports: false,
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     name: 'Recorder injected code',
     files: ['front_end/panels/recorder/injected/**/*.ts'],
     rules: {

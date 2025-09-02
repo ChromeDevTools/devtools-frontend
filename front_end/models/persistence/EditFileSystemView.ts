@@ -32,7 +32,11 @@ import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+// TODO(crbug.com/442509324): remove UI dependency
+// eslint-disable-next-line rulesdir/no-imports-in-directory
 import * as UI from '../../ui/legacy/legacy.js';
+// TODO(crbug.com/442509324): remove UI dependency
+// eslint-disable-next-line rulesdir/no-imports-in-directory
 import {Directives, html, render} from '../../ui/lit/lit.js';
 
 import editFileSystemViewStyles from './editFileSystemView.css.js';

@@ -890,8 +890,6 @@ export class TimelineUIUtils {
     return linkElement;
   }
 
-  static linkTokenizers: {regexes: RegExp[], types: string[]}|null = null;
-
   /**
    * Takes an input string and parses it to look for links. It does this by
    * looking for URLs in the input string. The returned fragment will contain
@@ -899,32 +897,18 @@ export class TimelineUIUtils {
    * of the link is the URL, so the visible string to the user is unchanged.
    */
   static parseStringForLinks(rawString: string): DocumentFragment {
-    // Tokenizers/getOrCreateTokenizers are adapted from ConsoleViewMessage.
-    function getOrCreateLinkTokenizers(): {regexes: RegExp[], types: string[]} {
-      if (TimelineUIUtils.linkTokenizers) {
-        return TimelineUIUtils.linkTokenizers;
+    // Look for scheme:// plus text and exclude any punctuation at the end.
+    const urlRegex = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
+    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(rawString, [urlRegex]);
+    const nodes = results.map(result => {
+      if (result.regexIndex === -1) {
+        return result.value;
       }
-
-      const linkStringRegex = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/|data:|www\.)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
-      const pathLineRegex = /(?:\/[\w\.-]*)+:[\d]+/;
-      TimelineUIUtils.linkTokenizers = {
-        regexes: [linkStringRegex, pathLineRegex],
-        types: ['url', 'url'],
-      };
-      return TimelineUIUtils.linkTokenizers;
-    }
-
-    const {regexes, types} = getOrCreateLinkTokenizers();
-    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(rawString, regexes);
-    const tokens = results.map(result => ({text: result.value, type: types[result.regexIndex]}));
-    const linkifiedTokens = tokens.map(token => {
-      if (token.type === 'url') {
-        return TimelineUIUtils.maybeCreateLinkElement(token.text) ?? token.text;
-      }
-      return token.text;
+      return TimelineUIUtils.maybeCreateLinkElement(result.value) ?? result.value;
     });
+
     const frag = document.createDocumentFragment();
-    frag.append(...linkifiedTokens.filter(token => token !== null));
+    frag.append(...nodes);
     return frag;
   }
 

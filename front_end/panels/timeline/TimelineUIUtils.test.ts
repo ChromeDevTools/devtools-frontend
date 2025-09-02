@@ -1817,4 +1817,59 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.strictEqual(html.innerText, 'Learn more about page performance metrics.');
     });
   });
+
+  describe('parseStringForLinks', () => {
+    it('should handle a string with no links', () => {
+      const rawString = 'This is a string with no links.';
+      const fragment = Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString);
+      const container = document.createElement('div');
+      container.appendChild(fragment);
+      assert.strictEqual(container.innerHTML, 'This is a string with no links.');
+    });
+
+    it('should handle a url and terminating punctuation', () => {
+      const rawString = 'Check out: https://example.com.';
+      const fragment = Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString);
+      const container = document.createElement('div');
+      container.appendChild(fragment);
+      assert.strictEqual(
+          container.innerHTML,
+          'Check out: <button class="devtools-link text-button link-style" jslog="Link; context: url; track: click" role="link" tabindex="-1">https://example.com</button>.');
+    });
+
+    it('should handle URLs anywhere within the string', () => {
+      const rawString =
+          'http://example.com at the beginning. http://example.com in the middle or at the end: http://example.com';
+      const fragment = Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString);
+      const container = document.createElement('div');
+      container.appendChild(fragment);
+      assert.strictEqual(
+          container.innerHTML,
+          `<button class="devtools-link text-button link-style" jslog="Link; context: url; track: click" role="link" tabindex="-1">http://example.com</button>
+at the beginning. <button class="devtools-link text-button link-style" jslog="Link; context: url; track: click" role="link" tabindex="-1">http://example.com</button>
+in the middle or at the end: <button class="devtools-link text-button link-style" jslog="Link; context: url; track: click" role="link" tabindex="-1">http://example.com</button>`
+              .replace(/\n/g, ' '));
+    });
+
+    it('should parse a string with multiple links and create link elements for them', () => {
+      const rawString = 'Node: ext://node/123   Root Cause: ext://node/13566';
+      const fragment = Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString);
+      const container = document.createElement('div');
+      container.appendChild(fragment);
+      assert.strictEqual(
+          container.innerHTML,
+          'Node: <button class="devtools-link text-button link-style" jslog="Link; context: url; track: click" role="link" tabindex="-1">ext://node/123</button>   Root Cause: <button class="devtools-link text-button link-style" jslog="Link; context: url; track: click" role="link" tabindex="-1">ext://node/13566</button>');
+    });
+
+    it('does not linkify data URI or www. prefixed text handle a data URI', () => {
+      const rawString =
+          'so data:text/html,%3Cscript%3Ealert%28%27hi%27%29%3B%3C%2Fscript%3E and www.site.com remain plain';
+      const fragment = Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString);
+      const container = document.createElement('div');
+      container.appendChild(fragment);
+      assert.strictEqual(
+          container.innerHTML,
+          'so data:text/html,%3Cscript%3Ealert%28%27hi%27%29%3B%3C%2Fscript%3E and www.site.com remain plain');
+    });
+  });
 });

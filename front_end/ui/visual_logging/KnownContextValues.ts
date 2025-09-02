@@ -540,6 +540,7 @@ export const knownContextValues = new Set([
   'background-services',
   'background-size',
   'background-sync',
+  'badge-notification.dismiss',
   'badproperty',
   'bars',
   'base-64',

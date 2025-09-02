@@ -1032,7 +1032,7 @@ function renderContextIcon(context: AiAssistanceModel.ConversationContext<unknow
     return Lit.nothing;
   }
   const item = context.getItem();
-  // FIXME: move this to presenter once PanelUtils are declartive. The instance
+  // FIXME: move this to presenter once PanelUtils are declarative. The instance
   // checking should be in the presenter and the rendering in the view function.
   if (item instanceof SDK.NetworkRequest.NetworkRequest) {
     return PanelUtils.PanelUtils.getIconForNetworkRequest(item);

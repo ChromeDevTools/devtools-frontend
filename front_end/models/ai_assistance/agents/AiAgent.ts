@@ -175,7 +175,7 @@ export type ExternalRequestResponse = ExternalRequestAnswer|ExternalRequestNotif
 export abstract class ConversationContext<T> {
   abstract getOrigin(): string;
   abstract getItem(): T;
-  abstract getTitle(): string|'dom-link';
+  abstract getTitle(): string;
 
   isOriginAllowed(agentOrigin: string|undefined): boolean {
     if (!agentOrigin) {

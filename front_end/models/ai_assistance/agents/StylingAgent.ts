@@ -177,8 +177,8 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
     return this.#node;
   }
 
-  override getTitle(): string|'dom-link' {
-    return 'dom-link';
+  override getTitle(): string {
+    throw new Error('Not implemented');
   }
 
   override async getSuggestions(): Promise<[ConversationSuggestion, ...ConversationSuggestion[]]|undefined> {

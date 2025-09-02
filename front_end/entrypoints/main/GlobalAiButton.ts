@@ -155,6 +155,22 @@ export class GlobalAiButton extends UI.Widget.Widget {
   #onClick(): void {
     UI.ViewManager.ViewManager.instance().showViewInLocation('freestyler', 'drawer-view');
     incrementClickCountSetting();
+
+    const hasExplicitUserPreference =
+        UI.InspectorView.InspectorView.instance().isUserExplicitlyUpdatedDrawerOrientation();
+    const isVerticalDrawerExperimentEnabled =
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER);
+    if (isVerticalDrawerExperimentEnabled && !hasExplicitUserPreference) {
+      // This mimics what we're doing while showing the drawer via `ESC`.
+      // There is a bug where opening the sidebar directly for the first time,
+      // and triggering a drawer rotation without calling `showDrawer({focus: true})` makes the drawer disappear.
+      UI.InspectorView.InspectorView.instance().showDrawer({
+        focus: true,
+        hasTargetDrawer: false,
+      });
+      UI.InspectorView.InspectorView.instance().toggleDrawerOrientation(
+          {force: UI.InspectorView.DrawerOrientation.VERTICAL});
+    }
   }
 
   override performUpdate(): Promise<void>|void {

@@ -11,7 +11,8 @@ import * as LegacyUI from './legacy.js';
 
 const InspectorView = LegacyUI.InspectorView.InspectorView;
 const Settings = Common.Settings.Settings;
-const DRAWER_ORIENTATION_SETTING_NAME = 'inspector.use-vertical-drawer-orientation';
+const DrawerOrientation = LegacyUI.InspectorView.DrawerOrientation;
+const DRAWER_ORIENTATION_SETTING_NAME = 'inspector.drawer-orientation';
 
 describeWithEnvironment('InspectorView', () => {
   beforeEach(() => {
@@ -72,28 +73,68 @@ describeWithEnvironment('InspectorView', () => {
     Common.Settings.Settings.instance({forceNew: true, syncedStorage, globalStorage, localStorage});
   });
 
-  it('drawer orientation and setting default to horizontal', () => {
+  it('drawer orientation and setting default to unset', () => {
     const inspectorView = InspectorView.instance({forceNew: true});
     assert.isFalse(inspectorView.isDrawerOrientationVertical());
     const setting = Settings.instance().settingForTest(DRAWER_ORIENTATION_SETTING_NAME);
-    assert.isFalse(setting.get());
+    assert.strictEqual(setting.get(), DrawerOrientation.UNSET);
   });
 
   it('drawer orientation setting updates after each toggle', () => {
     const inspectorView = InspectorView.instance({forceNew: true});
     const setting = Settings.instance().settingForTest(DRAWER_ORIENTATION_SETTING_NAME);
-    assert.isFalse(setting.get());
+    assert.strictEqual(setting.get(), DrawerOrientation.UNSET);
 
     inspectorView.toggleDrawerOrientation();
-    assert.isTrue(setting.get());
+    assert.strictEqual(setting.get(), DrawerOrientation.VERTICAL);
 
     inspectorView.toggleDrawerOrientation();
-    assert.isFalse(setting.get());
+    assert.strictEqual(setting.get(), DrawerOrientation.HORIZONTAL);
   });
 
-  it('drawer starts vertical if setting is true', () => {
-    Settings.instance().createSetting(DRAWER_ORIENTATION_SETTING_NAME, true);
+  it('drawer starts vertical if setting is vertical', () => {
+    Settings.instance().createSetting(DRAWER_ORIENTATION_SETTING_NAME, DrawerOrientation.VERTICAL);
     const inspectorView = InspectorView.instance({forceNew: true});
     assert.isTrue(inspectorView.isDrawerOrientationVertical());
+  });
+
+  it('isUserExplicitlyUpdatedDrawerOrientation returns false by default', () => {
+    const inspectorView = InspectorView.instance({forceNew: true});
+    assert.isFalse(inspectorView.isUserExplicitlyUpdatedDrawerOrientation());
+  });
+
+  it('isUserExplicitlyUpdatedDrawerOrientation returns true when orientation is toggled', () => {
+    const inspectorView = InspectorView.instance({forceNew: true});
+
+    inspectorView.toggleDrawerOrientation();
+
+    assert.isTrue(inspectorView.isUserExplicitlyUpdatedDrawerOrientation());
+  });
+
+  it('toggleDrawerOrientation can force vertical orientation', () => {
+    const inspectorView = InspectorView.instance({forceNew: true});
+    const orientationSetting = Settings.instance().settingForTest(DRAWER_ORIENTATION_SETTING_NAME);
+    const updatedSetting = Settings.instance().settingForTest(DRAWER_ORIENTATION_SETTING_NAME);
+
+    assert.isFalse(inspectorView.isDrawerOrientationVertical());
+
+    inspectorView.toggleDrawerOrientation({force: 'vertical'});
+
+    assert.isTrue(inspectorView.isDrawerOrientationVertical());
+    assert.strictEqual(orientationSetting.get(), DrawerOrientation.VERTICAL);
+    assert.strictEqual(updatedSetting.get(), DrawerOrientation.VERTICAL);
+  });
+
+  it('toggleDrawerOrientation can force horizontal orientation', () => {
+    Settings.instance().createSetting(DRAWER_ORIENTATION_SETTING_NAME, DrawerOrientation.VERTICAL);
+    const inspectorView = InspectorView.instance({forceNew: true});
+    const orientationSetting = Settings.instance().settingForTest(DRAWER_ORIENTATION_SETTING_NAME);
+
+    assert.isTrue(inspectorView.isDrawerOrientationVertical());
+
+    inspectorView.toggleDrawerOrientation({force: 'horizontal'});
+
+    assert.isFalse(inspectorView.isDrawerOrientationVertical());
+    assert.strictEqual(orientationSetting.get(), DrawerOrientation.HORIZONTAL);
   });
 });

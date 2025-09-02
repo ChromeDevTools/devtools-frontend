@@ -1889,7 +1889,7 @@ export const knownContextValues = new Set([
   'inspector-main.hard-reload',
   'inspector-main.reload',
   'inspector-stylesheet',
-  'inspector.use-vertical-drawer-orientation',
+  'inspector.drawer-orientation',
   'installability',
   'installing-entry-inspect',
   'instance-id',

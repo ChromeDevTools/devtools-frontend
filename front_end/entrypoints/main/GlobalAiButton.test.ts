@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
@@ -42,16 +43,73 @@ describeWithEnvironment('GlobalAiButton', () => {
     assert.strictEqual(view.input.state, Main.GlobalAiButton.GlobalAiButtonState.DEFAULT);
   });
 
-  it('shows freestyler in drawer and increases click count on click', async () => {
-    const {view} = await createWidget();
-    const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showViewInLocation');
-    const setting = Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count');
-    setting.set(0);
+  describe('onClick', () => {
+    let inspectorView: UI.InspectorView.InspectorView;
+    let isUserExplicitlyUpdatedDrawerOrientationStub: sinon.SinonStub;
+    let toggleDrawerOrientationSpy: sinon.SinonSpy;
+    let showViewStub: sinon.SinonStub;
+    let showDrawerStub: sinon.SinonStub;
 
-    view.input.onClick();
+    beforeEach(() => {
+      inspectorView = UI.InspectorView.InspectorView.instance();
+      isUserExplicitlyUpdatedDrawerOrientationStub =
+          sinon.stub(inspectorView, 'isUserExplicitlyUpdatedDrawerOrientation');
+      toggleDrawerOrientationSpy = sinon.spy(inspectorView, 'toggleDrawerOrientation');
+      showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showViewInLocation');
+      showDrawerStub = sinon.stub(inspectorView, 'showDrawer');
+    });
 
-    sinon.assert.calledOnceWithExactly(showViewStub, 'freestyler', 'drawer-view');
-    assert.strictEqual(setting.get(), 1);
+    it('shows freestyler in drawer and increases click count', async () => {
+      const {view} = await createWidget();
+      const setting = Common.Settings.Settings.instance().settingForTest('global-ai-button-click-count');
+      setting.set(0);
+
+      view.input.onClick();
+
+      sinon.assert.calledOnceWithExactly(showViewStub, 'freestyler', 'drawer-view');
+      assert.strictEqual(setting.get(), 1);
+    });
+
+    describe('with vertical drawer experiment', () => {
+      beforeEach(() => {
+        Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER, true);
+      });
+
+      afterEach(() => {
+        Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER, false);
+      });
+
+      it('toggles drawer if experiment is on and user has no preference', async () => {
+        const {view} = await createWidget();
+        isUserExplicitlyUpdatedDrawerOrientationStub.returns(false);
+
+        view.input.onClick();
+
+        sinon.assert.calledOnceWithExactly(showDrawerStub, {focus: true, hasTargetDrawer: false});
+        sinon.assert.calledOnceWithExactly(toggleDrawerOrientationSpy, {force: 'vertical'});
+      });
+
+      it('does not toggle drawer if user has preference', async () => {
+        const {view} = await createWidget();
+        isUserExplicitlyUpdatedDrawerOrientationStub.returns(true);
+
+        view.input.onClick();
+
+        sinon.assert.notCalled(showDrawerStub);
+        sinon.assert.notCalled(toggleDrawerOrientationSpy);
+      });
+    });
+
+    it('does not toggle drawer if experiment is off', async () => {
+      Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER, false);
+      const {view} = await createWidget();
+      isUserExplicitlyUpdatedDrawerOrientationStub.returns(false);
+
+      view.input.onClick();
+
+      sinon.assert.notCalled(showDrawerStub);
+      sinon.assert.notCalled(toggleDrawerOrientationSpy);
+    });
   });
 
   describe('promotion lifecycle', () => {

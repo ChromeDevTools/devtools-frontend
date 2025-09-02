@@ -140,8 +140,14 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorViewInstance: InspectorView|null = null;
 
+export enum DrawerOrientation {
+  VERTICAL = 'vertical',
+  HORIZONTAL = 'horizontal',
+  UNSET = 'unset',
+}
+
 export class InspectorView extends VBox implements ViewLocationResolver {
-  private readonly drawerIsVerticalSetting: Common.Settings.Setting<boolean>;
+  private readonly drawerOrientationSetting: Common.Settings.Setting<DrawerOrientation>;
   private readonly drawerSplitWidget: SplitWidget;
   private readonly tabDelegate: InspectorViewTabDelegate;
   private readonly drawerTabbedLocation: TabbedViewLocation;
@@ -164,10 +170,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.setMinimumSize(250, 72);
 
     // DevTools sidebar is a vertical split of main tab bar panels and a drawer.
-    this.drawerIsVerticalSetting =
-        Common.Settings.Settings.instance().createSetting('inspector.use-vertical-drawer-orientation', false);
-    this.drawerSplitWidget =
-        new SplitWidget(this.drawerIsVerticalSetting.get(), true, 'inspector.drawer-split-view-state', 200, 200);
+    this.drawerOrientationSetting =
+        Common.Settings.Settings.instance().createSetting('inspector.drawer-orientation', DrawerOrientation.UNSET);
+    const isVertical = this.drawerOrientationSetting.get() === DrawerOrientation.VERTICAL;
+    this.drawerSplitWidget = new SplitWidget(isVertical, true, 'inspector.drawer-split-view-state', 200, 200);
     this.drawerSplitWidget.hideSidebar();
     this.drawerSplitWidget.enableShowModeSaving();
     this.drawerSplitWidget.show(this.element);
@@ -195,7 +201,8 @@ export class InspectorView extends VBox implements ViewLocationResolver {
         this.drawerSplitWidget.isVertical() ? 'dock-bottom' : 'dock-right');
     this.#toggleOrientationButton.element.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
     this.#toggleOrientationButton.element.setAttribute('jslogcontext', 'toggle-drawer-orientation');
-    this.#toggleOrientationButton.addEventListener(ToolbarButton.Events.CLICK, this.toggleDrawerOrientation, this);
+    this.#toggleOrientationButton.addEventListener(
+        ToolbarButton.Events.CLICK, () => this.toggleDrawerOrientation(), this);
     this.drawerTabbedPane.addEventListener(
         TabbedPaneEvents.TabSelected,
         (event: Common.EventTarget.EventTargetEvent<EventData>) => this.tabSelected(event.data.tabId), this);
@@ -435,12 +442,22 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerHidden));
   }
 
-  toggleDrawerOrientation(): void {
-    const drawerWillBeVertical = !this.drawerSplitWidget.isVertical();
+  toggleDrawerOrientation({force}: {force?: Omit<DrawerOrientation, DrawerOrientation.UNSET>} = {}): void {
+    let drawerWillBeVertical: boolean;
+    if (force) {
+      drawerWillBeVertical = force === DrawerOrientation.VERTICAL;
+    } else {
+      drawerWillBeVertical = !this.drawerSplitWidget.isVertical();
+    }
+
+    this.drawerOrientationSetting.set(drawerWillBeVertical ? DrawerOrientation.VERTICAL : DrawerOrientation.HORIZONTAL);
     this.#toggleOrientationButton.setGlyph(drawerWillBeVertical ? 'dock-bottom' : 'dock-right');
-    this.drawerIsVerticalSetting.set(drawerWillBeVertical);
     this.drawerSplitWidget.setVertical(drawerWillBeVertical);
     this.setDrawerMinimumSize();
+  }
+
+  isUserExplicitlyUpdatedDrawerOrientation(): boolean {
+    return this.drawerOrientationSetting.get() !== DrawerOrientation.UNSET;
   }
 
   setDrawerMinimumSize(): void {

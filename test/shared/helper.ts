@@ -7,7 +7,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {AsyncScope} from '../conductor/async-scope.js';
 import type {DevToolsFrontendReloadOptions} from '../conductor/frontend_tab.js';
-import {getDevToolsFrontendHostname, reloadDevTools} from '../conductor/hooks.js';
+import {reloadDevTools} from '../conductor/hooks.js';
 import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
 import {getTestServerPort} from '../conductor/server_port.js';
 import type {DevToolsPage} from '../e2e_non_hosted/shared/frontend-helper.js';
@@ -485,7 +485,7 @@ export const waitForClass = async (element: puppeteer.ElementHandle<Element>, cl
   return await devToolsPage.waitForClass(element, classname);
 };
 
-export {getBrowserAndPages, getDevToolsFrontendHostname, getTestServerPort, reloadDevTools};
+export {getBrowserAndPages, getTestServerPort, reloadDevTools};
 
 export function matchString(actual: string, expected: string|RegExp): true|string {
   if (typeof expected === 'string') {

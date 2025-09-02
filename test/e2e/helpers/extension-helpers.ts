@@ -5,7 +5,6 @@
 import type * as puppeteer from 'puppeteer-core';
 import type {CdpPage} from 'puppeteer-core/internal/cdp/Page.js';
 
-import {getDevToolsFrontendHostname} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -14,15 +13,11 @@ const globalThis: any = global;
 
 let loadExtensionPromise: Promise<unknown> = Promise.resolve();
 
-export function getResourcesPathWithDevToolsHostname(inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
-  return inspectedPage.getResourcesPath(getDevToolsFrontendHostname());
-}
-
 export async function loadExtension(
     name: string, startPage?: string, allowFileAccess?: boolean,
     devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
     inspectedPage = getBrowserAndPagesWrappers().inspectedPage): Promise<puppeteer.Frame> {
-  startPage = startPage || `${getResourcesPathWithDevToolsHostname(inspectedPage)}/extensions/empty_extension.html`;
+  startPage = startPage || `${inspectedPage.getResourcesPath()}/extensions/empty_extension.html`;
   const extensionInfo = {startPage, name, allowFileAccess};
 
   // Because the injected script is shared across calls for the target, we cannot run multiple instances concurrently.

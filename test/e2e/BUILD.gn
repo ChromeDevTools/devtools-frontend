@@ -16,7 +16,6 @@ group("e2e") {
 node_ts_library("tests") {
   deps = [
     "console",
-    "extensions",
     "lighthouse",
     "performance",
     "sources",

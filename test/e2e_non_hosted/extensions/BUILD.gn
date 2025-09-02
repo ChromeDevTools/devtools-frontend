@@ -10,6 +10,7 @@ ts_e2e_library("extensions") {
     "can-open-resources-with-columns_test.ts",
     "can-reveal-requests_test.ts",
     "can-search-in-extension-panel_test.ts",
+    "debugger-language-plugins_test.ts",
   ]
 
   deps = [

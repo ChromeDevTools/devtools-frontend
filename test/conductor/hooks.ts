@@ -231,7 +231,3 @@ export async function postFileTeardown() {
   clearPuppeteerState();
   dumpCollectedErrors();
 }
-
-export function getDevToolsFrontendHostname(): string {
-  return frontendTab?.hostname() || 'localhost';
-}

@@ -403,6 +403,15 @@ export function aiCodeCompletionTeaserExtension(teaser: PanelCommon.AiCodeComple
     }
   }, {
     decorations: v => v.decorations,
+    eventHandlers: {
+      mousedown(event: MouseEvent): boolean {
+        // Required for mouse click to propagate to the "Don't show again" span in teaser.
+        if (event.target instanceof Node && teaser.contentElement.contains(event.target)) {
+          return true;
+        }
+        return false;
+      },
+    },
   });
   return teaserPlugin;
 }

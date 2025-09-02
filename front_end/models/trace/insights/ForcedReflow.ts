@@ -158,6 +158,10 @@ function getBottomCallFrameForEvent(event: Types.Events.Event, traceParsedData: 
   return profileStackTrace?.callFrames[0] ?? eventStackTrace?.[0] ?? null;
 }
 
+export function isForcedReflowInsight(model: InsightModel): model is ForcedReflowInsightModel {
+  return model.insightKey === InsightKeys.FORCED_REFLOW;
+}
+
 export function generateInsight(
     traceParsedData: Handlers.Types.ParsedTrace, context: InsightSetContext): ForcedReflowInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => {

@@ -22,6 +22,10 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-forced-reflow`;
   override internalName = 'forced-reflow';
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   mapToRow(data: Trace.Insights.Models.ForcedReflow.BottomUpCallStack): TableDataRow {
     return {
       values: [this.#linkifyUrl(data.bottomUpData)],

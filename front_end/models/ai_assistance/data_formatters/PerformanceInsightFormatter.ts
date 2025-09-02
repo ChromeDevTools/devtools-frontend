@@ -132,7 +132,8 @@ export class PerformanceInsightFormatter {
         ];
       case 'ForcedReflow':
         return [
-          {title: 'How can I avoid layout thrashing?'}, {title: 'What is forced reflow and why is it problematic?'}
+          {title: 'How can I avoid forced reflows and layout thrashing?'},
+          {title: 'What is forced reflow and why is it problematic?'}
         ];
       case 'ImageDelivery':
         return [
@@ -185,6 +186,59 @@ export class PerformanceInsightFormatter {
   }
 
   /**
+   * Create an AI prompt string out of the Forced Reflow Insight model to use with Ask AI.
+   * Note: This function accesses the UIStrings within ForcedReflow model to help build the
+   * AI prompt, but does not (and should not) call i18nString to localize these strings. They
+   * should all be sent in English (at least for now).
+   * @param insight The ForcedReflow Insight Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatForcedReflowInsight(insight: Trace.Insights.Models.ForcedReflow.ForcedReflowInsightModel): string {
+    let output = Trace.Insights.Models.ForcedReflow.UIStrings.description + '\n\n';
+
+    if (insight.topLevelFunctionCallData || insight.aggregatedBottomUpData.length > 0) {
+      output += 'The forced reflow checks revealed one or more problems.\n\n';
+    } else {
+      output += 'The forced reflow checks revealed no problems.';
+      return output;
+    }
+
+    function callFrameToString(frame: Trace.Types.Events.CallFrame|null): string {
+      if (frame === null) {
+        return Trace.Insights.Models.ForcedReflow.UIStrings.unattributed;
+      }
+
+      let result = `${frame.functionName || Trace.Insights.Models.ForcedReflow.UIStrings.anonymous}`;
+      if (frame.url) {
+        result += ` @ ${frame.url}:${frame.lineNumber}:${frame.columnNumber}`;
+      } else {
+        result += ' @ unknown location';
+      }
+      return result;
+    }
+
+    if (insight.topLevelFunctionCallData) {
+      output += 'The following is the top function call that caused forced reflow(s):\n\n';
+      output += ' - ' + callFrameToString(insight.topLevelFunctionCallData.topLevelFunctionCall);
+      output += `\n\n${Trace.Insights.Models.ForcedReflow.UIStrings.totalReflowTime}: ${
+          this.#formatMicro(insight.topLevelFunctionCallData.totalReflowTime)}\n`;
+    } else {
+      output += 'No top-level functions causing forced reflows were identified.\n';
+    }
+
+    if (insight.aggregatedBottomUpData.length > 0) {
+      output += '\n' + Trace.Insights.Models.ForcedReflow.UIStrings.relatedStackTrace + ' (including total time):\n';
+      for (const data of insight.aggregatedBottomUpData) {
+        output += `\n - ${this.#formatMicro(data.totalTime)} in ${callFrameToString(data.bottomUpData)}`;
+      }
+    } else {
+      output += '\nNo aggregated bottom-up causes of forced reflows were identified.';
+    }
+
+    return output;
+  }
+
+  /**
    * Create an AI prompt string out of the NetworkDependencyTree Insight model to use with Ask AI.
    * Note: This function accesses the UIStrings within NetworkDependencyTree to help build the
    * AI prompt, but does not (and should not) call i18nString to localize these strings. They
@@ -196,7 +250,7 @@ export class PerformanceInsightFormatter {
       insight: Trace.Insights.Models.NetworkDependencyTree.NetworkDependencyTreeInsightModel): string {
     let output = insight.fail ?
         'The network dependency tree checks found one or more problems.\n\n' :
-        'The network dependency tree checks found no problems, but optimization suggestions may be available.\n\n';
+        'The network dependency tree checks revealed no problems, but optimization suggestions may be available.\n\n';
 
     const rootNodes = insight.rootNodes;
     if (rootNodes.length > 0) {
@@ -517,6 +571,10 @@ Legacy JavaScript by file:
 ${filesFormatted}`;
     }
 
+    if (Trace.Insights.Models.ForcedReflow.isForcedReflowInsight(this.#insight)) {
+      return this.formatForcedReflowInsight(this.#insight);
+    }
+
     if (Trace.Insights.Models.NetworkDependencyTree.isNetworkDependencyTree(this.#insight)) {
       return this.formatNetworkDependencyTreeInsight(this.#insight);
     }
@@ -549,7 +607,7 @@ ${filesFormatted}`;
       case 'FontDisplay':
         return '';
       case 'ForcedReflow':
-        return '';
+        return '- https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts';
       case 'ImageDelivery':
         return '- https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/';
       case 'INPBreakdown':
@@ -605,7 +663,7 @@ ${filesFormatted}`;
       case 'FontDisplay':
         return '';
       case 'ForcedReflow':
-        return '';
+        return `This insight identifies forced synchronous layouts (also known as forced reflows) and layout thrashing caused by JavaScript accessing layout properties at suboptimal points in time.`;
       case 'ImageDelivery':
         return 'This insight identifies unoptimized images that are downloaded at a much higher resolution than they are displayed. Properly sizing and compressing these assets will decrease their download time, directly improving the perceived page load time and LCP';
       case 'INPBreakdown':

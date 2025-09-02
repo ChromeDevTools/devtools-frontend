@@ -368,6 +368,28 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
     });
   });
 
+  describe('ForcedReflow', () => {
+    it('serializes correctly when there are no results', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ForcedReflow', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details when there are problems found in the network dependency tree', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'forced-reflow.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ForcedReflow', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
   describe('NetworkDependencyTree', () => {
     it('serializes correctly when there are no results', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');

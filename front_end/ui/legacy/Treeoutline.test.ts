@@ -250,3 +250,166 @@ describe('TreeViewElement', () => {
     assert.deepEqual(onExpand.args[1][0].detail, {expanded: false, target: secondConfigElement});
   });
 });
+
+type NodeSpec = {
+  [key: string]: NodeSpec,
+}|string;
+
+class TestTreeNode {
+  #children: TestTreeNode[] = [];
+
+  constructor(readonly contents: string, private readonly contentsMap: Map<string, TestTreeNode>) {
+    assert.isUndefined(contentsMap.get(contents), 'Test expects contents to be unique');
+    contentsMap.set(contents, this);
+  }
+
+  get(contents: string): TestTreeNode|undefined {
+    return this.contentsMap.get(contents);
+  }
+
+  static make(spec: NodeSpec, root = new TestTreeNode('', new Map())): TestTreeNode {
+    if (typeof spec === 'string') {
+      root.children().push(new TestTreeNode(spec, root.contentsMap));
+      return root;
+    }
+    for (const key of Object.keys(spec)) {
+      const child = new TestTreeNode(key, root.contentsMap);
+      root.children().push(child);
+      TestTreeNode.make(spec[key], child);
+    }
+    return root;
+  }
+
+  children() {
+    return this.#children;
+  }
+
+  match(regex: RegExp) {
+    const matches = this.contents.matchAll(regex);
+    return matches
+        .map((match, matchIndexInNode) => ({
+               node: this,
+               matchIndexInNode,
+               isPostOrderMatch: false,
+             }))
+        .toArray();
+  }
+}
+
+describe('TreeSearch', () => {
+  const tree = TestTreeNode.make({
+    level1_child1: {
+      level2_child1_1: 'foo bar baz',
+      level2_child1_2: 'match 0',
+    },
+    level1_child2: {
+      'match 1': 'level2_child2_1',
+      level2_child2_2: 'bar',
+    },
+    level1_child3: 'match 2',
+  });
+
+  it('collects search results', () => {
+    const search = new UI.TreeOutline.TreeSearch<TestTreeNode>();
+    assert.isNotOk(search.currentMatch());
+    search.search(tree, false, (node, isPostOrder) => (isPostOrder && []) || node.match(/match/gi));
+
+    const viewStub = sinon.createStubInstance(UI.SearchableView.SearchableView);
+    search.updateSearchableView(viewStub);
+    sinon.assert.calledOnceWithExactly(viewStub.updateSearchMatchesCount, 3);
+    sinon.assert.calledOnceWithExactly(viewStub.updateCurrentMatchIndex, 0);
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'match 0');
+
+    search.reset();
+    search.updateSearchableView(viewStub);
+    sinon.assert.calledTwice(viewStub.updateSearchMatchesCount);
+    sinon.assert.calledTwice(viewStub.updateCurrentMatchIndex);
+    assert.deepEqual(viewStub.updateSearchMatchesCount.args, [[3], [0]]);
+    assert.deepEqual(viewStub.updateCurrentMatchIndex.args, [[0], [0]]);
+    assert.notExists(search.currentMatch());
+  });
+
+  it('supports multiple matches per node', () => {
+    const search = new UI.TreeOutline.TreeSearch<TestTreeNode>();
+    search.search(tree, false, (node, isPostOrder) => (isPostOrder && []) || node.match(/ba/gi));
+
+    const viewStub = sinon.createStubInstance(UI.SearchableView.SearchableView);
+    search.updateSearchableView(viewStub);
+    sinon.assert.calledOnceWithExactly(viewStub.updateSearchMatchesCount, 3);
+    sinon.assert.calledOnceWithExactly(viewStub.updateCurrentMatchIndex, 0);
+
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'foo bar baz');
+  });
+
+  it('supports forward and backward iteration which wraps around', () => {
+    const search = new UI.TreeOutline.TreeSearch<TestTreeNode>();
+
+    search.search(tree, false, (node, isPostOrder) => (isPostOrder && []) || node.match(/match/gi));
+
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'match 0');
+    search.next();
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'match 1');
+    search.next();
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'match 2');
+    search.next();
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'match 0');
+
+    search.next();
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'match 1');
+    search.prev();
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'match 0');
+    search.prev();
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'match 2');
+    search.prev();
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'match 1');
+    search.prev();
+    assert.strictEqual(search.currentMatch()?.node?.contents, 'match 0');
+  });
+
+  it('groups results by node', () => {
+    const search = new UI.TreeOutline.TreeSearch<TestTreeNode>();
+    search.search(tree, false, (node, isPostOrder) => (isPostOrder && []) || node.match(/ba/gi));
+
+    const node = tree.get('foo bar baz');
+    assert.exists(node);
+    const results = search.getResults(node);
+    assert.deepEqual(
+        results,
+        [{node, isPostOrderMatch: false, matchIndexInNode: 0}, {node, isPostOrderMatch: false, matchIndexInNode: 1}]);
+  });
+
+  it('correctly maintains the cursor position when updating the search', () => {
+    const search = new UI.TreeOutline.TreeSearch<TestTreeNode>();
+    search.search(tree, false, (node, isPostOrder) => (isPostOrder && []) || node.match(/ba/gi));
+
+    const firstNode = tree.get('foo bar baz');
+    assert.exists(firstNode);
+    const secondNode = tree.get('bar');
+    assert.exists(secondNode);
+
+    // If the current result still matches, cursor stays
+    assert.deepEqual(search.currentMatch(), {node: firstNode, isPostOrderMatch: false, matchIndexInNode: 0});
+    search.search(tree, false, (node, isPostOrder) => (isPostOrder && []) || node.match(/bar/gi));
+    assert.deepEqual(search.currentMatch(), {node: firstNode, isPostOrderMatch: false, matchIndexInNode: 0});
+    search.next();
+    assert.deepEqual(search.currentMatch(), {node: secondNode, isPostOrderMatch: false, matchIndexInNode: 0});
+    search.search(tree, false, (node, isPostOrder) => (isPostOrder && []) || node.match(/ba/gi));
+    assert.deepEqual(search.currentMatch(), {node: secondNode, isPostOrderMatch: false, matchIndexInNode: 0});
+
+    // If the current result does not match, cursor moves forward
+    search.reset();
+    search.search(tree, false, (node, isPostOrder) => (isPostOrder && []) || node.match(/ba/gi));
+    search.next();
+    assert.deepEqual(search.currentMatch(), {node: firstNode, isPostOrderMatch: false, matchIndexInNode: 1});
+    search.search(tree, false, (node, isPostOrder) => (isPostOrder && []) || node.match(/bar/gi));
+    assert.deepEqual(search.currentMatch(), {node: secondNode, isPostOrderMatch: false, matchIndexInNode: 0});
+
+    // If the current result does not match, cursor moves backward if moveBackward is passed
+    search.reset();
+    search.search(tree, false, (node, isPostOrder) => (isPostOrder && []) || node.match(/ba/gi));
+    search.next();
+    assert.deepEqual(search.currentMatch(), {node: firstNode, isPostOrderMatch: false, matchIndexInNode: 1});
+    search.search(tree, true, (node, isPostOrder) => (isPostOrder && []) || node.match(/bar/gi));
+    assert.deepEqual(search.currentMatch(), {node: firstNode, isPostOrderMatch: false, matchIndexInNode: 0});
+  });
+});

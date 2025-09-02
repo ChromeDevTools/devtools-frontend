@@ -1,11 +1,10 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as Lit from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import xmlTreeStyles from './xmlTree.css.js';
@@ -19,30 +18,262 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/XMLView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {render, html} = Lit;
+function* attributes(element: Element): Generator<Attr> {
+  for (let i = 0; i < element.attributes.length; ++i) {
+    const attributeNode = element.attributes.item(i);
+    if (attributeNode) {
+      yield attributeNode;
+    }
+  }
+}
 
-export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searchable {
-  private readonly treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-  private searchableView: UI.SearchableView.SearchableView|null = null;
-  private currentSearchFocusIndex = 0;
-  private currentSearchTreeElements: XMLViewNode[] = [];
-  private searchConfig: UI.SearchableView.SearchConfig|null = null;
+function hasNonTextChildren(node: Node): boolean {
+  return node.childNodes.length !== node.childTextNodes.length;
+}
+
+function textView(treeNode: XMLTreeViewNode, closeTag: boolean): string {
+  const {node} = treeNode;
+
+  switch (node.nodeType) {
+    case Node.ELEMENT_NODE:
+      if (node instanceof Element) {
+        const tag = node.tagName;
+        return closeTag ?
+            hasNonTextChildren(node) || node.textContent ? '</' + tag + '>' : '' :
+            `${'<' + tag}${
+                attributes(node)
+                    .map(attributeNode => `${'\xA0'}${attributeNode.name}${'="'}${attributeNode.value}${'"'}`)
+                    .toArray()
+                    .join('')}${
+                hasNonTextChildren(node) ? '' :
+                    node.textContent     ? `${    '>'    }${node.textContent}${    '</' + tag}` :
+                                           `${    ' /'    }`    }${    '>'    }`;
+      }
+      return '';
+    case Node.TEXT_NODE:
+      return node.nodeValue && !closeTag ? `${node.nodeValue}` : '';
+    case Node.CDATA_SECTION_NODE:
+      return node.nodeValue && !closeTag ? `${'<![CDATA['}${node.nodeValue}${']]>'}` : '';
+    case Node.PROCESSING_INSTRUCTION_NODE:
+      return node.nodeValue && !closeTag ? `${'<?' + node.nodeName + ' ' + node.nodeValue + '?>'}` : '';
+    case Node.COMMENT_NODE:
+      return !closeTag ? `${'<!--' + node.nodeValue + '-->'}` : '';
+  }
+  return '';
+}
+
+function htmlView(treeNode: XMLTreeViewNode): Lit.LitTemplate {
+  const {node} = treeNode;
+
+  switch (node.nodeType) {
+    case Node.ELEMENT_NODE:
+      if (node instanceof Element) {
+        const tag = node.tagName;
+        return html`<span part='shadow-xml-view-tag'>${'<' + tag}</span>${
+            attributes(node).map(attributeNode => html`<span part='shadow-xml-view-tag'>${'\xA0'}</span>
+                <span part='shadow-xml-view-attribute-name'>${attributeNode.name}</span>
+                <span part='shadow-xml-view-tag'>${'="'}</span>
+                <span part='shadow-xml-view-attribute-value'>${attributeNode.value}</span>
+                <span part='shadow-xml-view-tag'>${'"'}</span>`)}
+                <span ?hidden=${treeNode.expanded}>${
+            hasNonTextChildren(node) ? html`<span part='shadow-xml-view-tag'>${'>'}</span>
+                  <span part='shadow-xml-view-comment'>${'…'}</span>
+                  <span part='shadow-xml-view-tag'>${'</' + tag}</span>` :
+                node.textContent ? html`<span part='shadow-xml-view-tag'>${'>'}</span>
+                  <span part='shadow-xml-view-text'>${node.textContent}</span>
+                  <span part='shadow-xml-view-tag'>${'</' + tag}</span>` :
+                                   html`<span part='shadow-xml-view-tag'>${' /'}</span>`}</span>
+                <span part='shadow-xml-view-tag'>${'>'}</span>`;
+      }
+      return Lit.nothing;
+    case Node.TEXT_NODE:
+      return node.nodeValue ? html`<span part='shadow-xml-view-text'>${node.nodeValue}</span>` : Lit.nothing;
+    case Node.CDATA_SECTION_NODE:
+      return node.nodeValue ? html`<span part='shadow-xml-view-cdata'>${'<![CDATA['}</span>
+          <span part='shadow-xml-view-text'>${node.nodeValue}</span>
+          <span part='shadow-xml-view-cdata'>${']]>'}</span>` :
+                              Lit.nothing;
+    case Node.PROCESSING_INSTRUCTION_NODE:
+      return node.nodeValue ? html`<span part='shadow-xml-view-processing-instruction'>${
+                                  '<?' + node.nodeName + ' ' + node.nodeValue + '?>'}</span>` :
+                              Lit.nothing;
+    case Node.COMMENT_NODE:
+      return html`<span part='shadow-xml-view-comment'>${'<!--' + node.nodeValue + '-->'}</span>`;
+  }
+  return Lit.nothing;
+}
+
+interface ViewInput {
+  onExpand(node: XMLTreeViewNode, expanded: boolean): void;
+  xml: XMLTreeViewNode;
+  search: UI.TreeOutline.TreeSearch<XMLTreeViewNode, SearchResult>|undefined;
+  jumpToNextSearchResult: SearchResult|undefined;
+}
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  function highlight(node: XMLTreeViewNode, closeTag: boolean): ReturnType<typeof Lit.Directives.ref> {
+    if (!input.search) {
+      return Lit.nothing;
+    }
+    const entries = input.search.getResults(node);
+    const highlights = [];
+    let selected = undefined;
+    for (const entry of entries ?? []) {
+      if (entry.isPostOrderMatch === closeTag) {
+        const range = new TextUtils.TextRange.SourceRange(entry.match.index, entry.match[0].length);
+        if (entry === input.jumpToNextSearchResult) {
+          selected = range;
+        } else {
+          highlights.push(range);
+        }
+      }
+    }
+    return input.search.highlight(highlights, selected);
+  }
+
+  function layOutNode(node: XMLTreeViewNode, populateSubtrees = false): Lit.LitTemplate {
+    const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void =>
+        input.onExpand(node, event.detail.expanded);
+
+    // clang-format off
+    return html`
+    <li
+      ${highlight(node, /* closeTag=*/ false)}
+      role="treeitem"
+      ?selected=${input.jumpToNextSearchResult?.node === node}
+      @expand=${onExpand}>
+        ${htmlView(node)}${populateSubtrees || input.search ? subtree(node) : Lit.nothing}
+    </li>`;
+    // clang-format on
+  }
+
+  function subtree(treeNode: XMLTreeViewNode): Lit.LitTemplate {
+    const children = treeNode.children();
+    if (children.length === 0) {
+      return Lit.nothing;
+    }
+    // clang-format off
+    return html`<ul role="group" ?hidden=${!treeNode.expanded}>
+      ${children.map(child => layOutNode(child, treeNode.expanded))}
+      ${treeNode.node instanceof Element
+          ? html`<li
+                  ${highlight(treeNode, /* closeTag=*/ true)}
+                  role="treeitem"><span part='shadow-xml-view-close-tag'>${'</' + treeNode.node.tagName + '>'}</span
+                 ></li>`
+          : Lit.nothing}
+        </ul>`;
+    // clang-format on
+  }
+
+  // clang-format off
+  render(
+      html`
+    <style>${xmlViewStyles}</style>
+    <style>${xmlTreeStyles}</style>
+    <devtools-tree
+      class="shadow-xml-view source-code"
+      .template=${html`
+        <ul role="tree">
+          ${input.xml.children().map(node => layOutNode(node, /* populateSubtrees=*/ true))}
+        </ul>`}
+      ></devtools-tree>`,
+      // clang-format on
+      target);
+};
+
+function* children(xmlNode: Node|ParentNode|undefined): Generator<Node> {
+  if (!xmlNode || !hasNonTextChildren(xmlNode)) {
+    return;
+  }
+  let node: (ChildNode|null) = xmlNode?.firstChild;
+  while (node) {
+    const currentNode = node;
+    node = node.nextSibling;
+    const nodeType = currentNode.nodeType;
+    // ignore empty TEXT
+    if (nodeType === Node.TEXT_NODE && currentNode.nodeValue?.match(/\s+/)) {
+      continue;
+    }
+    // ignore ATTRIBUTE, ENTITY_REFERENCE, ENTITY, DOCUMENT, DOCUMENT_TYPE, DOCUMENT_FRAGMENT, NOTATION
+    if ((nodeType !== Node.ELEMENT_NODE) && (nodeType !== Node.TEXT_NODE) && (nodeType !== Node.CDATA_SECTION_NODE) &&
+        (nodeType !== Node.PROCESSING_INSTRUCTION_NODE) && (nodeType !== Node.COMMENT_NODE)) {
+      continue;
+    }
+    yield currentNode;
+  }
+}
+
+export class XMLTreeViewNode {
+  readonly node: Node|ParentNode;
+  expanded = false;
+  #children?: XMLTreeViewNode[];
+
+  constructor(node: Node|ParentNode) {
+    this.node = node;
+  }
+
+  children(): XMLTreeViewNode[] {
+    if (!this.#children) {
+      this.#children = children(this.node).map(node => new XMLTreeViewNode(node)).toArray();
+    }
+    return this.#children;
+  }
+
+  match(regex: RegExp, closeTag: boolean): RegExpStringIterator<RegExpExecArray> {
+    return textView(this, closeTag).matchAll(regex);
+  }
+}
+
+export class XMLTreeViewModel {
+  readonly xmlDocument: Document;
+  readonly root: XMLTreeViewNode;
 
   constructor(parsedXML: Document) {
-    super({useShadowDom: true});
-    this.registerRequiredCSS(xmlViewStyles);
-    this.contentElement.classList.add('shadow-xml-view', 'source-code');
-    this.treeOutline.registerRequiredCSS(xmlTreeStyles);
-    this.contentElement.appendChild(this.treeOutline.element);
+    this.xmlDocument = parsedXML;
+    this.root = new XMLTreeViewNode(parsedXML);
+    this.root.expanded = true;
+  }
+}
 
-    XMLViewNode.populate(this.treeOutline, parsedXML, this);
-    const firstChild = this.treeOutline.firstChild();
-    if (firstChild) {
-      firstChild.select(true /* omitFocus */, false /* selectedByUser */);
+interface SearchResult extends UI.TreeOutline.TreeSearchResult<XMLTreeViewNode> {
+  match: RegExpExecArray;
+}
+
+export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searchable {
+  private searchableView: UI.SearchableView.SearchableView|null = null;
+  #search: UI.TreeOutline.TreeSearch<XMLTreeViewNode, SearchResult>|undefined;
+  #treeViewModel: XMLTreeViewModel|undefined;
+  readonly #view: View;
+  #nextJump: SearchResult|undefined;
+
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(target, {jslog: 'xml-view', classes: ['shadow-xml-view', 'source-code']});
+    this.#view = view;
+  }
+
+  set parsedXML(parsedXML: Document) {
+    if (this.#treeViewModel?.xmlDocument !== parsedXML) {
+      this.#treeViewModel = new XMLTreeViewModel(parsedXML);
+      this.requestUpdate();
+    }
+  }
+
+  override performUpdate(): void {
+    if (this.#treeViewModel) {
+      const onExpand = (node: XMLTreeViewNode, expanded: boolean): void => {
+        node.expanded = expanded;
+        this.requestUpdate();
+      };
+      this.#view(
+          {xml: this.#treeViewModel.root, onExpand, search: this.#search, jumpToNextSearchResult: this.#nextJump}, {},
+          this.contentElement);
     }
   }
 
   static createSearchableView(parsedXML: Document): UI.SearchableView.SearchableView {
-    const xmlView = new XMLView(parsedXML);
+    const xmlView = new XMLView();
+    xmlView.parsedXML = parsedXML;
     const searchableView = new UI.SearchableView.SearchableView(xmlView, null);
     searchableView.setPlaceholder(i18nString(UIStrings.find));
     xmlView.searchableView = searchableView;
@@ -70,125 +301,41 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     return parsedXML;
   }
 
-  private jumpToMatch(index: number, shouldJump: boolean): void {
-    if (!this.searchConfig) {
-      return;
-    }
-    const {regex} = this.searchConfig.toSearchRegex(true);
-    const previousFocusElement = this.currentSearchTreeElements[this.currentSearchFocusIndex];
-    if (previousFocusElement) {
-      previousFocusElement.setSearchRegex(regex);
-    }
-
-    const newFocusElement = this.currentSearchTreeElements[index];
-    if (newFocusElement) {
-      this.updateSearchIndex(index);
-      if (shouldJump) {
-        newFocusElement.reveal(true);
-      }
-      newFocusElement.setSearchRegex(regex, UI.UIUtils.highlightedCurrentSearchResultClassName);
-    } else {
-      this.updateSearchIndex(0);
-    }
-  }
-
-  private updateSearchCount(count: number): void {
-    if (!this.searchableView) {
-      return;
-    }
-    this.searchableView.updateSearchMatchesCount(count);
-  }
-
-  private updateSearchIndex(index: number): void {
-    this.currentSearchFocusIndex = index;
-    if (!this.searchableView) {
-      return;
-    }
-    this.searchableView.updateCurrentMatchIndex(index);
-  }
-
-  innerPerformSearch(shouldJump: boolean, jumpBackwards?: boolean): void {
-    if (!this.searchConfig) {
-      return;
-    }
-    let newIndex: number = this.currentSearchFocusIndex;
-    const previousSearchFocusElement = this.currentSearchTreeElements[newIndex];
-    this.innerSearchCanceled();
-    this.currentSearchTreeElements = [];
-    const {regex} = this.searchConfig.toSearchRegex(true);
-
-    for (let element: (UI.TreeOutline.TreeElement|null) =
-             (this.treeOutline.rootElement() as UI.TreeOutline.TreeElement | null);
-         element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof XMLViewNode)) {
-        continue;
-      }
-      const hasMatch = element.setSearchRegex(regex);
-      if (hasMatch) {
-        this.currentSearchTreeElements.push(element);
-      }
-      if (previousSearchFocusElement === element) {
-        const currentIndex = this.currentSearchTreeElements.length - 1;
-        if (hasMatch || jumpBackwards) {
-          newIndex = currentIndex;
-        } else {
-          newIndex = currentIndex + 1;
-        }
-      }
-    }
-    this.updateSearchCount(this.currentSearchTreeElements.length);
-
-    if (!this.currentSearchTreeElements.length) {
-      this.updateSearchIndex(0);
-      return;
-    }
-    newIndex = Platform.NumberUtilities.mod(newIndex, this.currentSearchTreeElements.length);
-
-    this.jumpToMatch(newIndex, shouldJump);
-  }
-
-  private innerSearchCanceled(): void {
-    for (let element: (UI.TreeOutline.TreeElement|null) =
-             (this.treeOutline.rootElement() as UI.TreeOutline.TreeElement | null);
-         element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof XMLViewNode)) {
-        continue;
-      }
-      element.revertHighlightChanges();
-    }
-    this.updateSearchCount(0);
-    this.updateSearchIndex(0);
-  }
-
   onSearchCanceled(): void {
-    this.searchConfig = null;
-    this.currentSearchTreeElements = [];
-    this.innerSearchCanceled();
+    this.#search = undefined;
+    this.searchableView?.updateSearchMatchesCount(0);
+    this.searchableView?.updateCurrentMatchIndex(0);
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
-    this.searchConfig = searchConfig;
-    this.innerPerformSearch(shouldJump, jumpBackwards);
+    if (!this.#treeViewModel || !this.searchableView) {
+      return;
+    }
+    const {regex} = searchConfig.toSearchRegex(true);
+    if (!this.#search) {
+      this.#search = new UI.TreeOutline.TreeSearch();
+    }
+    this.#search.search(
+        this.#treeViewModel.root, jumpBackwards ?? false,
+        (node, closeTag) =>
+            node.match(regex, closeTag)
+                .map((match, matchIndexInNode) => ({node, matchIndexInNode, isPostOrderMatch: closeTag, match}))
+                .toArray());
+    this.#nextJump = shouldJump ? this.#search.currentMatch() : undefined;
+    this.#search.updateSearchableView(this.searchableView);
+    this.requestUpdate();
   }
 
   jumpToNextSearchResult(): void {
-    if (!this.currentSearchTreeElements.length) {
-      return;
-    }
-
-    const newIndex =
-        Platform.NumberUtilities.mod(this.currentSearchFocusIndex + 1, this.currentSearchTreeElements.length);
-    this.jumpToMatch(newIndex, true);
+    this.#nextJump = this.#search?.next();
+    this.searchableView && this.#search?.updateSearchableView(this.searchableView);
+    this.requestUpdate();
   }
 
   jumpToPreviousSearchResult(): void {
-    if (!this.currentSearchTreeElements.length) {
-      return;
-    }
-
-    const newIndex =
-        Platform.NumberUtilities.mod(this.currentSearchFocusIndex - 1, this.currentSearchTreeElements.length);
-    this.jumpToMatch(newIndex, true);
+    this.#nextJump = this.#search?.prev();
+    this.searchableView && this.#search?.updateSearchableView(this.searchableView);
+    this.requestUpdate();
   }
 
   supportsCaseSensitiveSearch(): boolean {
@@ -197,179 +344,5 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
 
   supportsRegexSearch(): boolean {
     return true;
-  }
-}
-
-export class XMLViewNode extends UI.TreeOutline.TreeElement {
-  private readonly node: Node|ParentNode;
-  private readonly closeTag: boolean;
-  private highlightChanges: UI.UIUtils.HighlightChange[];
-  private readonly xmlView: XMLView;
-
-  constructor(node: Node|ParentNode, closeTag: boolean, xmlView: XMLView) {
-    super('', !closeTag && 'childElementCount' in node && Boolean(node.childElementCount));
-    this.node = node;
-    this.closeTag = closeTag;
-    this.selectable = true;
-    this.highlightChanges = [];
-    this.xmlView = xmlView;
-    this.updateTitle();
-  }
-
-  static populate(
-      root: UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement, xmlNode: Node|ParentNode, xmlView: XMLView): void {
-    if (!(xmlNode instanceof Node)) {
-      return;
-    }
-    let node: (ChildNode|null) = xmlNode.firstChild;
-    while (node) {
-      const currentNode = node;
-      node = node.nextSibling;
-      const nodeType = currentNode.nodeType;
-      // ignore empty TEXT
-      if (nodeType === 3 && currentNode.nodeValue?.match(/\s+/)) {
-        continue;
-      }
-      // ignore ATTRIBUTE, ENTITY_REFERENCE, ENTITY, DOCUMENT, DOCUMENT_TYPE, DOCUMENT_FRAGMENT, NOTATION
-      if ((nodeType !== 1) && (nodeType !== 3) && (nodeType !== 4) && (nodeType !== 7) && (nodeType !== 8)) {
-        continue;
-      }
-      root.appendChild(new XMLViewNode(currentNode, false, xmlView));
-    }
-  }
-
-  setSearchRegex(regex: RegExp|null, additionalCssClassName?: string): boolean {
-    this.revertHighlightChanges();
-    if (!regex) {
-      return false;
-    }
-    if (this.closeTag && this.parent && !this.parent.expanded) {
-      return false;
-    }
-    regex.lastIndex = 0;
-    let cssClasses = UI.UIUtils.highlightedSearchResultClassName;
-    if (additionalCssClassName) {
-      cssClasses += ' ' + additionalCssClassName;
-    }
-    if (!this.listItemElement.textContent) {
-      return false;
-    }
-    const content = this.listItemElement.textContent.replace(/\xA0/g, ' ');
-    let match = regex.exec(content);
-    const ranges = [];
-    while (match) {
-      ranges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
-      match = regex.exec(content);
-    }
-    if (ranges.length) {
-      UI.UIUtils.highlightRangesWithStyleClass(this.listItemElement, ranges, cssClasses, this.highlightChanges);
-    }
-    return Boolean(this.highlightChanges.length);
-  }
-
-  revertHighlightChanges(): void {
-    UI.UIUtils.revertDomChanges(this.highlightChanges);
-    this.highlightChanges = [];
-  }
-
-  private updateTitle(): void {
-    const node = this.node;
-    if (!('nodeType' in node)) {
-      return;
-    }
-    switch (node.nodeType) {
-      case 1: {  // ELEMENT
-        if (node instanceof Element) {
-          const tag = node.tagName;
-          if (this.closeTag) {
-            this.setTitle(['</' + tag + '>', 'shadow-xml-view-tag']);
-            return;
-          }
-          const titleItems = ['<' + tag, 'shadow-xml-view-tag'];
-          const attributes = node.attributes;
-          for (let i = 0; i < attributes.length; ++i) {
-            const attributeNode = attributes.item(i);
-            if (!attributeNode) {
-              return;
-            }
-            titleItems.push(
-                '\xA0', 'shadow-xml-view-tag', attributeNode.name, 'shadow-xml-view-attribute-name', '="',
-                'shadow-xml-view-tag', attributeNode.value, 'shadow-xml-view-attribute-value', '"',
-                'shadow-xml-view-tag');
-          }
-          if (!this.expanded) {
-            if (node.childElementCount) {
-              titleItems.push(
-                  '>', 'shadow-xml-view-tag', '…', 'shadow-xml-view-comment', '</' + tag, 'shadow-xml-view-tag');
-            } else if (node.textContent) {
-              titleItems.push(
-                  '>', 'shadow-xml-view-tag', node.textContent, 'shadow-xml-view-text', '</' + tag,
-                  'shadow-xml-view-tag');
-            } else {
-              titleItems.push(' /', 'shadow-xml-view-tag');
-            }
-          }
-          titleItems.push('>', 'shadow-xml-view-tag');
-          this.setTitle(titleItems);
-          return;
-        }
-        return;
-      }
-      case 3: {  // TEXT
-        if (node.nodeValue) {
-          this.setTitle([node.nodeValue, 'shadow-xml-view-text']);
-        }
-        return;
-      }
-      case 4: {  // CDATA
-        if (node.nodeValue) {
-          this.setTitle([
-            '<![CDATA[',
-            'shadow-xml-view-cdata',
-            node.nodeValue,
-            'shadow-xml-view-text',
-            ']]>',
-            'shadow-xml-view-cdata',
-          ]);
-        }
-        return;
-      }
-      case 7: {  // PROCESSING_INSTRUCTION
-        if (node.nodeValue) {
-          this.setTitle(['<?' + node.nodeName + ' ' + node.nodeValue + '?>', 'shadow-xml-view-processing-instruction']);
-        }
-        return;
-      }
-      case 8: {  // COMMENT
-        this.setTitle(['<!--' + node.nodeValue + '-->', 'shadow-xml-view-comment']);
-        return;
-      }
-    }
-  }
-
-  private setTitle(items: string[]): void {
-    const titleFragment = document.createDocumentFragment();
-    for (let i = 0; i < items.length; i += 2) {
-      titleFragment.createChild('span', items[i + 1]).textContent = items[i];
-    }
-    this.title = titleFragment;
-    this.xmlView.innerPerformSearch(false, false);
-  }
-
-  override onattach(): void {
-    this.listItemElement.classList.toggle('shadow-xml-view-close-tag', this.closeTag);
-  }
-
-  override onexpand(): void {
-    this.updateTitle();
-  }
-
-  override oncollapse(): void {
-    this.updateTitle();
-  }
-
-  override async onpopulate(): Promise<void> {
-    XMLViewNode.populate(this, this.node, this.xmlView);
-    this.appendChild(new XMLViewNode(this.node, true, this.xmlView));
   }
 }

@@ -1,11 +1,8 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
-
-import highlightingStyles from './highlighting.css.js';
 
 export class RangeWalker {
   #offset = 0;
@@ -62,17 +59,17 @@ export class RangeWalker {
   }
 }
 
-export const HIGHLIGHT_REGISTRY = 'search-highlight';
+export const HIGHLIGHT_REGISTRY = 'highlighted-search-result';
+export const CURRENT_HIGHLIGHT_REGISTRY = 'current-search-result';
 
 let highlightManagerInstance: HighlightManager;
 export class HighlightManager {
   #highlights = new Highlight();
+  #currentHighlights = new Highlight();
 
   constructor() {
-    const styleElement = document.createElement('style');
-    styleElement.textContent = highlightingStyles;
-    document.head.appendChild(styleElement);
     CSS.highlights.set(HIGHLIGHT_REGISTRY, this.#highlights);
+    CSS.highlights.set(CURRENT_HIGHLIGHT_REGISTRY, this.#currentHighlights);
   }
 
   static instance(opts: {
@@ -94,19 +91,32 @@ export class HighlightManager {
     ranges.forEach(this.removeHighlight.bind(this));
   }
 
+  addCurrentHighlight(range: Range): void {
+    this.#currentHighlights.add(range);
+  }
+
+  addCurrentHighlights(ranges: Range[]): void {
+    ranges.forEach(this.addCurrentHighlight.bind(this));
+  }
+
   addHighlight(range: Range): void {
     this.#highlights.add(range);
   }
 
   removeHighlight(range: Range): void {
     this.#highlights.delete(range);
+    this.#currentHighlights.delete(range);
   }
 
-  highlightOrderedTextRanges(root: Node, sourceRanges: TextUtils.TextRange.SourceRange[]): Range[] {
+  highlightOrderedTextRanges(root: Node, sourceRanges: TextUtils.TextRange.SourceRange[], isCurrent = false): Range[] {
     const rangeWalker = new RangeWalker(root);
     const ranges = sourceRanges.map(range => rangeWalker.nextRange(range.offset, range.length))
                        .filter((r): r is Range => r !== null && !r.collapsed);
-    this.addHighlights(ranges);
+    if (isCurrent) {
+      this.addCurrentHighlights(ranges);
+    } else {
+      this.addHighlights(ranges);
+    }
     return ranges;
   }
 }

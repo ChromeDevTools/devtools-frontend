@@ -36,7 +36,9 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Buttons from '../components/buttons/buttons.js';
+import * as Highlighting from '../components/highlighting/highlighting.js';
 import type * as IconButton from '../components/icon_button/icon_button.js';
 import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
@@ -44,6 +46,7 @@ import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {type Config, InplaceEditor} from './InplaceEditor.js';
 import {Keys} from './KeyboardShortcut.js';
+import type {SearchableView} from './SearchableView.js';
 import {Tooltip} from './Tooltip.js';
 import treeoutlineStyles from './treeoutline.css.js';
 import {
@@ -1405,7 +1408,146 @@ function hasBooleanAttribute(element: Element, name: string): boolean {
   return element.hasAttribute(name) && element.getAttribute(name) !== 'false';
 }
 
+interface TreeNode<NodeT> {
+  children(): NodeT[];
+}
+
+export interface TreeSearchResult<NodeT> {
+  node: NodeT;
+  isPostOrderMatch: boolean;
+  matchIndexInNode: number;
+}
+
+export class TreeSearch < NodeT extends TreeNode<NodeT>,
+                                        SearchResultT extends TreeSearchResult<NodeT >= TreeSearchResult<NodeT>> {
+  #matches: SearchResultT[] = [];
+  #currentMatchIndex = 0;
+  #nodeMatchMap: WeakMap<NodeT, SearchResultT[]>|undefined;
+
+  reset(): void {
+    this.#matches = [];
+    this.#nodeMatchMap = undefined;
+    this.#currentMatchIndex = 0;
+  }
+
+  currentMatch(): SearchResultT|undefined {
+    return this.#matches.at(this.#currentMatchIndex);
+  }
+
+  #getNodeMatchMap(): WeakMap<NodeT, SearchResultT[]> {
+    if (!this.#nodeMatchMap) {
+      this.#nodeMatchMap = new WeakMap();
+      for (const match of this.#matches) {
+        let entry = this.#nodeMatchMap.get(match.node);
+        if (!entry) {
+          entry = [];
+          this.#nodeMatchMap.set(match.node, entry);
+        }
+        entry.push(match);
+      }
+    }
+    return this.#nodeMatchMap;
+  }
+
+  getResults(node: NodeT): SearchResultT[] {
+    return this.#getNodeMatchMap().get(node) ?? [];
+  }
+
+  highlight(ranges: TextUtils.TextRange.SourceRange[], selectedRange: TextUtils.TextRange.SourceRange|undefined):
+      ReturnType<typeof Lit.Directives.ref> {
+    return Lit.Directives.ref(element => {
+      if (element instanceof HTMLLIElement) {
+        TreeViewTreeElement.get(element)?.highlight(ranges, selectedRange);
+      }
+    });
+  }
+
+  updateSearchableView(view: SearchableView): void {
+    view.updateSearchMatchesCount(this.#matches.length);
+    view.updateCurrentMatchIndex(this.#currentMatchIndex);
+  }
+
+  next(): SearchResultT|undefined {
+    this.#currentMatchIndex = Platform.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
+    return this.currentMatch();
+  }
+
+  prev(): SearchResultT|undefined {
+    this.#currentMatchIndex = Platform.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
+    return this.currentMatch();
+  }
+
+  // This is a generator to sidestep stack overflow risks
+  *
+      #innerSearch(
+          node: NodeT, currentMatch: SearchResultT|undefined, jumpBackwards: boolean,
+          match: (node: NodeT, isPostOrder: boolean) => SearchResultT[]): Generator<SearchResultT> {
+    const updateCurrentMatchIndex = (isPostOrder: boolean): void => {
+      if (currentMatch?.node === node && currentMatch.isPostOrderMatch === isPostOrder) {
+        // We're current matching the node that contains the currently focused search result, the n-th result
+        // within that node. When updating the search hits, make sure we're still focusing the n-th result within
+        // that node. That may make the result jump within the node, but at least we're still focusing the same
+        // node. If there are fewer than n hits in the current node, we're going to move the focus to the next
+        // search hit in the next node by default, or the last one in this node if searching backwards.
+        if (currentMatch.matchIndexInNode >= preOrderMatches.length) {
+          this.#currentMatchIndex = jumpBackwards ? this.#matches.length - 1 : this.#matches.length;
+        } else {
+          this.#currentMatchIndex = this.#matches.length - preOrderMatches.length + currentMatch.matchIndexInNode;
+        }
+      }
+    };
+
+    const preOrderMatches = match(node, /* isPostOrder=*/ false);
+    this.#matches.push(...preOrderMatches);
+    updateCurrentMatchIndex(/* isPostOrder=*/ false);
+    yield* preOrderMatches.values();
+    for (const child of node.children()) {
+      yield* this.#innerSearch(child, currentMatch, jumpBackwards, match);
+    }
+    const postOrderMatches = match(node, /* isPostOrder=*/ true);
+    this.#matches.push(...postOrderMatches);
+    updateCurrentMatchIndex(/* isPostOrder=*/ true);
+    yield* postOrderMatches.values();
+  }
+
+  search(node: NodeT, jumpBackwards: boolean, match: (node: NodeT, isPostOrder: boolean) => SearchResultT[]): number {
+    const currentMatch = this.currentMatch();
+    this.reset();
+    // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/no-unused-vars
+    for (const _ of this.#innerSearch(node, currentMatch, jumpBackwards, match)) {
+      // run the generator
+    }
+    this.#currentMatchIndex = Platform.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
+    return this.#matches.length;
+  }
+}
+
+class ActiveHighlights {
+  #activeRanges: Range[] = [];
+  #highlights: TextUtils.TextRange.SourceRange[] = [];
+  #selectedSearchResult: TextUtils.TextRange.SourceRange|undefined = undefined;
+
+  apply(node: Node): void {
+    Highlighting.HighlightManager.HighlightManager.instance().removeHighlights(this.#activeRanges);
+    this.#activeRanges =
+        Highlighting.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(node, this.#highlights);
+    if (this.#selectedSearchResult) {
+      this.#activeRanges.push(...Highlighting.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(
+          node, [this.#selectedSearchResult], /* isSelected=*/ true));
+    }
+  }
+
+  set(element: Node, highlights: TextUtils.TextRange.SourceRange[],
+      selectedSearchResult: TextUtils.TextRange.SourceRange|undefined): void {
+    this.#highlights = highlights;
+    this.#selectedSearchResult = selectedSearchResult;
+    this.apply(element);
+  }
+}
+
 class TreeViewTreeElement extends TreeElement {
+  #activeHighlights = new ActiveHighlights();
+
   static #elementToTreeElement = new WeakMap<Node, TreeViewTreeElement>();
   readonly configElement: HTMLLIElement;
 
@@ -1416,23 +1558,23 @@ class TreeViewTreeElement extends TreeElement {
     this.refresh();
   }
 
+  highlight(
+      highlights: TextUtils.TextRange.SourceRange[],
+      selectedSearchResult: TextUtils.TextRange.SourceRange|undefined): void {
+    this.#activeHighlights.set(this.titleElement, highlights, selectedSearchResult);
+  }
+
   refresh(): void {
     this.titleElement.textContent = '';
-    if (hasBooleanAttribute(this.configElement, 'selected')) {
-      this.revealAndSelect(true);
-    }
 
     for (const child of this.configElement.childNodes) {
       if (child instanceof HTMLUListElement && child.role === 'group') {
-        if (hasBooleanAttribute(child, 'hidden')) {
-          this.collapse();
-        } else {
-          this.expand();
-        }
         continue;
       }
       this.titleElement.appendChild(child.cloneNode(true));
     }
+
+    this.#activeHighlights.apply(this.titleElement);
   }
 
   static get(configElement: Node|undefined): TreeViewTreeElement|undefined {

@@ -75,6 +75,7 @@ import * as ServerTiming from './ServerTiming.js';
 import * as ServiceWorkerCacheModel from './ServiceWorkerCacheModel.js';
 import * as ServiceWorkerManager from './ServiceWorkerManager.js';
 import * as SourceMap from './SourceMap.js';
+import * as SourceMapCache from './SourceMapCache.js';
 import * as SourceMapFunctionRanges from './SourceMapFunctionRanges.js';
 import * as SourceMapManager from './SourceMapManager.js';
 import * as SourceMapScopeChainEntry from './SourceMapScopeChainEntry.js';
@@ -153,6 +154,7 @@ export {
   ServiceWorkerCacheModel,
   ServiceWorkerManager,
   SourceMap,
+  SourceMapCache,
   SourceMapFunctionRanges,
   SourceMapManager,
   SourceMapScopeChainEntry,

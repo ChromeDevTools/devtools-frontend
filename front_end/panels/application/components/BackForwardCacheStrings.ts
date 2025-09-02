@@ -535,17 +535,17 @@ const UIStrings = {
   cookieDisabled:
       'Back/forward cache is disabled because cookies are disabled on a page that uses `Cache-Control: no-store`.',
   /**
-   * @description Description text for not restored reason WebRTCSticky.
+   * @description Description text for not restored reason WebRTCUsedWithCCNS.
    */
-  webRTCSticky: 'Back/forward cache is disabled because WebRTC has been used.',
+  webRTCUsedWithCCNS: 'Back/forward cache is disabled because WebRTC has been used.',
   /**
-   * @description Description text for not restored reason WebTransportSticky.
+   * @description Description text for not restored reason WebTransportUsedWithCCNS.
    */
-  webTransportSticky: 'Back/forward cache is disabled because WebTransport has been used.',
+  webTransportUsedWithCCNS: 'Back/forward cache is disabled because WebTransport has been used.',
   /**
-   * @description Description text for not restored reason WebSocketSticky.
+   * @description Description text for not restored reason WebSocketUsedWithCCNS.
    */
-  webSocketSticky: 'Back/forward cache is disabled because WebSocket has been used.',
+  webSocketUsedWithCCNS: 'Back/forward cache is disabled because WebSocket has been used.',
 
 } as const;
 
@@ -691,9 +691,9 @@ export const NotRestoredReasonDescription = {
       {name: i18nLazyString(UIStrings.jsNetworkRequestReceivedCacheControlNoStoreResource)},
   IndexedDBEvent: {name: i18nLazyString(UIStrings.indexedDBEvent)},
   CookieDisabled: {name: i18nLazyString(UIStrings.cookieDisabled)},
-  WebRTCSticky: {name: i18nLazyString(UIStrings.webRTCSticky)},
-  WebTransportSticky: {name: i18nLazyString(UIStrings.webTransportSticky)},
-  WebSocketSticky: {name: i18nLazyString(UIStrings.webSocketSticky)},
+  WebRTCUsedWithCCNS: {name: i18nLazyString(UIStrings.webRTCUsedWithCCNS)},
+  WebTransportUsedWithCCNS: {name: i18nLazyString(UIStrings.webTransportUsedWithCCNS)},
+  WebSocketUsedWithCCNS: {name: i18nLazyString(UIStrings.webSocketUsedWithCCNS)},
   HTTPAuthRequired: {name: i18n.i18n.lockedLazyString('HTTPAuthRequired')},
   CookieFlushed: {name: i18n.i18n.lockedLazyString('CookieFlushed')},
   SmartCard: {name: i18n.i18n.lockedLazyString('SmartCard')},

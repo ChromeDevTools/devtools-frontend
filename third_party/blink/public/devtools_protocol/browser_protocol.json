@@ -2454,7 +2454,7 @@
                     "properties": [
                         {
                             "name": "name",
-                            "description": "address field name, for example GIVEN_NAME.",
+                            "description": "address field name, for example GIVEN_NAME.\nThe full list of supported field names:\nhttps://source.chromium.org/chromium/chromium/src/+/main:components/autofill/core/browser/field_types.cc;l=38",
                             "type": "string"
                         },
                         {
@@ -2602,8 +2602,15 @@
                         },
                         {
                             "name": "card",
-                            "description": "Credit card information to fill out the form. Credit card data is not saved.",
+                            "description": "Credit card information to fill out the form. Credit card data is not saved.  Mutually exclusive with `address`.",
+                            "optional": true,
                             "$ref": "CreditCard"
+                        },
+                        {
+                            "name": "address",
+                            "description": "Address to fill out the form. Address data is not saved. Mutually exclusive with `card`.",
+                            "optional": true,
+                            "$ref": "Address"
                         }
                     ]
                 },
@@ -21729,9 +21736,9 @@
                         "IndexedDBEvent",
                         "Dummy",
                         "JsNetworkRequestReceivedCacheControlNoStoreResource",
-                        "WebRTCSticky",
-                        "WebTransportSticky",
-                        "WebSocketSticky",
+                        "WebRTCUsedWithCCNS",
+                        "WebTransportUsedWithCCNS",
+                        "WebSocketUsedWithCCNS",
                         "SmartCard",
                         "LiveMediaStreamTrack",
                         "UnloadHandler",

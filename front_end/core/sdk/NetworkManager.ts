@@ -409,6 +409,14 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return result.status;
   }
 
+  async getIpProtectionProxyStatus(): Promise<Protocol.Network.IpProxyStatus|null> {
+    const result = await this.#networkAgent.invoke_getIPProtectionProxyStatus();
+    if (result.getError()) {
+      return null;
+    }
+    return result.status;
+  }
+
   async enableReportingApi(enable = true): Promise<Promise<Protocol.ProtocolResponseWithError>> {
     return await this.#networkAgent.invoke_enableReportingApi({enable});
   }

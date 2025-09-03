@@ -90,6 +90,7 @@ ts_library("unittests") {
   sources = [
     "CookieControlsView.test.ts",
     "CookieReportView.test.ts",
+    "IPProtectionView.test.ts",
     "SecurityModel.test.ts",
     "SecurityPanel.test.ts",
   ]

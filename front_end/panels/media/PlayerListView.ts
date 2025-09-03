@@ -85,6 +85,13 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     return entry;
   }
 
+  selectPlayerById(playerID: string): void {
+    const fragment = this.playerEntryFragments.get(playerID);
+    if (fragment) {
+      this.selectPlayer(playerID, fragment.element());
+    }
+  }
+
   private selectPlayer(playerID: string, element: Element): void {
     this.mainContainer.renderMainPanel(playerID);
     if (this.currentlySelectedEntry !== null) {

@@ -90,6 +90,7 @@ devtools_module("elements") {
     "../../panels/emulation:bundle",
     "../../panels/event_listeners:bundle",
     "../../panels/issues:bundle",
+    "../../panels/media:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/utils:bundle",
     "../../ui/components/adorners:bundle",

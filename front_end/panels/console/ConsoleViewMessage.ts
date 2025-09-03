@@ -946,14 +946,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       }
       const renderResult = await UI.UIUtils.Renderer.render(node);
       if (renderResult) {
-        if (renderResult.tree) {
-          this.selectableChildren.push(renderResult.tree);
-          const resizeObserver = new ResizeObserver(() => {
-            this.messageResized({data: renderResult.node as HTMLElement});
-          });
-          resizeObserver.observe(renderResult.node as HTMLElement);
-        }
-        result.appendChild(renderResult.node);
+        this.selectableChildren.push(renderResult);
+        const resizeObserver = new ResizeObserver(() => {
+          this.messageResized({data: renderResult.element});
+        });
+        resizeObserver.observe(renderResult.element);
+        result.appendChild(renderResult.element);
       } else {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
       }

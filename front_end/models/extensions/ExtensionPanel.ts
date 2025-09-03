@@ -227,7 +227,7 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
         callback();
         return;
       }
-      objectPropertiesView.element.appendChild(result.node);
+      objectPropertiesView.element.appendChild(result.element);
       callback();
     });
   }

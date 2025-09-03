@@ -1645,27 +1645,23 @@ export class Renderer implements UI.UIUtils.Renderer {
     return rendererInstance;
   }
 
-  async render(object: Object, options?: UI.UIUtils.Options): Promise<{
-    node: Node,
-    tree: UI.TreeOutline.TreeOutline|null,
-  }|null> {
+  async render(object: Object, options?: UI.UIUtils.Options): Promise<UI.UIUtils.RenderedObject|null> {
     if (!(object instanceof SDK.RemoteObject.RemoteObject)) {
       throw new Error('Can\'t render ' + object);
     }
-    options = options || {title: undefined, editable: undefined};
-    const title = options.title;
+    const title = options?.title;
     const section = new ObjectPropertiesSection(object, title);
     if (!title) {
       section.titleLessMode();
     }
-    section.editable = Boolean(options.editable);
-    if (options.expand) {
+    section.editable = Boolean(options?.editable);
+    if (options?.expand) {
       section.firstChild()?.expand();
     }
-    return {node: section.element, tree: section} as {
-      node: Node,
-      tree: UI.TreeOutline.TreeOutline | null,
-    } | null;
+    return {
+      element: section.element,
+      forceSelect: section.forceSelect.bind(section),
+    };
   }
 }
 

@@ -61,7 +61,6 @@ import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import smallBubbleStyles from './smallBubble.css.js';
 import type {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
-import type {TreeOutline} from './Treeoutline.js';
 import {Widget} from './Widget.js';
 import type {XWidget} from './XWidget.js';
 
@@ -1775,16 +1774,15 @@ export function createInlineButton(toolbarButton: ToolbarButton): Element {
   return element;
 }
 
-export abstract class Renderer {
-  abstract render(object: Object, options?: Options): Promise<{
-    node: Node,
-    tree: TreeOutline|null,
-  }|null>;
+export interface RenderedObject {
+  element: HTMLElement;
+  forceSelect(): void;
+}
 
-  static async render(object: Object, options?: Options): Promise<{
-    node: Node,
-    tree: TreeOutline|null,
-  }|null> {
+export abstract class Renderer {
+  abstract render(object: Object, options?: Options): Promise<RenderedObject|null>;
+
+  static async render(object: Object, options?: Options): Promise<RenderedObject|null> {
     if (!object) {
       throw new Error('Can\'t render ' + object);
     }

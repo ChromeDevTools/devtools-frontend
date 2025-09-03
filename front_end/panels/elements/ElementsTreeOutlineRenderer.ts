@@ -50,10 +50,7 @@ export class Renderer implements UI.UIUtils.Renderer {
     return rendererInstance;
   }
 
-  async render(object: Object, options?: UI.UIUtils.Options): Promise<{
-    node: Node,
-    tree: UI.TreeOutline.TreeOutline|null,
-  }|null> {
+  async render(object: Object, options?: UI.UIUtils.Options): Promise<UI.UIUtils.RenderedObject|null> {
     let node: SDK.DOMModel.DOMNode|(SDK.DOMModel.DOMNode | null)|null = null;
 
     if (object instanceof SDK.DOMModel.DOMNode) {
@@ -78,6 +75,9 @@ export class Renderer implements UI.UIUtils.Renderer {
     if (options?.expand) {
       treeOutline.firstChild()?.expand();
     }
-    return {node: treeOutline.element, tree: treeOutline};
+    return {
+      element: treeOutline.element,
+      forceSelect: treeOutline.forceSelect.bind(treeOutline),
+    };
   }
 }

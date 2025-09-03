@@ -9,9 +9,12 @@ devtools_module("components") {
   sources = [ "DeviceSizeInputElement.ts" ]
 
   deps = [
+    "../../../core/platform:bundle",
     "../../../models/emulation:bundle",
     "../../../ui/components/helpers:bundle",
+    "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
+    "../../../ui/visual_logging:bundle",
   ]
 }
 

@@ -7,6 +7,7 @@
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -38,7 +39,7 @@ export class TypeToAllowDialog {
     inputPlaceholder: Platform.UIString.LocalizedString,
   }): Promise<boolean> {
     const dialog = new UI.Dialog.Dialog(options.jslogContext.dialog);
-    dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
+    dialog.setMaxContentSize(new Geometry.Size(504, 340));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog.setDimmed(true);
     const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: commonStyles});

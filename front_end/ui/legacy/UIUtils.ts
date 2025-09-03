@@ -41,6 +41,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
@@ -53,7 +54,6 @@ import * as ARIAUtils from './ARIAUtils.js';
 import checkboxTextLabelStyles from './checkboxTextLabel.css.js';
 import confirmDialogStyles from './confirmDialog.css.js';
 import {Dialog} from './Dialog.js';
-import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import inlineButtonStyles from './inlineButton.css.js';
 import inspectorCommonStyles from './inspectorCommon.css.js';
@@ -887,7 +887,7 @@ export function revertDomChanges(domChanges: HighlightChange[]): void {
   }
 }
 
-export function measurePreferredSize(element: Element, containerElement?: Element|null): Size {
+export function measurePreferredSize(element: Element, containerElement?: Element|null): Geometry.Size {
   const oldParent = element.parentElement;
   const oldNextSibling = element.nextSibling;
   containerElement = containerElement || element.ownerDocument.body;
@@ -901,7 +901,7 @@ export function measurePreferredSize(element: Element, containerElement?: Elemen
   } else {
     element.remove();
   }
-  return new Size(result.width, result.height);
+  return new Geometry.Size(result.width, result.height);
 }
 
 class InvokeOnceHandlers {

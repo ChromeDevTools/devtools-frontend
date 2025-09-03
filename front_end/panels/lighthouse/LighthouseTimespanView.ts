@@ -4,6 +4,7 @@
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -105,7 +106,7 @@ export class TimespanView extends UI.Dialog.Dialog {
     dialogRoot.appendChild(fragment.element());
 
     this.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
-    this.setMaxContentSize(new UI.Geometry.Size(500, 400));
+    this.setMaxContentSize(new Geometry.Size(500, 400));
     this.reset();
   }
 

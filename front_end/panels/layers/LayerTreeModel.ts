@@ -32,7 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 
 export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
   readonly layerTreeAgent: ProtocolProxyApi.LayerTreeApi;
@@ -405,10 +405,10 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
 
     if (this.layerPayload.transform) {
       const transformMatrix = this.matrixFromArray(this.layerPayload.transform);
-      const anchorVector = new UI.Geometry.Vector(
+      const anchorVector = new Geometry.Vector(
           this.layerPayload.width * this.anchorPoint()[0], this.layerPayload.height * this.anchorPoint()[1],
           this.anchorPoint()[2]);
-      const anchorPoint = UI.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
+      const anchorPoint = Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
       const anchorMatrix = new WebKitCSSMatrix().translate(-anchorPoint.x, -anchorPoint.y, -anchorPoint.z);
       matrix = anchorMatrix.inverse().multiply(transformMatrix.multiply(anchorMatrix.multiply(matrix)));
     }
@@ -426,8 +426,8 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
     this.quadInternal = [];
     const vertices = this.createVertexArrayForRect(this.layerPayload.width, this.layerPayload.height);
     for (let i = 0; i < 4; ++i) {
-      const point = UI.Geometry.multiplyVectorByMatrixAndNormalize(
-          new UI.Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
+      const point = Geometry.multiplyVectorByMatrixAndNormalize(
+          new Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
       this.quadInternal.push(point.x, point.y);
     }
 

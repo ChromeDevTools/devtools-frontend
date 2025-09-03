@@ -29,6 +29,7 @@
  */
 /* eslint no-return-assign: "off" */
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives as LitDirectives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -39,7 +40,7 @@ import {StorageItemsToolbar} from './StorageItemsToolbar.js';
 const {ARIAUtils} = UI;
 const {EmptyWidget} = UI.EmptyWidget;
 const {VBox, widgetConfig} = UI.Widget;
-const {Size} = UI.Geometry;
+const {Size} = Geometry;
 const {repeat} = LitDirectives;
 
 type Widget = UI.Widget.Widget;

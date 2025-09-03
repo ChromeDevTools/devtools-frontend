@@ -32,11 +32,11 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import {Size} from './Geometry.js';
 import {AnchorBehavior, GlassPane} from './GlassPane.js';
 import {ListControl, type ListDelegate, ListMode} from './ListControl.js';
 import {ListModel} from './ListModel.js';
@@ -125,7 +125,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     const maxWidth = this.maxWidth(items);
     const length = this.maxItemsHeight ? Math.min(this.maxItemsHeight, items.length) : items.length;
     const maxHeight = length * this.rowHeight;
-    this.glassPane.setMaxContentSize(new Size(maxWidth, maxHeight));
+    this.glassPane.setMaxContentSize(new Geometry.Size(maxWidth, maxHeight));
   }
 
   private maxWidth(items: Suggestion[]): number {

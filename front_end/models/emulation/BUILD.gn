@@ -21,7 +21,7 @@ devtools_module("emulation") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
-    "../../ui/legacy:bundle",
+    "../geometry:bundle",
   ]
 }
 

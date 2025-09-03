@@ -76,6 +76,7 @@ devtools_module("sources") {
     "../../models/breakpoints:bundle",
     "../../models/extensions:bundle",
     "../../models/formatter:bundle",
+    "../../models/geometry:bundle",
     "../../models/issues_manager:bundle",
     "../../models/persistence:bundle",
     "../../models/source_map_scopes:bundle",

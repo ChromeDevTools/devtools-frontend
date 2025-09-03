@@ -32,9 +32,9 @@
 import '../../core/dom_extension/dom_extension.js';
 
 import * as Platform from '../../core/platform/platform.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
 
-import {Constraints, Size} from './Geometry.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 import {XWidget} from './XWidget.js';
 
@@ -266,8 +266,8 @@ export class Widget {
   #invalidationsSuspended = 0;
   #parentWidget: Widget|null = null;
   #defaultFocusedElement?: Element|null;
-  #cachedConstraints?: Constraints;
-  #constraints?: Constraints;
+  #cachedConstraints?: Geometry.Constraints;
+  #constraints?: Geometry.Constraints;
   #invalidationsRequested?: boolean;
   #externallyManaged?: boolean;
   #updateComplete = UPDATE_COMPLETE;
@@ -770,11 +770,11 @@ export class Widget {
     return this.element.hasFocus();
   }
 
-  calculateConstraints(): Constraints {
-    return new Constraints();
+  calculateConstraints(): Geometry.Constraints {
+    return new Geometry.Constraints();
   }
 
-  constraints(): Constraints {
+  constraints(): Geometry.Constraints {
     if (typeof this.#constraints !== 'undefined') {
       return this.#constraints;
     }
@@ -785,16 +785,17 @@ export class Widget {
   }
 
   setMinimumAndPreferredSizes(width: number, height: number, preferredWidth: number, preferredHeight: number): void {
-    this.#constraints = new Constraints(new Size(width, height), new Size(preferredWidth, preferredHeight));
+    this.#constraints =
+        new Geometry.Constraints(new Geometry.Size(width, height), new Geometry.Size(preferredWidth, preferredHeight));
     this.invalidateConstraints();
   }
 
   setMinimumSize(width: number, height: number): void {
-    this.minimumSize = new Size(width, height);
+    this.minimumSize = new Geometry.Size(width, height);
   }
 
-  set minimumSize(size: Size) {
-    this.#constraints = new Constraints(size);
+  set minimumSize(size: Geometry.Size) {
+    this.#constraints = new Geometry.Constraints(size);
     this.invalidateConstraints();
   }
 
@@ -949,8 +950,8 @@ export class VBox extends Widget {
     this.contentElement.classList.add('vbox');
   }
 
-  override calculateConstraints(): Constraints {
-    let constraints: Constraints = new Constraints();
+  override calculateConstraints(): Geometry.Constraints {
+    let constraints: Geometry.Constraints = new Geometry.Constraints();
 
     function updateForChild(this: Widget): void {
       const child = this.constraints();
@@ -988,8 +989,8 @@ export class HBox extends Widget {
     this.contentElement.classList.add('hbox');
   }
 
-  override calculateConstraints(): Constraints {
-    let constraints: Constraints = new Constraints();
+  override calculateConstraints(): Geometry.Constraints {
+    let constraints: Geometry.Constraints = new Geometry.Constraints();
 
     function updateForChild(this: Widget): void {
       const child = this.constraints();

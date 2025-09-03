@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
-import type {Size} from './Geometry.js';
+import type {Size} from '../../models/geometry/geometry.js';
+
 import glassPaneStyles from './glassPane.css.js';
 import {deepElementFromEvent, measuredScrollbarWidth} from './UIUtils.js';
 import {Widget} from './Widget.js';

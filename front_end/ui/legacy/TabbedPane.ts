@@ -35,13 +35,13 @@ import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
-import {Constraints, Size} from './Geometry.js';
 import tabbedPaneStyles from './tabbedPane.css.js';
 import type {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
@@ -551,14 +551,14 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.tabSlider.classList.toggle('enabled', enable);
   }
 
-  override calculateConstraints(): Constraints {
+  override calculateConstraints(): Geometry.Constraints {
     let constraints = super.calculateConstraints();
-    const minContentConstraints = new Constraints(new Size(0, 0), new Size(50, 50));
+    const minContentConstraints = new Geometry.Constraints(new Geometry.Size(0, 0), new Geometry.Size(50, 50));
     constraints = constraints.widthToMax(minContentConstraints).heightToMax(minContentConstraints);
     if (this.verticalTabLayout) {
-      constraints = constraints.addWidth(new Constraints(new Size(120, 0)));
+      constraints = constraints.addWidth(new Geometry.Constraints(new Geometry.Size(120, 0)));
     } else {
-      constraints = constraints.addHeight(new Constraints(new Size(0, 30)));
+      constraints = constraints.addHeight(new Geometry.Constraints(new Geometry.Size(0, 30)));
     }
     return constraints;
   }

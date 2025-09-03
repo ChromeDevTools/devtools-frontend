@@ -7,9 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-// TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
-import * as UI from '../../ui/legacy/legacy.js';
+import * as Geometry from '../geometry/geometry.js';
 
 import {
   type EmulatedDevice,
@@ -92,10 +90,10 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     SDK.TargetManager.SDKModelObserver<SDK.EmulationModel.EmulationModel> {
   #screenRectInternal: Rect;
   #visiblePageRectInternal: Rect;
-  #availableSize: UI.Geometry.Size;
-  #preferredSize: UI.Geometry.Size;
+  #availableSize: Geometry.Size;
+  #preferredSize: Geometry.Size;
   #initialized: boolean;
-  #appliedDeviceSizeInternal: UI.Geometry.Size;
+  #appliedDeviceSizeInternal: Geometry.Size;
   #appliedDeviceScaleFactorInternal: number;
   #appliedUserAgentTypeInternal: UA;
   readonly #scaleSettingInternal: Common.Settings.Setting<number>;
@@ -120,10 +118,10 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     super();
     this.#screenRectInternal = new Rect(0, 0, 1, 1);
     this.#visiblePageRectInternal = new Rect(0, 0, 1, 1);
-    this.#availableSize = new UI.Geometry.Size(1, 1);
-    this.#preferredSize = new UI.Geometry.Size(1, 1);
+    this.#availableSize = new Geometry.Size(1, 1);
+    this.#preferredSize = new Geometry.Size(1, 1);
     this.#initialized = false;
-    this.#appliedDeviceSizeInternal = new UI.Geometry.Size(1, 1);
+    this.#appliedDeviceSizeInternal = new Geometry.Size(1, 1);
     this.#appliedDeviceScaleFactorInternal = window.devicePixelRatio;
     this.#appliedUserAgentTypeInternal = UA.DESKTOP;
 
@@ -272,7 +270,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.#scaleSettingInternal;
   }
 
-  setAvailableSize(availableSize: UI.Geometry.Size, preferredSize: UI.Geometry.Size): void {
+  setAvailableSize(availableSize: Geometry.Size, preferredSize: Geometry.Size): void {
     this.#availableSize = availableSize;
     this.#preferredSize = preferredSize;
     this.#initialized = true;
@@ -378,7 +376,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.#fitScaleInternal;
   }
 
-  appliedDeviceSize(): UI.Geometry.Size {
+  appliedDeviceSize(): Geometry.Size {
     return this.#appliedDeviceSizeInternal;
   }
 
@@ -562,9 +560,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         this.#appliedUserAgentTypeInternal = this.#deviceInternal.touch() ? UA.DESKTOP_TOUCH : UA.DESKTOP;
       }
       this.applyDeviceMetrics(
-          new UI.Geometry.Size(orientation.width, orientation.height), insets, outline,
-          this.#scaleSettingInternal.get(), this.#deviceInternal.deviceScaleFactor, mobile,
-          this.getScreenOrientationType(), resetPageScaleFactor);
+          new Geometry.Size(orientation.width, orientation.height), insets, outline, this.#scaleSettingInternal.get(),
+          this.#deviceInternal.deviceScaleFactor, mobile, this.getScreenOrientationType(), resetPageScaleFactor);
       this.applyUserAgent(this.#deviceInternal.userAgent, this.#deviceInternal.userAgentMetadata);
       this.applyTouch(this.#deviceInternal.touch(), mobile);
     } else if (this.#typeInternal === Type.None) {
@@ -588,7 +585,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       this.#fitScaleInternal = this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get());
       this.#appliedUserAgentTypeInternal = this.#uaSettingInternal.get();
       this.applyDeviceMetrics(
-          new UI.Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0),
+          new Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0),
           this.#scaleSettingInternal.get(), this.#deviceScaleFactorSettingInternal.get() || defaultDeviceScaleFactor,
           mobile,
           screenHeight >= screenWidth ? Protocol.Emulation.ScreenOrientationType.PortraitPrimary :
@@ -644,7 +641,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private applyDeviceMetrics(
-      screenSize: UI.Geometry.Size, insets: Insets, outline: Insets, scale: number, deviceScaleFactor: number,
+      screenSize: Geometry.Size, insets: Insets, outline: Insets, scale: number, deviceScaleFactor: number,
       mobile: boolean, screenOrientation: Protocol.Emulation.ScreenOrientationType|null,
       resetPageScaleFactor: boolean): void {
     screenSize.width = Math.max(1, Math.floor(screenSize.width));

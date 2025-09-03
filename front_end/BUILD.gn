@@ -135,6 +135,7 @@ group("unittests") {
     "models/emulation:unittests",
     "models/extensions:unittests",
     "models/formatter:unittests",
+    "models/geometry:unittests",
     "models/har:unittests",
     "models/heap_snapshot_model:unittests",
     "models/issues_manager:unittests",

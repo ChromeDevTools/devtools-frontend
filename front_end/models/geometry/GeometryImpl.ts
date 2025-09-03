@@ -219,8 +219,8 @@ export class EulerAngles {
       } else {                                 // cos(gamma) == 0, cos(beta) < 0
         alpha = Math.atan2(rotationMatrix.m21, -rotationMatrix.m22);
         beta = -Math.asin(rotationMatrix.m23);
-        beta += (beta > 0 || Math.abs(beta) < EPS) ? -Math.PI : Math.PI;   // beta [-pi,-pi/2) U (pi/2,pi)
-        gamma = -(Math.PI / 2);                                            // gamma = -pi/2
+        beta += (beta > 0 || Math.abs(beta) < EPS) ? -Math.PI : Math.PI;  // beta [-pi,-pi/2) U (pi/2,pi)
+        gamma = -(Math.PI / 2);                                           // gamma = -pi/2
       }
     } else if (rotationMatrix.m33 > 0) {  // cos(beta) > 0
       alpha = Math.atan2(-rotationMatrix.m21, rotationMatrix.m22);
@@ -229,8 +229,8 @@ export class EulerAngles {
     } else {                                                        // cos(beta) < 0
       alpha = Math.atan2(rotationMatrix.m21, -rotationMatrix.m22);
       beta = -Math.asin(rotationMatrix.m23);
-      beta += (beta > 0 || Math.abs(beta) < EPS) ? -Math.PI : Math.PI;   // beta [-pi,-pi/2) U (pi/2,pi)
-      gamma = Math.atan2(rotationMatrix.m13, -rotationMatrix.m33);       // gamma (-pi/2, pi/2)
+      beta += (beta > 0 || Math.abs(beta) < EPS) ? -Math.PI : Math.PI;  // beta [-pi,-pi/2) U (pi/2,pi)
+      gamma = Math.atan2(rotationMatrix.m13, -rotationMatrix.m33);      // gamma (-pi/2, pi/2)
     }
 
     // alpha is in [-pi, pi], make sure it is in [0, 2*pi).

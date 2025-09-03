@@ -9,6 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -84,7 +85,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     x: number,
     y: number,
   }|null;
-  private resizeStart?: UI.Geometry.Size;
+  private resizeStart?: Geometry.Size;
   private cachedCssScreenRect?: EmulationModel.DeviceModeModel.Rect;
   private cachedCssVisiblePageRect?: EmulationModel.DeviceModeModel.Rect;
   private cachedOutlineRect?: EmulationModel.DeviceModeModel.Rect;
@@ -214,7 +215,7 @@ export class DeviceModeView extends UI.Widget.VBox {
   private onResizeStart(): void {
     this.slowPositionStart = null;
     const rect = this.model.screenRect();
-    this.resizeStart = new UI.Geometry.Size(rect.width, rect.height);
+    this.resizeStart = new Geometry.Size(rect.width, rect.height);
   }
 
   private onResizeUpdate(widthFactor: number, heightFactor: number, event: {
@@ -400,7 +401,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const rect = element.getBoundingClientRect();
     const availableSize =
-        new UI.Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+        new Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
     this.model.setAvailableSize(availableSize, availableSize);
   }
 
@@ -408,8 +409,8 @@ export class DeviceModeView extends UI.Widget.VBox {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const rect = this.contentArea.getBoundingClientRect();
     const availableSize =
-        new UI.Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
-    const preferredSize = new UI.Geometry.Size(
+        new Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+    const preferredSize = new Geometry.Size(
         Math.max((rect.width - 2 * (this.handleWidth || 0)) * zoomFactor, 1),
         Math.max((rect.height - (this.handleHeight || 0)) * zoomFactor, 1));
     this.model.setAvailableSize(availableSize, preferredSize);

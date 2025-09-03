@@ -33,6 +33,7 @@ devtools_module("common") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../models/geometry:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/components/spinners:bundle",

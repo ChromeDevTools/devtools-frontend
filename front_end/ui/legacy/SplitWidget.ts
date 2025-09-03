@@ -32,10 +32,10 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import {Constraints} from './Geometry.js';
 import {Events as ResizerWidgetEvents, type ResizeUpdatePositionEvent, SimpleResizerWidget} from './ResizerWidget.js';
 import splitWidgetStyles from './splitWidget.css.js';
 import {ToolbarButton} from './Toolbar.js';
@@ -612,7 +612,8 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const totalSize = this.#totalSizeDIP();
     const zoomFactor = this.#constraintsInDip ? 1 : ZoomManager.instance().zoomFactor();
 
-    let constraints: Constraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Constraints();
+    let constraints: Geometry.Constraints =
+        this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry.Constraints();
     let minSidebarSize: 20|number = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
     if (!minSidebarSize) {
       minSidebarSize = MinPadding;
@@ -634,7 +635,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     }
     preferredSidebarSize += zoomFactor;  // 1 css pixel for splitter border.
 
-    constraints = this.#mainWidget ? this.#mainWidget.constraints() : new Constraints();
+    constraints = this.#mainWidget ? this.#mainWidget.constraints() : new Geometry.Constraints();
     let minMainSize: 20|number = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
     if (!minMainSize) {
       minMainSize = MinPadding;
@@ -690,16 +691,18 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.#updateLayout();
   }
 
-  override calculateConstraints(): Constraints {
+  override calculateConstraints(): Geometry.Constraints {
     if (this.#showMode === ShowMode.ONLY_MAIN) {
-      return this.#mainWidget ? this.#mainWidget.constraints() : new Constraints();
+      return this.#mainWidget ? this.#mainWidget.constraints() : new Geometry.Constraints();
     }
     if (this.#showMode === ShowMode.ONLY_SIDEBAR) {
-      return this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Constraints();
+      return this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry.Constraints();
     }
 
-    let mainConstraints: Constraints = this.#mainWidget ? this.#mainWidget.constraints() : new Constraints();
-    let sidebarConstraints: Constraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Constraints();
+    let mainConstraints: Geometry.Constraints =
+        this.#mainWidget ? this.#mainWidget.constraints() : new Geometry.Constraints();
+    let sidebarConstraints: Geometry.Constraints =
+        this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry.Constraints();
     const min = MinPadding;
     if (this.#isVertical) {
       mainConstraints = mainConstraints.widthToMax(min).addWidth(1);  // 1 for splitter

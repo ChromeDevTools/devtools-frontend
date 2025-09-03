@@ -1617,8 +1617,6 @@ export namespace Autofill {
   export interface AddressField {
     /**
      * address field name, for example GIVEN_NAME.
-     * The full list of supported field names:
-     * https://source.chromium.org/chromium/chromium/src/+/main:components/autofill/core/browser/field_types.cc;l=38
      */
     name: string;
     /**
@@ -1710,13 +1708,9 @@ export namespace Autofill {
      */
     frameId?: Page.FrameId;
     /**
-     * Credit card information to fill out the form. Credit card data is not saved.  Mutually exclusive with `address`.
+     * Credit card information to fill out the form. Credit card data is not saved.
      */
-    card?: CreditCard;
-    /**
-     * Address to fill out the form. Address data is not saved. Mutually exclusive with `card`.
-     */
-    address?: Address;
+    card: CreditCard;
   }
 
   export interface SetAddressesRequest {
@@ -11193,6 +11187,13 @@ export namespace Network {
      * Whether IP proxy is available
      */
     status: IpProxyStatus;
+  }
+
+  export interface SetIPProtectionProxyBypassEnabledRequest {
+    /**
+     * Whether IP Proxy is being bypassed by devtools; false by default.
+     */
+    enabled: boolean;
   }
 
   export interface SetAcceptedEncodingsRequest {

@@ -2446,6 +2446,11 @@ declare namespace ProtocolProxyApi {
     invoke_getIPProtectionProxyStatus(): Promise<Protocol.Network.GetIPProtectionProxyStatusResponse>;
 
     /**
+     * Sets bypass IP Protection Proxy boolean.
+     */
+    invoke_setIPProtectionProxyBypassEnabled(params: Protocol.Network.SetIPProtectionProxyBypassEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
      */
     invoke_setAcceptedEncodings(params: Protocol.Network.SetAcceptedEncodingsRequest): Promise<Protocol.ProtocolResponseWithError>;

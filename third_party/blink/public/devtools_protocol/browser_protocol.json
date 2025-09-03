@@ -2454,7 +2454,7 @@
                     "properties": [
                         {
                             "name": "name",
-                            "description": "address field name, for example GIVEN_NAME.\nThe full list of supported field names:\nhttps://source.chromium.org/chromium/chromium/src/+/main:components/autofill/core/browser/field_types.cc;l=38",
+                            "description": "address field name, for example GIVEN_NAME.",
                             "type": "string"
                         },
                         {
@@ -2602,15 +2602,8 @@
                         },
                         {
                             "name": "card",
-                            "description": "Credit card information to fill out the form. Credit card data is not saved.  Mutually exclusive with `address`.",
-                            "optional": true,
+                            "description": "Credit card information to fill out the form. Credit card data is not saved.",
                             "$ref": "CreditCard"
-                        },
-                        {
-                            "name": "address",
-                            "description": "Address to fill out the form. Address data is not saved. Mutually exclusive with `card`.",
-                            "optional": true,
-                            "$ref": "Address"
                         }
                     ]
                 },
@@ -16934,6 +16927,18 @@
                             "name": "status",
                             "description": "Whether IP proxy is available",
                             "$ref": "IpProxyStatus"
+                        }
+                    ]
+                },
+                {
+                    "name": "setIPProtectionProxyBypassEnabled",
+                    "description": "Sets bypass IP Protection Proxy boolean.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enabled",
+                            "description": "Whether IP Proxy is being bypassed by devtools; false by default.",
+                            "type": "boolean"
                         }
                     ]
                 },

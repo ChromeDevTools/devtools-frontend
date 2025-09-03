@@ -45,7 +45,7 @@ import * as Geometry from '../../models/geometry/geometry.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
-import {Directives, type LitTemplate, render} from '../lit/lit.js';
+import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ActionRegistration from './ActionRegistration.js';
@@ -73,6 +73,7 @@ declare global {
     'dt-small-bubble': DevToolsSmallBubble;
   }
 }
+const {Directives, render} = Lit;
 
 const UIStrings = {
   /**
@@ -2189,7 +2190,44 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
   });
 }
 
+class InterceptBindingDirective extends Lit.Directive.Directive {
+  static readonly #interceptedBindings = new WeakMap<Element, Map<string, (e: Event) => void>>();
+
+  constructor(part: Lit.Directive.PartInfo) {
+    super(part);
+    if (part.type !== Lit.Directive.PartType.EVENT) {
+      throw new Error('This directive is for event bindings only');
+    }
+  }
+
+  override update(part: Lit.Directive.EventPart, [listener]: [(e: Event) => void]): undefined {
+    let eventListeners = InterceptBindingDirective.#interceptedBindings.get(part.element);
+    if (!eventListeners) {
+      eventListeners = new Map();
+      InterceptBindingDirective.#interceptedBindings.set(part.element, eventListeners);
+    }
+    eventListeners.set(part.name, listener);
+
+    return this.render(listener);
+  }
+
+  render(_listener: (e: Event) => void): undefined {
+    return undefined;
+  }
+
+  static attachEventListeners(templateElement: Element, renderedElement: Element): void {
+    const eventListeners = InterceptBindingDirective.#interceptedBindings.get(templateElement);
+    if (!eventListeners) {
+      return;
+    }
+    for (const [name, listener] of eventListeners) {
+      renderedElement.addEventListener(name, listener);
+    }
+  }
+}
+
 export class HTMLElementWithLightDOMTemplate extends HTMLElement {
+  static readonly on = Lit.Directive.directive(InterceptBindingDirective);
   readonly #mutationObserver = new MutationObserver(this.#onChange.bind(this));
   #contentTemplate: HTMLTemplateElement|null = null;
 
@@ -2198,7 +2236,18 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     this.#mutationObserver.observe(this, {childList: true, attributes: true, subtree: true, characterData: true});
   }
 
-  set template(template: LitTemplate) {
+  static cloneNode(node: Node): Node {
+    const clone = node.cloneNode(false);
+    for (const child of node.childNodes) {
+      clone.appendChild(HTMLElementWithLightDOMTemplate.cloneNode(child));
+    }
+    if (node instanceof Element && clone instanceof Element) {
+      InterceptBindingDirective.attachEventListeners(node, clone);
+    }
+    return clone;
+  }
+
+  set template(template: Lit.LitTemplate) {
     if (!this.#contentTemplate) {
       this.removeChildren();
       this.#contentTemplate = this.createChild('template');

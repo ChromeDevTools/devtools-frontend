@@ -1571,7 +1571,7 @@ class TreeViewTreeElement extends TreeElement {
       if (child instanceof HTMLUListElement && child.role === 'group') {
         continue;
       }
-      this.titleElement.appendChild(child.cloneNode(true));
+      this.titleElement.appendChild(HTMLElementWithLightDOMTemplate.cloneNode(child));
     }
 
     this.#activeHighlights.apply(this.titleElement);

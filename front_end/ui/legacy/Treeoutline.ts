@@ -1690,7 +1690,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     return treeElement ? {expanded, treeElement} : null;
   }
 
-  protected override updateNodes(node: Node, attributeName: string|null): void {
+  protected override updateNode(node: Node, attributeName: string|null): void {
     while (node?.parentNode && !(node instanceof HTMLElement)) {
       node = node.parentNode;
     }

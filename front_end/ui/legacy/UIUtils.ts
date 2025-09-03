@@ -2260,14 +2260,18 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
   }
 
   #onChange(mutationList: MutationRecord[]): void {
+    this.onChange(mutationList);
     for (const mutation of mutationList) {
       this.removeNodes(mutation.removedNodes);
       this.addNodes(mutation.addedNodes);
-      this.updateNodes(mutation.target, mutation.attributeName);
+      this.updateNode(mutation.target, mutation.attributeName);
     }
   }
 
-  protected updateNodes(_node: Node, _attributeName: string|null): void {
+  protected onChange(_mutationList: MutationRecord[]): void {
+  }
+
+  protected updateNode(_node: Node, _attributeName: string|null): void {
   }
 
   protected addNodes(_nodes: NodeList|Node[]): void {

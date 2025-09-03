@@ -40,11 +40,10 @@ const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least o
  * @attribute striped
  * @attribute displayName
  */
-class DataGridElement extends HTMLElement {
+class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
   static readonly observedAttributes = ['striped', 'name', 'inline'];
 
   #dataGrid = SortableDataGrid.create([DUMMY_COLUMN_ID], [], '') as SortableDataGrid<DataGridElementNode>;
-  #mutationObserver = new MutationObserver(this.#onChange.bind(this));
   #resizeObserver = new ResizeObserver(() => {
     if (!this.inline) {
       this.#dataGrid.onResize();
@@ -94,10 +93,9 @@ class DataGridElement extends HTMLElement {
       }
     });
 
-    this.#mutationObserver.observe(this, {childList: true, attributes: true, subtree: true, characterData: true});
     this.#resizeObserver.observe(this);
     this.#updateColumns();
-    this.#addNodes(this.querySelectorAll('tr'));
+    this.addNodes(this.querySelectorAll('tr'));
   }
 
   attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void {
@@ -248,7 +246,7 @@ class DataGridElement extends HTMLElement {
     return null;
   }
 
-  #addNodes(nodes: NodeList): void {
+  override addNodes(nodes: NodeList): void {
     for (const element of this.#getDataRows(nodes)) {
       const parentNode = this.#dataGrid.rootNode();  // TODO(dsv): support nested nodes
       const nextNode = this.#findNextExistingNode(element);
@@ -270,7 +268,7 @@ class DataGridElement extends HTMLElement {
     }
   }
 
-  #removeNodes(nodes: NodeList): void {
+  override removeNodes(nodes: NodeList): void {
     for (const element of this.#getDataRows(nodes)) {
       const node = DataGridElementNode.get(element);
       if (node) {
@@ -279,7 +277,7 @@ class DataGridElement extends HTMLElement {
     }
   }
 
-  #updateNode(node: Node, attributeName: string|null): void {
+  override updateNode(node: Node, attributeName: string|null): void {
     while (node?.parentNode && !(node instanceof HTMLElement)) {
       node = node.parentNode;
     }
@@ -322,17 +320,11 @@ class DataGridElement extends HTMLElement {
     }
   }
 
-  #onChange(mutationList: MutationRecord[]): void {
+  override onChange(mutationList: MutationRecord[]): void {
     if (this.#needUpdateColumns(mutationList)) {
       this.#updateColumns();
     }
     this.#updateCreationNode();
-
-    for (const mutation of mutationList) {
-      this.#removeNodes(mutation.removedNodes);
-      this.#addNodes(mutation.addedNodes);
-      this.#updateNode(mutation.target, mutation.attributeName);
-    }
   }
 
   #editCallback(

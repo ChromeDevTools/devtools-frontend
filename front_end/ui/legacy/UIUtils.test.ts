@@ -269,7 +269,7 @@ describe('UIUtils', () => {
         this.additions.splice(0);
         this.removals.splice(0);
       }
-      override updateNodes(node: Node, attributeName: string|null): void {
+      override updateNode(node: Node, attributeName: string|null): void {
         this.updates.push({node: node.nodeName, attributeName});
       }
 

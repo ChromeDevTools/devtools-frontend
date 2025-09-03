@@ -140,6 +140,13 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorViewInstance: InspectorView|null = null;
 
+const MIN_MAIN_PANEL_WIDTH = 240;
+const MIN_VERTICAL_DRAWER_WIDTH = 200;
+// Inspector need to have space for both main panel and the drawer + some slack for borders
+const MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER = 250;
+const MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER = 450;
+const MIN_INSPECTOR_HEIGHT = 72;
+
 export enum DrawerOrientation {
   VERTICAL = 'vertical',
   HORIZONTAL = 'horizontal',
@@ -167,7 +174,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   constructor() {
     super();
     GlassPane.setContainer(this.element);
-    this.setMinimumSize(250, 72);
+    this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
 
     // DevTools sidebar is a vertical split of main tab bar panels and a drawer.
     this.drawerOrientationSetting =
@@ -190,7 +197,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     const moreTabsButton = this.drawerTabbedLocation.enableMoreTabsButton();
     moreTabsButton.setTitle(i18nString(UIStrings.moreTools));
     this.drawerTabbedPane = this.drawerTabbedLocation.tabbedPane();
-    this.setDrawerMinimumSize();
+    this.setDrawerRelatedMinimumSizes();
     this.drawerTabbedPane.element.classList.add('drawer-tabbed-pane');
     this.drawerTabbedPane.element.setAttribute('jslog', `${VisualLogging.drawer()}`);
     const closeDrawerButton = new ToolbarButton(i18nString(UIStrings.closeDrawer), 'cross');
@@ -234,6 +241,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
         'panel', true, true, Root.Runtime.Runtime.queryParam('panel'));
 
     this.tabbedPane = this.tabbedLocation.tabbedPane();
+    this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
     this.tabbedPane.element.classList.add('main-tabbed-pane');
     // The 'Inspect element' and 'Device mode' buttons in the tabs toolbar takes longer to load than
     // the tabs themselves, so a space equal to the buttons' total width is preemptively allocated
@@ -453,21 +461,23 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.drawerOrientationSetting.set(drawerWillBeVertical ? DrawerOrientation.VERTICAL : DrawerOrientation.HORIZONTAL);
     this.#toggleOrientationButton.setGlyph(drawerWillBeVertical ? 'dock-bottom' : 'dock-right');
     this.drawerSplitWidget.setVertical(drawerWillBeVertical);
-    this.setDrawerMinimumSize();
+    this.setDrawerRelatedMinimumSizes();
   }
 
   isUserExplicitlyUpdatedDrawerOrientation(): boolean {
     return this.drawerOrientationSetting.get() !== DrawerOrientation.UNSET;
   }
 
-  setDrawerMinimumSize(): void {
+  setDrawerRelatedMinimumSizes(): void {
     const drawerIsVertical = this.drawerSplitWidget.isVertical();
     if (drawerIsVertical) {
       // Set minimum size when the drawer is vertical to ensure the buttons will always be
       // visible during resizing.
-      this.drawerTabbedPane.setMinimumSize(200, 27);
+      this.drawerTabbedPane.setMinimumSize(MIN_VERTICAL_DRAWER_WIDTH, 27);
+      this.setMinimumSize(MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER, MIN_INSPECTOR_HEIGHT);
     } else {
       this.drawerTabbedPane.setMinimumSize(0, 27);
+      this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
     }
   }
 

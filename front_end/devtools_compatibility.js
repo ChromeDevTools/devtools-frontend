@@ -406,7 +406,6 @@ window.DevToolsAPI = DevToolsAPI;
 const EnumeratedHistogram = {
   // LINT.IfChange(EnumeratedHistogram)
   ActionTaken: 'DevTools.ActionTaken',
-  CSSHintShown: 'DevTools.CSSHintShown',
   DeveloperResourceLoaded: 'DevTools.DeveloperResourceLoaded',
   DeveloperResourceScheme: 'DevTools.DeveloperResourceScheme',
   ExperimentDisabled: 'DevTools.ExperimentDisabled',

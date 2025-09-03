@@ -2558,7 +2558,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           propertyName, this.computedStyles || undefined, this.parentsComputedStyles || undefined,
           localName?.toLowerCase(), fontFaces);
       if (hint) {
-        Host.userMetrics.cssHintShown(validator.getMetricType());
         const wrapper = document.createElement('span');
         wrapper.classList.add('hint-wrapper');
         const hintIcon = new IconButton.Icon.Icon();

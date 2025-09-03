@@ -1548,18 +1548,13 @@ class ActiveHighlights {
 
 class TreeViewTreeElement extends TreeElement {
   #activeHighlights = new ActiveHighlights();
+  #clonedAttributes = new Set<string>();
 
   static #elementToTreeElement = new WeakMap<Node, TreeViewTreeElement>();
   readonly configElement: HTMLLIElement;
 
   constructor(treeOutline: TreeOutline, configElement: HTMLLIElement) {
     super(undefined, undefined, configElement.getAttribute('jslog-context') ?? undefined);
-    for (let i = 0; i < configElement.attributes.length; ++i) {
-      const attribute = configElement.attributes.item(i);
-      if (attribute && attribute.name !== 'role' && SDK.DOMModel.ARIA_ATTRIBUTES.has(attribute.name)) {
-        this.listItemElement.setAttribute(attribute.name, attribute.value);
-      }
-    }
     this.configElement = configElement;
     TreeViewTreeElement.#elementToTreeElement.set(configElement, this);
     this.refresh();
@@ -1573,6 +1568,15 @@ class TreeViewTreeElement extends TreeElement {
 
   refresh(): void {
     this.titleElement.textContent = '';
+    this.#clonedAttributes.forEach(attr => this.listItemElement.attributes.removeNamedItem(attr));
+    this.#clonedAttributes.clear();
+    for (let i = 0; i < this.configElement.attributes.length; ++i) {
+      const attribute = this.configElement.attributes.item(i);
+      if (attribute && attribute.name !== 'role' && SDK.DOMModel.ARIA_ATTRIBUTES.has(attribute.name)) {
+        this.listItemElement.setAttribute(attribute.name, attribute.value);
+        this.#clonedAttributes.add(attribute.name);
+      }
+    }
 
     for (const child of this.configElement.childNodes) {
       if (child instanceof HTMLUListElement && child.role === 'group') {

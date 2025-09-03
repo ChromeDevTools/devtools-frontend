@@ -643,8 +643,8 @@ export const setEventListenerBreakpoint = function(id, enabled, targetName) {
   }
 
   if (breakpoint.enabled() !== enabled) {
-    pane.breakpoints.get(breakpoint).checkbox.checked = enabled;
-    pane.breakpointCheckboxClicked(breakpoint);
+    breakpoint.setEnabled(enabled);
+    pane.update();
   }
 };
 

@@ -10,6 +10,7 @@
  **/
 
 import type * as Platform from '../core/platform/platform.js';
+import * as Buttons from '../ui/components/buttons/buttons.js';
 import type * as NodeText from '../ui/components/node_text/node_text.js';
 import * as UI from '../ui/legacy/legacy.js';
 
@@ -19,6 +20,7 @@ const TEST_CONTAINER_ID = '__devtools-test-container-id';
 
 interface RenderOptions {
   allowMultipleChildren?: boolean;
+  includeCommonStyles?: boolean;
 }
 
 /**
@@ -36,6 +38,10 @@ export function renderElementIntoDOM<E extends Node|UI.Widget.Widget>(
 
   if (container.childNodes.length !== 0 && !allowMultipleChildren) {
     throw new Error(`renderElementIntoDOM expects the container to be empty ${container.innerHTML}`);
+  }
+  if (renderOptions.includeCommonStyles) {
+    container.appendChild(document.createElement('style')).textContent = UI.inspectorCommonStyles;
+    container.appendChild(document.createElement('style')).textContent = Buttons.textButtonStyles;
   }
   if (element instanceof Node) {
     container.appendChild(element);

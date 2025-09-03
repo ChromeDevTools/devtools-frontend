@@ -1479,6 +1479,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (this.#conversation) {
       void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
     }
+
     const generator = this.#conversationAgent.run(
         text, {
           signal,

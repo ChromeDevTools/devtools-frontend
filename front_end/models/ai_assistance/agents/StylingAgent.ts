@@ -7,9 +7,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-// TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
-import * as UI from '../../../ui/legacy/legacy.js';
 import {ChangeManager} from '../ChangeManager.js';
 import {debugLog} from '../debug.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
@@ -111,7 +108,7 @@ async function executeJsCode(
   if (!contextNode) {
     throw new Error('Cannot execute JavaScript because of missing context node');
   }
-  const target = contextNode.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
+  const target = contextNode.domModel().target();
 
   if (!target) {
     throw new Error('Target is not found for executing code');
@@ -607,7 +604,10 @@ const data = {
       const result = await Promise.race([
         this.#execJs(
             functionDeclaration,
-            {throwOnSideEffect, contextNode: this.context?.getItem() || null},
+            {
+              throwOnSideEffect,
+              contextNode: this.context?.getItem() || null,
+            },
             ),
         new Promise<never>((_, reject) => {
           setTimeout(
@@ -730,7 +730,7 @@ const data = {
   }
 
   #getSelectedNode(): SDK.DOMModel.DOMNode|null {
-    return UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    return this.context?.getItem() ?? null;
   }
 
   async getComputedStyles(relations: Relation[], properties: string[], _options?: {
@@ -820,8 +820,11 @@ const data = {
     }
 
     const selectedNode = this.#getSelectedNode();
-    const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
-    if (target?.model(SDK.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
+    if (!selectedNode) {
+      return {error: 'Error: no selected node found.'};
+    }
+    const target = selectedNode.domModel().target();
+    if (target.model(SDK.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
       return {
         error: 'Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint.',
       };

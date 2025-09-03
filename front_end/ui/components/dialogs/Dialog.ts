@@ -266,6 +266,12 @@ export class Dialog extends HTMLElement {
 
   set state(state: DialogState) {
     this.#props.state = state;
+
+    // Handles teardown process in case dialog is collapsed or disabled
+    if (this.#props.state === DialogState.COLLAPSED || this.#props.state === DialogState.DISABLED) {
+      this.#forceDialogCloseInDevToolsBound();
+    }
+
     this.#onStateChange();
   }
 
@@ -312,12 +318,10 @@ export class Dialog extends HTMLElement {
 
   async setDialogVisible(show: boolean): Promise<void> {
     if (show) {
-      this.state = DialogState.EXPANDED;
       await this.#showDialog();
       return;
     }
 
-    this.state = DialogState.COLLAPSED;
     this.#closeDialog();
   }
 
@@ -775,7 +779,8 @@ export const enum DialogVerticalPosition {
 
 export const enum DialogState {
   EXPANDED = 'expanded',
-  COLLAPSED = 'collapsed'
+  COLLAPSED = 'collapsed',
+  DISABLED = 'disabled'
 }
 
 export const enum DialogHorizontalAlignment {

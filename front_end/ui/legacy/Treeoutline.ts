@@ -1552,7 +1552,7 @@ class TreeViewTreeElement extends TreeElement {
   readonly configElement: HTMLLIElement;
 
   constructor(treeOutline: TreeOutline, configElement: HTMLLIElement) {
-    super();
+    super(undefined, undefined, configElement.getAttribute('jslog-context') ?? undefined);
     this.configElement = configElement;
     TreeViewTreeElement.#elementToTreeElement.set(configElement, this);
     this.refresh();
@@ -1606,7 +1606,11 @@ function getTreeNodes(nodeList: NodeList|Node[]): HTMLLIElement[] {
 }
 
 /**
- * A tree element that can be used as progressive enhancement over a <ul> element.
+ * A tree element that can be used as progressive enhancement over a <ul> element. A `template` IDL attribute allows
+ * additionally to insert the <ul> into a <template>, avoiding rendering anything into light DOM. The <ul> itself will
+ * be cloned into shadow DOM and rendered there.
+ *
+ * ## Usage ##
  *
  * It can be used as
  * ```
@@ -1617,7 +1621,7 @@ function getTreeNodes(nodeList: NodeList|Node[]): HTMLLIElement[] {
  *          Tree Node Text
  *          <ul role="group">
  *            Node with subtree
- *            <li role="treeitem">
+ *            <li role="treeitem" jslog-context="context">
  *              <ul role="group" hidden>
  *                <li role="treeitem">Tree Node Text in collapsed subtree</li>
  *                <li role="treeitem">Tree Node Text in collapsed subtree</li>
@@ -1631,12 +1635,29 @@ function getTreeNodes(nodeList: NodeList|Node[]): HTMLLIElement[] {
  * ></devtools-tree>
  *
  * ```
- * where a <li role="treeitem"> element defines a tree node and its contents. The `selected` attribute on an <li>
- * declares that this tree node should be selected on render. If a tree node contains a <ul role="group">, that defines
- * a subtree under that tree node. The `hidden` attribute on the <ul> defines whether that subtree should render as
- * collapsed initially.
+ * where a <li role="treeitem"> element defines a tree node and its contents (the <li> is the `config element` for this
+ * tree node). If a tree node contains a <ul role="group">, that defines a subtree under that tree node. The `hidden`
+ * attribute on the <ul> defines whether that subtree should render as collapsed. Note that node expanding/collapsing do
+ * not reflect this state back to the attribute on the config element, those state changes are rather sent out as
+ * `expand` events.
  *
  * Under the hood this uses TreeOutline.
+ *
+ * ## Config Element Attributes ##
+ *
+ * - `selected`: Whether the tree node should be rendered as selected.
+ * - `jslog-context`: The jslog context for the tree element.
+ * - `hidden`: On the <ul>, declares whether the subtree should be rendererd as expanded or collapsed.
+ *
+ * ## Event Handling ##
+ *
+ * Since config elements are cloned into the shadow DOM, it's not possible to directly attach event listeners to the
+ * children of config elements. Instead, the `HTMLElementWithLightDOMTemplate.on` directive should be used as a wrapper:
+ * ```
+ * <li role="treeitem">
+ *   <button @click=${on(clickHandler)}>click me</button>
+ * </li>
+ * ```
  *
  * @property template Define the tree contents
  * @event selected A node was selected
@@ -1657,13 +1678,13 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     });
     this.#treeOutline.addEventListener(Events.ElementExpanded, event => {
       if (event.data instanceof TreeViewTreeElement) {
-        event.data.configElement.dispatchEvent(new TreeViewElement.ExpandEvent(
+        this.dispatchEvent(new TreeViewElement.ExpandEvent(
             {expanded: true, target: (event.data as TreeViewTreeElement).configElement}));
       }
     });
     this.#treeOutline.addEventListener(Events.ElementCollapsed, event => {
       if (event.data instanceof TreeViewTreeElement) {
-        event.data.configElement.dispatchEvent(new TreeViewElement.ExpandEvent(
+        this.dispatchEvent(new TreeViewElement.ExpandEvent(
             {expanded: false, target: (event.data as TreeViewTreeElement).configElement}));
       }
     });

@@ -221,23 +221,26 @@ describe('TreeViewElement', () => {
   it('sends an `expand` event when a node is expanded or collapsed', async () => {
     const onExpand = sinon.stub<[UI.TreeOutline.TreeViewElement.ExpandEvent]>();
     let firstConfigElement: Element|undefined, secondConfigElement: Element|undefined;
-    const component = await makeTree(html`<devtools-tree .template=${html`
-      <ul role="tree">
-        <li @expand=${onExpand as (e: UI.TreeOutline.TreeViewElement.ExpandEvent) => void} ${Lit.Directives.ref(e => {
+    const component = await makeTree(html`
+     <devtools-tree
+       @expand=${onExpand as (e: UI.TreeOutline.TreeViewElement.ExpandEvent) => void}
+       .template=${html`
+         <ul role="tree">
+           <li  ${Lit.Directives.ref(e => {
       firstConfigElement = e;
     })} role="treeitem">first subtree
-          <ul role="group" hidden>
-            <li role="treeitem">in first subtree</li>
-          </ul>
-        </li>
-        <li @expand=${onExpand as (e: UI.TreeOutline.TreeViewElement.ExpandEvent) => void} ${Lit.Directives.ref(e => {
+             <ul role="group" hidden>
+               <li role="treeitem">in first subtree</li>
+             </ul>
+           </li>
+           <li  ${Lit.Directives.ref(e => {
       secondConfigElement = e;
     })} role="treeitem">second subtree
-          <ul role="group" hidden>
-            <li role="treeitem">in second subtree</li>
-          </ul>
-        </li>
-      </ul>`}></devtools-tree>`);
+             <ul role="group" hidden>
+               <li role="treeitem">in second subtree</li>
+             </ul>
+           </li>
+         </ul>`}></devtools-tree>`);
 
     assert.exists(firstConfigElement);
     assert.exists(secondConfigElement);
@@ -248,6 +251,24 @@ describe('TreeViewElement', () => {
     component.getInternalTreeOutlineForTest().rootElement().lastChild()?.collapse();
     sinon.assert.calledTwice(onExpand);
     assert.deepEqual(onExpand.args[1][0].detail, {expanded: false, target: secondConfigElement});
+  });
+
+  it('applies jslog contexts to tree elements', async () => {
+    const component = await makeTree(html`
+      <devtools-tree
+        .template=${html`
+          <ul role="tree">
+            <li role="treeitem" jslog-context="first">first node</li>
+            <li role="treeitem" jslog-context="second">second node</li>
+          </ul>
+        `}></devtools-tree>`);
+    assert.deepEqual(
+        component.getInternalTreeOutlineForTest().rootElement().children().map(
+            element => element.listItemElement.getAttribute('jslog')),
+        [
+          'TreeItem; parent: parentTreeItem; context: first; track: click, keydown: ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
+          'TreeItem; parent: parentTreeItem; context: second; track: click, keydown: ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End'
+        ]);
   });
 });
 

@@ -36,6 +36,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Buttons from '../components/buttons/buttons.js';
 import * as Highlighting from '../components/highlighting/highlighting.js';
@@ -1553,6 +1554,12 @@ class TreeViewTreeElement extends TreeElement {
 
   constructor(treeOutline: TreeOutline, configElement: HTMLLIElement) {
     super(undefined, undefined, configElement.getAttribute('jslog-context') ?? undefined);
+    for (let i = 0; i < configElement.attributes.length; ++i) {
+      const attribute = configElement.attributes.item(i);
+      if (attribute && attribute.name !== 'role' && SDK.DOMModel.ARIA_ATTRIBUTES.has(attribute.name)) {
+        this.listItemElement.setAttribute(attribute.name, attribute.value);
+      }
+    }
     this.configElement = configElement;
     TreeViewTreeElement.#elementToTreeElement.set(configElement, this);
     this.refresh();
@@ -1647,6 +1654,7 @@ function getTreeNodes(nodeList: NodeList|Node[]): HTMLLIElement[] {
  *
  * - `selected`: Whether the tree node should be rendered as selected.
  * - `jslog-context`: The jslog context for the tree element.
+ * - `aria-*`: All aria attributes defined on the config element are cloned over.
  * - `hidden`: On the <ul>, declares whether the subtree should be rendererd as expanded or collapsed.
  *
  * ## Event Handling ##

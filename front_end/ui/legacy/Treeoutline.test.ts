@@ -270,6 +270,38 @@ describe('TreeViewElement', () => {
           'TreeItem; parent: parentTreeItem; context: second; track: click, keydown: ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End'
         ]);
   });
+
+  it('applies aria attributes to tree eleemnts', async () => {
+    function attributes(element: UI.TreeOutline.TreeElement): Record<string, string> {
+      const attributes: Record<string, string> = {};
+      for (let i = 0; i < element.listItemElement.attributes.length; ++i) {
+        const attributeNode = element.listItemElement.attributes.item(i);
+        if (attributeNode && attributeNode.name !== 'jslog') {
+          attributes[attributeNode.name] = attributeNode.value;
+        }
+      }
+      return attributes;
+    }
+    const component = await makeTree(html`
+      <devtools-tree
+        .template=${html`
+          <ul role="tree">
+            <li role="treeitem" aria-checked="true" aria-live="off" aria-bogus="false">first node</li>
+            <li role="treeitem" aria-modal="true" aria-unknown="true">second node</li>
+          </ul>
+        `}></devtools-tree>`);
+    assert.deepEqual(component.getInternalTreeOutlineForTest().rootElement().children().map(attributes), [
+      {
+        'aria-checked': 'true',
+        'aria-live': 'off',
+        role: 'treeitem',
+      },
+      {
+        'aria-modal': 'true',
+        role: 'treeitem',
+      }
+    ]);
+  });
 });
 
 type NodeSpec = {

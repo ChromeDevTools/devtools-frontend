@@ -306,6 +306,10 @@ export class Experiment {
 // This must be constructed after the query parameters have been parsed.
 export const experiments = new ExperimentsSupport();
 
+/**
+ * @deprecated Experiments should not be used anymore, instead use base::Feature.
+ * See docs/contributing/settings-experiments-features.md
+ */
 export const enum ExperimentName {
   CAPTURE_NODE_CREATION_STACKS = 'capture-node-creation-stacks',
   CSS_OVERVIEW = 'css-overview',

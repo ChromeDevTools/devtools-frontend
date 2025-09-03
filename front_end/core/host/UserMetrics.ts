@@ -826,7 +826,6 @@ export enum DevtoolsExperiments {
   'use-source-map-scopes' = 76,
   'timeline-show-postmessage-events' = 86,
   'timeline-save-as-gz' = 108,
-  'timeline-ask-ai-full-button' = 109,
   'timeline-enhanced-traces' = 90,
   'timeline-compiled-sources' = 91,
   'timeline-debug-mode' = 93,

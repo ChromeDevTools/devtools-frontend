@@ -136,7 +136,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
   Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,
   Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ,
-  Root.Runtime.ExperimentName.TIMELINE_ASK_AI_FULL_BUTTON,
   Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES,
   Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES,
   Root.Runtime.ExperimentName.VERTICAL_DRAWER,

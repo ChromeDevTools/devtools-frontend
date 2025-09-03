@@ -1061,19 +1061,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return true;
   }
 
-  private shouldEnableFullAskAI(): boolean {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ASK_AI_FULL_BUTTON)) {
-      return false;
-    }
-
-    if (Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
-        Root.Runtime.GenAiEnterprisePolicyValue.DISABLE) {
-      return false;
-    }
-
-    return true;
-  }
-
   private populateToolbar(): void {
     const canRecord = this.canRecord();
 
@@ -1122,13 +1109,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     }
 
-    if (this.shouldEnableFullAskAI()) {
-      this.askAiButton = new UI.Toolbar.ToolbarButton('Ask AI', 'button-magic', undefined, 'timeline.ask-ai');
-      this.askAiButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#onClickAskAIButton.bind(this));
-      this.panelToolbar.appendToolbarItem(this.askAiButton);
-      this.panelToolbar.appendSeparator();
-    }
-
     // TODO(crbug.com/337909145): need to hide "Live metrics" option if !canRecord.
     this.panelToolbar.appendToolbarItem(this.#historyManager.button());
 
@@ -1173,25 +1153,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.panelRightToolbar.appendSeparator();
       this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
     }
-  }
-
-  // Currently for debugging purposes only.
-  #onClickAskAIButton(): void {
-    const actionId = 'drjones.performance-panel-full-context';
-    if (!UI.ActionRegistry.ActionRegistry.instance().hasAction(actionId)) {
-      return;
-    }
-
-    const focus = Utils.AIContext.getPerformanceAgentFocusFromModel(this.#traceEngineModel);
-    if (!focus) {
-      return;
-    }
-
-    UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, focus);
-
-    // Trigger the AI Assistance panel to open.
-    const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);
-    void action.execute();
   }
 
   #setupNavigationSetting(): HTMLElement {

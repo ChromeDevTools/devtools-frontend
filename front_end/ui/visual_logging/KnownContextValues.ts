@@ -3689,7 +3689,6 @@ export const knownContextValues = new Set([
   'time',
   'timeline',
   'timeline-alternative-navigation',
-  'timeline-ask-ai-full-button',
   'timeline-capture-layers-and-pictures',
   'timeline-capture-selector-stats',
   'timeline-compiled-sources',

@@ -90,10 +90,24 @@ function removeTextEditorTooltip() {
   }
 }
 
+/**
+ * If a test calls localEvalCSS, an element is created on demand for this
+ * purpose. This element is not removed from the DOM and will leak between tests
+ * if not removed.
+ */
+function removeCSSEvaluationElement() {
+  // Found in front_end/core/sdk/CSSPropertyParserMatchers.ts
+  const element = document.getElementById('css-evaluation-element');
+  if (element) {
+    document.body.removeChild(element);
+  }
+}
+
 afterEach(async function() {
   cleanTestDOM();
   removeGlassPanes();
   removeTextEditorTooltip();
+  removeCSSEvaluationElement();
   UI.ARIAUtils.LiveAnnouncer.removeAnnouncerElements(document.body);
   // Make sure all DOM clean up happens before the raf
   await raf();

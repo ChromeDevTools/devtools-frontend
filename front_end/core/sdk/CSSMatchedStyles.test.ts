@@ -743,10 +743,9 @@ describe('CSSMatchedStyles', () => {
         value: 'attr(data-test-number type(<length>), var(--test-self-loop-fallback-2))'
       },
       {name: '--test-length', value: 'attr(data-test-length type(<length>))'},
-      // TODO(b/393087009): Re-enable once fallback is fixed.
-      // {name: '--test-bad-unit-indirect', value: 'attr(data-test-bad-unit type(*), 4px)'},
-      // {name: '--test-bad-type-indirect', value: 'attr(data-test-bad-type type(*), 4)'},
-      // {name: '--test-cant-parse', value: 'attr(data-cant-parse type(*), red)'},
+      {name: '--test-bad-unit-indirect', value: 'attr(data-test-bad-unit type(*), 4px)'},
+      {name: '--test-bad-type-indirect', value: 'attr(data-test-bad-type type(*), 4)'},
+      {name: '--test-cant-parse', value: 'attr(data-cant-parse type(*), red)'},
     ];
     // Create an element
     const element = document.createElement('div');

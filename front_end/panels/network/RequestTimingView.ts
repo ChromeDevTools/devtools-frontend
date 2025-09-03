@@ -36,11 +36,11 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {Events, type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import networkingTimingTableStyles from './networkTimingTable.css.js';
 
 const UIStrings = {
@@ -242,10 +242,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/RequestTimingView.ts', 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestTimingView extends UI.Widget.VBox {
   private request: SDK.NetworkRequest.NetworkRequest;
-  private calculator: NetworkTimeCalculator;
+  private calculator: NetworkTimeCalculator.NetworkTimeCalculator;
   private lastMinimumBoundary: number;
   private tableElement?: Element;
-  constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator) {
+  constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTimeCalculator) {
     super();
     this.registerRequiredCSS(networkingTimingTableStyles);
     this.element.classList.add('resource-timing-view');
@@ -421,7 +421,8 @@ export class RequestTimingView extends UI.Widget.VBox {
     return result;
   }
 
-  static createTimingTable(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator): Element {
+  static createTimingTable(
+      request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTimeCalculator): Element {
     const tableElement = document.createElement('table');
     tableElement.classList.add('network-timing-table');
     tableElement.setAttribute('jslog', `${VisualLogging.pane('timing').track({resize: true})}`);
@@ -786,14 +787,14 @@ export class RequestTimingView extends UI.Widget.VBox {
   override wasShown(): void {
     this.request.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.refresh, this);
     this.request.addEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.refresh, this);
-    this.calculator.addEventListener(Events.BOUNDARIES_CHANGED, this.boundaryChanged, this);
+    this.calculator.addEventListener(NetworkTimeCalculator.Events.BOUNDARIES_CHANGED, this.boundaryChanged, this);
     this.refresh();
   }
 
   override willHide(): void {
     this.request.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.refresh, this);
     this.request.removeEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.refresh, this);
-    this.calculator.removeEventListener(Events.BOUNDARIES_CHANGED, this.boundaryChanged, this);
+    this.calculator.removeEventListener(NetworkTimeCalculator.Events.BOUNDARIES_CHANGED, this.boundaryChanged, this);
   }
 
   private refresh(): void {

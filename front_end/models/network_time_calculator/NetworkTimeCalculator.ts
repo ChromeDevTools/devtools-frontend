@@ -35,7 +35,8 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
-import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+
+import type {Calculator} from './Calculator.js';
 
 const UIStrings = {
   /**
@@ -66,7 +67,7 @@ const UIStrings = {
    */
   sFromCache: '{PH1} (from cache)',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkTimeCalculator.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/network_time_calculator/NetworkTimeCalculator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface Label {
@@ -88,8 +89,7 @@ export class NetworkTimeBoundary {
   }
 }
 
-export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
-    PerfUI.TimelineGrid.Calculator {
+export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements Calculator {
   #minimumBoundary = -1;
   #maximumBoundary = -1;
   readonly #boundaryChangedEventThrottler = new Common.Throttler.Throttler(0);

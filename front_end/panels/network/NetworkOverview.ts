@@ -5,13 +5,13 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {NetworkLogView} from './NetworkLogView.js';
-import {NetworkTimeBoundary} from './NetworkTimeCalculator.js';
 import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
 
 export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
@@ -25,7 +25,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   private requestsList!: SDK.NetworkRequest.NetworkRequest[];
   private requestsSet!: Set<SDK.NetworkRequest.NetworkRequest>;
   private span!: number;
-  private lastBoundary?: NetworkTimeBoundary|null;
+  private lastBoundary?: NetworkTimeCalculator.NetworkTimeBoundary|null;
 
   constructor() {
     super();
@@ -140,7 +140,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   override update(): void {
     const calculator = this.calculator();
 
-    const newBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
+    const newBoundary =
+        new NetworkTimeCalculator.NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
     if (!this.lastBoundary || !newBoundary.equals(this.lastBoundary)) {
       const span = calculator.boundarySpan();
       while (this.span < span) {
@@ -150,7 +151,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       calculator.setBounds(
           calculator.minimumBoundary(), Trace.Types.Timing.Milli(calculator.minimumBoundary() + this.span));
 
-      this.lastBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
+      this.lastBoundary =
+          new NetworkTimeCalculator.NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
     }
 
     const context = this.context();

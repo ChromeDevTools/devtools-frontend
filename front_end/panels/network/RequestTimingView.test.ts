@@ -5,10 +5,10 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 
-import * as Network from './NetworkTimeCalculator.js';
 import * as RequestTimingView from './RequestTimingView.js';
 
 const {urlString} = Platform.DevToolsPath;
@@ -143,7 +143,8 @@ describeWithLocale('ResourceTimingView', () => {
     const request = createNetworkRequest(
         Protocol.Network.ServiceWorkerRouterSource.Network, Protocol.Network.ServiceWorkerRouterSource.Network);
 
-    const component = new RequestTimingView.RequestTimingView(request, new Network.NetworkTimeCalculator(true));
+    const component =
+        new RequestTimingView.RequestTimingView(request, new NetworkTimeCalculator.NetworkTimeCalculator(true));
     const div = document.createElement('div');
     renderElementIntoDOM(div);
     component.markAsRoot();

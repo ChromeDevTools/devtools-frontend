@@ -34,6 +34,7 @@
  */
 
 import * as Platform from '../../../../core/platform/platform.js';
+import type * as NetworkTimeCalculator from '../../../../models/network_time_calculator/network_time_calculator.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import {DEFAULT_FONT_SIZE, getFontFamilyForCanvas} from './Font.js';
@@ -61,7 +62,7 @@ export class TimelineGrid {
     this.element.appendChild(this.gridHeaderElement);
   }
 
-  static calculateGridOffsets(calculator: Calculator, freeZoneAtLeft?: number): DividersData {
+  static calculateGridOffsets(calculator: NetworkTimeCalculator.Calculator, freeZoneAtLeft?: number): DividersData {
     const minGridSlicePx = 64;  // minimal distance between grid lines.
 
     const clientWidth = calculator.computePosition(calculator.maximumBoundary());
@@ -166,7 +167,7 @@ export class TimelineGrid {
     return this.dividersLabelBarElementInternal;
   }
 
-  updateDividers(calculator: Calculator, freeZoneAtLeft?: number): boolean {
+  updateDividers(calculator: NetworkTimeCalculator.Calculator, freeZoneAtLeft?: number): boolean {
     const dividersData = TimelineGrid.calculateGridOffsets(calculator, freeZoneAtLeft);
     const dividerOffsets = dividersData.offsets;
     const precision = dividersData.precision;
@@ -258,17 +259,6 @@ export class TimelineGrid {
     this.dividersLabelBarElementInternal.style.top = scrollTop + 'px';
     this.eventDividersElement.style.top = scrollTop + 'px';
   }
-}
-
-// The TimelineGrid is used in the Performance panel and Memory panel -> Allocating sampling, so the value can be either
-// milliseconds or bytes
-export interface Calculator {
-  computePosition(value: number): number;
-  formatValue(value: number, precision?: number): string;
-  minimumBoundary(): number;
-  zeroTime(): number;
-  maximumBoundary(): number;
-  boundarySpan(): number;
 }
 
 export interface DividersData {

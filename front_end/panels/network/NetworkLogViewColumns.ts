@@ -5,6 +5,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -15,9 +16,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {type NetworkNode, NetworkRequestNode} from './NetworkDataGridNode.js';
 import type {NetworkLogView} from './NetworkLogView.js';
 import {NetworkManageCustomHeadersView} from './NetworkManageCustomHeadersView.js';
-import type {
-  NetworkTimeCalculator, NetworkTransferDurationCalculator, NetworkTransferTimeCalculator} from
-  './NetworkTimeCalculator.js';
 import {NetworkWaterfallColumn} from './NetworkWaterfallColumn.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';
 
@@ -169,7 +167,7 @@ export class NetworkLogViewColumns {
   private waterfallRequestsAreStale: boolean;
   private waterfallScrollerWidthIsStale: boolean;
   private readonly popupLinkifier: Components.Linkifier.Linkifier;
-  private calculatorsMap: Map<string, NetworkTimeCalculator>;
+  private calculatorsMap: Map<string, NetworkTimeCalculator.NetworkTimeCalculator>;
   private lastWheelTime: number;
   private dataGridInternal!: DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>;
   private splitWidget!: UI.SplitWidget.SplitWidget;
@@ -185,8 +183,8 @@ export class NetworkLogViewColumns {
   private hasScrollerTouchStarted?: boolean;
   private scrollerTouchStartPos?: number;
   constructor(
-      networkLogView: NetworkLogView, timeCalculator: NetworkTransferTimeCalculator,
-      durationCalculator: NetworkTransferDurationCalculator,
+      networkLogView: NetworkLogView, timeCalculator: NetworkTimeCalculator.NetworkTransferTimeCalculator,
+      durationCalculator: NetworkTimeCalculator.NetworkTransferDurationCalculator,
       networkLogLargeRowsSetting: Common.Settings.Setting<boolean>) {
     this.networkLogView = networkLogView;
 
@@ -428,7 +426,7 @@ export class NetworkLogViewColumns {
     }
   }
 
-  setCalculator(x: NetworkTimeCalculator): void {
+  setCalculator(x: NetworkTimeCalculator.NetworkTimeCalculator): void {
     this.waterfallColumn.setCalculator(x);
   }
 
@@ -731,7 +729,7 @@ export class NetworkLogViewColumns {
       if (sortId === waterfallSortIds.Duration || sortId === waterfallSortIds.Latency) {
         calculator = this.calculatorsMap.get(CalculatorTypes.DURATION);
       }
-      this.networkLogView.setCalculator((calculator as NetworkTimeCalculator));
+      this.networkLogView.setCalculator((calculator as NetworkTimeCalculator.NetworkTimeCalculator));
 
       this.activeWaterfallSortId = sortId;
       this.dataGridInternal.markColumnAsSortedBy('waterfall', DataGrid.DataGrid.Order.Ascending);

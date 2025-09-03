@@ -588,7 +588,7 @@ export class CounterUI {
   }
 }
 
-export class Calculator implements PerfUI.TimelineGrid.Calculator {
+export class Calculator implements Calculator {
   private minimumBoundaryInternal: number;
   private maximumBoundaryInternal: number;
   private workingArea: number;

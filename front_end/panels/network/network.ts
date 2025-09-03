@@ -8,7 +8,7 @@ import './EventSourceMessagesView.js';
 import './NetworkConfigView.js';
 import './NetworkDataGridNode.js';
 import './NetworkItemView.js';
-import './NetworkTimeCalculator.js';
+import '../../models/network_time_calculator/network_time_calculator.js';
 import './NetworkLogView.js';
 import './NetworkLogViewColumns.js';
 import './NetworkFrameGrouper.js';
@@ -40,7 +40,6 @@ import * as NetworkManageCustomHeadersView from './NetworkManageCustomHeadersVie
 import * as NetworkOverview from './NetworkOverview.js';
 import * as NetworkPanel from './NetworkPanel.js';
 import * as NetworkSearchScope from './NetworkSearchScope.js';
-import * as NetworkTimeCalculator from './NetworkTimeCalculator.js';
 import * as NetworkWaterfallColumn from './NetworkWaterfallColumn.js';
 import * as RequestCookiesView from './RequestCookiesView.js';
 import * as RequestHTMLView from './RequestHTMLView.js';
@@ -67,7 +66,6 @@ export {
   NetworkOverview,
   NetworkPanel,
   NetworkSearchScope,
-  NetworkTimeCalculator,
   NetworkWaterfallColumn,
   RequestCookiesView,
   RequestHTMLView,

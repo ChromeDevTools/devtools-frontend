@@ -34,6 +34,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
@@ -43,7 +44,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as NetworkComponents from './components/components.js';
 import {EventSourceMessagesView} from './EventSourceMessagesView.js';
-import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {RequestCookiesView} from './RequestCookiesView.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';
 import {RequestPayloadView} from './RequestPayloadView.js';
@@ -168,7 +168,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   readonly #firstTab: NetworkForward.UIRequestLocation.UIRequestTabs;
 
   constructor(
-      request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator,
+      request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTimeCalculator,
       initialTab?: NetworkForward.UIRequestLocation.UIRequestTabs) {
     super();
     this.#request = request;

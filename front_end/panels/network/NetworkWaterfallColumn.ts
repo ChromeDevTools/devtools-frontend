@@ -5,6 +5,7 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -12,7 +13,6 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import type {NetworkNode} from './NetworkDataGridNode.js';
 import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
-import type {Label, NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import networkingTimingTableStyles from './networkTimingTable.css.js';
 import networkWaterfallColumnStyles from './networkWaterfallColumn.css.js';
 import {type RequestTimeRange, RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
@@ -27,7 +27,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   private rightPadding: number;
   private scrollTop: number;
   private headerHeight: number;
-  private calculator: NetworkTimeCalculator;
+  private calculator: NetworkTimeCalculator.NetworkTimeCalculator;
   private rowHeight: number;
   private offsetWidth: number;
   private offsetHeight: number;
@@ -45,7 +45,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   private readonly pathForStyle: Map<LayerStyle, Path2D>;
   private textLayers: TextLayer[];
 
-  constructor(calculator: NetworkTimeCalculator) {
+  constructor(calculator: NetworkTimeCalculator.NetworkTimeCalculator) {
     // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
     super();
     this.registerRequiredCSS(networkWaterfallColumnStyles);
@@ -319,7 +319,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this.calculateCanvasSize();
   }
 
-  setCalculator(calculator: NetworkTimeCalculator): void {
+  setCalculator(calculator: NetworkTimeCalculator.NetworkTimeCalculator): void {
     this.calculator = calculator;
   }
 
@@ -534,7 +534,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     const downloadingPath = (this.pathForStyle.get(downloadingStyle) as Path2D);
     downloadingPath.rect(ranges.mid, y, barWidth, height - borderWidth);
 
-    let labels: Label|null = null;
+    let labels: NetworkTimeCalculator.Label|null = null;
     if (node.hovered()) {
       labels = this.calculator.computeBarGraphLabels(request);
       const barDotLineLength = 10;

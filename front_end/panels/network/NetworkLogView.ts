@@ -45,6 +45,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
@@ -70,12 +71,6 @@ import {
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import networkLogViewStyles from './networkLogView.css.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
-import {
-  NetworkTimeBoundary,
-  type NetworkTimeCalculator,
-  NetworkTransferDurationCalculator,
-  NetworkTransferTimeCalculator,
-} from './NetworkTimeCalculator.js';
 
 const UIStrings = {
   /**
@@ -518,9 +513,9 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly progressBarContainer: Element;
   private readonly networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
   private rowHeightInternal: number;
-  private readonly timeCalculatorInternal: NetworkTransferTimeCalculator;
-  private readonly durationCalculator: NetworkTransferDurationCalculator;
-  private calculatorInternal: NetworkTransferTimeCalculator;
+  private readonly timeCalculatorInternal: NetworkTimeCalculator.NetworkTimeCalculator;
+  private readonly durationCalculator: NetworkTimeCalculator.NetworkTimeCalculator;
+  private calculatorInternal: NetworkTimeCalculator.NetworkTimeCalculator;
   private readonly columnsInternal: NetworkLogViewColumns;
   private staleRequests: Set<SDK.NetworkRequest.NetworkRequest>;
   private mainRequestLoadTime: number;
@@ -587,8 +582,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.rowHeightInternal = 0;
     updateRowHeight.call(this);
 
-    this.timeCalculatorInternal = new NetworkTransferTimeCalculator();
-    this.durationCalculator = new NetworkTransferDurationCalculator();
+    this.timeCalculatorInternal = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+    this.durationCalculator = new NetworkTimeCalculator.NetworkTransferDurationCalculator();
     this.calculatorInternal = this.timeCalculatorInternal;
 
     this.columnsInternal = new NetworkLogViewColumns(
@@ -1023,7 +1018,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       this.timeCalculatorInternal.setWindow(null);
     } else {
       this.timeFilter = NetworkLogView.requestTimeFilter.bind(null, start, end);
-      this.timeCalculatorInternal.setWindow(new NetworkTimeBoundary(start, end));
+      this.timeCalculatorInternal.setWindow(new NetworkTimeCalculator.NetworkTimeBoundary(start, end));
     }
     this.filterRequests();
   }
@@ -1335,15 +1330,15 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     }
   }
 
-  timeCalculator(): NetworkTimeCalculator {
+  timeCalculator(): NetworkTimeCalculator.NetworkTimeCalculator {
     return this.timeCalculatorInternal;
   }
 
-  calculator(): NetworkTimeCalculator {
+  calculator(): NetworkTimeCalculator.NetworkTimeCalculator {
     return this.calculatorInternal;
   }
 
-  setCalculator(x: NetworkTimeCalculator): void {
+  setCalculator(x: NetworkTimeCalculator.NetworkTimeCalculator): void {
     if (!x || this.calculatorInternal === x) {
       return;
     }

@@ -32,12 +32,13 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import type * as NetworkTimeCalculator from '../../../../models/network_time_calculator/network_time_calculator.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import overviewGridStyles from './overviewGrid.css.js';
-import {type Calculator, TimelineGrid} from './TimelineGrid.js';
+import {TimelineGrid} from './TimelineGrid.js';
 
 const UIStrings = {
   /**
@@ -61,7 +62,7 @@ export class OverviewGrid {
   // The |window| will manage the html element of resizers, the left/right blue-colour curtain, and handle the resizing,
   // zooming, and breadcrumb creation.
   private readonly window: Window;
-  constructor(prefix: string, calculator?: Calculator) {
+  constructor(prefix: string, calculator?: NetworkTimeCalculator.Calculator) {
     this.element = document.createElement('div');
     this.element.id = prefix + '-overview-container';
 
@@ -86,7 +87,7 @@ export class OverviewGrid {
     return this.element.clientWidth;
   }
 
-  updateDividers(calculator: Calculator): void {
+  updateDividers(calculator: NetworkTimeCalculator.Calculator): void {
     this.grid.updateDividers(calculator);
   }
 
@@ -154,7 +155,7 @@ const OffsetFromWindowEnds = 10;
 
 export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private parentElement: Element;
-  private calculator: Calculator|undefined;
+  private calculator: NetworkTimeCalculator.Calculator|undefined;
   private leftResizeElement: HTMLElement;
   private rightResizeElement: HTMLElement;
   private leftCurtainElement: HTMLElement;
@@ -180,7 +181,8 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private resizerParentOffsetLeft?: number;
   #breadcrumbsEnabled = false;
   #mouseOverGridOverview = false;
-  constructor(parentElement: HTMLElement, dividersLabelBarElement?: Element, calculator?: Calculator) {
+  constructor(
+      parentElement: HTMLElement, dividersLabelBarElement?: Element, calculator?: NetworkTimeCalculator.Calculator) {
     super();
     this.parentElement = parentElement;
     this.parentElement.classList.add('parent-element');

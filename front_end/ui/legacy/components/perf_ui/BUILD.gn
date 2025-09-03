@@ -47,6 +47,7 @@ devtools_module("perf_ui") {
     "../../../../core/sdk:bundle",
     "../../../../models/bindings:bundle",
     "../../../../models/cpu_profile:bundle",
+    "../../../../models/network_time_calculator:bundle",
     "../../../../models/workspace:bundle",
     "../../../../services/trace_bounds:bundle",
     "../../../../ui/legacy:bundle",

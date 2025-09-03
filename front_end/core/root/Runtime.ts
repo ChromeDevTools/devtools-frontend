@@ -479,6 +479,10 @@ interface GdpProfiles {
   starterBadgeEnabled: boolean;
 }
 
+interface LiveEdit {
+  enabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -521,6 +525,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsIpProtectionInDevTools: IpProtectionInDevTools,
   devToolsGlobalAiButton: GlobalAiButton,
   devToolsGdpProfiles: GdpProfiles,
+  devToolsLiveEdit: LiveEdit,
 }>;
 
 /**

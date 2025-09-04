@@ -9,6 +9,7 @@ import("../visibility.gni")
 
 devtools_module("trace") {
   sources = [
+    "EventsSerializer.ts",
     "LanternComputationData.ts",
     "ModelImpl.ts",
     "Processor.ts",
@@ -69,6 +70,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "EventsSerializer.test.ts",
     "ModelImpl.test.ts",
     "Processor.test.ts",
   ]

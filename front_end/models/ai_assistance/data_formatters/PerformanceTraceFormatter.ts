@@ -12,12 +12,12 @@ export class PerformanceTraceFormatter {
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
   #insightSet: Trace.Insights.Types.InsightSet|null;
   #traceMetadata: Trace.Types.File.MetaData;
-  #eventsSerializer: TimelineUtils.EventsSerializer.EventsSerializer;
+  #eventsSerializer: Trace.EventsSerializer.EventsSerializer;
   #unitFormatters: UnitFormatters;
 
   constructor(
       formatters: UnitFormatters, focus: TimelineUtils.AIContext.AgentFocus,
-      eventsSerializer: TimelineUtils.EventsSerializer.EventsSerializer) {
+      eventsSerializer: Trace.EventsSerializer.EventsSerializer) {
     if (focus.data.type !== 'full') {
       throw new Error('unexpected agent focus');
     }

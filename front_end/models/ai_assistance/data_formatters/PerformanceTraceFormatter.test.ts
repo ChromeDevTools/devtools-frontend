@@ -14,7 +14,7 @@ async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: st
   const {parsedTrace, insights, metadata} = await TraceLoader.traceEngine(context, name);
   assert.isOk(insights);
   const focus = TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insights, metadata);
-  const eventsSerializer = new TimelineUtils.EventsSerializer.EventsSerializer();
+  const eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
   const formatter = new PerformanceTraceFormatter(PERF_AGENT_UNIT_FORMATTERS, focus, eventsSerializer);
   return {formatter, parsedTrace};
 }
@@ -90,7 +90,7 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
 
   it('formatCallTree', async function() {
     const {formatter, parsedTrace} = await createFormatter(this, 'long-task-from-worker-thread.json.gz');
-    const event = new TimelineUtils.EventsSerializer.EventsSerializer().eventForKey('r-62', parsedTrace);
+    const event = new Trace.EventsSerializer.EventsSerializer().eventForKey('r-62', parsedTrace);
     const tree = TimelineUtils.AICallTree.AICallTree.fromEvent(event, parsedTrace);
     assert.exists(tree);
     const output = formatter.formatCallTree(tree);

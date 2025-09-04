@@ -429,7 +429,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
   #conversationType: PerformanceConversationType;
   #formatter: PerformanceTraceFormatter|null = null;
   #lastInsightForEnhancedQuery: Trace.Insights.Types.InsightModel|undefined;
-  #eventsSerializer = new TimelineUtils.EventsSerializer.EventsSerializer();
+  #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
   #lastFocusHandledForContextDetails: TimelineUtils.AIContext.AgentFocus|null = null;
 
   constructor(opts: AgentOptions, conversationType: PerformanceConversationType) {

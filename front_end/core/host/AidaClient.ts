@@ -131,10 +131,12 @@ export enum ClientFeature {
   CHROME_FILE_AGENT = 9,
   // Chrome AI Patch Agent.
   CHROME_PATCH_AGENT = 12,
-  // Chrome AI Assistance Performance Insights Agent.
-  CHROME_PERFORMANCE_INSIGHTS_AGENT = 13,
   // Chrome AI Assistance Performance Agent.
   CHROME_PERFORMANCE_FULL_AGENT = 24,
+
+  // Removed features (for reference).
+  // Chrome AI Assistance Performance Insights Agent.
+  // CHROME_PERFORMANCE_INSIGHTS_AGENT = 13,
 }
 
 export enum UserTier {

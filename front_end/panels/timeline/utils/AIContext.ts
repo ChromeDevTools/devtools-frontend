@@ -19,11 +19,12 @@ interface AgentFocusDataCallTree {
   callTree: AICallTree;
 }
 
-interface AgentFocusDataInsight {
+export interface AgentFocusDataInsight {
   type: 'insight';
   parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  insightSet: Trace.Insights.Types.InsightSet|null;
+  traceMetadata: Trace.Types.File.MetaData;
   insight: Trace.Insights.Types.InsightModel;
-  insightSetBounds: Trace.Types.Timing.TraceWindowMicro;
 }
 
 type AgentFocusData = AgentFocusDataCallTree|AgentFocusDataInsight|AgentFocusDataFull;
@@ -43,13 +44,16 @@ export class AgentFocus {
   }
 
   static fromInsight(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, insight: Trace.Insights.Types.InsightModel,
-      insightSetBounds: Trace.Types.Timing.TraceWindowMicro): AgentFocus {
+      parsedTrace: Trace.Handlers.Types.ParsedTrace, insights: Trace.Insights.Types.TraceInsightSets,
+      traceMetadata: Trace.Types.File.MetaData, insight: Trace.Insights.Types.InsightModel): AgentFocus {
+    // Currently only support a single insight set. Pick the first one with a navigation.
+    const insightSet = [...insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
     return new AgentFocus({
       type: 'insight',
       parsedTrace,
+      insightSet,
+      traceMetadata,
       insight,
-      insightSetBounds,
     });
   }
 

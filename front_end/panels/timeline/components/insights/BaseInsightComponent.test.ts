@@ -212,7 +212,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
   });
 
   describe('Ask AI Insights', () => {
-    const FAKE_PARSED_TRACE = {} as unknown as Trace.Handlers.Types.ParsedTrace;
     const FAKE_LCP_MODEL = {
       insightKey: 'LCPBreakdown',
       strings: {},
@@ -231,7 +230,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
       component.selected = true;
       component.model = FAKE_LCP_MODEL;
       // We don't need a real trace for these tests.
-      component.parsedTrace = FAKE_PARSED_TRACE;
       component.bounds = FAKE_INSIGHT_SET_BOUNDS;
       renderElementIntoDOM(component);
 
@@ -315,6 +313,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
     });
 
     it('sets the context when the user clicks the button', async () => {
+      const focus =
+          new Utils.AIContext.AgentFocus({type: 'insight'} as unknown as Utils.AIContext.AgentFocusDataInsight);
       updateHostConfig({
         aidaAvailability: {
           enabled: true,
@@ -325,6 +325,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
         }
       });
       const component = await renderComponent({insightHasAISupport: true});
+      component.agentFocus = focus;
       assert.isOk(component.shadowRoot);
       const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isOk(button);
@@ -343,9 +344,11 @@ describeWithEnvironment('BaseInsightComponent', () => {
     });
 
     it('clears the active context when it gets toggled shut', async () => {
-      const focus = {data: {type: 'insight'}} as unknown as Utils.AIContext.AgentFocus;
+      const focus =
+          new Utils.AIContext.AgentFocus({type: 'insight'} as unknown as Utils.AIContext.AgentFocusDataInsight);
       UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, focus);
       const component = await renderComponent({insightHasAISupport: true});
+      component.agentFocus = focus;
       const header = component.shadowRoot?.querySelector('header');
       assert.isOk(header);
       dispatchClickEvent(header);

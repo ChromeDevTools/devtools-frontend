@@ -18,7 +18,7 @@ export class PerformanceTraceFormatter {
   constructor(
       formatters: UnitFormatters, focus: TimelineUtils.AIContext.AgentFocus,
       eventsSerializer: Trace.EventsSerializer.EventsSerializer) {
-    if (focus.data.type !== 'full') {
+    if (focus.data.type !== 'full' && focus.data.type !== 'insight') {
       throw new Error('unexpected agent focus');
     }
 

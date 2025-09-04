@@ -7,48 +7,6 @@ import * as Trace from '../../../models/trace/trace.js';
 import {AICallTree} from './AICallTree.js';
 
 export class AIQueries {
-  /**
-   * Returns the set of network requests that occurred within the timeframe of this Insight.
-   */
-  static networkRequests(
-      insight: Trace.Insights.Types.InsightModel, insightSetBounds: Trace.Types.Timing.TraceWindowMicro,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace): readonly Trace.Types.Events.SyntheticNetworkRequest[] {
-    const bounds = insightBounds(insight, insightSetBounds);
-
-    // Now we find network requests that:
-    // 1. began within the bounds
-    // 2. completed within the bounds
-    const matchedRequests: Trace.Types.Events.SyntheticNetworkRequest[] = [];
-    for (const request of parsedTrace.NetworkRequests.byTime) {
-      // Requests are ordered by time ASC, so if we find one request that is
-      // beyond the max, the rest are guaranteed to be also and we can break early.
-      if (request.ts > bounds.max) {
-        break;
-      }
-      if (request.args.data.url.startsWith('data:')) {
-        // For the sake of the LLM querying data, we don't care about data: URLs.
-        continue;
-      }
-      if (request.ts >= bounds.min && request.ts + request.dur <= bounds.max) {
-        matchedRequests.push(request);
-      }
-    }
-
-    return matchedRequests;
-  }
-
-  /**
-   * Returns the single network request. We do not check to filter this by the
-   * bounds of the insight, because the only way that the LLM has found this
-   * request is by first inspecting a summary of relevant network requests for
-   * the given insight. So if it then looks up a request by URL, we know that
-   * is a valid and relevant request.
-   */
-  static networkRequest(parsedTrace: Trace.Handlers.Types.ParsedTrace, url: string):
-      Trace.Types.Events.SyntheticNetworkRequest|null {
-    return parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === url) ?? null;
-  }
-
   static findMainThread(navigationId: string|undefined, parsedTrace: Trace.Handlers.Types.ParsedTrace):
       Trace.Handlers.Threads.ThreadData|null {
     /**
@@ -138,17 +96,6 @@ export class AIQueries {
       parsedTrace,
       bounds,
     });
-  }
-
-  /**
-   * Returns an AI Call Tree representing the activity on the main thread for
-   * the relevant time range of the given insight.
-   */
-  static mainThreadActivityForInsight(
-      insight: Trace.Insights.Types.InsightModel, insightSetBounds: Trace.Types.Timing.TraceWindowMicro,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree|null {
-    const bounds = insightBounds(insight, insightSetBounds);
-    return this.mainThreadActivityTopDown(insight.navigationId, bounds, parsedTrace);
   }
 
   /**

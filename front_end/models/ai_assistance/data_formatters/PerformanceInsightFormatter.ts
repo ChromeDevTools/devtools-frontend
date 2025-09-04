@@ -320,6 +320,47 @@ export class PerformanceInsightFormatter {
   }
 
   /**
+   * Create an AI prompt string out of the Slow CSS Selector Insight model to use with Ask AI.
+   * Note: This function accesses the UIStrings within SlowCSSSelector to help build the
+   * AI prompt, but does not (and should not) call i18nString to localize these strings. They
+   * should all be sent in English (at least for now).
+   * @param insight The Network Dependency Tree Insight Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatSlowCssSelectorsInsight(insight: Trace.Insights.Models.SlowCSSSelector.SlowCSSSelectorInsightModel): string {
+    let output = '';
+
+    if (!insight.topSelectorElapsedMs && !insight.topSelectorMatchAttempts) {
+      return Trace.Insights.Models.SlowCSSSelector.UIStrings.enableSelectorData;
+    }
+
+    output += 'One or more slow CSS selectors were identified as negatively affecting page performance:\n\n';
+
+    if (insight.topSelectorElapsedMs) {
+      output += `${
+          Trace.Insights.Models.SlowCSSSelector.UIStrings.topSelectorElapsedTime} (as ranked by elapsed time in ms):\n`;
+      output += `${this.#formatMicro(insight.topSelectorElapsedMs['elapsed (us)'])}: ${
+          insight.topSelectorElapsedMs.selector}\n\n`;
+    }
+
+    if (insight.topSelectorMatchAttempts) {
+      output += Trace.Insights.Models.SlowCSSSelector.UIStrings.topSelectorMatchAttempt + ':\n';
+      output += `${insight.topSelectorMatchAttempts.match_attempts} attempts for selector: '${
+          insight.topSelectorMatchAttempts.selector}'\n\n`;
+    }
+
+    output += `${Trace.Insights.Models.SlowCSSSelector.UIStrings.total}:\n`;
+    output +=
+        `${Trace.Insights.Models.SlowCSSSelector.UIStrings.elapsed}: ${this.#formatMicro(insight.totalElapsedMs)}\n`;
+    output += `${Trace.Insights.Models.SlowCSSSelector.UIStrings.matchAttempts}: ${insight.totalMatchAttempts}\n`;
+    output += `${Trace.Insights.Models.SlowCSSSelector.UIStrings.matchCount}: ${insight.totalMatchCount}\n\n`;
+
+    output += Trace.Insights.Models.SlowCSSSelector.UIStrings.description;
+
+    return output;
+  }
+
+  /**
    * Create an AI prompt string out of the ThirdParties Insight model to use with Ask AI.
    * Note: This function accesses the UIStrings within ThirdParties to help build the
    * AI prompt, but does not (and should not) call i18nString to localize these strings. They
@@ -626,6 +667,10 @@ ${filesFormatted}`;
       return this.formatNetworkDependencyTreeInsight(this.#insight);
     }
 
+    if (Trace.Insights.Models.SlowCSSSelector.isSlowCSSSelectorInsight(this.#insight)) {
+      return this.formatSlowCssSelectorsInsight(this.#insight);
+    }
+
     if (Trace.Insights.Models.ThirdParties.isThirdPartyInsight(this.#insight)) {
       return this.formatThirdPartiesInsight(this.#insight);
     }
@@ -679,7 +724,7 @@ ${filesFormatted}`;
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
       case 'SlowCSSSelector':
-        return '';
+        return '- https://developer.chrome.com/docs/devtools/performance/selector-stats';
       case 'ThirdParties':
         return '- https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/';
       case 'Viewport':
@@ -749,7 +794,7 @@ It is important that all of these checks pass to minimize the delay between the 
       case 'RenderBlocking':
         return 'This insight identifies network requests that were render blocking. Render blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render blocking network request and prioritize your suggestions to the user based on the impact of each render blocking request.';
       case 'SlowCSSSelector':
-        return '';
+        return `This insight identifies CSS selectors that are slowing down your page's rendering performance.`;
       case 'ThirdParties':
         return 'This insight analyzes the performance impact of resources loaded from third-party servers and aggregates the performance cost, in terms of download transfer sizes and total amount of time that third party scripts spent executing on the main thread.';
       case 'Viewport':

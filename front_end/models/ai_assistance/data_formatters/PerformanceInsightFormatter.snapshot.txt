@@ -843,6 +843,48 @@ no origins were preconnected.
 - https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/
 === end content
 
+Title: PerformanceInsightFormatter SlowCssSelector serializes correctly when there are no results
+Content:
+## Insight Title: CSS Selector costs
+
+## Insight Summary:
+This insight identifies CSS selectors that are slowing down your page's rendering performance.
+
+## Detailed analysis:
+No CSS selector data was found. CSS selector stats need to be enabled in the performance panel settings.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/devtools/performance/selector-stats
+=== end content
+
+Title: PerformanceInsightFormatter SlowCssSelector serializes the correct details when CSS selectors are found
+Content:
+## Insight Title: CSS Selector costs
+
+## Insight Summary:
+This insight identifies CSS selectors that are slowing down your page's rendering performance.
+
+## Detailed analysis:
+One or more slow CSS selectors were identified as negatively affecting page performance:
+
+Top selector match attempt:
+169 attempts for selector: '.gb_Bd > :only-child'
+
+Total:
+Elapsed time: 0.0 ms
+Match attempts: 2444
+Match count: 465
+
+If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/devtools/performance/selector-stats) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/devtools/performance/selector-stats
+=== end content
+
 Title: PerformanceInsightFormatter ThirdParties serializes correctly when there are no results
 Content:
 ## Insight Title: 3rd parties

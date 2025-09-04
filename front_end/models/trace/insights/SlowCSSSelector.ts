@@ -56,7 +56,7 @@ export const UIStrings = {
   /**
    * @description top CSS selector when ranked by elapsed time in ms
    */
-  topSelectorElapsedTime: 'Top selector elaspsed time',
+  topSelectorElapsedTime: 'Top selector elapsed time',
   /**
    * @description top CSS selector when ranked by match attempt
    */
@@ -112,6 +112,10 @@ function finalize(partialModel: PartialInsightModel<SlowCSSSelectorInsightModel>
     state: partialModel.topSelectorElapsedMs && partialModel.topSelectorMatchAttempts ? 'informative' : 'pass',
     ...partialModel,
   };
+}
+
+export function isSlowCSSSelectorInsight(model: InsightModel): model is SlowCSSSelectorInsightModel {
+  return model.insightKey === InsightKeys.SLOW_CSS_SELECTOR;
 }
 
 export function generateInsight(

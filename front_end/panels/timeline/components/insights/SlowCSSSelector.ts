@@ -26,6 +26,10 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
   override internalName = 'slow-css-selector';
   #selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   private async toSourceFileLocation(cssModel: SDK.CSSModel.CSSModel, selector: Trace.Types.Events.SelectorTiming):
       Promise<Linkifier.Linkifier.LinkifierData[]|undefined> {
     if (!cssModel) {

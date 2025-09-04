@@ -412,6 +412,28 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
     });
   });
 
+  describe('SlowCssSelector', () => {
+    it('serializes correctly when there are no results', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('SlowCSSSelector', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details when CSS selectors are found', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'selector-stats.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('SlowCSSSelector', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
   describe('ThirdParties', () => {
     it('serializes correctly when there are no results', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');

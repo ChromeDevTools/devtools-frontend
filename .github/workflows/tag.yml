@@ -17,7 +17,7 @@ jobs:
       - name: Get devtools version
         id: devtools_version
         shell: bash
-        run: devtools_version.sh
+        run: ./scripts/devtools_version.sh
       - name: Create tag
         uses: actions/github-script@v7
         # This can fail if the tag exists but this is expected.

@@ -18,6 +18,7 @@ jobs:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
           TAG_NAME: ${{github.ref_name}}
         run: |
+          rm .npmrc
           npm version --no-git-tag-version $TAG_NAME
           npm config set registry 'https://wombat-dressing-room.appspot.com/'
           npm config set '//wombat-dressing-room.appspot.com/:_authToken' '${NPM_TOKEN}'

@@ -513,7 +513,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly progressBarContainer: Element;
   private readonly networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
   private rowHeightInternal: number;
-  private readonly timeCalculatorInternal: NetworkTimeCalculator.NetworkTimeCalculator;
+  private readonly timeCalculatorInternal: NetworkTimeCalculator.NetworkTransferTimeCalculator;
   private readonly durationCalculator: NetworkTimeCalculator.NetworkTimeCalculator;
   private calculatorInternal: NetworkTimeCalculator.NetworkTimeCalculator;
   private readonly columnsInternal: NetworkLogViewColumns;
@@ -1330,7 +1330,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     }
   }
 
-  timeCalculator(): NetworkTimeCalculator.NetworkTimeCalculator {
+  timeCalculator(): NetworkTimeCalculator.NetworkTransferTimeCalculator {
     return this.timeCalculatorInternal;
   }
 

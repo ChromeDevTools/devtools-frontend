@@ -13,6 +13,7 @@ import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../../testing/NetworkHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Logs from '../../logs/logs.js';
+import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import {
   NetworkAgent,
   RequestContext,
@@ -67,6 +68,7 @@ describeWithMockConnection('NetworkAgent', () => {
   });
   describe('run', () => {
     let selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest;
+    let calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
     const timingInfo: Protocol.Network.ResourceTiming = {
       requestTime: 500,
       proxyStart: 0,
@@ -128,6 +130,9 @@ describeWithMockConnection('NetworkAgent', () => {
               [initiatedNetworkRequest2, selectedNetworkRequest],
             ]),
           });
+
+      calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+      calculator.updateBoundaries(selectedNetworkRequest);
     });
 
     it('generates an answer', async () => {
@@ -141,7 +146,7 @@ describeWithMockConnection('NetworkAgent', () => {
       });
 
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new RequestContext(selectedNetworkRequest)}));
+          await Array.fromAsync(agent.run('test', {selected: new RequestContext(selectedNetworkRequest, calculator)}));
       assert.deepEqual(responses, [
         {
           type: ResponseType.USER_QUERY,

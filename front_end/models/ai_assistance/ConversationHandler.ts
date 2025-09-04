@@ -10,6 +10,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 
 import {
   type AiAgent,
@@ -313,11 +314,15 @@ export class ConversationHandler {
     if (!request) {
       return this.#generateErrorResponse(`Can't find request with the given selector ${requestUrl}`);
     }
+
+    const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+    calculator.updateBoundaries(request);
+
     return this.#createAndDoExternalConversation({
       conversationType: ConversationType.NETWORK,
       aiAgent: networkAgent,
       prompt,
-      selected: new RequestContext(request),
+      selected: new RequestContext(request, calculator),
     });
   }
 

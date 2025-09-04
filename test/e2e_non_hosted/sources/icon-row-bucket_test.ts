@@ -90,7 +90,7 @@ describe('The row\'s icon bucket', function() {
     const iconComponents = await getIconComponents(devToolsPage, 'cm-messageIcon-error');
     const messages: string[] = [];
     const expectedMessages = [
-      'Refused to create a TrustedTypePolicy named \'policy2\' because it violates the following Content Security Policy directive: "trusted-types policy1".',
+      'Creating a TrustedTypePolicy named \'policy2\' violates the following Content Security policy directive: "trusted-types policy1". The action has been blocked.',
       'Uncaught TypeError: Failed to execute \'createPolicy\' on \'TrustedTypePolicyFactory\': Policy "policy2" disallowed.',
     ];
     for (const iconComponent of iconComponents) {

@@ -219,6 +219,10 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     return this.actionRegistration.experiment;
   }
 
+  featurePromotionId(): string|undefined {
+    return this.actionRegistration.featurePromotionId;
+  }
+
   setting(): string|undefined {
     return this.actionRegistration.setting;
   }
@@ -537,6 +541,10 @@ export interface ActionRegistration {
    * experiment will enable and disable the action respectively.
    */
   experiment?: Root.Runtime.ExperimentName;
+  /**
+   * Whether an action needs to be promoted. A new badge is shown next to the menu items then.
+   */
+  featurePromotionId?: string;
   /**
    * The name of the setting an action is associated with. Enabling and
    * disabling the declared setting will enable and disable the action

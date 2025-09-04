@@ -74,15 +74,30 @@ export class SnapshotTester {
     this.#actual.set(title, actual);
 
     const expected = this.#expected.get(title);
-    if (!expected) {
-      // New tests always pass on the first run.
+    if (expected === undefined) {
       this.#newTests = true;
-      return;
+      if (SnapshotTester.#updateMode) {
+        return;
+      }
+
+      this.#anyFailures = true;
+      throw new Error(`snapshot assertion failed! new snapshot found (${
+          title}), must run \`npm run test -- --on-diff=update ...\` to accept it.`);
     }
 
     if (!SnapshotTester.#updateMode && actual !== expected) {
       this.#anyFailures = true;
       assertSnapshotContent(actual, expected);
+    }
+  }
+
+  async #postUpdate(): Promise<void> {
+    const url = new URL('/update-snapshot', import.meta.url);
+    url.searchParams.set('snapshotUrl', this.#snapshotUrl);
+    const content = this.#serializeSnapshotFileContent();
+    const response = await fetch(url, {method: 'POST', body: content});
+    if (response.status !== 200) {
+      throw new Error(`Unable to update snapshot ${url}`);
     }
   }
 
@@ -95,21 +110,22 @@ export class SnapshotTester {
       }
     }
 
-    let shouldPostUpdate = SnapshotTester.#updateMode;
-    if (!this.#anyFailures && (didAnyTestNotRun || this.#newTests)) {
-      shouldPostUpdate = true;
-    }
-
-    if (!shouldPostUpdate) {
+    const hasChanges = this.#anyFailures || didAnyTestNotRun || this.#newTests;
+    if (!hasChanges) {
       return;
     }
 
-    const url = new URL('/update-snapshot', import.meta.url);
-    url.searchParams.set('snapshotUrl', this.#snapshotUrl);
-    const content = this.#serializeSnapshotFileContent();
-    const response = await fetch(url, {method: 'POST', body: content});
-    if (response.status !== 200) {
-      throw new Error(`Unable to update snapshot ${url}`);
+    // If the update flag is on, post any and all changes (failures, new tests, removals).
+    if (SnapshotTester.#updateMode) {
+      await this.#postUpdate();
+      return;
+    }
+
+    // Note: this does not handle test filtering (.only, --grep). Need a reliable way
+    // to distinguish a deleted test from a test that was filtered out.
+    if (didAnyTestNotRun) {
+      throw new Error(
+          'Snapshots are out of sync (a test was likely deleted or renamed). Run with `--on-diff=update` to fix.');
     }
   }
 

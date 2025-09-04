@@ -843,7 +843,7 @@ no origins were preconnected.
 - https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/
 === end content
 
-Title: PerformanceInsightFormatter Third Parties Insight serializes correctly when there are no results
+Title: PerformanceInsightFormatter ThirdParties serializes correctly when there are no results
 Content:
 ## Insight Title: 3rd parties
 
@@ -859,7 +859,7 @@ No 3rd party scripts were found on this page.
 - https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/
 === end content
 
-Title: PerformanceInsightFormatter Third Parties Insight serializes 3rd party scripts correctly
+Title: PerformanceInsightFormatter ThirdParties serializes 3rd party scripts correctly
 Content:
 ## Insight Title: 3rd parties
 

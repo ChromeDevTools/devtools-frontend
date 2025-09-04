@@ -279,7 +279,7 @@ function snapshotTesterFactory() {
       res.writeHead(200, {'Content-Type': 'application/json'});
       const updateMode = TestConfig.onDiff.update === true;
       res.end(JSON.stringify({updateMode}));
-      return res.end();
+      return;
     }
 
     if (req.url.startsWith('/update-snapshot')) {

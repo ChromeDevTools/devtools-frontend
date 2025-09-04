@@ -25,6 +25,7 @@ jobs:
         env:
           TAG: ${{ steps.devtools_version.outputs.tag }}
         with:
+          github-token: ${{ secrets.BROWSER_AUTOMATION_BOT_TOKEN }}
           script: |
             await github.rest.git.createRef({
               owner: context.repo.owner,

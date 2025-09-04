@@ -40,7 +40,7 @@ import {ActionRegistry} from './ActionRegistry.js';
 import type {Key, Modifier} from './KeyboardShortcut.js';
 import {ShortcutRegistry} from './ShortcutRegistry.js';
 import {SoftContextMenu, type SoftContextMenuDescriptor} from './SoftContextMenu.js';
-import {deepElementFromEvent} from './UIUtils.js';
+import {deepElementFromEvent, maybeCreateNewBadge} from './UIUtils.js';
 
 /**
  * Represents a single item in a context menu.
@@ -313,11 +313,14 @@ export class Section {
     if (!label) {
       label = action.title();
     }
-    const result = this.appendItem(label, action.execute.bind(action), {
-      disabled: !action.enabled(),
-      jslogContext: jslogContext ?? actionId,
-      featureName: feature,
-    });
+    const promotionId = action.featurePromotionId();
+    let additionalElement = undefined;
+    if (promotionId) {
+      additionalElement = maybeCreateNewBadge(promotionId);
+    }
+    const result = this.appendItem(
+        label, action.execute.bind(action),
+        {disabled: !action.enabled(), jslogContext: jslogContext ?? actionId, featureName: feature, additionalElement});
     const shortcut = ShortcutRegistry.instance().shortcutTitleForAction(actionId);
     const keyAndModifier = ShortcutRegistry.instance().keyAndModifiersForAction(actionId);
     if (keyAndModifier) {

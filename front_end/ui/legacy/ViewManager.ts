@@ -23,7 +23,6 @@ import viewContainersStyles from './viewContainers.css.js';
 import {
   getLocalizedViewLocationCategory,
   getRegisteredLocationResolvers,
-  getRegisteredViewExtensionForID,
   getRegisteredViewExtensions,
   maybeRemoveViewExtension,
   registerLocationResolver,
@@ -1008,7 +1007,6 @@ export {
   getLocalizedViewLocationCategory,
   getRegisteredLocationResolvers,
   getRegisteredViewExtensions,
-  getRegisteredViewExtensionForID,
   maybeRemoveViewExtension,
   registerLocationResolver,
   registerViewExtension,

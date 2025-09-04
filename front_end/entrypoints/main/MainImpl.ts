@@ -908,20 +908,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       contextMenu.discard();
     }
 
-    const aiPreregisteredView = UI.ViewManager.getRegisteredViewExtensionForID('freestyler');
-    if (aiPreregisteredView) {
-      let additionalElement = undefined;
-      const promotionId = aiPreregisteredView.featurePromotionId();
-      if (promotionId) {
-        additionalElement = UI.UIUtils.maybeCreateNewBadge(promotionId);
-      }
-      contextMenu.defaultSection().appendItem(aiPreregisteredView.title(), () => {
-        void UI.ViewManager.ViewManager.instance().showView('freestyler', true, false);
-        if (promotionId) {
-          UI.UIUtils.PromotionManager.instance().recordFeatureInteraction(promotionId);
-        }
-      }, {additionalElement, jslogContext: 'freestyler'});
-    }
+    contextMenu.defaultSection().appendAction('freestyler.main-menu', undefined, /* optional */ true);
 
     if (dockController.dockSide() === UI.DockController.DockState.UNDOCKED) {
       const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -949,6 +936,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       const persistence = viewExtension.persistence();
       const title = viewExtension.title();
       const id = viewExtension.viewId();
+      const promotionId = viewExtension.featurePromotionId();
 
       if (id === 'issues-pane') {
         moreTools.defaultSection().appendItem(title, () => {
@@ -964,14 +952,15 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       if (location !== 'drawer-view' && location !== 'panel') {
         continue;
       }
-      // Skip AI Assistance because we already show it in the main menu
-      if (id === 'freestyler') {
-        continue;
+
+      let additionalElement = undefined;
+      if (promotionId) {
+        additionalElement = UI.UIUtils.maybeCreateNewBadge(promotionId);
       }
 
       moreTools.defaultSection().appendItem(title, () => {
         void UI.ViewManager.ViewManager.instance().showView(id, true, false);
-      }, {isPreviewFeature: viewExtension.isPreviewFeature(), jslogContext: id});
+      }, {additionalElement, isPreviewFeature: viewExtension.isPreviewFeature(), jslogContext: id});
     }
 
     const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.help), false, 'help');

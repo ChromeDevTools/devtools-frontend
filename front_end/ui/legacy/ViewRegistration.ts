@@ -170,12 +170,6 @@ export function registerViewExtension(registration: ViewRegistration): void {
   registeredViewExtensions.push(new PreRegisteredView(registration));
 }
 
-export function getRegisteredViewExtensionForID(id: string): PreRegisteredView|undefined {
-  return registeredViewExtensions.find(
-      view => view.viewId() === id &&
-          Root.Runtime.Runtime.isDescriptorEnabled({experiment: view.experiment(), condition: view.condition()}));
-}
-
 export function getRegisteredViewExtensions(): PreRegisteredView[] {
   return registeredViewExtensions.filter(
       view => Root.Runtime.Runtime.isDescriptorEnabled({experiment: view.experiment(), condition: view.condition()}));

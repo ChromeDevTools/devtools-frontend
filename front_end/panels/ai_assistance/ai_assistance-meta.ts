@@ -122,7 +122,6 @@ UI.ViewManager.registerViewExtension({
   commandPrompt: i18nLazyString(UIStrings.showAiAssistance),
   title: i18nLazyString(UIStrings.aiAssistance),
   order: 10,
-  isPreviewFeature: true,
   featurePromotionId: 'ai-assistance',
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   hasToolbar: false,
@@ -157,6 +156,21 @@ Common.Settings.registerSettingExtension({
     }
     return {disabled: false};
   },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'freestyler.main-menu',
+  contextTypes(): [] {
+    return [];
+  },
+  category: UI.ActionRegistration.ActionCategory.GLOBAL,
+  title: titleForAiAssistanceActions,
+  featurePromotionId: 'ai-assistance',
+  async loadActionDelegate() {
+    const AiAssistance = await loadAiAssistanceModule();
+    return new AiAssistance.ActionDelegate();
+  },
+  condition: config => isAnyFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
 });
 
 UI.ActionRegistration.registerActionExtension({

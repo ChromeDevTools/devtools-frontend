@@ -13,6 +13,7 @@ import {DeferredDOMNode} from './DOMModel.js';
 import type {FrameAssociated} from './FrameAssociated.js';
 import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
+import type {DebugId} from './SourceMap.js';
 
 const UIStrings = {
   /**
@@ -187,5 +188,9 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
       frameId: this.frameId,
       initiatorUrl: this.hasSourceURL ? Platform.DevToolsPath.EmptyUrlString : this.sourceURL,
     };
+  }
+
+  debugId(): DebugId|null {
+    return null;
   }
 }

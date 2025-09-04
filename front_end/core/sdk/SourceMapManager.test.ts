@@ -110,6 +110,10 @@ describe('SourceMapManager', () => {
     createPageResourceLoadInitiator(): SDK.PageResourceLoader.PageResourceLoadInitiator {
       return {target: this.target, frameId: null, initiatorUrl: null};
     }
+
+    debugId(): SDK.SourceMap.DebugId|null {
+      return null;
+    }
   }
 
   describe('attachSourceMap', () => {

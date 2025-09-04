@@ -44,7 +44,7 @@ import type {FrameAssociated} from './FrameAssociated.js';
 import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 import type {ExecutionContext} from './RuntimeModel.js';
-import type {SourceMap} from './SourceMap.js';
+import type {DebugId, SourceMap} from './SourceMap.js';
 import type {Target} from './Target.js';
 
 const UIStrings = {
@@ -423,6 +423,10 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
 
   createPageResourceLoadInitiator(): PageResourceLoadInitiator {
     return {target: this.target(), frameId: this.frameId, initiatorUrl: this.embedderName()};
+  }
+
+  debugId(): DebugId|null {
+    return this.buildId as (DebugId | null);
   }
 
   /**

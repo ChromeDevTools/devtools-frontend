@@ -842,3 +842,49 @@ no origins were preconnected.
 - https://web.dev/learn/performance/understanding-the-critical-path
 - https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/
 === end content
+
+Title: PerformanceInsightFormatter Third Parties Insight serializes correctly when there are no results
+Content:
+## Insight Title: 3rd parties
+
+## Insight Summary:
+This insight analyzes the performance impact of resources loaded from third-party servers and aggregates the performance cost, in terms of download transfer sizes and total amount of time that third party scripts spent executing on the main thread.
+
+## Detailed analysis:
+No 3rd party scripts were found on this page.
+
+## Estimated savings: none
+
+## External resources:
+- https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/
+=== end content
+
+Title: PerformanceInsightFormatter Third Parties Insight serializes 3rd party scripts correctly
+Content:
+## Insight Title: 3rd parties
+
+## Insight Summary:
+This insight analyzes the performance impact of resources loaded from third-party servers and aggregates the performance cost, in terms of download transfer sizes and total amount of time that third party scripts spent executing on the main thread.
+
+## Detailed analysis:
+The following list contains the largest transfer sizes by a 3rd party script:
+
+- imgix: 172 kB
+- Google Tag Manager: 163 kB
+- Google Analytics: 20.5 kB
+- web.app: 823 B
+
+The following list contains the largest amount spent by a 3rd party script on the main thread:
+
+- Google Tag Manager: 28.1 ms
+- Google Analytics: 5.8 ms
+- noondiphcddnnabmjcihcjfbhfklnnep: 1.7 ms
+- web.app: 0.2 ms
+
+3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
+
+## Estimated savings: none
+
+## External resources:
+- https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/
+=== end content

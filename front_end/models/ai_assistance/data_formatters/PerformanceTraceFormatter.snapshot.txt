@@ -849,6 +849,10 @@ Available insights:
     estimated wasted bytes: 52.1 kB
     example question: How do I decrease the initial loading time of my page?
     example question: Did anything slow down the request for this document?
+  - insight name: ThirdParties
+    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
+    relevant trace bounds: {min: 1020034871372, max: 1020035171789}
+    example question: Which third parties are having the largest impact on my page performance?
 === end content
 
 Title: PerformanceTraceFormatter formatTraceSummary yahoo-news.json.gz
@@ -887,6 +891,10 @@ Available insights:
     estimated wasted bytes: 97.8 kB
     example question: What should I do to improve and optimize the time taken to fetch and display images on the page?
     example question: Are all images on my site optimized?
+  - insight name: ThirdParties
+    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
+    relevant trace bounds: {min: 157423742399, max: 157427277086}
+    example question: Which third parties are having the largest impact on my page performance?
   - insight name: LegacyJavaScript
     description: Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)
     relevant trace bounds: {min: 157423489126, max: 157426132225}

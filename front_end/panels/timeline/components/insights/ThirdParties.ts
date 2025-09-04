@@ -51,6 +51,10 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
         },
   };
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   override renderContent(): Lit.LitTemplate {
     if (!this.model) {
       return Lit.nothing;

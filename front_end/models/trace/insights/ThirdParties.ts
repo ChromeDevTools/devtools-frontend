@@ -73,6 +73,10 @@ function finalize(partialModel: PartialInsightModel<ThirdPartiesInsightModel>): 
   };
 }
 
+export function isThirdPartyInsight(model: InsightModel): model is ThirdPartiesInsightModel {
+  return model.insightKey === InsightKeys.THIRD_PARTIES;
+}
+
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ThirdPartiesInsightModel {
   const entitySummaries =

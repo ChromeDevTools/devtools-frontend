@@ -320,6 +320,53 @@ export class PerformanceInsightFormatter {
   }
 
   /**
+   * Create an AI prompt string out of the ThirdParties Insight model to use with Ask AI.
+   * Note: This function accesses the UIStrings within ThirdParties to help build the
+   * AI prompt, but does not (and should not) call i18nString to localize these strings. They
+   * should all be sent in English (at least for now).
+   * @param insight The Third Parties Insight Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatThirdPartiesInsight(insight: Trace.Insights.Models.ThirdParties.ThirdPartiesInsightModel): string {
+    let output = '';
+
+    const entitySummaries = insight.entitySummaries ?? [];
+    const firstPartyEntity = insight.firstPartyEntity;
+
+    const thirdPartyTransferSizeEntries =
+        entitySummaries.filter(s => s.entity !== firstPartyEntity).toSorted((a, b) => b.transferSize - a.transferSize);
+    const thirdPartyMainThreadTimeEntries = entitySummaries.filter(s => s.entity !== firstPartyEntity)
+                                                .toSorted((a, b) => b.mainThreadTime - a.mainThreadTime);
+
+    if (!thirdPartyTransferSizeEntries.length && !thirdPartyMainThreadTimeEntries.length) {
+      return `No 3rd party scripts were found on this page.`;
+    }
+
+    if (thirdPartyTransferSizeEntries.length) {
+      output += `The following list contains the largest transfer sizes by a 3rd party script:\n\n`;
+      for (const entry of thirdPartyTransferSizeEntries) {
+        if (entry.transferSize > 0) {
+          output += `- ${entry.entity.name}: ${this.#unitFormatters.bytes(entry.transferSize)}\n`;
+        }
+      }
+      output += '\n';
+    }
+
+    if (thirdPartyMainThreadTimeEntries.length) {
+      output += `The following list contains the largest amount spent by a 3rd party script on the main thread:\n\n`;
+      for (const entry of thirdPartyMainThreadTimeEntries) {
+        if (entry.mainThreadTime > 0) {
+          output += `- ${entry.entity.name}: ${this.#formatMilli(entry.mainThreadTime)}\n`;
+        }
+      }
+      output += '\n';
+    }
+
+    output += Trace.Insights.Models.ThirdParties.UIStrings.description;
+    return output;
+  }
+
+  /**
    * Formats and outputs the insight's data.
    * Pass `{headingLevel: X}` to determine what heading level to use for the
    * titles in the markdown output. The default is 2 (##).
@@ -579,6 +626,10 @@ ${filesFormatted}`;
       return this.formatNetworkDependencyTreeInsight(this.#insight);
     }
 
+    if (Trace.Insights.Models.ThirdParties.isThirdPartyInsight(this.#insight)) {
+      return this.formatThirdPartiesInsight(this.#insight);
+    }
+
     return '';
   }
 
@@ -630,7 +681,7 @@ ${filesFormatted}`;
       case 'SlowCSSSelector':
         return '';
       case 'ThirdParties':
-        return '';
+        return '- https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/';
       case 'Viewport':
         return '';
       case 'Cache':
@@ -700,7 +751,7 @@ It is important that all of these checks pass to minimize the delay between the 
       case 'SlowCSSSelector':
         return '';
       case 'ThirdParties':
-        return '';
+        return 'This insight analyzes the performance impact of resources loaded from third-party servers and aggregates the performance cost, in terms of download transfer sizes and total amount of time that third party scripts spent executing on the main thread.';
       case 'Viewport':
         return '';
       case 'Cache':

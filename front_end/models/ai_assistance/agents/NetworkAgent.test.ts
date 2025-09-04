@@ -6,11 +6,9 @@ import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type * as Network from '../../../panels/network/network.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
-import {createNetworkPanelForMockConnection} from '../../../testing/NetworkHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
@@ -23,8 +21,6 @@ import {
 const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('NetworkAgent', () => {
-  let networkPanel: Network.NetworkPanel.NetworkPanel;
-
   function mockHostConfig(modelId?: string, temperature?: number) {
     updateHostConfig({
       devToolsAiAssistanceNetworkAgent: {
@@ -34,13 +30,8 @@ describeWithMockConnection('NetworkAgent', () => {
     });
   }
 
-  beforeEach(async () => {
-    networkPanel = await createNetworkPanelForMockConnection();
-  });
-
   afterEach(async () => {
     await RenderCoordinator.done();
-    networkPanel.detach();
   });
 
   describe('buildRequest', () => {

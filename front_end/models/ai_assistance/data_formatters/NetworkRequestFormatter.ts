@@ -4,9 +4,8 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import * as Network from '../../../panels/network/network.js';
 import * as Logs from '../../logs/logs.js';
-import type * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
+import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 
 const MAX_HEADERS_SIZE = 1000;
 
@@ -103,8 +102,7 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
   }
 
   formatNetworkRequestTiming(): string {
-    const results = Network.RequestTimingView.RequestTimingView.calculateRequestTimeRanges(
-        this.#request, this.#calculator.minimumBoundary());
+    const results = NetworkTimeCalculator.calculateRequestTimeRanges(this.#request, this.#calculator.minimumBoundary());
 
     function getDuration(name: string): string|undefined {
       const result = results.find(r => r.name === name);

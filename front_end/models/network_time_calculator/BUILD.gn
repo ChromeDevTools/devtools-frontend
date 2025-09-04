@@ -9,12 +9,14 @@ devtools_module("network_time_calculator") {
   sources = [
     "Calculator.ts",
     "NetworkTimeCalculator.ts",
+    "RequestTimeRanges.ts",
   ]
 
   deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
   ]
 }
 

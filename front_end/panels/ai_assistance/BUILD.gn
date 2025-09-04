@@ -42,6 +42,7 @@ devtools_module("ai_assistance") {
     "../../models/workspace_diff:bundle",
     "../../panels/changes:bundle",
     "../../panels/common:bundle",
+    "../../panels/network:bundle",
     "../../panels/network/forward:bundle",
     "../../panels/timeline:bundle",
     "../../panels/timeline/utils:bundle",

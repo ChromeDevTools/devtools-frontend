@@ -39,7 +39,6 @@ devtools_module("ai_assistance") {
     "../../core/root:bundle",
     "../../models/network_time_calculator:bundle",
     "../../panels/elements:bundle",
-    "../../panels/network:bundle",
     "../../panels/timeline/utils:bundle",
     "../../panels/utils:bundle",
     "../../third_party/diff:bundle",
@@ -47,6 +46,7 @@ devtools_module("ai_assistance") {
     "../../ui/lit:bundle",
     "../bindings:bundle",
     "../logs:bundle",
+    "../network_time_calculator:bundle",
     "../trace:bundle",
     "../workspace:bundle",
   ]

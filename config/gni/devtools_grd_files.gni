@@ -1116,6 +1116,7 @@ grd_files_unbundled_sources = [
   "front_end/models/logs/RequestResolver.js",
   "front_end/models/network_time_calculator/Calculator.js",
   "front_end/models/network_time_calculator/NetworkTimeCalculator.js",
+  "front_end/models/network_time_calculator/RequestTimeRanges.js",
   "front_end/models/persistence/Automapping.js",
   "front_end/models/persistence/AutomaticFileSystemManager.js",
   "front_end/models/persistence/AutomaticFileSystemWorkspaceBinding.js",

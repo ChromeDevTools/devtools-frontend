@@ -54,6 +54,7 @@ const LONG_ACTION_THRESHOLD = 15;
  */
 export class Snackbar extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
+  #container: HTMLElement;
   #timeout: number|null = null;
   #isLongAction = false;
   #actionButtonClickHandler?: () => void;
@@ -140,9 +141,10 @@ export class Snackbar extends HTMLElement {
     this.#actionButtonClickHandler = actionButtonClickHandler;
   }
 
-  constructor(properties: SnackbarProperties) {
+  constructor(properties: SnackbarProperties, container?: HTMLElement) {
     super();
     this.message = properties.message;
+    this.#container = container || UI.InspectorView.InspectorView.instance().element;
     if (properties.closable) {
       this.closable = properties.closable;
     }
@@ -155,8 +157,8 @@ export class Snackbar extends HTMLElement {
     }
   }
 
-  static show(properties: SnackbarProperties): Snackbar {
-    const snackbar = new Snackbar(properties);
+  static show(properties: SnackbarProperties, container?: HTMLElement): Snackbar {
+    const snackbar = new Snackbar(properties, container);
     Snackbar.snackbarQueue.push(snackbar);
     if (Snackbar.snackbarQueue.length === 1) {
       snackbar.#show();
@@ -165,7 +167,7 @@ export class Snackbar extends HTMLElement {
   }
 
   #show(): void {
-    UI.InspectorView.InspectorView.instance().element.appendChild(this);
+    this.#container.appendChild(this);
     if (this.#timeout) {
       window.clearTimeout(this.#timeout);
     }

@@ -16,6 +16,7 @@ generate_css("css_files") {
     "badgeNotification.css",
     "common.css",
     "freDialog.css",
+    "gdpSignUpDialog.css",
   ]
 }
 
@@ -26,6 +27,7 @@ devtools_module("common") {
     "AiCodeCompletionTeaser.ts",
     "BadgeNotification.ts",
     "FreDialog.ts",
+    "GdpSignUpDialog.ts",
   ]
 
   deps = [
@@ -37,6 +39,7 @@ devtools_module("common") {
     "../../ui/components/buttons:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/components/spinners:bundle",
+    "../../ui/components/switch:bundle",
     "../../ui/components/tooltips:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",

@@ -28,7 +28,7 @@ enum EligibilityStatus {
   NOT_ELIGIBLE = 'NOT_ELIGIBLE',
 }
 
-enum EmailPreference {
+export enum EmailPreference {
   ENABLED = 'ENABLED',
   DISABLED = 'DISABLED',
 }

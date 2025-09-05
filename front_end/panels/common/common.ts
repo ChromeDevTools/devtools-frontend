@@ -96,6 +96,7 @@ export class TypeToAllowDialog {
 
 export {AiCodeCompletionTeaser} from './AiCodeCompletionTeaser.js';
 export {FreDialog} from './FreDialog.js';
+export {GdpSignUpDialog} from './GdpSignUpDialog.js';
 export {AiCodeCompletionDisclaimer} from './AiCodeCompletionDisclaimer.js';
 export {AiCodeCompletionSummaryToolbar} from './AiCodeCompletionSummaryToolbar.js';
 export {BadgeNotification} from './BadgeNotification.js';

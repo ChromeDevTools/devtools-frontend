@@ -15,6 +15,7 @@ import * as Root from '../../../core/root/root.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as PanelCommon from '../../common/common.js';
 
 import syncSectionStyles from './syncSection.css.js';
 
@@ -270,11 +271,8 @@ function renderGdpSectionIfNeeded({
         <div class="gdp-profile-sign-up-content">
           ${renderBrand()}
           <devtools-button
-            @click=${() => {
-              // TODO(crbug.com/441467083): Render sign-up flow.
-              // no-op for now.
-            }}
-            .jslogContext=${'gdp.sign-up'}
+            @click=${() => PanelCommon.GdpSignUpDialog.show()}
+            .jslogContext=${'gdp.sign-up-dialog-open'}
             .variant=${Buttons.Button.Variant.OUTLINED}>
               ${i18nString(UIStrings.signUp)}
           </devtools-button>

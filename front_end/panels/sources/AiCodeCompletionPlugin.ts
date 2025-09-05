@@ -22,6 +22,8 @@ const CITATIONS_TOOLTIP_ID = 'sources-ai-code-completion-citations-tooltip';
 
 export class AiCodeCompletionPlugin extends Plugin {
   #aidaClient?: Host.AidaClient.AidaClient;
+  #aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
+  #boundOnAidaAvailabilityChange: () => Promise<void>;
   #aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
   #aiCodeCompletionSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
   #aiCodeCompletionTeaserDismissedSetting =
@@ -48,6 +50,10 @@ export class AiCodeCompletionPlugin extends Plugin {
     }
     this.#boundEditorKeyDown = this.#editorKeyDown.bind(this);
     this.#boundOnAiCodeCompletionSettingChanged = this.#onAiCodeCompletionSettingChanged.bind(this);
+    this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
+    Host.AidaClient.HostConfigTracker.instance().addEventListener(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+    void this.#onAidaAvailabilityChange();
     const showTeaser = !this.#aiCodeCompletionSetting.get() && !this.#aiCodeCompletionTeaserDismissedSetting.get();
     if (showTeaser) {
       this.#teaser = new PanelCommon.AiCodeCompletionTeaser({onDetach: this.#detachAiCodeCompletionTeaser.bind(this)});
@@ -61,6 +67,8 @@ export class AiCodeCompletionPlugin extends Plugin {
   override dispose(): void {
     this.#teaser = undefined;
     this.#aiCodeCompletionSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
+    Host.AidaClient.HostConfigTracker.instance().removeEventListener(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
     this.#editor?.removeEventListener('keydown', this.#boundEditorKeyDown);
     this.#cleanupAiCodeCompletion();
     super.dispose();
@@ -203,23 +211,31 @@ export class AiCodeCompletionPlugin extends Plugin {
       this.#detachAiCodeCompletionTeaser();
       this.#teaser = undefined;
     }
-    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
-        {aidaClient: this.#aidaClient}, this.#editor, AiCodeCompletion.AiCodeCompletion.Panel.SOURCES);
-    this.#aiCodeCompletion.addEventListener(
-        AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED, this.#onAiRequestTriggered, this);
-    this.#aiCodeCompletion.addEventListener(
-        AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED, this.#onAiResponseReceived, this);
+    if (!this.#aiCodeCompletion) {
+      this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
+          {aidaClient: this.#aidaClient}, this.#editor, AiCodeCompletion.AiCodeCompletion.Panel.SOURCES);
+      this.#aiCodeCompletion.addEventListener(
+          AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED, this.#onAiRequestTriggered, this);
+      this.#aiCodeCompletion.addEventListener(
+          AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED, this.#onAiResponseReceived, this);
+    }
     this.#createAiCodeCompletionDisclaimer();
     this.#createAiCodeCompletionCitationsToolbar();
   }
 
   #createAiCodeCompletionDisclaimer(): void {
+    if (this.#aiCodeCompletionDisclaimer) {
+      return;
+    }
     this.#aiCodeCompletionDisclaimer = new PanelCommon.AiCodeCompletionDisclaimer();
     this.#aiCodeCompletionDisclaimer.disclaimerTooltipId = DISCLAIMER_TOOLTIP_ID;
     this.#aiCodeCompletionDisclaimer.show(this.#aiCodeCompletionDisclaimerContainer, undefined, true);
   }
 
   #createAiCodeCompletionCitationsToolbar(): void {
+    if (this.#aiCodeCompletionCitationsToolbar) {
+      return;
+    }
     this.#aiCodeCompletionCitationsToolbar =
         new PanelCommon.AiCodeCompletionSummaryToolbar({citationsTooltipId: CITATIONS_TOOLTIP_ID, hasTopBorder: true});
     this.#aiCodeCompletionCitationsToolbar.show(this.#aiCodeCompletionCitationsToolbarContainer, undefined, true);
@@ -253,12 +269,25 @@ export class AiCodeCompletionPlugin extends Plugin {
     }
   }
 
+  async #onAidaAvailabilityChange(): Promise<void> {
+    const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+    if (currentAidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = currentAidaAvailability;
+      if (this.#aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+        this.#onAiCodeCompletionSettingChanged();
+      } else if (this.#aiCodeCompletion) {
+        this.#cleanupAiCodeCompletion();
+      }
+    }
+  }
+
   #cleanupAiCodeCompletion(): void {
     this.#aiCodeCompletion?.removeEventListener(
         AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED, this.#onAiRequestTriggered, this);
     this.#aiCodeCompletion?.removeEventListener(
         AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED, this.#onAiResponseReceived, this);
     this.#aiCodeCompletion?.remove();
+    this.#aiCodeCompletion = undefined;
     this.#aiCodeCompletionCitations = [];
     this.#aiCodeCompletionDisclaimerContainer.removeChildren();
     this.#aiCodeCompletionDisclaimer = undefined;

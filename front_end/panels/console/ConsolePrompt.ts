@@ -71,6 +71,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #javaScriptCompletionCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
 
   private aidaClient?: Host.AidaClient.AidaClient;
+  private aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
+  private boundOnAidaAvailabilityChange?: () => Promise<void>;
   private aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
   private teaser?: PanelCommon.AiCodeCompletionTeaser;
   private placeholderCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
@@ -199,6 +201,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (this.isAiCodeCompletionEnabled()) {
       this.aiCodeCompletionSetting.addChangeListener(this.onAiCodeCompletionSettingChanged.bind(this));
       this.onAiCodeCompletionSettingChanged();
+      this.boundOnAidaAvailabilityChange = this.onAidaAvailabilityChange.bind(this);
+      Host.AidaClient.HostConfigTracker.instance().addEventListener(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.boundOnAidaAvailabilityChange);
+      void this.onAidaAvailabilityChange();
     }
   }
 
@@ -293,6 +299,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (this.highlightingNode) {
       this.highlightingNode = false;
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    }
+    if (this.boundOnAidaAvailabilityChange) {
+      Host.AidaClient.HostConfigTracker.instance().removeEventListener(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.boundOnAidaAvailabilityChange);
     }
   }
 
@@ -505,6 +515,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   // TODO(b/435654172): Refactor and move aiCodeCompletion model one level up to avoid
   // defining additional listeners and events.
   private setAiCodeCompletion(): void {
+    if (this.aiCodeCompletion) {
+      return;
+    }
     if (!this.aidaClient) {
       this.aidaClient = new Host.AidaClient.AidaClient();
     }
@@ -529,6 +542,19 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     } else if (this.aiCodeCompletion) {
       this.aiCodeCompletion.remove();
       this.aiCodeCompletion = undefined;
+    }
+  }
+
+  private async onAidaAvailabilityChange(): Promise<void> {
+    const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+    if (currentAidaAvailability !== this.aidaAvailability) {
+      this.aidaAvailability = currentAidaAvailability;
+      if (this.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+        this.onAiCodeCompletionSettingChanged();
+      } else if (this.aiCodeCompletion) {
+        this.aiCodeCompletion.remove();
+        this.aiCodeCompletion = undefined;
+      }
     }
   }
 

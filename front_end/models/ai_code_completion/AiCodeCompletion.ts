@@ -377,6 +377,9 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       clearTimeout(this.#renderingTimeout);
       this.#renderingTimeout = undefined;
     }
+    this.#editor.dispatch({
+      effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(null),
+    });
   }
 }
 

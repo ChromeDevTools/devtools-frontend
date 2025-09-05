@@ -717,6 +717,8 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventT
       const config =
           await new Promise<Root.Runtime.HostConfig>(resolve => InspectorFrontendHostInstance.getHostConfig(resolve));
       Object.assign(Root.Runtime.hostConfig, config);
+      // TODO(crbug.com/442545623): Send `currentAidaAvailability` to the listeners as part of the event so that
+      // `await AidaClient.checkAccessPreconditions()` does not need to be called again in the event handlers.
       this.dispatchEventToListeners(Events.AIDA_AVAILABILITY_CHANGED);
     }
   }

@@ -88,7 +88,7 @@ const lockedString = i18n.i18n.lockedString;
 const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 
 export interface ViewInput {
-  aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
+  aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
   onAction: (event: Event) => void;
   onDismiss: (event: Event) => void;
 }
@@ -134,8 +134,9 @@ interface AiCodeCompletionTeaserConfig {
 export class AiCodeCompletionTeaser extends UI.Widget.Widget {
   readonly #view: View;
 
-  #aidaAvailability = Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL;
+  #aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
   #boundOnAidaAvailabilityChange: () => Promise<void>;
+  #boundOnAiCodeCompletionSettingChanged: () => void;
   #onDetach: () => void;
 
   // Whether the user completed first run experience dialog or not.
@@ -153,6 +154,7 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     this.#onDetach = config.onDetach;
     this.#view = view ?? DEFAULT_VIEW;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
+    this.#boundOnAiCodeCompletionSettingChanged = this.#onAiCodeCompletionSettingChanged.bind(this);
     this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     this.requestUpdate();
@@ -176,6 +178,12 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
       this.requestUpdate();
+    }
+  }
+
+  #onAiCodeCompletionSettingChanged(): void {
+    if (this.#aiCodeCompletionFreCompletedSetting.get() || this.#aiCodeCompletionTeaserDismissedSetting.get()) {
+      this.detach();
     }
   }
 
@@ -243,6 +251,8 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     super.wasShown();
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+    this.#aiCodeCompletionFreCompletedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
+    this.#aiCodeCompletionTeaserDismissedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
     void this.#onAidaAvailabilityChange();
   }
 
@@ -250,6 +260,8 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     super.willHide();
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+    this.#aiCodeCompletionFreCompletedSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
+    this.#aiCodeCompletionTeaserDismissedSetting.removeChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
   }
 
   override onDetach(): void {

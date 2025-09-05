@@ -16,11 +16,12 @@ import * as FreDialog from './FreDialog.js';
 
 describeWithEnvironment('AiCodeCompletionTeaser', () => {
   let showFreDialogStub: sinon.SinonStub<Parameters<typeof FreDialog.FreDialog.show>, Promise<boolean>>;
+  let checkAccessPreconditionsStub: sinon.SinonStub;
 
   beforeEach(() => {
     showFreDialogStub = sinon.stub(FreDialog.FreDialog, 'show');
-    sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
-        .resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    checkAccessPreconditionsStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
+    checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
   });
 
   async function createTeaser() {
@@ -91,6 +92,40 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
     assert.notExists(showFreDialogStub.lastCall.args[0].reminderItems.find(
         reminderItem =>
             reminderItem.content.toString().includes('This data will not be used to improve Google’s AI models.')));
+    widget.detach();
+  });
+
+  it('renders when AIDA becomes available', async () => {
+    checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
+
+    const {view, widget} = await createTeaser();
+
+    assert.strictEqual(view.input.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
+
+    checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
+
+    await view.nextInput;
+
+    assert.strictEqual(view.input.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    widget.detach();
+  });
+
+  it('does not render when AIDA becomes unavailable', async () => {
+    checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+
+    const {view, widget} = await createTeaser();
+
+    assert.strictEqual(view.input.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+
+    checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
+    Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
+
+    await view.nextInput;
+
+    assert.strictEqual(view.input.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
     widget.detach();
   });
 });

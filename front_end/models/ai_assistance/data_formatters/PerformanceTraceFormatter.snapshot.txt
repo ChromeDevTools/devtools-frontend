@@ -891,6 +891,11 @@ Available insights:
     estimated wasted bytes: 97.8 kB
     example question: What should I do to improve and optimize the time taken to fetch and display images on the page?
     example question: Are all images on my site optimized?
+  - insight name: FontDisplay
+    description: Consider setting [font-display](https://developer.chrome.com/blog/font-display) to swap or optional to ensure text is consistently visible. swap can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).
+    relevant trace bounds: {min: 157425661196, max: 157425696387}
+    estimated metric savings: FCP 20 ms
+    example question: How can I update my CSS to avoid layout shifts caused by incorrect `font-display` properties?
   - insight name: ThirdParties
     description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
     relevant trace bounds: {min: 157423742399, max: 157427277086}

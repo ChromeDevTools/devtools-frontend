@@ -56,6 +56,10 @@ function finalize(partialModel: PartialInsightModel<FontDisplayInsightModel>): F
   };
 }
 
+export function isFontDisplayInsight(model: InsightModel): model is FontDisplayInsightModel {
+  return model.insightKey === InsightKeys.FONT_DISPLAY;
+}
+
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): FontDisplayInsightModel {
   const fonts: RemoteFont[] = [];

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Trace from '../../trace/trace.js';
 import type {ConversationSuggestion} from '../agents/AiAgent.js';
 
@@ -183,6 +184,35 @@ export class PerformanceInsightFormatter {
       default:
         throw new Error('Unknown insight key');
     }
+  }
+
+  /**
+   * Create an AI prompt string out of the NetworkDependencyTree Insight model to use with Ask AI.
+   * Note: This function accesses the UIStrings within NetworkDependencyTree to help build the
+   * AI prompt, but does not (and should not) call i18nString to localize these strings. They
+   * should all be sent in English (at least for now).
+   * @param insight The Network Dependency Tree Insight Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatFontDisplayInsight(insight: Trace.Insights.Models.FontDisplay.FontDisplayInsightModel): string {
+    if (insight.fonts.length === 0) {
+      return 'No font display issues were detected.';
+    }
+
+    let output = 'The following font display issues were found:\n';
+
+    for (const font of insight.fonts) {
+      let fontName = font.name;
+      if (!fontName) {
+        const url = new Common.ParsedURL.ParsedURL(font.request.args.data.url);
+        fontName = url.isValid ? url.lastPathComponent : '(not available)';
+      }
+      output += `\n - Font name: ${fontName}, URL: ${font.request.args.data.url}, Property 'font-display' set to: '${
+          font.display}', Wasted time: ${this.#formatMilli(font.wastedTime)}.`;
+    }
+
+    output += '\n\n' + Trace.Insights.Models.FontDisplay.UIStrings.description;
+    return output;
   }
 
   /**
@@ -659,6 +689,10 @@ Legacy JavaScript by file:
 ${filesFormatted}`;
     }
 
+    if (Trace.Insights.Models.FontDisplay.isFontDisplayInsight(this.#insight)) {
+      return this.formatFontDisplayInsight(this.#insight);
+    }
+
     if (Trace.Insights.Models.ForcedReflow.isForcedReflowInsight(this.#insight)) {
       return this.formatForcedReflowInsight(this.#insight);
     }
@@ -701,7 +735,9 @@ ${filesFormatted}`;
       case 'DuplicatedJavaScript':
         return '';
       case 'FontDisplay':
-        return '';
+        return `- https://web.dev/articles/preload-optional-fonts
+- https://fonts.google.com/knowledge/glossary/foit
+- https://developer.chrome.com/blog/font-fallbacks`;
       case 'ForcedReflow':
         return '- https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts';
       case 'ImageDelivery':
@@ -757,7 +793,7 @@ ${filesFormatted}`;
         return `This insight identifies large, duplicated JavaScript modules that are present in your application and create redundant code.
   This wastes network bandwidth and slows down your page, as the user's browser must download and process the same code multiple times.`;
       case 'FontDisplay':
-        return '';
+        return 'This insight identifies font issues when a webpage uses custom fonts, for example when font-display is not set to `swap`, `fallback` or `optional`, causing the "Flash of Invisible Text" problem (FOIT).';
       case 'ForcedReflow':
         return `This insight identifies forced synchronous layouts (also known as forced reflows) and layout thrashing caused by JavaScript accessing layout properties at suboptimal points in time.`;
       case 'ImageDelivery':

@@ -22,6 +22,10 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
   override internalName = 'font-display';
   #overlayForRequest = new Map<Trace.Types.Events.Event, Trace.Types.Overlays.Overlay>();
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   protected override createOverlays(): Trace.Types.Overlays.Overlay[] {
     this.#overlayForRequest.clear();
 

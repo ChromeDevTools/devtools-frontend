@@ -346,6 +346,28 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
     });
   });
 
+  describe('FontDisplay', () => {
+    it('serializes correctly when there are no results', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('FontDisplay', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details when problems are found with font display', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'font-display.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('FontDisplay', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
   describe('ImageDelivery', () => {
     it('serializes the correct details when there are no optimizable images', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');

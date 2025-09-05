@@ -369,7 +369,6 @@ export class CdpPage extends Page {
       'Browser.getWindowForTarget',
     );
 
-    // @ts-expect-error Not available in stable yet.
     await this.#primaryTargetClient.send('Browser.setContentsSize', {
       windowId,
       width: params.contentWidth,
@@ -922,7 +921,7 @@ export class CdpPage extends Page {
     );
     const entry = history.entries[history.currentIndex + delta];
     if (!entry) {
-      return null;
+      throw new Error('History entry to navigate to not found.');
     }
     const result = await Promise.all([
       this.waitForNavigation(options),

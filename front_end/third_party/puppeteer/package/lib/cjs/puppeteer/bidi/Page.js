@@ -110,7 +110,6 @@ const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const encoding_js_1 = require("../util/encoding.js");
-const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
 const Frame_js_1 = require("./Frame.js");
 const Input_js_1 = require("./Input.js");
@@ -755,11 +754,6 @@ let BidiPage = (() => {
             }
             catch (error) {
                 controller.abort();
-                if ((0, ErrorLike_js_1.isErrorLike)(error)) {
-                    if (error.message.includes('no such history entry')) {
-                        return null;
-                    }
-                }
                 throw error;
             }
         }

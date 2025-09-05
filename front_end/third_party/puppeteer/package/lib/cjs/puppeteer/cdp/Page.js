@@ -304,7 +304,6 @@ class CdpPage extends Page_js_1.Page {
     }
     async resize(params) {
         const { windowId } = await this.#primaryTargetClient.send('Browser.getWindowForTarget');
-        // @ts-expect-error Not available in stable yet.
         await this.#primaryTargetClient.send('Browser.setContentsSize', {
             windowId,
             width: params.contentWidth,
@@ -691,7 +690,7 @@ class CdpPage extends Page_js_1.Page {
         const history = await this.#primaryTargetClient.send('Page.getNavigationHistory');
         const entry = history.entries[history.currentIndex + delta];
         if (!entry) {
-            return null;
+            throw new Error('History entry to navigate to not found.');
         }
         const result = await Promise.all([
             this.waitForNavigation(options),

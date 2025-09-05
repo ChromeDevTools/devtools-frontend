@@ -1557,6 +1557,9 @@ export declare interface CustomQueryHandler {
     queryAll?: (node: Node, selector: string) => Iterable<Node>;
 }
 
+/**
+ * @public
+ */
 declare interface CustomQuerySelector {
     querySelector(root: Node, selector: string): Awaitable<Node | null>;
     querySelectorAll(root: Node, selector: string): AwaitableIterable<Node>;
@@ -1575,12 +1578,9 @@ declare class CustomQuerySelectorRegistry {
 
 declare namespace CustomQuerySelectors {
     export {
-        CustomQuerySelector,
-        customQuerySelectors
+        CustomQuerySelector
     }
 }
-
-declare const customQuerySelectors: CustomQuerySelectorRegistry;
 
 /**
  * @public
@@ -5577,7 +5577,9 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @param options - Navigation parameters
      * @returns Promise which resolves to the main resource response. In case of
      * multiple redirects, the navigation will resolve with the response of the
-     * last redirect. If can not go back, resolves to `null`.
+     * last redirect.
+     * If the navigation is same page, returns null.
+     * If no history entry is found throws.
      */
     abstract goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;
     /**
@@ -5585,7 +5587,9 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @param options - Navigation Parameter
      * @returns Promise which resolves to the main resource response. In case of
      * multiple redirects, the navigation will resolve with the response of the
-     * last redirect. If can not go forward, resolves to `null`.
+     * last redirect.
+     * If the navigation is same page, returns null.
+     * If no history entry is found throws.
      */
     abstract goForward(options?: WaitForOptions): Promise<HTTPResponse | null>;
     /**

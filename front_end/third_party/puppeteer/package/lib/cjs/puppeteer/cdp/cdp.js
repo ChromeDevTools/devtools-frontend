@@ -52,6 +52,7 @@ __exportStar(require("./Page.js"), exports);
 __exportStar(require("./PredefinedNetworkConditions.js"), exports);
 __exportStar(require("./Target.js"), exports);
 __exportStar(require("./TargetManager.js"), exports);
+__exportStar(require("./TargetManageEvents.js"), exports);
 __exportStar(require("./Tracing.js"), exports);
 __exportStar(require("./utils.js"), exports);
 __exportStar(require("./WebWorker.js"), exports);

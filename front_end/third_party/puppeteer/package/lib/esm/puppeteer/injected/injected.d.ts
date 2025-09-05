@@ -43,7 +43,7 @@ declare const PuppeteerUtil: Readonly<{
 /**
  * @internal
  */
-type PuppeteerUtil = typeof PuppeteerUtil;
+export type PuppeteerInjectedUtil = typeof PuppeteerUtil;
 /**
  * @internal
  */

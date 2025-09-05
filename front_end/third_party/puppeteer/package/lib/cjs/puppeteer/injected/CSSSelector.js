@@ -6,11 +6,17 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cssQuerySelectorAll = exports.cssQuerySelector = void 0;
+/**
+ * @internal
+ */
 const cssQuerySelector = (root, selector) => {
     // @ts-expect-error assume element root
     return root.querySelector(selector);
 };
 exports.cssQuerySelector = cssQuerySelector;
+/**
+ * @internal
+ */
 const cssQuerySelectorAll = function (root, selector) {
     // @ts-expect-error assume element root
     return root.querySelectorAll(selector);

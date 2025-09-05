@@ -403,10 +403,25 @@ class AXNode {
         const node = {
             role: this.#role,
             elementHandle: async () => {
-                if (!this.payload.backendDOMNodeId) {
-                    return null;
+                const env_2 = { stack: [], error: void 0, hasError: false };
+                try {
+                    if (!this.payload.backendDOMNodeId) {
+                        return null;
+                    }
+                    const handle = __addDisposableResource(env_2, await this.#realm.adoptBackendNode(this.payload.backendDOMNodeId), false);
+                    // Since Text nodes are not elements, we want to
+                    // return a handle to the parent element for them.
+                    return (await handle.evaluateHandle(node => {
+                        return node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+                    }));
                 }
-                return (await this.#realm.adoptBackendNode(this.payload.backendDOMNodeId));
+                catch (e_2) {
+                    env_2.error = e_2;
+                    env_2.hasError = true;
+                }
+                finally {
+                    __disposeResources(env_2);
+                }
             },
         };
         const userStringProperties = [

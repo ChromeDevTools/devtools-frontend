@@ -102,7 +102,6 @@ import { assert } from '../util/assert.js';
 import { bubble } from '../util/decorators.js';
 import { Deferred } from '../util/Deferred.js';
 import { stringToTypedArray } from '../util/encoding.js';
-import { isErrorLike } from '../util/ErrorLike.js';
 import { BidiElementHandle } from './ElementHandle.js';
 import { BidiFrame } from './Frame.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
@@ -747,11 +746,6 @@ let BidiPage = (() => {
             }
             catch (error) {
                 controller.abort();
-                if (isErrorLike(error)) {
-                    if (error.message.includes('no such history entry')) {
-                        return null;
-                    }
-                }
                 throw error;
             }
         }

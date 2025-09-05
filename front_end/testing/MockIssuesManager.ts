@@ -57,7 +57,7 @@ export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper<Issues
   }
 
   addIssue(mockIssue: StubIssue) {
-    this.mockIssues.push(mockIssue as IssuesManager.Issue.Issue);
+    this.mockIssues.push(mockIssue);
     this.dispatchEventToListeners(
         IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issue: mockIssue, issuesModel: this.mockModel});
   }

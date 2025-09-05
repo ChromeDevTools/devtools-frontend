@@ -189,8 +189,7 @@ describe('Overrides panel', function() {
 
     assert.lengthOf(icons, 1);
     assert.strictEqual(
-        'Requests may be overridden locally, see the Sources panel',
-        await icons[0].evaluate(icon => (icon as HTMLElement).title));
+        'Requests may be overridden locally, see the Sources panel', await icons[0].evaluate(icon => icon.title));
 
     await waitForOverrideContentMenuItemIsEnabled('coffees.json', devToolsPage);
     await devToolsPage.click('aria/Override content');
@@ -215,8 +214,7 @@ describe('Overrides panel', function() {
 
     assert.lengthOf(icons, 1);
     assert.strictEqual(
-        'Requests may be overridden locally, see the Sources panel',
-        await icons[0].evaluate(icon => (icon as HTMLElement).title));
+        'Requests may be overridden locally, see the Sources panel', await icons[0].evaluate(icon => icon.title));
   });
 
   it('can show all overrides in the Sources panel', async ({devToolsPage, inspectedPage}) => {

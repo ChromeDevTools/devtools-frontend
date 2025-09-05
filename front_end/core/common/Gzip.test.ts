@@ -41,7 +41,7 @@ describe('arrayBufferToString', () => {
   });
   it('can decode a plaintext buffer', async () => {
     const text = 'Hello, buddy!';
-    const buffer = new TextEncoder().encode(text).buffer as ArrayBuffer;
+    const buffer = new TextEncoder().encode(text).buffer;
     const result = await Common.Gzip.arrayBufferToString(buffer);
     assert.strictEqual(result, text);
   });

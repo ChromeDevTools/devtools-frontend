@@ -65,7 +65,7 @@ describe('Media Tab', () => {
 
   async function getPlayerButtonText(devToolsPage: DevToolsPage) {
     const playerEntry = await getPlayerButton(devToolsPage);
-    return await playerEntry.evaluate(element => element.textContent as string);
+    return await playerEntry.evaluate(element => element.textContent);
   }
 
   async function waitForPlayerButtonTexts(count: number, devToolsPage: DevToolsPage) {

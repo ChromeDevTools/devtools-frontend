@@ -58,7 +58,7 @@ describe('The Extension API', () => {
     await header.click();
     const panel = await devToolsPage.waitForAria('extension-tab-title panel');
     const page = await devToolsPage.waitFor('iframe', panel);
-    const target = await page.evaluate(e => (e as HTMLIFrameElement).src);
+    const target = await page.evaluate(e => e.src);
     assert.strictEqual(target, `${inspectedPage.domain()}/blank.html`);
   });
 
@@ -72,7 +72,7 @@ describe('The Extension API', () => {
     await header.click();
     const panel = await devToolsPage.waitForAria('extension-tab-title panel');
     const page = await devToolsPage.waitFor('iframe', panel);
-    const target = await page.evaluate(e => (e as HTMLIFrameElement).src);
+    const target = await page.evaluate(e => e.src);
     assert.strictEqual(target, `${inspectedPage.domain()}/blank.html`);
   });
 });

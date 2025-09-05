@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type * as puppeteer from 'puppeteer-core';
 
 import {
   waitForContentOfSelectedElementsNode,
@@ -36,9 +35,8 @@ describe('Event listeners in the elements sidebar', () => {
 
   const getDisplayedEventListenerNames = async (devToolsPage: DevToolsPage) => {
     const eventListeners = await devToolsPage.$$(EVENT_LISTENERS_SELECTOR);
-    const eventListenerNames = await Promise.all(
-        eventListeners.map((listener: puppeteer.JSHandle) => listener.evaluate(l => (l as Element).textContent)));
-    return eventListenerNames as string[];
+    const eventListenerNames = await Promise.all(eventListeners.map(listener => listener.evaluate(l => l.textContent)));
+    return eventListenerNames;
   };
 
   const getEventListenerProperties = async (devToolsPage: DevToolsPage, selector: string) => {
@@ -57,7 +55,7 @@ describe('Event listeners in the elements sidebar', () => {
       return [key, value];
     })));
 
-    return propertiesOutput as string[][];
+    return propertiesOutput;
   };
 
   const getFirstNodeForEventListener = async (devToolsPage: DevToolsPage, listenerTypeSelector: string) => {

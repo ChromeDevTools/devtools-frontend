@@ -12,7 +12,7 @@ import type {InspectedPage} from '../shared/target-helper.js';
 async function waitForChangedConcurrency(
     lastConcurrency: number|undefined, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
   return await devToolsPage.waitForFunction(async () => {
-    const newConcurrency = await inspectedPage.evaluate('navigator.hardwareConcurrency') as number;
+    const newConcurrency = await inspectedPage.evaluate(() => navigator.hardwareConcurrency);
     if (newConcurrency !== lastConcurrency) {
       return newConcurrency;
     }

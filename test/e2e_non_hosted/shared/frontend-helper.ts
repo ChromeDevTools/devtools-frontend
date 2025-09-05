@@ -76,12 +76,12 @@ export class DevToolsPage extends PageWrapper {
     const url = this.page.url();
     this.#heartbeatInterval = setInterval(async () => {
       // 1 - success, -1 - eval error, -2 - eval timeout.
-      const status = (await Promise.race([
+      const status = await Promise.race([
         this.page.evaluate(() => 1).catch(() => {
           return -1;
         }),
-        new Promise(resolve => setTimeout(() => resolve(-2), 1000))
-      ]) as number);
+        new Promise<number>(resolve => setTimeout(() => resolve(-2), 1000))
+      ]);
       if (status <= 0) {
         clearInterval(this.#heartbeatInterval);
       }

@@ -577,7 +577,7 @@ export class LocalLazyObject implements LazyObject {
   }
 
   async asRemoteObject(): Promise<Chrome.DevTools.RemoteObject> {
-    const type = (Array.isArray(this.value) ? 'array' : 'object') as Chrome.DevTools.RemoteObjectType;
+    const type = Array.isArray(this.value) ? 'array' : 'object';
     const {objectId, type: valueType, linearMemoryAddress} = this;
     return {
       type,

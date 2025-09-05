@@ -54,7 +54,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     const expectedActivities = ['h2', 'H2', 'h2_with_suffix'];
     await navigateToBottomUpTab(devToolsPage, 'url');
 
-    const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+    const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
     await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
     await toggleCaseSensitive(devToolsPage);
     await setFilter('H2', devToolsPage);
@@ -68,7 +68,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     await navigateToBottomUpTab(devToolsPage, 'url');
 
     // click on the "Regex Button" and validate activities
-    const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+    const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
     await devToolsPage.waitForElementWithTextContent(allActivities[0], timelineTree);
     await toggleRegExButtonBottomUp(devToolsPage);
     await setFilter('h2$', devToolsPage);
@@ -82,7 +82,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     await navigateToBottomUpTab(devToolsPage, 'url');
 
     // click on the "Match whole word" and validate activities
-    const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+    const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
     await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
     await toggleMatchWholeWordButtonBottomUp(devToolsPage);
     await setFilter('function', devToolsPage);
@@ -96,7 +96,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     const expectedActivities = ['H2', 'h2_with_suffix', 'h2'];
     await navigateToBottomUpTab(devToolsPage, 'url');
 
-    const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+    const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
     await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
     await setFilter('h2', devToolsPage);
     const foundActivities = await enumerateTreeItems(devToolsPage);
@@ -126,7 +126,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     const expectedActivities = ['h2_with_suffix', 'container2', 'Function call', 'Timer fired', 'Profiling overhead'];
     await navigateToBottomUpTab(devToolsPage, 'url');
 
-    const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+    const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
     await toggleRegExButtonBottomUp(devToolsPage);
     await toggleCaseSensitive(devToolsPage);
     await setFilter('h2_', devToolsPage);
@@ -154,7 +154,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     await devToolsPage.click('th.activity-column');
     await devToolsPage.waitFor('th.activity-column.sortable.sort-ascending');
 
-    const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+    const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
     const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
     assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
     await expandNodeRecursively(rootActivity, devToolsPage);

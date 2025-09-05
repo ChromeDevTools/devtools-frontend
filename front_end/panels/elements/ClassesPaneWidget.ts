@@ -93,7 +93,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     }
 
     const eventTarget = (event.target as HTMLElement);
-    let text: ''|string = (eventTarget.textContent as string);
+    let text = eventTarget.textContent;
     if (Platform.KeyboardUtilities.isEscKey(event)) {
       if (!Platform.StringUtilities.isWhitespace(text)) {
         event.consume(true);

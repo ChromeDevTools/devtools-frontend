@@ -17,6 +17,7 @@ import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
 
 import {cleanTestDOM, raf, setupTestDOM} from './DOMHelpers.js';
 import {createFakeSetting, resetHostConfig} from './EnvironmentHelpers.js';
+import {TraceLoader} from './TraceLoader.js';
 import {
   checkForPendingActivity,
   startTrackingAsyncActivity,
@@ -32,7 +33,7 @@ document.documentElement.classList.add('platform-screenshot-test');
 const documentBodyElements = new Set<Element>();
 
 // Warm-up fonts to be readily available.
-before(async () => {
+before(async function() {
   const div = document.createElement('div');
   div.style.fontFamily = 'roboto';
   // Some latin characters to trigger the latin font file to be loaded.
@@ -42,6 +43,15 @@ before(async () => {
   document.body.append(div);
   await document.fonts.ready;
   div.remove();
+
+  // There is no way to provide after each file run via a test set up file.
+  // What we do instead is add and after all in all global test suits
+  // This is as close as we can get to after each file.
+  this.test?.parent?.suites.forEach(function(suite) {
+    suite.afterAll(function() {
+      TraceLoader.resetCache();
+    });
+  });
 });
 
 beforeEach(async () => {

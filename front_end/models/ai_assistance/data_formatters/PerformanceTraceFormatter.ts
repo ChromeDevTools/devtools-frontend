@@ -95,7 +95,7 @@ export class PerformanceTraceFormatter {
           continue;
         }
 
-        const insightBounds = TimelineUtils.InsightAIContext.insightBounds(model, insightSet.bounds);
+        const insightBounds = Trace.Insights.Common.insightBounds(model, insightSet.bounds);
         const insightParts = [
           `insight name: ${insightName}`,
           `description: ${model.description}`,

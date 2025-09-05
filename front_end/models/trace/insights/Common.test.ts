@@ -6,6 +6,7 @@ import type {RecursivePartial} from '../../../core/platform/TypescriptUtilities.
 import * as Protocol from '../../../generated/protocol.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {microsecondsTraceWindow} from '../../../testing/TraceHelpers.js';
 import type * as Types from '../types/types.js';
 
 import * as Insights from './insights.js';
@@ -120,6 +121,58 @@ describeWithEnvironment('Common', function() {
       const request = makeRequest({transferSize: 1000, resourceSize: 0, resourceType, responseHeaders: []});
       const result = estimate(request, 100, Protocol.Network.ResourceType.Script);
       assert.strictEqual(result, 33);  // uses default compression ratio.
+    });
+  });
+
+  describe('insightBounds', () => {
+    const INSIGHT_SET_BOUNDS = microsecondsTraceWindow(0, 1_000);
+
+    it('uses the bounds of the overlays', async () => {
+      const fakeInsight = {
+        createOverlays(): Types.Overlays.Overlay[] {
+          return [{
+            type: 'TIME_RANGE',
+            bounds: microsecondsTraceWindow(100, 500),
+            label: 'test',
+            showDuration: true,
+          }];
+        }
+      } as unknown as Insights.Types.InsightModel;
+      const bounds = Insights.Common.insightBounds(fakeInsight, INSIGHT_SET_BOUNDS);
+      assert.deepEqual(bounds, microsecondsTraceWindow(100, 500));
+    });
+
+    it('merges the bounds of two overlays', async () => {
+      const fakeInsight = {
+        createOverlays(): Types.Overlays.Overlay[] {
+          return [
+            {
+              type: 'TIME_RANGE',
+              bounds: microsecondsTraceWindow(100, 500),
+              label: 'test',
+              showDuration: true,
+            },
+            {
+              type: 'TIME_RANGE',
+              bounds: microsecondsTraceWindow(50, 400),
+              label: 'test',
+              showDuration: true,
+            }
+          ];
+        }
+      } as unknown as Insights.Types.InsightModel;
+      const bounds = Insights.Common.insightBounds(fakeInsight, INSIGHT_SET_BOUNDS);
+      assert.deepEqual(bounds, microsecondsTraceWindow(50, 500));
+    });
+
+    it('falls back to the set bounds if there are no overlays', async () => {
+      const fakeInsight = {
+        createOverlays(): Types.Overlays.Overlay[] {
+          return [];
+        }
+      } as unknown as Insights.Types.InsightModel;
+      const bounds = Insights.Common.insightBounds(fakeInsight, INSIGHT_SET_BOUNDS);
+      assert.deepEqual(bounds, INSIGHT_SET_BOUNDS);
     });
   });
 });

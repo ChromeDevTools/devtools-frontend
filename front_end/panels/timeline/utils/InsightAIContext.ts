@@ -126,22 +126,3 @@ export class AIQueries {
         .filter(tree => !!tree);
   }
 }
-
-/**
- * Calculates the trace bounds for the given insight that are relevant.
- *
- * Uses the insight's overlays to determine the relevant trace bounds. If there are
- * no overlays, falls back to the insight set's navigation bounds.
- */
-export function insightBounds(
-    insight: Trace.Insights.Types.InsightModel,
-    insightSetBounds: Trace.Types.Timing.TraceWindowMicro): Trace.Types.Timing.TraceWindowMicro {
-  const overlays = insight.createOverlays?.() ?? [];
-  const windows = overlays.map(Trace.Helpers.Timing.traceWindowFromOverlay).filter(bounds => !!bounds);
-  const overlaysBounds = Trace.Helpers.Timing.combineTraceWindowsMicro(windows);
-  if (overlaysBounds) {
-    return overlaysBounds;
-  }
-
-  return insightSetBounds;
-}

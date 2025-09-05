@@ -27,7 +27,7 @@ devtools_module("ai_assistance") {
     "data_formatters/NetworkRequestFormatter.ts",
     "data_formatters/PerformanceInsightFormatter.ts",
     "data_formatters/PerformanceTraceFormatter.ts",
-    "data_formatters/Types.ts",
+    "data_formatters/UnitFormatters.ts",
     "debug.ts",
     "injected.ts",
   ]
@@ -90,6 +90,7 @@ ts_library("unittests") {
     "data_formatters/NetworkRequestFormatter.test.ts",
     "data_formatters/PerformanceInsightFormatter.test.ts",
     "data_formatters/PerformanceTraceFormatter.test.ts",
+    "data_formatters/UnitFormatters.test.ts",
   ]
 
   deps = [

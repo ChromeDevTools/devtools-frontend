@@ -6,7 +6,7 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import {PERF_AGENT_UNIT_FORMATTERS, PerformanceInsightFormatter, TraceEventFormatter} from '../ai_assistance.js';
+import {PerformanceInsightFormatter, TraceEventFormatter} from '../ai_assistance.js';
 
 describeWithEnvironment('PerformanceInsightFormatter', () => {
   let snapshotTester: SnapshotTester;
@@ -25,7 +25,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       assert.isOk(insight.lcpRequest);
       snapshotTester.assert(this, output);
@@ -37,7 +37,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
 
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -49,7 +49,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
     const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
     const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
 
-    const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+    const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
     const output = formatter.formatInsight();
     snapshotTester.assert(this, output);
   });
@@ -60,7 +60,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('RenderBlocking', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -70,7 +70,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('RenderBlocking', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -83,7 +83,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
 
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
 
       assert.isOk(insight.lcpRequest);
@@ -98,7 +98,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('DocumentLatency', insights, firstNav);
 
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
 
       const request = insight.data?.documentRequest;
@@ -114,7 +114,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('CLSCulprits', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -125,7 +125,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
       assert.isOk(insights);
       const insight = getInsightOrError('INPBreakdown', insights);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -137,7 +137,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ModernHTTP', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -147,7 +147,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ModernHTTP', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -159,18 +159,17 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const requestUrl = 'http://localhost:3000/redirect3';
       const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
       assert.isOk(request);
-      const output =
-          TraceEventFormatter.networkRequests(PERF_AGENT_UNIT_FORMATTERS, [request], parsedTrace, {verbose: true});
+      const output = TraceEventFormatter.networkRequests([request], parsedTrace, {verbose: true});
       assert.include(output, `Redirects:
 #### Redirect 1: http://localhost:3000/
-- Start time: 3.0 ms
-- Duration: 512.0 ms
+- Start time: 3\xA0ms
+- Duration: 512\xA0ms
 #### Redirect 2: http://localhost:3000/redirect1
-- Start time: 515.1 ms
-- Duration: 505.7 ms
+- Start time: 515.1\xA0ms
+- Duration: 505.7\xA0ms
 #### Redirect 3: http://localhost:3000/redirect2
-- Start time: 1,020.7 ms
-- Duration: 507.1 ms
+- Start time: 1,020.7\xA0ms
+- Duration: 507.1\xA0ms
 `);
     });
 
@@ -179,8 +178,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
       const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
       assert.isOk(request);
-      const output =
-          TraceEventFormatter.networkRequests(PERF_AGENT_UNIT_FORMATTERS, [request], parsedTrace, {verbose: true});
+      const output = TraceEventFormatter.networkRequests([request], parsedTrace, {verbose: true});
       snapshotTester.assert(this, output);
     });
 
@@ -189,7 +187,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
       const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
       assert.isOk(request);
-      const output = TraceEventFormatter.networkRequests(PERF_AGENT_UNIT_FORMATTERS, [request], parsedTrace);
+      const output = TraceEventFormatter.networkRequests([request], parsedTrace);
       snapshotTester.assert(this, output);
     });
 
@@ -197,8 +195,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
       const requests = parsedTrace.NetworkRequests.byTime;
       // Duplicate request so that the compressed format is used
-      const output =
-          TraceEventFormatter.networkRequests(PERF_AGENT_UNIT_FORMATTERS, [requests[0], requests[0]], parsedTrace);
+      const output = TraceEventFormatter.networkRequests([requests[0], requests[0]], parsedTrace);
       const urlMapIndex = output.indexOf('allUrls = ');
       assert.isAbove(urlMapIndex, -1, 'Could not find url map in output');
       const dataWithUrlMap = output.substring(urlMapIndex);
@@ -213,13 +210,13 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const fields = [...parts.slice(0, 18), parts.slice(18).join(';')];
 
       assert.strictEqual(fields[0], '0', 'urlIndex');
-      assert.strictEqual(fields[1], '3.0 ms', 'queuedTime');
-      assert.strictEqual(fields[2], '1,529.5 ms', 'requestSentTime');
-      assert.strictEqual(fields[3], '3,532.6 ms', 'downloadCompleteTime');
-      assert.strictEqual(fields[4], '3,537.8 ms', 'processingCompleteTime');
-      assert.strictEqual(fields[5], '3,534.7 ms', 'totalDuration');
-      assert.strictEqual(fields[6], '0.1 ms', 'downloadDuration');
-      assert.strictEqual(fields[7], '5.1 ms', 'mainThreadProcessingDuration');
+      assert.strictEqual(fields[1], '3\xA0ms', 'queuedTime');
+      assert.strictEqual(fields[2], '1,529.5\xA0ms', 'requestSentTime');
+      assert.strictEqual(fields[3], '3,532.6\xA0ms', 'downloadCompleteTime');
+      assert.strictEqual(fields[4], '3,537.8\xA0ms', 'processingCompleteTime');
+      assert.strictEqual(fields[5], '3,534.7\xA0ms', 'totalDuration');
+      assert.strictEqual(fields[6], '0.1\xA0ms', 'downloadDuration');
+      assert.strictEqual(fields[7], '5.1\xA0ms', 'mainThreadProcessingDuration');
       assert.strictEqual(fields[8], '200', 'statusCode');
       assert.strictEqual(fields[9], 'text/html', 'mimeType');
       assert.strictEqual(fields[10], 'VeryHigh', 'priority');
@@ -230,10 +227,10 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.strictEqual(fields[15], 'f', 'fromServiceWorker');
       assert.strictEqual(fields[16], '', 'initiators');
       assert.strictEqual(
-          fields[17], '[[1|3.0 ms|512.0 ms],[2|515.1 ms|505.7 ms],[3|1,020.7 ms|507.1 ms]]', 'redirects');
+          fields[17], '[[1|3\xA0ms|512\xA0ms],[2|515.1\xA0ms|505.7\xA0ms],[3|1,020.7\xA0ms|507.1\xA0ms]]', 'redirects');
       assert.strictEqual(
           fields[18],
-          '[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]\n0;3.0 ms;1,529.5 ms;3,532.6 ms;3,537.8 ms;3,534.7 ms;0.1 ms;5.1 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;f;;[[1|3.0 ms|512.0 ms],[2|515.1 ms|505.7 ms],[3|1,020.7 ms|507.1 ms]];[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]',
+          '[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]\n0;3\xA0ms;1,529.5\xA0ms;3,532.6\xA0ms;3,537.8\xA0ms;3,534.7\xA0ms;0.1\xA0ms;5.1\xA0ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;f;;[[1|3\xA0ms|512\xA0ms],[2|515.1\xA0ms|505.7\xA0ms],[3|1,020.7\xA0ms|507.1\xA0ms]];[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]',
           'responseHeaders');
     });
 
@@ -241,7 +238,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       const request = parsedTrace.NetworkRequests.byTime;
       assert.isOk(request);
-      const output = TraceEventFormatter.networkRequests(PERF_AGENT_UNIT_FORMATTERS, request, parsedTrace);
+      const output = TraceEventFormatter.networkRequests(request, parsedTrace);
       const urlMapIndex = output.indexOf('allUrls = ');
       assert.isAbove(urlMapIndex, -1, 'Could not find url map in output');
       const dataWithUrlMap = output.substring(urlMapIndex);
@@ -256,13 +253,13 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const fields = [...parts.slice(0, 18), parts.slice(18).join(';')];
 
       assert.strictEqual(fields[0], '1', 'urlIndex');
-      assert.strictEqual(fields[1], '37.6 ms', 'queuedTime');
-      assert.strictEqual(fields[2], '41.7 ms', 'requestSentTime');
-      assert.strictEqual(fields[3], '48.0 ms', 'downloadCompleteTime');
-      assert.strictEqual(fields[4], '51.5 ms', 'processingCompleteTime');
-      assert.strictEqual(fields[5], '13.9 ms', 'totalDuration');
-      assert.strictEqual(fields[6], '4.8 ms', 'downloadDuration');
-      assert.strictEqual(fields[7], '3.5 ms', 'mainThreadProcessingDuration');
+      assert.strictEqual(fields[1], '37.6\xA0ms', 'queuedTime');
+      assert.strictEqual(fields[2], '41.7\xA0ms', 'requestSentTime');
+      assert.strictEqual(fields[3], '48\xA0ms', 'downloadCompleteTime');
+      assert.strictEqual(fields[4], '51.5\xA0ms', 'processingCompleteTime');
+      assert.strictEqual(fields[5], '13.9\xA0ms', 'totalDuration');
+      assert.strictEqual(fields[6], '4.8\xA0ms', 'downloadDuration');
+      assert.strictEqual(fields[7], '3.5\xA0ms', 'mainThreadProcessingDuration');
       assert.strictEqual(fields[8], '200', 'statusCode');
       assert.strictEqual(fields[9], 'text/css', 'mimeType');
       assert.strictEqual(fields[10], 'VeryHigh', 'priority');
@@ -284,7 +281,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
          const {parsedTrace} = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
          const request = parsedTrace.NetworkRequests.byTime;
          assert.isOk(request);
-         const output = TraceEventFormatter.networkRequests(PERF_AGENT_UNIT_FORMATTERS, request, parsedTrace);
+         const output = TraceEventFormatter.networkRequests(request, parsedTrace);
          const urlMapIndex = output.indexOf('allUrls = ');
          assert.isAbove(urlMapIndex, -1, 'Could not find url map in output');
          const dataWithUrlMap = output.substring(urlMapIndex);
@@ -308,7 +305,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('DuplicatedJavaScript', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -318,7 +315,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('DuplicatedJavaScript', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -330,7 +327,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LegacyJavaScript', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -340,7 +337,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LegacyJavaScript', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -352,7 +349,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('FontDisplay', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -362,7 +359,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('FontDisplay', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -374,7 +371,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ImageDelivery', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -384,7 +381,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ImageDelivery', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -396,7 +393,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ForcedReflow', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -406,7 +403,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ForcedReflow', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -418,7 +415,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -428,7 +425,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -440,7 +437,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('SlowCSSSelector', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -450,7 +447,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('SlowCSSSelector', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -462,7 +459,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ThirdParties', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
@@ -472,7 +469,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('ThirdParties', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });

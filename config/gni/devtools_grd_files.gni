@@ -1033,7 +1033,7 @@ grd_files_unbundled_sources = [
   "front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js",
   "front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js",
   "front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js",
-  "front_end/models/ai_assistance/data_formatters/Types.js",
+  "front_end/models/ai_assistance/data_formatters/UnitFormatters.js",
   "front_end/models/ai_assistance/debug.js",
   "front_end/models/ai_assistance/injected.js",
   "front_end/models/ai_code_completion/AiCodeCompletion.js",

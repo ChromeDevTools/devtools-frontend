@@ -160,7 +160,7 @@ describeWithMockConnection('NetworkAgent', () => {
             {
               title: 'Timing',
               text:
-                  'Queued at (timestamp): 0 μs\nStarted at (timestamp): 8.4 min\nQueueing (duration): 8.4 min\nConnection start (stalled) (duration): 800.00 ms\nRequest sent (duration): 100.00 ms\nDuration (duration): 8.4 min',
+                  'Queued at (timestamp): 0 s\nStarted at (timestamp): 501 s\nQueueing (duration): 501 s\nConnection start (stalled) (duration): 800 ms\nRequest sent (duration): 100 ms\nDuration (duration): 501 s',
             },
             {
               title: 'Request initiator chain',
@@ -197,12 +197,12 @@ x-forwarded-for: bar3
 
 Response status: 200 \n
 Request timing:
-Queued at (timestamp): 0 μs
-Started at (timestamp): 8.4 min
-Queueing (duration): 8.4 min
-Connection start (stalled) (duration): 800.00 ms
-Request sent (duration): 100.00 ms
-Duration (duration): 8.4 min
+Queued at (timestamp): 0 s
+Started at (timestamp): 501 s
+Queueing (duration): 501 s
+Connection start (stalled) (duration): 800 ms
+Request sent (duration): 100 ms
+Duration (duration): 501 s
 
 Request initiator chain:
 - URL: <redacted cross-origin initiator URL>

@@ -18,7 +18,6 @@ import {
   TraceEventFormatter,
 } from '../data_formatters/PerformanceInsightFormatter.js';
 import {PerformanceTraceFormatter} from '../data_formatters/PerformanceTraceFormatter.js';
-import type {UnitFormatters} from '../data_formatters/Types.js';
 import {debugLog} from '../debug.js';
 
 import {
@@ -220,19 +219,6 @@ enum ScorePriority {
   DEFAULT = 1,
 }
 
-export const PERF_AGENT_UNIT_FORMATTERS: UnitFormatters = {
-  micros(x) {
-    const milli = Trace.Helpers.Timing.microToMilli(x as Trace.Types.Timing.Micro);
-    return PERF_AGENT_UNIT_FORMATTERS.millis(milli);
-  },
-  millis(x) {
-    return i18n.TimeUtilities.preciseMillisToString(x, 1, ' ');
-  },
-  bytes(x) {
-    return i18n.ByteUtilities.bytesToString(x);
-  },
-};
-
 export class PerformanceTraceContext extends ConversationContext<TimelineUtils.AIContext.AgentFocus> {
   static full(
       parsedTrace: Trace.Handlers.Types.ParsedTrace, insights: Trace.Insights.Types.TraceInsightSets,
@@ -330,8 +316,7 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
       return;
     }
 
-    return new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, focus.parsedTrace, focus.insight)
-        .getSuggestions();
+    return new PerformanceInsightFormatter(focus.parsedTrace, focus.insight).getSuggestions();
   }
 }
 
@@ -672,7 +657,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     this.addFact(this.#networkDataDescriptionFact);
 
     if (!this.#traceFacts.length) {
-      this.#formatter = new PerformanceTraceFormatter(PERF_AGENT_UNIT_FORMATTERS, focus, this.#eventsSerializer);
+      this.#formatter = new PerformanceTraceFormatter(focus, this.#eventsSerializer);
       this.#createFactForTraceSummary(focus);
       this.#createFactForCriticalRequests();
       this.#createFactForMainThreadBottomUpSummary();
@@ -738,8 +723,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
           return {error: 'No insight available'};
         }
 
-        const details =
-            new PerformanceInsightFormatter(PERF_AGENT_UNIT_FORMATTERS, parsedTrace, insight).formatInsight();
+        const details = new PerformanceInsightFormatter(parsedTrace, insight).formatInsight();
 
         const key = `getInsightDetails('${params.insightName}')`;
         this.#cacheFunctionResult(focus, key, details);

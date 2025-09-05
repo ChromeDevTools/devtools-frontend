@@ -203,7 +203,7 @@ describeWithMockConnection('ConversationHandler', () => {
             },
             {
               text:
-                  'Queued at (timestamp): 0 μs\nStarted at (timestamp): 0 μs\nConnection start (stalled) (duration): -\nDuration (duration): -',
+                  'Queued at (timestamp): 0 s\nStarted at (timestamp): 0 s\nConnection start (stalled) (duration): -\nDuration (duration): -',
               title: 'Timing',
             },
             {

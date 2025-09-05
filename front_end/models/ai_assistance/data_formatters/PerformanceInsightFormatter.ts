@@ -9,7 +9,7 @@ import type {ConversationSuggestion} from '../agents/AiAgent.js';
 import {
   NetworkRequestFormatter,
 } from './NetworkRequestFormatter.js';
-import type {UnitFormatters} from './Types.js';
+import {bytes, micros, millis} from './UnitFormatters.js';
 
 /**
  * For a given frame ID and navigation ID, returns the LCP Event and the LCP Request, if the resource was an image.
@@ -43,21 +43,17 @@ function getLCPData(parsedTrace: Trace.Handlers.Types.ParsedTrace, frameId: stri
 export class PerformanceInsightFormatter {
   #insight: Trace.Insights.Types.InsightModel;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
-  #unitFormatters: UnitFormatters;
 
-  constructor(
-      formatters: UnitFormatters, parsedTrace: Trace.Handlers.Types.ParsedTrace,
-      insight: Trace.Insights.Types.InsightModel) {
+  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace, insight: Trace.Insights.Types.InsightModel) {
     this.#insight = insight;
     this.#parsedTrace = parsedTrace;
-    this.#unitFormatters = formatters;
   }
 
   #formatMilli(x?: number): string {
     if (x === undefined) {
       return '';
     }
-    return this.#unitFormatters.millis(x);
+    return millis(x);
   }
 
   #formatMicro(x?: number): string {
@@ -94,8 +90,7 @@ export class PerformanceInsightFormatter {
     if (lcpRequest) {
       parts.push(`${theLcpElement} is an image fetched from \`${lcpRequest.args.data.url}\`.`);
       const request = TraceEventFormatter.networkRequests(
-          this.#unitFormatters, [lcpRequest], this.#parsedTrace,
-          {verbose: true, customTitle: 'LCP resource network request'});
+          [lcpRequest], this.#parsedTrace, {verbose: true, customTitle: 'LCP resource network request'});
       parts.push(request);
     } else {
       parts.push(`${theLcpElement} is text and was not fetched from the network.`);
@@ -417,7 +412,7 @@ export class PerformanceInsightFormatter {
       output += `The following list contains the largest transfer sizes by a 3rd party script:\n\n`;
       for (const entry of thirdPartyTransferSizeEntries) {
         if (entry.transferSize > 0) {
-          output += `- ${entry.entity.name}: ${this.#unitFormatters.bytes(entry.transferSize)}\n`;
+          output += `- ${entry.entity.name}: ${bytes(entry.transferSize)}\n`;
         }
       }
       output += '\n';
@@ -475,18 +470,18 @@ ${this.#links()}`;
                                          .map(optimization => {
                                            const message =
                                                Trace.Insights.Models.ImageDelivery.getOptimizationMessage(optimization);
-                                           const byteSavings = this.#unitFormatters.bytes(optimization.byteSavings);
+                                           const byteSavings = bytes(optimization.byteSavings);
                                            return `${message} (Est ${byteSavings})`;
                                          })
                                          .join('\n');
 
                                  return `### ${image.request.args.data.url}
-- Potential savings: ${this.#unitFormatters.bytes(image.byteSavings)}
+- Potential savings: ${bytes(image.byteSavings)}
 - Optimizations:\n${optimizations}`;
                                })
                                .join('\n\n');
 
-      return `Total potential savings: ${this.#unitFormatters.bytes(this.#insight.wastedBytes)}
+      return `Total potential savings: ${bytes(this.#insight.wastedBytes)}
 
 The following images could be optimized:\n\n${imageDetails}`;
     }
@@ -546,8 +541,8 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
     }
 
     if (Trace.Insights.Models.RenderBlocking.isRenderBlocking(this.#insight)) {
-      const requestSummary = TraceEventFormatter.networkRequests(
-          this.#unitFormatters, this.#insight.renderBlockingRequests, this.#parsedTrace);
+      const requestSummary =
+          TraceEventFormatter.networkRequests(this.#insight.renderBlockingRequests, this.#parsedTrace);
 
       if (requestSummary.length === 0) {
         return 'There are no network requests that are render blocking.';
@@ -582,7 +577,7 @@ ${requestSummary}`;
 
       return `${this.#lcpMetricSharedContext()}
 
-${TraceEventFormatter.networkRequests(this.#unitFormatters, [documentRequest], this.#parsedTrace, {
+${TraceEventFormatter.networkRequests([documentRequest], this.#parsedTrace, {
         verbose: true,
         customTitle: 'Document network request'
       })}
@@ -622,8 +617,7 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
       } as const;
 
       const shiftsFormatted = worstCluster.events.map((layoutShift, index) => {
-        return TraceEventFormatter.layoutShift(
-            this.#unitFormatters, layoutShift, index, this.#parsedTrace, shifts.get(layoutShift));
+        return TraceEventFormatter.layoutShift(layoutShift, index, this.#parsedTrace, shifts.get(layoutShift));
       });
 
       return `The worst layout shift cluster was the cluster that started at ${
@@ -637,9 +631,8 @@ ${shiftsFormatted.join('\n')}`;
 
     if (Trace.Insights.Models.ModernHTTP.isModernHTTP(this.#insight)) {
       const requestSummary = (this.#insight.http1Requests.length === 1) ?
-          TraceEventFormatter.networkRequests(
-              this.#unitFormatters, this.#insight.http1Requests, this.#parsedTrace, {verbose: true}) :
-          TraceEventFormatter.networkRequests(this.#unitFormatters, this.#insight.http1Requests, this.#parsedTrace);
+          TraceEventFormatter.networkRequests(this.#insight.http1Requests, this.#parsedTrace, {verbose: true}) :
+          TraceEventFormatter.networkRequests(this.#insight.http1Requests, this.#parsedTrace);
 
       if (requestSummary.length === 0) {
         return 'There are no requests that were served over a legacy HTTP protocol.';
@@ -861,8 +854,7 @@ export interface NetworkRequestFormatOptions {
 
 export class TraceEventFormatter {
   static layoutShift(
-      formatters: UnitFormatters, shift: Trace.Types.Events.SyntheticLayoutShift, index: number,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      shift: Trace.Types.Events.SyntheticLayoutShift, index: number, parsedTrace: Trace.Handlers.Types.ParsedTrace,
       rootCauses?: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData): string {
     const baseTime = parsedTrace.Meta.traceBounds.min;
 
@@ -896,15 +888,15 @@ export class TraceEventFormatter {
 
     const startTime = Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.Micro(shift.ts - baseTime));
     return `### Layout shift ${index + 1}:
-- Start time: ${formatters.millis(startTime)}
+- Start time: ${millis(startTime)}
 - Score: ${shift.args.data?.weighted_score_delta.toFixed(4)}
 ${rootCauseText}`;
   }
 
   // Stringify network requests for the LLM model.
   static networkRequests(
-      formatters: UnitFormatters, requests: readonly Trace.Types.Events.SyntheticNetworkRequest[],
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, options?: NetworkRequestFormatOptions): string {
+      requests: readonly Trace.Types.Events.SyntheticNetworkRequest[], parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      options?: NetworkRequestFormatOptions): string {
     if (requests.length === 0) {
       return '';
     }
@@ -921,12 +913,11 @@ ${rootCauseText}`;
     // For a single request, use `formatRequestVerbosely`, which formats with all fields specified and does not require a
     // format description.
     if (verbose) {
-      return requests
-          .map(request => this.#networkRequestVerbosely(formatters, request, parsedTrace, options?.customTitle))
+      return requests.map(request => this.#networkRequestVerbosely(request, parsedTrace, options?.customTitle))
           .join('\n');
     }
 
-    return this.#networkRequestsArrayCompressed(formatters, requests, parsedTrace);
+    return this.#networkRequestsArrayCompressed(requests, parsedTrace);
   }
 
   /**
@@ -938,8 +929,8 @@ ${rootCauseText}`;
    * talk to jacktfranklin@.
    */
   static #networkRequestVerbosely(
-      formatters: UnitFormatters, request: Trace.Types.Events.SyntheticNetworkRequest,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, customTitle?: string): string {
+      request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      customTitle?: string): string {
     const {
       url,
       statusCode,
@@ -991,8 +982,8 @@ ${rootCauseText}`;
     const redirects = request.args.data.redirects.map((redirect, index) => {
       const startTime = redirect.ts - baseTime;
       return `#### Redirect ${index + 1}: ${redirect.url}
-- Start time: ${formatters.micros(startTime)}
-- Duration: ${formatters.micros(redirect.dur)}`;
+- Start time: ${micros(startTime)}
+- Duration: ${micros(redirect.dur)}`;
     });
 
     const initiators = this.#getInitiatorChain(parsedTrace, request);
@@ -1000,14 +991,14 @@ ${rootCauseText}`;
 
     return `${titlePrefix}: ${url}
 Timings:
-- Queued at: ${formatters.micros(startTimesForLifecycle.queuedAt)}
-- Request sent at: ${formatters.micros(startTimesForLifecycle.requestSentAt)}
-- Download complete at: ${formatters.micros(startTimesForLifecycle.downloadCompletedAt)}
-- Main thread processing completed at: ${formatters.micros(startTimesForLifecycle.processingCompletedAt)}
+- Queued at: ${micros(startTimesForLifecycle.queuedAt)}
+- Request sent at: ${micros(startTimesForLifecycle.requestSentAt)}
+- Download complete at: ${micros(startTimesForLifecycle.downloadCompletedAt)}
+- Main thread processing completed at: ${micros(startTimesForLifecycle.processingCompletedAt)}
 Durations:
-- Download time: ${formatters.micros(downloadTime)}
-- Main thread processing time: ${formatters.micros(mainThreadProcessingDuration)}
-- Total duration: ${formatters.micros(request.dur)}${initiator ? `\nInitiator: ${initiator.args.data.url}` : ''}
+- Download time: ${micros(downloadTime)}
+- Main thread processing time: ${micros(mainThreadProcessingDuration)}
+- Total duration: ${micros(request.dur)}${initiator ? `\nInitiator: ${initiator.args.data.url}` : ''}
 Redirects:${redirects.length ? '\n' + redirects.join('\n') : ' no redirects'}
 Status code: ${statusCode}
 MIME Type: ${mimeType}
@@ -1037,7 +1028,7 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
   // For a single request, use `formatRequestVerbosely`, which formats with all fields specified and does not require a
   // format description.
   static #networkRequestsArrayCompressed(
-      formatters: UnitFormatters, requests: readonly Trace.Types.Events.SyntheticNetworkRequest[],
+      requests: readonly Trace.Types.Events.SyntheticNetworkRequest[],
       parsedTrace: Trace.Handlers.Types.ParsedTrace): string {
     const networkDataString = `
 Network requests data:
@@ -1048,7 +1039,7 @@ Network requests data:
         requests
             .map(request => {
               const urlIndex = TraceEventFormatter.#getOrAssignUrlIndex(urlIdToIndex, request.args.data.url);
-              return this.#networkRequestCompressedFormat(formatters, urlIndex, request, parsedTrace, urlIdToIndex);
+              return this.#networkRequestCompressedFormat(urlIndex, request, parsedTrace, urlIdToIndex);
             })
             .join('\n');
 
@@ -1104,7 +1095,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
    * See `networkDataFormatDescription` above for specifics.
    */
   static #networkRequestCompressedFormat(
-      formatters: UnitFormatters, urlIndex: number, request: Trace.Types.Events.SyntheticNetworkRequest,
+      urlIndex: number, request: Trace.Types.Events.SyntheticNetworkRequest,
       parsedTrace: Trace.Handlers.Types.ParsedTrace, urlIdToIndex: Map<string, number>): string {
     const {
       statusCode,
@@ -1123,13 +1114,13 @@ The order of headers corresponds to an internal fixed list. If a header is not p
         parsedTrace.Meta.navigationsByFrameId,
     );
     const baseTime = navigationForEvent?.ts ?? parsedTrace.Meta.traceBounds.min;
-    const queuedTime = formatters.micros(request.ts - baseTime);
-    const requestSentTime = formatters.micros(syntheticData.sendStartTime - baseTime);
-    const downloadCompleteTime = formatters.micros(syntheticData.finishTime - baseTime);
-    const processingCompleteTime = formatters.micros(request.ts + request.dur - baseTime);
-    const totalDuration = formatters.micros(request.dur);
-    const downloadDuration = formatters.micros(syntheticData.finishTime - syntheticData.downloadStart);
-    const mainThreadProcessingDuration = formatters.micros(request.ts + request.dur - syntheticData.finishTime);
+    const queuedTime = micros(request.ts - baseTime);
+    const requestSentTime = micros(syntheticData.sendStartTime - baseTime);
+    const downloadCompleteTime = micros(syntheticData.finishTime - baseTime);
+    const processingCompleteTime = micros(request.ts + request.dur - baseTime);
+    const totalDuration = micros(request.dur);
+    const downloadDuration = micros(syntheticData.finishTime - syntheticData.downloadStart);
+    const mainThreadProcessingDuration = micros(request.ts + request.dur - syntheticData.finishTime);
     const renderBlocking = Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(request) ? 't' : 'f';
     const finalPriority = priority;
     const headerValues = responseHeaders
@@ -1142,8 +1133,8 @@ The order of headers corresponds to an internal fixed list. If a header is not p
     const redirects = request.args.data.redirects
                           .map(redirect => {
                             const urlIndex = TraceEventFormatter.#getOrAssignUrlIndex(urlIdToIndex, redirect.url);
-                            const redirectStartTime = formatters.micros(redirect.ts - baseTime);
-                            const redirectDuration = formatters.micros(redirect.dur);
+                            const redirectStartTime = micros(redirect.ts - baseTime);
+                            const redirectDuration = micros(redirect.dur);
                             return `[${urlIndex}|${redirectStartTime}|${redirectDuration}]`;
                           })
                           .join(',');

@@ -6,23 +6,19 @@ import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import * as Trace from '../../trace/trace.js';
 
 import {PerformanceInsightFormatter, TraceEventFormatter} from './PerformanceInsightFormatter.js';
-import type {UnitFormatters} from './Types.js';
+import {bytes, micros, millis} from './UnitFormatters.js';
 
 export class PerformanceTraceFormatter {
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
   #insightSet: Trace.Insights.Types.InsightSet|null;
   #traceMetadata: Trace.Types.File.MetaData;
   #eventsSerializer: Trace.EventsSerializer.EventsSerializer;
-  #unitFormatters: UnitFormatters;
 
-  constructor(
-      formatters: UnitFormatters, focus: TimelineUtils.AIContext.AgentFocus,
-      eventsSerializer: Trace.EventsSerializer.EventsSerializer) {
+  constructor(focus: TimelineUtils.AIContext.AgentFocus, eventsSerializer: Trace.EventsSerializer.EventsSerializer) {
     if (focus.data.type !== 'full' && focus.data.type !== 'insight') {
       throw new Error('unexpected agent focus');
     }
 
-    this.#unitFormatters = formatters;
     this.#parsedTrace = focus.data.parsedTrace;
     this.#insightSet = focus.data.insightSet;
     this.#traceMetadata = focus.data.traceMetadata;
@@ -60,7 +56,7 @@ export class PerformanceTraceFormatter {
         const subparts = insightSet?.model.LCPBreakdown.subparts;
         if (subparts) {
           const serializeSubpart = (subpart: Trace.Insights.Models.LCPBreakdown.Subpart): string => {
-            return `${this.#unitFormatters.micros(subpart.range)}, bounds: ${this.serializeBounds(subpart)}`;
+            return `${micros(subpart.range)}, bounds: ${this.serializeBounds(subpart)}`;
           };
           parts.push(`    - TTFB: ${serializeSubpart(subparts.ttfb)}`);
           if (subparts.loadDelay !== undefined) {
@@ -90,7 +86,7 @@ export class PerformanceTraceFormatter {
           continue;
         }
 
-        const formatter = new PerformanceInsightFormatter(this.#unitFormatters, parsedTrace, model);
+        const formatter = new PerformanceInsightFormatter(parsedTrace, model);
         if (!formatter.insightIsSupported()) {
           continue;
         }
@@ -106,7 +102,7 @@ export class PerformanceTraceFormatter {
           insightParts.push(`estimated metric savings: ${metricSavingsText}`);
         }
         if (model.wastedBytes) {
-          insightParts.push(`estimated wasted bytes: ${this.#unitFormatters.bytes(model.wastedBytes)}`);
+          insightParts.push(`estimated wasted bytes: ${bytes(model.wastedBytes)}`);
         }
         for (const suggestion of formatter.getSuggestions()) {
           insightParts.push(`example question: ${suggestion.title}`);
@@ -137,7 +133,7 @@ export class PerformanceTraceFormatter {
     }
 
     return 'Critical network requests:\n' +
-        TraceEventFormatter.networkRequests(this.#unitFormatters, criticalRequests, parsedTrace, {verbose: false});
+        TraceEventFormatter.networkRequests(criticalRequests, parsedTrace, {verbose: false});
   }
 
   #serializeBottomUpRootNode(rootNode: Trace.Extras.TraceTree.BottomUpRootNode, limit: number): string {
@@ -169,8 +165,7 @@ export class PerformanceTraceFormatter {
         source += ')';
       }
 
-      return `- self: ${this.#unitFormatters.millis(node.selfTime)}, total: ${
-          this.#unitFormatters.millis(node.totalTime)}, source: ${source}`;
+      return `- self: ${millis(node.selfTime)}, total: ${millis(node.totalTime)}, source: ${source}`;
     }
 
     const listText = topNodes.map(node => nodeToText.call(this, node)).join('\n');
@@ -204,9 +199,9 @@ export class PerformanceTraceFormatter {
 
     const listText = topMainThreadTimeEntries
                          .map(s => {
-                           const transferSize = `${this.#unitFormatters.bytes(s.transferSize)}`;
+                           const transferSize = `${bytes(s.transferSize)}`;
                            return `- name: ${s.entity.name}, main thread time: ${
-                               this.#unitFormatters.millis(s.mainThreadTime)}, network transfer size: ${transferSize}`;
+                               millis(s.mainThreadTime)}, network transfer size: ${transferSize}`;
                          })
                          .join('\n');
     return listText;
@@ -245,7 +240,7 @@ export class PerformanceTraceFormatter {
 
     const listText = longestTaskTrees
                          .map(tree => {
-                           const time = this.#unitFormatters.millis(tree.rootNode.totalTime);
+                           const time = millis(tree.rootNode.totalTime);
                            return `- total time: ${time}, event: ${this.serializeEvent(tree.rootNode.event)}`;
                          })
                          .join('\n');
@@ -344,8 +339,7 @@ export class PerformanceTraceFormatter {
 
     const requests = this.#parsedTrace.NetworkRequests.byTime.filter(
         request => Trace.Helpers.Timing.eventIsInBounds(request, bounds));
-    const requestsText =
-        TraceEventFormatter.networkRequests(this.#unitFormatters, requests, this.#parsedTrace, {verbose: false});
+    const requestsText = TraceEventFormatter.networkRequests(requests, this.#parsedTrace, {verbose: false});
     results.push('# Network requests summary');
     results.push(requestsText || 'No requests in the given bounds');
 

@@ -20,7 +20,6 @@ import * as Trace from '../../trace/trace.js';
 import {
   type ActionResponse,
   ConversationType,
-  PERF_AGENT_UNIT_FORMATTERS,
   PerformanceAgent,
   PerformanceTraceContext,
   PerformanceTraceFormatter,
@@ -353,8 +352,7 @@ code
       });
 
       const expectedDetailText =
-          new PerformanceTraceFormatter(
-              PERF_AGENT_UNIT_FORMATTERS, context.getItem(), new Trace.EventsSerializer.EventsSerializer())
+          new PerformanceTraceFormatter(context.getItem(), new Trace.EventsSerializer.EventsSerializer())
               .formatTraceSummary();
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
@@ -469,8 +467,7 @@ Help me understand?`;
         assert.isOk(match, `no request found for ${url}`);
       });
 
-      const formatter = new PerformanceTraceFormatter(
-          PERF_AGENT_UNIT_FORMATTERS, context.getItem(), new Trace.EventsSerializer.EventsSerializer());
+      const formatter = new PerformanceTraceFormatter(context.getItem(), new Trace.EventsSerializer.EventsSerializer());
       const expectedRequestsOutput = formatter.formatNetworkTrackSummary(bounds);
 
       const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestsOutput);
@@ -517,8 +514,7 @@ Help me understand?`;
       const action = responses.find(response => response.type === ResponseType.ACTION);
       assert.exists(action);
 
-      const formatter = new PerformanceTraceFormatter(
-          PERF_AGENT_UNIT_FORMATTERS, context.getItem(), new Trace.EventsSerializer.EventsSerializer());
+      const formatter = new PerformanceTraceFormatter(context.getItem(), new Trace.EventsSerializer.EventsSerializer());
       const summary = formatter.formatMainThreadTrackSummary(bounds);
       assert.isOk(summary);
 

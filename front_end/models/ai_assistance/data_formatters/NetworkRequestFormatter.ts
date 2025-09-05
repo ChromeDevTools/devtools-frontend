@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
+
+import {seconds} from './UnitFormatters.js';
 
 const MAX_HEADERS_SIZE = 1000;
 
@@ -104,22 +105,22 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
   formatNetworkRequestTiming(): string {
     const results = NetworkTimeCalculator.calculateRequestTimeRanges(this.#request, this.#calculator.minimumBoundary());
 
-    function getDuration(name: string): string|undefined {
+    const getDuration = (name: string): string|undefined => {
       const result = results.find(r => r.name === name);
       if (!result) {
         return;
       }
-      return i18n.TimeUtilities.secondsToString(result.end - result.start, true);
-    }
+      return seconds(result.end - result.start);
+    };
 
     const labels = [
       {
         label: 'Queued at (timestamp)',
-        value: this.#calculator.formatValue(this.#request.issueTime(), 2),
+        value: seconds(this.#request.issueTime() - this.#calculator.zeroTime()),
       },
       {
         label: 'Started at (timestamp)',
-        value: this.#calculator.formatValue(this.#request.startTime, 2),
+        value: seconds(this.#request.startTime - this.#calculator.zeroTime()),
       },
       {
         label: 'Queueing (duration)',

@@ -113,6 +113,10 @@ export class GdpClient {
     return await this.#cachedEligibilityPromise;
   }
 
+  async isEligibleToCreateProfile(): Promise<boolean> {
+    return (await this.checkEligibility())?.createProfile === EligibilityStatus.ELIGIBLE;
+  }
+
   createProfile({user, emailPreference}: {user: string, emailPreference: EmailPreference}): Promise<Profile|null> {
     return makeHttpRequest({
       service: SERVICE_NAME,

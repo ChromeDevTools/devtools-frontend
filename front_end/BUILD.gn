@@ -128,6 +128,7 @@ group("unittests") {
     "models/ai_assistance:unittests",
     "models/ai_code_completion:unittests",
     "models/autofill_manager:unittests",
+    "models/badges:unittests",
     "models/bindings:unittests",
     "models/breakpoints:unittests",
     "models/cpu_profile:unittests",

@@ -2024,7 +2024,7 @@ export const NativeFunctions = [
   },
   {
     name: "read",
-    signatures: [["?formats"]],
+    signatures: [["?options"]],
     receivers: ["Clipboard"]
   },
   {
@@ -7585,11 +7585,11 @@ export const NativeFunctions = [
   },
   {
     name: "drawElement",
-    signatures: [["element","x","y","?options"],["element","x","y","dwidth","dheight","?options"]]
+    signatures: [["element","x","y","?dwidth","?dheight"]]
   },
   {
     name: "drawHTMLElement",
-    signatures: [["element","x","y","?options"],["element","x","y","dwidth","dheight","?options"]]
+    signatures: [["element","x","y","?dwidth","?dheight"]]
   },
   {
     name: "setHitTestRegions",

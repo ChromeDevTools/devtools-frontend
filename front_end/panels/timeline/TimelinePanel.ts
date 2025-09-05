@@ -1534,7 +1534,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // extensions sourcemaps provide little to no-value for the exported trace
     // debugging, so they are filtered out.
     return metadata.sourceMaps.filter(value => {
-      return value.url && Trace.Helpers.Trace.isExtensionUrl(value.url);
+      return !Trace.Helpers.Trace.isExtensionUrl(value.url);
     });
   }
 

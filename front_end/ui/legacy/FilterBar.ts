@@ -72,7 +72,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTypes, typeof HBox>(HBox) {
   private enabled: boolean;
   private readonly stateSetting: Common.Settings.Setting<boolean>;
-  private readonly filterButtonInternal: ToolbarSettingToggle;
+  readonly #filterButton: ToolbarSettingToggle;
   private filters: FilterUI[];
   private alwaysShowFilters?: boolean;
   private showingWidget?: boolean;
@@ -86,10 +86,10 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
 
     this.stateSetting =
         Common.Settings.Settings.instance().createSetting('filter-bar-' + name + '-toggled', Boolean(visibleByDefault));
-    this.filterButtonInternal =
+    this.#filterButton =
         new ToolbarSettingToggle(this.stateSetting, 'filter', i18nString(UIStrings.filter), 'filter-filled', 'filter');
-    this.filterButtonInternal.element.style.setProperty('--dot-toggle-top', '13px');
-    this.filterButtonInternal.element.style.setProperty('--dot-toggle-left', '14px');
+    this.#filterButton.element.style.setProperty('--dot-toggle-top', '13px');
+    this.#filterButton.element.style.setProperty('--dot-toggle-left', '14px');
 
     this.filters = [];
 
@@ -98,7 +98,7 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
   }
 
   filterButton(): ToolbarButton {
-    return this.filterButtonInternal;
+    return this.#filterButton;
   }
 
   addDivider(): void {
@@ -116,7 +116,7 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
 
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
-    this.filterButtonInternal.setEnabled(enabled);
+    this.#filterButton.setEnabled(enabled);
     this.updateFilterBar();
   }
 
@@ -164,7 +164,7 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
 
   private updateFilterButton(): void {
     const isActive = this.hasActiveFilter();
-    this.filterButtonInternal.setChecked(isActive);
+    this.#filterButton.setChecked(isActive);
   }
 
   clear(): void {

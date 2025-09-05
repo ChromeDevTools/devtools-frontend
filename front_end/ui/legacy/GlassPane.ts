@@ -9,7 +9,7 @@ import {deepElementFromEvent, measuredScrollbarWidth} from './UIUtils.js';
 import {Widget} from './Widget.js';
 
 export class GlassPane {
-  private readonly widgetInternal;
+  readonly #widget;
 
   element: typeof Widget.prototype.element;
   contentElement: typeof Widget.prototype.contentElement;
@@ -26,10 +26,10 @@ export class GlassPane {
   #ignoreLeftMargin = false;
 
   constructor(jslog?: string) {
-    this.widgetInternal = new Widget({jslog, useShadowDom: true});
-    this.widgetInternal.markAsRoot();
-    this.element = this.widgetInternal.element;
-    this.contentElement = this.widgetInternal.contentElement;
+    this.#widget = new Widget({jslog, useShadowDom: true});
+    this.#widget.markAsRoot();
+    this.element = this.#widget.element;
+    this.contentElement = this.#widget.contentElement;
 
     this.registerRequiredCSS(glassPaneStyles);
     this.setPointerEventsBehavior(PointerEventsBehavior.PIERCE_GLASS_PANE);
@@ -42,15 +42,15 @@ export class GlassPane {
   }
 
   isShowing(): boolean {
-    return this.widgetInternal.isShowing();
+    return this.#widget.isShowing();
   }
 
   registerRequiredCSS(...cssFiles: Array<string&{_tag: 'CSS-in-JS'}>): void {
-    this.widgetInternal.registerRequiredCSS(...cssFiles);
+    this.#widget.registerRequiredCSS(...cssFiles);
   }
 
   setDefaultFocusedElement(element: Element|null): void {
-    this.widgetInternal.setDefaultFocusedElement(element);
+    this.#widget.setDefaultFocusedElement(element);
   }
 
   setDimmed(dimmed: boolean): void {
@@ -115,7 +115,7 @@ export class GlassPane {
     this.element.setAttribute('data-devtools-glass-pane', '');
     document.body.addEventListener('mousedown', this.onMouseDownBound, true);
     document.body.addEventListener('pointerdown', this.onMouseDownBound, true);
-    this.widgetInternal.show(document.body);
+    this.#widget.show(document.body);
     panes.add(this);
     this.positionContent();
   }
@@ -127,7 +127,7 @@ export class GlassPane {
     panes.delete(this);
     this.element.ownerDocument.body.removeEventListener('mousedown', this.onMouseDownBound, true);
     this.element.ownerDocument.body.removeEventListener('pointerdown', this.onMouseDownBound, true);
-    this.widgetInternal.detach();
+    this.#widget.detach();
     if (this.#onHideCallback) {
       this.#onHideCallback();
     }
@@ -291,11 +291,11 @@ export class GlassPane {
     }
 
     this.contentElement.positionAt(positionX, positionY, container);
-    this.widgetInternal.doResize();
+    this.#widget.doResize();
   }
 
   widget(): Widget {
-    return this.widgetInternal;
+    return this.#widget;
   }
 
   static setContainer(element: Element): void {

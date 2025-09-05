@@ -56,7 +56,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
   private readonly nodeShortcut: SDK.DOMModel.DOMNodeShortcut;
-  private hoveredInternal?: boolean;
+  #hovered?: boolean;
   constructor(nodeShortcut: SDK.DOMModel.DOMNodeShortcut) {
     super('');
     this.listItemElement.createChild('div', 'selection fill');
@@ -107,14 +107,14 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   get hovered(): boolean {
-    return Boolean(this.hoveredInternal);
+    return Boolean(this.#hovered);
   }
 
   set hovered(x: boolean) {
-    if (this.hoveredInternal === x) {
+    if (this.#hovered === x) {
       return;
     }
-    this.hoveredInternal = x;
+    this.#hovered = x;
     this.listItemElement.classList.toggle('hovered', x);
   }
 

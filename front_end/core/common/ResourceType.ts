@@ -159,17 +159,17 @@ const str_ = i18n.i18n.registerUIStrings('core/common/ResourceType.ts', UIString
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class ResourceType {
-  readonly #nameInternal: string;
-  readonly #titleInternal: () => Platform.UIString.LocalizedString;
-  readonly #categoryInternal: ResourceCategory;
-  readonly #isTextTypeInternal: boolean;
+  readonly #name: string;
+  readonly #title: () => Platform.UIString.LocalizedString;
+  readonly #category: ResourceCategory;
+  readonly #isTextType: boolean;
 
   constructor(
       name: string, title: () => Platform.UIString.LocalizedString, category: ResourceCategory, isTextType: boolean) {
-    this.#nameInternal = name;
-    this.#titleInternal = title;
-    this.#categoryInternal = category;
-    this.#isTextTypeInternal = isTextType;
+    this.#name = name;
+    this.#title = title;
+    this.#category = category;
+    this.#isTextType = isTextType;
   }
 
   static fromMimeType(mimeType: string|null): ResourceType {
@@ -286,23 +286,23 @@ export class ResourceType {
   }
 
   name(): string {
-    return this.#nameInternal;
+    return this.#name;
   }
 
   title(): string {
-    return this.#titleInternal();
+    return this.#title();
   }
 
   category(): ResourceCategory {
-    return this.#categoryInternal;
+    return this.#category;
   }
 
   isTextType(): boolean {
-    return this.#isTextTypeInternal;
+    return this.#isTextType;
   }
 
   isScript(): boolean {
-    return this.#nameInternal === 'script' || this.#nameInternal === 'sm-script';
+    return this.#name === 'script' || this.#name === 'sm-script';
   }
 
   hasScripts(): boolean {
@@ -310,7 +310,7 @@ export class ResourceType {
   }
 
   isStyleSheet(): boolean {
-    return this.#nameInternal === 'stylesheet' || this.#nameInternal === 'sm-stylesheet';
+    return this.#name === 'stylesheet' || this.#name === 'sm-stylesheet';
   }
 
   hasStyleSheets(): boolean {
@@ -318,7 +318,7 @@ export class ResourceType {
   }
 
   isDocument(): boolean {
-    return this.#nameInternal === 'document';
+    return this.#name === 'document';
   }
 
   isDocumentOrScriptOrStyleSheet(): boolean {
@@ -326,23 +326,23 @@ export class ResourceType {
   }
 
   isFont(): boolean {
-    return this.#nameInternal === 'font';
+    return this.#name === 'font';
   }
 
   isImage(): boolean {
-    return this.#nameInternal === 'image';
+    return this.#name === 'image';
   }
 
   isFromSourceMap(): boolean {
-    return this.#nameInternal.startsWith('sm-');
+    return this.#name.startsWith('sm-');
   }
 
   isWebbundle(): boolean {
-    return this.#nameInternal === 'webbundle';
+    return this.#name === 'webbundle';
   }
 
   toString(): string {
-    return this.#nameInternal;
+    return this.#name;
   }
 
   canonicalMimeType(): string {

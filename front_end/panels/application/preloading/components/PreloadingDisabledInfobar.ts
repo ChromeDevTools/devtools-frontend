@@ -118,11 +118,11 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
 
   async #render(): Promise<void> {
     await RenderCoordinator.write('PreloadingDisabledInfobar render', () => {
-      Lit.render(this.#renderInternal(), this.#shadow, {host: this});
+      Lit.render(this.#renderTemplate(), this.#shadow, {host: this});
     });
   }
 
-  #renderInternal(): Lit.LitTemplate {
+  #renderTemplate(): Lit.LitTemplate {
     const forceEnabled =
         this.#data.disabledByHoldbackPrefetchSpeculationRules || this.#data.disabledByHoldbackPrerenderSpeculationRules;
     const disabled =

@@ -95,8 +95,8 @@ export class ParsedURL {
   folderPathComponents: string;
   lastPathComponent: string;
   readonly blobInnerScheme: string|undefined;
-  #displayNameInternal?: string;
-  #dataURLDisplayNameInternal?: string;
+  #displayName?: string;
+  #dataURLDisplayName?: string;
 
   constructor(url: string) {
     this.isValid = false;
@@ -494,8 +494,8 @@ export class ParsedURL {
   }
 
   get displayName(): string {
-    if (this.#displayNameInternal) {
-      return this.#displayNameInternal;
+    if (this.#displayName) {
+      return this.#displayName;
     }
 
     if (this.isDataURL()) {
@@ -508,25 +508,25 @@ export class ParsedURL {
       return this.url;
     }
 
-    this.#displayNameInternal = this.lastPathComponent;
-    if (!this.#displayNameInternal) {
-      this.#displayNameInternal = (this.host || '') + '/';
+    this.#displayName = this.lastPathComponent;
+    if (!this.#displayName) {
+      this.#displayName = (this.host || '') + '/';
     }
-    if (this.#displayNameInternal === '/') {
-      this.#displayNameInternal = this.url;
+    if (this.#displayName === '/') {
+      this.#displayName = this.url;
     }
-    return this.#displayNameInternal;
+    return this.#displayName;
   }
 
   dataURLDisplayName(): string {
-    if (this.#dataURLDisplayNameInternal) {
-      return this.#dataURLDisplayNameInternal;
+    if (this.#dataURLDisplayName) {
+      return this.#dataURLDisplayName;
     }
     if (!this.isDataURL()) {
       return '';
     }
-    this.#dataURLDisplayNameInternal = Platform.StringUtilities.trimEndWithMaxLength(this.url, 20);
-    return this.#dataURLDisplayNameInternal;
+    this.#dataURLDisplayName = Platform.StringUtilities.trimEndWithMaxLength(this.url, 20);
+    return this.#dataURLDisplayName;
   }
 
   isAboutBlank(): boolean {

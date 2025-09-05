@@ -78,7 +78,7 @@ class EventListenerBreakpoint extends CategorizedBreakpoint {
 let eventBreakpointManagerInstance: EventBreakpointsManager;
 
 export class EventBreakpointsManager implements SDKModelObserver<EventBreakpointsModel> {
-  readonly #eventListenerBreakpointsInternal: EventListenerBreakpoint[] = [];
+  readonly #eventListenerBreakpoints: EventListenerBreakpoint[] = [];
 
   constructor() {
     this.createInstrumentationBreakpoints(Category.AUCTION_WORKLET, [
@@ -149,12 +149,12 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
 
   private createInstrumentationBreakpoints(category: Category, instrumentationNames: InstrumentationNames[]): void {
     for (const instrumentationName of instrumentationNames) {
-      this.#eventListenerBreakpointsInternal.push(new EventListenerBreakpoint(category, instrumentationName));
+      this.#eventListenerBreakpoints.push(new EventListenerBreakpoint(category, instrumentationName));
     }
   }
 
   eventListenerBreakpoints(): EventListenerBreakpoint[] {
-    return this.#eventListenerBreakpointsInternal.slice();
+    return this.#eventListenerBreakpoints.slice();
   }
 
   resolveEventListenerBreakpoint({eventName}: EventListenerPausedDetailsAuxData): EventListenerBreakpoint|null {
@@ -163,11 +163,11 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
     }
 
     const instrumentationName = eventName.substring(EventListenerBreakpoint.instrumentationPrefix.length);
-    return this.#eventListenerBreakpointsInternal.find(b => b.name === instrumentationName) || null;
+    return this.#eventListenerBreakpoints.find(b => b.name === instrumentationName) || null;
   }
 
   modelAdded(eventBreakpointModel: EventBreakpointsModel): void {
-    for (const breakpoint of this.#eventListenerBreakpointsInternal) {
+    for (const breakpoint of this.#eventListenerBreakpoints) {
       if (breakpoint.enabled()) {
         breakpoint.updateOnModel(eventBreakpointModel);
       }

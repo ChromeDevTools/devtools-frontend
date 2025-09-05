@@ -559,7 +559,7 @@ export class TimelineCategory {
   title: Platform.UIString.LocalizedString;
   visible: boolean;
   childColor: string;
-  colorInternal: string;
+  #color: string;
   #hidden?: boolean;
 
   constructor(
@@ -569,7 +569,7 @@ export class TimelineCategory {
     this.title = title;
     this.visible = visible;
     this.childColor = childColor;
-    this.colorInternal = color;
+    this.#color = color;
     this.hidden = false;
   }
 
@@ -581,11 +581,11 @@ export class TimelineCategory {
     return this.getComputedColorValue();
   }
   getCSSValue(): string {
-    return `var(${this.colorInternal})`;
+    return `var(${this.#color})`;
   }
 
   getComputedColorValue(): string {
-    return ThemeSupport.ThemeSupport.instance().getComputedValue(this.colorInternal);
+    return ThemeSupport.ThemeSupport.instance().getComputedValue(this.#color);
   }
 
   set hidden(hidden: boolean) {

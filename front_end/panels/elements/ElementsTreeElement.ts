@@ -349,10 +349,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private gutterContainer: HTMLElement;
   private readonly decorationsElement: HTMLElement;
   private searchQuery: string|null;
-  private expandedChildrenLimitInternal: number;
+  #expandedChildrenLimit: number;
   private readonly decorationsThrottler: Common.Throttler.Throttler;
   private inClipboard: boolean;
-  private hoveredInternal: boolean;
+  #hovered: boolean;
   private editing: EditorHandles|null;
   private htmlEditElement?: HTMLElement;
   expandAllButtonElement: UI.TreeOutline.TreeElement|null;
@@ -386,11 +386,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.decorationsElement = this.gutterContainer.createChild('div', 'hidden');
 
     this.searchQuery = null;
-    this.expandedChildrenLimitInternal = InitialChildrenLimit;
+    this.#expandedChildrenLimit = InitialChildrenLimit;
     this.decorationsThrottler = new Common.Throttler.Throttler(100);
 
     this.inClipboard = false;
-    this.hoveredInternal = false;
+    this.#hovered = false;
 
     this.editing = null;
 
@@ -503,7 +503,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   highlightSearchResults(searchQuery: string): void {
     this.searchQuery = searchQuery;
     if (!this.editing) {
-      this.highlightSearchResultsInternal();
+      this.#highlightSearchResults();
     }
   }
 
@@ -521,11 +521,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   get hovered(): boolean {
-    return this.hoveredInternal;
+    return this.#hovered;
   }
 
   set hovered(isHovered: boolean) {
-    if (this.hoveredInternal === isHovered) {
+    if (this.#hovered === isHovered) {
       return;
     }
 
@@ -536,7 +536,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       delete this.aiButtonContainer;
     }
 
-    this.hoveredInternal = isHovered;
+    this.#hovered = isHovered;
 
     if (this.listItemElement) {
       if (isHovered) {
@@ -603,11 +603,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   expandedChildrenLimit(): number {
-    return this.expandedChildrenLimitInternal;
+    return this.#expandedChildrenLimit;
   }
 
   setExpandedChildrenLimit(expandedChildrenLimit: number): void {
-    this.expandedChildrenLimitInternal = expandedChildrenLimit;
+    this.#expandedChildrenLimit = expandedChildrenLimit;
   }
 
   createSlotLink(nodeShortcut: SDK.DOMModel.DOMNodeShortcut|null): void {
@@ -691,7 +691,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   override onattach(): void {
-    if (this.hoveredInternal) {
+    if (this.#hovered) {
       this.createSelection();
       this.listItemElement.classList.add('hovered');
     }
@@ -1752,7 +1752,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.#applyIssueStyleAndTooltip(issue);
     }
 
-    this.highlightSearchResultsInternal();
+    this.#highlightSearchResults();
   }
 
   private computeLeftIndent(): number {
@@ -1780,10 +1780,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    void this.decorationsThrottler.schedule(this.updateDecorationsInternal.bind(this));
+    void this.decorationsThrottler.schedule(this.#updateDecorations.bind(this));
   }
 
-  private updateDecorationsInternal(): Promise<void> {
+  #updateDecorations(): Promise<void> {
     if (!this.treeOutline) {
       return Promise.resolve();
     }
@@ -2121,7 +2121,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const node = this.nodeInternal;
     const titleDOM = document.createDocumentFragment();
     const updateSearchHighlight = (): void => {
-      this.highlightSearchResultsInternal();
+      this.#highlightSearchResults();
     };
 
     switch (node.nodeType()) {
@@ -2387,7 +2387,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(lines.join('\n'));
   }
 
-  private highlightSearchResultsInternal(): void {
+  #highlightSearchResults(): void {
     this.hideSearchHighlights();
 
     if (!this.searchQuery) {
@@ -2509,10 +2509,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private updateAdorners(context: OpeningTagContext): void {
-    void context.adornersThrottler.schedule(this.updateAdornersInternal.bind(null, context));
+    void context.adornersThrottler.schedule(this.#updateAdorners.bind(null, context));
   }
 
-  private updateAdornersInternal(context: OpeningTagContext): Promise<void> {
+  #updateAdorners(context: OpeningTagContext): Promise<void> {
     const adornerContainer = context.adornerContainer;
     if (!adornerContainer) {
       return Promise.resolve();

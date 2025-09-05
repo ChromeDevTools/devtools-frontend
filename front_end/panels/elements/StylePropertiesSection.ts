@@ -148,7 +148,7 @@ export class StylePropertiesSection {
   navigable: boolean|null|undefined;
   protected readonly selectorRefElement: HTMLElement;
   private hoverableSelectorsMode: boolean;
-  private isHiddenInternal: boolean;
+  #isHidden: boolean;
   protected customPopulateCallback: () => void;
 
   nestingLevel = 0;
@@ -317,7 +317,7 @@ export class StylePropertiesSection {
       this.propertiesTreeOutline.element.classList.add('read-only');
     }
     this.hoverableSelectorsMode = false;
-    this.isHiddenInternal = false;
+    this.#isHidden = false;
     this.markSelectorMatches();
     this.onpopulate();
   }
@@ -1132,7 +1132,7 @@ export class StylePropertiesSection {
 
     const regex = this.parentPane.filterRegex();
     const hideRule = !hasMatchingChild && regex !== null && !regex.test(this.element.deepTextContent());
-    this.isHiddenInternal = hideRule;
+    this.#isHidden = hideRule;
     this.element.classList.toggle('hidden', hideRule);
     if (!hideRule && this.styleInternal.parentRule) {
       this.markSelectorHighlights();
@@ -1141,7 +1141,7 @@ export class StylePropertiesSection {
   }
 
   isHidden(): boolean {
-    return this.isHiddenInternal;
+    return this.#isHidden;
   }
 
   markSelectorMatches(): void {

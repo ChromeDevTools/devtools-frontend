@@ -284,12 +284,12 @@ export interface EventTypes {
 export class LayerTreeElement extends UI.TreeOutline.TreeElement {
   // Watch out: This is different from treeOutline that
   // LayerTreeElement inherits from UI.TreeOutline.TreeElement.
-  treeOutlineInternal: LayerTreeOutline;
+  #treeOutline: LayerTreeOutline;
   layer: SDK.LayerTreeBase.Layer;
 
   constructor(tree: LayerTreeOutline, layer: SDK.LayerTreeBase.Layer) {
     super();
-    this.treeOutlineInternal = tree;
+    this.#treeOutline = tree;
     this.layer = layer;
     layerToTreeElement.set(layer, this);
     this.update();
@@ -306,7 +306,7 @@ export class LayerTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   override onselect(): boolean {
-    this.treeOutlineInternal.selectedNodeChanged(this);
+    this.#treeOutline.selectedNodeChanged(this);
     return false;
   }
 

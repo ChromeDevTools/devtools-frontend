@@ -57,7 +57,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StartView extends UI.Widget.Widget {
   private controller: LighthouseController;
   private panel: LighthousePanel;
-  private readonly settingsToolbarInternal: UI.Toolbar.Toolbar;
+  readonly #settingsToolbar: UI.Toolbar.Toolbar;
   private startButton!: Buttons.Button.Button;
   private helpText?: Element;
   private warningText?: Element;
@@ -71,8 +71,8 @@ export class StartView extends UI.Widget.Widget {
 
     this.controller = controller;
     this.panel = panel;
-    this.settingsToolbarInternal = document.createElement('devtools-toolbar');
-    this.settingsToolbarInternal.classList.add('lighthouse-settings-toolbar');
+    this.#settingsToolbar = document.createElement('devtools-toolbar');
+    this.#settingsToolbar.classList.add('lighthouse-settings-toolbar');
     this.render();
   }
 
@@ -169,9 +169,9 @@ export class StartView extends UI.Widget.Widget {
   }
 
   private render(): void {
-    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.clear-storage', this.settingsToolbarInternal);
-    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.enable-sampling', this.settingsToolbarInternal);
-    this.populateRuntimeSettingAsToolbarDropdown('lighthouse.throttling', this.settingsToolbarInternal);
+    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.clear-storage', this.#settingsToolbar);
+    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.enable-sampling', this.#settingsToolbar);
+    this.populateRuntimeSettingAsToolbarDropdown('lighthouse.throttling', this.#settingsToolbar);
 
     const {mode} = this.controller.getFlags();
     this.populateStartButton(mode);
@@ -312,6 +312,6 @@ export class StartView extends UI.Widget.Widget {
   }
 
   settingsToolbar(): UI.Toolbar.Toolbar {
-    return this.settingsToolbarInternal;
+    return this.#settingsToolbar;
   }
 }

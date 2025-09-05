@@ -155,11 +155,11 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
   async #render(): Promise<void> {
     await RenderCoordinator.write('UsedPreloadingView render', () => {
-      Lit.render(this.#renderInternal(), this.#shadow, {host: this});
+      Lit.render(this.#renderTemplate(), this.#shadow, {host: this});
     });
   }
 
-  #renderInternal(): Lit.LitTemplate {
+  #renderTemplate(): Lit.LitTemplate {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`

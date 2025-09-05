@@ -369,7 +369,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   );
   private readonly statusPaneContainer: HTMLElement;
   private readonly flameChart: TimelineFlameChartView;
-  private readonly searchableViewInternal: UI.SearchableView.SearchableView;
+  readonly #searchableView: UI.SearchableView.SearchableView;
   private showSettingsPaneButton!: UI.Toolbar.ToolbarSettingToggle;
   private showSettingsPaneSetting!: Common.Settings.Setting<boolean>;
   private settingsPane?: HTMLElement;
@@ -536,14 +536,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.select(selection);
     });
 
-    this.searchableViewInternal = new UI.SearchableView.SearchableView(this.flameChart, null);
-    this.searchableViewInternal.setMinimumSize(0, 100);
-    this.searchableViewInternal.setMinimalSearchQuerySize(2);  // At 1 it can introduce a bit of jank.
-    this.searchableViewInternal.element.classList.add('searchable-view');
-    this.searchableViewInternal.show(this.timelinePane.element);
-    this.flameChart.show(this.searchableViewInternal.element);
-    this.flameChart.setSearchableView(this.searchableViewInternal);
-    this.searchableViewInternal.hideWidget();
+    this.#searchableView = new UI.SearchableView.SearchableView(this.flameChart, null);
+    this.#searchableView.setMinimumSize(0, 100);
+    this.#searchableView.setMinimalSearchQuerySize(2);  // At 1 it can introduce a bit of jank.
+    this.#searchableView.element.classList.add('searchable-view');
+    this.#searchableView.show(this.timelinePane.element);
+    this.flameChart.show(this.#searchableView.element);
+    this.flameChart.setSearchableView(this.#searchableView);
+    this.#searchableView.hideWidget();
 
     this.#splitWidget.setMainWidget(this.timelinePane);
     this.#splitWidget.setSidebarWidget(this.#sideBar);
@@ -729,7 +729,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return Common.Settings.Settings.instance().createSetting('timeline-show-extension-data', true);
   }
   override searchableView(): UI.SearchableView.SearchableView|null {
-    return this.searchableViewInternal;
+    return this.#searchableView;
   }
 
   override wasShown(): void {
@@ -882,7 +882,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
         // Whilst we don't reset this, we hide it, mainly so the user cannot
         // hit Ctrl/Cmd-F and try to search when it isn't visible.
-        this.searchableViewInternal.hideWidget();
+        this.#searchableView.hideWidget();
         return;
       }
 
@@ -2114,7 +2114,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.flameChart.setSelectionAndReveal(null);
     this.#sideBar.setParsedTrace(parsedTrace, traceMetadata);
 
-    this.searchableViewInternal.showWidget();
+    this.#searchableView.showWidget();
 
     const exclusiveFilter = this.#exclusiveFilterPerTrace.get(traceIndex) ?? null;
     this.#applyActiveFilters(parsedTrace.Meta.traceIsGeneric, exclusiveFilter);

@@ -221,30 +221,30 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
 }
 
 export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
-  readonly #callFrameInternal: SDK.DebuggerModel.CallFrame;
-  readonly #typeInternal: string;
-  readonly #typeNameInternal: string;
-  readonly #iconInternal: string|undefined;
-  readonly #objectInternal: SourceScopeRemoteObject;
+  readonly #callFrame: SDK.DebuggerModel.CallFrame;
+  readonly #type: string;
+  readonly #typeName: string;
+  readonly #icon: string|undefined;
+  readonly #object: SourceScopeRemoteObject;
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, stopId: StopId, type: string, typeName: string, icon: string|undefined,
       plugin: DebuggerLanguagePlugin) {
     if (icon && new URL(icon).protocol !== 'data:') {
       throw new Error('The icon must be a data:-URL');
     }
-    this.#callFrameInternal = callFrame;
-    this.#typeInternal = type;
-    this.#typeNameInternal = typeName;
-    this.#iconInternal = icon;
-    this.#objectInternal = new SourceScopeRemoteObject(callFrame, stopId, plugin);
+    this.#callFrame = callFrame;
+    this.#type = type;
+    this.#typeName = typeName;
+    this.#icon = icon;
+    this.#object = new SourceScopeRemoteObject(callFrame, stopId, plugin);
   }
 
   async getVariableValue(name: string): Promise<SDK.RemoteObject.RemoteObject|null> {
-    for (let v = 0; v < this.#objectInternal.variables.length; ++v) {
-      if (this.#objectInternal.variables[v].name !== name) {
+    for (let v = 0; v < this.#object.variables.length; ++v) {
+      if (this.#object.variables[v].name !== name) {
         continue;
       }
-      const properties = await this.#objectInternal.getAllProperties(false, false);
+      const properties = await this.#object.getAllProperties(false, false);
       if (!properties.properties) {
         continue;
       }
@@ -257,15 +257,15 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   }
 
   callFrame(): SDK.DebuggerModel.CallFrame {
-    return this.#callFrameInternal;
+    return this.#callFrame;
   }
 
   type(): string {
-    return this.#typeInternal;
+    return this.#type;
   }
 
   typeName(): string {
-    return this.#typeNameInternal;
+    return this.#typeName;
   }
 
   name(): string|undefined {
@@ -277,7 +277,7 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   }
 
   object(): SourceScopeRemoteObject {
-    return this.#objectInternal;
+    return this.#object;
   }
 
   description(): string {
@@ -285,7 +285,7 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   }
 
   icon(): string|undefined {
-    return this.#iconInternal;
+    return this.#icon;
   }
 
   extraProperties(): SDK.RemoteObject.RemoteObjectProperty[] {

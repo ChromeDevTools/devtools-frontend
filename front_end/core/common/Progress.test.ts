@@ -8,7 +8,7 @@ const CompositeProgress = Common.Progress.CompositeProgress;
 const ProgressProxy = Common.Progress.ProgressProxy;
 
 class MockProgressIndicator implements Common.Progress.Progress {
-  private isCanceledInternal = false;
+  #isCanceled = false;
   private totalWork = 0;
   private workCompleted = 0;
   private title!: string|undefined;
@@ -26,7 +26,7 @@ class MockProgressIndicator implements Common.Progress.Progress {
   }
 
   isCanceled() {
-    return this.isCanceledInternal;
+    return this.#isCanceled;
   }
 
   done() {
@@ -54,7 +54,7 @@ class MockProgressIndicator implements Common.Progress.Progress {
 
   // Test methods.
   cancel() {
-    this.isCanceledInternal = true;
+    this.#isCanceled = true;
   }
 }
 

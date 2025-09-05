@@ -301,7 +301,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private dragStartX!: number;
   private dragStartY!: number;
   private lastMouseOffsetY!: number;
-  private minimumBoundaryInternal!: number;
+  #minimumBoundary!: number;
   private maxDragOffset!: number;
   private timelineLevels?: number[][]|null;
   private visibleLevelOffsets?: Uint32Array|null;
@@ -4023,8 +4023,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   private updateBoundaries(): void {
     this.totalTime = this.dataProvider.totalTime();
-    this.minimumBoundaryInternal = this.dataProvider.minimumBoundary();
-    this.chartViewport.setBoundaries(this.minimumBoundaryInternal, this.totalTime);
+    this.#minimumBoundary = this.dataProvider.minimumBoundary();
+    this.chartViewport.setBoundaries(this.#minimumBoundary, this.totalTime);
   }
 
   private updateHeight(): void {

@@ -40,7 +40,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 let colorGeneratorInstance: Common.Color.Generator|null = null;
 
 export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
-  readonly colorGeneratorInternal: Common.Color.Generator;
+  readonly #colorGenerator: Common.Color.Generator;
   maxStackDepthInternal: number;
   timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null;
   entryNodes: CPUProfile.ProfileTreeModel.ProfileNode[];
@@ -48,7 +48,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   boldFont?: string;
 
   constructor() {
-    this.colorGeneratorInternal = ProfileFlameChartDataProvider.colorGenerator();
+    this.#colorGenerator = ProfileFlameChartDataProvider.colorGenerator();
     this.maxStackDepthInternal = 0;
     this.timelineDataInternal = null;
     this.entryNodes = [];
@@ -121,8 +121,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
     const node = this.entryNodes[entryIndex];
     // For idle and program, we want different 'shades of gray', so we fallback to functionName as scriptId = 0
     // For rest of nodes e.g eval scripts, if url is empty then scriptId will be guaranteed to be non-zero
-    return this.colorGeneratorInternal.colorForID(
-        node.url || (node.scriptId !== '0' ? node.scriptId : node.functionName));
+    return this.#colorGenerator.colorForID(node.url || (node.scriptId !== '0' ? node.scriptId : node.functionName));
   }
 
   decorateEntry(

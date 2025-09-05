@@ -39,6 +39,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   private readonly storageBucketModel: SDK.StorageBucketsModel.StorageBucketsModel|null;
   private readonly indexedDBAgent: ProtocolProxyApi.IndexedDBApi;
   private readonly storageAgent: ProtocolProxyApi.StorageApi;
+  // Used in web tests
   private readonly databasesInternal: Map<DatabaseId, Database>;
   private databaseNamesByStorageKeyAndBucket: Map<string, Map<string, Set<DatabaseId>>>;
   private readonly updatedStorageBuckets: Set<Protocol.Storage.StorageBucket>;

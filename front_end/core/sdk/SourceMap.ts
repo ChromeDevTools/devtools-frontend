@@ -153,10 +153,10 @@ export class SourceMap {
   static retainRawSourceMaps = false;
 
   #json: SourceMapV3|null;
-  readonly #compiledURLInternal: Platform.DevToolsPath.UrlString;
+  readonly #compiledURL: Platform.DevToolsPath.UrlString;
   readonly #sourceMappingURL: Platform.DevToolsPath.UrlString;
   readonly #baseURL: Platform.DevToolsPath.UrlString;
-  #mappingsInternal: SourceMapEntry[]|null;
+  #mappings: SourceMapEntry[]|null;
 
   readonly #sourceInfos: SourceInfo[] = [];
   readonly #sourceInfoByURL = new Map<Platform.DevToolsPath.UrlString, SourceInfo>();
@@ -173,12 +173,12 @@ export class SourceMap {
       compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString,
       payload: SourceMapV3) {
     this.#json = payload;
-    this.#compiledURLInternal = compiledURL;
+    this.#compiledURL = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
     this.#baseURL = (Common.ParsedURL.schemeIs(sourceMappingURL, 'data:')) ? compiledURL : sourceMappingURL;
     this.#debugId = 'debugId' in payload ? (payload.debugId as DebugId | undefined) : undefined;
 
-    this.#mappingsInternal = null;
+    this.#mappings = null;
     if ('sections' in this.#json) {
       if (this.#json.sections.find(section => 'url' in section)) {
         Common.Console.Console.instance().warn(
@@ -218,7 +218,7 @@ export class SourceMap {
   }
 
   compiledURL(): Platform.DevToolsPath.UrlString {
-    return this.#compiledURLInternal;
+    return this.#compiledURL;
   }
 
   url(): Platform.DevToolsPath.UrlString {
@@ -403,7 +403,7 @@ export class SourceMap {
 
   mappings(): SourceMapEntry[] {
     this.#ensureMappingsProcessed();
-    return this.#mappingsInternal ?? [];
+    return this.#mappings ?? [];
   }
 
   private reversedMappings(sourceURL: Platform.DevToolsPath.UrlString): number[] {
@@ -412,19 +412,19 @@ export class SourceMap {
   }
 
   #ensureMappingsProcessed(): void {
-    if (this.#mappingsInternal === null) {
-      this.#mappingsInternal = [];
+    if (this.#mappings === null) {
+      this.#mappings = [];
       try {
         this.eachSection(this.parseMap.bind(this));
       } catch (e) {
         console.error('Failed to parse source map', e);
-        this.#mappingsInternal = [];
+        this.#mappings = [];
       }
 
       // As per spec, mappings are not necessarily sorted.
       this.mappings().sort(SourceMapEntry.compare);
 
-      this.#computeReverseMappings(this.#mappingsInternal);
+      this.#computeReverseMappings(this.#mappings);
     }
 
     if (!SourceMap.retainRawSourceMaps) {

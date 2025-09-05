@@ -701,7 +701,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     const link = linkifier.maybeLinkifyConsoleCallFrame(
         this.heapProfilerModel ? this.heapProfilerModel.target() : null, node.callFrame);
     if (link) {
-      pushRow(i18nString(UIStrings.url), (link.textContent as string));
+      pushRow(i18nString(UIStrings.url), link.textContent);
     }
     linkifier.dispose();
     return ProfileView.buildPopoverTable(popoverInfo);

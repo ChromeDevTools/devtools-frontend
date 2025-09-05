@@ -97,12 +97,12 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/ConsoleModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ConsoleModel extends SDKModel<EventTypes> {
-  #messagesInternal: ConsoleMessage[] = [];
+  #messages: ConsoleMessage[] = [];
   readonly #messagesByTimestamp = new Platform.MapUtilities.Multimap<number, ConsoleMessage>();
   readonly #messageByExceptionId = new Map<RuntimeModel, Map<number, ConsoleMessage>>();
-  #warningsInternal = 0;
-  #errorsInternal = 0;
-  #violationsInternal = 0;
+  #warnings = 0;
+  #errors = 0;
+  #violations = 0;
   #pageLoadSequenceNumber = 0;
   readonly #targetListeners = new WeakMap<Target, Common.EventTarget.EventDescriptor[]>();
 
@@ -207,7 +207,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
       this.clearIfNecessary();
     }
 
-    this.#messagesInternal.push(msg);
+    this.#messages.push(msg);
     this.#messagesByTimestamp.set(msg.timestamp, msg);
     const runtimeModel = msg.runtimeModel();
     const exceptionId = msg.getExceptionId();
@@ -241,7 +241,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     if (!exceptionMessage) {
       return;
     }
-    this.#errorsInternal--;
+    this.#errors--;
     exceptionMessage.level = Protocol.Log.LogEntryLevel.Verbose;
     this.dispatchEventToListeners(Events.MessageUpdated, exceptionMessage);
   }
@@ -361,21 +361,21 @@ export class ConsoleModel extends SDKModel<EventTypes> {
 
   private incrementErrorWarningCount(msg: ConsoleMessage): void {
     if (msg.source === Protocol.Log.LogEntrySource.Violation) {
-      this.#violationsInternal++;
+      this.#violations++;
       return;
     }
     switch (msg.level) {
       case Protocol.Log.LogEntryLevel.Warning:
-        this.#warningsInternal++;
+        this.#warnings++;
         break;
       case Protocol.Log.LogEntryLevel.Error:
-        this.#errorsInternal++;
+        this.#errors++;
         break;
     }
   }
 
   messages(): ConsoleMessage[] {
-    return this.#messagesInternal;
+    return this.#messages;
   }
 
   // messages[] are not ordered by timestamp.
@@ -403,17 +403,17 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 
   private clear(): void {
-    this.#messagesInternal = [];
+    this.#messages = [];
     this.#messagesByTimestamp.clear();
     this.#messageByExceptionId.clear();
-    this.#errorsInternal = 0;
-    this.#warningsInternal = 0;
-    this.#violationsInternal = 0;
+    this.#errors = 0;
+    this.#warnings = 0;
+    this.#violations = 0;
     this.dispatchEventToListeners(Events.ConsoleCleared);
   }
 
   errors(): number {
-    return this.#errorsInternal;
+    return this.#errors;
   }
 
   static allErrors(): number {
@@ -425,7 +425,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 
   warnings(): number {
-    return this.#warningsInternal;
+    return this.#warnings;
   }
 
   static allWarnings(): number {
@@ -437,7 +437,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 
   violations(): number {
-    return this.#violationsInternal;
+    return this.#violations;
   }
 
   async saveToTempVariable(currentExecutionContext: ExecutionContext|null, remoteObject: RemoteObject|null):
@@ -575,7 +575,7 @@ export interface ConsoleMessageDetails {
 }
 
 export class ConsoleMessage {
-  readonly #runtimeModelInternal: RuntimeModel|null;
+  readonly #runtimeModel: RuntimeModel|null;
   source: MessageSource;
   level: Protocol.Log.LogEntryLevel|null;
   messageText: string;
@@ -610,7 +610,7 @@ export class ConsoleMessage {
   constructor(
       runtimeModel: RuntimeModel|null, source: MessageSource, level: Protocol.Log.LogEntryLevel|null,
       messageText: string, details?: ConsoleMessageDetails) {
-    this.#runtimeModelInternal = runtimeModel;
+    this.#runtimeModel = runtimeModel;
     this.source = source;
     this.level = (level);
     this.messageText = messageText;
@@ -628,11 +628,11 @@ export class ConsoleMessage {
     this.category = details?.category;
     this.isCookieReportIssue = Boolean(details?.isCookieReportIssue);
 
-    if (!this.#executionContextId && this.#runtimeModelInternal) {
+    if (!this.#executionContextId && this.#runtimeModel) {
       if (this.scriptId) {
-        this.#executionContextId = this.#runtimeModelInternal.executionContextIdForScriptId(this.scriptId);
+        this.#executionContextId = this.#runtimeModel.executionContextIdForScriptId(this.scriptId);
       } else if (this.stackTrace) {
-        this.#executionContextId = this.#runtimeModelInternal.executionContextForStackTrace(this.stackTrace);
+        this.#executionContextId = this.#runtimeModel.executionContextForStackTrace(this.stackTrace);
       }
     }
 
@@ -680,11 +680,11 @@ export class ConsoleMessage {
   }
 
   runtimeModel(): RuntimeModel|null {
-    return this.#runtimeModelInternal;
+    return this.#runtimeModel;
   }
 
   target(): Target|null {
-    return this.#runtimeModelInternal ? this.#runtimeModelInternal.target() : null;
+    return this.#runtimeModel ? this.#runtimeModel.target() : null;
   }
 
   setOriginatingMessage(originatingMessage: ConsoleMessage): void {

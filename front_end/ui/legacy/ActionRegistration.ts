@@ -103,8 +103,8 @@ export interface ActionDelegate {
 }
 
 export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private enabledInternal = true;
-  private toggledInternal = false;
+  #enabled = true;
+  #toggled = false;
   private actionRegistration: ActionRegistration;
   constructor(actionRegistration: ActionRegistration) {
     super();
@@ -137,16 +137,16 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   setEnabled(enabled: boolean): void {
-    if (this.enabledInternal === enabled) {
+    if (this.#enabled === enabled) {
       return;
     }
 
-    this.enabledInternal = enabled;
+    this.#enabled = enabled;
     this.dispatchEventToListeners(Events.ENABLED, enabled);
   }
 
   enabled(): boolean {
-    return this.enabledInternal;
+    return this.#enabled;
   }
 
   category(): ActionCategory {
@@ -174,7 +174,7 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       // with the 'value' of the options are used to determine which one it is.
 
       for (const pair of options) {
-        if (pair.value !== this.toggledInternal) {
+        if (pair.value !== this.#toggled) {
           title = pair.title();
         }
       }
@@ -183,16 +183,16 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   toggled(): boolean {
-    return this.toggledInternal;
+    return this.#toggled;
   }
 
   setToggled(toggled: boolean): void {
     console.assert(this.toggleable(), 'Shouldn\'t be toggling an untoggleable action', this.id());
-    if (this.toggledInternal === toggled) {
+    if (this.#toggled === toggled) {
       return;
     }
 
-    this.toggledInternal = toggled;
+    this.#toggled = toggled;
     this.dispatchEventToListeners(Events.TOGGLED, toggled);
   }
 

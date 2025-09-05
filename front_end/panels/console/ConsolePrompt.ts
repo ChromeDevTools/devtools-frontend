@@ -48,7 +48,7 @@ const AI_CODE_COMPLETION_CHARACTER_LIMIT = 20_000;
 export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
     UI.Widget.Widget) {
   private addCompletionsFromHistory: boolean;
-  private historyInternal: TextEditor.AutocompleteHistory.AutocompleteHistory;
+  #history: TextEditor.AutocompleteHistory.AutocompleteHistory;
   private initialText: string;
   private editor: TextEditor.TextEditor.TextEditor;
   private readonly eagerPreviewElement: HTMLDivElement;
@@ -109,7 +109,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     });
     this.registerRequiredCSS(consolePromptStyles);
     this.addCompletionsFromHistory = true;
-    this.historyInternal = new TextEditor.AutocompleteHistory.AutocompleteHistory(
+    this.#history = new TextEditor.AutocompleteHistory.AutocompleteHistory(
         Common.Settings.Settings.instance().createLocalSetting('console-history', []));
 
     this.initialText = '';
@@ -186,7 +186,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     });
     editorContainerElement.appendChild(this.editor);
-    this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.historyInternal);
+    this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
 
     if (this.hasFocus()) {
       this.focus();
@@ -307,7 +307,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   history(): TextEditor.AutocompleteHistory.AutocompleteHistory {
-    return this.historyInternal;
+    return this.#history;
   }
 
   clearAutocomplete(): void {

@@ -492,7 +492,7 @@ export interface ToolbarButtonOptions {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class ToolbarItem<T = any, E extends HTMLElement = HTMLElement> extends Common.ObjectWrapper.ObjectWrapper<T> {
   element: E;
-  private visibleInternal: boolean;
+  #visible: boolean;
   enabled: boolean;
   toolbar: Toolbar|null;
   protected title?: string;
@@ -500,7 +500,7 @@ export class ToolbarItem<T = any, E extends HTMLElement = HTMLElement> extends C
   constructor(element: E) {
     super();
     this.element = element;
-    this.visibleInternal = true;
+    this.#visible = true;
     this.enabled = true;
 
     /**
@@ -537,15 +537,15 @@ export class ToolbarItem<T = any, E extends HTMLElement = HTMLElement> extends C
   }
 
   visible(): boolean {
-    return this.visibleInternal;
+    return this.#visible;
   }
 
   setVisible(x: boolean): void {
-    if (this.visibleInternal === x) {
+    if (this.#visible === x) {
       return;
     }
     this.element.classList.toggle('hidden', !x);
-    this.visibleInternal = x;
+    this.#visible = x;
     if (this.toolbar && !(this instanceof ToolbarSeparator)) {
       this.toolbar.hideSeparatorDupes();
     }
@@ -1225,7 +1225,6 @@ export class ToolbarComboBox extends ToolbarItem<void, HTMLSelectElement> {
   selectedIndex(): number {
     return this.element.selectedIndex;
   }
-
 }
 
 export interface Option {
@@ -1234,12 +1233,12 @@ export interface Option {
 }
 
 export class ToolbarSettingComboBox extends ToolbarComboBox {
-  private optionsInternal: Option[];
+  #options: Option[];
   private readonly setting: Common.Settings.Setting<string>;
   private muteSettingListener?: boolean;
   constructor(options: Option[], setting: Common.Settings.Setting<string>, accessibleName: string) {
     super(null, accessibleName, undefined, setting.name);
-    this.optionsInternal = options;
+    this.#options = options;
     this.setting = setting;
     this.element.addEventListener('change', this.onSelectValueChange.bind(this), false);
     this.setOptions(options);
@@ -1247,7 +1246,7 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
   }
 
   setOptions(options: Option[]): void {
-    this.optionsInternal = options;
+    this.#options = options;
     this.element.removeChildren();
     for (let i = 0; i < options.length; ++i) {
       const dataOption = options[i];
@@ -1260,7 +1259,7 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
   }
 
   value(): string {
-    return this.optionsInternal[this.selectedIndex()].value;
+    return this.#options[this.selectedIndex()].value;
   }
 
   override select(option: Element): void {
@@ -1270,7 +1269,7 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
 
   override setSelectedIndex(index: number): void {
     super.setSelectedIndex(index);
-    const option = this.optionsInternal.at(index);
+    const option = this.#options.at(index);
     if (option) {
       this.setTitle(option.label);
     }
@@ -1294,8 +1293,8 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
     }
 
     const value = this.setting.get();
-    for (let i = 0; i < this.optionsInternal.length; ++i) {
-      if (value === this.optionsInternal[i].value) {
+    for (let i = 0; i < this.#options.length; ++i) {
+      if (value === this.#options[i].value) {
         this.setSelectedIndex(i);
         break;
       }
@@ -1306,7 +1305,7 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
    * Run when the user interacts with the <select> element.
    */
   private onSelectValueChange(_event: Event): void {
-    const option = this.optionsInternal[this.selectedIndex()];
+    const option = this.#options[this.selectedIndex()];
     this.muteSettingListener = true;
     this.setting.set(option.value);
     this.muteSettingListener = false;

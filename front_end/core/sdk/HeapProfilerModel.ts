@@ -15,7 +15,7 @@ import {Capability, type Target} from './Target.js';
 export class HeapProfilerModel extends SDKModel<EventTypes> {
   #enabled: boolean;
   readonly #heapProfilerAgent: ProtocolProxyApi.HeapProfilerApi;
-  readonly #runtimeModelInternal: RuntimeModel;
+  readonly #runtimeModel: RuntimeModel;
   #samplingProfilerDepth: number;
 
   constructor(target: Target) {
@@ -23,16 +23,16 @@ export class HeapProfilerModel extends SDKModel<EventTypes> {
     target.registerHeapProfilerDispatcher(new HeapProfilerDispatcher(this));
     this.#enabled = false;
     this.#heapProfilerAgent = target.heapProfilerAgent();
-    this.#runtimeModelInternal = (target.model(RuntimeModel) as RuntimeModel);
+    this.#runtimeModel = (target.model(RuntimeModel) as RuntimeModel);
     this.#samplingProfilerDepth = 0;
   }
 
   debuggerModel(): DebuggerModel {
-    return this.#runtimeModelInternal.debuggerModel();
+    return this.#runtimeModel.debuggerModel();
   }
 
   runtimeModel(): RuntimeModel {
-    return this.#runtimeModelInternal;
+    return this.#runtimeModel;
   }
 
   async enable(): Promise<void> {
@@ -97,7 +97,7 @@ export class HeapProfilerModel extends SDKModel<EventTypes> {
     if (result.getError()) {
       return null;
     }
-    return this.#runtimeModelInternal.createRemoteObject(result.result);
+    return this.#runtimeModel.createRemoteObject(result.result);
   }
 
   async addInspectedHeapObject(snapshotObjectId: Protocol.HeapProfiler.HeapSnapshotObjectId): Promise<boolean> {

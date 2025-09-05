@@ -17,7 +17,7 @@ let targetManagerInstance: TargetManager|undefined;
 type ModelClass<T = SDKModel> = new (arg1: Target) => T;
 
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  #targetsInternal: Set<Target>;
+  #targets: Set<Target>;
   readonly #observers: Set<Observer>;
   /* eslint-disable @typescript-eslint/no-explicit-any */
   #modelListeners: Platform.MapUtilities.Multimap<string|symbol|number, {
@@ -30,19 +30,19 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #scopedObservers: WeakSet<Observer|SDKModelObserver<any>>;
   /* eslint-enable @typescript-eslint/no-explicit-any */
   #isSuspended: boolean;
-  #browserTargetInternal: Target|null;
+  #browserTarget: Target|null;
   #scopeTarget: Target|null;
   #defaultScopeSet: boolean;
   readonly #scopeChangeListeners: Set<() => void>;
 
   private constructor() {
     super();
-    this.#targetsInternal = new Set();
+    this.#targets = new Set();
     this.#observers = new Set();
     this.#modelListeners = new Platform.MapUtilities.Multimap();
     this.#modelObservers = new Platform.MapUtilities.Multimap();
     this.#isSuspended = false;
-    this.#browserTargetInternal = null;
+    this.#browserTarget = null;
     this.#scopeTarget = null;
     this.#scopedObservers = new WeakSet();
     this.#defaultScopeSet = false;
@@ -82,7 +82,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
     this.#isSuspended = true;
     this.dispatchEventToListeners(Events.SUSPEND_STATE_CHANGED);
-    const suspendPromises = Array.from(this.#targetsInternal.values(), target => target.suspend(reason));
+    const suspendPromises = Array.from(this.#targets.values(), target => target.suspend(reason));
     await Promise.all(suspendPromises);
   }
 
@@ -92,7 +92,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
     this.#isSuspended = false;
     this.dispatchEventToListeners(Events.SUSPEND_STATE_CHANGED);
-    const resumePromises = Array.from(this.#targetsInternal.values(), target => target.resume());
+    const resumePromises = Array.from(this.#targets.values(), target => target.resume());
     await Promise.all(resumePromises);
   }
 
@@ -102,7 +102,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   models<T extends SDKModel>(modelClass: ModelClass<T>, opts?: {scoped: boolean}): T[] {
     const result = [];
-    for (const target of this.#targetsInternal) {
+    for (const target of this.#targets) {
       if (opts?.scoped && !this.isInScope(target)) {
         continue;
       }
@@ -194,7 +194,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     if (opts?.scoped) {
       this.#scopedObservers.add(targetObserver);
     }
-    for (const target of this.#targetsInternal) {
+    for (const target of this.#targets) {
       if (!opts?.scoped || this.isInScope(target)) {
         targetObserver.targetAdded(target);
       }
@@ -217,7 +217,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       void target.pageAgent().invoke_waitForDebugger();
     }
     target.createModels(new Set(this.#modelObservers.keysArray()));
-    this.#targetsInternal.add(target);
+    this.#targets.add(target);
 
     const inScope = this.isInScope(target);
     // Iterate over a copy. #observers might be modified during iteration.
@@ -250,12 +250,12 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   removeTarget(target: Target): void {
-    if (!this.#targetsInternal.has(target)) {
+    if (!this.#targets.has(target)) {
       return;
     }
 
     const inScope = this.isInScope(target);
-    this.#targetsInternal.delete(target);
+    this.#targets.delete(target);
     for (const modelClass of target.models().keys()) {
       const model = target.models().get(modelClass);
       assertNotNullOrUndefined(model);
@@ -280,7 +280,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   targets(): Target[] {
-    return [...this.#targetsInternal];
+    return [...this.#targets];
   }
 
   targetById(id: string): Target|null {
@@ -289,10 +289,10 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   rootTarget(): Target|null {
-    if (this.#targetsInternal.size === 0) {
+    if (this.#targets.size === 0) {
       return null;
     }
-    return this.#targetsInternal.values().next().value ?? null;
+    return this.#targets.values().next().value ?? null;
   }
 
   primaryPageTarget(): Target|null {
@@ -307,25 +307,25 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   browserTarget(): Target|null {
-    return this.#browserTargetInternal;
+    return this.#browserTarget;
   }
 
   async maybeAttachInitialTarget(): Promise<boolean> {
     if (!Boolean(Root.Runtime.Runtime.queryParam('browserConnection'))) {
       return false;
     }
-    if (!this.#browserTargetInternal) {
-      this.#browserTargetInternal = new Target(
+    if (!this.#browserTarget) {
+      this.#browserTarget = new Target(
           this, /* #id*/ 'main', /* #name*/ 'browser', TargetType.BROWSER, /* #parentTarget*/ null,
           /* #sessionId */ '', /* suspended*/ false, /* #connection*/ null, /* targetInfo*/ undefined);
-      this.#browserTargetInternal.createModels(new Set(this.#modelObservers.keysArray()));
+      this.#browserTarget.createModels(new Set(this.#modelObservers.keysArray()));
     }
     const targetId =
         await Host.InspectorFrontendHost.InspectorFrontendHostInstance.initialTargetId() as Protocol.Target.TargetID;
     // Do not await for Target.autoAttachRelated to return, as it goes throguh the renderer and we don't want to block early
     // at front-end initialization if a renderer is stuck. The rest of #target discovery and auto-attach process should happen
     // asynchronously upon Target.attachedToTarget.
-    void this.#browserTargetInternal.targetAgent().invoke_autoAttachRelated({
+    void this.#browserTarget.targetAgent().invoke_autoAttachRelated({
       targetId,
       waitForDebuggerOnStart: true,
     });
@@ -333,7 +333,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   clearAllTargetsForTest(): void {
-    this.#targetsInternal.clear();
+    this.#targets.clear();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

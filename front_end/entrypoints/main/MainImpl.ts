@@ -793,13 +793,13 @@ export class SearchActionDelegate implements UI.ActionRegistration.ActionDelegat
 let mainMenuItemInstance: MainMenuItem;
 
 export class MainMenuItem implements UI.Toolbar.Provider {
-  readonly #itemInternal: UI.Toolbar.ToolbarMenuButton;
+  readonly #item: UI.Toolbar.ToolbarMenuButton;
   constructor() {
-    this.#itemInternal = new UI.Toolbar.ToolbarMenuButton(
+    this.#item = new UI.Toolbar.ToolbarMenuButton(
         this.#handleContextMenu.bind(this), /* isIconDropdown */ true, /* useSoftMenu */ true, 'main-menu',
         'dots-vertical');
-    this.#itemInternal.element.classList.add('main-menu');
-    this.#itemInternal.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
+    this.#item.element.classList.add('main-menu');
+    this.#item.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
   }
 
   static instance(opts: {
@@ -814,7 +814,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
   }
 
   item(): UI.Toolbar.ToolbarItem|null {
-    return this.#itemInternal;
+    return this.#item;
   }
 
   #handleContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
@@ -903,7 +903,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       contextMenu.headerSection().appendCustomItem(dockItemElement, 'dock-side');
     }
 
-    const button = this.#itemInternal.element;
+    const button = this.#item.element;
 
     function setDockSide(side: UI.DockController.DockState): void {
       void dockController.once(UI.DockController.Events.AFTER_DOCK_SIDE_CHANGED).then(() => button.focus());

@@ -566,7 +566,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 }
 
 export class Ruler extends UI.Widget.VBox {
-  private contentElementInternal: HTMLElement;
+  #contentElement: HTMLElement;
   private readonly horizontal: boolean;
   private scale: number;
   private count: number;
@@ -577,7 +577,7 @@ export class Ruler extends UI.Widget.VBox {
   constructor(horizontal: boolean, applyCallback: (arg0: number) => void) {
     super({jslog: `${VisualLogging.deviceModeRuler().track({click: true})}`});
     this.element.classList.add('device-mode-ruler');
-    this.contentElementInternal =
+    this.#contentElement =
         this.element.createChild('div', 'device-mode-ruler-content').createChild('div', 'device-mode-ruler-inner');
     this.horizontal = horizontal;
     this.scale = 1;
@@ -597,10 +597,10 @@ export class Ruler extends UI.Widget.VBox {
 
   update(): void {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
-    const size = this.horizontal ? this.contentElementInternal.offsetWidth : this.contentElementInternal.offsetHeight;
+    const size = this.horizontal ? this.#contentElement.offsetWidth : this.#contentElement.offsetHeight;
 
     if (this.scale !== this.renderedScale || zoomFactor !== this.renderedZoomFactor) {
-      this.contentElementInternal.removeChildren();
+      this.#contentElement.removeChildren();
       this.count = 0;
       this.renderedScale = this.scale;
       this.renderedZoomFactor = zoomFactor;
@@ -627,7 +627,7 @@ export class Ruler extends UI.Widget.VBox {
 
     for (let i = count; i < this.count; i++) {
       if (!(i % step)) {
-        const lastChild = this.contentElementInternal.lastChild;
+        const lastChild = this.#contentElement.lastChild;
         if (lastChild) {
           lastChild.remove();
         }
@@ -638,7 +638,7 @@ export class Ruler extends UI.Widget.VBox {
       if (i % step) {
         continue;
       }
-      const marker = this.contentElementInternal.createChild('div', 'device-mode-ruler-marker');
+      const marker = this.#contentElement.createChild('div', 'device-mode-ruler-marker');
       if (i) {
         if (this.horizontal) {
           marker.style.left = (5 * i) * this.scale / zoomFactor + 'px';

@@ -11,8 +11,8 @@ import {ComputedStyleWidget} from './ComputedStyleWidget.js';
 import {StylesSidebarPane} from './StylesSidebarPane.js';
 
 export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private nodeInternal: SDK.DOMModel.DOMNode|null;
-  private cssModelInternal: SDK.CSSModel.CSSModel|null;
+  #node: SDK.DOMModel.DOMNode|null;
+  #cssModel: SDK.CSSModel.CSSModel|null;
   private eventListeners: Common.EventTarget.EventDescriptor[];
   private frameResizedTimer?: number;
   private computedStylePromise?: Promise<ComputedStyle|null>;
@@ -20,9 +20,9 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
 
   constructor() {
     super();
-    this.cssModelInternal = null;
+    this.#cssModel = null;
     this.eventListeners = [];
-    this.nodeInternal = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    this.#node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.onNodeChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(
@@ -40,17 +40,17 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
   }
 
   node(): SDK.DOMModel.DOMNode|null {
-    return this.nodeInternal;
+    return this.#node;
   }
 
   cssModel(): SDK.CSSModel.CSSModel|null {
-    return this.cssModelInternal?.isEnabled() ? this.cssModelInternal : null;
+    return this.#cssModel?.isEnabled() ? this.#cssModel : null;
   }
 
   // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
   // For that case, we want to only run this function once.
   private evaluateTrackingComputedStyleUpdatesForNode = Common.Debouncer.debounce((): void => {
-    if (!this.nodeInternal) {
+    if (!this.#node) {
       // There isn't a node selected now, so let's stop tracking computed style updates for the previously tracked node.
       if (this.currentTrackedNodeId) {
         void this.cssModel()?.trackComputedStyleUpdatesForNode(undefined);
@@ -76,25 +76,25 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
     // Either computed style widget or styles tab is visible
     // if the currently tracked node id is not the same as the selected node
     // let's start tracking the currently selected node.
-    if (this.currentTrackedNodeId !== this.nodeInternal.id) {
-      void this.cssModel()?.trackComputedStyleUpdatesForNode(this.nodeInternal.id);
-      this.currentTrackedNodeId = this.nodeInternal.id;
+    if (this.currentTrackedNodeId !== this.#node.id) {
+      void this.cssModel()?.trackComputedStyleUpdatesForNode(this.#node.id);
+      this.currentTrackedNodeId = this.#node.id;
     }
   }, 100);
 
   private onNodeChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode|null>): void {
-    this.nodeInternal = event.data;
-    this.updateModel(this.nodeInternal ? this.nodeInternal.domModel().cssModel() : null);
+    this.#node = event.data;
+    this.updateModel(this.#node ? this.#node.domModel().cssModel() : null);
     this.onCSSModelChanged(null);
     this.evaluateTrackingComputedStyleUpdatesForNode();
   }
 
   private updateModel(cssModel: SDK.CSSModel.CSSModel|null): void {
-    if (this.cssModelInternal === cssModel) {
+    if (this.#cssModel === cssModel) {
       return;
     }
     Common.EventTarget.removeEventListeners(this.eventListeners);
-    this.cssModelInternal = cssModel;
+    this.#cssModel = cssModel;
     const domModel = cssModel ? cssModel.domModel() : null;
     const resourceTreeModel = cssModel ? cssModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel) : null;
     if (cssModel && domModel && resourceTreeModel) {
@@ -123,7 +123,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
     delete this.computedStylePromise;
     // If the event contains `nodeId` and that's not the same as this node's id
     // we don't emit the COMPUTED_STYLE_CHANGED event.
-    if (event?.data && 'nodeId' in event.data && event.data.nodeId !== this.nodeInternal?.id) {
+    if (event?.data && 'nodeId' in event.data && event.data.nodeId !== this.#node?.id) {
       return;
     }
 
@@ -133,9 +133,8 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
   private onDOMModelChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
     // Any attribute removal or modification can affect the styles of "related" nodes.
     const node = event.data;
-    if (!this.nodeInternal ||
-        this.nodeInternal !== node && node.parentNode !== this.nodeInternal.parentNode &&
-            !node.isAncestor(this.nodeInternal)) {
+    if (!this.#node ||
+        this.#node !== node && node.parentNode !== this.#node.parentNode && !node.isAncestor(this.#node)) {
       return;
     }
     this.onCSSModelChanged(null);

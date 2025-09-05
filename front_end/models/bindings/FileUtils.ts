@@ -47,27 +47,27 @@ export interface ChunkedReader {
 
 export class ChunkedFileReader implements ChunkedReader {
   #file: File|null;
-  readonly #fileSizeInternal: number;
-  #loadedSizeInternal: number;
+  readonly #fileSize: number;
+  #loadedSize: number;
   #streamReader: ReadableStreamDefaultReader<Uint8Array<ArrayBuffer>>|null;
   readonly #chunkSize: number;
   readonly #chunkTransferredCallback: ((arg0: ChunkedReader) => void)|undefined;
   readonly #decoder: TextDecoder;
   #isCanceled: boolean;
-  #errorInternal: DOMException|null;
+  #error: DOMException|null;
   #transferFinished!: (arg0: boolean) => void;
   #output?: Common.StringOutputStream.OutputStream;
   #reader?: FileReader|null;
 
   constructor(file: File, chunkSize?: number, chunkTransferredCallback?: ((arg0: ChunkedReader) => void)) {
     this.#file = file;
-    this.#fileSizeInternal = file.size;
-    this.#loadedSizeInternal = 0;
+    this.#fileSize = file.size;
+    this.#loadedSize = 0;
     this.#chunkSize = (chunkSize) ? chunkSize : Number.MAX_VALUE;
     this.#chunkTransferredCallback = chunkTransferredCallback;
     this.#decoder = new TextDecoder();
     this.#isCanceled = false;
-    this.#errorInternal = null;
+    this.#error = null;
     this.#streamReader = null;
   }
 
@@ -99,11 +99,11 @@ export class ChunkedFileReader implements ChunkedReader {
   }
 
   loadedSize(): number {
-    return this.#loadedSizeInternal;
+    return this.#loadedSize;
   }
 
   fileSize(): number {
-    return this.#fileSizeInternal;
+    return this.#fileSize;
   }
 
   fileName(): string {
@@ -114,7 +114,7 @@ export class ChunkedFileReader implements ChunkedReader {
   }
 
   error(): DOMException|null {
-    return this.#errorInternal;
+    return this.#error;
   }
 
   private onChunkLoaded(event: Event): void {
@@ -132,8 +132,8 @@ export class ChunkedFileReader implements ChunkedReader {
     }
 
     const buffer = (this.#reader.result as ArrayBuffer);
-    this.#loadedSizeInternal += buffer.byteLength;
-    const endOfFile = this.#loadedSizeInternal === this.#fileSizeInternal;
+    this.#loadedSize += buffer.byteLength;
+    const endOfFile = this.#loadedSize === this.#fileSize;
     void this.decodeChunkBuffer(buffer, endOfFile);
   }
 
@@ -164,7 +164,7 @@ export class ChunkedFileReader implements ChunkedReader {
     this.#file = null;
     this.#reader = null;
     await this.#output.close();
-    this.#transferFinished(!this.#errorInternal);
+    this.#transferFinished(!this.#error);
   }
 
   private async loadChunk(): Promise<void> {
@@ -181,8 +181,8 @@ export class ChunkedFileReader implements ChunkedReader {
       void this.decodeChunkBuffer(value.buffer, false);
     }
     if (this.#reader) {
-      const chunkStart = this.#loadedSizeInternal;
-      const chunkEnd = Math.min(this.#fileSizeInternal, chunkStart + this.#chunkSize);
+      const chunkStart = this.#loadedSize;
+      const chunkEnd = Math.min(this.#fileSize, chunkStart + this.#chunkSize);
       const nextPart = this.#file.slice(chunkStart, chunkEnd);
       this.#reader.readAsArrayBuffer(nextPart);
     }
@@ -190,7 +190,7 @@ export class ChunkedFileReader implements ChunkedReader {
 
   private onError(event: Event): void {
     const eventTarget = (event.target as FileReader);
-    this.#errorInternal = eventTarget.error;
+    this.#error = eventTarget.error;
     this.#transferFinished(false);
   }
 }

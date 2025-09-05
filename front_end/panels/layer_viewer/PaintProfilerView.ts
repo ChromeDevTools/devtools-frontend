@@ -84,7 +84,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
   private readonly showImageCallback: (arg0?: string|undefined) => void;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  private readonly selectionWindowInternal: PerfUI.OverviewGrid.Window;
+  readonly #selectionWindow: PerfUI.OverviewGrid.Window;
   private readonly innerBarWidth: number;
   private minBarHeight: number;
   private readonly barPaddingWidth: number;
@@ -114,9 +114,8 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     this.showImageCallback = showImageCallback;
     this.canvas = this.canvasContainer.createChild('canvas', 'fill');
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-    this.selectionWindowInternal = new PerfUI.OverviewGrid.Window(this.canvasContainer);
-    this.selectionWindowInternal.addEventListener(
-        PerfUI.OverviewGrid.Events.WINDOW_CHANGED, this.onWindowChanged, this);
+    this.#selectionWindow = new PerfUI.OverviewGrid.Window(this.canvasContainer);
+    this.#selectionWindow.addEventListener(PerfUI.OverviewGrid.Events.WINDOW_CHANGED, this.onWindowChanged, this);
 
     this.innerBarWidth = 4 * window.devicePixelRatio;
     this.minBarHeight = window.devicePixelRatio;
@@ -220,11 +219,11 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     if (!snapshot) {
       this.update();
       this.populatePieChart(0, []);
-      this.selectionWindowInternal.setResizeEnabled(false);
+      this.#selectionWindow.setResizeEnabled(false);
       return;
     }
 
-    this.selectionWindowInternal.setResizeEnabled(true);
+    this.#selectionWindow.setResizeEnabled(true);
     this.progressBanner.classList.remove('hidden');
     this.updateImage();
 
@@ -373,8 +372,8 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
       return null;
     }
 
-    const screenLeft = (this.selectionWindowInternal.windowLeftRatio || 0) * this.canvas.width;
-    const screenRight = (this.selectionWindowInternal.windowRightRatio || 0) * this.canvas.width;
+    const screenLeft = (this.#selectionWindow.windowLeftRatio || 0) * this.canvas.width;
+    const screenRight = (this.#selectionWindow.windowRightRatio || 0) * this.canvas.width;
     const barLeft = Math.floor(screenLeft / this.outerBarWidth);
     const barRight = Math.floor((screenRight + this.innerBarWidth - this.barPaddingWidth / 2) / this.outerBarWidth);
     const stepLeft = Platform.NumberUtilities.clamp(barLeft * this.samplesPerBar, 0, this.log.length - 1);
@@ -411,8 +410,8 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     }
     this.snapshot = null;
     this.profiles = null;
-    this.selectionWindowInternal.reset();
-    this.selectionWindowInternal.setResizeEnabled(false);
+    this.#selectionWindow.reset();
+    this.#selectionWindow.setResizeEnabled(false);
   }
 }
 

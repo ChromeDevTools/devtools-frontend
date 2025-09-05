@@ -2347,7 +2347,7 @@ export class EventDispatchTypeDescriptor {
 
 export class TimelineDetailsContentHelper {
   fragment: DocumentFragment;
-  private linkifierInternal: LegacyComponents.Linkifier.Linkifier|null;
+  #linkifier: LegacyComponents.Linkifier.Linkifier|null;
   private target: SDK.Target.Target|null;
   element: HTMLDivElement;
   private tableElement: HTMLElement;
@@ -2355,7 +2355,7 @@ export class TimelineDetailsContentHelper {
   constructor(target: SDK.Target.Target|null, linkifier: LegacyComponents.Linkifier.Linkifier|null) {
     this.fragment = document.createDocumentFragment();
 
-    this.linkifierInternal = linkifier;
+    this.#linkifier = linkifier;
     this.target = target;
 
     this.element = document.createElement('div');
@@ -2386,7 +2386,7 @@ export class TimelineDetailsContentHelper {
   }
 
   linkifier(): LegacyComponents.Linkifier.Linkifier|null {
-    return this.linkifierInternal;
+    return this.#linkifier;
   }
 
   appendTextRow(title: string, value: string|number|boolean): void {
@@ -2416,7 +2416,7 @@ export class TimelineDetailsContentHelper {
 
   appendLocationRow(
       title: string, url: string, startLine: number, startColumn?: number, text?: string, omitOrigin?: boolean): void {
-    if (!this.linkifierInternal) {
+    if (!this.#linkifier) {
       return;
     }
 
@@ -2428,7 +2428,7 @@ export class TimelineDetailsContentHelper {
       text,
       omitOrigin,
     };
-    const link = this.linkifierInternal.maybeLinkifyScriptLocation(
+    const link = this.#linkifier.maybeLinkifyScriptLocation(
         this.target, null, url as Platform.DevToolsPath.UrlString, startLine, options);
     if (!link) {
       return;
@@ -2437,11 +2437,11 @@ export class TimelineDetailsContentHelper {
   }
 
   appendLocationRange(title: string, url: Platform.DevToolsPath.UrlString, startLine: number, endLine?: number): void {
-    if (!this.linkifierInternal || !this.target) {
+    if (!this.#linkifier || !this.target) {
       return;
     }
     const locationContent = document.createElement('span');
-    const link = this.linkifierInternal.maybeLinkifyScriptLocation(
+    const link = this.#linkifier.maybeLinkifyScriptLocation(
         this.target, null, url, startLine, {tabStop: true, inlineFrameIndex: 0});
     if (!link) {
       return;
@@ -2453,7 +2453,7 @@ export class TimelineDetailsContentHelper {
   }
 
   createChildStackTraceElement(stackTrace: Protocol.Runtime.StackTrace): void {
-    if (!this.linkifierInternal) {
+    if (!this.#linkifier) {
       return;
     }
     const resolvedStackTrace: Protocol.Runtime.StackTrace = structuredClone(stackTrace);
@@ -2471,7 +2471,7 @@ export class TimelineDetailsContentHelper {
     const stackTraceElement =
         this.tableElement.createChild('div', 'timeline-details-view-row timeline-details-stack-values');
     const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent(
-        undefined, this.target ?? undefined, this.linkifierInternal,
+        undefined, this.target ?? undefined, this.#linkifier,
         {stackTrace: resolvedStackTrace, tabStops: true, showColumnNumber: true});
     callFrameContents.markAsRoot();
     callFrameContents.show(stackTraceElement);

@@ -170,7 +170,7 @@ export namespace DetachedElementsProfileType {
 }
 
 export class DetachedElementsProfileHeader extends WritableProfileHeader {
-  readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;
+  readonly #heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
   readonly detachedElements: Protocol.DOM.DetachedElementInfo[]|null;
   constructor(
       heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, type: DetachedElementsProfileType,
@@ -179,7 +179,7 @@ export class DetachedElementsProfileHeader extends WritableProfileHeader {
         heapProfilerModel?.debuggerModel() ?? null, type,
         title || i18nString(UIStrings.detachedElementProfile, {PH1: type.nextProfileUid()}));
     this.detachedElements = detachedElements;
-    this.heapProfilerModelInternal = heapProfilerModel;
+    this.#heapProfilerModel = heapProfilerModel;
   }
 
   override createView(dataDisplayDelegate: DataDisplayDelegate): DetachedElementsProfileView {
@@ -187,7 +187,7 @@ export class DetachedElementsProfileHeader extends WritableProfileHeader {
   }
 
   heapProfilerModel(): SDK.HeapProfilerModel.HeapProfilerModel|null {
-    return this.heapProfilerModelInternal;
+    return this.#heapProfilerModel;
   }
 
   override profileType(): DetachedElementsProfileType {

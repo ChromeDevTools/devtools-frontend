@@ -26,21 +26,21 @@ export class Category extends Trace.Extras.TraceFilter.TraceFilter {
 }
 
 export class TimelineRegExp extends Trace.Extras.TraceFilter.TraceFilter {
-  private regExpInternal!: RegExp|null;
+  #regExp!: RegExp|null;
   constructor(regExp?: RegExp) {
     super();
     this.setRegExp(regExp || null);
   }
 
   setRegExp(regExp: RegExp|null): void {
-    this.regExpInternal = regExp;
+    this.#regExp = regExp;
   }
 
   regExp(): RegExp|null {
-    return this.regExpInternal;
+    return this.#regExp;
   }
 
   accept(event: Trace.Types.Events.Event, parsedTrace?: Trace.Handlers.Types.ParsedTrace): boolean {
-    return !this.regExpInternal || TimelineUIUtils.testContentMatching(event, this.regExpInternal, parsedTrace);
+    return !this.#regExp || TimelineUIUtils.testContentMatching(event, this.#regExp, parsedTrace);
   }
 }

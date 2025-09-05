@@ -589,28 +589,28 @@ export class CounterUI {
 }
 
 export class Calculator implements Calculator {
-  private minimumBoundaryInternal: number;
-  private maximumBoundaryInternal: number;
+  #minimumBoundary: number;
+  #maximumBoundary: number;
   private workingArea: number;
-  private zeroTimeInternal: number;
+  #zeroTime: number;
 
   constructor() {
-    this.minimumBoundaryInternal = 0;
-    this.maximumBoundaryInternal = 0;
+    this.#minimumBoundary = 0;
+    this.#maximumBoundary = 0;
     this.workingArea = 0;
-    this.zeroTimeInternal = 0;
+    this.#zeroTime = 0;
   }
   setZeroTime(time: number): void {
-    this.zeroTimeInternal = time;
+    this.#zeroTime = time;
   }
 
   computePosition(time: number): number {
-    return (time - this.minimumBoundaryInternal) / this.boundarySpan() * this.workingArea;
+    return (time - this.#minimumBoundary) / this.boundarySpan() * this.workingArea;
   }
 
   setWindow(minimumBoundary: number, maximumBoundary: number): void {
-    this.minimumBoundaryInternal = minimumBoundary;
-    this.maximumBoundaryInternal = maximumBoundary;
+    this.#minimumBoundary = minimumBoundary;
+    this.#maximumBoundary = maximumBoundary;
   }
 
   setDisplayWidth(clientWidth: number): void {
@@ -622,18 +622,18 @@ export class Calculator implements Calculator {
   }
 
   maximumBoundary(): number {
-    return this.maximumBoundaryInternal;
+    return this.#maximumBoundary;
   }
 
   minimumBoundary(): number {
-    return this.minimumBoundaryInternal;
+    return this.#minimumBoundary;
   }
 
   zeroTime(): number {
-    return this.zeroTimeInternal;
+    return this.#zeroTime;
   }
 
   boundarySpan(): number {
-    return this.maximumBoundaryInternal - this.minimumBoundaryInternal;
+    return this.#maximumBoundary - this.#minimumBoundary;
   }
 }

@@ -52,7 +52,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
   #anonymousConsoleProfileIdToTitle: Map<string, string>;
   readonly #profilerAgent: ProtocolProxyApi.ProfilerApi;
   #preciseCoverageDeltaUpdateCallback: ((arg0: number, arg2: Protocol.Profiler.ScriptCoverage[]) => Promise<void>)|null;
-  readonly #debuggerModelInternal: DebuggerModel;
+  readonly #debuggerModel: DebuggerModel;
   readonly registeredConsoleProfileMessages: ProfileFinishedData[] = [];
 
   constructor(target: Target) {
@@ -63,15 +63,15 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
     this.#preciseCoverageDeltaUpdateCallback = null;
     target.registerProfilerDispatcher(this);
     void this.#profilerAgent.invoke_enable();
-    this.#debuggerModelInternal = (target.model(DebuggerModel) as DebuggerModel);
+    this.#debuggerModel = (target.model(DebuggerModel) as DebuggerModel);
   }
 
   runtimeModel(): RuntimeModel {
-    return this.#debuggerModelInternal.runtimeModel();
+    return this.#debuggerModel.runtimeModel();
   }
 
   debuggerModel(): DebuggerModel {
-    return this.#debuggerModelInternal;
+    return this.#debuggerModel;
   }
 
   consoleProfileStarted({id, location, title}: Protocol.Profiler.ConsoleProfileStartedEvent): void {
@@ -97,7 +97,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
   }
 
   private createEventDataFrom(id: string, scriptLocation: Protocol.Debugger.Location, title?: string): EventData {
-    const debuggerLocation = Location.fromPayload(this.#debuggerModelInternal, scriptLocation);
+    const debuggerLocation = Location.fromPayload(this.#debuggerModel, scriptLocation);
     const globalId = this.target().id() + '.' + id;
     return {
       id: globalId,

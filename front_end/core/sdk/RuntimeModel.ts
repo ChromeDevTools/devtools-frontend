@@ -54,8 +54,7 @@ import {Capability, type Target, Type} from './Target.js';
 export class RuntimeModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.RuntimeApi;
   readonly #executionContextById = new Map<number, ExecutionContext>();
-  #executionContextComparatorInternal:
-      (arg0: ExecutionContext, arg1: ExecutionContext) => number = ExecutionContext.comparator;
+  #executionContextComparator: (arg0: ExecutionContext, arg1: ExecutionContext) => number = ExecutionContext.comparator;
   constructor(target: Target) {
     super(target);
 
@@ -92,14 +91,14 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   }
 
   setExecutionContextComparator(comparator: (arg0: ExecutionContext, arg1: ExecutionContext) => number): void {
-    this.#executionContextComparatorInternal = comparator;
+    this.#executionContextComparator = comparator;
   }
 
   /**
    * comparator
    */
   executionContextComparator(): (arg0: ExecutionContext, arg1: ExecutionContext) => number {
-    return this.#executionContextComparatorInternal;
+    return this.#executionContextComparator;
   }
 
   defaultExecutionContext(): ExecutionContext|null {
@@ -528,7 +527,7 @@ export class ExecutionContext {
   id: Protocol.Runtime.ExecutionContextId;
   uniqueId: string;
   name: string;
-  #labelInternal: string|null;
+  #label: string|null;
   origin: Platform.DevToolsPath.UrlString;
   isDefault: boolean;
   runtimeModel: RuntimeModel;
@@ -540,13 +539,13 @@ export class ExecutionContext {
     this.id = id;
     this.uniqueId = uniqueId;
     this.name = name;
-    this.#labelInternal = null;
+    this.#label = null;
     this.origin = origin;
     this.isDefault = isDefault;
     this.runtimeModel = runtimeModel;
     this.debuggerModel = runtimeModel.debuggerModel();
     this.frameId = frameId;
-    this.setLabelInternal('');
+    this.#setLabel('');
   }
 
   target(): Target {
@@ -697,25 +696,25 @@ export class ExecutionContext {
   }
 
   label(): string|null {
-    return this.#labelInternal;
+    return this.#label;
   }
 
   setLabel(label: string): void {
-    this.setLabelInternal(label);
+    this.#setLabel(label);
     this.runtimeModel.dispatchEventToListeners(Events.ExecutionContextChanged, this);
   }
 
-  private setLabelInternal(label: string): void {
+  #setLabel(label: string): void {
     if (label) {
-      this.#labelInternal = label;
+      this.#label = label;
       return;
     }
     if (this.name) {
-      this.#labelInternal = this.name;
+      this.#label = this.name;
       return;
     }
     const parsedUrl = Common.ParsedURL.ParsedURL.fromString(this.origin);
-    this.#labelInternal = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : '';
+    this.#label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : '';
   }
 }
 

@@ -82,7 +82,7 @@ export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
     this.showNext.addEventListener('click', this.showNextChunk.bind(this), false);
 
     this.showAll = UI.UIUtils.createTextButton('');
-    this.showAll.addEventListener('click', this.showAllInternal.bind(this), false);
+    this.showAll.addEventListener('click', this.#showAll.bind(this), false);
 
     this.showLast = UI.UIUtils.createTextButton(i18nString(UIStrings.showDAfter, {PH1: this.chunkSize}));
     this.showLast.addEventListener('click', this.showLastChunk.bind(this), false);
@@ -95,7 +95,7 @@ export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
     void this.callback(this.startPosition, this.startPosition + this.chunkSize);
   }
 
-  private showAllInternal(): void {
+  #showAll(): void {
     void this.callback(this.startPosition, this.endPosition);
   }
 

@@ -37,9 +37,9 @@ import type * as SDK from '../../core/sdk/sdk.js';
 export class ElementUpdateRecord {
   private modifiedAttributes?: Set<string>;
   private removedAttributes?: Set<string>;
-  private hasChangedChildrenInternal?: boolean;
-  private hasRemovedChildrenInternal?: boolean;
-  private charDataModifiedInternal?: boolean;
+  #hasChangedChildren?: boolean;
+  #hasRemovedChildren?: boolean;
+  #charDataModified?: boolean;
 
   attributeModified(attrName: string): void {
     if (this.removedAttributes?.has(attrName)) {
@@ -62,20 +62,20 @@ export class ElementUpdateRecord {
   }
 
   nodeInserted(_node: SDK.DOMModel.DOMNode): void {
-    this.hasChangedChildrenInternal = true;
+    this.#hasChangedChildren = true;
   }
 
   nodeRemoved(_node: SDK.DOMModel.DOMNode): void {
-    this.hasChangedChildrenInternal = true;
-    this.hasRemovedChildrenInternal = true;
+    this.#hasChangedChildren = true;
+    this.#hasRemovedChildren = true;
   }
 
   charDataModified(): void {
-    this.charDataModifiedInternal = true;
+    this.#charDataModified = true;
   }
 
   childrenModified(): void {
-    this.hasChangedChildrenInternal = true;
+    this.#hasChangedChildren = true;
   }
 
   isAttributeModified(attributeName: string): boolean {
@@ -88,14 +88,14 @@ export class ElementUpdateRecord {
   }
 
   isCharDataModified(): boolean {
-    return Boolean(this.charDataModifiedInternal);
+    return Boolean(this.#charDataModified);
   }
 
   hasChangedChildren(): boolean {
-    return Boolean(this.hasChangedChildrenInternal);
+    return Boolean(this.#hasChangedChildren);
   }
 
   hasRemovedChildren(): boolean {
-    return Boolean(this.hasRemovedChildrenInternal);
+    return Boolean(this.#hasRemovedChildren);
   }
 }

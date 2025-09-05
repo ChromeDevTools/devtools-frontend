@@ -117,21 +117,20 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class DebuggerPausedMessage {
-  private readonly elementInternal: HTMLDivElement;
+  readonly #element: HTMLDivElement;
   private contentElement: HTMLElement;
   constructor() {
-    this.elementInternal = document.createElement('div');
-    this.elementInternal.classList.add('paused-message');
-    this.elementInternal.classList.add('flex-none');
-    this.elementInternal.setAttribute('jslog', `${VisualLogging.dialog('debugger-paused')}`);
-    const root =
-        UI.UIUtils.createShadowRootWithCoreStyles(this.elementInternal, {cssFile: debuggerPausedMessageStyles});
+    this.#element = document.createElement('div');
+    this.#element.classList.add('paused-message');
+    this.#element.classList.add('flex-none');
+    this.#element.setAttribute('jslog', `${VisualLogging.dialog('debugger-paused')}`);
+    const root = UI.UIUtils.createShadowRootWithCoreStyles(this.#element, {cssFile: debuggerPausedMessageStyles});
     this.contentElement = root.createChild('div');
-    UI.ARIAUtils.markAsPoliteLiveRegion(this.elementInternal, false);
+    UI.ARIAUtils.markAsPoliteLiveRegion(this.#element, false);
   }
 
   element(): Element {
-    return this.elementInternal;
+    return this.#element;
   }
 
   private static descriptionWithoutStack(description: string): string {

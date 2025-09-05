@@ -53,16 +53,16 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let isolatedFileSystemManagerInstance: IsolatedFileSystemManager|null;
 
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private readonly fileSystemsInternal: Map<Platform.DevToolsPath.UrlString, PlatformFileSystem>;
+  readonly #fileSystems: Map<Platform.DevToolsPath.UrlString, PlatformFileSystem>;
   private readonly callbacks: Map<number, (arg0: Platform.DevToolsPath.RawPathString[]) => void>;
   private readonly progresses: Map<number, Common.Progress.Progress>;
-  private readonly workspaceFolderExcludePatternSettingInternal: Common.Settings.RegExpSetting;
+  readonly #workspaceFolderExcludePatternSetting: Common.Settings.RegExpSetting;
   private fileSystemRequestResolve: ((arg0: IsolatedFileSystem|null) => void)|null;
   private readonly fileSystemsLoadedPromise: Promise<IsolatedFileSystem[]>;
   private constructor() {
     super();
 
-    this.fileSystemsInternal = new Map();
+    this.#fileSystems = new Map();
     this.callbacks = new Map();
     this.progresses = new Map();
 
@@ -116,7 +116,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
     }
     const defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
-    this.workspaceFolderExcludePatternSettingInternal = Common.Settings.Settings.instance().createRegExpSetting(
+    this.#workspaceFolderExcludePatternSetting = Common.Settings.Settings.instance().createRegExpSetting(
         'workspace-folder-exclude-pattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
 
     this.fileSystemRequestResolve = null;
@@ -194,7 +194,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       if (!fileSystem) {
         return null;
       }
-      this.fileSystemsInternal.set(fileSystemURL, fileSystem);
+      this.#fileSystems.set(fileSystemURL, fileSystem);
       fileSystem.addEventListener(PlatformFileSystemEvents.FILE_SYSTEM_ERROR, this.#onFileSystemError, this);
       if (dispatchEvent) {
         this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
@@ -204,7 +204,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   addPlatformFileSystem(fileSystemURL: Platform.DevToolsPath.UrlString, fileSystem: PlatformFileSystem): void {
-    this.fileSystemsInternal.set(fileSystemURL, fileSystem);
+    this.#fileSystems.set(fileSystemURL, fileSystem);
     fileSystem.addEventListener(PlatformFileSystemEvents.FILE_SYSTEM_ERROR, this.#onFileSystemError, this);
     this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
   }
@@ -238,11 +238,11 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent<Platform.DevToolsPath.RawPathString>): void {
     const embedderPath = event.data;
     const fileSystemPath = Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath);
-    const isolatedFileSystem = this.fileSystemsInternal.get(fileSystemPath);
+    const isolatedFileSystem = this.#fileSystems.get(fileSystemPath);
     if (!isolatedFileSystem) {
       return;
     }
-    this.fileSystemsInternal.delete(fileSystemPath);
+    this.#fileSystems.delete(fileSystemPath);
     isolatedFileSystem.removeEventListener(PlatformFileSystemEvents.FILE_SYSTEM_ERROR, this.#onFileSystemError, this);
     isolatedFileSystem.fileSystemRemoved();
     this.dispatchEventToListeners(Events.FileSystemRemoved, isolatedFileSystem);
@@ -265,8 +265,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
           new Platform.MapUtilities.Multimap<Platform.DevToolsPath.UrlString, Platform.DevToolsPath.UrlString>();
       for (const embedderPath of embedderPaths) {
         const filePath = Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath);
-        for (const fileSystemPath of this.fileSystemsInternal.keys()) {
-          const fileSystem = this.fileSystemsInternal.get(fileSystemPath);
+        for (const fileSystemPath of this.#fileSystems.keys()) {
+          const fileSystem = this.#fileSystems.get(fileSystemPath);
           if (fileSystem?.isFileExcluded(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(embedderPath))) {
             continue;
           }
@@ -282,15 +282,15 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   fileSystems(): PlatformFileSystem[] {
-    return [...this.fileSystemsInternal.values()];
+    return [...this.#fileSystems.values()];
   }
 
   fileSystem(fileSystemPath: Platform.DevToolsPath.UrlString): PlatformFileSystem|null {
-    return this.fileSystemsInternal.get(fileSystemPath) || null;
+    return this.#fileSystems.get(fileSystemPath) || null;
   }
 
   workspaceFolderExcludePatternSetting(): Common.Settings.RegExpSetting {
-    return this.workspaceFolderExcludePatternSettingInternal;
+    return this.#workspaceFolderExcludePatternSetting;
   }
 
   registerCallback(callback: (arg0: Platform.DevToolsPath.RawPathString[]) => void): number {

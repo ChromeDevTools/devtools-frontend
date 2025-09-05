@@ -140,14 +140,14 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   refreshCallback: (() => void)|undefined;
   private dataTableHeaders: Record<string, Element>;
   scrollContainerInternal: Element;
-  private dataContainerInternal: Element;
+  #dataContainer: Element;
   private readonly dataTable: Element;
   protected inline: boolean;
   private columnsArray: ColumnDescriptor[];
   columns: Record<string, ColumnDescriptor>;
   visibleColumnsArray: ColumnDescriptor[];
   cellClass: string|null;
-  private dataTableHeadInternal: HTMLTableSectionElement;
+  #dataTableHead: HTMLTableSectionElement;
   private readonly headerRow: Element;
   private readonly dataTableColumnGroup: Element;
   dataTableBody: Element;
@@ -166,7 +166,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   elementToDataGridNode: WeakMap<Node, DataGridNode<T>>;
   disclosureColumnId?: string;
   private sortColumnCell?: Element;
-  private rootNodeInternal?: DataGridNode<T>;
+  #rootNode?: DataGridNode<T>;
   private editingNode?: DataGridNode<T>|null;
   private columnWeightsSetting?: Common.Settings.Setting<any>;
   creationNode?: DataGridNode<any>;
@@ -197,9 +197,9 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     this.dataTableHeaders = {};
 
-    this.dataContainerInternal = this.element.createChild('div', 'data-container');
-    this.dataTable = this.dataContainerInternal.createChild('table', 'data');
-    this.scrollContainerInternal = this.dataContainerInternal;
+    this.#dataContainer = this.element.createChild('div', 'data-container');
+    this.dataTable = this.#dataContainer.createChild('table', 'data');
+    this.scrollContainerInternal = this.#dataContainer;
 
     // FIXME: Add a createCallback which is different from editCallback and has different
     // behavior when creating a new node.
@@ -219,8 +219,8 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     this.dataTableColumnGroup = this.dataTable.createChild('colgroup');
 
-    this.dataTableHeadInternal = this.dataTable.createChild('thead');
-    this.headerRow = this.dataTableHeadInternal.createChild('tr');
+    this.#dataTableHead = this.dataTable.createChild('thead');
+    this.headerRow = this.#dataTableHead.createChild('tr');
 
     this.dataTableBody = this.dataTable.createChild('tbody');
     this.topFillerRow = this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed');
@@ -260,7 +260,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private firstSelectableNode(): DataGridNode<T>|null|undefined {
-    let firstSelectableNode: (DataGridNode<T>|undefined) = this.rootNodeInternal;
+    let firstSelectableNode: (DataGridNode<T>|undefined) = this.#rootNode;
     while (firstSelectableNode && !firstSelectableNode.selectable) {
       firstSelectableNode = firstSelectableNode.traverseNextNode(true) || undefined;
     }
@@ -268,8 +268,8 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private lastSelectableNode(): DataGridNode<T>|undefined {
-    let lastSelectableNode: DataGridNode<T>|(DataGridNode<T>| undefined) = this.rootNodeInternal;
-    let iterator: (DataGridNode<T>|undefined) = this.rootNodeInternal;
+    let lastSelectableNode: DataGridNode<T>|(DataGridNode<T>| undefined) = this.#rootNode;
+    let iterator: (DataGridNode<T>|undefined) = this.#rootNode;
     while (iterator) {
       if (iterator.selectable) {
         lastSelectableNode = iterator;
@@ -383,7 +383,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   protected getNumberOfRows(): number {
-    return this.rootNodeInternal ? this.enumerateChildren(this.rootNodeInternal, [], 1).length : 0;
+    return this.#rootNode ? this.enumerateChildren(this.#rootNode, [], 1).length : 0;
   }
 
   updateGridAccessibleNameOnFocus(): void {
@@ -400,7 +400,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       accessibleText = `${rowHeader} ${this.selectedNode.nodeAccessibleText}`;
     } else {
       // 2) If there is no selected item - Read the name of the grid and give instructions
-      if (!this.rootNodeInternal) {
+      if (!this.#rootNode) {
         return;
       }
       const numberOfRows = this.getNumberOfRows();
@@ -546,12 +546,12 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   protected setRootNode(rootNode: DataGridNode<T>): void {
-    if (this.rootNodeInternal) {
-      this.rootNodeInternal.removeChildren();
-      this.rootNodeInternal.dataGrid = null;
-      this.rootNodeInternal.isRoot = false;
+    if (this.#rootNode) {
+      this.#rootNode.removeChildren();
+      this.#rootNode.dataGrid = null;
+      this.#rootNode.isRoot = false;
     }
-    this.rootNodeInternal = rootNode;
+    this.#rootNode = rootNode;
     rootNode.isRoot = true;
     rootNode.setHasChildren(false);
     rootNode.expandedInternal = true;
@@ -561,7 +561,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   rootNode(): DataGridNode<T> {
-    let rootNode: DataGridNode<T>|(DataGridNode<T>| undefined) = this.rootNodeInternal;
+    let rootNode: DataGridNode<T>|(DataGridNode<T>| undefined) = this.#rootNode;
     if (!rootNode) {
       rootNode = new DataGridNode();
       this.setRootNode(rootNode);
@@ -894,10 +894,10 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     maxDescentLevel = maxDescentLevel || 0;
-    if (!this.rootNodeInternal) {
+    if (!this.#rootNode) {
       return;
     }
-    const children = this.enumerateChildren(this.rootNodeInternal, [], maxDescentLevel + 1);
+    const children = this.enumerateChildren(this.#rootNode, [], maxDescentLevel + 1);
     for (let i = 0; i < children.length; ++i) {
       const node = children[i];
       for (let j = 0; j < this.columnsArray.length; ++j) {
@@ -955,7 +955,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
       // Use container size to avoid changes of table width caused by change of column widths.
       const tableWidth = this.element.offsetWidth - this.cornerWidth;
-      const cells = this.dataTableHeadInternal.rows[0].cells;
+      const cells = this.#dataTableHead.rows[0].cells;
       const numColumns = cells.length - 1;  // Do not process corner column.
       for (let i = 0; i < numColumns; i++) {
         const column = this.visibleColumnsArray[i];
@@ -1025,7 +1025,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private getPreferredWidth(columnIndex: number): number {
     return elementToPreferedWidthMap.get(this.dataTableColumnGroup.children[columnIndex]) ||
-        this.dataTableHeadInternal.rows[0].cells[columnIndex].offsetWidth;
+        this.#dataTableHead.rows[0].cells[columnIndex].offsetWidth;
   }
 
   private applyColumnWeights(): void {
@@ -1104,7 +1104,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       // Get the width of the cell in the first (and only) row of the
       // header table in order to determine the width of the column, since
       // it is not possible to query a column for its width.
-      left[i] = (left[i - 1] || 0) + this.dataTableHeadInternal.rows[0].cells[i].offsetWidth;
+      left[i] = (left[i - 1] || 0) + this.#dataTableHead.rows[0].cells[i].offsetWidth;
     }
 
     // Make n - 1 resizers for n columns.
@@ -1442,7 +1442,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }
     }
 
-    if (target.isSelfOrDescendant(this.dataTableHeadInternal)) {
+    if (target.isSelfOrDescendant(this.#dataTableHead)) {
       if (this.headerContextMenuCallback) {
         this.headerContextMenuCallback(contextMenu);
       }
@@ -1652,11 +1652,11 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   // container's height matches the visible scrollable data area as seen by the user.
 
   protected headerHeightInScroller(): number {
-    return this.scrollContainer === this.dataContainerInternal ? this.headerHeight() : 0;
+    return this.scrollContainer === this.#dataContainer ? this.headerHeight() : 0;
   }
 
   headerHeight(): number {
-    return this.dataTableHeadInternal.offsetHeight;
+    return this.#dataTableHead.offsetHeight;
   }
 
   revealNode(element: HTMLElement): void {
@@ -1720,18 +1720,18 @@ export type DataGridData = Record<string, any>;
 export class DataGridNode<T> {
   elementInternal: HTMLElement|null = null;
   expandedInternal = false;
-  private selectedInternal = false;
+  #selected = false;
   private dirty = false;
   private inactive = false;
   private highlighted = false;
-  private depthInternal: number|undefined;
+  #depth: number|undefined;
   revealedInternal: boolean|undefined;
   protected attachedInternal = false;
   private savedPosition: {
     parent: DataGridNode<T>,
     index: number,
   }|null = null;
-  private shouldRefreshChildrenInternal = true;
+  #shouldRefreshChildren = true;
 
   children: Array<DataGridNode<T>> = [];
   dataGrid: DataGridImpl<T>|null = null;
@@ -1744,12 +1744,12 @@ export class DataGridNode<T> {
   nodeAccessibleText = '';
   cellAccessibleTextMap = new Map<string, string>();
   isCreationNode = false;
-  private dataInternal: DataGridData;
-  private hasChildrenInternal: boolean;
+  #data: DataGridData;
+  #hasChildren: boolean;
 
   constructor(data?: DataGridData|null, hasChildren?: boolean) {
-    this.dataInternal = data || {};
-    this.hasChildrenInternal = hasChildren || false;
+    this.#data = data || {};
+    this.#hasChildren = hasChildren || false;
   }
 
   element(): Element {
@@ -1769,7 +1769,7 @@ export class DataGridNode<T> {
       this.dataGrid.elementToDataGridNode.set(this.elementInternal, this);
     }
 
-    if (this.hasChildrenInternal) {
+    if (this.#hasChildren) {
       this.elementInternal.classList.add('parent');
     }
     if (this.expanded) {
@@ -1812,7 +1812,7 @@ export class DataGridNode<T> {
     const columnsArray = this.dataGrid.visibleColumnsArray;
     const accessibleTextArray = [];
     // Add depth if node is part of a tree
-    if (this.hasChildrenInternal || !this.parent.isRoot) {
+    if (this.#hasChildren || !this.parent.isRoot) {
       accessibleTextArray.push(i18nString(UIStrings.levelS, {PH1: this.depth + 1}));
     }
     for (let i = 0; i < columnsArray.length; ++i) {
@@ -1834,11 +1834,11 @@ export class DataGridNode<T> {
   }
 
   get data(): DataGridData {
-    return this.dataInternal;
+    return this.#data;
   }
 
   set data(x: DataGridData) {
-    this.dataInternal = x || {};
+    this.#data = x || {};
     this.refresh();
   }
 
@@ -1927,34 +1927,34 @@ export class DataGridNode<T> {
   }
 
   hasChildren(): boolean {
-    return this.hasChildrenInternal;
+    return this.#hasChildren;
   }
 
   setHasChildren(x: boolean): void {
-    if (this.hasChildrenInternal === x) {
+    if (this.#hasChildren === x) {
       return;
     }
 
-    this.hasChildrenInternal = x;
+    this.#hasChildren = x;
 
     if (!this.elementInternal) {
       return;
     }
 
-    this.elementInternal.classList.toggle('parent', this.hasChildrenInternal);
-    this.elementInternal.classList.toggle('expanded', this.hasChildrenInternal && this.expanded);
+    this.elementInternal.classList.toggle('parent', this.#hasChildren);
+    this.elementInternal.classList.toggle('expanded', this.#hasChildren && this.expanded);
   }
 
   get depth(): number {
-    if (this.depthInternal !== undefined) {
-      return this.depthInternal;
+    if (this.#depth !== undefined) {
+      return this.#depth;
     }
     if (this.parent && !this.parent.isRoot) {
-      this.depthInternal = this.parent.depth + 1;
+      this.#depth = this.parent.depth + 1;
     } else {
-      this.depthInternal = 0;
+      this.#depth = 0;
     }
-    return this.depthInternal;
+    return this.#depth;
   }
 
   get leftPadding(): number {
@@ -1962,18 +1962,18 @@ export class DataGridNode<T> {
   }
 
   get shouldRefreshChildren(): boolean {
-    return this.shouldRefreshChildrenInternal;
+    return this.#shouldRefreshChildren;
   }
 
   set shouldRefreshChildren(x: boolean) {
-    this.shouldRefreshChildrenInternal = x;
+    this.#shouldRefreshChildren = x;
     if (x && this.expanded) {
       this.expand();
     }
   }
 
   get selected(): boolean {
-    return this.selectedInternal;
+    return this.#selected;
   }
 
   set selected(x: boolean) {
@@ -2089,7 +2089,7 @@ export class DataGridNode<T> {
 
   resetNode(onlyCaches?: boolean): void {
     // @TODO(allada) This is a hack to make sure ViewportDataGrid can clean up these caches. Try Not To Use.
-    delete this.depthInternal;
+    this.#depth = undefined;
     delete this.revealedInternal;
     if (onlyCaches) {
       return;
@@ -2133,14 +2133,14 @@ export class DataGridNode<T> {
     child.dataGrid = this.dataGrid;
     child.recalculateSiblings(index);
 
-    child.shouldRefreshChildrenInternal = true;
+    child.#shouldRefreshChildren = true;
 
     let current: (DataGridNode<T>|null)|DataGridNode<T> = child.children[0];
     while (current) {
       current.resetNode(true);
       current.dataGrid = this.dataGrid;
       current.attachedInternal = false;
-      current.shouldRefreshChildrenInternal = true;
+      current.#shouldRefreshChildren = true;
       current = current.traverseNextNode(false, child, true);
     }
 
@@ -2243,20 +2243,20 @@ export class DataGridNode<T> {
   }
 
   expand(): void {
-    if (!this.hasChildrenInternal || this.expandedInternal) {
+    if (!this.#hasChildren || this.expandedInternal) {
       return;
     }
     if (this.isRoot) {
       return;
     }
 
-    if (this.revealed && !this.shouldRefreshChildrenInternal) {
+    if (this.revealed && !this.#shouldRefreshChildren) {
       for (let i = 0; i < this.children.length; ++i) {
         this.children[i].revealed = true;
       }
     }
 
-    if (this.shouldRefreshChildrenInternal) {
+    if (this.#shouldRefreshChildren) {
       for (let i = 0; i < this.children.length; ++i) {
         this.children[i].detach();
       }
@@ -2273,7 +2273,7 @@ export class DataGridNode<T> {
         }
       }
 
-      this.shouldRefreshChildrenInternal = false;
+      this.#shouldRefreshChildren = false;
     }
 
     if (this.elementInternal) {
@@ -2318,7 +2318,7 @@ export class DataGridNode<T> {
       this.dataGrid.selectedNode.deselect();
     }
 
-    this.selectedInternal = true;
+    this.#selected = true;
     this.dataGrid.selectedNode = this;
 
     if (this.elementInternal) {
@@ -2346,7 +2346,7 @@ export class DataGridNode<T> {
       return;
     }
 
-    this.selectedInternal = false;
+    this.#selected = false;
     this.dataGrid.selectedNode = null;
 
     if (this.elementInternal) {
@@ -2362,7 +2362,7 @@ export class DataGridNode<T> {
   traverseNextNode(skipHidden: boolean, stayWithin?: DataGridNode<T>|null, dontPopulate?: boolean, info?: {
     depthChange: number,
   }): DataGridNode<T>|null {
-    if (!dontPopulate && this.hasChildrenInternal) {
+    if (!dontPopulate && this.#hasChildren) {
       this.populate();
     }
 
@@ -2405,13 +2405,13 @@ export class DataGridNode<T> {
 
   traversePreviousNode(skipHidden: boolean, dontPopulate?: boolean): DataGridNode<T>|null {
     let node: (DataGridNode<T>|null) = (!skipHidden || this.revealed) ? this.previousSibling : null;
-    if (!dontPopulate && node?.hasChildrenInternal) {
+    if (!dontPopulate && node && node.#hasChildren) {
       node.populate();
     }
 
     while (node &&
            ((!skipHidden || (node.revealed && node.expanded)) ? node.children[node.children.length - 1] : null)) {
-      if (!dontPopulate && node.hasChildrenInternal) {
+      if (!dontPopulate && node && node.#hasChildren) {
         node.populate();
       }
       node = ((!skipHidden || (node.revealed && node.expanded)) ? node.children[node.children.length - 1] : null);
@@ -2429,7 +2429,7 @@ export class DataGridNode<T> {
   }
 
   isEventWithinDisclosureTriangle(event: MouseEvent): boolean {
-    if (!this.hasChildrenInternal) {
+    if (!this.#hasChildren) {
       return false;
     }
     const cell = UI.UIUtils.enclosingNodeOrSelfWithNodeName((event.target as Node), 'td');

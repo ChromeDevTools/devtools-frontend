@@ -128,16 +128,16 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly categoryFilter: Category;
   private readonly durationFilter: IsLong;
-  private readonly filtersInternal: Array<IsLong|Category>;
+  readonly #filters: Array<IsLong|Category>;
   constructor() {
     super();
     this.categoryFilter = new Category();
     this.durationFilter = new IsLong();
-    this.filtersInternal = [this.categoryFilter, this.durationFilter];
+    this.#filters = [this.categoryFilter, this.durationFilter];
   }
 
   filters(): Trace.Extras.TraceFilter.TraceFilter[] {
-    return this.filtersInternal;
+    return this.#filters;
   }
 
   populateToolbar(toolbar: UI.Toolbar.Toolbar): void {

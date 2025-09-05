@@ -111,7 +111,7 @@ export class TimelineHistoryManager {
   private recordings: TraceRecordingHistoryItem[];
   private readonly action: UI.ActionRegistration.Action;
   private readonly nextNumberByDomain: Map<string, number>;
-  private readonly buttonInternal: ToolbarButton;
+  readonly #button: ToolbarButton;
   private readonly allOverviews: Array<{
     constructor: (parsedTrace: Trace.Handlers.Types.ParsedTrace) => TimelineEventOverview,
     height: number,
@@ -127,12 +127,12 @@ export class TimelineHistoryManager {
     this.#minimapComponent = minimapComponent;
     this.action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
     this.nextNumberByDomain = new Map();
-    this.buttonInternal = new ToolbarButton(this.action);
+    this.#button = new ToolbarButton(this.action);
 
     this.#landingPageTitle =
         isNode ? i18nString(UIStrings.nodeLandingPageTitle) : i18nString(UIStrings.landingPageTitle);
 
-    UI.ARIAUtils.markAsMenuButton(this.buttonInternal.element);
+    UI.ARIAUtils.markAsMenuButton(this.#button.element);
     this.clear();
 
     // Attempt to reuse the overviews coming from the panel's minimap
@@ -185,10 +185,10 @@ export class TimelineHistoryManager {
     this.#buildAndStorePreviewData(newInput.data.parsedTraceIndex, newInput.parsedTrace, newInput.metadata, filmStrip);
 
     const modelTitle = this.title(newInput.data);
-    this.buttonInternal.setText(modelTitle);
+    this.#button.setText(modelTitle);
     const buttonTitle = this.action.title();
     UI.ARIAUtils.setLabel(
-        this.buttonInternal.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
+        this.#button.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
     this.updateState();
     if (this.recordings.length <= maxRecordings) {
       return;
@@ -212,14 +212,14 @@ export class TimelineHistoryManager {
   }
 
   button(): ToolbarButton {
-    return this.buttonInternal;
+    return this.#button;
   }
 
   clear(): void {
     this.recordings = [];
     this.lastActiveTrace = null;
     this.updateState();
-    this.buttonInternal.setText(this.#landingPageTitle);
+    this.#button.setText(this.#landingPageTitle);
     this.nextNumberByDomain.clear();
   }
 
@@ -241,7 +241,7 @@ export class TimelineHistoryManager {
     // DropDown.show() function finishes when the dropdown menu is closed via selection or losing focus
     const activeTraceIndex = await DropDown.show(
         this.recordings.map(recording => recording.parsedTraceIndex), this.#getActiveTraceIndexForListControl(),
-        this.buttonInternal.element, this.#landingPageTitle);
+        this.#button.element, this.#landingPageTitle);
 
     if (activeTraceIndex === null) {
       return null;
@@ -311,9 +311,9 @@ export class TimelineHistoryManager {
     this.lastActiveTrace = item;
     const modelTitle = this.title(item);
     const buttonTitle = this.action.title();
-    this.buttonInternal.setText(modelTitle);
+    this.#button.setText(modelTitle);
     UI.ARIAUtils.setLabel(
-        this.buttonInternal.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
+        this.#button.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
   }
 
   private updateState(): void {

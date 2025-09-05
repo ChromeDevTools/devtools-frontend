@@ -11,14 +11,14 @@ import {SDKModel} from './SDKModel.js';
 import type {TargetManager} from './TargetManager.js';
 
 export class Target extends ProtocolClient.InspectorBackend.TargetBase {
-  readonly #targetManagerInternal: TargetManager;
-  #nameInternal: string;
-  #inspectedURLInternal: Platform.DevToolsPath.UrlString = Platform.DevToolsPath.EmptyUrlString;
+  readonly #targetManager: TargetManager;
+  #name: string;
+  #inspectedURL: Platform.DevToolsPath.UrlString = Platform.DevToolsPath.EmptyUrlString;
   #inspectedURLName = '';
   readonly #capabilitiesMask: number;
-  #typeInternal: Type;
-  readonly #parentTargetInternal: Target|null;
-  #idInternal: Protocol.Target.TargetID|'main';
+  #type: Type;
+  readonly #parentTarget: Target|null;
+  #id: Protocol.Target.TargetID|'main';
   #modelByConstructor = new Map<new(arg1: Target) => SDKModel, SDKModel>();
   #isSuspended: boolean;
   /**
@@ -33,7 +33,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
    * crbug.com/387258086).
    */
   #hasCrashed = false;
-  #targetInfoInternal: Protocol.Target.TargetInfo|undefined;
+  #targetInfo: Protocol.Target.TargetInfo|undefined;
   #creatingModels?: boolean;
 
   constructor(
@@ -42,8 +42,8 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
       connection: ProtocolClient.InspectorBackend.Connection|null, targetInfo?: Protocol.Target.TargetInfo) {
     const needsNodeJSPatching = type === Type.NODE;
     super(needsNodeJSPatching, parentTarget, sessionId, connection);
-    this.#targetManagerInternal = targetManager;
-    this.#nameInternal = name;
+    this.#targetManager = targetManager;
+    this.#name = name;
     this.#capabilitiesMask = 0;
     switch (type) {
       case Type.FRAME:
@@ -99,11 +99,11 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
       case Type.NODE_WORKER:
         this.#capabilitiesMask = Capability.JS | Capability.NETWORK | Capability.TARGET | Capability.IO;
     }
-    this.#typeInternal = type;
-    this.#parentTargetInternal = parentTarget;
-    this.#idInternal = id;
+    this.#type = type;
+    this.#parentTarget = parentTarget;
+    this.#id = id;
     this.#isSuspended = suspended;
-    this.#targetInfoInternal = targetInfo;
+    this.#targetInfo = targetInfo;
   }
 
   createModels(required: Set<new(arg1: Target) => SDKModel>): void {
@@ -125,32 +125,32 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   }
 
   id(): Protocol.Target.TargetID|'main' {
-    return this.#idInternal;
+    return this.#id;
   }
 
   name(): string {
-    return this.#nameInternal || this.#inspectedURLName;
+    return this.#name || this.#inspectedURLName;
   }
 
   setName(name: string): void {
-    if (this.#nameInternal === name) {
+    if (this.#name === name) {
       return;
     }
-    this.#nameInternal = name;
-    this.#targetManagerInternal.onNameChange(this);
+    this.#name = name;
+    this.#targetManager.onNameChange(this);
   }
 
   type(): Type {
-    return this.#typeInternal;
+    return this.#type;
   }
 
   override markAsNodeJSForTest(): void {
     super.markAsNodeJSForTest();
-    this.#typeInternal = Type.NODE;
+    this.#type = Type.NODE;
   }
 
   targetManager(): TargetManager {
-    return this.#targetManagerInternal;
+    return this.#targetManager;
   }
 
   hasAllCapabilities(capabilitiesMask: number): boolean {
@@ -160,12 +160,11 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   }
 
   decorateLabel(label: string): string {
-    return (this.#typeInternal === Type.Worker || this.#typeInternal === Type.ServiceWorker) ? '\u2699 ' + label :
-                                                                                               label;
+    return (this.#type === Type.Worker || this.#type === Type.ServiceWorker) ? '\u2699 ' + label : label;
   }
 
   parentTarget(): Target|null {
-    return this.#parentTargetInternal;
+    return this.#parentTarget;
   }
 
   outermostTarget(): Target|null {
@@ -183,7 +182,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
 
   override dispose(reason: string): void {
     super.dispose(reason);
-    this.#targetManagerInternal.removeTarget(this);
+    this.#targetManager.removeTarget(this);
     for (const model of this.#modelByConstructor.values()) {
       model.dispose();
     }
@@ -199,7 +198,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         const model = new modelClass(this);
         this.#modelByConstructor.set(modelClass, model);
         if (!this.#creatingModels) {
-          this.#targetManagerInternal.modelAdded(modelClass, model, this.#targetManagerInternal.isInScope(this));
+          this.#targetManager.modelAdded(modelClass, model, this.#targetManager.isInScope(this));
         }
       }
     }
@@ -211,16 +210,16 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   }
 
   inspectedURL(): Platform.DevToolsPath.UrlString {
-    return this.#inspectedURLInternal;
+    return this.#inspectedURL;
   }
 
   setInspectedURL(inspectedURL: Platform.DevToolsPath.UrlString): void {
-    this.#inspectedURLInternal = inspectedURL;
+    this.#inspectedURL = inspectedURL;
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(inspectedURL);
-    this.#inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this.#idInternal;
-    this.#targetManagerInternal.onInspectedURLChange(this);
-    if (!this.#nameInternal) {
-      this.#targetManagerInternal.onNameChange(this);
+    this.#inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this.#id;
+    this.#targetManager.onInspectedURLChange(this);
+    if (!this.#name) {
+      this.#targetManager.onNameChange(this);
     }
   }
 
@@ -277,11 +276,11 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   }
 
   updateTargetInfo(targetInfo: Protocol.Target.TargetInfo): void {
-    this.#targetInfoInternal = targetInfo;
+    this.#targetInfo = targetInfo;
   }
 
   targetInfo(): Protocol.Target.TargetInfo|undefined {
-    return this.#targetInfoInternal;
+    return this.#targetInfo;
   }
 }
 

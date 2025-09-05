@@ -172,7 +172,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private noMatchesElement: HTMLElement;
   private sectionsContainer: UI.Widget.Widget;
   sectionByElement = new WeakMap<Node, StylePropertiesSection>();
-  private readonly swatchPopoverHelperInternal = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
+  readonly #swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
   readonly linkifier = new Components.Linkifier.Linkifier(MAX_LINK_LENGTH, /* useLinkDecorator */ true);
 
   private readonly decorator: StylePropertyHighlighter;
@@ -180,7 +180,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private lastRevealedProperty: SDK.CSSProperty.CSSProperty|null = null;
   private userOperation = false;
   isEditingStyle = false;
-  private filterRegexInternal: RegExp|null = null;
+  #filterRegex: RegExp|null = null;
   private isActivePropertyHighlighted = false;
   private initialUpdateCompleted = false;
   hasMatchedStyles = false;
@@ -218,7 +218,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.sectionsContainer.contentElement.addEventListener(
         'focusout', this.sectionsContainerFocusChanged.bind(this), false);
 
-    this.swatchPopoverHelperInternal.addEventListener(
+    this.#swatchPopoverHelper.addEventListener(
         InlineEditor.SwatchPopoverHelper.Events.WILL_SHOW_POPOVER, this.hideAllPopovers, this);
     this.decorator = new StylePropertyHighlighter(this);
     this.contentElement.classList.add('styles-pane');
@@ -250,7 +250,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper {
-    return this.swatchPopoverHelperInternal;
+    return this.#swatchPopoverHelper;
   }
 
   setUserOperation(userOperation: boolean): void {
@@ -356,7 +356,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   forceUpdate(): void {
     this.needsForceUpdate = true;
-    this.swatchPopoverHelperInternal.hide();
+    this.#swatchPopoverHelper.hide();
     this.#updateAbortController?.abort();
     this.resetCache();
     this.update();
@@ -398,7 +398,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
     }
 
-    if (sectionToFocus && this.filterRegexInternal) {
+    if (sectionToFocus && this.#filterRegex) {
       sectionToFocus = sectionToFocus.findCurrentOrNextVisible(/* willIterateForward= */ willIterateForward);
     }
     if (sectionToFocus) {
@@ -476,7 +476,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private onFilterChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
     const regex = event.data ? new RegExp(Platform.StringUtilities.escapeForRegExp(event.data), 'i') : null;
     this.lastFilterChange = Date.now();
-    this.filterRegexInternal = regex;
+    this.#filterRegex = regex;
     this.updateFilter();
     this.resetFocus();
     setTimeout(() => {
@@ -516,7 +516,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       section.update(section === editedSection);
     }
 
-    if (this.filterRegexInternal) {
+    if (this.#filterRegex) {
       this.updateFilter();
     }
     this.swatchPopoverHelper().reposition();
@@ -984,7 +984,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
     this.sectionsContainerFocusChanged();
 
-    if (this.filterRegexInternal) {
+    if (this.#filterRegex) {
       this.updateFilter();
     } else {
       this.noMatchesElement.classList.toggle('hidden', this.sectionBlocks.length > 0);
@@ -1284,7 +1284,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   filterRegex(): RegExp|null {
-    return this.filterRegexInternal;
+    return this.#filterRegex;
   }
 
   private updateFilter(): void {
@@ -1311,7 +1311,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   hideAllPopovers(): void {
-    this.swatchPopoverHelperInternal.hide();
+    this.#swatchPopoverHelper.hide();
     this.imagePreviewPopover.hide();
     if (this.activeCSSAngle) {
       this.activeCSSAngle.minify();
@@ -1492,12 +1492,12 @@ export interface EventTypes {
 const MAX_LINK_LENGTH = 23;
 
 export class SectionBlock {
-  private readonly titleElementInternal: Element|null;
+  readonly #titleElement: Element|null;
   sections: StylePropertiesSection[];
   #expanded = false;
   #icon: IconButton.Icon.Icon|undefined;
   constructor(titleElement: Element|null, expandable?: boolean, expandedByDefault?: boolean) {
-    this.titleElementInternal = titleElement;
+    this.#titleElement = titleElement;
     this.sections = [];
     this.#expanded = expandedByDefault ?? false;
 
@@ -1514,12 +1514,12 @@ export class SectionBlock {
   }
 
   expand(expand: boolean): void {
-    if (!this.titleElementInternal || !this.#icon) {
+    if (!this.#titleElement || !this.#icon) {
       return;
     }
-    this.titleElementInternal.classList.toggle('empty-section', !expand);
+    this.#titleElement.classList.toggle('empty-section', !expand);
     this.#icon.name = expand ? 'triangle-down' : 'triangle-right';
-    UI.ARIAUtils.setExpanded(this.titleElementInternal, expand);
+    UI.ARIAUtils.setExpanded(this.#titleElement, expand);
     this.#expanded = expand;
     this.sections.forEach(section => section.element.classList.toggle('hidden', !expand));
   }
@@ -1631,14 +1631,14 @@ export class SectionBlock {
       numVisibleSections += section.updateFilter() ? 1 : 0;
       hasAnyVisibleSection = section.updateFilter() || hasAnyVisibleSection;
     }
-    if (this.titleElementInternal) {
-      this.titleElementInternal.classList.toggle('hidden', !hasAnyVisibleSection);
+    if (this.#titleElement) {
+      this.#titleElement.classList.toggle('hidden', !hasAnyVisibleSection);
     }
     return numVisibleSections;
   }
 
   titleElement(): Element|null {
-    return this.titleElementInternal;
+    return this.#titleElement;
   }
 }
 

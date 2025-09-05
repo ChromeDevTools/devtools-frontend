@@ -70,7 +70,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) {
   readonly panel: ProfilesPanel;
-  private contentElementInternal: HTMLElement;
+  #contentElement: HTMLElement;
   readonly selectedProfileTypeSetting: Common.Settings.Setting<string>;
   profileTypeHeaderElement: HTMLElement;
   readonly profileTypeSelectorForm: HTMLElement;
@@ -91,16 +91,15 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
 
     this.panel = profilesPanel;
     this.element.classList.add('profile-launcher-view');
-    this.contentElementInternal = this.element.createChild('div', 'profile-launcher-view-content vbox');
+    this.#contentElement = this.element.createChild('div', 'profile-launcher-view-content vbox');
 
-    const profileTypeSelectorElement = this.contentElementInternal.createChild('div', 'vbox');
+    const profileTypeSelectorElement = this.#contentElement.createChild('div', 'vbox');
     this.selectedProfileTypeSetting = Common.Settings.Settings.instance().createSetting('selected-profile-type', 'CPU');
     this.profileTypeHeaderElement = profileTypeSelectorElement.createChild('h1');
     this.profileTypeSelectorForm = profileTypeSelectorElement.createChild('form');
     UI.ARIAUtils.markAsRadioGroup(this.profileTypeSelectorForm);
 
-    const isolateSelectorElement =
-        this.contentElementInternal.createChild('div', 'vbox profile-isolate-selector-block');
+    const isolateSelectorElement = this.#contentElement.createChild('div', 'vbox profile-isolate-selector-block');
     isolateSelectorElement.createChild('h1').textContent = i18nString(UIStrings.selectJavascriptVmInstance);
     const isolateSelector = new IsolateSelector();
     const isolateSelectorElementChild = isolateSelectorElement.createChild('div', 'vbox profile-launcher-target-list');
@@ -108,7 +107,7 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
     isolateSelector.show(isolateSelectorElementChild);
     isolateSelectorElement.appendChild(isolateSelector.totalMemoryElement());
 
-    const buttonsDiv = this.contentElementInternal.createChild('div', 'hbox profile-launcher-buttons');
+    const buttonsDiv = this.#contentElement.createChild('div', 'hbox profile-launcher-buttons');
     this.controlButton = UI.UIUtils.createTextButton('', this.controlButtonClicked.bind(this), {
       jslogContext: 'profiler.heap-toggle-recording',
       variant: Buttons.Button.Variant.PRIMARY,

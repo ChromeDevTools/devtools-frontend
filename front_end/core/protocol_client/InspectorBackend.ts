@@ -507,7 +507,7 @@ interface DispatcherMap extends Map<ProtocolDomainName, ProtocolProxyApi.Protoco
 export class TargetBase {
   needsNodeJSPatching: boolean;
   readonly sessionId: string;
-  routerInternal: SessionRouter|null;
+  #router: SessionRouter|null;
   #agents: AgentsMap = new Map();
   #dispatchers: DispatcherMap = new Map();
 
@@ -521,15 +521,15 @@ export class TargetBase {
     }
 
     let router: SessionRouter;
-    if (sessionId && parentTarget?.routerInternal) {
-      router = parentTarget.routerInternal;
+    if (sessionId && parentTarget && parentTarget.#router) {
+      router = parentTarget.#router;
     } else if (connection) {
       router = new SessionRouter(connection);
     } else {
       router = new SessionRouter(connectionFactory());
     }
 
-    this.routerInternal = router;
+    this.#router = router;
 
     router.registerSession(this, this.sessionId);
 
@@ -557,15 +557,15 @@ export class TargetBase {
   }
 
   dispose(_reason: string): void {
-    if (!this.routerInternal) {
+    if (!this.#router) {
       return;
     }
-    this.routerInternal.unregisterSession(this.sessionId);
-    this.routerInternal = null;
+    this.#router.unregisterSession(this.sessionId);
+    this.#router = null;
   }
 
   isDisposed(): boolean {
-    return !this.routerInternal;
+    return !this.#router;
   }
 
   markAsNodeJSForTest(): void {
@@ -573,7 +573,7 @@ export class TargetBase {
   }
 
   router(): SessionRouter|null {
-    return this.routerInternal;
+    return this.#router;
   }
 
   // Agent accessors, keep alphabetically sorted.

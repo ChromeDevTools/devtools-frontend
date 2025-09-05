@@ -237,7 +237,7 @@ export class BottomUpAllocationNode {
   liveCount: number;
   liveSize: number;
   traceTopIds: number[];
-  readonly #callersInternal: BottomUpAllocationNode[];
+  readonly #callers: BottomUpAllocationNode[];
   constructor(functionInfo: FunctionAllocationInfo) {
     this.functionInfo = functionInfo;
     this.allocationCount = 0;
@@ -247,14 +247,14 @@ export class BottomUpAllocationNode {
 
     this.traceTopIds = [];
 
-    this.#callersInternal = [];
+    this.#callers = [];
   }
 
   addCaller(traceNode: TopDownAllocationNode): BottomUpAllocationNode {
     const functionInfo = traceNode.functionInfo;
     let result;
-    for (let i = 0; i < this.#callersInternal.length; i++) {
-      const caller = this.#callersInternal[i];
+    for (let i = 0; i < this.#callers.length; i++) {
+      const caller = this.#callers[i];
       if (caller.functionInfo === functionInfo) {
         result = caller;
         break;
@@ -262,17 +262,17 @@ export class BottomUpAllocationNode {
     }
     if (!result) {
       result = new BottomUpAllocationNode(functionInfo);
-      this.#callersInternal.push(result);
+      this.#callers.push(result);
     }
     return result;
   }
 
   callers(): BottomUpAllocationNode[] {
-    return this.#callersInternal;
+    return this.#callers;
   }
 
   hasCallers(): boolean {
-    return this.#callersInternal.length > 0;
+    return this.#callers.length > 0;
   }
 }
 

@@ -288,7 +288,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     // the selected tab in the mean time. Show the previously selected tab in that
     // case instead, by simply doing nothing.
     if (this.#initialTab) {
-      this.selectTabInternal(this.#initialTab);
+      this.#selectTab(this.#initialTab);
       this.#initialTab = undefined;
     }
   }
@@ -349,7 +349,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
   }
 
-  private selectTabInternal(tabId: NetworkForward.UIRequestLocation.UIRequestTabs): void {
+  #selectTab(tabId: NetworkForward.UIRequestLocation.UIRequestTabs): void {
     if (!this.selectTab(tabId)) {
       // maybeAppendPayloadPanel might cause payload tab to appear asynchronously, so
       // it makes sense to retry on the next tick
@@ -373,12 +373,12 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   }
 
   async revealResponseBody(position: SourceFrame.SourceFrame.RevealPosition): Promise<void> {
-    this.selectTabInternal(NetworkForward.UIRequestLocation.UIRequestTabs.RESPONSE);
+    this.#selectTab(NetworkForward.UIRequestLocation.UIRequestTabs.RESPONSE);
     await this.#responseView?.revealPosition(position);
   }
 
   revealHeader(section: NetworkForward.UIRequestLocation.UIHeaderSection, header: string|undefined): void {
-    this.selectTabInternal(NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
+    this.#selectTab(NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
     this.#headersViewComponent?.revealHeader(section, header);
   }
 

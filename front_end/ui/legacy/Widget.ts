@@ -497,7 +497,7 @@ export class Widget {
       }
       this.attach(currentWidget);
     }
-    this.showWidgetInternal(parentElement, insertBefore);
+    this.#showWidget(parentElement, insertBefore);
   }
 
   private attach(parentWidget: Widget): void {
@@ -519,10 +519,10 @@ export class Widget {
     if (!this.element.parentElement) {
       throw new Error('Attempt to show widget that is not hidden using hideWidget().');
     }
-    this.showWidgetInternal(this.element.parentElement, this.element.nextSibling);
+    this.#showWidget(this.element.parentElement, this.element.nextSibling);
   }
 
-  private showWidgetInternal(parentElement: Element, insertBefore?: Node|null): void {
+  #showWidget(parentElement: Element, insertBefore?: Node|null): void {
     let currentParent: Element|null = parentElement;
     while (currentParent && !widgetMap.get(currentParent)) {
       currentParent = currentParent.parentElementOrShadowHost();
@@ -576,10 +576,10 @@ export class Widget {
     if (!this.#visible) {
       return;
     }
-    this.hideWidgetInternal(false);
+    this.#hideWidget(false);
   }
 
-  private hideWidgetInternal(removeFromDOM: boolean): void {
+  #hideWidget(removeFromDOM: boolean): void {
     this.#visible = false;
     const {parentElement} = this.element;
 
@@ -627,7 +627,7 @@ export class Widget {
     // responsibility for the consequences.
     const removeFromDOM = overrideHideOnDetach || !this.shouldHideOnDetach();
     if (this.#visible) {
-      this.hideWidgetInternal(removeFromDOM);
+      this.#hideWidget(removeFromDOM);
     } else if (removeFromDOM) {
       const {parentElement} = this.element;
       if (parentElement) {

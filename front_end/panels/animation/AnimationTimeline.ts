@@ -234,7 +234,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   #selectedGroup!: SDK.AnimationModel.AnimationGroup|null;
   #renderQueue!: AnimationUI[];
   #defaultDuration: number;
-  #durationInternal: number;
+  #duration: number;
   #timelineControlsWidth: number;
   readonly #nodesMap: Map<number, NodeUI>;
   #uiAnimations: AnimationUI[];
@@ -298,7 +298,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     noEffectSelectedPlaceholder.show(timelineHint);
 
     /** @constant */ this.#defaultDuration = 100;
-    this.#durationInternal = this.#defaultDuration;
+    this.#duration = this.#defaultDuration;
     this.#nodesMap = new Map();
     this.#uiAnimations = [];
     this.#groupBuffer = [];
@@ -593,11 +593,11 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   duration(): number {
-    return this.#durationInternal;
+    return this.#duration;
   }
 
   setDuration(duration: number): void {
-    this.#durationInternal = duration;
+    this.#duration = duration;
     this.scheduleRedraw();
   }
 
@@ -613,7 +613,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.#nodesMap.clear();
     this.#animationsMap.clear();
     this.#animationsContainer.removeChildren();
-    this.#durationInternal = this.#defaultDuration;
+    this.#duration = this.#defaultDuration;
     this.#timelineScrubber.classList.add('hidden');
     this.#gridHeader.classList.remove('scrubber-enabled');
     this.#selectedGroup = null;

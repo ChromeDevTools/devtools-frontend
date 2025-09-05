@@ -1020,13 +1020,13 @@ export class Edit {
 }
 
 export class CSSLocation {
-  readonly #cssModelInternal: CSSModel;
+  readonly #cssModel: CSSModel;
   styleSheetId: Protocol.CSS.StyleSheetId;
   url: Platform.DevToolsPath.UrlString;
   lineNumber: number;
   columnNumber: number;
   constructor(header: CSSStyleSheetHeader, lineNumber: number, columnNumber?: number) {
-    this.#cssModelInternal = header.cssModel();
+    this.#cssModel = header.cssModel();
     this.styleSheetId = header.id;
     this.url = header.resourceURL();
     this.lineNumber = lineNumber;
@@ -1034,11 +1034,11 @@ export class CSSLocation {
   }
 
   cssModel(): CSSModel {
-    return this.#cssModelInternal;
+    return this.#cssModel;
   }
 
   header(): CSSStyleSheetHeader|null {
-    return this.#cssModelInternal.styleSheetHeaderForId(this.styleSheetId);
+    return this.#cssModel.styleSheetHeaderForId(this.styleSheetId);
   }
 }
 

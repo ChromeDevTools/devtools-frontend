@@ -17,15 +17,15 @@ function setNodeData<T>(node: Node, value: T): void {
 }
 
 export class Fragment {
-  private readonly elementInternal: Element;
+  readonly #element: Element;
   private readonly elementsById = new Map<string, Element>();
 
   constructor(element: Element) {
-    this.elementInternal = element;
+    this.#element = element;
   }
 
   element(): Element {
-    return this.elementInternal;
+    return this.#element;
   }
 
   $(elementId: string): Element {
@@ -194,7 +194,7 @@ export class Fragment {
       return value;
     }
     if (value instanceof Fragment) {
-      return value.elementInternal;
+      return value.#element;
     }
     if (Array.isArray(value)) {
       const node = document.createDocumentFragment();

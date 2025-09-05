@@ -1880,11 +1880,11 @@ export function getPropertyRenderers(
 
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
-  private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
+  #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   property: SDK.CSSProperty.CSSProperty;
-  private readonly inheritedInternal: boolean;
-  private overloadedInternal: boolean;
-  private parentPaneInternal: StylesSidebarPane;
+  readonly #inherited: boolean;
+  #overloaded: boolean;
+  #parentPane: StylesSidebarPane;
   #parentSection: StylePropertiesSection;
   isShorthand: boolean;
   private readonly applyStyleThrottler = new Common.Throttler.Throttler(0);
@@ -1911,12 +1911,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const jslogContext = property.name.startsWith('--') ? 'custom-property' : property.name;
     super('', isShorthand, jslogContext);
     this.style = property.ownerStyle;
-    this.matchedStylesInternal = matchedStyles;
+    this.#matchedStyles = matchedStyles;
     this.property = property;
-    this.inheritedInternal = inherited;
-    this.overloadedInternal = overloaded;
+    this.#inherited = inherited;
+    this.#overloaded = overloaded;
     this.selectable = false;
-    this.parentPaneInternal = stylesPane;
+    this.#parentPane = stylesPane;
     this.#parentSection = section;
     this.isShorthand = isShorthand;
     this.newProperty = newProperty;
@@ -1933,8 +1933,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (!SDK.CSSMetadata.cssMetadata().isGridNameAwareProperty(this.name)) {
       return new Set();
     }
-    for (let node = this.parentPaneInternal.node()?.parentNode; node; node = node?.parentNode) {
-      const style = await this.parentPaneInternal.cssModel()?.getComputedStyle(node.id);
+    for (let node = this.#parentPane.node()?.parentNode; node; node = node?.parentNode) {
+      const style = await this.#parentPane.cssModel()?.getComputedStyle(node.id);
       const display = style?.get('display');
       const isGrid = display === 'grid' || display === 'inline-grid';
       if (!isGrid) {
@@ -1967,7 +1967,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles {
-    return this.matchedStylesInternal;
+    return this.#matchedStyles;
   }
 
   getLonghand(): StylePropertyTreeElement|null {
@@ -1980,18 +1980,18 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   inherited(): boolean {
-    return this.inheritedInternal;
+    return this.#inherited;
   }
 
   overloaded(): boolean {
-    return this.overloadedInternal;
+    return this.#overloaded;
   }
 
   setOverloaded(x: boolean): void {
-    if (x === this.overloadedInternal) {
+    if (x === this.#overloaded) {
       return;
     }
-    this.overloadedInternal = x;
+    this.#overloaded = x;
     this.updateState();
   }
 
@@ -2020,7 +2020,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   updateFilter(): boolean {
-    const regex = this.parentPaneInternal.filterRegex();
+    const regex = this.#parentPane.filterRegex();
     const matches = regex !== null && (regex.test(this.property.name) || regex.test(this.property.value));
     this.listItemElement.classList.toggle('filter-match', matches);
 
@@ -2095,11 +2095,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   node(): SDK.DOMModel.DOMNode|null {
-    return this.parentPaneInternal.node();
+    return this.#parentPane.node();
   }
 
   parentPane(): StylesSidebarPane {
-    return this.parentPaneInternal;
+    return this.#parentPane;
   }
 
   section(): StylePropertiesSection {
@@ -2116,14 +2116,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    this.parentPaneInternal.setUserOperation(true);
+    this.#parentPane.setUserOperation(true);
     const success = await this.property.setDisabled(disabled);
-    this.parentPaneInternal.setUserOperation(false);
+    this.#parentPane.setUserOperation(false);
 
     if (!success) {
       return;
     }
-    this.matchedStylesInternal.resetActiveProperties();
+    this.#matchedStyles.resetActiveProperties();
     this.updatePane();
     this.styleTextAppliedForTest();
   }
@@ -2140,7 +2140,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return staticLonghandProperties;
     }
 
-    const parsedLonghands = await this.parentPaneInternal.cssModel()?.agent.invoke_getLonghandProperties(
+    const parsedLonghands = await this.#parentPane.cssModel()?.agent.invoke_getLonghandProperties(
         {shorthandName: this.property.name, value: parsedProperty});
     if (!parsedLonghands || parsedLonghands.getError()) {
       return staticLonghandProperties;
@@ -2173,7 +2173,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       let overloaded = false;
 
       inherited = this.#parentSection.isPropertyInherited(name);
-      overloaded = this.matchedStylesInternal.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.OVERLOADED;
+      overloaded = this.#matchedStyles.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.OVERLOADED;
 
       const leadingProperty = leadingProperties.find(property => property.name === name && property.activeInStyle());
       if (leadingProperty) {
@@ -2181,9 +2181,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
 
       const item = new StylePropertyTreeElement({
-        stylesPane: this.parentPaneInternal,
+        stylesPane: this.#parentPane,
         section: this.#parentSection,
-        matchedStyles: this.matchedStylesInternal,
+        matchedStyles: this.#matchedStyles,
         property,
         isShorthand: false,
         inherited,
@@ -2201,7 +2201,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     this.listItemElement.addEventListener('mousedown', event => {
       if (event.button === 0) {
-        parentMap.set(this.parentPaneInternal, this);
+        parentMap.set(this.#parentPane, this);
       }
     }, false);
     this.listItemElement.addEventListener('mouseup', this.mouseUp.bind(this));
@@ -2248,9 +2248,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const matching: SDK.CSSPropertyParser.BottomUpTreeMatching = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [
-      new SDK.CSSPropertyParserMatchers.VariableMatcher(this.matchedStylesInternal, style),
-      new SDK.CSSPropertyParserMatchers.AttributeMatcher(this.matchedStylesInternal, style),
-      new SDK.CSSPropertyParserMatchers.EnvFunctionMatcher(this.matchedStylesInternal),
+      new SDK.CSSPropertyParserMatchers.VariableMatcher(this.#matchedStyles, style),
+      new SDK.CSSPropertyParserMatchers.AttributeMatcher(this.#matchedStyles, style),
+      new SDK.CSSPropertyParserMatchers.EnvFunctionMatcher(this.#matchedStyles),
     ]);
 
     const decl = SDK.CSSPropertyParser.ASTUtils.siblings(SDK.CSSPropertyParser.ASTUtils.declValue(matching.ast.tree));
@@ -2282,8 +2282,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const renderers = this.property.parsedOk ?
         getPropertyRenderers(
-            this.name, this.style, this.parentPaneInternal, this.matchedStylesInternal, this,
-            this.getComputedStyles() ?? new Map()) :
+            this.name, this.style, this.#parentPane, this.#matchedStyles, this, this.getComputedStyles() ?? new Map()) :
         [];
 
     if (Root.Runtime.experiments.isEnabled('font-editor') && this.property.parsedOk) {
@@ -2306,9 +2305,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     if (this.property.name.startsWith('--') &&
         !(this.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule)) {
-      const contents = this.parentPaneInternal.getVariablePopoverContents(
+      const contents = this.#parentPane.getVariablePopoverContents(
           this.matchedStyles(), this.property.name,
-          this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)?.value ?? null);
+          this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value ?? null);
       const tooltipId = this.getTooltipId('custom-property-decl');
       this.nameElement.setAttribute('aria-details', tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip(
@@ -2316,7 +2315,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       tooltip.appendChild(contents);
       tooltip.onbeforetoggle = (e: Event) => {
         if ((e as ToggleEvent).newState === 'open') {
-          contents.value = this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)?.value;
+          contents.value = this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value;
         }
       };
       this.listItemElement.appendChild(tooltip);
@@ -2339,7 +2338,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           return;
         }
 
-        const cssProperty = this.parentPaneInternal.webCustomData?.findCssProperty(this.name);
+        const cssProperty = this.#parentPane.webCustomData?.findCssProperty(this.name);
         if (!cssProperty) {
           event.consume(true);
           return;
@@ -2376,7 +2375,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       // Add a separate exclamation mark IMG element with a tooltip.
       this.listItemElement.insertBefore(
           this.createExclamationMark(
-              this.property, this.parentPaneInternal.getVariableParserError(this.matchedStyles(), this.property.name)),
+              this.property, this.#parentPane.getVariableParserError(this.matchedStyles(), this.property.name)),
           this.listItemElement.firstChild);
 
       // When the property is valid but the property value is invalid,
@@ -2550,7 +2549,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    const cssModel = this.parentPaneInternal.cssModel();
+    const cssModel = this.#parentPane.cssModel();
     const fontFaces = cssModel?.fontFaces() || [];
 
     const localName = this.node()?.localName();
@@ -2580,8 +2579,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private mouseUp(event: MouseEvent): void {
-    const activeTreeElement = parentMap.get(this.parentPaneInternal);
-    parentMap.delete(this.parentPaneInternal);
+    const activeTreeElement = parentMap.get(this.#parentPane);
+    parentMap.delete(this.#parentPane);
     if (!activeTreeElement) {
       return;
     }
@@ -2630,7 +2629,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private handleContextMenuEvent(context: Context, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (this.property.parsedOk && this.parent?.root) {
-      const sectionIndex = this.parentPaneInternal.focusedSectionIndex();
+      const sectionIndex = this.#parentPane.focusedSectionIndex();
       contextMenu.defaultSection().appendCheckboxItem(
           i18nString(UIStrings.togglePropertyAndContinueEditing), async () => {
             if (this.treeOutline) {
@@ -2639,7 +2638,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
               this.editingCancelled(context);
               await this.toggleDisabled(!this.property.disabled);
               event.consume();
-              this.parentPaneInternal.continueEditingElement(sectionIndex, propertyIndex);
+              this.#parentPane.continueEditingElement(sectionIndex, propertyIndex);
             }
           }, {checked: !this.property.disabled, jslogContext: 'toggle-property-and-continue-editing'});
     }
@@ -2854,7 +2853,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     this.originalPropertyText = this.property.propertyText || '';
 
-    this.parentPaneInternal.setEditingStyle(true);
+    this.#parentPane.setEditingStyle(true);
     selectedElement.parentElement?.scrollIntoViewIfNeeded(false);
 
     this.prompt = new CSSPropertyPrompt(this, context.isEditingName, Array.from(this.#gridNames ?? []));
@@ -2997,7 +2996,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private async applyFreeFlowStyleTextEdit(context: Context): Promise<void> {
-    if (!this.prompt || !this.parentPaneInternal.node()) {
+    if (!this.prompt || !this.#parentPane.node()) {
       return;
     }
 
@@ -3012,7 +3011,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
     // Prevent destructive side-effects during live-edit. crbug.com/433889
-    const parentNode = this.parentPaneInternal.node();
+    const parentNode = this.#parentPane.node();
     if (parentNode) {
       const isPseudo = Boolean(parentNode.pseudoType());
       if (isPseudo) {
@@ -3053,7 +3052,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       editedElement.parentElement.classList.remove('child-editing');
     }
 
-    this.parentPaneInternal.setEditingStyle(false);
+    this.#parentPane.setEditingStyle(false);
   }
 
   editingCancelled(context: Context): void {
@@ -3165,7 +3164,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         this: StylePropertyTreeElement, alreadyNew: boolean, valueChanged: boolean,
         section: StylePropertiesSection): void {
       if (!moveDirection) {
-        this.parentPaneInternal.resetFocus();
+        this.#parentPane.resetFocus();
         return;
       }
 
@@ -3279,8 +3278,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    const currentNode = this.parentPaneInternal.node();
-    this.parentPaneInternal.setUserOperation(true);
+    const currentNode = this.#parentPane.node();
+    this.#parentPane.setUserOperation(true);
 
     styleText += Platform.StringUtilities.findUnclosedCssQuote(styleText);
     styleText += ')'.repeat(Platform.StringUtilities.countUnmatchedLeftParentheses(styleText));
@@ -3302,7 +3301,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       majorChange = false;
       success = await this.property.setText(this.originalPropertyText, majorChange, overwriteProperty);
     }
-    this.parentPaneInternal.setUserOperation(false);
+    this.#parentPane.setUserOperation(false);
 
     // TODO: using this.property.index to access its containing StyleDeclaration's property will result in
     // off-by-1 errors when the containing StyleDeclaration's respective property has already been deleted.
@@ -3322,7 +3321,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    this.matchedStylesInternal.resetActiveProperties();
+    this.#matchedStyles.resetActiveProperties();
     this.hasBeenEditedIncrementally = true;
 
     // null check for updatedProperty before setting this.property as the code never expects this.property to be undefined or null.

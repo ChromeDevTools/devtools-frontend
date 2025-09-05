@@ -170,7 +170,7 @@ export class PopoverHelper {
     }
 
     this.hidePopoverTimer = window.setTimeout(() => {
-      this.hidePopoverInternal();
+      this.#hidePopover();
       this.hidePopoverTimer = null;
     }, timeout);
   }
@@ -184,7 +184,7 @@ export class PopoverHelper {
     this.showPopoverTimer = window.setTimeout(() => {
       this.showPopoverTimer = null;
       this.stopHidePopoverTimer();
-      this.hidePopoverInternal();
+      this.#hidePopover();
       const document = ((event.target as Node).ownerDocument) as Document;
       this.showPopover(document);
     }, timeout);
@@ -204,10 +204,10 @@ export class PopoverHelper {
 
   hidePopover(): void {
     this.stopShowPopoverTimer();
-    this.hidePopoverInternal();
+    this.#hidePopover();
   }
 
-  private hidePopoverInternal(): void {
+  #hidePopover(): void {
     if (!this.hidePopoverCallback) {
       return;
     }

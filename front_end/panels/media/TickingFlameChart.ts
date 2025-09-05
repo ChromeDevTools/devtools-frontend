@@ -65,10 +65,10 @@ export class Event {
   private readonly setComplete: (arg0: number) => void;
   private readonly updateMaxTime: (arg0: number) => void;
   private selfIndex: number;
-  private liveInternal: boolean;
+  #live: boolean;
   title: string;
-  private colorInternal: string;
-  private fontColorInternal: string;
+  #color: string;
+  #fontColor: string;
 
   constructor(
       timelineData: PerfUI.FlameChart.FlameChartTimelineData, eventHandlers: EventHandlers,
@@ -82,7 +82,7 @@ export class Event {
 
     // This is the index in the timelineData arrays we should be writing to.
     this.selfIndex = this.timelineData.entryLevels.length;
-    this.liveInternal = false;
+    this.#live = false;
 
     // Can't use the dict||or||default syntax, since NaN is a valid expected duration.
     const duration = eventProperties['duration'] === undefined ? 0 : eventProperties['duration'];
@@ -97,8 +97,8 @@ export class Event {
     }
 
     this.title = eventProperties['name'] || '';
-    this.colorInternal = eventProperties['color'] || HotColorScheme[0];
-    this.fontColorInternal = calculateFontColor(this.colorInternal);
+    this.#color = eventProperties['color'] || HotColorScheme[0];
+    this.#fontColor = calculateFontColor(this.#color);
   }
 
   /**
@@ -109,7 +109,7 @@ export class Event {
     htmlElement.createChild('br');
 
     const startTimeReadable = formatMillisecondsToSeconds(this.startTime, 2);
-    if (this.liveInternal) {
+    if (this.#live) {
       htmlElement.createChild('span').textContent = `Duration: ${startTimeReadable} - LIVE!`;
     } else if (!isNaN(this.duration)) {
       const durationReadable = formatMillisecondsToSeconds(this.duration + this.startTime, 2);
@@ -128,9 +128,9 @@ export class Event {
     // Setting end time to -1 signals that an event becomes live
     if (time === -1) {
       this.timelineData.entryTotalTimes[this.selfIndex] = this.setLive(this.selfIndex);
-      this.liveInternal = true;
+      this.#live = true;
     } else {
-      this.liveInternal = false;
+      this.#live = false;
       const duration = time - this.timelineData.entryStartTimes[this.selfIndex];
       this.timelineData.entryTotalTimes[this.selfIndex] = duration;
       this.setComplete(this.selfIndex);
@@ -147,16 +147,16 @@ export class Event {
   }
 
   set color(color: string) {
-    this.colorInternal = color;
-    this.fontColorInternal = calculateFontColor(this.colorInternal);
+    this.#color = color;
+    this.#fontColor = calculateFontColor(this.#color);
   }
 
   get color(): string {
-    return this.colorInternal;
+    return this.#color;
   }
 
   get fontColor(): string {
-    return this.fontColorInternal;
+    return this.#fontColor;
   }
 
   get startTime(): number {
@@ -169,14 +169,14 @@ export class Event {
   }
 
   get live(): boolean {
-    return this.liveInternal;
+    return this.#live;
   }
 }
 
 export class TickingFlameChart extends UI.Widget.VBox {
   private intervalTimer: number;
   private lastTimestamp: number;
-  private canTickInternal: boolean;
+  #canTick: boolean;
   private ticking: boolean;
   private isShown: boolean;
   private readonly bounds: Bounds;
@@ -192,7 +192,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
     // set to update once per second _while the tab is active_
     this.intervalTimer = 0;
     this.lastTimestamp = 0;
-    this.canTickInternal = true;
+    this.#canTick = true;
     this.ticking = false;
     this.isShown = false;
 
@@ -289,13 +289,13 @@ export class TickingFlameChart extends UI.Widget.VBox {
 
   override wasShown(): void {
     this.isShown = true;
-    if (this.canTickInternal && !this.ticking) {
+    if (this.#canTick && !this.ticking) {
       this.start();
     }
   }
 
   set canTick(allowed: boolean) {
-    this.canTickInternal = allowed;
+    this.#canTick = allowed;
     if (this.ticking && !allowed) {
       this.stop();
     }
@@ -357,7 +357,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
   private bounds: Bounds;
   private readonly liveEvents: Set<number>;
   private eventMap: Map<number, Event>;
-  private readonly timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData;
+  readonly #timelineData: PerfUI.FlameChart.FlameChartTimelineData;
   private maxLevel: number;
 
   constructor(initialBounds: Bounds, updateMaxTime: (arg0: number) => void) {
@@ -375,7 +375,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
 
     // Contains the numerical indices. This is passed as a reference to the events
     // so that they can update it when they change.
-    this.timelineDataInternal = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
+    this.#timelineData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
 
     // The current sum of all group heights.
     this.maxLevel = 0;
@@ -389,7 +389,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
    * Add a group with |name| that can contain |depth| different tracks.
    */
   addGroup(name: Common.UIString.LocalizedString, depth: number): void {
-    if (this.timelineDataInternal.groups) {
+    if (this.#timelineData.groups) {
       const newGroup = {
         name,
         startLevel: this.maxLevel,
@@ -398,7 +398,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
         style: DefaultStyle(),
         track: null,
       };
-      this.timelineDataInternal.groups.push(newGroup);
+      this.#timelineData.groups.push(newGroup);
       ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
         newGroup.style.color = getGroupDefaultTextColor();
       });
@@ -416,7 +416,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
     }
 
     const event = new Event(
-        this.timelineDataInternal, {
+        this.#timelineData, {
           setLive: this.setLive.bind(this),
           setComplete: this.setComplete.bind(this),
           updateMaxTime: this.updateMaxTimeHandle,
@@ -449,7 +449,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
   }
 
   timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
-    return this.timelineDataInternal;
+    return this.#timelineData;
   }
 
   /**

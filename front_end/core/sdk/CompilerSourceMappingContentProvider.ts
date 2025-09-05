@@ -49,14 +49,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CompilerSourceMappingContentProvider implements TextUtils.ContentProvider.ContentProvider {
   readonly #sourceURL: Platform.DevToolsPath.UrlString;
-  readonly #contentTypeInternal: Common.ResourceType.ResourceType;
+  readonly #contentType: Common.ResourceType.ResourceType;
   readonly #initiator: PageResourceLoadInitiator;
 
   constructor(
       sourceURL: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType,
       initiator: PageResourceLoadInitiator) {
     this.#sourceURL = sourceURL;
-    this.#contentTypeInternal = contentType;
+    this.#contentType = contentType;
     this.#initiator = initiator;
   }
 
@@ -65,14 +65,14 @@ export class CompilerSourceMappingContentProvider implements TextUtils.ContentPr
   }
 
   contentType(): Common.ResourceType.ResourceType {
-    return this.#contentTypeInternal;
+    return this.#contentType;
   }
 
   async requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
     try {
       const {content} = await PageResourceLoader.instance().loadResource(this.#sourceURL, this.#initiator);
       return new TextUtils.ContentData.ContentData(
-          content, /* isBase64=*/ false, this.#contentTypeInternal.canonicalMimeType());
+          content, /* isBase64=*/ false, this.#contentType.canonicalMimeType());
     } catch (e) {
       const error = i18nString(UIStrings.couldNotLoadContentForSS, {PH1: this.#sourceURL, PH2: e.message});
       console.error(error);

@@ -74,14 +74,14 @@ const str_ = i18n.i18n.registerUIStrings('models/persistence/IsolatedFileSystem.
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IsolatedFileSystem extends PlatformFileSystem {
   private readonly manager: IsolatedFileSystemManager;
-  private readonly embedderPathInternal: Platform.DevToolsPath.RawPathString;
+  readonly #embedderPath: Platform.DevToolsPath.RawPathString;
   private readonly domFileSystem: FileSystem;
   private readonly excludedFoldersSetting:
       Common.Settings.Setting<Record<Platform.DevToolsPath.UrlString, Platform.DevToolsPath.EncodedPathString[]>>;
-  private excludedFoldersInternal: Set<Platform.DevToolsPath.EncodedPathString>;
+  #excludedFolders: Set<Platform.DevToolsPath.EncodedPathString>;
   private readonly excludedEmbedderFolders: Platform.DevToolsPath.RawPathString[] = [];
-  private readonly initialFilePathsInternal = new Set<Platform.DevToolsPath.EncodedPathString>();
-  private readonly initialGitFoldersInternal = new Set<Platform.DevToolsPath.EncodedPathString>();
+  readonly #initialFilePaths = new Set<Platform.DevToolsPath.EncodedPathString>();
+  readonly #initialGitFolders = new Set<Platform.DevToolsPath.EncodedPathString>();
   private readonly fileLocks = new Map<Platform.DevToolsPath.EncodedPathString, Promise<unknown>>();
 
   constructor(
@@ -90,11 +90,11 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       automatic: boolean) {
     super(path, type, automatic);
     this.manager = manager;
-    this.embedderPathInternal = embedderPath;
+    this.#embedderPath = embedderPath;
     this.domFileSystem = domFileSystem;
     this.excludedFoldersSetting =
         Common.Settings.Settings.instance().createLocalSetting('workspace-excluded-folders', {});
-    this.excludedFoldersInternal = new Set(this.excludedFoldersSetting.get()[path] || []);
+    this.#excludedFolders = new Set(this.excludedFoldersSetting.get()[path] || []);
   }
 
   static async create(
@@ -142,15 +142,15 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   override initialFilePaths(): Platform.DevToolsPath.EncodedPathString[] {
-    return [...this.initialFilePathsInternal];
+    return [...this.#initialFilePaths];
   }
 
   override initialGitFolders(): Platform.DevToolsPath.EncodedPathString[] {
-    return [...this.initialGitFoldersInternal];
+    return [...this.#initialGitFolders];
   }
 
   override embedderPath(): Platform.DevToolsPath.RawPathString {
-    return this.embedderPathInternal;
+    return this.#embedderPath;
   }
 
   private initializeFilePaths(): Promise<void> {
@@ -167,14 +167,14 @@ export class IsolatedFileSystem extends PlatformFileSystem {
                     entry.fullPath as Platform.DevToolsPath.RawPathString))) {
               continue;
             }
-            this.initialFilePathsInternal.add(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
+            this.#initialFilePaths.add(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
                 Common.ParsedURL.ParsedURL.substr(entry.fullPath as Platform.DevToolsPath.RawPathString, 1)));
           } else {
             if (entry.fullPath.endsWith('/.git')) {
               const lastSlash = entry.fullPath.lastIndexOf('/');
               const parentFolder = Common.ParsedURL.ParsedURL.substr(
                   entry.fullPath as Platform.DevToolsPath.RawPathString, 1, lastSlash);
-              this.initialGitFoldersInternal.add(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(parentFolder));
+              this.#initialGitFolders.add(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(parentFolder));
             }
             if (this.isFileExcluded(Common.ParsedURL.ParsedURL.concatenate(
                     Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
@@ -502,18 +502,18 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   private saveExcludedFolders(): void {
     const settingValue = this.excludedFoldersSetting.get();
-    settingValue[this.path()] = [...this.excludedFoldersInternal];
+    settingValue[this.path()] = [...this.#excludedFolders];
     this.excludedFoldersSetting.set(settingValue);
   }
 
   override addExcludedFolder(path: Platform.DevToolsPath.EncodedPathString): void {
-    this.excludedFoldersInternal.add(path);
+    this.#excludedFolders.add(path);
     this.saveExcludedFolders();
     this.manager.dispatchEventToListeners(Events.ExcludedFolderAdded, path);
   }
 
   override removeExcludedFolder(path: Platform.DevToolsPath.EncodedPathString): void {
-    this.excludedFoldersInternal.delete(path);
+    this.#excludedFolders.delete(path);
     this.saveExcludedFolders();
     this.manager.dispatchEventToListeners(Events.ExcludedFolderRemoved, path);
   }
@@ -525,7 +525,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   override isFileExcluded(folderPath: Platform.DevToolsPath.EncodedPathString): boolean {
-    if (this.excludedFoldersInternal.has(folderPath)) {
+    if (this.#excludedFolders.has(folderPath)) {
       return true;
     }
     const regex = (this.manager.workspaceFolderExcludePatternSetting()).asRegExp();
@@ -533,14 +533,13 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   override excludedFolders(): Set<Platform.DevToolsPath.EncodedPathString> {
-    return this.excludedFoldersInternal;
+    return this.#excludedFolders;
   }
 
   override searchInPath(query: string, progress: Common.Progress.Progress): Promise<string[]> {
     return new Promise(resolve => {
       const requestId = this.manager.registerCallback(innerCallback);
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.searchInPath(
-          requestId, this.embedderPathInternal, query);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.searchInPath(requestId, this.#embedderPath, query);
 
       function innerCallback(files: Platform.DevToolsPath.RawPathString[]): void {
         resolve(files.map(path => Common.ParsedURL.ParsedURL.rawPathToUrlString(path)));
@@ -553,7 +552,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     progress.setTotalWork(1);
     const requestId = this.manager.registerProgress(progress);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.indexPath(
-        requestId, this.embedderPathInternal, JSON.stringify(this.excludedEmbedderFolders));
+        requestId, this.#embedderPath, JSON.stringify(this.excludedEmbedderFolders));
   }
 
   override mimeFromPath(path: Platform.DevToolsPath.UrlString): string {

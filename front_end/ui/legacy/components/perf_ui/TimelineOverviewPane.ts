@@ -492,15 +492,15 @@ export interface TimelineOverview {
 }
 
 export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOverview {
-  private calculatorInternal: TimelineOverviewCalculator|null;
+  #calculator: TimelineOverviewCalculator|null;
   private canvas: HTMLCanvasElement;
-  private contextInternal: CanvasRenderingContext2D|null;
+  #context: CanvasRenderingContext2D|null;
 
   constructor() {
     super();
-    this.calculatorInternal = null;
+    this.#calculator = null;
     this.canvas = this.element.createChild('canvas', 'fill');
-    this.contextInternal = this.canvas.getContext('2d');
+    this.#context = this.canvas.getContext('2d');
   }
 
   width(): number {
@@ -512,14 +512,14 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
   }
 
   context(): CanvasRenderingContext2D {
-    if (!this.contextInternal) {
+    if (!this.#context) {
       throw new Error('Unable to retrieve canvas context');
     }
-    return this.contextInternal;
+    return this.#context;
   }
 
   calculator(): TimelineOverviewCalculator|null {
-    return this.calculatorInternal;
+    return this.#calculator;
   }
 
   update(): void {
@@ -538,7 +538,7 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
   }
 
   setCalculator(calculator: TimelineOverviewCalculator): void {
-    this.calculatorInternal = calculator;
+    this.#calculator = calculator;
   }
 
   onClick(_event: Event): boolean {

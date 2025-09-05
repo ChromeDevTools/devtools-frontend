@@ -195,7 +195,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
 
   override wasShown(): void {
     super.wasShown();
-    this.setEditable(this.canEditSourceInternal());
+    this.setEditable(this.#canEditSource());
   }
 
   override willHide(): void {
@@ -213,7 +213,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
     return Common.ResourceType.ResourceType.simplifyContentType(mimeType);
   }
 
-  canEditSourceInternal(): boolean {
+  #canEditSource(): boolean {
     if (this.hasLoadError()) {
       return false;
     }
@@ -249,7 +249,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
   }
 
   private onNetworkPersistenceChanged(): void {
-    this.setEditable(this.canEditSourceInternal());
+    this.setEditable(this.#canEditSource());
   }
 
   commitEditing(): void {
@@ -391,7 +391,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
   }
 
   private updateStyle(): void {
-    this.setEditable(this.canEditSourceInternal());
+    this.setEditable(this.#canEditSource());
   }
 
   private maybeSetContent(content: TextUtils.ContentData.ContentData): void {

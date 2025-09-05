@@ -142,7 +142,7 @@ export class Dialog extends HTMLElement {
   #isPendingCloseDialog = false;
   #hitArea = new DOMRect(0, 0, 0, 0);
   #dialogClientRect = new DOMRect(0, 0, 0, 0);
-  #bestVerticalPositionInternal: DialogVerticalPosition|null = null;
+  #bestVerticalPosition: DialogVerticalPosition|null = null;
   #bestHorizontalAlignment: DialogHorizontalAlignment|null = null;
   readonly #devtoolsMutationObserver = new MutationObserver(mutations => {
     if (this.#props.expectedMutationsSelector) {
@@ -211,7 +211,7 @@ export class Dialog extends HTMLElement {
   }
 
   get bestVerticalPosition(): DialogVerticalPosition|null {
-    return this.#bestVerticalPositionInternal;
+    return this.#bestVerticalPosition;
   }
 
   get bestHorizontalAlignment(): DialogHorizontalAlignment|null {
@@ -476,11 +476,11 @@ export class Dialog extends HTMLElement {
             this.#getBestHorizontalAlignment(absoluteAnchorBounds, devtoolsBounds) :
             this.#props.horizontalAlignment;
 
-        this.#bestVerticalPositionInternal = this.#props.position === DialogVerticalPosition.AUTO ?
+        this.#bestVerticalPosition = this.#props.position === DialogVerticalPosition.AUTO ?
             this.#getBestVerticalPosition(absoluteAnchorBounds, dialogHeight, devtoolsBounds) :
             this.#props.position;
         if (this.#bestHorizontalAlignment === DialogHorizontalAlignment.AUTO ||
-            this.#bestVerticalPositionInternal === DialogVerticalPosition.AUTO) {
+            this.#bestVerticalPosition === DialogVerticalPosition.AUTO) {
           return;
         }
         this.#hitArea.height = anchorBottom - anchorTop + CONNECTOR_HEIGHT;
@@ -542,7 +542,7 @@ export class Dialog extends HTMLElement {
                 this.#bestHorizontalAlignment, `Unknown alignment type: ${this.#bestHorizontalAlignment}`);
         }
 
-        switch (this.#bestVerticalPositionInternal) {
+        switch (this.#bestVerticalPosition) {
           case DialogVerticalPosition.TOP: {
             this.style.setProperty('--dialog-top', '0');
             this.style.setProperty('--dialog-margin', 'auto');
@@ -563,8 +563,7 @@ export class Dialog extends HTMLElement {
             break;
           }
           default:
-            Platform.assertNever(
-                this.#bestVerticalPositionInternal, `Unknown position type: ${this.#bestVerticalPositionInternal}`);
+            Platform.assertNever(this.#bestVerticalPosition, `Unknown position type: ${this.#bestVerticalPosition}`);
         }
 
         dialog.close();

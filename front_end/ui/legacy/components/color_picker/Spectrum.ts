@@ -208,7 +208,7 @@ function getColorFromHsva(gamut: SpectrumGamut, hsva: Common.ColorUtils.Color4D)
 }
 
 export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
-  private colorInternal?: Common.Color.Color;
+  #color?: Common.Color.Color;
   private gamut: SpectrumGamut = SpectrumGamut.SRGB;
   private colorElement: HTMLElement;
   private colorDragElement: HTMLElement;
@@ -259,7 +259,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   private dragElement?: HTMLElement;
   private dragHotSpotX?: number;
   private dragHotSpotY?: number;
-  private colorNameInternal?: string;
+  #colorName?: string;
   private colorFormat: SpectrumColorFormat = Common.Color.Format.RGB;
   private eyeDropperAbortController: AbortController|null = null;
   private isFormatPickerShown = false;
@@ -269,7 +269,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   // selected form the palettes. That time, we don't
   // want to return the value of the variable but the
   // actual variable string.
-  private colorStringInternal?: string;
+  #colorString?: string;
   constructor(contrastInfo?: ContrastInfo|null) {
     super({useShadowDom: true});
     this.registerRequiredCSS(spectrumStyles);
@@ -621,7 +621,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
     this.palettePanelShowing = show;
     this.contentElement.classList.toggle('palette-panel-showing', show);
-    this.focusInternal();
+    this.#focus();
   }
 
   private onCloseBtnKeydown(event: KeyboardEvent): void {
@@ -646,7 +646,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   /**
    * (Suppress warning about preventScroll)
    */
-  private focusInternal(): void {
+  #focus(): void {
     if (!this.isShowing()) {
       return;
     }
@@ -717,7 +717,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
 
     this.togglePalettePanel(false);
-    this.focusInternal();
+    this.#focus();
   }
 
   private showLightnessShades(colorElement: HTMLElement, colorText: string, _event: Event): void {
@@ -1074,8 +1074,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   get color(): Common.Color.Color {
-    if (this.colorInternal) {
-      return this.colorInternal;
+    if (this.#color) {
+      return this.#color;
     }
 
     return getColorFromHsva(this.gamut, this.hsv);
@@ -1091,7 +1091,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     // * If we give "" as an argument to this funciton, it means
     // we want to clear the `colorStringInternal`.
     if (colorString !== undefined) {
-      this.colorStringInternal = colorString;
+      this.#colorString = colorString;
     }
 
     if (colorFormat !== undefined) {
@@ -1114,10 +1114,10 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     //   0 as well. Meaning that, when the user comes to white, the hue will be reset to
     //   `0` which will change the state of the color picker unintentionally.
     if (Array.isArray(colorOrHsv)) {
-      this.colorInternal = undefined;
+      this.#color = undefined;
       this.hsv = colorOrHsv;
     } else if (colorOrHsv !== undefined) {
-      this.colorInternal = colorOrHsv;
+      this.#color = colorOrHsv;
       const oldHue = this.hsv ? this.hsv[0] : null;
       this.hsv = getHsvFromColor(this.gamut, colorOrHsv);
       // When the hue is powerless in lch color space
@@ -1134,7 +1134,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         this.hsv[0] = oldHue;
       }
     }
-    this.colorNameInternal = colorName;
+    this.#colorName = colorName;
 
     if (this.contrastInfo) {
       this.contrastInfo.setColor(Common.Color.Legacy.fromHSVA(this.hsv), this.colorFormat);
@@ -1152,7 +1152,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   colorName(): string|undefined {
-    return this.colorNameInternal;
+    return this.#colorName;
   }
 
   private colorString(): string {
@@ -1161,8 +1161,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     // Empty string check is important here since we use
     // that to point that the colorStringInternal is cleared
     // and should not be used.
-    if (this.colorStringInternal) {
-      return this.colorStringInternal;
+    if (this.#colorString) {
+      return this.#colorString;
     }
 
     const color = this.color;

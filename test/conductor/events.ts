@@ -41,6 +41,7 @@ const ALLOWED_ASSERTION_FAILURES = [
   'Fetch API cannot load chrome-error://chromewebdata/neterror.rollup.js.map. URL scheme "chrome-error" is not supported.',
   'Request Storage.getAffectedUrlsForThirdPartyCookieMetadata failed.',
   'Cannot find registered action with ID \'sources.add-folder-to-workspace\'',
+  'Hash of blocked script',
 ];
 
 const logLevels = {

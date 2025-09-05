@@ -174,6 +174,7 @@ export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
     'MojoChannelAssociatedSendUsesRunOrPostTask',  // crbug.com/376228320
     'RasterInducingScroll',                        // crbug.com/381055647
     'CompositeBackgroundColorAnimation',           // crbug.com/381055647
+    'ScriptSrcHashesV1',                           // crbug.com/443216445
   ]
   // LINT.ThenChange(/test/conductor/hooks.ts:features)
 };

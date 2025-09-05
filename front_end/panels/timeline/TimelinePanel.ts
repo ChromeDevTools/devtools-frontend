@@ -2733,14 +2733,27 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   async #executeNewTrace(
       collectedEvents: Trace.Types.Events.Event[], isFreshRecording: boolean,
       metadata: Trace.Types.File.MetaData|null): Promise<void> {
-    await this.#traceEngineModel.parse(
-        collectedEvents,
-        {
-          metadata: metadata ?? undefined,
-          isFreshRecording,
-          resolveSourceMap: this.#createSourceMapResolver(isFreshRecording, metadata),
+    const config: Trace.Types.Configuration.ParseOptions = {
+      metadata: metadata ?? undefined,
+      isFreshRecording,
+      resolveSourceMap: this.#createSourceMapResolver(isFreshRecording, metadata),
+    };
+
+    if (window.location.href.includes('devtools/bundled') || window.location.search.includes('debugFrontend')) {
+      // Someone is debugging DevTools, enable the logger to give timings
+      // when tracing the performance panel itself.
+      const times: Record<string, number> = {};
+      config.logger = {
+        start(id) {
+          times[id] = performance.now();
         },
-    );
+        end(id) {
+          performance.measure(id, {start: times[id]});
+        },
+      };
+    }
+
+    await this.#traceEngineModel.parse(collectedEvents, config);
 
     // Store all source maps on the trace metadata.
     // If not fresh, we can't validate the maps are still accurate.

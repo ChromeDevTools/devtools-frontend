@@ -12,8 +12,8 @@ ENG_REVIEW_OWNERS
 test
 htaccess
 v8/include
-# Exclude all third_party code.
-third_party
+# Exclude /third_party code, but we want to keep front_end/third_party in the package.
+/third_party
 codereview.settings
 
 /out

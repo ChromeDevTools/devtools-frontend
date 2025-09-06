@@ -66,15 +66,34 @@ export class GroqProvider extends LLMBaseProvider {
         content: msg.content
       };
 
-      // Add optional fields if present
-      if (msg.tool_calls) {
-        baseMessage.tool_calls = msg.tool_calls;
+      // Ensure tool call arguments are strings per OpenAI/Groq spec
+      if (msg.tool_calls && Array.isArray(msg.tool_calls)) {
+        baseMessage.tool_calls = msg.tool_calls.map(tc => {
+          const args = (tc.function as any).arguments;
+          const argsString = typeof args === 'string' ? args : JSON.stringify(args ?? {});
+          return {
+            ...tc,
+            function: {
+              ...tc.function,
+              arguments: argsString,
+            },
+          };
+        });
       }
+
+      // Add optional fields if present
       if (msg.tool_call_id) {
         baseMessage.tool_call_id = msg.tool_call_id;
       }
       if (msg.name) {
         baseMessage.name = msg.name;
+      }
+
+      // For tool role, content must be a string; stringify objects/arrays
+      if (msg.role === 'tool') {
+        if (typeof baseMessage.content !== 'string') {
+          baseMessage.content = JSON.stringify(baseMessage.content ?? '');
+        }
       }
 
       return baseMessage;
@@ -204,8 +223,10 @@ export class GroqProvider extends LLMBaseProvider {
         });
       }
 
-      // Add tool_choice if provided
-      if (options?.tool_choice) {
+      // Ensure tool_choice is set to 'auto' when tools are present unless explicitly provided
+      if (options?.tools && !options?.tool_choice) {
+        payloadBody.tool_choice = 'auto';
+      } else if (options?.tool_choice) {
         payloadBody.tool_choice = options.tool_choice;
       }
 

@@ -9,7 +9,7 @@ import { AgentService } from '../../core/AgentService.js';
 import { createLogger } from '../../core/Logger.js';
 import { createTracingProvider, withTracingContext, isTracingEnabled, getTracingConfig } from '../../tracing/TracingConfig.js';
 import type { TracingProvider, TracingContext } from '../../tracing/TracingProvider.js';
-import type { ChatMessage } from '../../ui/ChatView.js';
+import type { ChatMessage } from '../../models/ChatTypes.js';
 import { AIChatPanel } from '../../ui/AIChatPanel.js';
 import {
   RegisterMessage,
@@ -805,4 +805,3 @@ export class EvaluationAgent {
     });
   }
 }
-

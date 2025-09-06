@@ -16,11 +16,12 @@ import {
   routeNextNode,
 } from './GraphHelpers.js';
 import { type CompiledGraph, NodeType } from './Types.js';
+import type { LLMProvider } from '../LLM/LLMTypes.js';
 
 const logger = createLogger('Graph');
 
 // createAgentGraph now uses the LLM SDK directly
-export function createAgentGraph(_apiKey: string | null, modelName: string): CompiledGraph {
+export function createAgentGraph(_apiKey: string | null, modelName: string, provider?: LLMProvider): CompiledGraph {
   if (!modelName) {
     throw new Error('Model name is required');
   }
@@ -32,6 +33,7 @@ export function createAgentGraph(_apiKey: string | null, modelName: string): Com
     ...defaultAgentGraphConfig,
     modelName: modelName,
     temperature: 0,
+    ...(provider ? { provider } : {}),
   };
 
   return createAgentGraphFromConfig(graphConfigWithModel);

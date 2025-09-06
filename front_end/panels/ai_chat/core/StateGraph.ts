@@ -6,7 +6,7 @@ import { createLogger } from './Logger.js';
 import type { Runnable } from './Types.js';
 import { createTracingProvider } from '../tracing/TracingConfig.js';
 import type { TracingProvider } from '../tracing/TracingProvider.js';
-import { ChatMessageEntity, type ModelChatMessage } from '../ui/ChatView.js';
+import { ChatMessageEntity, type ModelChatMessage } from '../models/ChatTypes.js';
 
 const logger = createLogger('StateGraph');
 

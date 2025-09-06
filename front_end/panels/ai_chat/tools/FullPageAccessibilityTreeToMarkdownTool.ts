@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import { AgentService } from '../core/AgentService.js';
-import { AIChatPanel } from '../ui/AIChatPanel.js';
+import type { LLMContext } from './Tools.js';
 import { callLLMWithTracing } from './LLMTracingWrapper.js';
 
 import { GetAccessibilityTreeTool, type Tool, type ErrorResult } from './Tools.js';
@@ -34,7 +34,7 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
     CRITICAL RULE: The output should represent the entire tree content. If the tree is empty or unavailable, return a Markdown message stating so.`;
   }
 
-  async execute(_args: Record<string, unknown>): Promise<FullPageAccessibilityTreeToMarkdownResult | ErrorResult> {
+  async execute(_args: Record<string, unknown>, ctx?: LLMContext): Promise<FullPageAccessibilityTreeToMarkdownResult | ErrorResult> {
     const getAccTreeTool = new GetAccessibilityTreeTool();
     const treeResult = await getAccTreeTool.execute({ reasoning: 'Get full accessibility tree for Markdown conversion' });
     if ('error' in treeResult) {
@@ -50,7 +50,11 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
     if (!apiKey) {
       return { error: 'API key not configured.' };
     }
-    const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+    if (!ctx?.provider || !(ctx.nanoModel || ctx.model)) {
+      return { error: 'Missing LLM context (provider/model) for AccessibilityTreeToMarkdownTool' };
+    }
+    const provider = ctx.provider;
+    const model = ctx.nanoModel || ctx.model;
 
     const prompt = `Accessibility Tree:\n\n\`\`\`\n${accessibilityTreeString}\n\`\`\``;
 

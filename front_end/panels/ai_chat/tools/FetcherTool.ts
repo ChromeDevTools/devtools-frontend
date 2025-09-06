@@ -4,7 +4,7 @@
 
 import { createLogger } from '../core/Logger.js';
 import { HTMLToMarkdownTool, type HTMLToMarkdownResult } from './HTMLToMarkdownTool.js';
-import { NavigateURLTool, type Tool } from './Tools.js';
+import { NavigateURLTool, type Tool, type LLMContext } from './Tools.js';
 
 const logger = createLogger('Tool:Fetcher');
 
@@ -72,7 +72,7 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
   /**
    * Execute the fetcher agent to process multiple URLs
    */
-  async execute(args: FetcherToolArgs): Promise<FetcherToolResult> {
+  async execute(args: FetcherToolArgs, ctx?: LLMContext): Promise<FetcherToolResult> {
     logger.info('Executing with args', { args });
     const { urls, reasoning } = args;
 
@@ -93,7 +93,7 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
     for (const url of urlsToProcess) {
       try {
         logger.info('Processing URL', { url });
-        const fetchedContent = await this.fetchContentFromUrl(url, reasoning);
+        const fetchedContent = await this.fetchContentFromUrl(url, reasoning, ctx);
         results.push(fetchedContent);
       } catch (error: any) {
         logger.error('Error processing URL', { url, error: error.message, stack: error.stack });
@@ -116,15 +116,15 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
   /**
    * Fetch and extract content from a single URL
    */
-  private async fetchContentFromUrl(url: string, reasoning: string): Promise<FetchedContent> {
+  private async fetchContentFromUrl(url: string, reasoning: string, ctx?: LLMContext): Promise<FetchedContent> {
     try {
       // Step 1: Navigate to the URL
       logger.info('Navigating to URL', { url });
       // Note: NavigateURLTool requires both url and reasoning parameters
-      const navigationResult = await this.navigateURLTool.execute({
-        url,
-        reasoning: `Navigating to ${url} to extract content for research`
-      } as { url: string, reasoning: string });
+        const navigationResult = await this.navigateURLTool.execute({
+          url,
+          reasoning: `Navigating to ${url} to extract content for research`
+      } as { url: string, reasoning: string }, ctx);
 
       // Check for navigation errors
       if ('error' in navigationResult) {
@@ -148,7 +148,7 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
       const extractionResult = await this.htmlToMarkdownTool.execute({
         instruction: 'Extract the main content focusing on article text, headings, and important information. Remove ads, navigation, and distracting elements.',
         reasoning
-      });
+      }, ctx);
 
       // Check for extraction errors
       if (!extractionResult.success || !extractionResult.markdownContent) {

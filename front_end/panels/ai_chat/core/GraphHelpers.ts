@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type { getTools } from '../tools/Tools.js';
-import { ChatMessageEntity, type ChatMessage } from '../ui/ChatView.js';
+import { ChatMessageEntity, type ChatMessage } from '../models/ChatTypes.js';
 
 import * as BaseOrchestratorAgent from './BaseOrchestratorAgent.js';
 import { createLogger } from './Logger.js';

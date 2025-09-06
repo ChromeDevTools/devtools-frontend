@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../core/sdk/sdk.js';
-import type { Tool } from './Tools.js';
+import type { Tool, LLMContext } from './Tools.js';
 import { TakeScreenshotTool } from './Tools.js';
 import { GetAccessibilityTreeTool } from './Tools.js';
 import { createLogger } from '../core/Logger.js';
-import { AIChatPanel } from '../ui/AIChatPanel.js';
-import { callLLMWithTracing } from './LLMTracingWrapper.js';
+import { LLMClient } from '../LLM/LLMClient.js';
+import { LLMResponseParser } from '../LLM/LLMResponseParser.js';
+import { LLMRetryManager } from '../LLM/LLMErrorHandler.js';
 
 const logger = createLogger('SequentialThinkingTool');
 
@@ -31,6 +32,8 @@ export interface ThinkingStep {
   thought: string;
   action: string;
   targetDescription?: string;
+  target_id?: number;
+  value?: string;
   expectedOutcome: string;
   risks?: string[];
 }
@@ -69,13 +72,13 @@ export class SequentialThinkingTool implements Tool<SequentialThinkingArgs, Sequ
   private screenshotTool = new TakeScreenshotTool();
   private accessibilityTool = new GetAccessibilityTreeTool();
 
-  async execute(args: SequentialThinkingArgs): Promise<SequentialThinkingResult | { error: string }> {
+  async execute(args: SequentialThinkingArgs, ctx?: LLMContext): Promise<SequentialThinkingResult | { error: string }> {
     try {
       logger.info('Sequential thinking initiated', { userRequest: args.userRequest });
 
       // Check if current model supports vision
-      const currentModel = AIChatPanel.instance().getSelectedModel();
-      const isVisionCapable = await AIChatPanel.isVisionCapable(currentModel);
+      const currentModel = ctx?.model || '';
+      const isVisionCapable = ctx?.getVisionCapability ? await ctx.getVisionCapability(currentModel) : false;
       
       logger.info(`Model ${currentModel} vision capable: ${isVisionCapable}`);
 
@@ -94,7 +97,7 @@ export class SequentialThinkingTool implements Tool<SequentialThinkingArgs, Sequ
       );
 
       // 3. Get LLM analysis with visual grounding (or text-only)
-      const analysis = await this.getGroundedAnalysis(prompt, isVisionCapable);
+      const analysis = await this.getGroundedAnalysis(prompt, ctx);
       if ('error' in analysis) {
         return { error: `Failed to analyze: ${analysis.error}` };
       }
@@ -179,15 +182,22 @@ OUTPUT FORMAT:
     {
       "step": 1,
       "thought": "Why this action is needed",
-      "action": "Specific action to take",
+      "action": "Specific action to take (e.g., CLICK, TYPE, SCROLL)",
       "targetDescription": "Visual description of target element (color, position, text)",
+      "target_id": 123456,
+      "value": "text to type (for TYPE actions only)",
       "expectedOutcome": "What should change visually",
       "risks": ["Potential issues"]
     }
   ],
   "warnings": ["Any concerns about completing the task"],
   "confidence": 0.0-1.0
-}`;
+}
+
+IMPORTANT FIELD USAGE:
+- target_id: Include this number when you can identify a specific element ID from the accessibility tree
+- value: Only include for TYPE actions - the text that should be typed into the element
+- action: Use standard action types like CLICK, TYPE, SCROLL, SELECT, etc.`;
 
     const pastStepsSection = pastSteps.length > 0 ? `
 PAST STEPS ATTEMPTED:
@@ -219,65 +229,73 @@ Based on the screenshot and current state, create a grounded sequential plan for
     };
   }
 
-  private async getGroundedAnalysis(prompt: { systemPrompt: string; userPrompt: string; images: Array<{ type: string; data: string }> }, isVisionCapable: boolean = true): Promise<SequentialThinkingResult | { error: string }> {
+  private async getGroundedAnalysis(prompt: { systemPrompt: string; userPrompt: string; images: Array<{ type: string; data: string }> }, ctx?: LLMContext): Promise<SequentialThinkingResult | { error: string }> {
+    const retryManager = new LLMRetryManager({
+      enableLogging: true,
+      defaultConfig: {
+        maxRetries: 2, // Allow 2 retries for JSON parsing failures
+        baseDelayMs: 1000,
+        maxDelayMs: 5000,
+        backoffMultiplier: 1.5,
+        jitterMs: 500,
+      }
+    });
+
     try {
-      // Get the selected model and its provider
-      const model = AIChatPanel.instance().getSelectedModel();
-      const provider = AIChatPanel.getProviderForModel(model);
+      const result = await retryManager.executeWithRetry(async () => {
+        // Get the selected model and its provider
+        if (!ctx?.provider || !ctx.model) {
+          throw new Error('Missing LLM context (provider/model) for SequentialThinkingTool');
+        }
+        const provider = ctx.provider;
+        const model = ctx.model;
+        const llm = LLMClient.getInstance();
 
-      // Prepare message based on vision capability
-      const messages = [{
-        role: 'user' as const,
-        content: isVisionCapable ? [
-          { type: 'text' as const, text: prompt.userPrompt },
-          ...prompt.images.filter(img => img.data !== 'no-screenshot-available').map(img => ({
-            type: 'image_url' as const,
-            image_url: { url: img.data }
-          }))
-        ] : prompt.userPrompt // Text-only for non-vision models
-      }];
+        // Prepare multimodal message
+        const validImages = prompt.images.filter(img => !!img?.data && img.data !== 'no-screenshot-available');
+        const messages = [{
+          role: 'user' as const,
+          content: [
+            { type: 'text' as const, text: prompt.userPrompt },
+            ...validImages.map(img => ({
+              type: 'image_url' as const,
+              image_url: { url: img.data }
+            }))
+          ]
+        }];
 
-      const response = await callLLMWithTracing(
-        {
+        const response = await llm.call({
           provider,
           model,
           messages,
           systemPrompt: prompt.systemPrompt,
-          temperature: 0.2,
-          options: { retryConfig: { maxRetries: 3 } }
-        },
-        {
-          toolName: this.name,
-          operationName: 'sequential_analysis',
-          context: 'grounded_planning',
-          additionalMetadata: {
-            isVisionCapable,
-            imageCount: prompt.images.length,
-            hasValidImages: prompt.images.some(img => img.data !== 'no-screenshot-available')
-          }
+          temperature: 0.2
+        });
+
+        if (!response.text) {
+          throw new Error('No response from LLM');
         }
-      );
 
-      if (!response.text) {
-        return { error: 'No response from LLM' };
-      }
-
-      try {
-        const result = JSON.parse(response.text) as SequentialThinkingResult;
+        // This will throw if JSON parsing fails, triggering a retry
+        const parsedResult = LLMResponseParser.parseStrictJSON(response.text) as SequentialThinkingResult;
         
         // Validate result structure
-        if (!result.currentState || !result.nextSteps || !Array.isArray(result.nextSteps)) {
-          return { error: 'Invalid response structure from LLM' };
+        if (!parsedResult.currentState || !parsedResult.nextSteps || !Array.isArray(parsedResult.nextSteps)) {
+          throw new Error('Invalid response structure from LLM - missing required fields');
         }
 
-        return result;
-      } catch (parseError) {
-        logger.error('Failed to parse LLM response:', parseError);
-        return { error: `Failed to parse response: ${String(parseError)}` };
-      }
+        return parsedResult;
+      }, {
+        context: 'sequential_thinking_analysis',
+        customRetryConfig: {
+          maxRetries: 2, // Specific retry count for this operation
+        }
+      });
+
+      return result;
     } catch (error) {
-      logger.error('LLM call failed:', error);
-      return { error: `LLM analysis failed: ${String(error)}` };
+      logger.error('Sequential thinking analysis failed after retries:', error);
+      return { error: `Analysis failed: ${String(error)}` };
     }
   }
 

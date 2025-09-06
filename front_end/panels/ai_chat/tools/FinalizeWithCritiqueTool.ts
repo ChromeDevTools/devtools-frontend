@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import { AgentService } from '../core/AgentService.js';
-import { ChatMessageEntity } from '../ui/ChatView.js';
+import { ChatMessageEntity } from '../models/ChatTypes.js';
 import { createLogger } from '../core/Logger.js';
 
 const logger = createLogger('FinalizeWithCritiqueTool');

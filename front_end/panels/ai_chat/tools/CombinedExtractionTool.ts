@@ -13,7 +13,7 @@ import {
   SchemaBasedExtractorTool, type SchemaDefinition
 } from './SchemaBasedExtractorTool.js';
 import {
-  NavigateURLTool, type Tool, type ErrorResult
+  NavigateURLTool, type Tool, type ErrorResult, type LLMContext
 } from './Tools.js';
 
 const logger = createLogger('Tool:CombinedExtraction');
@@ -78,7 +78,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
   /**
    * Execute the combined extraction
    */
-  async execute(args: CombinedExtractionArgs): Promise<CombinedExtractionResult | ErrorResult> {
+  async execute(args: CombinedExtractionArgs, ctx?: LLMContext): Promise<CombinedExtractionResult | ErrorResult> {
     logger.info('Executing with args', { args });
     const { url, schema, markdownResponse, reasoning, extractionInstruction } = args;
     const agentService = AgentService.getInstance();
@@ -96,7 +96,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
       // STEP 1: Navigate to the URL using NavigateURLTool
       logger.info('Navigating to URL', { url });
       const navigateUrlTool = new NavigateURLTool();
-      const navigationResult = await navigateUrlTool.execute({ url, reasoning });
+      const navigationResult = await navigateUrlTool.execute({ url, reasoning }, ctx);
 
       // Check if we got an error result
       if ('error' in navigationResult) {
@@ -136,7 +136,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
         const schemaResult = await schemaExtractorTool.execute({
           schema,
           instruction: extractionInstruction
-        });
+        }, ctx);
 
         if (!schemaResult.success) {
           // Don't fail the entire operation, just add the error to the result
@@ -153,7 +153,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
         const markdownResult = await htmlToMarkdownTool.execute({
           instruction: extractionInstruction,
           reasoning: reasoning || 'Converting page content to markdown for readability',
-        });
+        }, ctx);
 
         if (!markdownResult.success) {
           // Don't fail the entire operation if we already have schema data

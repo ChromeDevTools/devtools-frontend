@@ -20,6 +20,8 @@ import { OpenRouterProvider } from '../LLM/OpenRouterProvider.js';
 import { createLogger } from '../core/Logger.js';
 import { isEvaluationEnabled, getEvaluationConfig } from '../common/EvaluationConfig.js';
 import { EvaluationAgent } from '../evaluation/remote/EvaluationAgent.js';
+// Import of LiveAgentSessionComponent is not required here; the element is
+// registered by ChatView where it is used.
 
 const logger = createLogger('AIChatPanel');
 
@@ -76,14 +78,8 @@ localStorage.removeItem = (key: string) => {
 }
 
 import chatViewStyles from './chatView.css.js';
-import {
-  type ChatMessage,
-  ChatMessageEntity,
-  ChatView,
-  type ImageInputData,
-  type ModelChatMessage,
-  State as ChatViewState,
-} from './ChatView.js';
+import { ChatView } from './ChatView.js';
+import { type ChatMessage, ChatMessageEntity, type ImageInputData, type ModelChatMessage, State as ChatViewState } from '../models/ChatTypes.js';
 import { HelpDialog } from './HelpDialog.js';
 import { SettingsDialog, isVectorDBEnabled } from './SettingsDialog.js';
 import { EvaluationDialog } from './EvaluationDialog.js';
@@ -719,12 +715,28 @@ export class AIChatPanel extends UI.Panel.Panel {
   #apiKey: string | null = null; // Regular API key
   #evaluationAgent: EvaluationAgent | null = null; // Evaluation agent for this tab
 
+  // Store bound event listeners to properly add/remove without duplications
+  #boundOnMessagesChanged?: (e: Common.EventTarget.EventTargetEvent<ChatMessage[]>) => void;
+  #boundOnAgentSessionStarted?: (e: Common.EventTarget.EventTargetEvent<import('../agent_framework/AgentSessionTypes.js').AgentSession>) => void;
+  #boundOnAgentToolStarted?: (e: Common.EventTarget.EventTargetEvent<{ session: import('../agent_framework/AgentSessionTypes.js').AgentSession, toolCall: import('../agent_framework/AgentSessionTypes.js').AgentMessage }>) => void;
+  #boundOnAgentToolCompleted?: (e: Common.EventTarget.EventTargetEvent<{ session: import('../agent_framework/AgentSessionTypes.js').AgentSession, toolResult: import('../agent_framework/AgentSessionTypes.js').AgentMessage }>) => void;
+  #boundOnAgentSessionUpdated?: (e: Common.EventTarget.EventTargetEvent<import('../agent_framework/AgentSessionTypes.js').AgentSession>) => void;
+  #boundOnChildAgentStarted?: (e: Common.EventTarget.EventTargetEvent<{ parentSession: import('../agent_framework/AgentSessionTypes.js').AgentSession, childAgentName: string, childSessionId: string }>) => void;
+
   constructor() {
     super(AIChatPanel.panelName);
 
     // Initialize storage monitoring for debugging
     StorageMonitor.getInstance();
     
+    // Prepare bound handlers once so removeEventListener works correctly
+    this.#boundOnMessagesChanged = this.#handleMessagesChanged.bind(this);
+    this.#boundOnAgentSessionStarted = this.#handleAgentSessionStarted.bind(this);
+    this.#boundOnAgentToolStarted = this.#handleAgentToolStarted.bind(this);
+    this.#boundOnAgentToolCompleted = this.#handleAgentToolCompleted.bind(this);
+    this.#boundOnAgentSessionUpdated = this.#handleAgentSessionUpdated.bind(this);
+    this.#boundOnChildAgentStarted = this.#handleChildAgentStarted.bind(this);
+
     this.#setupUI();
     this.#setupInitialState();
     this.#setupOAuthEventListeners();
@@ -1310,10 +1322,20 @@ export class AIChatPanel extends UI.Panel.Panel {
     logger.info('✅ Credentials valid, proceeding with agent service initialization');
     
     // Remove any existing listeners to prevent duplicates
-    this.#agentService.removeEventListener(AgentEvents.MESSAGES_CHANGED, this.#handleMessagesChanged.bind(this));
+    if (this.#boundOnMessagesChanged) this.#agentService.removeEventListener(AgentEvents.MESSAGES_CHANGED, this.#boundOnMessagesChanged);
+    if (this.#boundOnAgentSessionStarted) this.#agentService.removeEventListener(AgentEvents.AGENT_SESSION_STARTED, this.#boundOnAgentSessionStarted);
+    if (this.#boundOnAgentToolStarted) this.#agentService.removeEventListener(AgentEvents.AGENT_TOOL_STARTED, this.#boundOnAgentToolStarted);
+    if (this.#boundOnAgentToolCompleted) this.#agentService.removeEventListener(AgentEvents.AGENT_TOOL_COMPLETED, this.#boundOnAgentToolCompleted);
+    if (this.#boundOnAgentSessionUpdated) this.#agentService.removeEventListener(AgentEvents.AGENT_SESSION_UPDATED, this.#boundOnAgentSessionUpdated);
+    if (this.#boundOnChildAgentStarted) this.#agentService.removeEventListener(AgentEvents.CHILD_AGENT_STARTED, this.#boundOnChildAgentStarted);
     
     // Register for messages changed events
-    this.#agentService.addEventListener(AgentEvents.MESSAGES_CHANGED, this.#handleMessagesChanged.bind(this));
+    if (this.#boundOnMessagesChanged) this.#agentService.addEventListener(AgentEvents.MESSAGES_CHANGED, this.#boundOnMessagesChanged);
+    if (this.#boundOnAgentSessionStarted) this.#agentService.addEventListener(AgentEvents.AGENT_SESSION_STARTED, this.#boundOnAgentSessionStarted);
+    if (this.#boundOnAgentToolStarted) this.#agentService.addEventListener(AgentEvents.AGENT_TOOL_STARTED, this.#boundOnAgentToolStarted);
+    if (this.#boundOnAgentToolCompleted) this.#agentService.addEventListener(AgentEvents.AGENT_TOOL_COMPLETED, this.#boundOnAgentToolCompleted);
+    if (this.#boundOnAgentSessionUpdated) this.#agentService.addEventListener(AgentEvents.AGENT_SESSION_UPDATED, this.#boundOnAgentSessionUpdated);
+    if (this.#boundOnChildAgentStarted) this.#agentService.addEventListener(AgentEvents.CHILD_AGENT_STARTED, this.#boundOnChildAgentStarted);
     
     // Initialize the agent service
     logger.info('Calling agentService.initialize()...');
@@ -1565,16 +1587,98 @@ export class AIChatPanel extends UI.Panel.Panel {
   }
   
   /**
+   * Handle agent session started event
+   */
+  #handleAgentSessionStarted(event: Common.EventTarget.EventTargetEvent<import('../agent_framework/AgentSessionTypes.js').AgentSession>): void {
+    const session = event.data;
+    this.#upsertAgentSessionMessage(session);
+    this.performUpdate();
+  }
+  
+  /**
+   * Handle agent tool started event
+   */
+  #handleAgentToolStarted(event: Common.EventTarget.EventTargetEvent<{ session: import('../agent_framework/AgentSessionTypes.js').AgentSession, toolCall: import('../agent_framework/AgentSessionTypes.js').AgentMessage }>): void {
+    const { session } = event.data;
+    this.#upsertAgentSessionMessage(session);
+    this.performUpdate();
+  }
+  
+  /**
+   * Handle agent tool completed event
+   */
+  #handleAgentToolCompleted(event: Common.EventTarget.EventTargetEvent<{ session: import('../agent_framework/AgentSessionTypes.js').AgentSession, toolResult: import('../agent_framework/AgentSessionTypes.js').AgentMessage }>): void {
+    const { session } = event.data;
+    this.#upsertAgentSessionMessage(session);
+    this.performUpdate();
+  }
+  
+  /**
+   * Handle agent session updated event
+   */
+  #handleAgentSessionUpdated(event: Common.EventTarget.EventTargetEvent<import('../agent_framework/AgentSessionTypes.js').AgentSession>): void {
+    const session = event.data;
+    this.#upsertAgentSessionMessage(session);
+    this.performUpdate();
+  }
+  
+  /**
+   * Handle child agent started event
+   */
+  #handleChildAgentStarted(event: Common.EventTarget.EventTargetEvent<{ parentSession: import('../agent_framework/AgentSessionTypes.js').AgentSession, childAgentName: string, childSessionId: string }>): void {
+    const { parentSession } = event.data;
+    this.#upsertAgentSessionMessage(parentSession);
+    this.performUpdate();
+  }
+
+  /**
+   * Upsert an AGENT_SESSION message into the messages array by sessionId
+   */
+  #upsertAgentSessionMessage(session: import('../agent_framework/AgentSessionTypes.js').AgentSession): void {
+    const idx = this.#messages.findIndex(m => m.entity === ChatMessageEntity.AGENT_SESSION &&
+      (m as any).agentSession?.sessionId === session.sessionId);
+    if (idx >= 0) {
+      const updated = { ...(this.#messages[idx] as any), agentSession: session };
+      const next = [...this.#messages];
+      next[idx] = updated;
+      this.#messages = next;
+    } else {
+      const agentSessionMessage: ChatMessage = {
+        entity: ChatMessageEntity.AGENT_SESSION,
+        agentSession: session,
+        summary: `${session.agentName} is executing...`
+      } as any;
+      this.#messages = [...this.#messages, agentSessionMessage];
+    }
+  }
+  
+  /**
    * Updates processing state based on the latest messages
    */
   #updateProcessingState(messages: ChatMessage[]): void {
     // Only set isProcessing to false if the last message is a final answer from the model
     const lastMessage = messages[messages.length - 1];
-    if (lastMessage &&
-        lastMessage.entity === ChatMessageEntity.MODEL &&
-        lastMessage.action === 'final' &&
-        lastMessage.isFinalAnswer) {
-      this.#isProcessing = false;
+    
+    // DEBUG: Log processing state check
+    logger.info('updateProcessingState: Current isProcessing =', this.#isProcessing);
+    if (lastMessage) {
+      const checks = {
+        hasMessage: !!lastMessage,
+        isModelEntity: lastMessage.entity === ChatMessageEntity.MODEL,
+        isFinalAction: 'action' in lastMessage && lastMessage.action === 'final',
+        isFinalAnswer: 'isFinalAnswer' in lastMessage && lastMessage.isFinalAnswer
+      };
+      logger.info('Processing state checks:', checks);
+      
+      if (lastMessage &&
+          lastMessage.entity === ChatMessageEntity.MODEL &&
+          lastMessage.action === 'final' &&
+          (lastMessage.isFinalAnswer || 'error' in lastMessage)) {
+        logger.info('Setting isProcessing to false');
+        this.#isProcessing = false;
+      } else {
+        logger.info('Not setting isProcessing to false - conditions not met');
+      }
     }
   }
 
@@ -1757,7 +1861,23 @@ export class AIChatPanel extends UI.Panel.Panel {
    */
   override willHide(): void {
     // Explicitly remove any event listeners to prevent memory leaks
-    this.#agentService.removeEventListener(AgentEvents.MESSAGES_CHANGED, this.#handleMessagesChanged.bind(this));
+    if (this.#boundOnMessagesChanged) {
+      this.#agentService.removeEventListener(AgentEvents.MESSAGES_CHANGED, this.#boundOnMessagesChanged);
+    }
+    if (this.#boundOnAgentSessionStarted) this.#agentService.removeEventListener(AgentEvents.AGENT_SESSION_STARTED, this.#boundOnAgentSessionStarted);
+    if (this.#boundOnAgentToolStarted) this.#agentService.removeEventListener(AgentEvents.AGENT_TOOL_STARTED, this.#boundOnAgentToolStarted);
+    if (this.#boundOnAgentToolCompleted) this.#agentService.removeEventListener(AgentEvents.AGENT_TOOL_COMPLETED, this.#boundOnAgentToolCompleted);
+    if (this.#boundOnAgentSessionUpdated) this.#agentService.removeEventListener(AgentEvents.AGENT_SESSION_UPDATED, this.#boundOnAgentSessionUpdated);
+    if (this.#boundOnChildAgentStarted) this.#agentService.removeEventListener(AgentEvents.CHILD_AGENT_STARTED, this.#boundOnChildAgentStarted);
+  }
+
+  // Test-only helpers
+  getIsProcessingForTesting(): boolean {
+    return this.#isProcessing;
+  }
+
+  setProcessingForTesting(flag: boolean): void {
+    this.#setProcessingState(flag);
   }
 
   /**

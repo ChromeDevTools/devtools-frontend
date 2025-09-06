@@ -7,7 +7,7 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Utils from '../common/utils.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { AIChatPanel } from '../ui/AIChatPanel.js';
+import type { LLMContext } from './Tools.js';
 import { callLLMWithTracing } from './LLMTracingWrapper.js';
 
 import { NodeIDsToURLsTool, type Tool } from './Tools.js';
@@ -74,7 +74,7 @@ Schema Examples:
    * Execute the schema-based extraction
    */
 
-  async execute(args: SchemaExtractionArgs): Promise<SchemaExtractionResult> {
+  async execute(args: SchemaExtractionArgs, ctx?: LLMContext): Promise<SchemaExtractionResult> {
     logger.debug('Executing with args', args);
     
     const { schema, instruction, reasoning } = args;
@@ -173,6 +173,7 @@ Schema Examples:
         domContent: treeText,
         schema: transformedSchema,
         apiKey,
+        ctx,
       });
 
       logger.debug('Initial extraction result:', initialExtraction);
@@ -190,6 +191,7 @@ Schema Examples:
         schema: transformedSchema, // Use the same transformed schema
         initialData: initialExtraction,
         apiKey,
+        ctx,
       });
 
       logger.debug('Refinement result:', refinedData);
@@ -227,6 +229,7 @@ Schema Examples:
         domContent: treeText, // Pass the DOM content for context
         schema, // Pass the schema to understand what was requested
         apiKey,
+        ctx,
       });
 
       logger.debug('Metadata result:', metadata);
@@ -399,6 +402,7 @@ Schema Examples:
     domContent: string,
     schema: SchemaDefinition,
     apiKey: string,
+    ctx?: LLMContext,
   }): Promise<any> {
     const { instruction, domContent, schema, apiKey } = options;
     logger.debug('Calling Extraction LLM...');
@@ -447,7 +451,11 @@ CRITICAL:
 Only output the JSON object with real data from the accessibility tree.`;
 
     try {
-      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      if (!options.ctx?.provider || !(options.ctx.nanoModel || options.ctx.model)) {
+        throw new Error('Missing LLM context (provider/model) for extraction');
+      }
+      const provider = options.ctx.provider;
+      const model = options.ctx.nanoModel || options.ctx.model;
       const llmResponse = await callLLMWithTracing(
         {
           provider,
@@ -488,6 +496,7 @@ Only output the JSON object with real data from the accessibility tree.`;
     schema: SchemaDefinition,
     initialData: any,
     apiKey: string,
+    ctx?: LLMContext,
   }): Promise<any> {
     const { instruction, schema, initialData, apiKey } = options;
     logger.debug('Calling Refinement LLM...');
@@ -527,7 +536,11 @@ Return only the refined JSON object.
 Do not add any conversational text or explanations or thinking tags.`;
 
     try {
-      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      if (!options.ctx?.provider || !(options.ctx.nanoModel || options.ctx.model)) {
+        throw new Error('Missing LLM context (provider/model) for refinement');
+      }
+      const provider = options.ctx.provider;
+      const model = options.ctx.nanoModel || options.ctx.model;
       const llmResponse = await callLLMWithTracing(
         {
           provider,
@@ -568,6 +581,7 @@ Do not add any conversational text or explanations or thinking tags.`;
     domContent: string,
     schema: SchemaDefinition,
     apiKey: string,
+    ctx?: LLMContext,
   }): Promise<ExtractionMetadata | null> {
     const { instruction, extractedData, domContent, schema, apiKey } = options;
     logger.debug('Calling Metadata LLM...');
@@ -634,7 +648,11 @@ Describe the type of page/content that was analyzed.
 Return ONLY a valid JSON object conforming to the required metadata schema.`;
 
     try {
-      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      if (!options.ctx?.provider || !(options.ctx.nanoModel || options.ctx.model)) {
+        throw new Error('Missing LLM context (provider/model) for metadata');
+      }
+      const provider = options.ctx.provider;
+      const model = options.ctx.nanoModel || options.ctx.model;
       const llmResponse = await callLLMWithTracing(
         {
           provider,

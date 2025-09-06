@@ -7,6 +7,7 @@ import { createLogger } from './Logger.js';
 import type { AgentState } from './State.js';
 import { StateGraph } from './StateGraph.js';
 import { NodeType, type CompiledGraph, type Runnable } from './Types.js';
+import type { LLMProvider } from '../LLM/LLMTypes.js';
 
 const logger = createLogger('ConfigurableGraph');
 
@@ -35,6 +36,10 @@ export interface GraphConfig {
   edges: GraphEdgeConfig[];
   modelName?: string;
   temperature?: number;
+  /**
+   * Selected LLM provider for this graph's agent nodes
+   */
+  provider?: LLMProvider;
 }
 
 /**
@@ -51,7 +56,7 @@ export function createAgentGraphFromConfig(
   const graph = new StateGraph<AgentState>({ name: config.name });
 
   const nodeFactories: Record<string, (nodeConfig: GraphNodeConfig, graphInstance?: StateGraph<AgentState>) => Runnable<AgentState, AgentState>> = {
-    agent: () => createAgentNode(config.modelName!, config.temperature || 0),
+    agent: () => createAgentNode(config.modelName!, config.provider!, config.temperature || 0),
     final: () => createFinalNode(),
     toolExecutor: (nodeCfg) => {
       return {
@@ -91,7 +96,7 @@ export function createAgentGraphFromConfig(
         const toolExecutorNodeName = edgeConfig.targetMap[NodeType.TOOL_EXECUTOR.toString()];
         if (toolExecutorNodeName && toolExecutorNodeName !== '__end__') {
           logger.debug(`Dynamically creating/updating tool executor: ${toolExecutorNodeName}`);
-          const toolExecutorInstance = createToolExecutorNode(state);
+          const toolExecutorInstance = createToolExecutorNode(state, config.provider!, config.modelName!);
           graphInstance.addNode(toolExecutorNodeName, toolExecutorInstance);
         } else {
           logger.error('Tool executor node name not found in targetMap or is __end__. Routing to __end__.');

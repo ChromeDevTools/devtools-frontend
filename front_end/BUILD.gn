@@ -29,6 +29,8 @@ group("front_end") {
     "entrypoints/shell",
     "entrypoints/wasmparser_worker:worker_entrypoint",
     "entrypoints/worker_app:entrypoint",
+    "panels/ai_chat:ai_chat_release_js_metadata",
+    "panels/ai_chat:ai_chat_release_css_metadata",
     "third_party/vscode.web-custom-data:web_custom_data",
   ]
 }

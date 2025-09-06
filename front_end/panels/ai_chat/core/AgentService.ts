@@ -6,12 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import {
-  type ChatMessage,
-  ChatMessageEntity,
-  type ImageInputData,
-  type ModelChatMessage
-} from '../ui/ChatView.js';
+import { type ChatMessage, ChatMessageEntity, type ImageInputData, type ModelChatMessage } from '../models/ChatTypes.js';
 
 import {createAgentGraph} from './Graph.js';
 import { createLogger } from './Logger.js';
@@ -20,6 +15,10 @@ import type {CompiledGraph} from './Types.js';
 import { LLMClient } from '../LLM/LLMClient.js';
 import { createTracingProvider, getCurrentTracingContext } from '../tracing/TracingConfig.js';
 import type { TracingProvider, TracingContext } from '../tracing/TracingProvider.js';
+import { AgentRunnerEventBus } from '../agent_framework/AgentRunnerEventBus.js';
+import { AgentRunner } from '../agent_framework/AgentRunner.js';
+import type { AgentSession, AgentMessage } from '../agent_framework/AgentSessionTypes.js';
+import type { LLMProvider } from '../LLM/LLMTypes.js';
 
 const logger = createLogger('AgentService');
 
@@ -28,6 +27,11 @@ const logger = createLogger('AgentService');
  */
 export enum Events {
   MESSAGES_CHANGED = 'messages-changed',
+  AGENT_SESSION_STARTED = 'agent-session-started',
+  AGENT_TOOL_STARTED = 'agent-tool-started',
+  AGENT_TOOL_COMPLETED = 'agent-tool-completed',
+  AGENT_SESSION_UPDATED = 'agent-session-updated',
+  CHILD_AGENT_STARTED = 'child-agent-started',
 }
 
 /**
@@ -35,6 +39,11 @@ export enum Events {
  */
 export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
   [Events.MESSAGES_CHANGED]: ChatMessage[],
+  [Events.AGENT_SESSION_STARTED]: AgentSession,
+  [Events.AGENT_TOOL_STARTED]: { session: AgentSession, toolCall: AgentMessage },
+  [Events.AGENT_TOOL_COMPLETED]: { session: AgentSession, toolResult: AgentMessage },
+  [Events.AGENT_SESSION_UPDATED]: AgentSession,
+  [Events.CHILD_AGENT_STARTED]: { parentSession: AgentSession, childAgentName: string, childSessionId: string },
 }> {
   static instance: AgentService;
 
@@ -45,6 +54,7 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
   #runningGraphStatePromise?: AsyncGenerator<AgentState, AgentState, void>;
   #tracingProvider!: TracingProvider;
   #sessionId: string;
+  #activeAgentSessions = new Map<string, AgentSession>();
 
   constructor() {
     super();
@@ -61,6 +71,12 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       answer: i18nString(UIStrings.welcomeMessage),
       isFinalAnswer: true,
     });
+    
+    // Initialize AgentRunner event system
+    AgentRunner.initializeEventBus();
+    
+    // Subscribe to AgentRunner events
+    AgentRunnerEventBus.getInstance().addEventListener('agent-progress', this.#handleAgentProgress.bind(this));
   }
 
   /**
@@ -177,8 +193,11 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
         throw new Error(`${providerName} API key is required for this configuration`);
       }
 
-      // Will throw error if OpenAI model is used without API key
-      this.#graph = createAgentGraph(apiKey, modelName);
+      // Determine selected provider for primary graph execution
+      const selectedProvider = (localStorage.getItem('ai_chat_provider') || 'openai') as LLMProvider;
+
+      // Will throw error if model/provider configuration is invalid
+      this.#graph = createAgentGraph(apiKey, modelName, selectedProvider);
 
       this.#isInitialized = true;
     } catch (error) {
@@ -595,6 +614,110 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       logger.error('Error checking if API key is required:', error);
       // Default to requiring API key in case of errors
       return true;
+    }
+  }
+  
+  /**
+   * Handle progress events from AgentRunner
+   */
+  #handleAgentProgress(event: Common.EventTarget.EventTargetEvent<import('../agent_framework/AgentRunnerEventBus.js').AgentRunnerProgressEvent>): void {
+    const progressEvent = event.data;
+    
+    switch (progressEvent.type) {
+      case 'session_started':
+        this.#activeAgentSessions.set(progressEvent.sessionId, progressEvent.data.session);
+        this.dispatchEventToListeners(Events.AGENT_SESSION_STARTED, progressEvent.data.session);
+        // Upsert AGENT_SESSION message for real-time rendering
+        this.#upsertAgentSessionInMessages(progressEvent.data.session);
+        break;
+      case 'tool_started':
+        this.dispatchEventToListeners(Events.AGENT_TOOL_STARTED, progressEvent.data);
+        // Stream session update into chat messages (parent or child)
+        this.#upsertAgentSessionInMessages(progressEvent.data.session);
+        break;
+      case 'tool_completed':
+        this.dispatchEventToListeners(Events.AGENT_TOOL_COMPLETED, progressEvent.data);
+        // Update session state
+        const session = this.#activeAgentSessions.get(progressEvent.sessionId);
+        if (session) {
+          this.dispatchEventToListeners(Events.AGENT_SESSION_UPDATED, session);
+          // Stream session update into chat messages
+          this.#upsertAgentSessionInMessages(session);
+        }
+        break;
+      case 'child_agent_started':
+        this.dispatchEventToListeners(Events.CHILD_AGENT_STARTED, progressEvent.data);
+        // Also reflect child placeholder in the parent's message if present
+        {
+          const parent = progressEvent.data.parentSession as AgentSession | undefined;
+          if (parent) {
+            this.#upsertAgentSessionInMessages(parent);
+          }
+        }
+        break;
+    }
+  }
+
+  // Upsert helper: ensures the chat transcript reflects the latest AgentSession state in real-time
+  #upsertAgentSessionInMessages(session: AgentSession): void {
+    // If this is a child session, update the parent container too
+    if (session.parentSessionId) {
+      // Find parent message and update nestedSessions
+      const parentIdx = this.#state.messages.findIndex(m =>
+        (m as any).entity === ChatMessageEntity.AGENT_SESSION &&
+        ((m as any).agentSession?.sessionId === session.parentSessionId)
+      );
+      if (parentIdx !== -1) {
+        const parentMsg = this.#state.messages[parentIdx] as any;
+        const parentSession = parentMsg.agentSession as AgentSession;
+        const nested = Array.isArray(parentSession.nestedSessions) ? [...parentSession.nestedSessions] : [];
+        const nIdx = nested.findIndex(s => s.sessionId === session.sessionId);
+        if (nIdx !== -1) {
+          nested[nIdx] = session;
+        } else {
+          nested.push(session);
+        }
+        const updatedParent = { ...parentSession, nestedSessions: nested } as AgentSession;
+        this.#state.messages[parentIdx] = { ...parentMsg, agentSession: updatedParent };
+        this.dispatchEventToListeners(Events.MESSAGES_CHANGED, [...this.#state.messages]);
+        return;
+      }
+    }
+
+    // Otherwise, upsert the session as a top-level AGENT_SESSION message
+    const idx = this.#state.messages.findIndex(m =>
+      (m as any).entity === ChatMessageEntity.AGENT_SESSION &&
+      ((m as any).agentSession?.sessionId === session.sessionId)
+    );
+    if (idx !== -1) {
+      const existing = this.#state.messages[idx] as any;
+      this.#state.messages[idx] = { ...existing, agentSession: session };
+    } else {
+      // Only add as top-level if it has no parent
+      if (!session.parentSessionId) {
+        this.#state.messages.push({ entity: ChatMessageEntity.AGENT_SESSION, agentSession: session } as any);
+      }
+    }
+    this.dispatchEventToListeners(Events.MESSAGES_CHANGED, [...this.#state.messages]);
+  }
+  
+  /**
+   * Get active agent sessions
+   */
+  getActiveAgentSessions(): AgentSession[] {
+    return Array.from(this.#activeAgentSessions.values());
+  }
+  
+  /**
+   * Clean up completed session
+   */
+  #cleanupCompletedSession(sessionId: string): void {
+    const session = this.#activeAgentSessions.get(sessionId);
+    if (session && (session.status === 'completed' || session.status === 'error')) {
+      // Keep for a short time for UI to finish rendering
+      setTimeout(() => {
+        this.#activeAgentSessions.delete(sessionId);
+      }, 5000);
     }
   }
 }

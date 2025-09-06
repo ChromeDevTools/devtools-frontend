@@ -7,10 +7,9 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Utils from '../common/utils.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { AIChatPanel } from '../ui/AIChatPanel.js';
 import { callLLMWithTracing } from './LLMTracingWrapper.js';
-
-import { waitForPageLoad, type Tool } from './Tools.js';
+import { waitForPageLoad, type Tool, type LLMContext } from './Tools.js';
+import type { LLMProvider } from '../LLM/LLMTypes.js';
 
 const logger = createLogger('Tool:HTMLToMarkdown');
 
@@ -58,7 +57,7 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
   /**
    * Execute the HTML to Markdown extraction
    */
-  async execute(args: HTMLToMarkdownArgs): Promise<HTMLToMarkdownResult> {
+  async execute(args: HTMLToMarkdownArgs, ctx?: LLMContext): Promise<HTMLToMarkdownResult> {
     logger.info('Executing with args', { args });
     const { instruction } = args;
     const agentService = AgentService.getInstance();
@@ -107,10 +106,19 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
 
       // Call the LLM for extraction
       logger.info('Calling LLM for extraction');
+      if (!ctx?.provider || !(ctx.model || ctx.nanoModel)) {
+        return {
+          success: false,
+          markdownContent: null,
+          error: 'Missing LLM context (provider/model) for HTMLToMarkdownTool'
+        };
+      }
       const extractionResult = await this.callExtractionLLM({
         systemPrompt,
         userPrompt,
         apiKey,
+        provider: ctx.provider,
+        model: ctx.nanoModel || ctx.model,
       });
 
       logger.info('Extraction completed successfully');
@@ -316,11 +324,14 @@ ${instruction}
     systemPrompt: string,
     userPrompt: string,
     apiKey: string,
+    provider: LLMProvider,
+    model: string,
   }): Promise<{
     markdownContent: string,
   }> {
     // Call LLM using the unified client with tracing
-    const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+    const provider = params.provider;
+    const model = params.model;
     const llmResponse = await callLLMWithTracing(
       {
         provider,

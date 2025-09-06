@@ -11,7 +11,7 @@ import { DocumentSearchTool } from '../../tools/DocumentSearchTool.js';
 import { NavigateURLTool, PerformActionTool, GetAccessibilityTreeTool, SearchContentTool, NavigateBackTool, NodeIDsToURLsTool, TakeScreenshotTool, ScrollPageTool } from '../../tools/Tools.js';
 import { HTMLToMarkdownTool } from '../../tools/HTMLToMarkdownTool.js';
 import { AIChatPanel } from '../../ui/AIChatPanel.js';
-import { ChatMessageEntity, type ChatMessage } from '../../ui/ChatView.js';
+import { ChatMessageEntity, type ChatMessage } from '../../models/ChatTypes.js';
 import {
   ConfigurableAgentTool,
   ToolRegistry, type AgentToolConfig, type ConfigurableAgentArgs

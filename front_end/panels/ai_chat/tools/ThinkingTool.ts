@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../core/sdk/sdk.js';
-import type { Tool } from './Tools.js';
+import type { Tool, LLMContext } from './Tools.js';
 import { TakeScreenshotTool, GetAccessibilityTreeTool } from './Tools.js';
 import { createLogger } from '../core/Logger.js';
-import { AIChatPanel } from '../ui/AIChatPanel.js';
 import { callLLMWithTracing } from './LLMTracingWrapper.js';
 
 const logger = createLogger('ThinkingTool');
@@ -39,13 +38,13 @@ export class ThinkingTool implements Tool<ThinkingArgs, ThinkingResult | { error
   private screenshotTool = new TakeScreenshotTool();
   private accessibilityTool = new GetAccessibilityTreeTool();
 
-  async execute(args: ThinkingArgs): Promise<ThinkingResult | { error: string }> {
+  async execute(args: ThinkingArgs, ctx?: LLMContext): Promise<ThinkingResult | { error: string }> {
     try {
       logger.info('Thinking tool initiated', { userRequest: args.userRequest });
 
       // 1. Check if current model supports vision
-      const currentModel = AIChatPanel.instance().getSelectedModel();
-      const isVisionModel = await AIChatPanel.isVisionCapable(currentModel);
+      const currentModel = ctx?.model || '';
+      const isVisionModel = ctx?.getVisionCapability ? await ctx.getVisionCapability(currentModel) : false;
       
       logger.info(`Model ${currentModel} vision capable: ${isVisionModel}`);
 
@@ -71,7 +70,7 @@ export class ThinkingTool implements Tool<ThinkingArgs, ThinkingResult | { error
         : this.buildTextThinkingPrompt(args.userRequest, args.context, contextData);
 
       // 4. Get thinking analysis
-      const analysis = await this.getThinkingAnalysis(prompt, isVisionModel);
+      const analysis = await this.getThinkingAnalysis(prompt, isVisionModel, ctx);
       if ('error' in analysis) {
         return { error: `Failed to analyze: ${analysis.error}` };
       }
@@ -231,11 +230,14 @@ Based on the accessibility tree structure above, think through what needs to be 
     };
   }
 
-  private async getThinkingAnalysis(prompt: { systemPrompt: string; userPrompt: string; images: Array<{ type: string; data: string }> }, isVisionModel: boolean): Promise<ThinkingResult | { error: string }> {
+  private async getThinkingAnalysis(prompt: { systemPrompt: string; userPrompt: string; images: Array<{ type: string; data: string }> }, isVisionModel: boolean, ctx?: LLMContext): Promise<ThinkingResult | { error: string }> {
     try {
       // Get the selected model and its provider
-      const model = AIChatPanel.instance().getSelectedModel();
-      const provider = AIChatPanel.getProviderForModel(model);
+      if (!ctx?.provider || !ctx.model) {
+        return { error: 'Missing LLM context (provider/model) for ThinkingTool' };
+      }
+      const provider = ctx.provider;
+      const model = ctx.model;
 
       // Prepare message based on model type
       const messages = [{

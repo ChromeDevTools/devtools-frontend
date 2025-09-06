@@ -20,8 +20,8 @@ import { getXPathByBackendNodeId } from '../common/utils.js';
 import { AgentService } from '../core/AgentService.js';
 import type { DevToolsContext } from '../core/State.js';
 import { LLMClient } from '../LLM/LLMClient.js';
-import { AIChatPanel } from '../ui/AIChatPanel.js';
-import { ChatMessageEntity } from '../ui/ChatView.js';
+import type { LLMProvider } from '../LLM/LLMTypes.js';
+import { ChatMessageEntity } from '../models/ChatTypes.js';
 
 // Type imports
 
@@ -40,12 +40,23 @@ import { SequentialThinkingTool, type SequentialThinkingResult, type SequentialT
 export interface Tool<TArgs = Record<string, unknown>, TResult = unknown> {
   name: string;
   description: string;
-  execute: (args: TArgs) => Promise<TResult>;
+  execute: (args: TArgs, ctx?: LLMContext) => Promise<TResult>;
   schema: {
     type: string,
     properties: Record<string, unknown>,
     required?: string[],
   };
+}
+
+/**
+ * Context passed into tools for LLM-related choices without relying on UI.
+ */
+export interface LLMContext {
+  provider: LLMProvider;
+  model: string;
+  getVisionCapability?: (model: string) => Promise<boolean> | boolean;
+  miniModel?: string;
+  nanoModel?: string;
 }
 
 /**
@@ -624,7 +635,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
   constructor() {
   }
 
-  async execute(args: { url: string, reasoning: string /* Add reasoning to signature */ }): Promise<NavigationResult | ErrorResult> {
+  async execute(args: { url: string, reasoning: string /* Add reasoning to signature */ }, ctx?: LLMContext): Promise<NavigationResult | ErrorResult> {
     logger.info('navigate_url', args);
     const url = args.url;
     const LOAD_TIMEOUT_MS = 30000; // 30 seconds timeout for page load
@@ -688,7 +699,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
       logger.info('Metadata fetched:', metadata);
 
       // *** Add 404 detection heuristic ***
-      const is404Result = await this.check404Status(target, metadata);
+      const is404Result = await this.check404Status(target, metadata, ctx);
       if (is404Result.is404) {
         return {
           error: `Page not found (404): ${is404Result.reason}`,
@@ -751,7 +762,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
     }
   }
 
-  private async check404Status(target: SDK.Target.Target, metadata: { url: string, title: string }): Promise<{ is404: boolean, reason?: string }> {
+  private async check404Status(target: SDK.Target.Target, metadata: { url: string, title: string }, ctx?: LLMContext): Promise<{ is404: boolean, reason?: string }> {
     try {
       // Basic heuristic checks first
       const title = metadata.title.toLowerCase();
@@ -773,7 +784,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
         // Get accessibility tree for better semantic analysis
         const treeResult = await Utils.getAccessibilityTree(target);
         const pageContent = treeResult.simplified;
-        const is404Confirmed = await this.confirmWith404LLM(metadata.url, metadata.title, pageContent);
+        const is404Confirmed = await this.confirmWith404LLM(metadata.url, metadata.title, pageContent, ctx);
         
         if (is404Confirmed) {
           return { 
@@ -790,7 +801,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
     }
   }
 
-  private async confirmWith404LLM(url: string, title: string, content: string): Promise<boolean> {
+  private async confirmWith404LLM(url: string, title: string, content: string, ctx?: LLMContext): Promise<boolean> {
     try {
       const agentService = AgentService.getInstance();
       const apiKey = agentService.getApiKey();
@@ -800,7 +811,12 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
         return false;
       }
 
-      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      if (!ctx?.provider || !(ctx.nanoModel || ctx.model)) {
+        logger.warn('Missing LLM context for 404 confirmation');
+        return false;
+      }
+      const provider = ctx.provider;
+      const model = ctx.nanoModel || ctx.model;
       const llm = LLMClient.getInstance();
       
       const systemPrompt = `You are analyzing web page content to determine if it represents a 404 "Page Not Found" error page.
@@ -1406,7 +1422,7 @@ export class WaitTool implements Tool<{ seconds?: number, duration?: number, rea
   name = 'wait_for_page_load';
   description = 'Waits for a specified number of seconds to allow page content to load, animations to complete, or dynamic content to appear. After waiting, returns a summary of what is currently visible in the viewport to help determine if additional waiting is needed. Provide the number of seconds to wait and an optional reasoning for waiting.';
 
-  async execute(args: { seconds?: number, duration?: number, reason?: string, reasoning?: string }): Promise<WaitResult | ErrorResult> {
+  async execute(args: { seconds?: number, duration?: number, reason?: string, reasoning?: string }, ctx?: LLMContext): Promise<WaitResult | ErrorResult> {
     // Handle both 'seconds' and 'duration' parameter names for flexibility
     const waitTime = args.seconds ?? args.duration;
     const waitReason = args.reason ?? args.reasoning;
@@ -1438,9 +1454,11 @@ export class WaitTool implements Tool<{ seconds?: number, duration?: number, rea
         // Get visible accessibility tree
         const treeResult = await Utils.getVisibleAccessibilityTree(target);
         
-        // Generate summary using LLM
-        const { model, provider } = AIChatPanel.getNanoModelWithProvider();
-        const llm = LLMClient.getInstance();
+        // Generate summary using LLM if ctx is available
+        if (ctx?.provider && (ctx.nanoModel || ctx.model)) {
+          const provider = ctx.provider;
+          const model = ctx.nanoModel || ctx.model;
+          const llm = LLMClient.getInstance();
         
         const reasonContext = waitReason ? `The wait was specifically for: ${waitReason}` : 'No specific reason was provided for the wait.';
         
@@ -1461,15 +1479,16 @@ Keep the summary to 2-3 sentences maximum.`;
         const userPrompt = `Analyze this viewport content and provide a brief summary${waitReason ? `, focusing on elements related to: ${waitReason}` : ''}:
 ${treeResult.simplified}`;
 
-        const response = await llm.call({
-          provider,
-          model,
-          messages: [{ role: 'user', content: userPrompt }],
-          systemPrompt,
-          temperature: 0.1,
-        });
+          const response = await llm.call({
+            provider,
+            model,
+            messages: [{ role: 'user', content: userPrompt }],
+            systemPrompt,
+            temperature: 0.1,
+          });
 
-        viewportSummary = response.text?.trim();
+          viewportSummary = response.text?.trim();
+        }
       }
     } catch (error) {
       // Non-critical error - just log and continue
@@ -1679,7 +1698,7 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number 
   name = 'perform_action';
   description = 'Performs an action on a DOM element identified by NodeID';
 
-  async execute(args: { method: string, nodeId: number | string, reasoning: string, args?: Record<string, unknown> | unknown[] }): Promise<PerformActionResult | ErrorResult> {
+  async execute(args: { method: string, nodeId: number | string, reasoning: string, args?: Record<string, unknown> | unknown[] }, ctx?: LLMContext): Promise<PerformActionResult | ErrorResult> {
     logger.info('Executing with args:', JSON.stringify(args));
     const method = args.method;
     const nodeId = args.nodeId;
@@ -2042,9 +2061,9 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number 
       // Visual verification using before/after screenshots and LLM
       let visualCheck: string | undefined;
       
-      // Check if current model supports vision
-      const currentModel = AIChatPanel.instance().getSelectedModel();
-      const isVisionCapable = await AIChatPanel.isVisionCapable(currentModel);
+      // Check if current model supports vision via provided context
+      const currentModel = (ctx as any)?.model;
+      const isVisionCapable = (ctx as any)?.getVisionCapability ? await (ctx as any).getVisionCapability(currentModel) : false;
       
       if (!isVisionCapable) {
         logger.info(`Model ${currentModel} does not support vision - using DOM-based verification`);
@@ -2063,7 +2082,11 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number 
           
           // Use LLM to analyze DOM changes
           const llmClient = LLMClient.getInstance();
-          const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+          if (!(ctx as any)?.provider || !((ctx as any)?.nanoModel || (ctx as any)?.model)) {
+            visualCheck = 'Skipping DOM verification (missing LLM context)';
+          } else {
+            const provider = (ctx as any).provider;
+            const model = (ctx as any).nanoModel || (ctx as any).model;
           const response = await llmClient.call({
             provider,
             model,
@@ -2096,7 +2119,8 @@ Provide a clear, concise response about what happened.`
             temperature: 0
           });
           
-          visualCheck = response.text || 'No DOM verification response';
+            visualCheck = response.text || 'No DOM verification response';
+          }
           logger.info('DOM-based verification result:', visualCheck);
         } catch (error) {
           logger.warn('DOM-based verification failed:', error);
@@ -2126,7 +2150,11 @@ Provide a clear, concise response about what happened.`
 
           // Ask LLM to verify using nano model for efficiency
           const llmClient = LLMClient.getInstance();
-          const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+          if (!(ctx as any)?.provider || !((ctx as any)?.nanoModel || (ctx as any)?.model)) {
+            visualCheck = 'Skipping visual verification (missing LLM context)';
+          } else {
+            const provider = (ctx as any).provider;
+            const model = (ctx as any).nanoModel || (ctx as any).model;
           const response = await llmClient.call({
             provider,
             model,
@@ -2178,7 +2206,8 @@ Provide a clear, descriptive response about what happened and whether the action
             temperature: 0
           });
           
-          visualCheck = response.text || 'No response';
+            visualCheck = response.text || 'No response';
+          }
           logger.info('Visual verification result:', visualCheck);
         } else if (afterScreenshotResult.data && !beforeScreenshotData) {
           // Fallback to single after screenshot if before screenshot failed
@@ -2195,15 +2224,19 @@ Provide a clear, descriptive response about what happened and whether the action
           }
 
           const llmClient = LLMClient.getInstance();
-          const { model, provider } = AIChatPanel.getNanoModelWithProvider();
-          const response = await llmClient.call({
-            provider,
-            model,
-            systemPrompt: 'You are a visual verification assistant. Analyze screenshots and page context to determine if actions succeeded.',
-            messages: [
-              {
-                role: 'user',
-                content: [
+          if (!(ctx as any)?.provider || !((ctx as any)?.nanoModel || (ctx as any)?.model)) {
+            visualCheck = 'Skipping visual verification (missing LLM context)';
+          } else {
+            const provider = (ctx as any).provider;
+            const model = (ctx as any).nanoModel || (ctx as any).model;
+            const response = await llmClient.call({
+              provider,
+              model,
+              systemPrompt: 'You are a visual verification assistant. Analyze screenshots and page context to determine if actions succeeded.',
+              messages: [
+                {
+                  role: 'user',
+                  content: [
                   {
                     type: 'text',
                     text: `Analyze this screenshot to determine if the ${method} action succeeded and describe what you observe.
@@ -2241,7 +2274,8 @@ Provide a clear, descriptive response about what you observe and whether the act
             temperature: 0
           });
           
-          visualCheck = response.text || 'No response';
+            visualCheck = response.text || 'No response';
+          }
           logger.info('Visual verification result (after only):', visualCheck);
         } else {
           logger.error('Screenshot data is empty or undefined');
@@ -2824,14 +2858,18 @@ Important guidelines:
   }
 
 
-  async execute(args: { objective: string, offset?: number, chunkSize?: number, maxRetries?: number }): Promise<ObjectiveDrivenActionResult | ErrorResult> {
+  async execute(args: { objective: string, offset?: number, chunkSize?: number, maxRetries?: number }, ctx?: LLMContext): Promise<ObjectiveDrivenActionResult | ErrorResult> {
     const { objective, offset = 0, chunkSize = 60000, maxRetries = 1 } = args; // Default offset 0, chunkSize 60000, maxRetries 1
     let currentTry = 0;
     let lastError: string | null = null;
 
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
-    const { model: modelNameForAction, provider: providerForAction } = AIChatPanel.getMiniModelWithProvider();
+    const providerForAction = ctx?.provider;
+    const modelNameForAction = ctx?.miniModel || ctx?.model;
+    if (!providerForAction || !modelNameForAction) {
+      return { error: 'Missing LLM context (provider/model) for ObjectiveDrivenActionTool' };
+    }
 
     if (!apiKey) {return { error: 'API key not configured.' };}
     if (typeof objective !== 'string' || objective.trim() === '') {
@@ -3760,14 +3798,18 @@ CRITICAL:
   }
 
 
-  async execute(args: { objective: string, schema: Record<string, unknown>, offset?: number, chunkSize?: number, maxRetries?: number }): Promise<SchemaBasedDataExtractionResult | ErrorResult> {
+  async execute(args: { objective: string, schema: Record<string, unknown>, offset?: number, chunkSize?: number, maxRetries?: number }, ctx?: LLMContext): Promise<SchemaBasedDataExtractionResult | ErrorResult> {
     const { objective, schema, offset = 0, chunkSize = 60000, maxRetries = 1 } = args; // Default offset 0, chunkSize 60000, maxRetries 1
     let currentTry = 0;
     let lastError: string | null = null;
 
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
-    const { model: modelNameForExtraction, provider: providerForExtraction } = AIChatPanel.getMiniModelWithProvider();
+    const providerForExtraction = ctx?.provider;
+    const modelNameForExtraction = ctx?.miniModel || ctx?.model;
+    if (!providerForExtraction || !modelNameForExtraction) {
+      return { error: 'Missing LLM context (provider/model) for SchemaBasedDataExtractionTool' };
+    }
 
     if (!apiKey) {
       return { error: 'API key not configured.' };

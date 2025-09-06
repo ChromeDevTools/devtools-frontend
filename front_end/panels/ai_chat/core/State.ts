@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import {type ChatMessage, ChatMessageEntity, type ImageInputData} from '../ui/ChatView.js';
+import {type ChatMessage, ChatMessageEntity, type ImageInputData} from '../models/ChatTypes.js';
 import type {TracingContext} from '../tracing/TracingProvider.js';
 
 const UIStrings = {

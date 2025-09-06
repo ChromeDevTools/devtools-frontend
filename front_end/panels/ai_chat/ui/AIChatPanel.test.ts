@@ -5,7 +5,9 @@
 import {AIChatPanel, DEFAULT_PROVIDER_MODELS, type ModelOption, resetAIChatPanelInstanceForTesting} from './AIChatPanel.js';
 import {LLMProviderRegistry} from '../LLM/LLMProviderRegistry.js';
 import {AgentService} from '../core/AgentService.js';
-import {ChatMessageEntity} from './ChatView.js';
+import {Events as AgentEvents} from '../core/AgentService.js';
+import {ChatMessageEntity} from '../models/ChatTypes.js';
+import {raf} from '../../testing/DOMHelpers.js';
 
 declare global {
   function describe(name: string, fn: () => void): void;
@@ -67,6 +69,101 @@ describe('AIChatPanel Model Validation', () => {
     // Clean up
     LLMProviderRegistry.clear();
     mockLocalStorage.clear();
+  });
+
+  describe('Processing state on final error', () => {
+    it('clears loader and keeps inputs enabled when final error message arrives', async () => {
+      // Ensure we have a panel and attach to DOM so ChatView renders
+      const root = document.createElement('div');
+      document.body.appendChild(root);
+      root.appendChild(panel.contentElement);
+
+      // Simulate messages changed with a final error message
+      const svc = AgentService.getInstance();
+      const messages: any[] = [
+        { entity: ChatMessageEntity.USER, text: 'Go' },
+        { entity: ChatMessageEntity.MODEL, action: 'final', isFinalAnswer: true, error: 'Failed after 5 attempts' },
+      ];
+      svc.dispatchEventToListeners(AgentEvents.MESSAGES_CHANGED, messages as any);
+      await raf();
+
+      // Query ChatView shadow for generic loader and assert it is not present
+      const chatView = panel.contentElement.querySelector('devtools-chat-view') as HTMLElement;
+      const shadow = chatView.shadowRoot!;
+      const loaders = shadow.querySelectorAll('.message.model-message.loading');
+      assert.strictEqual(loaders.length, 0);
+
+      // Model selector should not be disabled (processing cleared)
+      const inputBar = shadow.querySelector('ai-input-bar') as any;
+      assert.strictEqual(Boolean(inputBar?.modelSelectorDisabled), false);
+
+      document.body.removeChild(root);
+    });
+  });
+
+  describe('#updateProcessingState edge cases', () => {
+    it('does not clear processing on non-final (tool) message, then clears on final', async () => {
+      const root = document.createElement('div');
+      document.body.appendChild(root);
+      root.appendChild(panel.contentElement);
+
+      // Force processing state on
+      panel.setProcessingForTesting(true);
+      await raf();
+
+      // Dispatch non-final model tool message
+      const svc = AgentService.getInstance();
+      const toolMsg = { entity: ChatMessageEntity.MODEL, action: 'tool', toolName: 'fetch', isFinalAnswer: false } as any;
+      svc.dispatchEventToListeners(AgentEvents.MESSAGES_CHANGED, [ { entity: ChatMessageEntity.USER, text: 'x' } as any, toolMsg ] as any);
+      await raf();
+
+      // Still processing
+      assert.strictEqual(panel.getIsProcessingForTesting(), true);
+      const chatView = panel.contentElement.querySelector('devtools-chat-view') as HTMLElement;
+      const shadow = chatView.shadowRoot!;
+      const inputBar = shadow.querySelector('ai-input-bar') as any;
+      assert.strictEqual(Boolean(inputBar?.modelSelectorDisabled), true);
+
+      // Now dispatch final without error but with isFinalAnswer true
+      const finalMsg = { entity: ChatMessageEntity.MODEL, action: 'final', isFinalAnswer: true, answer: 'done' } as any;
+      svc.dispatchEventToListeners(AgentEvents.MESSAGES_CHANGED, [ { entity: ChatMessageEntity.USER, text: 'x' } as any, finalMsg ] as any);
+      await raf();
+
+      // Processing cleared
+      assert.strictEqual(panel.getIsProcessingForTesting(), false);
+      const inputBarAfter = shadow.querySelector('ai-input-bar') as any;
+      assert.strictEqual(Boolean(inputBarAfter?.modelSelectorDisabled), false);
+
+      document.body.removeChild(root);
+    });
+  });
+
+  describe('Groq JSON parse error surfaces and clears loader', () => {
+    it('shows error in ChatView and hides loader for Groq tool-args parse error', async () => {
+      const root = document.createElement('div');
+      document.body.appendChild(root);
+      root.appendChild(panel.contentElement);
+
+      const svc = AgentService.getInstance();
+      const groqError = 'Failed after 5 attempts: Groq API error:  - Failed to parse tool call arguments as JSON';
+      const messages: any[] = [
+        { entity: ChatMessageEntity.USER, text: 'Do research' },
+        { entity: ChatMessageEntity.MODEL, action: 'final', isFinalAnswer: true, error: groqError },
+      ];
+      svc.dispatchEventToListeners(AgentEvents.MESSAGES_CHANGED, messages as any);
+      await raf();
+
+      const chatView = panel.contentElement.querySelector('devtools-chat-view') as HTMLElement;
+      const shadow = chatView.shadowRoot!;
+      // Error is rendered
+      const errorNode = shadow.querySelector('.message-error') as HTMLElement;
+      assert.strictEqual(Boolean(errorNode && errorNode.textContent?.includes('Groq API error')), true);
+      assert.strictEqual(Boolean(errorNode && errorNode.textContent?.includes('Failed to parse tool call arguments as JSON')), true);
+      // Loader not present
+      const loaders = shadow.querySelectorAll('.message.model-message.loading');
+      assert.strictEqual(loaders.length, 0);
+      document.body.removeChild(root);
+    });
   });
 
   describe('#validateAndFixModelSelections', () => {

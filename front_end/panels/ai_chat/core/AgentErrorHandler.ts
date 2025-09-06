@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import { createLogger } from './Logger.js';
-import { ChatMessageEntity, type ChatMessage, type ToolResultMessage } from '../ui/ChatView.js';
+import { ChatMessageEntity, type ChatMessage, type ToolResultMessage } from '../models/ChatTypes.js';
 import type { AgentSession, AgentMessage } from '../agent_framework/AgentSessionTypes.js';
 
 const logger = createLogger('AgentErrorHandler');

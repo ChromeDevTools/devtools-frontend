@@ -4,15 +4,16 @@
 
 import { enhancePromptWithPageContext } from '../core/PageInfoManager.js';
 import { LLMClient } from '../LLM/LLMClient.js';
-import type { LLMResponse, LLMMessage } from '../LLM/LLMTypes.js';
+import type { LLMResponse, LLMMessage, LLMProvider } from '../LLM/LLMTypes.js';
 import type { Tool } from '../tools/Tools.js';
-import { AIChatPanel } from '../ui/AIChatPanel.js';
-import { ChatMessageEntity, type ChatMessage, type ModelChatMessage, type ToolResultMessage } from '../ui/ChatView.js';
+import { ChatMessageEntity, type ChatMessage, type ModelChatMessage, type ToolResultMessage } from '../models/ChatTypes.js';
 import { createLogger } from '../core/Logger.js';
 import { createTracingProvider, getCurrentTracingContext } from '../tracing/TracingConfig.js';
 import type { AgentSession, AgentMessage } from './AgentSessionTypes.js';
 import { AgentErrorHandler } from '../core/AgentErrorHandler.js';
+import { AgentRunnerEventBus } from './AgentRunnerEventBus.js';
 import { callLLMWithTracing } from '../tools/LLMTracingWrapper.js';
+import { sanitizeMessagesForModel } from '../LLM/MessageSanitizer.js';
 
 const logger = createLogger('AgentRunner');
 
@@ -28,6 +29,10 @@ export interface AgentRunnerConfig {
   tools: Array<Tool<any, any>>;
   maxIterations: number;
   temperature?: number;
+  /** Selected LLM provider for this run (required) */
+  provider: LLMProvider;
+  /** Optional vision capability check. Defaults to false (no vision). */
+  getVisionCapability?: (modelName: string) => Promise<boolean> | boolean;
 }
 
 /**
@@ -47,23 +52,15 @@ export interface AgentRunnerHooks {
  * Runs the core agent execution loop
  */
 export class AgentRunner {
-  private static currentSession: AgentSession | null = null;
-
+  private static eventBus: AgentRunnerEventBus | null = null;
+  
   /**
-   * Add a message to the current session
+   * Initialize event bus connection
    */
-  private static addSessionMessage(message: Partial<AgentMessage>): void {
-    if (!this.currentSession) {
-      return;
+  static initializeEventBus(): void {
+    if (!AgentRunner.eventBus) {
+      AgentRunner.eventBus = AgentRunnerEventBus.getInstance();
     }
-
-    const fullMessage: AgentMessage = {
-      id: crypto.randomUUID(),
-      timestamp: new Date(),
-      ...message
-    } as AgentMessage;
-
-    this.currentSession.messages.push(fullMessage);
   }
   /**
    * Helper function to convert ChatMessage[] to LLMMessage[]
@@ -72,6 +69,11 @@ export class AgentRunner {
     const llmMessages: LLMMessage[] = [];
 
     for (const msg of messages) {
+      // Skip AGENT_SESSION messages - they are for UI only
+      if (msg.entity === ChatMessageEntity.AGENT_SESSION) {
+        continue;
+      }
+      
       if (msg.entity === ChatMessageEntity.USER) {
         // User message
         if ('text' in msg) {
@@ -181,6 +183,25 @@ export class AgentRunner {
     return sanitized;
   }
 
+  /**
+   * Compute the tool result text shown to the LLM for regular tool outputs (non-ConfigurableAgentResult).
+   * Applies sanitization and chooses a placeholder if the result only contained an image payload.
+   */
+  static computeToolResultText(toolResultData: any, imageData?: string): string {
+    // If the tool produced a simple string, return as-is
+    if (typeof toolResultData === 'string') {
+      return toolResultData;
+    }
+    // Create sanitized data for text representation (exclude large/non-LLM fields)
+    const sanitizedData = this.sanitizeToolResultForText(toolResultData);
+    const sanitizedIsEmptyObject = typeof sanitizedData === 'object' && sanitizedData !== null && Object.keys(sanitizedData).length === 0;
+    const hadOnlyImage = !!imageData && sanitizedIsEmptyObject;
+    if (hadOnlyImage) {
+      return 'Image omitted (model lacks vision).';
+    }
+    return JSON.stringify(sanitizedData, null, 2);
+  }
+
   // Helper function to execute the handoff logic (to avoid duplication)
   private static async executeHandoff(
     currentMessages: ChatMessage[],
@@ -194,7 +215,10 @@ export class AgentRunner {
     defaultCreateSuccessResult: AgentRunnerHooks['createSuccessResult'],
     defaultCreateErrorResult: AgentRunnerHooks['createErrorResult'],
     llmToolArgs?: ConfigurableAgentArgs, // Specific args if triggered by LLM tool call
-    parentSession?: AgentSession // For natural nesting
+    parentSession?: AgentSession, // For natural nesting
+    defaultProvider?: LLMProvider,
+    defaultGetVisionCapability?: (modelName: string) => Promise<boolean> | boolean,
+    overrides?: { sessionId?: string; parentSessionId?: string; traceId?: string }
   ): Promise<ConfigurableAgentResult & { agentSession: AgentSession }> {
     const targetAgentName = handoffConfig.targetAgentName;
     const targetAgentTool = ToolRegistry.getRegisteredTool(targetAgentName);
@@ -228,6 +252,10 @@ export class AgentRunner {
       // Filter messages: keep user messages, final answers, and only tool calls/results for specified tools
       logger.info(`Filtering messages for handoff to ${targetAgentTool.name} based on includeToolResults.`);
       handoffMessages = currentMessages.filter(message => {
+        // Always exclude AGENT_SESSION messages - they are for UI only
+        if (message.entity === ChatMessageEntity.AGENT_SESSION) {
+          return false;
+        }
         if (message.entity === ChatMessageEntity.USER) {
           return true; // Always include user messages
         }
@@ -247,9 +275,12 @@ export class AgentRunner {
         return false; // Exclude other message types
       });
     } else {
-      // No filter specified: pass the entire message history
-      logger.info(`Passing full message history for handoff to ${targetAgentTool.name}.`);
-      handoffMessages = [...currentMessages];
+      // No filter specified: pass the entire message history (but still exclude AGENT_SESSION messages)
+      logger.info(`Passing filtered message history for handoff to ${targetAgentTool.name}.`);
+      handoffMessages = currentMessages.filter(message => {
+        // Always exclude AGENT_SESSION messages - they are for UI only
+        return message.entity !== ChatMessageEntity.AGENT_SESSION;
+      });
     }
 
     // Enhance the target agent's system prompt with page context
@@ -267,6 +298,8 @@ export class AgentRunner {
               .filter((tool): tool is Tool<any, any> => tool !== null),
       maxIterations: targetConfig.maxIterations || defaultMaxIterations,
       temperature: targetConfig.temperature ?? defaultTemperature,
+      provider: defaultProvider as LLMProvider,
+      getVisionCapability: defaultGetVisionCapability,
     };
     const targetRunnerHooks: AgentRunnerHooks = {
       prepareInitialMessages: undefined, // History already formed by transform or passthrough
@@ -288,7 +321,8 @@ export class AgentRunner {
         targetRunnerConfig, // Pass the constructed config
         targetRunnerHooks,  // Pass the constructed hooks
         targetAgentTool, // Target agent is now the executing agent
-        parentSession // Pass parent session for natural nesting
+        parentSession, // Pass parent session for natural nesting
+        overrides
     );
 
     // Extract the result and session
@@ -337,10 +371,11 @@ export class AgentRunner {
     config: AgentRunnerConfig,
     hooks: AgentRunnerHooks,
     executingAgent: ConfigurableAgentTool | null,
-    parentSession?: AgentSession // For natural nesting
+    parentSession?: AgentSession, // For natural nesting
+    overrides?: { sessionId?: string; parentSessionId?: string; traceId?: string }
   ): Promise<ConfigurableAgentResult & { agentSession: AgentSession }> {
     const agentName = executingAgent?.name || 'Unknown';
-    logger.info('Starting execution loop for agent: ${agentName}');
+    logger.info(`Starting execution loop for agent: ${agentName}`);
     const { apiKey, modelName, systemPrompt, tools, maxIterations, temperature } = config;
     const { prepareInitialMessages, createSuccessResult, createErrorResult } = hooks;
 
@@ -352,8 +387,8 @@ export class AgentRunner {
       agentReasoning: args.reasoning,
       agentDisplayName: executingAgent?.config?.ui?.displayName || agentName,
       agentDescription: executingAgent?.config?.description,
-      sessionId: crypto.randomUUID(),
-      parentSessionId: parentSession?.sessionId,
+      sessionId: overrides?.sessionId || crypto.randomUUID(),
+      parentSessionId: overrides?.parentSessionId || parentSession?.sessionId,
       status: 'running',
       startTime: new Date(),
       messages: [],
@@ -365,7 +400,58 @@ export class AgentRunner {
       iterationCount: 0
     };
 
-    this.currentSession = agentSession;
+    // Use local session variable instead of static
+    let currentSession = agentSession;
+    
+    // Emit session started event
+    if (AgentRunner.eventBus) {
+      AgentRunner.eventBus.emitProgress({
+        type: 'session_started',
+        sessionId: agentSession.sessionId,
+        parentSessionId: agentSession.parentSessionId,
+        agentName,
+        timestamp: new Date(),
+        data: { session: agentSession }
+      });
+    }
+    
+    // Create local function that captures the correct session
+    const addSessionMessage = (message: Partial<AgentMessage>): void => {
+      const fullMessage: AgentMessage = {
+        id: crypto.randomUUID(),
+        timestamp: new Date(),
+        ...message
+      } as AgentMessage;
+      
+      currentSession.messages.push(fullMessage);
+      
+      // Emit progress events based on message type
+      if (AgentRunner.eventBus && fullMessage.type === 'tool_call') {
+        AgentRunner.eventBus.emitProgress({
+          type: 'tool_started',
+          sessionId: currentSession.sessionId,
+          parentSessionId: currentSession.parentSessionId,
+          agentName: currentSession.agentName,
+          timestamp: new Date(),
+          data: { 
+            session: currentSession,
+            toolCall: fullMessage
+          }
+        });
+      } else if (AgentRunner.eventBus && fullMessage.type === 'tool_result') {
+        AgentRunner.eventBus.emitProgress({
+          type: 'tool_completed',
+          sessionId: currentSession.sessionId,
+          parentSessionId: currentSession.parentSessionId,
+          agentName: currentSession.agentName,
+          timestamp: new Date(),
+          data: {
+            session: currentSession,
+            toolResult: fullMessage
+          }
+        });
+      }
+    };
 
     let messages = [...initialMessages];
 
@@ -413,7 +499,7 @@ export class AgentRunner {
                      // Add a mapping for the handoff tool 'name' to the actual target tool instance
                      // This allows us to find the target agent later when this tool is called.
                     toolMap.set(handoffToolName, targetTool);
-                    logger.info('Added LLM handoff tool schema: ${handoffToolName}');
+                    logger.info(`Added LLM handoff tool schema: ${handoffToolName}`);
                 } else {
                   logger.warn(`Configured LLM handoff target '${targetAgentName}' not found or is not a ConfigurableAgentTool.`);
                 }
@@ -424,7 +510,7 @@ export class AgentRunner {
     // Capture initial reasoning from args if provided
     if (args.reasoning) {
       const reasoningText = Array.isArray(args.reasoning) ? args.reasoning.join(' ') : args.reasoning;
-      this.addSessionMessage({
+      addSessionMessage({
         type: 'reasoning',
         content: {
           type: 'reasoning',
@@ -437,8 +523,8 @@ export class AgentRunner {
 
     for (iteration = 0; iteration < maxIterations; iteration++) {
       // Update session iteration count
-      if (this.currentSession) {
-        this.currentSession.iterationCount = iteration + 1;
+      if (currentSession) {
+        currentSession.iterationCount = iteration + 1;
       }
       logger.info(`${agentName} Iteration ${iteration + 1}/${maxIterations}`);
 
@@ -484,7 +570,7 @@ export class AgentRunner {
             model: modelName,
             modelParameters: {
               temperature: temperature ?? 0,
-              provider: AIChatPanel.getProviderForModel(modelName)
+              provider: config.provider
             },
             input: {
               systemPrompt: currentSystemPrompt.substring(0, 500) + '...', // Truncate for tracing
@@ -513,13 +599,28 @@ export class AgentRunner {
         }
 
         const llm = LLMClient.getInstance();
-        const provider = AIChatPanel.getProviderForModel(modelName);
+        const provider = config.provider as LLMProvider;
         const llmMessages = AgentRunner.convertToLLMMessages(messages);
+
+        // Sanitize messages for model capabilities (strip images for non-vision models)
+        let isVisionForMainCall = false;
+        if (typeof config.getVisionCapability === 'function') {
+          try {
+            const res = await config.getVisionCapability(modelName);
+            isVisionForMainCall = typeof res === 'boolean' ? res : false;
+          } catch {
+            isVisionForMainCall = false;
+          }
+        }
+        const sanitizedForMainCall = sanitizeMessagesForModel(llmMessages, {
+          visionCapable: isVisionForMainCall,
+          placeholderForImageOnly: true,
+        });
 
         llmResponse = await llm.call({
           provider,
           model: modelName,
-          messages: llmMessages,
+          messages: sanitizedForMainCall,
           systemPrompt: currentSystemPrompt,
           tools: toolSchemas,
           temperature: temperature ?? 0,
@@ -592,7 +693,7 @@ export class AgentRunner {
         messages.push(systemErrorMessage);
 
         // Generate summary of error scenario
-        const errorSummary = await this.summarizeAgentProgress(messages, maxIterations, agentName, modelName, 'error');
+        const errorSummary = await this.summarizeAgentProgress(messages, maxIterations, agentName, modelName, 'error', config.provider, config.getVisionCapability);
 
         // Complete session with error
         agentSession.status = 'error';
@@ -672,7 +773,7 @@ export class AgentRunner {
           messages.push(newModelMessage);
 
           // Add tool call to current session
-          this.addSessionMessage({
+          addSessionMessage({
             type: 'tool_call',
             content: {
               type: 'tool_call',
@@ -693,7 +794,7 @@ export class AgentRunner {
             if (result.shouldContinue && result.errorMessage) {
               messages.push(result.errorMessage);
               if (result.sessionMessage) {
-                errorHandler.addSessionMessage(result.sessionMessage);
+                addSessionMessage(result.sessionMessage);
               }
               continue; // Continue to next iteration
             }
@@ -721,7 +822,7 @@ export class AgentRunner {
 
               // Add handoff message to current session
               const nestedSessionId = crypto.randomUUID();
-              this.addSessionMessage({
+              addSessionMessage({
                 type: 'handoff',
                 content: {
                   type: 'handoff',
@@ -741,7 +842,10 @@ export class AgentRunner {
                   apiKey, modelName, maxIterations, temperature ?? 0,
                   createSuccessResult, createErrorResult,
                   toolArgs as ConfigurableAgentArgs, // <= Pass LLM's toolArgs explicitly as llmToolArgs
-                  this.currentSession // Pass current session for natural nesting
+                  currentSession, // Pass current session for natural nesting
+                  config.provider,
+                  config.getVisionCapability,
+                  { sessionId: nestedSessionId, parentSessionId: currentSession.sessionId, traceId: getCurrentTracingContext()?.traceId }
               );
 
               // LLM tool handoff replaces the current agent's execution entirely
@@ -795,9 +899,76 @@ export class AgentRunner {
               }
             }
 
-             try {
+             // Special handling for agent-to-agent tool calls
+             let preallocatedChildId: string | undefined;
+             if (toolToExecute instanceof ConfigurableAgentTool) {
+               // This is an agent being called as a tool!
+               
+               // Pre-allocate child session ID and add placeholder for real-time UI
+               preallocatedChildId = crypto.randomUUID();
+               const childPlaceholder: AgentSession = {
+                 sessionId: preallocatedChildId,
+                 agentName: toolName,
+                 parentSessionId: currentSession.sessionId,
+                 status: 'running',
+                 startTime: new Date(),
+                 messages: [],
+                 nestedSessions: [],
+                 tools: []
+               };
+               currentSession.nestedSessions.push(childPlaceholder);
+               // Add a handoff anchor message to the parent session timeline so the UI can inline the child timeline
+               addSessionMessage({
+                 type: 'handoff',
+                 content: {
+                   type: 'handoff',
+                   targetAgent: toolName,
+                   reason: `Handing off to ${toolName}`,
+                   context: toolArgs as Record<string, any>,
+                   nestedSessionId: preallocatedChildId
+                 }
+               });
+               
+               // Emit child agent starting
+               if (AgentRunner.eventBus) {
+                AgentRunner.eventBus.emitProgress({
+                  type: 'child_agent_started',
+                  sessionId: currentSession.sessionId,
+                  parentSessionId: currentSession.parentSessionId,
+                  agentName: currentSession.agentName,
+                  timestamp: new Date(),
+                  data: {
+                    parentSession: currentSession,
+                    childAgentName: toolName,
+                    childSessionId: preallocatedChildId
+                  }
+                });
+              }
+            }
+
+            try {
               logger.info(`${agentName} Executing tool: ${toolToExecute.name} with args:`, toolArgs);
-              toolResultData = await toolToExecute.execute(toolArgs as any);
+              const execTracingContext = getCurrentTracingContext();
+              toolResultData = await toolToExecute.execute(toolArgs as any, ({
+                provider: config.provider,
+                model: modelName,
+                getVisionCapability: config.getVisionCapability,
+                overrideSessionId: preallocatedChildId,
+                overrideParentSessionId: currentSession.sessionId,
+                overrideTraceId: execTracingContext?.traceId,
+              } as any));
+              
+              // If this was an agent tool, replace placeholder with actual session
+              if (toolToExecute instanceof ConfigurableAgentTool && toolResultData?.agentSession) {
+                const index = currentSession.nestedSessions.findIndex(
+                  s => s.sessionId === preallocatedChildId
+                );
+                if (index !== -1) {
+                  // Ensure the child session knows its parent for downstream UI logic
+                  try { (toolResultData.agentSession as any).parentSessionId = currentSession.sessionId; } catch {}
+                  currentSession.nestedSessions[index] = toolResultData.agentSession;
+                }
+              }
 
               // Extract image data if present (before sanitization)
               if (typeof toolResultData === 'object' && toolResultData !== null) {
@@ -816,7 +987,7 @@ export class AgentRunner {
                   : (toolResultData.error || 'Agent failed');
               } else {
                 // Regular tool result
-                toolResultText = typeof toolResultData === 'string' ? toolResultData : JSON.stringify(sanitizedData, null, 2);
+                toolResultText = AgentRunner.computeToolResultText(toolResultData, imageData);
               }
 
               // Check if the result object indicates an error explicitly
@@ -919,7 +1090,7 @@ export class AgentRunner {
           messages.push(toolResultMessage);
 
           // Add tool result to current session
-          this.addSessionMessage({
+          addSessionMessage({
             type: 'tool_result',
             content: {
               type: 'tool_result',
@@ -944,7 +1115,7 @@ export class AgentRunner {
           messages.push(newModelMessage);
 
           // Add final answer to current session
-          this.addSessionMessage({
+          addSessionMessage({
             type: 'final_answer',
             content: {
               type: 'final_answer',
@@ -958,7 +1129,7 @@ export class AgentRunner {
           logger.info(`${agentName} LLM provided final answer.`);
 
           // Generate summary of successful completion
-          const completionSummary = await this.summarizeAgentProgress(messages, maxIterations, agentName, modelName, 'final_answer');
+          const completionSummary = await this.summarizeAgentProgress(messages, maxIterations, agentName, modelName, 'final_answer', config.provider, config.getVisionCapability);
 
           // Complete session naturally
           agentSession.status = 'completed';
@@ -978,7 +1149,7 @@ export class AgentRunner {
           if (result.shouldContinue && result.errorMessage) {
             messages.push(result.errorMessage);
             if (result.sessionMessage) {
-              errorHandler.addSessionMessage(result.sessionMessage);
+              addSessionMessage(result.sessionMessage);
             }
             continue; // Continue to next iteration so the LLM can try again
           }
@@ -1001,7 +1172,7 @@ export class AgentRunner {
         messages.push(systemErrorMessage);
 
         // Generate summary of error scenario
-        const errorSummary = await this.summarizeAgentProgress(messages, maxIterations, agentName, modelName, 'error');
+        const errorSummary = await this.summarizeAgentProgress(messages, maxIterations, agentName, modelName, 'error', config.provider, config.getVisionCapability);
 
         // Complete session with error
         agentSession.status = 'error';
@@ -1037,14 +1208,16 @@ export class AgentRunner {
                 apiKey, modelName, maxIterations, temperature ?? 0,
                 createSuccessResult, createErrorResult,
                 undefined, // No llmToolArgs for max iterations handoff
-                this.currentSession // Pass current session for natural nesting
+                currentSession, // Pass current session for natural nesting
+                config.provider,
+                config.getVisionCapability
             );
             // Extract the result and session
             const { agentSession: childSession, ...actualResult } = handoffResult;
 
             // Add child session to current session's nested sessions (natural nesting)
-            if (this.currentSession) {
-              this.currentSession.nestedSessions.push(childSession);
+            if (currentSession) {
+              currentSession.nestedSessions.push(childSession);
             }
 
             // Complete current session and return result with session
@@ -1065,7 +1238,7 @@ export class AgentRunner {
     agentSession.terminationReason = 'max_iterations';
 
     // Generate summary of agent progress instead of generic error message
-    const progressSummary = await this.summarizeAgentProgress(messages, maxIterations, agentName, modelName);
+    const progressSummary = await this.summarizeAgentProgress(messages, maxIterations, agentName, modelName, 'max_iterations', config.provider, config.getVisionCapability);
     const result = createErrorResult('Agent reached maximum iterations', messages, 'max_iterations');
     result.summary = {
       type: 'timeout',
@@ -1083,7 +1256,9 @@ export class AgentRunner {
     maxIterations: number,
     agentName: string,
     modelName: string,
-    completionType: 'final_answer' | 'max_iterations' | 'error' = 'max_iterations'
+    completionType: 'final_answer' | 'max_iterations' | 'error' = 'max_iterations',
+    provider: LLMProvider,
+    getVisionCapability?: (modelName: string) => Promise<boolean> | boolean
   ): Promise<string> {
     logger.info(`Generating summary for agent "${agentName}" with completion type: ${completionType}`);
     try {
@@ -1143,13 +1318,28 @@ Format your response as a clear, informative summary that would help a calling a
         content: summaryPrompt
       });
 
-      const provider = AIChatPanel.getProviderForModel(modelName);
+      const selectedProvider = provider;
+
+      // Centralized, capability-aware sanitization: strip images for non-vision models
+      let isVision = false;
+      if (typeof getVisionCapability === 'function') {
+        try {
+          const res = await getVisionCapability(modelName);
+          isVision = typeof res === 'boolean' ? res : false;
+        } catch {
+          isVision = false;
+        }
+      }
+      const sanitizedMessages = sanitizeMessagesForModel(llmMessages, {
+        visionCapable: isVision,
+        placeholderForImageOnly: true,
+      });
 
       const response = await callLLMWithTracing(
         {
-          provider,
+          provider: selectedProvider as LLMProvider,
           model: modelName,
-          messages: llmMessages,
+          messages: sanitizedMessages,
           systemPrompt: '', // Empty string instead of undefined
           temperature: 0.1,
           // Omit tools parameter entirely to avoid tool_choice conflicts

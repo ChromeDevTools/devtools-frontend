@@ -24,6 +24,7 @@ devtools_module("ai_assistance") {
     "PatchWidget.ts",
     "SelectWorkspaceDialog.ts",
     "components/ChatView.ts",
+    "components/ScrollPinHelper.ts",
     "components/ExploreWidget.ts",
     "components/MarkdownRendererWithCodeBlock.ts",
     "components/UserActionRow.ts",

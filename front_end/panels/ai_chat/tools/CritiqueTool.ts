@@ -4,10 +4,8 @@
 
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { AIChatPanel } from '../ui/AIChatPanel.js';
 import { callLLMWithTracing } from './LLMTracingWrapper.js';
-
-import type { Tool } from './Tools.js';
+import type { Tool, LLMContext } from './Tools.js';
 
 const logger = createLogger('Tool:Critique');
 
@@ -75,7 +73,7 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
   /**
    * Execute the critique agent
    */
-  async execute(args: CritiqueToolArgs): Promise<CritiqueToolResult> {
+  async execute(args: CritiqueToolArgs, ctx?: LLMContext): Promise<CritiqueToolResult> {
     logger.debug('Executing with args', args);
     const { userInput, finalResponse, reasoning } = args;
     const agentService = AgentService.getInstance();
@@ -102,7 +100,7 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
       logger.info('Evaluating planning response against user requirements');
 
       // First, extract requirements from user input
-      const requirementsResult = await this.extractRequirements(userInput, apiKey);
+      const requirementsResult = await this.extractRequirements(userInput, apiKey, ctx);
       if (!requirementsResult.success) {
         throw new Error('Failed to extract requirements from user input.');
       }
@@ -112,7 +110,8 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
         userInput,
         finalResponse,
         requirementsResult.requirements,
-        apiKey
+        apiKey,
+        ctx
       );
 
       if (!evaluationResult.success || !evaluationResult.criteria) {
@@ -124,7 +123,7 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
       // Generate feedback only if criteria not satisfied
       let feedback = undefined;
       if (!criteria.satisfiesCriteria) {
-        feedback = await this.generateFeedback(criteria, userInput, finalResponse, apiKey);
+        feedback = await this.generateFeedback(criteria, userInput, finalResponse, apiKey, ctx);
       }
 
       logger.info('Evaluation complete', {
@@ -151,7 +150,7 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
   /**
    * Extract structured requirements from user input
    */
-  private async extractRequirements(userInput: string, apiKey: string): Promise<{success: boolean, requirements: string[], error?: string}> {
+  private async extractRequirements(userInput: string, apiKey: string, ctx?: LLMContext): Promise<{success: boolean, requirements: string[], error?: string}> {
     const systemPrompt = `You are an expert requirements analyst. 
 Your task is to extract clear, specific requirements from the user's input.
 Focus on functional requirements, constraints, and expected outcomes.
@@ -166,7 +165,11 @@ Return a JSON array of requirement statements. Example format:
 ["Requirement 1", "Requirement 2", ...]`;
 
     try {
-      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      if (!ctx?.provider || !(ctx.nanoModel || ctx.model)) {
+        throw new Error('Missing LLM context (provider/model) for requirements extraction');
+      }
+      const provider = ctx.provider;
+      const model = ctx.nanoModel || ctx.model;
       
       const response = await callLLMWithTracing(
         {
@@ -213,7 +216,8 @@ Return a JSON array of requirement statements. Example format:
     userInput: string,
     finalResponse: string,
     requirements: string[],
-    apiKey: string
+    apiKey: string,
+    ctx?: LLMContext
   ): Promise<{success: boolean, criteria?: EvaluationCriteria, error?: string}> {
     const systemPrompt = `You are an expert plan evaluator.
 Your task is to determine if a planning response satisfies the user's requirements.
@@ -268,7 +272,11 @@ Return a JSON object evaluating the plan against the requirements using this sch
 ${JSON.stringify(evaluationSchema, null, 2)}`;
 
     try {
-      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      if (!ctx?.provider || !(ctx.nanoModel || ctx.model)) {
+        throw new Error('Missing LLM context (provider/model) for evaluation');
+      }
+      const provider = ctx.provider;
+      const model = ctx.nanoModel || ctx.model;
       
       const response = await callLLMWithTracing(
         {
@@ -316,7 +324,8 @@ ${JSON.stringify(evaluationSchema, null, 2)}`;
     criteria: EvaluationCriteria,
     userInput: string,
     finalResponse: string,
-    apiKey: string
+    apiKey: string,
+    ctx?: LLMContext
   ): Promise<string> {
     const systemPrompt = `You are an expert feedback provider.
 Your task is to generate clear, constructive feedback for a planning response.
@@ -338,7 +347,11 @@ Provide clear, actionable feedback focused on helping improve the final response
 Be concise, specific, and constructive.`;
 
     try {
-      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      if (!ctx?.provider || !(ctx.nanoModel || ctx.model)) {
+        throw new Error('Missing LLM context (provider/model) for feedback generation');
+      }
+      const provider = ctx.provider;
+      const model = ctx.nanoModel || ctx.model;
       
       const response = await callLLMWithTracing(
         {

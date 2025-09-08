@@ -692,6 +692,16 @@ export async function getValuesForScope(
   });
 }
 
+export async function waitValuesForScope(
+    scope: string, expandCount: number, expectedValues: string[],
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<string[]> {
+  await devToolsPage.waitForFunction(async () => {
+    const values = await getValuesForScope(scope, expandCount, expectedValues.length, devToolsPage);
+    return values.every((value, i) => value === expectedValues[i]);
+  });
+  return expectedValues;
+}
+
 export async function getPausedMessages(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const messageElement = await devToolsPage.page.waitForSelector('.paused-message');
   assert.isOk(messageElement, 'getPausedMessages: did not find .paused-message element.');

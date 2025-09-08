@@ -2,8 +2,48 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+type TrackedAsyncOperation = 'Promise'|'requestAnimationFrame'|'setTimeout'|'setInterval'|'requestIdleCallback'|
+    'cancelIdleCallback'|'cancelAnimationFrame'|'clearTimeout'|'clearInterval';
+
+type OriginalTrackedAsyncOperations = {
+  [K in TrackedAsyncOperation]: typeof window[K];
+};
+/**
+ * Capture the original at point in creation of the module
+ * Unless something before this is loaded
+ * This should always be the original
+ */
+const originals: Readonly<OriginalTrackedAsyncOperations> = {
+  Promise,
+  requestAnimationFrame: requestAnimationFrame.bind(window),
+  requestIdleCallback: requestIdleCallback.bind(window),
+  setInterval: setInterval.bind(window),
+  setTimeout: setTimeout.bind(window),
+  cancelAnimationFrame: cancelAnimationFrame.bind(window),
+  clearInterval: clearInterval.bind(window),
+  clearTimeout: clearTimeout.bind(window),
+  cancelIdleCallback: cancelIdleCallback.bind(window)
+};
+
+// We can't use Sinon for stubbing as 1) we need to double wrap sometimes
+interface Stub<TKey extends TrackedAsyncOperation> {
+  name: TKey;
+  stubWith: (typeof window)[TKey];
+}
+const stubs: Array<Stub<TrackedAsyncOperation>> = [];
+function stub<T extends TrackedAsyncOperation>(name: T, stubWith: (typeof window)[T]) {
+  window[name] = stubWith;
+  stubs.push({name, stubWith});
+}
+
+function restoreAll() {
+  for (const {name} of stubs) {
+    (window[name] as unknown) = originals[name];
+  }
+  stubs.length = 0;
+}
 interface AsyncActivity {
-  type: 'promise'|'requestAnimationFrame'|'setTimeout'|'setInterval'|'requestIdleCallback';
+  type: TrackedAsyncOperation;
   pending: boolean;
   cancelDelayed?: () => void;
   id?: string;
@@ -41,13 +81,15 @@ export async function checkForPendingActivity(testName = '') {
     const pendingCount = asyncActivity.filter(a => a.pending).length;
     const totalCount = asyncActivity.length;
     try {
+      const PromiseConstructor = originals.Promise;
       // First we wait for the pending async activity to finish normally
-      await original(Promise).all(asyncActivity.filter(a => a.pending).map(a => original(Promise).race([
+      await PromiseConstructor.all(asyncActivity.filter(a => a.pending).map(a => PromiseConstructor.race([
         a.promise,
-        new (original(Promise))(
-            (_, reject) => original(setTimeout)(
+        new PromiseConstructor<void>(
+            (resolve, reject) => originals.setTimeout(
                 () => {
                   if (!a.pending) {
+                    resolve();
                     return;
                   }
                   // If something is still pending after some time, we try to
@@ -96,16 +138,16 @@ export function stopTrackingAsyncActivity() {
 function trackingRequestAnimationFrame(fn: FrameRequestCallback) {
   const activity: AsyncActivity = {type: 'requestAnimationFrame', pending: true, stack: getStack(new Error())};
   let id = 0;
-  activity.promise = new (original(Promise<void>))(resolve => {
+  activity.promise = new originals.Promise<void>(resolve => {
     activity.runImmediate = () => {
       fn(performance.now());
       activity.pending = false;
       resolve();
     };
-    id = original(requestAnimationFrame)(activity.runImmediate);
+    id = originals.requestAnimationFrame(activity.runImmediate);
     activity.id = 'a' + id;
     activity.cancelDelayed = () => {
-      original(cancelAnimationFrame)(id);
+      originals.cancelAnimationFrame(id);
       activity.pending = false;
       resolve();
     };
@@ -117,16 +159,16 @@ function trackingRequestAnimationFrame(fn: FrameRequestCallback) {
 function trackingRequestIdleCallback(fn: IdleRequestCallback, opts?: IdleRequestOptions): number {
   const activity: AsyncActivity = {type: 'requestIdleCallback', pending: true, stack: getStack(new Error())};
   let id = 0;
-  activity.promise = new (original(Promise<void>))(resolve => {
+  activity.promise = new originals.Promise<void>(resolve => {
     activity.runImmediate = (idleDeadline?: IdleDeadline) => {
       fn(idleDeadline ?? {didTimeout: true, timeRemaining: () => 0} as IdleDeadline);
       activity.pending = false;
       resolve();
     };
-    id = original(requestIdleCallback)(activity.runImmediate, opts);
+    id = originals.requestIdleCallback(activity.runImmediate, opts);
     activity.id = 'd' + id;
     activity.cancelDelayed = () => {
-      original(cancelIdleCallback)(id);
+      originals.cancelIdleCallback(id);
       activity.pending = false;
       resolve();
     };
@@ -137,9 +179,10 @@ function trackingRequestIdleCallback(fn: IdleRequestCallback, opts?: IdleRequest
 
 function trackingSetTimeout(arg: TimerHandler, time?: number, ...params: unknown[]) {
   const activity: AsyncActivity = {type: 'setTimeout', pending: true, stack: getStack(new Error())};
-  let id: ReturnType<typeof setTimeout>|undefined;
-  activity.promise = new (original(Promise<void>))(resolve => {
+  let id: number|undefined;
+  activity.promise = new originals.Promise<void>(resolve => {
     activity.runImmediate = () => {
+      originals.clearTimeout(id);
       if (typeof (arg) === 'function') {
         arg(...params);
       } else {
@@ -148,10 +191,10 @@ function trackingSetTimeout(arg: TimerHandler, time?: number, ...params: unknown
       activity.pending = false;
       resolve();
     };
-    id = original(setTimeout)(activity.runImmediate, time);
+    id = originals.setTimeout(activity.runImmediate, time);
     activity.id = 't' + id;
     activity.cancelDelayed = () => {
-      original(clearTimeout)(id);
+      originals.clearTimeout(id);
       activity.pending = false;
       resolve();
     };
@@ -167,11 +210,11 @@ function trackingSetInterval(arg: TimerHandler, time?: number, ...params: unknow
     stack: getStack(new Error()),
   };
   let id = 0;
-  activity.promise = new (original(Promise<void>))(resolve => {
-    id = original(setInterval)(arg, time, ...params);
+  activity.promise = new originals.Promise<void>(resolve => {
+    id = originals.setInterval(arg, time, ...params);
     activity.id = 'i' + id;
     activity.cancelDelayed = () => {
-      original(clearInterval)(id);
+      originals.clearInterval(id);
       activity.pending = false;
       resolve();
     };
@@ -210,10 +253,9 @@ const BasePromise: Omit<PromiseConstructor, UntrackedPromiseMethod> = {
 // which never settles.
 const TrackingPromise: PromiseConstructor = Object.assign(
     function<T>(arg: (resolve: (value: T|PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void) {
-      const originalPromiseType = original(Promise);
-      const promise = new (originalPromiseType)(arg);
+      const promise = new originals.Promise(arg);
       const activity: AsyncActivity = {
-        type: 'promise',
+        type: 'Promise',
         promise,
         stack: getStack(new Error()),
         pending: false,
@@ -223,7 +265,7 @@ const TrackingPromise: PromiseConstructor = Object.assign(
           onRejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>)|undefined|
           null): Promise<TResult1|TResult2> {
         activity.pending = true;
-        return originalPromiseType.prototype.then.apply(this, [
+        return originals.Promise.prototype.then.apply(this, [
           result => {
             if (!onFulfilled) {
               return this;
@@ -249,31 +291,4 @@ const TrackingPromise: PromiseConstructor = Object.assign(
 
 function getStack(error: Error): string {
   return (error.stack ?? 'No stack').split('\n').slice(2).join('\n');
-}
-
-// We can't use Sinon for stubbing as 1) we need to double wrap sometimes and 2)
-// we need to access original values.
-interface Stub<TKey extends keyof typeof window> {
-  name: TKey;
-  original: (typeof window)[TKey];
-  stubWith: (typeof window)[TKey];
-}
-
-const stubs: Array<Stub<keyof typeof window>> = [];
-
-function stub<T extends keyof typeof window>(name: T, stubWith: (typeof window)[T]) {
-  const original = window[name];
-  window[name] = stubWith;
-  stubs.push({name, original, stubWith});
-}
-
-function original<T>(stubWith: T): T {
-  return stubs.find(s => s.stubWith === stubWith)?.original;
-}
-
-function restoreAll() {
-  for (const {name, original} of stubs) {
-    (window[name] as typeof original) = original;
-  }
-  stubs.length = 0;
 }

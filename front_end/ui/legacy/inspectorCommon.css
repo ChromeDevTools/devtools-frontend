@@ -780,7 +780,7 @@ devtools-toolbar {
   .toolbar-dropdown-arrow {
     pointer-events: none;
     flex: none;
-    top: 2px;
+    top: var(--sys-size-1);
   }
 
   .toolbar-button.dark-text .toolbar-dropdown-arrow {

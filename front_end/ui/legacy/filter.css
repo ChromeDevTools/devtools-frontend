@@ -171,7 +171,7 @@
   color: var(--sys-color-on-surface-subtle);
 
   .toolbar-dropdown-arrow {
-    top: var(--sys-size-2);
+    top: var(--sys-size-1);
   }
 
   &:hover {

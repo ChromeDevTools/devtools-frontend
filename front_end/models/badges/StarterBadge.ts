@@ -13,6 +13,7 @@ export class StarterBadge extends Badge {
   // TODO(ergunsh): Add remaining non-trivial event definitions
   override readonly interestedActions = [
     BadgeAction.CSS_RULE_MODIFIED,
+    BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED,
   ] as const;
 
   handleAction(_action: BadgeAction): void {

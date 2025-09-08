@@ -81,6 +81,7 @@ devtools_module("elements") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../models/badges:bundle",
     "../../models/bindings:bundle",
     "../../models/elements:bundle",
     "../../models/extensions:bundle",

@@ -10,6 +10,7 @@ import("../visibility.gni")
 devtools_module("badges") {
   sources = [
     "Badge.ts",
+    "DOMDetectiveBadge.ts",
     "SpeedsterBadge.ts",
     "StarterBadge.ts",
     "UserBadges.ts",
@@ -28,7 +29,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "//front_end/panels/common",
+    "//front_end/panels/*",
   ]
 
   visibility += devtools_models_visibility

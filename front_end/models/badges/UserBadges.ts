@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 
 import type {Badge, BadgeAction, BadgeActionEvents, BadgeContext} from './Badge.js';
+import {DOMDetectiveBadge} from './DOMDetectiveBadge.js';
 import {SpeedsterBadge} from './SpeedsterBadge.js';
 import {StarterBadge} from './StarterBadge.js';
 
@@ -29,6 +30,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   static readonly BADGE_REGISTRY: BadgeClass[] = [
     StarterBadge,
     SpeedsterBadge,
+    DOMDetectiveBadge,
   ];
 
   private constructor() {

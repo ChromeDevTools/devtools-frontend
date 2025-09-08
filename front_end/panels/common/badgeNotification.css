@@ -49,6 +49,10 @@
     background: var(--sys-color-surface);
   }
 
+  .badge-link {
+    color: var(--sys-color-inverse-primary);
+  }
+
   .message {
     width: 100%;
     color: var(--sys-color-inverse-on-surface);

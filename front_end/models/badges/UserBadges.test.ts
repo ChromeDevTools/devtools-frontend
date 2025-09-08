@@ -11,6 +11,7 @@ import * as Badges from './badges.js';
 class MockActivityBadge extends Badges.Badge {
   override name = 'badges/test-badge';
   override title = 'test-badge-title';
+  override imageUri = 'test-image-uri';
   override interestedActions: readonly Badges.BadgeAction[] = [
     Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED,
   ] as const;
@@ -23,6 +24,7 @@ class MockActivityBadge extends Badges.Badge {
 class MockStarterBadge extends Badges.Badge {
   override name = 'badges/starter-test-badge';
   override title = 'starter-test-badge';
+  override imageUri = 'starte-test-image-uri';
   override isStarterBadge = true;
   override interestedActions: readonly Badges.BadgeAction[] = [
     Badges.BadgeAction.CSS_RULE_MODIFIED,

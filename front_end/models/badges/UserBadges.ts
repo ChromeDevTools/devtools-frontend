@@ -137,4 +137,8 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
 
   reconcileBadgesFinishedForTest(): void {
   }
+
+  isReceiveBadgesSettingEnabled(): boolean {
+    return Boolean(this.#receiveBadgesSetting?.get());
+  }
 }

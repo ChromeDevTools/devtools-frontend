@@ -26,6 +26,7 @@ export abstract class Badge {
 
   abstract readonly name: string;
   abstract readonly title: string;
+  abstract readonly imageUri: string;
   abstract readonly interestedActions: readonly BadgeAction[];
   readonly isStarterBadge: boolean = false;
 

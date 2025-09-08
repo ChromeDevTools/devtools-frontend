@@ -4,9 +4,11 @@
 
 import {Badge, BadgeAction} from './Badge.js';
 
+const DOM_DETECTIVE_BADGE_IMAGE_URI = new URL('../../Images/gdp-logo-standalone.svg', import.meta.url).toString();
 export class DOMDetectiveBadge extends Badge {
   override readonly name = 'awards/dom-detective-badge';
   override readonly title = 'DOM Detective';
+  override readonly imageUri = DOM_DETECTIVE_BADGE_IMAGE_URI;
 
   override readonly interestedActions = [
     BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED,

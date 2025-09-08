@@ -36,7 +36,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Elements from '../../models/elements/elements.js';
@@ -466,10 +465,8 @@ export class ElementsTreeOutline extends
   constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean) {
     super();
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL)) {
-      this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
-      this.#issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUE_ADDED, this.#onIssueAdded, this);
-    }
+    this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
+    this.#issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUE_ADDED, this.#onIssueAdded, this);
 
     this.treeElementByNode = new WeakMap();
     const shadowContainer = document.createElement('div');
@@ -541,48 +538,46 @@ export class ElementsTreeOutline extends
     this.showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
     this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
     this.setUseLightSelectionColor(true);
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL)) {
-      // TODO(changhaohan): refactor the popover to use tooltip component.
-      this.#popupHelper = new UI.PopoverHelper.PopoverHelper(this.elementInternal, event => {
-        const hoveredNode = event.composedPath()[0] as Element;
-        if (!hoveredNode?.matches('.violating-element')) {
-          return null;
-        }
+    // TODO(changhaohan): refactor the popover to use tooltip component.
+    this.#popupHelper = new UI.PopoverHelper.PopoverHelper(this.elementInternal, event => {
+      const hoveredNode = event.composedPath()[0] as Element;
+      if (!hoveredNode?.matches('.violating-element')) {
+        return null;
+      }
 
-        const issues = this.#nodeElementToIssues.get(hoveredNode);
-        if (!issues) {
-          return null;
-        }
+      const issues = this.#nodeElementToIssues.get(hoveredNode);
+      if (!issues) {
+        return null;
+      }
 
-        return {
-          box: hoveredNode.boxInWindow(),
-          show: async (popover: UI.GlassPane.GlassPane) => {
-            popover.setIgnoreLeftMargin(true);
-            // clang-format off
-            render(html`
-              <div class="squiggles-content">
-                ${issues.map(issue => {
-                  const elementIssueDetails = getElementIssueDetails(issue);
-                  if (!elementIssueDetails) {
-                    // This shouldn't happen, but add this if check to pass ts check.
-                    return nothing;
-                  }
-                  const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
-                  const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
-                  return html`
-                    <div class="squiggles-content-item">
-                    <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
-                    <x-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</x-link>
-                    <span>${elementIssueDetails.tooltip}</span>
-                    </div>`;})}
-              </div>`, popover.contentElement);
-            // clang-format on
-            return true;
-          },
-        };
-      }, 'elements.issue');
-      this.#popupHelper.setTimeout(300);
-    }
+      return {
+        box: hoveredNode.boxInWindow(),
+        show: async (popover: UI.GlassPane.GlassPane) => {
+          popover.setIgnoreLeftMargin(true);
+          // clang-format off
+          render(html`
+            <div class="squiggles-content">
+              ${issues.map(issue => {
+                const elementIssueDetails = getElementIssueDetails(issue);
+                if (!elementIssueDetails) {
+                  // This shouldn't happen, but add this if check to pass ts check.
+                  return nothing;
+                }
+                const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
+                const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
+                return html`
+                  <div class="squiggles-content-item">
+                  <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
+                  <x-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</x-link>
+                  <span>${elementIssueDetails.tooltip}</span>
+                  </div>`;})}
+            </div>`, popover.contentElement);
+          // clang-format on
+          return true;
+        },
+      };
+    }, 'elements.issue');
+    this.#popupHelper.setTimeout(300);
   }
 
   static forDOMModel(domModel: SDK.DOMModel.DOMModel): ElementsTreeOutline|null {
@@ -1527,9 +1522,7 @@ export class ElementsTreeOutline extends
     this.reset();
     if (domModel.existingDocument()) {
       this.rootDOMNode = domModel.existingDocument();
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL)) {
-        this.#addAllElementIssues();
-      }
+      this.#addAllElementIssues();
     }
   }
 

@@ -1793,7 +1793,6 @@ export const knownContextValues = new Set([
   'hide-network-messages-true',
   'hide-player',
   'hide-repeating-children',
-  'highlight-errors-elements-panel',
   'highlight-node-on-hover-in-overlay',
   'history',
   'historyRedo',

@@ -9,8 +9,6 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('Element has violating properties', function() {
-  setup({enabledDevToolsExperiments: ['highlight-errors-elements-panel']});
-
   async function expandFormWithIssues(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await goToResourceAndWaitForStyleSection('elements/form-with-issues.html', devToolsPage, inspectedPage);
     await expandSelectedNodeRecursively(devToolsPage);
@@ -57,8 +55,6 @@ describe('Element has violating properties', function() {
 });
 
 describe('The elements panel', function() {
-  setup({enabledDevToolsExperiments: ['highlight-errors-elements-panel']});
-
   async function expandElementsWithIssues(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await inspectedPage.goToResource('elements/select-element-with-issues.html');
     await expandSelectedNodeRecursively(devToolsPage);

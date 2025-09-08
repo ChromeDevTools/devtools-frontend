@@ -129,7 +129,6 @@ const REGISTERED_EXPERIMENTS = [
   'timeline-invalidation-tracking',
   Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
   Root.Runtime.ExperimentName.HEADER_OVERRIDES,
-  Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,
   Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES,
   'font-editor',
   Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE,

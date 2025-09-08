@@ -341,11 +341,6 @@ export class MainImpl {
     // New cookie features.
     Root.Runtime.experiments.register('experimental-cookie-features', 'Enable experimental cookie features');
 
-    // Highlights a violating node or attribute by rendering a squiggly line under it and adding a tooltip linking to the issues panel.
-    Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,
-        'Highlights a violating node or attribute in the Elements panel DOM tree');
-
     // Change grouping of sources panel to use Authored/Deployed trees
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, 'Group sources into authored and deployed trees',
@@ -364,7 +359,6 @@ export class MainImpl {
 
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
-      Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocol-monitor'] : []),
     ]);
 

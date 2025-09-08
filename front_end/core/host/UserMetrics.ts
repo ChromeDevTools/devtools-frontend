@@ -817,7 +817,6 @@ export enum DevtoolsExperiments {
   'instrumentation-breakpoints' = 61,
   'authored-deployed-grouping' = 63,
   'just-my-code' = 65,
-  'highlight-errors-elements-panel' = 73,
   'use-source-map-scopes' = 76,
   'timeline-show-postmessage-events' = 86,
   'timeline-save-as-gz' = 108,

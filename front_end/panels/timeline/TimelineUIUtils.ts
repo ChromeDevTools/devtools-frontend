@@ -476,6 +476,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+// Look for scheme:// plus text and exclude any punctuation at the end.
+export const URL_REGEX = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
+
 let eventDispatchDesciptors: EventDispatchTypeDescriptor[];
 
 let colorGenerator: Common.Color.Generator;
@@ -897,9 +900,7 @@ export class TimelineUIUtils {
    * of the link is the URL, so the visible string to the user is unchanged.
    */
   static parseStringForLinks(rawString: string): DocumentFragment {
-    // Look for scheme:// plus text and exclude any punctuation at the end.
-    const urlRegex = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
-    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(rawString, [urlRegex]);
+    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(rawString, [URL_REGEX]);
     const nodes = results.map(result => {
       if (result.regexIndex === -1) {
         return result.value;

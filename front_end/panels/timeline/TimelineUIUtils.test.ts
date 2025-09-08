@@ -1872,4 +1872,55 @@ in the middle or at the end: <button class="devtools-link text-button link-style
           'so data:text/html,%3Cscript%3Ealert%28%27hi%27%29%3B%3C%2Fscript%3E and www.site.com remain plain');
     });
   });
+
+  describe('URL regex in parseStringForLinks', () => {
+    const urlRegex = Timeline.TimelineUIUtils.URL_REGEX;
+
+    const testCases: Array<{url: string, matches: boolean}> = [
+      // Matching URLs:
+      {url: 'http://example.com', matches: true},
+      {url: 'https://example.com', matches: true},
+      {url: 'https://www.xn--examl-gsa.com', matches: true},
+      {url: 'https://example.com/path/to/resource', matches: true},
+      {url: 'https://example.com?query=param&another=param', matches: true},
+      {url: 'https://example.com#fragment', matches: true},
+      {url: 'ftp://files.example.com', matches: true},
+      {url: 'custom-scheme://resource/123', matches: true},
+      {url: 'ext://node/123', matches: true},
+      {url: 'http://a.z', matches: true},
+      {url: '9http://example.com', matches: true},
+      // URLs with trailing punctuation should still match the URL part.
+      {url: 'https://example.com(', matches: true},
+      {url: 'https://example.com)', matches: true},
+      {url: 'https://example.com[', matches: true},
+      {url: 'https://example.com]', matches: true},
+      {url: 'https://example.com{', matches: true},
+      {url: 'https://example.com}', matches: true},
+      {url: 'https://example.com,', matches: true},
+      {url: 'https://example.com:', matches: true},
+      {url: 'https://example.com;', matches: true},
+      {url: 'https://example.com.', matches: true},
+      {url: 'https://example.com!', matches: true},
+      {url: 'https://example.com?', matches: true},
+
+      // Non-matching strings:
+      {url: 'www.example.com', matches: false},
+      {url: 'example.com', matches: false},
+      {url: 'data:text/html,hello', matches: false},
+      {url: 'mailto:test@example.com', matches: false},
+      {url: 'javascript:void(0)', matches: false},
+      {url: 'not a url', matches: false},
+      {url: 'http://', matches: false},
+      {url: 'https://a', matches: false},
+      {url: 'http://a .com', matches: false},
+      {url: 'http://a".com', matches: false},
+      {url: 'ht://example.com)', matches: false},  // protocol must be 3 or more letters.
+    ];
+
+    for (const {url, matches} of testCases) {
+      it(`correctly validates "${url}" as ${matches ? 'matching' : 'not matching'}`, () => {
+        assert.strictEqual(urlRegex.test(url), matches);
+      });
+    }
+  });
 });

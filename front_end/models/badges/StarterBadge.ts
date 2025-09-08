@@ -4,7 +4,7 @@
 
 import {Badge, BadgeAction} from './Badge.js';
 
-const STARTER_BADGE_IMAGE_URI = new URL('../../Images/gdp-logo-standalone.svg', import.meta.url).toString();
+const STARTER_BADGE_IMAGE_URI = new URL('../../Images/devtools-user-badge.svg', import.meta.url).toString();
 export class StarterBadge extends Badge {
   override readonly isStarterBadge = true;
   // TODO(ergunsh): Update the name to be the actual badge for DevTools.

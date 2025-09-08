@@ -41,6 +41,16 @@ describe('GdpClient', () => {
     sinon.assert.calledOnce(dispatchHttpRequestStub);
   });
 
+  it('should clear cache after creating a profile', async () => {
+    await Host.GdpClient.GdpClient.instance().getProfile();
+    await Host.GdpClient.GdpClient.instance().createProfile(
+        {user: 'test', emailPreference: Host.GdpClient.EmailPreference.ENABLED});
+    await Host.GdpClient.GdpClient.instance().getProfile();
+    await Host.GdpClient.GdpClient.instance().getProfile();
+
+    sinon.assert.calledThrice(dispatchHttpRequestStub);
+  });
+
   describe('when the integration is disabled', () => {
     it('should not make a request', async () => {
       updateHostConfig({

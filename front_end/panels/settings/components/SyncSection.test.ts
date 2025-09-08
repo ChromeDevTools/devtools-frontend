@@ -150,6 +150,9 @@ describeWithLocale('SyncSection', () => {
     });
 
     it('renders the sign-up state when the user does not have a GDP profile', async () => {
+      const gdpClient = Host.GdpClient.GdpClient.instance();
+      sinon.stub(gdpClient, 'getProfile').resolves(null);
+
       const syncSetting = createFakeSetting<boolean>('setting', true);
       const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
       const {shadowRoot} = await renderSyncSection({
@@ -160,7 +163,6 @@ describeWithLocale('SyncSection', () => {
         },
         syncSetting,
         receiveBadgesSetting,
-        gdpProfile: undefined,  // No profile
       });
       const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
       assert.instanceOf(gdpSection, HTMLElement);
@@ -175,9 +177,14 @@ describeWithLocale('SyncSection', () => {
     });
 
     it('renders the profile details with standard plan', async () => {
+      const gdpClient = Host.GdpClient.GdpClient.instance();
+      sinon.stub(gdpClient, 'getProfile').resolves({
+        name: 'test-profile',
+        activeSubscription: undefined,
+      });
+
       const syncSetting = createFakeSetting<boolean>('setting', true);
       const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-      const gdpProfile: Host.GdpClient.Profile = {name: 'profile-name'};  // No active subscription
       const {shadowRoot} = await renderSyncSection({
         syncInfo: {
           isSyncActive: true,
@@ -186,7 +193,6 @@ describeWithLocale('SyncSection', () => {
         },
         syncSetting,
         receiveBadgesSetting,
-        gdpProfile,
       });
 
       const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
@@ -229,15 +235,17 @@ describeWithLocale('SyncSection', () => {
 
     for (const {tier, expectedText} of subscriptionTiers) {
       it(`renders the profile details with ${expectedText} plan`, async () => {
+        const gdpClient = Host.GdpClient.GdpClient.instance();
+        sinon.stub(gdpClient, 'getProfile').resolves({
+          name: 'test-profile',
+          activeSubscription: {
+            subscriptionTier: tier as Host.GdpClient.SubscriptionTier,
+            subscriptionStatus: Host.GdpClient.SubscriptionStatus.ENABLED,
+          },
+        });
+
         const syncSetting = createFakeSetting<boolean>('setting', true);
         const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-        const gdpProfile: Host.GdpClient.Profile = {
-          name: 'profile-name',
-          activeSubscription: {
-            subscriptionStatus: Host.GdpClient.SubscriptionStatus.ENABLED,
-            subscriptionTier: tier,
-          },
-        };
         const {shadowRoot} = await renderSyncSection({
           syncInfo: {
             isSyncActive: true,
@@ -246,7 +254,6 @@ describeWithLocale('SyncSection', () => {
           },
           syncSetting,
           receiveBadgesSetting,
-          gdpProfile,
         });
 
         const gdpSection = shadowRoot.querySelector('.gdp-profile-container');

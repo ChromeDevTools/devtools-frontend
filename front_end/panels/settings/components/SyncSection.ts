@@ -117,7 +117,6 @@ export interface SyncSectionData {
   syncInfo: Host.InspectorFrontendHostAPI.SyncInformation;
   syncSetting: Common.Settings.Setting<boolean>;
   receiveBadgesSetting: Common.Settings.Setting<boolean>;
-  gdpProfile?: Host.GdpClient.Profile;
 }
 
 export class SyncSection extends HTMLElement {
@@ -132,7 +131,7 @@ export class SyncSection extends HTMLElement {
     this.#syncInfo = data.syncInfo;
     this.#syncSetting = data.syncSetting;
     this.#receiveBadgesSetting = data.receiveBadgesSetting;
-    this.#gdpProfile = data.gdpProfile;
+    void this.#updateGdpProfile();
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
@@ -156,6 +155,11 @@ export class SyncSection extends HTMLElement {
       </fieldset>
     `, this.#shadow, {host: this});
     // clang-format on
+  }
+
+  async #updateGdpProfile(): Promise<void> {
+    this.#gdpProfile = await Host.GdpClient.GdpClient.instance().getProfile() ?? undefined;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 }
 

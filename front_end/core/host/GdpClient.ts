@@ -131,16 +131,26 @@ export class GdpClient {
     return (await this.checkEligibility())?.createProfile === EligibilityStatus.ELIGIBLE;
   }
 
-  createProfile({user, emailPreference}: {user: string, emailPreference: EmailPreference}): Promise<Profile|null> {
-    return makeHttpRequest({
+  async createProfile({user, emailPreference}: {user: string, emailPreference: EmailPreference}):
+      Promise<Profile|null> {
+    const result = await makeHttpRequest<Profile>({
       service: SERVICE_NAME,
       path: '/v1beta1/profiles',
       method: 'POST',
       body: JSON.stringify({
         user,
         newsletter_email: emailPreference,
-      })
+      }),
     });
+    if (result) {
+      this.#clearCache();
+    }
+    return result;
+  }
+
+  #clearCache(): void {
+    this.#cachedProfilePromise = undefined;
+    this.#cachedEligibilityPromise = undefined;
   }
 
   createAward({name}: {name: string}): Promise<Award|null> {

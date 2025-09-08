@@ -136,21 +136,20 @@ describe('UIUtils', () => {
 
   describe('LongClickController', () => {
     it('does not invoke callback when disposed', () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
       const el = document.createElement('div');
       const callback = sinon.spy();
       const controller = new UI.UIUtils.LongClickController(el, callback);
-      // @ts-expect-error
-      const setTimeout = sinon.stub(window, 'setTimeout').callsFake(cb => cb());
 
       el.dispatchEvent(new PointerEvent('pointerdown'));
+      clock.runAll();
       sinon.assert.calledOnce(callback);
 
       controller.dispose();
 
       el.dispatchEvent(new PointerEvent('pointerdown'));
       sinon.assert.calledOnce(callback);
-
-      setTimeout.restore();
+      clock.restore();
     });
   });
 

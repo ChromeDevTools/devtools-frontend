@@ -5,7 +5,8 @@
 import {Badge, BadgeAction} from './Badge.js';
 
 export class SpeedsterBadge extends Badge {
-  override readonly name = 'awards/speedster';
+  // TODO(ergunsh): Update the name to be the actual badge for DevTools.
+  override readonly name = 'profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Flegacy%2Ftest';
   override readonly title = 'Speedster';
   override readonly interestedActions = [BadgeAction.PERFORMANCE_INSIGHT_CLICKED] as const;
 

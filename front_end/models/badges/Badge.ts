@@ -12,12 +12,12 @@ export enum BadgeAction {
 export type BadgeActionEvents = Record<BadgeAction, void>;
 
 export interface BadgeContext {
-  dispatchBadgeTriggeredEvent: (badge: Badge) => void;
+  onTriggerBadge: (badge: Badge) => void;
   badgeActionEventTarget: Common.ObjectWrapper.ObjectWrapper<BadgeActionEvents>;
 }
 
 export abstract class Badge {
-  #dispatchBadgeTriggeredEvent: (badge: Badge) => void;
+  #onTriggerBadge: (badge: Badge) => void;
   #badgeActionEventTarget: Common.ObjectWrapper.ObjectWrapper<BadgeActionEvents>;
   #eventListeners: Common.EventTarget.EventDescriptor[] = [];
   #triggeredBefore = false;
@@ -28,7 +28,7 @@ export abstract class Badge {
   readonly isStarterBadge: boolean = false;
 
   constructor(context: BadgeContext) {
-    this.#dispatchBadgeTriggeredEvent = context.dispatchBadgeTriggeredEvent;
+    this.#onTriggerBadge = context.onTriggerBadge;
     this.#badgeActionEventTarget = context.badgeActionEventTarget;
   }
 
@@ -40,7 +40,7 @@ export abstract class Badge {
 
     this.#triggeredBefore = true;
     this.deactivate();
-    this.#dispatchBadgeTriggeredEvent(this);
+    this.#onTriggerBadge(this);
   }
 
   activate(): void {

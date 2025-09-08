@@ -22,14 +22,14 @@ describe('Badge', () => {
   let badgeActionEventTarget: Common.ObjectWrapper.ObjectWrapper<Badges.BadgeActionEvents>;
   let testBadge: TestBadge;
   let handleActionSpy: sinon.SinonSpy;
-  let dispatchBadgeTriggeredEventStub: sinon.SinonStub;
+  let onTriggerBadgeStub: sinon.SinonStub;
 
   beforeEach(() => {
     badgeActionEventTarget = new Common.ObjectWrapper.ObjectWrapper();
     handleActionSpy = sinon.spy(TestBadge.prototype, 'handleAction');
-    dispatchBadgeTriggeredEventStub = sinon.stub();
+    onTriggerBadgeStub = sinon.stub();
     testBadge = new TestBadge({
-      dispatchBadgeTriggeredEvent: dispatchBadgeTriggeredEventStub,
+      onTriggerBadge: onTriggerBadgeStub,
       badgeActionEventTarget,
     });
   });
@@ -70,12 +70,12 @@ describe('Badge', () => {
     sinon.assert.notCalled(handleActionSpy);
   });
 
-  it('events received more than once only calls `dispatchBadgeTriggeredEvent` once', () => {
+  it('events received more than once only calls `onTriggerBadge` once', () => {
     testBadge.activate();
 
     badgeActionEventTarget.dispatchEventToListeners(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
     badgeActionEventTarget.dispatchEventToListeners(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
 
-    sinon.assert.calledOnce(dispatchBadgeTriggeredEventStub);
+    sinon.assert.calledOnce(onTriggerBadgeStub);
   });
 });

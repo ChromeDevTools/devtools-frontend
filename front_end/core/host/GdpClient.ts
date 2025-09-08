@@ -36,6 +36,20 @@ export enum EmailPreference {
 interface CheckElibigilityResponse {
   createProfile: EligibilityStatus;
 }
+export interface Award {
+  name: string;
+  badge: {
+    title: string,
+    description: string,
+    imageUri: string,
+    deletableByUser: boolean,
+  };
+  title: string;
+  description: string;
+  imageUri: string;
+  createTime: string;
+  awardingUri: string;
+}
 
 export interface Profile {
   // Resource name of the profile.
@@ -125,6 +139,18 @@ export class GdpClient {
       body: JSON.stringify({
         user,
         newsletter_email: emailPreference,
+      })
+    });
+  }
+
+  createAward({name}: {name: string}): Promise<Award|null> {
+    return makeHttpRequest({
+      service: SERVICE_NAME,
+      path: '/v1beta1/profiles/me/awards',
+      method: 'POST',
+      body: JSON.stringify({
+        awardingUri: 'devtools://devtools',
+        name,
       })
     });
   }

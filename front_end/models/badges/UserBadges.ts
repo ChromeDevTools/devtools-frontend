@@ -23,7 +23,7 @@ let userBadgesInstance: UserBadges|undefined = undefined;
 export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #badgeActionEventTarget = new Common.ObjectWrapper.ObjectWrapper<BadgeActionEvents>();
 
-  #receiveBadgesSetting?: Common.Settings.Setting<Boolean>;
+  #receiveBadgesSetting: Common.Settings.Setting<Boolean>;
   #allBadges: Badge[];
 
   static readonly BADGE_REGISTRY: BadgeClass[] = [
@@ -37,11 +37,10 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.#receiveBadgesSetting = Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges');
     this.#receiveBadgesSetting.addChangeListener(this.#reconcileBadges, this);
 
-    this.#allBadges =
-        UserBadges.BADGE_REGISTRY.map(badgeCtor => new badgeCtor({
-                                        dispatchBadgeTriggeredEvent: this.#dispatchBadgeTriggeredEvent.bind(this),
-                                        badgeActionEventTarget: this.#badgeActionEventTarget,
-                                      }));
+    this.#allBadges = UserBadges.BADGE_REGISTRY.map(badgeCtor => new badgeCtor({
+                                                      onTriggerBadge: this.#onTriggerBadge.bind(this),
+                                                      badgeActionEventTarget: this.#badgeActionEventTarget,
+                                                    }));
   }
 
   static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): UserBadges {
@@ -65,7 +64,28 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.#badgeActionEventTarget.dispatchEventToListeners(action);
   }
 
-  #dispatchBadgeTriggeredEvent(badge: Badge): void {
+  async #onTriggerBadge(badge: Badge): Promise<void> {
+    let shouldAwardBadge = false;
+    // By default, we award non-starter badges directly when they are triggered.
+    if (!badge.isStarterBadge) {
+      shouldAwardBadge = true;
+    } else {
+      const gdpProfile = await Host.GdpClient.GdpClient.instance().getProfile();
+      const receiveBadgesSettingEnabled = Boolean(this.#receiveBadgesSetting.get());
+      // If there is a GDP profile and the user has enabled receiving badges, we award the starter badge as well.
+      if (gdpProfile && receiveBadgesSettingEnabled) {
+        shouldAwardBadge = true;
+      }
+    }
+
+    // Awarding was needed and not successful, we don't show the notification
+    if (shouldAwardBadge) {
+      const result = await Host.GdpClient.GdpClient.instance().createAward({name: badge.name});
+      if (!result) {
+        return;
+      }
+    }
+
     this.dispatchEventToListeners(Events.BADGE_TRIGGERED, badge);
   }
 

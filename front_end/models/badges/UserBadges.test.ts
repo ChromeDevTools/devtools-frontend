@@ -44,6 +44,12 @@ function mockGetSyncInformation(information: Host.InspectorFrontendHostAPI.SyncI
   });
 }
 
+function stubGdpClientCreateAward(name: string|null):
+    sinon.SinonStub<Parameters<typeof Host.GdpClient.GdpClient.prototype.createAward>> {
+  return sinon.stub(Host.GdpClient.GdpClient.instance(), 'createAward')
+      .resolves(name ? {name} as Host.GdpClient.Award : null);
+}
+
 function mockGdpClientGetProfile(profile: Host.GdpClient.Profile|null): void {
   sinon.stub(Host.GdpClient.GdpClient.instance(), 'getProfile').resolves(profile);
 }
@@ -101,25 +107,103 @@ describeWithEnvironment('UserBadges', () => {
 
   it('should dispatch a badge triggered event when a badge is triggered for the first time', async () => {
     setUpEnvironmentForActivatedBadges();
-    const badgeTriggeredEventHandlerStub = sinon.stub();
+    stubGdpClientCreateAward('test/test-badge');
     await Badges.UserBadges.instance().initialize();
-    Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, badgeTriggeredEventHandlerStub);
+    const badgeTriggeredPromise = Badges.UserBadges.instance().once(Badges.Events.BADGE_TRIGGERED);
 
     Badges.UserBadges.instance().recordAction(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
 
-    sinon.assert.calledOnce(badgeTriggeredEventHandlerStub);
+    await badgeTriggeredPromise;
   });
 
   it('should only dispatch a badge triggered event once when the same action is recorded multiple times', async () => {
     setUpEnvironmentForActivatedBadges();
-    const badgeTriggeredEventHandlerStub = sinon.stub();
+    stubGdpClientCreateAward('test/test-badge');
     await Badges.UserBadges.instance().initialize();
-    Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, badgeTriggeredEventHandlerStub);
+    const badgeTriggeredPromise = Badges.UserBadges.instance().once(Badges.Events.BADGE_TRIGGERED);
 
     Badges.UserBadges.instance().recordAction(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
     Badges.UserBadges.instance().recordAction(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
 
-    sinon.assert.calledOnce(badgeTriggeredEventHandlerStub);
+    await badgeTriggeredPromise;
+  });
+
+  describe('onTriggerBadge', () => {
+    describe('non-starter badges', () => {
+      it('should award a non-starter badge and dispatch event when `createAward` succeeds', async () => {
+        setUpEnvironmentForActivatedBadges();
+        const createAwardStub = stubGdpClientCreateAward('test/test-badge');
+        await Badges.UserBadges.instance().initialize();
+        const badgeTriggeredPromise = Badges.UserBadges.instance().once(Badges.Events.BADGE_TRIGGERED);
+
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
+        const badge = await badgeTriggeredPromise;
+
+        assert.strictEqual(badge.name, 'badges/test-badge');
+        sinon.assert.calledWith(createAwardStub, {name: 'badges/test-badge'});
+      });
+
+      it('should not dispatch event for a non-starter badge when `createAward` fails', async () => {
+        setUpEnvironmentForActivatedBadges();
+        const createAwardStub = stubGdpClientCreateAward(null);
+        const badgeTriggeredSpy = sinon.spy();
+        await Badges.UserBadges.instance().initialize();
+        Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, badgeTriggeredSpy);
+
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        sinon.assert.calledOnce(createAwardStub);
+        sinon.assert.notCalled(badgeTriggeredSpy);
+      });
+    });
+
+    describe('starter-badges', () => {
+      it('should award a starter badge if the user has a profile and the setting is enabled', async () => {
+        setUpEnvironmentForActivatedBadges();
+        const createAwardStub = stubGdpClientCreateAward('test/test-badge');
+        await Badges.UserBadges.instance().initialize();
+        const badgeTriggeredPromise = Badges.UserBadges.instance().once(Badges.Events.BADGE_TRIGGERED);
+
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
+        const badge = await badgeTriggeredPromise;
+
+        assert.strictEqual(badge.name, 'badges/starter-test-badge');
+        sinon.assert.calledWith(createAwardStub, {name: 'badges/starter-test-badge'});
+      });
+
+      it('should not award a starter badge if the user does not have a GDP profile', async () => {
+        setReceiveBadgesSetting(true);
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGdpClientGetProfile(null);
+        const createAwardStub = stubGdpClientCreateAward(null);
+        const badgeTriggeredSpy = sinon.spy();
+        await Badges.UserBadges.instance().initialize();
+        Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, badgeTriggeredSpy);
+
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        sinon.assert.notCalled(createAwardStub);
+        sinon.assert.notCalled(badgeTriggeredSpy);
+      });
+
+      it('should not award a starter badge if the "receive badges" setting is disabled', async () => {
+        setReceiveBadgesSetting(false);
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGdpClientGetProfile({name: 'names/profile-id'});
+        const createAwardStub = stubGdpClientCreateAward(null);
+        const badgeTriggeredSpy = sinon.spy();
+        await Badges.UserBadges.instance().initialize();
+        Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, badgeTriggeredSpy);
+
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        sinon.assert.notCalled(createAwardStub);
+        sinon.assert.notCalled(badgeTriggeredSpy);
+      });
+    });
   });
 
   describe('recordAction', () => {

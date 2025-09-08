@@ -505,6 +505,57 @@ Response headers
 - expires: Thu, 07 Mar 2024 21:17:02 GMT
 === end content
 
+Title: PerformanceInsightFormatter DomSize serializes correctly when there are no results
+Content:
+## Insight Title: Optimize DOM size
+
+## Insight Summary:
+This insight evaluates some key metrics about the Document Object Model (DOM) and identifies excess in the DOM tree, for example:
+- The maximum number of elements within the DOM.
+- The maximum number of children for any given element.
+- Excessive depth of the DOM structure.
+- The largest layout and style recalculation events.
+
+## Detailed analysis:
+No DOM size issues were detected.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/lighthouse/performance/dom-size/
+=== end content
+
+Title: PerformanceInsightFormatter DomSize serializes the correct details showing DOM issues
+Content:
+## Insight Title: Optimize DOM size
+
+## Insight Summary:
+This insight evaluates some key metrics about the Document Object Model (DOM) and identifies excess in the DOM tree, for example:
+- The maximum number of elements within the DOM.
+- The maximum number of children for any given element.
+- Excessive depth of the DOM structure.
+- The largest layout and style recalculation events.
+
+## Detailed analysis:
+A large DOM can increase the duration of style calculations and layout reflows, impacting page responsiveness. A large DOM will also increase memory usage. [Learn how to avoid an excessive DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size/).
+
+Statistic:
+
+Total elements: 1006.
+DOM depth: 1001 nodes, starting with element 'SPAN' (node id: 27).
+Most children: 5, for parent 'BODY' (node id: 19).
+
+Large layout updates/style calculations:
+
+  - Layout update: Duration: 58.9 ms, with 2004 of 2012 nodes needing layout.
+  - Style recalculation: Duration: 150.5 ms, with 1001 elements affected.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/lighthouse/performance/dom-size/
+=== end content
+
 Title: PerformanceInsightFormatter Duplicated javascript serializes the correct details
 Content:
 ## Insight Title: Duplicated JavaScript

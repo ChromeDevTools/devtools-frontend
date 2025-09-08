@@ -25,6 +25,10 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-dom-size`;
   override internalName = 'dom-size';
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   #renderNodeTable(domStatsData: Trace.Types.Events.DOMStats['args']['data']): Lit.LitTemplate {
     const rows: TableData['rows'] = [];
 

@@ -299,6 +299,28 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
        });
   });
 
+  describe('DomSize', () => {
+    it('serializes correctly when there are no results', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('DOMSize', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details showing DOM issues', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'dom-size.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('DOMSize', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
   describe('Duplicated javascript', () => {
     it('serializes the correct details', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'dupe-js.json.gz');

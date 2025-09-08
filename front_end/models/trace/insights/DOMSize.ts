@@ -104,6 +104,10 @@ function finalize(partialModel: PartialInsightModel<DOMSizeInsightModel>): DOMSi
   };
 }
 
+export function isDomSizeInsight(model: InsightModel): model is DOMSizeInsightModel {
+  return model.insightKey === InsightKeys.DOM_SIZE;
+}
+
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DOMSizeInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);

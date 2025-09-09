@@ -43,6 +43,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
+import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
@@ -53,6 +54,7 @@ import * as Logs from '../../models/logs/logs.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as ProjectSettings from '../../models/project_settings/project_settings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import type * as PanelCommon from '../../panels/common/common.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbar from '../../ui/components/snackbars/snackbars.js';
@@ -122,6 +124,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+let loadedPanelCommonModule: typeof PanelCommon|undefined;
 export class MainImpl {
   #readyForTestPromise = Promise.withResolvers<void>();
 
@@ -515,9 +518,15 @@ export class MainImpl {
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
     this.#registerMessageSinkListener();
 
-    // Initialize `GDPClient` for Google Developer Program integration
+    // Initialize `GDPClient` and `UserBadges` for Google Developer Program integration
     if (Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled) {
       void Host.GdpClient.GdpClient.instance().initialize();
+      void Badges.UserBadges.instance().initialize();
+      Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, async ev => {
+        loadedPanelCommonModule ??= await import('../../panels/common/common.js') as typeof PanelCommon;
+        const badgeNotification = new loadedPanelCommonModule.BadgeNotification();
+        void badgeNotification.present(ev.data);
+      });
     }
 
     MainImpl.timeEnd('Main._createAppUI');

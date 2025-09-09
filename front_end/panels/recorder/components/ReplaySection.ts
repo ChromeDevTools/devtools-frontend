@@ -168,7 +168,9 @@ export class ReplaySection extends HTMLElement {
       this.#settings.replayExtension = '';
     }
 
-    Host.userMetrics.recordingReplaySpeed(replaySpeedToMetricSpeedMap[speed]);
+    if (replaySpeedToMetricSpeedMap[speed]) {
+      Host.userMetrics.recordingReplaySpeed(replaySpeedToMetricSpeedMap[speed]);
+    }
     void ComponentHelpers.ScheduledRender.scheduleRender(
         this,
         this.#render,

@@ -62,6 +62,10 @@ it('can highlight JavaScript with `import { default as name }` syntax', testHigh
 [keyword import] {[keyword default] [keyword as] [definition name]} [keyword from] [string 'module'];
 `, 'text/javascript')),
 
+it('can highlight JavaScript with `import defer` syntax', testHighlight(`
+[keyword import] [keyword defer] [definition feature] [keyword from] [string './some-feature.js'];
+`, 'text/javascript')),
+
 it('can highlight JavaScript with `new.target` syntax', testHighlight(`
 [keyword new].[property target]
 `, 'text/javascript'));

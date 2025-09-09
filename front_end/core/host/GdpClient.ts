@@ -36,6 +36,11 @@ export enum EmailPreference {
 interface CheckElibigilityResponse {
   createProfile: EligibilityStatus;
 }
+
+interface BatchGetAwardsResponse {
+  awards?: Award[];
+}
+
 export interface Award {
   name: string;
   badge: {
@@ -125,6 +130,27 @@ export class GdpClient {
         makeHttpRequest({service: SERVICE_NAME, path: '/v1beta1/eligibility:check', method: 'GET'});
 
     return await this.#cachedEligibilityPromise;
+  }
+
+  /**
+   * @returns null if the request fails, the awarded badge names otherwise.
+   */
+  async getAwardedBadgeNames({names}: {names: string[]}): Promise<Set<string>|null> {
+    const result = await makeHttpRequest<BatchGetAwardsResponse>({
+      service: SERVICE_NAME,
+      path: '/v1beta1/profiles/me/awards:batchGet',
+      method: 'GET',
+      queryParams: {
+        allowMissing: 'true',
+        names,
+      }
+    });
+
+    if (!result) {
+      return null;
+    }
+
+    return new Set(result.awards?.map(award => award.name) ?? []);
   }
 
   async isEligibleToCreateProfile(): Promise<boolean> {

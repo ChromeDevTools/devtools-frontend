@@ -98,7 +98,6 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   // TODO(ergunsh): Implement starter badge dismissal, snooze count & timestamp checks.
-  // TODO(ergunsh): Implement checking for previously awarded badges.
   async #reconcileBadges(): Promise<void> {
     const syncInfo = await new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
         resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
@@ -120,8 +119,28 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       return;
     }
 
-    const receiveBadgesSettingEnabled = Boolean(this.#receiveBadgesSetting?.get());
+    // This is a conservative approach. We bail out if `awardedBadgeNames` is null
+    // to prevent a negative user experience.
+    //
+    // A failure here (e.g., from a typo in a badge name) could cause us to
+    // re-trigger the "Receive badges" nudge for a user who has already earned the
+    // starter badge and opted out of receiving badges.
+    //
+    // The trade-off is, we silently failing to enable badge mechanism rather than annoying the user.
+    const awardedBadgeNames = await Host.GdpClient.GdpClient.instance().getAwardedBadgeNames(
+        {names: this.#allBadges.map(badge => badge.name)});
+    if (!awardedBadgeNames) {
+      this.#deactivateAllBadges();
+      return;
+    }
+
+    const receiveBadgesSettingEnabled = Boolean(this.#receiveBadgesSetting.get());
     for (const badge of this.#allBadges) {
+      if (awardedBadgeNames.has(badge.name)) {
+        badge.deactivate();
+        continue;
+      }
+
       const shouldActivateStarterBadge = badge.isStarterBadge && isEligibleToCreateProfile;
       const shouldActivateActivityBasedBadge =
           !badge.isStarterBadge && Boolean(gdpProfile) && receiveBadgesSettingEnabled;
@@ -139,6 +158,6 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   isReceiveBadgesSettingEnabled(): boolean {
-    return Boolean(this.#receiveBadgesSetting?.get());
+    return Boolean(this.#receiveBadgesSetting.get());
   }
 }

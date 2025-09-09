@@ -257,11 +257,13 @@ export type DispatchHttpRequestRequest = {
   service: string,
   path: string,
   method: 'GET',
+  queryParams?: Record<string, string|string[]>,
   body?: never,
 }|{
   service: string,
   path: string,
   method: 'POST',
+  queryParams?: Record<string, string|string[]>,
   // A JSON string containing the request body.
   body?: string,
 };

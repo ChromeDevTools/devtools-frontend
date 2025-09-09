@@ -68,6 +68,9 @@ export interface Profile {
   };
 }
 
+// TODO(crbug.com/441679275): Update once the API is enabled for prod.
+export const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.devsite.corp.google.com/profile/u/';
+
 async function makeHttpRequest<R extends object>(request: DispatchHttpRequestRequest): Promise<R|null> {
   if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled) {
     return null;

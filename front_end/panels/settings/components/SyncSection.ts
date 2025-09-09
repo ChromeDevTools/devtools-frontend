@@ -110,8 +110,6 @@ function getGdpSubscriptionText(profile: Host.GdpClient.Profile): Platform.UIStr
 }
 
 const GDP_LOGO_IMAGE_URL = new URL('../../../Images/gdp-logo-standalone.svg', import.meta.url).toString();
-// TODO(crbug.com/441679275): Update once the API is enabled for prod.
-const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.devsite.corp.google.com/profile/u/';
 
 export interface SyncSectionData {
   syncInfo: Host.InspectorFrontendHostAPI.SyncInformation;
@@ -262,7 +260,7 @@ function renderGdpSectionIfNeeded({
           <div class="plan-details">
             ${getGdpSubscriptionText(gdpProfile)}
             &nbsp;·&nbsp;
-            <x-link class="link" href=${GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK}>
+            <x-link class="link" href=${Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK}>
               ${i18nString(UIStrings.viewProfile)}
             </x-link></div>
             ${receiveBadgesSetting ? html`

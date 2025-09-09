@@ -11,6 +11,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import badgeNotificationStyles from './badgeNotification.css.js';
+import * as GdpSignUpDialog from './GdpSignUpDialog.js';
 
 const {html, render} = Lit;
 
@@ -194,7 +195,13 @@ export class BadgeNotification extends UI.Widget.Widget {
           label: i18nString(UIStrings.remindMeLater),
           onClick: () => {/* TODO(ergunsh): Implement */},
         },
-        {label: i18nString(UIStrings.createProfile), onClick: () => { /* TODO(ergunsh): Implement */ }}
+        {
+          label: i18nString(UIStrings.createProfile),
+          onClick: () => {
+            this.#close();
+            GdpSignUpDialog.GdpSignUpDialog.show();
+          }
+        }
       ],
       imageUri: badge.imageUri,
     });
@@ -208,7 +215,12 @@ export class BadgeNotification extends UI.Widget.Widget {
           label: i18nString(UIStrings.badgeSettings),
           onClick: () => {/* TODO(ergunsh): Implement */},
         },
-        {label: i18nString(UIStrings.viewProfile), onClick: () => { /* TODO(ergunsh): Implement */ }}
+        {
+          label: i18nString(UIStrings.viewProfile),
+          onClick: () => {
+            UI.UIUtils.openInNewTab(Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
+          }
+        }
       ],
       imageUri: badge.imageUri,
     });

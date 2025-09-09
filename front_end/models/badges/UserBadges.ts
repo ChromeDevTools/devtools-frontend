@@ -119,24 +119,27 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       return;
     }
 
-    // This is a conservative approach. We bail out if `awardedBadgeNames` is null
-    // to prevent a negative user experience.
-    //
-    // A failure here (e.g., from a typo in a badge name) could cause us to
-    // re-trigger the "Receive badges" nudge for a user who has already earned the
-    // starter badge and opted out of receiving badges.
-    //
-    // The trade-off is, we silently failing to enable badge mechanism rather than annoying the user.
-    const awardedBadgeNames = await Host.GdpClient.GdpClient.instance().getAwardedBadgeNames(
-        {names: this.#allBadges.map(badge => badge.name)});
-    if (!awardedBadgeNames) {
-      this.#deactivateAllBadges();
-      return;
+    let awardedBadgeNames: Set<string>|null = null;
+    if (gdpProfile) {
+      awardedBadgeNames = await Host.GdpClient.GdpClient.instance().getAwardedBadgeNames(
+          {names: this.#allBadges.map(badge => badge.name)});
+      // This is a conservative approach. We bail out if `awardedBadgeNames` is null
+      // when there is a profile to prevent a negative user experience.
+      //
+      // A failure here (e.g., from a typo in a badge name) could cause us to
+      // re-trigger the "Receive badges" nudge for a user who has already earned the
+      // starter badge and opted out of receiving badges.
+      //
+      // The trade-off is, we silently failing to enable badge mechanism rather than annoying the user.
+      if (!awardedBadgeNames) {
+        this.#deactivateAllBadges();
+        return;
+      }
     }
 
     const receiveBadgesSettingEnabled = Boolean(this.#receiveBadgesSetting.get());
     for (const badge of this.#allBadges) {
-      if (awardedBadgeNames.has(badge.name)) {
+      if (awardedBadgeNames?.has(badge.name)) {
         badge.deactivate();
         continue;
       }

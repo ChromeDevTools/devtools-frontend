@@ -271,9 +271,25 @@ describeWithEnvironment('UserBadges', () => {
     describe('only starter badge', () => {
       it('should activate only the starter badge if the user does not have a GDP profile and is eligible for one',
          async () => {
+           mockGdpClientGetProfile(null);
            mockIsEligibleToCreateProfile(true);
            mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
            mockGetAwardedBadgeNames([]);
+
+           await Badges.UserBadges.instance().initialize();
+
+           assertActiveBadges({
+             shouldActivityBadgeBeActive: false,
+             shouldStarterBadgeBeActive: true,
+           });
+         });
+
+      it('should activate only the starter badge if the user does not have a GDP profile and is eligible for one, even if awarded badges check fails',
+         async () => {
+           mockGdpClientGetProfile(null);
+           mockIsEligibleToCreateProfile(true);
+           mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+           mockGetAwardedBadgeNames(null);
 
            await Badges.UserBadges.instance().initialize();
 
@@ -301,6 +317,7 @@ describeWithEnvironment('UserBadges', () => {
 
       it('should not activate the starter badge if it was awarded before', async () => {
         mockIsEligibleToCreateProfile(true);
+        mockGdpClientGetProfile({name: 'profiles/test'});
         mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
         mockGetAwardedBadgeNames(['badges/starter-test-badge']);
 

@@ -11,11 +11,10 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {md} from '../utils/Helpers.js';
 import * as Utils from '../utils/utils.js';
 
 import type {BaseInsightComponent} from './insights/BaseInsightComponent.js';
-import {shouldRenderForCategory} from './insights/Helpers.js';
+import {md, shouldRenderForCategory} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
 import sidebarSingleInsightSetStyles from './sidebarSingleInsightSet.css.js';

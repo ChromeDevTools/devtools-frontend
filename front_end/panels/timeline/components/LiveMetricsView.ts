@@ -28,8 +28,9 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
-import {getThrottlingRecommendations, md} from '../utils/Helpers.js';
+import {getThrottlingRecommendations} from '../utils/Helpers.js';
 
+import {md} from './insights/Helpers.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
 import type {MetricCardData} from './MetricCard.js';
 import metricValueStyles from './metricValueStyles.css.js';

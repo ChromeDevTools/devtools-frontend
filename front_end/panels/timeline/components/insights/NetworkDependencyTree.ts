@@ -12,10 +12,10 @@ import type {
   '../../../../models/trace/insights/NetworkDependencyTree.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import {md} from '../../utils/Helpers.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
+import {md} from './Helpers.js';
 import networkDependencyTreeInsightStyles from './networkDependencyTreeInsight.css.js';
 import type {NodeLinkData} from './NodeLink.js';
 import {renderOthersLabel, type TableData, type TableDataRow} from './Table.js';

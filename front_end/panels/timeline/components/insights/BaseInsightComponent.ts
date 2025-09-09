@@ -15,10 +15,10 @@ import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import type * as Overlays from '../../overlays/overlays.js';
-import {md} from '../../utils/Helpers.js';
 import * as Utils from '../../utils/utils.js';
 
 import baseInsightComponentStyles from './baseInsightComponent.css.js';
+import {md} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import type {TableState} from './Table.js';
 

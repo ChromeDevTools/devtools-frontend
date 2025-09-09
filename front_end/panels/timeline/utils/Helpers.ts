@@ -2,18 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/markdown_view/markdown_view.js';
-
-import type * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import type * as Trace from '../../../models/trace/trace.js';
-import * as Marked from '../../../third_party/marked/marked.js';
-import * as Lit from '../../../ui/lit/lit.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
-const {html} = Lit;
 const MAX_ORIGIN_LENGTH = 60;
 
 export function getThrottlingRecommendations(): {
@@ -125,18 +119,6 @@ export function shortenUrl(url: URL, maxChars = 20): string {
   }
 
   return shortenedUrl;
-}
-
-/**
- * Returns a rendered MarkdownView component.
- *
- * This should only be used for markdown that is guaranteed to be valid,
- * and not contain any user-generated content.
- */
-export function md(markdown: Common.UIString.LocalizedString): Lit.TemplateResult {
-  const tokens = Marked.Marked.lexer(markdown);
-  const data = {tokens};
-  return html`<devtools-markdown-view .data=${data}></devtools-markdown-view>`;
 }
 
 /**

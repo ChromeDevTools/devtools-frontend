@@ -33,8 +33,6 @@ devtools_module("utils") {
     "../../../models/trace:bundle",
     "../../../models/workspace:bundle",
     "../../../panels/mobile_throttling:bundle",
-    "../../../third_party/marked:bundle",
-    "../../../ui/components/markdown_view:bundle",
     "../../../ui/legacy:bundle",
   ]
 }

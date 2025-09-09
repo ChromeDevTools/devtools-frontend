@@ -16,7 +16,7 @@ import * as UI from '../ui/legacy/legacy.js';
 
 import {checkForPendingActivity} from './TrackAsyncOperations.js';
 
-const TEST_CONTAINER_ID = '__devtools-test-container-id';
+export const TEST_CONTAINER_ID = '__devtools-test-container-id';
 
 interface RenderOptions {
   allowMultipleChildren?: boolean;
@@ -52,7 +52,7 @@ export function renderElementIntoDOM<E extends Node|UI.Widget.Widget>(
   return element;
 }
 
-function removeChildren(node: Node): void {
+export function removeChildren(node: Node): void {
   while (true) {
     const {firstChild} = node;
     if (firstChild === null) {
@@ -70,41 +70,6 @@ function removeChildren(node: Node): void {
     node.removeChild(firstChild);
   }
 }
-
-/**
- * Sets up the DOM for testing,
- * If not clean logs an error and cleans itself
- **/
-export const setupTestDOM = async () => {
-  const previousContainer = document.getElementById(TEST_CONTAINER_ID);
-  if (previousContainer) {
-    // This should not be reachable, unless the
-    // AfterEach hook fails before cleaning the DOM.
-    // Clean it here and report
-    console.error('Non clean test state found!');
-    cleanTestDOM();
-    await raf();
-  }
-  // Tests are run in light mode by default.
-  setColorScheme('light');
-  const newContainer = document.createElement('div');
-  newContainer.id = TEST_CONTAINER_ID;
-
-  // eslint-disable-next-line rulesdir/no-document-body-mutation
-  document.body.appendChild(newContainer);
-};
-
-/**
- * Completely cleans out the test DOM to ensure it's empty for the next test run.
- * This is run automatically between tests - you should not be manually calling this yourself.
- **/
-export const cleanTestDOM = () => {
-  const previousContainer = document.getElementById(TEST_CONTAINER_ID);
-  if (previousContainer) {
-    removeChildren(previousContainer);
-    previousContainer.remove();
-  }
-};
 
 /**
  * Asserts that all elements of `nodeList` are at least of type `T`.

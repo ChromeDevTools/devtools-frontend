@@ -108,12 +108,16 @@ const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement)
   render(html`
     <style>${badgeNotificationStyles}</style>
     <div class="container">
+      <div class="badge-container">
+        <img class="badge-image" src=${input.imageUri}>
+      </div>
+      <div class="action-and-text-container">
         <div class="label-container">
-            <img class="badge-image" src=${input.imageUri}>
             <div class="message">${input.message}</div>
             ${crossButton}
         </div>
         <div class="long-action-container">${actionButtons}</div>
+      </div>
     </div>
   `, target);
 };

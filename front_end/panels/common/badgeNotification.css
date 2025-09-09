@@ -16,37 +16,54 @@
 
   .container {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     overflow: hidden;
-    width: var(--sys-size-33);
+    width: 485px;
     background: var(--sys-color-inverse-surface);
     box-shadow: var(--sys-elevation-level3);
     border-radius: var(--sys-shape-corner-small);
-    font: var(--sys-typescale-body4-medium);
+    font: var(--sys-typescale-body4-regular);
     animation: slideIn 100ms cubic-bezier(0, 0, 0.3, 1);
     box-sizing: border-box;
     max-width: 100%;
     padding: var(--sys-size-5) var(--sys-size-6) var(--sys-size-6) var(--sys-size-6);
   }
 
+  .action-and-text-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-3);
+  }
+
   .long-action-container {
     margin-left: auto;
+    /*
+    * Buttons have a 24px total height, which includes padding for the hover area.
+    * We apply a -3px vertical margin to compensate for this extra space.
+    * This ensures the component aligns based on the visual text height,
+    * not the full clickable bounding box.
+    */
+    margin-block: -3px;
   }
 
   .label-container {
     display: flex;
     width: 100%;
     align-items: center;
-    gap: var(--sys-size-5);
+    padding-block: var(--sys-size-3);
+    line-height: 18px;
+  }
+
+  .badge-container {
+    margin-right: 10px;
+    min-width: 64px;
+    height: 64px;
   }
 
   .badge-image {
-    margin-right: var(--sys-size-6);
-    width: 42px;
-    height: 42px;
+    width: 100%;
+    height: 100%;
     border-radius: var(--sys-shape-corner-full);
-    background: var(--sys-color-surface);
   }
 
   .badge-link {

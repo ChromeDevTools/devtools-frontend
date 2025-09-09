@@ -74,8 +74,6 @@ export function stripComments(value: string): string {
   return value.replaceAll(/(\/\*(?:.|\s)*?\*\/)/g, '');
 }
 
-const cssParser = CodeMirror.css.cssLanguage.parser;
-
 function nodeText(node: CodeMirror.SyntaxNode, text: string): string {
   return nodeTextRange(node, node, text);
 }
@@ -577,6 +575,7 @@ export namespace ASTUtils {
 }
 
 function declaration(rule: string): CodeMirror.SyntaxNode|null {
+  const cssParser = CodeMirror.css.cssLanguage.parser;
   return cssParser.parse(rule).topNode.getChild('RuleSet')?.getChild('Block')?.getChild('Declaration') ?? null;
 }
 

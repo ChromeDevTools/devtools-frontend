@@ -75,25 +75,19 @@ export class ModificationsManager extends EventTarget {
       activeManager = modificationsManagerByTraceIndex[traceIndex];
       ModificationsManager.activeManager()?.applyModificationsIfPresent();
     }
-    const parsedTrace = traceModel.parsedTrace(traceIndex);
-    if (!parsedTrace) {
+
+    const parsedTraceFile = traceModel.parsedTraceFile(traceIndex);
+    if (!parsedTraceFile) {
       throw new Error('ModificationsManager was initialized without a corresponding trace data');
     }
+
+    const {parsedTrace, metadata, traceEvents, syntheticEventsManager} = parsedTraceFile;
     const traceBounds = parsedTrace.Meta.traceBounds;
-    const traceEvents = traceModel.rawTraceEvents(traceIndex);
-    if (!traceEvents) {
-      throw new Error('ModificationsManager was initialized without a corresponding raw trace events array');
-    }
-    const syntheticEventsManager = traceModel.syntheticTraceEventsManager(traceIndex);
-    if (!syntheticEventsManager) {
-      throw new Error('ModificationsManager was initialized without a corresponding SyntheticEventsManager');
-    }
-    const metadata = traceModel.metadata(traceIndex);
     const newModificationsManager = new ModificationsManager({
       parsedTrace,
       traceBounds,
       rawTraceEvents: traceEvents,
-      modifications: metadata?.modifications,
+      modifications: metadata.modifications,
       syntheticEvents: syntheticEventsManager.getSyntheticTraces(),
     });
     modificationsManagerByTraceIndex[traceIndex] = newModificationsManager;

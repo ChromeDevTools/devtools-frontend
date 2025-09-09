@@ -44,13 +44,13 @@ describeWithEnvironment('Handler Threads helper', function() {
         Trace.Types.Events.ThreadID(1),
     );
 
-    const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(contents);
+    const {parsedTraceFile} = await TraceLoader.executeTraceEngineOnFileContents(contents);
 
     // Check that we did indeed parse this properly as a CPU Profile.
-    assert.strictEqual(parsedTrace.Renderer.processes.size, 0);
-    assert.strictEqual(parsedTrace.Samples.profilesInProcess.size, 1);
+    assert.strictEqual(parsedTraceFile.parsedTrace.Renderer.processes.size, 0);
+    assert.strictEqual(parsedTraceFile.parsedTrace.Samples.profilesInProcess.size, 1);
 
-    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace);
+    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTraceFile.parsedTrace);
     assert.lengthOf(threads, 1);
 
     assert.strictEqual(threads.at(0)?.type, Trace.Handlers.Threads.ThreadType.CPU_PROFILE);

@@ -1377,12 +1377,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (this.#viewMode.mode !== 'VIEWING_TRACE') {
       return;
     }
-    const trace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
-    if (!trace) {
-      return;
-    }
-    let traceEvents = this.#traceEngineModel.rawTraceEvents(this.#viewMode.traceIndex);
-    if (!traceEvents) {
+
+    const parsedTraceFile = this.#traceEngineModel.parsedTraceFile(this.#viewMode.traceIndex);
+    if (!parsedTraceFile) {
       return;
     }
 
@@ -1394,9 +1391,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       scriptByIdMap.set(`${mapScript.isolate}.${mapScript.scriptId}`, mapScript);
     }
 
-    const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex) ?? {};
-
-    traceEvents = traceEvents.map(event => {
+    const traceEvents = parsedTraceFile.traceEvents.map(event => {
       if (Trace.Types.Events.isAnyScriptCatchupEvent(event) && event.name !== 'StubScriptCatchup') {
         const mappedScript = scriptByIdMap.get(`${event.args.data.isolate}.${event.args.data.scriptId}`);
 
@@ -1422,6 +1417,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return event;
     });
 
+    const metadata = parsedTraceFile.metadata;
     metadata.modifications = config.addModifications ? ModificationsManager.activeManager()?.toJSON() : undefined;
 
     // NOTE: we used to export the track configuration changes into the trace

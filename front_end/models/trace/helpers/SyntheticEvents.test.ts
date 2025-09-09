@@ -41,11 +41,11 @@ describe('SyntheticEvents', function() {
        async function() {
          const contents = await TraceLoader.fixtureContents(this, 'web-dev.json.gz');
          const rawEvents = 'traceEvents' in contents ? contents.traceEvents as Trace.Types.Events.Event[] : contents;
-         const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(rawEvents);
+         const {parsedTraceFile} = await TraceLoader.executeTraceEngineOnFileContents(rawEvents);
          const allSyntheticEvents = [
-           ...parsedTrace.Animations.animations,
-           ...parsedTrace.NetworkRequests.byTime,
-           ...parsedTrace.Screenshots.legacySyntheticScreenshots ?? [],
+           ...parsedTraceFile.parsedTrace.Animations.animations,
+           ...parsedTraceFile.parsedTrace.NetworkRequests.byTime,
+           ...parsedTraceFile.parsedTrace.Screenshots.legacySyntheticScreenshots ?? [],
          ];
          const syntheticEventsManager = Trace.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager();
          for (const syntheticEvent of allSyntheticEvents) {

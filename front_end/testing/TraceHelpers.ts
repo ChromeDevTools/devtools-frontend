@@ -36,7 +36,7 @@ export interface RenderFlameChartOptions {
    * name so that the TraceLoader can take care of loading and caching the
    * trace.
    */
-  traceFile: string|Trace.Handlers.Types.ParsedTrace;
+  fileNameOrParsedTrace: string|Trace.Handlers.Types.ParsedTrace;
   /**
    * Filter the tracks that will be rendered by their name. The name here is
    * the user visible name that is drawn onto the flame chart.
@@ -90,10 +90,10 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
 
   let parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
 
-  if (typeof options.traceFile === 'string') {
-    parsedTrace = (await TraceLoader.traceEngine(context, options.traceFile)).parsedTrace;
+  if (typeof options.fileNameOrParsedTrace === 'string') {
+    parsedTrace = (await TraceLoader.traceEngine(context, options.fileNameOrParsedTrace)).parsedTrace;
   } else {
-    parsedTrace = options.traceFile;
+    parsedTrace = options.fileNameOrParsedTrace;
   }
 
   if (options.preloadScreenshots) {

@@ -60,7 +60,8 @@ describeWithEnvironment('AICallTree', () => {
         rawEvents,
         Trace.Types.Events.ThreadID(1),
     );
-    const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(events);
+    const {parsedTraceFile} = await TraceLoader.executeTraceEngineOnFileContents(events);
+    const parsedTrace = parsedTraceFile.parsedTrace;
     // Find a random function call in the trace.
     const funcCall = parsedTrace.Samples.entryToNode.keys().find(event => {
       return Trace.Types.Events.isProfileCall(event) && event.callFrame.functionName === 'callAndPauseOnStart';

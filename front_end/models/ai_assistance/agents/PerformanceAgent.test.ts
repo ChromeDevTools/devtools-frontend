@@ -269,7 +269,8 @@ const FAKE_INP_MODEL = {
 const FAKE_PARSED_TRACE = {
   Meta: {traceBounds: {min: 0, max: 10}, mainFrameURL: 'https://www.example.com'},
 } as unknown as Trace.Handlers.Types.ParsedTrace;
-const FAKE_INSIGHTS = new Map() as unknown as Trace.Insights.Types.TraceInsightSets;
+const FAKE_INSIGHTS = new Map([['', {model: {LCPBreakdown: FAKE_LCP_MODEL, INPBreakdown: FAKE_INP_MODEL}}]]) as
+    unknown as Trace.Insights.Types.TraceInsightSets;
 const FAKE_METADATA = {} as unknown as Trace.Types.File.MetaData;
 
 function createAgentForInsightConversation(opts: {aidaClient?: Host.AidaClient.AidaClient} = {}) {

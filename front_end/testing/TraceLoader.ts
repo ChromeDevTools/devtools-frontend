@@ -21,6 +21,11 @@ import * as TraceBounds from '../services/trace_bounds/trace_bounds.js';
 // ones.
 const fileContentsCache = new Map<string, Trace.Types.File.Contents>();
 
+interface ParsedTraceFileAndModel {
+  parsedTraceFile: Trace.TraceModel.ParsedTraceFile;
+  model: Trace.TraceModel.Model;
+}
+
 // The new engine cache is a map of maps of:
 // trace file name => trace engine configuration => trace data
 //
@@ -30,12 +35,7 @@ const fileContentsCache = new Map<string, Trace.Types.File.Contents>();
 // file with different trace engine configurations, we will not use the cache
 // and will reparse. This is required as some of the settings and experiments
 // change if events are kept and dropped.
-const traceEngineCache = new Map<string, Map<string, {
-                                   parsedTrace: Trace.Handlers.Types.ParsedTrace,
-                                   insights: Trace.Insights.Types.TraceInsightSets | null,
-                                   metadata: Trace.Types.File.MetaData,
-                                   model: Trace.TraceModel.Model,
-                                 }>>();
+const traceEngineCache = new Map<string, Map<string, ParsedTraceFileAndModel>>();
 
 export interface TraceEngineLoaderOptions {
   initTraceBounds: boolean;
@@ -145,11 +145,8 @@ export class TraceLoader {
    */
   static async traceEngine(
       context: Mocha.Context|Mocha.Suite|null, name: string,
-      config: Trace.Types.Configuration.Configuration = Trace.Types.Configuration.defaults()): Promise<{
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
-    insights: Trace.Insights.Types.TraceInsightSets|null,
-    metadata: Trace.Types.File.MetaData,
-  }> {
+      config: Trace.Types.Configuration.Configuration = Trace.Types.Configuration.defaults()):
+      Promise<Trace.TraceModel.ParsedTraceFile> {
     if (context) {
       TraceLoader.setTestTimeout(context);
     }
@@ -165,47 +162,40 @@ export class TraceLoader {
     // If we have results from the cache, we use those to ensure we keep the
     // tests speedy and don't re-parse trace files over and over again.
     if (fromCache) {
+      const parsedTraceFile = fromCache.parsedTraceFile;
       await wrapInTimeout(context, () => {
         const syntheticEventsManager = fromCache.model.syntheticTraceEventsManager(0);
         if (!syntheticEventsManager) {
           throw new Error('Cached trace engine result did not have a synthetic events manager instance');
         }
         Trace.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
-        TraceLoader.initTraceBoundsManager(fromCache.parsedTrace);
+        TraceLoader.initTraceBoundsManager(parsedTraceFile.parsedTrace);
         Timeline.ModificationsManager.ModificationsManager.reset();
         Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
       }, 4_000, 'Initializing state for cached trace');
-      return {parsedTrace: fromCache.parsedTrace, insights: fromCache.insights, metadata: fromCache.metadata};
+      return parsedTraceFile;
     }
 
     const fileContents = await wrapInTimeout(context, async () => {
       return await TraceLoader.fixtureContents(context, name);
     }, 15_000, `Loading fixtureContents for ${name}`);
 
-    const parsedTraceData = await wrapInTimeout(context, async () => {
+    const parsedTraceFileAndModel = await wrapInTimeout(context, async () => {
       return await TraceLoader.executeTraceEngineOnFileContents(
           fileContents, /* emulate fresh recording */ false, config);
     }, 15_000, `Executing traceEngine for ${name}`);
 
-    const cacheByName = traceEngineCache.get(name) ?? new Map<string, {
-                          parsedTrace: Trace.Handlers.Types.ParsedTrace,
-                          insights: Trace.Insights.Types.TraceInsightSets | null,
-                          metadata: Trace.Types.File.MetaData,
-                          model: Trace.TraceModel.Model,
-                        }>();
-    cacheByName.set(configCacheKey, parsedTraceData);
+    const cacheByName = traceEngineCache.get(name) ?? new Map<string, ParsedTraceFileAndModel>();
+    cacheByName.set(configCacheKey, parsedTraceFileAndModel);
     traceEngineCache.set(name, cacheByName);
 
-    TraceLoader.initTraceBoundsManager(parsedTraceData.parsedTrace);
+    TraceLoader.initTraceBoundsManager(parsedTraceFileAndModel.parsedTraceFile.parsedTrace);
     await wrapInTimeout(context, () => {
       Timeline.ModificationsManager.ModificationsManager.reset();
-      Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(parsedTraceData.model, 0);
+      Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
+          parsedTraceFileAndModel.model, 0);
     }, 5_000, `Creating modification manager for ${name}`);
-    return {
-      parsedTrace: parsedTraceData.parsedTrace,
-      insights: parsedTraceData.insights,
-      metadata: parsedTraceData.metadata,
-    };
+    return parsedTraceFileAndModel.parsedTraceFile;
   }
 
   /**
@@ -224,12 +214,7 @@ export class TraceLoader {
 
   static async executeTraceEngineOnFileContents(
       contents: Trace.Types.File.Contents, emulateFreshRecording = false,
-      traceEngineConfig?: Trace.Types.Configuration.Configuration): Promise<{
-    model: Trace.TraceModel.Model,
-    metadata: Trace.Types.File.MetaData,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
-    insights: Trace.Insights.Types.TraceInsightSets|null,
-  }> {
+      traceEngineConfig?: Trace.Types.Configuration.Configuration): Promise<ParsedTraceFileAndModel> {
     const events = 'traceEvents' in contents ? contents.traceEvents : contents;
     const metadata = 'metadata' in contents ? contents.metadata : {};
     return await new Promise((resolve, reject) => {
@@ -240,19 +225,16 @@ export class TraceLoader {
         // When we receive the final update from the model, update the recording
         // state back to waiting.
         if (Trace.TraceModel.isModelUpdateDataComplete(data)) {
-          const metadata = model.metadata(0);
-          const parsedTrace = model.parsedTrace(0);
-          const insights = model.traceInsights(0);
-          if (metadata && parsedTrace) {
-            resolve({
-              model,
-              metadata,
-              parsedTrace,
-              insights,
-            });
-          } else {
+          const parsedTraceFile = model.parsedTraceFile(0);
+          if (!parsedTraceFile) {
             reject(new Error('Unable to load trace'));
+            return;
           }
+
+          resolve({
+            model,
+            parsedTraceFile,
+          });
         }
       });
 

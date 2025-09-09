@@ -1185,11 +1185,11 @@ describeWithEnvironment('FlameChart', () => {
       const rawCPUProfile = await TraceLoader.rawCPUProfile(this, 'node-fibonacci-website.cpuprofile.gz');
       const rawTrace = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
           rawCPUProfile, Trace.Types.Events.ThreadID(1));
-      const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(rawTrace);
+      const {parsedTraceFile} = await TraceLoader.executeTraceEngineOnFileContents(rawTrace);
 
       await renderFlameChartIntoDOM(this, {
         dataProvider: 'MAIN',
-        traceFile: parsedTrace,
+        fileNameOrParsedTrace: parsedTraceFile.parsedTrace,
         filterTracks(trackName) {
           return trackName.startsWith('Main');
         },
@@ -1203,7 +1203,7 @@ describeWithEnvironment('FlameChart', () => {
     it('renders the main thread correctly', async function() {
       await renderFlameChartIntoDOM(this, {
         dataProvider: 'MAIN',
-        traceFile: 'one-second-interaction.json.gz',
+        fileNameOrParsedTrace: 'one-second-interaction.json.gz',
         filterTracks(trackName) {
           return trackName.startsWith('Main');
         },
@@ -1217,7 +1217,7 @@ describeWithEnvironment('FlameChart', () => {
     it('renders iframe main threads correctly', async function() {
       await renderFlameChartIntoDOM(this, {
         dataProvider: 'MAIN',
-        traceFile: 'multiple-navigations-with-iframes.json.gz',
+        fileNameOrParsedTrace: 'multiple-navigations-with-iframes.json.gz',
         filterTracks(trackName) {
           return trackName.startsWith('Frame');
         },
@@ -1231,7 +1231,7 @@ describeWithEnvironment('FlameChart', () => {
     it('renders the rasterizer tracks, nested correctly', async function() {
       await renderFlameChartIntoDOM(this, {
         dataProvider: 'MAIN',
-        traceFile: 'web-dev.json.gz',
+        fileNameOrParsedTrace: 'web-dev.json.gz',
         filterTracks(trackName) {
           return trackName.startsWith('Raster');
         },
@@ -1245,7 +1245,7 @@ describeWithEnvironment('FlameChart', () => {
     it('renders tracks for workers', async function() {
       await renderFlameChartIntoDOM(this, {
         dataProvider: 'MAIN',
-        traceFile: 'two-workers.json.gz',
+        fileNameOrParsedTrace: 'two-workers.json.gz',
         filterTracks(trackName) {
           return trackName.startsWith('Worker');
         },
@@ -1263,7 +1263,7 @@ describeWithEnvironment('FlameChart', () => {
     it('renders threadpool groups correctly', async function() {
       await renderFlameChartIntoDOM(this, {
         dataProvider: 'MAIN',
-        traceFile: 'web-dev.json.gz',
+        fileNameOrParsedTrace: 'web-dev.json.gz',
         filterTracks(trackName) {
           return trackName.startsWith('Thread');
         },
@@ -1281,7 +1281,7 @@ describeWithEnvironment('FlameChart', () => {
   it('renders the interactions track correctly', async function() {
     await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
-      traceFile: 'slow-interaction-button-click.json.gz',
+      fileNameOrParsedTrace: 'slow-interaction-button-click.json.gz',
       filterTracks(trackName) {
         return trackName.startsWith('Interactions');
       },
@@ -1297,7 +1297,7 @@ describeWithEnvironment('FlameChart', () => {
   it('candy stripes long interactions', async function() {
     await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
-      traceFile: 'one-second-interaction.json.gz',
+      fileNameOrParsedTrace: 'one-second-interaction.json.gz',
       filterTracks(trackName) {
         return trackName.startsWith('Interactions');
       },
@@ -1313,7 +1313,7 @@ describeWithEnvironment('FlameChart', () => {
   it('renders the frames track with screenshots', async function() {
     const {flameChart} = await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
-      traceFile: 'web-dev-screenshot-source-ids.json.gz',
+      fileNameOrParsedTrace: 'web-dev-screenshot-source-ids.json.gz',
       // This is a bit confusing: we filter out all tracks here because the
       // Frames track was never migrated to an appender, and therefore it
       // cannot be filtered using this helper.
@@ -1339,7 +1339,7 @@ describeWithEnvironment('FlameChart', () => {
   it('renders correctly with a vertical offset', async function() {
     const {flameChart, parsedTrace, dataProvider} = await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
-      traceFile: 'web-dev.json.gz',
+      fileNameOrParsedTrace: 'web-dev.json.gz',
       filterTracks() {
         return true;
       },
@@ -1366,7 +1366,7 @@ describeWithEnvironment('FlameChart', () => {
   it('renders the animations track', async function() {
     await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
-      traceFile: 'animation.json.gz',
+      fileNameOrParsedTrace: 'animation.json.gz',
       filterTracks(trackName) {
         return trackName.startsWith('Animation');
       },
@@ -1380,7 +1380,7 @@ describeWithEnvironment('FlameChart', () => {
   it('renders the GPU track', async function() {
     await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
-      traceFile: 'threejs-gpu.json.gz',
+      fileNameOrParsedTrace: 'threejs-gpu.json.gz',
       filterTracks(trackName) {
         return trackName.startsWith('GPU');
       },
@@ -1394,7 +1394,7 @@ describeWithEnvironment('FlameChart', () => {
   it('renders the network track', async function() {
     const {flameChart} = await renderFlameChartIntoDOM(this, {
       dataProvider: 'NETWORK',
-      traceFile: 'web-dev.json.gz',
+      fileNameOrParsedTrace: 'web-dev.json.gz',
       customHeight: 350,
       customEndTime: 1020035221.509 as Trace.Types.Timing.Milli,
     });
@@ -1406,7 +1406,7 @@ describeWithEnvironment('FlameChart', () => {
   it('renders the user timing track', async function() {
     await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
-      traceFile: 'timings-track.json.gz',
+      fileNameOrParsedTrace: 'timings-track.json.gz',
       filterTracks(trackName) {
         return trackName.startsWith('Timings');
       },
@@ -1420,7 +1420,7 @@ describeWithEnvironment('FlameChart', () => {
   it('renders the auction worklets track', async function() {
     await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
-      traceFile: 'fenced-frame-fledge.json.gz',
+      fileNameOrParsedTrace: 'fenced-frame-fledge.json.gz',
       filterTracks(trackName) {
         return trackName.includes('Worklet');
       },
@@ -1436,7 +1436,7 @@ describeWithEnvironment('FlameChart', () => {
   it('renders the layout shifts track', async function() {
     await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
-      traceFile: 'cls-single-frame.json.gz',
+      fileNameOrParsedTrace: 'cls-single-frame.json.gz',
       filterTracks(trackName) {
         return trackName.startsWith('LayoutShifts');
       },

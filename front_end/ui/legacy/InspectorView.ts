@@ -451,6 +451,9 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   }
 
   toggleDrawerOrientation({force}: {force?: Omit<DrawerOrientation, DrawerOrientation.UNSET>} = {}): void {
+    if (!this.drawerTabbedPane.isShowing()) {
+      return;
+    }
     let drawerWillBeVertical: boolean;
     if (force) {
       drawerWillBeVertical = force === DrawerOrientation.VERTICAL;

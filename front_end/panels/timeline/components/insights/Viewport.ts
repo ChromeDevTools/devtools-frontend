@@ -16,6 +16,10 @@ export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-viewport`;
   override internalName = 'viewport';
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     return this.model?.metricSavings?.INP ?? null;
   }

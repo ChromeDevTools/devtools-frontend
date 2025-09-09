@@ -1026,3 +1026,41 @@ The following list contains the largest amount spent by a 3rd party script on th
 ## External resources:
 - https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/
 === end content
+
+Title: PerformanceInsightFormatter Viewport serializes correctly when there are no results
+Content:
+## Insight Title: Optimize viewport for mobile
+
+## Insight Summary:
+The insight identifies web pages that are not specifying the viewport meta tag for mobile devies, which avoids the artificial 300-350ms delay designed to help differentiate between tap and double-click.
+
+## Detailed analysis:
+The webpage is not optimized for mobile viewing.
+
+The viewport meta tag was found: `width=device-width, initial-scale=0.25`.
+
+## Estimated savings: INP 0 ms
+
+## External resources:
+- https://developer.chrome.com/blog/300ms-tap-delay-gone-away/
+=== end content
+
+Title: PerformanceInsightFormatter Viewport serializes the correct details showing viewport problems on mobile
+Content:
+## Insight Title: Optimize viewport for mobile
+
+## Insight Summary:
+The insight identifies web pages that are not specifying the viewport meta tag for mobile devies, which avoids the artificial 300-350ms delay designed to help differentiate between tap and double-click.
+
+## Detailed analysis:
+The webpage is not optimized for mobile viewing.
+
+The viewport meta tag is missing.
+
+Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) if the viewport is not optimized for mobile.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/blog/300ms-tap-delay-gone-away/
+=== end content

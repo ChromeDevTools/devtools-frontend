@@ -489,6 +489,32 @@ export class PerformanceInsightFormatter {
   }
 
   /**
+   * Create an AI prompt string out of the Viewport [Mobile] Insight model to use with Ask AI.
+   * Note: This function accesses the UIStrings within Viewport to help build the
+   * AI prompt, but does not (and should not) call i18nString to localize these strings. They
+   * should all be sent in English (at least for now).
+   * @param insight The Network Dependency Tree Insight Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatViewportInsight(insight: Trace.Insights.Models.Viewport.ViewportInsightModel): string {
+    let output = '';
+
+    output += 'The webpage is ' + (insight.mobileOptimized ? 'already' : 'not') + ' optimized for mobile viewing.\n';
+
+    const hasMetaTag = insight.viewportEvent;
+    if (hasMetaTag) {
+      output += `\nThe viewport meta tag was found: \`${insight.viewportEvent?.args?.data.content}\`.`;
+    } else {
+      output += `\nThe viewport meta tag is missing.`;
+    }
+
+    if (!hasMetaTag) {
+      output += '\n\n' + Trace.Insights.Models.Viewport.UIStrings.description;
+    }
+    return output;
+  }
+
+  /**
    * Formats and outputs the insight's data.
    * Pass `{headingLevel: X}` to determine what heading level to use for the
    * titles in the markdown output. The default is 2 (##).
@@ -762,6 +788,10 @@ ${filesFormatted}`;
       return this.formatThirdPartiesInsight(this.#insight);
     }
 
+    if (Trace.Insights.Models.Viewport.isViewportInsight(this.#insight)) {
+      return this.formatViewportInsight(this.#insight);
+    }
+
     return '';
   }
 
@@ -817,7 +847,7 @@ ${filesFormatted}`;
       case 'ThirdParties':
         return '- https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/';
       case 'Viewport':
-        return '';
+        return '- https://developer.chrome.com/blog/300ms-tap-delay-gone-away/';
       case 'Cache':
         return '';
       case 'ModernHTTP':
@@ -891,7 +921,7 @@ It is important that all of these checks pass to minimize the delay between the 
       case 'ThirdParties':
         return 'This insight analyzes the performance impact of resources loaded from third-party servers and aggregates the performance cost, in terms of download transfer sizes and total amount of time that third party scripts spent executing on the main thread.';
       case 'Viewport':
-        return '';
+        return 'The insight identifies web pages that are not specifying the viewport meta tag for mobile devies, which avoids the artificial 300-350ms delay designed to help differentiate between tap and double-click.';
       case 'Cache':
         return '';
       case 'ModernHTTP':

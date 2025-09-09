@@ -52,6 +52,10 @@ function finalize(partialModel: PartialInsightModel<ViewportInsightModel>): View
   };
 }
 
+export function isViewportInsight(model: InsightModel): model is ViewportInsightModel {
+  return model.insightKey === InsightKeys.VIEWPORT;
+}
+
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ViewportInsightModel {
   const viewportEvent = parsedTrace.UserInteractions.parseMetaViewportEvents.find(event => {

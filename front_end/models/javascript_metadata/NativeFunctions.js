@@ -6098,6 +6098,10 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
+    name: "EventTrigger",
+    signatures: [["?options"]]
+  },
+  {
     name: "KeyframeEffect",
     signatures: [["source"],["target","keyframes","?options"]]
   },
@@ -7588,7 +7592,7 @@ export const NativeFunctions = [
     signatures: [["element","x","y","?dwidth","?dheight"]]
   },
   {
-    name: "drawHTMLElement",
+    name: "drawHTML",
     signatures: [["element","x","y","?dwidth","?dheight"]]
   },
   {
@@ -8878,7 +8882,7 @@ export const NativeFunctions = [
     signatures: [["provokeMode"]]
   },
   {
-    name: "texHTMLElement2D",
+    name: "texHTML2D",
     signatures: [["target","level","internalformat","format","type","element"]]
   },
   {

@@ -891,6 +891,9 @@ export const generatedProperties = [
   "name": "animation-timing-function"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "animation-trigger"
  },
  {
@@ -4875,6 +4878,11 @@ export const generatedPropertyValues = {
    "jump-start",
    "step-start",
    "step-end"
+  ]
+ },
+ "animation-trigger": {
+  "values": [
+   "none"
   ]
  },
  "app-region": {

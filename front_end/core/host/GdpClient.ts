@@ -68,6 +68,15 @@ export interface Profile {
   };
 }
 
+// The `batchGet` awards endpoint returns badge names with an
+// obfuscated user ID (e.g., `profiles/12345/awards/badge-name`).
+// This function normalizes them to use `me` instead of the ID
+// (e.g., `profiles/me/awards/badge-path`) to match the format
+// used for client-side requests.
+function normalizeBadgeName(name: string): string {
+  return name.replace(/profiles\/[^/]+\/awards\//, 'profiles/me/awards/');
+}
+
 // TODO(crbug.com/441679275): Update once the API is enabled for prod.
 export const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.devsite.corp.google.com/profile/u/me';
 
@@ -153,7 +162,7 @@ export class GdpClient {
       return null;
     }
 
-    return new Set(result.awards?.map(award => award.name) ?? []);
+    return new Set(result.awards?.map(award => normalizeBadgeName(award.name)) ?? []);
   }
 
   async isEligibleToCreateProfile(): Promise<boolean> {

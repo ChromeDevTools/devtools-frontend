@@ -18,7 +18,7 @@ describe('GdpClient', () => {
 
     dispatchHttpRequestStub =
         sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
-            .callsFake((request, cb) => {
+            .callsFake((_, cb) => {
               cb({
                 response: JSON.stringify({name: 'profiles/id'}),
                 statusCode: 200,
@@ -49,6 +49,21 @@ describe('GdpClient', () => {
     await Host.GdpClient.GdpClient.instance().getProfile();
 
     sinon.assert.calledThrice(dispatchHttpRequestStub);
+  });
+
+  it('`getAwardedBadgeNames` should normalize the badge names', async () => {
+    dispatchHttpRequestStub.callsFake((_, cb) => {
+      cb({
+        response: JSON.stringify({
+          awards: [{
+            name: '/profiles/some-obfuscated-id/awards/some-badge',
+          }],
+        }),
+        statusCode: 200,
+      });
+    });
+    const result = await Host.GdpClient.GdpClient.instance().getAwardedBadgeNames({names: []});
+    assert.deepEqual(result, new Set(['/profiles/me/awards/some-badge']));
   });
 
   describe('when the integration is disabled', () => {

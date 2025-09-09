@@ -4,15 +4,29 @@
 
 import { AgentService } from '../core/AgentService.js';
 import type { Tool } from '../tools/Tools.js';
-import { AIChatPanel } from '../ui/AIChatPanel.js';
 import { ChatMessageEntity, type ChatMessage } from '../models/ChatTypes.js';
 import { createLogger } from '../core/Logger.js';
 import { getCurrentTracingContext } from '../tracing/TracingConfig.js';
+import { MODEL_SENTINELS } from '../core/Constants.js';
 import type { AgentSession } from './AgentSessionTypes.js';
+import type { LLMProvider } from '../LLM/LLMTypes.js';
 
 const logger = createLogger('ConfigurableAgentTool');
 
 import { AgentRunner, type AgentRunnerConfig, type AgentRunnerHooks } from './AgentRunner.js';
+
+// Context passed along with agent/tool calls
+export interface CallCtx {
+  provider?: LLMProvider,
+  model?: string,
+  miniModel?: string,
+  nanoModel?: string,
+  mainModel?: string,
+  getVisionCapability?: (modelName: string) => Promise<boolean> | boolean,
+  overrideSessionId?: string,
+  overrideParentSessionId?: string,
+  overrideTraceId?: string,
+}
 
 /**
  * Defines the possible reasons an agent run might terminate.
@@ -412,18 +426,51 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
 
     // Initialize
     const maxIterations = this.config.maxIterations || 10;
-    const modelName = typeof this.config.modelName === 'function'
-      ? this.config.modelName()
-      : (this.config.modelName || AIChatPanel.instance().getSelectedModel());
+    
+    // Parse execution context first
+    const callCtx = (_ctx || {}) as CallCtx;
+    
+    // Resolve model name from context or configuration
+    let modelName: string;
+    if (this.config.modelName === MODEL_SENTINELS.USE_MINI) {
+      if (!callCtx.miniModel) {
+        throw new Error(`Mini model not provided in context for agent '${this.name}'. Ensure context includes miniModel.`);
+      }
+      modelName = callCtx.miniModel;
+    } else if (this.config.modelName === MODEL_SENTINELS.USE_NANO) {
+      if (!callCtx.nanoModel) {
+        throw new Error(`Nano model not provided in context for agent '${this.name}'. Ensure context includes nanoModel.`);
+      }
+      modelName = callCtx.nanoModel;
+    } else if (typeof this.config.modelName === 'function') {
+      modelName = this.config.modelName();
+    } else if (this.config.modelName) {
+      modelName = this.config.modelName;
+    } else {
+      // Use main model from context, or fallback to context model
+      const contextModel = callCtx.mainModel || callCtx.model;
+      if (!contextModel) {
+        throw new Error(`No model provided for agent '${this.name}'. Ensure context includes model or mainModel.`);
+      }
+      modelName = contextModel;
+    }
+    
+    // Override with context model only if agent doesn't have its own model configuration
+    if (callCtx.model && !this.config.modelName) {
+      modelName = callCtx.model;
+    }
+    
+    // Validate required context
+    if (!callCtx.provider) {
+      throw new Error(`Provider not provided in context for agent '${this.name}'. Ensure context includes provider.`);
+    }
+    
     const temperature = this.config.temperature ?? 0;
-
     const systemPrompt = this.config.systemPrompt;
     const tools = this.getToolInstances();
-
+    
     // Prepare initial messages
     const internalMessages = this.prepareInitialMessages(args);
-
-    // Prepare runner config and hooks
     const runnerConfig: AgentRunnerConfig = {
       apiKey,
       modelName,
@@ -431,8 +478,10 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
       tools,
       maxIterations,
       temperature,
-      provider: AIChatPanel.getProviderForModel(modelName),
-      getVisionCapability: (m: string) => AIChatPanel.isVisionCapable(m),
+      provider: callCtx.provider,
+      getVisionCapability: callCtx.getVisionCapability ?? (() => false),
+      miniModel: callCtx.miniModel,
+      nanoModel: callCtx.nanoModel,
     };
 
     const runnerHooks: AgentRunnerHooks = {
@@ -446,7 +495,7 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
     };
 
     // Run the agent
-    const ctx: any = _ctx || {};
+    const ctx: any = callCtx || {};
     const result = await AgentRunner.run(
       internalMessages,
       args,

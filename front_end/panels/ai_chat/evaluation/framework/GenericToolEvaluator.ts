@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import type { Tool } from '../../tools/Tools.js';
+import type { LLMContext } from '../../tools/Tools.js';
+import type { LLMProvider } from '../../LLM/LLMTypes.js';
 import { NavigateURLTool } from '../../tools/Tools.js';
 import type { TestCase, TestResult, EvaluationConfig } from './types.js';
 import { createLogger } from '../../core/Logger.js';
@@ -136,7 +138,15 @@ export class GenericToolEvaluator {
         
         const toolResult = await ErrorHandlingUtils.withErrorHandling(
           async () => {
-            return await tool.execute(testCase.input);
+            // Build LLM context for tools that require LLM calls (extraction/refinement, etc.)
+            const provider = (localStorage.getItem('ai_chat_provider') as LLMProvider | null) || 'openai';
+            const ctx: LLMContext = {
+              provider,
+              model: this.config.mainModel,
+              miniModel: this.config.miniModel,
+              nanoModel: this.config.nanoModel,
+            };
+            return await tool.execute(testCase.input, ctx);
           },
           (error) => ({ error: ErrorHandlingUtils.formatUserFriendlyError(error, 'Tool execution failed') }),
           logger,

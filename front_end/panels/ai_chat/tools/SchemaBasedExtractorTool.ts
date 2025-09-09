@@ -9,6 +9,7 @@ import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
 import type { LLMContext } from './Tools.js';
 import { callLLMWithTracing } from './LLMTracingWrapper.js';
+import { LLMResponseParser } from '../LLM/LLMResponseParser.js';
 
 import { NodeIDsToURLsTool, type Tool } from './Tools.js';
 
@@ -451,11 +452,11 @@ CRITICAL:
 Only output the JSON object with real data from the accessibility tree.`;
 
     try {
-      if (!options.ctx?.provider || !(options.ctx.nanoModel || options.ctx.model)) {
-        throw new Error('Missing LLM context (provider/model) for extraction');
+      if (!options.ctx?.provider || !(options.ctx.nanoModel)) {
+        throw new Error('Missing LLM context (provider/nano model) for extraction');
       }
       const provider = options.ctx.provider;
-      const model = options.ctx.nanoModel || options.ctx.model;
+      const model = options.ctx.nanoModel;
       const llmResponse = await callLLMWithTracing(
         {
           provider,
@@ -479,9 +480,17 @@ Only output the JSON object with real data from the accessibility tree.`;
           }
         }
       );
-      const response = llmResponse.text;
-      if (!response) { throw new Error('No text response from extraction LLM'); }
-      return this.parseJsonResponse(response);
+      const response = llmResponse.text || '';
+      try {
+        return LLMResponseParser.parseStrictJSON(response);
+      } catch {
+        try {
+          return LLMResponseParser.parseJSONWithFallbacks(response);
+        } catch (e) {
+          logger.error('Failed to parse extraction JSON:', e);
+          return null;
+        }
+      }
     } catch (error) {
       logger.error('Error in callExtractionLLM:', error);
       return null; // Indicate failure
@@ -563,9 +572,17 @@ Do not add any conversational text or explanations or thinking tags.`;
           }
         }
       );
-      const response = llmResponse.text;
-      if (!response) { throw new Error('No text response from refinement LLM'); }
-      return this.parseJsonResponse(response);
+      const response = llmResponse.text || '';
+      try {
+        return LLMResponseParser.parseStrictJSON(response);
+      } catch {
+        try {
+          return LLMResponseParser.parseJSONWithFallbacks(response);
+        } catch (e) {
+          logger.error('Failed to parse refinement JSON:', e);
+          return null;
+        }
+      }
     } catch (error) {
       logger.error('Error in callRefinementLLM:', error);
       return null; // Indicate failure
@@ -676,9 +693,18 @@ Return ONLY a valid JSON object conforming to the required metadata schema.`;
           }
         }
       );
-      const response = llmResponse.text;
-      if (!response) { throw new Error('No text response from metadata LLM'); }
-      const parsedMetadata = this.parseJsonResponse(response);
+      const response = llmResponse.text || '';
+      let parsedMetadata: any = null;
+      try {
+        parsedMetadata = LLMResponseParser.parseStrictJSON(response);
+      } catch {
+        try {
+          parsedMetadata = LLMResponseParser.parseJSONWithFallbacks(response);
+        } catch (e) {
+          logger.error('Failed to parse metadata JSON:', e);
+          parsedMetadata = null;
+        }
+      }
       // Basic validation
       if (typeof parsedMetadata?.progress === 'string' && typeof parsedMetadata?.completed === 'boolean') {
         return parsedMetadata as ExtractionMetadata;
@@ -693,82 +719,6 @@ Return ONLY a valid JSON object conforming to the required metadata schema.`;
     }
   }
 
-  /**
-   * Helper to parse JSON, potentially extracting it from surrounding text.
-   */
-  private parseJsonResponse(responseText: string): any | null {
-    try {
-      // First, try parsing the whole string directly
-      return JSON.parse(responseText);
-    } catch (e) {
-      // If direct parsing fails, remove all think tags and their content
-      logger.debug('Removing think tags before parsing JSON');
-
-      // Remove <think>...</think> tags and everything inside them (handles multiple think tags)
-      let cleanedText = responseText.replace(/<think>[\s\S]*?<\/think>/g, '');
-
-      // Remove any incomplete <think> tags without closing tags
-      cleanedText = cleanedText.replace(/<think>[\s\S]*/g, '');
-
-      // If after removing think tags, the text is empty or whitespace, give up
-      if (!cleanedText.trim()) {
-        logger.error('No content left after removing think tags');
-        return null;
-      }
-
-      // First, look for JSON code blocks in the cleaned text
-      const codeBlockMatch = cleanedText.match(/```json\s*([\s\S]*?)\s*```/);
-      if (codeBlockMatch && codeBlockMatch[1]) {
-        try {
-          return JSON.parse(codeBlockMatch[1]);
-        } catch (codeBlockError) {
-          logger.error('Failed to parse JSON from code block:', codeBlockError);
-        }
-      }
-
-      // Next, try to find a complete JSON object or array in the cleaned text
-      // Find the last valid JSON in the text (in case there are multiple)
-      let potentialJsons: string[] = [];
-      const jsonMatches = cleanedText.match(/(\{[\s\S]*?\}|\[[\s\S]*?\])/g);
-      if (jsonMatches) {
-        potentialJsons = jsonMatches;
-      }
-
-      // Try parsing each potential JSON, starting with the longest one
-      // (longer matches are more likely to be complete)
-      potentialJsons.sort((a, b) => b.length - a.length);
-
-      for (const json of potentialJsons) {
-        try {
-          return JSON.parse(json);
-        } catch (jsonError) {
-          // Continue to the next potential JSON
-        }
-      }
-
-      // If no valid JSON found yet, try a more aggressive approach
-      const jsonObjectMatch = cleanedText.match(/\{[\s\S]*\}/);
-      if (jsonObjectMatch) {
-        try {
-          return JSON.parse(jsonObjectMatch[0]);
-        } catch (objectError) {
-          logger.error('Failed to parse JSON object:', objectError);
-        }
-      }
-
-      const jsonArrayMatch = cleanedText.match(/\[[\s\S]*\]/);
-      if (jsonArrayMatch) {
-        try {
-          return JSON.parse(jsonArrayMatch[0]);
-        } catch (arrayError) {
-          logger.error('Failed to parse JSON array:', arrayError);
-        }
-      }
-
-      logger.error('Failed to parse and no valid JSON found in response after removing think tags');
-      return null;
-    }
-  }
 
   /**
    * Recursively find and replace node IDs with URLs in a data structure

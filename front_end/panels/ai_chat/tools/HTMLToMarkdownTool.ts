@@ -106,11 +106,11 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
 
       // Call the LLM for extraction
       logger.info('Calling LLM for extraction');
-      if (!ctx?.provider || !(ctx.model || ctx.nanoModel)) {
+      if (!ctx?.provider || !ctx.nanoModel) {
         return {
           success: false,
           markdownContent: null,
-          error: 'Missing LLM context (provider/model) for HTMLToMarkdownTool'
+          error: 'Missing LLM context (provider/nanoModel) for HTMLToMarkdownTool'
         };
       }
       const extractionResult = await this.callExtractionLLM({
@@ -118,7 +118,7 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
         userPrompt,
         apiKey,
         provider: ctx.provider,
-        model: ctx.nanoModel || ctx.model,
+        model: ctx.nanoModel,
       });
 
       logger.info('Extraction completed successfully');

@@ -18,6 +18,7 @@ import { sanitizeMessagesForModel } from '../LLM/MessageSanitizer.js';
 const logger = createLogger('AgentRunner');
 
 import { ConfigurableAgentTool, ToolRegistry, type ConfigurableAgentArgs, type ConfigurableAgentResult, type AgentRunTerminationReason, type HandoffConfig /* , HandoffContextTransform, ContextFilterRegistry*/ } from './ConfigurableAgentTool.js';
+import { MODEL_SENTINELS } from '../core/Constants.js';
 
 /**
  * Configuration for the AgentRunner
@@ -33,6 +34,10 @@ export interface AgentRunnerConfig {
   provider: LLMProvider;
   /** Optional vision capability check. Defaults to false (no vision). */
   getVisionCapability?: (modelName: string) => Promise<boolean> | boolean;
+  /** Mini model for smaller/faster operations */
+  miniModel?: string;
+  /** Nano model for smallest/fastest operations */
+  nanoModel?: string;
 }
 
 /**
@@ -218,6 +223,8 @@ export class AgentRunner {
     parentSession?: AgentSession, // For natural nesting
     defaultProvider?: LLMProvider,
     defaultGetVisionCapability?: (modelName: string) => Promise<boolean> | boolean,
+    miniModel?: string, // Mini model for smaller/faster operations
+    nanoModel?: string, // Nano model for smallest/fastest operations
     overrides?: { sessionId?: string; parentSessionId?: string; traceId?: string }
   ): Promise<ConfigurableAgentResult & { agentSession: AgentSession }> {
     const targetAgentName = handoffConfig.targetAgentName;
@@ -286,12 +293,28 @@ export class AgentRunner {
     // Enhance the target agent's system prompt with page context
     const enhancedSystemPrompt = await enhancePromptWithPageContext(targetConfig.systemPrompt);
 
+    // Resolve model name for the target agent
+    let resolvedModelName: string;
+    if (typeof targetConfig.modelName === 'function') {
+      resolvedModelName = targetConfig.modelName();
+    } else if (targetConfig.modelName === MODEL_SENTINELS.USE_MINI) {
+      if (!miniModel) {
+        throw new Error(`Mini model not provided for handoff to agent '${targetAgentName}'. Ensure miniModel is passed in context.`);
+      }
+      resolvedModelName = miniModel;
+    } else if (targetConfig.modelName === MODEL_SENTINELS.USE_NANO) {
+      if (!nanoModel) {
+        throw new Error(`Nano model not provided for handoff to agent '${targetAgentName}'. Ensure nanoModel is passed in context.`);
+      }
+      resolvedModelName = nanoModel;
+    } else {
+      resolvedModelName = targetConfig.modelName || defaultModelName;
+    }
+
     // Construct Runner Config & Hooks for the target agent
     const targetRunnerConfig: AgentRunnerConfig = {
       apiKey,
-      modelName: typeof targetConfig.modelName === 'function'
-        ? targetConfig.modelName()
-        : (targetConfig.modelName || defaultModelName),
+      modelName: resolvedModelName,
       systemPrompt: enhancedSystemPrompt,
       tools: targetConfig.tools
               .map(toolName => ToolRegistry.getRegisteredTool(toolName))
@@ -300,6 +323,8 @@ export class AgentRunner {
       temperature: targetConfig.temperature ?? defaultTemperature,
       provider: defaultProvider as LLMProvider,
       getVisionCapability: defaultGetVisionCapability,
+      miniModel,
+      nanoModel,
     };
     const targetRunnerHooks: AgentRunnerHooks = {
       prepareInitialMessages: undefined, // History already formed by transform or passthrough
@@ -845,6 +870,8 @@ export class AgentRunner {
                   currentSession, // Pass current session for natural nesting
                   config.provider,
                   config.getVisionCapability,
+                  config.miniModel,
+                  config.nanoModel,
                   { sessionId: nestedSessionId, parentSessionId: currentSession.sessionId, traceId: getCurrentTracingContext()?.traceId }
               );
 
@@ -947,11 +974,13 @@ export class AgentRunner {
             }
 
             try {
-              logger.info(`${agentName} Executing tool: ${toolToExecute.name} with args:`, toolArgs);
+              logger.info(`${agentName} Executing tool: ${toolToExecute.name}`);
               const execTracingContext = getCurrentTracingContext();
               toolResultData = await toolToExecute.execute(toolArgs as any, ({
                 provider: config.provider,
                 model: modelName,
+                miniModel: config.miniModel,
+                nanoModel: config.nanoModel,
                 getVisionCapability: config.getVisionCapability,
                 overrideSessionId: preallocatedChildId,
                 overrideParentSessionId: currentSession.sessionId,
@@ -1210,7 +1239,9 @@ export class AgentRunner {
                 undefined, // No llmToolArgs for max iterations handoff
                 currentSession, // Pass current session for natural nesting
                 config.provider,
-                config.getVisionCapability
+                config.getVisionCapability,
+                config.miniModel,
+                config.nanoModel
             );
             // Extract the result and session
             const { agentSession: childSession, ...actualResult } = handoffResult;

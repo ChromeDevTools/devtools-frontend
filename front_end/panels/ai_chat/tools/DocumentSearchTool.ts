@@ -4,7 +4,7 @@
 
 import { createLogger } from '../core/Logger.js';
 import { VectorDBClient, type VectorSearchResult } from './VectorDBClient.js';
-import type { Tool } from './Tools.js';
+import type { Tool, LLMContext } from './Tools.js';
 
 const logger = createLogger('Tool:DocumentSearch');
 
@@ -87,7 +87,7 @@ export class DocumentSearchTool implements Tool<DocumentSearchArgs, DocumentSear
   /**
    * Execute the document search operation
    */
-  async execute(args: DocumentSearchArgs): Promise<DocumentSearchResult> {
+  async execute(args: DocumentSearchArgs, _ctx?: LLMContext): Promise<DocumentSearchResult> {
     logger.info('Executing document search with args', { args });
 
     try {

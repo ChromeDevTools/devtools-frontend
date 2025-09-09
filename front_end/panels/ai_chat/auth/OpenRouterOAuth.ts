@@ -241,6 +241,16 @@ export class OpenRouterOAuth {
           resolve();
           return true;
         }
+        // Intercept known OpenRouter sign-up dead-end by redirecting to sign-in
+        if (url) {
+          try {
+            await this.maybeRedirectSignupToSignin(url);
+          } catch (e) {
+            if (this.isDevelopment()) {
+              logger.warn('Signup→Signin redirect attempt failed:', e);
+            }
+          }
+        }
         return false;
       };
 
@@ -305,6 +315,30 @@ export class OpenRouterOAuth {
         urlChangeListener
       );
     });
+  }
+
+  /**
+   * If the inspected page is OpenRouter sign-up, navigate to sign-in instead, preserving query string.
+   * This works around a provider bug where sign-up does not continue to the callback.
+   */
+  private static async maybeRedirectSignupToSignin(currentUrl: string): Promise<void> {
+    try {
+      const url = new URL(currentUrl);
+      const hostMatches = /(^|\.)openrouter\.ai$/i.test(url.hostname);
+      const isSignup = url.pathname.startsWith('/sign-up');
+      const alreadyRedirected = sessionStorage.getItem('openrouter_signin_redirect_performed') === 'true';
+      if (!hostMatches || !isSignup || alreadyRedirected) {
+        return;
+      }
+      const signInUrl = `https://openrouter.ai/sign-in${url.search || ''}`;
+      sessionStorage.setItem('openrouter_signin_redirect_performed', 'true');
+      if (this.isDevelopment()) {
+        logger.info('Redirecting OpenRouter sign-up -> sign-in');
+      }
+      await this.navigateToUrl(signInUrl);
+    } catch {
+      // Ignore parse/navigation errors
+    }
   }
 
   /**
@@ -573,6 +607,9 @@ export class OpenRouterOAuth {
     
     // Clear active token exchange
     this.activeTokenExchange = null;
+
+    // Clear any signup→signin redirect flag
+    sessionStorage.removeItem('openrouter_signin_redirect_performed');
   }
 
   /**

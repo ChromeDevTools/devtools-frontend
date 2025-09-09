@@ -83,6 +83,7 @@ import { type ChatMessage, ChatMessageEntity, type ImageInputData, type ModelCha
 import { HelpDialog } from './HelpDialog.js';
 import { SettingsDialog, isVectorDBEnabled } from './SettingsDialog.js';
 import { EvaluationDialog } from './EvaluationDialog.js';
+import { MODEL_PLACEHOLDERS } from '../core/Constants.js';
 import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
 
 const {html} = Lit;
@@ -558,7 +559,7 @@ export class AIChatPanel extends UI.Panel.Panel {
       // Add placeholder if no Groq models available
       if (MODEL_OPTIONS.length === 0) {
         MODEL_OPTIONS.push({
-          value: '_placeholder_no_models',
+          value: MODEL_PLACEHOLDERS.NO_MODELS,
           label: 'Groq: Please configure API key in settings',
           type: 'groq' as const
         });
@@ -569,7 +570,7 @@ export class AIChatPanel extends UI.Panel.Panel {
       // Add placeholder if no OpenRouter models available
       if (MODEL_OPTIONS.length === 0) {
         MODEL_OPTIONS.push({
-          value: '_placeholder_no_models',
+          value: MODEL_PLACEHOLDERS.NO_MODELS,
           label: 'OpenRouter: Please configure API key in settings',
           type: 'openrouter' as const
         });
@@ -581,7 +582,7 @@ export class AIChatPanel extends UI.Panel.Panel {
       // Add placeholder if needed for LiteLLM when we have no models
       if (hadWildcard && MODEL_OPTIONS.length === 0) {
         MODEL_OPTIONS.push({
-          value: '_placeholder_add_custom',
+          value: MODEL_PLACEHOLDERS.ADD_CUSTOM,
           label: 'LiteLLM: Please add custom models in settings',
           type: 'litellm' as const
         });
@@ -1016,7 +1017,7 @@ export class AIChatPanel extends UI.Panel.Panel {
    */
   #setupOAuthEventListeners(): void {
     // Listen for OAuth success events
-    window.addEventListener('openrouter-oauth-success', () => {
+    window.addEventListener('openrouter-oauth-success', async () => {
       logger.info('=== OAUTH SUCCESS EVENT RECEIVED IN AICHATPANEL ===');
       logger.info('Timestamp:', new Date().toISOString());
       logger.info('Current localStorage state for OpenRouter:');
@@ -1025,6 +1026,18 @@ export class AIChatPanel extends UI.Panel.Panel {
       logger.info('- API key exists:', !!apiKey);
       logger.info('- API key length:', apiKey?.length || 0);
       logger.info('- Auth method:', authMethod);
+      
+      // Auto-fetch OpenRouter models after successful OAuth
+      if (apiKey) {
+        try {
+          logger.info('Auto-fetching OpenRouter models after OAuth success...');
+          await this.#autoFetchOpenRouterModels(apiKey);
+          logger.info('Successfully auto-fetched OpenRouter models');
+        } catch (error) {
+          logger.warn('Failed to auto-fetch OpenRouter models after OAuth:', error);
+        }
+      }
+      
       logger.info('Re-initializing agent service after OAuth success...');
       this.#initializeAgentService();
     });
@@ -1238,8 +1251,8 @@ export class AIChatPanel extends UI.Panel.Panel {
     return {
       isLiteLLM: Boolean(modelOption?.type === 'litellm'),
       isPlaceholder: Boolean(
-        modelOption?.value === '_placeholder_add_custom' || 
-        modelOption?.value === '_placeholder_no_models'
+        modelOption?.value === MODEL_PLACEHOLDERS.ADD_CUSTOM || 
+        modelOption?.value === MODEL_PLACEHOLDERS.NO_MODELS
       ),
     };
   }
@@ -1270,7 +1283,10 @@ export class AIChatPanel extends UI.Panel.Panel {
         this.#evaluationAgent = new EvaluationAgent({
           clientId: compositeClientId,
           endpoint: config.endpoint,
-          secretKey: config.secretKey
+          secretKey: config.secretKey,
+          judgeModel: this.#selectedModel,
+          miniModel: this.#miniModel,
+          nanoModel: this.#nanoModel,
         });
 
         await this.#evaluationAgent.connect();
@@ -1339,7 +1355,14 @@ export class AIChatPanel extends UI.Panel.Panel {
     
     // Initialize the agent service
     logger.info('Calling agentService.initialize()...');
-    this.#agentService.initialize(apiKey, this.#selectedModel)
+    const miniForInit = this.#miniModel || this.#selectedModel;
+    const nanoForInit = this.#nanoModel || miniForInit;
+    this.#agentService.initialize(
+        apiKey,
+        this.#selectedModel,
+        miniForInit,
+        nanoForInit,
+      )
       .then(() => {
         logger.info('✅ Agent service initialized successfully');
         this.#setCanSendMessagesState(true, "Agent service initialized successfully");
@@ -1518,6 +1541,45 @@ export class AIChatPanel extends UI.Panel.Panel {
     }).catch(error => {
       logger.error('Failed to import OpenRouterOAuth:', error);
     });
+  }
+
+  /**
+   * Auto-fetch OpenRouter models after successful OAuth authentication
+   */
+  async #autoFetchOpenRouterModels(apiKey: string): Promise<void> {
+    try {
+      logger.debug('Fetching OpenRouter models automatically after OAuth...');
+      
+      // Import LLMClient and SettingsDialog dynamically to fetch and update models
+      const [{ LLMClient }, { SettingsDialog }] = await Promise.all([
+        import('../LLM/LLMClient.js'),
+        import('./SettingsDialog.js')
+      ]);
+      
+      const openrouterModels = await LLMClient.fetchOpenRouterModels(apiKey);
+      logger.debug(`Auto-fetched ${openrouterModels.length} OpenRouter models`);
+      
+      // Update models programmatically via SettingsDialog static method
+      SettingsDialog.updateOpenRouterModels(openrouterModels);
+      
+      // Also update AIChatPanel's model options for immediate UI availability
+      const modelOptions: ModelOption[] = openrouterModels.map(model => ({
+        value: model.id,
+        label: model.name || model.id,
+        type: 'openrouter' as const,
+      }));
+      AIChatPanel.updateModelOptions(modelOptions, false);
+      this.performUpdate();
+      
+      // Also dispatch event for backward compatibility / other listeners
+      window.dispatchEvent(new CustomEvent('openrouter-models-fetched', {
+        detail: { models: openrouterModels }
+      }));
+      
+    } catch (error) {
+      logger.error('Failed to auto-fetch OpenRouter models:', error);
+      throw error;
+    }
   }
 
   /**

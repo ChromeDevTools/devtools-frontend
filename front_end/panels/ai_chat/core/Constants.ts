@@ -80,3 +80,15 @@ export const ERROR_MESSAGES = {
   NO_PRIMARY_TARGET: 'No primary page target found',
   EMPTY_PROMPT: 'Prompt cannot be empty',
 } as const;
+
+// Sentinel model identifiers used in agent configurations
+export const MODEL_SENTINELS = {
+  USE_MINI: 'use-mini',
+  USE_NANO: 'use-nano',
+} as const;
+
+// Placeholder values used in UI model selectors
+export const MODEL_PLACEHOLDERS = {
+  NO_MODELS: '_placeholder_no_models',
+  ADD_CUSTOM: '_placeholder_add_custom',
+} as const;

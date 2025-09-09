@@ -10,6 +10,7 @@ import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
 import { callLLMWithTracing } from './LLMTracingWrapper.js';
 import type { Tool, LLMContext } from './Tools.js';
+import { LLMResponseParser } from '../LLM/LLMResponseParser.js';
 
 const logger = createLogger('Tool:StreamlinedSchemaExtractor');
 
@@ -178,7 +179,7 @@ export class StreamlinedSchemaExtractorTool implements Tool<StreamlinedSchemaExt
         ctx
       );
       
-      if (retryResult) {
+      if (retryResult && typeof retryResult === 'object') {
         finalData = this.resolveUrlsDirectly(retryResult, context.urlMappings, urlFields);
         extractionResult = retryResult; // Update for next iteration
       } else {
@@ -239,11 +240,11 @@ IMPORTANT: Only extract data that you can see in the accessibility tree above. D
           extractionPrompt += `\n\nIMPORTANT: Previous attempt ${attempt - 1} failed due to invalid JSON. Please ensure you return ONLY valid JSON that can be parsed. Do not hallucinate any data - only extract what actually exists in the tree.`;
         }
 
-        if (!ctx?.provider || !(ctx.miniModel || ctx.model)) {
-          throw new Error('Missing LLM context (provider/model) for streamlined extraction');
+        if (!ctx?.provider || !ctx.miniModel) {
+          throw new Error('Missing LLM context (provider/miniModel) for streamlined extraction');
         }
         const provider = ctx.provider;
-        const model = ctx.miniModel || ctx.model;
+        const model = ctx.miniModel;
         const llmResponse = await callLLMWithTracing(
           {
             provider,
@@ -268,10 +269,20 @@ IMPORTANT: Only extract data that you can see in the accessibility tree above. D
             }
           }
         );
-        const result = llmResponse.text;
+        const text = llmResponse.text || '';
+        // Parse using LLMResponseParser with strict mode then fallbacks
+        let parsed: any;
+        try {
+          parsed = LLMResponseParser.parseStrictJSON(text);
+        } catch {
+          parsed = LLMResponseParser.parseJSONWithFallbacks(text);
+        }
         
-        logger.debug(`JSON extraction successful on attempt ${attempt}`);
-        return result;
+        if (parsed && typeof parsed === 'object') {
+          logger.debug(`JSON extraction successful on attempt ${attempt}`);
+          return parsed;
+        }
+        throw new Error('Parsed extraction result is not an object/array');
 
       } catch (error) {
         if (attempt <= maxRetries) {
@@ -383,11 +394,11 @@ Extract data according to the schema. For URL fields, return different nodeId nu
 CRITICAL: Only use nodeIds that you can actually see in the accessibility tree above. Do not invent, guess, or make up any nodeIds.`;
 
     try {
-      if (!ctx?.provider || !(ctx.miniModel || ctx.model)) {
-        throw new Error('Missing LLM context (provider/model) for URL retry extraction');
+      if (!ctx?.provider || !ctx.miniModel) {
+        throw new Error('Missing LLM context (provider/miniModel) for URL retry extraction');
       }
       const provider = ctx.provider;
-      const model = ctx.miniModel || ctx.model;
+      const model = ctx.miniModel;
       const llmResponse = await callLLMWithTracing(
         {
           provider,
@@ -411,9 +422,17 @@ CRITICAL: Only use nodeIds that you can actually see in the accessibility tree a
           }
         }
       );
-      const result = llmResponse.text;
-      
-      return result;
+      const text = llmResponse.text || '';
+      try {
+        return LLMResponseParser.parseStrictJSON(text);
+      } catch {
+        try {
+          return LLMResponseParser.parseJSONWithFallbacks(text);
+        } catch {
+          logger.warn('Retry URL resolution returned non-JSON; aborting this attempt');
+          return null;
+        }
+      }
     } catch (error) {
       logger.error(`Error in URL retry attempt ${attemptNumber}:`, error instanceof Error ? error.message : String(error));
       return null;

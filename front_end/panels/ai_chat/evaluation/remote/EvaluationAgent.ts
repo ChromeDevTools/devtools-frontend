@@ -10,7 +10,6 @@ import { createLogger } from '../../core/Logger.js';
 import { createTracingProvider, withTracingContext, isTracingEnabled, getTracingConfig } from '../../tracing/TracingConfig.js';
 import type { TracingProvider, TracingContext } from '../../tracing/TracingProvider.js';
 import type { ChatMessage } from '../../models/ChatTypes.js';
-import { AIChatPanel } from '../../ui/AIChatPanel.js';
 import {
   RegisterMessage,
   ReadyMessage,
@@ -40,6 +39,10 @@ export interface EvaluationAgentOptions {
   clientId: string;
   endpoint: string;
   secretKey?: string;
+  // Explicit models to avoid UI coupling
+  judgeModel: string;
+  miniModel: string;
+  nanoModel: string;
 }
 
 
@@ -56,11 +59,17 @@ export class EvaluationAgent {
   private authResolve: ((value?: void) => void) | null = null;
   private authReject: ((reason?: any) => void) | null = null;
   private tracingProvider: TracingProvider;
+  private judgeModel: string;
+  private miniModel: string;
+  private nanoModel: string;
 
   constructor(options: EvaluationAgentOptions) {
     this.clientId = options.clientId;
     this.endpoint = options.endpoint;
     this.secretKey = options.secretKey;
+    this.judgeModel = options.judgeModel;
+    this.miniModel = options.miniModel;
+    this.nanoModel = options.nanoModel;
     this.tracingProvider = createTracingProvider();
     
     logger.info('EvaluationAgent created with tracing provider', {
@@ -701,12 +710,10 @@ export class EvaluationAgent {
         // Get or create AgentService instance
         const agentService = AgentService.getInstance();
         
-        // Use the current model from localStorage (no override)
-        let modelName = localStorage.getItem('ai_chat_model_selection');
-        if (!modelName) {
-          // Default model
-          modelName = 'gpt-4o';
-        }
+        // Use explicit models from constructor
+        const modelName = this.judgeModel;
+        const miniModel = this.miniModel;
+        const nanoModel = this.nanoModel;
         
         logger.info('Initializing AgentService for chat evaluation', {
           modelName,
@@ -714,8 +721,8 @@ export class EvaluationAgent {
           isInitialized: agentService.isInitialized()
         });
         
-        // Always reinitialize with the current model
-        await agentService.initialize(agentService.getApiKey(), modelName);
+        // Always reinitialize with the current model and explicit mini/nano
+        await agentService.initialize(agentService.getApiKey(), modelName, miniModel, nanoModel);
         
         // Create a child observation for the chat execution
         if (tracingContext) {

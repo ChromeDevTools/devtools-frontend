@@ -165,13 +165,9 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
   /**
    * Initializes the agent with the given API key
    */
-  async initialize(apiKey: string | null, modelName?: string): Promise<void> {
+  async initialize(apiKey: string | null, modelName: string, miniModel: string, nanoModel: string): Promise<void> {
     try {
       this.#apiKey = apiKey;
-
-      if (!modelName) {
-        throw new Error('Model name is required for initialization');
-      }
       
       // Initialize LLM client first
       await this.#initializeLLMClient();
@@ -196,8 +192,10 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       // Determine selected provider for primary graph execution
       const selectedProvider = (localStorage.getItem('ai_chat_provider') || 'openai') as LLMProvider;
 
+      // Mini and nano models are injected by caller (validated upstream)
+
       // Will throw error if model/provider configuration is invalid
-      this.#graph = createAgentGraph(apiKey, modelName, selectedProvider);
+      this.#graph = createAgentGraph(apiKey, modelName, selectedProvider, miniModel, nanoModel);
 
       this.#isInitialized = true;
     } catch (error) {

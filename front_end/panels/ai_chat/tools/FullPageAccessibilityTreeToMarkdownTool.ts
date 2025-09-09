@@ -50,11 +50,11 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
     if (!apiKey) {
       return { error: 'API key not configured.' };
     }
-    if (!ctx?.provider || !(ctx.nanoModel || ctx.model)) {
-      return { error: 'Missing LLM context (provider/model) for AccessibilityTreeToMarkdownTool' };
+    if (!ctx?.provider || !ctx.nanoModel) {
+      return { error: 'Missing LLM context (provider/miniModel) for AccessibilityTreeToMarkdownTool' };
     }
     const provider = ctx.provider;
-    const model = ctx.nanoModel || ctx.model;
+    const model = ctx.nanoModel;
 
     const prompt = `Accessibility Tree:\n\n\`\`\`\n${accessibilityTreeString}\n\`\`\``;
 

@@ -40,6 +40,14 @@ export interface GraphConfig {
    * Selected LLM provider for this graph's agent nodes
    */
   provider?: LLMProvider;
+  /**
+   * Mini model for smaller/faster operations
+   */
+  miniModel?: string;
+  /**
+   * Nano model for smallest/fastest operations
+   */
+  nanoModel?: string;
 }
 
 /**
@@ -96,7 +104,7 @@ export function createAgentGraphFromConfig(
         const toolExecutorNodeName = edgeConfig.targetMap[NodeType.TOOL_EXECUTOR.toString()];
         if (toolExecutorNodeName && toolExecutorNodeName !== '__end__') {
           logger.debug(`Dynamically creating/updating tool executor: ${toolExecutorNodeName}`);
-          const toolExecutorInstance = createToolExecutorNode(state, config.provider!, config.modelName!);
+          const toolExecutorInstance = createToolExecutorNode(state, config.provider!, config.modelName!, config.miniModel, config.nanoModel);
           graphInstance.addNode(toolExecutorNodeName, toolExecutorInstance);
         } else {
           logger.error('Tool executor node name not found in targetMap or is __end__. Routing to __end__.');

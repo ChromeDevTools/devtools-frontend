@@ -39,6 +39,14 @@ export interface VisionTestCase extends TestCase {
  * Unified agent evaluation runner that supports both standard and vision-based evaluation
  * This replaces AgentEvaluationRunner when vision capabilities are needed
  */
+export interface VisionRunnerOptions {
+  visionEnabled?: boolean;
+  judgeModel: string;
+  mainModel: string;
+  miniModel: string;
+  nanoModel: string;
+}
+
 export class VisionAgentEvaluationRunner {
   
   private llmEvaluator: LLMEvaluator;
@@ -47,7 +55,7 @@ export class VisionAgentEvaluationRunner {
   private globalVisionEnabled: boolean;
   private tracingProvider: TracingProvider;
 
-  constructor(visionEnabled: boolean = false, judgeModel?: string) {
+  constructor(options: VisionRunnerOptions) {
     // Get API key from AgentService
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
@@ -56,14 +64,18 @@ export class VisionAgentEvaluationRunner {
       throw new Error('API key not configured. Please configure in AI Chat settings.');
     }
 
-    // Use provided judge model or default
-    const evaluationModel = judgeModel || 'gpt-4.1-mini';
+    // Require explicit models from caller
+    const { judgeModel, mainModel, miniModel, nanoModel } = options;
+    const evaluationModel = judgeModel;
 
     this.config = {
       extractionModel: evaluationModel,
       extractionApiKey: apiKey,
       evaluationModel: evaluationModel, 
       evaluationApiKey: apiKey,
+      mainModel,
+      miniModel,
+      nanoModel,
       maxConcurrency: 1, // Agent tools should run sequentially
       timeoutMs: TIMING_CONSTANTS.AGENT_TEST_DEFAULT_TIMEOUT,
       retries: 2,
@@ -73,7 +85,7 @@ export class VisionAgentEvaluationRunner {
 
     this.llmEvaluator = new LLMEvaluator(this.config.evaluationApiKey, this.config.evaluationModel);
     this.screenshotTool = new TakeScreenshotTool();
-    this.globalVisionEnabled = visionEnabled;
+    this.globalVisionEnabled = Boolean(options.visionEnabled);
     this.tracingProvider = createTracingProvider();
   }
 

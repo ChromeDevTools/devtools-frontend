@@ -9,7 +9,6 @@ import { ErrorHandlingUtils } from '../../utils/ErrorHandlingUtils.js';
 import { PromptTemplates } from '../../utils/PromptTemplates.js';
 import { ResponseParsingUtils } from '../../utils/ResponseParsingUtils.js';
 import type { ScreenshotData, VisionMessage, TextContent, ImageContent } from '../../utils/EvaluationTypes.js';
-import { AIChatPanel } from '../../../ui/AIChatPanel.js';
 
 const logger = createLogger('LLMEvaluator');
 
@@ -21,11 +20,10 @@ export class LLMEvaluator {
   private apiKey: string;
   private defaultModel: string;
 
-  constructor(apiKey: string, defaultModel?: string) {
+  constructor(apiKey: string, defaultModel: string) {
     this.apiKey = apiKey;
-    // Use the provided model, or fall back to saved judge model, or finally to mini model
-    const JUDGE_MODEL_STORAGE_KEY = 'ai_chat_judge_model';
-    this.defaultModel = defaultModel || localStorage.getItem(JUDGE_MODEL_STORAGE_KEY) || AIChatPanel.getMiniModel();
+    // Model must be provided by caller; no fallbacks
+    this.defaultModel = defaultModel;
   }
 
 
@@ -89,8 +87,9 @@ export class LLMEvaluator {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         const llm = LLMClient.getInstance();
+        const provider = await this.#getProviderForModel(model);
         const llmResponse = await llm.call({
-          provider: AIChatPanel.getProviderForModel(model),
+          provider,
           model: model,
           messages: [
             { role: 'system', content: PromptTemplates.buildSystemPrompt({ hasVision: false }) },
@@ -122,6 +121,25 @@ export class LLMEvaluator {
     }
     
     throw lastError;
+  }
+
+  /**
+   * Resolve the provider for a given model using the LLM registry.
+   * Falls back to the currently selected provider if unknown.
+   */
+  async #getProviderForModel(modelId: string): Promise<'openai' | 'litellm' | 'groq' | 'openrouter'> {
+    try {
+      const llm = LLMClient.getInstance();
+      const models = await llm.getAvailableModels();
+      const found = models.find(m => m.id === modelId);
+      if (found) {
+        return found.provider as any;
+      }
+    } catch {
+      // ignore and fall through to fallback
+    }
+    // Fallback: current selection or openai
+    return (localStorage.getItem('ai_chat_provider') || 'openai') as any;
   }
 
   /**

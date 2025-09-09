@@ -160,6 +160,11 @@ export interface EvaluationConfig {
   evaluationModel: string;
   evaluationApiKey: string;
   
+  // Model settings for tools and agents under test
+  mainModel: string;
+  miniModel: string;
+  nanoModel: string;
+  
   // Execution settings
   maxConcurrency: number;
   timeoutMs: number;

@@ -7,7 +7,7 @@ import * as Utils from '../common/utils.js';
 import { createLogger } from '../core/Logger.js';
 import { HTMLToMarkdownTool } from './HTMLToMarkdownTool.js';
 import { VectorDBClient, type VectorDocument, type VectorStoreResponse } from './VectorDBClient.js';
-import type { Tool } from './Tools.js';
+import type { Tool, LLMContext } from './Tools.js';
 import { integer } from '../../../generated/protocol.js';
 
 const logger = createLogger('Tool:BookmarkStore');
@@ -72,7 +72,7 @@ export class BookmarkStoreTool implements Tool<BookmarkStoreArgs, BookmarkStoreR
   /**
    * Execute the bookmark store operation
    */
-  async execute(args: BookmarkStoreArgs): Promise<BookmarkStoreResult> {
+  async execute(args: BookmarkStoreArgs, ctx?: LLMContext): Promise<BookmarkStoreResult> {
     logger.info('Executing bookmark store with args', { args });
 
     try {
@@ -108,7 +108,7 @@ export class BookmarkStoreTool implements Tool<BookmarkStoreArgs, BookmarkStoreR
       const markdownResult = await this.htmlToMarkdownTool.execute({
         instruction: `Extract the main content from this page for bookmarking. Focus on the primary article or content that would be useful for later reference.`,
         reasoning: 'Extracting content for bookmark storage'
-      });
+      }, ctx);
 
       if (!markdownResult.success || !markdownResult.markdownContent) {
         return {

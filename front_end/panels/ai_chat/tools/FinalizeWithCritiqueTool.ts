@@ -9,7 +9,7 @@ import { createLogger } from '../core/Logger.js';
 const logger = createLogger('FinalizeWithCritiqueTool');
 
 import { CritiqueTool} from './CritiqueTool.js';
-import type { Tool } from './Tools.js';
+import type { Tool, LLMContext } from './Tools.js';
 
 /**
  * Arguments for the FinalizeWithCritiqueTool
@@ -74,7 +74,7 @@ export class FinalizeWithCritiqueTool implements Tool<FinalizeWithCritiqueArgs, 
   /**
    * Execute the finalize with critique tool
    */
-  async execute(args: FinalizeWithCritiqueArgs): Promise<FinalizeWithCritiqueResult> {
+  async execute(args: FinalizeWithCritiqueArgs, ctx?: LLMContext): Promise<FinalizeWithCritiqueResult> {
     logger.info('Executing with answer:', args.answer.substring(0, 100) + '...');
 
     try {
@@ -112,7 +112,7 @@ export class FinalizeWithCritiqueTool implements Tool<FinalizeWithCritiqueArgs, 
         userInput: userMessage.text,
         finalResponse: args.answer,
         reasoning: 'Validating if the response meets all user requirements'
-      });
+      }, ctx);
 
       logger.info('Critique result:', critiqueResult);
 

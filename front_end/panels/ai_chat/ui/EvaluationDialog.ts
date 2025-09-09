@@ -16,6 +16,7 @@ import { webTaskAgentTests } from '../evaluation/test-cases/web-task-agent-tests
 import type { TestResult } from '../evaluation/framework/types.js';
 import { createLogger } from '../core/Logger.js';
 import { AIChatPanel } from './AIChatPanel.js';
+import { MODEL_PLACEHOLDERS } from '../core/Constants.js';
 
 const logger = createLogger('EvaluationDialog');
 
@@ -199,13 +200,25 @@ export class EvaluationDialog {
     
     // Initialize evaluation runners
     try {
-      this.#evaluationRunner = new EvaluationRunner(this.#state.judgeModel);
+      // Inject current UI-selected models into the runner to decouple from UI internals
+      this.#evaluationRunner = new EvaluationRunner({
+        judgeModel: this.#state.judgeModel,
+        mainModel: AIChatPanel.instance().getSelectedModel(),
+        miniModel: AIChatPanel.getMiniModel(),
+        nanoModel: AIChatPanel.getNanoModel(),
+      });
     } catch (error) {
       logger.error('Failed to initialize evaluation runner:', error);
     }
     
     try {
-      this.#agentEvaluationRunner = new VisionAgentEvaluationRunner(this.#state.visionEnabled, this.#state.judgeModel);
+      this.#agentEvaluationRunner = new VisionAgentEvaluationRunner({
+        visionEnabled: this.#state.visionEnabled,
+        judgeModel: this.#state.judgeModel,
+        mainModel: AIChatPanel.instance().getSelectedModel(),
+        miniModel: AIChatPanel.getMiniModel(),
+        nanoModel: AIChatPanel.getNanoModel(),
+      });
     } catch (error) {
       logger.error('Failed to initialize agent evaluation runner:', error);
     }
@@ -835,7 +848,7 @@ export class EvaluationDialog {
     
     // Filter models to only show those from the selected provider
     const filteredModels = modelOptions.filter(option => {
-      if (option.value.startsWith('_placeholder')) {
+      if (option.value.startsWith(MODEL_PLACEHOLDERS.NO_MODELS) || option.value.startsWith(MODEL_PLACEHOLDERS.ADD_CUSTOM)) {
         return false; // Skip placeholder options
       }
       // Use the model's type to determine if it belongs to the selected provider
@@ -885,13 +898,24 @@ export class EvaluationDialog {
       
       // Reinitialize evaluation runners with new model
       try {
-        this.#evaluationRunner = new EvaluationRunner(this.#state.judgeModel);
+        this.#evaluationRunner = new EvaluationRunner({
+          judgeModel: this.#state.judgeModel,
+          mainModel: AIChatPanel.instance().getSelectedModel(),
+          miniModel: AIChatPanel.getMiniModel(),
+          nanoModel: AIChatPanel.getNanoModel(),
+        });
       } catch (error) {
         logger.error('Failed to reinitialize evaluation runner:', error);
       }
       
       try {
-        this.#agentEvaluationRunner = new VisionAgentEvaluationRunner(this.#state.visionEnabled, this.#state.judgeModel);
+        this.#agentEvaluationRunner = new VisionAgentEvaluationRunner({
+          visionEnabled: this.#state.visionEnabled,
+          judgeModel: this.#state.judgeModel,
+          mainModel: AIChatPanel.instance().getSelectedModel(),
+          miniModel: AIChatPanel.getMiniModel(),
+          nanoModel: AIChatPanel.getNanoModel(),
+        });
       } catch (error) {
         logger.error('Failed to reinitialize agent evaluation runner:', error);
       }

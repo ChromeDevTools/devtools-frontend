@@ -28,6 +28,9 @@ const LITELLM_API_KEY_STORAGE_KEY = 'ai_chat_litellm_api_key';
 const GROQ_API_KEY_STORAGE_KEY = 'ai_chat_groq_api_key';
 const OPENROUTER_API_KEY_STORAGE_KEY = 'ai_chat_openrouter_api_key';
 const PROVIDER_SELECTION_KEY = 'ai_chat_provider';
+
+// Cache constants
+const OPENROUTER_MODELS_CACHE_DURATION_MS = 60 * 60 * 1000; // 60 minutes
 // Vector DB configuration keys - Milvus format
 const VECTOR_DB_ENABLED_KEY = 'ai_chat_vector_db_enabled';
 const MILVUS_ENDPOINT_KEY = 'ai_chat_milvus_endpoint';
@@ -556,6 +559,9 @@ export class SettingsDialog {
               type: 'openrouter' as const
             }));
             updateModelOptions(modelOptions, false);
+            // Persist cache alongside timestamp for consistency
+            localStorage.setItem('openrouter_models_cache', JSON.stringify(modelOptions));
+            localStorage.setItem('openrouter_models_cache_timestamp', Date.now().toString());
             logger.debug('Successfully refreshed OpenRouter models after provider change');
           } catch (error) {
             logger.error('Failed to fetch OpenRouter models after provider change:', error);
@@ -581,7 +587,7 @@ export class SettingsDialog {
         updateGroqModelSelectors();
       } else if (selectedProvider === 'openrouter') {
         // Update OpenRouter selectors
-        updateOpenRouterModelSelectors();
+        await updateOpenRouterModelSelectors();
       }
     });
     
@@ -1683,9 +1689,74 @@ export class SettingsDialog {
       fetchOpenRouterModelsButton.disabled = !openrouterApiKeyInput.value.trim();
     });
     
+    // Function to check cache age and auto-refresh OpenRouter models if stale
+    async function checkAndRefreshOpenRouterCache(): Promise<void> {
+      try {
+        const cacheTimestamp = localStorage.getItem('openrouter_models_cache_timestamp');
+        const now = Date.now();
+        
+        // If no timestamp, cache is considered stale
+        if (!cacheTimestamp) {
+          logger.debug('OpenRouter models cache has no timestamp, considering stale');
+          await autoRefreshOpenRouterModels();
+          return;
+        }
+        
+        const cacheAge = now - parseInt(cacheTimestamp, 10);
+        const isStale = cacheAge > OPENROUTER_MODELS_CACHE_DURATION_MS;
+        
+        if (isStale) {
+          const ageMinutes = Math.round(cacheAge / (1000 * 60));
+          logger.debug(`OpenRouter models cache is stale (${ageMinutes} minutes old), auto-refreshing...`);
+          await autoRefreshOpenRouterModels();
+        } else {
+          const remainingMinutes = Math.round((OPENROUTER_MODELS_CACHE_DURATION_MS - cacheAge) / (1000 * 60));
+          logger.debug(`OpenRouter models cache is fresh (expires in ${remainingMinutes} minutes)`);
+        }
+      } catch (error) {
+        logger.warn('Failed to check OpenRouter models cache age:', error);
+      }
+    }
+
+    // Function to auto-refresh OpenRouter models silently
+    async function autoRefreshOpenRouterModels(): Promise<void> {
+      try {
+        const openrouterApiKey = openrouterApiKeyInput.value.trim();
+        
+        if (!openrouterApiKey) {
+          logger.debug('No OpenRouter API key available for auto-refresh');
+          return;
+        }
+        
+        logger.debug('Auto-refreshing OpenRouter models...');
+        const openrouterModels = await LLMClient.fetchOpenRouterModels(openrouterApiKey);
+        
+        // Convert OpenRouter models to ModelOption format
+        const modelOptions: ModelOption[] = openrouterModels.map(model => ({
+          value: model.id,
+          label: model.name || model.id,
+          type: 'openrouter' as const
+        }));
+        
+        // Store in localStorage with timestamp
+        localStorage.setItem('openrouter_models_cache', JSON.stringify(modelOptions));
+        localStorage.setItem('openrouter_models_cache_timestamp', Date.now().toString());
+        
+        // Also update global model options so UI immediately sees models
+        updateModelOptions(modelOptions, false);
+        
+        logger.debug(`Auto-refreshed ${modelOptions.length} OpenRouter models`);
+      } catch (error) {
+        logger.warn('Failed to auto-refresh OpenRouter models:', error);
+      }
+    }
+
     // Function to update OpenRouter model selectors
-    function updateOpenRouterModelSelectors() {
+    async function updateOpenRouterModelSelectors() {
       logger.debug('Updating OpenRouter model selectors');
+      
+      // Check if OpenRouter models cache is stale and auto-refresh if needed
+      await checkAndRefreshOpenRouterCache();
       
       // Get the latest model options filtered for OpenRouter provider
       const openrouterModels = getModelOptions('openrouter');
@@ -1755,10 +1826,13 @@ export class SettingsDialog {
         // Update model options with fetched OpenRouter models
         updateModelOptions(modelOptions, false);
         
+        // Update timestamp for cache management
+        localStorage.setItem('openrouter_models_cache_timestamp', Date.now().toString());
+        
         const actualModelCount = openrouterModels.length;
         
         // Update the model selectors with the new models
-        updateOpenRouterModelSelectors();
+        await updateOpenRouterModelSelectors();
         
         // Update status to show success
         fetchOpenRouterModelsStatus.textContent = i18nString(UIStrings.fetchedModels, {PH1: actualModelCount});
@@ -1782,7 +1856,7 @@ export class SettingsDialog {
     });
     
     // Initialize OpenRouter model selectors
-    updateOpenRouterModelSelectors();
+    await updateOpenRouterModelSelectors();
     
     // Add Vector DB configuration section
     const vectorDBSection = document.createElement('div');
@@ -3100,6 +3174,36 @@ export class SettingsDialog {
     dialog.show();
     
     return Promise.resolve();
+  }
+
+  /**
+   * Static method to update OpenRouter models programmatically (called after OAuth success)
+   */
+  static updateOpenRouterModels(openrouterModels: any[]): void {
+    try {
+      logger.debug('Updating OpenRouter models programmatically...', openrouterModels.length);
+      
+      // Convert OpenRouter models to ModelOption format
+      const modelOptions: ModelOption[] = openrouterModels.map(model => ({
+        value: model.id,
+        label: model.name || model.id,
+        type: 'openrouter' as const
+      }));
+      
+      // Store models in localStorage cache for the model management system to pick up
+      localStorage.setItem('openrouter_models_cache', JSON.stringify(modelOptions));
+      localStorage.setItem('openrouter_models_cache_timestamp', Date.now().toString());
+      
+      // Dispatch event to notify model management system to refresh
+      window.dispatchEvent(new CustomEvent('openrouter-models-updated', {
+        detail: { models: modelOptions, source: 'oauth' }
+      }));
+      
+      logger.debug('Successfully cached OpenRouter models and dispatched update event');
+      
+    } catch (error) {
+      logger.error('Failed to update OpenRouter models programmatically:', error);
+    }
   }
 }
 

@@ -341,7 +341,7 @@ export class ExecuteJavaScriptTool implements Tool<{ code: string }, JavaScriptE
   name = 'execute_javascript';
   description = 'Executes JavaScript code in the page context';
 
-  async execute(args: { code: string }): Promise<JavaScriptExecutionResult | ErrorResult> {
+  async execute(args: { code: string }, _ctx?: LLMContext): Promise<JavaScriptExecutionResult | ErrorResult> {
     logger.info('execute_javascript', args);
     const code = args.code;
     if (typeof code !== 'string') {
@@ -399,7 +399,7 @@ export class NetworkAnalysisTool implements Tool<{ url?: string, limit?: number 
   name = 'analyze_network';
   description = 'Analyzes network requests, optionally filtered by URL pattern';
 
-  async execute(args: { url?: string, limit?: number }): Promise<NetworkAnalysisResult | ErrorResult> {
+  async execute(args: { url?: string, limit?: number }, _ctx?: LLMContext): Promise<NetworkAnalysisResult | ErrorResult> {
     const url = args.url;
     const limit = args.limit || 10;
 
@@ -811,12 +811,12 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
         return false;
       }
 
-      if (!ctx?.provider || !(ctx.nanoModel || ctx.model)) {
+      if (!ctx?.provider || !ctx.nanoModel) {
         logger.warn('Missing LLM context for 404 confirmation');
         return false;
       }
       const provider = ctx.provider;
-      const model = ctx.nanoModel || ctx.model;
+      const model = ctx.nanoModel;
       const llm = LLMClient.getInstance();
       
       const systemPrompt = `You are analyzing web page content to determine if it represents a 404 "Page Not Found" error page.
@@ -888,7 +888,7 @@ export class NavigateBackTool implements Tool<{ steps: number, reasoning: string
     required: ['steps', 'reasoning'],
   };
 
-  async execute(args: { steps: number, reasoning: string }): Promise<NavigateBackResult | ErrorResult> {
+  async execute(args: { steps: number, reasoning: string }, _ctx?: LLMContext): Promise<NavigateBackResult | ErrorResult> {
     logger.error('navigate_back', args);
     const steps = args.steps;
     if (typeof steps !== 'number' || steps <= 0) {
@@ -992,7 +992,7 @@ export class GetPageHTMLTool implements Tool<Record<string, unknown>, PageHTMLRe
   name = 'get_page_html';
   description = 'Gets the HTML contents and structure of the current page for analysis and summarization with CSS, JavaScript, and other non-essential content removed';
 
-  async execute(_args: Record<string, unknown>): Promise<PageHTMLResult | ErrorResult> {
+  async execute(_args: Record<string, unknown>, _ctx?: LLMContext): Promise<PageHTMLResult | ErrorResult> {
     // Get the main target
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
@@ -1104,7 +1104,7 @@ export class ClickElementTool implements Tool<{ selector: string }, ClickElement
   name = 'click_element';
   description = 'Clicks on an element identified by a CSS selector';
 
-  async execute(args: { selector: string }): Promise<ClickElementResult | ErrorResult> {
+  async execute(args: { selector: string }, _ctx?: LLMContext): Promise<ClickElementResult | ErrorResult> {
     
     const selector = args.selector;
     if (typeof selector !== 'string') {
@@ -1178,7 +1178,7 @@ export class SearchContentTool implements Tool<{ query: string, limit?: number }
   name = 'search_content';
   description = 'Searches for text content on the page and returns matching elements';
 
-  async execute(args: { query: string, limit?: number }): Promise<SearchContentResult | ErrorResult> {
+  async execute(args: { query: string, limit?: number }, _ctx?: LLMContext): Promise<SearchContentResult | ErrorResult> {
     
     const query = args.query;
     const limit = args.limit || 5;
@@ -1321,7 +1321,7 @@ export class ScrollPageTool implements Tool<{ position?: { x: number, y: number 
   name = 'scroll_page';
   description = 'Scrolls the page to a specific position or in a specific direction';
 
-  async execute(args: { position?: { x: number, y: number }, direction?: string, amount?: number }): Promise<ScrollResult | ErrorResult> {
+  async execute(args: { position?: { x: number, y: number }, direction?: string, amount?: number }, _ctx?: LLMContext): Promise<ScrollResult | ErrorResult> {
     const position = args.position;
     const direction = args.direction;
     const amount = args.amount || 300;  // Default scroll amount
@@ -1455,9 +1455,9 @@ export class WaitTool implements Tool<{ seconds?: number, duration?: number, rea
         const treeResult = await Utils.getVisibleAccessibilityTree(target);
         
         // Generate summary using LLM if ctx is available
-        if (ctx?.provider && (ctx.nanoModel || ctx.model)) {
+        if (ctx?.provider && ctx.nanoModel) {
           const provider = ctx.provider;
-          const model = ctx.nanoModel || ctx.model;
+          const model = ctx.nanoModel;
           const llm = LLMClient.getInstance();
         
         const reasonContext = waitReason ? `The wait was specifically for: ${waitReason}` : 'No specific reason was provided for the wait.';
@@ -1537,7 +1537,7 @@ export class TakeScreenshotTool implements Tool<{fullPage?: boolean}, Screenshot
   name = 'take_screenshot';
   description = 'Takes a screenshot of the current page view or the entire page. The image can be used for analyzing the page layout, content, and visual elements. Always specify whether to capture the full page or just the viewport and the reasoning behind it.';
 
-  async execute(args: {fullPage?: boolean}): Promise<ScreenshotResult|ErrorResult> {
+  async execute(args: {fullPage?: boolean}, _ctx?: LLMContext): Promise<ScreenshotResult|ErrorResult> {
     const fullPage = args.fullPage || false;
 
     // Get the main target
@@ -1598,7 +1598,7 @@ export class GetAccessibilityTreeTool implements Tool<{ reasoning: string }, Acc
   name = 'get_page_content';
   description = 'Gets the accessibility tree of the current page, providing a hierarchical structure of all accessible elements.';
 
-  async execute(args: { reasoning: string }): Promise<AccessibilityTreeResult | ErrorResult> {
+  async execute(args: { reasoning: string }, _ctx?: LLMContext): Promise<AccessibilityTreeResult | ErrorResult> {
     try {
       // Log reasoning for this action (addresses unused args warning)
       logger.warn(`Getting accessibility tree: ${args.reasoning}`);
@@ -1642,7 +1642,7 @@ export class GetVisibleAccessibilityTreeTool implements Tool<{ reasoning: string
   name = 'get_visible_content';
   description = 'Gets the accessibility tree of only the visible content in the viewport, providing a focused view of what the user can currently see.';
 
-  async execute(args: { reasoning: string }): Promise<AccessibilityTreeResult | ErrorResult> {
+  async execute(args: { reasoning: string }, _ctx?: LLMContext): Promise<AccessibilityTreeResult | ErrorResult> {
     try {
       // Log reasoning for this action
       logger.warn(`Getting visible accessibility tree: ${args.reasoning}`);
@@ -3112,7 +3112,7 @@ export class NodeIDsToURLsTool implements Tool<{ nodeIds: number[] }, NodeIDsToU
   name = 'get_urls_from_nodeids';
   description = 'Gets URLs associated with DOM elements identified by NodeIDs from accessibility tree.';
 
-  async execute(args: { nodeIds: number[] }): Promise<NodeIDsToURLsResult | ErrorResult> {
+  async execute(args: { nodeIds: number[] }, _ctx?: LLMContext): Promise<NodeIDsToURLsResult | ErrorResult> {
     if (!Array.isArray(args.nodeIds)) {
       return { error: 'nodeIds must be an array of numbers' };
     }
@@ -4008,7 +4008,7 @@ export class GetVisitsByDomainTool implements Tool<{ domain: string }, VisitHist
   name = 'get_visits_by_domain';
   description = 'Get a list of visited pages filtered by domain name';
 
-  async execute(args: { domain: string }): Promise<VisitHistoryDomainResult | ErrorResult> {
+  async execute(args: { domain: string }, _ctx?: LLMContext): Promise<VisitHistoryDomainResult | ErrorResult> {
     try {
       const visits = await VisitHistoryManager.getInstance().getVisitsByDomain(args.domain);
 
@@ -4046,7 +4046,7 @@ export class GetVisitsByKeywordTool implements Tool<{ keyword: string }, VisitHi
   name = 'get_visits_by_keyword';
   description = 'Get a list of visited pages containing a specific keyword';
 
-  async execute(args: { keyword: string }): Promise<VisitHistoryKeywordResult | ErrorResult> {
+  async execute(args: { keyword: string }, _ctx?: LLMContext): Promise<VisitHistoryKeywordResult | ErrorResult> {
     try {
       const visits = await VisitHistoryManager.getInstance().getVisitsByKeyword(args.keyword);
 
@@ -4091,7 +4091,7 @@ export class SearchVisitHistoryTool implements Tool<{
     keyword?: string,
     daysAgo?: number,
     limit?: number,
-  }): Promise<VisitHistorySearchResult | ErrorResult> {
+  }, _ctx?: LLMContext): Promise<VisitHistorySearchResult | ErrorResult> {
     try {
       const { domain, keyword, daysAgo, limit } = args;
 

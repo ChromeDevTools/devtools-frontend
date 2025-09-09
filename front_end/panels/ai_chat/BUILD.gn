@@ -337,6 +337,7 @@ ts_library("unittests") {
     "ui/__tests__/ChatViewAgentSessionsOrder.test.ts",
     "ui/__tests__/ChatViewSequentialSessionsTransition.test.ts",
     "ui/__tests__/ChatViewInputClear.test.ts",
+    "ui/__tests__/SettingsDialogOpenRouterCache.test.ts",
     "ui/input/__tests__/InputBarClear.test.ts",
     "ui/message/__tests__/MessageCombiner.test.ts",
     "ui/message/__tests__/StructuredResponseController.test.ts",

@@ -48,11 +48,6 @@ export abstract class Badge {
   }
 
   activate(): void {
-    // We don't reactivate a badge that's triggered before.
-    if (this.#triggeredBefore) {
-      return;
-    }
-
     // The event listeners are already registered, we don't re-register them.
     if (this.#eventListeners.length > 0) {
       return;
@@ -71,5 +66,6 @@ export abstract class Badge {
 
     Common.EventTarget.removeEventListeners(this.#eventListeners);
     this.#eventListeners = [];
+    this.#triggeredBefore = false;
   }
 }

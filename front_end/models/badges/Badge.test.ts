@@ -79,4 +79,15 @@ describe('Badge', () => {
 
     sinon.assert.calledOnce(onTriggerBadgeStub);
   });
+
+  it('a badge can be re-triggered after it has been triggered and then re-activated', () => {
+    testBadge.activate();
+
+    badgeActionEventTarget.dispatchEventToListeners(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
+    sinon.assert.calledOnce(onTriggerBadgeStub);
+
+    testBadge.activate();
+    badgeActionEventTarget.dispatchEventToListeners(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
+    sinon.assert.calledTwice(onTriggerBadgeStub);
+  });
 });

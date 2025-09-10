@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "Panel de rendemento"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "Conta"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorno"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "Fontes"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "Sincronizar"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools: {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "Mostrar scripts"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "Asistencia de IA"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Personalizar e controlar DevTools"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Panel anterior"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "Recibir insignias"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Volver cargar DevTools"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Está función só está dispoñible cunha conexión a Internet activa."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevTools recibiu unha solicitude externa"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Produciuse un erro descoñecido cargar o ficheiro"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Transporte do dicionario de comprensión"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "Comprobacións de integridade iniciadas polo servidor"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "Especificación de resumo non codificado de HTTP"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Simular un novo dispositivo despois de que se cargue a páxina pode afectar á LCP. Volve cargar a páxina despois de simular un novo dispositivo para obter datos da LCP precisos."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Eliminar o chat local"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "Exportar conversa"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Sigue estes pasos antes de facer unha pregunta"
   },
@@ -2677,6 +2695,9 @@
   },
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "Non hai ningunha conversa anterior"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "Copiouse a resposta no portapapeis"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "Enviar comentarios"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Cargas especulativas"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Fai clic nun informe para mostrar o seu contido"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "Non se seleccionou ningún informe"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API de informes"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "Fai clic nun informe para mostrar o seu contido"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "Non hai ningún informe nin extremo"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "Non se seleccionou ningún informe"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "Nesta páxina poderás inspeccionar Reporting API informes e extremos."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "As páxinas con WebRTC non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "A memoria caché de páxinas anteriores e seguintes está desactivada porque se usou WebRTC."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Nestes momentos, as páxinas que usan WebShare non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "As páxinas con WebSocket non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "A memoria caché de páxinas anteriores e seguintes está desactivada porque se usou WebSocket."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "As páxinas con WebTransport non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "A memoria caché de páxinas anteriores e seguintes está desactivada porque se usou WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Nestes momentos, as páxinas que usan WebXR non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Desactivar modo de grade"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "Desactivar modo de masonry"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Desactivar superposición da grade para o axuste do desprazamento"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Activar modo de grade"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "Activar modo de masonry"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Activar superposición da grade para o axuste do desprazamento"
@@ -6771,7 +6789,7 @@
     "message": "Categoría de detectores de eventos"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework detectores"
+    "message": "Resolver detectores de Framework"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Pasivos"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Superposicións de Flexbox"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "Grade ou masonry"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "Superposicións de grade ou masonry"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Non se atoparon deseños de Flexbox nesta páxina"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "Non se atopou ningún deseño de grade ou masonry nesta páxina"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Superpoñer configuración de visualización"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "As solicitudes poden ignorarse localmente. Consulta o panel Fontes"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "Engadir…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "Engadir {PH1}"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Personalizado"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "Configuración predeterminada"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "Opción recomendada: {PH1}"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "Calibrar…"
@@ -8646,10 +8685,10 @@
     "message": "Restablecer valor predeterminado"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "'Save-Data': Forzar desactivación"
+    "message": "'Save-Data': Desactivado"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "'Save-Data': Forzar activación"
+    "message": "'Save-Data': Activado"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "Omitir o valor rexistrado por navigator.connection.saveData na páxina"
@@ -9357,7 +9396,7 @@
     "message": "Mostrar só as solicitudes bloqueadas"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(Só no modo de incógnito) Mostrar só as solicitudes enviadas aos proxy de protección de IP"
+    "message": "Mostrar só as solicitudes enviadas aos proxys de protección de IP. Non afecta á navegación actual."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Mostrar só as solicitudes con cookies de resposta bloqueadas"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1} de descarga"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (da memoria caché)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (de ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "Latencia de {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "{PH1} de latencia, {PH2} de descarga ({PH3} en total)"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Cookies que se recibiron do servidor na cabeceira set-cookie da resposta pero que tiñan un formato incorrecto"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Vídeo"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Sortear protección de IP"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "Código de identificación"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "Método"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "O proxy da IP non está dispoñible"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "O proxy da IP só está dispoñible no modo de incógnito. Abre o sitio nese modo."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "Solicitudes de proxy"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "Estado"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Proba como funcionará este sitio se se activa o proxy de IP en Chrome"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "Controis de proxy de protección de IP"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} con {PH2}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Controis"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "Protección de IP"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Orixe principal"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Usuario inactivo, pantalla desbloqueada"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "Xera automaticamente títulos para as anotacións do rastro de rendemento"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "A medida que escribes na consola ou no panel Fontes, recibirás suxestións de código. Preme o tabulador para aceptar unha."
   },
@@ -12336,16 +12396,16 @@
     "message": "Mellora a túa produtividade coa IA"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "Para xerar suxestións de código, compártense con Google as entradas da consola, o historial da sesión que tes aberta na consola e o contido do ficheiro que está aberto neste momento. O noso equipo pode revisar eses datos para mellorar esta función."
+    "message": "Para xerar suxestións de código, compártense con Google as entradas da consola, o historial da sesión que teñas aberta na consola, o CSS inspeccionado no momento da acción e o contido do ficheiro que estea aberto. O noso equipo pode revisar eses datos para mellorar esta función."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Para xerar suxestións de código, compártense con Google as entradas da consola, o historial da sesión que tes aberta na consola e o contido do ficheiro que está aberto neste momento. Esta información non se usará para mellorar os modelos de IA de Google."
+    "message": "Para xerar suxestións de código, compártense con Google as entradas da consola, o historial da sesión que teñas aberta na consola, o CSS inspeccionado no momento da acción e o contido do ficheiro que estea aberto. Esta información non se usará para mellorar os modelos de IA de Google. A túa organización pode cambiar esta configuración en calquera momento."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "A mensaxe da consola, o código fonte relacionado e as cabeceiras de rede e o seguimento da morea asociados envíanse a Google para xerar explicacións. O noso equipo pode revisar eses datos para mellorar esta función."
+    "message": "Para xerar explicacións, a mensaxe da consola, o seguimento da morea asociado, o código fonte relacionado e as cabeceiras de rede vinculadas envíanse a Google. O noso equipo pode revisar eses datos para mellorar esta función."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "A mensaxe da consola, o seguimento da morea asociado, o código fonte relacionado e as cabeceiras de rede vinculadas envíanse a Google para xerar explicacións. Esta información non se usará para mellorar os modelos de IA de Google."
+    "message": "Para xerar explicacións, a mensaxe da consola, o seguimento da morea asociado, o código fonte relacionado e as cabeceiras de rede vinculadas envíanse a Google. Esta información non se usará para mellorar os modelos de IA de Google. A túa organización pode cambiar esta configuración en calquera momento."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "En función da túa rexión, Google pode non recompilar datos"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Activar asistencia de IA"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "Activar suxestións de código con IA"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "Permitir suxestións da IA para anotacións do panel de rendemento"
@@ -12381,19 +12444,19 @@
     "message": "Entende os estilos de CSS, a actividade de rede, os colos de botella de rendemento e as orixes dos ficheiros grazas ás estatísticas con tecnoloxía de IA"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Os datos e as consultas de usuarios aos que poida acceder a páxina inspeccionada a través das API web, as solicitudes de rede, os ficheiros e os rastros de rendemento envíanse a Google para xerar explicacións. O noso equipo pode revisar eses datos para mellorar esta función. Non os uses en páxinas con información persoal ou confidencial."
+    "message": "Para xerar explicacións, os datos e as consultas de usuarios aos que poida acceder a páxina inspeccionada a través das API web, as solicitudes de rede, os ficheiros e os rastros de rendemento envíanse a Google. O noso equipo pode revisar eses datos para mellorar esta función. Non os uses en páxinas con información persoal ou confidencial."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Os datos e as consultas de usuarios aos que poida acceder a páxina inspeccionada a través das API web, as solicitudes de rede, os ficheiros e os rastros de rendemento envíanse a Google para xerar explicacións. Esta información non se usará para mellorar os modelos de IA de Google."
+    "message": "Para xerar explicacións, os datos e as consultas de usuarios aos que poida acceder a páxina inspeccionada a través das API web, as solicitudes de rede, os ficheiros e os rastros de rendemento envíanse a Google. Esta información non se usará para mellorar os modelos de IA de Google. A túa organización pode cambiar esta configuración en calquera momento."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "O teu seguimento de rendemento envíase a Google para xerar unha explicación. Esta información non se usará para mellorar os modelos de IA de Google."
+    "message": "Para xerar suxestións de anotacións, o rastro do teu rendemento envíase a Google. O noso equipo pode revisar eses datos para mellorar esta función."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "O teu seguimento de rendemento envíase a Google para xerar unha explicación. Esta información non se usará para mellorar os modelos de IA de Google."
+    "message": "Para xerar suxestións de anotacións, o rastro do teu rendemento envíase a Google. Esta información non se usará para mellorar os modelos de IA de Google. A túa organización pode cambiar esta configuración en calquera momento."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "Recibir suxestións da IA para anotacións do panel de rendemento"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "Axúdache a anotar o rastro do teu rendemento con etiquetas xeradas automaticamente"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "Obtén axuda para completar o código"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Experimentos inestables"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (anual)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (mensual)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (anual)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (mensual)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "Plan estándar"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "Plan descoñecido"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Non tes a sesión iniciada en Chrome."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Para activar esta opción de configuración, primeiro debes habilitar a sincronización da configuración en Chrome."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Ir a Configuración"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(Os datos relevantes envíanse a Google)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "Rexistrarse"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Sesión iniciada en Chrome como:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Para activar esta opción de configuración, debes habilitar a sincronización de Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "Ver o perfil"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Engadir dispositivo personalizado"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- Activouse a limitación da CPU"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- A mostraxe de JavaScript está desactivada"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Activouse a limitación de rede"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "Atenuar terceiros"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "Desactivar mostras de JavaScript"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "Desactiva a mostraxe de JavaScript e reduce a sobrecarga ao executarse en dispositivos móbiles"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Arrastra ata aquí o ficheiro de rastro ou o URL"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Repítese"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "Tempo de espera"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} (tempo: {PH2})"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Tempos"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "Configurar pistas"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "Mostrar todo"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "Algunhas pistas están ocultas neste rastro. Podes configurar as pistas facendo clic co botón dereito no seu nome."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Elementos asíncronos"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Protocolo WebSocket"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "Gardar rastro de rendemento "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "Incluír anotacións"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "Incluír contido do script"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "Incluír mapas da orixe de scripts"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "Gardar"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "Gardar rastro…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Configuración avanzada"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Bloqueáronse as cookies desta solicitude debido a funcións experimentais de Chrome e á configuración do navegador. Tes máis información no panel Problemas."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "Contexto do audio: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "Tamaño do búfer de retrochamada"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "Intervalo de retrochamada"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "Hora actual"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "Máximo de canles de saída"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(non hai ningunha gravación)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Non se detectou ningún uso de Web Audio API"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Abre unha páxina que utilice Web Audio API para iniciar a supervisión."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "Capacidade de renderización"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "Frecuencia de mostraxe"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "Estado"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "audio"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Máis ferramentas"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "Mover ao final"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "Ir ao panel"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "Mover á parte superior"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "Ir á barra de pestanas principal"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Paneis"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "marcado"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "Esta é unha función nova"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Executar comando"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "Esta é unha función nova"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Non se atoparon resultados"

@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "Werkverrigtingpaneel"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "Rekening"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Versierder"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "Bronne"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "Sinkroniseer"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "Ontwikkelaarnutsgoed – {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "Wys skripte"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "KI-bystand"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Pasmaak en beheer Ontwikkelaarnutsgoed"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Vorige paneel"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "Ontvang kentekens"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Herlaai Ontwikkelaarnutsgoed"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Hierdie kenmerk is net met ’n aktiewe internetverbinding beskikbaar."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevTools het ’n eksterne versoek ontvang"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Onbekende lêerlaaifout"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Saampersingwoordeboekvervoer"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "Bedienergeïnisieerde integriteitkontrolerings"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "HTTP- ongeënkodeerde bondelspesifikasie"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Simulering van ’n nuwe toestel nadat die bladsy laai, kan LCP beïnvloed. Herlaai die bladsy nadat ’n nuwe toestel gesimuleer is om akkurate LCP-data te kry."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Vee plaaslike klets uit"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "Voer gesprek uit"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Volg die stappe hierbo om ’n vraag te vra"
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "Geen vorige gesprekke nie"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "Antwoord is na knipbord gekopieer"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "Stuur terugvoer"
   },
@@ -2685,7 +2706,7 @@
     "message": "Instellings"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
-    "message": "AI-bystand"
+    "message": "KI-bystand"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "Vra vir AI"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Spekulatiewe laaie"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Klik op enige verslag om die teks te wys"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "Geen verslag is gekies nie"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Verslaggewing-API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "Klik op enige verslag om die teks te wys"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "Geen verslag of eindpunt nie"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "Geen verslag is gekies nie"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "Jy sal Reporting API-verslae en -eindpunte op hierdie bladsy kan ondersoek."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Bladsye met WebRTC kan nie toegang kry tot terug-vorentoe-kasgeheue nie."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "Terug-vorentoe-kasgeheue is gedeaktiveer omdat WebRTC gebruik is."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Bladsye wat WebShare gebruik, kwalifiseer nie tans vir terug-vorentoe-kasgeheue nie."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Bladsye met WebSocket kan nie toegang kry tot terug-vorentoe-kasgeheue nie."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "Terug-vorentoe-kasgeheue is gedeaktiveer omdat WebSocket gebruik is."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Bladsye met WebTransport kan nie toegang kry tot terug-vorentoe-kasgeheue nie."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "Terug-vorentoe-kasgeheue is gedeaktiveer omdat WebTransport gebruik is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Bladsye wat WebXR gebruik, kwalifiseer nie tans vir terug-vorentoe-kasgeheue nie."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Deaktiveer roostermodus"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "Deaktiveer messelwerkmodus"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Deaktiveer rolleeskiekoorlegger"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Aktiveer roostermodus"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "Aktiveer messelwerkmodus"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Aktiveer rolleeskiekoorlegger"
@@ -6771,7 +6789,7 @@
     "message": "Gevalluisteraarskategorie"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework-luisteraars"
+    "message": "Los Framework-luisteraars op"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Passief"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Flexbox-oorleggers"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "Rooster/messelwerk"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "Rooster-/messelwerkoorleggers"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Geen Flexbox-uitlegte op hierdie bladsy gekry nie"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "Geen rooster- of messelwerkuitlegte is op hierdie bladsy gevind nie"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Oorlê vertooninstelings"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "Versoeke kan plaaslik geïgnoreer word, sien die Bronne-paneel"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "Voeg by …"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "Voeg {PH1} by"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Gepasmaak"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "Voorafstellings"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – aanbeveel"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "Kalibreer …"
@@ -8646,10 +8685,10 @@
     "message": "Stel terug na die verstekwaarde"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "“Stoor-Data”: verplig af"
+    "message": "“Stoor-Data”: af"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "“Stoor-Data”: verplig aan"
+    "message": "“Stoor-Data”: aan"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "Ignoreer die waarde wat deur navigator.connection.saveData op die bladsy aangegee is"
@@ -9357,7 +9396,7 @@
     "message": "Wys slegs geblokkeerde versoeke"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(Slegs Incognito) Wys slegs versoeke wat na IP-beskerminginstaanbedieners toe gestuur is"
+    "message": "Wys slegs versoeke wat na IP-beskerminginstaanbedieners toe gestuur is. Het geen uitwerking in gewone blaai nie."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Wys slegs versoeke met geblokkeerde antwoordwebkoekies"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1} aflaai"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (vanaf kasgeheue)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (vanaf ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "Traagheid van {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "Traagheid van {PH1}, aflaai van {PH2} (altesame {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Weboekies wat in die antwoord se \"set-cookie\"-opskrif van die bediener af ontvang is"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Omseil IP-beskerming"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "ID"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "Metode"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "IP-instaanbediener is onbeskikbaar"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "IP-instaanbediener is slegs in incognitomodus beskikbaar. Maak werf in incognito oop."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "Instaanbedienerversoeke"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "Status"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Toets die werkverrigting van hierdie werf indien IP-instaanbediener in Chrome geaktiveer is"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "Instaanbedienerkontroles vir IP-beskerming"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} met {PH2}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Kontroles"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "IP-beskerming"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Hoofoorsprong"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Gebruiker onaktief, skerm ontsluit"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "Genereer outomaties titels vir annotasies oor werkverrigtingspore"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Terwyl jy in die Konsole- of Bronnepaneel tik, sal jy kodevoorstelle ontvang. Druk Tab om een te aanvaar."
   },
@@ -12336,16 +12396,16 @@
     "message": "Gee jou produktiwiteit ’n hupstoot met AI"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "Om kodevoorstelle te genereer, word jou konsole-invoerdata, die geskiedenis van jou huidige konsolesessie en die inhoud van die huidige oop lêer met Google gedeel. Hierdie data kan deur mense wat kontrolering uitvoer, gesien word om hierdie kenmerk te verbeter."
+    "message": "Om kodevoorstelle te genereer, word jou konsole-invoerdata, die geskiedenis van jou huidige konsolesessie, die CSS wat tans geïnspekteer word en die inhoud van die lêer wat tans oop is, met Google gedeel. Hierdie data kan deur mense wat kontrolering uitvoer gesien word om hierdie kenmerk te verbeter."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Om kodevoorstelle te genereer, word jou konsole-invoerdata, die geskiedenis van jou huidige konsolesessie en die inhoud van die huidige oop lêer met Google gedeel. Hierdie data sal nie gebruik word om Google se KI-modelle te verbeter nie."
+    "message": "Om kodevoorstelle te genereer, word jou konsole-invoerdata, die geskiedenis van jou huidige konsolesessie, die CSS wat tans geïnspekteer word en die inhoud van die lêer wat tans oop is, met Google gedeel. Hierdie data sal nie gebruik word om Google se KI-modelle te verbeter nie. Jou organisasie kan enige tyd hierdie instellings verander."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "Die konsoleboodskap wat met stapelspoor, verwante bronkode en die geassosieerde netwerkopskrifte vereenselwig word, word na Google toe gestuur om verduidelikings te genereer. Hierdie data kan deur mense wat kontrolering uitvoer gesien word om hierdie kenmerk te verbeter."
+    "message": "Om verduidelikings te verskaf, word die konsoleboodskap, geassosieerde stapelspoor, verwante bronkode en die geassosieerde netwerkopskrifte na Google toe gestuur. Dié data kan gesien word deur mense wat kontrolering uitvoer om hierdie kenmerk te verbeter."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Die konsoleboodskap wat met stapelspoor, verwante bronkode en die geassosieerde netwerkopskrifte vereenselwig word, word na Google toe gestuur om verduidelikings te genereer. Hierdie data sal nie gebruik word om Google se KI-modelle te verbeter nie"
+    "message": "Om verduidelikings te verskaf, word die konsoleboodskap, geassosieerde stapelspoor, verwante bronkode en die geassosieerde netwerkopskrifte na Google toe gestuur. Hierdie data sal nie gebruik word om Google se KI-modelle te verbeter nie. Jou organisasie kan enige tyd hierdie instellings verander."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Google kan moontlik nie data insamel nie, afhangende van jou streek"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Aktiveer AI-bystand"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "Aktiveer KI-kodevoorstelle"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "Aktiveer KI-voorstelle vir prestasiepaneelannotasies"
@@ -12381,19 +12444,19 @@
     "message": "Verstaan VID-style, netwerkaktiwiteit, prestasieknelpunte en lêeroorsprong met KI-aangedrewe insigte"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Enige gebruikernavraag en data waartoe die ondersoekte bladsy toegang het via web-API’s, netwerkversoeke, lêers en werkverrigtingspore word na Google toe gestuur om verduidelikings te genereer. Hierdie data kan deur mense wat kontrolering uitvoer gesien word om hierdie kenmerk te verbeter. Moenie op bladsye met persoonlike of sensitiewe inligting gebruik nie."
+    "message": "Om verduidelikings te voorsien, word enige gebruikernavraag en data waartoe die ondersoekte bladsy via web-API’s, netwerkversoeke, lêers en werkverrigtingspore toegang kan kry, na Google toe gestuur. Dié data kan gesien word deur mense wat kontrolering uitvoer om hierdie kenmerk te verbeter. Moenie op bladsye met persoonlike of sensitiewe inligting gebruik nie."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Enige gebruikernavraag en data waartoe die ondersoekte bladsy toegang het via web-API’s, netwerkversoeke, lêers en werkverrigtingspore word na Google toe gestuur om verduidelikings te genereer. Hierdie data sal nie gebruik word om Google se KI-modelle te verbeter nie."
+    "message": "Om verduidelikings te voorsien, word enige gebruikernavraag en data waartoe die ondersoekte bladsy via web-API’s, netwerkversoeke, lêers en werkverrigtingspore toegang kan kry, na Google toe gestuur. Hierdie data sal nie gebruik word om Google se KI-modelle te verbeter nie. Jou organisasie kan enige tyd hierdie instellings verander."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "Jou prestasiespoor word na Google toe gestuur om ’n verduideliking te genereer. Hierdie data sal gebruik word om Google se KI-modelle te verbeter."
+    "message": "Om annotasievoorstelle te verskaf, word jou werkverrigtingspoor na Google toe gestuur. Hierdie data kan deur mense wat kontrolering uitvoer gesien word om hierdie kenmerk te verbeter."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Jou prestasiespoor word na Google toe gestuur om ’n verduideliking te genereer. Hierdie data sal nie gebruik word om Google se KI-modelle te verbeter nie"
+    "message": "Om annotasievoorstelle te verskaf, word jou werkverrigtingspoor na Google toe gestuur. Hierdie data sal nie gebruik word om Google se KI-modelle te verbeter nie. Jou organisasie kan enige tyd hierdie instellings verander."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "Kry KI-voorstelle vir prestasiepaneelannotasies"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "Help jou om jou werkverrigtingspoor met outogegenereerde etikette te annoteer."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "Kry hulp met die voltooiing van jou kode"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Onstabiele eksperimente"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (Jaarliks)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (Maandeliks)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (Jaarliks)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (Maandeliks)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "Standaardpakket"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "Onbekende pakket"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Jy is nie by Chrome aangemeld nie."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Om hierdie instelling aan te skakel, moet jy eers instellingsinkronisering in Chrome aktiveer."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Gaan na Instellings"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(Relevante data word na Google toe gestuur)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "Sluit aan"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Aangemeld by Chrome as:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Jy moet Chrome-sinkronisering aktiveer om hierdie instelling aan te skakel."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "Bekyk profiel"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Voeg gepasmaakte toestel by"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "– CPU-regulering is geaktiveer"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "– JavaScript-monsterneming is gedeaktiveer"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "– Netwerkregulering is geaktiveer"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "Verdonker derdepartye"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "Deaktiveer JavaScript-voorbeelde"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "Deaktiveer JavaScript-monsterneming, verminder hulpbrongebruik wanneer dit teen mobiele toestelle werk"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Los die naspoorlêer of URL hier"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Herhaal"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "Uitteltyd"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} teen {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Tydsduur"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "Stel bane op"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "Wys alles"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "Sommige bane is in hierdie spoor versteek. Jy kan bane opstel deur op die baannaam te regsklik."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Asinkroniseer"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protokol"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "Stoor werkverrigtingspoor "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "Sluit annotasies in"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "Sluit skripinhoud in"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "Sluit skripbronkaarte in"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "Stoor"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "Stoor spoor …"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Gevorderd"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Webkoekies vir hierdie versoek word geblokkeer as gevolg van óf Chrome-vlae óf blaaieropstelling. Kry meer inligting in die Kwessies-paneel."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "Oudio-inhoud: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "Terugbeloproepbuffergrootte"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "Terugbeloproepinterval"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "Huidige tyd"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "Maksimum uitvoerkanale"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(geen opnames nie)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Geen gebruik van Web Audio API is bespeur nie"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Maak 'n bladsy oop wat Web Audio API gebruik om monitering te begin."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "Leweringkapasiteit"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "Monsternemingkoers"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "Toestand"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "oudio"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Meer nutsgoed"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "Skuif na onder"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "Skuif na laai"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "Skuif na bo"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "Skuif na hoofoortjiebalk"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Panele"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "gemerk"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "Dit is ’n nuwe kenmerk"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Voer bevel uit"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "Dit is ’n nuwe kenmerk"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Geen resultate gekry nie"

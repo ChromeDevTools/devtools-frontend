@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "ପରଫରମାନ୍ସ ପେନେଲ"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "ଆକାଉଣ୍ଟ"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "ଆଡର୍ନର୍"
   },
@@ -147,7 +150,7 @@
     "message": "ଗ୍ଲୋବାଲ୍"
   },
   "core/common/SettingRegistration.ts | grid": {
-    "message": "ଗ୍ରିଡ୍"
+    "message": "ଗ୍ରିଡ"
   },
   "core/common/SettingRegistration.ts | memory": {
     "message": "ମେମୋରୀ"
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "ସୋର୍ସଗୁଡ଼ିକ"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "ସିଙ୍କ କରନ୍ତୁ"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "ସ୍କ୍ରିପ୍ଟ ଦେଖାନ୍ତୁ"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "AI ସହାୟତା"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "DevToolsକୁ କଷ୍ଟମାଇଜ୍ ଓ ନିୟନ୍ତ୍ରଣ କରନ୍ତୁ"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "ପୂର୍ବବର୍ତ୍ତୀ ପ୍ୟାନେଲ୍"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "ବେଜଗୁଡ଼ିକ ପାଆନ୍ତୁ"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "DevTools ପୁଣି ଲୋଡ୍ କରନ୍ତୁ"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "ଏହି ଫିଚର କେବଳ ଏକ ସକ୍ରିୟ ଇଣ୍ଟର୍ନେଟ କନେକ୍ସନ ସହିତ ଉପଲବ୍ଧ ଅଟେ।"
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevTools ଏକ ଏକ୍ସଟର୍ନଲ ଅନୁରୋଧ ପାଇଛି"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ଏହି ଫାଇଲ୍ ଲୋଡ୍ ହେବାରେ ଅଜଣା ତ୍ରୁଟି ହୋଇଛି"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "କମ୍ପ୍ରେସନ ଶବ୍ଦକୋଷ ଟ୍ରାନ୍ସପୋର୍ଟ"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "ସର୍ଭର-ଆରମ୍ଭ କରିଥିବା ଇଣ୍ଟିଗ୍ରିଟି ଯାଞ୍ଚ"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "HTTP ଅନଏନକୋଡେଡ ଡାଇଜେଷ୍ଟ ସ୍ପେସିଫିକେସନ"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "ପୃଷ୍ଠା ଲୋଡ ହେବା ପରେ ଏକ ନୂଆ ଡିଭାଇସକୁ ସିମୁଲେଟ କରିବା LCPକୁ ପ୍ରଭାବିତ କରେ। ସଠିକ LCP ଡାଟା ପାଇଁ ଏକ ନୂଆ ଡିଭାଇସକୁ ସିମୁଲେଟ କରିବା ପରେ ପୃଷ୍ଠାକୁ ରିଲୋଡ କରନ୍ତୁ।"
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "ସ୍ଥାନୀୟ ଚାଟକୁ ଡିଲିଟ କରନ୍ତୁ"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "ବାର୍ତ୍ତାଳାପକୁ ଏକ୍ସପୋର୍ଟ କରନ୍ତୁ"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "ଏକ ପ୍ରଶ୍ନ ପଚାରିବାକୁ ଉପରୋକ୍ତ ଷ୍ଟେପଗୁଡ଼ିକୁ ଫଲୋ କରନ୍ତୁ"
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "ଅତୀତର କୌଣସି ବାର୍ତ୍ତାଳାପ ନାହିଁ"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "ଉତ୍ତର କ୍ଲିପବୋର୍ଡକୁ କପି କରାଯାଇଛି"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "ମତାମତ ପଠାନ୍ତୁ"
   },
@@ -2685,7 +2706,7 @@
     "message": "ସେଟିଂସ"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
-    "message": "AI ଆସିଷ୍ଟାନ୍ସ"
+    "message": "AI ସହାୟତା"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "AIକୁ ପଚାରନ୍ତୁ"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "ସ୍ପେକ୍ୟୁଲେଟିଭ ଲୋଡଗୁଡ଼ିକ"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "ଯେ କୌଣସି ରିପୋର୍ଟର ବଡି ଡିସପ୍ଲେ କରିବାକୁ ଏହା ଉପରେ କ୍ଲିକ କରନ୍ତୁ"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "କୌଣସି ରିପୋର୍ଟ ଚୟନ କରାଯାଇନାହିଁ"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "ରିପୋର୍ଟିଂ API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "ଯେ କୌଣସି ରିପୋର୍ଟର ବଡି ଡିସପ୍ଲେ କରିବାକୁ ଏହା ଉପରେ କ୍ଲିକ କରନ୍ତୁ"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "କୌଣସି ରିପୋର୍ଟ ବା ଏଣ୍ଡପଏଣ୍ଟ ନାହିଁ"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "କୌଣସି ରିପୋର୍ଟ ଚୟନ କରାଯାଇନାହିଁ"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "ଏହି ପୃଷ୍ଠାରେ ଆପଣ Reporting API ରିପୋର୍ଟ ଏବଂ ଏଣ୍ଡପଏଣ୍ଟକୁ ଯାଞ୍ଚ କରିବାକୁ ସକ୍ଷମ ହେବେ।"
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC ବ୍ୟବହାର କରୁଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶ ଆକ୍ସେସ କରିପାରିବ ନାହିଁ।"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "WebRTC ବ୍ୟବହାର କରାଯାଇଥିବା ଯୋଗୁଁ ବେକ/ଫରୱାର୍ଡ କେଶକୁ ଅକ୍ଷମ କରାଯାଇଛି।"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "WebShare ବ୍ୟବହାର କରୁଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକ ବର୍ତ୍ତମାନ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶ ପାଇଁ ଯୋଗ୍ୟ ନୁହେଁ।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocket ବ୍ୟବହାର କରୁଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶ ଆକ୍ସେସ କରିପାରିବ ନାହିଁ।"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "WebSocket ବ୍ୟବହାର କରାଯାଇଥିବା ଯୋଗୁଁ ବେକ/ଫରୱାର୍ଡ କେଶକୁ ଅକ୍ଷମ କରାଯାଇଛି।"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransport ବ୍ୟବହାର କରୁଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶ ଆକ୍ସେସ କରିପାରିବ ନାହିଁ।"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "WebTransport ବ୍ୟବହାର କରାଯାଇଥିବା ଯୋଗୁଁ ବେକ/ଫରୱାର୍ଡ କେଶକୁ ଅକ୍ଷମ କରାଯାଇଛି।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "WebXR ବ୍ୟବହାର କରୁଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକ ବର୍ତ୍ତମାନ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶ ପାଇଁ ଯୋଗ୍ୟ ନୁହେଁ।"
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "ଗ୍ରିଡ୍ ମୋଡ୍ ଅକ୍ଷମ କରନ୍ତୁ"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "ମାସୋନରୀ ମୋଡକୁ ଅକ୍ଷମ କରନ୍ତୁ"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "ସ୍କ୍ରୋଲ୍-ସ୍ନାପ୍ ଓଭରଲେକୁ ଅକ୍ଷମ କରନ୍ତୁ"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "ଗ୍ରିଡ୍ ମୋଡ୍ ସକ୍ଷମ କରନ୍ତୁ"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "ମାସୋନରୀ ମୋଡକ ସକ୍ଷମ କରନ୍ତୁ"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "ସ୍କ୍ରୋଲ୍-ସ୍ନାପ୍ ଓଭରଲେକୁ ସକ୍ଷମ କରନ୍ତୁ"
@@ -6771,7 +6789,7 @@
     "message": "ଇଭେଣ୍ଟ ଲିସନର୍ ବର୍ଗ"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework ଲିସନରଗୁଡ଼ିକ"
+    "message": "Framework ଲିସନରଗୁଡ଼ିକର ସମାଧାନ କରନ୍ତୁ"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "ପ୍ୟାସିଭ୍"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "ଫ୍ଲେକ୍ସବକ୍ସ ଓଭରଲେ"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "ଗ୍ରିଡ / ମାସୋନରୀ"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "ଗ୍ରିଡ / ମାସୋନରୀ ଓଭରଲେ"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "ଏହି ପୃଷ୍ଠାରେ କୌଣସି ଫ୍ଲେକ୍ସବକ୍ସ ଲେଆଉଟ୍ ମିଳିଲା ନାହିଁ"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "ଏହି ପୃଷ୍ଠାରେ କୌଣସି ଗ୍ରିଡ କିମ୍ବା ମାସୋନରୀ ଲେଆଉଟ ମିଳିଲା ନାହିଁ"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "ଓଭରଲେ ଡିସପ୍ଲେ ସେଟିଂସ୍"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "ଅନୁରୋଧଗୁଡ଼ିକ ସ୍ଥାନୀୟ ଭାବେ ଓଭରରାଇଡ କରାଯାଇଥାଇପାରେ, ସୋର୍ସ ପେନେଲକୁ ଦେଖନ୍ତୁ"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "ଯୋଗ କରନ୍ତୁ…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "{PH1} ଯୋଗ କରନ୍ତୁ"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "କଷ୍ଟମ୍"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "ପ୍ରିସେଟଗୁଡ଼ିକ"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} - ସୁପାରିଶ କରାଯାଇଛି"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "କାଲିବ୍ରେଟ କରନ୍ତୁ…"
@@ -8646,10 +8685,10 @@
     "message": "ଡିଫଲ୍ଟ ମୂଲ୍ୟରେ ରିସେଟ କରନ୍ତୁ"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "'ଡାଟା-ସେଭ କରନ୍ତୁ': ବଳପୂର୍ବକ ବନ୍ଦ କରନ୍ତୁ"
+    "message": "'ଡାଟା-ସେଭ କରନ୍ତୁ': ବନ୍ଦ ଅଛି"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "'ଡାଟା-ସେଭ କରନ୍ତୁ': ବଳପୂର୍ବକ ଚାଲୁ କରନ୍ତୁ"
+    "message": "'ଡାଟା-ସେଭ କରନ୍ତୁ': ଚାଲୁ ଅଛି"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "ପୃଷ୍ଠାରେ navigator.connection.saveData ଦ୍ୱାରା ରିପୋର୍ଟ କରାଯାଇଥିବା ମୂଲ୍ୟକୁ ଓଭରରାଇଡ କରନ୍ତୁ"
@@ -9357,7 +9396,7 @@
     "message": "ବ୍ଲକ କରାଯାଇଥିବା ଅନୁରୋଧଗୁଡ଼ିକୁ କେବଳ ଦେଖାନ୍ତୁ"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(କେବଳ ଇନକଗ୍ନିଟୋ) କେବଳ IP ସୁରକ୍ଷା ପ୍ରକ୍ସିଗୁଡ଼ିକୁ ପଠାଯାଇଥିବା ଅନୁରୋଧଗୁଡ଼ିକ ଦେଖାନ୍ତୁ"
+    "message": "କେବଳ IP ସୁରକ୍ଷା ପ୍ରକ୍ସିଗୁଡ଼ିକୁ ପଠାଯାଇଥିବା ଅନୁରୋଧଗୁଡ଼ିକ ଦେଖାନ୍ତୁ। ରେଗୁଲାର ବ୍ରାଉଜିଂ ଉପରେ ଏହାର କୌଣସି ପ୍ରଭାବ ନାହିଁ।"
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "କେବଳ ବ୍ଲକ କରାଯାଇଥିବା ଉତ୍ତର କୁକୀଗୁଡ଼ିକ ଥିବା ଅନୁରୋଧଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1}ଟି ଡାଉନଲୋଡ୍"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (କ୍ୟାଶରୁ)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (ServiceWorkerଙ୍କ ଠାରୁ)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "{PH1} ଲାଟେନ୍ସି"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "{PH1}ର ଲାଟେନ୍ସି, {PH2}ର ଡାଉନଲୋଡ୍ (ମୋଟ {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "ଉତ୍ତରର set-cookie ହେଡରରେ ସର୍ଭରରୁ ମିଳିଥିବା କୁକୀଗୁଡ଼ିକ"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "ଭିଡିଓ"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP ସୁରକ୍ଷାକୁ ବାଇପାସ କରିବା"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "ID"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "ପଦ୍ଧତି"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "IP ପ୍ରକ୍ସି ଉପଲବ୍ଧ ନାହିଁ"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "IP ପ୍ରକ୍ସି କେବଳ ଇନକଗ୍ନିଟୋ ମୋଡ ମଧ୍ୟରେ ଉପଲବ୍ଧ। ଇନକଗ୍ନିଟୋ ମୋଡରେ ସାଇଟକୁ ଖୋଲନ୍ତୁ।"
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "ପ୍ରକ୍ସି ଅନୁରୋଧ"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "ସ୍ଥିତି"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "ଯଦି Chromeରେ IP ପ୍ରକ୍ସି ସକ୍ଷମ ଥାଏ, ତେବେ ଏହି ସାଇଟ କିପରି କାର୍ଯ୍ୟ କରିବ ତାହା ଟେଷ୍ଟ କରନ୍ତୁ"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "IP ସୁରକ୍ଷା ପ୍ରକ୍ସି ନିୟନ୍ତ୍ରଣ"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH2} ସହ {PH1}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "ନିୟନ୍ତ୍ରଣ"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "IP ସୁରକ୍ଷା"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "ମୁଖ୍ୟ ଅରିଜିନ୍"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "ୟୁଜର ନିଷ୍କ୍ରିୟ ଅଛନ୍ତି, ସ୍କ୍ରିନ ଅନଲକ କରାଯାଇଛି"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "ପରଫରମାନ୍ସ ଟ୍ରେସ ଏନୋଟେସନଗୁଡ଼ିକ ପାଇଁ ସ୍ୱତଃ ଟାଇଟେଲ ଜେନେରେଟ କରନ୍ତୁ"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "ଆପଣ କନସୋଲ କିମ୍ବା ସୋର୍ସ ପେନେଲରେ ଟାଇପ କରିଲେ, ଆପଣ କୋଡ ପରାମର୍ଶ ପାଇବେ। ଗୋଟିଏ ଗ୍ରହଣ କରିବାକୁ ଟାବ ଦବାନ୍ତୁ।"
   },
@@ -12336,16 +12396,16 @@
     "message": "AI ମାଧ୍ୟମରେ ଆପଣଙ୍କ ପ୍ରଡକ୍ଟିଭିଟି ବଢ଼ାନ୍ତୁ"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "କୋଡ ପରାମର୍ଶଗୁଡ଼ିକୁ ଜେନେରେଟ କରିବା ପାଇଁ, ଆପଣଙ୍କ କନସୋଲ ଇନପୁଟ, ଆପଣଙ୍କର ବର୍ତ୍ତମାନର କନସୋଲ ସେସନର ଇତିହାସ ଏବଂ ବର୍ତ୍ତମାନ ଖୋଲା ଥିବା ଫାଇଲର ବିଷୟବସ୍ତୁ Google ସହ ସେୟାର କରାଯାଏ। ଏହି ଫିଚରକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ମାନବ ରିଭ୍ୟୁଅରମାନଙ୍କ ଦ୍ୱାରା ଦେଖାଯାଇପାରେ।"
+    "message": "କୋଡ ପରାମର୍ଶଗୁଡ଼ିକୁ ଜେନେରେଟ କରିବା ପାଇଁ, ଆପଣଙ୍କ କନସୋଲ ଇନପୁଟ, ଆପଣଙ୍କର ବର୍ତ୍ତମାନର କନସୋଲ ସେସନର ଇତିହାସ, ବର୍ତ୍ତମାନ ନିରୀକ୍ଷଣ କରାଯାଇଥିବା CSS ଏବଂ ବର୍ତ୍ତମାନ ଖୋଲା ଥିବା ଫାଇଲର ବିଷୟବସ୍ତୁ Google ସହ ସେୟାର କରାଯାଏ। ଏହି ଫିଚରକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ମାନବ ରିଭ୍ୟୁଅରମାନଙ୍କ ଦ୍ୱାରା ଦେଖାଯାଇପାରେ।"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "କୋଡ ପରାମର୍ଶଗୁଡ଼ିକୁ ଜେନେରେଟ କରିବା ପାଇଁ, ଆପଣଙ୍କ କନସୋଲ ଇନପୁଟ, ଆପଣଙ୍କର ବର୍ତ୍ତମାନର କନସୋଲ ସେସନର ଇତିହାସ ଏବଂ ବର୍ତ୍ତମାନ ଖୋଲା ଥିବା ଫାଇଲର ବିଷୟବସ୍ତୁ Google ସହ ସେୟାର କରାଯାଏ। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ।"
+    "message": "କୋଡ ପରାମର୍ଶଗୁଡ଼ିକୁ ଜେନେରେଟ କରିବା ପାଇଁ, ଆପଣଙ୍କ କନସୋଲ ଇନପୁଟ, ଆପଣଙ୍କର ବର୍ତ୍ତମାନର କନସୋଲ ସେସନର ଇତିହାସ, ବର୍ତ୍ତମାନ ନିରୀକ୍ଷଣ କରାଯାଇଥିବା CSS ଏବଂ ବର୍ତ୍ତମାନ ଖୋଲା ଥିବା ଫାଇଲର ବିଷୟବସ୍ତୁ Google ସହ ସେୟାର କରାଯାଏ। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ। ଆପଣଙ୍କ ସଂସ୍ଥା ଯେ କୌଣସି ସମୟରେ ଏହି ସେଟିଂସକୁ ପରିବର୍ତ୍ତନ କରିପାରେ।"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "ବର୍ଣ୍ଣନାଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ କନସୋଲ ମେସେଜ, ସମ୍ବନ୍ଧିତ ଷ୍ଟାକ ଟ୍ରେସ, ସମ୍ବନ୍ଧିତ ସୋର୍ସ କୋଡ ଏବଂ ସମ୍ବନ୍ଧିତ ନେଟୱାର୍କ ହେଡରଗୁଡ଼ିକୁ Googleକୁ ପଠାଯାଏ। ଏହି ଫିଚରକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ମାନବ ସମୀକ୍ଷକମାନଙ୍କ ଦ୍ୱାରା ଦେଖାଯାଇପାରେ।"
+    "message": "ଏକ୍ସପ୍ଲାନେସନଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ କନସୋଲ ମେସେଜ, ସମ୍ବନ୍ଧିତ ଷ୍ଟାକ ଟ୍ରେସ, ସମ୍ବନ୍ଧିତ ସୋର୍ସ କୋଡ ଏବଂ ସମ୍ବନ୍ଧିତ ନେଟୱାର୍କ ହେଡରଗୁଡ଼ିକୁ Googleକୁ ପଠାଯାଏ। ଏହି ଫିଚରକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ମାନବ ରିଭ୍ୟୁଅରମାନଙ୍କ ଦ୍ୱାରା ଦେଖାଯାଇପାରେ।"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "ବର୍ଣ୍ଣନାଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ କନସୋଲ ମେସେଜ, ସମ୍ବନ୍ଧିତ ଷ୍ଟାକ ଟ୍ରେସ, ସମ୍ବନ୍ଧିତ ସୋର୍ସ କୋଡ ଏବଂ ସମ୍ବନ୍ଧିତ ନେଟୱାର୍କ ହେଡରଗୁଡ଼ିକୁ Googleକୁ ପଠାଯାଏ। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ।"
+    "message": "ଏକ୍ସପ୍ଲାନେସନଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ କନସୋଲ ମେସେଜ, ସମ୍ବନ୍ଧିତ ଷ୍ଟାକ ଟ୍ରେସ, ସମ୍ବନ୍ଧିତ ସୋର୍ସ କୋଡ ଏବଂ ସମ୍ବନ୍ଧିତ ନେଟୱାର୍କ ହେଡରଗୁଡ଼ିକୁ Googleକୁ ପଠାଯାଏ। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ। ଆପଣଙ୍କ ସଂସ୍ଥା ଯେ କୌଣସି ସମୟରେ ଏହି ସେଟିଂସକୁ ପରିବର୍ତ୍ତନ କରିପାରେ।"
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "ଆପଣଙ୍କ ଅଞ୍ଚଳ ଉପରେ ନିର୍ଭର କରି Google ଡାଟା ସଂଗ୍ରହ କରିବାରୁ ଦୂରେଇ ରହିପାରେ"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "AI ଆସିଷ୍ଟାଣ୍ଟକୁ ସକ୍ଷମ କରନ୍ତୁ"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "AI କୋଡ ପରାମର୍ଶଗୁଡ଼ିକୁ ସକ୍ଷମ କରନ୍ତୁ"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "ପରଫରମାନ୍ସ ପେନେଲ ଏନୋଟେସନ ପାଇଁ AI ପରାମର୍ଶ ସକ୍ଷମ କରନ୍ତୁ"
@@ -12381,19 +12444,19 @@
     "message": "AI-ପରିଚାଳିତ ଇନସାଇଟ୍ସ ମାଧ୍ୟମରେ CSS ଷ୍ଟାଇଲ, ନେଟୱାର୍କ କାର୍ଯ୍ୟକଳାପ, ପରଫରମାନ୍ସ ବୋଟଲନେକ ଏବଂ ଫାଇଲ ଅରିଜିନଗୁଡ଼ିକୁ ବୁଝନ୍ତୁ"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "ନିରୀକ୍ଷଣ କରାଯାଇଥିବା ପୃଷ୍ଠା Web API, ନେଟୱାର୍କ ଅନୁରୋଧ, ଫାଇଲ ଏବଂ ପରଫରମାନ୍ସ ଟ୍ରେସ ମାଧ୍ୟମରେ ଆକ୍ସେସ କରିପାରୁଥିବା ଯେ କୌଣସି ୟୁଜର କ୍ୱେରୀ ଏବଂ ଡାଟାକୁ ଏକ୍ସପ୍ଲାନେସନ ଜେନେରେଟ କରିବା ପାଇଁ Googleକୁ ପଠାଯାଏ। ଏହି ଫିଚରକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ମାନବ ସମୀକ୍ଷକମାନଙ୍କ ଦ୍ୱାରା ଦେଖାଯାଇପାରେ। ବ୍ୟକ୍ତିଗତ କିମ୍ବା ସମ୍ବେଦନଶୀଳ ସୂଚନା ଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।"
+    "message": "ନିରୀକ୍ଷଣ କରାଯାଇଥିବା ପୃଷ୍ଠା Web API, ନେଟୱାର୍କ ଅନୁରୋଧ, ଫାଇଲ ଏବଂ ପରଫରମାନ୍ସ ଟ୍ରେସଗୁଡ଼ିକ ମାଧ୍ୟମରେ ଆକ୍ସେସ କରିପାରୁଥିବା ଯେ କୌଣସି ୟୁଜର କ୍ୱେରୀ ଏବଂ ଡାଟାକୁ ଏକ୍ସପ୍ଲାନେସନଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ Googleକୁ ପଠାଯାଏ। ଏହି ଫିଚରକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ମାନବ ରିଭ୍ୟୁଅରମାନଙ୍କ ଦ୍ୱାରା ଦେଖାଯାଇପାରେ। ବ୍ୟକ୍ତିଗତ କିମ୍ବା ସମ୍ବେଦନଶୀଳ ସୂଚନା ଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ ନାହିଁ।"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "ନିରୀକ୍ଷଣ କରାଯାଇଥିବା ପୃଷ୍ଠା Web API, ନେଟୱାର୍କ ଅନୁରୋଧ, ଫାଇଲ ଏବଂ ପରଫରମାନ୍ସ ଟ୍ରେସ ମାଧ୍ୟମରେ ଆକ୍ସେସ କରିପାରୁଥିବା ଯେ କୌଣସି ୟୁଜର କ୍ୱେରୀ ଏବଂ ଡାଟାକୁ ଏକ୍ସପ୍ଲାନେସନ ଜେନେରେଟ କରିବା ପାଇଁ Googleକୁ ପଠାଯାଏ। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ।"
+    "message": "ନିରୀକ୍ଷଣ କରାଯାଇଥିବା ପୃଷ୍ଠା Web API, ନେଟୱାର୍କ ଅନୁରୋଧ, ଫାଇଲ ଏବଂ ପରଫରମାନ୍ସ ଟ୍ରେସଗୁଡ଼ିକ ମାଧ୍ୟମରେ ଆକ୍ସେସ କରିପାରୁଥିବା ଯେ କୌଣସି ୟୁଜର କ୍ୱେରୀ ଏବଂ ଡାଟାକୁ ଏକ୍ସପ୍ଲାନେସନଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ Googleକୁ ପଠାଯାଏ। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ। ଆପଣଙ୍କ ସଂସ୍ଥା ଯେ କୌଣସି ସମୟରେ ଏହି ସେଟିଂସକୁ ପରିବର୍ତ୍ତନ କରିପାରେ।"
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "ଏକ ବ୍ୟାଖ୍ୟା ଜେନେରେଟ କରିବା ପାଇଁ ଆପଣଙ୍କ ପରଫରମାନ୍ସ ଟ୍ରେସ Googleକୁ ପଠାଯାଇଛି। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ।"
+    "message": "ଆନୋଟେସନ ପରାମର୍ଶଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ ଆପଣଙ୍କର ପରଫରମାନ୍ସ ଟ୍ରେସକୁ Googleକୁ ପଠାଯାଏ। ଏହି ଫିଚରକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ମାନବ ରିଭ୍ୟୁଅରମାନଙ୍କ ଦ୍ୱାରା ଦେଖାଯାଇପାରେ।"
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "ଏକ ବ୍ୟାଖ୍ୟା ଜେନେରେଟ କରିବା ପାଇଁ ଆପଣଙ୍କ ପରଫରମାନ୍ସ ଟ୍ରେସ Googleକୁ ପଠାଯାଇଛି। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ।"
+    "message": "ଆନୋଟେସନ ପରାମର୍ଶଗୁଡ଼ିକ ଜେନେରେଟ କରିବା ପାଇଁ ଆପଣଙ୍କର ପରଫରମାନ୍ସ ଟ୍ରେସକୁ Googleକୁ ପଠାଯାଏ। Googleର AI ମଡେଲଗୁଡ଼ିକୁ ଉନ୍ନତ କରିବା ପାଇଁ ଏହି ଡାଟାକୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ। ଆପଣଙ୍କ ସଂସ୍ଥା ଯେ କୌଣସି ସମୟରେ ଏହି ସେଟିଂସକୁ ପରିବର୍ତ୍ତନ କରିପାରେ।"
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "ପରଫରମାନ୍ସ ପେନେଲ ଏନୋଟେସନ ପାଇଁ AI ପରାମର୍ଶ ପାଆନ୍ତୁ"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "ସ୍ୱତଃ-ଜେନେରେଟ ହୋଇଥିବା ଲେବଲଗୁଡ଼ିକ ସହିତ ଆପଣଙ୍କର ପରଫରମାନ୍ସ ଟ୍ରେସ ଆନୋଟେଟ କରିବାରେ ଆପଣଙ୍କୁ ସାହାଯ୍ୟ କରେ"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "ଆପଣଙ୍କ କୋଡ ସମ୍ପୂର୍ଣ୍ଣ କରିବାରେ ସାହାଯ୍ୟ ପାଆନ୍ତୁ"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "ଅସ୍ଥିର ପରୀକ୍ଷଣ"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (ବାର୍ଷିକ)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (ମାସିକ)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (ବାର୍ଷିକ)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (ମାସିକ)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "ଷ୍ଟାଣ୍ଡାର୍ଡ ପ୍ଲାନ"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "ଅଜଣା ପ୍ଲାନ"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "ଆପଣ Chromeରେ ସାଇନ ଇନ କରିନାହାଁନ୍ତି।"
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "ଏହି ସେଟିଂ ଚାଲୁ କରିବା ପାଇଁ ଆପଣଙ୍କୁ ନିଶ୍ଚିତ ଭାବରେ ପ୍ରଥମେ Chromeରେ ସେଟିଂସ ସିଙ୍କ ସକ୍ଷମ କରିବା ଆବଶ୍ୟକ।"
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "ସେଟିଂସକୁ ଯାଆନ୍ତୁ"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(ପ୍ରାସଙ୍ଗିକ ଡାଟାକୁ Googleକୁ ପଠାଯାଏ)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "ସାଇନ ଅପ କରନ୍ତୁ"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Chromeରେ ଏହି ଭାବେ ସାଇନ ଇନ କରାଯାଇଛି:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "ଏହି ସେଟିଂ ଚାଲୁ କରିବା ପାଇଁ ଆପଣଙ୍କୁ ନିଶ୍ଚିତ ଭାବରେ Chrome ସିଙ୍କକୁ ସକ୍ଷମ କରିବା ଆବଶ୍ୟକ।"
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "ପ୍ରୋଫାଇଲ ଭ୍ୟୁ କରନ୍ତୁ"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "କଷ୍ଟମ ଡିଭାଇସ ଯୋଗ କରନ୍ତୁ"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU ଥ୍ରୋଟଲିଂ ସକ୍ଷମ କରାଯାଇଛି"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- JavaScript ସାମ୍ପଲିଂ ଅକ୍ଷମ କରାଯାଇଛି"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- ନେଟୱାର୍କ ଥ୍ରୋଟଲିଂ ସକ୍ଷମ କରାଯାଇଛି"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "3ୟ ପକ୍ଷ ଚେକବକ୍ସକୁ ଡିମ କରନ୍ତୁ"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "JavaScript ସାମ୍ପଲଗୁଡ଼ିକୁ ଅକ୍ଷମ କରନ୍ତୁ"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "JavaScript ସାମ୍ପଲିଂକୁ ଅକ୍ଷମ କରେ, ଏବଂ ମୋବାଇଲ ଡିଭାଇସରେ ଚାଲିବାବେଳେ ଓଭରହେଡକୁ ହ୍ରାସ କରେ"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "ଏଠାରେ ଟ୍ରେସ ଫାଇଲ କିମ୍ବା URL ଡ୍ରପ କରନ୍ତୁ"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "ପୁନରାବୃତ୍ତି ହୁଏ"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "ସମୟ ସମାପ୍ତି"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH2}ରେ {PH1}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "ଟାଇମିଂ"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "ଟ୍ରାକଗୁଡ଼ିକୁ କନଫିଗର କରନ୍ତୁ"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "ସବୁ ଦେଖାନ୍ତୁ"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "ଏହି ଟ୍ରେସରେ କିଛି ଟ୍ରାକ ଲୁକ୍କାୟିତ ଅଛି। ଆପଣ ଟ୍ରାକ ନାମରେ ଡାହାଣ କ୍ଲିକ କରି ଟ୍ରାକଗୁଡ଼ିକୁ କନଫିଗର କରିପାରିବେ।"
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "ଏସିଙ୍କ"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket ପ୍ରୋଟୋକଲ"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "ପରଫରମାନ୍ସ ଟ୍ରେସକୁ ସେଭ କରନ୍ତୁ "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "ଏନୋଟେସନ ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "ସ୍କ୍ରିପ୍ଟ ବିଷୟବସ୍ତୁ ଅନ୍ତର୍ଭୁକ୍ତ କରନ୍ତୁ"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "ସ୍କ୍ରିପ୍ଟ ସୋର୍ସ ମେପଗୁଡ଼ିକ ଅନ୍ତର୍ଭୁକ୍ତ କରନ୍ତୁ"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "ସେଭ କରନ୍ତୁ"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "ଟ୍ରେସ ସେଭ କରନ୍ତୁ…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "ଉନ୍ନତ"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome ଫ୍ଲାଗ କିମ୍ବା ବ୍ରାଉଜରର କନଫିଗରେସନ ଯୋଗୁଁ ଏହି ଅନୁରୋଧ ପାଇଁ କୁକୀଗୁଡ଼ିକୁ ବ୍ଲକ କରାଯାଇଛି। ସମସ୍ୟା ପେନେଲରେ ଅଧିକ ଜାଣନ୍ତୁ।"
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "ଅଡିଓ ପ୍ରସଙ୍ଗ: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "କଲବ୍ୟାକ୍ ବଫର୍ ଆକାର"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "କଲବ୍ୟାକର ବ୍ୟବଧାନ"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "ବର୍ତ୍ତମାନର ସମୟ"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "ସର୍ବାଧିକ ଆଉଟପୁଟ୍ ଥିବା ଚ୍ୟାନେଲ୍"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(କୌଣସି ରେକର୍ଡିଂ ନାହିଁ)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "କୌଣସି ୱେବ ଅଡିଓ API ବ୍ୟବହାର ଚିହ୍ନଟ କରାଯାଇନାହିଁ"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "ମନିଟରିଂ ଆରମ୍ଭ କରିବା ପାଇଁ ୱେବ୍ ଅଡିଓ API ବ୍ୟବହାର କରୁଥିବା ଏକ ପୃଷ୍ଠା ଖୋଲନ୍ତୁ।"
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "ରେଣ୍ଡର୍ କରିବାର ଦକ୍ଷତା"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "ସାମ୍ପଲ୍ ରେଟ୍"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "ସ୍ଥିତି"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "ଅଡିଓ"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "ଅଧିକ ଟୁଲ୍"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "ତଳକୁ ମୁଭ୍ କରନ୍ତୁ"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "ଡ୍ରୟରକୁ ମୁଭ କରନ୍ତୁ"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "ଶୀର୍ଷକୁ ମୁଭ୍ କରନ୍ତୁ"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "ମୁଖ୍ୟ ଟାବ ବାରକୁ ମୁଭ କରନ୍ତୁ"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "ପ୍ୟାନେଲଗୁଡ଼ିକ"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "ଯାଞ୍ଚ କରାଯାଇଛି"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "ଏହା ଏକ ନୂଆ ଫିଚର ଅଟେ"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "କମାଣ୍ଡ ଚଲାନ୍ତୁ"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "ଏହା ଏକ ନୂଆ ଫିଚର ଅଟେ"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "କୌଣସି ଫଳାଫଳ ମିଳିଲା ନାହିଁ"

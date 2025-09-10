@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "Панель \"Продуктивність\""
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "Обліковий запис"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Декоративний елемент"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "Джерела"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "Синхронізація"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "Інструменти розробника – {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "Показати скрипти"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "Допомога ШІ"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Налаштувати Інструменти розробника й керувати ними"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Попередня панель"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "Отримувати значки"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Перезавантажити Інструменти розробника"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Ця функція доступна лише за наявності активного інтернет-з’єднання."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "У DevTools надійшов зовнішній запит"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Невідома помилка завантаження файлу"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Передавання словника зі стисненням"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "Перевірки цілісності, ініційовані на стороні сервера"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "Специфікація HTTP Unencoded Digest"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Імітація нового пристрою після завантаження сторінки може вплинути на показник LCP. Щоб отримати точні дані LCP, оновіть сторінку після імітації нового пристрою."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Видалити локальний чат"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "Експортувати дані чату"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Виконайте наведені вище дії, щоб поставити запитання"
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "Немає минулих чатів"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "Відповідь скопійовано в буфер обміну"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "Надіслати відгук"
   },
@@ -2685,7 +2706,7 @@
     "message": "Налаштування"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
-    "message": "Допомога від ШІ"
+    "message": "Допомога ШІ"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "Запитати в режимі ШІ"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Спекулятивні завантаження"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Натисніть будь-який звіт, щоб переглянути його основний текст"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "Звіт не вибрано"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "Натисніть будь-який звіт, щоб переглянути його основний текст"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "Немає звіту або кінцевої точки"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "Звіт не вибрано"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "На цій сторінці можна переглянути звіти й кінцеві точки Reporting API."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Сторінки з WebRTC не можна додавати у зворотний кеш."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "Зворотний кеш вимкнено, оскільки використовується WebRTC."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Сторінки, які використовують WebShare, наразі не підходять для зворотного кешу."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Сторінки з WebSocket не можна додавати у зворотний кеш."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "Зворотний кеш вимкнено, оскільки використовується WebSocket."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Сторінки з WebTransport не можна додавати у зворотний кеш."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "Зворотний кеш вимкнено, оскільки використовується WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Сторінки, які використовують WebXR, наразі не підходять для зворотного кешу."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Вимкнути режим сітки"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "Вимкнути режим кладки"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Вимкнути оверлей scroll-snap"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Увімкнути режим сітки"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "Увімкнути режим кладки"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Увімкнути оверлей scroll-snap"
@@ -6771,7 +6789,7 @@
     "message": "Категорія блоків прослуховування подій"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Прослуховувачі (Framework)"
+    "message": "Вирішити проблеми з прослуховувачами Framework"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Пасивні"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Оверлеї Flexbox"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "Сітка / кладка"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "Оверлеї сітки або кладки"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "На цій сторінці немає макетів flexbox"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "На цій сторінці не знайдено макетів сітки чи кладки"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Налаштування відображення оверлея"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "Запити можна перевизначати локально. Перегляньте панель \"Джерела\"."
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "Додати…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "Додати ({PH1})"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Свій вибір"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "Набір налаштувань"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} (рекомендовано)"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "Відкалібрувати…"
@@ -8646,10 +8685,10 @@
     "message": "Відновити значення за умовчанням"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "'Save-Data': примусово вимкнено"
+    "message": "'Save-Data': вимкнено"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "'Save-Data': примусово ввімкнено"
+    "message": "'Save-Data': увімкнено"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "Перевизначити значення, надіслане параметром navigator.connection.saveData на сторінці"
@@ -9357,7 +9396,7 @@
     "message": "Показати лише заблоковані запити"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(Лише в анонімному режимі) Показувати лише запити, надіслані на проксі із захистом IP-адрес"
+    "message": "Показувати лише запити, надіслані на проксі із захистом IP-адрес. Це налаштування не впливає на звичайний вебперегляд."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Показувати лише запити з файлами cookie, які блокують відповідь"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL-адреса"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "Завантаження: {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (з кешу)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (джерело: ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "Затримка {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "Затримка: {PH1}, завантаження: {PH2} (усього: {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Файли cookie, отримані із сервера в заголовку відповіді set-cookie"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Відео"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Ігнорувати захист IP-адреси"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "Ідентифікатор"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "Метод"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "Проксі-сервер IP-адрес недоступний"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "Проксі-сервер IP-адрес доступний лише в режимі анонімного перегляду. Відкрийте сайт в анонімному режимі."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "Запити проксі-сервера"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "Статус"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL-адреса"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Перевірте, як працюватиме цей сайт, якщо в Chrome увімкнути проксі-сервер IP-адрес"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "Засоби керування проксі-сервером для захисту IP-адреси"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} – {PH2}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Елементи керування"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "Захист IP-адреси"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Основне джерело"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Користувач неактивний, екран розблоковано"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "Автоматично генерує назви для анотацій трасування показників ефективності"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Під час введення тексту в консолі або на панелі \"Джерела\" з’являтимуться пропозиції коду. Щоб прийняти одну з них, натисніть клавішу Tab."
   },
@@ -12336,16 +12396,16 @@
     "message": "Працюйте продуктивніше за допомогою ШІ"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "Щоб генерувати пропозиції коду, ми надсилаємо в Google дані, які ви вводите в консолі, історію поточного сеансу консолі й вміст відкритого файлу. Наші спеціалісти можуть переглядати дані, щоб покращувати цю функцію."
+    "message": "Щоб генерувати пропозиції коду, ми надсилаємо в Google дані, які ви вводите в консолі, історію поточного сеансу консолі, CSS, що перевіряється, і вміст відкритого файлу. Наші спеціалісти можуть переглядати дані, щоб покращувати цю функцію."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Щоб генерувати пропозиції коду, ми надсилаємо в Google дані, які ви вводите в консолі, історію поточного сеансу консолі й вміст відкритого файлу. Ці дані не використовуватимуться для покращення моделей ШІ від Google."
+    "message": "Щоб генерувати пропозиції коду, ми надсилаємо в Google дані, які ви вводите в консолі, історію поточного сеансу консолі, CSS, що перевіряється, і вміст відкритого файлу. Ці дані не використовуватимуться для покращення моделей ШІ від Google. Адміністратор вашої організації може будь-коли змінити ці налаштування."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "Щоб створити пояснення, у Google надсилаються повідомлення в консолі, а також пов’язані трасування стека, вихідний код і заголовки мережі. Наші спеціалісти можуть переглядати дані, щоб покращувати цю функцію."
+    "message": "Щоб створити пояснення, у Google надсилаються повідомлення в консолі, а також пов’язані трасування стека, початковий код і заголовки мережі. Наші спеціалісти можуть переглядати дані, щоб покращувати цю функцію."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Щоб створити пояснення, у Google надсилаються повідомлення в консолі, а також пов’язані трасування стека, початковий код і заголовки мережі. Ці дані не використовуватимуться для покращення моделей ШІ від Google."
+    "message": "Щоб створити пояснення, у Google надсилаються повідомлення в консолі, а також пов’язані трасування стека, початковий код і заголовки мережі. Ці дані не використовуватимуться для покращення моделей ШІ від Google. Адміністратор вашої організації може будь-коли змінити ці налаштування."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Google може не збирати дані для деяких регіонів"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Увімкнути функцію \"Допомога від ШІ\""
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "Увімкнути пропозиції коду на основі ШІ"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "Увімкнути пропозиції від ШІ щодо приміток на панелі ефективності"
@@ -12381,19 +12444,19 @@
     "message": "Проаналізуйте стилі, мережеву активність, вузькі місця продуктивності й джерела файлів CSS за допомогою ШІ"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Будь-які запити користувачів і дані, до яких можна отримати доступ через API вебсервісів, запити мережі, файли й трасування показників ефективності на сторінці, що перевіряється, надсилаються в Google для створення пояснень. Наші спеціалісти можуть переглядати дані, щоб покращувати цю функцію. Не використовуйте її на сторінках з особистою або чутливою інформацією."
+    "message": "Щоб створювати пояснення, у Google надсилаються будь-які запити користувачів і дані, до яких можна отримати доступ через API вебсервісів, запити мережі, файли й трасування показників ефективності на сторінці, що перевіряється. Наші спеціалісти можуть переглядати дані, щоб покращувати цю функцію. Не використовуйте цю функцію на сторінках з особистою або чутливою інформацією."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Будь-які запити користувачів і дані, до яких можна отримати доступ через API вебсервісів, запити мережі, файли й трасування показників ефективності на сторінці, що перевіряється, надсилаються в Google для створення пояснень. Ці дані не використовуватимуться для покращення моделей ШІ від Google."
+    "message": "Щоб створювати пояснення, у Google надсилаються будь-які запити користувачів і дані, до яких можна отримати доступ через API вебсервісів, запити мережі, файли й трасування показників ефективності на сторінці, що перевіряється. Ці дані не використовуватимуться для покращення моделей ШІ від Google. Адміністратор вашої організації може будь-коли змінити ці налаштування."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "Дані про продуктивність надсилаються в Google для створення пояснень. Ці дані використовуватимуться для покращення моделей ШІ від Google."
+    "message": "Щоб генерувати пропозиції щодо анотацій, трасування показників ефективності надсилаються в Google. Наші спеціалісти можуть переглядати дані, щоб покращувати цю функцію."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Дані про продуктивність надсилаються в Google для створення пояснень. Ці дані не використовуватимуться для покращення моделей ШІ від Google."
+    "message": "Щоб генерувати пропозиції щодо анотацій, трасування показників ефективності надсилаються в Google. Ці дані не використовуватимуться для покращення моделей ШІ від Google. Адміністратор вашої організації може будь-коли змінити ці налаштування."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "Отримуйте пропозиції від ШІ щодо приміток на панелі ефективності"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "Допомагає додавати анотації до трасування показників ефективності за допомогою автоматично згенерованих міток"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "Отримайте допомогу з кодом"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Нестабільні експерименти"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (річний план)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (місячний план)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (річний план)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (місячний план)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "Стандартний план"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "Невідомий план"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Ви не ввійшли в Chrome."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Щоб увімкнути це налаштування, спершу потрібно ввімкнути синхронізацію налаштувань у Chrome."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Перейти до налаштувань"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(Відповідні дані надсилаються в Google)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "Зареєструватися"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Виконано вхід у Chrome як:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Щоб активувати це налаштування, потрібно ввімкнути синхронізацію Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "Переглянути профіль"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Додати власний пристрій"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- Увімкнено обмеження пропускної спроможності ЦП"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- Застосування вибірки JavaScript вимкнено"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Зменшення пропускної спроможності мережі ввімкнено"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "Зменшувати яскравість сторонніх об’єктів"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "Вимкнути вибірку JavaScript"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "Застосування вибірки JavaScript вимикається, що знижує витрати на мобільних пристроях"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Перетягніть файл трасування або URL-адресу сюди"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Повторення"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "Час очікування"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1}, {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Фактичний час"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "Налаштувати трасування"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "Показати всі"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "Деякі сегменти в цьому трасуванні приховано. Щоб налаштувати сегмент, натисніть його назву правою кнопкою миші."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Асинхронізація"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Протокол WebSocket"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "Зберегти трасування показників ефективності "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "Включити анотації"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "Включити вміст скрипту"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "Включити карти джерел скриптів"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "Зберегти"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "Зберегти трасування…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Розширені"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Файли cookie для цього запиту заблоковано через експериментальні параметри Chrome або конфігурацію вебпереглядача. Дізнайтеся більше на панелі \"Проблеми\"."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "Аудіоконтекст: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "Розмір буфера зворотного виклику"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "Інтервал зворотного виклику"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "Поточний час"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "Канали з максимальним виходом"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(немає записів)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Використання Web Audio API не виявлено"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Відкрийте сторінку, на якій використовується Web Audio API, щоб почати відстеження."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "Спроможність до відрисовки"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "Частота дискретизації"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "Стан"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "аудіо"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Інші інструменти"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "Перемістити вниз"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "Перемістити на панель"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "Перемістити вгору"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "Перемістити на основну панель вкладок"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Панелі"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "вибрано"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "Це нова функція"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -16968,7 +17127,7 @@
     "message": "Знімок екрана для {PH1}: виберіть, щоб переглянути попередні запити."
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
-    "message": "Налаштувати версії"
+    "message": "Налаштувати трасування"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
     "message": "Вибрано подію \"{PH1}\" у групі \"{PH2}\". Натисніть клавішу Enter, щоб виділити цю подію."
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Запустити команду"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "Це нова функція"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Результатів не знайдено"

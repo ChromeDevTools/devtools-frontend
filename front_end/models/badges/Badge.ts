@@ -9,6 +9,7 @@ export enum BadgeAction {
   CSS_RULE_MODIFIED = 'css-rule-modified',
   DOM_ELEMENT_OR_ATTRIBUTE_EDITED = 'dom-element-or-attribute-edited',
   MODERN_DOM_BADGE_CLICKED = 'modern-dom-badge-clicked',
+  // TODO(ergunsh): Instrument performance insight clicks.
   PERFORMANCE_INSIGHT_CLICKED = 'performance-insight-clicked',
 }
 

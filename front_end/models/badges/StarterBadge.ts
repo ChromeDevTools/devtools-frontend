@@ -7,8 +7,8 @@ import {Badge, BadgeAction} from './Badge.js';
 const STARTER_BADGE_IMAGE_URI = new URL('../../Images/devtools-user-badge.svg', import.meta.url).toString();
 export class StarterBadge extends Badge {
   override readonly isStarterBadge = true;
-  // TODO(ergunsh): Update the name to be the actual badge for DevTools.
-  override readonly name = 'profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Fprofile%2Fcreated-profile';
+  override readonly name =
+      'profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fchrome-devtools-user';
   override readonly title = 'Chrome DevTools User';
   override readonly imageUri = STARTER_BADGE_IMAGE_URI;
 

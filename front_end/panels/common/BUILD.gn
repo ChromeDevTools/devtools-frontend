@@ -76,6 +76,7 @@ ts_library("unittests") {
     "AiCodeCompletionSummaryToolbar.test.ts",
     "AiCodeCompletionTeaser.test.ts",
     "BadgeNotification.test.ts",
+    "GdpSignUpDialog.test.ts",
   ]
 
   deps = [

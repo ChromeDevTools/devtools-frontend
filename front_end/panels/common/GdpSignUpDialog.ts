@@ -3,9 +3,11 @@
 // found in the LICENSE file.
 import '../../ui/components/switch/switch.js';
 
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Badges from '../../models/badges/badges.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
@@ -200,6 +202,9 @@ export class GdpSignUpDialog extends UI.Widget.VBox {
         this.#keepMeUpdated ? Host.GdpClient.EmailPreference.ENABLED : Host.GdpClient.EmailPreference.DISABLED;
     const result = await Host.GdpClient.GdpClient.instance().createProfile({user, emailPreference});
     if (result) {
+      Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges').set(true);
+      await Badges.UserBadges.instance().initialize();
+      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.GDP_SIGN_UP_COMPLETE);
       this.#dialog.hide();
     } else {
       Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.signUpFailed)}, this.#dialog.contentElement);

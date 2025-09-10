@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 
 export enum BadgeAction {
+  GDP_SIGN_UP_COMPLETE = 'gdp-sign-up-complete',
   CSS_RULE_MODIFIED = 'css-rule-modified',
   DOM_ELEMENT_OR_ATTRIBUTE_EDITED = 'dom-element-or-attribute-edited',
   MODERN_DOM_BADGE_CLICKED = 'modern-dom-badge-clicked',

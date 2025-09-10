@@ -182,6 +182,31 @@ export class PerformanceInsightFormatter {
   }
 
   /**
+   * Create an AI prompt string out of the Cache Insight model to use with Ask AI.
+   * Note: This function accesses the UIStrings within Cache to help build the
+   * AI prompt, but does not (and should not) call i18nString to localize these strings. They
+   * should all be sent in English (at least for now).
+   * @param insight The Cache Insight Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatCacheInsight(insight: Trace.Insights.Models.Cache.CacheInsightModel): string {
+    if (insight.requests.length === 0) {
+      return Trace.Insights.Models.Cache.UIStrings.noRequestsToCache + '.';
+    }
+
+    let output = 'The following resources were associated with ineffficient cache policies:\n';
+
+    for (const entry of insight.requests) {
+      output += `\n- ${entry.request.args.data.url}`;
+      output += `\n  - Cache Time to Live (TTL): ${entry.ttl} seconds`;
+      output += `\n  - Wasted bytes: ${bytes(entry.wastedBytes)}`;
+    }
+
+    output += '\n\n' + Trace.Insights.Models.Cache.UIStrings.description;
+    return output;
+  }
+
+  /**
    * Create an AI prompt string out of the DOM Size model to use with Ask AI.
    * Note: This function accesses the UIStrings within DomSize to help build the
    * AI prompt, but does not (and should not) call i18nString to localize these strings. They
@@ -764,6 +789,10 @@ Legacy JavaScript by file:
 ${filesFormatted}`;
     }
 
+    if (Trace.Insights.Models.Cache.isCacheInsight(this.#insight)) {
+      return this.formatCacheInsight(this.#insight);
+    }
+
     if (Trace.Insights.Models.DOMSize.isDomSizeInsight(this.#insight)) {
       return this.formatDomSizeInsight(this.#insight);
     }
@@ -849,7 +878,7 @@ ${filesFormatted}`;
       case 'Viewport':
         return '- https://developer.chrome.com/blog/300ms-tap-delay-gone-away/';
       case 'Cache':
-        return '';
+        return '- https://web.dev/uses-long-cache-ttl/';
       case 'ModernHTTP':
         return '- https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2';
       case 'LegacyJavaScript':
@@ -923,7 +952,7 @@ It is important that all of these checks pass to minimize the delay between the 
       case 'Viewport':
         return 'The insight identifies web pages that are not specifying the viewport meta tag for mobile devies, which avoids the artificial 300-350ms delay designed to help differentiate between tap and double-click.';
       case 'Cache':
-        return '';
+        return 'This insight identifies static resources that are not cached effectively by the browser.';
       case 'ModernHTTP':
         return `Modern HTTP protocols, such as HTTP/2, are more efficient than older versions like HTTP/1.1 because they allow for multiple requests and responses to be sent over a single network connection, significantly improving page load performance by reducing latency and overhead. This insight identifies requests that can be upgraded to a modern HTTP protocol.
 

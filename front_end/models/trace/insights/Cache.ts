@@ -12,6 +12,7 @@ import {metricSavingsForWastedBytes} from './Common.js';
 import {linearInterpolation} from './Statistics.js';
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
@@ -62,7 +63,7 @@ const IGNORE_THRESHOLD_IN_PERCENT = 0.925;
 
 function finalize(partialModel: PartialInsightModel<CacheInsightModel>): CacheInsightModel {
   return {
-    insightKey: 'Cache',
+    insightKey: InsightKeys.CACHE,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
@@ -186,6 +187,10 @@ export interface CacheableRequest {
   request: Types.Events.SyntheticNetworkRequest;
   ttl: number;
   wastedBytes: number;
+}
+
+export function isCacheInsight(model: InsightModel): model is CacheInsightModel {
+  return model.insightKey === InsightKeys.CACHE;
 }
 
 export function generateInsight(

@@ -21,6 +21,10 @@ export class Cache extends BaseInsightComponent<CacheInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-cache`;
   override internalName = 'cache';
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   mapToRow(req: Trace.Insights.Models.Cache.CacheableRequest): TableDataRow {
     return {
       values: [eventRef(req.request), i18n.TimeUtilities.secondsToString(req.ttl)],

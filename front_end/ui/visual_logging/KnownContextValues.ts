@@ -3785,6 +3785,7 @@ export const knownContextValues = new Set([
   'timeline.ignore-list-new-regex.text',
   'timeline.ignore-list-pattern',
   'timeline.ignore-list-pattern.remove',
+  'timeline.insight-ask-ai.cache',
   'timeline.insight-ask-ai.cls-culprits',
   'timeline.insight-ask-ai.dismiss-field-mismatch',
   'timeline.insight-ask-ai.document-latency',

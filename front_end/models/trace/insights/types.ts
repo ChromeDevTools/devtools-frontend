@@ -150,4 +150,5 @@ export const enum InsightKeys {
   SLOW_CSS_SELECTOR = 'SlowCSSSelector',
   VIEWPORT = 'Viewport',
   MODERN_HTTP = 'ModernHTTP',
+  CACHE = 'Cache',
 }

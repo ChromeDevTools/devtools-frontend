@@ -1027,6 +1027,44 @@ The following list contains the largest amount spent by a 3rd party script on th
 - https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/
 === end content
 
+Title: PerformanceInsightFormatter Cache serializes correctly when there are no results
+Content:
+## Insight Title: Use efficient cache lifetimes
+
+## Insight Summary:
+This insight identifies static resources that are not cached effectively by the browser.
+
+## Detailed analysis:
+No requests with inefficient cache policies.
+
+## Estimated savings: none
+
+## External resources:
+- https://web.dev/uses-long-cache-ttl/
+=== end content
+
+Title: PerformanceInsightFormatter Cache serializes the correct details showing cache problems
+Content:
+## Insight Title: Use efficient cache lifetimes
+
+## Insight Summary:
+This insight identifies static resources that are not cached effectively by the browser.
+
+## Detailed analysis:
+The following resources were associated with ineffficient cache policies:
+
+- https://chromedevtools.github.io/performance-stories/lcp-large-image/app.css
+  - Cache Time to Live (TTL): 600 seconds
+  - Wasted bytes: 0 B
+
+A long cache lifetime can speed up repeat visits to your page. [Learn more](https://web.dev/uses-long-cache-ttl/).
+
+## Estimated savings: none
+
+## External resources:
+- https://web.dev/uses-long-cache-ttl/
+=== end content
+
 Title: PerformanceInsightFormatter Viewport serializes correctly when there are no results
 Content:
 ## Insight Title: Optimize viewport for mobile

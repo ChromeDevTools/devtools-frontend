@@ -900,6 +900,12 @@ Available insights:
     description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
     relevant trace bounds: {min: 157423742399, max: 157427277086}
     example question: Which third parties are having the largest impact on my page performance?
+  - insight name: Cache
+    description: A long cache lifetime can speed up repeat visits to your page. [Learn more](https://web.dev/uses-long-cache-ttl/).
+    relevant trace bounds: {min: 157423742399, max: 157426980482}
+    estimated metric savings: FCP 0 ms, LCP 0 ms
+    estimated wasted bytes: 847.4 kB
+    example question: What caching strategies can I apply to improve my page performance?
   - insight name: LegacyJavaScript
     description: Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)
     relevant trace bounds: {min: 157423489126, max: 157426132225}

@@ -497,6 +497,28 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
     });
   });
 
+  describe('Cache', () => {
+    it('serializes correctly when there are no results', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('Cache', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details showing cache problems', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('Cache', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
   describe('Viewport', () => {
     it('serializes correctly when there are no results', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'image-delivery.json.gz');

@@ -562,6 +562,7 @@ export class WebauthnPaneImpl extends UI.Panel.Panel implements
   #model?: SDK.WebAuthnModel.WebAuthnModel;
   #newAuthenticatorOptions: Protocol.WebAuthn.VirtualAuthenticatorOptions = {
     protocol: Protocol.WebAuthn.AuthenticatorProtocol.Ctap2,
+    ctap2Version: Protocol.WebAuthn.Ctap2Version.Ctap2_1,
     transport: Protocol.WebAuthn.AuthenticatorTransport.Usb,
     hasResidentKey: false,
     hasUserVerification: false,

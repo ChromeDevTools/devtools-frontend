@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 describe('Drawer', () => {
-  setup({enabledDevToolsExperiments: ['vertical-drawer']});
+  setup({enabledFeatures: ['DevToolsVerticalDrawer']});
 
   it('orientation can be toggled between horizontal and vertical', async ({devToolsPage}) => {
     // To show the drawer

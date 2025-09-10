@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
@@ -72,11 +71,11 @@ describeWithEnvironment('GlobalAiButton', () => {
 
     describe('with vertical drawer experiment', () => {
       beforeEach(() => {
-        Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER, true);
-      });
-
-      afterEach(() => {
-        Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER, false);
+        updateHostConfig({
+          devToolsFlexibleLayout: {
+            verticalDrawerEnabled: true,
+          },
+        });
       });
 
       it('toggles drawer if experiment is on and user has no preference', async () => {
@@ -101,7 +100,11 @@ describeWithEnvironment('GlobalAiButton', () => {
     });
 
     it('does not toggle drawer if experiment is off', async () => {
-      Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER, false);
+      updateHostConfig({
+        devToolsFlexibleLayout: {
+          verticalDrawerEnabled: false,
+        },
+      });
       const {view} = await createWidget();
       isUserExplicitlyUpdatedDrawerOrientationStub.returns(false);
 

@@ -423,7 +423,10 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
       },
       devToolsIpProtectionPanelInDevTools: {
         enabled: false,
-      }
+      },
+      devToolsFlexibleLayout: {
+        verticalDrawerEnabled: true,
+      },
     };
     if ('hostConfigForTesting' in globalThis) {
       const {hostConfigForTesting} = (globalThis as unknown as {hostConfigForTesting: Root.Runtime.HostConfig});

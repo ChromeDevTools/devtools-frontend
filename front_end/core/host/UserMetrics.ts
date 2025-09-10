@@ -823,7 +823,6 @@ export enum DevtoolsExperiments {
   'timeline-enhanced-traces' = 90,
   'timeline-compiled-sources' = 91,
   'timeline-debug-mode' = 93,
-  'vertical-drawer' = 107,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.

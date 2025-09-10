@@ -6,7 +6,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -296,7 +295,7 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Shift+Esc',
     },
   ],
-  experiment: Root.Runtime.ExperimentName.VERTICAL_DRAWER,
+  condition: config => Boolean(config?.devToolsFlexibleLayout?.verticalDrawerEnabled)
 });
 
 UI.ActionRegistration.registerActionExtension({

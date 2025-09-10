@@ -225,7 +225,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     this.drawerSplitWidget.installResizer(this.drawerTabbedPane.headerElement());
     this.drawerSplitWidget.setSidebarWidget(this.drawerTabbedPane);
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER)) {
+    if (Root.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled) {
       this.drawerTabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
     }
     this.drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
@@ -749,9 +749,7 @@ export class ActionDelegate implements ActionDelegateInterface {
         }
         return true;
       case 'main.toggle-drawer-orientation':
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER)) {
-          InspectorView.instance().toggleDrawerOrientation();
-        }
+        InspectorView.instance().toggleDrawerOrientation();
         return true;
       case 'main.next-tab':
         InspectorView.instance().tabbedPane.selectNextTab();

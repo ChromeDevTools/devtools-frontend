@@ -455,7 +455,7 @@ describe('User Metric with setting', () => {
 
 describe('User Metric with experiment', () => {
   setup({
-    enabledDevToolsExperiments: ['vertical-drawer'],
+    enabledFeatures: ['DevToolsVerticalDrawer'],
   });
 
   it('dispatches a metric event during drawer orientation toggle', async ({devToolsPage}) => {

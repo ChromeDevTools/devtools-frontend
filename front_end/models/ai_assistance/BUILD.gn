@@ -105,11 +105,3 @@ ts_library("unittests") {
     "../trace:bundle",
   ]
 }
-
-copy_to_gen("snapshots") {
-  sources = [
-    "AiHistoryStorage.snapshot.txt",
-    "data_formatters/PerformanceInsightFormatter.snapshot.txt",
-    "data_formatters/PerformanceTraceFormatter.snapshot.txt",
-  ]
-}

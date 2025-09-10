@@ -110,14 +110,6 @@ after(async () => {
 });
 ```
 
-Then add the `.snapshot.txt` file to the appropriate BUILD.gn:
-
-```
-copy_to_gen("snapshots") {
-  sources = [ "myfile.snapshot.txt" ]
-}
-```
-
 Then inside a test, call `snapshotTester.assert(this, output)`. For an example, see SnapshotTester.test.ts.
 
 To update snapshots, run `npm run test -- --on-diff=update ...`

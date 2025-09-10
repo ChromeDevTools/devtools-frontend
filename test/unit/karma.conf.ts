@@ -282,14 +282,31 @@ function snapshotTesterFactory() {
       return;
     }
 
-    if (req.url.startsWith('/update-snapshot')) {
+    if (req.url.startsWith('/snapshot')) {
       const parsedUrl = url.parse(req.url, true);
-      if (typeof parsedUrl.query.snapshotUrl !== 'string') {
-        throw new Error('invalid snapshotUrl');
+      if (typeof parsedUrl.query.snapshotPath !== 'string') {
+        throw new Error('invalid snapshotPath');
       }
 
-      const snapshotUrl = parsedUrl.query.snapshotUrl;
-      const snapshotPath = path.join(SOURCE_ROOT, url.parse(snapshotUrl, false).pathname?.split('gen')[1] ?? '');
+      const snapshotPath = path.join(SOURCE_ROOT, parsedUrl.query.snapshotPath);
+      if (!fs.existsSync(snapshotPath)) {
+        res.writeHead(404);
+        return;
+      }
+
+      const snapshot = fs.readFileSync(snapshotPath, 'utf-8');
+      res.writeHead(200);
+      res.end(snapshot);
+      return;
+    }
+
+    if (req.url.startsWith('/update-snapshot')) {
+      const parsedUrl = url.parse(req.url, true);
+      if (typeof parsedUrl.query.snapshotPath !== 'string') {
+        throw new Error('invalid snapshotPath');
+      }
+
+      const snapshotPath = path.join(SOURCE_ROOT, parsedUrl.query.snapshotPath);
 
       let body = '';
       req.on('data', (chunk: any) => {

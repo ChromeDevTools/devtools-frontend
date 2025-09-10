@@ -89,7 +89,3 @@ ts_library("testing") {
     "../ui/visual_logging:testing",
   ]
 }
-
-copy_to_gen("snapshots") {
-  sources = [ "SnapshotTester.snapshot.txt" ]
-}

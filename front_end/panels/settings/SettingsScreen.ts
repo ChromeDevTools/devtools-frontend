@@ -250,6 +250,7 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
   private readonly settingToControl = new Map<Common.Settings.Setting<unknown>, HTMLElement>();
   private readonly containerElement: HTMLElement;
   #updateSyncSectionTimerId = -1;
+  #syncSectionUpdatePromise: Promise<void>|null = null;
 
   constructor() {
     super({jslog: `${VisualLogging.pane('preferences')}`});
@@ -336,18 +337,19 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
       this.#updateSyncSectionTimerId = -1;
     }
 
-    void new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
-        resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve))
-        .then(syncInfo => {
-          this.syncSection.data = {
-            syncInfo,
-            syncSetting: Common.Settings.moduleSetting('sync-preferences') as Common.Settings.Setting<boolean>,
-            receiveBadgesSetting: Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges'),
-          };
-          if (!syncInfo.isSyncActive || !syncInfo.arePreferencesSynced) {
-            this.#updateSyncSectionTimerId = window.setTimeout(this.updateSyncSection.bind(this), 500);
-          }
-        });
+    this.#syncSectionUpdatePromise =
+        new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
+            resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve))
+            .then(syncInfo => {
+              this.syncSection.data = {
+                syncInfo,
+                syncSetting: Common.Settings.moduleSetting('sync-preferences') as Common.Settings.Setting<boolean>,
+                receiveBadgesSetting: Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges'),
+              };
+              if (!syncInfo.isSyncActive || !syncInfo.arePreferencesSynced) {
+                this.#updateSyncSectionTimerId = window.setTimeout(this.updateSyncSection.bind(this), 500);
+              }
+            });
   }
 
   private createExtensionSection(settings: Common.Settings.SettingRegistration[]): void {
@@ -399,6 +401,10 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
       const element = this.settingToControl.get(setting);
       if (element) {
         PanelUtils.highlightElement(element);
+      } else if (setting.name === 'receive-gdp-badges') {
+        void this.#syncSectionUpdatePromise?.then(() => {
+          void this.syncSection.highlightReceiveBadgesSetting();
+        });
       }
     }
   }

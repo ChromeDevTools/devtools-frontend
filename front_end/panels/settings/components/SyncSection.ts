@@ -16,6 +16,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelCommon from '../../common/common.js';
+import * as PanelUtils from '../../utils/utils.js';
 
 import syncSectionStyles from './syncSection.css.js';
 
@@ -87,7 +88,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/settings/components/SyncSection
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
-const {html} = Lit;
+const {html, Directives: {ref, createRef}} = Lit;
 
 function getGdpSubscriptionText(profile: Host.GdpClient.Profile): Platform.UIString.LocalizedString {
   if (!profile.activeSubscription ||
@@ -123,6 +124,7 @@ export class SyncSection extends HTMLElement {
   #syncInfo: Host.InspectorFrontendHostAPI.SyncInformation = {isSyncActive: false};
   #syncSetting?: Common.Settings.Setting<boolean>;
   #receiveBadgesSetting?: Common.Settings.Setting<boolean>;
+  #receiveBadgesSettingContainerRef = createRef<HTMLElement>();
   #gdpProfile?: Host.GdpClient.Profile;
 
   set data(data: SyncSectionData) {
@@ -131,6 +133,14 @@ export class SyncSection extends HTMLElement {
     this.#receiveBadgesSetting = data.receiveBadgesSetting;
     void this.#updateGdpProfile();
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
+  async highlightReceiveBadgesSetting(): Promise<void> {
+    await ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+    const element = this.#receiveBadgesSettingContainerRef.value;
+    if (element) {
+      PanelUtils.PanelUtils.highlightElement(element);
+    }
   }
 
   #render(): void {
@@ -149,7 +159,11 @@ export class SyncSection extends HTMLElement {
       <fieldset>
         ${renderAccountInfo(this.#syncInfo)}
         ${renderSettingCheckboxIfNeeded(this.#syncInfo, this.#syncSetting)}
-        ${renderGdpSectionIfNeeded({ receiveBadgesSetting: this.#receiveBadgesSetting, gdpProfile: this.#gdpProfile })}
+        ${renderGdpSectionIfNeeded({
+          receiveBadgesSetting: this.#receiveBadgesSetting,
+          receiveBadgesSettingContainerRef: this.#receiveBadgesSettingContainerRef,
+          gdpProfile: this.#gdpProfile
+        })}
       </fieldset>
     `, this.#shadow, {host: this});
     // clang-format on
@@ -232,8 +246,10 @@ function renderAccountInfo(syncInfo: Host.InspectorFrontendHostAPI.SyncInformati
 
 function renderGdpSectionIfNeeded({
   receiveBadgesSetting,
+  receiveBadgesSettingContainerRef,
   gdpProfile,
 }: {
+  receiveBadgesSettingContainerRef: Lit.Directives.Ref<HTMLElement>,
   receiveBadgesSetting?: Common.Settings.Setting<boolean>,
   gdpProfile?: Host.GdpClient.Profile,
 }): Lit.LitTemplate {
@@ -264,7 +280,7 @@ function renderGdpSectionIfNeeded({
               ${i18nString(UIStrings.viewProfile)}
             </x-link></div>
             ${receiveBadgesSetting ? html`
-              <div class="setting-container">
+              <div class="setting-container"  ${ref(receiveBadgesSettingContainerRef)}>
                 <setting-checkbox class="setting-checkbox" .data=${{setting: receiveBadgesSetting}}></setting-checkbox>
                 <span>${i18nString(UIStrings.relevantDataDisclaimer)}</span>
               </div>` : Lit.nothing}

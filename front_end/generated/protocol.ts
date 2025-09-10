@@ -4592,6 +4592,7 @@ export namespace DOM {
     compatibilityMode?: CompatibilityMode;
     assignedSlot?: BackendNode;
     isScrollable?: boolean;
+    affectedByStartingStyles?: boolean;
   }
 
   /**
@@ -5633,6 +5634,20 @@ export namespace DOM {
      * If the node is scrollable.
      */
     isScrollable: boolean;
+  }
+
+  /**
+   * Fired when a node's starting styles changes.
+   */
+  export interface AffectedByStartingStylesFlagUpdatedEvent {
+    /**
+     * The id of the node.
+     */
+    nodeId: DOM.NodeId;
+    /**
+     * If the node has starting styles.
+     */
+    affectedByStartingStyles: boolean;
   }
 
   /**
@@ -15965,6 +15980,11 @@ export namespace Preload {
      * @deprecated
      */
     errorMessage?: string;
+    /**
+     * For more details, see:
+     * https://github.com/WICG/nav-speculation/blob/main/speculation-rules-tags.md
+     */
+    tag?: string;
   }
 
   export const enum RuleSetErrorType {

@@ -1838,6 +1838,9 @@ class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
   scrollableFlagUpdated({nodeId, isScrollable}: Protocol.DOM.ScrollableFlagUpdatedEvent): void {
     this.#domModel.scrollableFlagUpdated(nodeId, isScrollable);
   }
+
+  affectedByStartingStylesFlagUpdated(_: Protocol.DOM.AffectedByStartingStylesFlagUpdatedEvent): void {
+  }
 }
 
 let domModelUndoStackInstance: DOMModelUndoStack|null = null;

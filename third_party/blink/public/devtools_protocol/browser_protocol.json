@@ -7004,6 +7004,12 @@
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "affectedByStartingStyles",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -8533,6 +8539,23 @@
                         {
                             "name": "isScrollable",
                             "description": "If the node is scrollable.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "affectedByStartingStylesFlagUpdated",
+                    "description": "Fired when a node's starting styles changes.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "The id of the node.",
+                            "$ref": "DOM.NodeId"
+                        },
+                        {
+                            "name": "affectedByStartingStyles",
+                            "description": "If the node has starting styles.",
                             "type": "boolean"
                         }
                     ]
@@ -24019,6 +24042,12 @@
                             "name": "errorMessage",
                             "description": "TODO(https://crbug.com/1425354): Replace this property with structured error.",
                             "deprecated": true,
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "tag",
+                            "description": "For more details, see:\nhttps://github.com/WICG/nav-speculation/blob/main/speculation-rules-tags.md",
                             "optional": true,
                             "type": "string"
                         }

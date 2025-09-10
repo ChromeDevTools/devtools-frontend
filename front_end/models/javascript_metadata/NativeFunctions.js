@@ -8432,6 +8432,14 @@ export const NativeFunctions = [
     signatures: [["?descriptionInitDict"]]
   },
   {
+    name: "RtcTransport",
+    signatures: [["name"]]
+  },
+  {
+    name: "sendPackets",
+    signatures: [["packets"]]
+  },
+  {
     name: "revoke",
     signatures: [["permission"]]
   },

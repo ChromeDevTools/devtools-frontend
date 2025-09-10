@@ -158,6 +158,10 @@ export namespace ProtocolMapping {
      */
     'DOM.scrollableFlagUpdated': [Protocol.DOM.ScrollableFlagUpdatedEvent];
     /**
+     * Fired when a node's starting styles changes.
+     */
+    'DOM.affectedByStartingStylesFlagUpdated': [Protocol.DOM.AffectedByStartingStylesFlagUpdatedEvent];
+    /**
      * Called when a pseudo element is removed from an element.
      */
     'DOM.pseudoElementRemoved': [Protocol.DOM.PseudoElementRemovedEvent];

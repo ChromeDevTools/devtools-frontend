@@ -1393,6 +1393,11 @@ declare namespace ProtocolProxyApi {
     scrollableFlagUpdated(params: Protocol.DOM.ScrollableFlagUpdatedEvent): void;
 
     /**
+     * Fired when a node's starting styles changes.
+     */
+    affectedByStartingStylesFlagUpdated(params: Protocol.DOM.AffectedByStartingStylesFlagUpdatedEvent): void;
+
+    /**
      * Called when a pseudo element is removed from an element.
      */
     pseudoElementRemoved(params: Protocol.DOM.PseudoElementRemovedEvent): void;

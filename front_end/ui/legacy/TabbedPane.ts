@@ -19,7 +19,7 @@ import {ContextMenu} from './ContextMenu.js';
 import tabbedPaneStyles from './tabbedPane.css.js';
 import type {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
-import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
+import {installDragHandle} from './UIUtils.js';
 import {VBox, type Widget} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
@@ -228,7 +228,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (this.tabsHistory[0] === tab && this.isShowing()) {
       this.selectTab(tab.id, userGesture);
     }
-    this.updateTabElements();
+    this.requestUpdate();
   }
 
   closeTab(id: string, userGesture?: boolean): void {
@@ -244,7 +244,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     for (let i = 0; i < ids.length; ++i) {
       this.innerCloseTab(ids[i], userGesture);
     }
-    this.updateTabElements();
+    this.requestUpdate();
     if (this.tabsHistory.length) {
       this.selectTab(this.tabsHistory[0].id, false);
     }
@@ -346,7 +346,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.tabsHistory.splice(this.tabsHistory.indexOf(tab), 1);
     this.tabsHistory.splice(0, 0, tab);
 
-    this.updateTabElements();
+    this.requestUpdate();
     if (focused || forceFocus) {
       this.focus();
     }
@@ -396,7 +396,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
     tab.setIcon(icon);
-    this.updateTabElements();
+    this.requestUpdate();
   }
 
   setTrailingTabIcon(id: string, icon: IconButton.Icon.Icon|null): void {
@@ -413,7 +413,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
     tab.setSuffixElement(suffixElement);
-    this.updateTabElements();
+    this.requestUpdate();
   }
 
   setBadge(id: string, content: string|null): void {
@@ -443,7 +443,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private zoomChanged(): void {
     this.clearMeasuredWidths();
     if (this.isShowing()) {
-      this.updateTabElements();
+      this.requestUpdate();
     }
   }
 
@@ -461,7 +461,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (tab && tab.title !== tabTitle) {
       tab.title = tabTitle;
       ARIAUtils.setLabel(tab.tabElement, tabTitle);
-      this.updateTabElements();
+      this.requestUpdate();
     }
   }
 
@@ -493,11 +493,11 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.clearMeasuredWidths();
       this.currentDevicePixelRatio = window.devicePixelRatio;
     }
-    this.updateTabElements();
+    this.requestUpdate();
   }
 
   headerResized(): void {
-    this.updateTabElements();
+    this.requestUpdate();
   }
 
   override wasShown(): void {
@@ -505,7 +505,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (effectiveTab && this.autoSelectFirstItemOnShow) {
       this.selectTab(effectiveTab.id);
     }
-    this.updateTabElements();
+    this.requestUpdate();
     this.dispatchEventToListeners(Events.PaneVisibilityChanged, {isVisible: true});
   }
 
@@ -537,10 +537,6 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return constraints;
   }
 
-  private updateTabElements(): void {
-    invokeOnceAfterBatchUpdate(this, this.innerUpdateTabElements);
-  }
-
   setPlaceholderElement(element: Element, focusedElement?: Element): void {
     this.placeholderElement = element;
     if (focusedElement) {
@@ -553,10 +549,10 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   async waitForTabElementUpdate(): Promise<void> {
-    this.innerUpdateTabElements();
+    this.performUpdate();
   }
 
-  private innerUpdateTabElements(): void {
+  override performUpdate(): void {
     if (!this.isShowing()) {
       return;
     }

@@ -965,13 +965,6 @@ export function endBatchUpdate(): void {
   }
 }
 
-export function invokeOnceAfterBatchUpdate(object: Object, method: () => void): void {
-  if (!postUpdateHandlers) {
-    postUpdateHandlers = new InvokeOnceHandlers(true);
-  }
-  postUpdateHandlers.add(object, method);
-}
-
 export function animateFunction(
     window: Window, func: (...args: any[]) => void, params: Array<{
       from: number,

@@ -137,7 +137,7 @@ export class CountersGraph extends UI.Widget.VBox {
     if (event.updateType === 'RESET' || event.updateType === 'VISIBLE_WINDOW') {
       const newWindow = event.state.milli.timelineTraceWindow;
       this.calculator.setWindow(newWindow.min, newWindow.max);
-      this.#scheduleRefresh();
+      this.requestUpdate();
     }
   }
 
@@ -153,7 +153,7 @@ export class CountersGraph extends UI.Widget.VBox {
       this.counters[i].reset();
       this.counterUI[i].reset();
     }
-    this.#scheduleRefresh();
+    this.requestUpdate();
     let counterEventsFound = 0;
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
@@ -208,8 +208,8 @@ export class CountersGraph extends UI.Widget.VBox {
     this.refresh();
   }
 
-  #scheduleRefresh(): void {
-    UI.UIUtils.invokeOnceAfterBatchUpdate(this, this.refresh);
+  override performUpdate(): Promise<void>|void {
+    this.refresh();
   }
 
   draw(): void {

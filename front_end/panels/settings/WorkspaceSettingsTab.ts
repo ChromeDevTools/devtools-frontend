@@ -2,29 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/buttons/buttons.js';
 import '../../ui/components/cards/cards.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-// TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
 import * as UI from '../../ui/legacy/legacy.js';
-// TODO(crbug.com/442509324): remove UI dependency
-// eslint-disable-next-line rulesdir/no-imports-in-directory
 import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {EditFileSystemView} from './EditFileSystemView.js';
-import type {FileSystem} from './FileSystemWorkspaceBinding.js';
-import {IsolatedFileSystem} from './IsolatedFileSystem.js';
-import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
-import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
-import type {PlatformFileSystem} from './PlatformFileSystem.js';
 import workspaceSettingsTabStyles from './workspaceSettingsTab.css.js';
 
 const UIStrings = {
@@ -49,14 +38,14 @@ const UIStrings = {
    */
   remove: 'Remove',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('models/persistence/WorkspaceSettingsTab.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/settings/WorkspaceSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface WorkspaceSettingsTabInput {
   excludePatternSetting: Common.Settings.RegExpSetting;
-  fileSystems: Array<{displayName: string, fileSystem: IsolatedFileSystem}>;
+  fileSystems: Array<{displayName: string, fileSystem: Persistence.IsolatedFileSystem.IsolatedFileSystem}>;
   onAddClicked: () => void;
-  onRemoveClicked: (fileSystem: IsolatedFileSystem) => void;
+  onRemoveClicked: (fileSystem: Persistence.IsolatedFileSystem.IsolatedFileSystem) => void;
 }
 export type View = (input: WorkspaceSettingsTabInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
@@ -80,14 +69,18 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           <devtools-card heading=${fileSystem.displayName}>
             <devtools-icon name="folder" slot="heading-prefix"></devtools-icon>
             <div class="mapping-view-container">
-              <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(EditFileSystemView, { fileSystem: fileSystem.fileSystem })}>
+              <devtools-widget .widgetConfig=${
+                  UI.Widget.widgetConfig(
+                      Persistence.EditFileSystemView.EditFileSystemView,
+                      {fileSystem: fileSystem.fileSystem})}>
               </devtools-widget>
             </div>
             <devtools-button
               slot="heading-suffix"
               .variant=${Buttons.Button.Variant.OUTLINED}
               jslog=${VisualLogging.action().track({click: true}).context('settings.remove-file-system')}
-              @click=${input.onRemoveClicked.bind(null, fileSystem.fileSystem)}>${i18nString(UIStrings.remove)}</devtools-button>
+              @click=${input.onRemoveClicked.bind(null, fileSystem.fileSystem)}>${
+      i18nString(UIStrings.remove)}</devtools-button>
           </devtools-card>
         `)}
         <div class="add-button-container">
@@ -98,7 +91,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             @click=${input.onAddClicked}>${i18nString(UIStrings.addFolder)}</devtools-button>
         </div>
       </div>
-    </div>`, target);
+    </div>`,
+         target);
   // clang-format on
 };
 
@@ -113,8 +107,10 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
 
   override wasShown(): void {
     this.#eventListeners = [
-      IsolatedFileSystemManager.instance().addEventListener(Events.FileSystemAdded, this.requestUpdate.bind(this)),
-      IsolatedFileSystemManager.instance().addEventListener(Events.FileSystemRemoved, this.requestUpdate.bind(this)),
+      Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addEventListener(
+          Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, this.requestUpdate.bind(this)),
+      Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addEventListener(
+          Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved, this.requestUpdate.bind(this)),
     ];
 
     this.requestUpdate();
@@ -127,28 +123,35 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
 
   override performUpdate(): void {
     const input: WorkspaceSettingsTabInput = {
-      excludePatternSetting: IsolatedFileSystemManager.instance().workspaceFolderExcludePatternSetting(),
-      onAddClicked: () => IsolatedFileSystemManager.instance().addFileSystem(),
-      onRemoveClicked: fs => IsolatedFileSystemManager.instance().removeFileSystem(fs),
-      fileSystems: IsolatedFileSystemManager.instance()
+      excludePatternSetting: Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance()
+                                 .workspaceFolderExcludePatternSetting(),
+      onAddClicked: () => Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem(),
+      onRemoveClicked: fs =>
+          Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().removeFileSystem(fs),
+      fileSystems: Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance()
                        .fileSystems()
                        .filter(fileSystem => {
-                         const networkPersistenceProject = NetworkPersistenceManager.instance().project();
-                         return fileSystem instanceof IsolatedFileSystem &&
+                         const networkPersistenceProject =
+                             Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
+                         return fileSystem instanceof Persistence.IsolatedFileSystem.IsolatedFileSystem &&
                              (!networkPersistenceProject ||
-                              IsolatedFileSystemManager.instance().fileSystem(
-                                  (networkPersistenceProject as FileSystem).fileSystemPath()) !== fileSystem);
+                              Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().fileSystem(
+                                  (networkPersistenceProject as Persistence.FileSystemWorkspaceBinding.FileSystem)
+                                      .fileSystemPath()) !== fileSystem);
                        })
                        .map(fileSystem => {
                          const displayName = WorkspaceSettingsTab.#getFilename(fileSystem);
-                         return {displayName, fileSystem: fileSystem as IsolatedFileSystem};
+                         return {
+                           displayName,
+                           fileSystem: fileSystem as Persistence.IsolatedFileSystem.IsolatedFileSystem,
+                         };
                        })
                        .sort((fs1, fs2) => fs1.displayName.localeCompare(fs2.displayName)),
     };
     this.#view(input, {}, this.contentElement);
   }
 
-  static #getFilename(fileSystem: PlatformFileSystem): string {
+  static #getFilename(fileSystem: Persistence.PlatformFileSystem.PlatformFileSystem): string {
     const fileSystemPath = fileSystem.path();
     const lastIndexOfSlash = fileSystemPath.lastIndexOf('/');
     const lastPathComponent = fileSystemPath.substring(lastIndexOfSlash + 1);

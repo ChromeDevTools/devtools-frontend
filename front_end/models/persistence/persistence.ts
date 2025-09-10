@@ -14,7 +14,6 @@ import * as PersistenceActions from './PersistenceActions.js';
 import * as Persistence from './PersistenceImpl.js';
 import * as PersistenceUtils from './PersistenceUtils.js';
 import * as PlatformFileSystem from './PlatformFileSystem.js';
-import * as WorkspaceSettingsTab from './WorkspaceSettingsTab.js';
 
 export {
   Automapping,
@@ -29,5 +28,4 @@ export {
   PersistenceActions,
   PersistenceUtils,
   PlatformFileSystem,
-  WorkspaceSettingsTab,
 };

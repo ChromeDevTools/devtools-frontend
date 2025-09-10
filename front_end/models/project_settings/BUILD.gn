@@ -26,6 +26,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/main",
+    "../../panels/settings",
     "../persistence",
   ]
 

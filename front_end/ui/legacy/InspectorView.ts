@@ -393,11 +393,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     }
   }
 
-  private emitDrawerChangeEvent(isDrawerOpen: boolean): void {
-    const evt = new CustomEvent(Events.DRAWER_CHANGE, {bubbles: true, cancelable: true, detail: {isDrawerOpen}});
-    document.body.dispatchEvent(evt);
-  }
-
   private getTabbedPaneForTabId(tabId: string): TabbedPane|null {
     // Tab exists in the main panel
     if (this.tabbedPane.hasTab(tabId)) {
@@ -429,7 +424,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     } else {
       this.focusRestorer = null;
     }
-    this.emitDrawerChangeEvent(true);
     ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerShown));
   }
 
@@ -446,7 +440,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     }
     this.drawerSplitWidget.hideSidebar(true);
 
-    this.emitDrawerChangeEvent(false);
     ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerHidden));
   }
 
@@ -804,8 +797,4 @@ export class InspectorViewTabDelegate implements TabbedPaneTabDelegate {
           i18nString(UIStrings.moveToDrawer), this.moveToDrawer.bind(this, tabId), {jslogContext: 'move-to-bottom'});
     }
   }
-}
-
-export const enum Events {
-  DRAWER_CHANGE = 'drawerchange',
 }

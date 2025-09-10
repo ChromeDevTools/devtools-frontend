@@ -101,11 +101,6 @@ export class ServiceWorkerManager extends SDKModel<EventTypes> {
   readonly #registrations = new Map<string, ServiceWorkerRegistration>();
   #enabled = false;
   readonly #forceUpdateSetting: Common.Settings.Setting<boolean>;
-  /** Status of service worker network requests panel */
-  serviceWorkerNetworkRequestsPanelStatus = {
-    isOpen: false,
-    openedAt: 0,
-  };
 
   constructor(target: Target) {
     super(target);

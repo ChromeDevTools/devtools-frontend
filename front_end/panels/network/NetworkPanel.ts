@@ -391,7 +391,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     return networkPanelInstance;
   }
 
-  static revealAndFilter(filters: Array<{
+  static async revealAndFilter(filters: Array<{
     filterType: NetworkForward.UIFilter.FilterType | null,
     filterValue: string,
   }>): Promise<void> {
@@ -404,8 +404,10 @@ export class NetworkPanel extends UI.Panel.Panel implements
         filterString += `${filter.filterValue} `;
       }
     }
+    await UI.ViewManager.ViewManager.instance().showView('network');
     panel.networkLogView.setTextFilterValue(filterString);
-    return UI.ViewManager.ViewManager.instance().showView('network');
+    panel.filterBar.setting().set(true);
+    panel.filterBar.focus();
   }
 
   throttlingSelectForTest(): UI.Toolbar.ToolbarItem {

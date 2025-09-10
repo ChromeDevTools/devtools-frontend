@@ -291,16 +291,125 @@ you could run the hosted DevTools with the following command:
 $ google-chrome http://localhost:8000/inspector.html?ws=localhost:9222/devtools/page/BADADD4E55BADADD4E55BADADD4E5511
 ```
 
+## Chromium checkout
+
+You can also work on the DevTools front-end within a full Chromium checkout.
+This workflow is particularly useful if you are working on a feature or a bug
+that spans back-end (Chromium C++ code) and front-end (DevTools TypeScript
+code), but it's also useful for Chromies that need to make small patches to
+DevTools front-end and don't want to go through the process of setting up a
+dedicated [`devtools-frontend` standalone checkout](#standalone-checkout).
+
+### Checking out source
+
+Follow [instructions](https://www.chromium.org/developers/how-tos/get-the-code)
+to check out Chromium. The DevTools front-end code is located inside the
+`third_party/devtools-frontend/src/` folder (after running `gclient sync`).
+
+### Build
+
+The [instructions](https://www.chromium.org/developers/how-tos/get-the-code) on
+the Chromium page apply as well here. In particular use
+
+```bash
+autoninja -C out/Default chrome
+```
+
+to build Chromium with the bundled DevTools front-end. You can also use
+
+```bash
+autoninja -C out/Default devtools_frontend_resources
+```
+
+to only build the DevTools front-end resources, which can afterwards be found in
+the `out/Default/gen/third_party/devtools-frontend/src/front_end` folder.
+
+### Run
+
+Launch Chromium with the bundled DevTools front-end using
+
+```bash
+out/Default/chrome
+```
+
+or if you are only iterating on a small set of changes to the DevTools front-end
+and used the `devtools_frontend_resources` build target, you can run Chrome with
+the generated DevTools front-end artifacts using
+
+```bash
+out/Default/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/third_party/devtools-frontend/src/front_end)
+```
+
+afterwards, which can be quite a bit faster than building and linking the full
+Chromium binary.
+
+### Testing
+
+To run the test suite, use `npm test` from within the DevTools front-end folder:
+
+```bash
+cd third_party/devtools-frontend/src
+npm test
+```
+
+### Juggling the git submodules
+
+Working on DevTools within a Chromium checkout means working across two separate
+repositories (at the same time), which can be a bit tricky. Especially if you
+are working on a change that spans across the boundary of the front-end and the
+back-end, you'll need to cook two separate CLs. There are several ways to go
+about this, and in here, we'll outline one somewhat well-lit path. You start by
+creating a branch in both Chromium and DevTools:
+
+```bash
+git new-branch my-change-backend
+pushd third_party/devtools-frontend/src
+git new-branch my-change-frontend
+popd
+```
+
+Now you go about developing your patch, and commit individually to Chromium and
+DevTools repositories. When you're done, you can upload the changes individually
+using `git cl upload`:
+
+```bash
+git cl upload
+pushd third_party/devtools-frontend/src
+git cl upload
+popd
+```
+
+The tricky part is to get the checkout back into a well-defined state, which can
+be accomplished using:
+
+```bash
+git checkout main
+git -C third_party/devtools-frontend/src checkout \
+  `gclient getdep -r src/third_party/devtools-frontend/src`
+gclient sync
+```
+
+When you need to rebase your changes, also make sure to run the above commands
+and afterwards rebase the changes in the repositories separately:
+
+```bash
+git checkout my-change-backend
+git rebase
+pushd third_party/devtools-frontend/src
+git checkout my-change-frontend
+git rebase
+popd
+```
+
 ## Integrated checkout
 
 **This solution is experimental, please report any trouble that you run into!**
 
-The integrated workflow offers the best of both worlds, and allows for working on both Chromium and DevTools frontend
-side-by-side. This is strongly recommended for folks working primarily on DevTools.
+The integrated workflow offers the best of both worlds, and allows for working
+on both Chromium and DevTools frontend side-by-side.
 
-This workflow will ensure that your local setup is equivalent to how Chromium infrastructure tests your change.
-
-A full [Chromium checkout](#Chromium-checkout) is a pre-requisite for the following steps.
+A full [Chromium checkout](#Chromium-checkout) is a pre-requisite for the
+following steps.
 
 ### Untrack the existing devtools-frontend submodule
 
@@ -325,12 +434,6 @@ In the `custom_deps` section, insert this line:
 ```python
 "src/third_party/devtools-frontend/src": None,
 ```
-
-Following this step, there are two approaches to manage your standalone checkout
-
-### Single gclient project
-
-**Note: it's not possible anymore to manage the two projects in separate gclient projects.**
 
 For the integrated checkout, create a single gclient project that automatically gclient sync's all dependencies for both
 repositories. After checking out chromium, modify the .gclient file for `chromium/src` to add the DevTools project:
@@ -363,27 +466,3 @@ ln -s src/third_party/devtools-frontend/src devtools-frontend
 If you did run `gclient sync` first, remove the devtools-frontend directory and start over.
 
 Run `gclient sync` after creating the link to fetch the dependencies for the standalone checkout.
-
-## Chromium checkout
-
-DevTools frontend can also be developed as part of the full Chromium checkout.
-This workflow can be used to make small patches to DevTools as a Chromium engineer.
-However, it is different to our infrastructure setup and how to execute general maintenance work, and therefore discouraged.
-
-### Checking out source
-
-Follow [instructions](https://www.chromium.org/developers/how-tos/get-the-code) to check out Chromium. DevTools frontend can be found under `third_party/devtools-frontend/src/`.
-
-### Build
-
-Refer to [instructions](https://www.chromium.org/developers/how-tos/get-the-code) to build Chromium.
-To only build DevTools frontend, use `devtools_frontend_resources` as build target.
-The resulting build artifacts for DevTools frontend can be found in `out/Default/gen/third_party/devtools-frontend/src/front_end`.
-
-### Run
-
-Run Chrome with bundled DevTools frontend:
-
-```bash
-out/Default/chrome
-```

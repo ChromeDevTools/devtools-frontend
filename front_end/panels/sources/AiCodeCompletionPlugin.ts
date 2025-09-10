@@ -121,6 +121,9 @@ export class AiCodeCompletionPlugin extends Plugin {
     const query = doc.toString();
     const cursor = selection.main.head;
     let prefix = query.substring(0, cursor);
+    if (prefix.trim().length === 0) {
+      return;
+    }
     let suffix = query.substring(cursor);
     if (prefix.length > AI_CODE_COMPLETION_CHARACTER_LIMIT) {
       prefix = prefix.substring(prefix.length - AI_CODE_COMPLETION_CHARACTER_LIMIT);

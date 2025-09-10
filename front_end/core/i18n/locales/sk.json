@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "Panel výkonu"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "Účet"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "Zdroje"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "Synchronizovať"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "Nástroje pre vývojárov – {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "Zobraziť skripty"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "Pomoc umelej inteligencie"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Prispôsobiť a ovládať Nástroje pre vývojárov"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Predchádzajúci panel"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "Získavať odznaky"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Znova načítať Nástroje pre vývojárov"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Táto funkcia je k dispozícii iba s aktívnym internetovým pripojením."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "Nástroje DevTools dostali externú požiadavku"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Neznáma chyba pri načítavaní súboru"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Prenos slovníka kompresie"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "Kontroly integrity spúšťané serverom"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "Špecifikácia súhrnu nešifrovaného protokolu HTTP"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Simulácia nového zariadenia po načítaní stránky môže ovplyvniť vykreslenie najväčšieho prvku. Ak chcete získať presné údaje o vykreslení najväčšieho prvku, po simulácii nového zariadenia stránku znova načítajte."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Odstrániť miestny čet"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "Exportovať konverzáciu"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Ak chcete položiť otázku, postupujte podľa krokov vyššie"
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "Žiadne minulé konverzácie"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "Odpoveď bola skopírovaná do schránky"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "Odoslať spätnú väzbu"
   },
@@ -2685,7 +2706,7 @@
     "message": "Nastavenia"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
-    "message": "Asistencia s umelou inteligenciou"
+    "message": "Pomoc umelej inteligencie"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "Opýtať sa umelej inteligencie"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Špekulatívne načítania"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Kliknutím na ľubovoľný prehľad zobrazíte jeho obsah"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "Nie je vybraný žiadny report"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "Kliknutím na ľubovoľný prehľad zobrazíte jeho obsah"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "Žiadny report ani koncový bod"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "Nie je vybraný žiadny report"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "Na tejto stránke budete môcť skontrolovať reporty a koncové body rozhrania Reporting API"
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Stránky s rozhraním WebRTC nemajú prístup do spätnej vyrovnávacej pamäte."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná, pretože bol použitý protokol WebRTC."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Stránky s rozhraním WebShare momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Stránky s rozhraním WebSocket nemajú prístup do spätnej vyrovnávacej pamäte."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "Spätná vyrovnávacia pamäť je deaktivovaná, pretože bol použitý protokol WebSocket."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Stránky s rozhraním WebTransport nemajú prístup do spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "Spätná vyrovnávacia pamäť je deaktivovaná, pretože bol použitý protokol WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Stránky s rozhraním WebXR momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Vypnúť režim mriežky"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "Vypnúť režim Masonry"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Deaktivovať prekrytie typu posúvať a prichytiť"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Zapnúť režim mriežky"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "Zapnúť režim Masonry"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Aktivovať prekrytie typu posúvať a prichytiť"
@@ -6771,7 +6789,7 @@
     "message": "Kategória prijímačov udalostí"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Prijímače Framework"
+    "message": "Vyriešte prijímače Framework"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Pasívne"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Prekrytia Flexbox"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "Mriežka alebo Masonry"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "Mriežka alebo prekrytia Masonry"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Na tejto stránke nie sú žiadne rozloženia Flexbox"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "Na tejto stránke sa nenašla mriežka ani rozloženia Masonry"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Nastavenia zobrazenia prekrytia"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "Požiadavky môžu byť prepísané miestne, pozrite si panel zdrojov"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "Pridať…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "Pridať {PH1}"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Vlastné"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "Predvoľby"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – odporúčané"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "Nakalibrujte…"
@@ -8646,10 +8685,10 @@
     "message": "Resetovať na predvolenú hodnotu"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "Save-Data: vynútené vypnutie"
+    "message": "Save-Data: vypnuté"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "Save-Data: vynútené zapnutie"
+    "message": "Save-Data: zapnuté"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "Prepísať hodnotu nahlásenú nástrojom navigator.connection.saveData na stránke"
@@ -9357,7 +9396,7 @@
     "message": "Zobraziť iba blokované požiadavky"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(Iba v režime inkognito) Zobrazovať iba požiadavky odoslané do proxy serverov ochrany adresy IP"
+    "message": "Zobrazujte si iba požiadavky odoslané do proxy serverov ochrany adresy IP. Pri bežnom prehliadaní to nemá žiadny vplyv."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Zobrazovať iba požiadavky s blokovanými súbormi cookie odpovedí"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "Webová adresa"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "Sťahovanie: {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (z vyrovnávacej pamäte)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (od: ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "Latencia: {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "Latencia: {PH1}. Stiahnutie: {PH2}. Celkove: {PH3}."
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Súbory cookie, ktoré boli prijaté zo servera v rámci hlavičky set-cookie príslušnej odpovede"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Obídenie ochrany adresy IP"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "Identifikátor"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "Metóda"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "Proxy server protokolu IP nie je k dispozícii"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "Proxy server protokolu IP je k dispozícii iba v režime inkognito. Otvorte web v režime inkognito."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "Požiadavky proxy servera"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "Stav"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "Webová adresa"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Otestujte, ako bude tento web fungovať, keď bude v Chrome povolený proxy server protokolu IP"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "Ovládanie proxy servera ochrany adresy IP"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} so šifrovaním {PH2}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Ovládania"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "Ochrana adresy IP"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Hlavný pôvod"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Používateľ je nečinný, obrazovka bola odomknutá"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "Automatické generovanie názvov pre poznámky reportov sledovania výkonnosti"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Pri písaní na paneli Konzola alebo Zdroje sa vám budú zobrazovať návrhy kódu. Ak chcete niektorý prijať, stlačte Tab."
   },
@@ -12336,16 +12396,16 @@
     "message": "Zvýšte si produktivitu pomocou umelej inteligencie"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "Váš vstup v konzole, história aktuálnej relácie konzoly a obsah aktuálne otvoreného súboru sa zdieľajú s Googlom, aby sa dali vygenerovať návrhy kódu. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu."
+    "message": "Váš vstup v konzole, história aktuálnej relácie konzoly, aktuálne kontrolovaná šablóna CSS a obsah aktuálne otvoreného súboru sa zdieľajú s Googlom, aby sa dali vygenerovať návrhy kódu. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Váš vstup v konzole, história aktuálnej relácie konzoly a obsah aktuálne otvoreného súboru sa zdieľajú s Googlom, aby sa dali vygenerovať návrhy kódu. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu."
+    "message": "Váš vstup v konzole, história aktuálnej relácie konzoly, aktuálne kontrolovaná šablóna CSS a obsah aktuálne otvoreného súboru sa zdieľajú s Googlom, aby sa dali vygenerovať návrhy kódu. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu. Vaša organizácia môže tieto nastavenia kedykoľvek zmeniť."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "Správa konzoly, spojené sledovanie zásobníka, súvisiaci zdrojový kód a spojené hlavičky v sieti sa odosielajú Googlu, aby vygeneroval vysvetlenia. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu."
+    "message": "Správa konzoly, spojené sledovanie zásobníka, súvisiaci zdrojový kód a spojené hlavičky v sieti sa odosielajú Googlu na účely generovania vysvetlení. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Správa konzoly, spojené sledovanie zásobníka, súvisiaci zdrojový kód a spojené hlavičky v sieti sa odosielajú Googlu, aby vygeneroval vysvetlenia. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu."
+    "message": "Správa konzoly, spojené sledovanie zásobníka, súvisiaci zdrojový kód a spojené hlavičky v sieti sa odosielajú Googlu na účely generovania vysvetlení. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu. Vaša organizácia môže tieto nastavenia kedykoľvek zmeniť."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "V závislosti od vášho regiónu môže Google prestať zhromažďovať údaje"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Povoliť asistenciu s umelou inteligenciou"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "Povoliť návrhy kódu od umelej inteligencie"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "Povoliť návrhy umelej inteligencie pre poznámky na paneli výkonnosti"
@@ -12381,19 +12444,19 @@
     "message": "Porozumejte štýlom CSS, aktivite siete, kritickým miestam výkonnosti a pôvodom súborov pomocou štatistík využívajúcich umelú inteligenciu"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Akékoľvek dopyty používateľov a údaje, ku ktorým má kontrolovaná stránka prístup prostredníctvom webových rozhraní API, žiadostí siete, súborov a stôp výkonu môžu byť odoslané Googlu na generovanie vysvetlení. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu. Nepoužívajte na stránkach s osobnými alebo citlivými údajmi."
+    "message": "Akékoľvek dopyty používateľov a údaje, ku ktorým má kontrolovaná stránka prístup prostredníctvom webových rozhraní API, požiadaviek siete, súborov a reportov sledovania výkonnosti, sa odosielajú Googlu na účely generovania vysvetlení. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu. Nepoužívajte na stránkach s osobnými alebo citlivými údajmi."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Akékoľvek dopyty používateľov a údaje, ku ktorým má kontrolovaná stránka prístup prostredníctvom webových rozhraní API, žiadostí siete, súborov a stôp výkonu môžu byť odoslané Googlu na generovanie vysvetlení. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu."
+    "message": "Akékoľvek dopyty používateľov a údaje, ku ktorým má kontrolovaná stránka prístup prostredníctvom webových rozhraní API, požiadaviek siete, súborov a reportov sledovania výkonnosti, sa odosielajú Googlu na účely generovania vysvetlení. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu. Vaša organizácia môže tieto nastavenia kedykoľvek zmeniť."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "Vaša stopa výkonnosti bude odoslaná Googlu, aby vygeneroval vysvetlenie. Pomocou týchto údajov sa budú zlepšovať modely umelej inteligencie od Googlu."
+    "message": "Report sledovania výkonnosti sa odosiela Googlu na účely generovania návrhov poznámok. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Vaša stopa výkonnosti bude odoslaná Googlu, aby vygeneroval vysvetlenie. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu."
+    "message": "Report sledovania výkonnosti sa odosiela Googlu na účely generovania návrhov poznámok. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu. Vaša organizácia môže tieto nastavenia kedykoľvek zmeniť."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "Získajte návrhy umelej inteligencie pre poznámky panela výkonnosti"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "Pomôže vám pridať poznámky do reportu sledovania výkonnosti pomocou automaticky generovaných štítkov"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "Získajte pomoc s vypĺňaním kódu"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Nestabilné experimenty"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (ročná tarifa)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (mesačná tarifa)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (ročná tarifa)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (mesačná tarifa)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "Tarifa Standard"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "Neznámy tarifa"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Neprihlásili ste sa do Chromu."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Ak chcete toto nastavenie zapnúť, najprv musíte povoliť synchronizáciu nastavení v Chrome."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Prejsť do Nastavení"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(Relevantné údaje sa odosielajú Googlu)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "Registrovať sa"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Do Chromu je prihlásený tento účet:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Ak chcete toto nastavenie zapnúť, musíte povoliť synchronizáciu Chromu."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "Zobraziť profil"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Pridať vlastné zariadenie"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "– Je povolené obmedzenie procesora"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "– Vzorkovanie JavaScript je zakázané"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "– Obmedzovanie rýchlosti je povolené"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "Stmavenie tretích strán"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "Zakázať vzorky JavaScript"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "Zakáže vzorkovanie JavaScript, zníži hornú hodnotu pri spustení v súvislosti s mobilnými zariadeniami"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Presuňte sem súbor alebo webovú adresu sledovania"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Opakuje sa"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "Časový limit"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} o {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Časy"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "Konfigurovať kanály"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "Zobrazovať všetko"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "V tomto reporte sledovania sú niektoré kanály skryté. Môžete ich konfigurovať kliknutím pravým tlačidlom myši na ich názov."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Asynchrónne"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Protokol WebSocket"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "Uloženie reportu sledovania výkonnosti "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "Zahrnúť poznámky"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "Zahrnúť obsah skriptu"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "Zahrnúť mapy zdrojov skriptu"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "Uložiť"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "Uložiť sledovanie…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Rozšírené"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Súbory cookie pre túto požiadavku sú blokované. Môže to byť spôsobené experimentálnymi funkciami Chromu alebo konfiguráciou prehliadača. Viac sa dozviete na paneli Problémy."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "Zvukový kontext: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "Veľkosť vyrovnávacej pamäte spätného volania"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "Interval spätného volania"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "Aktuálny čas"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "Kanály s maximálnym výstupom"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(žiadne záznamy)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Nebolo zistené žiadne používanie rozhrania Web Audio API"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Otvorte stránku, ktorá využíva rozhranie Web Audio API, a začnite monitorovať."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "Vykresliť kapacitu"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "Vzorkovacia frekvencia"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "Stav"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "zvuk"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Ďalšie nástroje"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "Presunúť naspodok"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "Presunúť do vysúvacieho panela"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "Presunúť navrch"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "Prejsť na hlavný panel s kartami"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Panely"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "začiarknuté"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "Toto je nová funkcia"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Spustenie príkazu"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "Toto je nová funkcia"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Nenašli sa žiadne výsledky"

@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "Performans paneli"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "Hesap"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -147,7 +150,7 @@
     "message": "Genel"
   },
   "core/common/SettingRegistration.ts | grid": {
-    "message": "Izgara"
+    "message": "Grid"
   },
   "core/common/SettingRegistration.ts | memory": {
     "message": "Bellek"
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "Kaynaklar"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "Senkronizasyon"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "Geliştirici araçları: {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "Komut dosyalarını göster"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "Yapay Zeka Desteği"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Geliştirici Araçları'nı özelleştirme ve kontrol etme"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Önceki panel"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "Rozet al"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Geliştirici Araçları'nı yeniden yükle"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Bu özellik yalnızca etkin internet bağlantısı olduğunda kullanılabilir."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevTools harici bir istek aldı"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Sayfa yüklenirken bilinmeyen hata oluştu"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Sıkıştırılmış Sözlük Aktarımı"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "Sunucu Tarafından Başlatılan Bütünlük Kontrolleri"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "HTTP kodlanmamış özet spesifikasyonu"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Sayfa yüklendikten sonra yeni bir cihazı simüle etmek LCP'yi etkileyebilir. Doğru LCP verileri için yeni bir cihazı simüle ettikten sonra sayfayı yeniden yükleyin."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Yerel sohbeti sil"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "Görüşmeyi dışa aktar"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Soru sormak için yukarıdaki adımları uygulayın"
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "Eski görüşme yok"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "Yanıt, panoya kopyalandı"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "Geri bildirim gönder"
   },
@@ -2685,7 +2706,7 @@
     "message": "Ayarlar"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
-    "message": "Yapay zeka yardımı"
+    "message": "Yapay Zeka Desteği"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "Yapay zekaya sorun"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Tahmine dayalı yüklemeler"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Gövdesini görüntülemek istediğiniz raporu tıklayın"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "Rapor seçilmedi"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "Gövdesini görüntülemek istediğiniz raporu tıklayın"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "Rapor veya uç nokta yok"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "Rapor seçilmedi"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "Bu sayfada Reporting API raporlarını ve uç noktalarını inceleyebilirsiniz."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC içeren sayfalar geri-ileri önbelleğe giremez."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "WebRTC kullanıldığı için geri-ileri önbellek devre dışı bırakıldı."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "WebShare kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocket içeren sayfalar geri-ileri önbelleğe giremez."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "WebSocket kullanıldığı için geri-ileri önbellek devre dışı bırakıldı."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransport içeren sayfalar geri-ileri önbelleğe giremez."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "WebTransport kullanıldığı için geri-ileri önbellek devre dışı bırakıldı."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "WebXR kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Kılavuz modunu devre dışı bırak"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "Masonry modunu devre dışı bırak"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Kaydırmayı tutturma yer paylaşımını devre dışı bırak"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Kılavuz modunu etkinleştir"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "Masonry modunu etkinleştir"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Kaydırmayı tutturma yer paylaşımını etkinleştir"
@@ -6771,7 +6789,7 @@
     "message": "Etkinlik işleyici kategorisi"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework dinleyicileri"
+    "message": "Framework işleyicilerini çözümleyin"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Etkin değil"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Flexbox yer paylaşımları"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "Grid/Masonry"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "Grid (Izgara)/Masonry (Duvar örgüsü) yer paylaşımları"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Bu sayfada flexbox düzeni bulunamadı"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "Bu sayfada grid veya masonry düzeni bulunamadı"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Görüntüleme ayarlarına yer paylaşımı uygula"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "İstekler yerel olarak geçersiz kılınmış olabilir (Kaynaklar paneline bakın)"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "Ekle…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "{PH1} ekle"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Özel"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "Hazır Ayarlar"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – önerilen"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "Ayarla…"
@@ -8646,10 +8685,10 @@
     "message": "Varsayılan değere sıfırlanır"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "\"Save-Data\": Zorunlu olarak devre dışı"
+    "message": "\"Save-Data\": kapalı"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "\"Save-Data\": Zorunlu olarak açık"
+    "message": "\"Save-Data\": açık"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "Sayfada navigator.connection.saveData tarafından bildirilen değeri geçersiz kılın"
@@ -9357,7 +9396,7 @@
     "message": "Yalnızca engellenen istekleri göster"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(Yalnızca Gizli Mod) Yalnızca IP koruması proxy'lerine gönderilen istekleri göster"
+    "message": "Yalnızca IP koruması proxy'lerine gönderilen istekleri göster. Normal taramada etkisi yoktur."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Yalnızca engellenen yanıt çerezlerine sahip istekleri göster"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1} indirme"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (önbellekten)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (ServiceWorker tarafından)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "{PH1} gecikme"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "{PH1} gecikme, {PH2} indirme (toplam {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Sunucudan yanıtın \"set-cookie\" üst bilgisi içinde alınan çerezler"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP korumasını atlayın"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "Kimlik"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "Yöntem"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "IP proxy'si kullanılamıyor"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "IP proxy'si yalnızca Gizli modda kullanılabilir. Siteyi Gizli modda açın."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "Proxy İstekleri"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "Durum"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Chrome'da IP proxy'si etkinleştirilirse bu sitenin nasıl performans göstereceğini test edin"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "IP Koruması Proxy Kontrolleri"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH2} ile {PH1}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Denetimler"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "IP Koruması"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Ana kaynak"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Kullanıcı aktif değil, ekran kilidi açık"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "Performans izi notları için otomatik olarak başlık oluşturun"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Konsol'da veya Kaynaklar panelinde yazarken kod önerileri alırsınız. Önerilerden birini kabul etmek için Sekme tuşuna basın."
   },
@@ -12336,16 +12396,16 @@
     "message": "Yapay zeka ile üretkenliğinizi artırın"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "Kod önerileri oluşturmak için konsol girişiniz, geçerli konsol oturumunuzun geçmişi ve şu anda açık olan dosyanın içeriği Google ile paylaşılır. Bu veriler, özelliğin geliştirilmesi için inceleme uzmanları tarafından görüntülenebilir."
+    "message": "Kod önerileri oluşturmak için konsol girişiniz, mevcut konsol oturumunuzun geçmişi, şu anda incelenen CSS ve açık olan dosyanın içeriği Google ile paylaşılır. Bu veriler, özelliğin geliştirilmesi için inceleme uzmanları tarafından görüntülenebilir."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Kod önerileri oluşturmak için konsol girişiniz, geçerli konsol oturumunuzun geçmişi ve şu anda açık olan dosyanın içeriği Google ile paylaşılır. Bu veriler, Google'ın yapay zeka modellerini iyileştirmek için kullanılmaz."
+    "message": "Kod önerileri oluşturmak için konsol girişiniz, mevcut konsol oturumunuzun geçmişi, şu anda incelenen CSS ve açık olan dosyanın içeriği Google ile paylaşılır. Bu veriler, Google'ın yapay zeka modellerini iyileştirmek için kullanılmaz. Kuruluşunuz istediği zaman bu ayarları değiştirebilir."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "Konsol mesajı, ilişkili yığın izleme (stack trace), ilgili kaynak kodu ve ilişkili ağ yanıtları, açıklama oluşturmak için Google'a gönderilir. Bu veriler, özelliğin geliştirilmesi için inceleme uzmanları tarafından görüntülenebilir."
+    "message": "Konsol mesajı, ilişkili yığın izleme (stack trace), ilgili kaynak kodu ve ilişkili ağ başlıkları, açıklama oluşturmak için Google'a gönderilir. Bu veriler, özelliğin geliştirilmesi için inceleme uzmanları tarafından görüntülenebilir."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Konsol mesajı, ilişkili yığın izleme (stack trace), ilgili kaynak kodu ve ilişkili ağ yanıtları, açıklama oluşturmak için Google'a gönderilir. Bu veriler, Google'ın yapay zeka modellerini iyileştirmek için kullanılmaz."
+    "message": "Konsol mesajı, ilişkili yığın izleme (stack trace), ilgili kaynak kodu ve ilişkili ağ başlıkları, açıklama oluşturmak için Google'a gönderilir. Bu veriler, Google'ın yapay zeka modellerini iyileştirmek için kullanılmaz. Kuruluşunuz istediği zaman bu ayarları değiştirebilir."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Google, bulunduğunuz bölgeye bağlı olarak veri toplamayabilir"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Yapay zeka yardımını etkinleştir"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "Yapay zeka kod önerilerini etkinleştir"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "Performans paneli notlarıyla ilgili yapay zeka önerilerini etkinleştir"
@@ -12384,16 +12447,16 @@
     "message": "İncelenen sayfanın; Web API'leri, ağ istekleri, dosyalar ve performans izleri aracılığıyla erişebildiği tüm kullanıcı sorguları ve veriler, açıklama oluşturmak için Google'a gönderilir. Bu veriler, özelliğin geliştirilmesi için inceleme uzmanları tarafından görüntülenebilir. Kişisel veya hassas bilgilerin yer aldığı sayfalarda kullanmayın."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "İncelenen sayfanın; Web API'leri, ağ istekleri, dosyalar ve performans izleri aracılığıyla erişebildiği tüm kullanıcı sorguları ve veriler, açıklama oluşturmak için Google'a gönderilir. Bu veriler, Google'ın yapay zeka modellerini iyileştirmek için kullanılmaz."
+    "message": "İncelenen sayfanın; Web API'leri, ağ istekleri, dosyalar ve performans izleri aracılığıyla erişebildiği tüm kullanıcı sorguları ve veriler, açıklama oluşturmak için Google'a gönderilir. Bu veriler, Google'ın yapay zeka modellerini iyileştirmek için kullanılmaz. Kuruluşunuz istediği zaman bu ayarları değiştirebilir."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "Performans izlemeniz, açıklama üretmek için Google'a gönderilir. Bu veriler, Google'ın yapay zeka modellerini iyileştirmek için kullanılmaz."
+    "message": "Not önerileri oluşturmak için performans iziniz Google'a gönderilir. Bu veriler, özelliğin geliştirilmesi için inceleme uzmanları tarafından görüntülenebilir."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Performans izlemeniz, açıklama üretmek için Google'a gönderilir. Bu veriler, Google'ın yapay zeka modellerini iyileştirmek için kullanılmaz."
+    "message": "Not önerileri oluşturmak için performans iziniz Google'a gönderilir. Bu veriler, Google'ın yapay zeka modellerini iyileştirmek için kullanılmaz. Kuruluşunuz istediği zaman bu ayarları değiştirebilir."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "Performans paneli notlarıyla ilgili yapay zeka önerileri alın"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "Otomatik olarak oluşturulan etiketlerle performans izinize not eklemenize yardımcı olur"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "Kodunuzu tamamlama konusunda yardım alın"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Tutarsız denemeler"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (Yıllık)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium - (Aylık)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (Yıllık)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (Aylık)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "Standart plan"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "Bilinmeyen plan"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Chrome'da oturum açmadınız."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Bu ayarı açmak için önce Chrome'da ayarların senkronizasyonunu etkinleştirmeniz gerekir."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Ayarlar'a git"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(Alakalı veriler Google'a gönderilir)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "Kaydol"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Chrome'da oturum açan e-posta adresi:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Bu ayarı açmak için Chrome Senkronizasyonu'nu etkinleştirmeniz gerekir."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "Profili görüntüle"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Özel cihaz ekle"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU kısıtlama etkin"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- JavaScript örnekleme devre dışı"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Ağ sınırlama etkin"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "Üçüncü tarafların görünürlüğünü azalt"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "JavaScript örneklerini devre dışı bırak"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "JavaScript örneklemeyi devre dışı bırakır, mobil cihaz bağlamında yürütülürken performans yükünü azaltır"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "İzleme dosyasını veya URL'sini buraya bırakın"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Yinelenmeler"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "Zaman aşımı"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1}, {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Zamanlamalar"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "Kanalları yapılandır"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "Tümünü göster"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "Bu izde bazı kanallar gizlenmiş. Kanal adını sağ tıklayarak kanalları yapılandırabilirsiniz."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Eş zamansız"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket protokolü"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "Performans izini kaydedin "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "Notları dahil edin"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "Komut dosyası içeriklerini dahil edin"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "Komut dosyası kaynak haritalarını dahil edin"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "Kaydet"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "İzi kaydet…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Gelişmiş"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Bu istekle ilgili çerezler, Chrome flag'leri veya tarayıcı yapılandırması nedeniyle engelleniyor. Sorunlar panelinden daha fazla bilgi edinebilirsiniz."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "Ses bağlamı: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "Geri Çağırma Arabellek Boyutu"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "Geri çağırma Aralığı"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "Şu Anki Saat"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "Maksimum Çıkış Kanalı"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(kayıt yok)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Web Audio API kullanımı algılanmadı"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "İzlemeyi başlatmak için Web Audio API kullanan bir sayfa açın."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "İşleme Kapasitesi"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "Örnek Hızı"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "Eyalet"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "ses"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Diğer Araçlar"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "En alta taşı"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "Çekmeceye taşı"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "En üste taşı"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "Ana sekme çubuğuna taşı"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Paneller"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "işaretli"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "Bu yeni bir özelliktir"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Komutu çalıştır"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "Bu yeni bir özelliktir"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Sonuç bulunamadı"

@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "Панел за ефективността"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "Профил"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Декоратор"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "Източници"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "Синхронизиране"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools – {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "Показване на инструмента за скриптове"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "Помощ от AI"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Персонализиране и управление на DevTools"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Предишен панел"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "Получаване на значки"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Презареждане на DevTools"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Тази функция е налице само при активна връзка с интернет."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevTools получи външна заявка"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "При зареждането на файла възникна неизвестна грешка"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Транспортиране чрез речници за компресиране"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "Проверки на целостта, инициирани от сървъра"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "Спецификация за некодиран хеш в HTTP"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Симулирането на ново устройство, след като страницата бъде заредена, може да засегне LCP. Презаредете я, след като симулирате ново устройство, за да получите точни данни за този показател."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Изтриване на локалния разговор"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "Експортиране на разговора"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Изпълнете стъпките по-горе, за да зададете въпрос"
   },
@@ -2677,6 +2695,9 @@
   },
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "Няма минали разговори"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "Отговорът е копиран в буферната памет"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "Изпращане на отзиви"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Спекулативни зареждания"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Кликнете върху отчет, за да се покаже основният му текст"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "Не е избран отчет"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API за отчитане"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "Кликнете върху отчет, за да се покаже основният му текст"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "Няма отчет, нито крайна точка"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "Не е избран отчет"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "На тази страница ще можете да инспектирате отчетите и крайните точки от Reporting API."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Страниците с WebRTC не могат да бъдат добавени към кеша за назад/напред."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "Кешът за назад/напред е деактивиран поради използване на WebRTC."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Страниците, които използват WebShare, понастоящем не отговарят на условията за кеша за назад/напред."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Страниците с WebSocket не могат да бъдат добавени към кеша за назад/напред."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "Кешът за назад/напред е деактивиран поради използване на WebSocket."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Страниците с WebTransport не могат да бъдат добавени към кеша за назад/напред."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "Кешът за назад/напред е деактивиран поради използване на WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Страниците, които използват WebXR, понастоящем не отговарят на условията за кеша за назад/напред."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Деактивиране на режима с решетка"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "Деактивиране на режима „блокове“"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Деактивиране на наслагването за превъртане с подравняване"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Активиране на режима с решетка"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "Активиране на режима „блокове“"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Активиране на наслагването за превъртане с подравняване"
@@ -6771,7 +6789,7 @@
     "message": "Категория приематели на събития"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework: приематели"
+    "message": "Разрешаване на приематели на Framework"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Пасивни"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Наслагвания на поле с гъвкаво оформление"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "Решетка/блокове"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "Наслагвания от тип „решетка“/„блокове“"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "На тази страница не са намерени структури с полета с гъвкаво оформление"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "На тази страница не са намерени оформления от тип „решетка“ или „блокове“"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Настройки за показване на наслагвания"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "Заявките може да бъдат заменени локално. Вижте панела „Източници“"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "Добавяне…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "Добавяне на {PH1}"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Персонализирано"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "Предварително зададени"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} (препоръчано)"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "Калибриране…"
@@ -8646,10 +8685,10 @@
     "message": "Възстановяване на стандартната стойност"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "Save-Data: принудително изключване"
+    "message": "Save-Data: изключено"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "Save-Data: принудително включване"
+    "message": "Save-Data: включено"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "Замяна на стойността, съобщена на страницата от navigator.connection.saveData"
@@ -9357,7 +9396,7 @@
     "message": "Показване само на блокираните заявки"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(Само в режим инкогнито) Показване само на заявките, изпратени до прокси сървърите за защита на IP адреса"
+    "message": "Показване само на заявките, изпратени до прокси сървърите за защита на IP адреса Няма ефект при обикновено сърфиране."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Показване само на заявките с блокирани „бисквитки“ за отговор"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL адрес"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "Изтегляне: {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (от кеша)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (от ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "Забавяне от {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "Забавяне: {PH1}, изтегляне: {PH2} (общо: {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "„Бисквитки“, които са получени от сървъра в заглавката set-cookie на отговора"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Видео"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Заобикаляне на защитата на IP адреса"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "ID"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "Метод"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "Прокси сървърът за IP адреса не е налице"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "Прокси сървърът за IP адреса е налице само в режим „инкогнито“. Отворете сайта в режим „инкогнито“."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "Заявки за прокси сървър"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "Състояние"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL адрес"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Тествайте как ще работи този сайт, ако прокси сървърът за IP адреса е активиран в Chrome"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "Контроли за прокси сървъра в инструмента за защита на IP адреса"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} с(ъс) {PH2}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Контроли"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "Защита на IP адреса"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Основен източник"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Неактивност на потребителя, отключен екран"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "Автоматично генериране на заглавия за анотациите в трасирането на ефективността"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Докато пишете в панела „Конзола“ или „Източници“, ще получавате предложения за код. За да приемете някое от тях, натиснете Tab."
   },
@@ -12336,16 +12396,16 @@
     "message": "Повишете продуктивността си с помощта на AI"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "За да се генерират предложения за код, с Google се споделят въведеното от вас в конзолата, историята на текущата ви сесия в нея и съдържанието на отворения в момента файл. Тези данни може да бъдат видени от проверяващи лица с цел подобряване на функцията."
+    "message": "За да се генерират предложения за код, с Google се споделят въведеното от вас в конзолата, историята на текущата ви сесия в нея, проверяваният в момента CSS елемент и съдържанието на отворения в момента файл. Тези данни може да бъдат видени от проверяващи лица с цел подобряване на функцията."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "За да се генерират предложения за код, с Google се споделят въведеното от вас в конзолата, историята на текущата ви сесия в нея и съдържанието на отворения в момента файл. Тези данни няма да се използват за подобряване на моделите на AI на Google."
+    "message": "За да се генерират предложения за код, с Google се споделят въведеното от вас в конзолата, историята на текущата ви сесия в нея, проверяваният в момента CSS елемент и съдържанието на отворения в момента файл. Тези данни няма да се използват за подобряване на моделите на AI на Google. Организацията ви може да промени тези настройки по всяко време."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "Съобщението в конзолата, свързаното трасиране на стека, съответният изходен код и асоциираните мрежови заглавки се изпращат до Google с цел генериране на обяснения. Тези данни може да бъдат видени от проверяващи лица с цел подобряване на функцията."
+    "message": "За да се генерират обяснения, до Google се изпращат съобщението в конзолата, свързаното трасиране на стека, съответният изходен код и асоциираните мрежови заглавки. Тези данни може да бъдат видени от проверяващи лица с цел подобряване на функцията."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Съобщението в конзолата, свързаното трасиране на стека, съответният изходен код и асоциираните мрежови заглавки се изпращат до Google с цел генериране на обяснения. Тези данни няма да се използват за подобряване на моделите на AI на Google."
+    "message": "За да се генерират обяснения, до Google се изпращат съобщението в конзолата, свързаното трасиране на стека, съответният изходен код и асоциираните мрежови заглавки. Тези данни няма да се използват за подобряване на моделите на AI на Google. Организацията ви може да промени тези настройки по всяко време."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "В зависимост от региона ви е възможно Google да не събира данни"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Активиране на „Помощ от AI“"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "Активиране на предложенията за код от AI"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "Активиране на предложенията от AI за анотации за панела за ефективност"
@@ -12381,19 +12444,19 @@
     "message": "Запознайте се със CSS стиловете, активността в мрежата, слабите места, влияещи на ефективността, и произхода на файловете с помощта на полезна информация, базирана на AI"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Всички заявки на потребителите и данните, до които проверяваната страница има достъп чрез уеб API, заявките в мрежата, файловете и трасиранията на ефективността се изпращат до Google с цел генериране на обяснения. Тези данни може да бъдат видени от проверяващи лица с цел подобряване на функцията. Не използвайте на страници с лична или поверителна информация."
+    "message": "За да бъдат генерирани обяснения, до Google се изпращат всички заявки на потребителите и данните, до които проверяваната страница има достъп чрез уеб API, заявките в мрежата, файловете и трасиранията на ефективността. Тези данни може да бъдат видени от проверяващи лица с цел подобряване на функцията. Не използвайте на страници с лична или поверителна информация."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Всички заявки на потребителите и данните, до които проверяваната страница има достъп чрез уеб API, заявките в мрежата, файловете и трасиранията на ефективността се изпращат до Google с цел генериране на обяснения. Тези данни няма да се използват за подобряване на моделите на AI на Google."
+    "message": "За да бъдат генерирани обяснения, до Google се изпращат всички заявки на потребителите и данните, до които проверяваната страница има достъп чрез уеб API, заявките в мрежата, файловете и трасиранията на ефективността. Тези данни няма да се използват за подобряване на моделите на AI на Google. Организацията ви може да промени тези настройки по всяко време."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "Трасирането на ефективността се изпраща до Google с цел генериране на обяснение. Тези данни ще се използват за подобряване на моделите на AI на Google."
+    "message": "За да се генерират предложения за анотации, до Google се изпраща трасирането на ефективността ви. Тези данни може да бъдат видени от проверяващи лица с цел подобряване на функцията."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Трасирането на ефективността се изпраща до Google с цел генериране на обяснение. Тези данни няма да се използват за подобряване на моделите на AI на Google."
+    "message": "За да се генерират предложения за анотации, до Google се изпраща трасирането на ефективността ви. Тези данни няма да се използват за подобряване на моделите на AI на Google. Организацията ви може да промени тези настройки по всяко време."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "Получавайте предложения от AI за анотации за панела за ефективност"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "Помага за анотиране на трасирането на ефективността с автоматично генерирани етикети"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "Получете помощ за завършването на кода си"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Нестабилни експерименти"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (годишно)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (месечно)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (годишно)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (месечно)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "План Standard"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "Неизвестен план"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Не сте влезли в профила си в Chrome."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "За да включите тази настройка, първо трябва да активирате синхронизирането на настройките в Chrome."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Към настройките"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(до Google се изпращат подходящи данни)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "Регистриране"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Влезли сте в Chrome като:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "За да включите тази настройка, трябва да активирате синхронизирането в Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "Преглед на потребителския профил"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Добавяне на персонализирано устройство"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "– Ограничаването на процесора е активирано"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "– Семплирането на JavaScript е деактивирано"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "– Ограничаването на мрежата е активирано"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "Затъмняване на съдържанието на трети страни"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "Деактивиране на семплирането на JavaScript"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "Деактивира семплирането на JavaScript, намалява използването на допълнителни ресурси при изпълнение с мобилни устройства"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Преместете тук файла или URL адреса с трасирането"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Повтаряне"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "Време за изчакване"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} – {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Времена"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "Конфигуриране на каналите"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "Показване на всички"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "Някои канали в това трасиране са скрити. Можете да ги конфигурирате, като кликнете с десния бутон върху името на канала."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Асинхронна работа"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Протокол WebSocket"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "Запазване на трасирането на ефективността "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "Включване на анотациите"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "Включване на съдържанието на скрипта"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "Включване на изходния код на скрипта"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "Запазване"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "Запазване на трасирането…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Разширени"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "„Бисквитките“ за тази заявка са блокирани или поради флагове на Chrome, или поради конфигурацията на браузъра. Научете повече в панела за проблеми."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "Аудиоконтекст: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "Размер на буферната памет за обратни извиквания"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "Интервал за обратно извикване"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "Текущ час"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "Макс. брой изходни канали"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(няма записи)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Не е установено използване на API за Web Audio"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Отворете страница, която използва API за уеб аудио, за да започнете наблюдение."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "Капацитет за рендериране"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "Скорост на семплиране"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "Състояние"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "аудио"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Още инструменти"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "Преместване най-долу"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "Преместване в слоя"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "Преместване най-горе"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "Преместване в основната лента с раздели"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Панели"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "с отметка"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "Това е нова функция"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Изпълнение на командата"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "Това е нова функция"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Няма намерени резултати"

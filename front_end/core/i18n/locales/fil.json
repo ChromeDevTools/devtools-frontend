@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "Panel ng performance"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "Account"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "Mga Source"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "Pag-sync"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "Ipakita ang Mga Script"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "Tulong ng AI"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "I-customize at kontrolin ang DevTools"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Nakaraang panel"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "Tumanggap ng mga badge"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "I-reload ang DevTools"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Available lang ang feature na ito kapag may aktibong koneksyon sa internet."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "Nakatanggap ang DevTools ng external na request"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Hindi kilalang error sa pag-load ng file"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Pag-transport ng Compression Dictionary"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "Mga Pagsusuri sa Integridad na Sinimulan ng Server"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "Detalye ng HTTP Unencoded Digest"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Posibleng makaapekto sa LCP ang pag-simulate ng bagong device pagkatapos mag-load ng page. I-reload ang page pagkatapos mag-simulate ng bagong device para sa tumpak na data ng LCP."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "I-delete ang lokal na chat"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "I-export ang pag-uusap"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Sundin ang mga hakbang sa itaas para makapagtanong"
   },
@@ -2677,6 +2695,9 @@
   },
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "Walang nakaraang pag-uusap"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "Nakopya ang sagot sa clipboard"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "Magpadala ng feedback"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Mga speculative na pag-load"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Mag-click sa anumang ulat para ipakita ang nilalaman nito"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "Walang napiling ulat"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "Mag-click sa anumang ulat para ipakita ang nilalaman nito"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "Walang ulat o endpoint"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "Walang napiling ulat"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "Sa page na ito, magagawa mong siyasatin ang mga ulat at endpoint ng Reporting API."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Hindi puwedeng pumasok sa back/forward cache ang mga page na may WebRTC."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "Naka-disable ang back/forward cache dahil ginamit ang WebRTC."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng WebShare."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Hindi puwedeng pumasok sa back/forward cache ang mga page na may WebSocket."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "Naka-disable ang back/forward cache dahil ginamit ang WebSocket."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Hindi puwedeng pumasok sa back/forward cache ang mga page na may WebTransport."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "Naka-disable ang back/forward cache dahil ginamit ang WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng WebXR."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "I-disable ang grid mode"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "I-disable ang masonry mode"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "I-disable ang overlay ng scroll-snap"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "I-enable ang grid mode"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "I-enable ang masonry mode"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "I-enable ang overlay ng scroll-snap"
@@ -6771,7 +6789,7 @@
     "message": "Kategorya ng mga event listener"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Mga listener sa Framework"
+    "message": "Lutasin ang mga listener sa Framework"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Passive"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Mga overlay ng flexbox"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "Grid / Masonry"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "Mga overlay ng Grid / Masonry"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Walang nakitang layout ng flexbox sa page na ito"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "Walang nakitang layout ng grid o masonry sa page na ito"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Mga setting ng overlay display"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "Posibleng lokal na ma-override ang mga request, tingnan ang panel na Mga Source"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "Magdagdag…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "Idagdag ang {PH1}"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Custom"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "Mga Preset"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – inirerekomenda"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "I-calibrate…"
@@ -8646,10 +8685,10 @@
     "message": "I-reset sa default na value"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "'Save-Data': sapilitang i-off"
+    "message": "'Save-Data': naka-off"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "'Save-Data': sapilitang i-on"
+    "message": "'Save-Data': naka-on"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "I-override ang value na iniulat ng navigator.connection.saveData sa page"
@@ -9357,7 +9396,7 @@
     "message": "Ipakita lang ang mga naka-block na request"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(Incognito Lang) Ipakita lang ang mga request na ipinadala sa mga proxy ng Proteksyon sa IP"
+    "message": "Ipakita lang ang mga request na ipinadala sa mga proxy ng Proteksyon sa IP. Walang epekto sa regular na pag-browse."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Magpakita lang ng mga request na may naka-block na cookies ng pagsagot"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1} (na) pag-download"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (mula sa cache)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (mula sa ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "{PH1} na latency"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "{PH1} na latency, {PH2} na pag-download ({PH3} sa kabuuan)"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Cookies na natanggap mula sa server sa 'set-cookie' na header ng sagot"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "I-bypass ang Proteksyon sa IP"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "ID"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "Method"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "Hindi available ang proxy ng IP"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "Available lang ang proxy ng IP sa incognito mode. Buksan ang site sa incognito."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "Mga Request sa Proxy"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "Status"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "I-test ang magiging performance ng site na ito kung naka-enable ang Proxy ng IP sa Chrome"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "Mga Kontrol sa Proxy ng Proteksyon sa IP"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} gamit ang {PH2}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Mga Kontrol"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "Proteksyon sa IP"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Pangunahing pinagmulan"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Idle ang user, na-unlock ang screen"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "Awtomatikong bumuo ng mga pamagat para sa mga anotasyon ng trace ng performance"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Habang nagta-type ka sa panel na Console o Mga Source, makakakuha ka ng mga suhestyon sa code. Pindutin ang Tab para tanggapin ang isang code."
   },
@@ -12336,16 +12396,16 @@
     "message": "I-boost ang iyong pagiging produktibo gamit ang AI"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "Para makabuo ng mga suhestyon sa code, shine-share sa Google ang iyong input sa console, ang history ng kasalukuyan mong session sa console, at ang mga content ng kasalukuyang nakabukas na file. Puwedeng makita ng mga taong tagasuri ang data na ito para mapahusay ang feature na ito."
+    "message": "Para makabuo ng mga suhestyon sa code, shine-share sa Google ang iyong input sa console, ang history ng kasalukuyan mong session sa console, ang kasalukuyang sinisiyasat na CSS, at ang mga content ng kasalukuyang nakabukas na file. Puwedeng makita ng mga taong tagasuri ang data na ito para mapahusay ang feature na ito."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Para makabuo ng mga suhestyon sa code, shine-share sa Google ang iyong input sa console, ang history ng kasalukuyan mong session sa console, at ang mga content ng kasalukuyang nakabukas na file. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng Google AI."
+    "message": "Para makabuo ng mga suhestyon sa code, shine-share sa Google ang iyong input sa console, ang history ng kasalukuyan mong session sa console, ang kasalukuyang sinisiyasat na CSS, at ang mga content ng kasalukuyang nakabukas na file. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng Google AI. Posibleng baguhin ng iyong organisasyon ang mga setting na ito anumang oras."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "Ipinadala sa Google ang mensahe sa console, nauugnay na stack trace, nauugnay na source code, at mga nauugnay na header ng network para bumuo ng mga paliwanag. Puwedeng makita ng mga taong tagasuri ang data na ito para mapahusay ang feature na ito."
+    "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang mensahe sa console, nauugnay na stack trace, nauugnay na source code, at mga nauugnay na header ng network. Puwedeng makita ng mga taong tagasuri ang data na ito para mapahusay ang feature na ito."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Ipinapadala sa Google ang mensahe sa console, nauugnay na stack trace, nauugnay na source code, at mga nauugnay na header ng network para bumuo ng mga paliwanag. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng AI ng Google."
+    "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang mensahe sa console, nauugnay na stack trace, nauugnay na source code, at mga nauugnay na header ng network. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng Google AI. Posibleng baguhin ng iyong organisasyon ang mga setting na ito anumang oras."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Posibleng hindi mangolekta ng data ang Google depende sa iyong rehiyon"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "I-enable ang tulong ng AI"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "I-enable ang mga suhestyon sa code ng AI"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "I-enable ang mga suhestyon ng AI para sa mga anotasyon ng panel ng performance"
@@ -12381,19 +12444,19 @@
     "message": "Maunawaan ang mga CSS style, aktibidad ng network, mga bottleneck ng performance, at mga origin ng file gamit ang mga AI-powered na insight"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Ipinapadala sa Google ang anumang query at data ng user na puwedeng ma-access ng siniyasat na page sa pamamagitan ng mga Web API, request sa network, file, at trace ng performance para bumuo ng mga paliwanag. Puwedeng makita ng mga taong tagasuri ang data na ito para mapahusay ang feature na ito. Huwag gamitin sa mga page na may personal o sensitibong impormasyon."
+    "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang anumang query at data ng user na puwedeng ma-access ng sinisiyasat na page sa pamamagitan ng mga Web API, request sa network, file, at trace ng performance. Puwedeng makita ng mga taong tagasuri ang data na ito para mapahusay ang feature na ito. Huwag gamitin sa mga page na may personal o sensitibong impormasyon."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Ipinapadala sa Google ang anumang query at data ng user na puwedeng ma-access ng siniyasat na page sa pamamagitan ng mga Web API, request sa network, file, at trace ng performance para bumuo ng mga paliwanag. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng AI ng Google."
+    "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang anumang query at data ng user na puwedeng ma-access ng sinisiyasat na page sa pamamagitan ng mga Web API, request sa network, file, at trace ng performance. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng Google AI. Posibleng baguhin ng iyong organisasyon ang mga setting na ito anumang oras."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "Ipinapadala ang trace ng performance mo sa Google para bumuo ng paliwanag. Gagamitin ang data na ito para pahusayin ang mga modelo ng AI ng Google."
+    "message": "Para makabuo ng mga suhestyon sa anotasyon, ipinapadala sa Google ang trace ng iyong performance. Puwedeng makita ng mga taong tagasuri ang data na ito para mapahusay ang feature na ito."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Ipinapadala ang trace ng performance mo sa Google para bumuo ng paliwanag. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng AI ng Google."
+    "message": "Para makabuo ng mga suhestyon sa anotasyon, ipinapadala sa Google ang trace ng iyong performance. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng Google AI. Posibleng baguhin ng iyong organisasyon ang mga setting na ito anumang oras."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "Makakuha ng mga suhestyon ng AI para sa mga anotasyon ng panel ng performance"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "Tinutulungan kang i-annotate ang trace ng iyong performance gamit ang mga awtomatikong binuong label"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "Humingi ng tulong sa pagkumpleto ng iyong code"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Mga hindi stable na eksperimento"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (Taunan)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (Buwanan)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (Taunan)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (Buwanan)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "Standard plan"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "Hindi kilalang plan"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Hindi ka naka-sign in sa Chrome."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Para ma-on ang setting na ito, dapat mo munang i-enable ang pag-sync ng mga setting sa Chrome."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Pumunta sa Mga Setting"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(Ipinapadala sa Google ang nauugnay na data)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "Mag-sign up"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Naka-sign in sa Chrome bilang:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Para ma-on ang setting na ito, dapat mong i-enable ang Chrome sync."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "Tingnan ang profile"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Magdagdag ng custom na device"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- Naka-enable ang pag-throttle ng CPU"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- Naka-disable ang sampling ng JavaScript"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Naka-enable ang pag-throttle ng network"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "I-dim ang mga 3rd party"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "I-disable ang mga sample ng JavaScript"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "Dini-disable ang sampling ng JavaScript, binabawasan ang overhead kapag nagpapatakbo sa mga mobile device"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "I-drop ang trace file o URL dito"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Umuulit"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "Timeout"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} sa {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Mga Timing"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "Mag-configure ng mga track"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "Ipakita lahat"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "Naka-hide ang ilang track sa trace na ito. Puwede mong i-configure ang mga track sa pamamagitan ng pag-right click sa pangalan ng track."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Async"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Protocol ng WebSocket"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "I-save ang trace ng performance "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "Isama ang mga anotasyon"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "Isama ang content ng script"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "Isama ang mga source map ng script"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "I-save"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "I-save ang trace…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Advanced"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Naka-block ang cookies para sa request na ito dahil sa mga pag-flag ng Chrome o pag-configure ng browser. Matuto pa sa panel na Mga Isyu."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "Konteksto ng audio: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "Laki ng Buffer ng Callback"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "Interval ng Callback"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "Kasalukuyang Oras"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "Maximum na Mga Channel ng Output"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(walang recording)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Walang na-detect na paggamit ng Web Audio API"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Magbukas ng page na gumagamit ng Web Audio API para simulan ang pagsubaybay."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "Kapasidad sa Pag-render"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "Sample Rate"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "Status"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "audio"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Higit Pang Tool"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "Ilipat sa ibaba"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "Ilipat sa drawer"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "Ilipat sa itaas"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "Ilipat sa pangunahing tab bar"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Mga Panel"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "na-check"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "Isa itong bagong feature"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Magpatakbo ng command"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "Isa itong bagong feature"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Walang nakitang resulta"

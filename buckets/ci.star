@@ -138,7 +138,6 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
                 "coverage": False,
             },
             use_siso = SISO.CHROMIUM_TRUSTED,
-            notification_muted = True,
         ),
         builder_descriptor(
             name = "Linux Official",

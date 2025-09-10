@@ -113,11 +113,11 @@ export class Model extends EventTarget {
         resolveSourceMap: config?.resolveSourceMap,
       };
       await this.#processor.parse(traceEvents, parseConfig);
-      if (!this.#processor.parsedTrace) {
+      if (!this.#processor.data) {
         throw new Error('processor did not parse trace');
       }
       const file = this.#storeAndCreateParsedTraceFile(
-          syntheticEventsManager, traceEvents, metadata, this.#processor.parsedTrace, this.#processor.insights);
+          syntheticEventsManager, traceEvents, metadata, this.#processor.data, this.#processor.insights);
       // We only push the file onto this.#traces here once we know it's valid
       // and there's been no errors in the parsing.
       this.#traces.push(file);
@@ -133,7 +133,7 @@ export class Model extends EventTarget {
 
   #storeAndCreateParsedTraceFile(
       syntheticEventsManager: Helpers.SyntheticEvents.SyntheticEventsManager,
-      traceEvents: readonly Types.Events.Event[], metadata: Types.File.MetaData, data: Handlers.Types.ParsedTrace,
+      traceEvents: readonly Types.Events.Event[], metadata: Types.File.MetaData, data: Handlers.Types.HandlerData,
       traceInsights: Insights.Types.TraceInsightSets|null): ParsedTraceFile {
     this.#lastRecordingIndex++;
     let recordingName = `Trace ${this.#lastRecordingIndex}`;
@@ -148,7 +148,7 @@ export class Model extends EventTarget {
     return {
       traceEvents,
       metadata,
-      parsedTrace: data,
+      data,
       insights: traceInsights,
       syntheticEventsManager,
     };
@@ -158,8 +158,8 @@ export class Model extends EventTarget {
     return this.size() - 1;
   }
 
-  findIndexForParsedTrace(parsedTrace: Handlers.Types.ParsedTrace): number {
-    return this.#traces.findIndex(file => file.parsedTrace === parsedTrace);
+  findIndexForHandlerData(data: Handlers.Types.HandlerData): number {
+    return this.#traces.findIndex(file => file.data === data);
   }
 
   /**
@@ -170,8 +170,8 @@ export class Model extends EventTarget {
     return this.#traces.at(index) ?? null;
   }
 
-  parsedTrace(index: number = this.#traces.length - 1): Handlers.Types.ParsedTrace|null {
-    return this.#traces.at(index)?.parsedTrace ?? null;
+  handlerData(index: number = this.#traces.length - 1): Handlers.Types.HandlerData|null {
+    return this.#traces.at(index)?.data ?? null;
   }
 
   traceInsights(index: number = this.#traces.length - 1): Insights.Types.TraceInsightSets|null {
@@ -221,7 +221,7 @@ export class Model extends EventTarget {
  * essentially the TraceFile plus whatever the model has parsed from it.
  */
 export type ParsedTraceFile = Types.File.TraceFile&{
-  parsedTrace: Handlers.Types.ParsedTrace,
+  data: Handlers.Types.HandlerData,
   /** Is null for CPU profiles. */
   insights: Insights.Types.TraceInsightSets | null,
   syntheticEventsManager: Helpers.SyntheticEvents.SyntheticEventsManager,

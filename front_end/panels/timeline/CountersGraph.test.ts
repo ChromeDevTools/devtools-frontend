@@ -24,10 +24,10 @@ class FakeTimelineModeViewDelegate implements Timeline.TimelinePanel.TimelineMod
 
 async function renderCountersGraphForMainThread(context: Mocha.Context): Promise<{
   countersGraph: Timeline.CountersGraph.CountersGraph,
-  parsedTrace: Trace.Handlers.Types.ParsedTrace,
+  parsedTrace: Trace.Handlers.Types.HandlerData,
 }> {
   const timelineModeViewDelegate = new FakeTimelineModeViewDelegate();
-  const {parsedTrace} = await TraceLoader.traceEngine(context, 'web-dev-with-commit.json.gz');
+  const {data: parsedTrace} = await TraceLoader.traceEngine(context, 'web-dev-with-commit.json.gz');
   const countersGraph = new Timeline.CountersGraph.CountersGraph(timelineModeViewDelegate);
   renderElementIntoDOM(countersGraph);
 

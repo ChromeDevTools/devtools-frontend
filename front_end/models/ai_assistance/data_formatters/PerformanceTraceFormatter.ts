@@ -9,7 +9,7 @@ import {PerformanceInsightFormatter, TraceEventFormatter} from './PerformanceIns
 import {bytes, micros, millis} from './UnitFormatters.js';
 
 export class PerformanceTraceFormatter {
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.Handlers.Types.HandlerData;
   #insightSet: Trace.Insights.Types.InsightSet|null;
   #traceMetadata: Trace.Types.File.MetaData;
   #eventsSerializer: Trace.EventsSerializer.EventsSerializer;

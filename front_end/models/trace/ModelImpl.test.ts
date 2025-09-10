@@ -34,7 +34,7 @@ describeWithEnvironment('TraceModel', function() {
     } as Trace.Handlers.Types.Handlers);
     const file1 = await TraceLoader.rawEvents(this, 'animation.json.gz');
     await model.parse(file1);
-    assert.deepEqual(Object.keys(model.parsedTrace(0) || {}), ['Meta', 'Animations']);
+    assert.deepEqual(Object.keys(model.handlerData(0) || {}), ['Meta', 'Animations']);
   });
 
   it('supports parsing multiple traces', async function() {
@@ -50,9 +50,9 @@ describeWithEnvironment('TraceModel', function() {
     model.resetProcessor();
 
     assert.strictEqual(model.size(), 2);
-    assert.isNotNull(model.parsedTrace(0));
+    assert.isNotNull(model.handlerData(0));
     assert.isNotNull(model.traceInsights(0));
-    assert.isNotNull(model.parsedTrace(1));
+    assert.isNotNull(model.handlerData(1));
     assert.isNotNull(model.traceInsights(1));
   });
 
@@ -70,12 +70,12 @@ describeWithEnvironment('TraceModel', function() {
     assert.strictEqual(model.size(), 2);
     model.deleteTraceByIndex(0);
     assert.strictEqual(model.size(), 1);
-    assert.isNotNull(model.parsedTrace(0));
+    assert.isNotNull(model.handlerData(0));
     assert.isNotNull(model.traceInsights(0));
 
     model.deleteTraceByIndex(0);
     assert.strictEqual(model.size(), 0);
-    assert.isNull(model.parsedTrace(0));
+    assert.isNull(model.handlerData(0));
     assert.isNull(model.traceInsights(0));
   });
 

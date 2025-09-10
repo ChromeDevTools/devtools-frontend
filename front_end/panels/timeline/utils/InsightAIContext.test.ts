@@ -10,7 +10,7 @@ import * as Utils from './utils.js';
 
 describeWithEnvironment('AIQueries', () => {
   it('can query for the longest tasks', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     assert.isOk(insights);
 
     const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());

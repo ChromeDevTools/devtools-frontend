@@ -167,7 +167,7 @@ export class CountersGraph extends UI.Widget.VBox {
     }
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, events: Trace.Types.Events.Event[]|null): void {
+  setModel(parsedTrace: Trace.Handlers.Types.HandlerData|null, events: Trace.Types.Events.Event[]|null): void {
     this.#events = events;
     if (!events || !parsedTrace) {
       return;

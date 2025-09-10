@@ -11,8 +11,8 @@ import * as TraceFilter from './TraceFilter.js';
 describeWithEnvironment('TraceFilter', () => {
   describe('VisibleEventsFilter', () => {
     it('accepts events that are set in the constructor and rejects other events', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
-      const userTimingEvent = (parsedTrace.UserTimings.performanceMeasures).at(0);
+      const {data} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const userTimingEvent = (data.UserTimings.performanceMeasures).at(0);
       assert.isOk(userTimingEvent);
 
       const visibleFilter = new TraceFilter.VisibleEventsFilter([
@@ -25,24 +25,24 @@ describeWithEnvironment('TraceFilter', () => {
 
     describe('eventType', () => {
       it('returns ConsoleTime if the event has the blink.console category', async function() {
-        const {parsedTrace} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
-        const consoleTimingEvent = (parsedTrace.UserTimings.consoleTimings).at(0);
+        const {data} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+        const consoleTimingEvent = (data.UserTimings.consoleTimings).at(0);
         assert.isOk(consoleTimingEvent);
         assert.strictEqual(
             TraceFilter.VisibleEventsFilter.eventType(consoleTimingEvent), Trace.Types.Events.Name.CONSOLE_TIME);
       });
 
       it('returns UserTiming if the event has the blink.user_timing category', async function() {
-        const {parsedTrace} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
-        const userTimingEvent = (parsedTrace.UserTimings.performanceMeasures).at(0);
+        const {data} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+        const userTimingEvent = (data.UserTimings.performanceMeasures).at(0);
         assert.isOk(userTimingEvent);
         assert.strictEqual(
             TraceFilter.VisibleEventsFilter.eventType(userTimingEvent), Trace.Types.Events.Name.USER_TIMING);
       });
 
       it('returns the event name if the event is any other category', async function() {
-        const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
-        const layoutShiftEvent = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
+        const {data} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+        const layoutShiftEvent = data.LayoutShifts.clusters.at(0)?.events.at(0);
         assert.isOk(layoutShiftEvent);
         assert.strictEqual(
             TraceFilter.VisibleEventsFilter.eventType(layoutShiftEvent),
@@ -53,8 +53,8 @@ describeWithEnvironment('TraceFilter', () => {
 
   describe('TimelineInvisibleEventsFilter', () => {
     it('does not accept events that have been set as invisible', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
-      const userTimingEvent = (parsedTrace.UserTimings.performanceMeasures).at(0);
+      const {data} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const userTimingEvent = (data.UserTimings.performanceMeasures).at(0);
       assert.isOk(userTimingEvent);
 
       const invisibleFilter = new TraceFilter.InvisibleEventsFilter([
@@ -65,8 +65,8 @@ describeWithEnvironment('TraceFilter', () => {
     });
 
     it('accepts events that have not been set as invisible', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
-      const layoutShiftEvent = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
+      const {data} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+      const layoutShiftEvent = data.LayoutShifts.clusters.at(0)?.events.at(0);
       assert.isOk(layoutShiftEvent);
 
       const invisibleFilter = new TraceFilter.InvisibleEventsFilter([
@@ -79,8 +79,8 @@ describeWithEnvironment('TraceFilter', () => {
 
   describe('ExclusiveNameFilter', () => {
     it('accepts events that do not match the provided set of names to exclude', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
-      const userTimingEvent = (parsedTrace.UserTimings.performanceMeasures).at(0);
+      const {data} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const userTimingEvent = (data.UserTimings.performanceMeasures).at(0);
       assert.isOk(userTimingEvent);
 
       const filter = new TraceFilter.ExclusiveNameFilter([
@@ -90,8 +90,8 @@ describeWithEnvironment('TraceFilter', () => {
     });
 
     it('rejects events that match the provided set of names to exclude', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
-      const layoutShiftEvent = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
+      const {data} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+      const layoutShiftEvent = data.LayoutShifts.clusters.at(0)?.events.at(0);
       assert.isOk(layoutShiftEvent);
 
       const filter = new TraceFilter.ExclusiveNameFilter([

@@ -13,7 +13,7 @@ import * as TimelineComponents from './components.js';
 
 describeWithMockConnection('NetworkRequestDetails', () => {
   async function makeDetailsComponent(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, request: Trace.Types.Events.SyntheticNetworkRequest,
+      parsedTrace: Trace.Handlers.Types.HandlerData, request: Trace.Types.Events.SyntheticNetworkRequest,
       entityMapper: Timeline.Utils.EntityMapper.EntityMapper):
       Promise<TimelineComponents.NetworkRequestDetails.NetworkRequestDetails> {
     const details = new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails();
@@ -28,7 +28,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
   }
 
   it('renders the right details for a network event from Trace', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
     const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
     const networkRequests = parsedTrace.NetworkRequests.byTime;
     const cssRequest = networkRequests.find(request => {
@@ -75,7 +75,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
   });
 
   it('renders the server timing details for a network event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'server-timings.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'server-timings.json.gz');
     const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
     const networkRequests = parsedTrace.NetworkRequests.byTime;
     const htmlRequest = networkRequests.find(request => {
@@ -118,7 +118,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
   });
 
   it('renders the redirect details for a network event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'many-redirects.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'many-redirects.json.gz');
     const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
     const networkRequests = parsedTrace.NetworkRequests.byTime;
     const htmlRequest = networkRequests.find(request => {

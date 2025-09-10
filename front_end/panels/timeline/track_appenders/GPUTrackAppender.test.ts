@@ -11,7 +11,7 @@ import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace: Trace.Handlers.Types.HandlerData,
     entryData: Trace.Types.Events.Event[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     ): Timeline.GPUTrackAppender.GPUTrackAppender {
@@ -22,14 +22,14 @@ function initTrackAppender(
 }
 
 describeWithEnvironment('GPUTrackAppender', function() {
-  let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  let parsedTrace: Trace.Handlers.Types.HandlerData;
   let gpuTrackAppender: Timeline.GPUTrackAppender.GPUTrackAppender;
   let entryData: Trace.Types.Events.Event[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 
   beforeEach(async function() {
-    ({parsedTrace} = await TraceLoader.traceEngine(this, 'threejs-gpu.json.gz'));
+    ({data: parsedTrace} = await TraceLoader.traceEngine(this, 'threejs-gpu.json.gz'));
     gpuTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
     gpuTrackAppender.appendTrackAtLevel(0);
   });

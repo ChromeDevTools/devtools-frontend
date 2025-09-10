@@ -78,13 +78,12 @@ export function isThirdPartyInsight(model: InsightModel): model is ThirdPartiesI
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ThirdPartiesInsightModel {
-  const entitySummaries =
-      Extras.ThirdParties.summarizeByThirdParty(parsedTrace as Handlers.Types.ParsedTrace, context.bounds);
+    data: Handlers.Types.HandlerData, context: InsightSetContext): ThirdPartiesInsightModel {
+  const entitySummaries = Extras.ThirdParties.summarizeByThirdParty(data as Handlers.Types.HandlerData, context.bounds);
 
-  const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
+  const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? data.Meta.mainFrameURL;
   const firstPartyEntity = ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) ||
-      Handlers.Helpers.makeUpEntity(parsedTrace.Renderer.entityMappings.createdEntityCache, firstPartyUrl);
+      Handlers.Helpers.makeUpEntity(data.Renderer.entityMappings.createdEntityCache, firstPartyUrl);
 
   return finalize({
     relatedEvents: getRelatedEvents(entitySummaries, firstPartyEntity),

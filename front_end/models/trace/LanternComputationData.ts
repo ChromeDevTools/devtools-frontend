@@ -10,9 +10,9 @@ import type * as Types from './types/types.js';
 
 type NetworkRequest = Lantern.Types.NetworkRequest<Types.Events.SyntheticNetworkRequest>;
 
-function createProcessedNavigation(parsedTrace: Handlers.Types.ParsedTrace, frameId: string, navigationId: string):
+function createProcessedNavigation(data: Handlers.Types.HandlerData, frameId: string, navigationId: string):
     Lantern.Types.Simulation.ProcessedNavigation {
-  const scoresByNav = parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(frameId);
+  const scoresByNav = data.PageLoadMetrics.metricScoresByFrameId.get(frameId);
   if (!scoresByNav) {
     throw new Lantern.Core.LanternError('missing metric scores for frame');
   }
@@ -85,7 +85,7 @@ function findWorkerThreads(trace: Lantern.Types.Trace): Map<number, number[]> {
 }
 
 function createLanternRequest(
-    parsedTrace: Readonly<Handlers.Types.ParsedTrace>, workerThreads: Map<number, number[]>,
+    parsedTrace: Readonly<Handlers.Types.HandlerData>, workerThreads: Map<number, number[]>,
     request: Types.Events.SyntheticNetworkRequest): NetworkRequest|undefined {
   if (request.args.data.hasResponse && request.args.data.connectionId === undefined) {
     throw new Lantern.Core.LanternError('Trace is too old');
@@ -273,14 +273,14 @@ function linkInitiators(lanternRequests: NetworkRequest[]): void {
 }
 
 function createNetworkRequests(
-    trace: Lantern.Types.Trace, parsedTrace: Handlers.Types.ParsedTrace, startTime = 0,
+    trace: Lantern.Types.Trace, data: Handlers.Types.HandlerData, startTime = 0,
     endTime = Number.POSITIVE_INFINITY): NetworkRequest[] {
   const workerThreads = findWorkerThreads(trace);
 
   const lanternRequestsNoRedirects: NetworkRequest[] = [];
-  for (const request of parsedTrace.NetworkRequests.byTime) {
+  for (const request of data.NetworkRequests.byTime) {
     if (request.ts >= startTime && request.ts < endTime) {
-      const lanternRequest = createLanternRequest(parsedTrace, workerThreads, request);
+      const lanternRequest = createLanternRequest(data, workerThreads, request);
       if (lanternRequest) {
         lanternRequestsNoRedirects.push(lanternRequest);
       }
@@ -371,8 +371,8 @@ function createNetworkRequests(
 }
 
 function collectMainThreadEvents(
-    trace: Lantern.Types.Trace, parsedTrace: Handlers.Types.ParsedTrace): Lantern.Types.TraceEvent[] {
-  const Meta = parsedTrace.Meta;
+    trace: Lantern.Types.Trace, data: Handlers.Types.HandlerData): Lantern.Types.TraceEvent[] {
+  const Meta = data.Meta;
   const mainFramePids = Meta.mainFrameNavigations.length ? new Set(Meta.mainFrameNavigations.map(nav => nav.pid)) :
                                                            Meta.topLevelRendererIds;
 
@@ -408,9 +408,9 @@ function collectMainThreadEvents(
 }
 
 function createGraph(
-    requests: Lantern.Types.NetworkRequest[], trace: Lantern.Types.Trace, parsedTrace: Handlers.Types.ParsedTrace,
+    requests: Lantern.Types.NetworkRequest[], trace: Lantern.Types.Trace, data: Handlers.Types.HandlerData,
     url?: Lantern.Types.Simulation.URL): Lantern.Graph.Node<Types.Events.SyntheticNetworkRequest> {
-  const mainThreadEvents = collectMainThreadEvents(trace, parsedTrace);
+  const mainThreadEvents = collectMainThreadEvents(trace, data);
 
   // url defines the initial request that the Lantern graph starts at (the root node) and the
   // main document request. These are equal if there are no redirects.

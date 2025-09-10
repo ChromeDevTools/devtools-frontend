@@ -10,7 +10,7 @@ import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Timeline from '../timeline.js';
 
 describeWithEnvironment('CompatibilityTracksAppender', function() {
-  let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  let parsedTrace: Trace.Handlers.Types.HandlerData;
   let tracksAppender: Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender;
   let entryData: Trace.Types.Events.Event[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
@@ -21,7 +21,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
     entryData = [];
     flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     entryTypeByLevel = [];
-    ({parsedTrace} = await TraceLoader.traceEngine(context, fixture));
+    ({data: parsedTrace} = await TraceLoader.traceEngine(context, fixture));
     const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
     tracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
         flameChartData, parsedTrace, entryData, entryTypeByLevel, entityMapper);

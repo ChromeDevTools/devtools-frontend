@@ -34,7 +34,7 @@ const MAX_PREDECESSOR_INITIATOR_LIMIT = 10;
  * work backwards to draw each one, as well as the events initiated directly by the entry.
  */
 export function initiatorsDataToDraw(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace, selectedEvent: Trace.Types.Events.Event,
+    parsedTrace: Trace.Handlers.Types.HandlerData, selectedEvent: Trace.Types.Events.Event,
     hiddenEntries: Trace.Types.Events.Event[],
     expandableEntries: Trace.Types.Events.Event[]): readonly InitiatorData[] {
   const initiatorsData = [
@@ -51,14 +51,14 @@ export function initiatorsDataToDraw(
 }
 
 export function initiatorsDataToDrawForNetwork(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace: Trace.Handlers.Types.HandlerData,
     selectedEvent: Trace.Types.Events.Event,
     ): readonly InitiatorData[] {
   return findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.NetworkRequests.eventToInitiator);
 }
 
 function findInitiatorDataPredecessors(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace: Trace.Handlers.Types.HandlerData,
     selectedEvent: Trace.Types.Events.Event,
     eventToInitiator: Map<Trace.Types.Events.Event, Trace.Types.Events.Event>,
     ): readonly InitiatorData[] {
@@ -125,7 +125,7 @@ function findInitiatorDataDirectSuccessors(
  */
 function getClosestVisibleInitiatorEntriesAncestors(
     initiatorData: InitiatorData, expandableEntries: Trace.Types.Events.Event[],
-    hiddenEntries: Trace.Types.Events.Event[], parsedTrace: Trace.Handlers.Types.ParsedTrace): InitiatorData {
+    hiddenEntries: Trace.Types.Events.Event[], parsedTrace: Trace.Handlers.Types.HandlerData): InitiatorData {
   if (hiddenEntries.includes(initiatorData.event)) {
     let nextParent = parsedTrace.Renderer.entryToNode.get(initiatorData.event)?.parent;
     while (nextParent?.entry && !expandableEntries.includes(nextParent?.entry)) {

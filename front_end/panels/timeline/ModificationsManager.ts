@@ -29,7 +29,7 @@ export class AnnotationModifiedEvent extends Event {
 }
 
 interface ModificationsManagerData {
-  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  parsedTrace: Trace.Handlers.Types.HandlerData;
   traceBounds: Trace.Types.Timing.TraceWindowMicro;
   rawTraceEvents: readonly Trace.Types.Events.Event[];
   syntheticEvents: Trace.Types.Events.SyntheticBased[];
@@ -40,7 +40,7 @@ export class ModificationsManager extends EventTarget {
   #entriesFilter: EntriesFilter;
   #timelineBreadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs;
   #modifications: Trace.Types.File.Modifications|null = null;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.Handlers.Types.HandlerData;
   #eventsSerializer: Trace.EventsSerializer.EventsSerializer;
   #overlayForAnnotation: Map<Trace.Types.File.Annotation, Trace.Types.Overlays.Overlay>;
   readonly #annotationsHiddenSetting: Common.Settings.Setting<boolean>;
@@ -81,7 +81,7 @@ export class ModificationsManager extends EventTarget {
       throw new Error('ModificationsManager was initialized without a corresponding trace data');
     }
 
-    const {parsedTrace, metadata, traceEvents, syntheticEventsManager} = parsedTraceFile;
+    const {data: parsedTrace, metadata, traceEvents, syntheticEventsManager} = parsedTraceFile;
     const traceBounds = parsedTrace.Meta.traceBounds;
     const newModificationsManager = new ModificationsManager({
       parsedTrace,

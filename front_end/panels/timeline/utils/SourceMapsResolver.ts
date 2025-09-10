@@ -29,7 +29,7 @@ export const resolvedCodeLocationDataNames = new Map<string, ResolvedCodeLocatio
 
 export class SourceMapsResolver extends EventTarget {
   private executionContextNamesByOrigin = new Map<Platform.DevToolsPath.UrlString, string>();
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.Handlers.Types.HandlerData;
   #entityMapper: EntityMapper.EntityMapper|null = null;
 
   #isResolving = false;
@@ -41,7 +41,7 @@ export class SourceMapsResolver extends EventTarget {
   // those workers too.
   #debuggerModelsToListen = new Set<SDK.DebuggerModel.DebuggerModel>();
 
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace, entityMapper?: EntityMapper.EntityMapper) {
+  constructor(parsedTrace: Trace.Handlers.Types.HandlerData, entityMapper?: EntityMapper.EntityMapper) {
     super();
     this.#parsedTrace = parsedTrace;
     this.#entityMapper = entityMapper ?? null;
@@ -87,7 +87,7 @@ export class SourceMapsResolver extends EventTarget {
     return SourceMapsResolver.resolvedCodeLocationForCallFrame(callFrame as Protocol.Runtime.CallFrame);
   }
 
-  static resolvedURLForEntry(parsedTrace: Trace.Handlers.Types.ParsedTrace, entry: Trace.Types.Events.Event):
+  static resolvedURLForEntry(parsedTrace: Trace.Handlers.Types.HandlerData, entry: Trace.Types.Events.Event):
       Platform.DevToolsPath.UrlString|null {
     const resolvedCallFrameURL =
         SourceMapsResolver.resolvedCodeLocationForEntry(entry)?.devtoolsLocation?.uiSourceCode.url();

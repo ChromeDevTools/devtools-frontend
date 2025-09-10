@@ -425,7 +425,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       'flamechart-selected-navigation', 'Classic - scroll to zoom', 'timeline.select-classic-navigation');
 
   #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
-  #hiddenTracksInfoBarPerTrace = new WeakMap<Trace.Handlers.Types.ParsedTrace, UI.Infobar.Infobar|'DISMISSED'>();
+  #hiddenTracksInfoBarPerTrace = new WeakMap<Trace.Handlers.Types.HandlerData, UI.Infobar.Infobar|'DISMISSED'>();
 
   constructor(traceModel?: Trace.TraceModel.Model) {
     super('timeline');
@@ -970,12 +970,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    * within DevTools you are warned when using the method.
    * @deprecated
    **/
-  getParsedTraceForLayoutTests(): Trace.Handlers.Types.ParsedTrace {
+  getParsedTraceForLayoutTests(): Trace.Handlers.Types.HandlerData {
     const traceIndex = this.#activeTraceIndex();
     if (traceIndex === null) {
       throw new Error('No trace index active.');
     }
-    const data = this.#traceEngineModel.parsedTrace(traceIndex);
+    const data = this.#traceEngineModel.handlerData(traceIndex);
     if (data === null) {
       throw new Error('No trace engine data found.');
     }
@@ -1660,7 +1660,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return;
     }
 
-    const parsedTrace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
+    const parsedTrace = this.#traceEngineModel.handlerData(this.#viewMode.traceIndex);
     const isCpuProfile = this.#traceEngineModel.metadata(this.#viewMode.traceIndex)?.dataOrigin ===
         Trace.Types.File.DataOrigin.CPU_PROFILE;
     if (!parsedTrace) {
@@ -2066,7 +2066,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return;
     }
     const {traceIndex} = this.#viewMode;
-    const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
+    const parsedTrace = this.#traceEngineModel.handlerData(traceIndex);
     const traceMetadata = this.#traceEngineModel.metadata(traceIndex);
     const syntheticEventsManager = this.#traceEngineModel.syntheticTraceEventsManager(traceIndex);
 
@@ -2291,7 +2291,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    * show a warning banner at the bottom. This can be dismissed by the user and
    * if that happens we do not want to bring it back again.
    */
-  #maybeCreateHiddenTracksBanner(trace: Trace.Handlers.Types.ParsedTrace): void {
+  #maybeCreateHiddenTracksBanner(trace: Trace.Handlers.Types.HandlerData): void {
     const hasHiddenTracks = this.flameChart.hasHiddenTracks();
     if (!hasHiddenTracks) {
       return;
@@ -2520,7 +2520,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         forceOpenSidebar: true,
       });
 
-      const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
+      const parsedTrace = this.#traceEngineModel.handlerData(traceIndex);
       if (!parsedTrace) {
         throw new Error(`Could not get trace data at index ${traceIndex}`);
       }
@@ -2589,7 +2589,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    *    subsequent attempt will work).
    */
   async #retainSourceMapsForEnhancedTrace(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, metadata: Trace.Types.File.MetaData): Promise<void> {
+      parsedTrace: Trace.Handlers.Types.HandlerData, metadata: Trace.Types.File.MetaData): Promise<void> {
     const handleScript = async(script: Trace.Handlers.ModelHandlers.Scripts.Script): Promise<void> => {
       if (script.sourceMapUrlElided) {
         if (metadata.sourceMaps?.find(m => m.url === script.url)) {
@@ -2756,7 +2756,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (isFreshRecording && metadata &&
         Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES)) {
       const traceIndex = this.#traceEngineModel.lastTraceIndex();
-      const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
+      const parsedTrace = this.#traceEngineModel.handlerData(traceIndex);
       if (parsedTrace) {
         await this.#retainSourceMapsForEnhancedTrace(parsedTrace, metadata);
       }
@@ -2825,7 +2825,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // If the user has selected a random trace event, the frame we want is the last
     // frame in that time window, hence why the window we look for is the
     // endTime to the endTime.
-    const parsedTrace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
+    const parsedTrace = this.#traceEngineModel.handlerData(this.#viewMode.traceIndex);
     if (!parsedTrace) {
       return null;
     }
@@ -2848,7 +2848,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (!currentFrame) {
       return;
     }
-    const parsedTrace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
+    const parsedTrace = this.#traceEngineModel.handlerData(this.#viewMode.traceIndex);
     if (!parsedTrace) {
       return;
     }
@@ -3015,9 +3015,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
           message: `Error running the trace: ${eventData.errorText}`,
         };
       }
-      const parsedTrace = panelInstance.model.parsedTrace(eventData.traceIndex);
+      const data = panelInstance.model.handlerData(eventData.traceIndex);
       const insights = panelInstance.model.traceInsights(eventData.traceIndex);
-      if (!parsedTrace || !insights || insights.size === 0) {
+      if (!data || !insights || insights.size === 0) {
         return {
           type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
           message: 'The trace was loaded successfully but no Insights were detected.',
@@ -3048,7 +3048,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       for (const modelName in insightsForNav.model) {
         const model = modelName as keyof Trace.Insights.Types.InsightModelsType;
         const insight = insightsForNav.model[model];
-        const formatter = new AiAssistanceModel.PerformanceInsightFormatter(parsedTrace, insight);
+        const formatter = new AiAssistanceModel.PerformanceInsightFormatter(data, insight);
         if (!formatter.insightIsSupported()) {
           // Not all Insights are integrated with "Ask AI" yet, let's avoid
           // filling up the response with those ones because there will be no

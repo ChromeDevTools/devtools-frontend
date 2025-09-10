@@ -7,7 +7,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Trace from '../../../models/trace/trace.js';
 
 export class EntityMapper {
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.Handlers.Types.HandlerData;
   #entityMappings: Trace.Handlers.Helpers.EntityMappings;
   #firstPartyEntity: Trace.Handlers.Helpers.Entity|null;
   #thirdPartyEvents: Trace.Types.Events.Event[] = [];
@@ -19,7 +19,7 @@ export class EntityMapper {
    */
   #resolvedCallFrames = new Set<Protocol.Runtime.CallFrame>();
 
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(parsedTrace: Trace.Handlers.Types.HandlerData) {
     this.#parsedTrace = parsedTrace;
     this.#entityMappings = this.#parsedTrace.Renderer.entityMappings;
     this.#firstPartyEntity = this.#findFirstPartyEntity();

@@ -124,7 +124,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
   #target: SDK.Target.Target|null = null;
   #linkifier: LegacyComponents.Linkifier.Linkifier|null = null;
   #serverTimings: SDK.ServerTiming.ServerTiming[]|null = null;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
     super(element);
@@ -137,7 +137,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  set parsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null) {
+  set parsedTrace(parsedTrace: Trace.Handlers.Types.HandlerData|null) {
     this.#parsedTrace = parsedTrace;
     this.requestUpdate();
   }
@@ -192,7 +192,7 @@ export interface ViewInput {
   entityMapper: TimelineUtils.EntityMapper.EntityMapper|null;
   serverTimings: SDK.ServerTiming.ServerTiming[]|null;
   linkifier: LegacyComponents.Linkifier.Linkifier|null;
-  parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
+  parsedTrace: Trace.Handlers.Types.HandlerData|null;
 }
 
 export const DEFAULT_VIEW: (
@@ -428,7 +428,7 @@ function renderServerTimings(timings: SDK.ServerTiming.ServerTiming[]|null): Lit
 }
 function renderInitiatedBy(
     request: Trace.Types.Events.SyntheticNetworkRequest,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
+    parsedTrace: Trace.Handlers.Types.HandlerData|null,
     target: SDK.Target.Target|null,
     linkifier: LegacyComponents.Linkifier.Linkifier|null,
     ): Lit.LitTemplate {

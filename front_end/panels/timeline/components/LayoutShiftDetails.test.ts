@@ -11,7 +11,7 @@ import * as TimelineComponents from './components.js';
 
 describeWithMockConnection('LayoutShiftDetails', () => {
   it('correctly renders main shift details', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
+    const {data: parsedTrace, insights} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
     const shiftEvent = parsedTrace.LayoutShifts.clusters[0].worstShiftEvent as Trace.Types.Events.SyntheticLayoutShift;
     assert.isOk(shiftEvent);
 
@@ -40,7 +40,7 @@ describeWithMockConnection('LayoutShiftDetails', () => {
   });
 
   it('correctly renders cluster details', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
+    const {data: parsedTrace, insights} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
     const cluster = parsedTrace.LayoutShifts.clusters[0];
     assert.isNotNull(cluster);
 

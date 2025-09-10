@@ -10,7 +10,7 @@ import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js
 import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
-    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.HandlerData,
     entryData: Trace.Types.Events.Event[], entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
     Timeline.AnimationsTrackAppender.AnimationsTrackAppender {
   const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
@@ -20,14 +20,14 @@ function initTrackAppender(
 }
 
 describeWithEnvironment('AnimationsTrackAppender', function() {
-  let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  let parsedTrace: Trace.Handlers.Types.HandlerData;
   let animationsTrackAppender: Timeline.AnimationsTrackAppender.AnimationsTrackAppender;
   let entryData: Trace.Types.Events.Event[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 
   beforeEach(async function() {
-    ({parsedTrace} = await TraceLoader.traceEngine(this, 'animation.json.gz'));
+    ({data: parsedTrace} = await TraceLoader.traceEngine(this, 'animation.json.gz'));
     animationsTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
     animationsTrackAppender.appendTrackAtLevel(0);
   });

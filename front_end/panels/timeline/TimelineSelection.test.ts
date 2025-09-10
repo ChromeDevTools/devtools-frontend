@@ -12,7 +12,7 @@ import * as Timeline from './timeline.js';
 describeWithEnvironment('TimelineSelection', function() {
   const {TimelineSelection} = Timeline;
   it('can be created with a frame', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const frame = parsedTrace.Frames.frames.at(0);
     assert.isOk(frame);
     const selection = TimelineSelection.selectionFromEvent(frame);
@@ -26,7 +26,7 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('can be created with a network request', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const request = parsedTrace.NetworkRequests.byTime.at(0);
     assert.isOk(request);
     const selection = TimelineSelection.selectionFromEvent(request);
@@ -39,7 +39,7 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('can be created with a random trace event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const firstLCPEvent = parsedTrace.PageLoadMetrics.allMarkerEvents.find(event => {
       return event.name === 'largestContentfulPaint::Candidate';
     });
@@ -76,7 +76,7 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('knows if two event selections are equal if they have the same event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const firstLCPEvent = parsedTrace.PageLoadMetrics.allMarkerEvents.find(event => {
       return event.name === 'largestContentfulPaint::Candidate';
     });
@@ -100,7 +100,7 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('knows selections of different types are not equal', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const firstLCPEvent = parsedTrace.PageLoadMetrics.allMarkerEvents.find(event => {
       return event.name === 'largestContentfulPaint::Candidate';
     });

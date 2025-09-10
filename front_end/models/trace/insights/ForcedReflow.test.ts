@@ -8,12 +8,12 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 describeWithEnvironment('ForcedReflow', function() {
   async function processTrace(context: Mocha.Suite|Mocha.Context, traceFile: string) {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(context, traceFile);
+    const {data, insights} = await TraceLoader.traceEngine(context, traceFile);
     if (!insights) {
       throw new Error('No insights');
     }
 
-    return {data: parsedTrace, insights};
+    return {data, insights};
   }
 
   it('generates call stacks', async function() {

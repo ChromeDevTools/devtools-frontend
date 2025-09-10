@@ -72,7 +72,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/DetailsView
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function buildWarningElementsForEvent(
-    event: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): HTMLSpanElement[] {
+    event: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.HandlerData): HTMLSpanElement[] {
   const warnings = parsedTrace.Warnings.perEvent.get(event);
   const warningElements: HTMLSpanElement[] = [];
   if (!warnings) {
@@ -130,7 +130,7 @@ export interface DetailRow {
 }
 export function buildRowsForWebSocketEvent(
     event: Trace.Types.Events.WebSocketCreate|Trace.Types.Events.WebSocketInfo|Trace.Types.Events.WebSocketTransfer,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace): readonly DetailRow[] {
+    parsedTrace: Trace.Handlers.Types.HandlerData): readonly DetailRow[] {
   const rows: DetailRow[] = [];
 
   const initiator = parsedTrace.Initiators.eventToInitiator.get(event);

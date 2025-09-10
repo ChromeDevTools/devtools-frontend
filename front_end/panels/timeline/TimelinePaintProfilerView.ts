@@ -23,9 +23,9 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   private event: Trace.Types.Events.Event|null;
   private paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
   private lastLoadedSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.Handlers.Types.HandlerData;
 
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(parsedTrace: Trace.Handlers.Types.HandlerData) {
     super(false, false);
     this.element.classList.add('timeline-paint-profiler-view');
     this.setSidebarSize(60);

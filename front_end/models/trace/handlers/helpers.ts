@@ -7,7 +7,7 @@ import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party
 import * as Types from '../types/types.js';
 
 import type {TraceEventsForNetworkRequest} from './NetworkRequestsHandler.js';
-import type {ParsedTrace} from './types.js';
+import type {HandlerData} from './types.js';
 
 export type Entity = typeof ThirdPartyWeb.ThirdPartyWeb.entities[number]&{
   isUnrecognized?: boolean,
@@ -41,7 +41,7 @@ export function getEntityForUrl(url: string, entityMappings: EntityMappings): En
 }
 
 export function getNonResolvedURL(
-    entry: Types.Events.Event, parsedTrace?: ParsedTrace): Platform.DevToolsPath.UrlString|null {
+    entry: Types.Events.Event, parsedTrace?: HandlerData): Platform.DevToolsPath.UrlString|null {
   if (Types.Events.isProfileCall(entry)) {
     return entry.callFrame.url as Platform.DevToolsPath.UrlString;
   }

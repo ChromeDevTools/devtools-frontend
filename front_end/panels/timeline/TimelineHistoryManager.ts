@@ -88,7 +88,7 @@ export interface NewHistoryRecordingData {
   // We do not store this, but need it to build the thumbnail preview.
   filmStripForPreview: Trace.Extras.FilmStrip.Data|null;
   // Also not stored, but used to create the preview overview for a new trace.
-  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  parsedTrace: Trace.Handlers.Types.HandlerData;
   metadata: Trace.Types.File.MetaData|null;
 }
 
@@ -113,7 +113,7 @@ export class TimelineHistoryManager {
   private readonly nextNumberByDomain: Map<string, number>;
   readonly #button: ToolbarButton;
   private readonly allOverviews: Array<{
-    constructor: (parsedTrace: Trace.Handlers.Types.ParsedTrace) => TimelineEventOverview,
+    constructor: (parsedTrace: Trace.Handlers.Types.HandlerData) => TimelineEventOverview,
     height: number,
   }>;
   private totalHeight: number;
@@ -341,7 +341,7 @@ export class TimelineHistoryManager {
   }
 
   #buildAndStorePreviewData(
-      parsedTraceIndex: number, parsedTrace: Trace.Handlers.Types.ParsedTrace, metadata: Trace.Types.File.MetaData|null,
+      parsedTraceIndex: number, parsedTrace: Trace.Handlers.Types.HandlerData, metadata: Trace.Types.File.MetaData|null,
       filmStrip: Trace.Extras.FilmStrip.Data|null): HTMLDivElement {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(parsedTrace.Meta.mainFrameURL);
     const domain = parsedURL ? parsedURL.host : '';
@@ -412,7 +412,7 @@ export class TimelineHistoryManager {
     return container;
   }
 
-  #buildOverview(parsedTrace: Trace.Handlers.Types.ParsedTrace): Element {
+  #buildOverview(parsedTrace: Trace.Handlers.Types.HandlerData): Element {
     const container = document.createElement('div');
     const dPR = window.devicePixelRatio;
     container.style.width = previewWidth + 'px';

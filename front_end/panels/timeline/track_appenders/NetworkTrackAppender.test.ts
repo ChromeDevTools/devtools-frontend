@@ -10,12 +10,12 @@ import * as TimelineComponents from '../components/components.js';
 import * as Timeline from '../timeline.js';
 
 describeWithEnvironment('NetworkTrackAppender', function() {
-  let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  let parsedTrace: Trace.Handlers.Types.HandlerData;
   let networkTrackAppender: Timeline.NetworkTrackAppender.NetworkTrackAppender;
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
 
   beforeEach(async function() {
-    ({parsedTrace} = await TraceLoader.traceEngine(this, 'cls-cluster-max-timeout.json.gz'));
+    ({data: parsedTrace} = await TraceLoader.traceEngine(this, 'cls-cluster-max-timeout.json.gz'));
     networkTrackAppender =
         new Timeline.NetworkTrackAppender.NetworkTrackAppender(flameChartData, parsedTrace.NetworkRequests.byTime);
     networkTrackAppender.appendTrackAtLevel(0);

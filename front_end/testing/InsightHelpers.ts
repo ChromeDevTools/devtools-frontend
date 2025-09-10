@@ -7,7 +7,7 @@ import * as Trace from '../models/trace/trace.js';
 import {TraceLoader} from './TraceLoader.js';
 
 export async function processTrace(context: Mocha.Suite|Mocha.Context, traceFile: string) {
-  const {parsedTrace, insights, metadata} = await TraceLoader.traceEngine(context, traceFile);
+  const {data: parsedTrace, insights, metadata} = await TraceLoader.traceEngine(context, traceFile);
   if (!insights) {
     throw new Error('No insights');
   }
@@ -16,7 +16,7 @@ export async function processTrace(context: Mocha.Suite|Mocha.Context, traceFile
 }
 
 export function createContextForNavigation(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace, navigation: Trace.Types.Events.NavigationStart,
+    parsedTrace: Trace.Handlers.Types.HandlerData, navigation: Trace.Types.Events.NavigationStart,
     frameId: string): Trace.Insights.Types.InsightSetContextWithNavigation {
   if (!navigation.args.data?.navigationId) {
     throw new Error('expected navigationId');

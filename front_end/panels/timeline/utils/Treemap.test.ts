@@ -275,7 +275,7 @@ describe('Treemap', () => {
 
   describeWithEnvironment('createTreemapData', () => {
     it('works (source maps)', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'dupe-js.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'dupe-js.json.gz');
       const data = Utils.Treemap.createTreemapData(parsedTrace.Scripts, new Map())
                        .map(d => [d.name, d.resourceBytes, d.encodedBytes, !!d.children?.length]);
       assert.deepEqual(data, [
@@ -293,7 +293,7 @@ describe('Treemap', () => {
     });
 
     it('works (no source maps; inline scripts)', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'yahoo-news.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'yahoo-news.json.gz');
       const data = Utils.Treemap.createTreemapData(parsedTrace.Scripts, new Map())
                        .filter(d => d.children?.[0].name.includes('inline'))
                        .map(d => [d.name.substring(0, 70), d.resourceBytes, d.encodedBytes, !!d.children?.length]);

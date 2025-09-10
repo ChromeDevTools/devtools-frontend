@@ -15,7 +15,7 @@ const domNodesForEventCache =
  * The result is cached so you can safely call this multiple times.
  **/
 export function nodeIdsForEvent(
-    modelData: Trace.Handlers.Types.ParsedTrace,
+    modelData: Trace.Handlers.Types.HandlerData,
     event: Trace.Types.Events.Event,
     ): Set<Protocol.DOM.BackendNodeId> {
   const fromCache = nodeIdsForEventCache.get(event);
@@ -67,7 +67,7 @@ export function nodeIdsForEvent(
  * This method is cached for the given event.
  */
 export async function relatedDOMNodesForEvent(
-    modelData: Trace.Handlers.Types.ParsedTrace,
+    modelData: Trace.Handlers.Types.HandlerData,
     event: Trace.Types.Events.Event): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>|null> {
   const fromCache = domNodesForEventCache.get(event);
   if (fromCache) {

@@ -364,9 +364,9 @@ describeWithEnvironment('TraceTree', () => {
     });
 
     it('correctly keeps ProfileCall nodes and uses them to build up the tree', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'mainWasm_profile.json.gz');
-      const mainThread = getMainThread(parsedTrace.Renderer);
-      const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds);
+      const {data} = await TraceLoader.traceEngine(this, 'mainWasm_profile.json.gz');
+      const mainThread = getMainThread(data.Renderer);
+      const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(data.Meta.traceBounds);
 
       // Replicate the filters as they would be when rendering in the actual panel.
       const textFilter = new Timeline.TimelineFilters.TimelineRegExp();
@@ -398,8 +398,8 @@ describeWithEnvironment('TraceTree', () => {
 
   describe('generateEventID', () => {
     it('generates the right ID for new engine profile call events', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
-      const mainThread = getMainThread(parsedTrace.Renderer);
+      const {data} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
+      const mainThread = getMainThread(data.Renderer);
       const profileCallEntry = mainThread.entries.find(entry => {
         return Trace.Types.Events.isProfileCall(entry) &&
             entry.callFrame.functionName === 'performConcurrentWorkOnRoot';
@@ -412,12 +412,12 @@ describeWithEnvironment('TraceTree', () => {
     });
 
     it('generates the right ID for new engine native profile call events', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'invalid-animation-events.json.gz', {
+      const {data} = await TraceLoader.traceEngine(this, 'invalid-animation-events.json.gz', {
         ...Trace.Types.Configuration.defaults(),
         includeRuntimeCallStats: true,
       });
 
-      const mainThread = getMainThread(parsedTrace.Renderer);
+      const mainThread = getMainThread(data.Renderer);
       const profileCallEntry = mainThread.entries.find(entry => {
         return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.url === 'native V8Runtime';
       });

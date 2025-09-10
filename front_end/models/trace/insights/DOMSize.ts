@@ -108,8 +108,7 @@ export function isDomSizeInsight(model: InsightModel): model is DOMSizeInsightMo
   return model.insightKey === InsightKeys.DOM_SIZE;
 }
 
-export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DOMSizeInsightModel {
+export function generateInsight(data: Handlers.Types.HandlerData, context: InsightSetContext): DOMSizeInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
   const mainTid = context.navigation?.tid;
@@ -117,7 +116,7 @@ export function generateInsight(
   const largeLayoutUpdates: Types.Events.Layout[] = [];
   const largeStyleRecalcs: Types.Events.UpdateLayoutTree[] = [];
 
-  const threads = Handlers.Threads.threadsInRenderer(parsedTrace.Renderer, parsedTrace.AuctionWorklets);
+  const threads = Handlers.Threads.threadsInRenderer(data.Renderer, data.AuctionWorklets);
   for (const thread of threads) {
     if (thread.type !== Handlers.Threads.ThreadType.MAIN_THREAD) {
       continue;
@@ -133,7 +132,7 @@ export function generateInsight(
       continue;
     }
 
-    const rendererThread = parsedTrace.Renderer.processes.get(thread.pid)?.threads.get(thread.tid);
+    const rendererThread = data.Renderer.processes.get(thread.pid)?.threads.get(thread.tid);
     if (!rendererThread) {
       continue;
     }
@@ -189,7 +188,7 @@ export function generateInsight(
     }),
   ].sort((a, b) => b.duration - a.duration).slice(0, 5);
 
-  const domStatsEvents = parsedTrace.DOMStats.domStatsByFrameId.get(context.frameId)?.filter(isWithinContext) ?? [];
+  const domStatsEvents = data.DOMStats.domStatsByFrameId.get(context.frameId)?.filter(isWithinContext) ?? [];
   let maxDOMStats: Types.Events.DOMStats|undefined;
   for (const domStats of domStatsEvents) {
     // While recording a cross-origin navigation, there can be overlapping dom stats from before & after

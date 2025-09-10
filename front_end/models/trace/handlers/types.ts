@@ -58,14 +58,14 @@ export type HandlersWithMeta<T extends Record<string, Handler>> = {
   [K in keyof T]: T[K];
 };
 
-// Represents the final parsed data from all of the handlers. If you instantiate a
+// Represents the final data from all of the handlers. If you instantiate a
 // TraceProcessor with a subset of handlers, you should instead use
 // `EnabledHandlerDataWithMeta<>`.
-export type ParsedTrace = Readonly<EnabledHandlerDataWithMeta<typeof ModelHandlers>>;
+export type HandlerData = Readonly<EnabledHandlerDataWithMeta<typeof ModelHandlers>>;
 
 type DeepWriteable<T> = {
   -readonly[P in keyof T]: DeepWriteable<T[P]>
 };
-export type ParsedTraceMutable = DeepWriteable<ParsedTrace>;
+export type HandlerDataMutable = DeepWriteable<HandlerData>;
 
 export type Handlers = typeof ModelHandlers;

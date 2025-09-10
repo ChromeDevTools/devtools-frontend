@@ -23,7 +23,7 @@ const {urlString} = Platform.DevToolsPath;
 
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace: Trace.Handlers.Types.HandlerData,
     entryData: Trace.Types.Events.Event[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     ): {
@@ -39,16 +39,16 @@ function initTrackAppender(
 
 async function renderThreadAppendersFromTrace(context: Mocha.Context|Mocha.Suite, trace: string):
     Promise<ReturnType<typeof renderThreadAppendersFromParsedData>> {
-  const {parsedTrace} = await TraceLoader.traceEngine(context, trace);
+  const {data: parsedTrace} = await TraceLoader.traceEngine(context, trace);
   return renderThreadAppendersFromParsedData(parsedTrace);
 }
 
-function renderThreadAppendersFromParsedData(parsedTrace: Trace.Handlers.Types.ParsedTrace): {
+function renderThreadAppendersFromParsedData(parsedTrace: Trace.Handlers.Types.HandlerData): {
   entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
   flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
   threadAppenders: Timeline.ThreadAppender.ThreadAppender[],
   entryData: Trace.Types.Events.Event[],
-  parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>,
+  parsedTrace: Readonly<Trace.Handlers.Types.HandlerData>,
   compatibilityTracksAppender: Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender,
 } {
   const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
@@ -459,7 +459,7 @@ describeWithEnvironment('ThreadAppender', function() {
         NetworkRequests:
             {entityMappings: {entityByEvent: new Map(), eventsByEntity: new Map(), createdEntityCache: new Map()}},
         ExtensionTraceData: {entryToNode: new Map(), extensionMarkers: [], extensionTrackData: []},
-      } as unknown as Trace.Handlers.Types.ParsedTrace;
+      } as unknown as Trace.Handlers.Types.HandlerData;
 
       // Add the script to ignore list and then append the flamechart data
       ignoreListManager.ignoreListURL(SCRIPT_TO_IGNORE);

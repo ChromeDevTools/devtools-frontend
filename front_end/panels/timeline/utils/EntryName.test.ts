@@ -12,7 +12,7 @@ import * as Utils from './utils.js';
 
 describeWithEnvironment('EntryName', () => {
   it('uses the URL for the name of a network request', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const request = parsedTrace.NetworkRequests.byTime.at(0);
     assert.isOk(request);
     const name = Utils.EntryName.nameForEntry(request);
@@ -20,7 +20,7 @@ describeWithEnvironment('EntryName', () => {
   });
 
   it('uses "Frame" for timeline frames', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const frame = parsedTrace.Frames.frames.at(0);
     assert.isOk(frame);
     const name = Utils.EntryName.nameForEntry(frame);
@@ -28,7 +28,7 @@ describeWithEnvironment('EntryName', () => {
   });
 
   it('adds the event type for EventDispatch events', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
     const clickEvent = allThreadEntriesInTrace(parsedTrace).find(event => {
       return Trace.Types.Events.isDispatch(event) && event.args.data.type === 'click';
     });
@@ -38,14 +38,14 @@ describeWithEnvironment('EntryName', () => {
   });
 
   it('correctly titles layout shifts', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
     const shifts = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
     const title = Utils.EntryName.nameForEntry(shifts[0]);
     assert.strictEqual(title, 'Layout shift');
   });
 
   it('correctly titles animation events', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'animation.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'animation.json.gz');
     const animation = parsedTrace.Animations.animations.at(0);
     assert.isOk(animation);
     const title = Utils.EntryName.nameForEntry(animation);
@@ -53,7 +53,7 @@ describeWithEnvironment('EntryName', () => {
   });
 
   it('uses the names defined in the entry styles', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const entry = allThreadEntriesInTrace(parsedTrace).find(e => e.name === Trace.Types.Events.Name.RUN_TASK);
     assert.isOk(entry);
 
@@ -62,7 +62,7 @@ describeWithEnvironment('EntryName', () => {
   });
 
   it('returns the name and URL for a WebSocketCreate event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'network-websocket-messages.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'network-websocket-messages.json.gz');
 
     let createEvent: Trace.Types.Events.WebSocketCreate|null = null;
     for (const websocket of parsedTrace.NetworkRequests.webSocket) {
@@ -88,7 +88,7 @@ describeWithEnvironment('EntryName', () => {
   });
 
   it('returns a custom name for pointer interactions', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
     const firstInteraction = parsedTrace.UserInteractions.interactionEvents.at(0);
     assert.isOk(firstInteraction);
     const name = Utils.EntryName.nameForEntry(firstInteraction);
@@ -96,7 +96,7 @@ describeWithEnvironment('EntryName', () => {
   });
 
   it('returns a custom name for keyboard interactions', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
     const keydownInteraction = parsedTrace.UserInteractions.interactionEvents.find(e => e.type === 'keydown');
     assert.isOk(keydownInteraction);
     const name = Utils.EntryName.nameForEntry(keydownInteraction);
@@ -104,7 +104,7 @@ describeWithEnvironment('EntryName', () => {
   });
 
   it('returns "other" for unknown interaction event types', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
     // Copy the event so we do not modify the actual trace data, and fake its
     // interaction type to be unexpected.
     const firstInteraction = {...parsedTrace.UserInteractions.interactionEvents[0]};
@@ -116,7 +116,7 @@ describeWithEnvironment('EntryName', () => {
 
   describe('profile calls', () => {
     it('uses the profile name for a ProfileCall if it has been set', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
       const {entry, profileNode} = getProfileEventAndNodeForReactTrace(parsedTrace);
       // Store and then reset this: we are doing this to test the fallback to
       // the entry callFrame.functionName property. After the assertion we
@@ -129,7 +129,7 @@ describeWithEnvironment('EntryName', () => {
     });
 
     it('falls back to the call frame name if a specific name has not been set', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
       const {entry, profileNode} = getProfileEventAndNodeForReactTrace(parsedTrace);
       // Store and then reset this: we are doing this to test the fallback to
       // the entry callFrame.functionName property. After the assertion we
@@ -142,7 +142,7 @@ describeWithEnvironment('EntryName', () => {
     });
 
     // Finds a particular event from the react-hello-world trace which is used for our test example.
-    function getProfileEventAndNodeForReactTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace): {
+    function getProfileEventAndNodeForReactTrace(parsedTrace: Trace.Handlers.Types.HandlerData): {
       entry: Trace.Types.Events.SyntheticProfileCall,
       profileNode: CPUProfile.ProfileTreeModel.ProfileNode,
     } {

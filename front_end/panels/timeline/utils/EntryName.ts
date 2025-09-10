@@ -55,7 +55,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  */
 export function nameForEntry(
     entry: Trace.Types.Events.Event,
-    parsedTrace?: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace?: Trace.Handlers.Types.HandlerData,
     ): string {
   if (Trace.Types.Events.isProfileCall(entry)) {
     if (parsedTrace) {

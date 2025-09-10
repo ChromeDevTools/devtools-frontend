@@ -35,7 +35,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * is no entry for a trace in this map it is assumed to be a new trace and the
  * banner will be shown if the user has any hidden track config.
  */
-const hiddenTracksInfoBarPerTrace = new WeakMap<Trace.Handlers.Types.ParsedTrace, UI.Infobar.Infobar|'DISMISSED'>();
+const hiddenTracksInfoBarPerTrace = new WeakMap<Trace.Handlers.Types.HandlerData, UI.Infobar.Infobar|'DISMISSED'>();
 
 /**
  * Creates an overlay for the timeline that will show a banner informing the user that at least one track is hidden.
@@ -49,7 +49,7 @@ const hiddenTracksInfoBarPerTrace = new WeakMap<Trace.Handlers.Types.ParsedTrace
  * @returns A `Trace.Types.Overlays.Overlay` object to be rendered, or `null` if
  * no banner should be shown (because the user has already seen the banner)
  */
-export function createHiddenTracksOverlay(trace: Trace.Handlers.Types.ParsedTrace, callbacks: {
+export function createHiddenTracksOverlay(trace: Trace.Handlers.Types.HandlerData, callbacks: {
   onShowAllTracks: () => void,
   onShowTrackConfigurationMode: () => void,
   onClose: () => void,

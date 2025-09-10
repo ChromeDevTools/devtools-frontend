@@ -65,8 +65,8 @@ export function isDuplicatedJavaScript(model: InsightModel): model is Duplicated
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DuplicatedJavaScriptInsightModel {
-  const scripts = parsedTrace.Scripts.scripts.filter(script => {
+    data: Handlers.Types.HandlerData, context: InsightSetContext): DuplicatedJavaScriptInsightModel {
+  const scripts = data.Scripts.scripts.filter(script => {
     if (script.frame !== context.frameId) {
       return false;
     }
@@ -108,7 +108,7 @@ export function generateInsight(
     duplicationGroupedByNodeModules,
     scriptsWithDuplication: [...new Set(scriptsWithDuplication)],
     scripts,
-    mainDocumentUrl: context.navigation?.args.data?.url ?? parsedTrace.Meta.mainFrameURL,
+    mainDocumentUrl: context.navigation?.args.data?.url ?? data.Meta.mainFrameURL,
     metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
     wastedBytes: wastedBytesByRequestId.values().reduce((acc, cur) => acc + cur, 0),
   });

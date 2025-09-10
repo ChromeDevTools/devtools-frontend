@@ -7,7 +7,7 @@ import * as Trace from '../../../models/trace/trace.js';
 import {AICallTree} from './AICallTree.js';
 
 export class AIQueries {
-  static findMainThread(navigationId: string|undefined, parsedTrace: Trace.Handlers.Types.ParsedTrace):
+  static findMainThread(navigationId: string|undefined, parsedTrace: Trace.Handlers.Types.HandlerData):
       Trace.Handlers.Threads.ThreadData|null {
     /**
      * We cannot assume that there is one main thread as there are scenarios
@@ -49,7 +49,7 @@ export class AIQueries {
    */
   static mainThreadActivityBottomUp(
       navigationId: string|undefined, bounds: Trace.Types.Timing.TraceWindowMicro,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Extras.TraceTree.BottomUpRootNode|null {
+      parsedTrace: Trace.Handlers.Types.HandlerData): Trace.Extras.TraceTree.BottomUpRootNode|null {
     const thread = this.findMainThread(navigationId, parsedTrace);
     if (!thread) {
       return null;
@@ -82,7 +82,7 @@ export class AIQueries {
    */
   static mainThreadActivityTopDown(
       navigationId: string|undefined, bounds: Trace.Types.Timing.TraceWindowMicro,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree|null {
+      parsedTrace: Trace.Handlers.Types.HandlerData): AICallTree|null {
     const thread = this.findMainThread(navigationId, parsedTrace);
     if (!thread) {
       return null;
@@ -103,7 +103,7 @@ export class AIQueries {
    */
   static longestTasks(
       navigationId: string|undefined, bounds: Trace.Types.Timing.TraceWindowMicro,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, limit = 3): AICallTree[]|null {
+      parsedTrace: Trace.Handlers.Types.HandlerData, limit = 3): AICallTree[]|null {
     const thread = this.findMainThread(navigationId, parsedTrace);
     if (!thread) {
       return null;

@@ -11,7 +11,7 @@ import type * as Trace from '../../models/trace/trace.js';
  * page's target.
  **/
 export function targetForEvent(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace, event: Trace.Types.Events.Event): SDK.Target.Target|null {
+    parsedTrace: Trace.Handlers.Types.HandlerData, event: Trace.Types.Events.Event): SDK.Target.Target|null {
   const targetManager = SDK.TargetManager.TargetManager.instance();
   const workerId = parsedTrace.Workers.workerIdByThread.get(event.tid);
   if (workerId) {

@@ -79,8 +79,8 @@ function finalize(partialModel: PartialInsightModel<INPBreakdownInsightModel>): 
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): INPBreakdownInsightModel {
-  const interactionEvents = parsedTrace.UserInteractions.interactionEventsWithNoNesting.filter(event => {
+    data: Handlers.Types.HandlerData, context: InsightSetContext): INPBreakdownInsightModel {
+  const interactionEvents = data.UserInteractions.interactionEventsWithNoNesting.filter(event => {
     return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });
 

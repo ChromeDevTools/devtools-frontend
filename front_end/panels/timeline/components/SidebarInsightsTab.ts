@@ -20,7 +20,7 @@ const {html} = Lit;
 
 export class SidebarInsightsTab extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
   #traceMetadata: Trace.Types.File.MetaData|null = null;
   #insights: Trace.Insights.Types.TraceInsightSets|null = null;
   #activeInsight: ActiveInsight|null = null;
@@ -35,7 +35,7 @@ export class SidebarInsightsTab extends HTMLElement {
 
   // TODO(paulirish): add back a disconnectedCallback() to avoid memory leaks that doesn't cause b/372943062
 
-  set parsedTrace(data: Trace.Handlers.Types.ParsedTrace|null) {
+  set parsedTrace(data: Trace.Handlers.Types.HandlerData|null) {
     if (data === this.#parsedTrace) {
       return;
     }

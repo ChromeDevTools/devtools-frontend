@@ -60,17 +60,16 @@ export function isFontDisplayInsight(model: InsightModel): model is FontDisplayI
   return model.insightKey === InsightKeys.FONT_DISPLAY;
 }
 
-export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): FontDisplayInsightModel {
+export function generateInsight(data: Handlers.Types.HandlerData, context: InsightSetContext): FontDisplayInsightModel {
   const fonts: RemoteFont[] = [];
-  for (const remoteFont of parsedTrace.LayoutShifts.remoteFonts) {
+  for (const remoteFont of data.LayoutShifts.remoteFonts) {
     const event = remoteFont.beginRemoteFontLoadEvent;
     if (!Helpers.Timing.eventIsInBounds(event, context.bounds)) {
       continue;
     }
 
     const requestId = `${event.pid}.${event.args.id}`;
-    const request = parsedTrace.NetworkRequests.byId.get(requestId);
+    const request = data.NetworkRequests.byId.get(requestId);
     if (!request) {
       continue;
     }

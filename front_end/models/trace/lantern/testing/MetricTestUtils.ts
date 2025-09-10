@@ -20,10 +20,10 @@ async function runTrace(context: Mocha.Suite|Mocha.Context, trace: Lantern.Types
 
   const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
   await processor.parse(trace.traceEvents as Trace.Types.Events.Event[], {isCPUProfile: false, isFreshRecording: true});
-  if (!processor.parsedTrace) {
+  if (!processor.data) {
     throw new Error('No data');
   }
-  return processor.parsedTrace;
+  return processor.data;
 }
 
 async function getComputationDataFromFixture(context: Mocha.Suite|Mocha.Context, {trace, settings, url}: {

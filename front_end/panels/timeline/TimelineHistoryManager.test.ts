@@ -21,7 +21,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
   it('shows the dropdown including a landing page link', async function() {
     assert.strictEqual(historyManager.button().element.innerText, 'Live metrics');
 
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     historyManager.addRecording(
         {
           data: {
@@ -54,7 +54,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
   });
 
   it('shows a minimap for each trace in the dropdown', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     historyManager.addRecording(
         {
           data: {
@@ -91,7 +91,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     historyManager = new Timeline.TimelineHistoryManager.TimelineHistoryManager(undefined, true);
     assert.strictEqual(historyManager.button().element.innerText, 'New recording');
 
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     historyManager.addRecording(
         {
           data: {
@@ -123,7 +123,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
   it('can select from multiple parsed data objects', async function() {
     // Add two parsed data objects to the history manager.
-    const {parsedTrace: trace1Data, metadata: metadata1} =
+    const {data: trace1Data, metadata: metadata1} =
         await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
     historyManager.addRecording(
         {
@@ -137,7 +137,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
         },
     );
 
-    const {parsedTrace: trace2Data, metadata: metadata2} =
+    const {data: trace2Data, metadata: metadata2} =
         await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
     historyManager.addRecording({
       data: {

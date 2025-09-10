@@ -14,7 +14,7 @@ import {bytes, micros, millis} from './UnitFormatters.js';
 /**
  * For a given frame ID and navigation ID, returns the LCP Event and the LCP Request, if the resource was an image.
  */
-function getLCPData(parsedTrace: Trace.Handlers.Types.ParsedTrace, frameId: string, navigationId: string): {
+function getLCPData(parsedTrace: Trace.Handlers.Types.HandlerData, frameId: string, navigationId: string): {
   lcpEvent: Trace.Types.Events.LargestContentfulPaintCandidate,
   metricScore: Trace.Handlers.ModelHandlers.PageLoadMetrics.LCPMetricScore,
   lcpRequest?: Trace.Types.Events.SyntheticNetworkRequest,
@@ -42,9 +42,9 @@ function getLCPData(parsedTrace: Trace.Handlers.Types.ParsedTrace, frameId: stri
 
 export class PerformanceInsightFormatter {
   #insight: Trace.Insights.Types.InsightModel;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.Handlers.Types.HandlerData;
 
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace, insight: Trace.Insights.Types.InsightModel) {
+  constructor(parsedTrace: Trace.Handlers.Types.HandlerData, insight: Trace.Insights.Types.InsightModel) {
     this.#insight = insight;
     this.#parsedTrace = parsedTrace;
   }
@@ -977,7 +977,7 @@ export interface NetworkRequestFormatOptions {
 
 export class TraceEventFormatter {
   static layoutShift(
-      shift: Trace.Types.Events.SyntheticLayoutShift, index: number, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      shift: Trace.Types.Events.SyntheticLayoutShift, index: number, parsedTrace: Trace.Handlers.Types.HandlerData,
       rootCauses?: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData): string {
     const baseTime = parsedTrace.Meta.traceBounds.min;
 
@@ -1018,7 +1018,7 @@ ${rootCauseText}`;
 
   // Stringify network requests for the LLM model.
   static networkRequests(
-      requests: readonly Trace.Types.Events.SyntheticNetworkRequest[], parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      requests: readonly Trace.Types.Events.SyntheticNetworkRequest[], parsedTrace: Trace.Handlers.Types.HandlerData,
       options?: NetworkRequestFormatOptions): string {
     if (requests.length === 0) {
       return '';
@@ -1052,7 +1052,7 @@ ${rootCauseText}`;
    * talk to jacktfranklin@.
    */
   static #networkRequestVerbosely(
-      request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.Handlers.Types.HandlerData,
       customTitle?: string): string {
     const {
       url,
@@ -1152,7 +1152,7 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
   // format description.
   static #networkRequestsArrayCompressed(
       requests: readonly Trace.Types.Events.SyntheticNetworkRequest[],
-      parsedTrace: Trace.Handlers.Types.ParsedTrace): string {
+      parsedTrace: Trace.Handlers.Types.HandlerData): string {
     const networkDataString = `
 Network requests data:
 
@@ -1219,7 +1219,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
    */
   static #networkRequestCompressedFormat(
       urlIndex: number, request: Trace.Types.Events.SyntheticNetworkRequest,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, urlIdToIndex: Map<string, number>): string {
+      parsedTrace: Trace.Handlers.Types.HandlerData, urlIdToIndex: Map<string, number>): string {
     const {
       statusCode,
       initialPriority,
@@ -1291,7 +1291,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
   }
 
   static #getInitiatorChain(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      parsedTrace: Trace.Handlers.Types.HandlerData,
       request: Trace.Types.Events.SyntheticNetworkRequest): Trace.Types.Events.SyntheticNetworkRequest[] {
     const initiators: Trace.Types.Events.SyntheticNetworkRequest[] = [];
 

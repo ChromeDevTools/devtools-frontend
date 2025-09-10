@@ -918,7 +918,7 @@ export class FilmStripRecorder implements Tracing.TracingManager.TracingManagerC
     this.#tracingManager = null;
     await this.#traceEngine.parse(this.#collectedTraceEvents);
 
-    const data = this.#traceEngine.parsedTrace(this.#traceEngine.size() - 1) as
+    const data = this.#traceEngine.handlerData(this.#traceEngine.size() - 1) as
         Trace.Extras.FilmStrip.HandlerDataWithScreenshots;
     if (!data) {
       return;

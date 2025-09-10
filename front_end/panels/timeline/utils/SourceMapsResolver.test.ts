@@ -108,7 +108,7 @@ export async function loadCodeLocationResolvingScenario(): Promise<{
 }
 
 function parsedTraceFromProfileCalls(profileCalls: Trace.Types.Events.SyntheticProfileCall[]):
-    Trace.Handlers.Types.ParsedTrace {
+    Trace.Handlers.Types.HandlerData {
   const workersData: Trace.Handlers.ModelHandlers.Workers.WorkersData = {
     workerSessionIdEvents: [],
     workerIdByThread: new Map(),
@@ -122,14 +122,14 @@ function parsedTraceFromProfileCalls(profileCalls: Trace.Types.Events.SyntheticP
     NetworkRequests:
         {entityMappings: {entityByEvent: new Map(), eventsByEntity: new Map(), createdEntityCache: new Map()}},
     Meta: {mainFrameURL: 'https://example.com', navigationsByNavigationId: new Map()},
-  } as Trace.Handlers.Types.ParsedTrace;
+  } as Trace.Handlers.Types.HandlerData;
 }
 
 describeWithMockConnection('SourceMapsResolver', () => {
   describe('function name resolving', () => {
     let target: SDK.Target.Target;
     let script: SDK.Script.Script;
-    let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+    let parsedTrace: Trace.Handlers.Types.HandlerData;
     let profileCallForNameResolving: Trace.Types.Events.SyntheticProfileCall;
     beforeEach(async function() {
       target = createTarget();
@@ -248,7 +248,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
   });
   describe('unnecessary work detection', () => {
     it('does not dispatch a SourceMappingsUpdated event if relevant mappings were not updated', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
       const listener = sinon.spy();
 
       const sourceMapsResolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);

@@ -10,10 +10,10 @@ import * as Timeline from './timeline.js';
 
 const {createHiddenTracksOverlay} = Timeline.TrackConfigBanner;
 
-function fakeTrace(): Trace.Handlers.Types.ParsedTrace {
+function fakeTrace(): Trace.Handlers.Types.HandlerData {
   // We don't need a real trace here; it is used as the cache key.
   // So to keep the tests lightweight, let's just fake it
-  return {} as Trace.Handlers.Types.ParsedTrace;
+  return {} as Trace.Handlers.Types.HandlerData;
 }
 const NO_OP_CALLBACKS = {
   onShowAllTracks: () => {},

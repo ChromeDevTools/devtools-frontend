@@ -15,7 +15,7 @@ import * as Insights from './insights/insights.js';
 
 describeWithEnvironment('Sidebar', () => {
   async function renderSidebar(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      parsedTrace: Trace.Handlers.Types.HandlerData,
       metadata: Trace.Types.File.MetaData|null,
       insights: Trace.Insights.Types.TraceInsightSets|null,
       ): Promise<Components.Sidebar.SidebarWidget> {
@@ -31,7 +31,7 @@ describeWithEnvironment('Sidebar', () => {
   }
 
   it('renders with two tabs for insights & annotations', async function() {
-    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
     const sidebar = await renderSidebar(parsedTrace, metadata, insights);
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
@@ -43,7 +43,7 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('selects the insights tab by default', async function() {
-    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
     const sidebar = await renderSidebar(parsedTrace, metadata, insights);
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
@@ -56,7 +56,7 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('collapses the active insight when the sidebar is closed', async function() {
-    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     assert.isOk(insights);
     const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
     assert.isOk(firstNav.args.data?.navigationId);
@@ -70,7 +70,7 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('restores the active insight when it is opened again', async function() {
-    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     assert.isOk(insights);
     const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
     assert.isOk(firstNav.args.data?.navigationId);
@@ -92,7 +92,7 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('disables the insights tab if there are no insights', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const sidebar = await renderSidebar(parsedTrace, metadata, null);
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
@@ -108,7 +108,7 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('shows the count for the active annotations', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const events = allThreadEntriesInTrace(parsedTrace);
     const annotation1: Trace.Types.File.Annotation = {
       type: 'ENTRY_LABEL',
@@ -133,7 +133,7 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('de-duplicates annotations that are pending to not show an incorrect count', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const events = allThreadEntriesInTrace(parsedTrace);
 
     // Create Empty Entry Label Annotation (considered not started)
@@ -161,7 +161,7 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('removes the annotations badge when the user deletes the final annotation', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data: parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const entryLabelAnnotation: Trace.Types.File.Annotation = {
       type: 'ENTRY_LABEL',
       entry: allThreadEntriesInTrace(parsedTrace)[0],  // random event, doesn't matter

@@ -169,7 +169,7 @@ export class TraceLoader {
           throw new Error('Cached trace engine result did not have a synthetic events manager instance');
         }
         Trace.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
-        TraceLoader.initTraceBoundsManager(parsedTraceFile.parsedTrace);
+        TraceLoader.initTraceBoundsManager(parsedTraceFile.data);
         Timeline.ModificationsManager.ModificationsManager.reset();
         Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
       }, 4_000, 'Initializing state for cached trace');
@@ -189,7 +189,7 @@ export class TraceLoader {
     cacheByName.set(configCacheKey, parsedTraceFileAndModel);
     traceEngineCache.set(name, cacheByName);
 
-    TraceLoader.initTraceBoundsManager(parsedTraceFileAndModel.parsedTraceFile.parsedTrace);
+    TraceLoader.initTraceBoundsManager(parsedTraceFileAndModel.parsedTraceFile.data);
     await wrapInTimeout(context, () => {
       Timeline.ModificationsManager.ModificationsManager.reset();
       Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
@@ -204,7 +204,7 @@ export class TraceLoader {
    * level - rely on this being set. This is always set in the actual panel, but
    * parsing a trace in a test does not automatically set it.
    **/
-  static initTraceBoundsManager(data: Trace.Handlers.Types.ParsedTrace): void {
+  static initTraceBoundsManager(data: Trace.Handlers.Types.HandlerData): void {
     TraceBounds.TraceBounds.BoundsManager
         .instance({
           forceNew: true,

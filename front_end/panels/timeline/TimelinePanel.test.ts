@@ -64,8 +64,8 @@ describeWithEnvironment('TimelinePanel', function() {
         await TraceLoader.rawEvents(this, 'extension-tracks-and-marks.json.gz') as Trace.Types.Events.Event[];
     await timeline.loadingComplete(events, null, null);
     const tracksBeforeDisablingSetting = timeline.getFlameChart().getMainDataProvider().timelineData().groups;
-    const parsedTrace = traceModel.parsedTrace();
-    const extensionTracksInTrace = parsedTrace?.ExtensionTraceData.extensionTrackData;
+    const data = traceModel.handlerData();
+    const extensionTracksInTrace = data?.ExtensionTraceData.extensionTrackData;
     const extensionTrackInTraceNames = extensionTracksInTrace?.flatMap(
         track => track.isTrackGroup ? [...Object.keys(track.entriesByTrack), track.name] : track.name);
 
@@ -153,16 +153,16 @@ describeWithEnvironment('TimelinePanel', function() {
      async function() {
        const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
        await timeline.loadingComplete(events, null, null);
-       const parsedTrace = traceModel.parsedTrace();
-       assert.isOk(parsedTrace?.Meta.traceBounds.min);
+       const data = traceModel.handlerData();
+       assert.isOk(data?.Meta.traceBounds.min);
        const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
        assert.isOk(modificationsManager);
        const ariaAlertStub = sinon.spy(UI.ARIAUtils.LiveAnnouncer, 'alert');
        // Add an annotation
        modificationsManager.createAnnotation(
            {
-             bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-                 parsedTrace.Meta.traceBounds.min, parsedTrace.Meta.traceBounds.max),
+             bounds:
+                 Trace.Helpers.Timing.traceWindowFromMicroSeconds(data.Meta.traceBounds.min, data.Meta.traceBounds.max),
              type: 'TIME_RANGE',
              label: '',
            },

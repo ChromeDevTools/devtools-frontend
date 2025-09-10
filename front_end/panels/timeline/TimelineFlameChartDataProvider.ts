@@ -134,7 +134,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private currentLevel = 0;
 
   private compatibilityTracksAppender: CompatibilityTracksAppender|null = null;
-  private parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  private parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
 
   #minimumBoundary = 0;
   private timeSpan = 0;
@@ -455,7 +455,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return Object.assign(defaultGroupStyle, extra);
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace, entityMapper: Utils.EntityMapper.EntityMapper): void {
+  setModel(parsedTrace: Trace.Handlers.Types.HandlerData, entityMapper: Utils.EntityMapper.EntityMapper): void {
     this.reset();
     this.parsedTrace = parsedTrace;
     const {traceBounds} = parsedTrace.Meta;

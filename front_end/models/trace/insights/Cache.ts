@@ -193,10 +193,9 @@ export function isCacheInsight(model: InsightModel): model is CacheInsightModel 
   return model.insightKey === InsightKeys.CACHE;
 }
 
-export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): CacheInsightModel {
+export function generateInsight(data: Handlers.Types.HandlerData, context: InsightSetContext): CacheInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
-  const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
+  const contextRequests = data.NetworkRequests.byTime.filter(isWithinContext);
 
   const results: CacheableRequest[] = [];
   let totalWastedBytes = 0;

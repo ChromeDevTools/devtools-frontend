@@ -34,7 +34,7 @@ describeWithEnvironment('TimelineTreeView', function() {
     });
 
     it('Creates a tree from nestable async events', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
       const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
       eventTreeView.setModelWithEvents(consoleTimings, parsedTrace);
@@ -51,7 +51,7 @@ describeWithEnvironment('TimelineTreeView', function() {
     });
 
     it('shows instant events as nodes', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
       const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
       const consoleTimings = [...parsedTrace.UserTimings.performanceMarks];
       eventTreeView.setModelWithEvents(consoleTimings, parsedTrace);
@@ -65,7 +65,7 @@ describeWithEnvironment('TimelineTreeView', function() {
     });
 
     it('can filter events by text', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
       const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
       const consoleTimings = [...parsedTrace.UserTimings.performanceMarks];
       eventTreeView.setModelWithEvents(consoleTimings, parsedTrace);
@@ -83,7 +83,7 @@ describeWithEnvironment('TimelineTreeView', function() {
     });
 
     it('can filter and hide entire categories', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
       const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
       const performanceTimingEvents = [...parsedTrace.UserTimings.performanceMeasures];
       eventTreeView.setModelWithEvents(performanceTimingEvents, parsedTrace);
@@ -105,7 +105,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
   describe('BottomUpTimelineTreeView', function() {
     it('Creates a bottom up tree from nestable events', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
       const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
       const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
@@ -141,7 +141,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
   describe('CallTreeTimelineTreeView', function() {
     it('Creates a call tree from nestable events', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
@@ -169,7 +169,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
   describe('event grouping', function() {
     it('groups events by category in the Call Tree view', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
@@ -191,7 +191,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       assert.strictEqual(children.next().value!.event.name, 'third console time');
     });
     it('groups events by category in the Bottom up Tree view', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
@@ -215,7 +215,7 @@ describeWithEnvironment('TimelineTreeView', function() {
     });
 
     it('can group entries by domain', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
       const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
@@ -240,7 +240,7 @@ describeWithEnvironment('TimelineTreeView', function() {
     });
 
     it('can group entries by third parties', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
@@ -267,7 +267,7 @@ describeWithEnvironment('TimelineTreeView', function() {
     });
 
     it('can group entries by frame', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
       const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
@@ -287,7 +287,7 @@ describeWithEnvironment('TimelineTreeView', function() {
     });
 
     it('can group entries by URL', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
       const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);

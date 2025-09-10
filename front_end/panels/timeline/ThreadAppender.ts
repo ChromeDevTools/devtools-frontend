@@ -144,7 +144,7 @@ export class ThreadAppender implements TrackAppender {
 
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.Handlers.Types.HandlerData;
 
   #entries: readonly Trace.Types.Events.Event[] = [];
   #tree: Trace.Helpers.TreeHelpers.TraceEntryTree;
@@ -159,7 +159,7 @@ export class ThreadAppender implements TrackAppender {
   #url = '';
   #headerNestingLevel: number|null = null;
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.HandlerData,
       processId: Trace.Types.Events.ProcessID, threadId: Trace.Types.Events.ThreadID, threadName: string|null,
       type: Trace.Handlers.Threads.ThreadType, entries: readonly Trace.Types.Events.Event[],
       tree: Trace.Helpers.TreeHelpers.TraceEntryTree) {

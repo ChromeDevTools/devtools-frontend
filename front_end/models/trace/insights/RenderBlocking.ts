@@ -113,12 +113,12 @@ function estimateSavingsWithGraphs(deferredIds: Set<string>, lanternContext: Lan
   return Math.round(Math.max(estimateBeforeInline - estimateAfterInline, 0)) as Types.Timing.Milli;
 }
 
-function hasImageLCP(parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContextWithNavigation): boolean {
-  return parsedTrace.LargestImagePaint.lcpRequestByNavigationId.has(context.navigationId);
+function hasImageLCP(data: Handlers.Types.HandlerData, context: InsightSetContextWithNavigation): boolean {
+  return data.LargestImagePaint.lcpRequestByNavigationId.has(context.navigationId);
 }
 
 function computeSavings(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContextWithNavigation,
+    data: Handlers.Types.HandlerData, context: InsightSetContextWithNavigation,
     renderBlockingRequests: Types.Events.SyntheticNetworkRequest[]):
     Pick<RenderBlockingInsightModel, 'metricSavings'|'requestIdToWastedMs'>|undefined {
   if (!context.lantern) {
@@ -155,7 +155,7 @@ function computeSavings(
     metricSavings.FCP = estimateSavingsWithGraphs(deferredNodeIds, context.lantern);
 
     // In most cases, render blocking resources only affect LCP if LCP isn't an image.
-    if (!hasImageLCP(parsedTrace, context)) {
+    if (!hasImageLCP(data, context)) {
       metricSavings.LCP = metricSavings.FCP;
     }
   }
@@ -176,14 +176,14 @@ function finalize(partialModel: PartialInsightModel<RenderBlockingInsightModel>)
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): RenderBlockingInsightModel {
+    data: Handlers.Types.HandlerData, context: InsightSetContext): RenderBlockingInsightModel {
   if (!context.navigation) {
     return finalize({
       renderBlockingRequests: [],
     });
   }
 
-  const firstPaintTs = parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(context.frameId)
+  const firstPaintTs = data.PageLoadMetrics.metricScoresByFrameId.get(context.frameId)
                            ?.get(context.navigationId)
                            ?.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.FP)
                            ?.event?.ts;
@@ -195,7 +195,7 @@ export function generateInsight(
   }
 
   let renderBlockingRequests: Types.Events.SyntheticNetworkRequest[] = [];
-  for (const req of parsedTrace.NetworkRequests.byTime) {
+  for (const req of data.NetworkRequests.byTime) {
     if (req.args.data.frame !== context.frameId) {
       continue;
     }
@@ -223,14 +223,13 @@ export function generateInsight(
       }
     }
 
-    const navigation =
-        Helpers.Trace.getNavigationForTraceEvent(req, context.frameId, parsedTrace.Meta.navigationsByFrameId);
+    const navigation = Helpers.Trace.getNavigationForTraceEvent(req, context.frameId, data.Meta.navigationsByFrameId);
     if (navigation === context.navigation) {
       renderBlockingRequests.push(req);
     }
   }
 
-  const savings = computeSavings(parsedTrace, context, renderBlockingRequests);
+  const savings = computeSavings(data, context, renderBlockingRequests);
 
   // Sort by request duration for insights.
   renderBlockingRequests = renderBlockingRequests.sort((a, b) => {

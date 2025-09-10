@@ -51,9 +51,9 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'LayoutShifts';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
+  #parsedTrace: Readonly<Trace.Handlers.Types.HandlerData>;
 
-  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.HandlerData) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#parsedTrace = parsedTrace;
   }
@@ -226,7 +226,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   }
 
   static createShiftViz(
-      event: Trace.Types.Events.SyntheticLayoutShift, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      event: Trace.Types.Events.SyntheticLayoutShift, parsedTrace: Trace.Handlers.Types.HandlerData,
       maxSize: Geometry.Size): HTMLElement|undefined {
     const screenshots = event.parsedData.screenshots;
     const {viewportRect, devicePixelRatio: dpr} = parsedTrace.Meta;

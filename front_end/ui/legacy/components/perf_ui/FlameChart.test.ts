@@ -1189,7 +1189,7 @@ describeWithEnvironment('FlameChart', () => {
 
       await renderFlameChartIntoDOM(this, {
         dataProvider: 'MAIN',
-        fileNameOrParsedTrace: parsedTraceFile.parsedTrace,
+        fileNameOrParsedTrace: parsedTraceFile.data,
         filterTracks(trackName) {
           return trackName.startsWith('Main');
         },

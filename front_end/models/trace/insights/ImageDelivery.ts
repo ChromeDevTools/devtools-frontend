@@ -183,19 +183,19 @@ function estimateGIFPercentSavings(request: Types.Events.SyntheticNetworkRequest
 }
 
 function getDisplayedSize(
-    parsedTrace: Handlers.Types.ParsedTrace, paintImage: Types.Events.PaintImage): {width: number, height: number} {
+    data: Handlers.Types.HandlerData, paintImage: Types.Events.PaintImage): {width: number, height: number} {
   // Note: for traces made prior to metadata.hostDPR (which means no data in
   // paintEventToCorrectedDisplaySize), the displayed size unexpectedly ignores any
   // emulated DPR and so the results may be very misleading.
-  return parsedTrace.ImagePainting.paintEventToCorrectedDisplaySize.get(paintImage) ?? {
+  return data.ImagePainting.paintEventToCorrectedDisplaySize.get(paintImage) ?? {
     width: paintImage.args.data.width,
     height: paintImage.args.data.height,
   };
 }
 
-function getPixelCounts(parsedTrace: Handlers.Types.ParsedTrace, paintImage: Types.Events.PaintImage):
+function getPixelCounts(data: Handlers.Types.HandlerData, paintImage: Types.Events.PaintImage):
     {displayedPixels: number, filePixels: number} {
-  const {width, height} = getDisplayedSize(parsedTrace, paintImage);
+  const {width, height} = getDisplayedSize(data, paintImage);
   return {
     filePixels: paintImage.args.data.srcWidth * paintImage.args.data.srcHeight,
     displayedPixels: width * height,
@@ -203,10 +203,10 @@ function getPixelCounts(parsedTrace: Handlers.Types.ParsedTrace, paintImage: Typ
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ImageDeliveryInsightModel {
+    data: Handlers.Types.HandlerData, context: InsightSetContext): ImageDeliveryInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
-  const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
+  const contextRequests = data.NetworkRequests.byTime.filter(isWithinContext);
 
   const optimizableImages: OptimizableImage[] = [];
   for (const request of contextRequests) {
@@ -220,7 +220,7 @@ export function generateInsight(
 
     // If the request was redirected, the image paints will have the pre-redirect URL.
     const url = request.args.data.redirects[0]?.url ?? request.args.data.url;
-    const imagePaints = parsedTrace.ImagePainting.paintImageEventForUrl.get(url)?.filter(isWithinContext);
+    const imagePaints = data.ImagePainting.paintImageEventForUrl.get(url)?.filter(isWithinContext);
 
     // This will filter out things like preloaded image requests where an image file is downloaded
     // but never rendered on the page.
@@ -229,15 +229,15 @@ export function generateInsight(
     }
 
     const largestImagePaint = imagePaints.reduce((prev, curr) => {
-      const prevPixels = getPixelCounts(parsedTrace, prev).displayedPixels;
-      const currPixels = getPixelCounts(parsedTrace, curr).displayedPixels;
+      const prevPixels = getPixelCounts(data, prev).displayedPixels;
+      const currPixels = getPixelCounts(data, curr).displayedPixels;
       return prevPixels > currPixels ? prev : curr;
     });
 
     const {
       filePixels: imageFilePixels,
       displayedPixels: largestImageDisplayPixels,
-    } = getPixelCounts(parsedTrace, largestImagePaint);
+    } = getPixelCounts(data, largestImagePaint);
 
     // Decoded body length is almost always the right one to be using because of the below:
     //     `encodedDataLength = decodedBodyLength + headers`.
@@ -284,7 +284,7 @@ export function generateInsight(
         // optimization added here.
         imageByteSavings += Math.round(wastedPixelRatio * (imageBytes - imageByteSavingsFromFormat));
 
-        const {width, height} = getDisplayedSize(parsedTrace, largestImagePaint);
+        const {width, height} = getDisplayedSize(data, largestImagePaint);
 
         optimizations.push({
           type: ImageOptimizationType.RESPONSIVE_SIZE,

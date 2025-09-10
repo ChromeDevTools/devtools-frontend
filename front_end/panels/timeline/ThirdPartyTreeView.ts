@@ -59,7 +59,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
   }
 
   override setModelWithEvents(
-      selectedEvents: Trace.Types.Events.Event[]|null, parsedTrace?: Trace.Handlers.Types.ParsedTrace|null,
+      selectedEvents: Trace.Types.Events.Event[]|null, parsedTrace?: Trace.Handlers.Types.HandlerData|null,
       entityMappings?: Utils.EntityMapper.EntityMapper|null): void {
     super.setModelWithEvents(selectedEvents, parsedTrace, entityMappings);
 

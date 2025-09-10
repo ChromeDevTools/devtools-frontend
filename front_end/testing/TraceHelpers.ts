@@ -36,7 +36,7 @@ export interface RenderFlameChartOptions {
    * name so that the TraceLoader can take care of loading and caching the
    * trace.
    */
-  fileNameOrParsedTrace: string|Trace.Handlers.Types.ParsedTrace;
+  fileNameOrParsedTrace: string|Trace.Handlers.Types.HandlerData;
   /**
    * Filter the tracks that will be rendered by their name. The name here is
    * the user visible name that is drawn onto the flame chart.
@@ -75,7 +75,7 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
   dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider |
       Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider,
   target: HTMLElement,
-  parsedTrace: Trace.Handlers.Types.ParsedTrace,
+  parsedTrace: Trace.Handlers.Types.HandlerData,
 }> {
   const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
   const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
@@ -88,10 +88,10 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
     ignoreListManager,
   });
 
-  let parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  let parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
 
   if (typeof options.fileNameOrParsedTrace === 'string') {
-    parsedTrace = (await TraceLoader.traceEngine(context, options.fileNameOrParsedTrace)).parsedTrace;
+    parsedTrace = (await TraceLoader.traceEngine(context, options.fileNameOrParsedTrace)).data;
   } else {
     parsedTrace = options.fileNameOrParsedTrace;
   }
@@ -155,12 +155,12 @@ export async function getNetworkFlameChart(traceFileName: string, expanded: bool
 }> {
   await initializeGlobalVars();
 
-  const {parsedTrace} = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
-  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
-  const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
-  const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
+  const {data} = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(data);
+  const minTime = Trace.Helpers.Timing.microToMilli(data.Meta.traceBounds.min);
+  const maxTime = Trace.Helpers.Timing.microToMilli(data.Meta.traceBounds.max);
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-  dataProvider.setModel(parsedTrace, entityMapper);
+  dataProvider.setModel(data, entityMapper);
   dataProvider.setWindowTimes(minTime, maxTime);
   dataProvider.timelineData().groups.forEach(group => {
     group.expanded = expanded;
@@ -659,7 +659,7 @@ export function getMainThread(data: Trace.Handlers.ModelHandlers.Renderer.Render
   return mainThread;
 }
 
-type ParsedTrace = Trace.Handlers.Types.ParsedTrace;
+type ParsedTrace = Trace.Handlers.Types.HandlerData;
 
 export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {}): ParsedTrace {
   return {
@@ -896,14 +896,14 @@ export function getAllNetworkRequestsByHost(
   return reqs;
 }
 
-const allThreadEntriesForTraceCache = new WeakMap<Trace.Handlers.Types.ParsedTrace, Trace.Types.Events.Event[]>();
+const allThreadEntriesForTraceCache = new WeakMap<Trace.Handlers.Types.HandlerData, Trace.Types.Events.Event[]>();
 
 /**
  * A function to get a list of all thread entries that exist. This is
  * reasonably expensive, so it's cached to avoid a huge impact on our test suite
  * speed.
  */
-export function allThreadEntriesInTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Types.Events.Event[] {
+export function allThreadEntriesInTrace(parsedTrace: Trace.Handlers.Types.HandlerData): Trace.Types.Events.Event[] {
   const fromCache = allThreadEntriesForTraceCache.get(parsedTrace);
   if (fromCache) {
     return fromCache;

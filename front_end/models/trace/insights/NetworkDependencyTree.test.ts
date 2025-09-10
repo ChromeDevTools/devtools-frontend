@@ -132,7 +132,7 @@ describe('generatePreconnectedOrigins', () => {
         linkPreconnectEvents: [] as Trace.Types.Events.LinkPreconnect[],
         byId: new Map<string, Trace.Types.Events.SyntheticNetworkRequest>(),
       },
-    } as Trace.Handlers.Types.ParsedTrace;
+    } as Trace.Handlers.Types.HandlerData;
 
     const mockContext = {} as InsightSetContextWithNavigation;
 
@@ -393,7 +393,7 @@ describeWithEnvironment('generatePreconnectCandidates', () => {
       byId: new Map<string, Trace.Types.Events.SyntheticNetworkRequest>(),
       linkPreconnectEvents: [] as Trace.Types.Events.LinkPreconnect[],
     },
-  } as Trace.Handlers.Types.ParsedTrace;
+  } as Trace.Handlers.Types.HandlerData;
 
   const mockContext = {
     // This is not need to calculate the data of this insight, but is needed to check this is a context with lantern data.

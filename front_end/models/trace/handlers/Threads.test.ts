@@ -8,9 +8,9 @@ import * as Trace from '../trace.js';
 
 describeWithEnvironment('Handler Threads helper', function() {
   it('returns all the threads for a trace that used tracing', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {data} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
-    const allThreads = Array.from(parsedTrace.Renderer.processes.values()).flatMap(process => {
+    const allThreads = Array.from(data.Renderer.processes.values()).flatMap(process => {
       return Array.from(process.threads.values());
     });
 
@@ -29,7 +29,7 @@ describeWithEnvironment('Handler Threads helper', function() {
       {name: 'CompositorTileWorker3', type: Trace.Handlers.Threads.ThreadType.RASTERIZER},
     ];
 
-    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace);
+    const threads = Trace.Handlers.Threads.threadsInTrace(data);
     assert.strictEqual(threads.length, allThreads.length);
     assert.deepEqual(threads.map(thread => ({name: thread.name, type: thread.type})), expectedThreadNamesAndTypes);
   });
@@ -47,10 +47,10 @@ describeWithEnvironment('Handler Threads helper', function() {
     const {parsedTraceFile} = await TraceLoader.executeTraceEngineOnFileContents(contents);
 
     // Check that we did indeed parse this properly as a CPU Profile.
-    assert.strictEqual(parsedTraceFile.parsedTrace.Renderer.processes.size, 0);
-    assert.strictEqual(parsedTraceFile.parsedTrace.Samples.profilesInProcess.size, 1);
+    assert.strictEqual(parsedTraceFile.data.Renderer.processes.size, 0);
+    assert.strictEqual(parsedTraceFile.data.Samples.profilesInProcess.size, 1);
 
-    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTraceFile.parsedTrace);
+    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTraceFile.data);
     assert.lengthOf(threads, 1);
 
     assert.strictEqual(threads.at(0)?.type, Trace.Handlers.Threads.ThreadType.CPU_PROFILE);

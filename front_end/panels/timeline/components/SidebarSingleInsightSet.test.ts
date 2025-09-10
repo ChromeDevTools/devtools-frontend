@@ -33,7 +33,7 @@ function getPassedInsights(component: Components.SidebarSingleInsightSet.Sidebar
 
 describeWithEnvironment('SidebarSingleInsightSet', () => {
   it('renders a list of insights', async function() {
-    const {insights, metadata, parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {insights, metadata, data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
     assert.isOk(insights);
     // only one navigation in this trace.
@@ -82,7 +82,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
   });
 
   it('does not render experimental insights by default', async function() {
-    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'font-display.json.gz');
+    const {data: parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'font-display.json.gz');
     const component = new Components.SidebarSingleInsightSet.SidebarSingleInsightSet();
     renderElementIntoDOM(component);
     const firstNavigation = parsedTrace.Meta.mainFrameNavigations.at(0)?.args.data?.navigationId;
@@ -126,7 +126,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
   });
 
   it('will render the active insight fully', async function() {
-    const {insights, metadata, parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {insights, metadata, data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
     assert.isOk(insights);
     // only one navigation in this trace.

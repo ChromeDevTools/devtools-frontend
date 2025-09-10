@@ -18,9 +18,9 @@ describeWithEnvironment('Initiators', () => {
     let rAFCall: Trace.Types.Events.SyntheticProfileCall;
     let functionCallByRAF: Trace.Types.Events.Event;
 
-    let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+    let parsedTrace: Trace.Handlers.Types.HandlerData;
     beforeEach(async function() {
-      parsedTrace = (await TraceLoader.traceEngine(this, 'async-js-calls.json.gz')).parsedTrace;
+      parsedTrace = (await TraceLoader.traceEngine(this, 'async-js-calls.json.gz')).data;
       setTimeoutCall =
           allThreadEntriesInTrace(parsedTrace)
               .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'setTimeout')
@@ -160,7 +160,7 @@ describeWithEnvironment('Initiators', () => {
 
   describe('Network Requests', function() {
     it('returns the initiator data for network requests', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
+      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
 
       // Find the network request to test, it is initiated by `youtube.com`.
       const event = parsedTrace.NetworkRequests.byTime.find(event => event.ts === 1491680762420);

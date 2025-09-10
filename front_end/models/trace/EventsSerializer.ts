@@ -29,15 +29,15 @@ export class EventsSerializer {
     return key;
   }
 
-  eventForKey(key: Types.File.SerializableKey, parsedTrace: Handlers.Types.ParsedTrace): Types.Events.Event {
+  eventForKey(key: Types.File.SerializableKey, data: Handlers.Types.HandlerData): Types.Events.Event {
     const eventValues = Types.File.traceEventKeyToValues(key);
 
     if (EventsSerializer.isProfileCallKey(eventValues)) {
-      return this.#getModifiedProfileCallByKeyValues(eventValues, parsedTrace);
+      return this.#getModifiedProfileCallByKeyValues(eventValues, data);
     }
 
     if (EventsSerializer.isLegacyTimelineFrameKey(eventValues)) {
-      const event = parsedTrace.Frames.frames.at(eventValues.rawIndex);
+      const event = data.Frames.frames.at(eventValues.rawIndex);
       if (!event) {
         throw new Error(`Could not find frame with index ${eventValues.rawIndex}`);
       }
@@ -75,14 +75,13 @@ export class EventsSerializer {
     return key.type === Types.File.EventKeyType.SYNTHETIC_EVENT;
   }
 
-  #getModifiedProfileCallByKeyValues(key: Types.File.ProfileCallKeyValues, parsedTrace: Handlers.Types.ParsedTrace):
+  #getModifiedProfileCallByKeyValues(key: Types.File.ProfileCallKeyValues, data: Handlers.Types.HandlerData):
       Types.Events.SyntheticProfileCall {
     const cacheResult = this.#modifiedProfileCallByKey.get(key);
     if (cacheResult) {
       return cacheResult;
     }
-    const profileCallsInThread =
-        parsedTrace.Renderer.processes.get(key.processID)?.threads.get(key.threadID)?.profileCalls;
+    const profileCallsInThread = data.Renderer.processes.get(key.processID)?.threads.get(key.threadID)?.profileCalls;
     if (!profileCallsInThread) {
       throw new Error(`Unknown profile call serializable key: ${(key)}`);
     }

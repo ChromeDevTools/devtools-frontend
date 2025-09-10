@@ -29,10 +29,10 @@ export class AnimationsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'Animations';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
+  #parsedTrace: Readonly<Trace.Handlers.Types.HandlerData>;
   #eventAppendedCallback = this.#eventAppendedCallbackFunction.bind(this);
 
-  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.HandlerData) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#parsedTrace = parsedTrace;
   }

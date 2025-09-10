@@ -11,7 +11,7 @@ import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace: Trace.Handlers.Types.HandlerData,
     entryData: Trace.Types.Events.Event[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     ): Timeline.TimingsTrackAppender.TimingsTrackAppender {
@@ -22,13 +22,13 @@ function initTrackAppender(
 }
 
 describeWithEnvironment('TimingTrackAppender', function() {
-  let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  let parsedTrace: Trace.Handlers.Types.HandlerData;
   let timingsTrackAppender: Timeline.TimingsTrackAppender.TimingsTrackAppender;
   let entryData: Trace.Types.Events.Event[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
   beforeEach(async function() {
-    ({parsedTrace} = await TraceLoader.traceEngine(this, 'timings-track.json.gz'));
+    ({data: parsedTrace} = await TraceLoader.traceEngine(this, 'timings-track.json.gz'));
     timingsTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
     timingsTrackAppender.appendTrackAtLevel(0);
   });
@@ -241,7 +241,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
       entryData = [];
       flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
       entryTypeByLevel = [];
-      ({parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz'));
+      ({data: parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz'));
       timingsTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
       timingsTrackAppender.appendTrackAtLevel(0);
       // Rather than use the real colours here and burden the test with having to
@@ -344,7 +344,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
         flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
         entryTypeByLevel = [];
         Timeline.TimelinePanel.TimelinePanel.extensionDataVisibilitySetting().set(false);
-        parsedTrace = (await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz')).parsedTrace;
+        parsedTrace = (await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz')).data;
         timingsTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
         timingsTrackAppender.appendTrackAtLevel(0);
 

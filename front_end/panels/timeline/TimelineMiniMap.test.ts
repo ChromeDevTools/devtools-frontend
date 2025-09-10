@@ -14,7 +14,7 @@ import * as TimelineComponents from './components/components.js';
 import * as Timeline from './timeline.js';
 
 describeWithEnvironment('TimelineMiniMap', function() {
-  async function renderMiniMapForScreenshot(parsedTrace: Trace.Handlers.Types.ParsedTrace): Promise<void> {
+  async function renderMiniMapForScreenshot(parsedTrace: Trace.Handlers.Types.HandlerData): Promise<void> {
     const container = document.createElement('div');
     container.style.flex = 'none';
     container.style.display = 'flex';
@@ -46,7 +46,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
   }
 
   it('always shows the responsiveness, CPU activity and network panel', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
@@ -72,19 +72,19 @@ describeWithEnvironment('TimelineMiniMap', function() {
   });
 
   it('shows memory and screenshots also if they are set to be visible', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     await renderMiniMapForScreenshot(parsedTrace);
     await assertScreenshot('timeline/minimap_with_memory_and_screenshots.png');
   });
 
   it('highlights long tasks in red', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
     await renderMiniMapForScreenshot(parsedTrace);
     await assertScreenshot('timeline/minimap_long_task.png');
   });
 
   it('creates the first breadcrumb', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
@@ -112,7 +112,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
   });
 
   it('stores breadcrumbs to be serialized', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
     minimap.setData({
       parsedTrace,

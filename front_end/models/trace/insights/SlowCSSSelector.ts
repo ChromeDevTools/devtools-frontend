@@ -119,8 +119,8 @@ export function isSlowCSSSelectorInsight(model: InsightModel): model is SlowCSSS
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): SlowCSSSelectorInsightModel {
-  const selectorStatsData = parsedTrace.SelectorStats;
+    data: Handlers.Types.HandlerData, context: InsightSetContext): SlowCSSSelectorInsightModel {
+  const selectorStatsData = data.SelectorStats;
 
   if (!selectorStatsData) {
     throw new Error('no selector stats data');

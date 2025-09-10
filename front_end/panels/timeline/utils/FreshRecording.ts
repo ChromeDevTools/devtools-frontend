@@ -12,7 +12,7 @@ let instance: Tracker|null = null;
  * is loaded, we set this flag accordingly.
  **/
 export class Tracker {
-  #freshRecordings = new WeakSet<Trace.Handlers.Types.ParsedTrace>();
+  #freshRecordings = new WeakSet<Trace.Handlers.Types.HandlerData>();
 
   static instance(opts: {forceNew: boolean} = {forceNew: false}): Tracker {
     if (!instance || opts.forceNew) {
@@ -21,11 +21,11 @@ export class Tracker {
     return instance;
   }
 
-  registerFreshRecording(data: Trace.Handlers.Types.ParsedTrace): void {
+  registerFreshRecording(data: Trace.Handlers.Types.HandlerData): void {
     this.#freshRecordings.add(data);
   }
 
-  recordingIsFresh(data: Trace.Handlers.Types.ParsedTrace): boolean {
+  recordingIsFresh(data: Trace.Handlers.Types.HandlerData): boolean {
     return this.#freshRecordings.has(data);
   }
 }

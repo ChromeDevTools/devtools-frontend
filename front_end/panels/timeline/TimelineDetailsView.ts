@@ -86,7 +86,7 @@ export class TimelineDetailsPane extends
   private selection?: TimelineSelection|null;
   private updateContentsScheduled: boolean;
   private lazySelectorStatsView: TimelineSelectorStatsView|null;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
   #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
@@ -270,7 +270,7 @@ export class TimelineDetailsPane extends
   }
 
   async setModel(data: {
-    parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
+    parsedTrace: Trace.Handlers.Types.HandlerData|null,
     selectedEvents: Trace.Types.Events.Event[]|null,
     traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null,
     eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null,
@@ -600,7 +600,7 @@ interface SelectedRange {
 interface SummaryViewInput {
   selectedEvent: Trace.Types.Events.Event|null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null;
-  parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
+  parsedTrace: Trace.Handlers.Types.HandlerData|null;
   traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null;
   entityMapper: Utils.EntityMapper.EntityMapper|null;
   target: SDK.Target.Target|null;
@@ -631,7 +631,7 @@ class SummaryView extends UI.Widget.Widget {
   #view: View;
   selectedEvent: Trace.Types.Events.Event|null = null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
-  parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
   traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
   entityMapper: Utils.EntityMapper.EntityMapper|null = null;
   target: SDK.Target.Target|null = null;

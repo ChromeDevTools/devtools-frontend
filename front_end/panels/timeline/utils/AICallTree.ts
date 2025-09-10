@@ -22,7 +22,7 @@ function depthFirstWalk(
 
 export interface FromTimeOnThreadOptions {
   thread: {pid: Trace.Types.Events.ProcessID, tid: Trace.Types.Events.ThreadID};
-  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  parsedTrace: Trace.Handlers.Types.HandlerData;
   bounds: Trace.Types.Timing.TraceWindowMicro;
 }
 
@@ -31,7 +31,7 @@ export class AICallTree {
       public selectedNode: Trace.Extras.TraceTree.Node|null,
       public rootNode: Trace.Extras.TraceTree.TopDownRootNode,
       // TODO: see if we can avoid passing around this entire thing.
-      public parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      public parsedTrace: Trace.Handlers.Types.HandlerData,
   ) {
   }
 
@@ -100,7 +100,7 @@ export class AICallTree {
    * This filters out other events we make such as SyntheticLayoutShifts which are not valid
    * If the event is not valid, or there is an unexpected error building the tree, `null` is returned.
    */
-  static fromEvent(selectedEvent: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree
+  static fromEvent(selectedEvent: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.HandlerData): AICallTree
       |null {
     // Special case: performance.mark events are shown on the main thread
     // technically, but because they are instant events they are shown with a
@@ -300,7 +300,7 @@ export class AICallTree {
   *     - This node is the selected node (S marker)
   */
   stringifyNode(
-      node: Trace.Extras.TraceTree.Node, nodeId: number, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      node: Trace.Extras.TraceTree.Node, nodeId: number, parsedTrace: Trace.Handlers.Types.HandlerData,
       selectedNode: Trace.Extras.TraceTree.Node|null, allUrls: string[], childStartingNodeIndex?: number): string {
     const event = node.event;
     if (!event) {

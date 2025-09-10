@@ -46,7 +46,7 @@ function isShowPostMessageEventsEnabled(): boolean {
 }
 
 export function entryIsVisibleInTimeline(
-    entry: Trace.Types.Events.Event, parsedTrace?: Trace.Handlers.Types.ParsedTrace): boolean {
+    entry: Trace.Types.Events.Event, parsedTrace?: Trace.Handlers.Types.HandlerData): boolean {
   if (parsedTrace?.Meta.traceIsGeneric) {
     return true;
   }
@@ -188,7 +188,7 @@ export class CompatibilityTracksAppender {
   #eventsForTrack = new Map<TrackAppender, Trace.Types.Events.Event[]>();
   #trackEventsForTreeview = new Map<TrackAppender, Trace.Types.Events.Event[]>();
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.Handlers.Types.HandlerData;
   #entryData: Trace.Types.Events.Event[];
   #colorGenerator: Common.Color.Generator;
   #allTrackAppenders: TrackAppender[] = [];
@@ -218,7 +218,7 @@ export class CompatibilityTracksAppender {
    * @param entityMapper 3P entity data for the trace.
    */
   constructor(
-      flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.HandlerData,
       entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[],
       entityMapper: TimelineUtils.EntityMapper.EntityMapper|null) {
     this.#flameChartData = flameChartData;

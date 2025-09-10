@@ -50,7 +50,7 @@ describeWithMockConnection('isIgnoreListedEntry', () => {
     const traceWithMappings = {
       Samples: makeMockSamplesHandlerData([profileCallWithMappings]),
       Workers: workersData,
-    } as Trace.Handlers.Types.ParsedTrace;
+    } as Trace.Handlers.Types.HandlerData;
     const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithMappings);
     await resolver.install();
     assert.isTrue(Utils.IgnoreList.isIgnoreListedEntry(profileCallWithMappings));
@@ -82,7 +82,7 @@ describeWithMockConnection('isIgnoreListedEntry', () => {
        const traceWithMappings = {
          Samples: makeMockSamplesHandlerData([profileCallWithMappings]),
          Workers: workersData,
-       } as Trace.Handlers.Types.ParsedTrace;
+       } as Trace.Handlers.Types.HandlerData;
        const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithMappings);
        await resolver.install();
        assert.isTrue(Utils.IgnoreList.isIgnoreListedEntry(profileCallWithMappings));
@@ -125,7 +125,7 @@ describeWithMockConnection('isIgnoreListedEntry', () => {
     const traceWithMappings = {
       Samples: makeMockSamplesHandlerData([profileCallWithContentScript]),
       Workers: workersData,
-    } as Trace.Handlers.Types.ParsedTrace;
+    } as Trace.Handlers.Types.HandlerData;
     const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithMappings);
     await resolver.install();
     assert.isTrue(Utils.IgnoreList.isIgnoreListedEntry(profileCallWithContentScript));

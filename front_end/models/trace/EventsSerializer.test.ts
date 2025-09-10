@@ -20,15 +20,15 @@ function findFirstEntry(
 
 describeWithEnvironment('EventsSerializer', () => {
   it('correctly implements a bidirectional key <-> event mapping', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
+    const {data} = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
     const eventsSerializer = new EventsSerializer.EventsSerializer();
-    const mainThread = getMainThread(parsedTrace.Renderer);
+    const mainThread = getMainThread(data.Renderer);
     // Find first 'Timer Fired' entry in the trace
     const rawEntry = findFirstEntry(mainThread.entries, entry => {
       return entry.name === 'TimerFire';
     });
 
-    const syntheticEvent = parsedTrace.NetworkRequests.byTime[0];
+    const syntheticEvent = data.NetworkRequests.byTime[0];
     const profileCall = findFirstEntry(mainThread.entries, entry => Types.Events.isProfileCall(entry));
     const rawEntryKey = eventsSerializer.keyForEvent(rawEntry);
     const syntheticEventKey = eventsSerializer.keyForEvent(syntheticEvent);
@@ -43,9 +43,9 @@ describeWithEnvironment('EventsSerializer', () => {
     assert.isOk(syntheticEventKey);
     assert.isOk(profileCallKey);
 
-    const resolvedRawEntry = eventsSerializer.eventForKey(rawEntryKey, parsedTrace);
-    const resolvedSyntheticEntry = eventsSerializer.eventForKey(syntheticEventKey, parsedTrace);
-    const resolvedProfileCall = eventsSerializer.eventForKey(profileCallKey, parsedTrace);
+    const resolvedRawEntry = eventsSerializer.eventForKey(rawEntryKey, data);
+    const resolvedSyntheticEntry = eventsSerializer.eventForKey(syntheticEventKey, data);
+    const resolvedProfileCall = eventsSerializer.eventForKey(profileCallKey, data);
 
     // Test key -> event mappings
     assert.strictEqual(resolvedRawEntry, rawEntry);
@@ -54,17 +54,17 @@ describeWithEnvironment('EventsSerializer', () => {
   });
 
   it('correctly maps to and from legacy timeline frames', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {data} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const eventsSerializer = new EventsSerializer.EventsSerializer();
 
-    const frame = parsedTrace.Frames.frames.at(0);
+    const frame = data.Frames.frames.at(0);
     assert.isOk(frame);
 
     const frameKey = eventsSerializer.keyForEvent(frame);
     assert.isOk(frameKey);
     assert.strictEqual(frameKey, 'l-0');
 
-    const resolvedFrame = eventsSerializer.eventForKey(frameKey, parsedTrace);
+    const resolvedFrame = eventsSerializer.eventForKey(frameKey, data);
     assert.strictEqual(resolvedFrame, frame);
   });
 });

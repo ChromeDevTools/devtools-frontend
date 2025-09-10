@@ -29,7 +29,7 @@ describeWithEnvironment('INP breakdown component', () => {
   });
 
   it('enables "Ask AI" if the page has an interaction', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    const {data: parsedTrace, insights} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
     assert.isOk(insights);
     const firstInsightSet = insights.values().next()?.value;
     assert.isOk(firstInsightSet);
@@ -51,7 +51,7 @@ describeWithEnvironment('INP breakdown component', () => {
   });
 
   it('disables "Ask AI" if the page has no interaction', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'unsized-images.json.gz');
+    const {data: parsedTrace, insights} = await TraceLoader.traceEngine(this, 'unsized-images.json.gz');
     assert.isOk(insights);
     const firstInsightSet = insights.values().next()?.value;
     assert.isOk(firstInsightSet);

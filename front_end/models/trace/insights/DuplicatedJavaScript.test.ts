@@ -115,7 +115,7 @@ describeWithEnvironment('DuplicatedJavaScript', function() {
     }
 
     const {parsedTraceFile} = await TraceLoader.executeTraceEngineOnFileContents(fileContents);
-    const {parsedTrace: data, insights} = parsedTraceFile;
+    const {data, insights} = parsedTraceFile;
     if (!insights) {
       throw new Error('invalid insights');
     }

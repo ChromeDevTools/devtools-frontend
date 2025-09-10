@@ -190,12 +190,12 @@ function finalize(partialModel: PartialInsightModel<DocumentLatencyInsightModel>
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DocumentLatencyInsightModel {
+    data: Handlers.Types.HandlerData, context: InsightSetContext): DocumentLatencyInsightModel {
   if (!context.navigation) {
     return finalize({});
   }
 
-  const documentRequest = parsedTrace.NetworkRequests.byId.get(context.navigationId);
+  const documentRequest = data.NetworkRequests.byId.get(context.navigationId);
   if (!documentRequest) {
     return finalize({warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
   }

@@ -77,8 +77,8 @@ export function isLegacyJavaScript(model: InsightModel): model is LegacyJavaScri
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): LegacyJavaScriptInsightModel {
-  const scripts = parsedTrace.Scripts.scripts.filter(script => {
+    data: Handlers.Types.HandlerData, context: InsightSetContext): LegacyJavaScriptInsightModel {
+  const scripts = data.Scripts.scripts.filter(script => {
     if (script.frame !== context.frameId) {
       return false;
     }

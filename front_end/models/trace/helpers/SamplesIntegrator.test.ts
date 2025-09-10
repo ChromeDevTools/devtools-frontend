@@ -93,15 +93,15 @@ describeWithEnvironment('SamplesIntegrator', function() {
 
   describe('buildProfileCalls', () => {
     it('generates profile calls using trace events and JS samples from a trace file', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
-      const samplesData = parsedTrace.Samples;
+      const {data} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
+      const samplesData = data.Samples;
       assert.strictEqual(samplesData.profilesInProcess.size, 1);
       const [[pid, profileByThread]] = samplesData.profilesInProcess.entries();
       const [[tid, cpuProfileData]] = profileByThread.entries();
       const parsedProfile = cpuProfileData.parsedProfile;
       const samplesIntegrator =
           new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
-      const traceEvents = allThreadEntriesInTrace(parsedTrace).filter(event => event.pid === pid && event.tid === tid);
+      const traceEvents = allThreadEntriesInTrace(data).filter(event => event.pid === pid && event.tid === tid);
       if (!traceEvents) {
         throw new Error('Trace events were unexpectedly not found.');
       }
@@ -342,15 +342,15 @@ describeWithEnvironment('SamplesIntegrator', function() {
       assert.strictEqual(framesForFunctionA[1].dur, runMicroTasks.ts + (runMicroTasks.dur || 0) - expectedBTimestamp);
     });
     it('skips samples from (program), (idle), (root) and (garbage collector) nodes', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
-      const samplesData = parsedTrace.Samples;
+      const {data} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
+      const samplesData = data.Samples;
       assert.strictEqual(samplesData.profilesInProcess.size, 1);
       const [[pid, profileByThread]] = samplesData.profilesInProcess.entries();
       const [[tid, cpuProfileData]] = profileByThread.entries();
       const parsedProfile = cpuProfileData.parsedProfile;
       const samplesIntegrator =
           new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
-      const traceEvents = allThreadEntriesInTrace(parsedTrace).filter(event => event.pid === pid && event.tid === tid);
+      const traceEvents = allThreadEntriesInTrace(data).filter(event => event.pid === pid && event.tid === tid);
       if (!traceEvents) {
         throw new Error('Trace events were unexpectedly not found.');
       }

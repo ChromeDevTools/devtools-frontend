@@ -10,8 +10,8 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import {PerformanceTraceFormatter} from '../ai_assistance.js';
 
 async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: string):
-    Promise<{formatter: PerformanceTraceFormatter, parsedTrace: Trace.Handlers.Types.ParsedTrace}> {
-  const {parsedTrace, insights, metadata} = await TraceLoader.traceEngine(context, name);
+    Promise<{formatter: PerformanceTraceFormatter, parsedTrace: Trace.Handlers.Types.HandlerData}> {
+  const {data: parsedTrace, insights, metadata} = await TraceLoader.traceEngine(context, name);
   assert.isOk(insights);
   const focus = TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insights, metadata);
   const eventsSerializer = new Trace.EventsSerializer.EventsSerializer();

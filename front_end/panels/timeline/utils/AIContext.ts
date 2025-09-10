@@ -8,20 +8,20 @@ import type {AICallTree} from './AICallTree.js';
 
 export interface AgentFocusDataFull {
   type: 'full';
-  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  parsedTrace: Trace.Handlers.Types.HandlerData;
   insightSet: Trace.Insights.Types.InsightSet|null;
   traceMetadata: Trace.Types.File.MetaData;
 }
 
 interface AgentFocusDataCallTree {
   type: 'call-tree';
-  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  parsedTrace: Trace.Handlers.Types.HandlerData;
   callTree: AICallTree;
 }
 
 export interface AgentFocusDataInsight {
   type: 'insight';
-  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  parsedTrace: Trace.Handlers.Types.HandlerData;
   insightSet: Trace.Insights.Types.InsightSet|null;
   traceMetadata: Trace.Types.File.MetaData;
   insight: Trace.Insights.Types.InsightModel;
@@ -31,7 +31,7 @@ type AgentFocusData = AgentFocusDataCallTree|AgentFocusDataInsight|AgentFocusDat
 
 export class AgentFocus {
   static full(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, insights: Trace.Insights.Types.TraceInsightSets,
+      parsedTrace: Trace.Handlers.Types.HandlerData, insights: Trace.Insights.Types.TraceInsightSets,
       traceMetadata: Trace.Types.File.MetaData): AgentFocus {
     // Currently only support a single insight set. Pick the first one with a navigation.
     const insightSet = [...insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
@@ -44,7 +44,7 @@ export class AgentFocus {
   }
 
   static fromInsight(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, insights: Trace.Insights.Types.TraceInsightSets,
+      parsedTrace: Trace.Handlers.Types.HandlerData, insights: Trace.Insights.Types.TraceInsightSets,
       traceMetadata: Trace.Types.File.MetaData, insight: Trace.Insights.Types.InsightModel): AgentFocus {
     // Currently only support a single insight set. Pick the first one with a navigation.
     const insightSet = [...insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
@@ -73,12 +73,12 @@ export class AgentFocus {
 }
 
 export function getPerformanceAgentFocusFromModel(model: Trace.TraceModel.Model): AgentFocus|null {
-  const parsedTrace = model.parsedTrace();
+  const data = model.handlerData();
   const insights = model.traceInsights();
   const traceMetadata = model.metadata();
-  if (!insights || !parsedTrace || !traceMetadata) {
+  if (!insights || !data || !traceMetadata) {
     return null;
   }
 
-  return AgentFocus.full(parsedTrace, insights, traceMetadata);
+  return AgentFocus.full(data, insights, traceMetadata);
 }

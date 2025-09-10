@@ -21,8 +21,8 @@ import * as TraceBounds from '../services/trace_bounds/trace_bounds.js';
 // ones.
 const fileContentsCache = new Map<string, Trace.Types.File.Contents>();
 
-interface ParsedTraceFileAndModel {
-  parsedTraceFile: Trace.TraceModel.ParsedTraceFile;
+interface ParsedTraceAndModel {
+  parsedTrace: Trace.TraceModel.ParsedTrace;
   model: Trace.TraceModel.Model;
 }
 
@@ -35,7 +35,7 @@ interface ParsedTraceFileAndModel {
 // file with different trace engine configurations, we will not use the cache
 // and will reparse. This is required as some of the settings and experiments
 // change if events are kept and dropped.
-const traceEngineCache = new Map<string, Map<string, ParsedTraceFileAndModel>>();
+const traceEngineCache = new Map<string, Map<string, ParsedTraceAndModel>>();
 
 export interface TraceEngineLoaderOptions {
   initTraceBounds: boolean;
@@ -146,7 +146,7 @@ export class TraceLoader {
   static async traceEngine(
       context: Mocha.Context|Mocha.Suite|null, name: string,
       config: Trace.Types.Configuration.Configuration = Trace.Types.Configuration.defaults()):
-      Promise<Trace.TraceModel.ParsedTraceFile> {
+      Promise<Trace.TraceModel.ParsedTrace> {
     if (context) {
       TraceLoader.setTestTimeout(context);
     }
@@ -162,18 +162,18 @@ export class TraceLoader {
     // If we have results from the cache, we use those to ensure we keep the
     // tests speedy and don't re-parse trace files over and over again.
     if (fromCache) {
-      const parsedTraceFile = fromCache.parsedTraceFile;
+      const parsedTrace = fromCache.parsedTrace;
       await wrapInTimeout(context, () => {
         const syntheticEventsManager = fromCache.model.syntheticTraceEventsManager(0);
         if (!syntheticEventsManager) {
           throw new Error('Cached trace engine result did not have a synthetic events manager instance');
         }
         Trace.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
-        TraceLoader.initTraceBoundsManager(parsedTraceFile.data);
+        TraceLoader.initTraceBoundsManager(parsedTrace);
         Timeline.ModificationsManager.ModificationsManager.reset();
         Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
       }, 4_000, 'Initializing state for cached trace');
-      return parsedTraceFile;
+      return parsedTrace;
     }
 
     const fileContents = await wrapInTimeout(context, async () => {
@@ -185,17 +185,17 @@ export class TraceLoader {
           fileContents, /* emulate fresh recording */ false, config);
     }, 15_000, `Executing traceEngine for ${name}`);
 
-    const cacheByName = traceEngineCache.get(name) ?? new Map<string, ParsedTraceFileAndModel>();
+    const cacheByName = traceEngineCache.get(name) ?? new Map<string, ParsedTraceAndModel>();
     cacheByName.set(configCacheKey, parsedTraceFileAndModel);
     traceEngineCache.set(name, cacheByName);
 
-    TraceLoader.initTraceBoundsManager(parsedTraceFileAndModel.parsedTraceFile.data);
+    TraceLoader.initTraceBoundsManager(parsedTraceFileAndModel.parsedTrace);
     await wrapInTimeout(context, () => {
       Timeline.ModificationsManager.ModificationsManager.reset();
       Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(
           parsedTraceFileAndModel.model, 0);
     }, 5_000, `Creating modification manager for ${name}`);
-    return parsedTraceFileAndModel.parsedTraceFile;
+    return parsedTraceFileAndModel.parsedTrace;
   }
 
   /**
@@ -204,17 +204,17 @@ export class TraceLoader {
    * level - rely on this being set. This is always set in the actual panel, but
    * parsing a trace in a test does not automatically set it.
    **/
-  static initTraceBoundsManager(data: Trace.Handlers.Types.HandlerData): void {
+  static initTraceBoundsManager(parsedTrace: Trace.TraceModel.ParsedTrace): void {
     TraceBounds.TraceBounds.BoundsManager
         .instance({
           forceNew: true,
         })
-        .resetWithNewBounds(data.Meta.traceBounds);
+        .resetWithNewBounds(parsedTrace.data.Meta.traceBounds);
   }
 
   static async executeTraceEngineOnFileContents(
       contents: Trace.Types.File.Contents, emulateFreshRecording = false,
-      traceEngineConfig?: Trace.Types.Configuration.Configuration): Promise<ParsedTraceFileAndModel> {
+      traceEngineConfig?: Trace.Types.Configuration.Configuration): Promise<ParsedTraceAndModel> {
     const events = 'traceEvents' in contents ? contents.traceEvents : contents;
     const metadata = 'metadata' in contents ? contents.metadata : {};
     return await new Promise((resolve, reject) => {
@@ -225,15 +225,15 @@ export class TraceLoader {
         // When we receive the final update from the model, update the recording
         // state back to waiting.
         if (Trace.TraceModel.isModelUpdateDataComplete(data)) {
-          const parsedTraceFile = model.parsedTraceFile(0);
-          if (!parsedTraceFile) {
+          const parsedTrace = model.parsedTrace(0);
+          if (!parsedTrace) {
             reject(new Error('Unable to load trace'));
             return;
           }
 
           resolve({
             model,
-            parsedTraceFile,
+            parsedTrace,
           });
         }
       });

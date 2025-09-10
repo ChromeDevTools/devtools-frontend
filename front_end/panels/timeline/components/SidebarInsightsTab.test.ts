@@ -11,12 +11,11 @@ import * as Components from './components.js';
 
 describeWithEnvironment('SidebarInsightsTab', () => {
   it('renders a list of insights per navigation in the sidebar', async function() {
-    const {data: parsedTrace, insights} = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
 
     const component = new Components.SidebarInsightsTab.SidebarInsightsTab();
     renderElementIntoDOM(component);
     component.parsedTrace = parsedTrace;
-    component.insights = insights;
     await RenderCoordinator.done();
     assert.isOk(component.shadowRoot);
 

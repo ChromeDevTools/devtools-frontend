@@ -23,7 +23,7 @@ const {urlString} = Platform.DevToolsPath;
 
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-    parsedTrace: Trace.Handlers.Types.HandlerData,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
     entryData: Trace.Types.Events.Event[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     ): {
@@ -38,17 +38,17 @@ function initTrackAppender(
 }
 
 async function renderThreadAppendersFromTrace(context: Mocha.Context|Mocha.Suite, trace: string):
-    Promise<ReturnType<typeof renderThreadAppendersFromParsedData>> {
-  const {data: parsedTrace} = await TraceLoader.traceEngine(context, trace);
-  return renderThreadAppendersFromParsedData(parsedTrace);
+    Promise<ReturnType<typeof renderThreadAppendersFromParsedTrace>> {
+  const parsedTrace = await TraceLoader.traceEngine(context, trace);
+  return renderThreadAppendersFromParsedTrace(parsedTrace);
 }
 
-function renderThreadAppendersFromParsedData(parsedTrace: Trace.Handlers.Types.HandlerData): {
+function renderThreadAppendersFromParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace): {
   entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
   flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
   threadAppenders: Timeline.ThreadAppender.ThreadAppender[],
   entryData: Trace.Types.Events.Event[],
-  parsedTrace: Readonly<Trace.Handlers.Types.HandlerData>,
+  parsedTrace: Readonly<Trace.TraceModel.ParsedTrace>,
   compatibilityTracksAppender: Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender,
 } {
   const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
@@ -219,7 +219,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('returns the correct title for a profile call', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const rendererHandler = parsedTrace.Renderer;
+    const rendererHandler = parsedTrace.data.Renderer;
     if (!rendererHandler) {
       throw new Error('RendererHandler is undefined');
     }
@@ -238,7 +238,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('will use the function name from the CPUProfile if it has been set', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const {Renderer, Samples} = parsedTrace;
+    const {Renderer, Samples} = parsedTrace.data;
     const [process] = Renderer.processes.values();
     const [thread] = process.threads.values();
     const profileCalls = thread.entries.filter(Trace.Types.Events.isProfileCall);
@@ -302,7 +302,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('shows the right time for a profile call when hovered', async function() {
     const {threadAppenders, parsedTrace} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    const rendererHandler = parsedTrace.Renderer;
+    const rendererHandler = parsedTrace.data.Renderer;
     if (!rendererHandler) {
       throw new Error('RendererHandler is undefined');
     }
@@ -448,22 +448,24 @@ describeWithEnvironment('ThreadAppender', function() {
       };
       // This only includes data used in the thread appender
       const mockParsedTrace = {
-        Renderer: rendererData,
-        Workers: workersData,
-        Warnings: warningsData,
-        AuctionWorklets: {worklets: new Map()},
-        Meta: {
-          traceIsGeneric: false,
-          navigationsByNavigationId: new Map(),
+        data: {
+          Renderer: rendererData,
+          Workers: workersData,
+          Warnings: warningsData,
+          AuctionWorklets: {worklets: new Map()},
+          Meta: {
+            traceIsGeneric: false,
+            navigationsByNavigationId: new Map(),
+          },
+          NetworkRequests:
+              {entityMappings: {entityByEvent: new Map(), eventsByEntity: new Map(), createdEntityCache: new Map()}},
+          ExtensionTraceData: {entryToNode: new Map(), extensionMarkers: [], extensionTrackData: []},
         },
-        NetworkRequests:
-            {entityMappings: {entityByEvent: new Map(), eventsByEntity: new Map(), createdEntityCache: new Map()}},
-        ExtensionTraceData: {entryToNode: new Map(), extensionMarkers: [], extensionTrackData: []},
-      } as unknown as Trace.Handlers.Types.HandlerData;
+      } as unknown as Trace.TraceModel.ParsedTrace;
 
       // Add the script to ignore list and then append the flamechart data
       ignoreListManager.ignoreListURL(SCRIPT_TO_IGNORE);
-      const {entryData, flameChartData, threadAppenders} = renderThreadAppendersFromParsedData(mockParsedTrace);
+      const {entryData, flameChartData, threadAppenders} = renderThreadAppendersFromParsedTrace(mockParsedTrace);
       const entryDataNames = entryData.map(entry => {
         if (Trace.Types.Events.isProfileCall(entry)) {
           return entry.callFrame.functionName;

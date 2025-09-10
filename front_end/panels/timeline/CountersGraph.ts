@@ -167,12 +167,12 @@ export class CountersGraph extends UI.Widget.VBox {
     }
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.HandlerData|null, events: Trace.Types.Events.Event[]|null): void {
+  setModel(parsedTrace: Trace.TraceModel.ParsedTrace|null, events: Trace.Types.Events.Event[]|null): void {
     this.#events = events;
     if (!events || !parsedTrace) {
       return;
     }
-    const minTime = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds).min;
+    const minTime = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).min;
     this.calculator.setZeroTime(minTime);
 
     for (let i = 0; i < this.counters.length; ++i) {

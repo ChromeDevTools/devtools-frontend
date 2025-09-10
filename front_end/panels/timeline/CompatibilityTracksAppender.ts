@@ -46,8 +46,8 @@ function isShowPostMessageEventsEnabled(): boolean {
 }
 
 export function entryIsVisibleInTimeline(
-    entry: Trace.Types.Events.Event, parsedTrace?: Trace.Handlers.Types.HandlerData): boolean {
-  if (parsedTrace?.Meta.traceIsGeneric) {
+    entry: Trace.Types.Events.Event, parsedTrace?: Trace.TraceModel.ParsedTrace): boolean {
+  if (parsedTrace?.data.Meta.traceIsGeneric) {
     return true;
   }
 
@@ -188,7 +188,7 @@ export class CompatibilityTracksAppender {
   #eventsForTrack = new Map<TrackAppender, Trace.Types.Events.Event[]>();
   #trackEventsForTreeview = new Map<TrackAppender, Trace.Types.Events.Event[]>();
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
-  #parsedTrace: Trace.Handlers.Types.HandlerData;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
   #entryData: Trace.Types.Events.Event[];
   #colorGenerator: Common.Color.Generator;
   #allTrackAppenders: TrackAppender[] = [];
@@ -218,7 +218,7 @@ export class CompatibilityTracksAppender {
    * @param entityMapper 3P entity data for the trace.
    */
   constructor(
-      flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.HandlerData,
+      flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.TraceModel.ParsedTrace,
       entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[],
       entityMapper: TimelineUtils.EntityMapper.EntityMapper|null) {
     this.#flameChartData = flameChartData;
@@ -284,7 +284,7 @@ export class CompatibilityTracksAppender {
     if (!TimelinePanel.extensionDataVisibilitySetting().get()) {
       return;
     }
-    const tracks = this.#parsedTrace.ExtensionTraceData.extensionTrackData;
+    const tracks = this.#parsedTrace.data.ExtensionTraceData.extensionTrackData;
     for (const trackData of tracks) {
       this.#allTrackAppenders.push(new ExtensionTrackAppender(this, trackData));
     }
@@ -318,11 +318,11 @@ export class CompatibilityTracksAppender {
           return 8;
       }
     };
-    const threads = Trace.Handlers.Threads.threadsInTrace(this.#parsedTrace);
+    const threads = Trace.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
     const showAllEvents = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
 
     for (const {pid, tid, name, type, entries, tree} of threads) {
-      if (this.#parsedTrace.Meta.traceIsGeneric) {
+      if (this.#parsedTrace.data.Meta.traceIsGeneric) {
         // If the trace is generic, we just push all of the threads with no effort to differentiate them, hence
         // overriding the thread type to be OTHER for all threads.
         this.#threadAppenders.push(new ThreadAppender(
@@ -334,7 +334,7 @@ export class CompatibilityTracksAppender {
         continue;
       }
 
-      const matchingWorklet = this.#parsedTrace.AuctionWorklets.worklets.get(pid);
+      const matchingWorklet = this.#parsedTrace.data.AuctionWorklets.worklets.get(pid);
       if (matchingWorklet) {
         // Each AuctionWorklet has two key threads:
         // 1. the Utility Thread

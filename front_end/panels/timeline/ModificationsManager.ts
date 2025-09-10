@@ -29,7 +29,7 @@ export class AnnotationModifiedEvent extends Event {
 }
 
 interface ModificationsManagerData {
-  parsedTrace: Trace.Handlers.Types.HandlerData;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
   traceBounds: Trace.Types.Timing.TraceWindowMicro;
   rawTraceEvents: readonly Trace.Types.Events.Event[];
   syntheticEvents: Trace.Types.Events.SyntheticBased[];
@@ -40,7 +40,7 @@ export class ModificationsManager extends EventTarget {
   #entriesFilter: EntriesFilter;
   #timelineBreadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs;
   #modifications: Trace.Types.File.Modifications|null = null;
-  #parsedTrace: Trace.Handlers.Types.HandlerData;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
   #eventsSerializer: Trace.EventsSerializer.EventsSerializer;
   #overlayForAnnotation: Map<Trace.Types.File.Annotation, Trace.Types.Overlays.Overlay>;
   readonly #annotationsHiddenSetting: Common.Settings.Setting<boolean>;
@@ -76,19 +76,18 @@ export class ModificationsManager extends EventTarget {
       ModificationsManager.activeManager()?.applyModificationsIfPresent();
     }
 
-    const parsedTraceFile = traceModel.parsedTraceFile(traceIndex);
-    if (!parsedTraceFile) {
+    const parsedTrace = traceModel.parsedTrace(traceIndex);
+    if (!parsedTrace) {
       throw new Error('ModificationsManager was initialized without a corresponding trace data');
     }
 
-    const {data: parsedTrace, metadata, traceEvents, syntheticEventsManager} = parsedTraceFile;
-    const traceBounds = parsedTrace.Meta.traceBounds;
+    const traceBounds = parsedTrace.data.Meta.traceBounds;
     const newModificationsManager = new ModificationsManager({
       parsedTrace,
       traceBounds,
-      rawTraceEvents: traceEvents,
-      modifications: metadata.modifications,
-      syntheticEvents: syntheticEventsManager.getSyntheticTraces(),
+      rawTraceEvents: parsedTrace.traceEvents,
+      modifications: parsedTrace.metadata.modifications,
+      syntheticEvents: parsedTrace.syntheticEventsManager.getSyntheticTraces(),
     });
     modificationsManagerByTraceIndex[traceIndex] = newModificationsManager;
     activeManager = newModificationsManager;

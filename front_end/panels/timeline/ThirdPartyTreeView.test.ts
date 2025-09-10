@@ -13,13 +13,13 @@ import * as Utils from './utils/utils.js';
 
 describeWithEnvironment('Third party tree', function() {
   it('does not select the first row by default', async function() {
-    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
     const events = [...mapper.mappings().eventsByEntity.values()].flat();
     treeView.setModelWithEvents(events, parsedTrace, mapper);
     const sel: Timeline.TimelineSelection.TimeRangeSelection = {
-      bounds: parsedTrace.Meta.traceBounds,
+      bounds: parsedTrace.data.Meta.traceBounds,
     };
     const box = new UI.Widget.VBox();
     treeView.show(box.element);
@@ -28,7 +28,7 @@ describeWithEnvironment('Third party tree', function() {
   });
 
   it('hides the table if there are no events', async function() {
-    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     renderElementIntoDOM(treeView);
@@ -46,14 +46,14 @@ describeWithEnvironment('Third party tree', function() {
   it('includes 1p and extension badges', async function() {
     // This trace creates 2 nodes in the tree. One representing the first party entity, and one for
     // a chrome extension.
-    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
     const events = [...mapper.mappings().eventsByEntity.values()].flat();
 
     treeView.setModelWithEvents(events, parsedTrace, mapper);
     const sel: Timeline.TimelineSelection.TimeRangeSelection = {
-      bounds: parsedTrace.Meta.traceBounds,
+      bounds: parsedTrace.data.Meta.traceBounds,
     };
     treeView.updateContents(sel);
     const tree = treeView.buildTree() as Trace.Extras.TraceTree.BottomUpRootNode;

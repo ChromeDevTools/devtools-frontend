@@ -119,24 +119,26 @@ describeWithEnvironment('PerformanceAgent', () => {
 describeWithEnvironment('PerformanceAgent – call tree focus', () => {
   describe('getOrigin()', () => {
     it('calculates the origin of the selected node when it has a URL associated with it', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       // An Evaluate Script event, picked because it has a URL of googletagmanager.com/...
-      const evalScriptEvent = allThreadEntriesInTrace(data).find(
-          event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);
+      const evalScriptEvent =
+          allThreadEntriesInTrace(parsedTrace)
+              .find(event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);
       assert.exists(evalScriptEvent);
-      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(evalScriptEvent, data);
+      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(evalScriptEvent, parsedTrace);
       assert.isOk(aiCallTree);
       const context = PerformanceTraceContext.fromCallTree(aiCallTree);
       assert.strictEqual(context.getOrigin(), 'https://www.googletagmanager.com');
     });
 
     it('returns a random but deterministic "origin" for nodes that have no URL associated', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       // A random layout event with no URL associated
-      const layoutEvent = allThreadEntriesInTrace(data).find(
-          event => event.name === Trace.Types.Events.Name.LAYOUT && event.ts === 122411130078);
+      const layoutEvent =
+          allThreadEntriesInTrace(parsedTrace)
+              .find(event => event.name === Trace.Types.Events.Name.LAYOUT && event.ts === 122411130078);
       assert.exists(layoutEvent);
-      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(layoutEvent, data);
+      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(layoutEvent, parsedTrace);
       assert.isOk(aiCallTree);
       const context = PerformanceTraceContext.fromCallTree(aiCallTree);
       assert.strictEqual(context.getOrigin(), 'Layout_90829_259_122411130078');
@@ -145,11 +147,11 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
 
   describe('run', function() {
     it('generates an answer', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
       // A basic Layout.
-      const layoutEvt = allThreadEntriesInTrace(data).find(event => event.ts === 465457096322);
+      const layoutEvt = allThreadEntriesInTrace(parsedTrace).find(event => event.ts === 465457096322);
       assert.exists(layoutEvt);
-      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(layoutEvt, data);
+      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(layoutEvt, parsedTrace);
       assert.exists(aiCallTree);
 
       const agent = new PerformanceAgent(
@@ -264,12 +266,17 @@ const FAKE_INP_MODEL = {
   state: 'fail',
   frameId: '123',
 } as const;
-const FAKE_PARSED_TRACE = {
+const FAKE_HANDLER_DATA = {
   Meta: {traceBounds: {min: 0, max: 10}, mainFrameURL: 'https://www.example.com'},
 } as unknown as Trace.Handlers.Types.HandlerData;
 const FAKE_INSIGHTS = new Map([['', {model: {LCPBreakdown: FAKE_LCP_MODEL, INPBreakdown: FAKE_INP_MODEL}}]]) as
     unknown as Trace.Insights.Types.TraceInsightSets;
 const FAKE_METADATA = {} as unknown as Trace.Types.File.MetaData;
+const FAKE_PARSED_TRACE = {
+  data: FAKE_HANDLER_DATA,
+  insights: FAKE_INSIGHTS,
+  metadata: FAKE_METADATA,
+} as unknown as Trace.TraceModel.ParsedTrace;
 
 function createAgentForInsightConversation(opts: {aidaClient?: Host.AidaClient.AidaClient} = {}) {
   return new PerformanceAgent({aidaClient: opts.aidaClient ?? mockAidaClient()}, ConversationType.PERFORMANCE_INSIGHT);
@@ -277,17 +284,16 @@ function createAgentForInsightConversation(opts: {aidaClient?: Host.AidaClient.A
 
 describeWithEnvironment('PerformanceAgent – insight focus', () => {
   it('uses the min and max bounds of the trace as the origin', async function() {
-    const {data, insights, metadata} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
-    assert.isOk(insights);
-    const [firstNav] = data.Meta.mainFrameNavigations;
-    const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
-    const context = PerformanceTraceContext.fromInsight(data, insights, metadata, lcpBreakdown);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+    assert.isOk(parsedTrace.insights);
+    const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+    const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+    const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
     assert.strictEqual(context.getOrigin(), 'trace-658799706428-658804825864');
   });
 
   it('outputs the right title for the selected insight', async () => {
-    const context =
-        PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_INSIGHTS, FAKE_METADATA, FAKE_LCP_MODEL);
+    const context = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL);
     assert.strictEqual(context.getTitle(), 'Trace: www.example.com');
   });
 
@@ -338,9 +344,9 @@ code
 
   describe('handleContextDetails', () => {
     it('outputs the right context for the initial query from the user', async function() {
-      const {data, insights, metadata} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
-      assert.isOk(insights);
-      const context = PerformanceTraceContext.fromInsight(data, insights, metadata, FAKE_LCP_MODEL);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const context = PerformanceTraceContext.fromInsight(parsedTrace, FAKE_LCP_MODEL);
       const agent = createAgentForInsightConversation({
         aidaClient: mockAidaClient([[{
           explanation: 'This is the answer',
@@ -389,8 +395,7 @@ code
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
 
-      const context =
-          PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_INSIGHTS, FAKE_METADATA, FAKE_LCP_MODEL);
+      const context = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL);
       const finalQuery = await agent.enhanceQuery('What is this?', context);
       const expected =
           `User clicked on the LCPBreakdown insight, and then asked a question.\n\n# User question for you to answer:\nWhat is this?`;
@@ -403,8 +408,7 @@ code
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
 
-      const context =
-          PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_INSIGHTS, FAKE_METADATA, FAKE_LCP_MODEL);
+      const context = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL);
 
       await agent.enhanceQuery('What is this?', context);
       const finalQuery = await agent.enhanceQuery('Help me understand?', context);
@@ -418,10 +422,8 @@ Help me understand?`;
       const agent = createAgentForInsightConversation({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
-      const context1 =
-          PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_INSIGHTS, FAKE_METADATA, FAKE_LCP_MODEL);
-      const context2 =
-          PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_INSIGHTS, FAKE_METADATA, FAKE_INP_MODEL);
+      const context1 = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL);
+      const context2 = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_INP_MODEL);
       const firstQuery = await agent.enhanceQuery('Q1', context1);
       const secondQuery = await agent.enhanceQuery('Q2', context1);
       const thirdQuery = await agent.enhanceQuery('Q3', context2);
@@ -434,11 +436,11 @@ Help me understand?`;
   describe('function calls', () => {
     it('can call getNetworkTrackSummary', async function() {
       const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAINetworkSummaryResponseSize');
-      const {data, insights, metadata} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
-      assert.isOk(insights);
-      const [firstNav] = data.Meta.mainFrameNavigations;
-      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
-      const bounds = data.Meta.traceBounds;
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+      const bounds = parsedTrace.data.Meta.traceBounds;
       const agent = createAgentForInsightConversation({
         aidaClient: mockAidaClient([
           [{
@@ -448,7 +450,7 @@ Help me understand?`;
           [{explanation: 'done'}]
         ])
       });
-      const context = PerformanceTraceContext.fromInsight(data, insights, metadata, lcpBreakdown);
+      const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       const action = responses.find(response => response.type === ResponseType.ACTION);
@@ -462,7 +464,7 @@ Help me understand?`;
       ];
 
       expectedRequestUrls.forEach(url => {
-        const match = data.NetworkRequests.byTime.find(r => r.args.data.url === url);
+        const match = parsedTrace.data.NetworkRequests.byTime.find(r => r.args.data.url === url);
         assert.isOk(match, `no request found for ${url}`);
       });
 
@@ -489,11 +491,11 @@ Help me understand?`;
     it('can call getMainThreadTrackSummary', async function() {
       const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAIMainThreadActivityResponseSize');
 
-      const {data, insights, metadata} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
-      assert.isOk(insights);
-      const [firstNav] = data.Meta.mainFrameNavigations;
-      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
-      const bounds = data.Meta.traceBounds;
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+      const bounds = parsedTrace.data.Meta.traceBounds;
       const agent = createAgentForInsightConversation({
         aidaClient: mockAidaClient([
           [{
@@ -503,7 +505,7 @@ Help me understand?`;
           [{explanation: 'done'}]
         ])
       });
-      const context = PerformanceTraceContext.fromInsight(data, insights, metadata, lcpBreakdown);
+      const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       const titleResponse = responses.find(response => response.type === ResponseType.TITLE);
@@ -531,18 +533,18 @@ Help me understand?`;
     });
 
     it('will not send facts from a previous insight if the context changes', async function() {
-      const {data, insights, metadata} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
-      assert.isOk(insights);
-      const [firstNav] = data.Meta.mainFrameNavigations;
-      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
-      const renderBlocking = getInsightOrError('RenderBlocking', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+      const renderBlocking = getInsightOrError('RenderBlocking', parsedTrace.insights, firstNav);
       const agent = createAgentForInsightConversation({
         aidaClient: mockAidaClient([
           [{explanation: '', functionCalls: [{name: 'getMainThreadTrackSummary', args: {}}]}],
         ])
       });
-      const lcpContext = PerformanceTraceContext.fromInsight(data, insights, metadata, lcpBreakdown);
-      const renderBlockingContext = PerformanceTraceContext.fromInsight(data, insights, metadata, renderBlocking);
+      const lcpContext = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+      const renderBlockingContext = PerformanceTraceContext.fromInsight(parsedTrace, renderBlocking);
 
       // Populate the function calls for the LCP Context
       await Array.fromAsync(agent.run('test 1 LCP', {selected: lcpContext}));
@@ -555,17 +557,17 @@ Help me understand?`;
     });
 
     it('will cache function calls as facts', async function() {
-      const {data, insights, metadata} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
-      assert.isOk(insights);
-      const [firstNav] = data.Meta.mainFrameNavigations;
-      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
       const agent = createAgentForInsightConversation({
         aidaClient: mockAidaClient([
           [{explanation: '', functionCalls: [{name: 'getMainThreadTrackSummary', args: {}}]}],
           [{explanation: '', functionCalls: [{name: 'getNetworkTrackSummary', args: {}}]}], [{explanation: 'done'}]
         ])
       });
-      const context = PerformanceTraceContext.fromInsight(data, insights, metadata, lcpBreakdown);
+      const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
       await Array.fromAsync(agent.run('test 1', {selected: context}));
       await Array.fromAsync(agent.run('test 2', {selected: context}));
       // First 6 are the always included high-level facts. The rests are from the function calls.
@@ -586,9 +588,8 @@ Help me understand?`;
 
 describeWithEnvironment('PerformanceAgent – all focus', () => {
   it('uses the min and max bounds of the trace as the origin', async function() {
-    const {data, insights, metadata} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
-    assert.isOk(insights);
-    const context = PerformanceTraceContext.full(data, insights, metadata);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+    const context = PerformanceTraceContext.full(parsedTrace);
     assert.strictEqual(context.getOrigin(), 'trace-658799706428-658804825864');
   });
 });

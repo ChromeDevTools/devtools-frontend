@@ -11,10 +11,10 @@ import * as Utils from './utils.js';
 
 describeWithEnvironment('EntityMapper', function() {
   it('correctly merges handler data', async function() {
-    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
 
-    const fromRenderer = parsedTrace.Renderer.entityMappings.eventsByEntity;
-    const fromNetwork = parsedTrace.NetworkRequests.entityMappings.eventsByEntity;
+    const fromRenderer = parsedTrace.data.Renderer.entityMappings.eventsByEntity;
+    const fromNetwork = parsedTrace.data.NetworkRequests.entityMappings.eventsByEntity;
 
     const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
     const mappings = mapper.mappings();
@@ -47,21 +47,21 @@ describeWithEnvironment('EntityMapper', function() {
 
   describe('entityForEvent', () => {
     it('correctly contains network req entity mappings', async function() {
-      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
       const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
 
       // Check entities for network requests.
-      const reqs = getAllNetworkRequestsByHost(parsedTrace.NetworkRequests.byTime, 'www.paulirish.com');
+      const reqs = getAllNetworkRequestsByHost(parsedTrace.data.NetworkRequests.byTime, 'www.paulirish.com');
       let gotEntity = mapper.entityForEvent(reqs[0]);
       assert.deepEqual(gotEntity?.name, 'paulirish.com');
 
-      const gstatic = getAllNetworkRequestsByHost(parsedTrace.NetworkRequests.byTime, 'fonts.gstatic.com');
+      const gstatic = getAllNetworkRequestsByHost(parsedTrace.data.NetworkRequests.byTime, 'fonts.gstatic.com');
       gotEntity = mapper.entityForEvent(gstatic[0]);
       assert.deepEqual(gotEntity?.name, 'Google Fonts');
     });
 
     it('correctly contains main event entity mappings', async function() {
-      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
       const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
 
       const funcCall = allThreadEntriesInTrace(parsedTrace).find(e => Trace.Types.Events.isFunctionCall(e));
@@ -74,10 +74,10 @@ describeWithEnvironment('EntityMapper', function() {
   });
   describe('eventsForEntity', () => {
     it('correctly contains network req entity mappings', async function() {
-      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
       const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
 
-      const reqs = getAllNetworkRequestsByHost(parsedTrace.NetworkRequests.byTime, 'www.paulirish.com');
+      const reqs = getAllNetworkRequestsByHost(parsedTrace.data.NetworkRequests.byTime, 'www.paulirish.com');
       const entity = mapper.entityForEvent(reqs[0]);
       assert.exists(entity);
       assert.deepEqual(entity.name, 'paulirish.com');
@@ -91,23 +91,23 @@ describeWithEnvironment('EntityMapper', function() {
   });
   describe('first party', () => {
     it('correctly captures the first party entity', async function() {
-      const {data: localhostTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+      const localhostTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
       let mapper = new Utils.EntityMapper.EntityMapper(localhostTrace);
       let got = mapper.firstPartyEntity();
       assert.deepEqual(got?.name, 'localhost');
 
-      const {data: paulTrace} = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
+      const paulTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
       mapper = new Utils.EntityMapper.EntityMapper(paulTrace);
       got = mapper.firstPartyEntity();
       assert.deepEqual(got?.name, 'paulirish.com');
 
-      const {data: webDevTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const webDevTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       mapper = new Utils.EntityMapper.EntityMapper(webDevTrace);
       got = mapper.firstPartyEntity();
       assert.deepEqual(got?.name, 'web.dev');
     });
     it('correctly captures 3p events', async function() {
-      const {data: paulTrace} = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
+      const paulTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
       const mapper = new Utils.EntityMapper.EntityMapper(paulTrace);
       const got = mapper.firstPartyEntity();
       assert.exists(got);

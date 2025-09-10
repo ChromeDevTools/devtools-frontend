@@ -10,7 +10,7 @@ import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js
 import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
-    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.HandlerData,
+    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.TraceModel.ParsedTrace,
     entryData: Trace.Types.Events.Event[], entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
     Timeline.AnimationsTrackAppender.AnimationsTrackAppender {
   const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
@@ -20,14 +20,14 @@ function initTrackAppender(
 }
 
 describeWithEnvironment('AnimationsTrackAppender', function() {
-  let parsedTrace: Trace.Handlers.Types.HandlerData;
+  let parsedTrace: Trace.TraceModel.ParsedTrace;
   let animationsTrackAppender: Timeline.AnimationsTrackAppender.AnimationsTrackAppender;
   let entryData: Trace.Types.Events.Event[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 
   beforeEach(async function() {
-    ({data: parsedTrace} = await TraceLoader.traceEngine(this, 'animation.json.gz'));
+    parsedTrace = await TraceLoader.traceEngine(this, 'animation.json.gz');
     animationsTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
     animationsTrackAppender.appendTrackAtLevel(0);
   });
@@ -45,7 +45,7 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
     });
 
     it('adds start times correctly', function() {
-      const animationsRequests = parsedTrace.Animations.animations;
+      const animationsRequests = parsedTrace.data.Animations.animations;
       for (let i = 0; i < animationsRequests.length; ++i) {
         const event = animationsRequests[i];
         assert.strictEqual(flameChartData.entryStartTimes[i], Trace.Helpers.Timing.microToMilli(event.ts));
@@ -53,7 +53,7 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
     });
 
     it('adds total times correctly', function() {
-      const animationsRequests = parsedTrace.Animations.animations;
+      const animationsRequests = parsedTrace.data.Animations.animations;
       for (let i = 0; i < animationsRequests.length; i++) {
         const event = animationsRequests[i];
         if (Trace.Types.Events.isMarkerEvent(event)) {

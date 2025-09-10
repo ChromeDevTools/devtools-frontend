@@ -86,8 +86,7 @@ export class TimelineDetailsPane extends
   private selection?: TimelineSelection|null;
   private updateContentsScheduled: boolean;
   private lazySelectorStatsView: TimelineSelectorStatsView|null;
-  #parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
-  #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #thirdPartyTree = new ThirdPartyTreeViewWidget();
@@ -270,9 +269,8 @@ export class TimelineDetailsPane extends
   }
 
   async setModel(data: {
-    parsedTrace: Trace.Handlers.Types.HandlerData|null,
+    parsedTrace: Trace.TraceModel.ParsedTrace|null,
     selectedEvents: Trace.Types.Events.Event[]|null,
-    traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null,
     eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null,
     entityMapper: Utils.EntityMapper.EntityMapper|null,
   }): Promise<void> {
@@ -284,14 +282,12 @@ export class TimelineDetailsPane extends
       this.#parsedTrace = data.parsedTrace;
     }
     if (data.parsedTrace) {
-      this.#summaryContent.filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(data.parsedTrace);
+      this.#summaryContent.filmStrip = Trace.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
       this.#entityMapper = new Utils.EntityMapper.EntityMapper(data.parsedTrace);
     }
     this.#selectedEvents = data.selectedEvents;
-    this.#traceInsightsSets = data.traceInsightsSets;
     this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
     this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
-    this.#summaryContent.traceInsightsSets = this.#traceInsightsSets;
     this.#summaryContent.parsedTrace = this.#parsedTrace;
     this.#summaryContent.entityMapper = this.#entityMapper;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
@@ -600,8 +596,7 @@ interface SelectedRange {
 interface SummaryViewInput {
   selectedEvent: Trace.Types.Events.Event|null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null;
-  parsedTrace: Trace.Handlers.Types.HandlerData|null;
-  traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
   entityMapper: Utils.EntityMapper.EntityMapper|null;
   target: SDK.Target.Target|null;
   linkifier: Components.Linkifier.Linkifier|null;
@@ -631,8 +626,7 @@ class SummaryView extends UI.Widget.Widget {
   #view: View;
   selectedEvent: Trace.Types.Events.Event|null = null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
-  parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
-  traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   entityMapper: Utils.EntityMapper.EntityMapper|null = null;
   target: SDK.Target.Target|null = null;
   linkifier: Components.Linkifier.Linkifier|null = null;
@@ -650,7 +644,6 @@ class SummaryView extends UI.Widget.Widget {
           selectedEvent: this.selectedEvent,
           eventToRelatedInsightsMap: this.eventToRelatedInsightsMap,
           parsedTrace: this.parsedTrace,
-          traceInsightsSets: this.traceInsightsSets,
           entityMapper: this.entityMapper,
           target: this.target,
           linkifier: this.linkifier,
@@ -668,7 +661,7 @@ function generateRangeSummaryDetails(input: SummaryViewInput): LitTemplate {
     return nothing;
   }
 
-  const minBoundsMilli = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+  const minBoundsMilli = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
   const {events, startTime, endTime, thirdPartyTree} = selectedRange;
   const aggregatedStats = TimelineUIUtils.statsForTimeRange(events, startTime, endTime);
   const startOffset = startTime - minBoundsMilli;
@@ -695,7 +688,6 @@ async function renderSelectedEventDetails(
       <devtools-widget data-layout-shift-details .widgetConfig=${
         UI.Widget.widgetConfig(TimelineComponents.LayoutShiftDetails.LayoutShiftDetails, {
           event: selectedEvent,
-          traceInsightsSets: input.traceInsightsSets,
           parsedTrace: input.parsedTrace,
           isFreshRecording: traceRecordingIsFresh,
         })}

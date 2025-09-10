@@ -32,10 +32,10 @@ export class InteractionsTrackAppender implements TrackAppender {
 
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #parsedTrace: Readonly<Trace.Handlers.Types.HandlerData>;
+  #parsedTrace: Readonly<Trace.TraceModel.ParsedTrace>;
 
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.HandlerData,
+      compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.TraceModel.ParsedTrace,
       colorGenerator: Common.Color.Generator) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = colorGenerator;
@@ -52,7 +52,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
-    if (this.#parsedTrace.UserInteractions.interactionEvents.length === 0) {
+    if (this.#parsedTrace.data.UserInteractions.interactionEvents.length === 0) {
       return trackStartLevel;
     }
     this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
@@ -69,7 +69,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    * appended.
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
-    const trackIsCollapsible = this.#parsedTrace.UserInteractions.interactionEvents.length > 0;
+    const trackIsCollapsible = this.#parsedTrace.data.UserInteractions.interactionEvents.length > 0;
     const style = buildGroupStyle({collapsible: trackIsCollapsible, useDecoratorsForOverview: true});
     const group = buildTrackHeader(
         VisualLoggingTrackName.INTERACTIONS, currentLevel, i18nString(UIStrings.interactions), style,
@@ -87,7 +87,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    * interactions (the first available level to append more data).
    */
   #appendInteractionsAtLevel(trackStartLevel: number): number {
-    const {interactionEventsWithNoNesting, interactionsOverThreshold} = this.#parsedTrace.UserInteractions;
+    const {interactionEventsWithNoNesting, interactionsOverThreshold} = this.#parsedTrace.data.UserInteractions;
 
     const addCandyStripeToLongInteraction =
         (event: Trace.Types.Events.SyntheticInteractionPair, index: number): void => {

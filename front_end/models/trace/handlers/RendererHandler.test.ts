@@ -24,8 +24,8 @@ const SUB_FRAME_PID_3 = 2236123;
 
 async function handleEventsFromTraceFile(
     context: Mocha.Suite|Mocha.Context, file: string): Promise<Trace.Handlers.Types.HandlerData> {
-  const parsedTraceFile = await TraceLoader.traceEngine(context, file);
-  return parsedTraceFile.data;
+  const parsedTrace = await TraceLoader.traceEngine(context, file);
+  return parsedTrace.data;
 }
 
 describeWithEnvironment('RendererHandler', function() {

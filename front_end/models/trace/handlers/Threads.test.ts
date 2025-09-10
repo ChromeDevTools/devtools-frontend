@@ -8,7 +8,8 @@ import * as Trace from '../trace.js';
 
 describeWithEnvironment('Handler Threads helper', function() {
   it('returns all the threads for a trace that used tracing', async function() {
-    const {data} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const data = parsedTrace.data;
 
     const allThreads = Array.from(data.Renderer.processes.values()).flatMap(process => {
       return Array.from(process.threads.values());
@@ -44,13 +45,14 @@ describeWithEnvironment('Handler Threads helper', function() {
         Trace.Types.Events.ThreadID(1),
     );
 
-    const {parsedTraceFile} = await TraceLoader.executeTraceEngineOnFileContents(contents);
+    const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(contents);
+    const data = parsedTrace.data;
 
     // Check that we did indeed parse this properly as a CPU Profile.
-    assert.strictEqual(parsedTraceFile.data.Renderer.processes.size, 0);
-    assert.strictEqual(parsedTraceFile.data.Samples.profilesInProcess.size, 1);
+    assert.strictEqual(data.Renderer.processes.size, 0);
+    assert.strictEqual(data.Samples.profilesInProcess.size, 1);
 
-    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTraceFile.data);
+    const threads = Trace.Handlers.Threads.threadsInTrace(data);
     assert.lengthOf(threads, 1);
 
     assert.strictEqual(threads.at(0)?.type, Trace.Handlers.Threads.ThreadType.CPU_PROFILE);

@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
+import type {ParsedTrace} from './ModelImpl.js';
 import * as Types from './types/types.js';
 
 export class EventsSerializer {
@@ -29,15 +29,15 @@ export class EventsSerializer {
     return key;
   }
 
-  eventForKey(key: Types.File.SerializableKey, data: Handlers.Types.HandlerData): Types.Events.Event {
+  eventForKey(key: Types.File.SerializableKey, parsedTrace: ParsedTrace): Types.Events.Event {
     const eventValues = Types.File.traceEventKeyToValues(key);
 
     if (EventsSerializer.isProfileCallKey(eventValues)) {
-      return this.#getModifiedProfileCallByKeyValues(eventValues, data);
+      return this.#getModifiedProfileCallByKeyValues(eventValues, parsedTrace);
     }
 
     if (EventsSerializer.isLegacyTimelineFrameKey(eventValues)) {
-      const event = data.Frames.frames.at(eventValues.rawIndex);
+      const event = parsedTrace.data.Frames.frames.at(eventValues.rawIndex);
       if (!event) {
         throw new Error(`Could not find frame with index ${eventValues.rawIndex}`);
       }
@@ -75,13 +75,14 @@ export class EventsSerializer {
     return key.type === Types.File.EventKeyType.SYNTHETIC_EVENT;
   }
 
-  #getModifiedProfileCallByKeyValues(key: Types.File.ProfileCallKeyValues, data: Handlers.Types.HandlerData):
+  #getModifiedProfileCallByKeyValues(key: Types.File.ProfileCallKeyValues, parsedTrace: ParsedTrace):
       Types.Events.SyntheticProfileCall {
     const cacheResult = this.#modifiedProfileCallByKey.get(key);
     if (cacheResult) {
       return cacheResult;
     }
-    const profileCallsInThread = data.Renderer.processes.get(key.processID)?.threads.get(key.threadID)?.profileCalls;
+    const profileCallsInThread =
+        parsedTrace.data.Renderer.processes.get(key.processID)?.threads.get(key.threadID)?.profileCalls;
     if (!profileCallsInThread) {
       throw new Error(`Unknown profile call serializable key: ${(key)}`);
     }

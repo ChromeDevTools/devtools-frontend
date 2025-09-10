@@ -51,9 +51,9 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'LayoutShifts';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #parsedTrace: Readonly<Trace.Handlers.Types.HandlerData>;
+  #parsedTrace: Readonly<Trace.TraceModel.ParsedTrace>;
 
-  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.HandlerData) {
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.TraceModel.ParsedTrace) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#parsedTrace = parsedTrace;
   }
@@ -68,7 +68,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
-    if (this.#parsedTrace.LayoutShifts.clusters.length === 0) {
+    if (this.#parsedTrace.data.LayoutShifts.clusters.length === 0) {
       return trackStartLevel;
     }
     this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
@@ -101,10 +101,10 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * layout shifts (the first available level to append more data).
    */
   #appendLayoutShiftsAtLevel(currentLevel: number): number {
-    const allClusters = this.#parsedTrace.LayoutShifts.clusters;
+    const allClusters = this.#parsedTrace.data.LayoutShifts.clusters;
     this.#compatibilityBuilder.appendEventsAtLevel(allClusters, currentLevel, this);
 
-    const allLayoutShifts = this.#parsedTrace.LayoutShifts.clusters.flatMap(cluster => cluster.events);
+    const allLayoutShifts = this.#parsedTrace.data.LayoutShifts.clusters.flatMap(cluster => cluster.events);
     void this.preloadScreenshots(allLayoutShifts);
     return this.#compatibilityBuilder.appendEventsAtLevel(allLayoutShifts, currentLevel, this);
   }
@@ -226,10 +226,10 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   }
 
   static createShiftViz(
-      event: Trace.Types.Events.SyntheticLayoutShift, parsedTrace: Trace.Handlers.Types.HandlerData,
+      event: Trace.Types.Events.SyntheticLayoutShift, parsedTrace: Trace.TraceModel.ParsedTrace,
       maxSize: Geometry.Size): HTMLElement|undefined {
     const screenshots = event.parsedData.screenshots;
-    const {viewportRect, devicePixelRatio: dpr} = parsedTrace.Meta;
+    const {viewportRect, devicePixelRatio: dpr} = parsedTrace.data.Meta;
     const vizContainer = document.createElement('div');
     vizContainer.classList.add('layout-shift-viz');
 

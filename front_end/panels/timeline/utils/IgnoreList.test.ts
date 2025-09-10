@@ -51,7 +51,8 @@ describeWithMockConnection('isIgnoreListedEntry', () => {
       Samples: makeMockSamplesHandlerData([profileCallWithMappings]),
       Workers: workersData,
     } as Trace.Handlers.Types.HandlerData;
-    const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithMappings);
+    const parsedTrace = {data: traceWithMappings} as Trace.TraceModel.ParsedTrace;
+    const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
     await resolver.install();
     assert.isTrue(Utils.IgnoreList.isIgnoreListedEntry(profileCallWithMappings));
   });
@@ -83,7 +84,8 @@ describeWithMockConnection('isIgnoreListedEntry', () => {
          Samples: makeMockSamplesHandlerData([profileCallWithMappings]),
          Workers: workersData,
        } as Trace.Handlers.Types.HandlerData;
-       const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithMappings);
+       const parsedTrace = {data: traceWithMappings} as Trace.TraceModel.ParsedTrace;
+       const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
        await resolver.install();
        assert.isTrue(Utils.IgnoreList.isIgnoreListedEntry(profileCallWithMappings));
        const ignoreKnownThirdPartySetting =
@@ -126,7 +128,8 @@ describeWithMockConnection('isIgnoreListedEntry', () => {
       Samples: makeMockSamplesHandlerData([profileCallWithContentScript]),
       Workers: workersData,
     } as Trace.Handlers.Types.HandlerData;
-    const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithMappings);
+    const parsedTrace = {data: traceWithMappings} as Trace.TraceModel.ParsedTrace;
+    const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
     await resolver.install();
     assert.isTrue(Utils.IgnoreList.isIgnoreListedEntry(profileCallWithContentScript));
 

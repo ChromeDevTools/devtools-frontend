@@ -1185,11 +1185,11 @@ describeWithEnvironment('FlameChart', () => {
       const rawCPUProfile = await TraceLoader.rawCPUProfile(this, 'node-fibonacci-website.cpuprofile.gz');
       const rawTrace = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
           rawCPUProfile, Trace.Types.Events.ThreadID(1));
-      const {parsedTraceFile} = await TraceLoader.executeTraceEngineOnFileContents(rawTrace);
+      const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(rawTrace);
 
       await renderFlameChartIntoDOM(this, {
         dataProvider: 'MAIN',
-        fileNameOrParsedTrace: parsedTraceFile.data,
+        fileNameOrParsedTrace: parsedTrace,
         filterTracks(trackName) {
           return trackName.startsWith('Main');
         },

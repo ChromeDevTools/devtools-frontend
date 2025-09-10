@@ -204,7 +204,7 @@ export interface TimelineCharts {
 }
 
 export interface OverlayEntryQueries {
-  parsedTrace: () => Trace.Handlers.Types.HandlerData | null;
+  parsedTrace: () => Trace.TraceModel.ParsedTrace | null;
   isEntryCollapsedByUser: (entry: Trace.Types.Events.Event) => boolean;
   firstVisibleParentForEntry: (entry: Trace.Types.Events.Event) => Trace.Types.Events.Event | null;
 }

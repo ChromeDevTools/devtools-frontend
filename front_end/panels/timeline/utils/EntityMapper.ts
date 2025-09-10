@@ -7,7 +7,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Trace from '../../../models/trace/trace.js';
 
 export class EntityMapper {
-  #parsedTrace: Trace.Handlers.Types.HandlerData;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
   #entityMappings: Trace.Handlers.Helpers.EntityMappings;
   #firstPartyEntity: Trace.Handlers.Helpers.Entity|null;
   #thirdPartyEvents: Trace.Types.Events.Event[] = [];
@@ -19,17 +19,18 @@ export class EntityMapper {
    */
   #resolvedCallFrames = new Set<Protocol.Runtime.CallFrame>();
 
-  constructor(parsedTrace: Trace.Handlers.Types.HandlerData) {
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
     this.#parsedTrace = parsedTrace;
-    this.#entityMappings = this.#parsedTrace.Renderer.entityMappings;
+    this.#entityMappings = this.#parsedTrace.data.Renderer.entityMappings;
     this.#firstPartyEntity = this.#findFirstPartyEntity();
     this.#thirdPartyEvents = this.#getThirdPartyEvents();
   }
 
   #findFirstPartyEntity(): Trace.Handlers.Helpers.Entity|null {
     // As a starting point, we consider the first navigation as the 1P.
-    const nav = Array.from(this.#parsedTrace.Meta.navigationsByNavigationId.values()).sort((a, b) => a.ts - b.ts)[0];
-    const firstPartyUrl = nav?.args.data?.documentLoaderURL ?? this.#parsedTrace.Meta.mainFrameURL;
+    const nav =
+        Array.from(this.#parsedTrace.data.Meta.navigationsByNavigationId.values()).sort((a, b) => a.ts - b.ts)[0];
+    const firstPartyUrl = nav?.args.data?.documentLoaderURL ?? this.#parsedTrace.data.Meta.mainFrameURL;
     if (!firstPartyUrl) {
       return null;
     }

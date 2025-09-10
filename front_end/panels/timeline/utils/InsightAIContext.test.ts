@@ -10,11 +10,11 @@ import * as Utils from './utils.js';
 
 describeWithEnvironment('AIQueries', () => {
   it('can query for the longest tasks', async function() {
-    const {data: parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    assert.isOk(insights);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    assert.isOk(parsedTrace.insights);
 
-    const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-    const insightSet = getInsightSetOrError(insights, firstNav);
+    const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+    const insightSet = getInsightSetOrError(parsedTrace.insights, firstNav);
     const tasks =
         Utils.InsightAIContext.AIQueries.longestTasks(firstNav.args.data?.navigationId, insightSet.bounds, parsedTrace);
     assert.isOk(tasks);

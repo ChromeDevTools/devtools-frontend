@@ -130,9 +130,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   private needsResizeToPreferredHeights?: boolean;
   private selectedSearchResult?: PerfUI.FlameChart.DataProviderSearchResult;
   private searchRegex?: RegExp;
-  #parsedTrace: Trace.Handlers.Types.HandlerData|null;
-  #traceMetadata: Trace.Types.File.MetaData|null;
-  #traceInsightSets: Trace.Insights.Types.TraceInsightSets|null = null;
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null;
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #selectedGroupName: string|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
@@ -203,7 +201,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.delegate = delegate;
     this.eventListeners = [];
     this.#parsedTrace = null;
-    this.#traceMetadata = null;
 
     const flameChartsContainer = new UI.Widget.VBox();
     flameChartsContainer.element.classList.add('flame-charts-container');
@@ -617,17 +614,19 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   }
 
   #amendMarkerWithFieldData(): void {
-    if (!this.#traceMetadata?.cruxFieldData || !this.#traceInsightSets) {
+    const metadata = this.#parsedTrace?.metadata;
+    const insights = this.#parsedTrace?.insights;
+    if (!metadata?.cruxFieldData || !insights) {
       return;
     }
 
     const fieldMetricResultsByNavigationId = new Map<string, Trace.Insights.Common.CrUXFieldMetricResults|null>();
-    for (const [key, insightSet] of this.#traceInsightSets) {
+    for (const [key, insightSet] of insights) {
       if (insightSet.navigation) {
         fieldMetricResultsByNavigationId.set(
             key,
             Trace.Insights.Common.getFieldMetricsForInsightSet(
-                insightSet, this.#traceMetadata, CrUXManager.CrUXManager.instance().getSelectedScope()));
+                insightSet, metadata, CrUXManager.CrUXManager.instance().getSelectedScope()));
       }
     }
 
@@ -659,13 +658,13 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     }
   }
 
-  setMarkers(parsedTrace: Trace.Handlers.Types.HandlerData|null): void {
+  setMarkers(parsedTrace: Trace.TraceModel.ParsedTrace|null): void {
     if (!parsedTrace) {
       return;
     }
     // Clear out any markers.
     this.bulkRemoveOverlays(this.#markers);
-    const markerEvents = parsedTrace.PageLoadMetrics.allMarkerEvents;
+    const markerEvents = parsedTrace.data.PageLoadMetrics.allMarkerEvents;
     // Set markers for Navigations, LCP, FCP, DCL, L.
     const markers = markerEvents.filter(
         event => event.name === Trace.Types.Events.Name.NAVIGATION_START ||
@@ -679,9 +678,9 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     markers.forEach(marker => {
       const adjustedTimestamp = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
           marker,
-          parsedTrace.Meta.traceBounds,
-          parsedTrace.Meta.navigationsByNavigationId,
-          parsedTrace.Meta.navigationsByFrameId,
+          parsedTrace.data.Meta.traceBounds,
+          parsedTrace.data.Meta.navigationsByNavigationId,
+          parsedTrace.data.Meta.navigationsByFrameId,
       );
       // If any of the markers overlap in timing, lets put them on the same marker.
       let matchingOverlay = false;
@@ -1190,13 +1189,15 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#updateDetailViews();
   }
 
-  setModel(newParsedTrace: Trace.Handlers.Types.HandlerData, traceMetadata: Trace.Types.File.MetaData|null): void {
+  setModel(
+      newParsedTrace: Trace.TraceModel.ParsedTrace,
+      eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap): void {
     if (newParsedTrace === this.#parsedTrace) {
       return;
     }
 
     this.#parsedTrace = newParsedTrace;
-    this.#traceMetadata = traceMetadata;
+    this.#eventToRelatedInsightsMap = eventToRelatedInsightsMap;
     for (const dimmer of this.#flameChartDimmers) {
       dimmer.active = false;
       dimmer.mainChartIndices = [];
@@ -1263,19 +1264,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     return {main, network};
   }
 
-  setInsights(
-      insights: Trace.Insights.Types.TraceInsightSets|null,
-      eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap): void {
-    if (this.#traceInsightSets === insights) {
-      return;
-    }
-
-    this.#traceInsightSets = insights;
-    this.#eventToRelatedInsightsMap = eventToRelatedInsightsMap;
-    // The DetailsView is provided with the InsightSets, so make sure we update it.
-    this.#updateDetailViews();
-  }
-
   reset(): void {
     if (this.networkDataProvider.isEmpty()) {
       this.mainFlameChart.enableRuler(true);
@@ -1315,7 +1303,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     void this.detailsView.setModel({
       parsedTrace: this.#parsedTrace,
       selectedEvents: this.#selectedEvents,
-      traceInsightsSets: this.#traceInsightSets,
       eventToRelatedInsightsMap: this.#eventToRelatedInsightsMap,
       entityMapper: this.#entityMapper,
     });

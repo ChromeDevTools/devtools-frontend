@@ -29,7 +29,7 @@ export interface ParseConfig {
  * `createWithSubsetOfHandlers` can be used to run just some handlers.
  **/
 export class Model extends EventTarget {
-  readonly #traces: ParsedTraceFile[] = [];
+  readonly #traces: ParsedTrace[] = [];
   readonly #nextNumberByDomain = new Map<string, number>();
 
   readonly #recordingsAvailable: string[] = [];
@@ -134,7 +134,7 @@ export class Model extends EventTarget {
   #storeAndCreateParsedTraceFile(
       syntheticEventsManager: Helpers.SyntheticEvents.SyntheticEventsManager,
       traceEvents: readonly Types.Events.Event[], metadata: Types.File.MetaData, data: Handlers.Types.HandlerData,
-      traceInsights: Insights.Types.TraceInsightSets|null): ParsedTraceFile {
+      traceInsights: Insights.Types.TraceInsightSets|null): ParsedTrace {
     this.#lastRecordingIndex++;
     let recordingName = `Trace ${this.#lastRecordingIndex}`;
     const origin = Helpers.Trace.extractOriginFromTrace(data.Meta.mainFrameURL);
@@ -158,38 +158,18 @@ export class Model extends EventTarget {
     return this.size() - 1;
   }
 
-  findIndexForHandlerData(data: Handlers.Types.HandlerData): number {
-    return this.#traces.findIndex(file => file.data === data);
-  }
-
   /**
    * Returns the parsed trace data indexed by the order in which it was stored.
    * If no index is given, the last stored parsed data is returned.
    */
-  parsedTraceFile(index: number = this.#traces.length - 1): ParsedTraceFile|null {
+  parsedTrace(index: number = this.#traces.length - 1): ParsedTrace|null {
     return this.#traces.at(index) ?? null;
-  }
-
-  handlerData(index: number = this.#traces.length - 1): Handlers.Types.HandlerData|null {
-    return this.#traces.at(index)?.data ?? null;
-  }
-
-  traceInsights(index: number = this.#traces.length - 1): Insights.Types.TraceInsightSets|null {
-    return this.#traces.at(index)?.insights ?? null;
-  }
-
-  metadata(index: number = this.#traces.length - 1): Types.File.MetaData|null {
-    return this.#traces.at(index)?.metadata ?? null;
   }
 
   overrideModifications(index: number, newModifications: Types.File.Modifications): void {
     if (this.#traces[index]) {
       this.#traces[index].metadata.modifications = newModifications;
     }
-  }
-
-  rawTraceEvents(index: number = this.#traces.length - 1): readonly Types.Events.Event[]|null {
-    return this.#traces.at(index)?.traceEvents ?? null;
   }
 
   syntheticTraceEventsManager(index: number = this.#traces.length - 1): Helpers.SyntheticEvents.SyntheticEventsManager
@@ -216,11 +196,11 @@ export class Model extends EventTarget {
 }
 
 /**
- * This parsed trace file is used by the Model. It keeps multiple instances
+ * This parsed trace is used by the Model. It keeps multiple instances
  * of these so that the user can swap between them. The key is that it is
  * essentially the TraceFile plus whatever the model has parsed from it.
  */
-export type ParsedTraceFile = Types.File.TraceFile&{
+export type ParsedTrace = Types.File.TraceFile&{
   data: Handlers.Types.HandlerData,
   /** Is null for CPU profiles. */
   insights: Insights.Types.TraceInsightSets | null,

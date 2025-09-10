@@ -88,8 +88,7 @@ export interface NewHistoryRecordingData {
   // We do not store this, but need it to build the thumbnail preview.
   filmStripForPreview: Trace.Extras.FilmStrip.Data|null;
   // Also not stored, but used to create the preview overview for a new trace.
-  parsedTrace: Trace.Handlers.Types.HandlerData;
-  metadata: Trace.Types.File.MetaData|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
 }
 
 // Lazily instantiate the formatter as the constructor takes 50ms+
@@ -113,7 +112,7 @@ export class TimelineHistoryManager {
   private readonly nextNumberByDomain: Map<string, number>;
   readonly #button: ToolbarButton;
   private readonly allOverviews: Array<{
-    constructor: (parsedTrace: Trace.Handlers.Types.HandlerData) => TimelineEventOverview,
+    constructor: (parsedTrace: Trace.TraceModel.ParsedTrace) => TimelineEventOverview,
     height: number,
   }>;
   private totalHeight: number;
@@ -182,7 +181,7 @@ export class TimelineHistoryManager {
 
     // Order is important: this needs to happen first because lots of the
     // subsequent code depends on us storing the preview data into the map.
-    this.#buildAndStorePreviewData(newInput.data.parsedTraceIndex, newInput.parsedTrace, newInput.metadata, filmStrip);
+    this.#buildAndStorePreviewData(newInput.data.parsedTraceIndex, newInput.parsedTrace, filmStrip);
 
     const modelTitle = this.title(newInput.data);
     this.#button.setText(modelTitle);
@@ -341,9 +340,9 @@ export class TimelineHistoryManager {
   }
 
   #buildAndStorePreviewData(
-      parsedTraceIndex: number, parsedTrace: Trace.Handlers.Types.HandlerData, metadata: Trace.Types.File.MetaData|null,
+      parsedTraceIndex: number, parsedTrace: Trace.TraceModel.ParsedTrace,
       filmStrip: Trace.Extras.FilmStrip.Data|null): HTMLDivElement {
-    const parsedURL = Common.ParsedURL.ParsedURL.fromString(parsedTrace.Meta.mainFrameURL);
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(parsedTrace.data.Meta.mainFrameURL);
     const domain = parsedURL ? parsedURL.host : '';
 
     const sequenceNumber = this.nextNumberByDomain.get(domain) || 1;
@@ -362,7 +361,7 @@ export class TimelineHistoryManager {
     };
     parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
 
-    preview.appendChild(this.#buildTextDetails(metadata, domain));
+    preview.appendChild(this.#buildTextDetails(parsedTrace.metadata, domain));
     const screenshotAndOverview = preview.createChild('div', 'hbox');
     screenshotAndOverview.appendChild(this.#buildScreenshotThumbnail(filmStrip));
     screenshotAndOverview.appendChild(this.#buildOverview(parsedTrace));
@@ -412,7 +411,7 @@ export class TimelineHistoryManager {
     return container;
   }
 
-  #buildOverview(parsedTrace: Trace.Handlers.Types.HandlerData): Element {
+  #buildOverview(parsedTrace: Trace.TraceModel.ParsedTrace): Element {
     const container = document.createElement('div');
     const dPR = window.devicePixelRatio;
     container.style.width = previewWidth + 'px';

@@ -14,12 +14,12 @@ import {bytes, micros, millis} from './UnitFormatters.js';
 /**
  * For a given frame ID and navigation ID, returns the LCP Event and the LCP Request, if the resource was an image.
  */
-function getLCPData(parsedTrace: Trace.Handlers.Types.HandlerData, frameId: string, navigationId: string): {
+function getLCPData(parsedTrace: Trace.TraceModel.ParsedTrace, frameId: string, navigationId: string): {
   lcpEvent: Trace.Types.Events.LargestContentfulPaintCandidate,
   metricScore: Trace.Handlers.ModelHandlers.PageLoadMetrics.LCPMetricScore,
   lcpRequest?: Trace.Types.Events.SyntheticNetworkRequest,
 }|null {
-  const navMetrics = parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(frameId)?.get(navigationId);
+  const navMetrics = parsedTrace.data.PageLoadMetrics.metricScoresByFrameId.get(frameId)?.get(navigationId);
   if (!navMetrics) {
     return null;
   }
@@ -35,16 +35,16 @@ function getLCPData(parsedTrace: Trace.Handlers.Types.HandlerData, frameId: stri
 
   return {
     lcpEvent,
-    lcpRequest: parsedTrace.LargestImagePaint.lcpRequestByNavigationId.get(navigationId),
+    lcpRequest: parsedTrace.data.LargestImagePaint.lcpRequestByNavigationId.get(navigationId),
     metricScore: metric,
   };
 }
 
 export class PerformanceInsightFormatter {
   #insight: Trace.Insights.Types.InsightModel;
-  #parsedTrace: Trace.Handlers.Types.HandlerData;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
 
-  constructor(parsedTrace: Trace.Handlers.Types.HandlerData, insight: Trace.Insights.Types.InsightModel) {
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel) {
     this.#insight = insight;
     this.#parsedTrace = parsedTrace;
   }
@@ -716,7 +716,7 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
         return '';
       }
 
-      const baseTime = this.#parsedTrace.Meta.traceBounds.min;
+      const baseTime = this.#parsedTrace.data.Meta.traceBounds.min;
 
       const clusterTimes = {
         start: worstCluster.ts - baseTime,
@@ -977,9 +977,9 @@ export interface NetworkRequestFormatOptions {
 
 export class TraceEventFormatter {
   static layoutShift(
-      shift: Trace.Types.Events.SyntheticLayoutShift, index: number, parsedTrace: Trace.Handlers.Types.HandlerData,
+      shift: Trace.Types.Events.SyntheticLayoutShift, index: number, parsedTrace: Trace.TraceModel.ParsedTrace,
       rootCauses?: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData): string {
-    const baseTime = parsedTrace.Meta.traceBounds.min;
+    const baseTime = parsedTrace.data.Meta.traceBounds.min;
 
     const potentialRootCauses: string[] = [];
     if (rootCauses) {
@@ -1018,7 +1018,7 @@ ${rootCauseText}`;
 
   // Stringify network requests for the LLM model.
   static networkRequests(
-      requests: readonly Trace.Types.Events.SyntheticNetworkRequest[], parsedTrace: Trace.Handlers.Types.HandlerData,
+      requests: readonly Trace.Types.Events.SyntheticNetworkRequest[], parsedTrace: Trace.TraceModel.ParsedTrace,
       options?: NetworkRequestFormatOptions): string {
     if (requests.length === 0) {
       return '';
@@ -1052,7 +1052,7 @@ ${rootCauseText}`;
    * talk to jacktfranklin@.
    */
   static #networkRequestVerbosely(
-      request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.Handlers.Types.HandlerData,
+      request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.TraceModel.ParsedTrace,
       customTitle?: string): string {
     const {
       url,
@@ -1073,9 +1073,9 @@ ${rootCauseText}`;
     const navigationForEvent = Trace.Helpers.Trace.getNavigationForTraceEvent(
         request,
         request.args.data.frame,
-        parsedTrace.Meta.navigationsByFrameId,
+        parsedTrace.data.Meta.navigationsByFrameId,
     );
-    const baseTime = navigationForEvent?.ts ?? parsedTrace.Meta.traceBounds.min;
+    const baseTime = navigationForEvent?.ts ?? parsedTrace.data.Meta.traceBounds.min;
 
     // Gets all the timings for this request, relative to the base time.
     // Note that this is the start time, not total time. E.g. "queuedAt: X"
@@ -1092,7 +1092,7 @@ ${rootCauseText}`;
     const downloadTime = syntheticData.finishTime - syntheticData.downloadStart;
 
     const renderBlocking = Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(request);
-    const initiator = parsedTrace.NetworkRequests.eventToInitiator.get(request);
+    const initiator = parsedTrace.data.NetworkRequests.eventToInitiator.get(request);
 
     const priorityLines = [];
     if (initialPriority === priority) {
@@ -1152,7 +1152,7 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
   // format description.
   static #networkRequestsArrayCompressed(
       requests: readonly Trace.Types.Events.SyntheticNetworkRequest[],
-      parsedTrace: Trace.Handlers.Types.HandlerData): string {
+      parsedTrace: Trace.TraceModel.ParsedTrace): string {
     const networkDataString = `
 Network requests data:
 
@@ -1218,8 +1218,8 @@ The order of headers corresponds to an internal fixed list. If a header is not p
    * See `networkDataFormatDescription` above for specifics.
    */
   static #networkRequestCompressedFormat(
-      urlIndex: number, request: Trace.Types.Events.SyntheticNetworkRequest,
-      parsedTrace: Trace.Handlers.Types.HandlerData, urlIdToIndex: Map<string, number>): string {
+      urlIndex: number, request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.TraceModel.ParsedTrace,
+      urlIdToIndex: Map<string, number>): string {
     const {
       statusCode,
       initialPriority,
@@ -1234,9 +1234,9 @@ The order of headers corresponds to an internal fixed list. If a header is not p
     const navigationForEvent = Trace.Helpers.Trace.getNavigationForTraceEvent(
         request,
         request.args.data.frame,
-        parsedTrace.Meta.navigationsByFrameId,
+        parsedTrace.data.Meta.navigationsByFrameId,
     );
-    const baseTime = navigationForEvent?.ts ?? parsedTrace.Meta.traceBounds.min;
+    const baseTime = navigationForEvent?.ts ?? parsedTrace.data.Meta.traceBounds.min;
     const queuedTime = micros(request.ts - baseTime);
     const requestSentTime = micros(syntheticData.sendStartTime - baseTime);
     const downloadCompleteTime = micros(syntheticData.finishTime - baseTime);
@@ -1291,13 +1291,13 @@ The order of headers corresponds to an internal fixed list. If a header is not p
   }
 
   static #getInitiatorChain(
-      parsedTrace: Trace.Handlers.Types.HandlerData,
+      parsedTrace: Trace.TraceModel.ParsedTrace,
       request: Trace.Types.Events.SyntheticNetworkRequest): Trace.Types.Events.SyntheticNetworkRequest[] {
     const initiators: Trace.Types.Events.SyntheticNetworkRequest[] = [];
 
     let cur: Trace.Types.Events.SyntheticNetworkRequest|undefined = request;
     while (cur) {
-      const initiator = parsedTrace.NetworkRequests.eventToInitiator.get(cur);
+      const initiator = parsedTrace.data.NetworkRequests.eventToInitiator.get(cur);
       if (initiator) {
         // Should never happen, but if it did that would be an infinite loop.
         if (initiators.includes(initiator)) {

@@ -134,7 +134,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private currentLevel = 0;
 
   private compatibilityTracksAppender: CompatibilityTracksAppender|null = null;
-  private parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
+  private parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
 
   #minimumBoundary = 0;
   private timeSpan = 0;
@@ -455,10 +455,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return Object.assign(defaultGroupStyle, extra);
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.HandlerData, entityMapper: Utils.EntityMapper.EntityMapper): void {
+  setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: Utils.EntityMapper.EntityMapper): void {
     this.reset();
     this.parsedTrace = parsedTrace;
-    const {traceBounds} = parsedTrace.Meta;
+    const {traceBounds} = parsedTrace.data.Meta;
     const minTime = Trace.Helpers.Timing.microToMilli(traceBounds.min);
     const maxTime = Trace.Helpers.Timing.microToMilli(traceBounds.max);
     this.#minimumBoundary = minTime;
@@ -537,7 +537,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!this.parsedTrace) {
       return [];
     }
-    return this.parsedTrace.Meta.mainFrameNavigations;
+    return this.parsedTrace.data.Meta.mainFrameNavigations;
   }
 
   entryTitle(entryIndex: number): string|null {
@@ -644,7 +644,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       // Note for readers: NodeJS CpuProfiles are purposefully NOT generic.
       // We wrap them in a `TracingStartedInPage` event, which causes them to
       // be treated like "real" Chrome traces. This is by design!
-      if (this.parsedTrace.Meta.traceIsGeneric) {
+      if (this.parsedTrace.data.Meta.traceIsGeneric) {
         this.#processGenericTrace();
       } else {
         this.#processInspectorTrace();
@@ -662,7 +662,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     for (const [pid, threadAppenders] of appendersByProcess) {
       const processGroupStyle = this.buildGroupStyle({shareHeaderLine: false});
-      const processName = this.parsedTrace?.Meta.processNames.get(pid)?.args.name || 'Process';
+      const processName = this.parsedTrace?.data.Meta.processNames.get(pid)?.args.name || 'Process';
       this.appendHeader(`${processName} (${pid})`, processGroupStyle, true, false);
       for (const appender of threadAppenders) {
         appender.setHeaderNestingLevel(1);
@@ -763,7 +763,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (!Trace.Helpers.Timing.eventIsInBounds(entry, visibleWindow)) {
         continue;
       }
-      if (!filter || filter.accept(entry, this.parsedTrace || undefined)) {
+      if (!filter || filter.accept(entry, this.parsedTrace?.data || undefined)) {
         const startTimeMilli = Trace.Helpers.Timing.microToMilli(entry.ts);
         results.push({index: i, startTimeMilli, provider: 'main'});
       }
@@ -786,9 +786,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!this.parsedTrace) {
       return;
     }
-    const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(this.parsedTrace);
+    const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(this.parsedTrace.data);
     const hasScreenshots = filmStrip.frames.length > 0;
-    const hasFrames = this.parsedTrace.Frames.frames.length > 0;
+    const hasFrames = this.parsedTrace.data.Frames.frames.length > 0;
     if (!hasFrames && !hasScreenshots) {
       return;
     }
@@ -799,7 +799,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.appendHeader(i18nString(UIStrings.frames), this.framesGroupStyle, false /* selectable */, expanded);
 
     this.entryTypeByLevel[this.currentLevel] = EntryType.FRAME;
-    for (const frame of this.parsedTrace.Frames.frames) {
+    for (const frame of this.parsedTrace.data.Frames.frames) {
       this.#appendFrame(frame);
     }
     ++this.currentLevel;
@@ -829,7 +829,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       prevTimestamp = screenshotTimeInMilliSeconds;
     }
     if (filmStrip.frames.length && prevTimestamp !== undefined) {
-      const maxRecordTimeMillis = Trace.Helpers.Timing.traceWindowMilliSeconds(this.parsedTrace.Meta.traceBounds).max;
+      const maxRecordTimeMillis =
+          Trace.Helpers.Timing.traceWindowMilliSeconds(this.parsedTrace.data.Meta.traceBounds).max;
 
       // Set the total time of the final screenshot so it takes up the remainder of the trace.
       (this.#timelineData.entryTotalTimes as number[]).push(maxRecordTimeMillis - prevTimestamp);
@@ -1194,7 +1195,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       // decorated.
       return true;
     }
-    return Boolean(this.parsedTrace?.Warnings.perEvent.get(event));
+    return Boolean(this.parsedTrace?.data.Warnings.perEvent.get(event));
   }
 
   private appendHeader(title: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean, expanded?: boolean):

@@ -124,7 +124,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
   #target: SDK.Target.Target|null = null;
   #linkifier: LegacyComponents.Linkifier.Linkifier|null = null;
   #serverTimings: SDK.ServerTiming.ServerTiming[]|null = null;
-  #parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
     super(element);
@@ -137,7 +137,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  set parsedTrace(parsedTrace: Trace.Handlers.Types.HandlerData|null) {
+  set parsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null) {
     this.#parsedTrace = parsedTrace;
     this.requestUpdate();
   }
@@ -192,7 +192,7 @@ export interface ViewInput {
   entityMapper: TimelineUtils.EntityMapper.EntityMapper|null;
   serverTimings: SDK.ServerTiming.ServerTiming[]|null;
   linkifier: LegacyComponents.Linkifier.Linkifier|null;
-  parsedTrace: Trace.Handlers.Types.HandlerData|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
 }
 
 export const DEFAULT_VIEW: (
@@ -428,7 +428,7 @@ function renderServerTimings(timings: SDK.ServerTiming.ServerTiming[]|null): Lit
 }
 function renderInitiatedBy(
     request: Trace.Types.Events.SyntheticNetworkRequest,
-    parsedTrace: Trace.Handlers.Types.HandlerData|null,
+    parsedTrace: Trace.TraceModel.ParsedTrace|null,
     target: SDK.Target.Target|null,
     linkifier: LegacyComponents.Linkifier.Linkifier|null,
     ): Lit.LitTemplate {
@@ -451,7 +451,7 @@ function renderInitiatedBy(
     }
   }
   // If we do not, we can see if the network handler found an initiator and try to link by URL
-  const initiator = parsedTrace?.NetworkRequests.eventToInitiator.get(request);
+  const initiator = parsedTrace?.data.NetworkRequests.eventToInitiator.get(request);
   if (initiator) {
     link = linkifier.maybeLinkifyScriptLocation(
         target,

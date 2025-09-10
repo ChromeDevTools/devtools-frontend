@@ -220,17 +220,13 @@ enum ScorePriority {
 }
 
 export class PerformanceTraceContext extends ConversationContext<TimelineUtils.AIContext.AgentFocus> {
-  static full(
-      parsedTrace: Trace.Handlers.Types.HandlerData, insights: Trace.Insights.Types.TraceInsightSets,
-      traceMetadata: Trace.Types.File.MetaData): PerformanceTraceContext {
-    return new PerformanceTraceContext(TimelineUtils.AIContext.AgentFocus.full(parsedTrace, insights, traceMetadata));
+  static full(parsedTrace: Trace.TraceModel.ParsedTrace): PerformanceTraceContext {
+    return new PerformanceTraceContext(TimelineUtils.AIContext.AgentFocus.full(parsedTrace));
   }
 
-  static fromInsight(
-      parsedTrace: Trace.Handlers.Types.HandlerData, insights: Trace.Insights.Types.TraceInsightSets,
-      traceMetadata: Trace.Types.File.MetaData, insight: Trace.Insights.Types.InsightModel): PerformanceTraceContext {
-    return new PerformanceTraceContext(
-        TimelineUtils.AIContext.AgentFocus.fromInsight(parsedTrace, insights, traceMetadata, insight));
+  static fromInsight(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel):
+      PerformanceTraceContext {
+    return new PerformanceTraceContext(TimelineUtils.AIContext.AgentFocus.fromInsight(parsedTrace, insight));
   }
 
   static fromCallTree(callTree: TimelineUtils.AICallTree.AICallTree): PerformanceTraceContext {
@@ -246,9 +242,10 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
 
   override getOrigin(): string {
     const focus = this.#focus.data;
+    const data = focus.parsedTrace.data;
 
     if (focus.type === 'full' || focus.type === 'insight') {
-      const {min, max} = focus.parsedTrace.Meta.traceBounds;
+      const {min, max} = data.Meta.traceBounds;
       return `trace-${min}-${max}`;
     }
 
@@ -262,7 +259,7 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
       // Get the non-resolved (ignore sourcemaps) URL for the event. We use the
       // non-resolved URL as in the context of the AI Assistance panel, we care
       // about the origin it was served on.
-      const nonResolvedURL = Trace.Handlers.Helpers.getNonResolvedURL(selectedEvent, focus.callTree.parsedTrace);
+      const nonResolvedURL = Trace.Handlers.Helpers.getNonResolvedURL(selectedEvent, focus.callTree.parsedTrace.data);
       if (nonResolvedURL) {
         const origin = Common.ParsedURL.ParsedURL.extractOrigin(nonResolvedURL);
         if (origin) {  // origin could be the empty string.
@@ -288,9 +285,10 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
 
   override getTitle(): string {
     const focus = this.#focus.data;
+    const data = focus.parsedTrace.data;
 
     if (focus.type === 'full' || focus.type === 'insight') {
-      const url = focus.insightSet?.url ?? new URL(focus.parsedTrace.Meta.mainFrameURL);
+      const url = focus.insightSet?.url ?? new URL(data.Meta.mainFrameURL);
       return `Trace: ${url.hostname}`;
     }
 
@@ -693,7 +691,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
       return;
     }
 
-    const {parsedTrace, insightSet, traceMetadata} = focus.data;
+    const {parsedTrace, insightSet} = focus.data;
 
     this.declareFunction<{insightName: string}, {details: string}>('getInsightDetails', {
       description:
@@ -771,8 +769,8 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
             return null;
           }
 
-          const clampedMin = Math.max(min ?? 0, parsedTrace.Meta.traceBounds.min);
-          const clampedMax = Math.min(max ?? Number.POSITIVE_INFINITY, parsedTrace.Meta.traceBounds.max);
+          const clampedMin = Math.max(min ?? 0, parsedTrace.data.Meta.traceBounds.min);
+          const clampedMax = Math.min(max ?? Number.POSITIVE_INFINITY, parsedTrace.data.Meta.traceBounds.max);
           if (clampedMin > clampedMax) {
             return null;
           }
@@ -935,7 +933,8 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     });
 
     const isFresh = TimelineUtils.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
-    const hasScriptContents = traceMetadata.enhancedTraceVersion && parsedTrace.Scripts.scripts.some(s => s.content);
+    const hasScriptContents =
+        parsedTrace.metadata.enhancedTraceVersion && parsedTrace.data.Scripts.scripts.some(s => s.content);
 
     if (isFresh || hasScriptContents) {
       this.declareFunction<{url: string}, {content: string}>('getResourceContent', {

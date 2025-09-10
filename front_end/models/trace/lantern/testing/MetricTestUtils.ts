@@ -15,7 +15,7 @@ function toLanternTrace(traceEvents: readonly Trace.Types.Events.Event[]): Lante
   };
 }
 
-async function runTrace(context: Mocha.Suite|Mocha.Context, trace: Lantern.Types.Trace) {
+async function runTraceProcessor(context: Mocha.Suite|Mocha.Context, trace: Lantern.Types.Trace) {
   TraceLoader.TraceLoader.setTestTimeout(context);
 
   const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
@@ -35,28 +35,28 @@ async function getComputationDataFromFixture(context: Mocha.Suite|Mocha.Context,
   if (!settings.throttlingMethod) {
     settings.throttlingMethod = 'simulate';
   }
-  const parsedTrace = await runTrace(context, trace);
-  const requests = Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace);
+  const data = await runTraceProcessor(context, trace);
+  const requests = Trace.LanternComputationData.createNetworkRequests(trace, data);
   const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
   if (!networkAnalysis) {
     throw new Error('no networkAnalysis');
   }
 
-  const frameId = parsedTrace.Meta.mainFrameId;
-  const navigationId = parsedTrace.Meta.mainFrameNavigations[0].args.data?.navigationId;
+  const frameId = data.Meta.mainFrameId;
+  const navigationId = data.Meta.mainFrameNavigations[0].args.data?.navigationId;
   if (!navigationId) {
     throw new Error('no navigation id found');
   }
 
   return {
     simulator: Lantern.Simulation.Simulator.createSimulator({...settings, networkAnalysis}),
-    graph: Trace.LanternComputationData.createGraph(requests, trace, parsedTrace, url),
-    processedNavigation: Trace.LanternComputationData.createProcessedNavigation(parsedTrace, frameId, navigationId),
+    graph: Trace.LanternComputationData.createGraph(requests, trace, data, url),
+    processedNavigation: Trace.LanternComputationData.createProcessedNavigation(data, frameId, navigationId),
   };
 }
 
 export {
   getComputationDataFromFixture,
-  runTrace,
+  runTraceProcessor as runTrace,
   toLanternTrace,
 };

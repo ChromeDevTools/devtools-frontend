@@ -34,7 +34,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
   #timelineData: PerfUI.FlameChart.FlameChartTimelineData|null = null;
   #lastSelection: Selection|null = null;
-  #parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #eventIndexByEvent = new Map<NetworkTrackEvent, number|null>();
   // -1 means no entry is selected.
   #lastInitiatorEntry = -1;
@@ -63,7 +63,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     this.#networkTrackAppender = null;
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.HandlerData, entityMapper: TimelineUtils.EntityMapper.EntityMapper): void {
+  setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: TimelineUtils.EntityMapper.EntityMapper): void {
     this.reset();
     this.#parsedTrace = parsedTrace;
     this.#entityMapper = entityMapper;
@@ -72,17 +72,17 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     this.#setTimingBoundsData(this.#parsedTrace);
   }
 
-  setEvents(parsedTrace: Trace.Handlers.Types.HandlerData): void {
-    if (parsedTrace.NetworkRequests.webSocket) {
-      parsedTrace.NetworkRequests.webSocket.forEach(webSocketData => {
+  setEvents(parsedTrace: Trace.TraceModel.ParsedTrace): void {
+    if (parsedTrace.data.NetworkRequests.webSocket) {
+      parsedTrace.data.NetworkRequests.webSocket.forEach(webSocketData => {
         if (webSocketData.syntheticConnection) {
           this.#events.push(webSocketData.syntheticConnection);
         }
         this.#events.push(...webSocketData.events);
       });
     }
-    if (parsedTrace.NetworkRequests.byTime) {
-      this.#events.push(...parsedTrace.NetworkRequests.byTime);
+    if (parsedTrace.data.NetworkRequests.byTime) {
+      this.#events.push(...parsedTrace.data.NetworkRequests.byTime);
     }
   }
 
@@ -413,8 +413,8 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    * Sets the minimum time and total time span of a trace using the
    * new engine data.
    */
-  #setTimingBoundsData(newParsedTrace: Trace.Handlers.Types.HandlerData): void {
-    const {traceBounds} = newParsedTrace.Meta;
+  #setTimingBoundsData(newParsedTrace: Trace.TraceModel.ParsedTrace): void {
+    const {traceBounds} = newParsedTrace.data.Meta;
     const minTime = Trace.Helpers.Timing.microToMilli(traceBounds.min);
     const maxTime = Trace.Helpers.Timing.microToMilli(traceBounds.max);
     this.#minimumBoundary = minTime;
@@ -512,7 +512,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
         continue;
       }
 
-      if (!filter || filter.accept(entry, this.#parsedTrace ?? undefined)) {
+      if (!filter || filter.accept(entry, this.#parsedTrace?.data ?? undefined)) {
         const startTimeMilli = Trace.Helpers.Timing.microToMilli(entry.ts);
         results.push({startTimeMilli, index: i, provider: 'network'});
       }
@@ -529,7 +529,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     if (!this.#parsedTrace) {
       return [];
     }
-    return this.#parsedTrace.Meta.mainFrameNavigations;
+    return this.#parsedTrace.data.Meta.mainFrameNavigations;
   }
 
   buildFlowForInitiator(entryIndex: number): boolean {

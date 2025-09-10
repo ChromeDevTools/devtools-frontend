@@ -9,9 +9,8 @@ import {PerformanceInsightFormatter, TraceEventFormatter} from './PerformanceIns
 import {bytes, micros, millis} from './UnitFormatters.js';
 
 export class PerformanceTraceFormatter {
-  #parsedTrace: Trace.Handlers.Types.HandlerData;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
   #insightSet: Trace.Insights.Types.InsightSet|null;
-  #traceMetadata: Trace.Types.File.MetaData;
   #eventsSerializer: Trace.EventsSerializer.EventsSerializer;
 
   constructor(focus: TimelineUtils.AIContext.AgentFocus, eventsSerializer: Trace.EventsSerializer.EventsSerializer) {
@@ -21,7 +20,6 @@ export class PerformanceTraceFormatter {
 
     this.#parsedTrace = focus.data.parsedTrace;
     this.#insightSet = focus.data.insightSet;
-    this.#traceMetadata = focus.data.traceMetadata;
     this.#eventsSerializer = eventsSerializer;
   }
 
@@ -37,7 +35,8 @@ export class PerformanceTraceFormatter {
   formatTraceSummary(): string {
     const parsedTrace = this.#parsedTrace;
     const insightSet = this.#insightSet;
-    const traceMetadata = this.#traceMetadata;
+    const traceMetadata = this.#parsedTrace.metadata;
+    const data = parsedTrace.data;
 
     const parts = [];
 
@@ -45,8 +44,8 @@ export class PerformanceTraceFormatter {
     const cls = insightSet ? Trace.Insights.Common.getCLS(insightSet) : null;
     const inp = insightSet ? Trace.Insights.Common.getINP(insightSet) : null;
 
-    parts.push(`URL: ${parsedTrace.Meta.mainFrameURL}`);
-    parts.push(`Bounds: ${this.serializeBounds(parsedTrace.Meta.traceBounds)}`);
+    parts.push(`URL: ${data.Meta.mainFrameURL}`);
+    parts.push(`Bounds: ${this.serializeBounds(data.Meta.traceBounds)}`);
     parts.push('CPU throttling: ' + (traceMetadata.cpuThrottling ? `${traceMetadata.cpuThrottling}x` : 'none'));
     parts.push(`Network throttling: ${traceMetadata.networkThrottling ?? 'none'}`);
     if (lcp || cls || inp) {
@@ -178,7 +177,7 @@ export class PerformanceTraceFormatter {
     const parsedTrace = this.#parsedTrace;
     const insightSet = this.#insightSet;
 
-    const bounds = parsedTrace.Meta.traceBounds;
+    const bounds = parsedTrace.data.Meta.traceBounds;
     const rootNode = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityBottomUp(
         insightSet?.navigation?.args.data?.navigationId,
         bounds,
@@ -231,7 +230,7 @@ export class PerformanceTraceFormatter {
     const parsedTrace = this.#parsedTrace;
     const insightSet = this.#insightSet;
 
-    const bounds = parsedTrace.Meta.traceBounds;
+    const bounds = parsedTrace.data.Meta.traceBounds;
     const longestTaskTrees = TimelineUtils.InsightAIContext.AIQueries.longestTasks(
         insightSet?.navigation?.args.data?.navigationId, bounds, parsedTrace, 3);
     if (!longestTaskTrees || longestTaskTrees.length === 0) {
@@ -312,7 +311,7 @@ export class PerformanceTraceFormatter {
       results.push(this.#serializeBottomUpRootNode(bottomUpRootNode, 20));
     }
 
-    const thirdPartySummaries = Trace.Extras.ThirdParties.summarizeByThirdParty(this.#parsedTrace, bounds);
+    const thirdPartySummaries = Trace.Extras.ThirdParties.summarizeByThirdParty(this.#parsedTrace.data, bounds);
     if (thirdPartySummaries.length) {
       results.push('# Third parties');
       results.push(this.#formatThirdPartyEntitySummaries(thirdPartySummaries));
@@ -337,7 +336,7 @@ export class PerformanceTraceFormatter {
   formatNetworkTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): string {
     const results = [];
 
-    const requests = this.#parsedTrace.NetworkRequests.byTime.filter(
+    const requests = this.#parsedTrace.data.NetworkRequests.byTime.filter(
         request => Trace.Helpers.Timing.eventIsInBounds(request, bounds));
     const requestsText = TraceEventFormatter.networkRequests(requests, this.#parsedTrace, {verbose: false});
     results.push('# Network requests summary');

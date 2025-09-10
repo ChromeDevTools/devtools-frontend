@@ -19,11 +19,12 @@ describeWithEnvironment('PerformanceAnnotationsAgent', () => {
         explanation: 'hello world\n',
       }]]),
     });
-    const {data} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const evalScriptEvent = allThreadEntriesInTrace(data).find(
-        event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const evalScriptEvent =
+        allThreadEntriesInTrace(parsedTrace)
+            .find(event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);
     assert.exists(evalScriptEvent);
-    const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(evalScriptEvent, data);
+    const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(evalScriptEvent, parsedTrace);
     assert.isOk(aiCallTree);
     const label = await agent.generateAIEntryLabel(aiCallTree);
     assert.strictEqual(label, 'hello world');

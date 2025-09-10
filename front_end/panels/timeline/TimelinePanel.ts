@@ -425,7 +425,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       'flamechart-selected-navigation', 'Classic - scroll to zoom', 'timeline.select-classic-navigation');
 
   #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
-  #hiddenTracksInfoBarPerTrace = new WeakMap<Trace.Handlers.Types.HandlerData, UI.Infobar.Infobar|'DISMISSED'>();
+  #hiddenTracksInfoBarByParsedTrace = new WeakMap<Trace.TraceModel.ParsedTrace, UI.Infobar.Infobar|'DISMISSED'>();
 
   constructor(traceModel?: Trace.TraceModel.Model) {
     super('timeline');
@@ -975,8 +975,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (traceIndex === null) {
       throw new Error('No trace index active.');
     }
-    const data = this.#traceEngineModel.handlerData(traceIndex);
-    if (data === null) {
+    const data = this.#traceEngineModel.parsedTrace(traceIndex)?.data;
+    if (!data) {
       throw new Error('No trace engine data found.');
     }
     return data;
@@ -993,11 +993,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (traceIndex === null) {
       throw new Error('No trace index active.');
     }
-    const data = this.#traceEngineModel.rawTraceEvents(traceIndex);
-    if (data === null) {
+    const data = this.#traceEngineModel.parsedTrace(traceIndex);
+    if (!data) {
       throw new Error('No trace engine data found.');
     }
-    return data;
+    return data.traceEvents;
   }
 
   #onEntryHovered(dataProvider: TimelineFlameChartDataProvider, event: Common.EventTarget.EventTargetEvent<number>):
@@ -1378,8 +1378,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return;
     }
 
-    const parsedTraceFile = this.#traceEngineModel.parsedTraceFile(this.#viewMode.traceIndex);
-    if (!parsedTraceFile) {
+    const parsedTrace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
+    if (!parsedTrace) {
       return;
     }
 
@@ -1391,7 +1391,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       scriptByIdMap.set(`${mapScript.isolate}.${mapScript.scriptId}`, mapScript);
     }
 
-    const traceEvents = parsedTraceFile.traceEvents.map(event => {
+    const traceEvents = parsedTrace.traceEvents.map(event => {
       if (Trace.Types.Events.isAnyScriptCatchupEvent(event) && event.name !== 'StubScriptCatchup') {
         const mappedScript = scriptByIdMap.get(`${event.args.data.isolate}.${event.args.data.scriptId}`);
 
@@ -1417,7 +1417,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return event;
     });
 
-    const metadata = parsedTraceFile.metadata;
+    const metadata = parsedTrace.metadata;
     metadata.modifications = config.addModifications ? ModificationsManager.activeManager()?.toJSON() : undefined;
 
     // NOTE: we used to export the track configuration changes into the trace
@@ -1660,9 +1660,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return;
     }
 
-    const parsedTrace = this.#traceEngineModel.handlerData(this.#viewMode.traceIndex);
-    const isCpuProfile = this.#traceEngineModel.metadata(this.#viewMode.traceIndex)?.dataOrigin ===
-        Trace.Types.File.DataOrigin.CPU_PROFILE;
+    const parsedTrace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
+    const isCpuProfile = parsedTrace?.metadata.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE;
     if (!parsedTrace) {
       return;
     }
@@ -2066,8 +2065,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return;
     }
     const {traceIndex} = this.#viewMode;
-    const parsedTrace = this.#traceEngineModel.handlerData(traceIndex);
-    const traceMetadata = this.#traceEngineModel.metadata(traceIndex);
+    const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
     const syntheticEventsManager = this.#traceEngineModel.syntheticTraceEventsManager(traceIndex);
 
     if (!parsedTrace || !syntheticEventsManager) {
@@ -2087,8 +2085,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     // Order is important: the bounds must be set before we initiate any UI
     // rendering.
+    const data = parsedTrace.data;
     TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(
-        parsedTrace.Meta.traceBounds,
+        data.Meta.traceBounds,
     );
 
     // Set up the modifications manager for the newly active trace.
@@ -2101,19 +2100,16 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
     this.statusDialog?.updateProgressBar(i18nString(UIStrings.processed), 70);
 
-    const traceInsightsSets = this.#traceEngineModel.traceInsights(traceIndex);
-    this.flameChart.setInsights(traceInsightsSets, this.#eventToRelatedInsights);
-
-    this.flameChart.setModel(parsedTrace, traceMetadata);
+    this.flameChart.setModel(parsedTrace, this.#eventToRelatedInsights);
     this.flameChart.resizeToPreferredHeights();
     // Reset the visual selection as we've just swapped to a new trace.
     this.flameChart.setSelectionAndReveal(null);
-    this.#sideBar.setParsedTrace(parsedTrace, traceMetadata);
+    this.#sideBar.setParsedTrace(parsedTrace);
 
     this.#searchableView.showWidget();
 
     const exclusiveFilter = this.#exclusiveFilterPerTrace.get(traceIndex) ?? null;
-    this.#applyActiveFilters(parsedTrace.Meta.traceIsGeneric, exclusiveFilter);
+    this.#applyActiveFilters(parsedTrace.data.Meta.traceIsGeneric, exclusiveFilter);
     (this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions)
         .updateContentVisibility(currentManager ? currentManager.getAnnotations()?.length > 0 : false);
 
@@ -2126,7 +2122,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         this.flameChart.getMainDataProvider().compatibilityTracksAppenderInstance().threadAppenders().at(0);
     if (topMostMainThreadAppender) {
       const zoomedInBounds = Trace.Extras.MainThreadActivity.calculateWindow(
-          parsedTrace.Meta.traceBounds, topMostMainThreadAppender.getEntries());
+          parsedTrace.data.Meta.traceBounds, topMostMainThreadAppender.getEntries());
 
       TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomedInBounds);
     }
@@ -2142,11 +2138,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     // Set up line level profiling with CPU profiles, if we found any.
     PerfUI.LineLevelProfile.Performance.instance().reset();
-    if (parsedTrace?.Samples.profilesInProcess.size) {
+    if (parsedTrace.data.Samples.profilesInProcess.size) {
       const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       // Gather up all CPU Profiles we found when parsing this trace.
       const cpuProfiles =
-          Array.from(parsedTrace.Samples.profilesInProcess).flatMap(([_processId, threadsInProcess]) => {
+          Array.from(parsedTrace.data.Samples.profilesInProcess).flatMap(([_processId, threadsInProcess]) => {
             const profiles = Array.from(threadsInProcess.values()).map(profileData => profileData.parsedProfile);
             return profiles;
           });
@@ -2176,11 +2172,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.#maybeCreateHiddenTracksBanner(parsedTrace);
 
     this.#setActiveInsight(null);
-    this.#sideBar.setInsights(traceInsightsSets);
 
     this.#eventToRelatedInsights.clear();
-    if (traceInsightsSets) {
-      for (const [insightSetKey, insightSet] of traceInsightsSets) {
+    if (parsedTrace.insights) {
+      for (const [insightSetKey, insightSet] of parsedTrace.insights) {
         for (const model of Object.values(insightSet.model)) {
           let relatedEvents = model.relatedEvents;
           if (!relatedEvents) {
@@ -2291,16 +2286,16 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    * show a warning banner at the bottom. This can be dismissed by the user and
    * if that happens we do not want to bring it back again.
    */
-  #maybeCreateHiddenTracksBanner(trace: Trace.Handlers.Types.HandlerData): void {
+  #maybeCreateHiddenTracksBanner(parsedTrace: Trace.TraceModel.ParsedTrace): void {
     const hasHiddenTracks = this.flameChart.hasHiddenTracks();
     if (!hasHiddenTracks) {
       return;
     }
 
-    const maybeOverlay = createHiddenTracksOverlay(trace, {
+    const maybeOverlay = createHiddenTracksOverlay(parsedTrace, {
       onClose: () => {
         this.flameChart.overlays().removeOverlaysOfType('BOTTOM_INFO_BAR');
-        this.#hiddenTracksInfoBarPerTrace.set(trace, 'DISMISSED');
+        this.#hiddenTracksInfoBarByParsedTrace.set(parsedTrace, 'DISMISSED');
       },
       onShowAllTracks: () => {
         this.flameChart.showAllMainChartTracks();
@@ -2520,7 +2515,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         forceOpenSidebar: true,
       });
 
-      const parsedTrace = this.#traceEngineModel.handlerData(traceIndex);
+      const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
       if (!parsedTrace) {
         throw new Error(`Could not get trace data at index ${traceIndex}`);
       }
@@ -2538,9 +2533,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
           parsedTraceIndex: traceIndex,
           type: 'TRACE_INDEX',
         },
-        filmStripForPreview: Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace),
+        filmStripForPreview: Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data),
         parsedTrace,
-        metadata,
       });
 
       this.dispatchEventToListeners(Events.RECORDING_COMPLETED, {
@@ -2589,7 +2583,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    *    subsequent attempt will work).
    */
   async #retainSourceMapsForEnhancedTrace(
-      parsedTrace: Trace.Handlers.Types.HandlerData, metadata: Trace.Types.File.MetaData): Promise<void> {
+      parsedTrace: Trace.TraceModel.ParsedTrace, metadata: Trace.Types.File.MetaData): Promise<void> {
     const handleScript = async(script: Trace.Handlers.ModelHandlers.Scripts.Script): Promise<void> => {
       if (script.sourceMapUrlElided) {
         if (metadata.sourceMaps?.find(m => m.url === script.url)) {
@@ -2634,7 +2628,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     metadata.sourceMaps = [];
 
     const promises = [];
-    for (const script of parsedTrace?.Scripts.scripts.values() ?? []) {
+    for (const script of parsedTrace?.data.Scripts.scripts.values() ?? []) {
       promises.push(handleScript(script));
     }
     await Promise.all(promises);
@@ -2756,7 +2750,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (isFreshRecording && metadata &&
         Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES)) {
       const traceIndex = this.#traceEngineModel.lastTraceIndex();
-      const parsedTrace = this.#traceEngineModel.handlerData(traceIndex);
+      const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
       if (parsedTrace) {
         await this.#retainSourceMapsForEnhancedTrace(parsedTrace, metadata);
       }
@@ -2825,14 +2819,15 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // If the user has selected a random trace event, the frame we want is the last
     // frame in that time window, hence why the window we look for is the
     // endTime to the endTime.
-    const parsedTrace = this.#traceEngineModel.handlerData(this.#viewMode.traceIndex);
+    const parsedTrace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
     if (!parsedTrace) {
       return null;
     }
+
     const endTime = rangeForSelection(selection).max;
     const lastFrameInSelection = Trace.Handlers.ModelHandlers.Frames
                                      .framesWithinWindow(
-                                         parsedTrace.Frames.frames,
+                                         parsedTrace.data.Frames.frames,
                                          endTime,
                                          endTime,
                                          )
@@ -2848,14 +2843,15 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (!currentFrame) {
       return;
     }
-    const parsedTrace = this.#traceEngineModel.handlerData(this.#viewMode.traceIndex);
+    const parsedTrace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
     if (!parsedTrace) {
       return;
     }
-    let index = parsedTrace.Frames.frames.indexOf(currentFrame);
+
+    let index = parsedTrace.data.Frames.frames.indexOf(currentFrame);
     console.assert(index >= 0, 'Can\'t find current frame in the frame list');
-    index = Platform.NumberUtilities.clamp(index + offset, 0, parsedTrace.Frames.frames.length - 1);
-    const frame = parsedTrace.Frames.frames[index];
+    index = Platform.NumberUtilities.clamp(index + offset, 0, parsedTrace.data.Frames.frames.length - 1);
+    const frame = parsedTrace.data.Frames.frames[index];
     this.#revealTimeRange(
         Trace.Helpers.Timing.microToMilli(frame.startTime), Trace.Helpers.Timing.microToMilli(frame.endTime));
     this.select(selectionFromEvent(frame));
@@ -3015,16 +3011,16 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
           message: `Error running the trace: ${eventData.errorText}`,
         };
       }
-      const data = panelInstance.model.handlerData(eventData.traceIndex);
-      const insights = panelInstance.model.traceInsights(eventData.traceIndex);
-      if (!data || !insights || insights.size === 0) {
+
+      const parsedTrace = panelInstance.model.parsedTrace(eventData.traceIndex);
+      if (!parsedTrace || !parsedTrace.insights || parsedTrace.insights.size === 0) {
         return {
           type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
           message: 'The trace was loaded successfully but no Insights were detected.',
         };
       }
 
-      const navigationId = Array.from(insights.keys()).find(k => k !== 'NO_NAVIGATION');
+      const navigationId = Array.from(parsedTrace.insights.keys()).find(k => k !== 'NO_NAVIGATION');
       if (!navigationId) {
         return {
           type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
@@ -3032,7 +3028,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         };
       }
 
-      const insightsForNav = insights.get(navigationId);
+      const insightsForNav = parsedTrace.insights.get(navigationId);
       if (!insightsForNav) {
         return {
           type: AiAssistanceModel.ExternalRequestResponseType.ERROR,
@@ -3045,10 +3041,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       // bottom of the response under a heading.
       let responseTextForPassedInsights = '';
 
+      // TODO(b/442392194): use PerformanceTraceFormatter summary instead.
       for (const modelName in insightsForNav.model) {
         const model = modelName as keyof Trace.Insights.Types.InsightModelsType;
         const insight = insightsForNav.model[model];
-        const formatter = new AiAssistanceModel.PerformanceInsightFormatter(data, insight);
+        const formatter = new AiAssistanceModel.PerformanceInsightFormatter(parsedTrace, insight);
         if (!formatter.insightIsSupported()) {
           // Not all Insights are integrated with "Ask AI" yet, let's avoid
           // filling up the response with those ones because there will be no

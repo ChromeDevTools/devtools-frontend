@@ -128,7 +128,7 @@ type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 export class TimelineSelectorStatsView extends UI.Widget.VBox {
   #selectorLocations: Map<string, Protocol.CSS.SourceRange[]>;
-  #parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   /**
    * We store the last event (or array of events) that we renderered. We do
    * this because as the user zooms around the panel this view is updated,
@@ -141,7 +141,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
   #view: View;
   #timings: SelectorTiming[] = [];
 
-  constructor(parsedTrace: Trace.Handlers.Types.HandlerData|null, view: View = (input, _, target) => {
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace|null, view: View = (input, _, target) => {
     render(
         html`
       <devtools-data-grid striped name=${i18nString(UIStrings.selectorStats)}
@@ -297,7 +297,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       return;
     }
 
-    const invalidatedNodes = this.#parsedTrace.SelectorStats.invalidatedNodeList;
+    const invalidatedNodes = this.#parsedTrace.data.SelectorStats.invalidatedNodeList;
     const invalidatedNodeMap = new Map<string, {subtree: boolean, nodeList: Array<SDK.DOMModel.DOMNode|null>}>();
 
     const frameIdBackendNodeIdsMap = new Map<String, Set<Protocol.DOM.BackendNodeId>>();
@@ -334,7 +334,8 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     }
 
     for (const event of events) {
-      const selectorStats = event ? this.#parsedTrace.SelectorStats.dataForUpdateLayoutEvent.get(event) : undefined;
+      const selectorStats =
+          event ? this.#parsedTrace.data.SelectorStats.dataForUpdateLayoutEvent.get(event) : undefined;
       if (!selectorStats) {
         continue;
       }
@@ -399,7 +400,8 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     await this.updateInvalidationCount(events);
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
-      const selectorStats = event ? this.#parsedTrace.SelectorStats.dataForUpdateLayoutEvent.get(event) : undefined;
+      const selectorStats =
+          event ? this.#parsedTrace.data.SelectorStats.dataForUpdateLayoutEvent.get(event) : undefined;
       if (!selectorStats) {
         continue;
       }

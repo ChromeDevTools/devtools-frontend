@@ -23,18 +23,18 @@ describeWithMockConnection('EntryNodes', function() {
 
   describe('nodeIdsForEvent', () => {
     it('identifies node ids for a Layout event', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      const layoutEvent = allThreadEntriesInTrace(data).find(Trace.Types.Events.isLayout);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const layoutEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isLayout);
       assert.isOk(layoutEvent);
-      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(data, layoutEvent);
+      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, layoutEvent);
       assert.deepEqual(Array.from(nodeIds), [2]);
     });
 
     it('identifies node ids for a LayoutShift event', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const layoutShiftEvent = data.LayoutShifts.clusters[0].events.at(0);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const layoutShiftEvent = parsedTrace.data.LayoutShifts.clusters[0].events.at(0);
       assert.isOk(layoutShiftEvent);
-      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(data, layoutShiftEvent);
+      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, layoutShiftEvent);
       assert.deepEqual(Array.from(nodeIds), [
         193,
         195,
@@ -45,53 +45,53 @@ describeWithMockConnection('EntryNodes', function() {
     });
 
     it('identifies node ids for a Paint event', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const paintEvent = allThreadEntriesInTrace(data).find(Trace.Types.Events.isPaint);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const paintEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isPaint);
       assert.isOk(paintEvent);
-      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(data, paintEvent);
+      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, paintEvent);
       assert.deepEqual(Array.from(nodeIds), [75]);
     });
 
     it('identifies node ids for a PaintImage event', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const paintImageEvent = allThreadEntriesInTrace(data).find(Trace.Types.Events.isPaintImage);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const paintImageEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isPaintImage);
       assert.isOk(paintImageEvent);
-      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(data, paintImageEvent);
+      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, paintImageEvent);
       assert.deepEqual(Array.from(nodeIds), [107]);
     });
 
     it('identifies node ids for a ScrollLayer event', async function() {
       // This trace chosen as it happens to have ScrollLayer events, unlike the
       // web-dev traces used in tests above.
-      const {data} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
-      const scrollLayerEvent = allThreadEntriesInTrace(data).find(Trace.Types.Events.isScrollLayer);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+      const scrollLayerEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isScrollLayer);
       assert.isOk(scrollLayerEvent);
-      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(data, scrollLayerEvent);
+      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, scrollLayerEvent);
       assert.deepEqual(Array.from(nodeIds), [4]);
     });
 
     it('identifies node ids for a DecodeImage event', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const decodeImageEvent = allThreadEntriesInTrace(data).find(Trace.Types.Events.isDecodeImage);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const decodeImageEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isDecodeImage);
       assert.isOk(decodeImageEvent);
-      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(data, decodeImageEvent);
+      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, decodeImageEvent);
       assert.deepEqual(Array.from(nodeIds), [240]);
     });
 
     it('identifies node ids for a DrawLazyPixelRef event', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const drawLazyPixelRefEvent = allThreadEntriesInTrace(data).find(Trace.Types.Events.isDrawLazyPixelRef);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const drawLazyPixelRefEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isDrawLazyPixelRef);
       assert.isOk(drawLazyPixelRefEvent);
-      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(data, drawLazyPixelRefEvent);
+      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, drawLazyPixelRefEvent);
       assert.deepEqual(Array.from(nodeIds), [212]);
     });
 
     it('identifies node ids for a MarkLCP event', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const lcpCandidateEvent =
-          data.PageLoadMetrics.allMarkerEvents.find(Trace.Types.Events.isLargestContentfulPaintCandidate);
+          parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(Trace.Types.Events.isLargestContentfulPaintCandidate);
       assert.isOk(lcpCandidateEvent);
-      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(data, lcpCandidateEvent);
+      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, lcpCandidateEvent);
       assert.deepEqual(Array.from(nodeIds), [209]);
     });
   });
@@ -106,10 +106,10 @@ describeWithMockConnection('EntryNodes', function() {
 
     it('returns the related DOM nodes', async function() {
       // Load in a trace and find an event that has one related node with an ID of 2.
-      const {data} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      const layoutEvent = allThreadEntriesInTrace(data).find(Trace.Types.Events.isLayout);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const layoutEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isLayout);
       assert.isOk(layoutEvent);
-      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(data, layoutEvent);
+      const nodeIds = Utils.EntryNodes.nodeIdsForEvent(parsedTrace, layoutEvent);
       assert.deepEqual(Array.from(nodeIds), [2]);
 
       // Create a mock target, dom model, document and node, using the ID of 2 to match with the event above
@@ -128,7 +128,7 @@ describeWithMockConnection('EntryNodes', function() {
       await domModel.requestDocument();
       domModel.registerNode(domNode);
 
-      const result = await Utils.EntryNodes.relatedDOMNodesForEvent(data, layoutEvent);
+      const result = await Utils.EntryNodes.relatedDOMNodesForEvent(parsedTrace, layoutEvent);
       assert.isNotNull(result);
       const entries = Array.from(result.entries());
       assert.deepEqual(entries, [[backendNodeId(2), domNode]]);

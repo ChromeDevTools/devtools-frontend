@@ -108,14 +108,14 @@ export async function loadCodeLocationResolvingScenario(): Promise<{
 }
 
 function parsedTraceFromProfileCalls(profileCalls: Trace.Types.Events.SyntheticProfileCall[]):
-    Trace.Handlers.Types.HandlerData {
+    Trace.TraceModel.ParsedTrace {
   const workersData: Trace.Handlers.ModelHandlers.Workers.WorkersData = {
     workerSessionIdEvents: [],
     workerIdByThread: new Map(),
     workerURLById: new Map(),
   };
   // This only includes data used in the SourceMapsResolver
-  return {
+  const data = {
     Samples: makeMockSamplesHandlerData(profileCalls),
     Workers: workersData,
     Renderer: makeMockRendererHandlerData(profileCalls),
@@ -123,14 +123,17 @@ function parsedTraceFromProfileCalls(profileCalls: Trace.Types.Events.SyntheticP
         {entityMappings: {entityByEvent: new Map(), eventsByEntity: new Map(), createdEntityCache: new Map()}},
     Meta: {mainFrameURL: 'https://example.com', navigationsByNavigationId: new Map()},
   } as Trace.Handlers.Types.HandlerData;
+
+  return {data} as Trace.TraceModel.ParsedTrace;
 }
 
 describeWithMockConnection('SourceMapsResolver', () => {
   describe('function name resolving', () => {
     let target: SDK.Target.Target;
     let script: SDK.Script.Script;
-    let parsedTrace: Trace.Handlers.Types.HandlerData;
+    let parsedTrace: Trace.TraceModel.ParsedTrace;
     let profileCallForNameResolving: Trace.Types.Events.SyntheticProfileCall;
+
     beforeEach(async function() {
       target = createTarget();
       script = (await loadBasicSourceMapExample(target)).script;
@@ -155,7 +158,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
          // Test the node's name is minified before the script and source maps load.
          assert.strictEqual(
              Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(
-                 parsedTrace.Samples, profileCallForNameResolving),
+                 parsedTrace.data.Samples, profileCallForNameResolving),
              MINIFIED_FUNCTION_NAME);
 
          await resolver.install();
@@ -164,7 +167,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
          // reparsed to resolve function names.
          assert.strictEqual(
              Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(
-                 parsedTrace.Samples, profileCallForNameResolving),
+                 parsedTrace.data.Samples, profileCallForNameResolving),
              AUTHORED_FUNCTION_NAME);
 
          // Ensure we populate the cache
@@ -196,7 +199,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
       await resolver.install();
       assert.strictEqual(
           Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(
-              parsedTrace.Samples, profileCallForNameResolving),
+              parsedTrace.data.Samples, profileCallForNameResolving),
           PLUGIN_FUNCTION_NAME);
     });
   });
@@ -228,27 +231,27 @@ describeWithMockConnection('SourceMapsResolver', () => {
       };
 
       // For a profile call with mappings, it must return the mapped script.
-      const traceWithMappings = parsedTraceFromProfileCalls([profileCallWithMappings]);
-      const mapperWithMappings = new Utils.EntityMapper.EntityMapper(traceWithMappings);
-      let resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithMappings, mapperWithMappings);
+      const parsedTraceWithMappings = parsedTraceFromProfileCalls([profileCallWithMappings]);
+      const mapperWithMappings = new Utils.EntityMapper.EntityMapper(parsedTraceWithMappings);
+      let resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTraceWithMappings, mapperWithMappings);
       await resolver.install();
-      let sourceMappedURL =
-          Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(traceWithMappings, profileCallWithMappings);
+      let sourceMappedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(
+          parsedTraceWithMappings, profileCallWithMappings);
       assert.strictEqual(sourceMappedURL, authoredScriptURL);
 
       // For a profile call without mappings, it must return the original URL
-      const traceWithoutMappings = parsedTraceFromProfileCalls([profileCallWithNoMappings]);
-      const mapperWithoutMappings = new Utils.EntityMapper.EntityMapper(traceWithoutMappings);
-      resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithoutMappings, mapperWithoutMappings);
+      const parsedTraceWithoutMappings = parsedTraceFromProfileCalls([profileCallWithNoMappings]);
+      const mapperWithoutMappings = new Utils.EntityMapper.EntityMapper(parsedTraceWithoutMappings);
+      resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTraceWithoutMappings, mapperWithoutMappings);
       await resolver.install();
       sourceMappedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(
-          traceWithoutMappings, profileCallWithNoMappings);
+          parsedTraceWithoutMappings, profileCallWithNoMappings);
       assert.strictEqual(sourceMappedURL, genScriptURL);
     });
   });
   describe('unnecessary work detection', () => {
     it('does not dispatch a SourceMappingsUpdated event if relevant mappings were not updated', async function() {
-      const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
       const listener = sinon.spy();
 
       const sourceMapsResolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
@@ -282,8 +285,8 @@ describeWithMockConnection('SourceMapsResolver', () => {
         url: 'http://example-domain.com/',
       };
 
-      const trace = parsedTraceFromProfileCalls([profileCall, profileCallUnmapped]);
-      const mapper = new Utils.EntityMapper.EntityMapper(trace);
+      const parsedTrace = parsedTraceFromProfileCalls([profileCall, profileCallUnmapped]);
+      const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
 
       const testEntity = {
         name: 'example-domain.com',
@@ -303,7 +306,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
       mapper.mappings().eventsByEntity.set(testEntity, [profileCall, profileCallUnmapped]);
       mapper.mappings().createdEntityCache.set('example-domain.com', testEntity);
 
-      const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(trace, mapper);
+      const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace, mapper);
       // This should update the entities
       await resolver.install();
       const afterEntityOfEvent = mapper.entityForEvent(profileCall);

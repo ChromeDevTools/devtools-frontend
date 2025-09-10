@@ -29,7 +29,7 @@ export const resolvedCodeLocationDataNames = new Map<string, ResolvedCodeLocatio
 
 export class SourceMapsResolver extends EventTarget {
   private executionContextNamesByOrigin = new Map<Platform.DevToolsPath.UrlString, string>();
-  #parsedTrace: Trace.Handlers.Types.HandlerData;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
   #entityMapper: EntityMapper.EntityMapper|null = null;
 
   #isResolving = false;
@@ -41,7 +41,7 @@ export class SourceMapsResolver extends EventTarget {
   // those workers too.
   #debuggerModelsToListen = new Set<SDK.DebuggerModel.DebuggerModel>();
 
-  constructor(parsedTrace: Trace.Handlers.Types.HandlerData, entityMapper?: EntityMapper.EntityMapper) {
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper?: EntityMapper.EntityMapper) {
     super();
     this.#parsedTrace = parsedTrace;
     this.#entityMapper = entityMapper ?? null;
@@ -87,7 +87,7 @@ export class SourceMapsResolver extends EventTarget {
     return SourceMapsResolver.resolvedCodeLocationForCallFrame(callFrame as Protocol.Runtime.CallFrame);
   }
 
-  static resolvedURLForEntry(parsedTrace: Trace.Handlers.Types.HandlerData, entry: Trace.Types.Events.Event):
+  static resolvedURLForEntry(parsedTrace: Trace.TraceModel.ParsedTrace, entry: Trace.Types.Events.Event):
       Platform.DevToolsPath.UrlString|null {
     const resolvedCallFrameURL =
         SourceMapsResolver.resolvedCodeLocationForEntry(entry)?.devtoolsLocation?.uiSourceCode.url();
@@ -96,7 +96,7 @@ export class SourceMapsResolver extends EventTarget {
     }
     // If no source mapping was found for an entry's URL, then default
     // to the URL value contained in the event itself, if any.
-    const url = Trace.Handlers.Helpers.getNonResolvedURL(entry, parsedTrace);
+    const url = Trace.Handlers.Helpers.getNonResolvedURL(entry, parsedTrace.data);
     if (url) {
       return Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url)?.url() ?? url;
     }
@@ -110,7 +110,7 @@ export class SourceMapsResolver extends EventTarget {
   }
 
   async install(): Promise<void> {
-    for (const threadToProfileMap of this.#parsedTrace.Samples.profilesInProcess.values()) {
+    for (const threadToProfileMap of this.#parsedTrace.data.Samples.profilesInProcess.values()) {
       for (const [tid, profile] of threadToProfileMap) {
         const nodes = profile.parsedProfile.nodes();
         if (!nodes || nodes.length === 0) {
@@ -164,7 +164,7 @@ export class SourceMapsResolver extends EventTarget {
     // is attach. If not, we do not notify the flamechart that mappings
     // were updated, since that would trigger a rerender.
     let updatedMappings = false;
-    for (const [, threadsInProcess] of this.#parsedTrace.Samples.profilesInProcess) {
+    for (const [, threadsInProcess] of this.#parsedTrace.data.Samples.profilesInProcess) {
       for (const [tid, threadProfile] of threadsInProcess) {
         const nodes = threadProfile.parsedProfile.nodes() ?? [];
         const target = this.#targetForThread(tid);
@@ -224,7 +224,7 @@ export class SourceMapsResolver extends EventTarget {
   // Figure out the target for the node. If it is in a worker thread,
   // that is the target, otherwise we use the primary page target.
   #targetForThread(tid: Trace.Types.Events.ThreadID): SDK.Target.Target|null {
-    const maybeWorkerId = this.#parsedTrace.Workers.workerIdByThread.get(tid);
+    const maybeWorkerId = this.#parsedTrace.data.Workers.workerIdByThread.get(tid);
     if (maybeWorkerId) {
       return SDK.TargetManager.TargetManager.instance().targetById(maybeWorkerId);
     }

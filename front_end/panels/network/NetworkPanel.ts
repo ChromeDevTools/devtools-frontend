@@ -918,14 +918,15 @@ export class FilmStripRecorder implements Tracing.TracingManager.TracingManagerC
     this.#tracingManager = null;
     await this.#traceEngine.parse(this.#collectedTraceEvents);
 
-    const data = this.#traceEngine.handlerData(this.#traceEngine.size() - 1) as
-        Trace.Extras.FilmStrip.HandlerDataWithScreenshots;
+    const data = this.#traceEngine.parsedTrace(this.#traceEngine.size() - 1)?.data as
+            Trace.Extras.FilmStrip.HandlerDataWithScreenshots |
+        null;
     if (!data) {
       return;
     }
     const zeroTimeInSeconds = Trace.Types.Timing.Seconds(this.#timeCalculator.minimumBoundary());
     const filmStrip =
-        Trace.Extras.FilmStrip.fromParsedTrace(data, Trace.Helpers.Timing.secondsToMicro(zeroTimeInSeconds));
+        Trace.Extras.FilmStrip.fromHandlerData(data, Trace.Helpers.Timing.secondsToMicro(zeroTimeInSeconds));
 
     if (this.#callback) {
       this.#callback(filmStrip);

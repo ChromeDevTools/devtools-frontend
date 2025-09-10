@@ -29,18 +29,18 @@ describeWithEnvironment('INP breakdown component', () => {
   });
 
   it('enables "Ask AI" if the page has an interaction', async function() {
-    const {data: parsedTrace, insights} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    assert.isOk(insights);
-    const firstInsightSet = insights.values().next()?.value;
+    const parsedTrace = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    assert.isOk(parsedTrace.insights);
+    const firstInsightSet = parsedTrace.insights.values().next()?.value;
     assert.isOk(firstInsightSet);
-    const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-    const interactionInsight = getInsightOrError('INPBreakdown', insights, firstNav);
+    const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+    const interactionInsight = getInsightOrError('INPBreakdown', parsedTrace.insights, firstNav);
     assert.isDefined(interactionInsight.longestInteractionEvent);
 
     const component = new Insights.INPBreakdown.INPBreakdown();
     component.model = interactionInsight;
     component.insightSetKey = firstInsightSet.id;
-    component.bounds = parsedTrace.Meta.traceBounds;
+    component.bounds = parsedTrace.data.Meta.traceBounds;
     component.selected = true;
     renderElementIntoDOM(component);
     await RenderCoordinator.done();
@@ -51,18 +51,18 @@ describeWithEnvironment('INP breakdown component', () => {
   });
 
   it('disables "Ask AI" if the page has no interaction', async function() {
-    const {data: parsedTrace, insights} = await TraceLoader.traceEngine(this, 'unsized-images.json.gz');
-    assert.isOk(insights);
-    const firstInsightSet = insights.values().next()?.value;
+    const parsedTrace = await TraceLoader.traceEngine(this, 'unsized-images.json.gz');
+    assert.isOk(parsedTrace.insights);
+    const firstInsightSet = parsedTrace.insights.values().next()?.value;
     assert.isOk(firstInsightSet);
-    const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-    const interactionInsight = getInsightOrError('INPBreakdown', insights, firstNav);
+    const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+    const interactionInsight = getInsightOrError('INPBreakdown', parsedTrace.insights, firstNav);
     assert.isUndefined(interactionInsight.longestInteractionEvent);
 
     const component = new Insights.INPBreakdown.INPBreakdown();
     component.model = interactionInsight;
     component.insightSetKey = firstInsightSet.id;
-    component.bounds = parsedTrace.Meta.traceBounds;
+    component.bounds = parsedTrace.data.Meta.traceBounds;
     component.selected = true;
     renderElementIntoDOM(component);
     await RenderCoordinator.done();

@@ -95,8 +95,8 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
   });
 
   it('uses the URL for displaying network event labels and truncates it', async function() {
-    const {data: parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const event = parsedTrace.NetworkRequests.byTime.find(event => {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const event = parsedTrace.data.NetworkRequests.byTime.find(event => {
       return event.args.data.url.includes('private-aggregation-test');
     });
     assert.isOk(event);

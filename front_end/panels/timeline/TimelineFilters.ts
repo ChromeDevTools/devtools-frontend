@@ -40,7 +40,7 @@ export class TimelineRegExp extends Trace.Extras.TraceFilter.TraceFilter {
     return this.#regExp;
   }
 
-  accept(event: Trace.Types.Events.Event, parsedTrace?: Trace.Handlers.Types.HandlerData): boolean {
-    return !this.#regExp || TimelineUIUtils.testContentMatching(event, this.#regExp, parsedTrace);
+  accept(event: Trace.Types.Events.Event, handlerData?: Trace.Handlers.Types.HandlerData): boolean {
+    return !this.#regExp || TimelineUIUtils.testContentMatching(event, this.#regExp, handlerData);
   }
 }

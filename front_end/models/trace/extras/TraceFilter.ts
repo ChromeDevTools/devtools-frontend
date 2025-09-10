@@ -6,7 +6,7 @@ import type * as Handlers from '../handlers/handlers.js';
 import * as Types from '../types/types.js';
 
 export abstract class TraceFilter {
-  abstract accept(_event: Types.Events.Event, parsedTrace?: Handlers.Types.HandlerData): boolean;
+  abstract accept(_event: Types.Events.Event, handlerData?: Handlers.Types.HandlerData): boolean;
 }
 
 export class VisibleEventsFilter extends TraceFilter {

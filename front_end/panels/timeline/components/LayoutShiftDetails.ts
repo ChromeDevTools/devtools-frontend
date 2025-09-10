@@ -83,8 +83,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ViewInput {
   event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster|null;
-  traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null;
-  parsedTrace: Trace.Handlers.Types.HandlerData|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
   isFreshRecording: boolean;
   togglePopover: (e: MouseEvent) => void;
   onEventClick: (event: Trace.Types.Events.Event) => void;
@@ -93,8 +92,7 @@ export interface ViewInput {
 export class LayoutShiftDetails extends UI.Widget.Widget {
   #view: typeof DEFAULT_VIEW;
   #event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster|null = null;
-  #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
-  #parsedTrace: Trace.Handlers.Types.HandlerData|null = null;
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #isFreshRecording = false;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
@@ -107,12 +105,7 @@ export class LayoutShiftDetails extends UI.Widget.Widget {
     void this.requestUpdate();
   }
 
-  set traceInsightsSets(traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null) {
-    this.#traceInsightsSets = traceInsightsSets;
-    void this.requestUpdate();
-  }
-
-  set parsedTrace(parsedTrace: Trace.Handlers.Types.HandlerData|null) {
+  set parsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null) {
     this.#parsedTrace = parsedTrace;
     void this.requestUpdate();
   }
@@ -154,7 +147,6 @@ export class LayoutShiftDetails extends UI.Widget.Widget {
     this.#view(
         {
           event: this.#event,
-          traceInsightsSets: this.#traceInsightsSets,
           parsedTrace: this.#parsedTrace,
           isFreshRecording: this.#isFreshRecording,
           togglePopover: e => this.#togglePopover(e),
@@ -189,9 +181,9 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
         </div>
         ${Trace.Types.Events.isSyntheticLayoutShift(input.event) ?
           renderLayoutShiftDetails(
-            input.event, input.traceInsightsSets, input.parsedTrace, input.isFreshRecording, input.onEventClick,
+            input.event, input.parsedTrace.insights, input.parsedTrace, input.isFreshRecording, input.onEventClick,
          ) : renderLayoutShiftClusterDetails(
-           input.event, input.traceInsightsSets, input.parsedTrace, input.onEventClick,
+           input.event, input.parsedTrace.insights, input.parsedTrace, input.onEventClick,
          )}
         </div>
       </div>
@@ -201,7 +193,7 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
 
 function renderLayoutShiftDetails(
     layoutShift: Trace.Types.Events.SyntheticLayoutShift, traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null,
-    parsedTrace: Trace.Handlers.Types.HandlerData, isFreshRecording: boolean,
+    parsedTrace: Trace.TraceModel.ParsedTrace, isFreshRecording: boolean,
     onEventClick: (e: Trace.Types.Events.Event) => void): Lit.LitTemplate {
   if (!traceInsightsSets) {
     return Lit.nothing;
@@ -252,7 +244,7 @@ function renderLayoutShiftDetails(
 
 function renderLayoutShiftClusterDetails(
     cluster: Trace.Types.Events.SyntheticLayoutShiftCluster,
-    traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null, parsedTrace: Trace.Handlers.Types.HandlerData,
+    traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null, parsedTrace: Trace.TraceModel.ParsedTrace,
     onEventClick: (e: Trace.Types.Events.Event) => void): Lit.LitTemplate {
   if (!traceInsightsSets) {
     return Lit.nothing;
@@ -303,7 +295,7 @@ function renderLayoutShiftClusterDetails(
 
 function renderShiftRow(
     currentShift: Trace.Types.Events.SyntheticLayoutShift, userHasSingleShiftSelected: boolean,
-    parsedTrace: Trace.Handlers.Types.HandlerData, elementsShifted: Trace.Types.Events.TraceImpactedNode[],
+    parsedTrace: Trace.TraceModel.ParsedTrace, elementsShifted: Trace.Types.Events.TraceImpactedNode[],
     onEventClick: (e: Trace.Types.Events.Event) => void,
     rootCauses: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData|undefined): Lit.LitTemplate {
   const score = currentShift.args.data?.weighted_score_delta;
@@ -340,10 +332,10 @@ function renderShiftRow(
 function renderStartTime(
     shift: Trace.Types.Events.SyntheticLayoutShift,
     userHasSingleShiftSelected: boolean,
-    parsedTrace: Trace.Handlers.Types.HandlerData,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
     onEventClick: (e: Trace.Types.Events.Event) => void,
     ): Lit.TemplateResult {
-  const ts = Trace.Types.Timing.Micro(shift.ts - parsedTrace.Meta.traceBounds.min);
+  const ts = Trace.Types.Timing.Micro(shift.ts - parsedTrace.data.Meta.traceBounds.min);
   if (userHasSingleShiftSelected) {
     return html`${i18n.TimeUtilities.preciseMillisToString(Helpers.Timing.microToMilli(ts))}`;
   }
@@ -356,12 +348,11 @@ function renderStartTime(
 
 function renderParentCluster(
     cluster: Trace.Types.Events.SyntheticLayoutShiftCluster|undefined,
-    onEventClick: (e: Trace.Types.Events.Event) => void,
-    parsedTrace: Trace.Handlers.Types.HandlerData): Lit.LitTemplate {
+    onEventClick: (e: Trace.Types.Events.Event) => void, parsedTrace: Trace.TraceModel.ParsedTrace): Lit.LitTemplate {
   if (!cluster) {
     return Lit.nothing;
   }
-  const ts = Trace.Types.Timing.Micro(cluster.ts - (parsedTrace?.Meta.traceBounds.min ?? 0));
+  const ts = Trace.Types.Timing.Micro(cluster.ts - (parsedTrace.data.Meta.traceBounds.min ?? 0));
   const clusterTs = i18n.TimeUtilities.formatMicroSecondsTime(ts);
 
   // clang-format off

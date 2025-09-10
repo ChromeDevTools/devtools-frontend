@@ -34,7 +34,7 @@ describeWithEnvironment('TraceModel', function() {
     } as Trace.Handlers.Types.Handlers);
     const file1 = await TraceLoader.rawEvents(this, 'animation.json.gz');
     await model.parse(file1);
-    assert.deepEqual(Object.keys(model.handlerData(0) || {}), ['Meta', 'Animations']);
+    assert.deepEqual(Object.keys(model.parsedTrace(0)?.data || {}), ['Meta', 'Animations']);
   });
 
   it('supports parsing multiple traces', async function() {
@@ -50,10 +50,8 @@ describeWithEnvironment('TraceModel', function() {
     model.resetProcessor();
 
     assert.strictEqual(model.size(), 2);
-    assert.isNotNull(model.handlerData(0));
-    assert.isNotNull(model.traceInsights(0));
-    assert.isNotNull(model.handlerData(1));
-    assert.isNotNull(model.traceInsights(1));
+    assert.isNotNull(model.parsedTrace(0));
+    assert.isNotNull(model.parsedTrace(1));
   });
 
   it('supports deleting traces', async function() {
@@ -70,13 +68,11 @@ describeWithEnvironment('TraceModel', function() {
     assert.strictEqual(model.size(), 2);
     model.deleteTraceByIndex(0);
     assert.strictEqual(model.size(), 1);
-    assert.isNotNull(model.handlerData(0));
-    assert.isNotNull(model.traceInsights(0));
+    assert.isNotNull(model.parsedTrace(0));
 
     model.deleteTraceByIndex(0);
     assert.strictEqual(model.size(), 0);
-    assert.isNull(model.handlerData(0));
-    assert.isNull(model.traceInsights(0));
+    assert.isNull(model.parsedTrace(0));
   });
 
   it('names traces using their origin and defaults to "Trace n" when no origin is found', async function() {
@@ -109,7 +105,7 @@ describeWithEnvironment('TraceModel', function() {
     await model.parse(file1);
 
     // Make sure there are no modifications before any are added
-    assert.isUndefined(model.metadata(0)?.modifications);
+    assert.isUndefined(model.parsedTrace(0)?.metadata.modifications);
 
     const initialBreadcrumb = {
       window: {
@@ -156,6 +152,6 @@ describeWithEnvironment('TraceModel', function() {
 
     model.overrideModifications(0, modifications);
     // Make sure metadata contains overwritten modifications
-    assert.strictEqual(model.metadata(0)?.modifications, modifications);
+    assert.strictEqual(model.parsedTrace(0)?.metadata.modifications, modifications);
   });
 });

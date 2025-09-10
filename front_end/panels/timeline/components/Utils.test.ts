@@ -71,8 +71,8 @@ describeWithEnvironment('Utils', () => {
 
     before(async function() {
       const events = await TraceLoader.fixtureContents(this, 'load-simple.json.gz');
-      const {parsedTraceFile} = await TraceLoader.executeTraceEngineOnFileContents(events);
-      req = parsedTraceFile.data.NetworkRequests.byId.get('2648544.35');
+      const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(events);
+      req = parsedTrace.data.NetworkRequests.byId.get('2648544.35');
     });
 
     function tweakRequest(

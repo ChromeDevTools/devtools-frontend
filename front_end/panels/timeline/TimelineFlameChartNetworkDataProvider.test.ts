@@ -13,13 +13,13 @@ import * as Timeline from './timeline.js';
 describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
   it('renders the network track correctly', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {data} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(data);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
 
-    const minTime = Trace.Helpers.Timing.microToMilli(data.Meta.traceBounds.min);
-    const maxTime = Trace.Helpers.Timing.microToMilli(data.Meta.traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
 
-    dataProvider.setModel(data, entityMapper);
+    dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.setWindowTimes(minTime, maxTime);
 
     // TimelineFlameChartNetworkDataProvider only has network track, so should always be one track group.
@@ -29,7 +29,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.deepEqual(dataProvider.minimumBoundary(), minTime);
     assert.deepEqual(dataProvider.totalTime(), maxTime - minTime);
 
-    const networkEvents = data.NetworkRequests.byTime;
+    const networkEvents = parsedTrace.data.NetworkRequests.byTime;
     const networkEventsStartTimes = networkEvents.map(request => Trace.Helpers.Timing.microToMilli(request.ts));
     const networkEventsTotalTimes = networkEvents.map(request => {
       const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(request);
@@ -59,14 +59,14 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('renders initiators and clears them when events are deselected', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {data} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(data);
-    dataProvider.setModel(data, entityMapper);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
     const timelineData1 = dataProvider.timelineData();
     assert.lengthOf(timelineData1.initiatorsData, 0);  // no initiators by default
 
     // A network event that has an initiator - nothing special about the exact event.
-    const event = data.NetworkRequests.byId.get('90829.57');
+    const event = parsedTrace.data.NetworkRequests.byId.get('90829.57');
     assert.exists(event);
     const index = dataProvider.indexForEvent(event);
     assert.isNotNull(index);
@@ -84,9 +84,9 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('can return the group for a given entryIndex', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {data} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(data);
-    dataProvider.setModel(data, entityMapper);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.timelineData();
 
     assert.strictEqual(
@@ -97,16 +97,16 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('filters navigations to only return those that happen on the main frame', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {data} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(data);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
 
-    const minTime = Trace.Helpers.Timing.microToMilli(data.Meta.traceBounds.min);
-    const maxTime = Trace.Helpers.Timing.microToMilli(data.Meta.traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
 
-    dataProvider.setModel(data, entityMapper);
+    dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.setWindowTimes(minTime, maxTime);
 
-    const mainFrameID = data.Meta.mainFrameId;
+    const mainFrameID = parsedTrace.data.Meta.mainFrameId;
     const navigationEvents = dataProvider.mainFrameNavigationStartEvents();
     // Ensure that every navigation event that we return is for the main frame.
     assert.isTrue(navigationEvents.every(navEvent => {
@@ -116,9 +116,9 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('can provide the index for an event and the event for a given index', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {data} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(data);
-    dataProvider.setModel(data, entityMapper);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
 
     const event = dataProvider.eventByIndex(0);
     assert.isOk(event);
@@ -127,13 +127,13 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('does not render the network track if there is no network requests', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {data} = await TraceLoader.traceEngine(this, 'basic.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(data);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'basic.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
 
-    const minTime = Trace.Helpers.Timing.microToMilli(data.Meta.traceBounds.min);
-    const maxTime = Trace.Helpers.Timing.microToMilli(data.Meta.traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
 
-    dataProvider.setModel(data, entityMapper);
+    dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.setWindowTimes(minTime, maxTime);
 
     // Network track appender won't append the network track if there is no network requests.
@@ -159,7 +159,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('decorate a event correctly', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {data} = await TraceLoader.traceEngine(this, 'cls-cluster-max-timeout.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'cls-cluster-max-timeout.json.gz');
     // The field that is important of this test:
     // {
     // "ts": 183752441.977,
@@ -178,7 +178,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     //   "responseTime": 1634222299.776
     // ...
     // }
-    const event = data.NetworkRequests.byTime[1];
+    const event = parsedTrace.data.NetworkRequests.byTime[1];
     // So for this request:
     // The earliest event belonging to this request starts at 183752441.977.
     // This is used in flamechart to calculate unclippedBarX.
@@ -209,14 +209,14 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('can search for entries within a given time-range', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {data} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(data);
-    dataProvider.setModel(data, entityMapper);
-    const boundsMs = Trace.Helpers.Timing.traceWindowMilliSeconds(data.Meta.traceBounds);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    const boundsMs = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds);
     dataProvider.setWindowTimes(boundsMs.min, boundsMs.max);
 
     const filter = new Timeline.TimelineFilters.TimelineRegExp(/app\.js/i);
-    const results = dataProvider.search(data.Meta.traceBounds, filter);
+    const results = dataProvider.search(parsedTrace.data.Meta.traceBounds, filter);
     assert.lengthOf(results, 1);
     assert.deepEqual(results[0], {index: 8, startTimeMilli: 122411056.533, provider: 'network'});
   });
@@ -227,9 +227,9 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
         Settings.instance().createSetting<PerfUi.FlameChart.PersistedGroupConfig[]|null>('persist-flame-config', null);
 
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {data} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(data);
-    dataProvider.setModel(data, entityMapper);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.setPersistedGroupConfigSetting(setting);
 
     const groups = dataProvider.timelineData().groups;

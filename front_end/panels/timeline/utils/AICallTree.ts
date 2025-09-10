@@ -22,7 +22,7 @@ function depthFirstWalk(
 
 export interface FromTimeOnThreadOptions {
   thread: {pid: Trace.Types.Events.ProcessID, tid: Trace.Types.Events.ThreadID};
-  parsedTrace: Trace.Handlers.Types.HandlerData;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
   bounds: Trace.Types.Timing.TraceWindowMicro;
 }
 
@@ -30,13 +30,12 @@ export class AICallTree {
   constructor(
       public selectedNode: Trace.Extras.TraceTree.Node|null,
       public rootNode: Trace.Extras.TraceTree.TopDownRootNode,
-      // TODO: see if we can avoid passing around this entire thing.
-      public parsedTrace: Trace.Handlers.Types.HandlerData,
+      public parsedTrace: Trace.TraceModel.ParsedTrace,
   ) {
   }
 
   static findEventsForThread({thread, parsedTrace, bounds}: FromTimeOnThreadOptions): Trace.Types.Events.Event[]|null {
-    const threadEvents = parsedTrace.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
+    const threadEvents = parsedTrace.data.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
     if (!threadEvents) {
       return null;
     }
@@ -46,7 +45,7 @@ export class AICallTree {
 
   static findMainThreadTasks({thread, parsedTrace, bounds}: FromTimeOnThreadOptions):
       Trace.Types.Events.RunTask[]|null {
-    const threadEvents = parsedTrace.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
+    const threadEvents = parsedTrace.data.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
     if (!threadEvents) {
       return null;
     }
@@ -100,7 +99,7 @@ export class AICallTree {
    * This filters out other events we make such as SyntheticLayoutShifts which are not valid
    * If the event is not valid, or there is an unexpected error building the tree, `null` is returned.
    */
-  static fromEvent(selectedEvent: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.HandlerData): AICallTree
+  static fromEvent(selectedEvent: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): AICallTree
       |null {
     // Special case: performance.mark events are shown on the main thread
     // technically, but because they are instant events they are shown with a
@@ -117,7 +116,7 @@ export class AICallTree {
     }
 
     // First: check that the selected event is on the thread we have identified as the main thread.
-    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace);
+    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace.data);
     const thread = threads.find(t => t.pid === selectedEvent.pid && t.tid === selectedEvent.tid);
     if (!thread) {
       return null;
@@ -139,7 +138,8 @@ export class AICallTree {
     // information such as Layout Shift clusters.
     // We check Renderer + Samples to ensure we support CPU Profiles (which do
     // not populate the Renderer Handler)
-    if (!parsedTrace.Renderer.entryToNode.has(selectedEvent) && !parsedTrace.Samples.entryToNode.has(selectedEvent)) {
+    const data = parsedTrace.data;
+    if (!data.Renderer.entryToNode.has(selectedEvent) && !data.Samples.entryToNode.has(selectedEvent)) {
       return null;
     }
 
@@ -147,10 +147,10 @@ export class AICallTree {
     const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(selectedEvent);
     const selectedEventBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
         Trace.Helpers.Timing.milliToMicro(startTime), Trace.Helpers.Timing.milliToMicro(endTime));
-    let threadEvents = parsedTrace.Renderer.processes.get(selectedEvent.pid)?.threads.get(selectedEvent.tid)?.entries;
+    let threadEvents = data.Renderer.processes.get(selectedEvent.pid)?.threads.get(selectedEvent.tid)?.entries;
     if (!threadEvents) {
       // None from the renderer: try the samples handler, this might be a CPU trace.
-      threadEvents = parsedTrace.Samples.profilesInProcess.get(selectedEvent.pid)?.get(selectedEvent.tid)?.profileCalls;
+      threadEvents = data.Samples.profilesInProcess.get(selectedEvent.pid)?.get(selectedEvent.tid)?.profileCalls;
     }
 
     if (!threadEvents) {
@@ -300,7 +300,7 @@ export class AICallTree {
   *     - This node is the selected node (S marker)
   */
   stringifyNode(
-      node: Trace.Extras.TraceTree.Node, nodeId: number, parsedTrace: Trace.Handlers.Types.HandlerData,
+      node: Trace.Extras.TraceTree.Node, nodeId: number, parsedTrace: Trace.TraceModel.ParsedTrace,
       selectedNode: Trace.Extras.TraceTree.Node|null, allUrls: string[], childStartingNodeIndex?: number): string {
     const event = node.event;
     if (!event) {

@@ -8,51 +8,51 @@ import type {AICallTree} from './AICallTree.js';
 
 export interface AgentFocusDataFull {
   type: 'full';
-  parsedTrace: Trace.Handlers.Types.HandlerData;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
   insightSet: Trace.Insights.Types.InsightSet|null;
-  traceMetadata: Trace.Types.File.MetaData;
 }
 
 interface AgentFocusDataCallTree {
   type: 'call-tree';
-  parsedTrace: Trace.Handlers.Types.HandlerData;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
   callTree: AICallTree;
 }
 
 export interface AgentFocusDataInsight {
   type: 'insight';
-  parsedTrace: Trace.Handlers.Types.HandlerData;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
   insightSet: Trace.Insights.Types.InsightSet|null;
-  traceMetadata: Trace.Types.File.MetaData;
   insight: Trace.Insights.Types.InsightModel;
 }
 
 type AgentFocusData = AgentFocusDataCallTree|AgentFocusDataInsight|AgentFocusDataFull;
 
 export class AgentFocus {
-  static full(
-      parsedTrace: Trace.Handlers.Types.HandlerData, insights: Trace.Insights.Types.TraceInsightSets,
-      traceMetadata: Trace.Types.File.MetaData): AgentFocus {
+  static full(parsedTrace: Trace.TraceModel.ParsedTrace): AgentFocus {
+    if (!parsedTrace.insights) {
+      throw new Error('missing insights');
+    }
+
     // Currently only support a single insight set. Pick the first one with a navigation.
-    const insightSet = [...insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
+    const insightSet = [...parsedTrace.insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
     return new AgentFocus({
       type: 'full',
       parsedTrace,
       insightSet,
-      traceMetadata,
     });
   }
 
-  static fromInsight(
-      parsedTrace: Trace.Handlers.Types.HandlerData, insights: Trace.Insights.Types.TraceInsightSets,
-      traceMetadata: Trace.Types.File.MetaData, insight: Trace.Insights.Types.InsightModel): AgentFocus {
+  static fromInsight(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel):
+      AgentFocus {
+    if (!parsedTrace.insights) {
+      throw new Error('missing insights');
+    }
     // Currently only support a single insight set. Pick the first one with a navigation.
-    const insightSet = [...insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
+    const insightSet = [...parsedTrace.insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
     return new AgentFocus({
       type: 'insight',
       parsedTrace,
       insightSet,
-      traceMetadata,
       insight,
     });
   }
@@ -73,12 +73,10 @@ export class AgentFocus {
 }
 
 export function getPerformanceAgentFocusFromModel(model: Trace.TraceModel.Model): AgentFocus|null {
-  const data = model.handlerData();
-  const insights = model.traceInsights();
-  const traceMetadata = model.metadata();
-  if (!insights || !data || !traceMetadata) {
+  const parsedTrace = model.parsedTrace();
+  if (!parsedTrace) {
     return null;
   }
 
-  return AgentFocus.full(data, insights, traceMetadata);
+  return AgentFocus.full(parsedTrace);
 }

@@ -55,12 +55,12 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  */
 export function nameForEntry(
     entry: Trace.Types.Events.Event,
-    parsedTrace?: Trace.Handlers.Types.HandlerData,
+    parsedTrace?: Trace.TraceModel.ParsedTrace,
     ): string {
   if (Trace.Types.Events.isProfileCall(entry)) {
     if (parsedTrace) {
       const potentialCallName =
-          Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(parsedTrace.Samples, entry);
+          Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(parsedTrace.data.Samples, entry);
       // We need this extra check because the call name could be the empty
       // string. If it is, we want to fallback.
       if (potentialCallName) {

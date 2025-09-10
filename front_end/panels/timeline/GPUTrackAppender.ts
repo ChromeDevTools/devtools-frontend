@@ -27,9 +27,9 @@ export class GPUTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'GPU';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #parsedTrace: Readonly<Trace.Handlers.Types.HandlerData>;
+  #parsedTrace: Readonly<Trace.TraceModel.ParsedTrace>;
 
-  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.HandlerData) {
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.TraceModel.ParsedTrace) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#parsedTrace = parsedTrace;
   }
@@ -44,7 +44,7 @@ export class GPUTrackAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean|undefined): number {
-    const gpuEvents = this.#parsedTrace.GPU.mainGPUThreadTasks;
+    const gpuEvents = this.#parsedTrace.data.GPU.mainGPUThreadTasks;
     if (gpuEvents.length === 0) {
       return trackStartLevel;
     }

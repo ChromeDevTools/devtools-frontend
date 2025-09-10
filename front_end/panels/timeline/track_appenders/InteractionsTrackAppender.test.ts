@@ -10,7 +10,7 @@ import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-    parsedTrace: Trace.Handlers.Types.HandlerData,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
     entryData: Trace.Types.Events.Event[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     ): Timeline.InteractionsTrackAppender.InteractionsTrackAppender {
@@ -26,12 +26,12 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     interactionsTrackAppender: Timeline.InteractionsTrackAppender.InteractionsTrackAppender,
     entryData: Trace.Types.Events.Event[],
-    parsedTrace: Readonly<Trace.Handlers.Types.HandlerData>,
+    parsedTrace: Readonly<Trace.TraceModel.ParsedTrace>,
   }> {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Trace.Types.Events.Event[] = [];
     const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-    const {data: parsedTrace} = await TraceLoader.traceEngine(context, trace);
+    const parsedTrace = await TraceLoader.traceEngine(context, trace);
     const interactionsTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
     interactionsTrackAppender.appendTrackAtLevel(0);
 
@@ -62,7 +62,7 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
 
     it('only shows the top level interactions', async function() {
       const {entryData, parsedTrace} = await renderTrackAppender(this, 'nested-interactions.json.gz');
-      assert.strictEqual(entryData.length, parsedTrace.UserInteractions.interactionEventsWithNoNesting.length);
+      assert.strictEqual(entryData.length, parsedTrace.data.UserInteractions.interactionEventsWithNoNesting.length);
     });
 
     it('creates a flamechart group', async function() {
@@ -74,7 +74,7 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     it('adds all interactions with the correct start times', async function() {
       const {flameChartData, parsedTrace, entryData} =
           await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
-      const events = parsedTrace.UserInteractions.interactionEventsWithNoNesting;
+      const events = parsedTrace.data.UserInteractions.interactionEventsWithNoNesting;
       for (const event of events) {
         const markerIndex = entryData.indexOf(event);
         assert.exists(markerIndex);
@@ -85,7 +85,7 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     it('adds total times correctly', async function() {
       const {flameChartData, parsedTrace, entryData} =
           await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
-      const events = parsedTrace.UserInteractions.interactionEventsWithNoNesting;
+      const events = parsedTrace.data.UserInteractions.interactionEventsWithNoNesting;
       for (const event of events) {
         const markerIndex = entryData.indexOf(event);
         assert.exists(markerIndex);
@@ -98,7 +98,7 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
 
   it('candy-stripes and adds warning triangles to long interactions', async function() {
     const {parsedTrace, flameChartData, entryData} = await renderTrackAppender(this, 'one-second-interaction.json.gz');
-    const longInteraction = parsedTrace.UserInteractions.longestInteractionEvent;
+    const longInteraction = parsedTrace.data.UserInteractions.longestInteractionEvent;
     if (!longInteraction) {
       throw new Error('Could not find longest interaction');
     }

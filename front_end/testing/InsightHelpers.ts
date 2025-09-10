@@ -6,31 +6,32 @@ import * as Trace from '../models/trace/trace.js';
 
 import {TraceLoader} from './TraceLoader.js';
 
-export async function processTrace(context: Mocha.Suite|Mocha.Context, traceFile: string) {
-  const {data: parsedTrace, insights, metadata} = await TraceLoader.traceEngine(context, traceFile);
-  if (!insights) {
+export async function processTrace(context: Mocha.Suite|Mocha.Context, traceFile: string):
+    Promise<Trace.TraceModel.ParsedTrace&{insights: Trace.Insights.Types.TraceInsightSets}> {
+  const parsedTrace = await TraceLoader.traceEngine(context, traceFile);
+  if (!parsedTrace.insights) {
     throw new Error('No insights');
   }
 
-  return {data: parsedTrace, insights, metadata};
+  return parsedTrace as Trace.TraceModel.ParsedTrace & {insights: Trace.Insights.Types.TraceInsightSets};
 }
 
 export function createContextForNavigation(
-    parsedTrace: Trace.Handlers.Types.HandlerData, navigation: Trace.Types.Events.NavigationStart,
+    data: Trace.Handlers.Types.HandlerData, navigation: Trace.Types.Events.NavigationStart,
     frameId: string): Trace.Insights.Types.InsightSetContextWithNavigation {
   if (!navigation.args.data?.navigationId) {
     throw new Error('expected navigationId');
   }
 
-  const navigationIndex = parsedTrace.Meta.mainFrameNavigations.indexOf(navigation);
+  const navigationIndex = data.Meta.mainFrameNavigations.indexOf(navigation);
   if (navigationIndex === -1) {
     throw new Error('unexpected navigation');
   }
 
   const min = navigation.ts;
-  const max = navigationIndex + 1 < parsedTrace.Meta.mainFrameNavigations.length ?
-      parsedTrace.Meta.mainFrameNavigations[navigationIndex + 1].ts :
-      parsedTrace.Meta.traceBounds.max;
+  const max = navigationIndex + 1 < data.Meta.mainFrameNavigations.length ?
+      data.Meta.mainFrameNavigations[navigationIndex + 1].ts :
+      data.Meta.traceBounds.max;
   const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
 
   return {

@@ -20,7 +20,7 @@ import {
  * removed before rendering the resulting thread on the timeline.
  */
 export class EntriesFilter {
-  #parsedTrace: Trace.Handlers.Types.HandlerData;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
   // Track the set of invisible entries.
   #invisibleEntries: Trace.Types.Events.Event[] = [];
   // List of entries whose children are hidden. This list is used to
@@ -31,14 +31,15 @@ export class EntriesFilter {
   // will never change so we can avoid running the potentially expensive search again.
   #entryToDescendantsMap = new Map<Trace.Helpers.TreeHelpers.TraceEntryNode, Trace.Types.Events.Event[]>();
 
-  constructor(parsedTrace: Trace.Handlers.Types.HandlerData) {
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
     this.#parsedTrace = parsedTrace;
   }
 
   #getEntryNode(entry: Trace.Types.Events.Event): Trace.Helpers.TreeHelpers.TraceEntryNode|undefined {
     // The entry might be either from the Samples handler or Renderer handler. So we need to check both handlers to find
     // the EntryNode.
-    return this.#parsedTrace.Samples.entryToNode.get(entry) ?? this.#parsedTrace.Renderer.entryToNode.get(entry);
+    return this.#parsedTrace.data.Samples.entryToNode.get(entry) ??
+        this.#parsedTrace.data.Renderer.entryToNode.get(entry);
   }
 
   /**

@@ -8,6 +8,6 @@ cp -r node_modules/third-party-web package
 rm -fr package/.* package/www-v2 package/dist/domain-map.csv
 
 ../../../third_party/esbuild/esbuild  --bundle package/nostats-subset.js --format=esm --outdir=lib
-rm -rf node_modules package-lock.json
+rm -rf node_modules
 # Because there's a bug in clang causing it to reformat import lists even where formatting is disabled, run it right away
 git cl format --js

@@ -197,6 +197,24 @@ interface PropertyDeclaration<Type = unknown, TypeHint = unknown> {
      * the property changes.
      */
     readonly noAccessor?: boolean;
+    /**
+     * When `true`, uses the initial value of the property as the default value,
+     * which changes how attributes are handled:
+     *  - The initial value does *not* reflect, even if the `reflect` option is `true`.
+     *    Subsequent changes to the property will reflect, even if they are equal to the
+     *     default value.
+     *  - When the attribute is removed, the property is set to the default value
+     *  - The initial value will not trigger an old value in the `changedProperties` map
+     *    argument to update lifecycle methods.
+     *
+     * When set, properties must be initialized, either with a field initializer, or an
+     * assignment in the constructor. Not initializing the property may lead to
+     * improper handling of subsequent property assignments.
+     *
+     * While this behavior is opt-in, most properties that reflect to attributes should
+     * use `useDefault: true` so that their initial values do not reflect.
+     */
+    useDefault?: boolean;
 }
 /**
  * Map of properties to PropertyDeclaration options. For each property an
@@ -562,6 +580,11 @@ declare abstract class ReactiveElement extends HTMLElement implements ReactiveCo
      */
     hasUpdated: boolean;
     /**
+     * Records property default values when the
+     * `useDefault` option is used.
+     */
+    private __defaultValues?;
+    /**
      * Properties that should be reflected when updated.
      */
     private __reflectingProperties?;
@@ -598,13 +621,7 @@ declare abstract class ReactiveElement extends HTMLElement implements ReactiveCo
      * Fixes any properties set on the instance before upgrade time.
      * Otherwise these would shadow the accessor and break these properties.
      * The properties are stored in a Map which is played back after the
-     * constructor runs. Note, on very old versions of Safari (<=9) or Chrome
-     * (<=41), properties created for native platform properties like (`id` or
-     * `name`) may not have default values set in the element constructor. On
-     * these browsers native properties appear on instances and therefore their
-     * default value will overwrite any element default (e.g. if the element sets
-     * this.id = 'id' in the constructor, the 'id' will become '' since this is
-     * the native platform default).
+     * constructor runs.
      */
     private __saveInstanceProperties;
     /**
@@ -645,7 +662,7 @@ declare abstract class ReactiveElement extends HTMLElement implements ReactiveCo
      * overridden, `super.attributeChangedCallback(name, _old, value)` must be
      * called.
      *
-     * See [using the lifecycle callbacks](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#using_the_lifecycle_callbacks)
+     * See [responding to attribute changes](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes)
      * on MDN for more information about the `attributeChangedCallback`.
      * @category attributes
      */
@@ -847,7 +864,7 @@ type StandardPropertyContext<C, V> = (ClassAccessorDecoratorContext<C, V> | Clas
  * Wraps a class accessor or setter so that `requestUpdate()` is called with the
  * property name and old value when the accessor is set.
  */
-declare const standardProperty: <C extends Interface<ReactiveElement>, V>(options: PropertyDeclaration<unknown, unknown> | undefined, target: ClassAccessorDecoratorTarget<C, V> | ((value: V) => void), context: StandardPropertyContext<C, V>) => ClassAccessorDecoratorResult<C, V> | ((this: C, value: V) => void);
+declare const standardProperty: <C extends Interface<ReactiveElement>, V>(options: PropertyDeclaration | undefined, target: ClassAccessorDecoratorTarget<C, V> | ((value: V) => void), context: StandardPropertyContext<C, V>) => ClassAccessorDecoratorResult<C, V> | ((this: C, value: V) => void);
 /**
  * A class field or accessor decorator which creates a reactive property that
  * reflects a corresponding attribute value. When a decorated property is set

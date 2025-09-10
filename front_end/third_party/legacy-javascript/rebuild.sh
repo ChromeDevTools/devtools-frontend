@@ -6,4 +6,4 @@ npm install
 rm -rf package
 cp node_modules/legacy-javascript/legacy-javascript.js lib
 
-rm -rf node_modules package package-lock.json
+rm -rf node_modules package

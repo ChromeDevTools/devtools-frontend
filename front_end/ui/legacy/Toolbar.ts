@@ -980,6 +980,7 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
   private readonly contextMenuHandler: (arg0: ContextMenu) => void;
   private readonly useSoftMenu: boolean;
   private readonly keepOpen: boolean;
+  private readonly isIconDropdown: boolean;
   private triggerTimeoutId?: number;
   #triggerDelay = 200;
 
@@ -1013,6 +1014,7 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.contextMenuHandler = contextMenuHandler;
     this.useSoftMenu = Boolean(useSoftMenu);
     this.keepOpen = Boolean(keepOpen);
+    this.isIconDropdown = Boolean(isIconDropdown);
     ARIAUtils.markAsMenuButton(this.element);
   }
 
@@ -1074,10 +1076,12 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
   private trigger(event: Event): void {
     delete this.triggerTimeoutId;
 
+    const horizontalPosition =
+        this.isIconDropdown ? this.element.getBoundingClientRect().right : this.element.getBoundingClientRect().left;
     const contextMenu = new ContextMenu(event, {
       useSoftMenu: this.useSoftMenu,
       keepOpen: this.keepOpen,
-      x: this.element.getBoundingClientRect().right,
+      x: horizontalPosition,
       y: this.element.getBoundingClientRect().top + this.element.offsetHeight,
       // Without adding a delay, pointer events will be un-ignored too early, and a single click causes
       // the context menu to be closed and immediately re-opened on Windows (https://crbug.com/339560549).

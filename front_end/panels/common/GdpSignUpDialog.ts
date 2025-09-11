@@ -43,7 +43,8 @@ const UIStrings = {
   /**
    * @description Body for the first section of the GDP sign up dialog.
    */
-  designedForSuccessBody: 'Grow your skills, build with AI, and showcase your achievements',
+  designedForSuccessBody:
+      'Grow your skills, build with AI, and receive badges you can showcase in your developer profile',
   /**
    * @description Title for the second section of the GDP sign up dialog.
    */

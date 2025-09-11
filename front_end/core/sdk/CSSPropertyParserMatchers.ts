@@ -260,9 +260,8 @@ export class AttributeMatcher extends matcherBase(AttributeMatch) {
 
     const attrName = matching.ast.text(nameNode);
 
+    const rawValue = this.matchedStyles.rawAttributeValueFromStyle(this.style, attrName);
     let substitutionText: string|null = null;
-    const domNode = this.matchedStyles.nodeForStyle(this.style) ?? this.matchedStyles.node();
-    const rawValue = domNode.getAttribute(attrName) ?? null;
     if (rawValue !== null) {
       substitutionText = isCSSTokens ? rawValue : localEvalCSS(rawValue, type ?? RAW_STRING_TYPE);
     } else if (!fallback) {

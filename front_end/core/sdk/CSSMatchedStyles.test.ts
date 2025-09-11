@@ -698,6 +698,25 @@ describe('CSSMatchedStyles', () => {
     assert.isNull(matchedStyles.resolveProperty('background-color', styles[0]));
   });
 
+  it('reads attributes from the parent node of a pseudo-element', async () => {
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+    node.nodeType.returns(Node.ELEMENT_NODE);
+    node.getAttribute.callsFake((name: string) => `parent-${name}`);
+    const pseudoElement = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    pseudoElement.id = 2 as Protocol.DOM.NodeId;
+    pseudoElement.nodeType.returns(Node.ELEMENT_NODE);
+    pseudoElement.parentNode = node;
+    pseudoElement.pseudoType.returns('before');
+    const matchedStyles = await getMatchedStyles({
+      matchedPayload: [ruleMatch('div::before', {content: 'attr(data-content)'})],
+      node: pseudoElement,
+    });
+
+    const property = matchedStyles.rawAttributeValueFromStyle(matchedStyles.nodeStyles()[0], 'data-content');
+    assert.strictEqual(property, 'parent-data-content');
+  });
+
   it('evaluates variables with attr() calls in the same way as blink', async () => {
     const attributes = [
       {name: 'data-test-nonexistent', value: 'attr(data-nonexistent)'},

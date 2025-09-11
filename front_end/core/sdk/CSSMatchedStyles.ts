@@ -868,6 +868,20 @@ export class CSSMatchedStyles {
     return domCascade ? domCascade.computeAttribute(style, attributeName, type) : null;
   }
 
+  rawAttributeValueFromStyle(style: CSSStyleDeclaration, attributeName: string): string|null {
+    let node: DOMNode|null = this.nodeForStyle(style) ?? this.node();
+
+    // If it's a pseudo-element, we need to find the originating element.
+    while (node?.pseudoType()) {
+      node = node.parentNode;
+    }
+
+    if (!node) {
+      return null;
+    }
+    return node.getAttribute(attributeName) ?? null;
+  }
+
   resolveProperty(name: string, ownerStyle: CSSStyleDeclaration): CSSProperty|null {
     return this.#styleToDOMCascade.get(ownerStyle)?.resolveProperty(name, ownerStyle) ?? null;
   }
@@ -1304,16 +1318,8 @@ class DOMInheritanceCascade {
     return this.innerComputeAttribute(nodeCascade, style, attributeName, type, new SCCRecord());
   }
 
-  private rawAttributeValue(style: CSSStyleDeclaration, attributeName: string): string|null {
-    const node = this.#matchedStyles.nodeForStyle(style) ?? this.#matchedStyles.node();
-    if (!node) {
-      return null;
-    }
-    return node.getAttribute(attributeName) ?? null;
-  }
-
   private attributeValueAsType(style: CSSStyleDeclaration, attributeName: string, type: string): string|null {
-    const rawValue = this.rawAttributeValue(style, attributeName);
+    const rawValue = this.#matchedStyles.rawAttributeValueFromStyle(style, attributeName);
     if (rawValue === null) {
       return null;
     }
@@ -1322,7 +1328,7 @@ class DOMInheritanceCascade {
 
   private attributeValueWithSubstitutions(
       nodeCascade: NodeCascade, style: CSSStyleDeclaration, attributeName: string, sccRecord: SCCRecord): string|null {
-    const rawValue = this.rawAttributeValue(style, attributeName);
+    const rawValue = this.#matchedStyles.rawAttributeValueFromStyle(style, attributeName);
     if (rawValue === null) {
       return null;
     }

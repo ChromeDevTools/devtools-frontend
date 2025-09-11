@@ -471,23 +471,52 @@ export function getZeroIndexedStackTraceInEventPayload(event: Types.Events.Event
   if (!stack) {
     return null;
   }
-  return stack.map(callFrame => {
-    switch (event.name) {
-      case Types.Events.Name.SCHEDULE_STYLE_RECALCULATION:
-      case Types.Events.Name.INVALIDATE_LAYOUT:
-      case Types.Events.Name.FUNCTION_CALL:
-      case Types.Events.Name.LAYOUT:
-      case Types.Events.Name.UPDATE_LAYOUT_TREE: {
-        return makeZeroBasedCallFrame(callFrame);
-      }
-      default: {
-        if (Types.Events.isUserTiming(event) || Types.Extensions.isSyntheticExtensionEntry(event)) {
-          return makeZeroBasedCallFrame(callFrame);
-        }
-      }
+
+  switch (event.name) {
+    case Types.Events.Name.SCHEDULE_STYLE_RECALCULATION:
+    case Types.Events.Name.INVALIDATE_LAYOUT:
+    case Types.Events.Name.FUNCTION_CALL:
+    case Types.Events.Name.LAYOUT:
+    case Types.Events.Name.UPDATE_LAYOUT_TREE: {
+      return stack.map(makeZeroBasedCallFrame);
     }
-    return callFrame;
-  });
+
+    default: {
+      if (Types.Events.isUserTiming(event) || Types.Extensions.isSyntheticExtensionEntry(event)) {
+        return stack.map(makeZeroBasedCallFrame);
+      }
+
+      return stack;
+    }
+  }
+}
+
+/**
+ * Same as getZeroIndexedStackTraceInEventPayload, but only returns the top call frame.
+ */
+export function getStackTraceTopCallFrameInEventPayload(event: Types.Events.Event): Types.Events.CallFrame|null {
+  const stack = stackTraceInEvent(event);
+  if (!stack || stack.length === 0) {
+    return null;
+  }
+
+  switch (event.name) {
+    case Types.Events.Name.SCHEDULE_STYLE_RECALCULATION:
+    case Types.Events.Name.INVALIDATE_LAYOUT:
+    case Types.Events.Name.FUNCTION_CALL:
+    case Types.Events.Name.LAYOUT:
+    case Types.Events.Name.UPDATE_LAYOUT_TREE: {
+      return makeZeroBasedCallFrame(stack[0]);
+    }
+
+    default: {
+      if (Types.Events.isUserTiming(event) || Types.Extensions.isSyntheticExtensionEntry(event)) {
+        return makeZeroBasedCallFrame(stack[0]);
+      }
+
+      return stack[0];
+    }
+  }
 }
 
 /**

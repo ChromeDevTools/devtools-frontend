@@ -153,9 +153,9 @@ function finalize(partialModel: PartialInsightModel<ForcedReflowInsightModel>): 
 function getBottomCallFrameForEvent(event: Types.Events.Event, traceParsedData: Handlers.Types.HandlerData):
     Types.Events.CallFrame|Protocol.Runtime.CallFrame|null {
   const profileStackTrace = Extras.StackTraceForEvent.get(event, traceParsedData);
-  const eventStackTrace = Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
+  const eventTopCallFrame = Helpers.Trace.getStackTraceTopCallFrameInEventPayload(event);
 
-  return profileStackTrace?.callFrames[0] ?? eventStackTrace?.[0] ?? null;
+  return profileStackTrace?.callFrames[0] ?? eventTopCallFrame ?? null;
 }
 
 export function isForcedReflowInsight(model: InsightModel): model is ForcedReflowInsightModel {

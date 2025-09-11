@@ -147,9 +147,11 @@ export class PerformanceTraceFormatter {
     function nodeToText(this: PerformanceTraceFormatter, node: Trace.Extras.TraceTree.Node): string {
       const event = node.event;
 
-      let frame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.[0];
+      let frame;
       if (Trace.Types.Events.isProfileCall(event)) {
         frame = event.callFrame;
+      } else {
+        frame = Trace.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(event);
       }
 
       let source = TimelineUtils.EntryName.nameForEntry(event);

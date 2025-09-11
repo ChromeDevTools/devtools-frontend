@@ -445,7 +445,7 @@ function renderInitiatedBy(
   };
   // If we have a stack trace, that is the most reliable way to get the initiator data and display a link to the source.
   if (hasStackTrace) {
-    const topFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(request)?.at(0) ?? null;
+    const topFrame = Trace.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(request) ?? null;
     if (topFrame) {
       link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, options);
     }

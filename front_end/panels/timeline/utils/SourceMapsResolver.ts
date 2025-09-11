@@ -78,11 +78,11 @@ export class SourceMapsResolver extends EventTarget {
     if (Trace.Types.Events.isProfileCall(entry)) {
       callFrame = entry.callFrame;
     } else {
-      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(entry);
-      if (stackTrace === null || stackTrace.length < 1) {
+      const topCallFrame = Trace.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(entry);
+      if (!topCallFrame) {
         return null;
       }
-      callFrame = stackTrace[0];
+      callFrame = topCallFrame;
     }
     return SourceMapsResolver.resolvedCodeLocationForCallFrame(callFrame as Protocol.Runtime.CallFrame);
   }

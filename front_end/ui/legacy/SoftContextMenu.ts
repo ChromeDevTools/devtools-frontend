@@ -258,7 +258,10 @@ export class SoftContextMenu {
       subMenuTimer: undefined,
     };
 
-    if (item.jslogContext && !item.element?.hasAttribute('jslog')) {
+    // Only add a jslog context if the item has a label. Menu items without a
+    // label are containers for custom elements, which are responsible for adding
+    // their own `jslog` attributes.
+    if (item.jslogContext && item.label) {
       if (item.type === 'checkbox') {
         menuItemElement.setAttribute(
             'jslog', `${VisualLogging.toggle().track({click: true}).context(item.jslogContext)}`);

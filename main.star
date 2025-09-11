@@ -190,7 +190,8 @@ luci.notifier(
     notify_blamelist = True,
     notify_emails = [
         "liviurau@google.org",
-        "buganizer-system+1866754@google.com",
+        "chrome-devtools-waterfall-gardener-amer-oncall@google.com",
+        "chrome-devtools-waterfall-gardener-emea-oncall@google.com",
     ],
 )
 
@@ -209,7 +210,8 @@ luci.notifier(
     notify_blamelist = False,
     notify_emails = [
         "liviurau@google.org",
-        "buganizer-system+1866754@google.com",
+        "chrome-devtools-waterfall-gardener-amer-oncall@google.com",
+        "chrome-devtools-waterfall-gardener-emea-oncall@google.com",
     ],
 )
 
@@ -227,7 +229,8 @@ luci.notifier(
     ],
     notify_emails = [
         "liviurau@google.com",
-        "buganizer-system+1866754@google.com",
+        "chrome-devtools-waterfall-gardener-amer-oncall@google.com",
+        "chrome-devtools-waterfall-gardener-emea-oncall@google.com",
     ],
     template = luci.notifier_template(
         name = "sheriff_email",

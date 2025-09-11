@@ -38,6 +38,7 @@ describeWithMockConnection('ConsoleContextSelector', () => {
       devToolsAiCodeCompletion: {
         enabled: true,
       },
+      aidaAvailability: {enabled: true},
     });
     registerNoopActions(['console.clear', 'console.clear.history', 'console.create-pin']);
 

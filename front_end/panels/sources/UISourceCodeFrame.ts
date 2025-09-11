@@ -346,7 +346,8 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
       AiWarningInfobarPlugin,
     ];
 
-    if (Boolean(Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled)) {
+    if (Root.Runtime.hostConfig.aidaAvailability?.enabled &&
+        Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled) {
       sourceFramePluginsList.push(AiCodeCompletionPlugin);
     }
     return sourceFramePluginsList;

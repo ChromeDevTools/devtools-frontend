@@ -582,7 +582,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private isAiCodeCompletionEnabled(): boolean {
-    return Boolean(Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+    return Boolean(
+        Root.Runtime.hostConfig.aidaAvailability?.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
   }
 
   private editorSetForTest(): void {

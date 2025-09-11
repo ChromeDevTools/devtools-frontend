@@ -127,6 +127,10 @@ const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement)
 
 type View = typeof DEFAULT_VIEW;
 
+function revealBadgeSettings(): void {
+  void Common.Revealer.reveal(Common.Settings.moduleSetting('receive-gdp-badges'));
+}
+
 export class BadgeNotification extends UI.Widget.Widget {
   message: HTMLElement|string = '';
   imageUri = '';
@@ -180,7 +184,13 @@ export class BadgeNotification extends UI.Widget.Widget {
             label: i18nString(UIStrings.remindMeLater),
             onClick: () => {/* To implement */},
           },
-          {label: i18nString(UIStrings.receiveBadges), onClick: () => { /* To implement */ }}
+          {
+            label: i18nString(UIStrings.receiveBadges),
+            onClick: () => {
+              this.#close();
+              revealBadgeSettings();
+            }
+          }
         ],
         imageUri: badge.imageUri,
       });
@@ -216,7 +226,7 @@ export class BadgeNotification extends UI.Widget.Widget {
           label: i18nString(UIStrings.badgeSettings),
           onClick: () => {
             this.#close();
-            void Common.Revealer.reveal(Common.Settings.moduleSetting('receive-gdp-badges'));
+            revealBadgeSettings();
           },
         },
         {

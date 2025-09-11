@@ -10,6 +10,10 @@ import * as SettingComponents from '../../../ui/components/settings/settings.js'
 
 import * as PanelComponents from './components.js';
 
+// TODO(crbug.com/442543412): Add tests for calling `UserBadges.initialize()` and recording an action after
+// the setting is enabled. We currently don't have tests for these because we'll need to re-write them
+// anyways with the widget framework (and using `view.onSettingChanged` kind of approach instead of
+// emitting the change custom event).
 async function renderSyncSection(data: PanelComponents.SyncSection.SyncSectionData):
     Promise<{section: PanelComponents.SyncSection.SyncSection, shadowRoot: ShadowRoot}> {
   const section = new PanelComponents.SyncSection.SyncSection();

@@ -12,8 +12,10 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import * as Badges from '../../../models/badges/badges.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import type * as SettingsComponents from '../../../ui/components/settings/settings.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelCommon from '../../common/common.js';
 import * as PanelUtils from '../../utils/utils.js';
@@ -281,7 +283,16 @@ function renderGdpSectionIfNeeded({
             </x-link></div>
             ${receiveBadgesSetting ? html`
               <div class="setting-container"  ${ref(receiveBadgesSettingContainerRef)}>
-                <setting-checkbox class="setting-checkbox" .data=${{setting: receiveBadgesSetting}}></setting-checkbox>
+                <setting-checkbox class="setting-checkbox" .data=${{setting: receiveBadgesSetting}} @change=${(e: Event) => {
+                  const settingCheckbox = e.target as SettingsComponents.SettingCheckbox.SettingCheckbox;
+                  void Badges.UserBadges.instance().initialize().then(() => {
+                    if (!settingCheckbox.checked) {
+                      return;
+                    }
+
+                    Badges.UserBadges.instance().recordAction(Badges.BadgeAction.RECEIVE_BADGES_SETTING_ENABLED);
+                  });
+                }}></setting-checkbox>
                 <span>${i18nString(UIStrings.relevantDataDisclaimer)}</span>
               </div>` : Lit.nothing}
         </div>

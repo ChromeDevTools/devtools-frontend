@@ -1608,9 +1608,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     const content = await Common.Gzip.fileToString(file);
     if (content.includes('enhancedTraceVersion')) {
-      await window.scheduler.postTask(() => {
-        this.#launchRehydratedSession(content);
-      }, {priority: 'background'});
+      this.#launchRehydratedSession(content);
     } else {
       this.loader = TimelineLoader.loadFromParsedJsonFile(JSON.parse(content), this);
       this.prepareToLoadTimeline();
@@ -1624,6 +1622,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const url = new URL(window.location.href);
     const pathToEntrypoint = url.pathname.slice(0, url.pathname.lastIndexOf('/'));
     url.pathname = `${pathToEntrypoint}/rehydrated_devtools_app.html`;
+    // The standalone devtools shouldn't retain any existing query params.
+    url.search = '';
     pathToLaunch = url.toString();
 
     // Clarifying the window the code is referring to

@@ -7,11 +7,11 @@ import type * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
-import * as Utils from './Utils.js';
+import * as Components from './components.js';
 
 describeWithEnvironment('Utils', () => {
   describe('NumberWithUnit', () => {
-    const {NumberWithUnit} = Utils;
+    const {NumberWithUnit} = Components.Utils;
 
     it('renders number with unit (formatMicroSecondsAsSeconds)', () => {
       const result = NumberWithUnit.formatMicroSecondsAsSeconds(100_000 as Trace.Types.Timing.Micro);
@@ -64,7 +64,7 @@ describeWithEnvironment('Utils', () => {
   });
 
   describe('networkResourceCategory', function() {
-    const {networkResourceCategory, NetworkCategory} = Utils;
+    const {networkResourceCategory, NetworkCategory} = Components.Utils;
     const {ResourceType} = Protocol.Network;
     const getCategory = networkResourceCategory;
     let req: Trace.Types.Events.SyntheticNetworkRequest|undefined;

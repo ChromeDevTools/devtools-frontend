@@ -5,11 +5,11 @@
 import type * as Protocol from '../../generated/protocol.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
-import * as EnhancedTraces from './EnhancedTracesParser.js';
 import type {RehydratingExecutionContext, RehydratingScript, RehydratingTarget} from './RehydratingObject.js';
+import * as SDK from './sdk.js';
 
 describe('EnhancedTracesParser', () => {
-  let enhancedTracesParser: EnhancedTraces.EnhancedTracesParser;
+  let enhancedTracesParser: SDK.EnhancedTracesParser.EnhancedTracesParser;
   const target1: RehydratingTarget = {
     targetId: '21D58E83A5C17916277166140F6A464B' as Protocol.Target.TargetID,
     type: 'page',
@@ -212,7 +212,8 @@ describe('EnhancedTracesParser', () => {
 
   beforeEach(async function() {
     const events = await TraceLoader.rawEvents(this, 'enhanced-traces.json.gz');
-    enhancedTracesParser = new EnhancedTraces.EnhancedTracesParser({traceEvents: events as object[], metadata: {}});
+    enhancedTracesParser =
+        new SDK.EnhancedTracesParser.EnhancedTracesParser({traceEvents: events as object[], metadata: {}});
   });
 
   it('captures correct targets', async function() {

@@ -11,22 +11,23 @@ import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import * as AiCodeCompletionTeaser from './AiCodeCompletionTeaser.js';
-import * as FreDialog from './FreDialog.js';
+import * as PanelCommon from './common.js';
+
+const {AiCodeCompletionTeaser, FreDialog} = PanelCommon;
 
 describeWithEnvironment('AiCodeCompletionTeaser', () => {
-  let showFreDialogStub: sinon.SinonStub<Parameters<typeof FreDialog.FreDialog.show>, Promise<boolean>>;
+  let showFreDialogStub: sinon.SinonStub<Parameters<typeof FreDialog.show>, Promise<boolean>>;
   let checkAccessPreconditionsStub: sinon.SinonStub;
 
   beforeEach(() => {
-    showFreDialogStub = sinon.stub(FreDialog.FreDialog, 'show');
+    showFreDialogStub = sinon.stub(FreDialog, 'show');
     checkAccessPreconditionsStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
     checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
   });
 
   async function createTeaser() {
-    const view = createViewFunctionStub(AiCodeCompletionTeaser.AiCodeCompletionTeaser);
-    const widget = new AiCodeCompletionTeaser.AiCodeCompletionTeaser({onDetach: sinon.stub()}, view);
+    const view = createViewFunctionStub(AiCodeCompletionTeaser);
+    const widget = new AiCodeCompletionTeaser({onDetach: sinon.stub()}, view);
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     await view.nextInput;

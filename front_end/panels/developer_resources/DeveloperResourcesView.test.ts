@@ -6,7 +6,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
-import * as DeveloperResourcesView from './DeveloperResourcesView.js';
+import * as DeveloperResources from './developer_resources.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -24,7 +24,7 @@ describeWithEnvironment('DeveloperResourcesView', () => {
     loader.resourceLoadedThroughExtension(resource1);
     loader.resourceLoadedThroughExtension(resource2);
 
-    const developerResourcesView = new DeveloperResourcesView.DeveloperResourcesView();
+    const developerResourcesView = new DeveloperResources.DeveloperResourcesView.DeveloperResourcesView();
 
     // This is required, as otherwise the view is not updated.
     sinon.stub(developerResourcesView, 'isShowing').callsFake(() => {

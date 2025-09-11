@@ -62,6 +62,7 @@ import * as PageResourceLoader from './PageResourceLoader.js';
 import * as PaintProfiler from './PaintProfiler.js';
 import * as PerformanceMetricsModel from './PerformanceMetricsModel.js';
 import * as PreloadingModel from './PreloadingModel.js';
+import * as RehydratingConnection from './RehydratingConnection.js';
 import * as RemoteObject from './RemoteObject.js';
 import * as Resource from './Resource.js';
 import * as ResourceTreeModel from './ResourceTreeModel.js';
@@ -141,6 +142,7 @@ export {
   PaintProfiler,
   PerformanceMetricsModel,
   PreloadingModel,
+  RehydratingConnection,  // TODO(crbug.com/444191656): Exported for tests.
   RemoteObject,
   Resource,
   ResourceTreeModel,

@@ -4,9 +4,9 @@
 
 import type * as Protocol from '../../generated/protocol.js';
 
-import * as Rehydrating from './RehydratingConnection.js';
 import type {
   RehydratingExecutionContext, RehydratingScript, RehydratingTarget, ServerMessage} from './RehydratingObject.js';
+import * as SDK from './sdk.js';
 
 const mockTarget1: RehydratingTarget = {
   targetId: 'ABCDE' as Protocol.Target.TargetID,
@@ -89,11 +89,11 @@ describe('RehydratingSession', () => {
   const messageId = 1;
   const target = mockTarget1;
   let mockRehydratingConnection: MockRehydratingConnection;
-  let mockRehydratingSession: Rehydrating.RehydratingSession;
+  let mockRehydratingSession: SDK.RehydratingConnection.RehydratingSession;
   const executionContextsForTarget1 = [mockExecutionContext1, mockExecutionContext2];
   const scriptsForTarget1 = [mockScript1, mockScript2];
 
-  class MockRehydratingConnection implements Rehydrating.RehydratingConnectionInterface {
+  class MockRehydratingConnection implements SDK.RehydratingConnection.RehydratingConnectionInterface {
     messageQueue: ServerMessage[] = [];
 
     postToFrontend(arg: ServerMessage): void {
@@ -105,7 +105,7 @@ describe('RehydratingSession', () => {
     }
   }
 
-  class RehydratingSessionForTest extends Rehydrating.RehydratingSession {
+  class RehydratingSessionForTest extends SDK.RehydratingConnection.RehydratingSession {
     override sendMessageToFrontend(payload: ServerMessage): void {
       this.connection?.postToFrontend(payload);
     }

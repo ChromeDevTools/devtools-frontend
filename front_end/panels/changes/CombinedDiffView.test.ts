@@ -14,7 +14,9 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
-import * as CombinedDiffView from './CombinedDiffView.js';
+import * as Changes from './changes.js';
+
+const {CombinedDiffView} = Changes;
 
 const {urlString} = Platform.DevToolsPath;
 

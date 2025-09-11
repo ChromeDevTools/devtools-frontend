@@ -12,7 +12,7 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import * as BadgeNotification from './BadgeNotification.js';
+import * as PanelCommon from './common.js';
 
 class TestBadge extends Badges.Badge {
   override name = 'testBadge';
@@ -53,9 +53,9 @@ function assertMessageIncludes(messageInput: HTMLElement|string, textToInclude: 
 }
 
 describeWithEnvironment('BadgeNotification', () => {
-  async function createWidget(properties?: Partial<BadgeNotification.BadgeNotificationProperties>) {
-    const view = createViewFunctionStub(BadgeNotification.BadgeNotification);
-    const widget = new BadgeNotification.BadgeNotification(undefined, view);
+  async function createWidget(properties?: Partial<PanelCommon.BadgeNotification>) {
+    const view = createViewFunctionStub(PanelCommon.BadgeNotification);
+    const widget = new PanelCommon.BadgeNotification(undefined, view);
     widget.message = properties?.message ?? 'Test message';
     widget.imageUri = properties?.imageUri ?? 'test.png';
     widget.actions = properties?.actions ?? [];

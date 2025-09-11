@@ -13,7 +13,7 @@ import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import * as GdpSignUpDialog from './GdpSignUpDialog.js';
+import * as PanelCommon from './common.js';
 
 function stubCreateProfileWithResolvers() {
   const {promise: createProfilePromise, resolve: resolveCreateProfile} = Promise.withResolvers<{name: string}|null>();
@@ -24,10 +24,10 @@ function stubCreateProfileWithResolvers() {
 
 describeWithEnvironment('GdpSignUpDialog', () => {
   async function createWidget() {
-    const view = createViewFunctionStub(GdpSignUpDialog.GdpSignUpDialog);
+    const view = createViewFunctionStub(PanelCommon.GdpSignUpDialog);
     const dialog = new UI.Dialog.Dialog();
     const hideSpy = sinon.spy(dialog, 'hide');
-    const widget = new GdpSignUpDialog.GdpSignUpDialog({dialog}, view);
+    const widget = new PanelCommon.GdpSignUpDialog({dialog}, view);
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     await view.nextInput;

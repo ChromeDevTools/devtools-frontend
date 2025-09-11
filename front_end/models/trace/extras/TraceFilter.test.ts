@@ -6,8 +6,6 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-import * as TraceFilter from './TraceFilter.js';
-
 describeWithEnvironment('TraceFilter', () => {
   describe('VisibleEventsFilter', () => {
     it('accepts events that are set in the constructor and rejects other events', async function() {
@@ -15,7 +13,7 @@ describeWithEnvironment('TraceFilter', () => {
       const userTimingEvent = (data.UserTimings.performanceMeasures).at(0);
       assert.isOk(userTimingEvent);
 
-      const visibleFilter = new TraceFilter.VisibleEventsFilter([
+      const visibleFilter = new Trace.Extras.TraceFilter.VisibleEventsFilter([
         // Set an random record type to be visible - the exact type is not important for the test.
         Trace.Types.Events.Name.USER_TIMING,
       ]);
@@ -29,7 +27,8 @@ describeWithEnvironment('TraceFilter', () => {
         const consoleTimingEvent = (data.UserTimings.consoleTimings).at(0);
         assert.isOk(consoleTimingEvent);
         assert.strictEqual(
-            TraceFilter.VisibleEventsFilter.eventType(consoleTimingEvent), Trace.Types.Events.Name.CONSOLE_TIME);
+            Trace.Extras.TraceFilter.VisibleEventsFilter.eventType(consoleTimingEvent),
+            Trace.Types.Events.Name.CONSOLE_TIME);
       });
 
       it('returns UserTiming if the event has the blink.user_timing category', async function() {
@@ -37,7 +36,8 @@ describeWithEnvironment('TraceFilter', () => {
         const userTimingEvent = (data.UserTimings.performanceMeasures).at(0);
         assert.isOk(userTimingEvent);
         assert.strictEqual(
-            TraceFilter.VisibleEventsFilter.eventType(userTimingEvent), Trace.Types.Events.Name.USER_TIMING);
+            Trace.Extras.TraceFilter.VisibleEventsFilter.eventType(userTimingEvent),
+            Trace.Types.Events.Name.USER_TIMING);
       });
 
       it('returns the event name if the event is any other category', async function() {
@@ -45,7 +45,7 @@ describeWithEnvironment('TraceFilter', () => {
         const layoutShiftEvent = data.LayoutShifts.clusters.at(0)?.events.at(0);
         assert.isOk(layoutShiftEvent);
         assert.strictEqual(
-            TraceFilter.VisibleEventsFilter.eventType(layoutShiftEvent),
+            Trace.Extras.TraceFilter.VisibleEventsFilter.eventType(layoutShiftEvent),
             Trace.Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT);
       });
     });
@@ -57,7 +57,7 @@ describeWithEnvironment('TraceFilter', () => {
       const userTimingEvent = (data.UserTimings.performanceMeasures).at(0);
       assert.isOk(userTimingEvent);
 
-      const invisibleFilter = new TraceFilter.InvisibleEventsFilter([
+      const invisibleFilter = new Trace.Extras.TraceFilter.InvisibleEventsFilter([
         Trace.Types.Events.Name.USER_TIMING,
 
       ]);
@@ -69,7 +69,7 @@ describeWithEnvironment('TraceFilter', () => {
       const layoutShiftEvent = data.LayoutShifts.clusters.at(0)?.events.at(0);
       assert.isOk(layoutShiftEvent);
 
-      const invisibleFilter = new TraceFilter.InvisibleEventsFilter([
+      const invisibleFilter = new Trace.Extras.TraceFilter.InvisibleEventsFilter([
         Trace.Types.Events.Name.USER_TIMING,
 
       ]);
@@ -83,7 +83,7 @@ describeWithEnvironment('TraceFilter', () => {
       const userTimingEvent = (data.UserTimings.performanceMeasures).at(0);
       assert.isOk(userTimingEvent);
 
-      const filter = new TraceFilter.ExclusiveNameFilter([
+      const filter = new Trace.Extras.TraceFilter.ExclusiveNameFilter([
         Trace.Types.Events.Name.LAYOUT_SHIFT,
       ]);
       assert.isTrue(filter.accept(userTimingEvent));
@@ -94,7 +94,7 @@ describeWithEnvironment('TraceFilter', () => {
       const layoutShiftEvent = data.LayoutShifts.clusters.at(0)?.events.at(0);
       assert.isOk(layoutShiftEvent);
 
-      const filter = new TraceFilter.ExclusiveNameFilter([
+      const filter = new Trace.Extras.TraceFilter.ExclusiveNameFilter([
         Trace.Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT,
       ]);
       assert.isFalse(filter.accept(layoutShiftEvent));

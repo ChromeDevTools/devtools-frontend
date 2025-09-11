@@ -6,8 +6,7 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
 import * as Trace from '../trace.js';
 
-import * as ModernHTTP from './ModernHTTP.js';
-const {determineHttp1Requests: determineNonHttp2Resources} = ModernHTTP;
+const {determineHttp1Requests: determineNonHttp2Resources} = Trace.Insights.ModernHTTP;
 
 describeWithEnvironment('Cache', function() {
   describe('determineNonHttp2Resources', () => {

@@ -63,6 +63,11 @@ new RuleTester().run('es-modules-import', rule, {
       code: 'import {resetTestDOM} from \'../testing/DOMHelpers.js\';',
       filename: 'front_end/testing/test_setup.ts',
     },
+    // Importing test helpers directly is allowed in the test files
+    {
+      code: 'import * as DOMHelpers from \'../testing/DOMHelpers.js\';',
+      filename: 'front_end/testing/test_setup.ts',
+    },
     // Importing test helpers directly is allowed in test files
     {
       code: 'import {resetTestDOM} from \'../testing/DOMHelpers.js\';',
@@ -328,5 +333,14 @@ new RuleTester().run('es-modules-import', rule, {
       ],
       output: 'import x from \'../ui/visual_logging/visual_logging.js\';',
     },
+    {
+      code: 'import * as BadgeNotification from \'./BadgeNotification.js\';',
+      filename: 'front_end/panels/common/BadgeNotification.test.ts',
+      errors: [
+        {
+          messageId: 'incorrectSameNamespaceTestImport',
+        },
+      ],
+    }
   ],
 });

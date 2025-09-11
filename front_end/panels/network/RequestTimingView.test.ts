@@ -9,7 +9,7 @@ import * as NetworkTimeCalculator from '../../models/network_time_calculator/net
 import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 
-import * as RequestTimingView from './RequestTimingView.js';
+import * as Network from './network.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -144,7 +144,7 @@ describeWithLocale('ResourceTimingView', () => {
         Protocol.Network.ServiceWorkerRouterSource.Network, Protocol.Network.ServiceWorkerRouterSource.Network);
 
     const component =
-        new RequestTimingView.RequestTimingView(request, new NetworkTimeCalculator.NetworkTimeCalculator(true));
+        new Network.RequestTimingView.RequestTimingView(request, new NetworkTimeCalculator.NetworkTimeCalculator(true));
     const div = document.createElement('div');
     renderElementIntoDOM(div);
     component.markAsRoot();

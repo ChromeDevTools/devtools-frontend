@@ -11,7 +11,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import thirdPartyTreeViewStyles from './thirdPartyTreeView.css.js';
 import * as TimelineTreeView from './TimelineTreeView.js';
-import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -89,7 +88,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     // default are not in the set of visible entries (as they are not shown on
     // the main flame chart).
     const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(
-        Utils.EntryStyles.visibleTypes().concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
+        Trace.Styles.visibleTypes().concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
 
     const node = new Trace.Extras.TraceTree.BottomUpRootNode(relatedEvents, {
       textFilter: this.textFilter(),

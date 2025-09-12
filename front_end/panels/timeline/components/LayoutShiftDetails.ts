@@ -12,7 +12,6 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
-import * as Utils from '../utils/utils.js';
 
 import * as Insights from './insights/insights.js';
 import layoutShiftDetailsStyles from './layoutShiftDetails.css.js';
@@ -163,7 +162,7 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
         return;
       }
 
-      const title = Utils.EntryName.nameForEntry(input.event);
+      const title = Trace.Name.forEntry(input.event);
       // clang-format off
       render(html`
         <style>${layoutShiftDetailsStyles}</style>

@@ -546,25 +546,25 @@ export class ThreadAppender implements TrackAppender {
 
     if (Trace.Types.Events.isProfileCall(event)) {
       if (event.callFrame.functionName === '(idle)') {
-        return categoryColorValue(Utils.EntryStyles.getCategoryStyles().idle);
+        return categoryColorValue(Trace.Styles.getCategoryStyles().idle);
       }
       if (event.callFrame.functionName === '(program)') {
-        return categoryColorValue(Utils.EntryStyles.getCategoryStyles().other);
+        return categoryColorValue(Trace.Styles.getCategoryStyles().other);
       }
       if (event.callFrame.scriptId === '0') {
         // If we can not match this frame to a script, return the
         // generic "scripting" color.
-        return categoryColorValue(Utils.EntryStyles.getCategoryStyles().scripting);
+        return categoryColorValue(Trace.Styles.getCategoryStyles().scripting);
       }
       // Otherwise, return a color created based on its URL.
       return this.#colorGenerator.colorForID(event.callFrame.url);
     }
-    const eventStyles = Utils.EntryStyles.getEventStyle(event.name as Trace.Types.Events.Name);
+    const eventStyles = Trace.Styles.getEventStyle(event.name as Trace.Types.Events.Name);
     if (eventStyles) {
       return categoryColorValue(eventStyles.category);
     }
 
-    return categoryColorValue(Utils.EntryStyles.getCategoryStyles().other);
+    return categoryColorValue(Trace.Styles.getCategoryStyles().other);
   }
 
   /**
@@ -575,7 +575,7 @@ export class ThreadAppender implements TrackAppender {
       const rule = Utils.IgnoreList.getIgnoredReasonString(entry);
       return i18nString(UIStrings.onIgnoreList, {rule});
     }
-    return Utils.EntryName.nameForEntry(entry, this.#parsedTrace);
+    return Trace.Name.forEntry(entry, this.#parsedTrace);
   }
 
   setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
@@ -592,6 +592,6 @@ export class ThreadAppender implements TrackAppender {
   }
 }
 
-function categoryColorValue(category: Utils.EntryStyles.TimelineCategory): string {
+function categoryColorValue(category: Trace.Styles.TimelineCategory): string {
   return ThemeSupport.ThemeSupport.instance().getComputedValue(category.cssVariable);
 }

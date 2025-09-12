@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as Trace from '../../../models/trace/trace.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 
-import {getEventStyle} from './EntryStyles.js';
+import * as Handlers from './handlers/handlers.js';
+import type {ParsedTrace} from './ModelImpl.js';
+import {getEventStyle} from './Styles.js';
+import * as Types from './types/types.js';
 
 const UIStrings = {
   /**
@@ -41,7 +43,7 @@ const UIStrings = {
   layoutShift: 'Layout shift',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/utils/EntryName.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/trace/Name.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
@@ -53,14 +55,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * custom name is found, we will fallback to the `name` property in the trace
  * entry.
  */
-export function nameForEntry(
-    entry: Trace.Types.Events.Event,
-    parsedTrace?: Trace.TraceModel.ParsedTrace,
+export function forEntry(
+    entry: Types.Events.Event,
+    parsedTrace?: ParsedTrace,
     ): string {
-  if (Trace.Types.Events.isProfileCall(entry)) {
+  if (Types.Events.isProfileCall(entry)) {
     if (parsedTrace) {
       const potentialCallName =
-          Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(parsedTrace.data.Samples, entry);
+          Handlers.ModelHandlers.Samples.getProfileCallFunctionName(parsedTrace.data.Samples, entry);
       // We need this extra check because the call name could be the empty
       // string. If it is, we want to fallback.
       if (potentialCallName) {
@@ -70,24 +72,24 @@ export function nameForEntry(
     return entry.callFrame.functionName || i18nString(UIStrings.anonymous);
   }
 
-  if (Trace.Types.Events.isLegacyTimelineFrame(entry)) {
+  if (Types.Events.isLegacyTimelineFrame(entry)) {
     return i18n.i18n.lockedString(UIStrings.frame);
   }
 
-  if (Trace.Types.Events.isDispatch(entry)) {
+  if (Types.Events.isDispatch(entry)) {
     // EventDispatch represent user actions such as clicks, so in this case
     // rather than show the event title (which is always just "Event"), we
     // add the type ("click") to help the user understand the event.
     return i18nString(UIStrings.eventDispatchS, {PH1: entry.args.data.type});
   }
-  if (Trace.Types.Events.isSyntheticNetworkRequest(entry)) {
+  if (Types.Events.isSyntheticNetworkRequest(entry)) {
     const parsedURL = new Common.ParsedURL.ParsedURL(entry.args.data.url);
     const text =
         parsedURL.isValid ? `${parsedURL.displayName} (${parsedURL.host})` : entry.args.data.url || 'Network request';
     return text;
   }
 
-  if (Trace.Types.Events.isWebSocketCreate(entry)) {
+  if (Types.Events.isWebSocketCreate(entry)) {
     if (entry.args.data.url) {
       return i18nString(UIStrings.wsConnectionOpenedWithUrl, {PH1: entry.args.data.url});
     }
@@ -95,29 +97,29 @@ export function nameForEntry(
     return i18nString(UIStrings.wsConnectionOpened);
   }
 
-  if (Trace.Types.Events.isWebSocketDestroy(entry)) {
+  if (Types.Events.isWebSocketDestroy(entry)) {
     return i18nString(UIStrings.wsConnectionClosed);
   }
 
-  if (Trace.Types.Events.isSyntheticInteraction(entry)) {
+  if (Types.Events.isSyntheticInteraction(entry)) {
     return nameForInteractionEvent(entry);
   }
 
-  if (Trace.Types.Events.isSyntheticLayoutShift(entry)) {
+  if (Types.Events.isSyntheticLayoutShift(entry)) {
     return i18nString(UIStrings.layoutShift);
   }
 
-  if (Trace.Types.Events.isSyntheticAnimation(entry) && entry.args.data.beginEvent.args.data.displayName) {
+  if (Types.Events.isSyntheticAnimation(entry) && entry.args.data.beginEvent.args.data.displayName) {
     return entry.args.data.beginEvent.args.data.displayName;
   }
 
-  const eventStyleCustomName = getEventStyle(entry.name as Trace.Types.Events.Name)?.title;
+  const eventStyleCustomName = getEventStyle(entry.name as Types.Events.Name)?.title;
 
   return eventStyleCustomName || entry.name;
 }
 
-function nameForInteractionEvent(event: Trace.Types.Events.SyntheticInteractionPair): string {
-  const category = Trace.Handlers.ModelHandlers.UserInteractions.categoryOfInteraction(event);
+function nameForInteractionEvent(event: Types.Events.SyntheticInteractionPair): string {
+  const category = Handlers.ModelHandlers.UserInteractions.categoryOfInteraction(event);
   // Because we hide nested interactions, we do not want to show the
   // specific type of the interaction that was not hidden, so instead we
   // show just the category of that interaction.

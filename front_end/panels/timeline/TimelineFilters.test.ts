@@ -8,7 +8,6 @@ import {getMainThread} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Timeline from './timeline.js';
-import * as Utils from './utils/utils.js';
 
 describeWithEnvironment('TimelineFilters', () => {
   describe('IsLong', () => {
@@ -47,7 +46,7 @@ describeWithEnvironment('TimelineFilters', () => {
       const {data} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
       // These events are usually visible, so make the category hidden before
       // running this test.
-      Utils.EntryStyles.getCategoryStyles()['scripting'].hidden = true;
+      Trace.Styles.getCategoryStyles()['scripting'].hidden = true;
 
       const userTimingEvent = data.UserTimings.performanceMeasures.at(0);
       if (!userTimingEvent) {
@@ -55,7 +54,7 @@ describeWithEnvironment('TimelineFilters', () => {
       }
       const filter = new Timeline.TimelineFilters.Category();
       assert.isFalse(filter.accept(userTimingEvent));
-      Utils.EntryStyles.getCategoryStyles()['scripting'].hidden = false;
+      Trace.Styles.getCategoryStyles()['scripting'].hidden = false;
     });
 
     it('returns true for a new event if it has a category that is visible', async function() {
@@ -66,7 +65,7 @@ describeWithEnvironment('TimelineFilters', () => {
       }
       const filter = new Timeline.TimelineFilters.Category();
       assert.isTrue(filter.accept(userTimingEvent));
-      Utils.EntryStyles.getCategoryStyles()['scripting'].hidden = false;
+      Trace.Styles.getCategoryStyles()['scripting'].hidden = false;
     });
   });
 });

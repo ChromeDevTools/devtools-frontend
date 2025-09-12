@@ -4,8 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-
-import * as Utils from './utils/utils.js';
+import * as Trace from '../../models/trace/trace.js';
 
 const UIStrings = {
   /**
@@ -72,15 +71,15 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/UIDevtoolsUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let eventStylesMap: Record<string, Utils.EntryStyles.TimelineRecordStyle>|null = null;
-let categories: Utils.EntryStyles.CategoryPalette|null = null;
+let eventStylesMap: Record<string, Trace.Styles.TimelineRecordStyle>|null = null;
+let categories: Trace.Styles.CategoryPalette|null = null;
 
 export class UIDevtoolsUtils {
   static isUiDevTools(): boolean {
     return Root.Runtime.Runtime.queryParam('uiDevTools') === 'true';
   }
 
-  static categorizeEvents(): Record<string, Utils.EntryStyles.TimelineRecordStyle> {
+  static categorizeEvents(): Record<string, Trace.Styles.TimelineRecordStyle> {
     if (eventStylesMap) {
       return eventStylesMap;
     }
@@ -93,9 +92,9 @@ export class UIDevtoolsUtils {
     const painting = categories['painting'];
     const other = categories['other'];
 
-    const eventStyles: Record<string, Utils.EntryStyles.TimelineRecordStyle> = {};
+    const eventStyles: Record<string, Trace.Styles.TimelineRecordStyle> = {};
 
-    const {TimelineRecordStyle} = Utils.EntryStyles;
+    const {TimelineRecordStyle} = Trace.Styles;
 
     // Paint Categories
     eventStyles[type.ViewPaint] = new TimelineRecordStyle('View::Paint', painting);
@@ -128,11 +127,11 @@ export class UIDevtoolsUtils {
     return eventStyles;
   }
 
-  static categories(): Utils.EntryStyles.CategoryPalette {
+  static categories(): Trace.Styles.CategoryPalette {
     if (categories) {
       return categories;
     }
-    const {TimelineCategory, EventCategory} = Utils.EntryStyles;
+    const {TimelineCategory, EventCategory} = Trace.Styles;
     categories = {
       layout: new TimelineCategory(EventCategory.LAYOUT, i18nString(UIStrings.layout), true, '--app-color-loading'),
       rasterizing: new TimelineCategory(

@@ -47,7 +47,6 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import * as Timeline from './timeline.js';
-import * as Utils from './utils/utils.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -477,12 +476,12 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
 
     it('should return the right color', function() {
-      const parsedColor = Utils.EntryStyles.getCategoryStyles().scripting.cssVariable;
+      const parsedColor = Trace.Styles.getCategoryStyles().scripting.cssVariable;
       assert.strictEqual(parsedColor, '--app-color-scripting');
     });
 
     it('should return the color as a CSS variable', function() {
-      const cssVariable = Utils.EntryStyles.getCategoryStyles().scripting.getCSSValue();
+      const cssVariable = Trace.Styles.getCategoryStyles().scripting.getCSSValue();
       assert.strictEqual('var(--app-color-scripting)', cssVariable);
     });
 

@@ -2,20 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as CPUProfile from '../../../models/cpu_profile/cpu_profile.js';
-import * as Trace from '../../../models/trace/trace.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {allThreadEntriesInTrace, getMainThread} from '../../../testing/TraceHelpers.js';
-import {TraceLoader} from '../../../testing/TraceLoader.js';
+import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {allThreadEntriesInTrace, getMainThread} from '../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 
-import * as Utils from './utils.js';
+import * as Trace from './trace.js';
 
 describeWithEnvironment('EntryName', () => {
   it('uses the URL for the name of a network request', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const request = parsedTrace.data.NetworkRequests.byTime.at(0);
     assert.isOk(request);
-    const name = Utils.EntryName.nameForEntry(request);
+    const name = Trace.Name.forEntry(request);
     assert.strictEqual(name, 'web.dev/ (web.dev)');
   });
 
@@ -23,7 +22,7 @@ describeWithEnvironment('EntryName', () => {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const frame = parsedTrace.data.Frames.frames.at(0);
     assert.isOk(frame);
-    const name = Utils.EntryName.nameForEntry(frame);
+    const name = Trace.Name.forEntry(frame);
     assert.strictEqual(name, 'Frame');
   });
 
@@ -33,14 +32,14 @@ describeWithEnvironment('EntryName', () => {
       return Trace.Types.Events.isDispatch(event) && event.args.data.type === 'click';
     });
     assert.isOk(clickEvent);
-    const name = Utils.EntryName.nameForEntry(clickEvent);
+    const name = Trace.Name.forEntry(clickEvent);
     assert.strictEqual(name, 'Event: click');
   });
 
   it('correctly titles layout shifts', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
     const shifts = parsedTrace.data.LayoutShifts.clusters.flatMap(c => c.events);
-    const title = Utils.EntryName.nameForEntry(shifts[0]);
+    const title = Trace.Name.forEntry(shifts[0]);
     assert.strictEqual(title, 'Layout shift');
   });
 
@@ -48,7 +47,7 @@ describeWithEnvironment('EntryName', () => {
     const parsedTrace = await TraceLoader.traceEngine(this, 'animation.json.gz');
     const animation = parsedTrace.data.Animations.animations.at(0);
     assert.isOk(animation);
-    const title = Utils.EntryName.nameForEntry(animation);
+    const title = Trace.Name.forEntry(animation);
     assert.strictEqual(title, 'Animation');
   });
 
@@ -57,7 +56,7 @@ describeWithEnvironment('EntryName', () => {
     const entry = allThreadEntriesInTrace(parsedTrace).find(e => e.name === Trace.Types.Events.Name.RUN_TASK);
     assert.isOk(entry);
 
-    const name = Utils.EntryName.nameForEntry(entry, parsedTrace);
+    const name = Trace.Name.forEntry(entry, parsedTrace);
     assert.strictEqual(name, 'Task');
   });
 
@@ -74,7 +73,7 @@ describeWithEnvironment('EntryName', () => {
       }
     }
     assert.isOk(createEvent);
-    const name = Utils.EntryName.nameForEntry(createEvent, parsedTrace);
+    const name = Trace.Name.forEntry(createEvent, parsedTrace);
     assert.strictEqual(name, 'WebSocket opened: wss://echo.websocket.org/');
   });
 
@@ -83,7 +82,7 @@ describeWithEnvironment('EntryName', () => {
       name: Trace.Types.Events.Name.WEB_SOCKET_DESTROY,
     } as unknown as Trace.Types.Events.WebSocketDestroy;
 
-    const name = Utils.EntryName.nameForEntry(fakeDestroyEvent);
+    const name = Trace.Name.forEntry(fakeDestroyEvent);
     assert.strictEqual(name, 'WebSocket closed');
   });
 
@@ -91,7 +90,7 @@ describeWithEnvironment('EntryName', () => {
     const parsedTrace = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
     const firstInteraction = parsedTrace.data.UserInteractions.interactionEvents.at(0);
     assert.isOk(firstInteraction);
-    const name = Utils.EntryName.nameForEntry(firstInteraction);
+    const name = Trace.Name.forEntry(firstInteraction);
     assert.strictEqual(name, 'Pointer');
   });
 
@@ -99,7 +98,7 @@ describeWithEnvironment('EntryName', () => {
     const parsedTrace = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
     const keydownInteraction = parsedTrace.data.UserInteractions.interactionEvents.find(e => e.type === 'keydown');
     assert.isOk(keydownInteraction);
-    const name = Utils.EntryName.nameForEntry(keydownInteraction);
+    const name = Trace.Name.forEntry(keydownInteraction);
     assert.strictEqual(name, 'Keyboard');
   });
 
@@ -110,7 +109,7 @@ describeWithEnvironment('EntryName', () => {
     const firstInteraction = {...parsedTrace.data.UserInteractions.interactionEvents[0]};
     firstInteraction.type = 'unknown';
 
-    const name = Utils.EntryName.nameForEntry(firstInteraction);
+    const name = Trace.Name.forEntry(firstInteraction);
     assert.strictEqual(name, 'Other');
   });
 
@@ -123,7 +122,7 @@ describeWithEnvironment('EntryName', () => {
       // reset this to avoid impacting other tests.
       const originalProfileNodeName = profileNode.functionName;
       profileNode.setFunctionName('testing-profile-name');
-      const name = Utils.EntryName.nameForEntry(entry, parsedTrace);
+      const name = Trace.Name.forEntry(entry, parsedTrace);
       assert.strictEqual(name, 'testing-profile-name');
       profileNode.setFunctionName(originalProfileNodeName);
     });
@@ -136,7 +135,7 @@ describeWithEnvironment('EntryName', () => {
       // reset this to avoid impacting other tests.
       const originalProfileNodeName = profileNode.functionName;
       profileNode.setFunctionName('');
-      const name = Utils.EntryName.nameForEntry(entry, parsedTrace);
+      const name = Trace.Name.forEntry(entry, parsedTrace);
       assert.strictEqual(name, 'performConcurrentWorkOnRoot');
       profileNode.setFunctionName(originalProfileNodeName);
     });

@@ -154,7 +154,7 @@ export class PerformanceTraceFormatter {
         frame = Trace.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(event);
       }
 
-      let source = TimelineUtils.EntryName.nameForEntry(event);
+      let source = Trace.Name.forEntry(event);
       if (frame?.url) {
         source += ` (url: ${frame.url}`;
         if (frame.lineNumber !== -1) {
@@ -282,9 +282,8 @@ export class PerformanceTraceFormatter {
       // Limit to 5, because some insights (namely ThirdParties) can have a huge
       // number of related events. Mostly, insights probably don't have more than
       // 5.
-      const eventsString = events.slice(0, 5)
-                               .map(e => TimelineUtils.EntryName.nameForEntry(e) + ' ' + this.serializeEvent(e))
-                               .join(', ');
+      const eventsString =
+          events.slice(0, 5).map(e => Trace.Name.forEntry(e) + ' ' + this.serializeEvent(e)).join(', ');
       results.push(`- ${insightKey}: ${eventsString}`);
     }
     return results.join('\n');

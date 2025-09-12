@@ -2884,7 +2884,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.frameSelected));
       return;
     }
-    const name = Utils.EntryName.nameForEntry(newSelection.event);
+    const name = Trace.Name.forEntry(newSelection.event);
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.eventSelected, {PH1: name}));
   }
 

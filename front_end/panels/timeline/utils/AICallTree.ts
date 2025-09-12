@@ -6,9 +6,6 @@ import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 
-import {nameForEntry} from './EntryName.js';
-import {visibleTypes} from './EntryStyles.js';
-
 /** Iterates from a node down through its descendents. If the callback returns true, the loop stops. */
 function depthFirstWalk(
     nodes: MapIterator<Trace.Extras.TraceTree.Node>, callback: (arg0: Trace.Extras.TraceTree.Node) => void|true): void {
@@ -65,7 +62,7 @@ export class AICallTree {
       return null;
     }
 
-    const visibleEventsFilter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleTypes());
+    const visibleEventsFilter = new Trace.Extras.TraceFilter.VisibleEventsFilter(Trace.Styles.visibleTypes());
 
     // By default, we remove events whose duration is less than 0.5% of the total
     // range. So if the range is 10s, an event must be 0.05s+ to be included.
@@ -166,7 +163,7 @@ export class AICallTree {
     // events here, otherwise the generated call tree will not match what the
     // user is seeing.
     if (!allEventsEnabled) {
-      filters.push(new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleTypes()));
+      filters.push(new Trace.Extras.TraceFilter.VisibleEventsFilter(Trace.Styles.visibleTypes()));
     }
 
     // Build a tree bounded by the selected event's timestamps, and our other filters applied
@@ -311,7 +308,7 @@ export class AICallTree {
     const idStr = String(nodeId);
 
     // 2. Name
-    const name = nameForEntry(event, parsedTrace);
+    const name = Trace.Name.forEntry(event, parsedTrace);
 
     // Round milliseconds to one decimal place, return empty string if zero/undefined
     const roundToTenths = (num: number|undefined): string => {

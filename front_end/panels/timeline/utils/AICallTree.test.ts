@@ -163,7 +163,7 @@ describeWithEnvironment('AICallTree', () => {
     const visited: Array<{name: string, nodeIndex: number, childStartingIndex?: number}> = [];
 
     const callback = (node: Trace.Extras.TraceTree.Node, nodeIndex: number, childStartingIndex?: number): void => {
-      visited.push({name: Utils.EntryName.nameForEntry(node.event, parsedTrace), nodeIndex, childStartingIndex});
+      visited.push({name: Trace.Name.forEntry(node.event, parsedTrace), nodeIndex, childStartingIndex});
     };
 
     callTree?.breadthFirstWalk(callTree.rootNode.children().values(), callback);
@@ -207,7 +207,7 @@ describeWithEnvironment('AICallTree', () => {
     const visited: Array<{name: string, nodeIndex: number, childStartingIndex?: number}> = [];
 
     const callback = (node: Trace.Extras.TraceTree.Node, nodeIndex: number, childStartingIndex?: number): void => {
-      visited.push({name: Utils.EntryName.nameForEntry(node.event, parsedTrace), nodeIndex, childStartingIndex});
+      visited.push({name: Trace.Name.forEntry(node.event, parsedTrace), nodeIndex, childStartingIndex});
     };
 
     callTree?.breadthFirstWalk(callTree.rootNode.children().values(), callback);

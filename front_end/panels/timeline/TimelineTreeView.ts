@@ -980,7 +980,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     color: string,
     icon: (Element|undefined),
   } {
-    const categories = Utils.EntryStyles.getCategoryStyles();
+    const categories = Trace.Styles.getCategoryStyles();
     const color = TimelineUIUtils.eventColor(node.event);
     const unattributed = i18nString(UIStrings.unattributed);
 
@@ -988,10 +988,10 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
 
     switch (this.groupBySetting.get()) {
       case AggregatedTimelineTreeView.GroupBy.Category: {
-        const idIsValid = id && Utils.EntryStyles.stringIsEventCategory(id);
+        const idIsValid = id && Trace.Styles.stringIsEventCategory(id);
         const category = idIsValid ? categories[id] || categories['other'] : {title: unattributed, color: unattributed};
 
-        const color = category instanceof Utils.EntryStyles.TimelineCategory ?
+        const color = category instanceof Trace.Styles.TimelineCategory ?
             ThemeSupport.ThemeSupport.instance().getComputedValue(category.cssVariable) :
             category.color;
         return {name: category.title, color, icon: undefined};

@@ -23,7 +23,6 @@ import {
   type TimelineSelection,
 } from './TimelineSelection.js';
 import {buildPersistedConfig} from './TrackConfiguration.js';
-import * as TimelineUtils from './utils/utils.js';
 
 export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
   #minimumBoundary = 0;
@@ -211,7 +210,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
   entryTitle(index: number): string|null {
     const event = this.#events[index];
-    return TimelineUtils.EntryName.nameForEntry(event);
+    return Trace.Name.forEntry(event);
   }
 
   entryFont(_index: number): string|null {

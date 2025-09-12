@@ -11,7 +11,9 @@ import * as Insights from './insights/insights.js';
 import * as Lantern from './lantern/lantern.js';
 import * as LanternComputationData from './LanternComputationData.js';
 import * as TraceModel from './ModelImpl.js';
+import * as Name from './Name.js';
 import * as Processor from './Processor.js';
+import * as Styles from './Styles.js';
 import * as Types from './types/types.js';
 
 export {
@@ -23,7 +25,9 @@ export {
   Insights,
   Lantern,
   LanternComputationData,
+  Name,
   Processor,
+  Styles,
   TraceModel,
   Types,
 };

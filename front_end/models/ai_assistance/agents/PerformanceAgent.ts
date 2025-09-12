@@ -297,7 +297,7 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
       if (!event) {
         return 'unknown';
       }
-      return TimelineUtils.EntryName.nameForEntry(event);
+      return Trace.Name.forEntry(event);
     }
 
     Platform.assertNever(focus, 'Unknown agent focus');

@@ -6,7 +6,6 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import type * as Trace from '../../../models/trace/trace.js';
-import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
 const MAX_ORIGIN_LENGTH = 60;
 
@@ -24,7 +23,7 @@ export function getThrottlingRecommendations(): {
   const response = CrUXManager.CrUXManager.instance().getSelectedFieldMetricData('round_trip_time');
   if (response?.percentiles) {
     const rtt = Number(response.percentiles.p75);
-    networkConditions = MobileThrottling.ThrottlingPresets.ThrottlingPresets.getRecommendedNetworkPreset(rtt);
+    networkConditions = SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
   }
 
   return {

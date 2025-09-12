@@ -2413,3 +2413,50 @@ export interface RequestUpdateDroppedEventData {
   mimeType: string;
   lastModified: Date|null;
 }
+
+/**
+ * For the given Round Trip Time (in MilliSeconds), return the best throttling conditions.
+ */
+export function getRecommendedNetworkPreset(rtt: number): Conditions|null {
+  const RTT_COMPARISON_THRESHOLD = 200;
+  const RTT_MINIMUM = 60;
+
+  if (!Number.isFinite(rtt)) {
+    return null;
+  }
+
+  if (rtt < RTT_MINIMUM) {
+    return null;
+  }
+
+  // We pick from the set of presets in the panel but do not want to allow
+  // the "No Throttling" option to be picked.
+  const presets = THROTTLING_CONDITIONS_LOOKUP.values()
+                      .filter(condition => {
+                        return condition !== NoThrottlingConditions;
+                      })
+                      .toArray();
+
+  let closestPreset: Conditions|null = null;
+  let smallestDiff = Infinity;
+  for (const preset of presets) {
+    const {targetLatency} = preset;
+    if (!targetLatency) {
+      continue;
+    }
+
+    const diff = Math.abs(targetLatency - rtt);
+    if (diff > RTT_COMPARISON_THRESHOLD) {
+      continue;
+    }
+
+    if (smallestDiff < diff) {
+      continue;
+    }
+
+    closestPreset = preset;
+    smallestDiff = diff;
+  }
+
+  return closestPreset;
+}

@@ -2193,4 +2193,68 @@ describeWithMockConnection('InterceptedRequest', () => {
     ];
     assert.deepEqual(SDK.NetworkManager.InterceptedRequest.mergeSetCookieHeaders(original, overrides), expected);
   });
+
+  describe('getRecommendedNetworkPreset', () => {
+    it('should recommend "Slow 3G" for high RTT', () => {
+      // RTT >= 276ms should be Slow 3G.
+      const rtt = 500;
+      const preset = SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
+      assert.isNotNull(preset);
+      assert.strictEqual(preset?.key, SDK.NetworkManager.Slow3GConditions.key);
+    });
+
+    it('should recommend "Slow 4G" for medium RTT', () => {
+      // RTT between 106ms and 275ms should be Slow 4G.
+      const rtt = 200;
+      const preset = SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
+      assert.isNotNull(preset);
+      assert.strictEqual(preset?.key, SDK.NetworkManager.Slow4GConditions.key);
+    });
+
+    it('should recommend "Fast 4G" for low RTT', () => {
+      // RTT between 60ms and 105ms should be Fast 4G.
+      const rtt = 100;
+      const preset = SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
+      assert.isNotNull(preset);
+      assert.strictEqual(preset?.key, SDK.NetworkManager.Fast4GConditions.key);
+    });
+
+    it('should return null for very low RTT, suggesting no throttling', () => {
+      // RTT below 60ms should suggest no throttling by returning null.
+      const rtt = 20;
+      const preset = SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
+      assert.isNull(preset);
+    });
+
+    it('should handle boundary conditions correctly', () => {
+      // Crossover between Slow 3G and Slow 4G
+      const slow3GPreset = SDK.NetworkManager.getRecommendedNetworkPreset(276);
+      assert.isNotNull(slow3GPreset);
+      assert.strictEqual(slow3GPreset.key, SDK.NetworkManager.Slow3GConditions.key, 'RTT 276 should be Slow 3G');
+
+      const slow4GAt3GBoundary = SDK.NetworkManager.getRecommendedNetworkPreset(275);
+      assert.isNotNull(slow4GAt3GBoundary);
+      assert.strictEqual(slow4GAt3GBoundary.key, SDK.NetworkManager.Slow4GConditions.key, 'RTT 275 should be Slow 4G');
+
+      // Crossover between Slow 4G and Fast 4G
+      const slow4GAtFast4GBoundary = SDK.NetworkManager.getRecommendedNetworkPreset(106);
+      assert.isNotNull(slow4GAtFast4GBoundary);
+      assert.strictEqual(
+          slow4GAtFast4GBoundary.key, SDK.NetworkManager.Slow4GConditions.key, 'RTT 106 should be Slow 4G');
+
+      const fast4GAtSlow4GBoundary = SDK.NetworkManager.getRecommendedNetworkPreset(105);
+      assert.isNotNull(fast4GAtSlow4GBoundary);
+      assert.strictEqual(
+          fast4GAtSlow4GBoundary.key, SDK.NetworkManager.Fast4GConditions.key, 'RTT 105 should be Fast 4G');
+
+      // Boundary for Fast 4G and No Throttling
+      const fast4GAtNoThrottlingBoundary = SDK.NetworkManager.getRecommendedNetworkPreset(60);
+      assert.isNotNull(fast4GAtNoThrottlingBoundary);
+      assert.strictEqual(
+          fast4GAtNoThrottlingBoundary.key, SDK.NetworkManager.Fast4GConditions.key, 'RTT 60 should be Fast 4G');
+
+      const noThrottlingPreset = SDK.NetworkManager.getRecommendedNetworkPreset(59);
+      assert.isNull(noThrottlingPreset, 'RTT 59 should be null');
+    });
+  });
 });

@@ -59,7 +59,6 @@ describeWithEnvironment('BadgeNotification', () => {
     widget.message = properties?.message ?? 'Test message';
     widget.imageUri = properties?.imageUri ?? 'test.png';
     widget.actions = properties?.actions ?? [];
-    widget.markAsRoot();
     renderElementIntoDOM(widget, {allowMultipleChildren: true});
     widget.requestUpdate();
     await view.nextInput;
@@ -78,10 +77,12 @@ describeWithEnvironment('BadgeNotification', () => {
 
   it('invokes action callback on click', async () => {
     const action1Spy = sinon.spy();
-    const {view} = await createWidget({actions: [{label: 'Action 1', onClick: action1Spy}]});
+    const {view, widget} = await createWidget({actions: [{label: 'Action 1', onClick: action1Spy}]});
 
     view.input.actions[0].onClick();
     sinon.assert.calledOnce(action1Spy);
+
+    widget.detach();
   });
 
   it('is removed on close click', async () => {
@@ -91,6 +92,8 @@ describeWithEnvironment('BadgeNotification', () => {
 
     view.input.onCloseClick();
     assert.isFalse(inspectorViewRootElementStub.contains(widget.element));
+
+    widget.detach();
   });
 
   it('presents an activity-based badge', async () => {
@@ -105,6 +108,8 @@ describeWithEnvironment('BadgeNotification', () => {
     assert.strictEqual(input.actions[0].label, 'Badge settings');
     assert.strictEqual(input.actions[1].label, 'View profile');
     assertMessageIncludes(input.message, 'It has been added to your Developer Profile.');
+
+    widget.detach();
   });
 
   it('presents a starter badge as an activity-based badge if the user has a profile and has enabled badges',
@@ -124,6 +129,8 @@ describeWithEnvironment('BadgeNotification', () => {
        assert.strictEqual(input.actions[0].label, 'Badge settings');
        assert.strictEqual(input.actions[1].label, 'View profile');
        assertMessageIncludes(input.message, 'It has been added to your Developer Profile.');
+
+       widget.detach();
      });
 
   it('presents a starter badge with an opt-in message if the user has a profile but has disabled badges', async () => {
@@ -141,6 +148,8 @@ describeWithEnvironment('BadgeNotification', () => {
     assert.strictEqual(input.actions[0].label, 'Remind me later');
     assert.strictEqual(input.actions[1].label, 'Receive badges');
     assertMessageIncludes(input.message, 'Turn on badges to claim it.');
+
+    widget.detach();
   });
 
   it('presents a starter badge with a create profile message if the user does not have a profile', async () => {
@@ -157,5 +166,7 @@ describeWithEnvironment('BadgeNotification', () => {
     assert.strictEqual(input.actions[0].label, 'Remind me later');
     assert.strictEqual(input.actions[1].label, 'Create profile');
     assertMessageIncludes(input.message, 'Create a profile to claim your badge.');
+
+    widget.detach();
   });
 });

@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Badges from '../../models/badges/badges.js';
+import * as WindowBoundsService from '../../services/window_bounds/window_bounds.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -66,6 +67,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nFormatString = i18n.i18n.getFormatLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
+const LEFT_OFFSET = 5;
+const BOTTOM_OFFSET = 5;
 export interface BadgeNotificationAction {
   label: string;
   jslogContext?: string;
@@ -141,6 +144,8 @@ export class BadgeNotification extends UI.Widget.Widget {
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
+
+    this.markAsRoot();
   }
 
   async present(badge: Badges.Badge): Promise<void> {
@@ -151,12 +156,24 @@ export class BadgeNotification extends UI.Widget.Widget {
     }
   }
 
+  #positionNotification(): void {
+    const boundingRect = this.contentElement.getBoundingClientRect();
+    const container =
+        WindowBoundsService.WindowBoundsService.WindowBoundsServiceImpl.instance().getDevToolsBoundingElement();
+    this.contentElement.positionAt(
+        LEFT_OFFSET, container.clientHeight - boundingRect.height - BOTTOM_OFFSET, container);
+  }
+
   #show(properties: BadgeNotificationProperties): void {
     this.message = properties.message;
     this.imageUri = properties.imageUri;
     this.actions = properties.actions;
     this.requestUpdate();
-    this.show(UI.InspectorView.InspectorView.instance().element);
+    this.show(document.body);
+
+    void this.updateComplete.then(() => {
+      this.#positionNotification();
+    });
   }
 
   async #presentStarterBadge(badge: Badges.Badge): Promise<void> {

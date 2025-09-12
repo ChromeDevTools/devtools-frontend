@@ -37,6 +37,7 @@ devtools_module("common") {
     "../../core/platform:bundle",
     "../../models/badges:bundle",
     "../../models/geometry:bundle",
+    "../../services/window_bounds:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/components/spinners:bundle",

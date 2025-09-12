@@ -133,7 +133,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private lastSelection: Selection|null = null;
   readonly #font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
   #eventIndexByEvent = new WeakMap<Trace.Types.Events.Event, number|null>();
-  #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
+  #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
 
   /**
    * When we create initiator chains for a selected event, we store those
@@ -429,7 +429,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return Object.assign(defaultGroupStyle, extra);
   }
 
-  setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: Utils.EntityMapper.EntityMapper): void {
+  setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: Trace.EntityMapper.EntityMapper): void {
     this.reset();
     this.parsedTrace = parsedTrace;
     const {traceBounds} = parsedTrace.data.Meta;

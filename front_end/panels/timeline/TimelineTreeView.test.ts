@@ -10,7 +10,6 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Timeline from './timeline.js';
-import * as Utils from './utils/utils.js';
 
 class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
   select(_selection: Timeline.TimelineSelection.TimelineSelection|null): void {
@@ -106,7 +105,7 @@ describeWithEnvironment('TimelineTreeView', function() {
   describe('BottomUpTimelineTreeView', function() {
     it('Creates a bottom up tree from nestable events', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
-      const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
+      const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
       const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
@@ -241,7 +240,7 @@ describeWithEnvironment('TimelineTreeView', function() {
 
     it('can group entries by third parties', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
+      const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
       const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);

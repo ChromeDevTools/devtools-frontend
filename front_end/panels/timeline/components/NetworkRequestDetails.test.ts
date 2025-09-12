@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import {cleanTextContent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
@@ -14,7 +14,7 @@ import * as TimelineComponents from './components.js';
 describeWithMockConnection('NetworkRequestDetails', () => {
   async function makeDetailsComponent(
       parsedTrace: Trace.TraceModel.ParsedTrace, request: Trace.Types.Events.SyntheticNetworkRequest,
-      entityMapper: Timeline.Utils.EntityMapper.EntityMapper):
+      entityMapper: Trace.EntityMapper.EntityMapper):
       Promise<TimelineComponents.NetworkRequestDetails.NetworkRequestDetails> {
     const details = new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails();
     details.parsedTrace = parsedTrace;
@@ -29,7 +29,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
 
   it('renders the right details for a network event from Trace', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const networkRequests = parsedTrace.data.NetworkRequests.byTime;
     const cssRequest = networkRequests.find(request => {
       return request.args.data.url === 'https://chromedevtools.github.io/performance-stories/lcp-web-font/app.css';
@@ -76,7 +76,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
 
   it('renders the server timing details for a network event', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'server-timings.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const networkRequests = parsedTrace.data.NetworkRequests.byTime;
     const htmlRequest = networkRequests.find(request => {
       return request.args.data.url === 'https://node-server-tan.vercel.app/waste-time';
@@ -119,7 +119,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
 
   it('renders the redirect details for a network event', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'many-redirects.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const networkRequests = parsedTrace.data.NetworkRequests.byTime;
     const htmlRequest = networkRequests.find(request => {
       return request.args.data.url === 'http://localhost:10200/redirects-final.html';

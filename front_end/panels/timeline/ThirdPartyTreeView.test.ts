@@ -2,20 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
-import * as Utils from './utils/utils.js';
 
 describeWithEnvironment('Third party tree', function() {
   it('does not select the first row by default', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
-    const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
+    const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const events = [...mapper.mappings().eventsByEntity.values()].flat();
     treeView.setModelWithEvents(events, parsedTrace, mapper);
     const sel: Timeline.TimelineSelection.TimeRangeSelection = {
@@ -29,7 +28,7 @@ describeWithEnvironment('Third party tree', function() {
 
   it('hides the table if there are no events', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
+    const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     renderElementIntoDOM(treeView);
     treeView.setModelWithEvents(null, parsedTrace, mapper);
@@ -48,7 +47,7 @@ describeWithEnvironment('Third party tree', function() {
     // a chrome extension.
     const parsedTrace = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
-    const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
+    const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const events = [...mapper.mappings().eventsByEntity.values()].flat();
 
     treeView.setModelWithEvents(events, parsedTrace, mapper);

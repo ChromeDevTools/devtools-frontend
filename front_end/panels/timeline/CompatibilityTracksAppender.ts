@@ -201,7 +201,7 @@ export class CompatibilityTracksAppender {
   #gpuTrackAppender: GPUTrackAppender;
   #layoutShiftsTrackAppender: LayoutShiftsTrackAppender;
   #threadAppenders: ThreadAppender[] = [];
-  #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null;
+  #entityMapper: Trace.EntityMapper.EntityMapper|null;
 
   /**
    * @param flameChartData the data used by the flame chart renderer on
@@ -220,7 +220,7 @@ export class CompatibilityTracksAppender {
   constructor(
       flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.TraceModel.ParsedTrace,
       entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[],
-      entityMapper: TimelineUtils.EntityMapper.EntityMapper|null) {
+      entityMapper: Trace.EntityMapper.EntityMapper|null) {
     this.#flameChartData = flameChartData;
     this.#parsedTrace = parsedTrace;
     this.#entityMapper = entityMapper;

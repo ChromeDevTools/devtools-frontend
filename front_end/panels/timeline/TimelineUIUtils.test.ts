@@ -1390,7 +1390,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
   it('renders 3p details for profile call properly', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const jsCall = allThreadEntriesInTrace(parsedTrace)
                        .find(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'z');
     assert.exists(jsCall);

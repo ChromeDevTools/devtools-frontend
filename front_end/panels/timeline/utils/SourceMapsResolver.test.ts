@@ -232,7 +232,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
 
       // For a profile call with mappings, it must return the mapped script.
       const parsedTraceWithMappings = parsedTraceFromProfileCalls([profileCallWithMappings]);
-      const mapperWithMappings = new Utils.EntityMapper.EntityMapper(parsedTraceWithMappings);
+      const mapperWithMappings = new Trace.EntityMapper.EntityMapper(parsedTraceWithMappings);
       let resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTraceWithMappings, mapperWithMappings);
       await resolver.install();
       let sourceMappedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(
@@ -241,7 +241,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
 
       // For a profile call without mappings, it must return the original URL
       const parsedTraceWithoutMappings = parsedTraceFromProfileCalls([profileCallWithNoMappings]);
-      const mapperWithoutMappings = new Utils.EntityMapper.EntityMapper(parsedTraceWithoutMappings);
+      const mapperWithoutMappings = new Trace.EntityMapper.EntityMapper(parsedTraceWithoutMappings);
       resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTraceWithoutMappings, mapperWithoutMappings);
       await resolver.install();
       sourceMappedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(
@@ -286,7 +286,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
       };
 
       const parsedTrace = parsedTraceFromProfileCalls([profileCall, profileCallUnmapped]);
-      const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
+      const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
 
       const testEntity = {
         name: 'example-domain.com',

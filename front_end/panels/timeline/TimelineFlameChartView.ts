@@ -164,7 +164,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   #onMainEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #onNetworkEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #currentSelection: TimelineSelection|null = null;
-  #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
+  #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
 
   // Only one dimmer is used at a time. The first dimmer, as defined by the following
   // order, that is `active` within this array is used.
@@ -1223,7 +1223,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#selectedGroupName = null;
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.#selectedEvents = null;
-    this.#entityMapper = new Utils.EntityMapper.EntityMapper(this.#parsedTrace);
+    this.#entityMapper = new Trace.EntityMapper.EntityMapper(this.#parsedTrace);
     // order is important: |reset| needs to be called after the trace
     // model has been set in the data providers.
     this.mainDataProvider.setModel(this.#parsedTrace, this.#entityMapper);

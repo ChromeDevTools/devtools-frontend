@@ -394,7 +394,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #traceEngineModel: Trace.TraceModel.Model;
   #externalAIConversationData: AiAssistanceModel.ExternalPerformanceAIConversationData|null = null;
   #sourceMapsResolver: Utils.SourceMapsResolver.SourceMapsResolver|null = null;
-  #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
+  #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
   #sidebarToggleButton = this.#splitWidget.createShowHideSidebarButton(
       i18nString(UIStrings.showSidebar),
@@ -2152,7 +2152,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     // Initialize EntityMapper
-    this.#entityMapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
+    this.#entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
 
     // Set up SourceMapsResolver to ensure we resolve any function names in
     // profile calls.
@@ -2163,7 +2163,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     void this.#sourceMapsResolver.install();
 
     // Initialize EntityMapper
-    this.#entityMapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
+    this.#entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
 
     this.statusDialog?.updateProgressBar(i18nString(UIStrings.processed), 80);
     this.updateMiniMap();

@@ -2,15 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../core/platform/platform.js';
-import type * as Protocol from '../../../generated/protocol.js';
-import * as Trace from '../../../models/trace/trace.js';
+import type * as Platform from '../../core/platform/platform.js';
+import type * as Protocol from '../../generated/protocol.js';
+
+import * as Handlers from './handlers/handlers.js';
+import * as Helpers from './helpers/helpers.js';
+import type {ParsedTrace} from './ModelImpl.js';
+import type * as Types from './types/types.js';
 
 export class EntityMapper {
-  #parsedTrace: Trace.TraceModel.ParsedTrace;
-  #entityMappings: Trace.Handlers.Helpers.EntityMappings;
-  #firstPartyEntity: Trace.Handlers.Helpers.Entity|null;
-  #thirdPartyEvents: Trace.Types.Events.Event[] = [];
+  #parsedTrace: ParsedTrace;
+  #entityMappings: Handlers.Helpers.EntityMappings;
+  #firstPartyEntity: Handlers.Helpers.Entity|null;
+  #thirdPartyEvents: Types.Events.Event[] = [];
   /**
    * When resolving urls and updating our entity mapping in the
    * SourceMapsResolver, a single call frame can appear multiple times
@@ -19,14 +23,14 @@ export class EntityMapper {
    */
   #resolvedCallFrames = new Set<Protocol.Runtime.CallFrame>();
 
-  constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
+  constructor(parsedTrace: ParsedTrace) {
     this.#parsedTrace = parsedTrace;
     this.#entityMappings = this.#parsedTrace.data.Renderer.entityMappings;
     this.#firstPartyEntity = this.#findFirstPartyEntity();
     this.#thirdPartyEvents = this.#getThirdPartyEvents();
   }
 
-  #findFirstPartyEntity(): Trace.Handlers.Helpers.Entity|null {
+  #findFirstPartyEntity(): Handlers.Helpers.Entity|null {
     // As a starting point, we consider the first navigation as the 1P.
     const nav =
         Array.from(this.#parsedTrace.data.Meta.navigationsByNavigationId.values()).sort((a, b) => a.ts - b.ts)[0];
@@ -34,10 +38,10 @@ export class EntityMapper {
     if (!firstPartyUrl) {
       return null;
     }
-    return Trace.Handlers.Helpers.getEntityForUrl(firstPartyUrl, this.#entityMappings) ?? null;
+    return Handlers.Helpers.getEntityForUrl(firstPartyUrl, this.#entityMappings) ?? null;
   }
 
-  #getThirdPartyEvents(): Trace.Types.Events.Event[] {
+  #getThirdPartyEvents(): Types.Events.Event[] {
     const entries = Array.from(this.#entityMappings.eventsByEntity.entries());
     const thirdPartyEvents = entries.flatMap(([entity, events]) => {
       return entity !== this.#firstPartyEntity ? events : [];
@@ -48,26 +52,26 @@ export class EntityMapper {
   /**
    * Returns an entity for a given event if any.
    */
-  entityForEvent(event: Trace.Types.Events.Event): Trace.Handlers.Helpers.Entity|null {
+  entityForEvent(event: Types.Events.Event): Handlers.Helpers.Entity|null {
     return this.#entityMappings.entityByEvent.get(event) ?? null;
   }
 
   /**
    * Returns trace events that correspond with a given entity if any.
    */
-  eventsForEntity(entity: Trace.Handlers.Helpers.Entity): Trace.Types.Events.Event[] {
+  eventsForEntity(entity: Handlers.Helpers.Entity): Types.Events.Event[] {
     return this.#entityMappings.eventsByEntity.get(entity) ?? [];
   }
 
-  firstPartyEntity(): Trace.Handlers.Helpers.Entity|null {
+  firstPartyEntity(): Handlers.Helpers.Entity|null {
     return this.#firstPartyEntity;
   }
 
-  thirdPartyEvents(): Trace.Types.Events.Event[] {
+  thirdPartyEvents(): Types.Events.Event[] {
     return this.#thirdPartyEvents;
   }
 
-  mappings(): Trace.Handlers.Helpers.EntityMappings {
+  mappings(): Handlers.Helpers.EntityMappings {
     return this.#entityMappings;
   }
 
@@ -89,8 +93,8 @@ export class EntityMapper {
     }
 
     const compiledURL = callFrame.url;
-    const currentEntity = Trace.Handlers.Helpers.getEntityForUrl(compiledURL, this.#entityMappings);
-    const resolvedEntity = Trace.Handlers.Helpers.getEntityForUrl(sourceURL, this.#entityMappings);
+    const currentEntity = Handlers.Helpers.getEntityForUrl(compiledURL, this.#entityMappings);
+    const resolvedEntity = Handlers.Helpers.getEntityForUrl(sourceURL, this.#entityMappings);
     // If the entity changed, then we should update our caches. If we don't have a currentEntity,
     // we can't do much with that. Additionally without our current entity, we don't have a reference to the related
     // events so there are no relationships to be made.
@@ -99,13 +103,13 @@ export class EntityMapper {
     }
     const currentEntityEvents = (currentEntity && this.#entityMappings.eventsByEntity.get(currentEntity)) ?? [];
     // The events of the entity that match said source location.
-    const sourceLocationEvents: Trace.Types.Events.Event[] = [];
+    const sourceLocationEvents: Types.Events.Event[] = [];
     // The events that don't match the source location, but that we should keep mapped to its current entity.
-    const unrelatedEvents: Trace.Types.Events.Event[] = [];
+    const unrelatedEvents: Types.Events.Event[] = [];
     currentEntityEvents?.forEach(e => {
-      const cf = Trace.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(e);
+      const cf = Helpers.Trace.getStackTraceTopCallFrameInEventPayload(e);
 
-      const matchesCallFrame = cf && Trace.Helpers.Trace.isMatchingCallFrame(cf, callFrame);
+      const matchesCallFrame = cf && Helpers.Trace.isMatchingCallFrame(cf, callFrame);
       if (matchesCallFrame) {
         sourceLocationEvents.push(e);
       } else {

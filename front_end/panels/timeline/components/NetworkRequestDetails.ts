@@ -12,7 +12,6 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
-import type * as TimelineUtils from '../utils/utils.js';
 
 import networkRequestDetailsStyles from './networkRequestDetails.css.js';
 import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
@@ -120,7 +119,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
   #view: typeof DEFAULT_VIEW;
   #request: Trace.Types.Events.SyntheticNetworkRequest|null = null;
   #requestPreviewElements = new WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLElement>();
-  #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
+  #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
   #target: SDK.Target.Target|null = null;
   #linkifier: LegacyComponents.Linkifier.Linkifier|null = null;
   #serverTimings: SDK.ServerTiming.ServerTiming[]|null = null;
@@ -165,7 +164,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  set entityMapper(mapper: TimelineUtils.EntityMapper.EntityMapper|null) {
+  set entityMapper(mapper: Trace.EntityMapper.EntityMapper|null) {
     this.#entityMapper = mapper;
     this.requestUpdate();
   }
@@ -189,7 +188,7 @@ export interface ViewInput {
   request: Trace.Types.Events.SyntheticNetworkRequest|null;
   target: SDK.Target.Target|null;
   previewElementsCache: WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLElement>;
-  entityMapper: TimelineUtils.EntityMapper.EntityMapper|null;
+  entityMapper: Trace.EntityMapper.EntityMapper|null;
   serverTimings: SDK.ServerTiming.ServerTiming[]|null;
   linkifier: LegacyComponents.Linkifier.Linkifier|null;
   parsedTrace: Trace.TraceModel.ParsedTrace|null;
@@ -393,7 +392,7 @@ function renderFromCache(
 
 function renderThirdPartyEntity(
     request: Trace.Types.Events.SyntheticNetworkRequest,
-    entityMapper: TimelineUtils.EntityMapper.EntityMapper|null): Lit.LitTemplate {
+    entityMapper: Trace.EntityMapper.EntityMapper|null): Lit.LitTemplate {
   if (!entityMapper) {
     return Lit.nothing;
   }

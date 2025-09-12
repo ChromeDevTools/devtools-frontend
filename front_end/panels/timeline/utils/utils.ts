@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as AICallTree from './AICallTree.js';
 import * as AIContext from './AIContext.js';
-import * as EntityMapper from './EntityMapper.js';
 import * as EntryName from './EntryName.js';
 import * as EntryNodes from './EntryNodes.js';
 import * as EntryStyles from './EntryStyles.js';
@@ -18,7 +17,6 @@ import * as Treemap from './Treemap.js';
 export {
   AICallTree,
   AIContext,
-  EntityMapper,
   EntryName,
   EntryNodes,
   EntryStyles,

@@ -39,7 +39,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   // -1 means no entry is selected.
   #lastInitiatorEntry = -1;
   #lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
-  #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
+  #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
   #persistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>|null = null;
 
   constructor() {
@@ -63,7 +63,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     this.#networkTrackAppender = null;
   }
 
-  setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: TimelineUtils.EntityMapper.EntityMapper): void {
+  setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: Trace.EntityMapper.EntityMapper): void {
     this.reset();
     this.#parsedTrace = parsedTrace;
     this.#entityMapper = entityMapper;

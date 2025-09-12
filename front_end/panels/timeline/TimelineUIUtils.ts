@@ -918,7 +918,7 @@ export class TimelineUIUtils {
       event: Trace.Types.Events.Event,
       linkifier: LegacyComponents.Linkifier.Linkifier,
       canShowPieChart: boolean,
-      entityMapper: Utils.EntityMapper.EntityMapper|null,
+      entityMapper: Trace.EntityMapper.EntityMapper|null,
       ): Promise<DocumentFragment> {
     const maybeTarget = targetForEvent(parsedTrace, event);
     const {duration} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
@@ -2308,7 +2308,7 @@ export class TimelineUIUtils {
   }
 
   static getOriginWithEntity(
-      entityMapper: Utils.EntityMapper.EntityMapper|null, parsedTrace: Trace.TraceModel.ParsedTrace,
+      entityMapper: Trace.EntityMapper.EntityMapper|null, parsedTrace: Trace.TraceModel.ParsedTrace,
       event: Trace.Types.Events.Event): string|null {
     const resolvedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
     if (!resolvedURL) {

@@ -90,7 +90,7 @@ export class TimelineDetailsPane extends
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #thirdPartyTree = new ThirdPartyTreeViewWidget();
-  #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
+  #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -272,7 +272,7 @@ export class TimelineDetailsPane extends
     parsedTrace: Trace.TraceModel.ParsedTrace|null,
     selectedEvents: Trace.Types.Events.Event[]|null,
     eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null,
-    entityMapper: Utils.EntityMapper.EntityMapper|null,
+    entityMapper: Trace.EntityMapper.EntityMapper|null,
   }): Promise<void> {
     if (this.#parsedTrace !== data.parsedTrace) {
       // Clear the selector stats view, so the next time the user views it we
@@ -283,7 +283,7 @@ export class TimelineDetailsPane extends
     }
     if (data.parsedTrace) {
       this.#summaryContent.filmStrip = Trace.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
-      this.#entityMapper = new Utils.EntityMapper.EntityMapper(data.parsedTrace);
+      this.#entityMapper = new Trace.EntityMapper.EntityMapper(data.parsedTrace);
     }
     this.#selectedEvents = data.selectedEvents;
     this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
@@ -597,7 +597,7 @@ interface SummaryViewInput {
   selectedEvent: Trace.Types.Events.Event|null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null;
   parsedTrace: Trace.TraceModel.ParsedTrace|null;
-  entityMapper: Utils.EntityMapper.EntityMapper|null;
+  entityMapper: Trace.EntityMapper.EntityMapper|null;
   target: SDK.Target.Target|null;
   linkifier: Components.Linkifier.Linkifier|null;
   filmStrip: Trace.Extras.FilmStrip.Data|null;
@@ -627,7 +627,7 @@ class SummaryView extends UI.Widget.Widget {
   selectedEvent: Trace.Types.Events.Event|null = null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
-  entityMapper: Utils.EntityMapper.EntityMapper|null = null;
+  entityMapper: Trace.EntityMapper.EntityMapper|null = null;
   target: SDK.Target.Target|null = null;
   linkifier: Components.Linkifier.Linkifier|null = null;
   filmStrip: Trace.Extras.FilmStrip.Data|null = null;

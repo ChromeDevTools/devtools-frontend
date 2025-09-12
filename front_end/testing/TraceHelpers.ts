@@ -99,7 +99,7 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
   if (options.preloadScreenshots) {
     await Timeline.Utils.ImageCache.preload(parsedTrace?.data.Screenshots.screenshots ?? []);
   }
-  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+  const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
   const dataProvider = options.dataProvider === 'MAIN' ?
       new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider() :
       new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
@@ -157,7 +157,7 @@ export async function getNetworkFlameChart(traceFileName: string, expanded: bool
 
   const parsedTrace = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
   const data = parsedTrace.data;
-  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+  const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
   const minTime = Trace.Helpers.Timing.microToMilli(data.Meta.traceBounds.min);
   const maxTime = Trace.Helpers.Timing.microToMilli(data.Meta.traceBounds.max);
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();

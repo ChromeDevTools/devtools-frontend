@@ -12,7 +12,7 @@ function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.TraceModel.ParsedTrace,
     entryData: Trace.Types.Events.Event[], entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
     Timeline.LayoutShiftsTrackAppender.LayoutShiftsTrackAppender {
-  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+  const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
       flameChartData, parsedTrace, entryData, entryTypeByLevel, entityMapper);
   return compatibilityTracksAppender.layoutShiftsTrackAppender();

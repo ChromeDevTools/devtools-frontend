@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -51,7 +51,7 @@ const emitCloseBlock = (closeChar = '}') => {
 };
 
 const emitHeaderComments = () => {
-  emitLine('// Copyright 2020 The Chromium Authors.');
+  emitLine('// Copyright 2020 The Chromium Authors');
   emitLine('// Use of this source code is governed by a BSD-style license that can be');
   emitLine('// found in the LICENSE file.');
   emitLine();

@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -285,7 +285,6 @@ export default defineConfig([
       'rulesdir/no-commented-out-console': 'error',
       // Prevent imports being commented out rather than deleted.
       'rulesdir/no-commented-out-import': 'error',
-      'rulesdir/check-license-header': 'error',
       /**
        * Enforce some consistency and usefulness of JSDoc comments, to make sure
        * we actually benefit from them.

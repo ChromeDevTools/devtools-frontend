@@ -1,4 +1,4 @@
-# Copyright 2014 The Chromium Authors.
+# Copyright 2014 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 """
@@ -22,6 +22,20 @@ from pathlib import Path
 USE_PYTHON3 = True
 PRESUBMIT_VERSION = '2.0.0'
 
+_EXCLUDED_PATHS = [
+    r'^extensions[\\/]cxx_debugging[\\/]e2e[\\/]runner\.py$',  # Lines too long
+    r'^front_end[\\/]core[\\/]common[\\/]Color\.ts$',  # Apple copyright
+    r'^front_end[\\/]core[\\/]common[\\/]Object\.ts$',  # Apple copyright
+    r'^front_end[\\/]core[\\/]common[\\/]ResourceType\.ts$',  # Apple copyright
+    r'^front_end[\\/]core[\\/]dom_extension[\\/]DOMExtension\.ts$',  # Apple copyright
+    r'^front_end[\\/]core[\\/]platform[\\/]UIString\.ts$',  # Apple copyright
+    r'^front_end[\\/]core[\\/]sdk[\\/]Resource\.ts$',  # Apple copyright
+    r'^front_end[\\/]core[\\/]sdk[\\/]Script\.ts$',  # Apple copyright
+    r'^front_end[\\/]ui[\\/]legacy[\\/]components[\\/]data_grid[\\/]DataGrid\.ts$',  # Apple copyright
+    r'^scripts[\\/]build[\\/]build_inspector_overlay\.py$',  # Lines too long
+    r'^scripts[\\/]build[\\/]code_generator_frontend\.py$',
+    r'^scripts[\\/]deps[\\/]manage_node_deps\.py$',  # Lines too long
+]
 
 def _ExecuteSubProcess(input_api,
                        output_api,
@@ -270,50 +284,6 @@ def CheckDevToolsLint(input_api, output_api):
     return results
 
 
-def CheckDevToolsNonJSFileLicenseHeaders(input_api, output_api):
-    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                       'scripts', 'test',
-                                       'run_header_check_non_js_files.js')
-
-    front_end_directory = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'front_end')
-    inspector_overlay_directory = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'inspector_overlay')
-    test_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                            'test')
-    scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                               'scripts')
-    config_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                              'config')
-
-    default_linted_directories = [
-        front_end_directory, test_directory, scripts_directory,
-        inspector_overlay_directory, config_directory
-    ]
-
-    check_related_files = [lint_path]
-
-    lint_config_files = _GetAffectedFiles(input_api, check_related_files, [],
-                                          ['.js'])
-
-    should_bail_out, files_to_lint = _GetFilesToLint(
-        input_api, lint_config_files, default_linted_directories,
-        ['BUILD.gn', '.gni', '.css'])
-    if should_bail_out:
-        return []
-
-    # If there are more than 50 files to check, don't bother and check
-    # everything, so as to not run into command line length limits on Windows.
-    if len(files_to_lint) > 50:
-        files_to_lint = []
-
-    return _CheckWithNodeScript(input_api,
-                                output_api,
-                                lint_path,
-                                files_to_lint,
-                                message='License headers')
-
-
 def CheckGeneratedFiles(input_api, output_api):
     v8_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                                'v8')
@@ -508,7 +478,5 @@ def CheckAuthorizedAuthor(input_api, output_api):
 
 
 def CheckPanProjectChecksOnCommit(input_api, output_api):
-    return input_api.canned_checks.PanProjectChecks(input_api,
-                                                    output_api,
-                                                    license_header=".*",
-                                                    maxlen=120)
+    return input_api.canned_checks.PanProjectChecks(
+        input_api, output_api, excluded_paths=_EXCLUDED_PATHS, maxlen=120)

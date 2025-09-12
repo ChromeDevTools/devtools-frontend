@@ -4,10 +4,10 @@
 
 import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
+import * as SourceMapsResolver from '../../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 
 import {nameForEntry} from './EntryName.js';
 import {visibleTypes} from './EntryStyles.js';
-import {SourceMapsResolver} from './SourceMapsResolver.js';
 
 /** Iterates from a node down through its descendents. If the callback returns true, the loop stops. */
 function depthFirstWalk(
@@ -328,7 +328,7 @@ export class AICallTree {
     const selfTimeStr = roundToTenths(node.selfTime);
 
     // 5. URL Index
-    const url = SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
+    const url = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
     let urlIndexStr = '';
     if (url) {
       const existingIndex = allUrls.indexOf(url);

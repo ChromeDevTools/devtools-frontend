@@ -11,7 +11,6 @@ import * as Helpers from './Helpers.js';
 import * as IgnoreList from './IgnoreList.js';
 import * as ImageCache from './ImageCache.js';
 import * as InsightAIContext from './InsightAIContext.js';
-import * as SourceMapsResolver from './SourceMapsResolver.js';
 import * as Treemap from './Treemap.js';
 
 export {
@@ -25,6 +24,5 @@ export {
   IgnoreList,
   ImageCache,
   InsightAIContext,
-  SourceMapsResolver,
   Treemap,
 };

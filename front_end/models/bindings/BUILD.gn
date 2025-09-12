@@ -78,6 +78,7 @@ devtools_entrypoint("bundle") {
     "../issues_manager/*",
     "../persistence/*",
     "../source_map_scopes/*",
+    "../trace_source_maps_resolver/*",
     "../workspace/*",
   ]
 

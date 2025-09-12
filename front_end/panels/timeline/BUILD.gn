@@ -116,6 +116,7 @@ devtools_module("timeline") {
     "../../models/source_map_scopes:bundle",
     "../../models/text_utils:bundle",
     "../../models/trace:bundle",
+    "../../models/trace_source_maps_resolver:bundle",
     "../../models/workspace:bundle",
     "../../panels/coverage:bundle",
     "../../panels/layer_viewer:bundle",

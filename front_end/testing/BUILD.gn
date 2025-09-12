@@ -75,6 +75,7 @@ ts_library("testing") {
     "../models/stack_trace:bundle",
     "../models/text_utils:bundle",
     "../models/trace:bundle",
+    "../models/trace_source_maps_resolver:bundle",
     "../models/workspace:bundle",
     "../panels/elements:meta",
     "../panels/sensors:meta",

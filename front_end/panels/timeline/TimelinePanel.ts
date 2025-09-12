@@ -47,6 +47,7 @@ import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js'
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
@@ -393,7 +394,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   #traceEngineModel: Trace.TraceModel.Model;
   #externalAIConversationData: AiAssistanceModel.ExternalPerformanceAIConversationData|null = null;
-  #sourceMapsResolver: Utils.SourceMapsResolver.SourceMapsResolver|null = null;
+  #sourceMapsResolver: SourceMapsResolver.SourceMapsResolver|null = null;
   #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
   #sidebarToggleButton = this.#splitWidget.createShowHideSidebarButton(
@@ -706,7 +707,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   static removeInstance(): void {
     // TODO(crbug.com/358583420): Simplify attached data management
     // so that we don't have to maintain all of these singletons.
-    Utils.SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
+    SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
     Trace.Helpers.SyntheticEvents.SyntheticEventsManager.reset();
     TraceBounds.TraceBounds.BoundsManager.removeInstance();
     ModificationsManager.reset();
@@ -805,10 +806,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       // this set of NodeNames is cached by PIDs, so we clear it so we don't
       // use incorrect names from another trace that might happen to share
       // PID/TIDs.
-      Utils.SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
+      SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
 
       this.#sourceMapsResolver.removeEventListener(
-          Utils.SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
+          SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
       this.#sourceMapsResolver.uninstall();
       this.#sourceMapsResolver = null;
     }
@@ -2157,9 +2158,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // Set up SourceMapsResolver to ensure we resolve any function names in
     // profile calls.
     // Pass in the entity mapper.
-    this.#sourceMapsResolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace, this.#entityMapper);
+    this.#sourceMapsResolver = new SourceMapsResolver.SourceMapsResolver(parsedTrace, this.#entityMapper);
     this.#sourceMapsResolver.addEventListener(
-        Utils.SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
+        SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
     void this.#sourceMapsResolver.install();
 
     // Initialize EntityMapper

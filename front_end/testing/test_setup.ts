@@ -10,7 +10,7 @@
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Trace from '../models/trace/trace.js';
-import * as Timeline from '../panels/timeline/timeline.js';
+import * as TraceSourceMapsResolver from '../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
 
 import {cleanTestDOM, setupTestDOM} from './DOMHooks.js';
@@ -62,7 +62,7 @@ beforeEach(async () => {
     handler.reset();
   }
   Trace.Helpers.SyntheticEvents.SyntheticEventsManager.reset();
-  Timeline.Utils.SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
+  TraceSourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
 
   // Don't retain host binding listeners across tests. Set this up before initializing ThemeSupport as
   // ThemeSupport adds a host binding listener.

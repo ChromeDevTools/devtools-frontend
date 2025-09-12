@@ -42,6 +42,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 // eslint-disable-next-line rulesdir/es-modules-import
@@ -512,7 +513,7 @@ export class TimelineUIUtils {
     return TimelineUIUtils.debugModeEnabled;
   }
   static frameDisplayName(frame: Protocol.Runtime.CallFrame): string {
-    const maybeResolvedData = Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);
+    const maybeResolvedData = SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);
     const functionName = maybeResolvedData?.name || frame.functionName;
     if (!SamplesIntegrator.isNativeRuntimeFrame(frame)) {
       return UI.UIUtils.beautifyFunctionName(functionName);
@@ -623,7 +624,7 @@ export class TimelineUIUtils {
     // need to check for profile calls in the beginning of this
     // function.
     if (Trace.Types.Events.isProfileCall(event)) {
-      const maybeResolvedData = Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForEntry(event);
+      const maybeResolvedData = SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForEntry(event);
       const displayName = maybeResolvedData?.name || TimelineUIUtils.frameDisplayName(event.callFrame);
       return displayName;
     }
@@ -1084,7 +1085,7 @@ export class TimelineUIUtils {
 
       case Trace.Types.Events.Name.PROFILE_CALL: {
         const profileCall = event as Trace.Types.Events.SyntheticProfileCall;
-        const resolvedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, profileCall);
+        const resolvedURL = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, profileCall);
         if (!resolvedURL) {
           break;
         }
@@ -2312,7 +2313,7 @@ export class TimelineUIUtils {
   static getOriginWithEntity(
       entityMapper: Trace.EntityMapper.EntityMapper|null, parsedTrace: Trace.TraceModel.ParsedTrace,
       event: Trace.Types.Events.Event): string|null {
-    const resolvedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
+    const resolvedURL = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
     if (!resolvedURL) {
       return null;
     }
@@ -2464,8 +2465,7 @@ export class TimelineDetailsContentHelper {
       currentResolvedStackTrace.callFrames = currentResolvedStackTrace.callFrames.map(
           callFrame => ({
             ...callFrame,
-            functionName:
-                Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(callFrame)?.name ||
+            functionName: SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(callFrame)?.name ||
                 callFrame.functionName,
           }));
       currentResolvedStackTrace = currentResolvedStackTrace.parent;

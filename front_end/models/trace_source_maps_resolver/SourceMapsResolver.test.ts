@@ -2,29 +2,31 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {Chrome} from '../../../../extension-api/ExtensionAPI.js';
-import * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import type * as Protocol from '../../../generated/protocol.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
-import * as Trace from '../../../models/trace/trace.js';
-import * as Workspace from '../../../models/workspace/workspace.js';
-import {createTarget} from '../../../testing/EnvironmentHelpers.js';
-import {TestPlugin} from '../../../testing/LanguagePluginHelpers.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Trace from '../../models/trace/trace.js';
+import * as Workspace from '../../models/workspace/workspace.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
 import {
   describeWithMockConnection,
-} from '../../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../../testing/MockScopeChain.js';
-import {encodeSourceMap} from '../../../testing/SourceMapEncoder.js';
-import {loadBasicSourceMapExample} from '../../../testing/SourceMapHelpers.js';
+} from '../../testing/MockConnection.js';
+import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
+import {loadBasicSourceMapExample} from '../../testing/SourceMapHelpers.js';
 import {
   makeMockRendererHandlerData,
   makeMockSamplesHandlerData,
   makeProfileCall,
-} from '../../../testing/TraceHelpers.js';
-import {TraceLoader} from '../../../testing/TraceLoader.js';
+} from '../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 
-import * as Utils from './utils.js';
+import * as TraceSourceMapsResolver from './trace_source_maps_resolver.js';
+
+const {SourceMapsResolver, SourceMappingsUpdated} = TraceSourceMapsResolver;
 
 const {urlString} = Platform.DevToolsPath;
 const MINIFIED_FUNCTION_NAME = 'minified';
@@ -153,7 +155,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
 
     it('renames nodes from the profile models when the corresponding scripts and source maps have loaded',
        async function() {
-         const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
+         const resolver = new SourceMapsResolver(parsedTrace);
 
          // Test the node's name is minified before the script and source maps load.
          assert.strictEqual(
@@ -172,8 +174,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
 
          // Ensure we populate the cache
          assert.strictEqual(
-             Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForEntry(profileCallForNameResolving)
-                 ?.name,
+             SourceMapsResolver.resolvedCodeLocationForEntry(profileCallForNameResolving)?.name,
              AUTHORED_FUNCTION_NAME);
        });
 
@@ -195,7 +196,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
 
       const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
       pluginManager.addPlugin(new Plugin());
-      const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
+      const resolver = new SourceMapsResolver(parsedTrace);
       await resolver.install();
       assert.strictEqual(
           Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(
@@ -233,19 +234,17 @@ describeWithMockConnection('SourceMapsResolver', () => {
       // For a profile call with mappings, it must return the mapped script.
       const parsedTraceWithMappings = parsedTraceFromProfileCalls([profileCallWithMappings]);
       const mapperWithMappings = new Trace.EntityMapper.EntityMapper(parsedTraceWithMappings);
-      let resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTraceWithMappings, mapperWithMappings);
+      let resolver = new SourceMapsResolver(parsedTraceWithMappings, mapperWithMappings);
       await resolver.install();
-      let sourceMappedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(
-          parsedTraceWithMappings, profileCallWithMappings);
+      let sourceMappedURL = SourceMapsResolver.resolvedURLForEntry(parsedTraceWithMappings, profileCallWithMappings);
       assert.strictEqual(sourceMappedURL, authoredScriptURL);
 
       // For a profile call without mappings, it must return the original URL
       const parsedTraceWithoutMappings = parsedTraceFromProfileCalls([profileCallWithNoMappings]);
       const mapperWithoutMappings = new Trace.EntityMapper.EntityMapper(parsedTraceWithoutMappings);
-      resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTraceWithoutMappings, mapperWithoutMappings);
+      resolver = new SourceMapsResolver(parsedTraceWithoutMappings, mapperWithoutMappings);
       await resolver.install();
-      sourceMappedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(
-          parsedTraceWithoutMappings, profileCallWithNoMappings);
+      sourceMappedURL = SourceMapsResolver.resolvedURLForEntry(parsedTraceWithoutMappings, profileCallWithNoMappings);
       assert.strictEqual(sourceMappedURL, genScriptURL);
     });
   });
@@ -254,8 +253,8 @@ describeWithMockConnection('SourceMapsResolver', () => {
       const parsedTrace = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
       const listener = sinon.spy();
 
-      const sourceMapsResolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
-      sourceMapsResolver.addEventListener(Utils.SourceMapsResolver.SourceMappingsUpdated.eventName, listener);
+      const sourceMapsResolver = new SourceMapsResolver(parsedTrace);
+      sourceMapsResolver.addEventListener(SourceMappingsUpdated.eventName, listener);
       await sourceMapsResolver.install();
       sinon.assert.notCalled(listener);
     });
@@ -306,7 +305,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
       mapper.mappings().eventsByEntity.set(testEntity, [profileCall, profileCallUnmapped]);
       mapper.mappings().createdEntityCache.set('example-domain.com', testEntity);
 
-      const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace, mapper);
+      const resolver = new SourceMapsResolver(parsedTrace, mapper);
       // This should update the entities
       await resolver.install();
       const afterEntityOfEvent = mapper.entityForEvent(profileCall);

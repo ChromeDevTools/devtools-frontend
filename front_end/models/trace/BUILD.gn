@@ -61,6 +61,7 @@ devtools_entrypoint("bundle") {
     "../../ui/legacy/components/utils/*",
     "../ai_assistance/*",
     "../live-metrics/*",
+    "../trace_source_maps_resolver/*",
     "./*",
   ]
 

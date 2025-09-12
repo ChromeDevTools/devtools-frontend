@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import type * as Protocol from '../../../generated/protocol.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
-import * as SourceMapScopes from '../../../models/source_map_scopes/source_map_scopes.js';
-import * as Trace from '../../../models/trace/trace.js';
-import * as Workspace from '../../../models/workspace/workspace.js';
+import type * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../bindings/bindings.js';
+import * as SourceMapScopes from '../source_map_scopes/source_map_scopes.js';
+import * as Trace from '../trace/trace.js';
+import * as Workspace from '../workspace/workspace.js';
 
 interface ResolvedCodeLocationData {
   name: string|null;

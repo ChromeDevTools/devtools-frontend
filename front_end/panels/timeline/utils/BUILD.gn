@@ -17,7 +17,6 @@ devtools_module("utils") {
     "IgnoreList.ts",
     "ImageCache.ts",
     "InsightAIContext.ts",
-    "SourceMapsResolver.ts",
     "Treemap.ts",
   ]
 
@@ -30,6 +29,7 @@ devtools_module("utils") {
     "../../../models/crux-manager:bundle",
     "../../../models/source_map_scopes:bundle",
     "../../../models/trace:bundle",
+    "../../../models/trace_source_maps_resolver:bundle",
     "../../../models/workspace:bundle",
     "../../../panels/mobile_throttling:bundle",
     "../../../ui/legacy:bundle",
@@ -69,7 +69,6 @@ ts_library("unittests") {
     "IgnoreList.test.ts",
     "ImageCache.test.ts",
     "InsightAIContext.test.ts",
-    "SourceMapsResolver.test.ts",
     "Treemap.test.ts",
   ]
 

@@ -157,6 +157,7 @@ group("unittests") {
     "models/trace/lantern/metrics:unittests",
     "models/trace/lantern/simulation:unittests",
     "models/trace/types:unittests",
+    "models/trace_source_maps_resolver:unittests",
     "models/workspace:unittests",
     "models/workspace_diff:unittests",
     "panels/accessibility:unittests",

@@ -67,6 +67,7 @@ devtools_entrypoint("bundle") {
     "../persistence/*",
     "../source_map_scopes/*",
     "../stack_trace/*",
+    "../trace_source_maps_resolver/*",
     "../workspace_diff/*",
   ]
 

@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
   dispatchClickEvent,
@@ -263,7 +264,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         Renderer: makeMockRendererHandlerData([profileCall]),
       });
 
-      const resolver = new Timeline.Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
+      const resolver = new SourceMapsResolver.SourceMapsResolver(parsedTrace);
       await resolver.install();
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
@@ -312,7 +313,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         Renderer: makeMockRendererHandlerData([functionCall]),
       });
 
-      const resolver = new Timeline.Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
+      const resolver = new SourceMapsResolver.SourceMapsResolver(parsedTrace);
       await resolver.install();
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
@@ -1495,7 +1496,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       }
 
       // Fake that we resolved the entry's name from a sourcemap.
-      Timeline.Utils.SourceMapsResolver.SourceMapsResolver.storeResolvedCodeDataForCallFrame(
+      SourceMapsResolver.SourceMapsResolver.storeResolvedCodeDataForCallFrame(
           profileEntry.callFrame, {name: 'resolved-function-test', devtoolsLocation: null, script: null});
 
       const title = Timeline.TimelineUIUtils.TimelineUIUtils.eventTitle(profileEntry);

@@ -9,6 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {
   addDecorationToEvent,
@@ -545,22 +546,25 @@ export class ThreadAppender implements TrackAppender {
 
     if (Trace.Types.Events.isProfileCall(event)) {
       if (event.callFrame.functionName === '(idle)') {
-        return Utils.EntryStyles.getCategoryStyles().idle.getComputedColorValue();
+        return categoryColorValue(Utils.EntryStyles.getCategoryStyles().idle);
       }
       if (event.callFrame.functionName === '(program)') {
-        return Utils.EntryStyles.getCategoryStyles().other.getComputedColorValue();
+        return categoryColorValue(Utils.EntryStyles.getCategoryStyles().other);
       }
       if (event.callFrame.scriptId === '0') {
         // If we can not match this frame to a script, return the
         // generic "scripting" color.
-        return Utils.EntryStyles.getCategoryStyles().scripting.getComputedColorValue();
+        return categoryColorValue(Utils.EntryStyles.getCategoryStyles().scripting);
       }
       // Otherwise, return a color created based on its URL.
       return this.#colorGenerator.colorForID(event.callFrame.url);
     }
-    const defaultColor =
-        Utils.EntryStyles.getEventStyle(event.name as Trace.Types.Events.Name)?.category.getComputedColorValue();
-    return defaultColor || Utils.EntryStyles.getCategoryStyles().other.getComputedColorValue();
+    const eventStyles = Utils.EntryStyles.getEventStyle(event.name as Trace.Types.Events.Name);
+    if (eventStyles) {
+      return categoryColorValue(eventStyles.category);
+    }
+
+    return categoryColorValue(Utils.EntryStyles.getCategoryStyles().other);
   }
 
   /**
@@ -586,4 +590,8 @@ export class ThreadAppender implements TrackAppender {
     const selfTime = this.#parsedTrace.data.Renderer.entryToNode.get(event)?.selfTime;
     info.formattedTime = getDurationString(event.dur, selfTime);
   }
+}
+
+function categoryColorValue(category: Utils.EntryStyles.TimelineCategory): string {
+  return ThemeSupport.ThemeSupport.instance().getComputedValue(category.cssVariable);
 }

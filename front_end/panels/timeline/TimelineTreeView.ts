@@ -13,6 +13,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ActiveFilters} from './ActiveFilters.js';
@@ -989,7 +990,11 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case AggregatedTimelineTreeView.GroupBy.Category: {
         const idIsValid = id && Utils.EntryStyles.stringIsEventCategory(id);
         const category = idIsValid ? categories[id] || categories['other'] : {title: unattributed, color: unattributed};
-        return {name: category.title, color: category.color, icon: undefined};
+
+        const color = category instanceof Utils.EntryStyles.TimelineCategory ?
+            ThemeSupport.ThemeSupport.instance().getComputedValue(category.cssVariable) :
+            category.color;
+        return {name: category.title, color, icon: undefined};
       }
 
       case AggregatedTimelineTreeView.GroupBy.Domain:

@@ -475,9 +475,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
       ThemeSupport.ThemeSupport.clearThemeCache();
     });
 
-    it('should return the correct rgb value for a corresponding CSS variable', function() {
-      const parsedColor = Utils.EntryStyles.getCategoryStyles().scripting.getComputedColorValue();
-      assert.strictEqual('rgb(2 2 2)', parsedColor);
+    it('should return the right color', function() {
+      const parsedColor = Utils.EntryStyles.getCategoryStyles().scripting.cssVariable;
+      assert.strictEqual(parsedColor, '--app-color-scripting');
     });
 
     it('should return the color as a CSS variable', function() {
@@ -1515,7 +1515,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const profileCalls = thread.entries.filter(entry => Trace.Types.Events.isProfileCall(entry));
       const style = Timeline.TimelineUIUtils.TimelineUIUtils.eventStyle(profileCalls[0]);
       assert.strictEqual(style.category.name, 'scripting');
-      assert.strictEqual(style.category.color, 'rgb(250 204 21 / 100%)');
+      assert.strictEqual(style.category.cssVariable, '--app-color-scripting');
     });
   });
 

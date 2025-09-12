@@ -51,6 +51,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {getDurationString} from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
@@ -604,11 +605,12 @@ export class TimelineUIUtils {
     if (Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
       return Extensions.ExtensionUI.extensionEntryColor(event);
     }
-    let parsedColor = TimelineUIUtils.eventStyle(event).category.getComputedColorValue();
+    const themeSupport = ThemeSupport.ThemeSupport.instance();
+    let parsedColor = themeSupport.getComputedValue(TimelineUIUtils.eventStyle(event).category.cssVariable);
     // This event is considered idle time but still rendered as a scripting event here
     // to connect the StreamingCompileScriptParsing events it belongs to.
     if (event.name === Trace.Types.Events.Name.STREAMING_COMPILE_SCRIPT_WAITING) {
-      parsedColor = Utils.EntryStyles.getCategoryStyles().scripting.getComputedColorValue();
+      parsedColor = themeSupport.getComputedValue(Utils.EntryStyles.getCategoryStyles().scripting.cssVariable);
       if (!parsedColor) {
         throw new Error('Unable to parse color from getCategoryStyles().scripting.color');
       }

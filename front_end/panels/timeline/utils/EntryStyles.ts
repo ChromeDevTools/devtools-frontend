@@ -5,7 +5,6 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
-import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 
 const UIStrings = {
   /**
@@ -558,18 +557,16 @@ export class TimelineCategory {
   name: EventCategory;
   title: Platform.UIString.LocalizedString;
   visible: boolean;
-  childColor: string;
-  #color: string;
   #hidden?: boolean;
+  #cssVariable: `--app-color-${string}`;
 
   constructor(
-      name: EventCategory, title: Platform.UIString.LocalizedString, visible: boolean, childColor: string,
-      color: string) {
+      name: EventCategory, title: Platform.UIString.LocalizedString, visible: boolean,
+      cssVariable: `--app-color-${string}`) {
     this.name = name;
     this.title = title;
     this.visible = visible;
-    this.childColor = childColor;
-    this.#color = color;
+    this.#cssVariable = cssVariable;
     this.hidden = false;
   }
 
@@ -577,15 +574,12 @@ export class TimelineCategory {
     return Boolean(this.#hidden);
   }
 
-  get color(): string {
-    return this.getComputedColorValue();
-  }
-  getCSSValue(): string {
-    return `var(${this.#color})`;
+  get cssVariable(): string {
+    return this.#cssVariable;
   }
 
-  getComputedColorValue(): string {
-    return ThemeSupport.ThemeSupport.instance().getComputedValue(this.#color);
+  getCSSValue(): string {
+    return `var(${this.#cssVariable})`;
   }
 
   set hidden(hidden: boolean) {
@@ -630,41 +624,25 @@ export function getCategoryStyles(): CategoryPalette {
     return categoryStyles;
   }
   categoryStyles = {
-    loading: new TimelineCategory(
-        EventCategory.LOADING, i18nString(UIStrings.loading), true, '--app-color-loading-children',
-        '--app-color-loading'),
+    loading: new TimelineCategory(EventCategory.LOADING, i18nString(UIStrings.loading), true, '--app-color-loading'),
     experience: new TimelineCategory(
-        EventCategory.EXPERIENCE, i18nString(UIStrings.experience), false, '--app-color-rendering-children',
-        '--app-color-rendering'),
-    messaging: new TimelineCategory(
-        EventCategory.MESSAGING, i18nString(UIStrings.messaging), true, '--app-color-messaging-children',
-        '--app-color-messaging'),
-    scripting: new TimelineCategory(
-        EventCategory.SCRIPTING, i18nString(UIStrings.scripting), true, '--app-color-scripting-children',
-        '--app-color-scripting'),
-    rendering: new TimelineCategory(
-        EventCategory.RENDERING, i18nString(UIStrings.rendering), true, '--app-color-rendering-children',
-        '--app-color-rendering'),
-    painting: new TimelineCategory(
-        EventCategory.PAINTING, i18nString(UIStrings.painting), true, '--app-color-painting-children',
-        '--app-color-painting'),
-    gpu: new TimelineCategory(
-        EventCategory.GPU, i18nString(UIStrings.gpu), false, '--app-color-painting-children', '--app-color-painting'),
-    async: new TimelineCategory(
-        EventCategory.ASYNC, i18nString(UIStrings.async), false, '--app-color-async-children', '--app-color-async'),
-    other: new TimelineCategory(
-        EventCategory.OTHER, i18nString(UIStrings.system), false, '--app-color-system-children', '--app-color-system'),
-    idle: new TimelineCategory(
-        EventCategory.IDLE, i18nString(UIStrings.idle), false, '--app-color-idle-children', '--app-color-idle'),
-    layout: new TimelineCategory(
-        EventCategory.LAYOUT, i18nString(UIStrings.layout), false, '--app-color-loading-children',
-        '--app-color-loading'),
+        EventCategory.EXPERIENCE, i18nString(UIStrings.experience), false, '--app-color-rendering'),
+    messaging:
+        new TimelineCategory(EventCategory.MESSAGING, i18nString(UIStrings.messaging), true, '--app-color-messaging'),
+    scripting:
+        new TimelineCategory(EventCategory.SCRIPTING, i18nString(UIStrings.scripting), true, '--app-color-scripting'),
+    rendering:
+        new TimelineCategory(EventCategory.RENDERING, i18nString(UIStrings.rendering), true, '--app-color-rendering'),
+    painting:
+        new TimelineCategory(EventCategory.PAINTING, i18nString(UIStrings.painting), true, '--app-color-painting'),
+    gpu: new TimelineCategory(EventCategory.GPU, i18nString(UIStrings.gpu), false, '--app-color-painting'),
+    async: new TimelineCategory(EventCategory.ASYNC, i18nString(UIStrings.async), false, '--app-color-async'),
+    other: new TimelineCategory(EventCategory.OTHER, i18nString(UIStrings.system), false, '--app-color-system'),
+    idle: new TimelineCategory(EventCategory.IDLE, i18nString(UIStrings.idle), false, '--app-color-idle'),
+    layout: new TimelineCategory(EventCategory.LAYOUT, i18nString(UIStrings.layout), false, '--app-color-loading'),
     rasterizing: new TimelineCategory(
-        EventCategory.RASTERIZING, i18nString(UIStrings.rasterizing), false, '--app-color-children',
-        '--app-color-scripting'),
-    drawing: new TimelineCategory(
-        EventCategory.DRAWING, i18nString(UIStrings.drawing), false, '--app-color-rendering-children',
-        '--app-color-rendering'),
+        EventCategory.RASTERIZING, i18nString(UIStrings.rasterizing), false, '--app-color-scripting'),
+    drawing: new TimelineCategory(EventCategory.DRAWING, i18nString(UIStrings.drawing), false, '--app-color-rendering'),
   };
   return categoryStyles;
 }

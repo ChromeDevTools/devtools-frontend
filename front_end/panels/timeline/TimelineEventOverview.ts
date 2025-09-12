@@ -9,6 +9,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Utils from './utils/utils.js';
@@ -242,7 +243,8 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
           quantizer.appendInterval(this.#start + timeRange + quantTime, idleIndex);  // Kick drawing the last bucket.
           for (let i = categoryOrder.length - 1; i > 0; --i) {
             paths[i].lineTo(width, height);
-            const computedColorValue = categories[categoryOrder[i]].getComputedColorValue();
+            const computedColorValue =
+                ThemeSupport.ThemeSupport.instance().getComputedValue(categories[categoryOrder[i]].cssVariable);
             context.fillStyle = computedColorValue;
             context.fill(paths[i]);
             context.strokeStyle = 'white';

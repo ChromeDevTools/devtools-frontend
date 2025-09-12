@@ -20,6 +20,7 @@ import { OpenRouterProvider } from '../LLM/OpenRouterProvider.js';
 import { createLogger } from '../core/Logger.js';
 import { isEvaluationEnabled, getEvaluationConfig } from '../common/EvaluationConfig.js';
 import { EvaluationAgent } from '../evaluation/remote/EvaluationAgent.js';
+import { BUILD_CONFIG } from '../core/BuildConfig.js';
 // Import of LiveAgentSessionComponent is not required here; the element is
 // registered by ChatView where it is used.
 
@@ -1395,9 +1396,8 @@ export class AIChatPanel extends UI.Panel.Panel {
    * @returns true if at least one provider has valid credentials
    */
   #hasAnyProviderCredentials(): boolean {
-    logger.info('=== CHECKING ALL PROVIDER CREDENTIALS ===');
+    
     const selectedProvider = localStorage.getItem(PROVIDER_SELECTION_KEY) || 'openai';
-    logger.info('Currently selected provider:', selectedProvider);
     
     // Check all providers except LiteLLM (unless LiteLLM is selected)
     const providers = ['openai', 'groq', 'openrouter'];
@@ -1407,19 +1407,13 @@ export class AIChatPanel extends UI.Panel.Panel {
       providers.push('litellm');
     }
     
-    logger.info('Providers to check:', providers);
-    
     for (const provider of providers) {
-      logger.info(`Checking provider: ${provider}`);
       const validation = LLMClient.validateProviderCredentials(provider);
-      logger.info(`Provider ${provider} validation result:`, validation);
       if (validation.isValid) {
-        logger.info(`✅ Found valid credentials for provider: ${provider}`);
         return true;
       }
     }
     
-    logger.info('❌ No valid credentials found for any provider');
     return false;
   }
 
@@ -1997,12 +1991,11 @@ export class AIChatPanel extends UI.Panel.Panel {
         inputPlaceholder: this.#getInputPlaceholderText(),
         // Add OAuth login state
         showOAuthLogin: (() => {
+          if (BUILD_CONFIG.AUTOMATED_MODE) {
+            return false;
+          }
           const hasCredentials = this.#hasAnyProviderCredentials();
-          const showOAuth = !hasCredentials;
-          logger.info('=== OAUTH LOGIN UI DECISION ===');
-          logger.info('hasAnyProviderCredentials:', hasCredentials);
-          logger.info('showOAuthLogin will be set to:', showOAuth);
-          return showOAuth;
+          return !hasCredentials;
         })(),
         onOAuthLogin: this.#handleOAuthLogin.bind(this),
       };

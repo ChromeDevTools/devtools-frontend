@@ -4,6 +4,7 @@
 
 import { createLogger } from '../core/Logger.js';
 import { WebSocketRPCClient } from './WebSocketRPCClient.js';
+import { BUILD_CONFIG } from '../core/BuildConfig.js';
 
 const logger = createLogger('EvaluationConfig');
 
@@ -49,6 +50,13 @@ class EvaluationConfigStore {
 
   private loadFromLocalStorage(): void {
     try {
+      // In automated mode, set default to enabled if not already set
+      if (BUILD_CONFIG.AUTOMATED_MODE && 
+          localStorage.getItem('ai_chat_evaluation_enabled') === null) {
+        localStorage.setItem('ai_chat_evaluation_enabled', 'true');
+        logger.info('Automated mode: defaulted evaluation to enabled');
+      }
+
       const enabled = localStorage.getItem('ai_chat_evaluation_enabled') === 'true';
       const endpoint = localStorage.getItem('ai_chat_evaluation_endpoint') || 'ws://localhost:8080';
       const secretKey = localStorage.getItem('ai_chat_evaluation_secret_key') || '';

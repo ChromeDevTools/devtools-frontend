@@ -47,7 +47,16 @@ RUN git remote add upstream https://github.com/BrowserOperator/browser-operator-
 RUN git fetch upstream
 RUN git checkout upstream/main
 
-# Build Browser Operator version
+# Allow configurable automated mode
+ARG AUTOMATED_MODE=false
+
+# Set build-time flags based on Docker arg
+RUN if [ "$AUTOMATED_MODE" = "true" ]; then \
+      sed -i 's/AUTOMATED_MODE: false/AUTOMATED_MODE: true/' \
+        front_end/panels/ai_chat/core/BuildConfig.ts; \
+    fi
+
+# Build Browser Operator version with current changes
 RUN npm run build
 
 # Production stage

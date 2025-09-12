@@ -22,8 +22,11 @@ The Docker setup uses a multi-stage build process:
 From the repository root directory:
 
 ```bash
-# Build the Docker image
-docker build -f docker/Dockerfile -t devtools-frontend .
+# Build with automated mode (default - bypasses OAuth, auto-enables evaluation)
+docker build -f docker/Dockerfile -t browser-operator-automated .
+
+# Build with normal mode (requires manual authentication)
+docker build -f docker/Dockerfile --build-arg AUTOMATED_MODE=false -t browser-operator-manual .
 
 # Or use docker-compose (recommended)
 docker-compose -f docker/docker-compose.yml build
@@ -32,8 +35,11 @@ docker-compose -f docker/docker-compose.yml build
 ### Running the Container
 
 ```bash
-# Using docker run
-docker run -d -p 8000:8000 --name devtools-frontend devtools-frontend
+# Automated mode (no authentication required, evaluation auto-enabled)
+docker run -d -p 8000:8000 --name browser-operator-automated browser-operator-automated
+
+# Manual mode (requires OAuth/API key setup)
+docker run -d -p 8000:8000 --name browser-operator-manual browser-operator-manual
 
 # Or using docker-compose (recommended)
 docker-compose -f docker/docker-compose.yml up -d
@@ -65,6 +71,29 @@ docker/
 ├── nginx.conf          # Nginx server configuration
 ├── docker-compose.yml  # Docker Compose configuration
 └── README.md          # This file
+```
+
+## Automated Mode vs Manual Mode
+
+### Automated Mode (Default)
+- **Purpose**: Optimized for Docker/CI environments and automated workflows
+- **Authentication**: Bypasses OAuth panel - no manual setup required  
+- **Evaluation**: Automatically enables evaluation mode for API wrapper connectivity
+- **Use cases**: Production deployments, CI/CD, headless automation, API integration
+
+### Manual Mode  
+- **Purpose**: Standard interactive usage
+- **Authentication**: Requires OAuth setup or API key configuration
+- **Evaluation**: Manual enable/disable in settings
+- **Use cases**: Development, interactive testing, manual usage
+
+```bash
+# Example automated mode workflow
+docker build -f docker/Dockerfile -t browser-operator-automated .
+docker run -d -p 8000:8000 --name browser-operator browser-operator-automated
+
+# Ready to use immediately - no authentication required!
+# Evaluation server can connect automatically via WebSocket (ws://localhost:8080)
 ```
 
 ## Advanced Usage

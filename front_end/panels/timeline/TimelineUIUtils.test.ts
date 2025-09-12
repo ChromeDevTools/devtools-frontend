@@ -623,17 +623,17 @@ describeWithMockConnection('TimelineUIUtils', function() {
         };
       });
 
-      const updateLayoutTreeEvent = allThreadEntriesInTrace(parsedTrace).find(event => {
-        return Trace.Types.Events.isUpdateLayoutTree(event) &&
+      const recalcStyleEvent = allThreadEntriesInTrace(parsedTrace).find(event => {
+        return Trace.Types.Events.isRecalcStyle(event) &&
             event.args.beginData?.stackTrace?.[0].functionName === 'testFuncs.changeAttributeAndDisplay';
       });
-      if (!updateLayoutTreeEvent) {
+      if (!recalcStyleEvent) {
         throw new Error('Could not find update layout tree event');
       }
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
           parsedTrace,
-          updateLayoutTreeEvent,
+          recalcStyleEvent,
           new Components.Linkifier.Linkifier(),
           false,
           null,
@@ -951,7 +951,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       TraceLoader.initTraceBoundsManager(parsedTrace);
       const [process] = parsedTrace.data.Renderer.processes.values();
       const [thread] = process.threads.values();
-      const stylesRecalc = thread.entries.filter(entry => entry.name === Trace.Types.Events.Name.UPDATE_LAYOUT_TREE);
+      const stylesRecalc = thread.entries.filter(entry => entry.name === Trace.Types.Events.Name.RECALC_STYLE);
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
           parsedTrace,

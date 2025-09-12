@@ -1949,8 +1949,8 @@ export function isSelectorStats(event: Event): event is SelectorStats {
   return event.name === Name.SELECTOR_STATS;
 }
 
-export interface UpdateLayoutTree extends Complete {
-  name: Name.UPDATE_LAYOUT_TREE;
+export interface RecalcStyle extends Complete {
+  name: Name.RECALC_STYLE;
   args: Args&{
     elementCount: number,
     beginData?: {
@@ -1960,8 +1960,10 @@ export interface UpdateLayoutTree extends Complete {
     },
   };
 }
-export function isUpdateLayoutTree(event: Event): event is UpdateLayoutTree {
-  return event.name === Name.UPDATE_LAYOUT_TREE;
+
+/** The real trace event is called 'UpdateLayoutTree' but we've aliased it for convenience. */
+export function isRecalcStyle(event: Event): event is RecalcStyle {
+  return event.name === Name.RECALC_STYLE;
 }
 
 export interface Layout extends Complete {
@@ -2984,7 +2986,8 @@ export const enum Name {
   /* Layout */
   SCHEDULE_STYLE_RECALCULATION = 'ScheduleStyleRecalculation',
   LAYOUT = 'Layout',
-  UPDATE_LAYOUT_TREE = 'UpdateLayoutTree',
+  /** The real trace event is called 'UpdateLayoutTree' but we've aliased it for convenience. */
+  RECALC_STYLE = 'UpdateLayoutTree',
   INVALIDATE_LAYOUT = 'InvalidateLayout',
   LAYOUT_INVALIDATION_TRACKING = 'LayoutInvalidationTracking',
   COMPUTE_INTERSECTION = 'ComputeIntersections',

@@ -1253,7 +1253,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      case Trace.Types.Events.Name.UPDATE_LAYOUT_TREE: {
+      case Trace.Types.Events.Name.RECALC_STYLE: {
         contentHelper.appendTextRow(i18nString(UIStrings.elementsAffected), unsafeEventArgs['elementCount']);
 
         const selectorStatsSetting =
@@ -1729,7 +1729,7 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.FIRE_IDLE_CALLBACK:
         initiatorStackLabel = i18nString(UIStrings.idleCallbackRequested);
         break;
-      case Trace.Types.Events.Name.UPDATE_LAYOUT_TREE:
+      case Trace.Types.Events.Name.RECALC_STYLE:
         initiatorStackLabel = i18nString(UIStrings.firstInvalidated);
         stackLabel = i18nString(UIStrings.recalculationForced);
         break;

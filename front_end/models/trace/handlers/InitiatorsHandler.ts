@@ -17,11 +17,7 @@ let lastScheduleStyleRecalcByFrame = new Map<string, Types.Events.ScheduleStyleR
 // invalidated.
 let lastInvalidationEventForFrame = new Map<string, Types.Events.Event>();
 
-// Important: although the event is called UpdateLayoutTree, in the UI we
-// present these to the user as "Recalculate Style". So don't get confused!
-// These are the same - just UpdateLayoutTree is what the event from Chromium
-// is called.
-let lastUpdateLayoutTreeByFrame = new Map<string, Types.Events.UpdateLayoutTree>();
+let lastRecalcByFrame = new Map<string, Types.Events.RecalcStyle>();
 
 // These two maps store the same data but in different directions.
 // For a given event, tell me what its initiator was. An event can only have one initiator.
@@ -39,7 +35,7 @@ let schedulePostTaskCallbackEventsById = new Map<number, Types.Events.SchedulePo
 export function reset(): void {
   lastScheduleStyleRecalcByFrame = new Map();
   lastInvalidationEventForFrame = new Map();
-  lastUpdateLayoutTreeByFrame = new Map();
+  lastRecalcByFrame = new Map();
   timerInstallEventsById = new Map();
   eventToInitiatorMap = new Map();
   initiatorToEventsMap = new Map();
@@ -68,14 +64,11 @@ function storeInitiator(data: {initiator: Types.Events.Event, event: Types.Event
 export function handleEvent(event: Types.Events.Event): void {
   if (Types.Events.isScheduleStyleRecalculation(event)) {
     lastScheduleStyleRecalcByFrame.set(event.args.data.frame, event);
-  } else if (Types.Events.isUpdateLayoutTree(event)) {
-    // IMPORTANT: although the trace event is called UpdateLayoutTree, this
-    // represents a Styles Recalculation. This event in the timeline is shown to
-    // the user as "Recalculate Styles."
+  } else if (Types.Events.isRecalcStyle(event)) {
     if (event.args.beginData) {
-      // Store the last UpdateLayout event: we use this when we see an
+      // Store the last RecalcStyle event: we use this when we see an
       // InvalidateLayout and try to figure out its initiator.
-      lastUpdateLayoutTreeByFrame.set(event.args.beginData.frame, event);
+      lastRecalcByFrame.set(event.args.beginData.frame, event);
 
       // If this frame has seen a ScheduleStyleRecalc event, then that event is
       // considered to be the initiator of this StylesRecalc.
@@ -96,17 +89,17 @@ export function handleEvent(event: Types.Events.Event): void {
     // cause of this layout invalidation.
     if (!lastInvalidationEventForFrame.has(event.args.data.frame)) {
       // 1. If we have not had an invalidation event for this frame
-      // 2. AND we have had an UpdateLayoutTree for this frame
-      // 3. AND the UpdateLayoutTree event ended AFTER the InvalidateLayout startTime
-      // 4. AND we have an initiator for the UpdateLayoutTree event
-      // 5. Then we set the last invalidation event for this frame to be the UpdateLayoutTree's initiator.
-      const lastUpdateLayoutTreeForFrame = lastUpdateLayoutTreeByFrame.get(event.args.data.frame);
-      if (lastUpdateLayoutTreeForFrame) {
-        const {endTime} = Helpers.Timing.eventTimingsMicroSeconds(lastUpdateLayoutTreeForFrame);
-        const initiatorOfUpdateLayout = eventToInitiatorMap.get(lastUpdateLayoutTreeForFrame);
+      // 2. AND we have had an RecalcStyle for this frame
+      // 3. AND the RecalcStyle event ended AFTER the InvalidateLayout startTime
+      // 4. AND we have an initiator for the RecalcStyle event
+      // 5. Then we set the last invalidation event for this frame to be the RecalcStyle's initiator.
+      const lastRecalcStyleForFrame = lastRecalcByFrame.get(event.args.data.frame);
+      if (lastRecalcStyleForFrame) {
+        const {endTime} = Helpers.Timing.eventTimingsMicroSeconds(lastRecalcStyleForFrame);
+        const initiatorOfRecalcStyle = eventToInitiatorMap.get(lastRecalcStyleForFrame);
 
-        if (initiatorOfUpdateLayout && endTime && endTime > event.ts) {
-          invalidationInitiator = initiatorOfUpdateLayout;
+        if (initiatorOfRecalcStyle && endTime && endTime > event.ts) {
+          invalidationInitiator = initiatorOfRecalcStyle;
         }
       }
     }

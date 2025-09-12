@@ -78,7 +78,7 @@ export type SlowCSSSelectorInsightModel = InsightModel<typeof UIStrings, {
 function aggregateSelectorStats(data: SelectorStatsData, context: InsightSetContext): SelectorTiming[] {
   const selectorMap = new Map<String, SelectorTiming>();
 
-  for (const [event, value] of data.dataForUpdateLayoutEvent) {
+  for (const [event, value] of data.dataForRecalcStyleEvent) {
     if (event.args.beginData?.frame !== context.frameId) {
       continue;
     }
@@ -159,7 +159,7 @@ export function generateInsight(
   }
 
   return finalize({
-    // TODO: should we identify UpdateLayout events as linked to this insight?
+    // TODO: should we identify RecalcStyle events as linked to this insight?
     relatedEvents: [],
     totalElapsedMs: Types.Timing.Milli(totalElapsedUs / 1000.0),
     totalMatchAttempts,

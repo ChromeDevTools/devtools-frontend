@@ -454,7 +454,7 @@ export function makeMockRendererHandlerData(
     entries,
     profileCalls: entries.filter(Trace.Types.Events.isProfileCall),
     layoutEvents: entries.filter(Trace.Types.Events.isLayout),
-    updateLayoutTreeEvents: entries.filter(Trace.Types.Events.isUpdateLayoutTree),
+    recalcStyleEvents: entries.filter(Trace.Types.Events.isRecalcStyle),
   };
 
   const mockProcess: Trace.Handlers.ModelHandlers.Renderer.RendererProcess = {
@@ -807,7 +807,7 @@ export function getBaseTraceHandlerData(overrides: Partial<Trace.Handlers.Types.
       frames: new Map(),
     },
     SelectorStats: {
-      dataForUpdateLayoutEvent: new Map(),
+      dataForRecalcStyleEvent: new Map(),
       invalidatedNodeList: [],
     },
     Warnings: {

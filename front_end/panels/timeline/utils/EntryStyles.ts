@@ -707,7 +707,7 @@ export function maybeInitSylesMap(): EventStylesMap {
         defaultCategoryStyles.rendering,
         ),
 
-    [Trace.Types.Events.Name.UPDATE_LAYOUT_TREE]:
+    [Trace.Types.Events.Name.RECALC_STYLE]:
         new TimelineRecordStyle(i18nString(UIStrings.recalculateStyle), defaultCategoryStyles.rendering),
 
     [Trace.Types.Events.Name.INVALIDATE_LAYOUT]: new TimelineRecordStyle(

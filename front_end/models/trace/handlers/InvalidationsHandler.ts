@@ -4,41 +4,68 @@
 
 import * as Types from '../types/types.js';
 
-let invalidationsForEvent = new Map<Types.Events.Event, Types.Events.InvalidationTrackingEvent[]>();
-let invalidationCountForEvent = new Map<Types.Events.Event, number>();
+/**
+ * @file Associates invalidation to recalc/layout events; mostly used in "invalidation tracking" experiment.
+ * "Invalidations" == "mutations" == "damage".
+ * A DOM change that means we need to recompute style or layout is an invalidation that's tracked here.
+ * If the experiment `timeline-invalidation-tracking` is enabled, the `disabledByDefault('devtools.timeline.invalidationTracking')` trace category is enabled, which contains most of these events.
+ */
 
-let lastRecalcStyleEvent: Types.Events.UpdateLayoutTree|null = null;
+interface InvalidationsStatePerFrame {
+  invalidationsForEvent: Map<Types.Events.Event, Types.Events.InvalidationTrackingEvent[]>;
+  invalidationCountForEvent: Map<Types.Events.Event, number>;
+  lastRecalcStyleEvent: Types.Events.RecalcStyle|null;
+  hasPainted: boolean;
+  pendingInvalidations: Types.Events.InvalidationTrackingEvent[];
+}
 
-// Used to track paints so we track invalidations correctly per paint.
-let hasPainted = false;
-
-let allInvalidationTrackingEvents: Types.Events.InvalidationTrackingEvent[] = [];
+const frameStateByFrame = new Map<string, InvalidationsStatePerFrame>();
+let maxInvalidationsPerEvent: number|null = null;
 
 export function reset(): void {
-  invalidationsForEvent = new Map();
-  invalidationCountForEvent = new Map();
-  lastRecalcStyleEvent = null;
-  allInvalidationTrackingEvents = [];
-  hasPainted = false;
+  frameStateByFrame.clear();
   maxInvalidationsPerEvent = null;
 }
 
-let maxInvalidationsPerEvent: number|null = null;
 export function handleUserConfig(userConfig: Types.Configuration.Configuration): void {
   maxInvalidationsPerEvent = userConfig.maxInvalidationEventsPerEvent;
 }
 
-function addInvalidationToEvent(event: Types.Events.Event, invalidation: Types.Events.InvalidationTrackingEvent): void {
-  const existingInvalidations = invalidationsForEvent.get(event) || [];
+function getState(frameId: string): InvalidationsStatePerFrame {
+  let frameState = frameStateByFrame.get(frameId);
+  if (!frameState) {
+    frameState = {
+      invalidationsForEvent: new Map(),
+      invalidationCountForEvent: new Map(),
+      lastRecalcStyleEvent: null,
+      pendingInvalidations: [],
+      hasPainted: false,
+    };
+    frameStateByFrame.set(frameId, frameState);
+  }
+  return frameState;
+}
+
+function getFrameId(event: Types.Events.Event): string|null {
+  if (Types.Events.isRecalcStyle(event) || Types.Events.isLayout(event)) {
+    return event.args.beginData?.frame ?? null;
+  }
+  return event.args?.data?.frame ?? null;
+}
+
+function addInvalidationToEvent(
+    frameState: InvalidationsStatePerFrame, event: Types.Events.Event,
+    invalidation: Types.Events.InvalidationTrackingEvent): void {
+  const existingInvalidations = frameState.invalidationsForEvent.get(event) || [];
   existingInvalidations.push(invalidation);
 
   if (maxInvalidationsPerEvent !== null && existingInvalidations.length > maxInvalidationsPerEvent) {
     existingInvalidations.shift();
   }
-  invalidationsForEvent.set(event, existingInvalidations);
+  frameState.invalidationsForEvent.set(event, existingInvalidations);
 
-  const count = invalidationCountForEvent.get(event) ?? 0;
-  invalidationCountForEvent.set(event, count + 1);
+  const count = frameState.invalidationCountForEvent.get(event) ?? 0;
+  frameState.invalidationCountForEvent.set(event, count + 1);
 }
 
 export function handleEvent(event: Types.Events.Event): void {
@@ -49,72 +76,68 @@ export function handleEvent(event: Types.Events.Event): void {
     return;
   }
 
-  if (Types.Events.isUpdateLayoutTree(event)) {
-    lastRecalcStyleEvent = event;
+  const frameId = getFrameId(event);
+  if (!frameId) {
+    return;
+  }
+  const thisFrame = getState(frameId);
+
+  if (Types.Events.isRecalcStyle(event)) {
+    thisFrame.lastRecalcStyleEvent = event;
 
     // Associate any prior invalidations with this recalc event.
-    for (const invalidation of allInvalidationTrackingEvents) {
+    for (const invalidation of thisFrame.pendingInvalidations) {
       if (Types.Events.isLayoutInvalidationTracking(invalidation)) {
         // LayoutInvalidation events cannot be associated with a LayoutTree
         // event.
         continue;
       }
-
-      const recalcFrameId = lastRecalcStyleEvent.args.beginData?.frame;
-
-      if (recalcFrameId && invalidation.args.data.frame === recalcFrameId) {
-        addInvalidationToEvent(event, invalidation);
-      }
+      addInvalidationToEvent(thisFrame, event, invalidation);
     }
     return;
   }
 
   if (Types.Events.isInvalidationTracking(event)) {
-    if (hasPainted) {
+    if (thisFrame.hasPainted) {
       // If we have painted, then we can clear out the list of all existing
       // invalidations, as we cannot associate them across frames.
-      allInvalidationTrackingEvents.length = 0;
-      lastRecalcStyleEvent = null;
-      hasPainted = false;
+      thisFrame.pendingInvalidations.length = 0;
+      thisFrame.lastRecalcStyleEvent = null;
+      thisFrame.hasPainted = false;
     }
 
-    // Style invalidation events can occur before and during recalc styles. When we get a recalc style event (aka UpdateLayoutTree), we check and associate any prior invalidations with it.
-    // But any invalidations that occur during a UpdateLayoutTree
+    // Style invalidation events can occur before and during recalc styles. When we get a recalc style event, we check and associate any prior invalidations with it.
+    // But any invalidations that occur during a RecalcStyle
     // event would be reported in trace events after. So each time we get an
     // invalidation that might be due to a style recalc, we check if the
     // timings overlap and if so associate them.
-    if (lastRecalcStyleEvent &&
+    if (thisFrame.lastRecalcStyleEvent &&
         (Types.Events.isScheduleStyleInvalidationTracking(event) ||
          Types.Events.isStyleRecalcInvalidationTracking(event) ||
          Types.Events.isStyleInvalidatorInvalidationTracking(event))) {
-      const recalcEndTime = lastRecalcStyleEvent.ts + (lastRecalcStyleEvent.dur || 0);
-      if (event.ts >= lastRecalcStyleEvent.ts && event.ts <= recalcEndTime &&
-          lastRecalcStyleEvent.args.beginData?.frame === event.args.data.frame) {
-        addInvalidationToEvent(lastRecalcStyleEvent, event);
+      const recalcLastRecalc = thisFrame.lastRecalcStyleEvent;
+      const recalcEndTime = recalcLastRecalc.ts + (recalcLastRecalc.dur || 0);
+      if (event.ts >= recalcLastRecalc.ts && event.ts <= recalcEndTime) {
+        addInvalidationToEvent(thisFrame, recalcLastRecalc, event);
       }
     }
 
-    allInvalidationTrackingEvents.push(event);
+    thisFrame.pendingInvalidations.push(event);
     return;
   }
 
   if (Types.Events.isPaint(event)) {
-    // Used to ensure that we do not create relationships across frames.
-    hasPainted = true;
+    thisFrame.hasPainted = true;
     return;
   }
 
   if (Types.Events.isLayout(event)) {
-    const layoutFrame = event.args.beginData.frame;
-    for (const invalidation of allInvalidationTrackingEvents) {
+    for (const invalidation of thisFrame.pendingInvalidations) {
       // The only invalidations that cause a Layout are LayoutInvalidations :)
       if (!Types.Events.isLayoutInvalidationTracking(invalidation)) {
         continue;
       }
-
-      if (invalidation.args.data.frame === layoutFrame) {
-        addInvalidationToEvent(event, invalidation);
-      }
+      addInvalidationToEvent(thisFrame, event, invalidation);
     }
   }
 }
@@ -128,6 +151,16 @@ interface InvalidationsData {
 }
 
 export function data(): InvalidationsData {
+  const invalidationsForEvent = new Map<Types.Events.Event, Types.Events.InvalidationTrackingEvent[]>();
+  const invalidationCountForEvent = new Map<Types.Events.Event, number>();
+  for (const frame of frameStateByFrame.values()) {
+    for (const [event, invalidations] of frame.invalidationsForEvent.entries()) {
+      invalidationsForEvent.set(event, invalidations);
+    }
+    for (const [event, count] of frame.invalidationCountForEvent.entries()) {
+      invalidationCountForEvent.set(event, count);
+    }
+  }
   return {
     invalidationsForEvent,
     invalidationCountForEvent,

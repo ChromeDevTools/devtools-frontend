@@ -19,22 +19,22 @@ interface InvalidatedNode {
   tts?: Types.Timing.Micro;
   subtree:
       boolean;  // Indicates if the invalidation applies solely to the node (false) or extends to all its descendants (true)
-  lastUpdateLayoutTreeEventTs: Types.Timing.Micro;
+  lastRecalcStyleEventTs: Types.Timing.Micro;
 }
 
-let lastUpdateLayoutTreeEvent: Types.Events.UpdateLayoutTree|null = null;
+let lastRecalcStyleEvent: Types.Events.RecalcStyle|null = null;
 let lastInvalidatedNode: InvalidatedNode|null = null;
 
-let selectorDataForUpdateLayoutTree = new Map<Types.Events.UpdateLayoutTree, {
+let selectorDataForRecalcStyle = new Map<Types.Events.RecalcStyle, {
   timings: Types.Events.SelectorTiming[],
 }>();
 
 let invalidatedNodeList = new Array<InvalidatedNode>();
 
 export function reset(): void {
-  lastUpdateLayoutTreeEvent = null;
+  lastRecalcStyleEvent = null;
   lastInvalidatedNode = null;
-  selectorDataForUpdateLayoutTree = new Map();
+  selectorDataForRecalcStyle = new Map();
   invalidatedNodeList = [];
 }
 
@@ -55,8 +55,8 @@ export function handleEvent(event: Types.Events.Event): void {
     }
   }
 
-  if (Types.Events.isSelectorStats(event) && lastUpdateLayoutTreeEvent && event.args.selector_stats) {
-    selectorDataForUpdateLayoutTree.set(lastUpdateLayoutTreeEvent, {
+  if (Types.Events.isSelectorStats(event) && lastRecalcStyleEvent && event.args.selector_stats) {
+    selectorDataForRecalcStyle.set(lastRecalcStyleEvent, {
       timings: event.args.selector_stats.selector_timings,
     });
     return;
@@ -80,14 +80,14 @@ export function handleEvent(event: Types.Events.Event): void {
         ts: event.ts,
         tts: event.tts,
         subtree: false,
-        lastUpdateLayoutTreeEventTs: lastUpdateLayoutTreeEvent ? lastUpdateLayoutTreeEvent.ts : Types.Timing.Micro(0),
+        lastRecalcStyleEventTs: lastRecalcStyleEvent ? lastRecalcStyleEvent.ts : Types.Timing.Micro(0),
       };
       invalidatedNodeList.push(lastInvalidatedNode);
     }
   }
 
-  if (Types.Events.isUpdateLayoutTree(event)) {
-    lastUpdateLayoutTreeEvent = event;
+  if (Types.Events.isRecalcStyle(event)) {
+    lastRecalcStyleEvent = event;
     return;
   }
 }
@@ -96,7 +96,7 @@ export async function finalize(): Promise<void> {
 }
 
 export interface SelectorStatsData {
-  dataForUpdateLayoutEvent: Map<Types.Events.UpdateLayoutTree, {
+  dataForRecalcStyleEvent: Map<Types.Events.RecalcStyle, {
     timings: Types.Events.SelectorTiming[],
   }>;
   invalidatedNodeList: InvalidatedNode[];
@@ -104,7 +104,7 @@ export interface SelectorStatsData {
 
 export function data(): SelectorStatsData {
   return {
-    dataForUpdateLayoutEvent: selectorDataForUpdateLayoutTree,
+    dataForRecalcStyleEvent: selectorDataForRecalcStyle,
     invalidatedNodeList,
   };
 }

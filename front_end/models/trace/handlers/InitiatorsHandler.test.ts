@@ -12,7 +12,7 @@ describeWithEnvironment('InitiatorsHandler', () => {
     Trace.Handlers.ModelHandlers.Initiators.reset();
   });
 
-  it('for an UpdateLayoutTree event it sets the initiator to the previous ScheduledStyleRecalculation event',
+  it('for an RecalcStyle event it sets the initiator to the previous ScheduledStyleRecalculation event',
      async function() {
        const traceEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
        for (const event of traceEvents) {
@@ -20,19 +20,19 @@ describeWithEnvironment('InitiatorsHandler', () => {
        }
        await Trace.Handlers.ModelHandlers.Initiators.finalize();
        const {eventToInitiator} = Trace.Handlers.ModelHandlers.Initiators.data();
-       const updateLayoutTreeEvent = traceEvents.find(event => {
-         return Trace.Types.Events.isUpdateLayoutTree(event) && event.ts === 122411039965;
+       const recalcStyleEvent = traceEvents.find(event => {
+         return Trace.Types.Events.isRecalcStyle(event) && event.ts === 122411039965;
        });
-       if (!updateLayoutTreeEvent || !Trace.Types.Events.isUpdateLayoutTree(updateLayoutTreeEvent)) {
+       if (!recalcStyleEvent || !Trace.Types.Events.isRecalcStyle(recalcStyleEvent)) {
          throw new Error('Could not find layout tree event.');
        }
-       const initiator = eventToInitiator.get(updateLayoutTreeEvent);
+       const initiator = eventToInitiator.get(recalcStyleEvent);
        if (!initiator) {
-         throw new Error('Did not find expected initiator for updateLayoutTreeEvent');
+         throw new Error('Did not find expected initiator for recalcStyleEvent');
        }
        assert.isTrue(Trace.Types.Events.isScheduleStyleRecalculation(initiator));
-       assert.strictEqual(updateLayoutTreeEvent.args.beginData?.frame, '25D2F12F1818C70B5BD4325CC9ACD8FF');
-       assert.strictEqual(updateLayoutTreeEvent.args.beginData?.frame, initiator.args?.data?.frame);
+       assert.strictEqual(recalcStyleEvent.args.beginData?.frame, '25D2F12F1818C70B5BD4325CC9ACD8FF');
+       assert.strictEqual(recalcStyleEvent.args.beginData?.frame, initiator.args?.data?.frame);
      });
 
   it('for a Layout event it sets the initiator to the last InvalidateLayout event on that frame', async function() {

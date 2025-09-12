@@ -268,8 +268,8 @@ describeWithEnvironment('StackTraceForTraceEvent', function() {
     profileCall1.callFrame.lineNumber = 0;
     profileCall2.callFrame.columnNumber = 0;
     profileCall2.callFrame.lineNumber = 0;
-    const traceEvent = makeCompleteEvent(Trace.Types.Events.Name.UPDATE_LAYOUT_TREE, 100, 10, '', pid, tid) as
-        Trace.Types.Events.UpdateLayoutTree;
+    const traceEvent = makeCompleteEvent(Trace.Types.Events.Name.RECALC_STYLE, 100, 10, '', pid, tid) as
+        Trace.Types.Events.RecalcStyle;
     const payloadCallStack = [
       {columnNumber: payloadColumnNumber, functionName: 'bar', lineNumber: payloadLineNumber, scriptId: '115', url: ''},
       {columnNumber: payloadColumnNumber, functionName: 'foo', lineNumber: payloadLineNumber, scriptId: '115', url: ''},

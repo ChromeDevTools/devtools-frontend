@@ -137,7 +137,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
    * If the user views a single event, this will be set to that single event, but if they are viewing a range of events, this will be set to an array.
    * If it's null, that means we have not rendered yet.
    */
-  #lastStatsSourceEventOrEvents: Trace.Types.Events.UpdateLayoutTree|Trace.Types.Events.UpdateLayoutTree[]|null = null;
+  #lastStatsSourceEventOrEvents: Trace.Types.Events.RecalcStyle|Trace.Types.Events.RecalcStyle[]|null = null;
   #view: View;
   #timings: SelectorTiming[] = [];
 
@@ -292,7 +292,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     return numberOfDescendentNode;
   }
 
-  private async updateInvalidationCount(events: Trace.Types.Events.UpdateLayoutTree[]): Promise<void> {
+  private async updateInvalidationCount(events: Trace.Types.Events.RecalcStyle[]): Promise<void> {
     if (!this.#parsedTrace) {
       return;
     }
@@ -322,7 +322,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       // aggregate invalidated nodes per (Selector + Recalc timestamp + Frame)
       for (const selector of invalidatedNode.selectorList) {
         const key = [
-          selector.selector, selector.styleSheetId, invalidatedNode.frame, invalidatedNode.lastUpdateLayoutTreeEventTs
+          selector.selector, selector.styleSheetId, invalidatedNode.frame, invalidatedNode.lastRecalcStyleEventTs
         ].join('-');
         if (invalidatedNodeMap.has(key)) {
           const nodes = invalidatedNodeMap.get(key);
@@ -334,8 +334,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     }
 
     for (const event of events) {
-      const selectorStats =
-          event ? this.#parsedTrace.data.SelectorStats.dataForUpdateLayoutEvent.get(event) : undefined;
+      const selectorStats = event ? this.#parsedTrace.data.SelectorStats.dataForRecalcStyleEvent.get(event) : undefined;
       if (!selectorStats) {
         continue;
       }
@@ -362,7 +361,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     }
   }
 
-  private async aggregateEvents(events: Trace.Types.Events.UpdateLayoutTree[]): Promise<void> {
+  private async aggregateEvents(events: Trace.Types.Events.RecalcStyle[]): Promise<void> {
     if (!this.#parsedTrace) {
       return;
     }
@@ -389,7 +388,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             // This is true due to the isArray check, but without this cast TS
             // would want us to repeat the isArray() check inside this callback,
             // but we want to avoid that extra work.
-            const previousEvents = this.#lastStatsSourceEventOrEvents as Trace.Types.Events.UpdateLayoutTree[];
+            const previousEvents = this.#lastStatsSourceEventOrEvents as Trace.Types.Events.RecalcStyle[];
             return event === previousEvents[index];
           })) {
         return;
@@ -400,8 +399,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     await this.updateInvalidationCount(events);
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
-      const selectorStats =
-          event ? this.#parsedTrace.data.SelectorStats.dataForUpdateLayoutEvent.get(event) : undefined;
+      const selectorStats = event ? this.#parsedTrace.data.SelectorStats.dataForRecalcStyleEvent.get(event) : undefined;
       if (!selectorStats) {
         continue;
       }
@@ -453,7 +451,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     this.#timings = await this.processSelectorTimings(timings);
   }
 
-  setAggregatedEvents(events: Trace.Types.Events.UpdateLayoutTree[]): void {
+  setAggregatedEvents(events: Trace.Types.Events.RecalcStyle[]): void {
     if (!this.#parsedTrace) {
       return;
     }

@@ -84,7 +84,7 @@ const STYLE_RECALC_ELEMENTS_THRESHOLD = 300;
 
 export type DOMSizeInsightModel = InsightModel<typeof UIStrings, {
   largeLayoutUpdates: Types.Events.Layout[],
-  largeStyleRecalcs: Types.Events.UpdateLayoutTree[],
+  largeStyleRecalcs: Types.Events.RecalcStyle[],
   largeUpdates: Array<
       {label: Common.UIString.LocalizedString, duration: Types.Timing.Milli, size: number, event: Types.Events.Event}>,
   maxDOMStats?: Types.Events.DOMStats,
@@ -114,7 +114,7 @@ export function generateInsight(data: Handlers.Types.HandlerData, context: Insig
   const mainTid = context.navigation?.tid;
 
   const largeLayoutUpdates: Types.Events.Layout[] = [];
-  const largeStyleRecalcs: Types.Events.UpdateLayoutTree[] = [];
+  const largeStyleRecalcs: Types.Events.RecalcStyle[] = [];
 
   const threads = Handlers.Threads.threadsInRenderer(data.Renderer, data.AuctionWorklets);
   for (const thread of threads) {
@@ -137,7 +137,7 @@ export function generateInsight(data: Handlers.Types.HandlerData, context: Insig
       continue;
     }
 
-    const {entries, layoutEvents, updateLayoutTreeEvents} = rendererThread;
+    const {entries, layoutEvents, recalcStyleEvents} = rendererThread;
     if (!entries.length) {
       continue;
     }
@@ -161,7 +161,7 @@ export function generateInsight(data: Handlers.Types.HandlerData, context: Insig
       }
     }
 
-    for (const event of updateLayoutTreeEvents) {
+    for (const event of recalcStyleEvents) {
       if (event.dur < DOM_SIZE_DURATION_THRESHOLD || !isWithinContext(event)) {
         continue;
       }

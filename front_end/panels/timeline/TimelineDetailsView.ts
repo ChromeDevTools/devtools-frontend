@@ -485,11 +485,11 @@ export class TimelineDetailsPane extends
     this.tabbedPane.selectTab(Tab.PaintProfiler, true);
   }
 
-  private showSelectorStatsForIndividualEvent(event: Trace.Types.Events.UpdateLayoutTree): void {
+  private showSelectorStatsForIndividualEvent(event: Trace.Types.Events.RecalcStyle): void {
     this.showAggregatedSelectorStats([event]);
   }
 
-  private showAggregatedSelectorStats(events: Trace.Types.Events.UpdateLayoutTree[]): void {
+  private showAggregatedSelectorStats(events: Trace.Types.Events.RecalcStyle[]): void {
     const selectorStatsView = this.selectorStatsView();
 
     selectorStatsView.setAggregatedEvents(events);
@@ -509,7 +509,7 @@ export class TimelineDetailsPane extends
       this.showEventInPaintProfiler(event);
     }
 
-    if (Trace.Types.Events.isUpdateLayoutTree(event)) {
+    if (Trace.Types.Events.isRecalcStyle(event)) {
       this.showSelectorStatsForIndividualEvent(event);
     }
   }
@@ -562,7 +562,7 @@ export class TimelineDetailsPane extends
     const isSelectorStatsEnabled =
         Common.Settings.Settings.instance().createSetting('timeline-capture-selector-stats', false).get();
     if (this.#selectedEvents && isSelectorStatsEnabled) {
-      const eventsInRange = Trace.Helpers.Trace.findUpdateLayoutTreeEvents(
+      const eventsInRange = Trace.Helpers.Trace.findRecalcStyleEvents(
           this.#selectedEvents,
           Trace.Helpers.Timing.milliToMicro(startTime),
           Trace.Helpers.Timing.milliToMicro(endTime),

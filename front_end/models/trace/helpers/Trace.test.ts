@@ -531,11 +531,11 @@ describeWithEnvironment('Trace helpers', function() {
     });
   });
 
-  describe('findUpdateLayoutTreeEvents', () => {
-    it('returns the set of UpdateLayoutTree events within the right time range', async function() {
+  describe('findRecalcStyleEvents', () => {
+    it('returns the set of RecalcStyle events within the right time range', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'selector-stats.json.gz');
       const mainThread = getMainThread(parsedTrace.data.Renderer);
-      const foundEvents = Trace.Helpers.Trace.findUpdateLayoutTreeEvents(
+      const foundEvents = Trace.Helpers.Trace.findRecalcStyleEvents(
           mainThread.entries,
           parsedTrace.data.Meta.traceBounds.min,
       );
@@ -546,7 +546,7 @@ describeWithEnvironment('Trace helpers', function() {
 
       // Check we can filter by endTime by making the endTime less than the start
       // time of the last event:
-      const filteredByEndTimeEvents = Trace.Helpers.Trace.findUpdateLayoutTreeEvents(
+      const filteredByEndTimeEvents = Trace.Helpers.Trace.findRecalcStyleEvents(
           mainThread.entries,
           parsedTrace.data.Meta.traceBounds.min,
           Trace.Types.Timing.Micro(lastEvent.ts - 1_000),

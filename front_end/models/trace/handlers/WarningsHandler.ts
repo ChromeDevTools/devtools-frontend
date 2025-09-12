@@ -97,7 +97,7 @@ function processForcedReflowWarning(event: Types.Events.Event): void {
   accomodateEventInStack(event, jsInvokeStack, /* pushEventToStack */ Types.Events.isJSInvocationEvent(event));
   if (jsInvokeStack.length) {
     // Current event falls inside a JS call.
-    if (event.name === Types.Events.Name.LAYOUT || event.name === Types.Events.Name.UPDATE_LAYOUT_TREE) {
+    if (event.name === Types.Events.Name.LAYOUT || event.name === Types.Events.Name.RECALC_STYLE) {
       // A forced reflow happened. However we need to check if
       // the threshold is surpassed to add a warning. Accumulate the
       // event to check for this after the current Task is over.

@@ -55,7 +55,7 @@ describeWithEnvironment('WarningsHandler', function() {
     const layout = forcedReflow[1];
     assert.deepEqual(data.perEvent.get(stylesRecalc), ['FORCED_REFLOW']);
     assert.deepEqual(data.perEvent.get(layout), ['FORCED_REFLOW']);
-    assert.strictEqual(stylesRecalc.name, Trace.Types.Events.Name.UPDATE_LAYOUT_TREE);
+    assert.strictEqual(stylesRecalc.name, Trace.Types.Events.Name.RECALC_STYLE);
     assert.strictEqual(layout.name, Trace.Types.Events.Name.LAYOUT);
   });
 

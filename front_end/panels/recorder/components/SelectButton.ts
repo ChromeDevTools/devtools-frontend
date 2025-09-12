@@ -232,38 +232,55 @@ export class SelectButton extends HTMLElement {
 
     // clang-format off
     Lit.render(
-      html`
-      <style>${UI.inspectorCommonStyles}</style>
-      <style>${selectButtonStyles}</style>
-      <div class="select-button" title=${ifDefined(this.#getTitle(menuLabel))}>
-      <select
-      class=${classMap(classes)}
-      ?disabled=${this.#props.disabled}
-      jslog=${VisualLogging.dropDown('network-conditions').track({change: true})}
-      @change=${this.#handleSelectMenuSelect}>
-        ${
-          hasGroups
-            ? this.#props.groups.map(group =>
-                this.#renderSelectGroup(group, selectedItem),
-              )
-            : this.#props.items.map(item =>
-                this.#renderSelectItem(item, selectedItem),
-              )
-        }
-    </select>
-        ${
-          selectedItem
-            ? html`
-        <devtools-button
-            .disabled=${this.#props.disabled}
-            .variant=${buttonVariant}
-            .iconName=${selectedItem.buttonIconName}
-            @click=${this.#handleClick}>
-            ${this.#props.buttonLabel}
-        </devtools-button>`
-            : ''
-        }
-      </div>`,
+      html` <style>
+          ${UI.inspectorCommonStyles}
+        </style>
+        <style>
+          ${selectButtonStyles}
+        </style>
+        <div
+          class="select-button"
+          title=${ifDefined(this.#getTitle(menuLabel))}
+        >
+          <label>
+            ${this.#props.groups.length > 1
+              ? html`
+                  <div
+                    class="groups-label"
+                    >${this.#props.groups
+                      .map(group => {
+                        return group.name;
+                      })
+                      .join(' & ')}</div>`
+              : Lit.nothing}
+            <select
+              class=${classMap(classes)}
+              ?disabled=${this.#props.disabled}
+              jslog=${VisualLogging.dropDown('network-conditions').track({
+                change: true,
+              })}
+              @change=${this.#handleSelectMenuSelect}
+            >
+              ${hasGroups
+                ? this.#props.groups.map(group =>
+                    this.#renderSelectGroup(group, selectedItem),
+                  )
+                : this.#props.items.map(item =>
+                    this.#renderSelectItem(item, selectedItem),
+                  )}
+            </select>
+          </label>
+          ${selectedItem
+            ? html` <devtools-button
+                .disabled=${this.#props.disabled}
+                .variant=${buttonVariant}
+                .iconName=${selectedItem.buttonIconName}
+                @click=${this.#handleClick}
+              >
+                ${this.#props.buttonLabel}
+              </devtools-button>`
+            : ''}
+        </div>`,
       this.#shadow,
       { host: this },
     );

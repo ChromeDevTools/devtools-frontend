@@ -68,6 +68,10 @@ let scriptCacheInstance: {
 export class Script implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
   debuggerModel: DebuggerModel;
   scriptId: Protocol.Runtime.ScriptId;
+  /**
+   * The URL of the script. When `hasSourceURL` is true, this value comes from a `//# sourceURL=` directive. Otherwise,
+   * it's the original `src` URL from which the script was loaded.
+   */
   sourceURL: Platform.DevToolsPath.UrlString;
   lineOffset: number;
   columnOffset: number;

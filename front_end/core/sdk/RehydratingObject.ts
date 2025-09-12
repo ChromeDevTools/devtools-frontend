@@ -9,6 +9,7 @@ import type {SourceMapV3} from './SourceMap.js';
 export interface RehydratingScript {
   scriptId: Protocol.Runtime.ScriptId;
   isolate: string;
+  /** The script's `src` */
   url: string;
   executionContextId: Protocol.Runtime.ExecutionContextId;
   startLine: number;
@@ -19,6 +20,7 @@ export interface RehydratingScript {
   isModule?: boolean;
   hasSourceURL?: boolean;
   sourceMapURL?: string;
+  /** The manually provided string via the `//# sourceURL` directive */
   sourceURL?: string;
   length?: number;
   sourceText?: string;

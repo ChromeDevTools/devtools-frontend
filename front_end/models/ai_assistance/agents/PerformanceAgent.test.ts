@@ -107,7 +107,7 @@ describeWithEnvironment('PerformanceAgent', () => {
               model_id: 'test model',
               temperature: undefined,
             },
-            client_feature: 8,
+            client_feature: Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT,
             functionality_type: 1,
           },
       );
@@ -117,34 +117,6 @@ describeWithEnvironment('PerformanceAgent', () => {
 });
 
 describeWithEnvironment('PerformanceAgent – call tree focus', () => {
-  describe('getOrigin()', () => {
-    it('calculates the origin of the selected node when it has a URL associated with it', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      // An Evaluate Script event, picked because it has a URL of googletagmanager.com/...
-      const evalScriptEvent =
-          allThreadEntriesInTrace(parsedTrace)
-              .find(event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);
-      assert.exists(evalScriptEvent);
-      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(evalScriptEvent, parsedTrace);
-      assert.isOk(aiCallTree);
-      const context = PerformanceTraceContext.fromCallTree(aiCallTree);
-      assert.strictEqual(context.getOrigin(), 'https://www.googletagmanager.com');
-    });
-
-    it('returns a random but deterministic "origin" for nodes that have no URL associated', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      // A random layout event with no URL associated
-      const layoutEvent =
-          allThreadEntriesInTrace(parsedTrace)
-              .find(event => event.name === Trace.Types.Events.Name.LAYOUT && event.ts === 122411130078);
-      assert.exists(layoutEvent);
-      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(layoutEvent, parsedTrace);
-      assert.isOk(aiCallTree);
-      const context = PerformanceTraceContext.fromCallTree(aiCallTree);
-      assert.strictEqual(context.getOrigin(), 'Layout_90829_259_122411130078');
-    });
-  });
-
   describe('run', function() {
     it('generates an answer', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
@@ -205,7 +177,8 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
       assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
         {
           role: 1,
-          parts: [{text: `${aiCallTree.serialize()}\n\n# User request\n\ntest`}],
+          parts:
+              [{text: `User selected the following call tree:\n\n${aiCallTree.serialize()}\n\n# User query\n\ntest`}],
         },
         {
           role: 2,
@@ -225,6 +198,8 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
 
       const mockAiCallTree = {
         serialize: () => 'Mock call tree',
+        parsedTrace: FAKE_PARSED_TRACE,
+        rootNode: {event: {ts: 0, dur: 0}},
       } as unknown as TimelineUtils.AICallTree.AICallTree;
 
       const context1 = PerformanceTraceContext.fromCallTree(mockAiCallTree);
@@ -232,7 +207,8 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
       const context3 = PerformanceTraceContext.fromCallTree(mockAiCallTree);
 
       const enhancedQuery1 = await agent.enhanceQuery('What is this?', context1);
-      assert.strictEqual(enhancedQuery1, 'Mock call tree\n\n# User request\n\nWhat is this?');
+      assert.strictEqual(
+          enhancedQuery1, 'User selected the following call tree:\n\nMock call tree\n\n# User query\n\nWhat is this?');
 
       const query2 = 'But what about this follow-up question?';
       const enhancedQuery2 = await agent.enhanceQuery(query2, context2);
@@ -269,8 +245,17 @@ const FAKE_INP_MODEL = {
 const FAKE_HANDLER_DATA = {
   Meta: {traceBounds: {min: 0, max: 10}, mainFrameURL: 'https://www.example.com'},
 } as unknown as Trace.Handlers.Types.HandlerData;
-const FAKE_INSIGHTS = new Map([['', {model: {LCPBreakdown: FAKE_LCP_MODEL, INPBreakdown: FAKE_INP_MODEL}}]]) as
-    unknown as Trace.Insights.Types.TraceInsightSets;
+const FAKE_INSIGHTS = new Map([
+                        [
+                          '', {
+                            model: {
+                              LCPBreakdown: FAKE_LCP_MODEL,
+                              INPBreakdown: FAKE_INP_MODEL,
+                            },
+                            bounds: {min: 0, max: 0, range: 0},
+                          }
+                        ],
+                      ]) as unknown as Trace.Insights.Types.TraceInsightSets;
 const FAKE_METADATA = {} as unknown as Trace.Types.File.MetaData;
 const FAKE_PARSED_TRACE = {
   data: FAKE_HANDLER_DATA,
@@ -283,15 +268,6 @@ function createAgentForInsightConversation(opts: {aidaClient?: Host.AidaClient.A
 }
 
 describeWithEnvironment('PerformanceAgent – insight focus', () => {
-  it('uses the min and max bounds of the trace as the origin', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
-    assert.isOk(parsedTrace.insights);
-    const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
-    const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
-    const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
-    assert.strictEqual(context.getOrigin(), 'trace-658799706428-658804825864');
-  });
-
   it('outputs the right title for the selected insight', async () => {
     const context = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL);
     assert.strictEqual(context.getTitle(), 'Trace: www.example.com');
@@ -397,8 +373,7 @@ code
 
       const context = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL);
       const finalQuery = await agent.enhanceQuery('What is this?', context);
-      const expected =
-          `User clicked on the LCPBreakdown insight, and then asked a question.\n\n# User question for you to answer:\nWhat is this?`;
+      const expected = `User selected the LCPBreakdown insight.\n\n# User query\n\nWhat is this?`;
 
       assert.strictEqual(finalQuery, expected);
     });
@@ -412,8 +387,7 @@ code
 
       await agent.enhanceQuery('What is this?', context);
       const finalQuery = await agent.enhanceQuery('Help me understand?', context);
-      const expected = `# User question for you to answer:
-Help me understand?`;
+      const expected = `Help me understand?`;
 
       assert.strictEqual(finalQuery, expected);
     });
@@ -427,9 +401,9 @@ Help me understand?`;
       const firstQuery = await agent.enhanceQuery('Q1', context1);
       const secondQuery = await agent.enhanceQuery('Q2', context1);
       const thirdQuery = await agent.enhanceQuery('Q3', context2);
-      assert.include(firstQuery, 'User clicked on the LCPBreakdown');
-      assert.notInclude(secondQuery, 'User clicked on the');
-      assert.include(thirdQuery, 'User clicked on the INPBreakdown');
+      assert.include(firstQuery, 'User selected the LCPBreakdown');
+      assert.notInclude(secondQuery, 'User selected the');
+      assert.include(thirdQuery, 'User selected the INPBreakdown');
     });
   });
 

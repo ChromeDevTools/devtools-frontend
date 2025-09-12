@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
+import type * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
   cleanup,
@@ -274,8 +275,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
       {
         flavor: TimelineUtils.AIContext.AgentFocus,
         createContext: () => {
-          return AiAssistanceModel.PerformanceTraceContext.fromCallTree(
-              sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree));
+          const parsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
+          return AiAssistanceModel.PerformanceTraceContext.full(parsedTrace);
         },
         action: 'drjones.performance-panel-context'
       },
@@ -358,8 +359,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel, view} = await createAiAssistancePanel({chatView});
 
       // Firstly, start a conversation and set a context
-      const context = AiAssistanceModel.PerformanceTraceContext.fromCallTree(
-          sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree));
+      const fakeParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
+      const context = AiAssistanceModel.PerformanceTraceContext.full(fakeParsedTrace);
       UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, context.getItem());
       panel.handleAction('drjones.performance-panel-context');
       await view.nextInput;
@@ -1497,8 +1498,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
            viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'timeline');
            UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, timelinePanel);
 
-           const fakeCallTree = sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree);
-           const focus = TimelineUtils.AIContext.AgentFocus.fromCallTree(fakeCallTree);
+           const fakeParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
+           const focus = TimelineUtils.AIContext.AgentFocus.full(fakeParsedTrace);
            UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, focus);
 
            Common.Settings.moduleSetting('ai-assistance-enabled').set(true);

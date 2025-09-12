@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 
 import type {AICallTree} from './AICallTree.js';
 
@@ -15,6 +15,7 @@ export interface AgentFocusDataFull {
 interface AgentFocusDataCallTree {
   type: 'call-tree';
   parsedTrace: Trace.TraceModel.ParsedTrace;
+  insightSet: Trace.Insights.Types.InsightSet|null;
   callTree: AICallTree;
 }
 
@@ -27,14 +28,20 @@ export interface AgentFocusDataInsight {
 
 type AgentFocusData = AgentFocusDataCallTree|AgentFocusDataInsight|AgentFocusDataFull;
 
+function getFirstInsightSet(insights: Trace.Insights.Types.TraceInsightSets): Trace.Insights.Types.InsightSet|null {
+  // Currently only support a single insight set. Pick the first one with a navigation.
+  // TODO(cjamcl): we should just give the agent the entire insight set, and give
+  // summary detail about all of them + the ability to query each.
+  return [...insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
+}
+
 export class AgentFocus {
   static full(parsedTrace: Trace.TraceModel.ParsedTrace): AgentFocus {
     if (!parsedTrace.insights) {
       throw new Error('missing insights');
     }
 
-    // Currently only support a single insight set. Pick the first one with a navigation.
-    const insightSet = [...parsedTrace.insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
+    const insightSet = getFirstInsightSet(parsedTrace.insights);
     return new AgentFocus({
       type: 'full',
       parsedTrace,
@@ -47,8 +54,8 @@ export class AgentFocus {
     if (!parsedTrace.insights) {
       throw new Error('missing insights');
     }
-    // Currently only support a single insight set. Pick the first one with a navigation.
-    const insightSet = [...parsedTrace.insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
+
+    const insightSet = getFirstInsightSet(parsedTrace.insights);
     return new AgentFocus({
       type: 'insight',
       parsedTrace,
@@ -58,7 +65,21 @@ export class AgentFocus {
   }
 
   static fromCallTree(callTree: AICallTree): AgentFocus {
-    return new AgentFocus({type: 'call-tree', parsedTrace: callTree.parsedTrace, callTree});
+    const insights = callTree.parsedTrace.insights;
+
+    // Select the insight set containing the call tree.
+    // If for some reason that fails, fallback to the first one.
+    let insightSet = null;
+    if (insights) {
+      const callTreeTimeRange = Trace.Helpers.Timing.traceWindowFromEvent(callTree.rootNode.event);
+      insightSet = insights.values().find(set => Trace.Helpers.Timing.boundsIncludeTimeRange({
+        timeRange: callTreeTimeRange,
+        bounds: set.bounds,
+      })) ??
+          getFirstInsightSet(insights);
+    }
+
+    return new AgentFocus({type: 'call-tree', parsedTrace: callTree.parsedTrace, insightSet, callTree});
   }
 
   #data: AgentFocusData;

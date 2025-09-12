@@ -123,8 +123,6 @@ export enum ClientFeature {
   CHROME_STYLING_AGENT = 2,
   // Chrome AI Assistance Network Agent.
   CHROME_NETWORK_AGENT = 7,
-  // Chrome AI Assistance Performance Agent.
-  CHROME_PERFORMANCE_AGENT = 8,
   // Chrome AI Annotations Performance Agent
   CHROME_PERFORMANCE_ANNOTATIONS_AGENT = 20,
   // Chrome AI Assistance File Agent.
@@ -137,6 +135,8 @@ export enum ClientFeature {
   // Removed features (for reference).
   // Chrome AI Assistance Performance Insights Agent.
   // CHROME_PERFORMANCE_INSIGHTS_AGENT = 13,
+  // Chrome AI Assistance Performance Agent (call trees).
+  // CHROME_PERFORMANCE_AGENT = 8,
 }
 
 export enum UserTier {

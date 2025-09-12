@@ -189,10 +189,10 @@ describeWithEnvironment('TimelinePanel', function() {
 
   it('clears out AI related contexts when the user presses "Clear"', async () => {
     const context = UI.Context.Context.instance();
-    const {AIContext, AICallTree} = Timeline.Utils;
+    const {AIContext} = Timeline.Utils;
 
-    const callTree = sinon.createStubInstance(AICallTree.AICallTree);
-    context.setFlavor(AIContext.AgentFocus, AIContext.AgentFocus.fromCallTree(callTree));
+    const mockParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
+    context.setFlavor(AIContext.AgentFocus, AIContext.AgentFocus.full(mockParsedTrace));
 
     const clearButton = timeline.element.querySelector('[aria-label="Clear"]');
     assert.isOk(clearButton);

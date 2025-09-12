@@ -77,8 +77,7 @@ function normalizeBadgeName(name: string): string {
   return name.replace(/profiles\/[^/]+\/awards\//, 'profiles/me/awards/');
 }
 
-// TODO(crbug.com/441679275): Update once the API is enabled for prod.
-export const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.devsite.corp.google.com/profile/u/me';
+export const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.google.com/profile/u/me';
 
 async function makeHttpRequest<R extends object>(request: DispatchHttpRequestRequest): Promise<R|null> {
   if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled) {

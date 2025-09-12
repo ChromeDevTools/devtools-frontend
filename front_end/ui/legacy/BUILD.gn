@@ -180,6 +180,7 @@ ts_library("unittests") {
     "ActionRegistration.test.ts",
     "Context.test.ts",
     "ContextMenu.test.ts",
+    "Dialog.test.ts",
     "DockController.test.ts",
     "FilterBar.test.ts",
     "Fragment.test.ts",

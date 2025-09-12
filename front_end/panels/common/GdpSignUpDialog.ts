@@ -235,6 +235,6 @@ export class GdpSignUpDialog extends UI.Widget.VBox {
     dialog.setDimmed(true);
 
     new GdpSignUpDialog({dialog}).show(dialog.contentElement);
-    dialog.show();
+    dialog.show(undefined, /* stack */ true);
   }
 }

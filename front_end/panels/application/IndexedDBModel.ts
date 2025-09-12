@@ -351,7 +351,9 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   loadObjectStoreData(
       databaseId: DatabaseId, objectStoreName: string, idbKeyRange: IDBKeyRange|null, skipCount: number,
       pageSize: number, callback: (arg0: Entry[], arg1: boolean) => void): void {
-    void this.requestData(databaseId, databaseId.name, objectStoreName, '', idbKeyRange, skipCount, pageSize, callback);
+    void this.requestData(
+        databaseId, databaseId.name, objectStoreName, /* indexName=*/ undefined, idbKeyRange, skipCount, pageSize,
+        callback);
   }
 
   loadIndexData(
@@ -362,7 +364,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   }
 
   private async requestData(
-      databaseId: DatabaseId, databaseName: string, objectStoreName: string, indexName: string,
+      databaseId: DatabaseId, databaseName: string, objectStoreName: string, indexName: string|undefined,
       idbKeyRange: IDBKeyRange|null, skipCount: number, pageSize: number,
       callback: (arg0: Entry[], arg1: boolean) => void): Promise<void> {
     const keyRange = idbKeyRange ? IndexedDBModel.keyRangeFromIDBKeyRange(idbKeyRange) : undefined;

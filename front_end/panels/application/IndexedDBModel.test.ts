@@ -144,7 +144,7 @@ describeWithMockConnection('IndexedDBModel', () => {
       storageBucket: testStorageBucket,
       databaseName: 'test-database',
       objectStoreName: 'test-store',
-      indexName: '',
+      indexName: undefined,
       skipCount: 0,
       pageSize: 50,
       keyRange: undefined,

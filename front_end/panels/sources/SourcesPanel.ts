@@ -1197,7 +1197,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     } else if (position === 'bottom') {
       vertically = true;
     } else {
-      vertically = UI.InspectorView.InspectorView.instance().element.offsetWidth < 680;
+      vertically = this.splitWidget.element.offsetWidth < 680;
     }
 
     if (this.sidebarPaneView && vertically === !this.splitWidget.isVertical()) {

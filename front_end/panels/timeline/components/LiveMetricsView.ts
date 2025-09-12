@@ -385,7 +385,9 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   async #refreshFieldDataForCurrentPage(): Promise<void> {
-    await this.#cruxManager.refresh();
+    if (!this.#isNode) {
+      await this.#cruxManager.refresh();
+    }
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 

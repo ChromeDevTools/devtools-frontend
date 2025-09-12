@@ -10,6 +10,8 @@ import {assertNotNullOrUndefined} from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 
+import {StubConnection} from './Connections.js';
+import {RehydratingConnection} from './RehydratingConnection.js';
 import {SDKModel} from './SDKModel.js';
 import {Target, Type as TargetType} from './Target.js';
 
@@ -308,6 +310,22 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   browserTarget(): Target|null {
     return this.#browserTarget;
+  }
+
+  /**
+   * If this returns true, the target is not connected to a legit CDP server.
+   * However, it's not exhaustive, so some `false` responses may be misleading.
+   *    (eg., tab URL of `devtools://devtools/bundled/devtools_app.html` uses a MainConnection but has no CDP server behind it).
+   */
+  hasFakeConnection(): boolean {
+    // There _may_ be a race condition hiding here on the router/connection creation.
+    // So we play it safe and consider "no connection yet" as "not fake".
+    const connection = this.primaryPageTarget()?.router()?.connection();
+    if (!connection) {
+      return false;
+    }
+    const isFakeConnection = (connection instanceof StubConnection) || (connection instanceof RehydratingConnection);
+    return isFakeConnection;
   }
 
   async maybeAttachInitialTarget(): Promise<boolean> {

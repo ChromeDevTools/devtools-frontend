@@ -281,8 +281,10 @@ function createMainConnection(onConnectionLost: (message: Platform.UIString.Loca
     const ws = (wsParam ? `ws://${wsParam}` : `wss://${wssParam}`) as Platform.DevToolsPath.UrlString;
     return new WebSocketConnection(ws, onConnectionLost);
   }
-  if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
-    // Hosted mode (e.g. `http://localhost:9222/devtools/inspector.html`) but no WebSocket URL.
+
+  const notEmbeddedOrWs = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
+  if (notEmbeddedOrWs) {
+    // eg., hosted mode (e.g. `http://localhost:9222/devtools/inspector.html`) without a WebSocket URL,
     return new StubConnection();
   }
 

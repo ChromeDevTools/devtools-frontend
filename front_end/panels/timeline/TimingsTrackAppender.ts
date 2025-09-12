@@ -83,6 +83,7 @@ export class TimingsTrackAppender implements TrackAppender {
         timestampEvents.length === 0 && consoleTimings.length === 0) {
       return trackStartLevel;
     }
+    // TODO(paulirish): these 5 sets of events should be merged and sorted by start time. This would allow for a denser packing.
     this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
     let newLevel = this.#appendExtensionsAtLevel(trackStartLevel);
     newLevel = this.#compatibilityBuilder.appendEventsAtLevel(performanceMarks, newLevel, this);

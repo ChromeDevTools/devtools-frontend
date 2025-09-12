@@ -2637,6 +2637,7 @@ export const knownContextValues = new Set([
   'node',
   'node-connection',
   'node-id',
+  'node-js-debugging',
   'node-removed',
   'nodes',
   'nominal',

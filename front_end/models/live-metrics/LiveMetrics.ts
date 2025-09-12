@@ -534,7 +534,13 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
     const source = await InjectedScript.get();
 
-    const {identifier} = await this.#target.pageAgent().invoke_addScriptToEvaluateOnNewDocument({
+    // Extra check in case the target was removed while we were initializing.
+    // It's possible to be halfway-through enabling when the target is removed
+    // eg try loading 'devtools://devtools/bundled/devtools_app.html?ws=127.0.0.1:99/blah'
+    if (!this.#target) {
+      return;
+    }
+    const {identifier} = await this.#target?.pageAgent().invoke_addScriptToEvaluateOnNewDocument({
       source,
       worldName: LIVE_METRICS_WORLD_NAME,
       runImmediately: true,

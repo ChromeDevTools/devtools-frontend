@@ -595,7 +595,7 @@ export const generatedProperties = [
    "overflow-y",
    "overlay",
    "override-colors",
-   "overscroll-anchor-name",
+   "overscroll-area",
    "overscroll-behavior-block",
    "overscroll-behavior-inline",
    "overscroll-behavior-x",
@@ -3352,7 +3352,7 @@ export const generatedProperties = [
   "keywords": [
    "none"
   ],
-  "name": "overscroll-anchor-name"
+  "name": "overscroll-area"
  },
  {
   "longhands": [
@@ -6263,7 +6263,7 @@ export const generatedPropertyValues = {
    "auto"
   ]
  },
- "overscroll-anchor-name": {
+ "overscroll-area": {
   "values": [
    "none"
   ]

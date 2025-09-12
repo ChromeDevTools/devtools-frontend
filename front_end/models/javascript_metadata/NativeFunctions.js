@@ -118,6 +118,11 @@ export const NativeFunctions = [
     receivers: ["Clients","BackgroundFetchManager"]
   },
   {
+    name: "get",
+    signatures: [["entry"]],
+    receivers: ["RouteMap"]
+  },
+  {
     name: "set",
     signatures: [["v"]],
     receivers: ["PropertyDescriptor"]
@@ -6611,6 +6616,10 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
+    name: "setFormControlRange",
+    signatures: [["element","start","end"]]
+  },
+  {
     name: "MutationObserver",
     signatures: [["callback"]]
   },
@@ -7207,6 +7216,10 @@ export const NativeFunctions = [
   {
     name: "ResizeObserver",
     signatures: [["callback"]]
+  },
+  {
+    name: "RouteEvent",
+    signatures: [["type"]]
   },
   {
     name: "Sanitizer",
@@ -8416,18 +8429,6 @@ export const NativeFunctions = [
     signatures: [["extensions"]]
   },
   {
-    name: "createProcessor",
-    signatures: [["worker","?options","?transfer"]]
-  },
-  {
-    name: "readReceivedAcks",
-    signatures: [["maxCount"]]
-  },
-  {
-    name: "readSentRtp",
-    signatures: [["maxCount"]]
-  },
-  {
     name: "RTCSessionDescription",
     signatures: [["?descriptionInitDict"]]
   },
@@ -9279,6 +9280,10 @@ export const NativeFunctions = [
   },
   {
     name: "XRInputSourcesChangeEvent",
+    signatures: [["type","eventInitDict"]]
+  },
+  {
+    name: "XRLayerEvent",
     signatures: [["type","eventInitDict"]]
   },
   {

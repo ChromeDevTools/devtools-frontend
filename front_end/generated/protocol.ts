@@ -172,7 +172,8 @@ export namespace Accessibility {
    * - from 'live' to 'root': attributes which apply to nodes in live regions
    * - from 'autocomplete' to 'valuetext': attributes which apply to widgets
    * - from 'checked' to 'selected': states which apply to widgets
-   * - from 'activedescendant' to 'owns' - relationships between elements other than parent/child/sibling.
+   * - from 'activedescendant' to 'owns': relationships between elements other than parent/child/sibling
+   * - from 'activeFullscreenElement' to 'uninteresting': reasons why this noode is hidden
    */
   export const enum AXPropertyName {
     Actions = 'actions',
@@ -216,6 +217,23 @@ export namespace Accessibility {
     Labelledby = 'labelledby',
     Owns = 'owns',
     Url = 'url',
+    ActiveFullscreenElement = 'activeFullscreenElement',
+    ActiveModalDialog = 'activeModalDialog',
+    ActiveAriaModalDialog = 'activeAriaModalDialog',
+    AriaHiddenElement = 'ariaHiddenElement',
+    AriaHiddenSubtree = 'ariaHiddenSubtree',
+    EmptyAlt = 'emptyAlt',
+    EmptyText = 'emptyText',
+    InertElement = 'inertElement',
+    InertSubtree = 'inertSubtree',
+    LabelContainer = 'labelContainer',
+    LabelFor = 'labelFor',
+    NotRendered = 'notRendered',
+    NotVisible = 'notVisible',
+    PresentationalRole = 'presentationalRole',
+    ProbablyPresentational = 'probablyPresentational',
+    InactiveCarouselTabContent = 'inactiveCarouselTabContent',
+    Uninteresting = 'uninteresting',
   }
 
   /**
@@ -8314,9 +8332,9 @@ export namespace IndexedDB {
      */
     objectStoreName: string;
     /**
-     * Index name, empty string for object store data requests.
+     * Index name. If not specified or empty string, it performs an object store data request.
      */
-    indexName: string;
+    indexName?: string;
     /**
      * Number of records to skip.
      */

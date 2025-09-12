@@ -2732,6 +2732,7 @@ export const knownContextValues = new Set([
   'override-headers',
   'override-source-mapped-file-warning',
   'overscroll-anchor-name',
+  'overscroll-area',
   'overscroll-behavior',
   'overscroll-behavior-block',
   'overscroll-behavior-inline',

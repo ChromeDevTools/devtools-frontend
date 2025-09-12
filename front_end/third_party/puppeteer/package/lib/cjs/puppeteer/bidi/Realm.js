@@ -54,7 +54,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiWorkerRealm = exports.BidiFrameRealm = exports.BidiRealm = void 0;
 const Realm_js_1 = require("../api/Realm.js");
-const AriaQueryHandler_js_1 = require("../cdp/AriaQueryHandler.js");
+const AriaQueryHandler_js_1 = require("../common/AriaQueryHandler.js");
 const LazyArg_js_1 = require("../common/LazyArg.js");
 const ScriptInjector_js_1 = require("../common/ScriptInjector.js");
 const util_js_1 = require("../common/util.js");

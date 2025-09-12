@@ -3,7 +3,7 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import * as Bidi from 'webdriver-bidi-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import { Frame, type GoToOptions, type WaitForOptions } from '../api/Frame.js';
 import { Accessibility } from '../cdp/Accessibility.js';

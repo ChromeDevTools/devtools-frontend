@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { ElementHandle } from '../api/ElementHandle.js';
-import { QueryHandler, type QuerySelector } from '../common/QueryHandler.js';
-import type { AwaitableIterable } from '../common/types.js';
+import { QueryHandler, type QuerySelector } from './QueryHandler.js';
+import type { AwaitableIterable } from './types.js';
 /**
  * @internal
  */

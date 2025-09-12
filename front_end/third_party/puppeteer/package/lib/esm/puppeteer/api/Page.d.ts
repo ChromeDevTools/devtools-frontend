@@ -781,9 +781,10 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     abstract setDragInterception(enabled: boolean): Promise<void>;
     /**
-     * Sets the network connection to offline.
+     * Emulates the offline mode.
      *
-     * It does not change the parameters used in {@link Page.emulateNetworkConditions}
+     * It does not change the download/upload/latency parameters set by
+     * {@link Page.emulateNetworkConditions}
      *
      * @param enabled - When `true`, enables offline mode for the page.
      */
@@ -1181,7 +1182,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     abstract cookies(...urls: string[]): Promise<Cookie[]>;
     /**
      * @deprecated Page-level cookie API is deprecated. Use
-     * {@link Browser.deleteCookie} or {@link BrowserContext.deleteCookie}
+     * {@link Browser.deleteCookie}, {@link BrowserContext.deleteCookie},
+     * {@link Browser.deleteMatchingCookies} or {@link BrowserContext.deleteMatchingCookies}
      * instead.
      */
     abstract deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;

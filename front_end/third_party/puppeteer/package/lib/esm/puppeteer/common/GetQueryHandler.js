@@ -3,7 +3,7 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { ARIAQueryHandler } from '../cdp/AriaQueryHandler.js';
+import { ARIAQueryHandler } from './AriaQueryHandler.js';
 import { CSSQueryHandler } from './CSSQueryHandler.js';
 import { customQueryHandlers } from './CustomQueryHandler.js';
 import { PierceQueryHandler } from './PierceQueryHandler.js';

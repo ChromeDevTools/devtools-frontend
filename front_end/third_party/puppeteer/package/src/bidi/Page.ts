@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type Protocol from 'devtools-protocol';
+import * as Bidi from 'webdriver-bidi-protocol';
 
 import {firstValueFrom, from, raceWith} from '../../third_party/rxjs/rxjs.js';
 import type {CDPSession} from '../api/CDPSession.js';
@@ -769,7 +769,7 @@ export class BidiPage extends Page {
     }
     if (!this.#emulatedNetworkConditions) {
       this.#emulatedNetworkConditions = {
-        offline: false,
+        offline: networkConditions?.offline ?? false,
         upload: -1,
         download: -1,
         latency: 0,
@@ -784,6 +784,8 @@ export class BidiPage extends Page {
     this.#emulatedNetworkConditions.latency = networkConditions
       ? networkConditions.latency
       : 0;
+    this.#emulatedNetworkConditions.offline =
+      networkConditions?.offline ?? false;
     return await this.#applyNetworkConditions();
   }
 

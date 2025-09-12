@@ -11,7 +11,7 @@ function _checkPrivateRedeclaration(e, t) { if (t.has(e)) throw new TypeError("C
 function _classPrivateFieldSet(s, a, r) { return s.set(_assertClassBrand(s, a), r), r; }
 function _classPrivateFieldGet(s, a) { return s.get(_assertClassBrand(s, a)); }
 function _assertClassBrand(e, t, n) { if ("function" == typeof e ? e === t : e.has(t)) return arguments.length < 3 ? t : n; throw new TypeError("Private element is not present on this object"); }
-var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _mutex2, _onRelease) {
+var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _mutex2, _onRelease) {
   'use strict';
 
   /**
@@ -2486,7 +2486,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    */
   var _disposed = /*#__PURE__*/new WeakMap();
   var _stack = /*#__PURE__*/new WeakMap();
-  class DisposableStack {
+  class DisposableStackPolyfill {
     constructor() {
       _classPrivateFieldInitSpec(this, _disposed, false);
       _classPrivateFieldInitSpec(this, _stack, []);
@@ -2582,7 +2582,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       if (_classPrivateFieldGet(_disposed, this)) {
         throw new ReferenceError('A disposed stack can not use anything new');
       }
-      const stack = new DisposableStack();
+      const stack = new DisposableStackPolyfill();
       _classPrivateFieldSet(_stack, stack, _classPrivateFieldGet(_stack, this));
       _classPrivateFieldSet(_stack, this, []);
       _classPrivateFieldSet(_disposed, this, true);
@@ -2608,11 +2608,11 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         throw errors[0];
       } else if (errors.length > 1) {
         let suppressed = null;
-        for (const error of errors.reverse()) {
+        for (const error of errors) {
           if (suppressed === null) {
             suppressed = error;
           } else {
-            suppressed = new SuppressedError$1(error, suppressed);
+            suppressed = new SuppressedErrorPolyfill(error, suppressed);
           }
         }
         throw suppressed;
@@ -2622,9 +2622,13 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
+  const DisposableStack = globalThis.DisposableStack ?? DisposableStackPolyfill;
+  /**
+   * @internal
+   */
   var _disposed2 = /*#__PURE__*/new WeakMap();
   var _stack2 = /*#__PURE__*/new WeakMap();
-  class AsyncDisposableStack {
+  class AsyncDisposableStackPolyfill {
     constructor() {
       _classPrivateFieldInitSpec(this, _disposed2, false);
       _classPrivateFieldInitSpec(this, _stack2, []);
@@ -2639,7 +2643,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     /**
      * Alias for `[Symbol.asyncDispose]()`.
      */
-    async dispose() {
+    async disposeAsync() {
       await this[asyncDisposeSymbol]();
     }
     /**
@@ -2730,7 +2734,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       if (_classPrivateFieldGet(_disposed2, this)) {
         throw new ReferenceError('A disposed stack can not use anything new');
       }
-      const stack = new AsyncDisposableStack();
+      const stack = new AsyncDisposableStackPolyfill();
       _classPrivateFieldSet(_stack2, stack, _classPrivateFieldGet(_stack2, this));
       _classPrivateFieldSet(_stack2, this, []);
       _classPrivateFieldSet(_disposed2, this, true);
@@ -2756,11 +2760,11 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         throw errors[0];
       } else if (errors.length > 1) {
         let suppressed = null;
-        for (const error of errors.reverse()) {
+        for (const error of errors) {
           if (suppressed === null) {
             suppressed = error;
           } else {
-            suppressed = new SuppressedError$1(error, suppressed);
+            suppressed = new SuppressedErrorPolyfill(error, suppressed);
           }
         }
         throw suppressed;
@@ -2769,11 +2773,17 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   }
   /**
    * @internal
+   */
+  const AsyncDisposableStack = globalThis.AsyncDisposableStack ?? AsyncDisposableStackPolyfill;
+  /**
+   * @internal
    * Represents an error that occurs when multiple errors are thrown during
    * the disposal of resources. This class encapsulates the primary error and
    * any suppressed errors that occurred subsequently.
    */
-  let SuppressedError$1 = (_error = /*#__PURE__*/new WeakMap(), _suppressed = /*#__PURE__*/new WeakMap(), class SuppressedError extends Error {
+  var _error = /*#__PURE__*/new WeakMap();
+  var _suppressed = /*#__PURE__*/new WeakMap();
+  class SuppressedErrorPolyfill extends Error {
     constructor(error, suppressed, message = 'An error was suppressed during disposal') {
       super(message);
       _classPrivateFieldInitSpec(this, _error, void 0);
@@ -2795,7 +2805,11 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     get suppressed() {
       return _classPrivateFieldGet(_suppressed, this);
     }
-  });
+  }
+  /**
+   * @internal
+   */
+  const SuppressedError$1 = globalThis.SuppressedError ?? SuppressedErrorPolyfill;
 
   /**
    * @license
@@ -2951,7 +2965,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.19.0';
+  const packageVersion = '24.20.0';
 
   /**
    * @license
@@ -3542,9 +3556,6 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  /**
-   * @internal
-   */
   async function getReadableFromProtocolStream(client, handle) {
     return new ReadableStream({
       async pull(controller) {
@@ -3857,6 +3868,19 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       return await this.defaultBrowserContext().deleteCookie(...cookies);
     }
     /**
+     * Deletes cookies matching the provided filters from the default
+     * {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.deleteMatchingCookies |
+     * browser.defaultBrowserContext().deleteMatchingCookies()}.
+     */
+    async deleteMatchingCookies(...filters) {
+      return await this.defaultBrowserContext().deleteMatchingCookies(...filters);
+    }
+    /**
      * Whether Puppeteer is connected to this {@link Browser | browser}.
      *
      * @deprecated Use {@link Browser | Browser.connected}.
@@ -4143,8 +4167,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       return await firstValueFrom(merge(fromEmitterEvent(this, "targetcreated" /* BrowserContextEvent.TargetCreated */), fromEmitterEvent(this, "targetchanged" /* BrowserContextEvent.TargetChanged */), from(this.targets())).pipe(filterAsync(predicate), raceWith(timeout(ms))));
     }
     /**
-     * Removes cookie in the browser context
-     * @param cookies - {@link Cookie | cookie} to remove
+     * Removes cookie in this browser context.
+     *
+     * @param cookies - Complete {@link Cookie | cookie} object to be removed.
      */
     async deleteCookie(...cookies) {
       return await this.setCookie(...cookies.map(cookie => {
@@ -4153,6 +4178,49 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           expires: 1
         };
       }));
+    }
+    /**
+     * Deletes cookies matching the provided filters in this browser context.
+     *
+     * @param filters - {@link DeleteCookiesRequest}
+     */
+    async deleteMatchingCookies(...filters) {
+      const cookies = await this.cookies();
+      const cookiesToDelete = cookies.filter(cookie => {
+        return filters.some(filter => {
+          if (filter.name === cookie.name) {
+            if (filter.domain !== undefined && filter.domain === cookie.domain) {
+              return true;
+            }
+            if (filter.path !== undefined && filter.path === cookie.path) {
+              return true;
+            }
+            if (filter.partitionKey !== undefined && cookie.partitionKey !== undefined) {
+              if (typeof cookie.partitionKey !== 'object') {
+                throw new Error('Unexpected string partition key');
+              }
+              if (typeof filter.partitionKey === 'string') {
+                if (filter.partitionKey === cookie.partitionKey?.sourceOrigin) {
+                  return true;
+                }
+              } else {
+                if (filter.partitionKey.sourceOrigin === cookie.partitionKey?.sourceOrigin) {
+                  return true;
+                }
+              }
+            }
+            if (filter.url !== undefined) {
+              const url = new URL(filter.url);
+              if (url.hostname === cookie.domain && url.pathname === cookie.path) {
+                return true;
+              }
+            }
+            return true;
+          }
+          return false;
+        });
+      });
+      await this.deleteCookie(...cookiesToDelete);
     }
     /**
      * Whether this {@link BrowserContext | browser context} is closed.
@@ -4334,6 +4402,35 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       await this.handle({
         accept: false
       });
+    }
+  }
+
+  /**
+   * @internal
+   */
+  class AsyncIterableUtil {
+    static async *map(iterable, map) {
+      for await (const value of iterable) {
+        yield await map(value);
+      }
+    }
+    static async *flatMap(iterable, map) {
+      for await (const value of iterable) {
+        yield* map(value);
+      }
+    }
+    static async collect(iterable) {
+      const result = [];
+      for await (const value of iterable) {
+        result.push(value);
+      }
+      return result;
+    }
+    static async first(iterable) {
+      for await (const value of iterable) {
+        return value;
+      }
+      return;
     }
   }
 
@@ -4888,42 +4985,13 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   }
 
   /**
-   * @internal
-   */
-  // Either one of these may be implemented, but at least one must be.
-  _defineProperty(QueryHandler, "querySelectorAll", void 0);
-  _defineProperty(QueryHandler, "querySelector", void 0);
-  class AsyncIterableUtil {
-    static async *map(iterable, map) {
-      for await (const value of iterable) {
-        yield await map(value);
-      }
-    }
-    static async *flatMap(iterable, map) {
-      for await (const value of iterable) {
-        yield* map(value);
-      }
-    }
-    static async collect(iterable) {
-      const result = [];
-      for await (const value of iterable) {
-        result.push(value);
-      }
-      return result;
-    }
-    static async first(iterable) {
-      for await (const value of iterable) {
-        return value;
-      }
-      return;
-    }
-  }
-
-  /**
    * @license
    * Copyright 2020 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
+  // Either one of these may be implemented, but at least one must be.
+  _defineProperty(QueryHandler, "querySelectorAll", void 0);
+  _defineProperty(QueryHandler, "querySelector", void 0);
   const isKnownAttribute = attribute => {
     return ['name', 'role'].includes(attribute);
   };
@@ -12694,9 +12762,6 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       }
       const interestingNodes = new Set();
       this.collectInterestingNodes(interestingNodes, defaultRoot, false);
-      if (!interestingNodes.has(needle)) {
-        return null;
-      }
       return this.serializeTree(needle, interestingNodes)[0] ?? null;
     }
     serializeTree(node, interestingNodes) {
@@ -12818,7 +12883,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       if (_assertClassBrand(_AXNode_brand, this, _hasFocusableChild).call(this)) {
         return false;
       }
-      if (_classPrivateFieldGet(_focusable, this) && _classPrivateFieldGet(_name, this)) {
+      if (_classPrivateFieldGet(_focusable, this) && _classPrivateFieldGet(_name, this) && _classPrivateFieldGet(_name, this) !== 'Document') {
         return true;
       }
       if (_classPrivateFieldGet(_role, this) === 'heading' && _classPrivateFieldGet(_name, this)) {
@@ -12928,7 +12993,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       };
       for (const booleanProperty of booleanProperties) {
         // RootWebArea's treat focus differently than other nodes. They report whether
-        // their frame  has focus, not whether focus is specifically on the root
+        // their frame has focus, not whether focus is specifically on the root
         // node.
         if (booleanProperty === 'focused' && _classPrivateFieldGet(_role, this) === 'RootWebArea') {
           continue;
@@ -17657,7 +17722,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     async emulateNetworkConditions(networkConditions) {
       if (!_classPrivateFieldGet(_emulatedNetworkConditions, this)) {
         _classPrivateFieldSet(_emulatedNetworkConditions, this, {
-          offline: false,
+          offline: networkConditions?.offline ?? false,
           upload: -1,
           download: -1,
           latency: 0
@@ -17666,6 +17731,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       _classPrivateFieldGet(_emulatedNetworkConditions, this).upload = networkConditions ? networkConditions.upload : -1;
       _classPrivateFieldGet(_emulatedNetworkConditions, this).download = networkConditions ? networkConditions.download : -1;
       _classPrivateFieldGet(_emulatedNetworkConditions, this).latency = networkConditions ? networkConditions.latency : 0;
+      _classPrivateFieldGet(_emulatedNetworkConditions, this).offline = networkConditions?.offline ?? false;
       await _assertClassBrand(_NetworkManager_brand, this, _applyToAllClients).call(this, _assertClassBrand(_NetworkManager_brand, this, _applyNetworkConditions).bind(this));
     }
     async setUserAgent(userAgent, userAgentMetadata) {
@@ -24722,8 +24788,8 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '140.0.7339.80',
-    'chrome-headless-shell': '140.0.7339.80',
+    chrome: '140.0.7339.82',
+    'chrome-headless-shell': '140.0.7339.82',
     firefox: 'stable_142.0.1'
   });
 

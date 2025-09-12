@@ -71,9 +71,6 @@ export declare function getReadableAsTypedArray(readable: ReadableStream<Uint8Ar
 /**
  * @internal
  */
-/**
- * @internal
- */
 export declare function getReadableFromProtocolStream(client: CDPSession, handle: string): Promise<ReadableStream<Uint8Array>>;
 /**
  * @internal

@@ -334,7 +334,6 @@ let BrowsingContext = (() => {
             });
         }
         async setCacheBehavior(cacheBehavior) {
-            // @ts-expect-error not in BiDi types yet.
             await this.#session.send('network.setCacheBehavior', {
                 contexts: [this.id],
                 cacheBehavior,
@@ -538,7 +537,9 @@ let BrowsingContext = (() => {
             return result.result.nodes;
         }
         async setJavaScriptEnabled(enabled) {
-            await this.userContext.browser.session.send('emulation.setScriptingEnabled', {
+            await this.userContext.browser.session.send(
+            // @ts-expect-error missing types
+            'emulation.setScriptingEnabled', {
                 // Enabled `null` means `default`, `false` means `disabled`.
                 enabled: enabled ? null : false,
                 contexts: [this.id],

@@ -19,7 +19,7 @@ exports.asyncDisposeSymbol = Symbol.asyncDispose;
 /**
  * @internal
  */
-class DisposableStack {
+class DisposableStackPolyfill {
     #disposed = false;
     #stack = [];
     /**
@@ -112,7 +112,7 @@ class DisposableStack {
         if (this.#disposed) {
             throw new ReferenceError('A disposed stack can not use anything new');
         }
-        const stack = new DisposableStack();
+        const stack = new DisposableStackPolyfill();
         stack.#stack = this.#stack;
         this.#stack = [];
         this.#disposed = true;
@@ -140,12 +140,12 @@ class DisposableStack {
         }
         else if (errors.length > 1) {
             let suppressed = null;
-            for (const error of errors.reverse()) {
+            for (const error of errors) {
                 if (suppressed === null) {
                     suppressed = error;
                 }
                 else {
-                    suppressed = new SuppressedError(error, suppressed);
+                    suppressed = new SuppressedErrorPolyfill(error, suppressed);
                 }
             }
             throw suppressed;
@@ -153,11 +153,14 @@ class DisposableStack {
     }
     [Symbol.toStringTag] = 'DisposableStack';
 }
-exports.DisposableStack = DisposableStack;
 /**
  * @internal
  */
-class AsyncDisposableStack {
+exports.DisposableStack = globalThis.DisposableStack ?? DisposableStackPolyfill;
+/**
+ * @internal
+ */
+class AsyncDisposableStackPolyfill {
     #disposed = false;
     #stack = [];
     /**
@@ -169,7 +172,7 @@ class AsyncDisposableStack {
     /**
      * Alias for `[Symbol.asyncDispose]()`.
      */
-    async dispose() {
+    async disposeAsync() {
         await this[exports.asyncDisposeSymbol]();
     }
     /**
@@ -261,7 +264,7 @@ class AsyncDisposableStack {
         if (this.#disposed) {
             throw new ReferenceError('A disposed stack can not use anything new');
         }
-        const stack = new AsyncDisposableStack();
+        const stack = new AsyncDisposableStackPolyfill();
         stack.#stack = this.#stack;
         this.#stack = [];
         this.#disposed = true;
@@ -289,12 +292,12 @@ class AsyncDisposableStack {
         }
         else if (errors.length > 1) {
             let suppressed = null;
-            for (const error of errors.reverse()) {
+            for (const error of errors) {
                 if (suppressed === null) {
                     suppressed = error;
                 }
                 else {
-                    suppressed = new SuppressedError(error, suppressed);
+                    suppressed = new SuppressedErrorPolyfill(error, suppressed);
                 }
             }
             throw suppressed;
@@ -302,14 +305,17 @@ class AsyncDisposableStack {
     }
     [Symbol.toStringTag] = 'AsyncDisposableStack';
 }
-exports.AsyncDisposableStack = AsyncDisposableStack;
+/**
+ * @internal
+ */
+exports.AsyncDisposableStack = globalThis.AsyncDisposableStack ?? AsyncDisposableStackPolyfill;
 /**
  * @internal
  * Represents an error that occurs when multiple errors are thrown during
  * the disposal of resources. This class encapsulates the primary error and
  * any suppressed errors that occurred subsequently.
  */
-class SuppressedError extends Error {
+class SuppressedErrorPolyfill extends Error {
     #error;
     #suppressed;
     constructor(error, suppressed, message = 'An error was suppressed during disposal') {
@@ -332,5 +338,8 @@ class SuppressedError extends Error {
         return this.#suppressed;
     }
 }
-exports.SuppressedError = SuppressedError;
+/**
+ * @internal
+ */
+exports.SuppressedError = globalThis.SuppressedError ?? SuppressedErrorPolyfill;
 //# sourceMappingURL=disposable.js.map

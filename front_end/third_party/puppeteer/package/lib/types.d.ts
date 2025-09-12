@@ -5,7 +5,7 @@ import type { ParseSelector } from 'typed-query-selector/parser.js';
 import { PassThrough } from 'node:stream';
 import { Protocol } from 'devtools-protocol';
 import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
-import { Session } from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import { Session } from 'webdriver-bidi-protocol';
 
 /**
  * The Accessibility class provides methods for inspecting the browser's
@@ -353,6 +353,17 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      */
     deleteCookie(...cookies: Cookie[]): Promise<void>;
     /**
+     * Deletes cookies matching the provided filters from the default
+     * {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.deleteMatchingCookies |
+     * browser.defaultBrowserContext().deleteMatchingCookies()}.
+     */
+    deleteMatchingCookies(...filters: DeleteCookiesRequest[]): Promise<void>;
+    /**
      * Installs an extension and returns the ID. In Chrome, this is only
      * available if the browser was created using `pipe: true` and the
      * `--enable-unsafe-extension-debugging` flag is set.
@@ -526,10 +537,17 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      */
     abstract setCookie(...cookies: CookieData[]): Promise<void>;
     /**
-     * Removes cookie in the browser context
-     * @param cookies - {@link Cookie | cookie} to remove
+     * Removes cookie in this browser context.
+     *
+     * @param cookies - Complete {@link Cookie | cookie} object to be removed.
      */
     deleteCookie(...cookies: Cookie[]): Promise<void>;
+    /**
+     * Deletes cookies matching the provided filters in this browser context.
+     *
+     * @param filters - {@link DeleteCookiesRequest}
+     */
+    deleteMatchingCookies(...filters: DeleteCookiesRequest[]): Promise<void>;
     /**
      * Whether this {@link BrowserContext | browser context} is closed.
      */
@@ -1166,18 +1184,6 @@ export declare interface ContinueRequestOverrides {
  */
 export declare interface Cookie extends CookieData {
     /**
-     * Cookie name.
-     */
-    name: string;
-    /**
-     * Cookie value.
-     */
-    value: string;
-    /**
-     * Cookie domain.
-     */
-    domain: string;
-    /**
      * Cookie path.
      */
     path: string;
@@ -1191,10 +1197,6 @@ export declare interface Cookie extends CookieData {
      */
     size: number;
     /**
-     * True if cookie is http-only.
-     */
-    httpOnly: boolean;
-    /**
      * True if cookie is secure.
      */
     secure: boolean;
@@ -1202,29 +1204,6 @@ export declare interface Cookie extends CookieData {
      * True in case of session cookie.
      */
     session: boolean;
-    /**
-     * Cookie SameSite type.
-     */
-    sameSite?: CookieSameSite;
-    /**
-     * Cookie Priority. Supported only in Chrome.
-     */
-    priority?: CookiePriority;
-    /**
-     * True if cookie is SameParty. Supported only in Chrome.
-     */
-    sameParty?: boolean;
-    /**
-     * Cookie source scheme type. Supported only in Chrome.
-     */
-    sourceScheme?: CookieSourceScheme;
-    /**
-     * Cookie partition key. In Chrome, it is the top-level site the
-     * partitioned cookie is available in. In Firefox, it matches the
-     * source origin in the
-     * {@link https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey | PartitionKey }.
-     */
-    partitionKey?: CookiePartitionKey | string;
     /**
      * True if cookie partition key is opaque. Supported only in Chrome.
      */
@@ -4571,6 +4550,14 @@ export declare interface Moveable {
  */
 export declare interface NetworkConditions {
     /**
+     * Emulates the offline mode.
+     *
+     * @remarks
+     *
+     * Shortcut for {@link Page.setOfflineMode}.
+     */
+    offline?: boolean;
+    /**
      * Download speed (bytes/s)
      */
     download: number;
@@ -4839,9 +4826,10 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     abstract setDragInterception(enabled: boolean): Promise<void>;
     /**
-     * Sets the network connection to offline.
+     * Emulates the offline mode.
      *
-     * It does not change the parameters used in {@link Page.emulateNetworkConditions}
+     * It does not change the download/upload/latency parameters set by
+     * {@link Page.emulateNetworkConditions}
      *
      * @param enabled - When `true`, enables offline mode for the page.
      */
@@ -5234,7 +5222,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     abstract cookies(...urls: string[]): Promise<Cookie[]>;
     /**
      * @deprecated Page-level cookie API is deprecated. Use
-     * {@link Browser.deleteCookie} or {@link BrowserContext.deleteCookie}
+     * {@link Browser.deleteCookie}, {@link BrowserContext.deleteCookie},
+     * {@link Browser.deleteMatchingCookies} or {@link BrowserContext.deleteMatchingCookies}
      * instead.
      */
     abstract deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;

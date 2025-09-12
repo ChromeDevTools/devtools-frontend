@@ -1,11 +1,14 @@
+"use strict";
 /**
  * @license
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { QueryHandler } from '../common/QueryHandler.js';
-import { assert } from '../util/assert.js';
-import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ARIAQueryHandler = void 0;
+const assert_js_1 = require("../util/assert.js");
+const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
+const QueryHandler_js_1 = require("./QueryHandler.js");
 const isKnownAttribute = (attribute) => {
     return ['name', 'role'].includes(attribute);
 };
@@ -27,7 +30,7 @@ const parseARIASelector = (selector) => {
     }
     const queryOptions = {};
     const defaultName = selector.replace(ATTRIBUTE_REGEXP, (_, attribute, __, value) => {
-        assert(isKnownAttribute(attribute), `Unknown aria attribute "${attribute}" in selector`);
+        (0, assert_js_1.assert)(isKnownAttribute(attribute), `Unknown aria attribute "${attribute}" in selector`);
         queryOptions[attribute] = value;
         return '';
     });
@@ -39,7 +42,7 @@ const parseARIASelector = (selector) => {
 /**
  * @internal
  */
-export class ARIAQueryHandler extends QueryHandler {
+class ARIAQueryHandler extends QueryHandler_js_1.QueryHandler {
     static querySelector = async (node, selector, { ariaQuerySelector }) => {
         return await ariaQuerySelector(node, selector);
     };
@@ -48,7 +51,8 @@ export class ARIAQueryHandler extends QueryHandler {
         yield* element.queryAXTree(name, role);
     }
     static queryOne = async (element, selector) => {
-        return ((await AsyncIterableUtil.first(this.queryAll(element, selector))) ?? null);
+        return ((await AsyncIterableUtil_js_1.AsyncIterableUtil.first(this.queryAll(element, selector))) ?? null);
     };
 }
+exports.ARIAQueryHandler = ARIAQueryHandler;
 //# sourceMappingURL=AriaQueryHandler.js.map

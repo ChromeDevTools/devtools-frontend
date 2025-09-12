@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 export * from './Accessibility.js';
-export * from './AriaQueryHandler.js';
 export * from './Binding.js';
 export * from './Browser.js';
 export * from './BrowserContext.js';

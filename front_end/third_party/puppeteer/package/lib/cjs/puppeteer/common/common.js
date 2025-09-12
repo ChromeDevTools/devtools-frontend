@@ -21,6 +21,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./BrowserWebSocketTransport.js"), exports);
 __exportStar(require("./CallbackRegistry.js"), exports);
+__exportStar(require("./AriaQueryHandler.js"), exports);
 __exportStar(require("./ConsoleMessage.js"), exports);
 __exportStar(require("./CustomQueryHandler.js"), exports);
 __exportStar(require("./Debug.js"), exports);

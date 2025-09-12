@@ -139,7 +139,7 @@ export class NetworkManager extends EventEmitter {
     async emulateNetworkConditions(networkConditions) {
         if (!this.#emulatedNetworkConditions) {
             this.#emulatedNetworkConditions = {
-                offline: false,
+                offline: networkConditions?.offline ?? false,
                 upload: -1,
                 download: -1,
                 latency: 0,
@@ -154,6 +154,8 @@ export class NetworkManager extends EventEmitter {
         this.#emulatedNetworkConditions.latency = networkConditions
             ? networkConditions.latency
             : 0;
+        this.#emulatedNetworkConditions.offline =
+            networkConditions?.offline ?? false;
         await this.#applyToAllClients(this.#applyNetworkConditions.bind(this));
     }
     async #applyToAllClients(fn) {

@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -16,7 +16,7 @@ new RuleTester().run('check-license-header', rule, {
     },
     {
       code: `
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -100,7 +100,7 @@ import * as Common from '../common/common.js';
       filename: 'scripts/test_runner.js',
       code: `#!/usr/bin/env node
 
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -140,7 +140,7 @@ import * as Action from './Action.js';
 `,
     },
     {
-      code: `// Copyright 2019 The Chromium Authors. All rights reserved.
+      code: `// Copyright 2019 The Chromium Authors.
 // Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
 
 (async function() {})();`,
@@ -150,14 +150,14 @@ import * as Action from './Action.js';
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// Copyright 2019 The Chromium Authors. All rights reserved.
+// Copyright 2019 The Chromium Authors.
 // Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
 
 (async function() {})();`,
     },
     {
       code: `
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors.
 //
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -171,7 +171,7 @@ import * as Action from './Action.js';
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors.
 //
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.

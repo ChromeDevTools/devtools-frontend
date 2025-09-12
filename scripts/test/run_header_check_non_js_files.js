@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -21,7 +21,7 @@ const CONFIG_DIRECTORY = path.join(ROOT_DIRECTORY, 'config');
 
 const CURRENT_YEAR = new Date().getFullYear();
 const LINE_LICENSE_HEADER = [
-  `Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.`,
+  `Copyright ${CURRENT_YEAR} The Chromium Authors.`,
   'Use of this source code is governed by a BSD-style license that can be',
   'found in the LICENSE file.',
 ];

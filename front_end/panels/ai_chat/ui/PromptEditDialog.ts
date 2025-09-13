@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import * as Geometry from '../../../models/geometry/geometry.js';
 import { createLogger } from '../core/Logger.js';
 
 const logger = createLogger('PromptEditDialog');
@@ -98,7 +99,7 @@ export class PromptEditDialog {
     dialog.setOutsideClickCallback(() => this.close());
     dialog.contentElement.classList.add('prompt-edit-dialog');
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    dialog.setMaxContentSize(new UI.Geometry.Size(window.innerWidth * 0.9, window.innerHeight * 0.9));
+    dialog.setMaxContentSize(new Geometry.Size(window.innerWidth * 0.9, window.innerHeight * 0.9));
 
     // Apply styles by injecting a style element
     const styleElement = document.createElement('style');

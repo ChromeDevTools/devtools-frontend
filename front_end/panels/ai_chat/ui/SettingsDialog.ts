@@ -8,8 +8,11 @@ import { getEvaluationConfig, setEvaluationConfig, isEvaluationEnabled, connectT
 import { createLogger } from '../core/Logger.js';
 import { LLMClient } from '../LLM/LLMClient.js';
 import { getTracingConfig, setTracingConfig, isTracingEnabled } from '../tracing/TracingConfig.js';
+import { getMCPConfig, setMCPConfig, isMCPEnabled } from '../mcp/MCPConfig.js';
+import { MCPRegistry } from '../mcp/MCPRegistry.js';
 
 import { DEFAULT_PROVIDER_MODELS } from './AIChatPanel.js';
+import './model_selector/ModelSelector.js';
 
 const logger = createLogger('SettingsDialog');
 
@@ -349,6 +352,87 @@ const UIStrings = {
    *@description Evaluation connection status
    */
   evaluationConnectionStatus: 'Connection Status',
+  /**
+   *@description MCP section title
+   */
+  mcpSection: 'MCP Integration',
+  /**
+   *@description MCP enabled label
+   */
+  mcpEnabled: 'Enable MCP Integration',
+  /**
+   *@description MCP enabled hint
+   */
+  mcpEnabledHint: 'Enable MCP client to discover and call tools via Model Context Protocol',
+  /**
+   *@description MCP endpoint label
+   */
+  mcpEndpoint: 'MCP Server Endpoint',
+  /**
+   *@description MCP endpoint hint
+   */
+  mcpEndpointHint: 'HTTPS SSE or WebSocket endpoint (e.g., https://host/mcp or ws://localhost:9000)',
+  /**
+   *@description MCP token label
+   */
+  mcpToken: 'Auth Token (optional)',
+  /**
+   *@description MCP token hint
+   */
+  mcpTokenHint: 'If your MCP server requires authentication, provide a token here',
+  /**
+   *@description MCP connect button
+   */
+  mcpConnectRefresh: 'Connect / Refresh Tools',
+  /**
+   *@description MCP discovered tools label
+   */
+  mcpDiscoveredTools: 'Discovered Tools',
+  /**
+   *@description MCP discovered tools hint
+   */
+  mcpDiscoveredToolsHint: 'Select which MCP tools to make available to agents',
+  /**
+   *@description MCP no tools message
+   */
+  mcpNoTools: 'No tools discovered. Connect to an MCP server first.',
+  
+  /**
+   *@description MCP tool mode label
+   */
+  mcpToolMode: 'Tool Selection Mode',
+  /**
+   *@description MCP tool mode hint
+   */
+  mcpToolModeHint: 'Choose how MCP tools are selected and surfaced to agents',
+  /**
+   *@description MCP tool mode all option
+   */
+  mcpToolModeAll: 'All Tools - Surface all available MCP tools (may impact performance)',
+  /**
+   *@description MCP tool mode router option
+   */
+  mcpToolModeRouter: 'Smart Router - Use LLM to select most relevant tools each turn (recommended)',
+  /**
+   *@description MCP tool mode meta option
+   */
+  mcpToolModeMeta: 'Meta Tools - Use mcp.search/mcp.invoke for dynamic discovery (best for large catalogs)',
+  /**
+   *@description MCP max tools per turn label
+   */
+  mcpMaxToolsPerTurn: 'Max Tools Per Turn',
+  /**
+   *@description MCP max tools per turn hint
+   */
+  mcpMaxToolsPerTurnHint: 'Maximum number of tools to surface to agents in a single turn (default: 20)',
+  /**
+   *@description MCP max MCP tools per turn label
+   */
+  mcpMaxMcpPerTurn: 'Max MCP Tools Per Turn', 
+  /**
+   *@description MCP max MCP tools per turn hint
+   */
+  mcpMaxMcpPerTurnHint: 'Maximum number of MCP tools to include in tool selection (default: 8)',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_chat/ui/SettingsDialog.ts', UIStrings);
@@ -361,14 +445,14 @@ export function isVectorDBEnabled(): boolean {
 
 export class SettingsDialog {
   // Variables to store direct references to model selectors
-  static #openaiMiniModelSelect: HTMLSelectElement | null = null;
-  static #openaiNanoModelSelect: HTMLSelectElement | null = null;
-  static #litellmMiniModelSelect: HTMLSelectElement | null = null;
-  static #litellmNanoModelSelect: HTMLSelectElement | null = null;
-  static #groqMiniModelSelect: HTMLSelectElement | null = null;
-  static #groqNanoModelSelect: HTMLSelectElement | null = null;
-  static #openrouterMiniModelSelect: HTMLSelectElement | null = null;
-  static #openrouterNanoModelSelect: HTMLSelectElement | null = null;
+  static #openaiMiniModelSelect: any | null = null;
+  static #openaiNanoModelSelect: any | null = null;
+  static #litellmMiniModelSelect: any | null = null;
+  static #litellmNanoModelSelect: any | null = null;
+  static #groqMiniModelSelect: any | null = null;
+  static #groqNanoModelSelect: any | null = null;
+  static #openrouterMiniModelSelect: any | null = null;
+  static #openrouterNanoModelSelect: any | null = null;
   
   static async show(
     selectedModel: string,
@@ -445,8 +529,8 @@ export class SettingsDialog {
     providerHint.textContent = i18nString(UIStrings.providerHint);
     providerSection.appendChild(providerHint);
     
-    // Get the current provider from localStorage
-    const currentProvider = localStorage.getItem(PROVIDER_SELECTION_KEY) || 'openai';
+    // Use the stored provider from localStorage
+    const currentProvider = (localStorage.getItem(PROVIDER_SELECTION_KEY) || 'openai') as 'openai' | 'litellm' | 'groq' | 'openrouter';
     
     // Create provider selection dropdown
     const providerSelect = document.createElement('select');
@@ -477,6 +561,9 @@ export class SettingsDialog {
     openrouterOption.textContent = i18nString(UIStrings.openrouterProvider);
     openrouterOption.selected = currentProvider === 'openrouter';
     providerSelect.appendChild(openrouterOption);
+
+    // Ensure the select's value reflects the computed currentProvider
+    providerSelect.value = currentProvider;
     
     // Create provider-specific content containers
     const openaiContent = document.createElement('div');
@@ -769,10 +856,10 @@ export class SettingsDialog {
         
         // Refresh existing model selectors with new options if they exist
         if (SettingsDialog.#litellmMiniModelSelect) {
-          refreshModelSelectOptions(SettingsDialog.#litellmMiniModelSelect, allLiteLLMModels, miniModel);
+          refreshModelSelectOptions(SettingsDialog.#litellmMiniModelSelect, allLiteLLMModels, miniModel, i18nString(UIStrings.defaultMiniOption));
         }
         if (SettingsDialog.#litellmNanoModelSelect) {
-          refreshModelSelectOptions(SettingsDialog.#litellmNanoModelSelect, allLiteLLMModels, nanoModel);
+          refreshModelSelectOptions(SettingsDialog.#litellmNanoModelSelect, allLiteLLMModels, nanoModel, i18nString(UIStrings.defaultNanoOption));
         }
 
         if (hadWildcard && actualModelCount === 0 && !hasCustomModels) {
@@ -833,27 +920,36 @@ export class SettingsDialog {
     customModelsSection.appendChild(customModelsList);
 
     // Helper function to refresh the model list in a select element
-    function refreshModelSelectOptions(select: HTMLSelectElement, models: ModelOption[], currentValue: string) {
-      // Remember the current value
-      const previousValue = select.value;
-      
-      // Remove all options except the default (first) option
+    function refreshModelSelectOptions(select: any, models: ModelOption[], currentValue: string, defaultLabel: string) {
+      // Custom component path
+      if (select && select.tagName && select.tagName.toLowerCase() === 'ai-model-selector') {
+        const previousValue = select.value || select.selected || '';
+        const opts = [{ value: '', label: defaultLabel }, ...models];
+        select.options = opts;
+        if (previousValue && opts.some((o: any) => o.value === previousValue)) {
+          select.value = previousValue;
+        } else if (currentValue && opts.some((o: any) => o.value === currentValue)) {
+          select.value = currentValue;
+        } else {
+          select.value = '';
+        }
+        return;
+      }
+
+      // Native <select> fallback
+      const previousValue = (select as HTMLSelectElement).value;
       while (select.options.length > 1) {
         select.remove(1);
       }
-      
-      // Add new options
-      models.forEach(option => {
+      models.forEach((option: ModelOption) => {
         const optionElement = document.createElement('option');
         optionElement.value = option.value;
         optionElement.textContent = option.label;
         select.appendChild(optionElement);
       });
-      
-      // Try to restore previous selection, or use the provided value if it exists in the new options
-      if (previousValue && Array.from(select.options).some(opt => opt.value === previousValue)) {
+      if (previousValue && Array.from(select.options).some((opt: any) => opt.value === previousValue)) {
         select.value = previousValue;
-      } else if (currentValue && Array.from(select.options).some(opt => opt.value === currentValue)) {
+      } else if (currentValue && Array.from(select.options).some((opt: any) => opt.value === currentValue)) {
         select.value = currentValue;
       }
     }
@@ -1318,10 +1414,14 @@ export class SettingsDialog {
       const defaults = DEFAULT_PROVIDER_MODELS[provider] || DEFAULT_PROVIDER_MODELS.openai;
       const defaultModel = modelType === 'mini' ? defaults.mini : defaults.nano;
       
-      // Return default if it exists in provider models, otherwise return current model
-      return defaultModel && providerModels.some(model => model.value === defaultModel) 
-        ? defaultModel 
-        : currentModel;
+      // Return default if it exists in provider models
+      if (defaultModel && providerModels.some(model => model.value === defaultModel)) {
+        return defaultModel;
+      }
+
+      // If no valid model found, return empty string to indicate no selection
+      // The UI should handle this by showing a placeholder or the first available option
+      return '';
     }
     
     // Function to update Groq model selectors
@@ -1413,10 +1513,10 @@ export class SettingsDialog {
         
         // Refresh existing model selectors with new options if they exist
         if (SettingsDialog.#groqMiniModelSelect) {
-          refreshModelSelectOptions(SettingsDialog.#groqMiniModelSelect, allGroqModels, miniModel);
+          refreshModelSelectOptions(SettingsDialog.#groqMiniModelSelect, allGroqModels, miniModel, i18nString(UIStrings.defaultMiniOption));
         }
         if (SettingsDialog.#groqNanoModelSelect) {
-          refreshModelSelectOptions(SettingsDialog.#groqNanoModelSelect, allGroqModels, nanoModel);
+          refreshModelSelectOptions(SettingsDialog.#groqNanoModelSelect, allGroqModels, nanoModel, i18nString(UIStrings.defaultNanoOption));
         }
 
         fetchGroqModelsStatus.textContent = i18nString(UIStrings.fetchedModels, {PH1: actualModelCount});
@@ -2393,6 +2493,462 @@ export class SettingsDialog {
     evaluationEndpointInput.value = currentEvaluationConfig.endpoint || 'ws://localhost:8080';
     evaluationConfigContainer.appendChild(evaluationEndpointInput);
 
+    // ---- MCP Integration Section ----
+    const mcpSection = document.createElement('div');
+    mcpSection.className = 'settings-section mcp-section';
+    // Hide MCP UI: auto-connect is always on; settings are not user-configurable
+    mcpSection.style.display = 'none';
+    contentDiv.appendChild(mcpSection);
+
+    const mcpSectionTitle = document.createElement('h3');
+    mcpSectionTitle.className = 'settings-subtitle';
+    mcpSectionTitle.textContent = i18nString(UIStrings.mcpSection);
+    mcpSection.appendChild(mcpSectionTitle);
+
+    // Current MCP config
+    const currentMCPConfig = getMCPConfig();
+
+    // Enable checkbox
+    const mcpEnabledContainer = document.createElement('div');
+    mcpEnabledContainer.className = 'mcp-enabled-container';
+    mcpSection.appendChild(mcpEnabledContainer);
+
+    const mcpEnabledCheckbox = document.createElement('input');
+    mcpEnabledCheckbox.type = 'checkbox';
+    mcpEnabledCheckbox.id = 'mcp-enabled';
+    mcpEnabledCheckbox.className = 'mcp-checkbox';
+    mcpEnabledCheckbox.checked = isMCPEnabled();
+    mcpEnabledContainer.appendChild(mcpEnabledCheckbox);
+
+    const mcpEnabledLabel = document.createElement('label');
+    mcpEnabledLabel.htmlFor = 'mcp-enabled';
+    mcpEnabledLabel.className = 'mcp-label';
+    mcpEnabledLabel.textContent = i18nString(UIStrings.mcpEnabled);
+    mcpEnabledContainer.appendChild(mcpEnabledLabel);
+
+    const mcpEnabledHint = document.createElement('div');
+    mcpEnabledHint.className = 'settings-hint';
+    mcpEnabledHint.textContent = i18nString(UIStrings.mcpEnabledHint);
+    mcpSection.appendChild(mcpEnabledHint);
+
+    // Status indicator
+    const mcpStatusContainer = document.createElement('div');
+    mcpStatusContainer.className = 'connection-status-container';
+    mcpStatusContainer.style.display = 'flex';
+    mcpStatusContainer.style.alignItems = 'center';
+    mcpStatusContainer.style.gap = '8px';
+    mcpStatusContainer.style.marginTop = '8px';
+    mcpStatusContainer.style.fontSize = '13px';
+    mcpSection.appendChild(mcpStatusContainer);
+
+    const mcpStatusDot = document.createElement('div');
+    mcpStatusDot.className = 'connection-status-dot';
+    mcpStatusDot.style.width = '8px';
+    mcpStatusDot.style.height = '8px';
+    mcpStatusDot.style.borderRadius = '50%';
+    mcpStatusDot.style.flexShrink = '0';
+    mcpStatusContainer.appendChild(mcpStatusDot);
+
+    const mcpStatusText = document.createElement('span');
+    mcpStatusText.className = 'connection-status-text';
+    mcpStatusContainer.appendChild(mcpStatusText);
+
+    const mcpStatusDetails = document.createElement('div');
+    mcpStatusDetails.className = 'settings-hint';
+    mcpStatusDetails.style.marginTop = '4px';
+    mcpSection.appendChild(mcpStatusDetails);
+
+    const formatTimestamp = (date: Date | undefined): string => {
+      if (!date) return '';
+      return date.toLocaleString();
+    };
+
+    const formatMCPError = (error: string, errorType?: string): {message: string, hint?: string} => {
+      if (!errorType) return {message: error};
+      switch (errorType) {
+        case 'connection':
+          return {message: `Connection failed: ${error}`, hint: 'Check if the MCP server is running and the endpoint URL is correct.'};
+        case 'authentication':
+          return {message: `Authentication failed: ${error}`, hint: 'Verify your auth token is correct and has not expired.'};
+        case 'configuration':
+          return {message: `Configuration error: ${error}`, hint: 'Check your endpoint URL format (should be ws:// or wss://).'};
+        case 'network':
+          return {message: `Network error: ${error}`, hint: 'Check your internet connection and firewall settings.'};
+        case 'server_error':
+          return {message: `Server error: ${error}`, hint: 'The MCP server encountered an internal error. Contact the server administrator.'};
+        default:
+          return {message: error};
+      }
+    };
+
+    const updateMCPStatus = () => {
+      const status = MCPRegistry.getStatus();
+      if (!status.enabled) {
+        mcpStatusDot.style.backgroundColor = 'var(--color-text-disabled)';
+        mcpStatusText.textContent = 'Disabled';
+        mcpStatusText.style.color = 'var(--color-text-disabled)';
+        mcpStatusDetails.textContent = '';
+        return;
+      }
+      const anyConnected = status.servers.some(s => s.connected);
+      const toolCount = status.registeredToolNames.length;
+      if (anyConnected) {
+        mcpStatusDot.style.backgroundColor = 'var(--color-accent-green)';
+        mcpStatusText.textContent = `Connected (${toolCount} tools)`;
+        mcpStatusText.style.color = 'var(--color-accent-green)';
+        
+        // Safely build details content without using innerHTML
+        mcpStatusDetails.textContent = '';
+        if (status.lastConnected) {
+          const line = document.createElement('div');
+          line.textContent = `Last connected: ${formatTimestamp(status.lastConnected)}`;
+          mcpStatusDetails.appendChild(line);
+        }
+        if (status.lastError) {
+          const {message, hint} = formatMCPError(status.lastError, status.lastErrorType);
+          const errLine = document.createElement('div');
+          const errSpan = document.createElement('span');
+          errSpan.style.color = 'var(--color-error-text)';
+          errSpan.textContent = message;
+          errLine.appendChild(errSpan);
+          mcpStatusDetails.appendChild(errLine);
+          if (hint) {
+            const hintLine = document.createElement('div');
+            hintLine.style.color = 'var(--color-text-secondary)';
+            hintLine.style.fontSize = '12px';
+            hintLine.textContent = hint;
+            mcpStatusDetails.appendChild(hintLine);
+          }
+        }
+      } else {
+        mcpStatusDot.style.backgroundColor = 'var(--color-text-disabled)';
+        mcpStatusText.textContent = 'Not connected';
+        mcpStatusText.style.color = 'var(--color-text-disabled)';
+        
+        // Safely build details content without using innerHTML
+        mcpStatusDetails.textContent = '';
+        if (status.lastDisconnected) {
+          const line = document.createElement('div');
+          line.textContent = `Last disconnected: ${formatTimestamp(status.lastDisconnected)}`;
+          mcpStatusDetails.appendChild(line);
+        }
+        if (status.lastError) {
+          const {message, hint} = formatMCPError(status.lastError, status.lastErrorType);
+          const errLine = document.createElement('div');
+          const errSpan = document.createElement('span');
+          errSpan.style.color = 'var(--color-error-text)';
+          errSpan.textContent = message;
+          errLine.appendChild(errSpan);
+          mcpStatusDetails.appendChild(errLine);
+          if (hint) {
+            const hintLine = document.createElement('div');
+            hintLine.style.color = 'var(--color-text-secondary)';
+            hintLine.style.fontSize = '12px';
+            hintLine.textContent = hint;
+            mcpStatusDetails.appendChild(hintLine);
+          }
+        }
+      }
+    };
+    updateMCPStatus();
+
+    // Disconnect button (only shown when connected)
+    const mcpDisconnectContainer = document.createElement('div');
+    mcpDisconnectContainer.style.marginTop = '8px';
+    mcpDisconnectContainer.style.marginBottom = '8px';
+    mcpSection.appendChild(mcpDisconnectContainer);
+
+    const mcpDisconnectButton = document.createElement('button');
+    mcpDisconnectButton.textContent = 'Disconnect';
+    mcpDisconnectButton.className = 'settings-button';
+    mcpDisconnectButton.style.backgroundColor = 'var(--color-button-secondary)';
+    mcpDisconnectButton.style.border = '1px solid var(--color-button-outline)';
+    mcpDisconnectButton.style.color = 'var(--color-text-primary)';
+    mcpDisconnectButton.style.padding = '4px 8px';
+    mcpDisconnectButton.style.borderRadius = '3px';
+    mcpDisconnectButton.style.cursor = 'pointer';
+    mcpDisconnectButton.addEventListener('click', async () => {
+      try {
+        MCPRegistry.dispose();
+        updateMCPStatus();
+        updateDisconnectButton();
+        updateToolsList();
+      } catch (err) {
+        console.error('Failed to disconnect MCP:', err);
+      }
+    });
+    mcpDisconnectContainer.appendChild(mcpDisconnectButton);
+
+    const updateDisconnectButton = () => {
+      const status = MCPRegistry.getStatus();
+      const anyConnected = status.enabled && status.servers.some(s => s.connected);
+      mcpDisconnectContainer.style.display = anyConnected ? 'block' : 'none';
+    };
+    updateDisconnectButton();
+
+    // MCP config inputs (visible when enabled)
+    const mcpConfigContainer = document.createElement('div');
+    mcpConfigContainer.className = 'mcp-config-container';
+    mcpConfigContainer.style.display = mcpEnabledCheckbox.checked ? 'block' : 'none';
+    mcpSection.appendChild(mcpConfigContainer);
+
+    // Endpoint
+    const mcpEndpointLabel = document.createElement('div');
+    mcpEndpointLabel.className = 'settings-label';
+    mcpEndpointLabel.textContent = i18nString(UIStrings.mcpEndpoint);
+    mcpConfigContainer.appendChild(mcpEndpointLabel);
+
+    const mcpEndpointHint = document.createElement('div');
+    mcpEndpointHint.className = 'settings-hint';
+    mcpEndpointHint.textContent = i18nString(UIStrings.mcpEndpointHint);
+    mcpConfigContainer.appendChild(mcpEndpointHint);
+
+    const mcpEndpointInput = document.createElement('input');
+    mcpEndpointInput.type = 'text';
+    mcpEndpointInput.className = 'settings-input';
+    mcpEndpointInput.placeholder = 'ws://localhost:9000';
+    mcpEndpointInput.value = currentMCPConfig.endpoint || '';
+    mcpConfigContainer.appendChild(mcpEndpointInput);
+
+    // Token
+    const mcpTokenLabel = document.createElement('div');
+    mcpTokenLabel.className = 'settings-label';
+    mcpTokenLabel.textContent = i18nString(UIStrings.mcpToken);
+    mcpConfigContainer.appendChild(mcpTokenLabel);
+
+    const mcpTokenHint = document.createElement('div');
+    mcpTokenHint.className = 'settings-hint';
+    mcpTokenHint.textContent = i18nString(UIStrings.mcpTokenHint);
+    mcpConfigContainer.appendChild(mcpTokenHint);
+
+    const mcpTokenInput = document.createElement('input');
+    mcpTokenInput.type = 'password';
+    mcpTokenInput.className = 'settings-input';
+    mcpTokenInput.placeholder = 'Optional';
+    mcpTokenInput.value = currentMCPConfig.token || '';
+    mcpConfigContainer.appendChild(mcpTokenInput);
+
+    // Connect/Refresh button
+    const mcpConnectButton = document.createElement('button');
+    mcpConnectButton.className = 'settings-button';
+    mcpConnectButton.textContent = i18nString(UIStrings.mcpConnectRefresh);
+    mcpConnectButton.addEventListener('click', async () => {
+      // Save config then init/refresh
+      setMCPConfig({
+        enabled: mcpEnabledCheckbox.checked,
+        endpoint: mcpEndpointInput.value.trim(),
+        token: mcpTokenInput.value.trim() || undefined,
+      });
+      try {
+        await MCPRegistry.init();
+        await MCPRegistry.refresh();
+      } catch (err) {
+        logger.error('MCP connect/refresh failed', err);
+      } finally {
+        updateMCPStatus();
+        updateDisconnectButton();
+        updateToolsList();
+        onSettingsSaved();
+      }
+    });
+    mcpConfigContainer.appendChild(mcpConnectButton);
+
+    // Autostart checkbox
+    // Autostart UI removed: MCP auto-connect is always enabled by the panel
+
+    // Tool mode selection
+    const mcpToolModeLabel = document.createElement('div');
+    mcpToolModeLabel.className = 'settings-label';
+    mcpToolModeLabel.textContent = i18nString(UIStrings.mcpToolMode);
+    mcpConfigContainer.appendChild(mcpToolModeLabel);
+
+    const mcpToolModeHint = document.createElement('div');
+    mcpToolModeHint.className = 'settings-hint';
+    mcpToolModeHint.textContent = i18nString(UIStrings.mcpToolModeHint);
+    mcpConfigContainer.appendChild(mcpToolModeHint);
+
+    const mcpToolModeSelect = document.createElement('select');
+    mcpToolModeSelect.className = 'settings-select';
+    mcpConfigContainer.appendChild(mcpToolModeSelect);
+
+    // Tool mode options
+    const toolModeOptions = [
+      { value: 'all', text: i18nString(UIStrings.mcpToolModeAll) },
+      { value: 'router', text: i18nString(UIStrings.mcpToolModeRouter) },
+      { value: 'meta', text: i18nString(UIStrings.mcpToolModeMeta) },
+    ];
+
+    toolModeOptions.forEach(option => {
+      const optionElement = document.createElement('option');
+      optionElement.value = option.value;
+      optionElement.textContent = option.text;
+      if ((currentMCPConfig.toolMode || 'router') === option.value) {
+        optionElement.selected = true;
+      }
+      mcpToolModeSelect.appendChild(optionElement);
+    });
+
+    // Ensure the select reflects the currently stored mode even if options were appended later
+    mcpToolModeSelect.value = (currentMCPConfig.toolMode || 'router');
+
+    // Handle tool mode changes
+    mcpToolModeSelect.addEventListener('change', () => {
+      setMCPConfig({
+        ...getMCPConfig(),
+        toolMode: mcpToolModeSelect.value as 'all' | 'router' | 'meta',
+      });
+      onSettingsSaved();
+    });
+
+    // Advanced budget controls
+    const mcpMaxToolsLabel = document.createElement('div');
+    mcpMaxToolsLabel.className = 'settings-label';
+    mcpMaxToolsLabel.textContent = i18nString(UIStrings.mcpMaxToolsPerTurn);
+    mcpConfigContainer.appendChild(mcpMaxToolsLabel);
+
+    const mcpMaxToolsHint = document.createElement('div');
+    mcpMaxToolsHint.className = 'settings-hint';
+    mcpMaxToolsHint.textContent = i18nString(UIStrings.mcpMaxToolsPerTurnHint);
+    mcpConfigContainer.appendChild(mcpMaxToolsHint);
+
+    const mcpMaxToolsInput = document.createElement('input');
+    mcpMaxToolsInput.type = 'number';
+    mcpMaxToolsInput.className = 'settings-input';
+    mcpMaxToolsInput.min = '1';
+    mcpMaxToolsInput.max = '100';
+    mcpMaxToolsInput.value = String(currentMCPConfig.maxToolsPerTurn || 20);
+    mcpConfigContainer.appendChild(mcpMaxToolsInput);
+
+    const mcpMaxMcpLabel = document.createElement('div');
+    mcpMaxMcpLabel.className = 'settings-label';
+    mcpMaxMcpLabel.textContent = i18nString(UIStrings.mcpMaxMcpPerTurn);
+    mcpConfigContainer.appendChild(mcpMaxMcpLabel);
+
+    const mcpMaxMcpHint = document.createElement('div');
+    mcpMaxMcpHint.className = 'settings-hint';
+    mcpMaxMcpHint.textContent = i18nString(UIStrings.mcpMaxMcpPerTurnHint);
+    mcpConfigContainer.appendChild(mcpMaxMcpHint);
+
+    const mcpMaxMcpInput = document.createElement('input');
+    mcpMaxMcpInput.type = 'number';
+    mcpMaxMcpInput.className = 'settings-input';
+    mcpMaxMcpInput.min = '1';
+    mcpMaxMcpInput.max = '50';
+    mcpMaxMcpInput.value = String(currentMCPConfig.maxMcpPerTurn || 8);
+    mcpConfigContainer.appendChild(mcpMaxMcpInput);
+
+    // Handle budget control changes
+    const updateBudgetControls = () => {
+      const maxTools = Math.max(1, Math.min(100, parseInt(mcpMaxToolsInput.value, 10) || 20));
+      const maxMcp = Math.max(1, Math.min(50, parseInt(mcpMaxMcpInput.value, 10) || 8));
+      setMCPConfig({
+        ...getMCPConfig(),
+        maxToolsPerTurn: maxTools,
+        maxMcpPerTurn: maxMcp,
+      });
+      onSettingsSaved();
+    };
+
+    mcpMaxToolsInput.addEventListener('change', updateBudgetControls);
+    mcpMaxMcpInput.addEventListener('change', updateBudgetControls);
+
+    // Tool management UI
+    const mcpToolsSection = document.createElement('div');
+    mcpToolsSection.className = 'mcp-tools-section';
+    mcpConfigContainer.appendChild(mcpToolsSection);
+
+    const mcpToolsLabel = document.createElement('div');
+    mcpToolsLabel.className = 'settings-label';
+    mcpToolsLabel.textContent = i18nString(UIStrings.mcpDiscoveredTools);
+    mcpToolsSection.appendChild(mcpToolsLabel);
+
+    const mcpToolsHint = document.createElement('div');
+    mcpToolsHint.className = 'settings-hint';
+    mcpToolsHint.textContent = i18nString(UIStrings.mcpDiscoveredToolsHint);
+    mcpToolsSection.appendChild(mcpToolsHint);
+
+    const mcpToolsList = document.createElement('div');
+    mcpToolsList.className = 'mcp-tools-list';
+    mcpToolsSection.appendChild(mcpToolsList);
+
+    const updateToolsList = () => {
+      const status = MCPRegistry.getStatus();
+      mcpToolsList.innerHTML = '';
+      
+      if (!status.enabled || status.registeredToolNames.length === 0) {
+        const noToolsMessage = document.createElement('div');
+        noToolsMessage.className = 'mcp-no-tools';
+        noToolsMessage.textContent = i18nString(UIStrings.mcpNoTools);
+        mcpToolsList.appendChild(noToolsMessage);
+        return;
+      }
+
+      const currentAllowlist = new Set(currentMCPConfig.toolAllowlist || []);
+
+      status.registeredToolNames.forEach(toolName => {
+        const toolItem = document.createElement('div');
+        toolItem.className = 'mcp-tool-item';
+
+        const toolCheckbox = document.createElement('input');
+        toolCheckbox.type = 'checkbox';
+        toolCheckbox.id = `mcp-tool-${toolName.replace(/[^a-zA-Z0-9]/g, '-')}`;
+        toolCheckbox.className = 'mcp-tool-checkbox';
+        toolCheckbox.checked = currentAllowlist.size === 0 || currentAllowlist.has(toolName);
+        toolItem.appendChild(toolCheckbox);
+
+        const toolLabel = document.createElement('label');
+        toolLabel.htmlFor = toolCheckbox.id;
+        toolLabel.className = 'mcp-tool-label';
+        toolLabel.textContent = toolName.replace(/^mcp:[^:]+:/, ''); // Remove namespace prefix
+        toolItem.appendChild(toolLabel);
+
+        // Update allowlist when checkbox changes
+        toolCheckbox.addEventListener('change', () => {
+          const currentConfig = getMCPConfig();
+          const allowlist = new Set(currentConfig.toolAllowlist || []);
+          
+          if (toolCheckbox.checked) {
+            allowlist.add(toolName);
+          } else {
+            allowlist.delete(toolName);
+          }
+
+          setMCPConfig({
+            ...currentConfig,
+            toolAllowlist: Array.from(allowlist),
+          });
+        });
+
+        mcpToolsList.appendChild(toolItem);
+      });
+    };
+
+    // Initial tools list update
+    updateToolsList();
+
+    // Autostart is deprecated; always auto-connect is handled by the UI layer
+
+    // Toggle visibility on enable/disable
+    mcpEnabledCheckbox.addEventListener('change', async () => {
+      setMCPConfig({
+        enabled: mcpEnabledCheckbox.checked,
+        endpoint: mcpEndpointInput.value.trim(),
+        token: mcpTokenInput.value.trim() || undefined,
+      });
+      mcpConfigContainer.style.display = mcpEnabledCheckbox.checked ? 'block' : 'none';
+      try {
+        await MCPRegistry.init();
+        await MCPRegistry.refresh();
+      } catch (err) {
+        logger.error('MCP toggle failed', err);
+      } finally {
+        updateMCPStatus();
+        updateDisconnectButton();
+        updateToolsList();
+        onSettingsSaved();
+      }
+    });
+
     // Evaluation secret key
     const evaluationSecretKeyLabel = document.createElement('div');
     evaluationSecretKeyLabel.className = 'settings-label';
@@ -2514,13 +3070,13 @@ export class SettingsDialog {
     disclaimerText.classList.add('settings-disclaimer');
     disclaimerText.innerHTML = `
       <p class="disclaimer-warning">
-        <strong>Alpha Version:</strong> This is an alpha version of the Browser Operator - AI Assistant feature.
+        <strong>Beta Version:</strong> This is a beta version of the Browser Operator - AI Assistant feature.
       </p>
       <p class="disclaimer-note">
         <strong>Data Sharing:</strong> When using this feature, your browser data and conversation content will be sent to the AI model for processing.
       </p>
       <p class="disclaimer-note">
-        <strong>Model Support:</strong> We currently support OpenAI models directly. And we support LiteLLM as a proxy to access 100+ other models.
+        <strong>Provider Support:</strong> We currently support OpenAI, Groq and OpenRouter providers directly. And we support LiteLLM as a proxy to access 100+ other models.
       </p>
       <p class="disclaimer-footer">
         By using this feature, you acknowledge that your data will be processed according to Model Provider's privacy policy and terms of service.
@@ -2687,6 +3243,8 @@ export class SettingsDialog {
         endpoint: evaluationEndpointInput.value.trim() || 'ws://localhost:8080',
         secretKey: evaluationSecretKeyInput.value.trim()
       });
+
+      // MCP settings are auto-managed; no save from UI
       
       logger.debug('Settings saved successfully');
       logger.debug('Mini Model:', localStorage.getItem(MINI_MODEL_STORAGE_KEY));
@@ -2713,6 +3271,8 @@ export class SettingsDialog {
       vectorDBSection.style.display = display;
       tracingSection.style.display = display;
       evaluationSection.style.display = display;
+      const mcpSectionEl = contentDiv.querySelector('.mcp-section') as HTMLElement | null;
+      if (mcpSectionEl) { mcpSectionEl.style.display = display; }
       
       // Save state to localStorage
       localStorage.setItem(ADVANCED_SETTINGS_ENABLED_KEY, show.toString());
@@ -2896,6 +3456,41 @@ export class SettingsDialog {
       .model-selection-container {
         margin-bottom: 20px;
       }
+
+      /* Model selector component styles (shared with chat view) */
+      .model-selection-container ai-model-selector { display: block; width: 100%; }
+      .model-selector.searchable { position: relative; }
+      .model-select-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 10px;
+        border: 1px solid var(--color-details-hairline);
+        border-radius: 6px;
+        background: var(--color-background-elevation-1);
+        cursor: pointer;
+        width: 100%;
+        font-size: 12px;
+        color: var(--color-text-primary);
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+      }
+      .model-select-trigger:hover:not(:disabled) { background: var(--color-background-elevation-2); border-color: #00a4fe; }
+      .model-select-trigger:disabled { opacity: 0.6; cursor: not-allowed; background-color: var(--color-background-elevation-0); }
+      .selected-model { flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .dropdown-arrow { margin-left: 8px; font-size: 10px; color: var(--color-text-secondary); transition: transform 0.2s ease; }
+      .model-dropdown { position: absolute; left: 0; right: 0; background: var(--color-background-elevation-1); border: 1px solid var(--color-details-hairline); border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; max-height: 300px; overflow: hidden; }
+      .model-dropdown.below { top: 100%; margin-top: 2px; }
+      .model-dropdown.above { bottom: 100%; margin-bottom: 2px; }
+      .model-search { width: 100%; padding: 8px 12px; border: none; border-bottom: 1px solid var(--color-details-hairline); outline: none; background: var(--color-background-elevation-1); color: var(--color-text-primary); font-size: 12px; box-sizing: border-box; }
+      .model-search::placeholder { color: var(--color-text-secondary); }
+      .model-options { max-height: 240px; overflow-y: auto; }
+      .model-option { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid var(--color-details-hairline); font-size: 12px; color: var(--color-text-primary); transition: background-color 0.2s ease; }
+      .model-option:last-child { border-bottom: none; }
+      .model-option:hover, .model-option.highlighted { background: #def1fb; }
+      .model-option.selected { background: #00a4fe; color: white; }
+      .model-option.no-results { color: var(--color-text-secondary); cursor: default; font-style: italic; }
+      .model-option.no-results:hover { background: transparent; }
       
       .mini-model-description, .nano-model-description {
         font-size: 12px;
@@ -3088,6 +3683,44 @@ export class SettingsDialog {
         border-left: 2px solid var(--color-details-hairline);
       }
 
+      /* Apply tracing config visual style to Evaluation section */
+      .evaluation-enabled-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .evaluation-checkbox { margin: 0; }
+      .evaluation-label {
+        font-weight: 500;
+        color: var(--color-text-primary);
+        cursor: pointer;
+      }
+      .evaluation-config-container {
+        margin-top: 16px;
+        padding-left: 24px;
+        border-left: 2px solid var(--color-details-hairline);
+      }
+
+      /* Apply tracing config visual style to MCP section */
+      .mcp-enabled-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .mcp-checkbox { margin: 0; }
+      .mcp-label {
+        font-weight: 500;
+        color: var(--color-text-primary);
+        cursor: pointer;
+      }
+      .mcp-config-container {
+        margin-top: 16px;
+        padding-left: 24px;
+        border-left: 2px solid var(--color-details-hairline);
+      }
+
       /* Advanced Settings Toggle styles */
       .advanced-settings-toggle-section {
         padding: 16px 20px;
@@ -3168,6 +3801,12 @@ export class SettingsDialog {
         opacity: 0.6;
         cursor: not-allowed;
       }
+
+      .mcp-section {
+        margin-top: 16px;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--color-details-hairline);
+      }
     `;
     dialog.contentElement.appendChild(styleElement);
     
@@ -3207,57 +3846,50 @@ export class SettingsDialog {
   }
 }
 
-// Helper function to create a model selector
+// Helper function to create a model selector (uses shared component)
 function createModelSelector(
   container: HTMLElement,
   labelText: string,
   description: string,
-  selectorType: string, // renamed from className for clarity
+  selectorType: string, // semantic identifier
   modelOptions: ModelOption[],
   selectedModel: string,
   defaultOptionText: string,
-  onFocus?: () => void // Optional callback for when the selector is focused
-): HTMLSelectElement {
+  onFocus?: () => void // Optional callback for when the selector is opened/focused
+): HTMLElement {
   const modelContainer = document.createElement('div');
   modelContainer.className = 'model-selection-container';
   container.appendChild(modelContainer);
-  
+
   const modelLabel = document.createElement('div');
   modelLabel.className = 'settings-label';
   modelLabel.textContent = labelText;
   modelContainer.appendChild(modelLabel);
-  
+
   const modelDescription = document.createElement('div');
   modelDescription.className = 'settings-hint';
   modelDescription.textContent = description;
   modelContainer.appendChild(modelDescription);
-  
-  const modelSelect = document.createElement('select');
-  modelSelect.className = 'settings-input';
-  modelSelect.dataset.modelType = selectorType; // Use data attribute instead of class
-  modelContainer.appendChild(modelSelect);
-  
-  // Add default option
-  const defaultOption = document.createElement('option');
-  defaultOption.value = '';
-  defaultOption.textContent = defaultOptionText;
-  modelSelect.appendChild(defaultOption);
-  
-  // Add model options
-  modelOptions.forEach(option => {
-    const optionElement = document.createElement('option');
-    optionElement.value = option.value;
-    optionElement.textContent = option.label;
-    if (option.value === selectedModel) {
-      optionElement.selected = true;
-    }
-    modelSelect.appendChild(optionElement);
-  });
-  
-  // Add focus event listener if a callback was provided
+
+  const selectorEl = document.createElement('ai-model-selector') as any;
+  selectorEl.dataset.modelType = selectorType;
+  selectorEl.options = [{ value: '', label: defaultOptionText }, ...modelOptions];
+  selectorEl.selected = selectedModel || '';
+  selectorEl.forceSearchable = true; // Ensure consistent UI in Settings
+
+  // Expose a `.value` API similar to native <select> for existing code paths
+  try {
+    Object.defineProperty(selectorEl, 'value', {
+      get() { return selectorEl.selected || ''; },
+      set(v: string) { selectorEl.selected = v || ''; },
+      configurable: true,
+    });
+  } catch {}
+
   if (onFocus) {
-    modelSelect.addEventListener('focus', onFocus);
+    selectorEl.addEventListener('model-selector-focus', onFocus);
   }
-  
-  return modelSelect;
+
+  modelContainer.appendChild(selectorEl);
+  return selectorEl as HTMLElement;
 }

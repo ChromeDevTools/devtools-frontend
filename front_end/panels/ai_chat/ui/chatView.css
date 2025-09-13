@@ -11,6 +11,8 @@
   overflow: hidden;
   font-family: var(--default-font-family);
   background-color: var(--sys-color-cdt-base-container);
+  /* Reserve space for overlayed input bar within nested scrollers */
+  --ai-input-bar-reserved-space: 120px;
   --message-max-width: 80%;
   --message-horizontal-padding: var(--sys-size-5);
   --primary-color: var(--color-primary);
@@ -41,16 +43,30 @@ ai-input-bar {
   width: 100%;
 }
 
+/* Float input bar above content; messages scroll behind */
+.chat-view-container > ai-input-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+}
+
+/* Center the input bar in first-message (centered) view */
+/* In centered view the input is rendered inside centered-content, so no overlay positioning needed */
+
 .chat-view-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
   position: relative;
+  overflow: hidden; /* Ensure only the message list scrolls */
   backdrop-filter: blur(10px);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Legacy selector kept for backwards compatibility (unused by ai-message-list) */
 .messages-container {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -59,7 +75,7 @@ ai-input-bar {
   scroll-behavior: smooth;
   padding: 12px 16px;
   background-color: var(--color-background);
-  padding-bottom: calc(12px + 80px);
+  padding-bottom: var(--ai-input-bar-reserved-space);
   min-height: 100px;
 }
 
@@ -82,6 +98,12 @@ ai-input-bar {
 .expanded-view {
   /* Default styles already defined above */
   animation: expandToFull 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* In expanded (conversation) view, reserve bottom space so the floating
+   input bar does not overlap the last messages. */
+.chat-view-container.expanded-view {
+  padding-bottom: 150px; /* tune if input height changes */
 }
 
 @keyframes expandToFull {
@@ -531,8 +553,7 @@ ai-input-bar {
   display: flex;
   justify-content: flex-end;
   padding: 4px 0;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 28px;
   border-top: 1px solid var(--color-details-hairline);
   opacity: 0.8;
   transition: opacity var(--transition-fast);

@@ -13,9 +13,15 @@ export enum ChatMessageEntity {
 }
 
 // Base structure for all chat messages
+export type UILane = 'chat' | 'agent';
+
 export interface BaseChatMessage {
   entity: ChatMessageEntity;
   error?: string;
+  // UI routing hint: which lane should render this message
+  uiLane?: UILane;
+  // If managed by an AgentSession, provide the session id for traceability
+  managedByAgentSessionId?: string;
 }
 
 // Image input used by user messages
@@ -74,4 +80,3 @@ export enum State {
   LOADING = 'loading',
   ERROR = 'error',
 }
-

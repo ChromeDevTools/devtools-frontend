@@ -39,7 +39,7 @@ export function renderStructuredResponse(
           </div>
         ` : state.aiState === 'opened' ? html`
           <div class="deep-research-actions">
-            <button class="view-document-btn" @click=${open} title="Open full report in document viewer">📄 View Full Report</button>
+            <button class="view-document-btn" @click=${open} title="Open in full screen document viewer">📄 View Full Screen</button>
           </div>
         ` : html`
           <div class="inline-markdown-report">
@@ -47,7 +47,7 @@ export function renderStructuredResponse(
             <div class="inline-report-content">${renderMarkdown(data.markdownReport, markdownRenderer, open)}</div>
           </div>
           <div class="deep-research-actions">
-            <button class="view-document-btn" @click=${open} title="Open full report in document viewer">📄 ${state.isLastMessage ? '' : 'View Full Report'}</button>
+            <button class="view-document-btn" @click=${open} title="Open in full screen document viewer">📄 ${state.isLastMessage ? '' : 'View Full Screen'}</button>
           </div>
         `}
       </div>

@@ -1,0 +1,24 @@
+Name: Model Context Protocol SDK
+Short Name: mcp-sdk
+URL: https://github.com/modelcontextprotocol/typescript-sdk
+Version: 1.12.3
+License: MIT
+License File: LICENSE
+Security Critical: no
+Shipped: yes
+
+Description:
+Official TypeScript SDK for Model Context Protocol (MCP) - enables AI assistants
+to interact with external systems through a standardized protocol.
+
+Dependencies:
+- eventsource-parser@3.0.6 (MIT license)
+
+To update this package:
+wget -qO- https://registry.npmjs.org/@modelcontextprotocol/sdk/-/sdk-1.12.3.tgz | tar xzf -
+wget -qO- https://registry.npmjs.org/eventsource-parser/-/eventsource-parser-3.0.6.tgz | tar xzf -
+
+Local Modifications:
+- Created mcp-sdk.ts wrapper for DevTools integration
+- Removed Node.js-specific code paths
+- Modified imports to use DevTools module system

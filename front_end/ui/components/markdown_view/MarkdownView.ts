@@ -320,7 +320,7 @@ export class MarkdownLitRenderer {
             class="view-document-btn"
             @click=${() => this.openTableInViewer(token)}
             title="Open table in full document viewer for better viewing">
-            📊 View Full Table
+            📊 View Full Screen
           </button>
         </div>
       ` : ''}

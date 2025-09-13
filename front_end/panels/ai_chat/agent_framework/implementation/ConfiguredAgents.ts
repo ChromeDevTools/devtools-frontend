@@ -19,6 +19,7 @@ import { WaitTool } from '../../tools/Tools.js';
 import { MODEL_SENTINELS } from '../../core/Constants.js';
 import { ThinkingTool } from '../../tools/ThinkingTool.js';
 import type { Tool } from '../../tools/Tools.js';
+import { registerMCPMetaTools } from '../../mcp/MCPMetaTools.js';
 
 /**
  * Configuration for the Direct URL Navigator Agent
@@ -93,6 +94,8 @@ Remember: Always use navigate_url to actually go to the constructed URLs. Return
  * Initialize all configured agents
  */
 export function initializeConfiguredAgents(): void {
+  // Ensure MCP meta-tools are available regardless of mode; selection logic decides if they are surfaced
+  registerMCPMetaTools();
   // Register core tools
   ToolRegistry.registerToolFactory('navigate_url', () => new NavigateURLTool());
   ToolRegistry.registerToolFactory('navigate_back', () => new NavigateBackTool());

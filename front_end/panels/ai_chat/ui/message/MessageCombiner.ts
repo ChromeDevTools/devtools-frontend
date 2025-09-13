@@ -24,32 +24,15 @@ export type CombinedMessage = ChatMessage|CombinedModelMessage|OrphanedToolResul
  *  - toolName equality with immediate adjacency (fallback)
  */
 export function combineMessages(messages: ChatMessage[]): CombinedMessage[] {
-  // Build a set of toolCallIds that are managed by agent sessions, so we can
-  // hide both the model tool-call and tool-result duplicates in the main feed.
-  const agentManagedToolCallIds = new Set<string>();
-
-  for (const msg of messages) {
-    if ((msg as any).entity === 'agent_session') {
-      const sess = (msg as AgentSessionMessage).agentSession;
-      if (sess && Array.isArray(sess.messages)) {
-        for (const am of sess.messages) {
-          if (am && am.content && (am.content as any).toolCallId) {
-            agentManagedToolCallIds.add((am.content as any).toolCallId);
-          }
-        }
-      }
-    } else if ((msg as any).entity === 'tool_result') {
-      const tr = msg as ToolResultMessage;
-      if (tr.isFromConfigurableAgent && tr.toolCallId) {
-        agentManagedToolCallIds.add(tr.toolCallId);
-      }
-    }
-  }
-
   const result: CombinedMessage[] = [];
 
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i];
+
+    // Skip agent-lane items from chat feed
+    if ((msg as any).uiLane === 'agent') {
+      continue;
+    }
 
     // Keep User messages and Final Model answers as-is
     if (msg.entity === 'user' || (msg.entity === 'model' && (msg as ModelChatMessage).action === 'final')) {
@@ -60,19 +43,10 @@ export function combineMessages(messages: ChatMessage[]): CombinedMessage[] {
     // Handle Model tool-call messages
     if (msg.entity === 'model' && (msg as ModelChatMessage).action === 'tool') {
       const modelMsg = msg as ModelChatMessage;
-      // Hide model tool-call if it's managed by an agent session
-      if (modelMsg.toolCallId && agentManagedToolCallIds.has(modelMsg.toolCallId)) {
-        // If the immediate next is the paired tool_result, skip it as well
-        const next = messages[i + 1];
-        if (next && next.entity === 'tool_result' && (next as ToolResultMessage).toolCallId === modelMsg.toolCallId) {
-          i++; // skip the result too
-        }
-        continue; // do not include in result
-      }
       const next = messages[i + 1];
 
       const nextIsMatchingToolResult = Boolean(
-          next && next.entity === 'tool_result' &&
+          next && (next as any).uiLane !== 'agent' && next.entity === 'tool_result' &&
           (
             // Prefer toolCallId match when available
             (!!(next as ToolResultMessage).toolCallId && (next as ToolResultMessage).toolCallId === modelMsg.toolCallId) ||
@@ -83,11 +57,6 @@ export function combineMessages(messages: ChatMessage[]): CombinedMessage[] {
 
       if (nextIsMatchingToolResult) {
         const tr = next as ToolResultMessage;
-        // If the result is agent-managed, drop both
-        if (tr.isFromConfigurableAgent || (tr.toolCallId && agentManagedToolCallIds.has(tr.toolCallId))) {
-          i++; // skip the tool-result
-          continue;
-        }
         const combined: CombinedModelMessage = {
           ...modelMsg,
           resultText: tr.resultText,
@@ -107,10 +76,7 @@ export function combineMessages(messages: ChatMessage[]): CombinedMessage[] {
     // Handle orphaned tool-result messages
     if (msg.entity === 'tool_result') {
       const tr = msg as ToolResultMessage;
-      // Hide agent-managed tool results in all cases
-      if (tr.isFromConfigurableAgent || (tr.toolCallId && agentManagedToolCallIds.has(tr.toolCallId))) {
-        continue;
-      }
+      // Agent-lane results already skipped above
       const prev = messages[i - 1];
       const isPrevMatchingModelCall = Boolean(
           prev && prev.entity === 'model' && (prev as ModelChatMessage).action === 'tool' &&

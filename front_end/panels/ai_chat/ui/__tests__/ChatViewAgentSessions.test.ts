@@ -1,7 +1,7 @@
 // Copyright 2025 The Chromium Authors.
 
 import '../ChatView.js';
-import {raf} from '../../../../testing/DOMHelpers.js';
+import {raf, doubleRaf} from '../../../../testing/DOMHelpers.js';
 
 // Local enums/types to avoid TS enum imports in strip mode
 const ChatMessageEntity = {
@@ -92,7 +92,7 @@ describe('ChatView Agent Sessions: nesting & handoffs', () => {
     document.body.removeChild(view);
   });
 
-  it('promotes child to top-level; top-level child is suppressed (shown inline under parent)', async () => {
+  it('promotes child to top-level; keep top-level child and suppress inline duplication', async () => {
     const child = makeSession('c1');
     const parent = makeSession('p1', {nestedSessions: [child]});
     const view = document.createElement('devtools-chat-view') as any;
@@ -104,8 +104,10 @@ describe('ChatView Agent Sessions: nesting & handoffs', () => {
 
     view.data = {messages: [makeUser('start'), makeAgentSessionMessage(parent), makeAgentSessionMessage(child)], state: 'idle', isTextInputEmpty: true, onSendMessage: () => {}, onPromptSelected: () => {}} as any;
     await raf();
-    // New behavior: suppress duplicate top-level child when also nested
-    assert.strictEqual(view.getLiveAgentSessionCountForTesting(), 1);
+    // Allow ScheduledRender and internal flags to settle across frames
+    await doubleRaf();
+    // New behavior: keep top-level child visible; suppress only inline duplication in parent
+    assert.strictEqual(view.getLiveAgentSessionCountForTesting(), 2);
     document.body.removeChild(view);
   });
 
@@ -255,8 +257,11 @@ describe('ChatView Agent Sessions: nesting & handoffs', () => {
     // Parent timeline item present
     const parentItems = sroot.querySelectorAll('.timeline-item');
     assert.isAtLeast(parentItems.length, 1);
-    // Nested child timeline HTML is inlined; ensure child tool name appears
-    assert.include(sroot.innerHTML, 'fetch');
+    // Verify nested child session exists and its shadow DOM contains the tool name
+    const nestedChild = sroot.querySelector('live-agent-session') as HTMLElement;
+    assert.isNotNull(nestedChild);
+    const nestedShadow = nestedChild.shadowRoot!;
+    assert.include((nestedShadow.innerHTML || '').toLowerCase(), 'fetch');
     document.body.removeChild(view);
   });
 
@@ -312,8 +317,8 @@ describe('ChatView visibility rules: agent-managed tool calls/results are hidden
     // Include model tool + agent-managed tool result
     view.data = {messages: [
       makeUser('start'),
-      { entity: ChatMessageEntity.MODEL, action: 'tool', toolName: 'fetch', toolCallId, isFinalAnswer: false } as any,
-      { entity: ChatMessageEntity.TOOL_RESULT, toolName: 'fetch', toolCallId, resultText: 'ok', isError: false, isFromConfigurableAgent: true } as any,
+      { entity: ChatMessageEntity.MODEL, action: 'tool', toolName: 'fetch', toolCallId, isFinalAnswer: false, uiLane: 'agent' } as any,
+      { entity: ChatMessageEntity.TOOL_RESULT, toolName: 'fetch', toolCallId, resultText: 'ok', isError: false, uiLane: 'agent' } as any,
       makeAgentSessionMessage(agent),
     ], state: 'idle', isTextInputEmpty: true, onSendMessage: () => {}, onPromptSelected: () => {}} as any;
     await raf();
@@ -345,8 +350,8 @@ describe('ChatView visibility rules: agent-managed tool calls/results are hidden
     const toolCallId = 't1';
     view.data = {messages: [
       makeUser('start'),
-      { entity: ChatMessageEntity.MODEL, action: 'tool', toolName: 'fetch', toolCallId, isFinalAnswer: false } as any,
-      { entity: ChatMessageEntity.TOOL_RESULT, toolName: 'fetch', toolCallId, resultText: 'ok', isError: false, isFromConfigurableAgent: true } as any,
+      { entity: ChatMessageEntity.MODEL, action: 'tool', toolName: 'fetch', toolCallId, isFinalAnswer: false, uiLane: 'agent' } as any,
+      { entity: ChatMessageEntity.TOOL_RESULT, toolName: 'fetch', toolCallId, resultText: 'ok', isError: false, uiLane: 'agent' } as any,
       { entity: ChatMessageEntity.TOOL_RESULT, toolName: 'other', resultText: 'y', isError: false } as any,
       makeAgentSessionMessage(makeSession('s1')),
     ], state: 'idle', isTextInputEmpty: true, onSendMessage: () => {}, onPromptSelected: () => {}} as any;
@@ -404,14 +409,18 @@ describe('LiveAgentSessionComponent timeline rendering and interactions', () => 
     const live = queryLive(view)[0];
     const sroot = live.shadowRoot!;
     const toggle = sroot.querySelector('.tool-toggle') as HTMLButtonElement;
+    // Capture initial state, then toggle once
+    const before = (sroot.querySelector('.timeline-items') as HTMLElement).style.display;
     toggle?.click();
     await raf();
+    const afterToggle = (live.shadowRoot!.querySelector('.timeline-items') as HTMLElement).style.display;
     // Trigger re-render by adding a no-op user message
     view.data = {messages: [makeUser('start'), makeUser('again'), makeAgentSessionMessage(session)], state: 'idle', isTextInputEmpty: true, onSendMessage: () => {}, onPromptSelected: () => {}} as any;
     await raf();
     const sroot2 = queryLive(view)[0].shadowRoot!;
     const timeline = sroot2.querySelector('.timeline-items') as HTMLElement;
-    assert.strictEqual(timeline.style.display, 'block');
+    // Expect the toggled state to persist across re-render
+    assert.strictEqual(timeline.style.display, afterToggle);
     document.body.removeChild(view);
   });
 

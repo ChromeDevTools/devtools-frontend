@@ -76,16 +76,16 @@ describe('LiveAgentSessionComponent UI elements', () => {
 
     const sroot = el.shadowRoot!;
     const timeline = sroot.querySelector('.timeline-items') as HTMLElement;
-    // Default collapsed
-    assert.strictEqual(timeline.style.display, 'none');
-    // Click toggle
+    // Default expanded
+    assert.strictEqual(timeline.style.display, 'block');
+    // Click toggle to collapse
     (sroot.querySelector('.tool-toggle') as HTMLButtonElement).click();
     await raf();
-    assert.strictEqual((el.shadowRoot!.querySelector('.timeline-items') as HTMLElement).style.display, 'block');
-    // Collapse again
+    assert.strictEqual((el.shadowRoot!.querySelector('.timeline-items') as HTMLElement).style.display, 'none');
+    // Expand again
     (el.shadowRoot!.querySelector('.tool-toggle') as HTMLButtonElement).click();
     await raf();
-    assert.strictEqual((el.shadowRoot!.querySelector('.timeline-items') as HTMLElement).style.display, 'none');
+    assert.strictEqual((el.shadowRoot!.querySelector('.timeline-items') as HTMLElement).style.display, 'block');
 
     document.body.removeChild(el);
   });

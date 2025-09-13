@@ -52,6 +52,7 @@ export interface Tool<TArgs = Record<string, unknown>, TResult = unknown> {
  * Context passed into tools for LLM-related choices without relying on UI.
  */
 export interface LLMContext {
+  apiKey?: string;
   provider: LLMProvider;
   model: string;
   getVisionCapability?: (model: string) => Promise<boolean> | boolean;

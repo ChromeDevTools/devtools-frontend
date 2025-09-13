@@ -87,7 +87,7 @@ describe('SettingsDialog OpenRouter Cache Auto-Refresh', () => {
       mockLocalStorage.set('openrouter_models_cache', JSON.stringify(mockModels));
       // No timestamp set
 
-      const timestamp = mockLocalStorage.get('openrouter_models_cache_timestamp');
+      const timestamp = window.localStorage.getItem('openrouter_models_cache_timestamp');
       assert.isNull(timestamp);
     });
 
@@ -145,7 +145,7 @@ describe('SettingsDialog OpenRouter Cache Auto-Refresh', () => {
       mockLocalStorage.set('openrouter_models_cache_timestamp', staleCacheTime.toString());
       // No API key set
 
-      const apiKey = mockLocalStorage.get('ai_chat_openrouter_api_key');
+      const apiKey = window.localStorage.getItem('ai_chat_openrouter_api_key');
       assert.isNull(apiKey);
       
       // Should not attempt fetch without API key

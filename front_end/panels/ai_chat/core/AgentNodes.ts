@@ -4,17 +4,20 @@
 
 import type { getTools } from '../tools/Tools.js';
 import { ChatMessageEntity, type ModelChatMessage, type ToolResultMessage, type ChatMessage, type AgentSessionMessage } from '../models/ChatTypes.js';
-import { ConfigurableAgentTool } from '../agent_framework/ConfigurableAgentTool.js';
+import { ConfigurableAgentTool, ToolRegistry } from '../agent_framework/ConfigurableAgentTool.js';
 
 import { LLMClient } from '../LLM/LLMClient.js';
 import type { LLMMessage } from '../LLM/LLMTypes.js';
 import type { LLMProvider } from '../LLM/LLMTypes.js';
-import { createSystemPromptAsync, getAgentToolsFromState } from './GraphHelpers.js';
+import { createSystemPromptAsync } from './GraphHelpers.js';
+import * as BaseOrchestratorAgent from './BaseOrchestratorAgent.js';
+import { ToolSurfaceProvider } from './ToolSurfaceProvider.js';
 import { createLogger } from './Logger.js';
 import type { AgentState } from './State.js';
 import type { Runnable } from './Types.js';
 import { AgentErrorHandler } from './AgentErrorHandler.js';
 import { createTracingProvider, withTracingContext } from '../tracing/TracingConfig.js';
+import * as ToolNameMap from './ToolNameMap.js';
 import type { TracingProvider } from '../tracing/TracingProvider.js';
 
 const logger = createLogger('AgentNodes');
@@ -29,6 +32,7 @@ export function createAgentNode(modelName: string, provider: LLMProvider, temper
     private tracingProvider: TracingProvider;
 
     constructor() { this.tracingProvider = createTracingProvider(); }
+
 
     async invoke(state: AgentState): Promise<AgentState> {
       console.log('[AGENT NODE DEBUG] AgentNode invoke called, messages count:', state.messages.length);
@@ -125,7 +129,7 @@ export function createAgentNode(modelName: string, provider: LLMProvider, temper
           input: {
             systemPrompt: systemPrompt.substring(0, 1000) + '...', // Truncate for tracing
             messages: state.messages.length,
-            tools: getAgentToolsFromState(state).map(t => t.name),
+            tools: [],
             lastMessage: state.messages.length > 0 ? {
               entity: state.messages[state.messages.length - 1].entity,
               content: JSON.stringify(state.messages[state.messages.length - 1]).substring(0, 500)
@@ -144,7 +148,31 @@ export function createAgentNode(modelName: string, provider: LLMProvider, temper
         const provider = this.provider as LLMProvider;
         
         // Get tools for the current agent type
-        const tools = getAgentToolsFromState(state);
+        const baseTools = BaseOrchestratorAgent.getAgentTools(state.selectedAgentType ?? '') as any;
+        const selection = await ToolSurfaceProvider.select(state, baseTools, { maxToolsPerTurn: 20, maxMcpPerTurn: 8 });
+        // Persist selection in context so ToolExecutorNode can resolve the same set
+        if (!state.context) { (state as any).context = {}; }
+        (state.context as any).selectedToolNames = selection.selectedNames;
+        const tools = selection.tools;
+        
+        // Update the generation observation with the actual tool list now that selection is known
+        if (tracingContext?.traceId && generationId) {
+          try {
+            await this.tracingProvider.updateObservation(generationId, {
+              input: {
+                systemPrompt: systemPrompt.substring(0, 1000) + '...',
+                messages: state.messages.length,
+                tools: tools.map(t => t.name),
+                lastMessage: state.messages.length > 0 ? {
+                  entity: state.messages[state.messages.length - 1].entity,
+                  content: JSON.stringify(state.messages[state.messages.length - 1]).substring(0, 500)
+                } : null
+              }
+            });
+          } catch (err) {
+            logger.warn('Failed to update generation observation with tools list', err);
+          }
+        }
         
         // Convert ChatMessage[] to LLMMessage[]
         const llmMessages = this.convertChatMessagesToLLMMessages(state.messages);
@@ -168,7 +196,7 @@ export function createAgentNode(modelName: string, provider: LLMProvider, temper
               tools: tools.map(tool => ({
                 type: 'function',
                 function: {
-                  name: tool.name,
+                  name: ToolNameMap.getSanitized(tool.name),
                   description: tool.description,
                   parameters: tool.schema,
                 }
@@ -221,19 +249,20 @@ export function createAgentNode(modelName: string, provider: LLMProvider, temper
         let newModelMessage: ModelChatMessage;
         if (parsedAction.type === 'tool_call') {
           const toolCallId = crypto.randomUUID(); // Generate unique ID for OpenAI format
+          const resolvedToolName = ToolNameMap.resolveOriginal(parsedAction.name) || parsedAction.name;
           
           // Create tool-call event observation
           const tracingContext = state.context?.tracingContext;
           if (tracingContext?.traceId) {
-            const toolCallObservationId = `tool-call-${parsedAction.name}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+            const toolCallObservationId = `tool-call-${resolvedToolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
             await this.tracingProvider.createObservation({
               id: toolCallObservationId,
-              name: `Tool Call Decision: ${parsedAction.name}`,
+              name: `Tool Call Decision: ${resolvedToolName}`,
               type: 'event',
               startTime: new Date(),
               parentObservationId: tracingContext.currentGenerationId || tracingContext.parentObservationId,
               input: {
-                toolName: parsedAction.name,
+                toolName: resolvedToolName,
                 toolArgs: parsedAction.args,
                 toolCallId,
                 reasoning: response.reasoning?.summary
@@ -251,18 +280,23 @@ export function createAgentNode(modelName: string, provider: LLMProvider, temper
             tracingContext.currentToolCallId = toolCallObservationId;
           }
           
+          // Determine lane: agent tools render in agent lane only
+          const regTool = ToolRegistry.getRegisteredTool(resolvedToolName as any);
+          const isAgentTool = !!regTool && (regTool instanceof ConfigurableAgentTool);
+
           newModelMessage = {
             entity: ChatMessageEntity.MODEL,
             action: 'tool',
-            toolName: parsedAction.name,
-            toolArgs: parsedAction.args,
-            toolCallId, // Add for linking with tool response
-            isFinalAnswer: false,
-            reasoning: response.reasoning?.summary,
+            toolName: resolvedToolName,
+             toolArgs: parsedAction.args,
+             toolCallId, // Add for linking with tool response
+             isFinalAnswer: false,
+             reasoning: response.reasoning?.summary,
+             uiLane: isAgentTool ? 'agent' : 'chat',
           };
 
-          logger.debug('AgentNode: Created tool message', { toolName: parsedAction.name, toolCallId });
-          if (parsedAction.name === 'finalize_with_critique') {
+          logger.debug('AgentNode: Created tool message', { toolName: resolvedToolName, toolCallId });
+          if (resolvedToolName === 'finalize_with_critique') {
             logger.debug('AgentNode: finalize_with_critique call with args:', JSON.stringify(parsedAction.args));
           }
         } else if (parsedAction.type === 'final_answer') {
@@ -347,7 +381,7 @@ export function createAgentNode(modelName: string, provider: LLMProvider, temper
     /**
      * Convert ChatMessage[] to LLMMessage[]
      */
-    private convertChatMessagesToLLMMessages(messages: ChatMessage[]): LLMMessage[] {
+    private convertChatMessagesToLLMMessages(messages: ChatMessage[], originalToSanitized?: Record<string,string>): LLMMessage[] {
       const llmMessages: LLMMessage[] = [];
       logger.info('Converting ChatMessages to LLMMessages. Messages:', messages);
       for (const msg of messages) {
@@ -368,6 +402,7 @@ export function createAgentNode(modelName: string, provider: LLMProvider, temper
             });
           } else if ('action' in msg && msg.action === 'tool' && 'toolName' in msg && 'toolArgs' in msg && 'toolCallId' in msg) {
             // Tool call message - convert from ModelChatMessage structure
+            const fnName = originalToSanitized?.[msg.toolName!] || ToolNameMap.getSanitized(msg.toolName!);
             llmMessages.push({
               role: 'assistant',
               content: undefined,
@@ -375,7 +410,7 @@ export function createAgentNode(modelName: string, provider: LLMProvider, temper
                 id: msg.toolCallId!,
                 type: 'function' as const,
                 function: {
-                  name: msg.toolName!,
+                  name: fnName,
                   arguments: JSON.stringify(msg.toolArgs),
                 }
               }],
@@ -407,9 +442,21 @@ export function createAgentNode(modelName: string, provider: LLMProvider, temper
 }
 
 export function createToolExecutorNode(state: AgentState, provider: LLMProvider, modelName: string, miniModel?: string, nanoModel?: string): Runnable<AgentState, AgentState> {
-  const tools = getAgentToolsFromState(state); // Adjusted to use getAgentToolsFromState
+    // If AgentNode has pre-selected tool names, honor that set to ensure consistency
+  const selectedNames: string[] | undefined = (state.context as any)?.selectedToolNames;
+  let tools: ReturnType<typeof getTools>;
+  if (selectedNames && selectedNames.length > 0) {
+    const resolved: any[] = [];
+    for (const name of selectedNames) {
+      const inst = ToolRegistry.getRegisteredTool(name as any);
+      if (inst) { resolved.push(inst as any); }
+    }
+    tools = resolved as any;
+  } else {
+    tools = [] as unknown as ReturnType<typeof getTools>;
+  }
   const toolMap = new Map<string, ReturnType<typeof getTools>[number]>();
-  tools.forEach((tool: ReturnType<typeof getTools>[number]) => toolMap.set(tool.name, tool));
+  (tools as any[]).forEach((tool: any) => toolMap.set(tool.name, tool));
 
   const toolExecutorNode = new class ToolExecutorNode implements Runnable<AgentState, AgentState> {
     private toolMap: Map<string, ReturnType<typeof getTools>[number]>;
@@ -543,7 +590,9 @@ export function createToolExecutorNode(state: AgentState, provider: LLMProvider,
               
         const result = await withTracingContext(executionContext, async () => {
           console.log(`[TOOL EXECUTION PATH 1] Inside withTracingContext for tool: ${toolName}`);
+          const apiKeyFromState = (state.context as any)?.apiKey;
           return await selectedTool.execute(toolArgs as any, { 
+            apiKey: apiKeyFromState,
             provider: this.provider, 
             model: this.modelName,
             miniModel: this.miniModel,
@@ -714,6 +763,7 @@ export function createToolExecutorNode(state: AgentState, provider: LLMProvider,
       }
 
       // Create the NEW ToolResultMessage
+      const isAgentTool = selectedTool instanceof ConfigurableAgentTool;
       const toolResultMessage: ToolResultMessage = {
         entity: ChatMessageEntity.TOOL_RESULT,
         toolName,
@@ -721,8 +771,7 @@ export function createToolExecutorNode(state: AgentState, provider: LLMProvider,
         isError,
         toolCallId, // Link back to the tool call for OpenAI format
         ...(isError && { error: resultText }),
-        // Mark if this is from a ConfigurableAgentTool
-        ...(selectedTool instanceof ConfigurableAgentTool && { isFromConfigurableAgent: true })
+        uiLane: isAgentTool ? 'agent' as const : 'chat',
       };
 
       logger.debug('ToolExecutorNode: Adding tool result message with toolCallId:', { toolCallId, toolResultMessage });

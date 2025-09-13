@@ -18,7 +18,7 @@ export class ToolCallComponent extends HTMLElement {
   
   private toolCall: AgentMessage | null = null;
   private status: ToolStatus = 'running';
-  private isExpanded = false;
+  private isExpanded = true;
 
   connectedCallback(): void {
     this.render();

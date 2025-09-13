@@ -65,8 +65,7 @@ export class MessageList extends HTMLElement {
           scroll-behavior: smooth;
           padding: 12px 16px;
           background-color: var(--color-background);
-          /* Reduced bottom padding since input bar is no longer sticky */
-          padding-bottom: 16px;
+          padding-bottom: 12px;
           min-height: 100px;
           position: relative;
           z-index: 0;

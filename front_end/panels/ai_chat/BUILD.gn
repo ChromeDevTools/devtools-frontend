@@ -56,6 +56,8 @@ devtools_module("ai_chat") {
     "core/PageInfoManager.ts",
     "core/AgentNodes.ts",
     "core/GraphHelpers.ts",
+    "core/ToolNameMap.ts",
+    "core/ToolSurfaceProvider.ts",
     "core/StateGraph.ts",
     "core/Logger.ts",
     "core/AgentErrorHandler.ts",
@@ -123,6 +125,10 @@ devtools_module("ai_chat") {
     "tracing/TracingConfig.ts",
     "auth/PKCEUtils.ts",
     "auth/OpenRouterOAuth.ts",
+    "mcp/MCPConfig.ts",
+    "mcp/MCPToolAdapter.ts",
+    "mcp/MCPRegistry.ts",
+    "mcp/MCPMetaTools.ts",
   ]
 
   deps = [
@@ -132,6 +138,7 @@ devtools_module("ai_chat") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../models/logs:bundle",
+    "../../third_party/mcp-sdk:bundle",
     "../../ui/components/helpers:bundle",
     "../../ui/components/markdown_view:bundle",
     "../../ui/components/snackbars:bundle",
@@ -185,6 +192,8 @@ _ai_chat_sources = [
     "core/PageInfoManager.ts",
     "core/AgentNodes.ts",
     "core/GraphHelpers.ts",
+    "core/ToolNameMap.ts",
+    "core/ToolSurfaceProvider.ts",
     "core/StateGraph.ts",
     "core/Logger.ts",
     "core/AgentErrorHandler.ts",
@@ -202,6 +211,7 @@ _ai_chat_sources = [
     "LLM/MessageSanitizer.ts",
     "LLM/LLMClient.ts",
     "tools/Tools.ts",
+    "tools/LLMTracingWrapper.ts",
     "tools/CritiqueTool.ts",
     "tools/FetcherTool.ts",
     "tools/FinalizeWithCritiqueTool.ts",
@@ -251,6 +261,10 @@ _ai_chat_sources = [
     "tracing/TracingConfig.ts",
     "auth/PKCEUtils.ts",
     "auth/OpenRouterOAuth.ts",
+    "mcp/MCPConfig.ts",
+    "mcp/MCPToolAdapter.ts",
+    "mcp/MCPRegistry.ts",
+    "mcp/MCPMetaTools.ts",
 ]
 
 # Construct the expected JS output paths for the metadata
@@ -347,6 +361,8 @@ ts_library("unittests") {
     "agent_framework/__tests__/AgentRunner.sanitizeToolResult.test.ts",
     "agent_framework/__tests__/AgentRunner.computeToolResultText.test.ts",
     "agent_framework/__tests__/AgentRunner.run.flows.test.ts",
+    "mcp/MCPClientSDK.test.ts",
+    "core/ToolSurfaceProvider.test.ts",
   ]
 
   deps = [

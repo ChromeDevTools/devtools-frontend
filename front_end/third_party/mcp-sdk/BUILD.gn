@@ -1,0 +1,57 @@
+# Copyright 2025 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../visibility.gni")
+
+devtools_pre_built("mcp-sdk") {
+  sources_are_release = false
+
+  sources = [
+    # TypeScript configuration
+    "mcp-sdk-tsconfig.json",
+    
+    # AJV JSON Schema validator (dependency)
+    "ajv/dist/ajv.d.ts",
+    "ajv/dist/ajv.js",
+    "ajv/package.json",
+    
+    # Zod schema validation library (dependency)
+    "zod/index.d.ts",
+    "zod/lib/index.js",
+    "zod/lib/index.mjs",
+    "zod/package.json",
+    
+    # Main MCP SDK files
+    "package/dist/client/index.d.ts",
+    "package/dist/client/index.js",
+    "package/dist/client/sse.d.ts",
+    "package/dist/client/sse.js",
+    "package/dist/shared/transport.d.ts",
+    "package/dist/shared/transport.js",
+    "package/dist/shared/protocol.d.ts",
+    "package/dist/shared/protocol.js",
+    "package/dist/types.d.ts",
+    "package/dist/types.js",
+    
+    # EventSource parser dependency
+    "eventsource-parser/package/dist/index.d.ts",
+    "eventsource-parser/package/dist/index.js",
+    "eventsource-parser/package/dist/stream.d.ts",
+    "eventsource-parser/package/dist/stream.js",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "mcp-sdk.ts"
+
+  deps = [ ":mcp-sdk" ]
+
+  visibility = [
+    "../../panels/ai_chat/*",
+  ]
+
+  visibility += devtools_third_party_visibility
+}

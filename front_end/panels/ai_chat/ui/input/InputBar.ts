@@ -96,6 +96,7 @@ export class InputBar extends HTMLElement {
         .options=${this.#modelOptions}
         .selected=${this.#selectedModel}
         .disabled=${this.#modelSelectorDisabled}
+        .preferAbove=${!this.#centered}
         @change=${(e: CustomEvent) => {
           const value = (e.detail as any)?.value as string | undefined;
           if (value) {

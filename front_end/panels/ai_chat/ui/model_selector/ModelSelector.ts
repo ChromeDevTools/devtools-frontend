@@ -19,6 +19,8 @@ export class ModelSelector extends HTMLElement {
   #open = false;
   #query = '';
   #highlighted = 0;
+  #preferAbove = false;
+  #forceSearchable = false;
 
   get options(): ModelOption[] { return this.#options; }
   set options(v: ModelOption[]) { this.#options = v || []; this.#render(); }
@@ -26,6 +28,10 @@ export class ModelSelector extends HTMLElement {
   set selected(v: string | undefined) { this.#selected = v; this.#render(); }
   get disabled(): boolean { return this.#disabled; }
   set disabled(v: boolean) { this.#disabled = !!v; this.#render(); }
+  get preferAbove(): boolean { return this.#preferAbove; }
+  set preferAbove(v: boolean) { this.#preferAbove = !!v; this.#render(); }
+  get forceSearchable(): boolean { return this.#forceSearchable; }
+  set forceSearchable(v: boolean) { this.#forceSearchable = !!v; this.#render(); }
 
   connectedCallback(): void { this.#render(); }
 
@@ -33,7 +39,17 @@ export class ModelSelector extends HTMLElement {
     this.dispatchEvent(new CustomEvent('change', { bubbles: true, detail: { value }}));
   }
 
-  #toggle = (e: Event) => { e.preventDefault(); if (!this.#disabled) { this.#open = !this.#open; this.#render(); } };
+  #toggle = (e: Event) => {
+    e.preventDefault();
+    if (this.#disabled) return;
+    const wasOpen = this.#open;
+    this.#open = !this.#open;
+    this.#render();
+    if (!wasOpen && this.#open) {
+      // Notify host that the selector opened (used to lazily refresh models)
+      this.dispatchEvent(new CustomEvent('model-selector-focus', {bubbles: true}));
+    }
+  };
   #onSearch = (e: Event) => { this.#query = (e.target as HTMLInputElement).value; this.#highlighted = 0; this.#render(); };
   #onKeydown = (e: KeyboardEvent) => {
     const filtered = this.#filtered();
@@ -49,7 +65,7 @@ export class ModelSelector extends HTMLElement {
     return this.#options.filter(o => o.label.toLowerCase().includes(q) || o.value.toLowerCase().includes(q));
   }
 
-  #isSearchable(): boolean { return (this.#options?.length || 0) >= 20; }
+  #isSearchable(): boolean { return this.#forceSearchable || (this.#options?.length || 0) >= 20; }
 
   #render(): void {
     const selectedLabel = this.#options.find(o => o.value === this.#selected)?.label || this.#selected || 'Select Model';
@@ -72,7 +88,7 @@ export class ModelSelector extends HTMLElement {
           <span class="dropdown-arrow">${this.#open ? '▲' : '▼'}</span>
         </button>
         ${this.#open ? html`
-          <div class="model-dropdown below" @click=${(e: Event) => e.stopPropagation()}>
+          <div class="model-dropdown ${this.#preferAbove ? 'above' : 'below'}" @click=${(e: Event) => e.stopPropagation()}>
             <input class="model-search" type="text" placeholder="Search models..." @input=${this.#onSearch} @keydown=${this.#onKeydown} .value=${this.#query}>
             <div class="model-options">
               ${filtered.map((o, i) => html`

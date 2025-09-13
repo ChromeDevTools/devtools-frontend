@@ -197,6 +197,10 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       // Will throw error if model/provider configuration is invalid
       this.#graph = createAgentGraph(apiKey, modelName, selectedProvider, miniModel, nanoModel);
 
+      // Stash apiKey in state context for downstream tools that need it
+      if (!this.#state.context) { (this.#state as any).context = {}; }
+      (this.#state.context as any).apiKey = apiKey || '';
+
       this.#isInitialized = true;
     } catch (error) {
       logger.error('Failed to initialize agent:', error);
@@ -388,6 +392,9 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
         currentPageUrl,
         currentPageTitle,
       };
+
+      // Inject API key into context for tool execution paths (ConfigurableAgentTool)
+      try { (state as any).context.apiKey = this.#apiKey || ''; } catch {}
 
       console.warn('Going to invoke graph', {
         traceId,

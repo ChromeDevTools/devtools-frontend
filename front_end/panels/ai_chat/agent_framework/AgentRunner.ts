@@ -977,6 +977,7 @@ export class AgentRunner {
               logger.info(`${agentName} Executing tool: ${toolToExecute.name}`);
               const execTracingContext = getCurrentTracingContext();
               toolResultData = await toolToExecute.execute(toolArgs as any, ({
+                apiKey: config.apiKey,
                 provider: config.provider,
                 model: modelName,
                 miniModel: config.miniModel,

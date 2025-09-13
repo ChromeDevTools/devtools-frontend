@@ -12,6 +12,7 @@
   "lighthouse",
   "lit",
   "marked",
+  "mcp-sdk",
   "puppeteer",
   "puppeteer/third_party/mitt",
   "puppeteer/third_party/parsel",

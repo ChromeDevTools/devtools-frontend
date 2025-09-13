@@ -35,9 +35,9 @@ const UIStrings = {
    */
   importantNotice: 'Important Notice',
   /**
-   *@description Alpha version warning
+   *@description Beta version warning
    */
-  alphaVersionWarning: 'Alpha Version: This is an alpha version of the Browser Operator - AI Assistant feature. Do not use it for production or sensitive data.',
+  betaVersionWarning: 'Beta Version: This is a beta version of the Browser Operator - AI Assistant feature. Do not use it for production or sensitive data.',
   /**
    *@description Data sharing notice
    */
@@ -214,7 +214,7 @@ export class HelpDialog {
     
     const disclaimerWarning = document.createElement('p');
     disclaimerWarning.className = 'help-disclaimer-warning';
-    disclaimerWarning.textContent = i18nString(UIStrings.alphaVersionWarning);
+    disclaimerWarning.textContent = i18nString(UIStrings.betaVersionWarning);
     disclaimerSection.appendChild(disclaimerWarning);
     
     const disclaimerNote = document.createElement('p');

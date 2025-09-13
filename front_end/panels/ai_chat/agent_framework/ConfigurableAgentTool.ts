@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { AgentService } from '../core/AgentService.js';
 import type { Tool } from '../tools/Tools.js';
 import { ChatMessageEntity, type ChatMessage } from '../models/ChatTypes.js';
 import { createLogger } from '../core/Logger.js';
@@ -17,6 +16,7 @@ import { AgentRunner, type AgentRunnerConfig, type AgentRunnerHooks } from './Ag
 
 // Context passed along with agent/tool calls
 export interface CallCtx {
+  apiKey?: string,
   provider?: LLMProvider,
   model?: string,
   miniModel?: string,
@@ -196,7 +196,7 @@ export class ToolRegistry {
     try {
         const instance = factory();
         this.registeredTools.set(name, instance);
-        logger.info('Registered and instantiated tool: ${name}');
+        logger.info(`Registered and instantiated tool: ${name}`);
     } catch (error) {
         logger.error(`Failed to instantiate tool '${name}' during registration:`, error);
         // Remove the factory entry if instantiation fails
@@ -402,8 +402,8 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
 
     // Get current tracing context for debugging
     const tracingContext = getCurrentTracingContext();
-    const agentService = AgentService.getInstance();
-    const apiKey = agentService.getApiKey();
+    const callCtx = (_ctx || {}) as CallCtx;
+    const apiKey = callCtx.apiKey;
 
     if (!apiKey) {
       const errorResult = this.createErrorResult(`API key not configured for ${this.name}`, [], 'error');
@@ -426,9 +426,6 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
 
     // Initialize
     const maxIterations = this.config.maxIterations || 10;
-    
-    // Parse execution context first
-    const callCtx = (_ctx || {}) as CallCtx;
     
     // Resolve model name from context or configuration
     let modelName: string;

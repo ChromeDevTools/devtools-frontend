@@ -157,36 +157,7 @@ export class ChatView extends HTMLElement {
     this.#structuredController.resetLastProcessed();
   }
 
-  /**
-   * Check if a message is part of an agent session
-   */
-  #isPartOfAgentSession(message: ChatMessage): boolean {
-    // Check if there's an AgentSessionMessage in the current messages
-    const hasAgentSession = this.#messages.some(msg => msg.entity === ChatMessageEntity.AGENT_SESSION);
-    
-    if (!hasAgentSession) {
-      return false;
-    }
-    
-    // For ModelChatMessage tool calls, check if they're from ConfigurableAgentTool
-    if (message.entity === ChatMessageEntity.MODEL) {
-      const modelMsg = message as ModelChatMessage;
-      if (modelMsg.action === 'tool' && modelMsg.toolName) {
-        // Check if there's a corresponding tool result that's from ConfigurableAgentTool
-        const toolResultIndex = this.#messages.findIndex((msg) => 
-          msg.entity === ChatMessageEntity.TOOL_RESULT && 
-          (msg as ToolResultMessage).toolName === modelMsg.toolName &&
-          (msg as ToolResultMessage).toolCallId === modelMsg.toolCallId
-        );
-        if (toolResultIndex !== -1) {
-          const toolResult = this.#messages[toolResultIndex] as ToolResultMessage;
-          return toolResult.isFromConfigurableAgent === true;
-        }
-      }
-    }
-    
-    return false;
-  }
+  // Lane-based routing: deprecated session-heuristics removed
 
   // Scroll behavior handled by <ai-message-list>
 
@@ -317,11 +288,12 @@ export class ChatView extends HTMLElement {
       this.#selectedPromptType = data.selectedAgentType;
     }
 
-    // Check if we should exit the first message view state
-    // We're no longer in first message view if there are user messages
-    const hasUserMessages = data.messages && Array.isArray(data.messages) ? 
+    // Check if we should show the centered first-message view
+    // Only show it if there are no user messages AND at most one message (welcome)
+    const messageCount = data.messages && Array.isArray(data.messages) ? data.messages.length : 0;
+    const hasUserMessages = data.messages && Array.isArray(data.messages) ?
       data.messages.some(msg => msg && msg.entity === ChatMessageEntity.USER) : false;
-    this.#isFirstMessageView = !hasUserMessages;
+    this.#isFirstMessageView = !hasUserMessages && messageCount <= 1;
 
     // Controller owns session message upserts; no UI sync required
 
@@ -399,6 +371,10 @@ export class ChatView extends HTMLElement {
   // Render messages based on the combined structure
   #renderMessage(message: ChatMessage | (ModelChatMessage & { resultText?: string, isError?: boolean, resultError?: string, combined?: boolean }) | (ToolResultMessage & { orphaned?: boolean }), combinedIndex?: number ): Lit.TemplateResult {
     try {
+      // Lane filter: hide agent-lane items from the main chat feed
+      if ((message as any).uiLane === 'agent') {
+        return html``;
+      }
       switch (message.entity) {
         case ChatMessageEntity.USER:
           // Render User Message via dedicated renderer
@@ -439,9 +415,7 @@ export class ChatView extends HTMLElement {
         case ChatMessageEntity.TOOL_RESULT:
           {
             const toolResultMessage = message as (ToolResultMessage & { orphaned?: boolean });
-            if (toolResultMessage.isFromConfigurableAgent) {
-              return html``;
-            }
+            // Lane-based filter already handled above
             if (toolResultMessage.orphaned) {
               return renderToolResultMessage(toolResultMessage);
             }
@@ -451,14 +425,7 @@ export class ChatView extends HTMLElement {
           {
             // Cast to the potentially combined type
             const modelMessage = message as (ModelChatMessage & { resultText?: string, isError?: boolean, resultError?: string, combined?: boolean });
-
-            // Hide tool calls that are part of agent sessions
-            if (modelMessage.action === 'tool') {
-              const isPartOfSession = this.#isPartOfAgentSession(modelMessage);
-              if (isPartOfSession) {
-                return html``;
-              }
-            }
+            // Lane filter above already hides agent-managed tool calls
 
             // Check if it's a combined message (tool call + result) or just a running tool call / final answer
             const isCombined = modelMessage.combined === true;
@@ -497,79 +464,78 @@ export class ChatView extends HTMLElement {
             const icon = ToolDescriptionFormatter.getToolIcon(toolName);
             const descriptionData = ToolDescriptionFormatter.getToolDescription(toolName, toolArgs);
 
-            return html``
-            // return html`
-            //   <!-- Reasoning (if any) displayed above the timeline -->
-            //   ${toolReasoning ? html`
-            //     <div class="message-text reasoning-text" style="margin-bottom: 8px;">
-            //       ${renderMarkdown(toolReasoning, this.#markdownRenderer, this.#openInAIAssistantViewer.bind(this))}
-            //     </div>
-            //   ` : Lit.nothing}
+            return html`
+              <!-- Reasoning (if any) displayed above the timeline -->
+              ${toolReasoning ? html`
+                <div class="message-text reasoning-text" style="margin-bottom: 8px;">
+                  ${renderMarkdown(toolReasoning, this.#markdownRenderer)}
+                </div>
+              ` : Lit.nothing}
 
-            //   <!-- Timeline Tool Execution -->
-            //   <div class="agent-execution-timeline single-tool">
-            //     <!-- Tool Header -->
-            //     <div class="agent-header">
-            //       <div class="agent-marker"></div>
-            //       <div class="agent-title">${descriptionData.action}</div>
-            //       <div class="agent-divider"></div>
-            //         <button class="tool-toggle" @click=${(e: Event) => this.#toggleToolResult(e)}>
-            //           <span class="toggle-icon">▼</span>
-            //         </button>
-            //     </div>
+              <!-- Timeline Tool Execution -->
+              <div class="agent-execution-timeline single-tool">
+                <!-- Tool Header -->
+                <div class="agent-header">
+                  <div class="agent-marker"></div>
+                  <div class="agent-title">${descriptionData.action}</div>
+                  <div class="agent-divider"></div>
+                    <button class="tool-toggle" @click=${(e: Event) => this.#toggleToolResult(e)}>
+                      <span class="toggle-icon">▼</span>
+                    </button>
+                </div>
                 
-            //     <div class="timeline-items" style="display: none;">
-            //       <div class="timeline-item">
-            //         <div class="tool-line">
-            //           ${descriptionData.isMultiLine ? html`
-            //             <div class="tool-summary">
-            //               <span class="tool-description">
-            //                 <span class="tool-description-indicator">└─</span>
-            //                 <div>${(descriptionData.content as Array<{key: string, value: string}>)[0]?.value || 'multiple parameters'}</div>
-            //               </span>
-            //               <span class="tool-status-marker ${status}" title="${status === 'running' ? 'Running' : status === 'completed' ? 'Completed' : status === 'error' ? 'Error' : 'Unknown'}">●</span>
-            //             </div>
-            //           ` : html`
-            //             <span class="tool-description">
-            //               <span class="tool-description-indicator">└─</span>
-            //               <div>${descriptionData.content}</div>
-            //             </span>
-            //             <span class="tool-status-marker ${status}" title="${status === 'running' ? 'Running' : status === 'completed' ? 'Completed' : status === 'error' ? 'Error' : 'Unknown'}">●</span>
-            //           `}
-            //         </div>
+                <div class="timeline-items" style="display: none;">
+                  <div class="timeline-item">
+                    <div class="tool-line">
+                      ${descriptionData.isMultiLine ? html`
+                        <div class="tool-summary">
+                          <span class="tool-description">
+                            <span class="tool-description-indicator">└─</span>
+                            <div>${(descriptionData.content as Array<{key: string, value: string}>)[0]?.value || 'multiple parameters'}</div>
+                          </span>
+                          <span class="tool-status-marker ${status}" title="${status === 'running' ? 'Running' : status === 'completed' ? 'Completed' : status === 'error' ? 'Error' : 'Unknown'}">●</span>
+                        </div>
+                      ` : html`
+                        <span class="tool-description">
+                          <span class="tool-description-indicator">└─</span>
+                          <div>${descriptionData.content}</div>
+                        </span>
+                        <span class="tool-status-marker ${status}" title="${status === 'running' ? 'Running' : status === 'completed' ? 'Completed' : status === 'error' ? 'Error' : 'Unknown'}">●</span>
+                      `}
+                    </div>
                     
-            //         <!-- Result Block - Integrated within timeline item -->
-            //         ${isCombined && resultText ? html`
-            //           <div class="tool-result-integrated ${status}">
-            //             Response:
-            //             ${this.#formatJsonWithSyntaxHighlighting(resultText)}
-            //           </div>
-            //         ` : Lit.nothing}
-            //       </div>
-            //     </div>
+                    <!-- Result Block - Integrated within timeline item -->
+                    ${isCombined && resultText ? html`
+                      <div class="tool-result-integrated ${status}">
+                        Response:
+                        ${this.#formatJsonWithSyntaxHighlighting(resultText)}
+                      </div>
+                    ` : Lit.nothing}
+                  </div>
+                </div>
                 
-            //     <!-- Loading spinner for running tools -->
-            //     ${status === 'running' ? html`
-            //       <div class="tool-loading">
-            //         <svg class="loading-spinner" width="16" height="16" viewBox="0 0 16 16">
-            //           <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="30 12" stroke-linecap="round">
-            //             <animateTransform 
-            //               attributeName="transform" 
-            //               attributeType="XML" 
-            //               type="rotate" 
-            //               from="0 8 8" 
-            //               to="360 8 8" 
-            //               dur="1s" 
-            //               repeatCount="indefinite" />
-            //           </circle>
-            //         </svg>
-            //       </div>
-            //     ` : Lit.nothing}
+                <!-- Loading spinner for running tools -->
+                ${status === 'running' ? html`
+                  <div class="tool-loading">
+                    <svg class="loading-spinner" width="16" height="16" viewBox="0 0 16 16">
+                      <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="30 12" stroke-linecap="round">
+                        <animateTransform 
+                          attributeName="transform" 
+                          attributeType="XML" 
+                          type="rotate" 
+                          from="0 8 8" 
+                          to="360 8 8" 
+                          dur="1s" 
+                          repeatCount="indefinite" />
+                      </circle>
+                    </svg>
+                  </div>
+                ` : Lit.nothing}
 
-            //     <!-- Error messages -->
-            //     ${modelMessage.error ? html`<div class="message-error tool-error-message">Model Error: ${modelMessage.error}</div>` : Lit.nothing}
-            //   </div>
-            // `;
+                <!-- Error messages -->
+                ${modelMessage.error ? html`<div class="message-error tool-error-message">Model Error: ${modelMessage.error}</div>` : Lit.nothing}
+              </div>
+            `;
           }
         default:
           // Should not happen, but render a fallback
@@ -974,6 +940,26 @@ export class ChatView extends HTMLElement {
   #toggleAgentView(): void {
     this.#agentViewMode = this.#agentViewMode === 'simplified' ? 'enhanced' : 'simplified';
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  /**
+   * Toggle visibility of tool result details
+   */
+  #toggleToolResult(event: Event): void {
+    const button = event.currentTarget as HTMLElement;
+    const timeline = button.closest('.agent-execution-timeline');
+    const items = timeline?.querySelector('.timeline-items') as HTMLElement;
+    const icon = button.querySelector('.toggle-icon') as HTMLElement;
+    
+    if (items) {
+      if (items.style.display === 'none') {
+        items.style.display = 'block';
+        icon.textContent = '▲';
+      } else {
+        items.style.display = 'none';
+        icon.textContent = '▼';
+      }
+    }
   }
 
   // Stable key for message list rendering to avoid node reuse glitches

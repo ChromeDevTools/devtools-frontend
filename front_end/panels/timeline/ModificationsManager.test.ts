@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -62,7 +62,7 @@ describeWithEnvironment('ModificationsManager', () => {
   });
 
   it('creates annotations and generates correct json for annotations', async function() {
-    const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     // Get any entres to create a label and a link with.
     const entry = allThreadEntriesInTrace(parsedTrace)[0];
     const entry2 = allThreadEntriesInTrace(parsedTrace)[1];
@@ -122,7 +122,7 @@ describeWithEnvironment('ModificationsManager', () => {
 
   it('does not add the annotation link between entries into the json saved into metadata if `entryTo` does not exist',
      async function() {
-       const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
+       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
        // Get any entry to create links with.
        const entry = allThreadEntriesInTrace(parsedTrace)[0];
        const entry2 = allThreadEntriesInTrace(parsedTrace)[1];
@@ -160,7 +160,7 @@ describeWithEnvironment('ModificationsManager', () => {
      });
 
   it('correctly identifies if a connection between entries already exists', async function() {
-    const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     // Get any entry to create links with.
     const entry1 = allThreadEntriesInTrace(parsedTrace)[0];
     const entry2 = allThreadEntriesInTrace(parsedTrace)[1];

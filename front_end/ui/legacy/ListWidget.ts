@@ -1,4 +1,4 @@
-// Copyright 2015 The Chromium Authors. All rights reserved.
+// Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -312,7 +312,7 @@ export type EditorControl<T = string> = (HTMLInputElement|HTMLSelectElement|Cust
 
 export class Editor<T> {
   element: HTMLDivElement;
-  private readonly contentElementInternal: HTMLElement;
+  readonly #contentElement: HTMLElement;
   private commitButton: Buttons.Button.Button;
   private readonly cancelButton: Buttons.Button.Button;
   private errorMessageContainer: HTMLElement;
@@ -331,8 +331,8 @@ export class Editor<T> {
     this.element.addEventListener(
         'keydown', onKeyDown.bind(null, Platform.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)), false);
 
-    this.contentElementInternal = this.element.createChild('div', 'editor-content');
-    this.contentElementInternal.addEventListener('keydown', onKeyDown.bind(null, event => {
+    this.#contentElement = this.element.createChild('div', 'editor-content');
+    this.#contentElement.addEventListener('keydown', onKeyDown.bind(null, event => {
       if (event.key !== 'Enter') {
         return false;
       }
@@ -368,7 +368,7 @@ export class Editor<T> {
   }
 
   contentElement(): Element {
-    return this.contentElementInternal;
+    return this.#contentElement;
   }
 
   createInput(

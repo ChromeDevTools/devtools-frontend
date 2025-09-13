@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -99,7 +99,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
   private readonly itemMap: Map<number, SelectableLevel>;
   private hiddenLevels: string[];
   private bitFieldValue: MessageLevelBitfield;
-  private readonly defaultTitleInternal: Common.UIString.LocalizedString;
+  readonly #defaultTitle: Common.UIString.LocalizedString;
   private readonly customTitle: Common.UIString.LocalizedString;
   private readonly allTitle: Common.UIString.LocalizedString;
   elementsForItems: WeakMap<SelectableLevel, HTMLElement>;
@@ -113,7 +113,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
 
     this.bitFieldValue = MessageLevelBitfield.DEFAULT;
 
-    this.defaultTitleInternal = i18nString(UIStrings.default);
+    this.#defaultTitle = i18nString(UIStrings.default);
     this.customTitle = i18nString(UIStrings.custom);
     this.allTitle = i18nString(UIStrings.all);
 
@@ -121,7 +121,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
   }
 
   defaultTitle(): Common.UIString.LocalizedString {
-    return this.defaultTitleInternal;
+    return this.#defaultTitle;
   }
 
   setDefault(dropdown: UI.SoftDropDown.SoftDropDown<SelectableLevel>): void {
@@ -130,7 +130,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
 
   populate(): void {
     this.items.insert(this.items.length, {
-      title: this.defaultTitleInternal,
+      title: this.#defaultTitle,
       overwrite: true,
       stringValue: '',
       value: MessageLevelBitfield.DEFAULT,
@@ -205,7 +205,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
     }
 
     if (this.bitFieldValue === MessageLevelBitfield.DEFAULT) {
-      return this.defaultTitleInternal;
+      return this.#defaultTitle;
     }
 
     if (this.bitFieldValue === MessageLevelBitfield.ALL) {

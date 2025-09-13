@@ -1,9 +1,10 @@
 /*
- * Copyright 2016 The Chromium Authors. All rights reserved.
+ * Copyright 2016 The Chromium Authors
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
 
+@scope to (devtools-widget > *) {
 .tree-outline ol {
   list-style: none;
   padding: 0;
@@ -19,35 +20,36 @@ ol.tree-outline {
   min-height: 12px;
 }
 
-.tree-outline li.shadow-xml-view-close-tag {
+::part(shadow-xml-view-close-tag) {
   margin-left: -16px;
 }
 
-.shadow-xml-view-tag {
+::part(shadow-xml-view-close-tag),::part(shadow-xml-view-tag) {
   color: var(--sys-color-purple);
 }
 
-.shadow-xml-view-comment {
+::part(shadow-xml-view-comment) {
   color: var(--sys-color-green);
 }
 
-.shadow-xml-view-processing-instruction {
+::part(shadow-xml-view-processing-instruction) {
   color: var(--sys-color-green);
 }
 
-.shadow-xml-view-attribute-name {
+::part(shadow-xml-view-attribute-name) {
   color: var(--sys-color-orange);
 }
 
-.shadow-xml-view-attribute-value {
+::part(shadow-xml-view-attribute-value) {
   color: var(--sys-color-blue);
 }
 
-.shadow-xml-view-text {
+::part(shadow-xml-view-text) {
   color: var(--sys-color-on-surface);
   white-space: pre;
 }
 
-.shadow-xml-view-cdata {
+::part(shadow-xml-view-cdata) {
   color: var(--sys-color-on-surface);
+}
 }

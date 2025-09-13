@@ -1,4 +1,4 @@
-# Copyright 2020 The Chromium Authors. All rights reserved.
+# Copyright 2020 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -28,7 +28,7 @@ devtools_module("formatter_worker") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../models/text_utils:bundle",
-    "../../third_party/acorn:acorn",
+    "../../third_party/acorn",
     "../../third_party/acorn:bundle",
     "../../third_party/codemirror",
     "../../third_party/codemirror:codemirror-legacy-types",

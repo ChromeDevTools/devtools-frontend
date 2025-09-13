@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2011 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2011 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
@@ -140,8 +114,21 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorViewInstance: InspectorView|null = null;
 
+const MIN_MAIN_PANEL_WIDTH = 240;
+const MIN_VERTICAL_DRAWER_WIDTH = 200;
+// Inspector need to have space for both main panel and the drawer + some slack for borders
+const MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER = 250;
+const MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER = 450;
+const MIN_INSPECTOR_HEIGHT = 72;
+
+export enum DrawerOrientation {
+  VERTICAL = 'vertical',
+  HORIZONTAL = 'horizontal',
+  UNSET = 'unset',
+}
+
 export class InspectorView extends VBox implements ViewLocationResolver {
-  private readonly drawerIsVerticalSetting: Common.Settings.Setting<boolean>;
+  private readonly drawerOrientationSetting: Common.Settings.Setting<DrawerOrientation>;
   private readonly drawerSplitWidget: SplitWidget;
   private readonly tabDelegate: InspectorViewTabDelegate;
   private readonly drawerTabbedLocation: TabbedViewLocation;
@@ -161,13 +148,13 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   constructor() {
     super();
     GlassPane.setContainer(this.element);
-    this.setMinimumSize(250, 72);
+    this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
 
     // DevTools sidebar is a vertical split of main tab bar panels and a drawer.
-    this.drawerIsVerticalSetting =
-        Common.Settings.Settings.instance().createSetting('inspector.use-vertical-drawer-orientation', false);
-    this.drawerSplitWidget =
-        new SplitWidget(this.drawerIsVerticalSetting.get(), true, 'inspector.drawer-split-view-state', 200, 200);
+    this.drawerOrientationSetting =
+        Common.Settings.Settings.instance().createSetting('inspector.drawer-orientation', DrawerOrientation.UNSET);
+    const isVertical = this.drawerOrientationSetting.get() === DrawerOrientation.VERTICAL;
+    this.drawerSplitWidget = new SplitWidget(isVertical, true, 'inspector.drawer-split-view-state', 200, 200);
     this.drawerSplitWidget.hideSidebar();
     this.drawerSplitWidget.enableShowModeSaving();
     this.drawerSplitWidget.show(this.element);
@@ -184,7 +171,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     const moreTabsButton = this.drawerTabbedLocation.enableMoreTabsButton();
     moreTabsButton.setTitle(i18nString(UIStrings.moreTools));
     this.drawerTabbedPane = this.drawerTabbedLocation.tabbedPane();
-    this.setDrawerMinimumSize();
+    this.setDrawerRelatedMinimumSizes();
     this.drawerTabbedPane.element.classList.add('drawer-tabbed-pane');
     this.drawerTabbedPane.element.setAttribute('jslog', `${VisualLogging.drawer()}`);
     const closeDrawerButton = new ToolbarButton(i18nString(UIStrings.closeDrawer), 'cross');
@@ -195,7 +182,8 @@ export class InspectorView extends VBox implements ViewLocationResolver {
         this.drawerSplitWidget.isVertical() ? 'dock-bottom' : 'dock-right');
     this.#toggleOrientationButton.element.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
     this.#toggleOrientationButton.element.setAttribute('jslogcontext', 'toggle-drawer-orientation');
-    this.#toggleOrientationButton.addEventListener(ToolbarButton.Events.CLICK, this.toggleDrawerOrientation, this);
+    this.#toggleOrientationButton.addEventListener(
+        ToolbarButton.Events.CLICK, () => this.toggleDrawerOrientation(), this);
     this.drawerTabbedPane.addEventListener(
         TabbedPaneEvents.TabSelected,
         (event: Common.EventTarget.EventTargetEvent<EventData>) => this.tabSelected(event.data.tabId), this);
@@ -211,7 +199,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     this.drawerSplitWidget.installResizer(this.drawerTabbedPane.headerElement());
     this.drawerSplitWidget.setSidebarWidget(this.drawerTabbedPane);
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER)) {
+    if (Root.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled) {
       this.drawerTabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
     }
     this.drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
@@ -227,6 +215,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
         'panel', true, true, Root.Runtime.Runtime.queryParam('panel'));
 
     this.tabbedPane = this.tabbedLocation.tabbedPane();
+    this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
     this.tabbedPane.element.classList.add('main-tabbed-pane');
     // The 'Inspect element' and 'Device mode' buttons in the tabs toolbar takes longer to load than
     // the tabs themselves, so a space equal to the buttons' total width is preemptively allocated
@@ -379,11 +368,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     }
   }
 
-  private emitDrawerChangeEvent(isDrawerOpen: boolean): void {
-    const evt = new CustomEvent(Events.DRAWER_CHANGE, {bubbles: true, cancelable: true, detail: {isDrawerOpen}});
-    document.body.dispatchEvent(evt);
-  }
-
   private getTabbedPaneForTabId(tabId: string): TabbedPane|null {
     // Tab exists in the main panel
     if (this.tabbedPane.hasTab(tabId)) {
@@ -415,7 +399,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     } else {
       this.focusRestorer = null;
     }
-    this.emitDrawerChangeEvent(true);
     ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerShown));
   }
 
@@ -432,26 +415,40 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     }
     this.drawerSplitWidget.hideSidebar(true);
 
-    this.emitDrawerChangeEvent(false);
     ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerHidden));
   }
 
-  toggleDrawerOrientation(): void {
-    const drawerWillBeVertical = !this.drawerSplitWidget.isVertical();
+  toggleDrawerOrientation({force}: {force?: Omit<DrawerOrientation, DrawerOrientation.UNSET>} = {}): void {
+    if (!this.drawerTabbedPane.isShowing()) {
+      return;
+    }
+    let drawerWillBeVertical: boolean;
+    if (force) {
+      drawerWillBeVertical = force === DrawerOrientation.VERTICAL;
+    } else {
+      drawerWillBeVertical = !this.drawerSplitWidget.isVertical();
+    }
+
+    this.drawerOrientationSetting.set(drawerWillBeVertical ? DrawerOrientation.VERTICAL : DrawerOrientation.HORIZONTAL);
     this.#toggleOrientationButton.setGlyph(drawerWillBeVertical ? 'dock-bottom' : 'dock-right');
-    this.drawerIsVerticalSetting.set(drawerWillBeVertical);
     this.drawerSplitWidget.setVertical(drawerWillBeVertical);
-    this.setDrawerMinimumSize();
+    this.setDrawerRelatedMinimumSizes();
   }
 
-  setDrawerMinimumSize(): void {
+  isUserExplicitlyUpdatedDrawerOrientation(): boolean {
+    return this.drawerOrientationSetting.get() !== DrawerOrientation.UNSET;
+  }
+
+  setDrawerRelatedMinimumSizes(): void {
     const drawerIsVertical = this.drawerSplitWidget.isVertical();
     if (drawerIsVertical) {
       // Set minimum size when the drawer is vertical to ensure the buttons will always be
       // visible during resizing.
-      this.drawerTabbedPane.setMinimumSize(200, 27);
+      this.drawerTabbedPane.setMinimumSize(MIN_VERTICAL_DRAWER_WIDTH, 27);
+      this.setMinimumSize(MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER, MIN_INSPECTOR_HEIGHT);
     } else {
       this.drawerTabbedPane.setMinimumSize(0, 27);
+      this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
     }
   }
 
@@ -727,9 +724,7 @@ export class ActionDelegate implements ActionDelegateInterface {
         }
         return true;
       case 'main.toggle-drawer-orientation':
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER)) {
-          InspectorView.instance().toggleDrawerOrientation();
-        }
+        InspectorView.instance().toggleDrawerOrientation();
         return true;
       case 'main.next-tab':
         InspectorView.instance().tabbedPane.selectNextTab();
@@ -775,8 +770,4 @@ export class InspectorViewTabDelegate implements TabbedPaneTabDelegate {
           i18nString(UIStrings.moveToDrawer), this.moveToDrawer.bind(this, tabId), {jslogContext: 'move-to-bottom'});
     }
   }
-}
-
-export const enum Events {
-  DRAWER_CHANGE = 'drawerchange',
 }

@@ -1,1 +1,3 @@
 file://config/owner/INFRA_OWNERS
+
+per-file run_start.mjs=file://config/owner/COMMON_OWNERS

@@ -102,7 +102,6 @@ import { assert } from '../util/assert.js';
 import { bubble } from '../util/decorators.js';
 import { Deferred } from '../util/Deferred.js';
 import { stringToTypedArray } from '../util/encoding.js';
-import { isErrorLike } from '../util/ErrorLike.js';
 import { BidiElementHandle } from './ElementHandle.js';
 import { BidiFrame } from './Frame.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
@@ -243,6 +242,9 @@ let BidiPage = (() => {
         }
         mainFrame() {
             return this.#frame;
+        }
+        resize(_params) {
+            throw new Error('Method not implemented for WebDriver BiDi yet.');
         }
         async focusedFrame() {
             const env_1 = { stack: [], error: void 0, hasError: false };
@@ -629,7 +631,7 @@ let BidiPage = (() => {
             }
             if (!this.#emulatedNetworkConditions) {
                 this.#emulatedNetworkConditions = {
-                    offline: false,
+                    offline: networkConditions?.offline ?? false,
                     upload: -1,
                     download: -1,
                     latency: 0,
@@ -644,6 +646,8 @@ let BidiPage = (() => {
             this.#emulatedNetworkConditions.latency = networkConditions
                 ? networkConditions.latency
                 : 0;
+            this.#emulatedNetworkConditions.offline =
+                networkConditions?.offline ?? false;
             return await this.#applyNetworkConditions();
         }
         async #applyNetworkConditions() {
@@ -744,11 +748,6 @@ let BidiPage = (() => {
             }
             catch (error) {
                 controller.abort();
-                if (isErrorLike(error)) {
-                    if (error.message.includes('no such history entry')) {
-                        return null;
-                    }
-                }
                 throw error;
             }
         }

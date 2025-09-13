@@ -3,12 +3,12 @@
  * Copyright 2024 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import * as Bidi from 'webdriver-bidi-protocol';
 import type { JSHandle } from '../api/JSHandle.js';
 import { Realm } from '../api/Realm.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { EvaluateFunc, HandleFor } from '../common/types.js';
-import type PuppeteerUtil from '../injected/injected.js';
+import type { PuppeteerInjectedUtil } from '../injected/injected.js';
 import type { Realm as BidiRealmCore, DedicatedWorkerRealm, SharedWorkerRealm } from './core/Realm.js';
 import type { WindowRealm } from './core/Realm.js';
 import { BidiElementHandle } from './ElementHandle.js';
@@ -23,8 +23,8 @@ export declare abstract class BidiRealm extends Realm {
     readonly realm: BidiRealmCore;
     constructor(realm: BidiRealmCore, timeoutSettings: TimeoutSettings);
     protected initialize(): void;
-    protected internalPuppeteerUtil?: Promise<BidiJSHandle<PuppeteerUtil>>;
-    get puppeteerUtil(): Promise<BidiJSHandle<PuppeteerUtil>>;
+    protected internalPuppeteerUtil?: Promise<BidiJSHandle<PuppeteerInjectedUtil>>;
+    get puppeteerUtil(): Promise<BidiJSHandle<PuppeteerInjectedUtil>>;
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     createHandle(result: Bidi.Script.RemoteValue): BidiJSHandle<unknown> | BidiElementHandle<Node>;
@@ -42,7 +42,7 @@ export declare class BidiFrameRealm extends BidiRealm {
     static from(realm: WindowRealm, frame: BidiFrame): BidiFrameRealm;
     readonly realm: WindowRealm;
     private constructor();
-    get puppeteerUtil(): Promise<BidiJSHandle<PuppeteerUtil>>;
+    get puppeteerUtil(): Promise<BidiJSHandle<PuppeteerInjectedUtil>>;
     get sandbox(): string | undefined;
     get environment(): BidiFrame;
     adoptBackendNode(backendNodeId?: number | undefined): Promise<JSHandle<Node>>;

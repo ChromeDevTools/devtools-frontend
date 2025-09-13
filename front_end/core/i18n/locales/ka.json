@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "ეფექტურობის არე"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "ანგარიში"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "დეკორატიული ელემენტი"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "წყაროები"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "სინქრონიზაცია"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools — {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "სცენარების ჩვენება"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "AI დახმარება"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "მოირგეთ და გააკონტროლეთ DevTools"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "წინა პანელი"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "მიღებული ბეჯები"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "DevTools-ის გადატვირთვა"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "ეს ფუნქცია ხელმისაწვდომია მხოლოდ აქტიური ინტერნეტ-კავშირის დროს."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevTools-მა გარე მოთხოვნა მიიღო"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ფაილის ჩატვირთვისას მოხდა უცნობი შეცდომა"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "შეკუმშვის ლექსიკონის გადაცემა"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "სერვერის მიერ ინიცირებული მთლიანობის შემოწმებები"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "HTTP Unencoded Digest-ის სპეციფიკაცია"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "ახალი მოწყობილობის სიმულაციამ, გვერდის ჩატვირთვის შემდეგ, შეიძლება გავლენა იქონიოს LCP-ზე. LCP-ს ზუსტი მონაცემების მისაღებად გადატვირთეთ გვერდი ახალი მოწყობილობის სიმულაციის შემდეგ."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "ლოკალური ჩეთის წაშლა"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "საუბრის ექსპორტი"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "შეკითხვის დასასმელად მიჰყევით ნაბიჯებს"
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "წარსული საუბრები არ არის"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "პასუხი კოპირებულია გაცვლის ბუფერი"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "გამოხმაურება"
   },
@@ -2685,7 +2706,7 @@
     "message": "პარამეტრები"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
-    "message": "ხელოვნური ინტელექტის დახმარება"
+    "message": "AI დახმარება"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "ხელოვნური ინტელექტისთვის კითხვა"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "სპეკულაციური ჩატვირთვები"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "დააწკაპუნეთ ნებისმიერ ანგარიშზე, მისი ძირითადი ტექსტი რომ გამოაჩინოთ"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "ანგარიში არ არის არჩეული"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "დააწკაპუნეთ ნებისმიერ ანგარიშზე, მისი ძირითადი ტექსტი რომ გამოაჩინოთ"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "ანგარიში ან საბოლოო წერტილი არ არის"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "ანგარიში არ არის არჩეული"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "ამ გვერდზე შეძლებთ, შეამოწმოთ Reporting API ანგარიშები და საბოლოო წერტილები."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC-ის მქონე გვერდების უკან-წინ გადასვლის ქეშში დამატება ვერ მოხერხდება."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "უკან-წინ გადასვლის ქეში გათიშულია, რადგან გამოყენებული იყო WebRTC."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "გვერდები, რომლებიც იყენებს WebShare-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocket-ის გვერდების უკან-წინ გადასვლის ქეშში დამატება შეუძლებელია."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "უკან-წინ გადასვლის ქეში გათიშულია, რადგან გამოყენებული იყო WebSocket."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransport-ის მქონე გვერდები ვერ მოხვდება უკან-წინ გადასვლის ქეშში."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "უკან-წინ გადასვლის ქეში გათიშულია, რადგან გამოყენებული იყო WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "გვერდები, რომლებიც იყენებს WebXR-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "ბადის რეჟიმის გათიშვა"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "განლაგების რეჟიმის გამორთვა"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "გადაადგილების გადაფარვის გათიშვა"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "ბადის რეჟიმის ჩართვა"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "აგრისებრი რეჟიმის ჩართვა"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "გადაადგილების გადაფარვის ჩართვა"
@@ -6771,7 +6789,7 @@
     "message": "მოვლენების მსმენელების კატეგორია"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework მსმენელი"
+    "message": "Framework მსმენელის ამოცნობა"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "პასიური"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Flexbox-ის გადაფარვები"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "ბადისებრი / მოზაიკური"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "ბადისებრი / აგურისებრი გადაფარვა"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "ამ გვერდზე Flexbox განლაგებები ვერ მოიძებნა"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "ამ გვერდზე ბადისებრი ან მოზაიკური განლაგება ვერ მოიძებნა"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "გადაფარვის ჩვენების პარამეტრები"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "მოთხოვნები, შესაძლოა, უგულებელყოფილი იყოს ადგილობრივ დონეზე, იხილეთ წყაროების პანელი"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "დამატება…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "{PH1}-ის დამატება"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "მორგებული"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "წინასწარ დაყენებული"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "რეკომენდებულია {PH1}"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "მიმდინარეობს კალიბრაცია…"
@@ -8646,10 +8685,10 @@
     "message": "ნაგულისხმევ მნიშვნელობაზე გადაყენება"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "„მონაცემების შენახვა“: იძულებით გამორთვა"
+    "message": "მონაცემთა შენახვა: გამორთულია"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "„მონაცემების შენახვა“: იძულებით ჩართვა"
+    "message": "მონაცემთა შენახვა: ჩართულია"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "გვერდზე navigator.connection.saveData-ს მიერ შეტყობინებული მნიშვნელობის უგულებელყოფა"
@@ -9357,7 +9396,7 @@
     "message": "მხოლოდ დაბლოკილი მოთხოვნების ჩვენება"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(მხოლოდ ინკოგნიტო) მხოლოდ IP-დაცულ პროქსებთან გაგზავნილი მოთხოვნების ჩვენება"
+    "message": "მხოლოდ IP-დაცულ პროქსი-სერვერებისთვის გაგზავნილი მოთხოვნების ჩვენება. გავლენას არ ახდენს ჩვეულებრივ დათვალიერებაზე."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "მხოლოდ იმ მოთხოვნების ჩვენება, რომლებშიც არის რეაგირების დაბლოკილი ქუქი-ჩანაწერები"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1} ჩამოტვირთვა"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (ქეშიდან)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (წყარო: ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "{PH1}-იანი რეაგირების დრო"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "რეაგირების დრო: {PH1}, ჩამოტვირთვა: {PH2} (სულ {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "ქუქი-ჩანაწერები, რომლებიც მიღებული იყო სერვერიდან პასუხის „set-cookie“ ჰედერში"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "ვიდეო"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP დაცვის გვერდის ავლა"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "ID"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "მეთოდი"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "IP პროქსი-სერვერი მიუწვდომელია"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "IP პროქსი-სერვერი ხელმისაწვდომია მხოლოდ ინკოგნიტო რეჟიმში. გახსენით საიტი ინკოგნიტოში."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "პროქსი-სერვერის მოთხოვნები"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "სტატუსი"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "შეამოწმეთ, თუ როგორ იმუშავებს ეს საიტი, თუ Chrome-ში ჩართულია IP პროქსი-სერვერი"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "IP დაცვის პროქსი-სერვერის კონტროლი"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} {PH2}-ით"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "მართვის საშუალებები"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "IP დაცვა"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "მთავარი წყარო"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "მომხმარებელი უმოქმედოა, ეკრანი განბლოკილია"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "შესრულების კვალის ანოტაციებისთვის სათაურების ავტომატურად გენერირება"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "კონსოლში ან წყაროების პანელში აკრეფისას მიიღებთ კოდის შემოთავაზებებს. გამოსაყენებლად დააჭირეთ Tab-ს."
   },
@@ -12336,16 +12396,16 @@
     "message": "გაზარდეთ პროდუქტიულობა ხელოვნური ინტელექტის მეშვეობით"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "კოდის შემოთავაზებების გენერირებისთვის თქვენი კონსოლის შენატანი, კონსოლში მიმდინარე სესიის ისტორია და ამჟამად გახსნილი ფაილის კონტენტი გაუზიარდება Google-ს. ეს მონაცემები შეიძლება ნახონ ადამიანმა მიმომხილველებმა, ამ ფუნქციის გაუმჯობესების მიზნით."
+    "message": "კოდის შემოთავაზებების გენერირებისთვის Google-თან გაზიარდება შემდეგი ინფორმაცია: თქვენი კონსოლის შენატანი, თქვენი კონსოლის მიმდინარე სესია, არსებული შემოწმებული CSS და ამჟამად გახსნილი ფაილის კონტენტი. ეს მონაცემები შეიძლება ნახონ ადამიანმა მიმომხილველებმა, ამ ფუნქციის გაუმჯობესების მიზნით."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "კოდის შემოთავაზებების გენერირებისთვის თქვენი კონსოლის შენატანი, კონსოლში მიმდინარე სესიის ისტორია და ამჟამად გახსნილი ფაილის კონტენტი გაუზიარდება Google-ს. ეს მონაცემი არ გამოიყენება Google-ის ხელოვნური ინტელექტის მოდელების გაუმჯობესებისთვის."
+    "message": "კოდის შემოთავაზებების გენერირებისთვის Google-თან გაზიარდება შემდეგი ინფორმაცია: თქვენი კონსოლის შენატანი, თქვენი კონსოლის მიმდინარე სესია, არსებული შემოწმებული CSS და ამჟამად გახსნილი ფაილის კონტენტი. ეს მონაცემი არ გამოიყენება Google-ის ხელოვნური ინტელექტის მოდელების გაუმჯობესებისთვის. თქვენმა ორგანიზაციამ, შესაძლოა, ნებისმიერ დროს შეცვალოს ეს პარამეტრები."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "კონსოლის შეტყობინება, დაკავშირებული სტეკის ტრასირება, დაკავშირებული საწყისი კოდი და ქსელის სათაურები გაეგზავნება Google-ს, ახსნა-განმარტების გენერირების მიზნით. ეს მონაცემები შეიძლება ნახონ ადამიანმა მიმომხილველებმა, ამ ფუნქციის გაუმჯობესების მიზნით."
+    "message": "განმარტების გენერირებისთვის კონსოლის შეტყობინება, ასოცირებული სტეკის კვალი, დაკავშირებული საწყისი კოდი და ასოცირებული ქსელის სათაურები ეგზავნება Google-ს. ეს მონაცემები შეიძლება ნახონ ადამიანმა მიმომხილველებმა, ამ ფუნქციის გაუმჯობესების მიზნით."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "კონსოლის შეტყობინება, დაკავშირებული სტეკის ტრასირება, დაკავშირებული საწყისი კოდი და ქსელის სათაურები გაეგზავნება Google-ს, ახსნა-განმარტების გენერირების მიზნით. ეს მონაცემი არ გამოიყენება Google-ის ხელოვნური ინტელექტის მოდელების გაუმჯობესებისთვის."
+    "message": "განმარტების გენერირებისთვის კონსოლის შეტყობინება, ასოცირებული სტეკის კვალი, დაკავშირებული საწყისი კოდი და ასოცირებული ქსელის სათაურები ეგზავნება Google-ს. ეს მონაცემი არ გამოიყენება Google-ის ხელოვნური ინტელექტის მოდელების გაუმჯობესებისთვის. თქვენმა ორგანიზაციამ, შესაძლოა, ნებისმიერ დროს შეცვალოს ეს პარამეტრები."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "თქვენი რეგიონის მიხედვით, Google-მა შეიძლება თავი შეიკავოს მონაცემების შეგროვებისგან"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "AI ასისტენტის ჩართვა"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "ხელოვნური ინტელექტის კოდის შემოთავაზებების ჩართვა"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "ხელოვნური ინტელექტის მიერ ეფექტურობისთვის გენერირებული შემოთავაზებების ჩართვის ანოტაციები"
@@ -12381,19 +12444,19 @@
     "message": "გაერკვიეთ CSS სტილებში, ქსელის აქტივობაში, ეფექტურობის შემაფერხებელ ფაქტორებსა და ფაილების წარმომავლობაში AI-ს მხარდაჭერით შექმნილი ანალიზის მეშვეობით"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "მომხმარებლების ნებისმიერ მოთხოვნა და მონაცემი, რომლებზეც წვდომა შემოწმებულ გვერდს შეუძლია ვებ API-ების, ქსელის მოთხოვნების, ფაილებისა და ეფექტურობის კონტროლის მეშვეობით, ეგზავნება Google-ს ახსნა-განმარტების გენერირების მიზნით. ეს მონაცემები შეიძლება ნახონ ადამიანმა მიმომხილველებმა, ამ ფუნქციის გაუმჯობესების მიზნით. არ გამოიყენოთ გვერდებზე, რომლებიც შეიცავს პერსონალურ ან სენსიტიურ ინფორმაციას."
+    "message": "განმარტებების გენერირებისთვის, მოთხოვნა და მონაცემი, რომლებზეც წვდომა შემოწმებულ გვერდს შეუძლია ვებ API-ების, ქსელის მოთხოვნების, ფაილებისა და ეფექტურობის კონტროლის მეშვეობით, ეგზავნება Google-ს. ეს მონაცემები შეიძლება ნახონ ადამიანმა მიმომხილველებმა, ამ ფუნქციის გაუმჯობესების მიზნით. არ გამოიყენოთ გვერდებზე, რომლებიც შეიცავს პერსონალურ ან სენსიტიურ ინფორმაციას."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "მომხმარებლების ნებისმიერ მოთხოვნა და მონაცემი, რომლებზეც წვდომა შემოწმებულ გვერდს შეუძლია ვებ API-ების, ქსელის მოთხოვნების, ფაილებისა და ეფექტურობის კონტროლის მეშვეობით, ეგზავნება Google-ს ახსნა-განმარტების გენერირების მიზნით. ეს მონაცემები არ იქნება გამოყენებული Google-ის ხელოვნური ინტელექტის მოდელების გაუმჯობესებისთვის."
+    "message": "განმარტებების გენერირებისთვის, მოთხოვნა და მონაცემი, რომლებზეც წვდომა შემოწმებულ გვერდს შეუძლია ვებ API-ების, ქსელის მოთხოვნების, ფაილებისა და ეფექტურობის კონტროლის მეშვეობით, ეგზავნება Google-ს. ეს მონაცემი არ გამოიყენება Google-ის ხელოვნური ინტელექტის მოდელების გაუმჯობესებისთვის. თქვენმა ორგანიზაციამ, შესაძლოა, ნებისმიერ დროს შეცვალოს ეს პარამეტრები."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "თქვენი ეფექტურობის მონაცემები ეგზავნება Google-ს განმარტების გენერირებისთვის. ეს მონაცემები გამოყენებული იქნება Google-ის ხელოვნური ინტელექტის მოდელების გაუმჯობესებისთვის."
+    "message": "ანოტაციის შემოთავაზებების გენერირებისთვის თქვენი შესრულების კვალი ეგზავნება Google-ს. ეს მონაცემები შეიძლება ნახონ ადამიანმა მიმომხილველებმა, ამ ფუნქციის გაუმჯობესების მიზნით."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "თქვენი ეფექტურობის მონაცემები ეგზავნება Google-ს განმარტების გენერირებისთვის. ეს მონაცემი არ გამოიყენება Google-ის ხელოვნური ინტელექტის მოდელების გაუმჯობესებისთვის."
+    "message": "ანოტაციის შემოთავაზებების გენერირებისთვის თქვენი შესრულების კვალი ეგზავნება Google-ს. ეს მონაცემი არ გამოიყენება Google-ის ხელოვნური ინტელექტის მოდელების გაუმჯობესებისთვის. თქვენმა ორგანიზაციამ, შესაძლოა, ნებისმიერ დროს შეცვალოს ეს პარამეტრები."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "ხელოვნური ინტელექტის მიერ ეფექტურობისთვის გენერირებული შემოთავაზებების მიღების ანოტაციები"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "გეხმარებათ ანოტაციაში თქვენი ეფექტურობის კვალი ავტომატურად გენერირებული ლეიბლებით"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "მიიღეთ დახმარება კოდის დასრულებაში"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "არასტაბილური ექსპერიმენტები"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (წლიური)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (ყოველთვიური)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (წლიური)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (ყოველთვიური)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "სტანდარტული გეგმა"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "უცნობი გეგმა"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "თქვენ არ ხართ შესული Chrome-ში."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "ამ პარამეტრის გასააქტიურებლად ჯერ უნდა ჩართოთ პარამეტრების სინქრონიზაცია Chrome-ში."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "პარამეტრებზე გადასვლა"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(შესაბამისი ინფორმაცია ეგზავნება Google-ს)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "რეგისტრაცია"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "შესული ხართ Chrome-ში, როგორც:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "ამ პარამეტრის გასააქტიურებლად ჩართეთ Chrome სინქი."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "პროფილის ნახვა"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "მორგებული მოწყობილობის დამატება"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "— CPU-ს რეგულირება ჩართულია"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "— JavaScript სემპლინგი გათიშულია"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "— ქსელის რეგულირება ჩართულია"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "მესამე მხარეების ჩამუქება"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "JavaScript ნიმუშების გათიშვა"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "გათიშავს JavaScript სემპლინგს, შეამცირებს ხარჯს მობილურ მოწყობილობებთან დაკავშირებით გაშვების შემთხვევაში"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "ჩავლებით გადმოიტანეთ გამოკვლევის ფაილი ან URL აქ"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "მეორდება"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "ლოდინის დრო"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1}, {PH2}-ზე"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "დროები"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "ჩანაწერების კონფიგურაცია"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "ყველას ჩვენება"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "ამ ჩანაწერში ზოგიერთი კვალი დამალულია. ჩანაწერების კონფიგურაცია შეგიძლიათ ჩანაწერზე მარჯვენა ღილაკით დაწკაპუნებით."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "ასინქრონული"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket პროტოკოლი"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "შესრულების კვალის შენახვა "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "ანოტაციების ჩართვა"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "სკრიპტის კონტენტის ჩართვა"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "სკრიპტის წყაროს რუკების ჩართვა"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "შენახვა"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "კვალის შენახვა…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "გაფართოებული"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "ამ მოთხოვნისთვის ქუქი-ჩანაწერები დაიბლოკა Chrome დროშების ან ბრაუზერის კონფიგურაციის გამო. შეიტყვეთ მეტი პრობლემების არეში"
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "აუდიოკონტექსტი: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "უკუგამოძახების ბუფერის ზომა"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "უკუგამოძახების ინტერვალი"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "მიმდინარე დრო"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "გამავალი არხების მაქს. რაოდენობა"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(ჩანაწერები არ არის)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Web Audio API-ს გამოყენება არ არის აღმოჩენილი"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "მონიტორინგის დასაწყებად გახსენით გვერდი, რომელიც იყენებს Web Audio API-ს."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "რენდერის მოცულობა"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "სემპლინგის სიხშირე"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "მდგომარეობა"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "აუდიო"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "სხვა ხელსაწყოები"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "ბოლოში გადატანა"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "უჯრაში გადატანა"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "თავში გადატანა"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "ჩანართების მთავარ ზოლში გადატანა"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "პანელები"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "მონიშნული"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "ეს ახალი ფუნქციაა"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "ბრძანების გაშვება"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "ეს ახალი ფუნქციაა"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "შედეგები ვერ მოიძებნა"

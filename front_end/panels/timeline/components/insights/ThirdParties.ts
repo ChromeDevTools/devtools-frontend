@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -50,6 +50,10 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
           };
         },
   };
+
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
 
   override renderContent(): Lit.LitTemplate {
     if (!this.model) {

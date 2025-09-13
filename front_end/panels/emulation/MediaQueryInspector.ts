@@ -1,4 +1,4 @@
-// Copyright 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -355,24 +355,24 @@ export const enum Section {
 
 export class MediaQueryUIModel {
   private cssMedia: SDK.CSSMedia.CSSMedia;
-  private readonly minWidthExpressionInternal: SDK.CSSMedia.CSSMediaQueryExpression|null;
-  private readonly maxWidthExpressionInternal: SDK.CSSMedia.CSSMediaQueryExpression|null;
-  private readonly activeInternal: boolean;
-  private readonly sectionInternal: Section;
-  private rawLocationInternal?: SDK.CSSModel.CSSLocation|null;
+  readonly #minWidthExpression: SDK.CSSMedia.CSSMediaQueryExpression|null;
+  readonly #maxWidthExpression: SDK.CSSMedia.CSSMediaQueryExpression|null;
+  readonly #active: boolean;
+  readonly #section: Section;
+  #rawLocation?: SDK.CSSModel.CSSLocation|null;
   constructor(
       cssMedia: SDK.CSSMedia.CSSMedia, minWidthExpression: SDK.CSSMedia.CSSMediaQueryExpression|null,
       maxWidthExpression: SDK.CSSMedia.CSSMediaQueryExpression|null, active: boolean) {
     this.cssMedia = cssMedia;
-    this.minWidthExpressionInternal = minWidthExpression;
-    this.maxWidthExpressionInternal = maxWidthExpression;
-    this.activeInternal = active;
+    this.#minWidthExpression = minWidthExpression;
+    this.#maxWidthExpression = maxWidthExpression;
+    this.#active = active;
     if (maxWidthExpression && !minWidthExpression) {
-      this.sectionInternal = Section.MAX;
+      this.#section = Section.MAX;
     } else if (minWidthExpression && maxWidthExpression) {
-      this.sectionInternal = Section.MIN_MAX;
+      this.#section = Section.MIN_MAX;
     } else {
-      this.sectionInternal = Section.MIN;
+      this.#section = Section.MIN;
     }
   }
 
@@ -480,7 +480,7 @@ export class MediaQueryUIModel {
   }
 
   section(): Section {
-    return this.sectionInternal;
+    return this.#section;
   }
 
   mediaText(): string {
@@ -488,21 +488,21 @@ export class MediaQueryUIModel {
   }
 
   rawLocation(): SDK.CSSModel.CSSLocation|null {
-    if (!this.rawLocationInternal) {
-      this.rawLocationInternal = this.cssMedia.rawLocation();
+    if (!this.#rawLocation) {
+      this.#rawLocation = this.cssMedia.rawLocation();
     }
-    return this.rawLocationInternal;
+    return this.#rawLocation;
   }
 
   minWidthExpression(): SDK.CSSMedia.CSSMediaQueryExpression|null {
-    return this.minWidthExpressionInternal;
+    return this.#minWidthExpression;
   }
 
   maxWidthExpression(): SDK.CSSMedia.CSSMediaQueryExpression|null {
-    return this.maxWidthExpressionInternal;
+    return this.#maxWidthExpression;
   }
 
   active(): boolean {
-    return this.activeInternal;
+    return this.#active;
   }
 }

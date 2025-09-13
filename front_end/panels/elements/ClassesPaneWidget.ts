@@ -1,4 +1,4 @@
-// Copyright (c) 2015 The Chromium Authors. All rights reserved.
+// Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -93,7 +93,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     }
 
     const eventTarget = (event.target as HTMLElement);
-    let text: ''|string = (eventTarget.textContent as string);
+    let text = eventTarget.textContent;
     if (Platform.KeyboardUtilities.isEscKey(event)) {
       if (!Platform.StringUtilities.isWhitespace(text)) {
         event.consume(true);

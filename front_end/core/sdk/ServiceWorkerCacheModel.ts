@@ -1,4 +1,4 @@
-// Copyright 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -29,7 +29,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   readonly #storageAgent: ProtocolProxyApi.StorageApi;
   readonly #storageBucketModel: StorageBucketsModel;
 
-  readonly #cachesInternal = new Map<string, Cache>();
+  readonly #caches = new Map<string, Cache>();
   readonly #storageKeysTracked = new Set<string>();
   readonly #storageBucketsUpdated = new Set<Protocol.Storage.StorageBucket>();
   readonly #throttler = new Common.Throttler.Throttler(2000);
@@ -66,9 +66,9 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   }
 
   clearForStorageKey(storageKey: string): void {
-    for (const [opaqueId, cache] of this.#cachesInternal.entries()) {
+    for (const [opaqueId, cache] of this.#caches.entries()) {
       if (cache.storageKey === storageKey) {
-        this.#cachesInternal.delete((opaqueId));
+        this.#caches.delete((opaqueId));
         this.cacheRemoved((cache));
       }
     }
@@ -78,10 +78,10 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   }
 
   refreshCacheNames(): void {
-    for (const cache of this.#cachesInternal.values()) {
+    for (const cache of this.#caches.values()) {
       this.cacheRemoved(cache);
     }
-    this.#cachesInternal.clear();
+    this.#caches.clear();
     const storageBuckets = this.#storageBucketModel.getBuckets();
     for (const storageBucket of storageBuckets) {
       void this.loadCacheNames(storageBucket.bucket);
@@ -94,7 +94,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
       console.error(`ServiceWorkerCacheAgent error deleting cache ${cache.toString()}: ${response.getError()}`);
       return;
     }
-    this.#cachesInternal.delete(cache.cacheId);
+    this.#caches.delete(cache.cacheId);
     this.cacheRemoved(cache);
   }
 
@@ -120,14 +120,14 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   }
 
   caches(): Cache[] {
-    return [...this.#cachesInternal.values()];
+    return [...this.#caches.values()];
   }
 
   override dispose(): void {
-    for (const cache of this.#cachesInternal.values()) {
+    for (const cache of this.#caches.values()) {
       this.cacheRemoved(cache);
     }
-    this.#cachesInternal.clear();
+    this.#caches.clear();
     if (this.#enabled) {
       this.#storageBucketModel.removeEventListener(
           StorageBucketsModelEvents.BUCKET_ADDED, this.storageBucketAdded, this);
@@ -146,13 +146,13 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
 
   private removeStorageBucket(storageBucket: Protocol.Storage.StorageBucket): void {
     let storageKeyCount = 0;
-    for (const [opaqueId, cache] of this.#cachesInternal.entries()) {
+    for (const [opaqueId, cache] of this.#caches.entries()) {
       if (storageBucket.storageKey === cache.storageKey) {
         storageKeyCount++;
       }
       if (cache.inBucket(storageBucket)) {
         storageKeyCount--;
-        this.#cachesInternal.delete((opaqueId));
+        this.#caches.delete((opaqueId));
         this.cacheRemoved((cache));
       }
     }
@@ -175,7 +175,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
     function deleteAndSaveOldCaches(this: ServiceWorkerCacheModel, cache: Cache): void {
       if (cache.inBucket(storageBucket) && !updatingCachesIds.has(cache.cacheId)) {
         oldCaches.set(cache.cacheId, cache);
-        this.#cachesInternal.delete(cache.cacheId);
+        this.#caches.delete(cache.cacheId);
       }
     }
 
@@ -191,13 +191,13 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
       }
       const cache = new Cache(this, storageBucket, cacheJson.cacheName, cacheJson.cacheId);
       updatingCachesIds.add(cache.cacheId);
-      if (this.#cachesInternal.has(cache.cacheId)) {
+      if (this.#caches.has(cache.cacheId)) {
         continue;
       }
       newCaches.set(cache.cacheId, cache);
-      this.#cachesInternal.set(cache.cacheId, cache);
+      this.#caches.set(cache.cacheId, cache);
     }
-    this.#cachesInternal.forEach(deleteAndSaveOldCaches, this);
+    this.#caches.forEach(deleteAndSaveOldCaches, this);
     newCaches.forEach(this.cacheAdded, this);
     oldCaches.forEach(this.cacheRemoved, this);
   }

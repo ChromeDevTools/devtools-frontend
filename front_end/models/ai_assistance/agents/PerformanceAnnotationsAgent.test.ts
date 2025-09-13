@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -19,7 +19,7 @@ describeWithEnvironment('PerformanceAnnotationsAgent', () => {
         explanation: 'hello world\n',
       }]]),
     });
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const evalScriptEvent =
         allThreadEntriesInTrace(parsedTrace)
             .find(event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);

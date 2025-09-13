@@ -1,0 +1,50 @@
+# Copyright 2025 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/typescript/typescript.gni")
+
+devtools_module("trace_source_maps_resolver") {
+  sources = [ "SourceMapsResolver.ts" ]
+
+  deps = [
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../bindings:bundle",
+    "../source_map_scopes:bundle",
+    "../trace:bundle",
+    "../workspace:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "trace_source_maps_resolver.ts"
+
+  deps = [ ":trace_source_maps_resolver" ]
+
+  visibility = [
+    ":*",
+    "../../panels/timeline/*",
+    "../../testing/*",
+    "../trace:bundle",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "SourceMapsResolver.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../testing",
+    "../bindings:bundle",
+    "../trace:bundle",
+    "../workspace:bundle",
+  ]
+}

@@ -1,0 +1,37 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/typescript/typescript.gni")
+import("../visibility.gni")
+
+devtools_module("geometry") {
+  sources = [ "GeometryImpl.ts" ]
+
+  deps = [ "../../core/sdk:bundle" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "geometry.ts"
+
+  deps = [ ":geometry" ]
+
+  visibility = [
+    ":*",
+    "../*",
+    "../../panels/*",
+    "../../ui/*",
+  ]
+
+  visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "Geometry.test.ts" ]
+
+  deps = [ ":bundle" ]
+}

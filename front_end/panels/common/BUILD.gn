@@ -1,4 +1,4 @@
-# Copyright 2025 The Chromium Authors. All rights reserved.
+# Copyright 2025 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -13,8 +13,10 @@ generate_css("css_files") {
     "aiCodeCompletionDisclaimer.css",
     "aiCodeCompletionSummaryToolbar.css",
     "aiCodeCompletionTeaser.css",
+    "badgeNotification.css",
     "common.css",
     "freDialog.css",
+    "gdpSignUpDialog.css",
   ]
 }
 
@@ -23,7 +25,9 @@ devtools_module("common") {
     "AiCodeCompletionDisclaimer.ts",
     "AiCodeCompletionSummaryToolbar.ts",
     "AiCodeCompletionTeaser.ts",
+    "BadgeNotification.ts",
     "FreDialog.ts",
+    "GdpSignUpDialog.ts",
   ]
 
   deps = [
@@ -31,9 +35,13 @@ devtools_module("common") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../models/badges:bundle",
+    "../../models/geometry:bundle",
+    "../../services/window_bounds:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/components/spinners:bundle",
+    "../../ui/components/switch:bundle",
     "../../ui/components/tooltips:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
@@ -68,6 +76,8 @@ ts_library("unittests") {
     "AiCodeCompletionDisclaimer.test.ts",
     "AiCodeCompletionSummaryToolbar.test.ts",
     "AiCodeCompletionTeaser.test.ts",
+    "BadgeNotification.test.ts",
+    "GdpSignUpDialog.test.ts",
   ]
 
   deps = [

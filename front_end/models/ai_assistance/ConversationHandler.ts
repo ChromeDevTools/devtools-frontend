@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -8,10 +8,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Tracing from '../../services/tracing/tracing.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import type * as Trace from '../trace/trace.js';
+import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 
 import {
   type AiAgent,
@@ -22,7 +21,7 @@ import {
 } from './agents/AiAgent.js';
 import {FileAgent} from './agents/FileAgent.js';
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
-import {PerformanceAgent, PerformanceTraceContext} from './agents/PerformanceAgent.js';
+import {PerformanceAgent, type PerformanceTraceContext} from './agents/PerformanceAgent.js';
 import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
 import {
   Conversation,
@@ -41,13 +40,6 @@ interface ExternalNetworkRequestParameters {
   conversationType: ConversationType.NETWORK;
   prompt: string;
   requestUrl: string;
-}
-
-export interface ExternalPerformanceInsightsRequestParameters {
-  conversationType: ConversationType.PERFORMANCE_INSIGHT;
-  prompt: string;
-  insightTitle: string;
-  traceModel: Trace.TraceModel.Model;
 }
 
 export interface ExternalPerformanceAIConversationData {
@@ -191,7 +183,7 @@ export class ConversationHandler {
    */
   async handleExternalRequest(
       parameters: ExternalStylingRequestParameters|ExternalNetworkRequestParameters|
-      ExternalPerformanceInsightsRequestParameters|ExternalPerformanceRequestParameters,
+      ExternalPerformanceRequestParameters,
       ): Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
     try {
       Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
@@ -209,13 +201,6 @@ export class ConversationHandler {
         case ConversationType.STYLING: {
           return await this.#handleExternalStylingConversation(parameters.prompt, parameters.selector);
         }
-        case ConversationType.PERFORMANCE_INSIGHT:
-          if (!parameters.insightTitle) {
-            return this.#generateErrorResponse(
-                'The insightTitle parameter is required for debugging a Performance Insight.');
-          }
-          return await this.#handleExternalPerformanceInsightsConversation(
-              parameters.prompt, parameters.insightTitle, parameters.traceModel);
         case ConversationType.PERFORMANCE_FULL:
           return await this.#handleExternalPerformanceConversation(parameters.prompt, parameters.data);
         case ConversationType.NETWORK:
@@ -312,25 +297,6 @@ export class ConversationHandler {
     });
   }
 
-  async #handleExternalPerformanceInsightsConversation(
-      prompt: string, insightTitle: string,
-      traceModel: Trace.TraceModel.Model): Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
-    const insightsAgent = this.createAgent(ConversationType.PERFORMANCE_INSIGHT);
-    const focusOrError = await Tracing.ExternalRequests.getInsightAgentFocusToDebug(
-        traceModel,
-        insightTitle,
-    );
-    if ('error' in focusOrError) {
-      return this.#generateErrorResponse(focusOrError.error);
-    }
-    return this.#createAndDoExternalConversation({
-      conversationType: ConversationType.PERFORMANCE_INSIGHT,
-      aiAgent: insightsAgent,
-      prompt,
-      selected: new PerformanceTraceContext(focusOrError.focus),
-    });
-  }
-
   async #handleExternalPerformanceConversation(prompt: string, data: ExternalPerformanceAIConversationData):
       Promise<AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse>> {
     return this.#doExternalConversation({
@@ -348,11 +314,15 @@ export class ConversationHandler {
     if (!request) {
       return this.#generateErrorResponse(`Can't find request with the given selector ${requestUrl}`);
     }
+
+    const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+    calculator.updateBoundaries(request);
+
     return this.#createAndDoExternalConversation({
       conversationType: ConversationType.NETWORK,
       aiAgent: networkAgent,
       prompt,
-      selected: new RequestContext(request),
+      selected: new RequestContext(request, calculator),
     });
   }
 

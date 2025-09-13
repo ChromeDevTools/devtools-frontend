@@ -1,4 +1,4 @@
-// Copyright (c) 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -1393,6 +1393,11 @@ declare namespace ProtocolProxyApi {
     scrollableFlagUpdated(params: Protocol.DOM.ScrollableFlagUpdatedEvent): void;
 
     /**
+     * Fired when a node's starting styles changes.
+     */
+    affectedByStartingStylesFlagUpdated(params: Protocol.DOM.AffectedByStartingStylesFlagUpdatedEvent): void;
+
+    /**
      * Called when a pseudo element is removed from an element.
      */
     pseudoElementRemoved(params: Protocol.DOM.PseudoElementRemovedEvent): void;
@@ -2446,6 +2451,11 @@ declare namespace ProtocolProxyApi {
     invoke_getIPProtectionProxyStatus(): Promise<Protocol.Network.GetIPProtectionProxyStatusResponse>;
 
     /**
+     * Sets bypass IP Protection Proxy boolean.
+     */
+    invoke_setIPProtectionProxyBypassEnabled(params: Protocol.Network.SetIPProtectionProxyBypassEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
      */
     invoke_setAcceptedEncodings(params: Protocol.Network.SetAcceptedEncodingsRequest): Promise<Protocol.ProtocolResponseWithError>;
@@ -3074,7 +3084,8 @@ declare namespace ProtocolProxyApi {
      *
      * To generate bundle id for proxy mode:
      * 1. Generate 32 random bytes.
-     * 2. Add a specific suffix 0x00 at the end.
+     * 2. Add a specific suffix at the end following the documentation
+     *    https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix
      * 3. Encode the entire sequence using Base32 without padding.
      *
      * If Chrome is not in IWA dev

@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -377,6 +377,9 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       clearTimeout(this.#renderingTimeout);
       this.#renderingTimeout = undefined;
     }
+    this.#editor.dispatch({
+      effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(null),
+    });
   }
 }
 

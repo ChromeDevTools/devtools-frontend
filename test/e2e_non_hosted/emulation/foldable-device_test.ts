@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {assert} from 'chai';
@@ -49,7 +49,7 @@ describe('Test the Device Posture API support', () => {
     await selectNonDualScreenDevice(devToolsPage);
     // posture dropdown should not be found
     const dropdown = await getDevicePostureDropDown(devToolsPage);
-    const hidden = dropdown ? await dropdown.evaluate(x => (x as Element).classList.contains('hidden')) : true;
+    const hidden = dropdown ? await dropdown.evaluate(x => x.classList.contains('hidden')) : true;
     assert.isTrue(hidden);
   });
 });

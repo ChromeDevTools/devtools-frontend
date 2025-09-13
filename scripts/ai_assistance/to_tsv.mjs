@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -36,4 +36,3 @@ assert(responses.length === queries.length);
 
 await fs.writeFile(file.replace('.json', '-queries.tsv'), queries.join('\n'));
 await fs.writeFile(file.replace('.json', '-responses.tsv'), responses.join('\n'));
-

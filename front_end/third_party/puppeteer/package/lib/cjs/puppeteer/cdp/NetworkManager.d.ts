@@ -14,6 +14,14 @@ import { type NetworkManagerEvents } from '../common/NetworkManagerEvents.js';
  */
 export interface NetworkConditions {
     /**
+     * Emulates the offline mode.
+     *
+     * @remarks
+     *
+     * Shortcut for {@link Page.setOfflineMode}.
+     */
+    offline?: boolean;
+    /**
      * Download speed (bytes/s)
      */
     download: number;

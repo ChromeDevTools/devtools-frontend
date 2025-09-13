@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -22,8 +22,8 @@ function extractUrlsFromSummaries(summaries: Trace.Extras.ThirdParties.EntitySum
 describeWithEnvironment('ThirdParties', function() {
   describe('summarizeByThirdParty', function() {
     it('full trace bounds', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
-      const summaries = Trace.Extras.ThirdParties.summarizeByThirdParty(parsedTrace, parsedTrace.Meta.traceBounds);
+      const {data} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+      const summaries = Trace.Extras.ThirdParties.summarizeByThirdParty(data, data.Meta.traceBounds);
 
       const results = summaries.map(s => [s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, [
@@ -52,14 +52,14 @@ describeWithEnvironment('ThirdParties', function() {
     });
 
     it('partial trace bounds', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+      const {data} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
 
       // Font requests of load-simple.json.gz begin & end before/after this bounds.
       const min = Trace.Types.Timing.Micro(1634222300000);
       const max = Trace.Types.Timing.Micro(1634222320000);
       const bounds = {min, max, range: Trace.Types.Timing.Micro(max - min)};
 
-      const summaries = Trace.Extras.ThirdParties.summarizeByThirdParty(parsedTrace, bounds);
+      const summaries = Trace.Extras.ThirdParties.summarizeByThirdParty(data, bounds);
 
       const results = summaries.map(s => [s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, [
@@ -69,12 +69,12 @@ describeWithEnvironment('ThirdParties', function() {
     });
 
     it('no activity within trace bounds', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+      const {data} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
 
       const min = Trace.Types.Timing.Micro(1634230000000);
       const max = Trace.Types.Timing.Micro(1634231000000);
       const bounds = {min, max, range: Trace.Types.Timing.Micro(max - min)};
-      const summaries = Trace.Extras.ThirdParties.summarizeByThirdParty(parsedTrace, bounds);
+      const summaries = Trace.Extras.ThirdParties.summarizeByThirdParty(data, bounds);
 
       const results = summaries.map(s => [s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, []);
@@ -83,8 +83,8 @@ describeWithEnvironment('ThirdParties', function() {
 
   describe('summarizeByURL', function() {
     it('full trace bounds', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
-      const summaries = Trace.Extras.ThirdParties.summarizeByURL(parsedTrace, parsedTrace.Meta.traceBounds);
+      const {data} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+      const summaries = Trace.Extras.ThirdParties.summarizeByURL(data, data.Meta.traceBounds);
 
       const results = summaries.map(
           s => [s.url, s.request?.args.data.url === s.url, s.entity.name, s.mainThreadTime, s.transferSize]);

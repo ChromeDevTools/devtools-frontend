@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
@@ -27,9 +27,9 @@ export class GPUTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'GPU';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
+  #parsedTrace: Readonly<Trace.TraceModel.ParsedTrace>;
 
-  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.TraceModel.ParsedTrace) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#parsedTrace = parsedTrace;
   }
@@ -44,7 +44,7 @@ export class GPUTrackAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean|undefined): number {
-    const gpuEvents = this.#parsedTrace.GPU.mainGPUThreadTasks;
+    const gpuEvents = this.#parsedTrace.data.GPU.mainGPUThreadTasks;
     if (gpuEvents.length === 0) {
       return trackStartLevel;
     }

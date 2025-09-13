@@ -51,7 +51,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 import { Realm } from '../api/Realm.js';
-import { ARIAQueryHandler } from '../cdp/AriaQueryHandler.js';
+import { ARIAQueryHandler } from '../common/AriaQueryHandler.js';
 import { LazyArg } from '../common/LazyArg.js';
 import { scriptInjector } from '../common/ScriptInjector.js';
 import { debugError, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, PuppeteerURL, SOURCE_URL_REGEX, } from '../common/util.js';

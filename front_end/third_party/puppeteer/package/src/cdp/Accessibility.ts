@@ -259,9 +259,7 @@ export class Accessibility {
 
     const interestingNodes = new Set<AXNode>();
     this.collectInterestingNodes(interestingNodes, defaultRoot, false);
-    if (!interestingNodes.has(needle)) {
-      return null;
-    }
+
     return this.serializeTree(needle, interestingNodes)[0] ?? null;
   }
 
@@ -426,7 +424,7 @@ class AXNode {
     if (this.#hasFocusableChild()) {
       return false;
     }
-    if (this.#focusable && this.#name) {
+    if (this.#focusable && this.#name && this.#name !== 'Document') {
       return true;
     }
     if (this.#role === 'heading' && this.#name) {
@@ -508,9 +506,15 @@ class AXNode {
         if (!this.payload.backendDOMNodeId) {
           return null;
         }
-        return (await this.#realm.adoptBackendNode(
+        using handle = await this.#realm.adoptBackendNode(
           this.payload.backendDOMNodeId,
-        )) as ElementHandle<Element>;
+        );
+
+        // Since Text nodes are not elements, we want to
+        // return a handle to the parent element for them.
+        return (await handle.evaluateHandle(node => {
+          return node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+        })) as ElementHandle<Element>;
       },
     };
 
@@ -569,7 +573,7 @@ class AXNode {
 
     for (const booleanProperty of booleanProperties) {
       // RootWebArea's treat focus differently than other nodes. They report whether
-      // their frame  has focus, not whether focus is specifically on the root
+      // their frame has focus, not whether focus is specifically on the root
       // node.
       if (booleanProperty === 'focused' && this.#role === 'RootWebArea') {
         continue;

@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -555,7 +555,7 @@ export async function finalize(): Promise<void> {
 
     // Establish initiator relationships
     const initiatorUrl = networkEvent.args.data.initiator?.url ||
-        Helpers.Trace.getZeroIndexedStackTraceInEventPayload(networkEvent)?.at(0)?.url;
+        Helpers.Trace.getStackTraceTopCallFrameInEventPayload(networkEvent)?.url;
     if (initiatorUrl) {
       const events = networkRequestEventByInitiatorUrl.get(initiatorUrl) ?? [];
       events.push(networkEvent);

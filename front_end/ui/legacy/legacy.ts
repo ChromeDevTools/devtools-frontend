@@ -1,4 +1,4 @@
-// Copyright 2019 The Chromium Authors. All rights reserved.
+// Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -16,7 +16,6 @@ import * as FilterBar from './FilterBar.js';
 import * as FilterSuggestionBuilder from './FilterSuggestionBuilder.js';
 import * as ForwardedInputEventHandler from './ForwardedInputEventHandler.js';
 import * as Fragment from './Fragment.js';
-import * as Geometry from './Geometry.js';
 import * as GlassPane from './GlassPane.js';
 import * as Infobar from './Infobar.js';
 import * as InplaceEditor from './InplaceEditor.js';
@@ -71,7 +70,6 @@ export {
   FilterSuggestionBuilder,
   ForwardedInputEventHandler,
   Fragment,
-  Geometry,
   GlassPane,
   Infobar,
   InplaceEditor,

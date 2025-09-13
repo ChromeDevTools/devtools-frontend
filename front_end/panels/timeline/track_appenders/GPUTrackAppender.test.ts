@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -11,25 +11,25 @@ import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
     entryData: Trace.Types.Events.Event[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     ): Timeline.GPUTrackAppender.GPUTrackAppender {
-  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+  const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
       flameChartData, parsedTrace, entryData, entryTypeByLevel, entityMapper);
   return compatibilityTracksAppender.gpuTrackAppender();
 }
 
 describeWithEnvironment('GPUTrackAppender', function() {
-  let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  let parsedTrace: Trace.TraceModel.ParsedTrace;
   let gpuTrackAppender: Timeline.GPUTrackAppender.GPUTrackAppender;
   let entryData: Trace.Types.Events.Event[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 
   beforeEach(async function() {
-    ({parsedTrace} = await TraceLoader.traceEngine(this, 'threejs-gpu.json.gz'));
+    parsedTrace = await TraceLoader.traceEngine(this, 'threejs-gpu.json.gz');
     gpuTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
     gpuTrackAppender.appendTrackAtLevel(0);
   });
@@ -56,7 +56,7 @@ describeWithEnvironment('GPUTrackAppender', function() {
     });
 
     it('adds start times correctly', () => {
-      const gpuEvents = parsedTrace.GPU.mainGPUThreadTasks;
+      const gpuEvents = parsedTrace.data.GPU.mainGPUThreadTasks;
       for (const event of gpuEvents) {
         const index = entryData.indexOf(event);
         assert.exists(index);
@@ -65,7 +65,7 @@ describeWithEnvironment('GPUTrackAppender', function() {
     });
 
     it('adds total times correctly', () => {
-      const gpuEvents = parsedTrace.GPU.mainGPUThreadTasks;
+      const gpuEvents = parsedTrace.data.GPU.mainGPUThreadTasks;
       for (const event of gpuEvents) {
         const index = entryData.indexOf(event);
         assert.exists(index);
@@ -107,7 +107,7 @@ describeWithEnvironment('GPUTrackAppender', function() {
       ThemeSupport.ThemeSupport.clearThemeCache();
     });
     it('returns the correct color and title for GPU tasks', () => {
-      const gpuEvents = parsedTrace.GPU.mainGPUThreadTasks;
+      const gpuEvents = parsedTrace.data.GPU.mainGPUThreadTasks;
       for (const event of gpuEvents) {
         assert.strictEqual(gpuTrackAppender.colorForEvent(event), 'rgb(6 6 6)');
       }

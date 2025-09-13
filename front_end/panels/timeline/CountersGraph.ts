@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2012 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2012 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
@@ -163,23 +137,23 @@ export class CountersGraph extends UI.Widget.VBox {
     if (event.updateType === 'RESET' || event.updateType === 'VISIBLE_WINDOW') {
       const newWindow = event.state.milli.timelineTraceWindow;
       this.calculator.setWindow(newWindow.min, newWindow.max);
-      this.#scheduleRefresh();
+      this.requestUpdate();
     }
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, events: Trace.Types.Events.Event[]|null): void {
+  setModel(parsedTrace: Trace.TraceModel.ParsedTrace|null, events: Trace.Types.Events.Event[]|null): void {
     this.#events = events;
     if (!events || !parsedTrace) {
       return;
     }
-    const minTime = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds).min;
+    const minTime = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).min;
     this.calculator.setZeroTime(minTime);
 
     for (let i = 0; i < this.counters.length; ++i) {
       this.counters[i].reset();
       this.counterUI[i].reset();
     }
-    this.#scheduleRefresh();
+    this.requestUpdate();
     let counterEventsFound = 0;
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
@@ -234,8 +208,8 @@ export class CountersGraph extends UI.Widget.VBox {
     this.refresh();
   }
 
-  #scheduleRefresh(): void {
-    UI.UIUtils.invokeOnceAfterBatchUpdate(this, this.refresh);
+  override performUpdate(): Promise<void>|void {
+    this.refresh();
   }
 
   draw(): void {
@@ -588,29 +562,29 @@ export class CounterUI {
   }
 }
 
-export class Calculator implements PerfUI.TimelineGrid.Calculator {
-  private minimumBoundaryInternal: number;
-  private maximumBoundaryInternal: number;
+export class Calculator implements Calculator {
+  #minimumBoundary: number;
+  #maximumBoundary: number;
   private workingArea: number;
-  private zeroTimeInternal: number;
+  #zeroTime: number;
 
   constructor() {
-    this.minimumBoundaryInternal = 0;
-    this.maximumBoundaryInternal = 0;
+    this.#minimumBoundary = 0;
+    this.#maximumBoundary = 0;
     this.workingArea = 0;
-    this.zeroTimeInternal = 0;
+    this.#zeroTime = 0;
   }
   setZeroTime(time: number): void {
-    this.zeroTimeInternal = time;
+    this.#zeroTime = time;
   }
 
   computePosition(time: number): number {
-    return (time - this.minimumBoundaryInternal) / this.boundarySpan() * this.workingArea;
+    return (time - this.#minimumBoundary) / this.boundarySpan() * this.workingArea;
   }
 
   setWindow(minimumBoundary: number, maximumBoundary: number): void {
-    this.minimumBoundaryInternal = minimumBoundary;
-    this.maximumBoundaryInternal = maximumBoundary;
+    this.#minimumBoundary = minimumBoundary;
+    this.#maximumBoundary = maximumBoundary;
   }
 
   setDisplayWidth(clientWidth: number): void {
@@ -622,18 +596,18 @@ export class Calculator implements PerfUI.TimelineGrid.Calculator {
   }
 
   maximumBoundary(): number {
-    return this.maximumBoundaryInternal;
+    return this.#maximumBoundary;
   }
 
   minimumBoundary(): number {
-    return this.minimumBoundaryInternal;
+    return this.#minimumBoundary;
   }
 
   zeroTime(): number {
-    return this.zeroTimeInternal;
+    return this.#zeroTime;
   }
 
   boundarySpan(): number {
-    return this.maximumBoundaryInternal - this.minimumBoundaryInternal;
+    return this.#maximumBoundary - this.#minimumBoundary;
   }
 }

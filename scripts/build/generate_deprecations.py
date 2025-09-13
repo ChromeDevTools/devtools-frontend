@@ -1,6 +1,6 @@
 #!/usr/bin/env vpython3
 #
-# Copyright 2023 The Chromium Authors. All rights reserved.
+# Copyright 2023 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -69,8 +69,7 @@ def deprecations_from_file(file_name):
 meta, ui_strings = deprecations_from_file(READ_LOCATION)
 now = datetime.datetime.now()
 with open(GENERATED_LOCATION, mode="w+") as f:
-    f.write("// Copyright %d The Chromium Authors. All rights reserved.\n" %
-            now.year)
+    f.write("// Copyright %d The Chromium Authors\n" % now.year)
     f.write(
         "// Use of this source code is governed by a BSD-style license that can be\n"
     )

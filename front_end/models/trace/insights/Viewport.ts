@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -52,9 +52,12 @@ function finalize(partialModel: PartialInsightModel<ViewportInsightModel>): View
   };
 }
 
-export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ViewportInsightModel {
-  const viewportEvent = parsedTrace.UserInteractions.parseMetaViewportEvents.find(event => {
+export function isViewportInsight(model: InsightModel): model is ViewportInsightModel {
+  return model.insightKey === InsightKeys.VIEWPORT;
+}
+
+export function generateInsight(data: Handlers.Types.HandlerData, context: InsightSetContext): ViewportInsightModel {
+  const viewportEvent = data.UserInteractions.parseMetaViewportEvents.find(event => {
     if (event.args.data.frame !== context.frameId) {
       return false;
     }
@@ -62,7 +65,7 @@ export function generateInsight(
     return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });
 
-  const compositorEvents = parsedTrace.UserInteractions.beginCommitCompositorFrameEvents.filter(event => {
+  const compositorEvents = data.UserInteractions.beginCommitCompositorFrameEvents.filter(event => {
     if (event.args.frame !== context.frameId) {
       return false;
     }
@@ -88,7 +91,7 @@ export function generateInsight(
   for (const event of compositorEvents) {
     if (!event.args.is_mobile_optimized) {
       // Grab all the pointer events with at least 50ms of input delay.
-      const longPointerInteractions = [...parsedTrace.UserInteractions.interactionsOverThreshold.values()].filter(
+      const longPointerInteractions = [...data.UserInteractions.interactionsOverThreshold.values()].filter(
           interaction => Handlers.ModelHandlers.UserInteractions.categoryOfInteraction(interaction) === 'POINTER' &&
               interaction.inputDelay >= 50_000);
 

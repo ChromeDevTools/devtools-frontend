@@ -1,4 +1,4 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
+// Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -82,11 +82,11 @@ const UIStrings = {
   /**
    * @description Text to indicate Save-Data override is set to Enabled.
    */
-  saveDataOn: '\'Save-Data\': force on',
+  saveDataOn: '\'Save-Data\': on',
   /**
    * @description Text to indicate Save-Data override is set to Disabled.
    */
-  saveDataOff: '\'Save-Data\': force off',
+  saveDataOff: '\'Save-Data\': off',
   /**
    * @description Tooltip text for an select element that overrides navigator.connection.saveData on the page
    */

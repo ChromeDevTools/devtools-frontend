@@ -1,4 +1,4 @@
-// Copyright (c) 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -83,6 +83,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
     this.#rehydratingWindow.addEventListener('message', this.#onReceiveHostWindowPayloadBound);
     if (!this.#rehydratingWindow.opener) {
       this.#onConnectionLost(i18nString(UIStrings.noHostWindow));
+      return;
     }
     this.#rehydratingWindow.opener.postMessage({type: 'REHYDRATING_WINDOW_READY'});
   }

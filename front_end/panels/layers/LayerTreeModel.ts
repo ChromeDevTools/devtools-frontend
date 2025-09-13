@@ -1,43 +1,17 @@
-/*
- * Copyright (C) 2013 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2013 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 
 export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
   readonly layerTreeAgent: ProtocolProxyApi.LayerTreeApi;
   readonly paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel;
-  private layerTreeInternal: SDK.LayerTreeBase.LayerTreeBase|null;
+  #layerTree: SDK.LayerTreeBase.LayerTreeBase|null;
   private readonly throttler: Common.Throttler.Throttler;
   private enabled?: boolean;
   private lastPaintRectByLayerId?: Map<string, Protocol.DOM.Rect>;
@@ -53,7 +27,7 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
       resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     }
-    this.layerTreeInternal = null;
+    this.#layerTree = null;
     this.throttler = new Common.Throttler.Throttler(20);
   }
 
@@ -75,14 +49,14 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
   private async forceEnable(): Promise<void> {
     this.lastPaintRectByLayerId = new Map();
-    if (!this.layerTreeInternal) {
-      this.layerTreeInternal = new AgentLayerTree(this);
+    if (!this.#layerTree) {
+      this.#layerTree = new AgentLayerTree(this);
     }
     await this.layerTreeAgent.invoke_enable();
   }
 
   layerTree(): SDK.LayerTreeBase.LayerTreeBase|null {
-    return this.layerTreeInternal;
+    return this.#layerTree;
   }
 
   async layerTreeChanged(layers: Protocol.LayerTree.Layer[]|null): Promise<void> {
@@ -93,7 +67,7 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   private async innerSetLayers(layers: Protocol.LayerTree.Layer[]|null): Promise<void> {
-    const layerTree = this.layerTreeInternal as AgentLayerTree;
+    const layerTree = this.#layerTree as AgentLayerTree;
 
     await layerTree.setLayers(layers);
 
@@ -118,7 +92,7 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
     if (!this.enabled) {
       return;
     }
-    const layerTree = this.layerTreeInternal as AgentLayerTree;
+    const layerTree = this.#layerTree as AgentLayerTree;
     const layer = layerTree.layerById(layerId) as AgentLayer;
     if (!layer) {
       if (!this.lastPaintRectByLayerId) {
@@ -133,7 +107,7 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   private onPrimaryPageChanged(): void {
-    this.layerTreeInternal = null;
+    this.#layerTree = null;
     if (this.enabled) {
       void this.forceEnable();
     }
@@ -227,16 +201,17 @@ export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
 }
 
 export class AgentLayer implements SDK.LayerTreeBase.Layer {
+  // Used in Web tests
   private scrollRectsInternal!: Protocol.LayerTree.ScrollRect[];
-  private quadInternal!: number[];
-  private childrenInternal!: AgentLayer[];
-  private parentInternal!: AgentLayer|null;
+  #quad!: number[];
+  #children!: AgentLayer[];
+  #parent!: AgentLayer|null;
   private layerPayload!: Protocol.LayerTree.Layer;
   private layerTreeModel: LayerTreeModel;
-  private nodeInternal?: SDK.DOMModel.DOMNode|null;
-  lastPaintRectInternal?: Protocol.DOM.Rect;
-  private paintCountInternal?: number;
-  private stickyPositionConstraintInternal?: SDK.LayerTreeBase.StickyPositionConstraint|null;
+  #node?: SDK.DOMModel.DOMNode|null;
+  #lastPaintRect?: Protocol.DOM.Rect;
+  #paintCount?: number;
+  #stickyPositionConstraint?: SDK.LayerTreeBase.StickyPositionConstraint|null;
   constructor(layerTreeModel: LayerTreeModel, layerPayload: Protocol.LayerTree.Layer) {
     this.layerTreeModel = layerTreeModel;
     this.reset(layerPayload);
@@ -251,7 +226,7 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
   }
 
   parent(): SDK.LayerTreeBase.Layer|null {
-    return this.parentInternal;
+    return this.#parent;
   }
 
   isRoot(): boolean {
@@ -259,31 +234,31 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
   }
 
   children(): SDK.LayerTreeBase.Layer[] {
-    return this.childrenInternal;
+    return this.#children;
   }
 
   addChild(childParam: SDK.LayerTreeBase.Layer): void {
     const child = childParam as AgentLayer;
-    if (child.parentInternal) {
+    if (child.#parent) {
       console.assert(false, 'Child already has a parent');
     }
-    this.childrenInternal.push(child);
-    child.parentInternal = this;
+    this.#children.push(child);
+    child.#parent = this;
   }
 
   setNode(node: SDK.DOMModel.DOMNode|null): void {
-    this.nodeInternal = node;
+    this.#node = node;
   }
 
   node(): SDK.DOMModel.DOMNode|null {
-    return this.nodeInternal || null;
+    return this.#node || null;
   }
 
   nodeForSelfOrAncestor(): SDK.DOMModel.DOMNode|null {
     let layer: (AgentLayer|null)|this = this;
-    for (; layer; layer = layer.parentInternal) {
-      if (layer.nodeInternal) {
-        return layer.nodeInternal;
+    for (; layer; layer = layer.#parent) {
+      if (layer.#node) {
+        return layer.#node;
       }
     }
     return null;
@@ -310,7 +285,7 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
   }
 
   quad(): number[] {
-    return this.quadInternal;
+    return this.#quad;
   }
 
   anchorPoint(): number[] {
@@ -326,15 +301,15 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
   }
 
   paintCount(): number {
-    return this.paintCountInternal || this.layerPayload.paintCount;
+    return this.#paintCount || this.layerPayload.paintCount;
   }
 
   lastPaintRect(): Protocol.DOM.Rect|null {
-    return this.lastPaintRectInternal || null;
+    return this.#lastPaintRect || null;
   }
 
   setLastPaintRect(lastPaintRect?: Protocol.DOM.Rect): void {
-    this.lastPaintRectInternal = lastPaintRect;
+    this.#lastPaintRect = lastPaintRect;
   }
 
   scrollRects(): Protocol.LayerTree.ScrollRect[] {
@@ -342,7 +317,7 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
   }
 
   stickyPositionConstraint(): SDK.LayerTreeBase.StickyPositionConstraint|null {
-    return this.stickyPositionConstraintInternal || null;
+    return this.#stickyPositionConstraint || null;
   }
 
   async requestCompositingReasons(): Promise<string[]> {
@@ -375,18 +350,18 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
   }
 
   didPaint(rect: Protocol.DOM.Rect): void {
-    this.lastPaintRectInternal = rect;
-    this.paintCountInternal = this.paintCount() + 1;
+    this.#lastPaintRect = rect;
+    this.#paintCount = this.paintCount() + 1;
   }
 
   reset(layerPayload: Protocol.LayerTree.Layer): void {
-    this.nodeInternal = null;
-    this.childrenInternal = [];
-    this.parentInternal = null;
-    this.paintCountInternal = 0;
+    this.#node = null;
+    this.#children = [];
+    this.#parent = null;
+    this.#paintCount = 0;
     this.layerPayload = layerPayload;
     this.scrollRectsInternal = this.layerPayload.scrollRects || [];
-    this.stickyPositionConstraintInternal = this.layerPayload.stickyPositionConstraint ?
+    this.#stickyPositionConstraint = this.layerPayload.stickyPositionConstraint ?
         new SDK.LayerTreeBase.StickyPositionConstraint(
             this.layerTreeModel.layerTree(), this.layerPayload.stickyPositionConstraint) :
         null;
@@ -405,10 +380,10 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
 
     if (this.layerPayload.transform) {
       const transformMatrix = this.matrixFromArray(this.layerPayload.transform);
-      const anchorVector = new UI.Geometry.Vector(
+      const anchorVector = new Geometry.Vector(
           this.layerPayload.width * this.anchorPoint()[0], this.layerPayload.height * this.anchorPoint()[1],
           this.anchorPoint()[2]);
-      const anchorPoint = UI.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
+      const anchorPoint = Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
       const anchorMatrix = new WebKitCSSMatrix().translate(-anchorPoint.x, -anchorPoint.y, -anchorPoint.z);
       matrix = anchorMatrix.inverse().multiply(transformMatrix.multiply(anchorMatrix.multiply(matrix)));
     }
@@ -423,19 +398,19 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
 
   calculateQuad(parentTransform: DOMMatrix): void {
     const matrix = this.calculateTransformToViewport(parentTransform);
-    this.quadInternal = [];
+    this.#quad = [];
     const vertices = this.createVertexArrayForRect(this.layerPayload.width, this.layerPayload.height);
     for (let i = 0; i < 4; ++i) {
-      const point = UI.Geometry.multiplyVectorByMatrixAndNormalize(
-          new UI.Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
-      this.quadInternal.push(point.x, point.y);
+      const point = Geometry.multiplyVectorByMatrixAndNormalize(
+          new Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
+      this.#quad.push(point.x, point.y);
     }
 
     function calculateQuadForLayer(layer: AgentLayer): void {
       layer.calculateQuad(matrix);
     }
 
-    this.childrenInternal.forEach(calculateQuadForLayer);
+    this.#children.forEach(calculateQuadForLayer);
   }
 }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -674,48 +674,48 @@ function locationCompare(a: string, b: string): number {
 }
 
 export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCoverageInfo.EventTypes> {
-  private readonly urlInternal: Platform.DevToolsPath.UrlString;
+  readonly #url: Platform.DevToolsPath.UrlString;
   private coverageInfoByLocation: Map<string, CoverageInfo>;
-  private sizeInternal: number;
-  private usedSizeInternal: number;
-  private typeInternal!: CoverageType;
-  private isContentScriptInternal: boolean;
+  #size: number;
+  #usedSize: number;
+  #type!: CoverageType;
+  #isContentScript: boolean;
   sourcesURLCoverageInfo = new Map<Platform.DevToolsPath.UrlString, SourceURLCoverageInfo>();
   sourceSegments: SourceSegment[]|undefined;
 
   constructor(url: Platform.DevToolsPath.UrlString) {
     super();
 
-    this.urlInternal = url;
+    this.#url = url;
     this.coverageInfoByLocation = new Map();
-    this.sizeInternal = 0;
-    this.usedSizeInternal = 0;
-    this.isContentScriptInternal = false;
+    this.#size = 0;
+    this.#usedSize = 0;
+    this.#isContentScript = false;
   }
 
   url(): Platform.DevToolsPath.UrlString {
-    return this.urlInternal;
+    return this.#url;
   }
 
   type(): CoverageType {
-    return this.typeInternal;
+    return this.#type;
   }
 
   size(): number {
-    return this.sizeInternal;
+    return this.#size;
   }
 
   usedSize(): number {
-    return this.usedSizeInternal;
+    return this.#usedSize;
   }
 
   unusedSize(): number {
-    return this.sizeInternal - this.usedSizeInternal;
+    return this.#size - this.#usedSize;
   }
 
   usedPercentage(): number {
     // Per convention, empty files are reported as 100 % uncovered
-    if (this.sizeInternal === 0) {
+    if (this.#size === 0) {
       return 0;
     }
     if (!this.unusedSize() || !this.size()) {
@@ -726,14 +726,14 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
 
   unusedPercentage(): number {
     // Per convention, empty files are reported as 100 % uncovered
-    if (this.sizeInternal === 0) {
+    if (this.#size === 0) {
       return 1;
     }
     return this.unusedSize() / this.size();
   }
 
   isContentScript(): boolean {
-    return this.isContentScriptInternal;
+    return this.#isContentScript;
   }
 
   entries(): IterableIterator<CoverageInfo> {
@@ -752,8 +752,8 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
   }
 
   addToSizes(usedSize: number, size: number): void {
-    this.usedSizeInternal += usedSize;
-    this.sizeInternal += size;
+    this.#usedSize += usedSize;
+    this.#size += size;
 
     if (usedSize !== 0 || size !== 0) {
       this.dispatchEventToListeners(URLCoverageInfo.Events.SizesChanged);
@@ -772,9 +772,9 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
 
     if ((type & CoverageType.JAVA_SCRIPT) && !this.coverageInfoByLocation.size &&
         contentProvider instanceof SDK.Script.Script) {
-      this.isContentScriptInternal = (contentProvider).isContentScript();
+      this.#isContentScript = (contentProvider).isContentScript();
     }
-    this.typeInternal |= type;
+    this.#type |= type;
 
     if (entry) {
       entry.addCoverageType(type);
@@ -783,7 +783,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
 
     if ((type & CoverageType.JAVA_SCRIPT) && !this.coverageInfoByLocation.size &&
         contentProvider instanceof SDK.Script.Script) {
-      this.isContentScriptInternal = (contentProvider).isContentScript();
+      this.#isContentScript = (contentProvider).isContentScript();
     }
 
     entry = new CoverageInfo(contentProvider, contentLength, lineOffset, columnOffset, type, this);

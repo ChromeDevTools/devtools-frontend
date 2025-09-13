@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type Protocol from 'devtools-protocol';
+import * as Bidi from 'webdriver-bidi-protocol';
 
 import {firstValueFrom, from, raceWith} from '../../third_party/rxjs/rxjs.js';
 import type {CDPSession} from '../api/CDPSession.js';
@@ -55,7 +55,6 @@ import {assert} from '../util/assert.js';
 import {bubble} from '../util/decorators.js';
 import {Deferred} from '../util/Deferred.js';
 import {stringToTypedArray} from '../util/encoding.js';
-import {isErrorLike} from '../util/ErrorLike.js';
 
 import type {BidiBrowser} from './Browser.js';
 import type {BidiBrowserContext} from './BrowserContext.js';
@@ -235,6 +234,13 @@ export class BidiPage extends Page {
 
   override mainFrame(): BidiFrame {
     return this.#frame;
+  }
+
+  override resize(_params: {
+    contentWidth: number;
+    contentHeight: number;
+  }): Promise<void> {
+    throw new Error('Method not implemented for WebDriver BiDi yet.');
   }
 
   async focusedFrame(): Promise<BidiFrame> {
@@ -763,7 +769,7 @@ export class BidiPage extends Page {
     }
     if (!this.#emulatedNetworkConditions) {
       this.#emulatedNetworkConditions = {
-        offline: false,
+        offline: networkConditions?.offline ?? false,
         upload: -1,
         download: -1,
         latency: 0,
@@ -778,6 +784,8 @@ export class BidiPage extends Page {
     this.#emulatedNetworkConditions.latency = networkConditions
       ? networkConditions.latency
       : 0;
+    this.#emulatedNetworkConditions.offline =
+      networkConditions?.offline ?? false;
     return await this.#applyNetworkConditions();
   }
 
@@ -926,11 +934,6 @@ export class BidiPage extends Page {
       return response;
     } catch (error) {
       controller.abort();
-      if (isErrorLike(error)) {
-        if (error.message.includes('no such history entry')) {
-          return null;
-        }
-      }
       throw error;
     }
   }

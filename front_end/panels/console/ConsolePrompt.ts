@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -48,7 +48,7 @@ const AI_CODE_COMPLETION_CHARACTER_LIMIT = 20_000;
 export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
     UI.Widget.Widget) {
   private addCompletionsFromHistory: boolean;
-  private historyInternal: TextEditor.AutocompleteHistory.AutocompleteHistory;
+  #history: TextEditor.AutocompleteHistory.AutocompleteHistory;
   private initialText: string;
   private editor: TextEditor.TextEditor.TextEditor;
   private readonly eagerPreviewElement: HTMLDivElement;
@@ -71,6 +71,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #javaScriptCompletionCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
 
   private aidaClient?: Host.AidaClient.AidaClient;
+  private aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
+  private boundOnAidaAvailabilityChange?: () => Promise<void>;
   private aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
   private teaser?: PanelCommon.AiCodeCompletionTeaser;
   private placeholderCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
@@ -107,7 +109,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     });
     this.registerRequiredCSS(consolePromptStyles);
     this.addCompletionsFromHistory = true;
-    this.historyInternal = new TextEditor.AutocompleteHistory.AutocompleteHistory(
+    this.#history = new TextEditor.AutocompleteHistory.AutocompleteHistory(
         Common.Settings.Settings.instance().createLocalSetting('console-history', []));
 
     this.initialText = '';
@@ -184,7 +186,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     });
     editorContainerElement.appendChild(this.editor);
-    this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.historyInternal);
+    this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
 
     if (this.hasFocus()) {
       this.focus();
@@ -199,6 +201,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (this.isAiCodeCompletionEnabled()) {
       this.aiCodeCompletionSetting.addChangeListener(this.onAiCodeCompletionSettingChanged.bind(this));
       this.onAiCodeCompletionSettingChanged();
+      this.boundOnAidaAvailabilityChange = this.onAidaAvailabilityChange.bind(this);
+      Host.AidaClient.HostConfigTracker.instance().addEventListener(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.boundOnAidaAvailabilityChange);
+      void this.onAidaAvailabilityChange();
     }
   }
 
@@ -238,6 +244,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const cursor = selection.main.head;
     const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     let prefix = query.substring(0, cursor);
+    if (prefix.trim().length === 0) {
+      return;
+    }
     if (currentExecutionContext) {
       const consoleModel = currentExecutionContext.target().model(SDK.ConsoleModel.ConsoleModel);
       if (consoleModel) {
@@ -294,10 +303,14 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.highlightingNode = false;
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
+    if (this.boundOnAidaAvailabilityChange) {
+      Host.AidaClient.HostConfigTracker.instance().removeEventListener(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.boundOnAidaAvailabilityChange);
+    }
   }
 
   history(): TextEditor.AutocompleteHistory.AutocompleteHistory {
-    return this.historyInternal;
+    return this.#history;
   }
 
   clearAutocomplete(): void {
@@ -505,6 +518,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   // TODO(b/435654172): Refactor and move aiCodeCompletion model one level up to avoid
   // defining additional listeners and events.
   private setAiCodeCompletion(): void {
+    if (this.aiCodeCompletion) {
+      return;
+    }
     if (!this.aidaClient) {
       this.aidaClient = new Host.AidaClient.AidaClient();
     }
@@ -513,7 +529,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.teaser = undefined;
     }
     this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
-        {aidaClient: this.aidaClient}, this.editor, AiCodeCompletion.AiCodeCompletion.Panel.CONSOLE);
+        {aidaClient: this.aidaClient}, this.editor, AiCodeCompletion.AiCodeCompletion.Panel.CONSOLE, ['\n\n']);
     this.aiCodeCompletion.addEventListener(AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED, event => {
       this.aiCodeCompletionCitations = event.data.citations;
       this.dispatchEventToListeners(Events.AI_CODE_COMPLETION_RESPONSE_RECEIVED, event.data);
@@ -529,6 +545,19 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     } else if (this.aiCodeCompletion) {
       this.aiCodeCompletion.remove();
       this.aiCodeCompletion = undefined;
+    }
+  }
+
+  private async onAidaAvailabilityChange(): Promise<void> {
+    const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+    if (currentAidaAvailability !== this.aidaAvailability) {
+      this.aidaAvailability = currentAidaAvailability;
+      if (this.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+        this.onAiCodeCompletionSettingChanged();
+      } else if (this.aiCodeCompletion) {
+        this.aiCodeCompletion.remove();
+        this.aiCodeCompletion = undefined;
+      }
     }
   }
 
@@ -553,7 +582,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private isAiCodeCompletionEnabled(): boolean {
-    return Boolean(Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+    return Boolean(
+        Root.Runtime.hostConfig.aidaAvailability?.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
   }
 
   private editorSetForTest(): void {

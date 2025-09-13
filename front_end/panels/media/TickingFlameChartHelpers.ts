@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -13,39 +13,39 @@ export function formatMillisecondsToSeconds(ms: number, decimalPlaces: number): 
  * kept in a separate file for unit testing.
  */
 export class Bounds {
-  private minInternal: number;
-  private maxInternal: number;
-  private lowInternal: number;
-  private highInternal: number;
+  #min: number;
+  #max: number;
+  #low: number;
+  #high: number;
   private readonly maxRange: number;
   private readonly minRange: number;
   constructor(initialLow: number, initialHigh: number, maxRange: number, minRange: number) {
-    this.minInternal = initialLow;
-    this.maxInternal = initialHigh;
-    this.lowInternal = this.minInternal;
-    this.highInternal = this.maxInternal;
+    this.#min = initialLow;
+    this.#max = initialHigh;
+    this.#low = this.#min;
+    this.#high = this.#max;
     this.maxRange = maxRange;
     this.minRange = minRange;
   }
 
   get low(): number {
-    return this.lowInternal;
+    return this.#low;
   }
 
   get high(): number {
-    return this.highInternal;
+    return this.#high;
   }
 
   get min(): number {
-    return this.minInternal;
+    return this.#min;
   }
 
   get max(): number {
-    return this.maxInternal;
+    return this.#max;
   }
 
   get range(): number {
-    return this.highInternal - this.lowInternal;
+    return this.#high - this.#low;
   }
 
   private reassertBounds(): void {
@@ -55,18 +55,18 @@ export class Bounds {
       if (this.range < this.minRange) {
         needsAdjustment = true;
         const delta = (this.minRange - this.range) / 2;
-        this.highInternal += delta;
-        this.lowInternal -= delta;
+        this.#high += delta;
+        this.#low -= delta;
       }
 
-      if (this.lowInternal < this.minInternal) {
+      if (this.#low < this.#min) {
         needsAdjustment = true;
-        this.lowInternal = this.minInternal;
+        this.#low = this.#min;
       }
 
-      if (this.highInternal > this.maxInternal) {
+      if (this.#high > this.#max) {
         needsAdjustment = true;
-        this.highInternal = this.maxInternal;
+        this.#high = this.#max;
       }
     }
   }
@@ -75,12 +75,12 @@ export class Bounds {
    * zoom out |amount| ticks at position [0, 1] along the current range of the timeline.
    */
   zoomOut(amount: number, position: number): void {
-    const range = this.highInternal - this.lowInternal;
+    const range = this.#high - this.#low;
     const growSize = range * Math.pow(1.1, amount) - range;
     const lowEnd = growSize * position;
     const highEnd = growSize - lowEnd;
-    this.lowInternal -= lowEnd;
-    this.highInternal += highEnd;
+    this.#low -= lowEnd;
+    this.#high += highEnd;
     this.reassertBounds();
   }
 
@@ -88,7 +88,7 @@ export class Bounds {
    * zoom in |amount| ticks at position [0, 1] along the current range of the timeline.
    */
   zoomIn(amount: number, position: number): void {
-    const range = this.highInternal - this.lowInternal;
+    const range = this.#high - this.#low;
     if (this.range <= this.minRange) {
       return;
     }
@@ -96,8 +96,8 @@ export class Bounds {
     const shrinkSize = range - range / Math.pow(1.1, amount);
     const lowEnd = shrinkSize * position;
     const highEnd = shrinkSize - lowEnd;
-    this.lowInternal += lowEnd;
-    this.highInternal -= highEnd;
+    this.#low += lowEnd;
+    this.#high -= highEnd;
     this.reassertBounds();
   }
 
@@ -105,13 +105,13 @@ export class Bounds {
    * Add Xms to the max value, and scroll the timeline forward if the end is in sight.
    */
   addMax(amount: number): void {
-    const range = this.highInternal - this.lowInternal;
-    const isAtHighEnd = this.highInternal === this.maxInternal;
-    const isZoomedOut = this.lowInternal === this.minInternal || range >= this.maxRange;
+    const range = this.#high - this.#low;
+    const isAtHighEnd = this.#high === this.#max;
+    const isZoomedOut = this.#low === this.#min || range >= this.maxRange;
 
-    this.maxInternal += amount;
+    this.#max += amount;
     if (isAtHighEnd && isZoomedOut) {
-      this.highInternal = this.maxInternal;
+      this.#high = this.#max;
     }
     this.reassertBounds();
   }
@@ -120,8 +120,8 @@ export class Bounds {
    * Attempt to push the maximum time up to |time| ms.
    */
   pushMaxAtLeastTo(time: number): boolean {
-    if (this.maxInternal < time) {
-      this.addMax(time - this.maxInternal);
+    if (this.#max < time) {
+      this.addMax(time - this.#max);
       return true;
     }
     return false;

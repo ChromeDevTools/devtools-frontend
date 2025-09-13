@@ -1,4 +1,4 @@
-// Copyright 2019 The Chromium Authors. All rights reserved.
+// Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -83,6 +83,13 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
 
     entry.$('icon').appendChild(IconButton.Icon.create('pause', 'media-player'));
     return entry;
+  }
+
+  selectPlayerById(playerID: string): void {
+    const fragment = this.playerEntryFragments.get(playerID);
+    if (fragment) {
+      this.selectPlayer(playerID, fragment.element());
+    }
   }
 
   private selectPlayer(playerID: string, element: Element): void {

@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -50,42 +50,42 @@ describeWithEnvironment('TraceEvent types', function() {
   });
 
   it('is able to determine that an event is a synthetic user timing event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
-    const timingEvent = parsedTrace.UserTimings.performanceMeasures[0];
+    const parsedTrace = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+    const timingEvent = parsedTrace.data.UserTimings.performanceMeasures[0];
     assert.isTrue(Trace.Types.Events.isSyntheticUserTiming(timingEvent));
-    const consoleEvent = parsedTrace.UserTimings.consoleTimings[0];
+    const consoleEvent = parsedTrace.data.UserTimings.consoleTimings[0];
     assert.isFalse(Trace.Types.Events.isSyntheticUserTiming(consoleEvent));
   });
 
   it('is able to determine that an event is a synthetic console event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
-    const consoleEvent = parsedTrace.UserTimings.consoleTimings[0];
+    const parsedTrace = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+    const consoleEvent = parsedTrace.data.UserTimings.consoleTimings[0];
     assert.isTrue(Trace.Types.Events.isSyntheticConsoleTiming(consoleEvent));
-    const timingEvent = parsedTrace.UserTimings.performanceMeasures[0];
+    const timingEvent = parsedTrace.data.UserTimings.performanceMeasures[0];
     assert.isFalse(Trace.Types.Events.isSyntheticConsoleTiming(timingEvent));
   });
 
   it('is able to detemrine that an event is a synthetic network request event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
-    const networkEvent = parsedTrace.NetworkRequests.byTime[0];
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+    const networkEvent = parsedTrace.data.NetworkRequests.byTime[0];
     assert.isTrue(Trace.Types.Events.isSyntheticNetworkRequest(networkEvent));
     const otherEvent = allThreadEntriesInTrace(parsedTrace)[0];
     assert.isFalse(Trace.Types.Events.isSyntheticNetworkRequest(otherEvent));
   });
 
   it('is able to determine that an event is a synthetic layout shift event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
-    const syntheticLayoutShift = parsedTrace.LayoutShifts.clusters[0].events[0];
+    const parsedTrace = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+    const syntheticLayoutShift = parsedTrace.data.LayoutShifts.clusters[0].events[0];
     assert.isTrue(Trace.Types.Events.isSyntheticLayoutShift(syntheticLayoutShift));
   });
 
   it('is able to identify that an event is a legacy timeline frame', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const frame = parsedTrace.Frames.frames.at(0);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const frame = parsedTrace.data.Frames.frames.at(0);
     assert.isOk(frame);
     assert.isTrue(Trace.Types.Events.isLegacyTimelineFrame(frame));
 
-    const networkEvent = parsedTrace.NetworkRequests.byTime.at(0);
+    const networkEvent = parsedTrace.data.NetworkRequests.byTime.at(0);
     assert.isOk(networkEvent);
     assert.isFalse(Trace.Types.Events.isLegacyTimelineFrame(networkEvent));
   });

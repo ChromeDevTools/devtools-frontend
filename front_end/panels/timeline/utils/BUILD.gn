@@ -1,4 +1,4 @@
-# Copyright 2024 The Chromium Authors. All rights reserved.
+# Copyright 2024 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -9,17 +9,12 @@ devtools_module("utils") {
   sources = [
     "AICallTree.ts",
     "AIContext.ts",
-    "EntityMapper.ts",
-    "EntryName.ts",
     "EntryNodes.ts",
-    "EntryStyles.ts",
-    "EventsSerializer.ts",
     "FreshRecording.ts",
     "Helpers.ts",
     "IgnoreList.ts",
     "ImageCache.ts",
     "InsightAIContext.ts",
-    "SourceMapsResolver.ts",
     "Treemap.ts",
   ]
 
@@ -32,10 +27,9 @@ devtools_module("utils") {
     "../../../models/crux-manager:bundle",
     "../../../models/source_map_scopes:bundle",
     "../../../models/trace:bundle",
+    "../../../models/trace_source_maps_resolver:bundle",
     "../../../models/workspace:bundle",
     "../../../panels/mobile_throttling:bundle",
-    "../../../third_party/marked:bundle",
-    "../../../ui/components/markdown_view:bundle",
     "../../../ui/legacy:bundle",
   ]
 }
@@ -66,16 +60,12 @@ ts_library("unittests") {
 
   sources = [
     "AICallTree.test.ts",
-    "EntityMapper.test.ts",
-    "EntryName.test.ts",
     "EntryNodes.test.ts",
-    "EventsSerializer.test.ts",
     "FreshRecording.test.ts",
     "Helpers.test.ts",
     "IgnoreList.test.ts",
     "ImageCache.test.ts",
     "InsightAIContext.test.ts",
-    "SourceMapsResolver.test.ts",
     "Treemap.test.ts",
   ]
 

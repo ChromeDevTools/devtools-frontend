@@ -1,4 +1,4 @@
-# Copyright 2020 The Chromium Authors. All rights reserved.
+# Copyright 2020 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -32,6 +32,7 @@ devtools_module("layer_viewer") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../models/geometry:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
   ]

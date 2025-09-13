@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -76,7 +76,12 @@ export class ContentData {
     }
 
     const binaryString = window.atob(this.#contentAsBase64 as string);
-    const bytes = Uint8Array.from(binaryString, m => m.codePointAt(0) as number);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
     this.#contentAsText = new TextDecoder(this.charset).decode(bytes);
     return this.#contentAsText;
   }

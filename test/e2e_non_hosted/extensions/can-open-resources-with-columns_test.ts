@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -93,7 +93,8 @@ describe('The Extension API', () => {
       assert.deepEqual(r, 1);
       await waitForHighlightedLine(2, devToolsPage);
       const toolbarText = await getToolbarText(devToolsPage);
-      assert.isTrue(toolbarText.includes('Line 2, Column 60'));
+      // Column 38 is the last column in the 2nd line.
+      assert.isTrue(toolbarText.includes('Line 2, Column 38'));
     }
 
     // Is backwards compatible: accepts a callback with a missing columnNumber

@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -577,7 +577,7 @@ export class LocalLazyObject implements LazyObject {
   }
 
   async asRemoteObject(): Promise<Chrome.DevTools.RemoteObject> {
-    const type = (Array.isArray(this.value) ? 'array' : 'object') as Chrome.DevTools.RemoteObjectType;
+    const type = Array.isArray(this.value) ? 'array' : 'object';
     const {objectId, type: valueType, linearMemoryAddress} = this;
     return {
       type,

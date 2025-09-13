@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import type * as Trace from '../../../models/trace/trace.js';
@@ -12,7 +12,7 @@ let instance: Tracker|null = null;
  * is loaded, we set this flag accordingly.
  **/
 export class Tracker {
-  #freshRecordings = new WeakSet<Trace.Handlers.Types.ParsedTrace>();
+  #freshRecordings = new WeakSet<Trace.TraceModel.ParsedTrace>();
 
   static instance(opts: {forceNew: boolean} = {forceNew: false}): Tracker {
     if (!instance || opts.forceNew) {
@@ -21,11 +21,11 @@ export class Tracker {
     return instance;
   }
 
-  registerFreshRecording(data: Trace.Handlers.Types.ParsedTrace): void {
+  registerFreshRecording(data: Trace.TraceModel.ParsedTrace): void {
     this.#freshRecordings.add(data);
   }
 
-  recordingIsFresh(data: Trace.Handlers.Types.ParsedTrace): boolean {
+  recordingIsFresh(data: Trace.TraceModel.ParsedTrace): boolean {
     return this.#freshRecordings.has(data);
   }
 }

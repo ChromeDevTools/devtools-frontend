@@ -9,6 +9,8 @@ import {describeWithMockConnection, setMockConnectionResponseHandler} from '../.
 import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
 
 import * as StackTrace from './stack_trace.js';
+// TODO(crbug.com/444191656): Expose a `testing` bundle.
+// eslint-disable-next-line rulesdir/es-modules-import
 import * as StackTraceImpl from './stack_trace_impl.js';
 
 describeWithMockConnection('StackTraceModel', () => {
@@ -167,6 +169,24 @@ describeWithMockConnection('StackTraceModel', () => {
       } catch {
       }
     });
+
+    it('forwards missing debug info', async () => {
+      const {model} = setup();
+      const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) =>
+          Promise.resolve(frames.map(f => [{
+                                       url: f.url,
+                                       name: f.functionName,
+                                       line: f.lineNumber,
+                                       column: f.columnNumber,
+                                       missingDebugInfo: {type: StackTrace.StackTrace.MissingDebugInfoType.NO_INFO},
+                                     }]));
+
+      const stackTrace =
+          await model.createFromProtocolRuntime({callFrames: [protocolCallFrame('foo.js:1:foo:1:10')]}, translateFn);
+
+      assert.strictEqual(
+          stackTrace.syncFragment.frames[0].missingDebugInfo?.type, StackTrace.StackTrace.MissingDebugInfoType.NO_INFO);
+    });
   });
 
   describe('scriptInfoChanged', () => {
@@ -292,5 +312,26 @@ describeWithMockConnection('StackTraceModel', () => {
          sinon.assert.calledOnce(updatedSpyFull);
          sinon.assert.calledOnce(updatedSpySubSet);
        });
+
+    it('forwards missing debug info', async () => {
+      const {model} = setup();
+      const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) =>
+          Promise.resolve(frames.map(f => [{
+                                       url: f.url,
+                                       name: f.functionName,
+                                       line: f.lineNumber,
+                                       column: f.columnNumber,
+                                       missingDebugInfo: {type: StackTrace.StackTrace.MissingDebugInfoType.NO_INFO},
+                                     }]));
+      const stackTrace = await model.createFromProtocolRuntime(
+          {callFrames: [protocolCallFrame('foo.js:1:foo:1:10')]}, identityTranslateFn);
+      assert.isUndefined(stackTrace.syncFragment.frames[0].missingDebugInfo);
+      const script = {scriptId: '1', sourceURL: 'bar.js'} as SDK.Script.Script;
+
+      await model.scriptInfoChanged(script, translateFn);
+
+      const frame = stackTrace.syncFragment.frames[0];
+      assert.strictEqual(frame.missingDebugInfo?.type, StackTrace.StackTrace.MissingDebugInfoType.NO_INFO);
+    });
   });
 });

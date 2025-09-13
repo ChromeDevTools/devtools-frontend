@@ -1,4 +1,4 @@
-# Copyright 2025 The Chromium Authors. All rights reserved.
+# Copyright 2025 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -27,6 +27,7 @@ devtools_module("ai_assistance") {
     "data_formatters/NetworkRequestFormatter.ts",
     "data_formatters/PerformanceInsightFormatter.ts",
     "data_formatters/PerformanceTraceFormatter.ts",
+    "data_formatters/UnitFormatters.ts",
     "debug.ts",
     "injected.ts",
   ]
@@ -36,8 +37,8 @@ devtools_module("ai_assistance") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/root:bundle",
+    "../../models/network_time_calculator:bundle",
     "../../panels/elements:bundle",
-    "../../panels/network:bundle",
     "../../panels/timeline/utils:bundle",
     "../../panels/utils:bundle",
     "../../third_party/diff:bundle",
@@ -45,6 +46,7 @@ devtools_module("ai_assistance") {
     "../../ui/lit:bundle",
     "../bindings:bundle",
     "../logs:bundle",
+    "../network_time_calculator:bundle",
     "../trace:bundle",
     "../workspace:bundle",
   ]
@@ -88,6 +90,7 @@ ts_library("unittests") {
     "data_formatters/NetworkRequestFormatter.test.ts",
     "data_formatters/PerformanceInsightFormatter.test.ts",
     "data_formatters/PerformanceTraceFormatter.test.ts",
+    "data_formatters/UnitFormatters.test.ts",
   ]
 
   deps = [
@@ -100,13 +103,5 @@ ts_library("unittests") {
     "../../testing",
     "../bindings:bundle",
     "../trace:bundle",
-  ]
-}
-
-copy_to_gen("snapshots") {
-  sources = [
-    "AiHistoryStorage.snapshot.txt",
-    "data_formatters/PerformanceInsightFormatter.snapshot.txt",
-    "data_formatters/PerformanceTraceFormatter.snapshot.txt",
   ]
 }

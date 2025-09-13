@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -114,8 +114,8 @@ describeWithEnvironment('DuplicatedJavaScript', function() {
       }
     }
 
-    const parsedTraceData = await TraceLoader.executeTraceEngineOnFileContents(fileContents);
-    const {parsedTrace: data, insights} = parsedTraceData;
+    const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(fileContents);
+    const {data, insights} = parsedTrace;
     if (!insights) {
       throw new Error('invalid insights');
     }

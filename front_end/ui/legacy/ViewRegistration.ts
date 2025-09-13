@@ -1,5 +1,5 @@
 
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
@@ -174,12 +174,6 @@ export function registerViewExtension(registration: ViewRegistration): void {
   }
   viewIdSet.add(viewId);
   registeredViewExtensions.push(new PreRegisteredView(registration));
-}
-
-export function getRegisteredViewExtensionForID(id: string): PreRegisteredView|undefined {
-  return registeredViewExtensions.find(
-      view => view.viewId() === id &&
-          Root.Runtime.Runtime.isDescriptorEnabled({experiment: view.experiment(), condition: view.condition()}));
 }
 
 export function getRegisteredViewExtensions(): PreRegisteredView[] {

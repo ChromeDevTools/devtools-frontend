@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -6,6 +6,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as Geometry from '../../../../models/geometry/geometry.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -108,7 +109,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
   private spreadInput: HTMLInputElement;
   private spreadSlider: HTMLInputElement;
   private model!: CSSShadowModel;
-  private canvasOrigin!: UI.Geometry.Point;
+  private canvasOrigin!: Geometry.Point;
   private changedElement?: HTMLInputElement|null;
   constructor() {
     super({useShadowDom: true});
@@ -368,10 +369,10 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
   private dragStart(event: MouseEvent): boolean {
     this.xySlider.focus();
     this.updateCanvas(true);
-    this.canvasOrigin = new UI.Geometry.Point(
+    this.canvasOrigin = new Geometry.Point(
         this.xySlider.getBoundingClientRect().left + this.halfCanvasSize,
         this.xySlider.getBoundingClientRect().top + this.halfCanvasSize);
-    const clickedPoint = new UI.Geometry.Point(event.x - this.canvasOrigin.x, event.y - this.canvasOrigin.y);
+    const clickedPoint = new Geometry.Point(event.x - this.canvasOrigin.x, event.y - this.canvasOrigin.y);
     const thumbPoint = this.sliderThumbPosition();
     if (clickedPoint.distanceTo(thumbPoint) >= sliderThumbRadius) {
       this.dragMove(event);
@@ -380,7 +381,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   private dragMove(event: MouseEvent): void {
-    let point: UI.Geometry.Point = new UI.Geometry.Point(event.x - this.canvasOrigin.x, event.y - this.canvasOrigin.y);
+    let point: Geometry.Point = new Geometry.Point(event.x - this.canvasOrigin.x, event.y - this.canvasOrigin.y);
     if (event.shiftKey) {
       point = this.snapToClosestDirection(point);
     }
@@ -454,20 +455,20 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.dispatchEventToListeners(Events.SHADOW_CHANGED, this.model);
   }
 
-  private constrainPoint(point: UI.Geometry.Point, max: number): UI.Geometry.Point {
+  private constrainPoint(point: Geometry.Point, max: number): Geometry.Point {
     if (Math.abs(point.x) <= max && Math.abs(point.y) <= max) {
-      return new UI.Geometry.Point(point.x, point.y);
+      return new Geometry.Point(point.x, point.y);
     }
     return point.scale(max / Math.max(Math.abs(point.x), Math.abs(point.y)));
   }
 
-  private snapToClosestDirection(point: UI.Geometry.Point): UI.Geometry.Point {
+  private snapToClosestDirection(point: Geometry.Point): Geometry.Point {
     let minDistance: number = Number.MAX_VALUE;
-    let closestPoint: UI.Geometry.Point = point;
+    let closestPoint: Geometry.Point = point;
 
     const directions = [
-      new UI.Geometry.Point(0, -1), new UI.Geometry.Point(1, -1), new UI.Geometry.Point(1, 0),
-      new UI.Geometry.Point(1, 1),  // Southeast
+      new Geometry.Point(0, -1), new Geometry.Point(1, -1), new Geometry.Point(1, 0),
+      new Geometry.Point(1, 1),  // Southeast
     ];
 
     for (const direction of directions) {
@@ -482,10 +483,10 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     return closestPoint;
   }
 
-  private sliderThumbPosition(): UI.Geometry.Point {
+  private sliderThumbPosition(): Geometry.Point {
     const x = (this.model.offsetX().amount / maxRange) * this.innerCanvasSize;
     const y = (this.model.offsetY().amount / maxRange) * this.innerCanvasSize;
-    return this.constrainPoint(new UI.Geometry.Point(x, y), this.innerCanvasSize);
+    return this.constrainPoint(new Geometry.Point(x, y), this.innerCanvasSize);
   }
 }
 

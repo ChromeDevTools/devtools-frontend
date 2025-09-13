@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -6,8 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import * as PanelUtils from '../../../panels/utils/utils.js';
-import type {TemplateResult} from '../../../ui/lit/lit.js';
+import type * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
 
 import {
@@ -95,10 +94,13 @@ const lockedString = i18n.i18n.lockedString;
 
 export class RequestContext extends ConversationContext<SDK.NetworkRequest.NetworkRequest> {
   #request: SDK.NetworkRequest.NetworkRequest;
+  #calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest) {
+  constructor(
+      request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator) {
     super();
     this.#request = request;
+    this.#calculator = calculator;
   }
 
   override getOrigin(): string {
@@ -109,8 +111,8 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
     return this.#request;
   }
 
-  override getIcon(): TemplateResult {
-    return PanelUtils.PanelUtils.getIconForNetworkRequest(this.#request);
+  get calculator(): NetworkTimeCalculator.NetworkTimeCalculator {
+    return this.#calculator;
   }
 
   override getTitle(): string {
@@ -139,8 +141,7 @@ export class NetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
   }
 
   async *
-      handleContextDetails(selectedNetworkRequest: ConversationContext<SDK.NetworkRequest.NetworkRequest>|null):
-          AsyncGenerator<ContextResponse, void, void> {
+      handleContextDetails(selectedNetworkRequest: RequestContext|null): AsyncGenerator<ContextResponse, void, void> {
     if (!selectedNetworkRequest) {
       return;
     }
@@ -148,25 +149,25 @@ export class NetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
     yield {
       type: ResponseType.CONTEXT,
       title: lockedString(UIStringsNotTranslate.analyzingNetworkData),
-      details: createContextDetailsForNetworkAgent(selectedNetworkRequest.getItem()),
+      details: createContextDetailsForNetworkAgent(selectedNetworkRequest),
     };
   }
 
-  override async enhanceQuery(
-      query: string,
-      selectedNetworkRequest: ConversationContext<SDK.NetworkRequest.NetworkRequest>|null): Promise<string> {
+  override async enhanceQuery(query: string, selectedNetworkRequest: RequestContext|null): Promise<string> {
     const networkEnchantmentQuery = selectedNetworkRequest ?
         `# Selected network request \n${
-            new NetworkRequestFormatter(selectedNetworkRequest.getItem())
+            new NetworkRequestFormatter(selectedNetworkRequest.getItem(), selectedNetworkRequest.calculator)
                 .formatNetworkRequest()}\n\n# User request\n\n` :
         '';
     return `${networkEnchantmentQuery}${query}`;
   }
 }
 
-function createContextDetailsForNetworkAgent(request: SDK.NetworkRequest.NetworkRequest):
-    [ContextDetail, ...ContextDetail[]] {
-  const formatter = new NetworkRequestFormatter(request);
+function createContextDetailsForNetworkAgent(
+    selectedNetworkRequest: RequestContext,
+    ): [ContextDetail, ...ContextDetail[]] {
+  const request = selectedNetworkRequest.getItem();
+  const formatter = new NetworkRequestFormatter(request, selectedNetworkRequest.calculator);
   const requestContextDetail: ContextDetail = {
     title: lockedString(UIStringsNotTranslate.request),
     text: lockedString(UIStringsNotTranslate.requestUrl) + ': ' + request.url() + '\n\n' +

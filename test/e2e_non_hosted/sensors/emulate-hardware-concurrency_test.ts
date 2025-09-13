@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -12,7 +12,7 @@ import type {InspectedPage} from '../shared/target-helper.js';
 async function waitForChangedConcurrency(
     lastConcurrency: number|undefined, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
   return await devToolsPage.waitForFunction(async () => {
-    const newConcurrency = await inspectedPage.evaluate('navigator.hardwareConcurrency') as number;
+    const newConcurrency = await inspectedPage.evaluate(() => navigator.hardwareConcurrency);
     if (newConcurrency !== lastConcurrency) {
       return newConcurrency;
     }

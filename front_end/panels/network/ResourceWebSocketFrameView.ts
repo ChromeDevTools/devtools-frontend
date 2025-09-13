@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -159,8 +159,8 @@ const opCodeDescriptions: Array<() => string> = (function(): Array<() => Common.
 class ResourceFrameNode extends DataGridItem {
   readonly frame: SDK.NetworkRequest.WebSocketFrame;
   private readonly isTextFrame: boolean;
-  private dataTextInternal: string;
-  private binaryViewInternal: BinaryResourceView|null;
+  #dataText: string;
+  #binaryView: BinaryResourceView|null;
 
   constructor(frame: SDK.NetworkRequest.WebSocketFrame) {
     let length = String(frame.text.length);
@@ -194,9 +194,9 @@ class ResourceFrameNode extends DataGridItem {
 
     this.frame = frame;
     this.isTextFrame = isTextFrame;
-    this.dataTextInternal = dataText;
+    this.#dataText = dataText;
 
-    this.binaryViewInternal = null;
+    this.#binaryView = null;
   }
 
   override createCells(element: Element): void {
@@ -214,7 +214,7 @@ class ResourceFrameNode extends DataGridItem {
   }
 
   override dataText(): string {
-    return this.dataTextInternal;
+    return this.#dataText;
   }
 
   override binaryView(): BinaryResourceView|null {
@@ -222,15 +222,15 @@ class ResourceFrameNode extends DataGridItem {
       return null;
     }
 
-    if (!this.binaryViewInternal) {
-      if (this.dataTextInternal.length > 0) {
-        this.binaryViewInternal = new BinaryResourceView(
+    if (!this.#binaryView) {
+      if (this.#dataText.length > 0) {
+        this.#binaryView = new BinaryResourceView(
             TextUtils.StreamingContentData.StreamingContentData.from(
-                new TextUtils.ContentData.ContentData(this.dataTextInternal, true, 'applicaiton/octet-stream')),
+                new TextUtils.ContentData.ContentData(this.#dataText, true, 'applicaiton/octet-stream')),
             Platform.DevToolsPath.EmptyUrlString, Common.ResourceType.resourceTypes.WebSocket);
       }
     }
-    return this.binaryViewInternal;
+    return this.#binaryView;
   }
 
   override getTime(): number {

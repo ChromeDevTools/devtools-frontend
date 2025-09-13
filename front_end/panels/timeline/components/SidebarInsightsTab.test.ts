@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -11,12 +11,11 @@ import * as Components from './components.js';
 
 describeWithEnvironment('SidebarInsightsTab', () => {
   it('renders a list of insights per navigation in the sidebar', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
 
     const component = new Components.SidebarInsightsTab.SidebarInsightsTab();
     renderElementIntoDOM(component);
     component.parsedTrace = parsedTrace;
-    component.insights = insights;
     await RenderCoordinator.done();
     assert.isOk(component.shadowRoot);
 

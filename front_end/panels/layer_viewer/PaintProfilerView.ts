@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2013 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2013 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
@@ -84,7 +58,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
   private readonly showImageCallback: (arg0?: string|undefined) => void;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  private readonly selectionWindowInternal: PerfUI.OverviewGrid.Window;
+  readonly #selectionWindow: PerfUI.OverviewGrid.Window;
   private readonly innerBarWidth: number;
   private minBarHeight: number;
   private readonly barPaddingWidth: number;
@@ -114,9 +88,8 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     this.showImageCallback = showImageCallback;
     this.canvas = this.canvasContainer.createChild('canvas', 'fill');
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-    this.selectionWindowInternal = new PerfUI.OverviewGrid.Window(this.canvasContainer);
-    this.selectionWindowInternal.addEventListener(
-        PerfUI.OverviewGrid.Events.WINDOW_CHANGED, this.onWindowChanged, this);
+    this.#selectionWindow = new PerfUI.OverviewGrid.Window(this.canvasContainer);
+    this.#selectionWindow.addEventListener(PerfUI.OverviewGrid.Events.WINDOW_CHANGED, this.onWindowChanged, this);
 
     this.innerBarWidth = 4 * window.devicePixelRatio;
     this.minBarHeight = window.devicePixelRatio;
@@ -220,11 +193,11 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     if (!snapshot) {
       this.update();
       this.populatePieChart(0, []);
-      this.selectionWindowInternal.setResizeEnabled(false);
+      this.#selectionWindow.setResizeEnabled(false);
       return;
     }
 
-    this.selectionWindowInternal.setResizeEnabled(true);
+    this.#selectionWindow.setResizeEnabled(true);
     this.progressBanner.classList.remove('hidden');
     this.updateImage();
 
@@ -373,8 +346,8 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
       return null;
     }
 
-    const screenLeft = (this.selectionWindowInternal.windowLeftRatio || 0) * this.canvas.width;
-    const screenRight = (this.selectionWindowInternal.windowRightRatio || 0) * this.canvas.width;
+    const screenLeft = (this.#selectionWindow.windowLeftRatio || 0) * this.canvas.width;
+    const screenRight = (this.#selectionWindow.windowRightRatio || 0) * this.canvas.width;
     const barLeft = Math.floor(screenLeft / this.outerBarWidth);
     const barRight = Math.floor((screenRight + this.innerBarWidth - this.barPaddingWidth / 2) / this.outerBarWidth);
     const stepLeft = Platform.NumberUtilities.clamp(barLeft * this.samplesPerBar, 0, this.log.length - 1);
@@ -411,8 +384,8 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     }
     this.snapshot = null;
     this.profiles = null;
-    this.selectionWindowInternal.reset();
-    this.selectionWindowInternal.setResizeEnabled(false);
+    this.#selectionWindow.reset();
+    this.#selectionWindow.setResizeEnabled(false);
   }
 }
 

@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -13,8 +13,8 @@ describeWithEnvironment('InteractionBreakdown', () => {
   const {InteractionBreakdown} = TimelineComponents.InteractionBreakdown;
 
   it('renders the breakdowns for an InteractionBreakdown', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    const longInteraction = parsedTrace.UserInteractions.longestInteractionEvent;
+    const parsedTrace = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    const longInteraction = parsedTrace.data.UserInteractions.longestInteractionEvent;
     if (!longInteraction) {
       throw new Error('Could not find longest interaction');
     }

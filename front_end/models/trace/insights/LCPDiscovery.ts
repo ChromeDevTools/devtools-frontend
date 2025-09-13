@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -95,14 +95,14 @@ function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): 
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): LCPDiscoveryInsightModel {
+    data: Handlers.Types.HandlerData, context: InsightSetContext): LCPDiscoveryInsightModel {
   if (!context.navigation) {
     return finalize({});
   }
 
-  const networkRequests = parsedTrace.NetworkRequests;
+  const networkRequests = data.NetworkRequests;
 
-  const frameMetrics = parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
+  const frameMetrics = data.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
   if (!frameMetrics) {
     throw new Error('no frame metrics');
   }
@@ -122,7 +122,7 @@ export function generateInsight(
     return finalize({warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
   }
 
-  const lcpRequest = parsedTrace.LargestImagePaint.lcpRequestByNavigationId.get(context.navigationId);
+  const lcpRequest = data.LargestImagePaint.lcpRequestByNavigationId.get(context.navigationId);
   if (!lcpRequest) {
     return finalize({lcpEvent});
   }

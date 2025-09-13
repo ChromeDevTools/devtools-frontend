@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -9,13 +9,13 @@ import type {CSSModel} from './CSSModel.js';
 import {CSSQuery} from './CSSQuery.js';
 
 export class CSSMediaQuery {
-  readonly #activeInternal: boolean;
-  readonly #expressionsInternal: CSSMediaQueryExpression[]|null;
+  readonly #active: boolean;
+  readonly #expressions: CSSMediaQueryExpression[]|null;
   constructor(payload: Protocol.CSS.MediaQuery) {
-    this.#activeInternal = payload.active;
-    this.#expressionsInternal = [];
+    this.#active = payload.active;
+    this.#expressions = [];
     for (let j = 0; j < payload.expressions.length; ++j) {
-      this.#expressionsInternal.push(CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
+      this.#expressions.push(CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
     }
   }
 
@@ -24,26 +24,26 @@ export class CSSMediaQuery {
   }
 
   active(): boolean {
-    return this.#activeInternal;
+    return this.#active;
   }
 
   expressions(): CSSMediaQueryExpression[]|null {
-    return this.#expressionsInternal;
+    return this.#expressions;
   }
 }
 
 export class CSSMediaQueryExpression {
-  readonly #valueInternal: number;
-  readonly #unitInternal: string;
-  readonly #featureInternal: string;
-  readonly #valueRangeInternal: TextUtils.TextRange.TextRange|null;
-  readonly #computedLengthInternal: number|null;
+  readonly #value: number;
+  readonly #unit: string;
+  readonly #feature: string;
+  readonly #valueRange: TextUtils.TextRange.TextRange|null;
+  readonly #computedLength: number|null;
   constructor(payload: Protocol.CSS.MediaQueryExpression) {
-    this.#valueInternal = payload.value;
-    this.#unitInternal = payload.unit;
-    this.#featureInternal = payload.feature;
-    this.#valueRangeInternal = payload.valueRange ? TextUtils.TextRange.TextRange.fromObject(payload.valueRange) : null;
-    this.#computedLengthInternal = payload.computedLength || null;
+    this.#value = payload.value;
+    this.#unit = payload.unit;
+    this.#feature = payload.feature;
+    this.#valueRange = payload.valueRange ? TextUtils.TextRange.TextRange.fromObject(payload.valueRange) : null;
+    this.#computedLength = payload.computedLength || null;
   }
 
   static parsePayload(payload: Protocol.CSS.MediaQueryExpression): CSSMediaQueryExpression {
@@ -51,23 +51,23 @@ export class CSSMediaQueryExpression {
   }
 
   value(): number {
-    return this.#valueInternal;
+    return this.#value;
   }
 
   unit(): string {
-    return this.#unitInternal;
+    return this.#unit;
   }
 
   feature(): string {
-    return this.#featureInternal;
+    return this.#feature;
   }
 
   valueRange(): TextUtils.TextRange.TextRange|null {
-    return this.#valueRangeInternal;
+    return this.#valueRange;
   }
 
   computedLength(): number|null {
-    return this.#computedLengthInternal;
+    return this.#computedLength;
   }
 }
 

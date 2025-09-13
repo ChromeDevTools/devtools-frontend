@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -58,7 +58,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface NetworkTooltipData {
   networkRequest: Trace.Types.Events.SyntheticNetworkRequest|null;
-  entityMapper: TimelineUtils.EntityMapper.EntityMapper|null;
+  entityMapper: Trace.EntityMapper.EntityMapper|null;
 }
 
 export class NetworkRequestTooltip extends HTMLElement {

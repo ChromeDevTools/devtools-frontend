@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -106,7 +106,7 @@ describe('ExtensionTraceDataHandler', function() {
         {
           detail: {
             devtools: {
-              dataType: 'invalid-type' as Trace.Types.Extensions.ExtensionDataPayload['dataType'],
+              dataType: 'invalid-type' as Trace.Types.Extensions.DevToolsObj['dataType'],
               track: 'Another Extension Track',
             },
           },
@@ -141,7 +141,7 @@ describe('ExtensionTraceDataHandler', function() {
         // The first track is the one labeled 'An Extension Track'.
         {
           const {track, properties} =
-              extensionHandlerOutput.extensionTrackData[0].entriesByTrack['An Extension Track'][0].args;
+              extensionHandlerOutput.extensionTrackData[0].entriesByTrack['An Extension Track'][0].devtoolsObj;
           assert.strictEqual(JSON.stringify(properties), '[["Description","Something"]]');
           assert.strictEqual(track, 'An Extension Track');
         }
@@ -149,7 +149,7 @@ describe('ExtensionTraceDataHandler', function() {
         // Now look for 'Another Extension Track'.
         {
           const {tooltipText, track, properties} =
-              extensionHandlerOutput.extensionTrackData[1].entriesByTrack['Another Extension Track'][0].args;
+              extensionHandlerOutput.extensionTrackData[1].entriesByTrack['Another Extension Track'][0].devtoolsObj;
           assert.strictEqual(tooltipText, 'A hint if needed');
           assert.strictEqual(track, 'Another Extension Track');
           assert.strictEqual(
@@ -162,7 +162,7 @@ describe('ExtensionTraceDataHandler', function() {
         // Ensure it is discarded.
         const allTrackEntries =
             extensionHandlerOutput.extensionTrackData.map(track => Object.values(track.entriesByTrack)).flat(2);
-        const validTrackEntries = allTrackEntries.filter(entry => entry.args.track);
+        const validTrackEntries = allTrackEntries.filter(entry => entry.devtoolsObj.track);
         assert.lengthOf(validTrackEntries, allTrackEntries.length);
       });
 
@@ -172,8 +172,8 @@ describe('ExtensionTraceDataHandler', function() {
         // Ensure it is discarded.
         const allTrackEntries =
             extensionHandlerOutput.extensionTrackData.map(track => Object.values(track.entriesByTrack)).flat(2);
-        const validTrackEntries =
-            allTrackEntries.filter(entry => entry.args.dataType === 'track-entry' || entry.args.dataType === undefined);
+        const validTrackEntries = allTrackEntries.filter(
+            entry => entry.devtoolsObj.dataType === 'track-entry' || entry.devtoolsObj.dataType === undefined);
         assert.lengthOf(validTrackEntries, allTrackEntries.length);
       });
     });
@@ -185,7 +185,7 @@ describe('ExtensionTraceDataHandler', function() {
       it('parses marker data correctly', async () => {
         assert.lengthOf(extensionHandlerOutput.extensionMarkers, 1);
         assert.strictEqual(extensionHandlerOutput.extensionMarkers[0].name, 'A custom mark');
-        const {tooltipText, properties} = extensionHandlerOutput.extensionMarkers[0].args;
+        const {tooltipText, properties} = extensionHandlerOutput.extensionMarkers[0].devtoolsObj;
         assert.strictEqual(tooltipText, 'A mark');
         assert.strictEqual(JSON.stringify(properties), '[["Description","This marks the start of a task"]]');
       });
@@ -206,7 +206,8 @@ describe('ExtensionTraceDataHandler', function() {
         };
 
         assert.isNull(
-            Trace.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(performanceMarkEvent),
+            Trace.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(performanceMarkEvent)
+                .devtoolsObj,
         );
       });
 
@@ -215,7 +216,7 @@ describe('ExtensionTraceDataHandler', function() {
         // value.
         // Ensure it is discarded.
         const allMarkers = extensionHandlerOutput.extensionMarkers;
-        const validTrackEntries = allMarkers.filter(entry => entry.args.dataType === 'marker');
+        const validTrackEntries = allMarkers.filter(entry => entry.devtoolsObj.dataType === 'marker');
         assert.lengthOf(validTrackEntries, allMarkers.length);
       });
     });
@@ -257,7 +258,7 @@ describe('ExtensionTraceDataHandler', function() {
             detail: {
               devtools: {
                 color: 'error',
-                dataType: 'invalid' as Trace.Types.Extensions.ExtensionDataPayload['dataType'],
+                dataType: 'invalid' as Trace.Types.Extensions.DevToolsObj['dataType'],
               },
             },
             name: 'A custom mark',
@@ -696,7 +697,7 @@ describe('ExtensionTraceDataHandler', function() {
         // Ensure it is discarded.
         const allTrackEntries =
             extensionHandlerOutput.extensionTrackData.map(track => Object.values(track.entriesByTrack)).flat(2);
-        const validTrackEntries = allTrackEntries.filter(entry => entry.args.track);
+        const validTrackEntries = allTrackEntries.filter(entry => entry.devtoolsObj.track);
         assert.lengthOf(validTrackEntries, allTrackEntries.length);
       });
     });

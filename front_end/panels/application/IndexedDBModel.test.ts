@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -144,7 +144,7 @@ describeWithMockConnection('IndexedDBModel', () => {
       storageBucket: testStorageBucket,
       databaseName: 'test-database',
       objectStoreName: 'test-store',
-      indexName: '',
+      indexName: undefined,
       skipCount: 0,
       pageSize: 50,
       keyRange: undefined,

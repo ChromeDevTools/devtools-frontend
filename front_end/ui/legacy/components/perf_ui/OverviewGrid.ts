@@ -1,43 +1,18 @@
-/*
- * Copyright (C) 2013 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2013 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import type * as NetworkTimeCalculator from '../../../../models/network_time_calculator/network_time_calculator.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import overviewGridStyles from './overviewGrid.css.js';
-import {type Calculator, TimelineGrid} from './TimelineGrid.js';
+import {TimelineGrid} from './TimelineGrid.js';
 
 const UIStrings = {
   /**
@@ -61,7 +36,7 @@ export class OverviewGrid {
   // The |window| will manage the html element of resizers, the left/right blue-colour curtain, and handle the resizing,
   // zooming, and breadcrumb creation.
   private readonly window: Window;
-  constructor(prefix: string, calculator?: Calculator) {
+  constructor(prefix: string, calculator?: NetworkTimeCalculator.Calculator) {
     this.element = document.createElement('div');
     this.element.id = prefix + '-overview-container';
 
@@ -86,7 +61,7 @@ export class OverviewGrid {
     return this.element.clientWidth;
   }
 
-  updateDividers(calculator: Calculator): void {
+  updateDividers(calculator: NetworkTimeCalculator.Calculator): void {
     this.grid.updateDividers(calculator);
   }
 
@@ -154,7 +129,7 @@ const OffsetFromWindowEnds = 10;
 
 export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private parentElement: Element;
-  private calculator: Calculator|undefined;
+  private calculator: NetworkTimeCalculator.Calculator|undefined;
   private leftResizeElement: HTMLElement;
   private rightResizeElement: HTMLElement;
   private leftCurtainElement: HTMLElement;
@@ -180,7 +155,8 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private resizerParentOffsetLeft?: number;
   #breadcrumbsEnabled = false;
   #mouseOverGridOverview = false;
-  constructor(parentElement: HTMLElement, dividersLabelBarElement?: Element, calculator?: Calculator) {
+  constructor(
+      parentElement: HTMLElement, dividersLabelBarElement?: Element, calculator?: NetworkTimeCalculator.Calculator) {
     super();
     this.parentElement = parentElement;
     this.parentElement.classList.add('parent-element');

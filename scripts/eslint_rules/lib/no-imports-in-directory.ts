@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -24,7 +24,7 @@ export default createRule<Options[], 'invalidImport'>({
       category: 'Possible Errors',
     },
     messages: {
-      invalidImport: 'It is banned to import this module from this file\'s directory',
+      invalidImport: 'It is banned to import {{bannedPath}} from this file\'s directory',
     },
     schema: [
       {
@@ -75,7 +75,13 @@ export default createRule<Options[], 'invalidImport'>({
             continue;
           }
 
-          context.report({node, messageId: 'invalidImport'});
+          context.report({
+            node,
+            messageId: 'invalidImport',
+            data: {
+              bannedPath: path.relative(context.cwd, bannedPath),
+            },
+          });
           break;
         }
       },

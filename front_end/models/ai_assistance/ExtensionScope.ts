@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -6,7 +6,6 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as Bindings from '../bindings/bindings.js';
 
 import type {ChangeManager} from './ChangeManager.js';
@@ -41,10 +40,8 @@ export class ExtensionScope {
 
   readonly #bindingMutex = new Common.Mutex.Mutex();
 
-  constructor(changes: ChangeManager, agentId: string) {
+  constructor(changes: ChangeManager, agentId: string, selectedNode: SDK.DOMModel.DOMNode|null) {
     this.#changeManager = changes;
-    const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
-
     const frameId = selectedNode?.frameId();
     const target = selectedNode?.domModel().target();
     this.#agentId = agentId;
@@ -53,16 +50,10 @@ export class ExtensionScope {
   }
 
   get target(): SDK.Target.Target {
-    if (this.#target) {
-      return this.#target;
-    }
-
-    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
-    if (!target) {
+    if (!this.#target) {
       throw new Error('Target is not found for executing code');
     }
-
-    return target;
+    return this.#target;
   }
 
   get frameId(): Protocol.Page.FrameId {

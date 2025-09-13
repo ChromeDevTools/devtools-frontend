@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2009 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2009 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
@@ -40,6 +14,8 @@ import {
   type ChangeEvent,
   type ClickEvent,
   type ContextMenuDescriptor,
+  type DispatchHttpRequestRequest,
+  type DispatchHttpRequestResult,
   type DoAidaConversationResult,
   type DragEvent,
   type EnumeratedHistogram,
@@ -74,7 +50,7 @@ const MAX_RECORDED_HISTOGRAMS_SIZE = 100;
 const OVERRIDES_FILE_SYSTEM_PATH = '/overrides' as Platform.DevToolsPath.RawPathString;
 
 /**
- * The InspectorFrontendHostStub is a stub interface used the frontend is loaded like a webpage. Examples:
+ * The `InspectorFrontendHostStub` is a stub interface used the frontend is loaded like a webpage. Examples:
  *   - devtools://devtools/bundled/devtools_app.html
  *   - https://chrome-devtools-frontend.appspot.com/serve_rev/@030cc140435b0152645522b9864b75cac6c0a854/worker_app.html
  *   - http://localhost:9222/devtools/inspector.html?ws=localhost:9222/devtools/page/xTARGET_IDx
@@ -421,7 +397,10 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
       },
       devToolsIpProtectionPanelInDevTools: {
         enabled: false,
-      }
+      },
+      devToolsFlexibleLayout: {
+        verticalDrawerEnabled: true,
+      },
     };
     if ('hostConfigForTesting' in globalThis) {
       const {hostConfigForTesting} = (globalThis as unknown as {hostConfigForTesting: Root.Runtime.HostConfig});
@@ -505,18 +484,24 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   /**
-   * **Hosted mode** is when DevTools is loaded over `http(s)://` rather than from `devtools://`.
-   * It does **not** indicate whether the frontend is connected to a valid CDP target.
+   * Think of **Hosted mode** as "non-embedded" mode; you can see a devtools frontend URL as the tab's URL. It's an atypical way that DevTools is run.
+   * Whereas in **Non-hosted** (aka "embedded"), DevTools is embedded and fully dockable. It's the common way DevTools is run.
    *
-   *  | Example case                                         | Mode           | Example URL                                                                   |
+   * **Hosted mode** == we're using the `InspectorFrontendHostStub`. impl. (@see `InspectorFrontendHostStub` class comment)
+   * Whereas with **non-hosted** mode, native `DevToolsEmbedderMessageDispatcher` is used for CDP and more.
+   *
+   * Relationships to other signals:
+   * - Hosted-ness does not indicate whether the frontend is _connected to a valid CDP target_.
+   * - Being _"dockable"_ (aka `canDock`) is typically aligned but technically orthogonal.
+   * - It's unrelated to the _tab's (main frame's) URL_. Though in non-hosted, the devtools frame origin will always be `devtools://devtools`.
+   *
+   *  | Example case                                         | Mode           | Example devtools                                                                   |
    *  | :--------------------------------------------------- | :------------- | :---------------------------------------------------------------------------- |
-   *  | typical devtools: (un)docked w/ native CDP bindings  | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html?targetType=tab&...`            |
-   *  | tab href is `devtools://…?ws=…`                      | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html?ws=localhost:9228/...`         |
-   *  | tab href is `devtools://…` but no connection         | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html`                               |
-   *  | tab href is `https://…?ws=` (connected)              | **Hosted**     | `https://chrome-devtools-frontend.appspot.com/serve_rev/@.../worker_app.html` |
-   *  | tab href is `http://…` but no connection             | **Hosted**     | `http://localhost:9222/devtools/inspector.html?ws=localhost:9222/...`         |
-   *
-   * See also `canDock` which has similar semantics.
+   *  | tab URL: anything. embedded DevTools w/ native CDP bindings    | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html?targetType=tab&...`            |
+   *  | tab URL: `devtools://…?ws=…`                | **Hosted**     | `devtools://devtools/bundled/devtools_app.html?ws=localhost:9228/...`         |
+   *  | tab URL: `devtools://…` but no connection   | **Hosted**     | `devtools://devtools/bundled/devtools_app.html`                               |
+   *  | tab URL: `https://…` but no connection      | **Hosted**     | `https://chrome-devtools-frontend.appspot.com/serve_rev/@.../worker_app.html` |
+   *  | tab URL: `http://…?ws=` (connected)         | **Hosted**     | `http://localhost:9222/devtools/inspector.html?ws=localhost:9222/...`         |
    */
   isHostedMode(): boolean {
     return true;
@@ -546,6 +531,11 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     callback({
       error: 'Not implemented',
     });
+  }
+
+  dispatchHttpRequest(_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void):
+      void {
+    callback({error: 'Not implemented'});
   }
 
   recordImpression(_event: ImpressionEvent): void {

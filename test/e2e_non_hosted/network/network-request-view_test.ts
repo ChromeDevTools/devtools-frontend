@@ -145,7 +145,7 @@ describe('The Network Request view', () => {
     assert.isOk(name);
     await selectRequestByName(name, {devToolsPage});
 
-    const styleSrcError = expectError(`Refused to load the stylesheet '${stylesheet}'`);
+    const styleSrcError = expectError(`Loading the stylesheet '${stylesheet}' violates`);
     const networkView = await devToolsPage.waitFor('.network-item-view');
     await devToolsPage.click('[aria-label=Preview][role=tab]', {
       root: networkView,

@@ -1,9 +1,11 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import {protocolCallFrame, stringifyFragment} from '../../testing/StackTraceHelpers.js';
 
+// TODO(crbug.com/444191656): Expose a `testing` bundle.
+// eslint-disable-next-line rulesdir/es-modules-import
 import * as StackTraceImpl from './stack_trace_impl.js';
 
 describe('FragmentImpl', () => {

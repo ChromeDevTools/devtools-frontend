@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -31,14 +31,18 @@ function assertSnapshotContent(actual: string, expected: string): void {
 export class SnapshotTester {
   static #updateMode: boolean|null = null;
 
-  #snapshotUrl: string;
+  #snapshotPath: string;
   #expected = new Map<string, string>();
   #actual = new Map<string, string>();
   #anyFailures = false;
   #newTests = false;
 
   constructor(meta: ImportMeta) {
-    this.#snapshotUrl = meta.url.replace('.test.js', '.snapshot.txt').split('?')[0];
+    // out/Default/gen/third_party/devtools-frontend/src/front_end/testing/SnapshotTester.test.js?8ee4f2b123e221040a4aa075a28d0e5b41d3d3ed
+    // ->
+    // front_end/testing/SnapshotTester.snapshot.txt
+    this.#snapshotPath =
+        meta.url.substring(meta.url.lastIndexOf('front_end')).replace('.test.js', '.snapshot.txt').split('?')[0];
   }
 
   async load() {
@@ -46,10 +50,11 @@ export class SnapshotTester {
       SnapshotTester.#updateMode = await this.#checkIfUpdateMode();
     }
 
-    const url = new URL(this.#snapshotUrl, import.meta.url);
+    const url = new URL('/snapshot', import.meta.url);
+    url.searchParams.set('snapshotPath', this.#snapshotPath);
     const response = await fetch(url);
     if (response.status === 404) {
-      console.warn(`Snapshot file not found: ${url.href}. Will create it for you.`);
+      console.warn(`Snapshot file not found: ${this.#snapshotPath}. Will create it for you.`);
       return;
     }
     if (response.status !== 200) {
@@ -74,15 +79,33 @@ export class SnapshotTester {
     this.#actual.set(title, actual);
 
     const expected = this.#expected.get(title);
-    if (!expected) {
-      // New tests always pass on the first run.
+    if (expected === undefined) {
       this.#newTests = true;
-      return;
+      if (SnapshotTester.#updateMode) {
+        return;
+      }
+
+      this.#anyFailures = true;
+      throw new Error(`snapshot assertion failed! new snapshot found (${
+          title}), must run \`npm run test -- --on-diff=update ...\` to accept it.`);
     }
 
-    if (!SnapshotTester.#updateMode && actual !== expected) {
+    const isDifferent = actual !== expected;
+    if (isDifferent) {
       this.#anyFailures = true;
-      assertSnapshotContent(actual, expected);
+      if (!SnapshotTester.#updateMode) {
+        assertSnapshotContent(actual, expected);
+      }
+    }
+  }
+
+  async #postUpdate(): Promise<void> {
+    const url = new URL('/update-snapshot', import.meta.url);
+    url.searchParams.set('snapshotPath', this.#snapshotPath);
+    const content = this.#serializeSnapshotFileContent();
+    const response = await fetch(url, {method: 'POST', body: content});
+    if (response.status !== 200) {
+      throw new Error(`Unable to update snapshot ${url}`);
     }
   }
 
@@ -95,21 +118,22 @@ export class SnapshotTester {
       }
     }
 
-    let shouldPostUpdate = SnapshotTester.#updateMode;
-    if (!this.#anyFailures && (didAnyTestNotRun || this.#newTests)) {
-      shouldPostUpdate = true;
-    }
-
-    if (!shouldPostUpdate) {
+    const hasChanges = this.#anyFailures || didAnyTestNotRun || this.#newTests;
+    if (!hasChanges) {
       return;
     }
 
-    const url = new URL('/update-snapshot', import.meta.url);
-    url.searchParams.set('snapshotUrl', this.#snapshotUrl);
-    const content = this.#serializeSnapshotFileContent();
-    const response = await fetch(url, {method: 'POST', body: content});
-    if (response.status !== 200) {
-      throw new Error(`Unable to update snapshot ${url}`);
+    // If the update flag is on, post any and all changes (failures, new tests, removals).
+    if (SnapshotTester.#updateMode) {
+      await this.#postUpdate();
+      return;
+    }
+
+    // Note: this does not handle test filtering (.only, --grep). Need a reliable way
+    // to distinguish a deleted test from a test that was filtered out.
+    if (didAnyTestNotRun) {
+      throw new Error(
+          'Snapshots are out of sync (a test was likely deleted or renamed). Run with `--on-diff=update` to fix.');
     }
   }
 

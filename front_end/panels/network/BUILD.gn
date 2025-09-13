@@ -1,4 +1,4 @@
-# Copyright 2020 The Chromium Authors. All rights reserved.
+# Copyright 2020 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -47,7 +47,6 @@ devtools_module("network") {
     "NetworkOverview.ts",
     "NetworkPanel.ts",
     "NetworkSearchScope.ts",
-    "NetworkTimeCalculator.ts",
     "NetworkWaterfallColumn.ts",
     "RequestCookiesView.ts",
     "RequestHTMLView.ts",
@@ -73,6 +72,7 @@ devtools_module("network") {
     "../../models/har:bundle",
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
+    "../../models/network_time_calculator:bundle",
     "../../models/text_utils:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
@@ -115,7 +115,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/*",
     "../../models/ai_assistance/*",
-    "../../panels/ai_assistance:unittests",
+    "../../panels/ai_assistance/*",
     "../../ui/components/request_link_icon/*",
     "../application/*",
   ]

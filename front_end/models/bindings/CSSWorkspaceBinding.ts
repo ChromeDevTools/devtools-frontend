@@ -1,4 +1,4 @@
-// Copyright 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -283,7 +283,7 @@ export class LiveLocation extends LiveLocationWithPool {
   readonly #lineNumber: number;
   readonly #columnNumber: number;
   readonly #info: ModelInfo;
-  headerInternal: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|null;
+  #header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|null;
   constructor(
       rawLocation: SDK.CSSModel.CSSLocation, info: ModelInfo,
       updateDelegate: (arg0: LiveLocationInterface) => Promise<void>, locationPool: LiveLocationPool) {
@@ -292,22 +292,22 @@ export class LiveLocation extends LiveLocationWithPool {
     this.#lineNumber = rawLocation.lineNumber;
     this.#columnNumber = rawLocation.columnNumber;
     this.#info = info;
-    this.headerInternal = null;
+    this.#header = null;
   }
 
   header(): SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|null {
-    return this.headerInternal;
+    return this.#header;
   }
 
   setHeader(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|null): void {
-    this.headerInternal = header;
+    this.#header = header;
   }
 
   override async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
-    if (!this.headerInternal) {
+    if (!this.#header) {
       return null;
     }
-    const rawLocation = new SDK.CSSModel.CSSLocation(this.headerInternal, this.#lineNumber, this.#columnNumber);
+    const rawLocation = new SDK.CSSModel.CSSLocation(this.#header, this.#lineNumber, this.#columnNumber);
     return CSSWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
   }
 

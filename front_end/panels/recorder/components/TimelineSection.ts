@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -60,6 +60,7 @@ export class TimelineSection extends HTMLElement {
       html`
       <style>${timelineSectionStyles}</style>
       <div class=${Lit.Directives.classMap(classes)}>
+        <div class="overlay"></div>
         <div class="icon"><slot name="icon"></slot></div>
         <svg width="24" height="100%" class="bar">
           <rect class="line" x="7" y="0" width="2" height="100%" />

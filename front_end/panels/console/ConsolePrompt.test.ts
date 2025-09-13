@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -27,14 +27,18 @@ describeWithMockConnection('ConsoleContextSelector', () => {
   let consolePrompt: Console.ConsolePrompt.ConsolePrompt;
   let keyBinding: CodeMirror.KeyBinding[];
   let evaluateOnTarget: sinon.SinonStub;
+  let checkAccessPreconditionsStub: sinon.SinonStub;
   let editor: TextEditor.TextEditor.TextEditor;
 
   beforeEach(() => {
     sinon.stub(Host.AidaClient.HostConfigTracker.instance(), 'pollAidaAvailability').callsFake(async () => {});
+    checkAccessPreconditionsStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
+    checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     updateHostConfig({
       devToolsAiCodeCompletion: {
         enabled: true,
       },
+      aidaAvailability: {enabled: true},
     });
     registerNoopActions(['console.clear', 'console.clear.history', 'console.create-pin']);
 
@@ -158,6 +162,42 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     assert.exists(consolePrompt['aiCodeCompletion']);
     setting.set(false);
     assert.isUndefined(consolePrompt['aiCodeCompletion']);
+  });
+
+  describe('onAidaAvailabilityChange', () => {
+    it('sets up AI completion when AIDA becomes available', async () => {
+      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
+      Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.isUndefined(consolePrompt['aiCodeCompletion']);
+
+      checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+      Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.exists(consolePrompt['aiCodeCompletion']);
+    });
+
+    it('cleans up AI completion when AIDA becomes unavailable', async () => {
+      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+      Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.exists(consolePrompt['aiCodeCompletion']);
+
+      checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
+      Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.isUndefined(consolePrompt['aiCodeCompletion']);
+    });
   });
 
   it('sends console history in the request to AIDA', () => {

@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -73,8 +73,6 @@ export function splitByComma(value: string): string[] {
 export function stripComments(value: string): string {
   return value.replaceAll(/(\/\*(?:.|\s)*?\*\/)/g, '');
 }
-
-const cssParser = CodeMirror.css.cssLanguage.parser;
 
 function nodeText(node: CodeMirror.SyntaxNode, text: string): string {
   return nodeTextRange(node, node, text);
@@ -249,12 +247,12 @@ export class BottomUpTreeMatching extends TreeWalker {
     return this.#matchedNodes.get(this.#key(node));
   }
 
-  hasUnresolvedVars(node: CodeMirror.SyntaxNode): boolean {
-    return this.hasUnresolvedVarsRange(node, node);
+  hasUnresolvedSubstitutions(node: CodeMirror.SyntaxNode): boolean {
+    return this.hasUnresolvedSubstitutionsRange(node, node);
   }
 
-  hasUnresolvedVarsRange(from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode): boolean {
-    return this.computedText.hasUnresolvedVars(from.from - this.ast.tree.from, to.to - this.ast.tree.from);
+  hasUnresolvedSubstitutionsRange(from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode): boolean {
+    return this.computedText.hasUnresolvedSubstitutions(from.from - this.ast.tree.from, to.to - this.ast.tree.from);
   }
 
   getComputedText(node: CodeMirror.SyntaxNode, substitutionHook?: (match: Match) => string | null): string {
@@ -274,9 +272,9 @@ export class BottomUpTreeMatching extends TreeWalker {
     return this.computedText.countTopLevelValues(from.from - this.ast.tree.from, to.from - this.ast.tree.from);
   }
 
-  getComputedPropertyValueText(): string {
+  getComputedPropertyValueText(substitutionHook?: (match: Match) => string | null): string {
     const [from, to] = ASTUtils.range(ASTUtils.siblings(ASTUtils.declValue(this.ast.tree)));
-    return this.getComputedTextRange(from ?? this.ast.tree, to ?? this.ast.tree);
+    return this.getComputedTextRange(from ?? this.ast.tree, to ?? this.ast.tree, substitutionHook);
   }
 
   getComputedTextRange(
@@ -415,7 +413,7 @@ export class ComputedText {
     }
   }
 
-  hasUnresolvedVars(begin: number, end: number): boolean {
+  hasUnresolvedSubstitutions(begin: number, end: number): boolean {
     for (const chunk of this.#range(begin, end)) {
       if (chunk.computedText === null) {
         return true;
@@ -577,6 +575,7 @@ export namespace ASTUtils {
 }
 
 function declaration(rule: string): CodeMirror.SyntaxNode|null {
+  const cssParser = CodeMirror.css.cssLanguage.parser;
   return cssParser.parse(rule).topNode.getChild('RuleSet')?.getChild('Block')?.getChild('Declaration') ?? null;
 }
 

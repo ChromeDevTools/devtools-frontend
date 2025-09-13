@@ -1,8 +1,8 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as UI from '../../legacy.js';
+import * as Geometry from '../../../../models/geometry/geometry.js';
 
 import {CSSLinearEasingModel} from './CSSLinearEasingModel.js';
 
@@ -21,8 +21,8 @@ export abstract class AnimationTimingModel {
       return cssLinearEasingModel;
     }
 
-    return UI.Geometry.CubicBezier.parse(text) || null;
+    return Geometry.CubicBezier.parse(text) || null;
   }
 }
 
-export const LINEAR_BEZIER = UI.Geometry.LINEAR_BEZIER;
+export const LINEAR_BEZIER = Geometry.LINEAR_BEZIER;

@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -11,7 +11,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import thirdPartyTreeViewStyles from './thirdPartyTreeView.css.js';
 import * as TimelineTreeView from './TimelineTreeView.js';
-import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -59,8 +58,8 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
   }
 
   override setModelWithEvents(
-      selectedEvents: Trace.Types.Events.Event[]|null, parsedTrace?: Trace.Handlers.Types.ParsedTrace|null,
-      entityMappings?: Utils.EntityMapper.EntityMapper|null): void {
+      selectedEvents: Trace.Types.Events.Event[]|null, parsedTrace?: Trace.TraceModel.ParsedTrace|null,
+      entityMappings?: Trace.EntityMapper.EntityMapper|null): void {
     super.setModelWithEvents(selectedEvents, parsedTrace, entityMappings);
 
     const hasEvents = Boolean(selectedEvents && selectedEvents.length > 0);
@@ -89,7 +88,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     // default are not in the set of visible entries (as they are not shown on
     // the main flame chart).
     const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(
-        Utils.EntryStyles.visibleTypes().concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
+        Trace.Styles.visibleTypes().concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
 
     const node = new Trace.Extras.TraceTree.BottomUpRootNode(relatedEvents, {
       textFilter: this.textFilter(),

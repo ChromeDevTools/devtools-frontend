@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -197,7 +197,7 @@ export class DeviceModeToolbar {
   private readonly showUserAgentTypeSetting: Common.Settings.Setting<boolean>;
   private autoAdjustScaleSetting: Common.Settings.Setting<boolean>;
   private readonly lastMode: Map<EmulationModel.EmulatedDevices.EmulatedDevice, EmulationModel.EmulatedDevices.Mode>;
-  private readonly elementInternal: HTMLDivElement;
+  readonly #element: HTMLDivElement;
   private readonly emulatedDevicesList: EmulationModel.EmulatedDevices.EmulatedDevicesList;
   private readonly persistenceSetting: Common.Settings.Setting<{device: string, orientation: string, mode: string}>;
   private spanButton!: UI.Toolbar.ToolbarButton;
@@ -240,11 +240,11 @@ export class DeviceModeToolbar {
 
     this.lastMode = new Map();
 
-    this.elementInternal = document.createElement('div');
-    this.elementInternal.classList.add('device-mode-toolbar');
-    this.elementInternal.setAttribute('jslog', `${VisualLogging.toolbar('device-mode').track({resize: true})}`);
+    this.#element = document.createElement('div');
+    this.#element.classList.add('device-mode-toolbar');
+    this.#element.setAttribute('jslog', `${VisualLogging.toolbar('device-mode').track({resize: true})}`);
 
-    const mainToolbar = this.elementInternal.createChild('devtools-toolbar', 'main-toolbar');
+    const mainToolbar = this.#element.createChild('devtools-toolbar', 'main-toolbar');
     this.appendDeviceSelectMenu(mainToolbar);
 
     this.widthInput = new EmulationComponents.DeviceSizeInputElement.SizeInputElement(
@@ -269,7 +269,7 @@ export class DeviceModeToolbar {
 
     this.appendDisplaySettings(mainToolbar);
     this.appendDevicePositionItems(mainToolbar);
-    const optionsToolbar = this.elementInternal.createChild('devtools-toolbar', 'device-mode-toolbar-options');
+    const optionsToolbar = this.#element.createChild('devtools-toolbar', 'device-mode-toolbar-options');
     optionsToolbar.wrappable = true;
     this.fillOptionsToolbar(optionsToolbar);
 
@@ -711,7 +711,7 @@ export class DeviceModeToolbar {
   }
 
   element(): Element {
-    return this.elementInternal;
+    return this.#element;
   }
 
   update(): void {

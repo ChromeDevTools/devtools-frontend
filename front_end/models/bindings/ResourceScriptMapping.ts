@@ -1,36 +1,11 @@
-/*
- * Copyright (C) 2012 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2012 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -307,9 +282,9 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
   readonly uiSourceCode: Workspace.UISourceCode.UISourceCode;
   readonly script: SDK.Script.Script|null;
   #scriptSource?: string|null;
-  #isDivergingFromVMInternal?: boolean;
-  #hasDivergedFromVMInternal?: boolean;
-  #isMergingToVMInternal?: boolean;
+  #isDivergingFromVM?: boolean;
+  #hasDivergedFromVM?: boolean;
+  #isMergingToVM?: boolean;
   #updateMutex = new Common.Mutex.Mutex();
   constructor(
       resourceScriptMapping: ResourceScriptMapping, uiSourceCode: Workspace.UISourceCode.UISourceCode,
@@ -352,6 +327,11 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
   }
 
   private workingCopyCommitted(): void {
+    // This feature flag is for turning down live edit. If it's not present, we keep the feature enabled.
+    if (Root.Runtime.hostConfig.devToolsLiveEdit?.enabled === false) {
+      return;
+    }
+
     if (this.uiSourceCode.project().canSetFileContent()) {
       return;
     }
@@ -408,9 +388,9 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
     // Do not interleave "divergeFromVM" with "mergeToVM" calls.
     const release = await this.#updateMutex.acquire();
     const diverged = this.isDiverged();
-    if (diverged && !this.#hasDivergedFromVMInternal) {
+    if (diverged && !this.#hasDivergedFromVM) {
       await this.divergeFromVM();
-    } else if (!diverged && this.#hasDivergedFromVMInternal) {
+    } else if (!diverged && this.#hasDivergedFromVM) {
       await this.mergeToVM();
     }
     release();
@@ -418,34 +398,34 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
 
   private async divergeFromVM(): Promise<void> {
     if (this.script) {
-      this.#isDivergingFromVMInternal = true;
+      this.#isDivergingFromVM = true;
       await this.#resourceScriptMapping.debuggerWorkspaceBinding.updateLocations(this.script);
-      this.#isDivergingFromVMInternal = undefined;
-      this.#hasDivergedFromVMInternal = true;
+      this.#isDivergingFromVM = undefined;
+      this.#hasDivergedFromVM = true;
       this.dispatchEventToListeners(ResourceScriptFile.Events.DID_DIVERGE_FROM_VM);
     }
   }
 
   private async mergeToVM(): Promise<void> {
     if (this.script) {
-      this.#hasDivergedFromVMInternal = undefined;
-      this.#isMergingToVMInternal = true;
+      this.#hasDivergedFromVM = undefined;
+      this.#isMergingToVM = true;
       await this.#resourceScriptMapping.debuggerWorkspaceBinding.updateLocations(this.script);
-      this.#isMergingToVMInternal = undefined;
+      this.#isMergingToVM = undefined;
       this.dispatchEventToListeners(ResourceScriptFile.Events.DID_MERGE_TO_VM);
     }
   }
 
   hasDivergedFromVM(): boolean {
-    return Boolean(this.#hasDivergedFromVMInternal);
+    return Boolean(this.#hasDivergedFromVM);
   }
 
   isDivergingFromVM(): boolean {
-    return Boolean(this.#isDivergingFromVMInternal);
+    return Boolean(this.#isDivergingFromVM);
   }
 
   isMergingToVM(): boolean {
-    return Boolean(this.#isMergingToVMInternal);
+    return Boolean(this.#isMergingToVM);
   }
 
   checkMapping(): void {

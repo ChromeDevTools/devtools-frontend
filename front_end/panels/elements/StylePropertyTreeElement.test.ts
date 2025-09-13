@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -791,7 +791,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
                      stylePropertyTreeElement.matchedStyles(), stylePropertyTreeElement.property.ownerStyle)]);
 
         const res = {
-          hasUnresolvedVars: matching.hasUnresolvedVars(ast.tree),
+          hasUnresolvedVars: matching.hasUnresolvedSubstitutions(ast.tree),
           computedText: matching.getComputedText(ast.tree),
         };
         return res;

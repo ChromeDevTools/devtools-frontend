@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -12,6 +12,7 @@ import * as Types from '../types/types.js';
 import {getLogNormalScore} from './Statistics.js';
 import {
   InsightKeys,
+  type InsightModel,
   type InsightModels,
   type InsightSet,
   type InsightSetContext,
@@ -431,4 +432,22 @@ export function calculateDocFirstByteTs(docRequest: Types.Events.SyntheticNetwor
   return Types.Timing.Micro(
       Helpers.Timing.secondsToMicro(timing.requestTime) +
       Helpers.Timing.milliToMicro(timing.receiveHeadersStart ?? timing.receiveHeadersEnd));
+}
+
+/**
+ * Calculates the trace bounds for the given insight that are relevant.
+ *
+ * Uses the insight's overlays to determine the relevant trace bounds. If there are
+ * no overlays, falls back to the insight set's navigation bounds.
+ */
+export function insightBounds(
+    insight: InsightModel, insightSetBounds: Types.Timing.TraceWindowMicro): Types.Timing.TraceWindowMicro {
+  const overlays = insight.createOverlays?.() ?? [];
+  const windows = overlays.map(Helpers.Timing.traceWindowFromOverlay).filter(bounds => !!bounds);
+  const overlaysBounds = Helpers.Timing.combineTraceWindowsMicro(windows);
+  if (overlaysBounds) {
+    return overlaysBounds;
+  }
+
+  return insightSetBounds;
 }

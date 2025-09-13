@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "성능 패널"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "계정"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "어도너"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "소스"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "동기화"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "스크립트 표시"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "AI 어시스턴스"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "DevTools 맞춤 설정 및 제어"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "이전 패널"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "배지 받기"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "DevTools 새로고침"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "이 기능은 인터넷에 연결되어 있을 때만 사용할 수 있습니다."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevTools에서 외부 요청을 받았습니다."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "알 수 없는 파일 로드 오류"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "압축 사전 전송"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "서버에서 시작된 무결성 검사"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "HTTP 인코딩되지 않은 다이제스트 사양"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "페이지가 로드된 후 새 기기를 시뮬레이션하면 LCP에 영향을 미칠 수 있습니다. 정확한 LCP 데이터를 얻으려면 새 기기를 시뮬레이션한 후 페이지를 새로고침하세요."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "로컬 채팅 삭제"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "대화 내보내기"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "위의 단계에 따라 질문하세요."
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "이전 대화 없음"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "응답이 클립보드에 복사됨"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "의견 보내기"
   },
@@ -2685,7 +2706,7 @@
     "message": "설정"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
-    "message": "AI 지원"
+    "message": "AI 어시스턴스"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "AI에 질문하기"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "추측 로드"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "아무 보고서나 클릭하여 본문 표시"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "선택된 보고서 없음"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "아무 보고서나 클릭하여 본문 표시"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "보고서 또는 엔드포인트 없음"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "선택된 보고서 없음"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "이 페이지에서 Reporting API 보고서 및 엔드포인트를 검사할 수 있습니다."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "WebRTC가 사용되었기 때문에 뒤로-앞으로 캐시가 사용 중지되었습니다."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "WebShare를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocket이 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "WebSocket이 사용되었기 때문에 뒤로-앞으로 캐시가 사용 중지되었습니다."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransport가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "WebTransport가 사용되었기 때문에 뒤로-앞으로 캐시가 사용 중지되었습니다."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "WebXR을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "그리드 모드 사용 중지"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "메이슨리 모드 사용 중지"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "스크롤-스냅 오버레이 사용 중지"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "그리드 모드 사용 설정"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "메이슨리 모드 사용 설정"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "스크롤-스냅 오버레이 사용 설정"
@@ -6771,7 +6789,7 @@
     "message": "이벤트 리스너 카테고리"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework 리스너"
+    "message": "Framework 리스너 해결"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "패시브"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Flexbox 오버레이"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "그리드/메이슨리"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "그리드/메이슨리 오버레이"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "이 페이지에서 발견된 Flexbox 레이아웃 없음"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "이 페이지에서 발견된 그리드 또는 메이슨리 레이아웃 없음"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "오버레이 디스플레이 설정"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "요청은 로컬에 의해 재정의될 수 있습니다. 소스 패널을 참고하세요."
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "추가…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "{PH1} 추가"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "맞춤"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "사전 설정"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} - 추천"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "보정…"
@@ -8646,10 +8685,10 @@
     "message": "기본값으로 재설정"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "'Save-Data': 강제 사용 중지"
+    "message": "'Save-Data': 사용 중지"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "'Save-Data': 강제 사용 설정"
+    "message": "'Save-Data': 사용 설정"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "페이지에서 navigator.connection.saveData에 의해 보고된 값을 재정의합니다."
@@ -9357,7 +9396,7 @@
     "message": "차단된 요청만 표시"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(시크릿 모드 전용) IP 보호 프록시에 전송된 요청만 표시"
+    "message": "IP 보호 프록시에 전송된 요청만 표시합니다. 일반 브라우징에서는 영향을 주지 않습니다."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "차단된 응답 쿠키가 있는 요청만 표시합니다."
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1} 다운로드"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1}(캐시에서)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1}(ServiceWorker에서)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "지연 시간 {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "지연 시간 {PH1}, 다운로드 {PH2}(총 {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "응답의 'set-cookie' 헤더에서 서버로부터 수신한 쿠키"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "동영상"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP 보호 우회"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "ID"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "메서드"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "IP 프록시를 사용할 수 없음"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "IP 프록시는 시크릿 모드에서만 사용할 수 있습니다. 시크릿 모드에서 사이트를 엽니다."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "프록시 요청"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "상태"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Chrome에서 IP 프록시를 사용 설정한 경우 이 사이트의 성능을 테스트합니다."
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "IP 보호 프록시 컨트롤"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH2}이(가) 포함된 {PH1}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "제어"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "IP 보호"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "주요 출처"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "사용자 유휴 상태, 화면 잠금 해제됨"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "성능 트레이스 주석의 제목을 자동으로 생성합니다."
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "콘솔 또는 소스 패널에 입력하면 코드 추천이 표시됩니다. Tab 키를 눌러 하나를 수락하세요."
   },
@@ -12336,16 +12396,16 @@
     "message": "AI로 생산성 향상"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "코드 추천을 생성하기 위해 콘솔 입력 내용, 현재 콘솔 세션의 기록, 현재 열려 있는 파일의 콘텐츠가 Google과 공유됩니다. 이 기능의 개선을 위해 인적 검토자가 데이터를 확인할 수도 있습니다."
+    "message": "코드 추천을 생성하기 위해 콘솔 입력 내용, 현재 콘솔 세션의 기록, 현재 검사 중인 CSS, 현재 열려 있는 파일의 콘텐츠가 Google과 공유됩니다. 이 기능의 개선을 위해 인적 검토자가 데이터를 확인할 수도 있습니다."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "코드 추천을 생성하기 위해 콘솔 입력 내용, 현재 콘솔 세션의 기록, 현재 열려 있는 파일의 콘텐츠가 Google과 공유됩니다. 이 데이터는 Google AI 모델을 개선하는 데 사용되지 않습니다."
+    "message": "코드 추천을 생성하기 위해 콘솔 입력 내용, 현재 콘솔 세션의 기록, 현재 검사 중인 CSS, 현재 열려 있는 파일의 콘텐츠가 Google과 공유됩니다. 이 데이터는 Google AI 모델을 개선하는 데 사용되지 않습니다. 조직에서 언제든지 이 설정을 변경할 수 있습니다."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "설명을 생성할 수 있도록 콘솔 메시지, 관련 스택 트레이스, 관련 소스 코드, 관련 네트워크 헤더가 Google로 전송됩니다. 이 기능의 개선을 위해 인적 검토자가 데이터를 확인할 수도 있습니다."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "설명을 생성할 수 있도록 콘솔 메시지, 관련 스택 트레이스, 관련 소스 코드, 관련 네트워크 헤더가 Google로 전송됩니다. 이 데이터는 Google의 AI 모델을 개선하는 데 사용되지 않습니다."
+    "message": "설명을 생성할 수 있도록 콘솔 메시지, 관련 스택 트레이스, 관련 소스 코드, 관련 네트워크 헤더가 Google로 전송됩니다. 이 데이터는 Google AI 모델을 개선하는 데 사용되지 않습니다. 조직에서 언제든지 이 설정을 변경할 수 있습니다."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "거주 지역에 따라 Google에서 데이터를 수집하지 않을 수 있습니다"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "AI 지원 사용 설정"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "AI 코드 추천 사용 설정"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "성능 패널 주석에 대한 AI 추천 사용 설정"
@@ -12381,19 +12444,19 @@
     "message": "AI 기반 통계를 통해 CSS 스타일, 네트워크 활동, 성능 병목 현상, 파일 출처를 파악하세요"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "검사된 페이지에서 웹 API, 네트워크 요청, 파일 및 성능 트레이스를 통해 액세스할 수 있는 모든 사용자 쿼리 및 데이터는 설명을 생성하기 위해 Google로 전송됩니다. 이 기능의 개선을 위해 인적 검토자가 데이터를 확인할 수도 있습니다. 개인 정보 또는 민감한 정보가 포함된 페이지에서는 사용하지 마세요."
+    "message": "설명을 생성할 수 있도록, 검사된 페이지에서 웹 API, 네트워크 요청, 파일, 성능 트레이스를 통해 액세스할 수 있는 모든 사용자 질문 및 데이터가 Google로 전송됩니다. 이 기능의 개선을 위해 인적 검토자가 데이터를 확인할 수도 있습니다. 개인 정보 또는 민감한 정보가 포함된 페이지에서는 사용하지 마세요."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "검사된 페이지에서 웹 API, 네트워크 요청, 파일 및 성능 트레이스를 통해 액세스할 수 있는 모든 사용자 쿼리 및 데이터는 설명을 생성하기 위해 Google로 전송됩니다. 이 데이터는 Google의 AI 모델을 개선하는 데 사용되지 않습니다."
+    "message": "설명을 생성할 수 있도록, 검사된 페이지에서 웹 API, 네트워크 요청, 파일, 성능 트레이스를 통해 액세스할 수 있는 모든 사용자 질문 및 데이터가 Google로 전송됩니다. 이 데이터는 Google AI 모델을 개선하는 데 사용되지 않습니다. 조직에서 언제든지 이 설정을 변경할 수 있습니다."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "설명을 생성하기 위해 성능 추적이 Google로 전송됩니다. 이 데이터는 Google AI 모델을 개선하는 데 사용되지 않습니다."
+    "message": "주석 추천을 생성할 수 있도록 성능 트레이스가 Google로 전송됩니다. 이 기능의 개선을 위해 인적 검토자가 데이터를 확인할 수도 있습니다."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "설명을 생성하기 위해 성능 추적이 Google로 전송됩니다. 이 데이터는 Google AI 모델을 개선하는 데 사용되지 않습니다."
+    "message": "주석 추천을 생성할 수 있도록 성능 트레이스가 Google로 전송됩니다. 이 데이터는 Google AI 모델을 개선하는 데 사용되지 않습니다. 조직에서 언제든지 이 설정을 변경할 수 있습니다."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "성능 패널 주석에 대한 AI 추천 받기"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "자동 생성된 라벨로 성능 트레이스에 주석을 다는 데 도움이 됩니다."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "코드 완성 도움 받기"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "불안정한 실험"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium(연간)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium(월간)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro(연간)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro(월간)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "Standard 요금제"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "알 수 없는 요금제"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Chrome에 로그인되어 있지 않습니다."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "이 설정을 사용하려면 먼저 Chrome에서 설정 동기화를 사용해야 합니다."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "설정으로 이동"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(관련 데이터가 Google로 전송됨)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "가입"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Chrome에 로그인된 이메일 주소:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "이 설정을 사용하려면 Chrome 동기화를 사용 설정해야 합니다."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "프로필 보기"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "맞춤 기기 추가"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU 제한 사용 설정됨"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- 자바스크립트 샘플링이 사용 중지됨"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- 네트워크 제한이 사용 설정됨"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "서드 파티 흐리게 표시"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "자바스크립트 샘플 사용 중지"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "자바스크립트 샘플링을 사용 중지하고 휴대기기에 대해 실행 중인 경우 오버헤드를 줄입니다."
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "여기에 트레이스 파일 또는 URL 드롭"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "반복"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "시간 초과"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "소요 시간"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "트랙 구성"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "모두 표시"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "이 트레이스에는 일부 트랙이 숨겨져 있습니다. 트랙 이름을 마우스 오른쪽 버튼을 클릭하여 트랙을 구성할 수 있습니다."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "비동기"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket 프로토콜"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "성능 트레이스 저장 "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "주석 포함"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "스크립트 콘텐츠 포함"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "스크립트 소스 맵 포함"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "저장"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "트레이스 저장…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "고급"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome 플래그 또는 브라우저 구성으로 인해 이 요청의 쿠키가 차단되었습니다. 문제 패널에서 자세히 알아보세요."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "오디오 컨텍스트: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "콜백 버퍼 크기"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "콜백 간격"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "현재 시간"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "최대 출력 채널"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(기록 없음)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "감지된 Web Audio API 사용이 없습니다."
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "모니터링을 시작하려면 Web Audio API를 사용하는 페이지를 여세요."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "렌더링 용량"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "샘플링 레이트"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "상태"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "오디오"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "도구 더보기"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "맨 아래로 이동"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "창으로 이동"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "맨 위로 이동"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "기본 탭 바로 이동"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "패널"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "선택함"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "새로운 기능입니다."
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "명령어 실행"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "새로운 기능입니다."
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "검색결과 없음"

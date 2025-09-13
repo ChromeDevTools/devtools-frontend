@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -7,6 +7,8 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
+import type * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
   cleanup,
@@ -264,15 +266,17 @@ describeWithMockConnection('AI Assistance Panel', () => {
       {
         flavor: SDK.NetworkRequest.NetworkRequest,
         createContext: () => {
-          return new AiAssistanceModel.RequestContext(sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest));
+          return new AiAssistanceModel.RequestContext(
+              sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest),
+              sinon.createStubInstance(NetworkTimeCalculator.NetworkTransferDurationCalculator));
         },
         action: 'drjones.network-floating-button'
       },
       {
         flavor: TimelineUtils.AIContext.AgentFocus,
         createContext: () => {
-          return AiAssistanceModel.PerformanceTraceContext.fromCallTree(
-              sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree));
+          const parsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
+          return AiAssistanceModel.PerformanceTraceContext.full(parsedTrace);
         },
         action: 'drjones.performance-panel-context'
       },
@@ -280,7 +284,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         flavor: TimelineUtils.AIContext.AgentFocus,
         createContext: () => {
           // @ts-expect-error: don't need any data.
-          const context = AiAssistanceModel.PerformanceTraceContext.fromInsight(null, null, null);
+          const context = AiAssistanceModel.PerformanceTraceContext.fromInsight({insights: new Map()}, new Map());
           sinon.stub(AiAssistanceModel.PerformanceTraceContext.prototype, 'getSuggestions')
               .returns(Promise.resolve([{title: 'test suggestion'}]));
           return context;
@@ -355,8 +359,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel, view} = await createAiAssistancePanel({chatView});
 
       // Firstly, start a conversation and set a context
-      const context = AiAssistanceModel.PerformanceTraceContext.fromCallTree(
-          sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree));
+      const fakeParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
+      const context = AiAssistanceModel.PerformanceTraceContext.full(fakeParsedTrace);
       UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, context.getItem());
       panel.handleAction('drjones.performance-panel-context');
       await view.nextInput;
@@ -458,7 +462,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
          assert.isFalse(view.input.showChatActions);
          assert.isFalse(view.input.showActiveConversationActions);
        });
-
   });
 
   describe('history interactions', () => {
@@ -1495,8 +1498,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
            viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'timeline');
            UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, timelinePanel);
 
-           const fakeCallTree = sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree);
-           const focus = TimelineUtils.AIContext.AgentFocus.fromCallTree(fakeCallTree);
+           const fakeParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
+           const focus = TimelineUtils.AIContext.AgentFocus.full(fakeParsedTrace);
            UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, focus);
 
            Common.Settings.moduleSetting('ai-assistance-enabled').set(true);

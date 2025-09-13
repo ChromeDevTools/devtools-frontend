@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2011 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2011 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -507,7 +481,7 @@ interface DispatcherMap extends Map<ProtocolDomainName, ProtocolProxyApi.Protoco
 export class TargetBase {
   needsNodeJSPatching: boolean;
   readonly sessionId: string;
-  routerInternal: SessionRouter|null;
+  #router: SessionRouter|null;
   #agents: AgentsMap = new Map();
   #dispatchers: DispatcherMap = new Map();
 
@@ -521,15 +495,15 @@ export class TargetBase {
     }
 
     let router: SessionRouter;
-    if (sessionId && parentTarget?.routerInternal) {
-      router = parentTarget.routerInternal;
+    if (sessionId && parentTarget && parentTarget.#router) {
+      router = parentTarget.#router;
     } else if (connection) {
       router = new SessionRouter(connection);
     } else {
       router = new SessionRouter(connectionFactory());
     }
 
-    this.routerInternal = router;
+    this.#router = router;
 
     router.registerSession(this, this.sessionId);
 
@@ -557,15 +531,15 @@ export class TargetBase {
   }
 
   dispose(_reason: string): void {
-    if (!this.routerInternal) {
+    if (!this.#router) {
       return;
     }
-    this.routerInternal.unregisterSession(this.sessionId);
-    this.routerInternal = null;
+    this.#router.unregisterSession(this.sessionId);
+    this.#router = null;
   }
 
   isDisposed(): boolean {
-    return !this.routerInternal;
+    return !this.#router;
   }
 
   markAsNodeJSForTest(): void {
@@ -573,7 +547,7 @@ export class TargetBase {
   }
 
   router(): SessionRouter|null {
-    return this.routerInternal;
+    return this.#router;
   }
 
   // Agent accessors, keep alphabetically sorted.

@@ -1,4 +1,4 @@
-# Copyright 2024 The Chromium Authors. All rights reserved.
+# Copyright 2024 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -14,6 +14,7 @@ ts_library("testing") {
     "ContextMenuHelpers.ts",
     "Cookies.ts",
     "DOMHelpers.ts",
+    "DOMHooks.ts",
     "DataGridHelpers.ts",
     "EnvironmentHelpers.ts",
     "ExpectStubCall.ts",
@@ -74,6 +75,7 @@ ts_library("testing") {
     "../models/stack_trace:bundle",
     "../models/text_utils:bundle",
     "../models/trace:bundle",
+    "../models/trace_source_maps_resolver:bundle",
     "../models/workspace:bundle",
     "../panels/elements:meta",
     "../panels/sensors:meta",
@@ -87,8 +89,4 @@ ts_library("testing") {
     "../ui/lit:bundle",
     "../ui/visual_logging:testing",
   ]
-}
-
-copy_to_gen("snapshots") {
-  sources = [ "SnapshotTester.snapshot.txt" ]
 }

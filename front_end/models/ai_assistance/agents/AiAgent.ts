@@ -1,10 +1,9 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
-import type * as Lit from '../../../ui/lit/lit.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 
 export const enum ResponseType {
@@ -176,8 +175,7 @@ export type ExternalRequestResponse = ExternalRequestAnswer|ExternalRequestNotif
 export abstract class ConversationContext<T> {
   abstract getOrigin(): string;
   abstract getItem(): T;
-  abstract getIcon(): Lit.TemplateResult|undefined;
-  abstract getTitle(opts?: {disabled: boolean}): string|ReturnType<typeof Lit.Directives.until>;
+  abstract getTitle(): string;
 
   isOriginAllowed(agentOrigin: string|undefined): boolean {
     if (!agentOrigin) {

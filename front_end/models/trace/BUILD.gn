@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors. All rights reserved.
+# Copyright 2022 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -9,9 +9,13 @@ import("../visibility.gni")
 
 devtools_module("trace") {
   sources = [
+    "EntityMapper.ts",
+    "EventsSerializer.ts",
     "LanternComputationData.ts",
     "ModelImpl.ts",
+    "Name.ts",
     "Processor.ts",
+    "Styles.ts",
   ]
 
   deps = [
@@ -59,6 +63,7 @@ devtools_entrypoint("bundle") {
     "../../ui/legacy/components/utils/*",
     "../ai_assistance/*",
     "../live-metrics/*",
+    "../trace_source_maps_resolver/*",
     "./*",
   ]
 
@@ -69,7 +74,10 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "EntityMapper.test.ts",
+    "EventsSerializer.test.ts",
     "ModelImpl.test.ts",
+    "Name.test.ts",
     "Processor.test.ts",
   ]
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2015 The Chromium Authors. All rights reserved.
+// Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -272,11 +272,11 @@ export const loadAsStream = function(
 
   function dataURLDecodeSuccessful(text: string): void {
     streamWrite(streamId, text);
-    finishedCallback(({statusCode: 200} as LoadNetworkResourceResult));
+    finishedCallback(({statusCode: 200}));
   }
 
   function dataURLDecodeFailed(_xhrStatus: Error): void {
     const messageOverride: string = i18nString(UIStrings.decodingDataUrlFailed);
-    finishedCallback(({statusCode: 404, messageOverride} as LoadNetworkResourceResult));
+    finishedCallback(({statusCode: 404, messageOverride}));
   }
 };

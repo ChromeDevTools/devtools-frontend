@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -111,8 +111,8 @@ describeWithEnvironment('UserTimingsHandler', function() {
         }
       });
       it('correctly extracts nested timings in the correct order', async function() {
-        const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings-complex.json.gz');
-        const complexTimingsData = parsedTrace.UserTimings;
+        const {data} = await TraceLoader.traceEngine(this, 'user-timings-complex.json.gz');
+        const complexTimingsData = data.UserTimings;
         const userTimingEventNames = [];
         for (const event of complexTimingsData.performanceMeasures) {
           // This trace has multiple user timings events, in this instance we only care about the ones that include 'nested' in the name.
@@ -155,8 +155,8 @@ describeWithEnvironment('UserTimingsHandler', function() {
 
   describe('console timings', function() {
     beforeEach(async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
-      timingsData = parsedTrace.UserTimings;
+      const {data} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+      timingsData = data.UserTimings;
     });
     describe('console.time events parsing', function() {
       it('parses the start and end events and returns a list of blocks', async () => {

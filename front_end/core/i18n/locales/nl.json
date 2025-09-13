@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "Deelvenster Prestaties"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "Account"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "Bronnen"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "Synchroniseren"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools: {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "Scripts tonen"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "AI-ondersteuning"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "DevTools aanpassen en beheren"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Vorig deelvenster"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "Badges ontvangen"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "DevTools opnieuw laden"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Deze functie is alleen beschikbaar met een actieve internetverbinding."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevTools heeft een extern verzoek ontvangen"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Onbekende fout bij het laden van het bestand"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Compressiefunctie voor woordenboekoverdracht"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "Door de server gestarte integriteitscontroles"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "Specificatie van niet-gecodeerde HTTP-digest"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Als je een nieuw apparaat simuleert nadat de pagina is geladen, kan dit van invloed zijn op LCP. Laad de pagina opnieuw nadat je een nieuw apparaat hebt gesimuleerd voor nauwkeurige LCP-gegevens."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Lokale chat verwijderen"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "Gesprek exporteren"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Volg de stappen hierboven om een vraag te stellen"
   },
@@ -2677,6 +2695,9 @@
   },
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "Geen eerdere gesprekken"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "Reactie naar klembord gekopieerd"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "Feedback sturen"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Speculatief geladen items"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Klik op een rapport om de content te bekijken"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "Geen rapport geselecteerd"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting-API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "Klik op een rapport om de content te bekijken"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "Geen rapport of eindpunt"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "Geen rapport geselecteerd"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "Op deze pagina kun je Reporting API rapporten en eindpunten inspecteren."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Pagina's met WebRTC kunnen niet worden opgeslagen in Back-Forward Cache."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "Back-Forward Cache is uitgezet omdat WebRTC is gebruikt."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Pagina's die WebShare gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Pagina's met WebSocket kunnen niet worden opgeslagen in Back-Forward Cache."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "Back-Forward Cache is uitgezet omdat WebSocket is gebruikt."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Pagina's met WebTransport kunnen niet worden opgeslagen in Back-Forward Cache."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "Back-Forward Cache is uitgezet omdat WebTransport is gebruikt."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Pagina's die WebXR gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Raster uitzetten"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "Metselmodus uitzetten"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Overlay voor scrolluitlijning uitzetten"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Raster aanzetten"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "Metselmodus aanzetten"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Overlay voor scroluitlijning aanzetten"
@@ -6771,7 +6789,7 @@
     "message": "Categorie event-listeners"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework-listeners"
+    "message": "Framework-listeners omzetten"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Passief"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Flexbox-overlays"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "Raster/metselwerk"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "Raster-/metseloverlays"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Geen flexbox-indelingen gevonden op deze pagina"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "Geen raster- of metselindelingen gevonden op deze pagina"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Weergave-instellingen van overlay"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "Verzoeken kunnen lokaal worden overschreven. Zie het deelvenster Bronnen."
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "Toevoegen…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "{PH1} toevoegen"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Aangepast"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "Voorinstellingen"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – aanbevolen"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "Kalibreren…"
@@ -8646,10 +8685,10 @@
     "message": "Resetten naar de standaardwaarde"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "'Save-Data': geforceerd uitgezet"
+    "message": "'Save-Data': uit"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "'Save-Data': geforceerd aangezet"
+    "message": "'Save-Data': aan"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "De waarde overschrijven die wordt gerapporteerd door navigator.connection.saveData op de pagina"
@@ -9357,7 +9396,7 @@
     "message": "Alleen geblokkeerde verzoeken tonen"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(Alleen incognitomodus) Alleen verzoeken tonen die naar proxy's voor IP-beveiliging zijn gestuurd"
+    "message": "Alleen verzoeken tonen die naar proxy's voor IP-beveiliging zijn gestuurd. Heeft geen effect bij normaal browsen."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Alleen verzoeken met geblokkeerde reactiecookies tonen"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1}-download"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (uit cachegeheugen)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (van ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "{PH1} latentie"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "{PH1} vertraging, {PH2} download ({PH3} in totaal)"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Cookies die van de server zijn ontvangen in de 'set-cookie'-header van de reactie"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Video"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP-beveiliging omzeilen"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "ID"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "Methode"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "IP-proxy niet beschikbaar"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "IP-proxy is alleen beschikbaar in de incognitomodus. Open de site in de incognitomodus."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "Proxy-verzoeken"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "Status"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Test hoe deze site presteert als IP-proxy aanstaat in Chrome"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "Proxyopties voor IP-beveiliging"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} met {PH2}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Bedieningselementen"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "IP-beveiliging"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Hoofdbron"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Gebruiker inactief, scherm ontgrendeld"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "Automatisch titels genereren voor annotaties voor prestatietracering"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Terwijl je typt in het deelvenster Console of Bronnen, krijg je codesuggesties. Druk op Tab om er een te accepteren."
   },
@@ -12336,16 +12396,16 @@
     "message": "Je productiviteit verhogen met AI"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "Je console-invoer, de geschiedenis van je huidige consolesessie en de inhoud van het op dit moment geopende bestand worden gedeeld met Google om codesuggesties te genereren. Deze gegevens kunnen door menselijke reviewers worden bekeken om deze functie te verbeteren."
+    "message": "Je console-invoer, de geschiedenis van je huidige consolesessie, de op dit moment geïnspecteerde CSS en de content van het op dit moment geopende bestand worden gedeeld met Google om codesuggesties te genereren. Deze gegevens kunnen door menselijke reviewers worden bekeken om deze functie te verbeteren."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Je console-invoer, de geschiedenis van je huidige consolesessie en de inhoud van het op dit moment geopende bestand worden gedeeld met Google om codesuggesties te genereren. Deze gegevens worden niet gebruikt om de AI-modellen van Google te verbeteren."
+    "message": "Je console-invoer, de geschiedenis van je huidige consolesessie, de op dit moment geïnspecteerde CSS en de content van het op dit moment geopende bestand worden gedeeld met Google om codesuggesties te genereren. Deze gegevens worden niet gebruikt om de AI-modellen van Google te verbeteren. Je organisatie kan deze instellingen op elk moment wijzigen."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "Het consolebericht, de bijbehorende stacktrace, de gerelateerde broncode en de bijbehorende netwerkheaders worden naar Google gestuurd om uitleg te genereren. Deze gegevens kunnen door menselijke reviewers worden bekeken om deze functie te verbeteren."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Het consolebericht, de bijbehorende stacktrace, de gerelateerde broncode en de bijbehorende netwerkheaders worden naar Google gestuurd om uitleg te genereren. Deze gegevens worden niet gebruikt om de AI-modellen van Google te verbeteren."
+    "message": "Het consolebericht, de bijbehorende stacktrace, de gerelateerde broncode en de bijbehorende netwerkheaders worden naar Google gestuurd om uitleg te genereren. Deze gegevens worden niet gebruikt om de AI-modellen van Google te verbeteren. Je organisatie kan deze instellingen op elk moment wijzigen."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Afhankelijk van je regio kan Google besluiten de gegevensverzameling te stoppen"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "AI-ondersteuning aanzetten"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "AI-codesuggesties aanzetten"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "AI-suggesties aanzetten voor annotaties in het prestatiepaneel"
@@ -12384,16 +12447,16 @@
     "message": "Zoekopdrachten van de gebruiker en gegevens waartoe de geïnspecteerde pagina via web-API's, netwerkverzoeken, bestanden en prestatietracering toegang heeft, worden naar Google gestuurd om uitleg te genereren. Deze gegevens kunnen door menselijke reviewers worden bekeken om deze functie te verbeteren. Gebruik deze niet op pagina's met persoonlijke of gevoelige informatie."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Zoekopdrachten van de gebruiker en gegevens waartoe de geïnspecteerde pagina via web-API's, netwerkverzoeken, bestanden en prestatietracering toegang heeft, worden naar Google gestuurd om uitleg te genereren. Deze gegevens worden niet gebruikt om de AI-modellen van Google te verbeteren."
+    "message": "Zoekopdrachten van de gebruiker en gegevens waartoe de geïnspecteerde pagina via web-API's, netwerkverzoeken, bestanden en prestatietracering toegang heeft, worden naar Google gestuurd om uitleg te genereren. Deze gegevens worden niet gebruikt om de AI-modellen van Google te verbeteren. Je organisatie kan deze instellingen op elk moment wijzigen."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "Je preprestatietracering wordt naar Google gestuurd om een uitleg te genereren. Deze gegevens worden gebruikt om de AI-modellen van Google te verbeteren."
+    "message": "Je prestatietracering wordt naar Google gestuurd om suggesties voor annotaties te genereren. Deze gegevens kunnen door menselijke reviewers worden bekeken om deze functie te verbeteren."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Je preprestatietracering wordt naar Google gestuurd om een uitleg te genereren. Deze gegevens worden niet gebruikt om de AI-modellen van Google te verbeteren."
+    "message": "Je prestatietracering wordt naar Google gestuurd om suggesties voor annotaties te genereren. Deze gegevens worden niet gebruikt om de AI-modellen van Google te verbeteren. Je organisatie kan deze instellingen op elk moment wijzigen."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "Krijg AI-suggesties voor annotaties in het deelvenster Prestaties"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "Hiermee kun je je prestatietracering annoteren met automatisch gegenereerde labels"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "Hulp bij het afronden van je code"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Onstabiele experimenten"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (jaarlijks)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (maandelijks)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (jaarlijks)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (maandelijks)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "Standaardprijsmodel"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "Onbekend abonnement"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Je bent niet ingelogd bij Chrome."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Als je deze instelling wilt aanzetten, moet je eerst de synchronisatie van instellingen aanzetten in Chrome."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Naar Instellingen"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(Relevante gegevens worden naar Google gestuurd)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "Aanmelden"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Ingelogd bij Chrome als:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Als je deze instelling wilt aanzetten, moet je Chrome-synchronisatie aanzetten."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "Profiel bekijken"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Aangepast apparaat toevoegen"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU-throttling is aangezet"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- JavaScript-steekproeven staan uit"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Netwerkbeperking is aangezet"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "Derden dimmen"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "JavaScript-voorbeelden uitzetten"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "JavaScript-steekproeven uitzetten voor minder overhead op mobiele apparaten"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Sleep trace-bestand of URL hierheen"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Herhaald"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "Time-out"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} om {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Timings"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "Tracks instellen"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "Alles tonen"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "Sommige tracks zijn verborgen in deze tracering. Je kunt tracks instellen door met de rechtermuisknop op de tracknaam te klikken."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Asynchroon"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket-protocol"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "Prestatietracering opslaan "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "Annotaties opnemen"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "Scriptcontent opnemen"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "Scriptbronkaarten opnemen"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "Opslaan"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "Tracering opslaan…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Geavanceerd"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Cookies voor dit verzoek worden geblokkeerd vanwege Chrome-markeringen of de browserconfiguratie. Ontdek meer informatie in het deelvenster Problemen."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "Audiocontext: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "Buffergrootte voor callbacks"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "Callback-interval"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "Huidige tijd"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "Maximale uitvoerkanalen"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(geen opnamen)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Geen gebruik van de Web Audio API gevonden"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Open een pagina die de Web Audio API gebruikt om de controle te starten."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "Rendercapaciteit"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "Samplingsnelheid"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "Staat"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "audio"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Meer tools"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "Naar beneden verplaatsen"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "Naar lade verplaatsen"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "Bovenaan zetten"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "Verplaatsen naar de hoofdtabbladbalk"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Deelvensters"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "aangevinkt"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "Dit is een nieuwe functie"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Opdracht uitvoeren"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "Dit is een nieuwe functie"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Geen resultaten gevonden"

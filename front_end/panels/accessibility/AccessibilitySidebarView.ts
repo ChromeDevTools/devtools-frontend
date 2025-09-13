@@ -1,4 +1,4 @@
-// Copyright 2015 The Chromium Authors. All rights reserved.
+// Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -16,8 +16,8 @@ import {SourceOrderPane} from './SourceOrderView.js';
 let accessibilitySidebarViewInstance: AccessibilitySidebarView;
 
 export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget {
-  private nodeInternal: SDK.DOMModel.DOMNode|null;
-  private axNodeInternal: SDK.AccessibilityModel.AccessibilityNode|null;
+  #node: SDK.DOMModel.DOMNode|null;
+  #axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   private skipNextPullNode: boolean;
   private readonly sidebarPaneStack: UI.View.ViewLocation;
   private readonly breadcrumbsSubPane: AXBreadcrumbsPane;
@@ -27,8 +27,8 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
   private constructor(throttlingTimeout?: number) {
     super(false /* useShadowDom */, throttlingTimeout);
     this.element.classList.add('accessibility-sidebar-view');
-    this.nodeInternal = null;
-    this.axNodeInternal = null;
+    this.#node = null;
+    this.#axNode = null;
     this.skipNextPullNode = false;
     this.sidebarPaneStack = UI.ViewManager.ViewManager.instance().createStackLocation();
     this.breadcrumbsSubPane = new AXBreadcrumbsPane(this);
@@ -55,16 +55,16 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
   }
 
   node(): SDK.DOMModel.DOMNode|null {
-    return this.nodeInternal;
+    return this.#node;
   }
 
   axNode(): SDK.AccessibilityModel.AccessibilityNode|null {
-    return this.axNodeInternal;
+    return this.#axNode;
   }
 
   setNode(node: SDK.DOMModel.DOMNode|null, fromAXTree?: boolean): void {
     this.skipNextPullNode = Boolean(fromAXTree);
-    this.nodeInternal = node;
+    this.#node = node;
     this.update();
   }
 
@@ -73,7 +73,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
       return;
     }
 
-    this.axNodeInternal = axNode;
+    this.#axNode = axNode;
 
     if (axNode.isDOMNode()) {
       void this.sidebarPaneStack.showView(this.ariaSubPane, this.axNodeSubPane);

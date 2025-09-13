@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -23,6 +23,5 @@ export async function getOrientationInputs(devtoolsPage: DevToolsPage) {
 }
 
 export async function getOrientationValues(devtoolsPage: DevToolsPage) {
-  return await Promise.all((await getOrientationInputs(devtoolsPage))
-                               .map(i => i.evaluate(i => parseInt((i as HTMLInputElement).value, 10))));
+  return await Promise.all((await getOrientationInputs(devtoolsPage)).map(i => i.evaluate(i => parseInt(i.value, 10))));
 }

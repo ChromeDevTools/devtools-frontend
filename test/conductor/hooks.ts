@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -60,12 +60,14 @@ function launchChrome() {
     'FencedFrames',
     'PrivacySandboxAdsAPIsOverride',
     'AutofillEnableDevtoolsIssues',
+    'CADisplayLink',
   ];
   const disabledFeatures = [
     'PMProcessPriorityPolicy',                     // crbug.com/361252079
     'MojoChannelAssociatedSendUsesRunOrPostTask',  // crbug.com/376228320
     'RasterInducingScroll',                        // crbug.com/381055647
     'CompositeBackgroundColorAnimation',           // crbug.com/381055647
+    'ScriptSrcHashesV1',                           // crbug.com/443216445
   ];
   // LINT.ThenChange(/test/e2e_non_hosted/shared/browser-helper.ts:features)
   const launchArgs = [
@@ -229,8 +231,4 @@ export async function postFileTeardown() {
 
   clearPuppeteerState();
   dumpCollectedErrors();
-}
-
-export function getDevToolsFrontendHostname(): string {
-  return frontendTab?.hostname() || 'localhost';
 }

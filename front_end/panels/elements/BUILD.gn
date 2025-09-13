@@ -1,4 +1,4 @@
-# Copyright 2020 The Chromium Authors. All rights reserved.
+# Copyright 2020 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -81,6 +81,7 @@ devtools_module("elements") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../models/badges:bundle",
     "../../models/bindings:bundle",
     "../../models/elements:bundle",
     "../../models/extensions:bundle",
@@ -90,6 +91,7 @@ devtools_module("elements") {
     "../../panels/emulation:bundle",
     "../../panels/event_listeners:bundle",
     "../../panels/issues:bundle",
+    "../../panels/media:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/utils:bundle",
     "../../ui/components/adorners:bundle",

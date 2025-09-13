@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -134,16 +134,11 @@ export class SidebarWidget extends UI.Widget.VBox {
     this.#tabbedPane.setBadge('annotations', annotations.length > 0 ? annotations.length.toString() : null);
   }
 
-  setParsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, metadata: Trace.Types.File.MetaData|null): void {
-    this.#insightsView.setParsedTrace(parsedTrace, metadata);
-  }
-
-  setInsights(insights: Trace.Insights.Types.TraceInsightSets|null): void {
-    this.#insightsView.setInsights(insights);
-
+  setParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null): void {
+    this.#insightsView.setParsedTrace(parsedTrace);
     this.#tabbedPane.setTabEnabled(
         SidebarTabs.INSIGHTS,
-        insights !== null && insights.size > 0,
+        Boolean(parsedTrace?.insights && parsedTrace.insights.size > 0),
     );
   }
 
@@ -167,13 +162,8 @@ class InsightsView extends UI.Widget.VBox {
     this.element.appendChild(this.#component);
   }
 
-  setParsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, metadata: Trace.Types.File.MetaData|null): void {
+  setParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null): void {
     this.#component.parsedTrace = parsedTrace;
-    this.#component.traceMetadata = metadata;
-  }
-
-  setInsights(data: Trace.Insights.Types.TraceInsightSets|null): void {
-    this.#component.insights = data;
   }
 
   getActiveInsight(): ActiveInsight|null {

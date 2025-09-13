@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -7,6 +7,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
@@ -46,8 +47,8 @@ function isShowPostMessageEventsEnabled(): boolean {
 }
 
 export function entryIsVisibleInTimeline(
-    entry: Trace.Types.Events.Event, parsedTrace?: Trace.Handlers.Types.ParsedTrace): boolean {
-  if (parsedTrace?.Meta.traceIsGeneric) {
+    entry: Trace.Types.Events.Event, parsedTrace?: Trace.TraceModel.ParsedTrace): boolean {
+  if (parsedTrace?.data.Meta.traceIsGeneric) {
     return true;
   }
 
@@ -74,7 +75,7 @@ export function entryIsVisibleInTimeline(
 
   // Default styles are globally defined for each event name. Some
   // events are hidden by default.
-  const eventStyle = TimelineUtils.EntryStyles.getEventStyle(entry.name as Trace.Types.Events.Name);
+  const eventStyle = Trace.Styles.getEventStyle(entry.name as Trace.Types.Events.Name);
   const eventIsTiming = Trace.Types.Events.isConsoleTime(entry) || Trace.Types.Events.isPerformanceMeasure(entry) ||
       Trace.Types.Events.isPerformanceMark(entry) || Trace.Types.Events.isConsoleTimeStamp(entry);
   return (eventStyle && !eventStyle.hidden) || eventIsTiming;
@@ -188,7 +189,7 @@ export class CompatibilityTracksAppender {
   #eventsForTrack = new Map<TrackAppender, Trace.Types.Events.Event[]>();
   #trackEventsForTreeview = new Map<TrackAppender, Trace.Types.Events.Event[]>();
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
   #entryData: Trace.Types.Events.Event[];
   #colorGenerator: Common.Color.Generator;
   #allTrackAppenders: TrackAppender[] = [];
@@ -201,7 +202,7 @@ export class CompatibilityTracksAppender {
   #gpuTrackAppender: GPUTrackAppender;
   #layoutShiftsTrackAppender: LayoutShiftsTrackAppender;
   #threadAppenders: ThreadAppender[] = [];
-  #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null;
+  #entityMapper: Trace.EntityMapper.EntityMapper|null;
 
   /**
    * @param flameChartData the data used by the flame chart renderer on
@@ -218,9 +219,9 @@ export class CompatibilityTracksAppender {
    * @param entityMapper 3P entity data for the trace.
    */
   constructor(
-      flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.TraceModel.ParsedTrace,
       entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[],
-      entityMapper: TimelineUtils.EntityMapper.EntityMapper|null) {
+      entityMapper: Trace.EntityMapper.EntityMapper|null) {
     this.#flameChartData = flameChartData;
     this.#parsedTrace = parsedTrace;
     this.#entityMapper = entityMapper;
@@ -284,7 +285,7 @@ export class CompatibilityTracksAppender {
     if (!TimelinePanel.extensionDataVisibilitySetting().get()) {
       return;
     }
-    const tracks = this.#parsedTrace.ExtensionTraceData.extensionTrackData;
+    const tracks = this.#parsedTrace.data.ExtensionTraceData.extensionTrackData;
     for (const trackData of tracks) {
       this.#allTrackAppenders.push(new ExtensionTrackAppender(this, trackData));
     }
@@ -318,11 +319,11 @@ export class CompatibilityTracksAppender {
           return 8;
       }
     };
-    const threads = Trace.Handlers.Threads.threadsInTrace(this.#parsedTrace);
+    const threads = Trace.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
     const showAllEvents = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
 
     for (const {pid, tid, name, type, entries, tree} of threads) {
-      if (this.#parsedTrace.Meta.traceIsGeneric) {
+      if (this.#parsedTrace.data.Meta.traceIsGeneric) {
         // If the trace is generic, we just push all of the threads with no effort to differentiate them, hence
         // overriding the thread type to be OTHER for all threads.
         this.#threadAppenders.push(new ThreadAppender(
@@ -334,7 +335,7 @@ export class CompatibilityTracksAppender {
         continue;
       }
 
-      const matchingWorklet = this.#parsedTrace.AuctionWorklets.worklets.get(pid);
+      const matchingWorklet = this.#parsedTrace.data.AuctionWorklets.worklets.get(pid);
       if (matchingWorklet) {
         // Each AuctionWorklet has two key threads:
         // 1. the Utility Thread
@@ -612,7 +613,7 @@ export class CompatibilityTracksAppender {
     if (track.titleForEvent) {
       return track.titleForEvent(event);
     }
-    return TimelineUtils.EntryName.nameForEntry(event, this.#parsedTrace);
+    return Trace.Name.forEntry(event, this.#parsedTrace);
   }
   /**
    * Returns the info shown when an event in the timeline is hovered.
@@ -639,8 +640,7 @@ export class CompatibilityTracksAppender {
 
     // If there's a url associated, add into additionalElements
     const url = URL.parse(
-        info.url ?? TimelineUtils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(this.#parsedTrace, event) ??
-        '');
+        info.url ?? SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(this.#parsedTrace, event) ?? '');
     if (url) {
       const MAX_PATH_LENGTH = 45;
       const path = Platform.StringUtilities.trimMiddle(url.href.replace(url.origin, ''), MAX_PATH_LENGTH);

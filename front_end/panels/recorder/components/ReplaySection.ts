@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -168,7 +168,9 @@ export class ReplaySection extends HTMLElement {
       this.#settings.replayExtension = '';
     }
 
-    Host.userMetrics.recordingReplaySpeed(replaySpeedToMetricSpeedMap[speed]);
+    if (replaySpeedToMetricSpeedMap[speed]) {
+      Host.userMetrics.recordingReplaySpeed(replaySpeedToMetricSpeedMap[speed]);
+    }
     void ComponentHelpers.ScheduledRender.scheduleRender(
         this,
         this.#render,

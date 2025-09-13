@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -21,6 +21,10 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-font-display`;
   override internalName = 'font-display';
   #overlayForRequest = new Map<Trace.Types.Events.Event, Trace.Types.Overlays.Overlay>();
+
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
 
   protected override createOverlays(): Trace.Types.Overlays.Overlay[] {
     this.#overlayForRequest.clear();

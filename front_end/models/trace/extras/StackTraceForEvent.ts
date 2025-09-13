@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -8,10 +8,10 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 export const stackTraceForEventInTrace =
-    new Map<Handlers.Types.ParsedTrace, Map<Types.Events.Event, Protocol.Runtime.StackTrace>>();
+    new Map<Handlers.Types.HandlerData, Map<Types.Events.Event, Protocol.Runtime.StackTrace>>();
 
-export function clearCacheForTrace(parsedTrace: Handlers.Types.ParsedTrace): void {
-  stackTraceForEventInTrace.delete(parsedTrace);
+export function clearCacheForTrace(data: Handlers.Types.HandlerData): void {
+  stackTraceForEventInTrace.delete(data);
 }
 /**
  * This util builds a stack trace that includes async calls for a given
@@ -19,12 +19,11 @@ export function clearCacheForTrace(parsedTrace: Handlers.Types.ParsedTrace): voi
  * stacks and trace event instrumentation on the V8 debugger to stitch
  * them together.
  */
-export function get(event: Types.Events.Event, parsedTrace: Handlers.Types.ParsedTrace): Protocol.Runtime.StackTrace|
-    null {
-  let cacheForTrace = stackTraceForEventInTrace.get(parsedTrace);
+export function get(event: Types.Events.Event, data: Handlers.Types.HandlerData): Protocol.Runtime.StackTrace|null {
+  let cacheForTrace = stackTraceForEventInTrace.get(data);
   if (!cacheForTrace) {
     cacheForTrace = new Map();
-    stackTraceForEventInTrace.set(parsedTrace, cacheForTrace);
+    stackTraceForEventInTrace.set(data, cacheForTrace);
   }
   const resultFromCache = cacheForTrace.get(event);
   if (resultFromCache) {
@@ -32,11 +31,11 @@ export function get(event: Types.Events.Event, parsedTrace: Handlers.Types.Parse
   }
   let result: Protocol.Runtime.StackTrace|null = null;
   if (Types.Extensions.isSyntheticExtensionEntry(event)) {
-    result = getForExtensionEntry(event, parsedTrace);
+    result = getForExtensionEntry(event, data);
   } else if (Types.Events.isPerformanceMeasureBegin(event)) {
-    result = getForPerformanceMeasure(event, parsedTrace);
+    result = getForPerformanceMeasure(event, data);
   } else {
-    result = getForEvent(event, parsedTrace);
+    result = getForEvent(event, data);
     const payloadCallFrames =
         getTraceEventPayloadStackAsProtocolCallFrame(event).filter(callFrame => !isNativeJSFunction(callFrame));
     // If the event has a payload stack trace, replace the synchronous
@@ -65,24 +64,22 @@ export function get(event: Types.Events.Event, parsedTrace: Handlers.Types.Parse
  * hierarchy. This shouldn't be called outside of this file, use `get`
  * instead to ensure the correct event in the tree hierarchy is used.
  */
-function getForEvent(event: Types.Events.Event, parsedTrace: Handlers.Types.ParsedTrace): Protocol.Runtime.StackTrace {
+function getForEvent(event: Types.Events.Event, data: Handlers.Types.HandlerData): Protocol.Runtime.StackTrace {
   // When working with a CPU profile the renderer handler won't have
   // entries in its tree.
-  const entryToNode =
-      parsedTrace.Renderer.entryToNode.size > 0 ? parsedTrace.Renderer.entryToNode : parsedTrace.Samples.entryToNode;
+  const entryToNode = data.Renderer.entryToNode.size > 0 ? data.Renderer.entryToNode : data.Samples.entryToNode;
   const topStackTrace: Protocol.Runtime.StackTrace = {callFrames: []};
   let stackTrace: Protocol.Runtime.StackTrace = topStackTrace;
   let currentEntry: Types.Events.SyntheticProfileCall;
   let node: Helpers.TreeHelpers.TraceEntryNode|null|undefined = entryToNode.get(event);
-  const traceCache =
-      stackTraceForEventInTrace.get(parsedTrace) || new Map<Types.Events.Event, Protocol.Runtime.StackTrace>();
-  stackTraceForEventInTrace.set(parsedTrace, traceCache);
+  const traceCache = stackTraceForEventInTrace.get(data) || new Map<Types.Events.Event, Protocol.Runtime.StackTrace>();
+  stackTraceForEventInTrace.set(data, traceCache);
   // Move up this node's ancestor tree appending JS frames to its
   // stack trace. If an async caller is detected, move up in the async
   // stack instead.
   while (node) {
     if (!Types.Events.isProfileCall(node.entry)) {
-      const maybeAsyncParent = parsedTrace.AsyncJSCalls.runEntryPointToScheduler.get(node.entry);
+      const maybeAsyncParent = data.AsyncJSCalls.runEntryPointToScheduler.get(node.entry);
       if (!maybeAsyncParent) {
         node = node.parent;
         continue;
@@ -114,7 +111,7 @@ function getForEvent(event: Types.Events.Event, parsedTrace: Handlers.Types.Pars
     if (!isNativeJSFunction(currentEntry.callFrame)) {
       stackTrace.callFrames.push(currentEntry.callFrame);
     }
-    const maybeAsyncParentEvent = parsedTrace.AsyncJSCalls.asyncCallToScheduler.get(currentEntry);
+    const maybeAsyncParentEvent = data.AsyncJSCalls.asyncCallToScheduler.get(currentEntry);
     const maybeAsyncParentNode = maybeAsyncParentEvent && entryToNode.get(maybeAsyncParentEvent.scheduler);
     if (maybeAsyncParentNode) {
       stackTrace = addAsyncParentToStack(stackTrace, maybeAsyncParentEvent.taskName);
@@ -147,23 +144,23 @@ function addAsyncParentToStack(stackTrace: Protocol.Runtime.StackTrace, taskName
  * code location that called the extension API), and returns its stack
  * trace.
  */
-function getForExtensionEntry(event: Types.Extensions.SyntheticExtensionEntry, parsedTrace: Handlers.Types.ParsedTrace):
+function getForExtensionEntry(event: Types.Extensions.SyntheticExtensionEntry, data: Handlers.Types.HandlerData):
     Protocol.Runtime.StackTrace|null {
   const rawEvent: Types.Events.Event = event.rawSourceEvent;
   if (Types.Events.isPerformanceMeasureBegin(rawEvent)) {
-    return getForPerformanceMeasure(rawEvent, parsedTrace);
+    return getForPerformanceMeasure(rawEvent, data);
   }
   if (!rawEvent) {
     return null;
   }
-  return get(rawEvent, parsedTrace);
+  return get(rawEvent, data);
 }
 
 /**
  * Gets the raw event for a user timing and obtains its stack trace.
  */
-function getForPerformanceMeasure(event: Types.Events.PerformanceMeasureBegin, parsedTrace: Handlers.Types.ParsedTrace):
-    Protocol.Runtime.StackTrace|null {
+function getForPerformanceMeasure(
+    event: Types.Events.PerformanceMeasureBegin, data: Handlers.Types.HandlerData): Protocol.Runtime.StackTrace|null {
   let rawEvent: Types.Events.Event|undefined = event;
   if (event.args.traceId === undefined) {
     return null;
@@ -173,11 +170,11 @@ function getForPerformanceMeasure(event: Types.Events.PerformanceMeasureBegin, p
   // timeline. They are connected via a common traceId. At this
   // point `rawEvent` corresponds to the second case, we must
   // encounter the event for the call itself to obtain its callstack.
-  rawEvent = parsedTrace.UserTimings.measureTraceByTraceId.get(event.args.traceId);
+  rawEvent = data.UserTimings.measureTraceByTraceId.get(event.args.traceId);
   if (!rawEvent) {
     return null;
   }
-  return get(rawEvent, parsedTrace);
+  return get(rawEvent, data);
 }
 /**
  * Determines if a function is a native JS API (like setTimeout,

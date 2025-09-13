@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -32,7 +32,7 @@ describe('The Sources Tab', function() {
       await devToolsPage.waitFor(PRETTY_PRINTED_TOGGLE);
 
       const expectedLines = [
-        '// Copyright 2020 The Chromium Authors. All rights reserved.',
+        '// Copyright 2020 The Chromium Authors',
         '// Use of this source code is governed by a BSD-style license that can be',
         '// found in the LICENSE file.',
         '// clang-format off',
@@ -59,7 +59,7 @@ describe('The Sources Tab', function() {
       await devToolsPage.waitForNone(PRETTY_PRINTED_TOGGLE);
 
       const expectedLines = [
-        '// Copyright 2020 The Chromium Authors. All rights reserved.',
+        '// Copyright 2020 The Chromium Authors',
         '// Use of this source code is governed by a BSD-style license that can be',
         '// found in the LICENSE file.',
         '// clang-format off',

@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -56,17 +56,20 @@ function finalize(partialModel: PartialInsightModel<FontDisplayInsightModel>): F
   };
 }
 
-export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): FontDisplayInsightModel {
+export function isFontDisplayInsight(model: InsightModel): model is FontDisplayInsightModel {
+  return model.insightKey === InsightKeys.FONT_DISPLAY;
+}
+
+export function generateInsight(data: Handlers.Types.HandlerData, context: InsightSetContext): FontDisplayInsightModel {
   const fonts: RemoteFont[] = [];
-  for (const remoteFont of parsedTrace.LayoutShifts.remoteFonts) {
+  for (const remoteFont of data.LayoutShifts.remoteFonts) {
     const event = remoteFont.beginRemoteFontLoadEvent;
     if (!Helpers.Timing.eventIsInBounds(event, context.bounds)) {
       continue;
     }
 
     const requestId = `${event.pid}.${event.args.id}`;
-    const request = parsedTrace.NetworkRequests.byId.get(requestId);
+    const request = data.NetworkRequests.byId.get(requestId);
     if (!request) {
       continue;
     }

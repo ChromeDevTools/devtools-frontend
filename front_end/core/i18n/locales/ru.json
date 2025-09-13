@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "Панель \"Производительность\""
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "Аккаунт"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Декоративный элемент"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "Источники"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "Синхронизация"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "Инструменты разработчика – {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "Показать инструмент \"Скрипты\""
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "Помощь от ИИ"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Настройка инструментов разработчика и управление ими"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Предыдущая панель"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "Получать значки"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Перезагрузить инструменты разработчика"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Для доступа к этой функции требуется подключение к интернету."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevTools: получен внешний запрос"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Неизвестная ошибка при загрузке файла."
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Перенос словарей сжатия"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "Проверки целостности по инициативе сервера"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "Спецификация HTTP Unencoded Digest"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Имитация нового устройства после загрузки страницы может повлиять на значение LCP. Чтобы получить точные данные об этом показателе, обновите страницу, когда измените имитируемое устройство."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Удалить чат на устройстве"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "Экспортировать разговор"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Чтобы задать вопрос, следуйте инструкциям выше"
   },
@@ -2677,6 +2695,9 @@
   },
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "Обсуждения не найдены"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "Ответ скопирован в буфер обмена."
   },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "Отправить отзыв"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Спекулятивные загрузки"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Чтобы посмотреть отчет, нажмите на него."
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "Отчет не выбран."
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "Чтобы посмотреть отчет, нажмите на него."
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "Нет отчета или конечной точки"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "Отчет не выбран."
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "На этой странице можно посмотреть отчеты и конечные точки Reporting API."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Страницы, которые используют WebRTC, нельзя добавить в возвратный кеш."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "Возвратный кеш отключен, потому что используется WebRTC."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Страницы, которые используют WebShare, в настоящее время нельзя добавить в возвратный кеш."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Страницы, которые используют интерфейс WebSocket, нельзя добавить в возвратный кеш."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "Возвратный кеш отключен, потому что используется WebSocket."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Страницы, которые используют WebTransport, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "Возвратный кеш отключен, потому что используется WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Страницы, которые используют WebXR, в настоящее время нельзя добавить в возвратный кеш."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Отключить режим сетки"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "Отключить режим мозаики"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Отключить оверлей с прокруткой и привязкой"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Включить режим сетки"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "Включить режим мозаики"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Включить оверлей с прокруткой и привязкой"
@@ -6771,7 +6789,7 @@
     "message": "Категория прослушивателей событий"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Прослушиватели Framework"
+    "message": "Распознавать прослушиватели Framework"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Пассивен"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Оверлеи Flexbox"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "Сетка/мозаика"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "Макеты сетки/мозаики"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Макеты Flexbox на странице не найдены."
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "Макеты сетки и мозаики на странице не найдены."
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Настройки отображения оверлеев"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "Запросы можно локально переопределять. Подробная информация доступна на панели \"Источники\"."
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "Добавить…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "Добавить {PH1}"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Свои настройки"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "Шаблоны"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – рекомендуется"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "Начните калибровку."
@@ -8646,10 +8685,10 @@
     "message": "Сброс к значению по умолчанию"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "Save-Data: принудительно отключено"
+    "message": "Save-Data: отключено"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "Save-Data: принудительно включено"
+    "message": "Save-Data: включено"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "Переопределить значение, указанное параметром navigator.connection.saveData на этой странице"
@@ -9357,7 +9396,7 @@
     "message": "Показывать только заблокированные запросы"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(Только в режиме инкогнито) Показывать только запросы, отправленные на прокси с защитой IP-адреса"
+    "message": "Показывать только запросы, отправленные на прокси с защитой IP-адреса. Не влияет на обычный режим просмотра в браузере."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Показывать только запросы с заблокированными файлами cookie ответов"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "Скачивание: {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (из кеша)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (источник: ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "Задержка: {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "Задержка: {PH1}, загрузка: {PH2} (всего: {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Файлы cookie, которые были получены от сервера в заголовке ответа set-cookie"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Видео"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "Обход защиты IP-адреса"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "ID"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "Метод"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "Прокси-сервер IP недоступен."
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "Прокси-сервер IP доступен только в режиме инкогнито. Откройте сайт в этом режиме."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "Запросы прокси-сервера"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "Статус"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Вы можете проверить, как будет работать сайт при включенном прокси-сервере IP."
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "Настройки прокси-сервера для защиты IP-адреса"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} и {PH2}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Параметры"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "Защита IP-адреса"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Главный источник"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Пользователь бездействует, экран разблокирован"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "Автоматически генерировать заголовки для аннотаций трассировки производительности."
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "При вводе кода в Консоли или на панели \"Источники\" будут появляться подсказки. Чтобы принять одну из них, нажмите Tab."
   },
@@ -12336,16 +12396,16 @@
     "message": "Работайте эффективнее с ИИ"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "Для генерации подсказок кода вводимые в консоли данные, история текущего консольного сеанса и содержимое открытого файла передаются в Google. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию."
+    "message": "Для генерации подсказок кода вводимые в консоли данные, история текущего консольного сеанса, текущий CSS и содержимое открытого файла передаются в Google. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Для генерации подсказок кода вводимые в консоли данные, история текущего консольного сеанса и содержимое открытого файла передаются в Google. Google не использует эти данные для улучшения ИИ-моделей."
+    "message": "Для генерации подсказок кода вводимые в консоли данные, история текущего консольного сеанса, текущий CSS и содержимое открытого файла передаются в Google. Google не использует эти данные для улучшения ИИ-моделей. Ваша организация может изменить эти настройки в любой момент."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "Сообщение консоли и связанные с ним трассировка стека, исходный код и сетевые заголовки отправляются в Google для генерации интерпретаций. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию."
+    "message": "Сообщение консоли и связанные с ним данные (трассировка стека, исходный код и сетевые заголовки) передаются в Google для генерации интерпретаций. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Сообщение консоли и связанные с ним данные (трассировка стека, исходный код и сетевые заголовки) передаются в Google для генерации интерпретаций. Google не использует эти данные для улучшения ИИ-моделей."
+    "message": "Сообщение консоли и связанные с ним данные (трассировка стека, исходный код и сетевые заголовки) передаются в Google для генерации интерпретаций. Google не использует эти данные для улучшения ИИ-моделей. Ваша организация может изменить эти настройки в любой момент."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Google может не собирать данные в некоторых регионах."
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Включить помощь от ИИ"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "Включить подсказки кода с помощью ИИ"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "Включить ИИ-подсказки для аннотаций на панели \"Производительность\""
@@ -12384,16 +12447,16 @@
     "message": "Любые пользовательские запросы и данные, к которым проверяемая страница обращается через Web API (сетевые запросы, файлы и трассировки производительности), передаются в Google для генерации интерпретаций. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию. Не указывайте на страницах личную и конфиденциальную информацию."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Любые пользовательские запросы и данные, к которым проверяемая страница обращается через Web API (сетевые запросы, файлы и трассировки производительности), передаются в Google для генерации интерпретаций. Google не использует эти данные для улучшения ИИ-моделей."
+    "message": "Любые пользовательские запросы и данные, к которым проверяемая страница обращается через Web API (сетевые запросы, файлы и трассировки производительности), передаются в Google для генерации интерпретаций. Google не использует эти данные для улучшения ИИ-моделей. Ваша организация может изменить эти настройки в любой момент."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "Мы отправляем в Google трассировку производительности, чтобы генерировать пояснения. Эти данные будут использоваться для улучшения ИИ-моделей Google."
+    "message": "Трассировка производительности передается в Google для генерации подсказок для аннотаций. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Мы отправляем в Google трассировку производительности, чтобы генерировать пояснения. Эти данные не будут использоваться для улучшения ИИ-моделей Google."
+    "message": "Трассировка производительности передается в Google для генерации подсказок для аннотаций. Google не использует эти данные для улучшения ИИ-моделей. Ваша организация может изменить эти настройки в любой момент."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "ИИ-подсказки для аннотаций на панели \"Производительность\""
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "Функция помогает аннотировать трассировку производительности с помощью автоматически создаваемых меток."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "Получайте помощь при написании кода"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Нестабильные эксперименты"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (ежегодная)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (ежемесячная)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (ежегодная)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (ежемесячная)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "Стандартный план"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "Неизвестный тарифный план"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Вы не вошли в Chrome."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Чтобы включить этот параметр, необходимо активировать синхронизацию настроек в Chrome."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Открыть настройки"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(Данные передаются в Google)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "Зарегистрироваться"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Выполнен вход в аккаунт Chrome:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Чтобы включить эту настройку, необходимо активировать синхронизацию Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "Просмотреть профиль"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Добавить свое устройство"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "– Ограничение процессора включено"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "– Выборка JavaScript отключена"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "– Включено ограничение пропускной способности сети"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "Уменьшить видимость стороннего контента"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "Отключить образцы JavaScript"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "Отключает выборку JavaScript и уменьшает ресурсопотребление при выполнении на мобильных устройствах."
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Перетащите сюда файл трассировки или URL."
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Повтор"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "Время ожидания"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1}: {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Временные метки"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "Настроить дорожки"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "Показать все"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "В трассировке скрыты некоторые дорожки. Чтобы настроить отображение, нажмите правой кнопкой мыши на название дорожки."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Асинхронный"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Протокол WebSocket"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "Сохранить трассировку производительности "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "Добавить аннотации"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "Добавить содержимое скрипта"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "Добавить карты исходного кода скриптов"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "Сохранить"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "Сохранить трассировку…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Дополнительные настройки"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Файлы cookie для этого запроса заблокированы из-за экспериментальных параметров Chrome или настроек браузера. Чтобы получить подробную информацию, откройте панель \"Проблемы\"."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "Аудиоконтекст: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "Размер буфера обратного вызова"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "Интервал обратного вызова"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "Текущее время"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "Максимальное количество каналов вывода"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(записей нет)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Web Audio API не используется."
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Чтобы начать мониторинг, откройте страницу, которая использует Web Audio API."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "Емкость рендеринга"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "Частота дискретизации"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "Статус"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "аудио"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Дополнительные инструменты"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "Переместить вниз"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "Переместить на выдвигающуюся панель"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "Переместить наверх"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "Переместить на главную панель вкладок"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Панели"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "отмечено"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "Это новая функция"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Выполнить команду"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "Это новая функция"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Ничего не найдено."

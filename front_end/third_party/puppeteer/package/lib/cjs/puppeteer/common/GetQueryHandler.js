@@ -6,7 +6,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getQueryHandlerAndSelector = getQueryHandlerAndSelector;
-const AriaQueryHandler_js_1 = require("../cdp/AriaQueryHandler.js");
+const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
 const CSSQueryHandler_js_1 = require("./CSSQueryHandler.js");
 const CustomQueryHandler_js_1 = require("./CustomQueryHandler.js");
 const PierceQueryHandler_js_1 = require("./PierceQueryHandler.js");

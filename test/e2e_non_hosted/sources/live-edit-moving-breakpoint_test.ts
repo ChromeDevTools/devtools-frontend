@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -15,6 +15,8 @@ import {
 } from '../../shared/helper.js';
 
 describe('Live edit', () => {
+  setup({enabledFeatures: ['DevToolsLiveEdit']});
+
   it('moves the breakpoint after reload when changes are not persisted', async ({devToolsPage, inspectedPage}) => {
     await openSourceCodeEditorForFile(
         'live-edit-moving-breakpoint.js', 'live-edit-moving-breakpoint.html', devToolsPage, inspectedPage);

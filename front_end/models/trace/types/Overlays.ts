@@ -1,8 +1,6 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-import type * as Lit from '../../../ui/lit/lit.js';
 
 import type {EntriesLinkState} from './File.js';
 import type {Micro, TraceWindowMicro} from './Timing.js';
@@ -86,7 +84,7 @@ export interface CandyStripedTimeRange {
  */
 export interface TimespanBreakdownEntryBreakdown {
   bounds: TraceWindowMicro;
-  label: string|Lit.LitTemplate;
+  label: string|HTMLElement;
   showDuration: boolean;
 }
 

@@ -1,8 +1,9 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import * as Platform from '../../../../core/platform/platform.js';
+import * as Geometry from '../../../../models/geometry/geometry.js';
 import * as UI from '../../legacy.js';
 
 export const CSSAngleRegex = /(?<value>[+-]?\d*\.?\d+)(?<unit>deg|grad|rad|turn)/;
@@ -35,13 +36,13 @@ export const getAngleFromRadians = (rad: number, targetUnit: AngleUnit): Angle =
   let value = rad;
   switch (targetUnit) {
     case AngleUnit.GRAD:
-      value = UI.Geometry.radiansToGradians(rad);
+      value = Geometry.radiansToGradians(rad);
       break;
     case AngleUnit.DEG:
-      value = UI.Geometry.radiansToDegrees(rad);
+      value = Geometry.radiansToDegrees(rad);
       break;
     case AngleUnit.TURN:
-      value = UI.Geometry.radiansToTurns(rad);
+      value = Geometry.radiansToTurns(rad);
       break;
   }
 
@@ -54,11 +55,11 @@ export const getAngleFromRadians = (rad: number, targetUnit: AngleUnit): Angle =
 export const getRadiansFromAngle = (angle: Angle): number => {
   switch (angle.unit) {
     case AngleUnit.DEG:
-      return UI.Geometry.degreesToRadians(angle.value);
+      return Geometry.degreesToRadians(angle.value);
     case AngleUnit.GRAD:
-      return UI.Geometry.gradiansToRadians(angle.value);
+      return Geometry.gradiansToRadians(angle.value);
     case AngleUnit.TURN:
-      return UI.Geometry.turnsToRadians(angle.value);
+      return Geometry.turnsToRadians(angle.value);
   }
 
   return angle.value;

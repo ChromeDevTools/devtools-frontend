@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -12,8 +12,8 @@ import * as Timeline from './timeline.js';
 describeWithEnvironment('TimelineSelection', function() {
   const {TimelineSelection} = Timeline;
   it('can be created with a frame', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const frame = parsedTrace.Frames.frames.at(0);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const frame = parsedTrace.data.Frames.frames.at(0);
     assert.isOk(frame);
     const selection = TimelineSelection.selectionFromEvent(frame);
     assert.strictEqual(selection.event, frame);
@@ -26,8 +26,8 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('can be created with a network request', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const request = parsedTrace.NetworkRequests.byTime.at(0);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const request = parsedTrace.data.NetworkRequests.byTime.at(0);
     assert.isOk(request);
     const selection = TimelineSelection.selectionFromEvent(request);
     assert.strictEqual(selection.event, request);
@@ -39,8 +39,8 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('can be created with a random trace event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const firstLCPEvent = parsedTrace.PageLoadMetrics.allMarkerEvents.find(event => {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const firstLCPEvent = parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(event => {
       return event.name === 'largestContentfulPaint::Candidate';
     });
     assert.isOk(firstLCPEvent);
@@ -76,8 +76,8 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('knows if two event selections are equal if they have the same event', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const firstLCPEvent = parsedTrace.PageLoadMetrics.allMarkerEvents.find(event => {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const firstLCPEvent = parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(event => {
       return event.name === 'largestContentfulPaint::Candidate';
     });
     assert.isOk(firstLCPEvent);
@@ -85,7 +85,7 @@ describeWithEnvironment('TimelineSelection', function() {
     const selection2 = TimelineSelection.selectionFromEvent(firstLCPEvent);
     assert.isTrue(TimelineSelection.selectionsEqual(selection1, selection2));
 
-    const networkEvent = parsedTrace.NetworkRequests.byTime.at(0);
+    const networkEvent = parsedTrace.data.NetworkRequests.byTime.at(0);
     assert.isOk(networkEvent);
     const selection3 = TimelineSelection.selectionFromEvent(networkEvent);
     assert.isFalse(TimelineSelection.selectionsEqual(selection1, selection3));
@@ -100,8 +100,8 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('knows selections of different types are not equal', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const firstLCPEvent = parsedTrace.PageLoadMetrics.allMarkerEvents.find(event => {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const firstLCPEvent = parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(event => {
       return event.name === 'largestContentfulPaint::Candidate';
     });
     assert.isOk(firstLCPEvent);

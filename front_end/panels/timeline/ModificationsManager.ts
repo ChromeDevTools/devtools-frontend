@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -9,7 +9,6 @@ import * as TimelineComponents from '../../panels/timeline/components/components
 
 import * as AnnotationHelpers from './AnnotationHelpers.js';
 import {EntriesFilter} from './EntriesFilter.js';
-import * as Utils from './utils/utils.js';
 
 const modificationsManagerByTraceIndex: ModificationsManager[] = [];
 let activeManager: ModificationsManager|null;
@@ -30,7 +29,7 @@ export class AnnotationModifiedEvent extends Event {
 }
 
 interface ModificationsManagerData {
-  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
   traceBounds: Trace.Types.Timing.TraceWindowMicro;
   rawTraceEvents: readonly Trace.Types.Events.Event[];
   syntheticEvents: Trace.Types.Events.SyntheticBased[];
@@ -41,8 +40,8 @@ export class ModificationsManager extends EventTarget {
   #entriesFilter: EntriesFilter;
   #timelineBreadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs;
   #modifications: Trace.Types.File.Modifications|null = null;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
-  #eventsSerializer: Utils.EventsSerializer.EventsSerializer;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
+  #eventsSerializer: Trace.EventsSerializer.EventsSerializer;
   #overlayForAnnotation: Map<Trace.Types.File.Annotation, Trace.Types.Overlays.Overlay>;
   readonly #annotationsHiddenSetting: Common.Settings.Setting<boolean>;
 
@@ -76,26 +75,19 @@ export class ModificationsManager extends EventTarget {
       activeManager = modificationsManagerByTraceIndex[traceIndex];
       ModificationsManager.activeManager()?.applyModificationsIfPresent();
     }
+
     const parsedTrace = traceModel.parsedTrace(traceIndex);
     if (!parsedTrace) {
       throw new Error('ModificationsManager was initialized without a corresponding trace data');
     }
-    const traceBounds = parsedTrace.Meta.traceBounds;
-    const traceEvents = traceModel.rawTraceEvents(traceIndex);
-    if (!traceEvents) {
-      throw new Error('ModificationsManager was initialized without a corresponding raw trace events array');
-    }
-    const syntheticEventsManager = traceModel.syntheticTraceEventsManager(traceIndex);
-    if (!syntheticEventsManager) {
-      throw new Error('ModificationsManager was initialized without a corresponding SyntheticEventsManager');
-    }
-    const metadata = traceModel.metadata(traceIndex);
+
+    const traceBounds = parsedTrace.data.Meta.traceBounds;
     const newModificationsManager = new ModificationsManager({
       parsedTrace,
       traceBounds,
-      rawTraceEvents: traceEvents,
-      modifications: metadata?.modifications,
-      syntheticEvents: syntheticEventsManager.getSyntheticTraces(),
+      rawTraceEvents: parsedTrace.traceEvents,
+      modifications: parsedTrace.metadata.modifications,
+      syntheticEvents: parsedTrace.syntheticEventsManager.getSyntheticTraces(),
     });
     modificationsManagerByTraceIndex[traceIndex] = newModificationsManager;
     activeManager = newModificationsManager;
@@ -110,7 +102,7 @@ export class ModificationsManager extends EventTarget {
     this.#timelineBreadcrumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(traceBounds);
     this.#modifications = modifications || null;
     this.#parsedTrace = parsedTrace;
-    this.#eventsSerializer = new Utils.EventsSerializer.EventsSerializer();
+    this.#eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
     // This method is also called in SidebarAnnotationsTab, but calling this multiple times doesn't recreate the setting.
     // Instead, after the second call, the cached setting is returned.
     this.#annotationsHiddenSetting = Common.Settings.Settings.instance().moduleSetting('annotations-hidden');

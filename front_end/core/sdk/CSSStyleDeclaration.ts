@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -12,16 +12,16 @@ import type {CSSRule} from './CSSRule.js';
 import type {Target} from './Target.js';
 
 export class CSSStyleDeclaration {
-  readonly #cssModelInternal: CSSModel;
+  readonly #cssModel: CSSModel;
   parentRule: CSSRule|null;
-  #allPropertiesInternal!: CSSProperty[];
+  #allProperties!: CSSProperty[];
   styleSheetId?: Protocol.CSS.StyleSheetId;
   range!: TextUtils.TextRange.TextRange|null;
   cssText?: string;
   #shorthandValues = new Map<string, string>();
   #shorthandIsImportant = new Set<string>();
   #activePropertyMap = new Map<string, CSSProperty>();
-  #leadingPropertiesInternal!: CSSProperty[]|null;
+  #leadingProperties!: CSSProperty[]|null;
   type: Type;
   // For CSSStyles coming from animations,
   // This holds the name of the animation.
@@ -29,7 +29,7 @@ export class CSSStyleDeclaration {
   constructor(
       cssModel: CSSModel, parentRule: CSSRule|null, payload: Protocol.CSS.CSSStyle, type: Type,
       animationName?: string) {
-    this.#cssModelInternal = cssModel;
+    this.#cssModel = cssModel;
     this.parentRule = parentRule;
     this.#reinitialize(payload);
     this.type = type;
@@ -44,8 +44,8 @@ export class CSSStyleDeclaration {
       this.#reinitialize((edit.payload as Protocol.CSS.CSSStyle));
     } else {
       this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
-      for (let i = 0; i < this.#allPropertiesInternal.length; ++i) {
-        this.#allPropertiesInternal[i].rebase(edit);
+      for (let i = 0; i < this.#allProperties.length; ++i) {
+        this.#allProperties[i].rebase(edit);
       }
     }
   }
@@ -68,7 +68,7 @@ export class CSSStyleDeclaration {
       }
     }
 
-    this.#allPropertiesInternal = [];
+    this.#allProperties = [];
 
     if (payload.cssText && this.range) {
       const longhands = [];
@@ -77,20 +77,19 @@ export class CSSStyleDeclaration {
         if (!range) {
           continue;
         }
-        const parsedProperty = CSSProperty.parsePayload(this, this.#allPropertiesInternal.length, cssProperty);
-        this.#allPropertiesInternal.push(parsedProperty);
+        const parsedProperty = CSSProperty.parsePayload(this, this.#allProperties.length, cssProperty);
+        this.#allProperties.push(parsedProperty);
         for (const longhand of parsedProperty.getLonghandProperties()) {
           longhands.push(longhand);
         }
       }
       for (const longhand of longhands) {
-        longhand.index = this.#allPropertiesInternal.length;
-        this.#allPropertiesInternal.push(longhand);
+        longhand.index = this.#allProperties.length;
+        this.#allProperties.push(longhand);
       }
     } else {
       for (const cssProperty of payload.cssProperties) {
-        this.#allPropertiesInternal.push(
-            CSSProperty.parsePayload(this, this.#allPropertiesInternal.length, cssProperty));
+        this.#allProperties.push(CSSProperty.parsePayload(this, this.#allProperties.length, cssProperty));
       }
     }
 
@@ -100,7 +99,7 @@ export class CSSStyleDeclaration {
     // TODO(changhaohan): verify if this #activePropertyMap is still necessary, or if it is
     // providing different information against the activeness in allPropertiesInternal.
     this.#activePropertyMap = new Map();
-    for (const property of this.#allPropertiesInternal) {
+    for (const property of this.#allProperties) {
       if (!property.activeInStyle()) {
         continue;
       }
@@ -108,7 +107,7 @@ export class CSSStyleDeclaration {
     }
 
     this.cssText = payload.cssText;
-    this.#leadingPropertiesInternal = null;
+    this.#leadingProperties = null;
   }
 
   #generateSyntheticPropertiesIfNeeded(): void {
@@ -121,13 +120,13 @@ export class CSSStyleDeclaration {
     }
 
     const propertiesSet = new Set<string>();
-    for (const property of this.#allPropertiesInternal) {
+    for (const property of this.#allProperties) {
       propertiesSet.add(property.name);
     }
 
     const generatedProperties = [];
     // For style-based properties, generate #shorthands with values when possible.
-    for (const property of this.#allPropertiesInternal) {
+    for (const property of this.#allProperties) {
       // For style-based properties, try generating #shorthands.
       const shorthands = cssMetadata().getShorthands(property.name) || [];
       for (const shorthand of shorthands) {
@@ -147,7 +146,7 @@ export class CSSStyleDeclaration {
         propertiesSet.add(shorthand);
       }
     }
-    this.#allPropertiesInternal = this.#allPropertiesInternal.concat(generatedProperties);
+    this.#allProperties = this.#allProperties.concat(generatedProperties);
   }
 
   #computeLeadingProperties(): CSSProperty[] {
@@ -156,11 +155,11 @@ export class CSSStyleDeclaration {
     }
 
     if (this.range) {
-      return this.#allPropertiesInternal.filter(propertyHasRange);
+      return this.#allProperties.filter(propertyHasRange);
     }
 
     const leadingProperties = [];
-    for (const property of this.#allPropertiesInternal) {
+    for (const property of this.#allProperties) {
       const shorthands = cssMetadata().getShorthands(property.name) || [];
       let belongToAnyShorthand = false;
       for (const shorthand of shorthands) {
@@ -178,18 +177,18 @@ export class CSSStyleDeclaration {
   }
 
   leadingProperties(): CSSProperty[] {
-    if (!this.#leadingPropertiesInternal) {
-      this.#leadingPropertiesInternal = this.#computeLeadingProperties();
+    if (!this.#leadingProperties) {
+      this.#leadingProperties = this.#computeLeadingProperties();
     }
-    return this.#leadingPropertiesInternal;
+    return this.#leadingProperties;
   }
 
   target(): Target {
-    return this.#cssModelInternal.target();
+    return this.#cssModel.target();
   }
 
   cssModel(): CSSModel {
-    return this.#cssModelInternal;
+    return this.#cssModel;
   }
 
   #computeInactiveProperties(): void {
@@ -198,7 +197,7 @@ export class CSSStyleDeclaration {
     // 1. regular property, including shorthands
     // 2. longhand components from shorthands, in the order of their shorthands.
     const processedLonghands = new Set();
-    for (const property of this.#allPropertiesInternal) {
+    for (const property of this.#allProperties) {
       const metadata = cssMetadata();
       const canonicalName = metadata.canonicalPropertyName(property.name);
       if (property.disabled || !property.parsedOk) {
@@ -239,7 +238,7 @@ export class CSSStyleDeclaration {
   }
 
   allProperties(): CSSProperty[] {
-    return this.#allPropertiesInternal;
+    return this.#allProperties;
   }
 
   hasActiveProperty(name: string): boolean {
@@ -290,7 +289,7 @@ export class CSSStyleDeclaration {
     if (!this.range || !this.styleSheetId) {
       return Promise.resolve(false);
     }
-    return this.#cssModelInternal.setStyleText(this.styleSheetId, this.range, text, majorChange);
+    return this.#cssModel.setStyleText(this.styleSheetId, this.range, text, majorChange);
   }
 
   insertPropertyAt(index: number, name: string, value: string, userCallback?: ((arg0: boolean) => void)): void {

@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -56,7 +56,7 @@ export const UIStrings = {
   /**
    * @description top CSS selector when ranked by elapsed time in ms
    */
-  topSelectorElapsedTime: 'Top selector elaspsed time',
+  topSelectorElapsedTime: 'Top selector elapsed time',
   /**
    * @description top CSS selector when ranked by match attempt
    */
@@ -78,7 +78,7 @@ export type SlowCSSSelectorInsightModel = InsightModel<typeof UIStrings, {
 function aggregateSelectorStats(data: SelectorStatsData, context: InsightSetContext): SelectorTiming[] {
   const selectorMap = new Map<String, SelectorTiming>();
 
-  for (const [event, value] of data.dataForUpdateLayoutEvent) {
+  for (const [event, value] of data.dataForRecalcStyleEvent) {
     if (event.args.beginData?.frame !== context.frameId) {
       continue;
     }
@@ -114,9 +114,13 @@ function finalize(partialModel: PartialInsightModel<SlowCSSSelectorInsightModel>
   };
 }
 
+export function isSlowCSSSelectorInsight(model: InsightModel): model is SlowCSSSelectorInsightModel {
+  return model.insightKey === InsightKeys.SLOW_CSS_SELECTOR;
+}
+
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): SlowCSSSelectorInsightModel {
-  const selectorStatsData = parsedTrace.SelectorStats;
+    data: Handlers.Types.HandlerData, context: InsightSetContext): SlowCSSSelectorInsightModel {
+  const selectorStatsData = data.SelectorStats;
 
   if (!selectorStatsData) {
     throw new Error('no selector stats data');
@@ -155,7 +159,7 @@ export function generateInsight(
   }
 
   return finalize({
-    // TODO: should we identify UpdateLayout events as linked to this insight?
+    // TODO: should we identify RecalcStyle events as linked to this insight?
     relatedEvents: [],
     totalElapsedMs: Types.Timing.Milli(totalElapsedUs / 1000.0),
     totalMatchAttempts,

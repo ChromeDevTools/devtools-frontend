@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {Printer} from '../../testing/PropertyParser.js';
@@ -514,11 +514,61 @@ describe('CSSPropertyParser', () => {
         assert.strictEqual(
             match.fallback?.map(n => ast.text(n)).join(' '), fallback.length > 0 ? fallback.join(', ') : undefined);
       }
-      for (const fail of ['var', 'var(--a, 123, 123)', 'var(a)', 'var(--a']) {
+      for (const fail of ['var', 'var(a)', 'var(--a']) {
         const {match, text} =
             matchSingleValue('width', fail, new SDK.CSSPropertyParserMatchers.BaseVariableMatcher(() => ''));
 
         assert.isNull(match, text);
+      }
+    });
+
+    it('parses attrs correctly', () => {
+      const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+      const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
+      const domNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      domNode.getAttribute.returns(undefined);
+      matchedStyles.nodeForStyle.returns(domNode);
+      for (const succeed
+               of ['attr(a)', 'attr(a, "123")', 'attr(a px, 123px)', 'attr(a %, 123%)', 'attr(a type(<length>))',
+                   'attr(a type(*), 123)', 'attr(a, attr(b))', 'attr(a, 123, 123)']) {
+        const {ast, match, text} = matchSingleValue(
+            'width', succeed, new SDK.CSSPropertyParserMatchers.AttributeMatcher(matchedStyles, style, () => null));
+        assert.exists(ast, succeed);
+        assert.exists(match, text);
+        assert.strictEqual(match.text, succeed);
+        assert.strictEqual(match.name, 'a');
+        if (match.type !== null) {
+          assert.include(succeed, ' ' + match.type);
+        }
+      }
+      for (const fail of ['attr', 'attr(a', 'attr(a b c)', 'attr(a nottype(<length>))', 'attr(a *)']) {
+        const {match, text} = matchSingleValue(
+            'width', fail, new SDK.CSSPropertyParserMatchers.AttributeMatcher(matchedStyles, style, () => null));
+        assert.isNull(match, text);
+      }
+    });
+
+    it('parses attr() functions with comments correctly', () => {
+      const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+      const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
+      const domNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      domNode.getAttribute.returns(undefined);
+      matchedStyles.nodeForStyle.returns(domNode);
+      const emptyFallbackCases = [
+        'attr(a px,)',
+        'attr(/* comment */a px,)',
+        'attr(a /* comment */ px,)',
+        'attr(a px, /* comment */)',
+      ];
+      for (const succeed of emptyFallbackCases) {
+        const {ast, match, text} = matchSingleValue(
+            'width', succeed, new SDK.CSSPropertyParserMatchers.AttributeMatcher(matchedStyles, style, () => null));
+        assert.exists(ast, succeed);
+        assert.exists(match, text);
+        assert.strictEqual(match.text, succeed);
+        assert.strictEqual(match.name, 'a');
+        assert.strictEqual(match.type, 'px');
+        assert.deepEqual(match.fallback, []);
       }
     });
   });

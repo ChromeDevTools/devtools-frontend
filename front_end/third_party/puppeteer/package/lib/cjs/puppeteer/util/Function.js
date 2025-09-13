@@ -32,7 +32,8 @@ function stringifyFunction(fn) {
         new Function(`(${value})`);
     }
     catch (err) {
-        if (err.message.includes(`Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive`)) {
+        if (err.message.includes(`Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive`) ||
+            err.message.includes('Evaluating a string as JavaScript violates the following Content Security Policy')) {
             // The content security policy does not allow Function eval. Let's
             // assume the value might be valid as is.
             return value;

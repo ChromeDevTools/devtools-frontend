@@ -298,6 +298,14 @@ export class CdpPage extends Page {
             }
         }
     }
+    async resize(params) {
+        const { windowId } = await this.#primaryTargetClient.send('Browser.getWindowForTarget');
+        await this.#primaryTargetClient.send('Browser.setContentsSize', {
+            windowId,
+            width: params.contentWidth,
+            height: params.contentHeight,
+        });
+    }
     async #onFileChooser(event) {
         const env_1 = { stack: [], error: void 0, hasError: false };
         try {
@@ -678,7 +686,7 @@ export class CdpPage extends Page {
         const history = await this.#primaryTargetClient.send('Page.getNavigationHistory');
         const entry = history.entries[history.currentIndex + delta];
         if (!entry) {
-            return null;
+            throw new Error('History entry to navigate to not found.');
         }
         const result = await Promise.all([
             this.waitForNavigation(options),

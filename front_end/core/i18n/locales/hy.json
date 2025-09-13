@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "«Արդյունավետություն» վահանակ"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "Հաշիվ"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "Աղբյուրներ"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "Համաժամացում"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "Մշակողի գործիքներ – {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "Ցուցադրել սկրիպտները"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "ԱԲ օգնություն"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Կարգավորել և կառավարել մշակողի գործիքները"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "Նախորդ վահանակը"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "Ստանալ նշանակներ"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Կրկին բեռնել մշակողի գործիքները"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "Այս գործառույթը հասանելի է միայն ինտերնետ կապի առկայության դեպքում։"
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevToolsն արտաքին հարցում են ստացել"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ֆայլը բեռնելիս անհայտ սխալ առաջացավ"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Սեղմման գրացուցակի տեղափոխում"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "Ամբողջականության ստուգումներ՝ նախաձեռնված սերվերի կողմից"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "HTTP Unencoded Digest-ի տեխնիկական բնութագիրը"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Նոր սարքի նմանակումը էջի բեռնումից հետո կարող է ազդել LCP-ի արժեքի վրա։ Վերաբեռնեք էջը նոր սարք նմանակելուց հետո՝ LCP-ի արժեքի ավելի ճշգրիտ տվյալներ ստանալու համար։"
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Ջնջել զրույցը սարքում"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "Արտահանել զրույցը"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Կատարեք վերևում նշված քայլերը՝ հարց տալու համար"
   },
@@ -2677,6 +2695,9 @@
   },
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "Անցած զրույցներ չկան"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "Պատասխանը պատճենվեց սեղմատախտակին"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "Կարծիք հայտնել"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Սպեկուլյատիվ բեռնումներ"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Հաշվետվությունը դիտելու համար սեղմեք դրա վրա"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "Ոչ մի բողոք ընտրված չէ"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "Հաշվետվությունը դիտելու համար սեղմեք դրա վրա"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "Հաշվետվություն կամ վերջնակետ չկա"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "Ոչ մի բողոք ընտրված չէ"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "Այս էջում դուք կկարողանաք դիտել Reporting API-ի հաշվետվությունները և վերջնակետերը։"
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC-ով էջերին հասանելի չէ ամբողջ էջի քեշավորումը։"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "Ամբողջ էջի քեշավորումն անջատված է, քանի որ WebRTC-ն է օգտագործվել։"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Էջերը, որոնք օգտագործում են WebShare, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Էջերը, որոնք օգտագործում են WebSocket միջերես, հնարավոր չէ ամբողջությամբ քեշավորել։"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "Ամբողջ էջի քեշավորումն անջատված է, քանի որ WebSocket-ն է օգտագործվել։"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Էջերը, որոնք օգտագործում են WebTransport, հնարավոր չէ ամբողջությամբ քեշավորել։"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "Ամբողջ էջի քեշավորումն անջատված է, քանի որ WebTransport-ն է օգտագործվել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Էջերը, որոնք օգտագործում են WebXR, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "Անջատել ցանցի ռեժիմը"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "Անջատել սալիկաձև ռեժիմը"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "Անջատել ոլորման և ֆիքսման վրադրումը"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "Միացնել ցանցի ռեժիմը"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "Միացնել սալիկաձև ռեժիմը"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Միացնել ոլորման և ֆիքսման վրադրումը"
@@ -6771,7 +6789,7 @@
     "message": "Իրադարձությունների ունկնդիրների կատեգորիա"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework ունկնդիրներ"
+    "message": "Ճանաչել Framework ունկնդիրներին"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Պասիվ"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "Flexbox վրադրումներ"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "Ցանցի տեսքով / սալիկաձև"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "Ցանցի տեսքով / սալիկաձև դասավորություն"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "Flexbox դասավորություններ չեն գտնվել այս էջում"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "Այս էջում ցանցի տեսքով կամ սալիկաձև դասավորություն չի հայտնաբերվել"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "Վրադրել էկրանի կարգավորումները"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "Հարցումները կարող են փոխարինվել տեղում։ Տես «Աղբյուրներ» վահանակը։"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "Ավելացնել…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "Ավելացնել {PH1}"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Հատուկ"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "Կարգավորումների հավաքածու"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – Խորհուրդ է տրվում"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}՝ {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "Չափաբերել…"
@@ -8646,10 +8685,10 @@
     "message": "Վերականգնել կանխադրված արժեքը"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "Save-Data․ հարկադրաբար անջատված է"
+    "message": "Save-Data․ անջատված է"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "Save-Data․ հարկադրաբար միացված է"
+    "message": "Save-Data․ միացված է"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "Փոխարինել այս էջում navigator.connection.saveData պարամետրի հայտնած արժեքը"
@@ -9357,7 +9396,7 @@
     "message": "Ցուցադրել միայն արգելափակված հարցումները"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "Ցույց տալ միայն IP հասցեի պաշտպանությամբ պրոքսի սերվերներին ուղարկված հարցումները (միայն ինկոգնիտո ռեժիմում)"
+    "message": "Ցույց տալ միայն IP հասցեի պաշտպանությամբ պրոքսի սերվերներին ուղարկված հարցումները։ Չի ազդում դիտարկման սովորական ռեժիմի վրա։"
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "Ցուցադրել միայն արգելափակված պատասխան քուքիներով հարցումները"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "Ներբեռնում՝ {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (քեշից)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "{PH1} հապաղում"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "{PH1} հապաղում, {PH2} ներբեռնում (ընդհանուր՝ {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "Քուքիներ, որոնք ստացվել են սերվերից՝ set-cookie պատասխանի գլխագրում"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "Տեսանյութ"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP հասցեի պաշտպանության շրջանցում"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "ID"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "Մեթոդ"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "IP պրոքսին անհասանելի է"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "IP պրոքսին հասանելի է միայն ինկոգնիտո ռեժիմում։ Բացեք կայքն ինկոգնիտո ռեժիմում։"
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "Պրոքսի սերվերի հարցումներ"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "Կարգավիճակ"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Փորձարկեք, թե ինչպես կաշխատի կայքը, եթե IP-ի պրոքսին միացված լինի Chrome-ում"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "IP հասցեի պաշտպանության պրոքսի կարգավորումներ"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1}՝ {PH2}-ի հետ"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "Կարգավորումներ"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "IP հասցեի պաշտպանություն"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Հիմնական աղբյուր"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Օգտատերն ակտիվ չէ, էկրանն ապակողպված է"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "Ավտոմատ ստեղծել վերնագրեր արտադրողականության հետագծման ծանոթագրությունների համար"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Երբ կոդը մուտքագրում եք Կոնսոլում կամ «Աղբյուրներ» վահանակում, դուք կստանաք կոդերի առաջարկներ։ Դրանցից մեկն ընդունելու համար սեղմեք Tab։"
   },
@@ -12336,16 +12396,16 @@
     "message": "Բարձրացրեք ձեր արտադրողականությունը ԱԲ-ի միջոցով"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "Կոդերի առաջարկներ գեներացնելու համար Google-ին փոխանցվում են կոնսոլ մուտքագրվող տվյալները, կոնսոլի ընթացիկ աշխատաշրջանի պատմությունը և տվյալ պահին բացված ֆայլի բովանդակությունը։ Այս տվյալները կարող են դիտվել մասնագետների կողմից՝ գործառույթը բարելավելու համար։"
+    "message": "Կոդերի առաջարկներ գեներացնելու համար Google-ին փոխանցվում են կոնսոլ մուտքագրվող տվյալները, կոնսոլի ընթացիկ աշխատաշրջանի պատմությունը, ընթացիկ CSS-ը և տվյալ պահին բացված ֆայլի բովանդակությունը։ Այս տվյալները կարող են դիտվել մասնագետների կողմից՝ գործառույթը բարելավելու համար։"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Կոդերի առաջարկներ գեներացնելու համար Google-ին փոխանցվում են կոնսոլ մուտքագրվող տվյալները, կոնսոլի ընթացիկ աշխատաշրջանի պատմությունը և տվյալ պահին բացված ֆայլի բովանդակությունը։ Այս տվյալները չեն օգտագործվի Google-ի արհեստական բանականության մոդելները բարելավելու համար։"
+    "message": "Կոդերի առաջարկներ գեներացնելու համար Google-ին փոխանցվում են կոնսոլ մուտքագրվող տվյալները, կոնսոլի ընթացիկ աշխատաշրջանի պատմությունը, ընթացիկ CSS-ը և տվյալ պահին բացված ֆայլի բովանդակությունը։ Այս տվյալները չեն օգտագործվի Google-ի արհեստական բանականության մոդելները բարելավելու համար։ Ձեր կազմակերպությունը ցանկացած ժամանակ կարող է փոխել այս կարգավորումները։"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "Վահանակի հաղորդագրությունը, կապված սթեքի ժամանակագրությունը, համապատասխան սկզբնական կոդը և կապված ցանցի վերնագրերը ուղարկվում են Google-ին՝ բացատրություններ գեներացնելու համար։ Այս տվյալները կարող են դիտվել մասնագետների կողմից՝ գործառույթը բարելավելու համար։"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Վահանակի հաղորդագրությունը, կապված սթեքի ժամանակագրությունը, համապատասխան սկզբնական կոդը և կապված ցանցի վերնագրերը ուղարկվում են Google-ին՝ բացատրություններ գեներացնելու համար։ Այս տվյալները չեն օգտագործվի Google-ի արհեստական բանականության մոդելները բարելավելու համար։"
+    "message": "Վահանակի հաղորդագրությունը, կապված սթեքի ժամանակագրությունը, համապատասխան սկզբնական կոդը և կապված ցանցի վերնագրերը ուղարկվում են Google-ին՝ բացատրություններ գեներացնելու համար։ Այս տվյալները չեն օգտագործվի Google-ի արհեստական բանականության մոդելները բարելավելու համար։ Ձեր կազմակերպությունը ցանկացած ժամանակ կարող է փոխել այս կարգավորումները։"
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Կախված ձեր տարածաշրջանից՝ Google-ը կարող է ձեռնպահ մնալ տվյալների հավաքումից"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Միացնել ԱԲ օգնությունը"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "Միացնել ԱԲ կոդերի առաջարկները"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "Միացնել ԱԲ հուշումները ծանոթագրությունների համար՝ «Արդյունավետություն» վահանակում"
@@ -12381,19 +12444,19 @@
     "message": "Վերլուծեք CSS-ի ոճերը, ցանցային ակտիվությունը, արտադրողականության հետ կապված խնդիրների պատճառները և ֆայլերի աղբյուրները՝ հիմնվելով ԱԲ-ի հուշումների վրա"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Տվյալները, որոնք ստուգվող էջը կարող է բացել վեբ API-ների, ցանցի հարցումների, ֆայլերի և արտադրողականության հետագծումների միջոցով, ուղարկվում են Google-ին՝ բացատրություններ ստեղծելու համար։ Այս տվյալները կարող են դիտվել մասնագետների կողմից՝ գործառույթը բարելավելու համար։ Մի օգտագործեք անձնական կամ զգայուն տեղեկություններ էջերում։"
+    "message": "Տվյալները, որոնք ստուգվող էջը կարող է բացել վեբ API-ների, ցանցի հարցումների, ֆայլերի և արտադրողականության հետագծումների միջոցով, ուղարկվում են Google-ին՝ բացատրություններ գեներացնելու համար։ Այս տվյալները կարող են դիտվել մասնագետների կողմից՝ գործառույթը բարելավելու համար։ Մի օգտագործեք անձնական կամ զգայուն տեղեկություններով էջերում։"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Տվյալները, որոնք ստուգվող էջը կարող է բացել վեբ API-ների, ցանցի հարցումների, ֆայլերի և արտադրողականության հետագծումների միջոցով, ուղարկվում են Google-ին՝ բացատրություններ ստեղծելու համար։ Այս տվյալները չեն օգտագործվի Google-ի արհեստական բանականության մոդելները բարելավելու համար։"
+    "message": "Տվյալները, որոնք ստուգվող էջը կարող է բացել վեբ API-ների, ցանցի հարցումների, ֆայլերի և արտադրողականության հետագծումների միջոցով, ուղարկվում են Google-ին՝ բացատրություններ գեներացնելու համար։ Այս տվյալները չեն օգտագործվի Google-ի արհեստական բանականության մոդելները բարելավելու համար։ Ձեր կազմակերպությունը ցանկացած ժամանակ կարող է փոխել այս կարգավորումները։"
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "Արտադրողականության հետագծման ձեր տվյալներն ուղարկվում են Google-ին՝ բացատրություն գեներացնելու համար։ Այս տվյալները կօգտագործվեն Google-ի արհեստական բանականության մոդելները բարելավելու համար։"
+    "message": "Ծանոթագրությունների առաջարկներ ստեղծելու համար ձեր արդյունավետության հետագծումն ուղարկվում է Google-ին։ Այս տվյալները կարող են դիտվել մասնագետների կողմից՝ գործառույթը բարելավելու համար։"
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Արտադրողականության հետագծման ձեր տվյալներն ուղարկվում են Google-ին՝ բացատրություն գեներացնելու համար։ Այս տվյալները չեն օգտագործվի Google-ի արհեստական բանականության մոդելները բարելավելու համար։"
+    "message": "Ծանոթագրությունների առաջարկներ ստեղծելու համար ձեր արդյունավետության հետագծումն ուղարկվում է Google-ին։ Այս տվյալները չեն օգտագործվի Google-ի արհեստական բանականության մոդելները բարելավելու համար։ Ձեր կազմակերպությունը ցանկացած ժամանակ կարող է փոխել այս կարգավորումները։"
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "ԱԲ հուշումներ ստացեք ծանոթագրությունների համար՝ «Արդյունավետություն» վահանակում"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "Գործառույթն ավտոմատ ստեղծվող պիտակների միջոցով արտադրողականության հետագծմանն ավելացնում է ծանոթագրություն"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "Օգնություն ստացեք կոդ գրելիս"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "Անկայուն փորձարկումներ"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (տարեկան)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (ամսական)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (տարեկանl)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (ամսական)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "Ստանդարտ սակագնային պլան"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "Անհայտ պլան"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "Դուք Chrome-ում հաշիվ չեք մտել"
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Այս կարգավորումը միացնելու համար նախ անհրաժեշտ է միացնել կարգավորումների համաժամացումը Chrome-ում։"
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Բացել կարգավորումները"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(տվյալներն ուղարկվում են Google-ին)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "Գրանցվել"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Chrome-ում օգտագործվող հաշիվը՝"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Այս կարգավորումը միացնելու համար անհրաժեշտ է միացնել Chrome-ի համաժամացումը։"
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "Դիտել պրոֆիլը"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Ավելացնել հատուկ սարք"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "– CPU-ի սահմանափակումը միացված է"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "– JavaScript-ի նմուշառումն անջատված է"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "– Ցանցի թողունակության սահմանափակումը միացված է"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "Խամրեցնել երրորդ կողմի բովանդակությունը"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "Անջատել JavaScript-ի նմուշները"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "Անջատում է JavaScript-ի նմուշառումը, նվազեցնում է ռեսուրսների օգտագործումը շարժական սարքերում կատարման ժամանակ։"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Հետագծման ֆայլը կամ URL-ը թողեք այստեղ"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Կրկնություն"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "Սպասման ժամանակ"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1}՝ {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Ժամանակային տվյալներ"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "Կազմաձևել տարբերակների տեսակները"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "Ցույց տալ բոլորը"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "Հետագծման մեջ որոշ տողեր թաքցված են։ Տողերը կարգավորելու համար տողի անվանման վրա սեղմեք մկնիկի աջ կոճակը։"
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Չհամաժամացում"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket հաղորդակարգ"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "Պահել արտադրողականության հետագծումը "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "Ներառել ծանոթագրություններ"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "Ներառել սկրիպտի բովանդակությունը"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "Ավելացնել սկրիպտների սկզբնական կոդերի քարտեզները"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "Պահել"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "Պահել հետագծումը…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Ընդլայնված"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Այս հարցման քուքիներն արգելափակված են Chrome-ի փորձնական գործառույթների կամ դիտարկիչի կազմաձևման պատճառով։ Իմացեք ավելին «Խնդիրներ» վահանակում։"
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "Աուդիո համատեքստը՝ {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "Հետզանգի բուֆերի չափսը"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "Հետզանգի ինտերվալը"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "Ընթացիկ ժամը"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "Ելքային ալիքների առավելագույն թիվը"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(գրանցումներ չկան)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Web Audio API-ի օգտագործում չի հայտնաբերվել"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Մշտադիտարկումը սկսելու համար բացեք էջ, որն օգտագործում է Web Audio API։"
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "Արտապատկերման տարողունակություն"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "Հաճախականություն"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "Կարգավիճակ"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "աուդիո"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Այլ գործիքներ"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "Տանել ցանկի վերջ"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "Տեղափոխել դարակ"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "Տեղափոխել ցանկի սկիզբ"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "Տեղափոխել ներդիրների գլխավոր վահանակ"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Վահանակներ"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "նշված է"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "Սա նոր գործառույթ է"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "Կատարել հրամանը"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "Սա նոր գործառույթ է"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Ոչինչ չի գտնվել"

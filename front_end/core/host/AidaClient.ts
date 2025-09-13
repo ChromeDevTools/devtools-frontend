@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -123,18 +123,20 @@ export enum ClientFeature {
   CHROME_STYLING_AGENT = 2,
   // Chrome AI Assistance Network Agent.
   CHROME_NETWORK_AGENT = 7,
-  // Chrome AI Assistance Performance Agent.
-  CHROME_PERFORMANCE_AGENT = 8,
   // Chrome AI Annotations Performance Agent
   CHROME_PERFORMANCE_ANNOTATIONS_AGENT = 20,
   // Chrome AI Assistance File Agent.
   CHROME_FILE_AGENT = 9,
   // Chrome AI Patch Agent.
   CHROME_PATCH_AGENT = 12,
-  // Chrome AI Assistance Performance Insights Agent.
-  CHROME_PERFORMANCE_INSIGHTS_AGENT = 13,
   // Chrome AI Assistance Performance Agent.
   CHROME_PERFORMANCE_FULL_AGENT = 24,
+
+  // Removed features (for reference).
+  // Chrome AI Assistance Performance Insights Agent.
+  // CHROME_PERFORMANCE_INSIGHTS_AGENT = 13,
+  // Chrome AI Assistance Performance Agent (call trees).
+  // CHROME_PERFORMANCE_AGENT = 8,
 }
 
 export enum UserTier {
@@ -715,6 +717,8 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventT
       const config =
           await new Promise<Root.Runtime.HostConfig>(resolve => InspectorFrontendHostInstance.getHostConfig(resolve));
       Object.assign(Root.Runtime.hostConfig, config);
+      // TODO(crbug.com/442545623): Send `currentAidaAvailability` to the listeners as part of the event so that
+      // `await AidaClient.checkAccessPreconditions()` does not need to be called again in the event handlers.
       this.dispatchEventToListeners(Events.AIDA_AVAILABILITY_CHANGED);
     }
   }

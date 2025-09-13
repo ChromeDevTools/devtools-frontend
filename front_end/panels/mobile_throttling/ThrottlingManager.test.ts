@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -98,7 +98,7 @@ describeWithMockConnection('ThrottlingManager', () => {
       const options = select.options();
       assert.deepEqual(
           options.map(option => option.textContent),
-          ['\'Save-Data\': default', '\'Save-Data\': force on', '\'Save-Data\': force off']);
+          ['\'Save-Data\': default', '\'Save-Data\': on', '\'Save-Data\': off']);
 
       let emulationModelSpy = spyCall(emulationModel, 'setDataSaverOverride');
       select.select(options[0]);

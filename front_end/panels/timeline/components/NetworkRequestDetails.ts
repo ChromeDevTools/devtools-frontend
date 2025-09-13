@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -12,7 +12,6 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
-import type * as TimelineUtils from '../utils/utils.js';
 
 import networkRequestDetailsStyles from './networkRequestDetails.css.js';
 import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
@@ -120,11 +119,11 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
   #view: typeof DEFAULT_VIEW;
   #request: Trace.Types.Events.SyntheticNetworkRequest|null = null;
   #requestPreviewElements = new WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLElement>();
-  #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
+  #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
   #target: SDK.Target.Target|null = null;
   #linkifier: LegacyComponents.Linkifier.Linkifier|null = null;
   #serverTimings: SDK.ServerTiming.ServerTiming[]|null = null;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
     super(element);
@@ -137,7 +136,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  set parsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null) {
+  set parsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null) {
     this.#parsedTrace = parsedTrace;
     this.requestUpdate();
   }
@@ -165,7 +164,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  set entityMapper(mapper: TimelineUtils.EntityMapper.EntityMapper|null) {
+  set entityMapper(mapper: Trace.EntityMapper.EntityMapper|null) {
     this.#entityMapper = mapper;
     this.requestUpdate();
   }
@@ -189,10 +188,10 @@ export interface ViewInput {
   request: Trace.Types.Events.SyntheticNetworkRequest|null;
   target: SDK.Target.Target|null;
   previewElementsCache: WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLElement>;
-  entityMapper: TimelineUtils.EntityMapper.EntityMapper|null;
+  entityMapper: Trace.EntityMapper.EntityMapper|null;
   serverTimings: SDK.ServerTiming.ServerTiming[]|null;
   linkifier: LegacyComponents.Linkifier.Linkifier|null;
-  parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
 }
 
 export const DEFAULT_VIEW: (
@@ -393,7 +392,7 @@ function renderFromCache(
 
 function renderThirdPartyEntity(
     request: Trace.Types.Events.SyntheticNetworkRequest,
-    entityMapper: TimelineUtils.EntityMapper.EntityMapper|null): Lit.LitTemplate {
+    entityMapper: Trace.EntityMapper.EntityMapper|null): Lit.LitTemplate {
   if (!entityMapper) {
     return Lit.nothing;
   }
@@ -428,7 +427,7 @@ function renderServerTimings(timings: SDK.ServerTiming.ServerTiming[]|null): Lit
 }
 function renderInitiatedBy(
     request: Trace.Types.Events.SyntheticNetworkRequest,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
+    parsedTrace: Trace.TraceModel.ParsedTrace|null,
     target: SDK.Target.Target|null,
     linkifier: LegacyComponents.Linkifier.Linkifier|null,
     ): Lit.LitTemplate {
@@ -445,13 +444,13 @@ function renderInitiatedBy(
   };
   // If we have a stack trace, that is the most reliable way to get the initiator data and display a link to the source.
   if (hasStackTrace) {
-    const topFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(request)?.at(0) ?? null;
+    const topFrame = Trace.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(request) ?? null;
     if (topFrame) {
       link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, options);
     }
   }
   // If we do not, we can see if the network handler found an initiator and try to link by URL
-  const initiator = parsedTrace?.NetworkRequests.eventToInitiator.get(request);
+  const initiator = parsedTrace?.data.NetworkRequests.eventToInitiator.get(request);
   if (initiator) {
     link = linkifier.maybeLinkifyScriptLocation(
         target,

@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -18,9 +18,9 @@ describeWithEnvironment('Initiators', () => {
     let rAFCall: Trace.Types.Events.SyntheticProfileCall;
     let functionCallByRAF: Trace.Types.Events.Event;
 
-    let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+    let parsedTrace: Trace.TraceModel.ParsedTrace;
     beforeEach(async function() {
-      parsedTrace = (await TraceLoader.traceEngine(this, 'async-js-calls.json.gz')).parsedTrace;
+      parsedTrace = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
       setTimeoutCall =
           allThreadEntriesInTrace(parsedTrace)
               .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'setTimeout')
@@ -126,7 +126,7 @@ describeWithEnvironment('Initiators', () => {
          // Get the parent of rAF to add to the expandable events array.
          // When we add rAF to hidden entries list, it will be the
          // closest expandable parent and the initiator should point to it.
-         const rAFParent = parsedTrace.Renderer.entryToNode.get(rAFCall)?.parent;
+         const rAFParent = parsedTrace.data.Renderer.entryToNode.get(rAFCall)?.parent;
          assert.exists(rAFParent);
 
          // Find the initiatorData objects starting at the rAF
@@ -144,7 +144,7 @@ describeWithEnvironment('Initiators', () => {
 
     it('will return the closest expandable ancestor as an initiated event in a pair if the event itself is hidden',
        async function() {
-         const functionCallByRAFParent = parsedTrace.Renderer.entryToNode.get(functionCallByRAF)?.parent;
+         const functionCallByRAFParent = parsedTrace.data.Renderer.entryToNode.get(functionCallByRAF)?.parent;
          assert.exists(functionCallByRAFParent);
 
          const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(
@@ -160,13 +160,13 @@ describeWithEnvironment('Initiators', () => {
 
   describe('Network Requests', function() {
     it('returns the initiator data for network requests', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
 
       // Find the network request to test, it is initiated by `youtube.com`.
-      const event = parsedTrace.NetworkRequests.byTime.find(event => event.ts === 1491680762420);
+      const event = parsedTrace.data.NetworkRequests.byTime.find(event => event.ts === 1491680762420);
       assert.exists(event);
       // Find the `youtube.com` network request.
-      const initiator = parsedTrace.NetworkRequests.byTime.find(event => event.ts === 1491680629144);
+      const initiator = parsedTrace.data.NetworkRequests.byTime.find(event => event.ts === 1491680629144);
       assert.exists(initiator);
       const initiatorData = Timeline.Initiators.initiatorsDataToDrawForNetwork(parsedTrace, event);
 

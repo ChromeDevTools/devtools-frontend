@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console, rulesdir/check-license-header */
+/* eslint-disable no-console */
 
 /**
  * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.

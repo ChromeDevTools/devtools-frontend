@@ -1,179 +1,195 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {CategorizedBreakpoint} from '../../core/sdk/CategorizedBreakpoint.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Protocol from '../../generated/protocol.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as BrowserDebugger from './browser_debugger.js';
 
 class TestSidebarPane extends BrowserDebugger.CategorizedBreakpointsSidebarPane.CategorizedBreakpointsSidebarPane {
-  static breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[] = [
-    new SDK.CategorizedBreakpoint.CategorizedBreakpoint(SDK.CategorizedBreakpoint.Category.ANIMATION, 'animation'),
-    new SDK.CategorizedBreakpoint.CategorizedBreakpoint(SDK.CategorizedBreakpoint.Category.ANIMATION, 'bnimation'),
-    new SDK.CategorizedBreakpoint.CategorizedBreakpoint(SDK.CategorizedBreakpoint.Category.CANVAS, 'also_animation'),
-    new SDK.CategorizedBreakpoint.CategorizedBreakpoint(SDK.CategorizedBreakpoint.Category.LOAD, 'different'),
-  ];
+  readonly view:
+      ViewFunctionStub<typeof BrowserDebugger.CategorizedBreakpointsSidebarPane.CategorizedBreakpointsSidebarPane>;
+  readonly breakpoints: CategorizedBreakpoint[];
+  breakpointFromPausedDetails: CategorizedBreakpoint|null = null;
 
   constructor() {
-    super(TestSidebarPane.breakpoints, 'view', Protocol.Debugger.PausedEventReason.Other);
-    renderElementIntoDOM(this);
+    const breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[] = [
+      new SDK.CategorizedBreakpoint.CategorizedBreakpoint(SDK.CategorizedBreakpoint.Category.LOAD, 'different'),
+      new SDK.CategorizedBreakpoint.CategorizedBreakpoint(SDK.CategorizedBreakpoint.Category.ANIMATION, 'bnimation'),
+      new SDK.CategorizedBreakpoint.CategorizedBreakpoint(SDK.CategorizedBreakpoint.Category.CANVAS, 'also_animation'),
+      new SDK.CategorizedBreakpoint.CategorizedBreakpoint(SDK.CategorizedBreakpoint.Category.ANIMATION, 'animation'),
+    ];
+    const view =
+        createViewFunctionStub(BrowserDebugger.CategorizedBreakpointsSidebarPane.CategorizedBreakpointsSidebarPane);
+    super(breakpoints, 'view', 'view', view);
+    this.view = view;
+    this.breakpoints = breakpoints;
   }
 
-  doPopulate(filterText: string|null): void {
-    const input = this.filterToolbar.contentElement.querySelector('devtools-toolbar-input');
-    input?.setAttribute('value', filterText ?? '');
-  }
-
-  override getBreakpointFromPausedDetails() {
-    return TestSidebarPane.breakpoints[1];
-  }
-
-  * tree(): Generator<UI.TreeOutline.TreeElement> {
-    function* walk(root: UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement): Generator<UI.TreeOutline.TreeElement> {
-      let child = root.firstChild();
-      while (child) {
-        yield child;
-        yield* walk(child);
-        child = child.nextSibling;
-      }
-    }
-    yield* walk(this.treeOutline);
-  }
-
-  asObject(): object {
-    function treeAsObject(root: UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement): object {
-      const object: Record<string, object> = {};
-      let child = root.firstChild();
-      while (child) {
-        object[(child.title as HTMLElement).title] = treeAsObject(child);
-        child = child.nextSibling;
-      }
-      return object;
-    }
-
-    return treeAsObject(this.treeOutline);
+  override getBreakpointFromPausedDetails(): SDK.CategorizedBreakpoint.CategorizedBreakpoint|null {
+    return this.breakpointFromPausedDetails;
   }
 }
 
 describeWithMockConnection('CategorizedBreakpointsSidebarPane', () => {
-  it('shows a breakpoint tree', () => {
+  it('sorts and groups the breakpoint', async () => {
     const pane = new TestSidebarPane();
+    pane.update();
+    const input = await pane.view.nextInput;
+    assert.deepEqual(input.sortedCategoryNames, [
+      SDK.CategorizedBreakpoint.Category.ANIMATION,
+      SDK.CategorizedBreakpoint.Category.CANVAS,
+      SDK.CategorizedBreakpoint.Category.LOAD,
+    ]);
 
-    assert.deepEqual(pane.asObject(), {
-      Animation: {
-        animation: {},
-        bnimation: {},
-      },
-      Canvas: {
-        also_animation: {},
-      },
-      Load: {
-        different: {},
-      },
-    });
+    assert.deepEqual(
+        input.categories.get(SDK.CategorizedBreakpoint.Category.ANIMATION), [pane.breakpoints[1], pane.breakpoints[3]]);
+    assert.deepEqual(input.categories.get(SDK.CategorizedBreakpoint.Category.CANVAS), [pane.breakpoints[2]]);
+    assert.deepEqual(input.categories.get(SDK.CategorizedBreakpoint.Category.LOAD), [pane.breakpoints[0]]);
   });
 
-  it('filters the breakpoint tree', () => {
+  it('passes filterText', async () => {
     const pane = new TestSidebarPane();
-    pane.doPopulate('animation');
-
-    assert.deepEqual(pane.asObject(), {
-      Animation: {
-        animation: {},
-      },
-      Canvas: {
-        also_animation: {},
-      },
-    });
-
-    pane.doPopulate(null);
-    assert.deepEqual(pane.asObject(), {
-      Animation: {
-        animation: {},
-        bnimation: {},
-      },
-      Canvas: {
-        also_animation: {},
-      },
-      Load: {
-        different: {},
-      },
-    });
+    pane.update();
+    const input = await pane.view.nextInput;
+    assert.isNull(input.filterText);
+    input.onFilterChanged('filter');
+    const postInput = await pane.view.nextInput;
+    assert.strictEqual(postInput.filterText, 'filter');
   });
 
-  // This and the following test check that the paused-on breakpoint is included when filtering even when it's not
-  // matching. They test filtering and pausing in different orders.
-  it('includes the paused breakpoint entry when filtered', async () => {
-    sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
+  it('enables breakpoints', async () => {
     const pane = new TestSidebarPane();
+    pane.update();
+    const input = await pane.view.nextInput;
+    assert.isFalse(pane.breakpoints[1].enabled());
+    input.onBreakpointChange(pane.breakpoints[1], true);
+    assert.isTrue(pane.breakpoints[1].enabled());
+  });
+
+  it('highlights the hit breakpoint from debugger paused details', async () => {
+    const pane = new TestSidebarPane();
+    pane.update();
+    const input = await pane.view.nextInput;
+    assert.isNull(input.highlightedItem);
+
+    pane.breakpointFromPausedDetails = pane.breakpoints[0];
+
     const target = createTarget();
     UI.Context.Context.instance().setFlavor(SDK.Target.Target, target);
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assert.exists(debuggerModel);
-    await debuggerModel.pausedScript([], Protocol.Debugger.PausedEventReason.Other, {}, []);
-    // Filter applied first.
-    pane.doPopulate('animation');
-    // Breakpoint hit second.
-    pane.update();
 
-    assert.deepEqual(pane.asObject(), {
-      Animation: {
-        animation: {},
-        bnimation: {},
-      },
-      Canvas: {
-        also_animation: {},
-      },
-    });
-  });
+    const model = target.model(SDK.DebuggerModel.DebuggerModel);
+    assert.exists(model);
+    sinon.stub(model, 'debuggerPausedDetails')
+        .returns(sinon.createStubInstance(SDK.DebuggerModel.DebuggerPausedDetails));
 
-  it('preserves the paused breakpoint entry while filtering', async () => {
     sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
-    const pane = new TestSidebarPane();
-    const target = createTarget();
-    UI.Context.Context.instance().setFlavor(SDK.Target.Target, target);
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assert.exists(debuggerModel);
-    await debuggerModel.pausedScript([], Protocol.Debugger.PausedEventReason.Other, {}, []);
-    // Breakpoint hit first.
     pane.update();
-    // Filter applied second.
-    pane.doPopulate('animation');
 
-    assert.deepEqual(pane.asObject(), {
-      Animation: {
-        animation: {},
-        bnimation: {},
-      },
-      Canvas: {
-        also_animation: {},
-      },
-    });
+    const postInput = await pane.view.nextInput;
+    assert.strictEqual(postInput.highlightedItem, pane.breakpoints[0]);
   });
 
-  it('preseves expanded nodes while filtering', () => {
-    const pane = new TestSidebarPane();
-    const category = pane.tree().find(element => (element.title as HTMLElement).title === 'Canvas');
-    assert.exists(category);
-    category.expand();
-    pane.doPopulate('animation');
+  describe('View', () => {
+    const categories = new Map([
+      [
+        SDK.CategorizedBreakpoint.Category.ANIMATION,
+        [
+          new SDK.CategorizedBreakpoint.CategorizedBreakpoint(
+              SDK.CategorizedBreakpoint.Category.ANIMATION, 'animation'),
+          new SDK.CategorizedBreakpoint.CategorizedBreakpoint(SDK.CategorizedBreakpoint.Category.ANIMATION, 'bnimation')
+        ]
+      ],
+      [
+        SDK.CategorizedBreakpoint.Category.CANVAS, [new SDK.CategorizedBreakpoint.CategorizedBreakpoint(
+                                                       SDK.CategorizedBreakpoint.Category.CANVAS, 'also_animation')]
+      ],
+      [
+        SDK.CategorizedBreakpoint.Category.LOAD,
+        [new SDK.CategorizedBreakpoint.CategorizedBreakpoint(SDK.CategorizedBreakpoint.Category.LOAD, 'different')]
+      ],
+    ]);
 
-    const category2 = pane.tree().find(element => (element.title as HTMLElement).title === 'Canvas');
-    assert.strictEqual(
-        category, category2,
-        'This test assumes the tree element objects do not change. If this fails, update the test.');
-    assert.isTrue(category.expanded);
-    pane.doPopulate(null);
-    assert.isTrue(category.expanded);
-    category.collapse();
-    assert.isFalse(category.expanded);
-    pane.doPopulate('animation');
-    pane.doPopulate(null);
-    assert.isFalse(category.expanded);
+    it('renders the breakpoints view', async () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target, {includeCommonStyles: true});
+      BrowserDebugger.CategorizedBreakpointsSidebarPane.DEFAULT_VIEW(
+          {
+            onFilterChanged: function(): void {
+              throw new Error('Function not implemented.');
+            },
+            onBreakpointChange: function(): void {
+              throw new Error('Function not implemented.');
+            },
+            filterText: null,
+            highlightedItem: null,
+            categories,
+            sortedCategoryNames: categories.keys().toArray().toSorted(),
+            userExpandedCategories: new Set(),
+          },
+          {
+            defaultFocus: undefined,
+            userExpandedCategories: new Set(),
+          },
+          target);
+      await assertScreenshot('browser_debugger/categorized_breakpoint_sidebar_pane.png');
+    });
+
+    it('highlights and expands the current breakpoint', async () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target, {includeCommonStyles: true});
+      BrowserDebugger.CategorizedBreakpointsSidebarPane.DEFAULT_VIEW(
+          {
+            onFilterChanged: function(): void {
+              throw new Error('Function not implemented.');
+            },
+            onBreakpointChange: function(): void {
+              throw new Error('Function not implemented.');
+            },
+            filterText: null,
+            highlightedItem: categories.get(SDK.CategorizedBreakpoint.Category.CANVAS)![0],
+            categories,
+            sortedCategoryNames: categories.keys().toArray().toSorted(),
+            userExpandedCategories: new Set(),
+          },
+          {
+            defaultFocus: undefined,
+            userExpandedCategories: new Set(),
+          },
+          target);
+      await assertScreenshot('browser_debugger/categorized_breakpoint_sidebar_pane_highlight.png');
+    });
+
+    it('expands selected breakpoints', async () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target, {includeCommonStyles: true});
+      categories.get(SDK.CategorizedBreakpoint.Category.CANVAS)?.[0].setEnabled(true);
+      BrowserDebugger.CategorizedBreakpointsSidebarPane.DEFAULT_VIEW(
+          {
+            onFilterChanged: function(): void {
+              throw new Error('Function not implemented.');
+            },
+            onBreakpointChange: function(): void {
+              throw new Error('Function not implemented.');
+            },
+            filterText: null,
+            categories,
+            sortedCategoryNames: categories.keys().toArray().toSorted(),
+            highlightedItem: null,
+            userExpandedCategories: new Set(),
+          },
+          {
+            defaultFocus: undefined,
+            userExpandedCategories: new Set(),
+          },
+          target);
+      await assertScreenshot('browser_debugger/categorized_breakpoint_sidebar_pane_expand.png');
+    });
   });
 });

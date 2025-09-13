@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -43,9 +43,19 @@ describeWithEnvironment('StylingAgent', () => {
   }
 
   let element: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
+  let target: sinon.SinonStubbedInstance<SDK.Target.Target>;
+  let domModel: sinon.SinonStubbedInstance<SDK.DOMModel.DOMModel>;
+
   beforeEach(() => {
     mockHostConfig();
+    target = sinon.createStubInstance(SDK.Target.Target);
+    target.model.returns(null);
+
+    domModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
+    domModel.target.returns(target);
+
     element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    element.domModel.returns(domModel);
   });
 
   describe('describeElement', () => {
@@ -233,18 +243,20 @@ describeWithEnvironment('StylingAgent', () => {
         execJs,
       });
 
+      sinon.stub(StylingAgent, 'describeElement').resolves('element-description');
+
       const controller = new AbortController();
       controller.abort();
       await Array.fromAsync(agent.run('test', {
-        selected: null,
+        selected: new AiAssistance.NodeContext(element),
         signal: controller.signal,
       }));
-      await Array.fromAsync(agent.run('test2', {selected: null}));
+      await Array.fromAsync(agent.run('test2', {selected: new AiAssistance.NodeContext(element)}));
 
       const request = agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER);
       assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
       assert.deepEqual(request.historical_contexts, [
-        {parts: [{text: 'QUERY: test2'}], role: 1}, {
+        {parts: [{text: '# Inspected element\n\nelement-description\n\n# User request\n\nQUERY: test2'}], role: 1}, {
           parts: [
             {functionCall: {name: 'executeJavaScript', args: {title: 'title2', thought: 'thought2', code: 'action2'}}}
           ],

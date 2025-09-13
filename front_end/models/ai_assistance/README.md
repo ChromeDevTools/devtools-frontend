@@ -14,7 +14,7 @@ Each agent has a _context_ defined, which represents the selected data that form
 When defining a context, they must extend the `ConversationContext` interface, which defines a few methods which must be implemented, including:
 
 - `getOrigin()`: the origin of the data. This is important as for security concerns if the user swaps to a new context with a different origin, a new conversation must be started to avoid any concerns of sharing data across origins.
-- `getIcon()` and `getTitle()` which are used to represent the context in the UI.
+- `getTitle()` which are used to represent the context in the UI.
 
 When the user begins a conversation with the AI, we want to include information based on the active context to send as part of the prompt. This is done in the agent implementation by overriding the `enhanceQuery()` method, which takes the active context as the second argument. This method can be used to enrich the query with contextual information.
 

@@ -1,4 +1,4 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
+// Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -119,7 +119,7 @@ PerformanceTestRunner.createTraceEngineDataFromEvents = async function(events) {
   await model.parse(events);
   // Model only has one trace, so we can hardcode 0 here to get the latest
   // result.
-  return model.parsedTrace(0);
+  return model.parsedTrace(0)?.data;
 };
 
 PerformanceTestRunner.createTimelineController = function() {

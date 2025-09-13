@@ -5,6 +5,7 @@
  */
 export * from './BrowserWebSocketTransport.js';
 export * from './CallbackRegistry.js';
+export * from './AriaQueryHandler.js';
 export * from './ConsoleMessage.js';
 export * from './CustomQueryHandler.js';
 export * from './Debug.js';

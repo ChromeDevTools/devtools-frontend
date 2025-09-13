@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "پانل عملکرد"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "حساب"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "آرایش‌دهنده"
   },
@@ -147,7 +150,7 @@
     "message": "جهانی"
   },
   "core/common/SettingRegistration.ts | grid": {
-    "message": "جدول"
+    "message": "جدولی"
   },
   "core/common/SettingRegistration.ts | memory": {
     "message": "حافظه"
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "منابع"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "همگام‌سازی"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "نمایش دستورگان‌ها"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "دستیاری هوش مصنوعی"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "سفارشی‌سازی و تنظیم DevTools"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "پانل قبلی"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "دریافت نشان"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "بار کردن مجدد DevTools"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "این ویژگی فقط با اتصال اینترنت فعال دردسترس است."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "‫DevTools یک درخواست خارجی دریافت کرد"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "خطای ناشناخته هنگام بار کردن فایل"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "انتقال واژه‌نامه فشرده‌سازی"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "بررسی‌های تمامیت آغازشده توسط سرور"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "مشخصات خلاصه کدبندی‌نشده HTTP"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "شبیه‌سازی دستگاه جدید پس‌از بار شدن صفحه می‌تواند بر LCP تأثیر بگذارد. برای داده‌های LCP دقیق، صفحه را پس‌از شبیه‌سازی دستگاه جدید مجدد بار کنید."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "حذف گپ محلی"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "صادر کردن مکالمه"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "برای پرسیدن سؤال، مراحل بالا را دنبال کنید"
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "مکالمه‌ای ازقبل وجود ندارد"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "پاسخ در بریده‌دان کپی شد"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "ارسال بازخورد"
   },
@@ -2691,7 +2712,7 @@
     "message": "پرسیدن از هوش مصنوعی"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
-    "message": "اشکال‌زدایی کردن با هوش مصنوعی"
+    "message": "اشکال‌زدایی با هوش مصنوعی"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "فعال کردن دستیاری هوش مصنوعی"
@@ -3246,7 +3267,7 @@
     "message": "منشأ"
   },
   "panels/application/BackgroundServiceView.ts | paymentHandler": {
-    "message": "کنترل‌کننده پرداخت"
+    "message": "مدیریت‌كننده پرداخت"
   },
   "panels/application/BackgroundServiceView.ts | periodicBackgroundSync": {
     "message": "همگام‌سازی دوره‌ای پس‌زمینه"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "بارگذاری‌های فرضی"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "برای مشاهده محتوای هر گزارش روی آن کلیک کنید"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "گزارشی انتخاب نشده است"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "میانای برنامه‌سازی کاربردی گزارش‌دهی"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "برای مشاهده محتوای هر گزارش روی آن کلیک کنید"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "بدون گزارش یا نقطه پایانی"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "گزارشی انتخاب نشده است"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "در این صفحه می‌توانید نقطه‌های پایان و گزارش‌های Reporting API را بازرسی کنید."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "صفحه‌های دارای WebRTC نمی‌توانند وارد حافظه پنهان عقب-جلو شوند."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "حافظه نهان بهینه‌شده غیرفعال است زیرا از WebRTC استفاده شده است."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "درحال‌حاضر، صفحه‌هایی که از WebShare استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "صفحه‌های دارای WebSocket نمی‌توانند وارد حافظه پنهان عقب-جلو شوند."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "حافظه نهان بهینه‌شده غیرفعال است زیرا از WebSocket استفاده شده است."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "صفحه‌های دارای WebTransport نمی‌توانند در حافظه پنهان عقب-جلو ذخیره شوند."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "حافظه نهان بهینه‌شده غیرفعال است زیرا از WebTransport استفاده شده است."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "درحال‌حاضر، صفحه‌هایی که از WebXR استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
@@ -4557,7 +4569,7 @@
     "message": "ثبت کنترل‌كننده پروتکل معتبر در {PH1} پیدا شد. با نصب برنامه، پروتکل‌های ثبت‌شده را آزمایش کنید."
   },
   "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
-    "message": "ثبت کنترل‌كننده پروتکل نشانی وب برای برنامه‌های وب پیش‌رو"
+    "message": "ثبت مدیریت‌كننده پروتکل نشانی وب برای برنامه‌های وب پیش‌رو"
   },
   "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
     "message": "کنترل‌کننده‌های پروتکل را در {PH1} تعریف کنید تا برنامه‌تان هنگام نصب شدن، به‌عنوان کنترل‌کننده پروتکل‌های سفارشی ثبت شود."
@@ -4566,7 +4578,7 @@
     "message": "آزمایش پروتکل"
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
-    "message": "نقطه پایان یا پارامتر پُرسمان برای کنترل‌كننده پروتکل"
+    "message": "نقطه پایان یا پارامتر پُرسمان برای مدیریت‌كننده پروتکل"
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
     "message": "نشانی وب را وارد کنید"
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "غیرفعال کردن حالت جدولی"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "غیرفعال کردن حالت آجری"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "غیرفعال کردن همپوشانی قفل پیمایش"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "فعال کردن حالت جدولی"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "فعال کردن حالت آجری"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "فعال کردن همپوشانی قفل پیمایش"
@@ -6771,7 +6789,7 @@
     "message": "دسته شنونده‌های رویداد"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework شنونده"
+    "message": "حل کردن شنونده‌های Framework"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "منفعل"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "همپوشانی‌های چارگوش انعطاف‌پذیر"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "جدولی / آجری"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "رونهادهای جدولی / آجری"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "هیچ‌گونه طرح‌بندی چارگوش انعطاف‌پذیر در این صفحه پیدا نشد"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "چیدمان جدولی یا آجری در این صفحه پیدا نشد"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "تنظیمات نمایش همپوشانی"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "ممکن است درخواست‌ها به‌طور محلی ملغی شود، پانل «منابع» را ببینید"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "افزودن…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "افزودن {PH1}"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "سفارشی"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "پیش‌تنظیم‌ها"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "‫{PH1} – توصیه‌شده"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "واسنجی…"
@@ -8646,10 +8685,10 @@
     "message": "بازنشانی به مقدار پیش‌فرض"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "‫«Save-Data»: خاموش اجباری"
+    "message": "‫«Save-Data»: خاموش"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "‫«Save-Data»: روشن اجباری"
+    "message": "‫«Save-Data»: روشن"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "ارزش گزارش‌شده توسط navigator.connection.saveData در صفحه را ملغی می‌کند"
@@ -8952,7 +8991,7 @@
     "message": "منبع با چارچوب COEP به سرصفحه COEP نیاز دارد"
   },
   "panels/network/NetworkDataGridNode.ts | coopSandboxedIframeCannotNavigateToCoopPage": {
-    "message": "بالاپر iframe قرارگرفته در جعبه امن به صفحه COOP هدایت نمی‌شود"
+    "message": "بالاپر iframe قرارگرفته در جعبه امن نمی‌تواند به صفحه COOP پیمایش کند"
   },
   "panels/network/NetworkDataGridNode.ts | corpNotSameOrigin": {
     "message": "‫CORP با «same-site» مطابقت ندارد"
@@ -9357,7 +9396,7 @@
     "message": "فقط درخواست‌های مسدودشده نشان داده می‌شود"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(فقط در حالت ناشناس) فقط درخواست‌هایی که به پراکسی‌های «حفاظت پروتکل اینترنتی» ارسال شده‌اند نشان داده می‌شوند"
+    "message": "فقط درخواست‌های ارسال‌شده به پراکسی‌های «حفاظت پروتکل اینترنتی» نشان داده می‌شوند. در مرور معمولی بی‌اثر است."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "فقط درخواست‌هایی که پاسخ کوکی‌ها مسدود شده‌اند نشان داده می‌شود"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "نشانی وب"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1} بارگیری"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (از حافظه پنهان)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (از ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "{PH1} تأخیر"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "{PH1} تأخیر، {PH2} بارگیری (در کل {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "کوکی‌هایی که در سرصفحه «set-cookie» پاسخ از سرور دریافت شده‌اند"
@@ -11574,7 +11598,7 @@
     "message": "برای جستجو کردن، تایپ کنید و {PH1} را فشار دهید"
   },
   "panels/security/CookieControlsView.ts | cardDisclaimer": {
-    "message": "فقط وقتی DevTools باز است"
+    "message": "فقط زمانی‌که DevTools باز باشد"
   },
   "panels/security/CookieControlsView.ts | cardTitle": {
     "message": "محدود کردن موقت کوکی‌های طرف سوم"
@@ -11740,6 +11764,36 @@
   },
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "ویدیو"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "دور زدن «حفاظت پروتکل اینترنتی»"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "شناسه"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "روش"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "«پراکسی پروتکل اینترنتی» دردسترس نیست"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "«پراکسی پروتکل اینترنتی» فقط در «حالت ناشناس» دردسترس است. سایت را در «حالت ناشناس» باز کنید."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "درخواست‌های پراکسی"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "وضعیت"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "نشانی وب"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "آزمایش کردن نحوه عملکرد این سایت درصورت فعال بودن «پراکسی پروتکل اینترنتی» در Chrome"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "کنترل‌های پراکسی «حفاظت پروتکل اینترنتی»"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} با {PH2}"
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "کنترل‌ها"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "حفاظت پروتکل اینترنتی"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "مبدأ اصلی"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "کاربر آزاد، قفل صفحه باز است"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "به‌طور خودکار عناوینی برای حاشیه‌نویسی‌های ردیابی عملکرد تولید می‌شود"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "درحین تایپ در پانل «کنسول» یا «منابع»، پیشنهادهایی برای کد دریافت خواهید کرد. برای پذیرفتن یکی از پیشنهادها، کلید جهش را فشار دهید."
   },
@@ -12336,16 +12396,16 @@
     "message": "بهره‌وری‌تان را با هوش مصنوعی تقویت کنید"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "برای تولید پیشنهادهای کد، ورودی کنسول شما، سابقه جلسه فعلی کنسول، و محتوای فایل بازشده فعلی با Google هم‌رسانی می‌شوند. برای بهبود دادن این ویژگی، ممکن است افراد بازبین این داده‌ها را ببینند."
+    "message": "برای تولید پیشنهادهای کد، ورودی کنسول شما، سابقه جلسه کنونی کنسول شما، CSS درحال بازرسی، و محتویات فایل بازشده کنونی با Google هم‌رسانی می‌شوند. افراد بازبین ممکن است این داده‌ها را برای بهبود دادن این ویژگی ببینند."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "برای تولید پیشنهادهای کد، ورودی کنسول شما، سابقه جلسه فعلی کنسول، و محتوای فایل بازشده فعلی با Google هم‌رسانی می‌شوند. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد."
+    "message": "برای تولید پیشنهادهای کد، ورودی کنسول شما، سابقه جلسه کنونی کنسول شما، CSS درحال بازرسی، و محتویات فایل بازشده کنونی با Google هم‌رسانی می‌شوند. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد. سازمان شما هرزمان بخواهد می‌تواند این تنظیمات را تغییر دهد."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "پیام کنسول، ردیابی پشته‌ای منسوب، کد منبع مربوطه، و سرصفحه‌های شبکه منسوب برای تولید توضیحات به Google ارسال می‌شوند. ممکن است افراد بازبین این داده‌ها را ببینند تا این ویژگی را بهبود دهند."
+    "message": "برای تولید توضیحات، پیام کنسول، ردیابی پشته‌ای منسوب، کد منبع مرتبط، و سرصفحه‌های شبکه منسوب به Google ارسال می‌شوند. ممکن است افراد بازبین این داده‌ها را ببینند تا این ویژگی را بهبود دهند."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "پیام کنسول، ردیابی پشته‌ای منسوب، کد منبع مربوطه، و سرصفحه‌های شبکه منسوب برای تولید توضیحات به Google ارسال می‌شوند. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد."
+    "message": "برای تولید توضیحات، پیام کنسول، ردیابی پشته‌ای منسوب، کد منبع مرتبط، و سرصفحه‌های شبکه منسوب به Google ارسال می‌شوند. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد. سازمان شما هرزمان بخواهد می‌تواند این تنظیمات را تغییر دهد."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "بسته به منطقه شما، ممکن است Google داده‌ای جمع‌آوری نکند"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "فعال کردن دستیاری هوش مصنوعی"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "فعال کردن پیشنهادهای کد هوش مصنوعی"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "فعال کردن پیشنهادهای هوش مصنوعی برای گزارمان‌های پانل عملکرد"
@@ -12381,19 +12444,19 @@
     "message": "درک سبک‌های CSS، فعالیت شبکه، گلوگاه‌های عملکرد، و منشأ فایل‌ها با اطلاعات آماری بهره‌گرفته از هوش مصنوعی"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "هر پُرسمان کاربر و داده‌ای که صفحه بازرسی‌شده بتواند ازطریق «میاناهای برنامه‌سازی کاربردی وب»، درخواست‌های شبکه، فایل‌ها، و ردپاهای عملکرد به آن‌ها دسترسی داشته باشد، برای تولید توضیحات به Google ارسال می‌شود. ممکن است افراد بازبین این داده‌ها را ببینند تا این ویژگی را بهبود دهند. از این ویژگی در صفحه‌های حاوی اطلاعات حساس یا شخصی استفاده نکنید."
+    "message": "برای تولید توضیحات، هر پُرسمان کاربر و داده‌ای که صفحه بازرسی‌شده بتواند ازطریق «میاناهای برنامه‌سازی کاربردی وب»، درخواست‌های شبکه، فایل‌ها، و ردیابی‌های عملکرد به آن‌ها دسترسی داشته باشد به Google ارسال می‌شود. ممکن است افراد بازبین این داده‌ها را ببینند تا این ویژگی را بهبود دهند. از این ویژگی در صفحه‌های حاوی اطلاعات حساس یا شخصی استفاده نکنید."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "هر پُرسمان کاربر و داده‌ای که صفحه بازرسی‌شده بتواند ازطریق «میاناهای برنامه‌سازی کاربردی وب»، درخواست‌های شبکه، فایل‌ها، و ردپاهای عملکرد به آن‌ها دسترسی داشته باشد، برای تولید توضیحات به Google ارسال می‌شود. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد."
+    "message": "برای تولید توضیحات، هر پُرسمان کاربر و داده‌ای که صفحه بازرسی‌شده بتواند ازطریق «میاناهای برنامه‌سازی کاربردی وب»، درخواست‌های شبکه، فایل‌ها، و ردیابی‌های عملکرد به آن‌ها دسترسی داشته باشد به Google ارسال می‌شود. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد. سازمان شما هرزمان بخواهد می‌تواند این تنظیمات را تغییر دهد."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "برای تولید توضیح، ردیابی عملکرد شما به Google ارسال می‌شود. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده خواهد شد."
+    "message": "برای تولید پیشنهادهای حاشیه‌نویسی، ردیابی عملکردتان به Google ارسال می‌شود. افراد بازبین ممکن است این داده‌ها را برای بهبود دادن این ویژگی ببینند."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "برای تولید توضیح، ردیابی عملکرد شما به Google ارسال می‌شود. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد."
+    "message": "برای تولید پیشنهادهای حاشیه‌نویسی، ردیابی عملکردتان به Google ارسال می‌شود. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد. سازمان شما هرزمان بخواهد می‌تواند این تنظیمات را تغییر دهد."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "دریافت پیشنهادهای هوش مصنوعی برای گزارمان‌های پانل عملکرد"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "به شما کمک می‌کند ردیابی عملکردتان را با برچسب‌هایی که به‌طور خودکار تولید می‌شوند حاشیه‌نویسی کنید"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "دریافت کمک برای تکمیل کد"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "آزمایش‌های ناپایدار"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "‫Premium (سالانه)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "‫Premium (ماهانه)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "‫Pro (سالانه)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "‫Pro (ماهانه)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "طرح استاندارد"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "طرح ناشناس"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "به سیستم Chrome وارد نشده‌اید."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "برای روشن کردن این تنظیم، ابتدا باید همگام‌سازی تنظیمات را در Chrome فعال کنید."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "رفتن به «تنظیمات»"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(داده‌های مربوطه به Google ارسال می‌شوند)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "ثبت‌نام"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "واردشده به Chrome با نام:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "برای روشن کردن این تنظیم، باید همگام‌سازی Chrome را فعال کنید."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "مشاهده نمایه"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "افزودن دستگاه سفارشی"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- محدود کردن CPU فعال است"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- نمونه‌برداری جاوا اسکریپت غیرفعال است"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- محدود کردن شبکه فعال است"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "محدود کردن طرف‌های سوم"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "غیرفعال کردن نمونه‌های جاوا اسکریپت"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "نمونه‌برداری جاوا اسکریپت را غیرفعال می‌کند و سربار را هنگام اجرا برای دستگاه‌های همراه کاهش می‌دهد"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "فایل ردیابی یا نشانی وب را اینجا رها کنید"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "تکرار می‌شود"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "مهلت"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} در {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "زمان‌بندی‌ها"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "پیکربندی ردیابی‌ها"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "نشان دادن همه"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "برخی‌از مسیرها در این ردیابی پنهان شده‌اند. برای پیکربندی کردن مسیرها، می‌توانید روی نام آن‌ها کلیک‌راست کنید."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "ناهمگام"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "پروتکل WebSocket"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "ذخیره کردن ردیابی عملکرد "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "گنجاندن حاشیه‌نویسی‌ها"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "گنجاندن محتوای دستورگان"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "گنجاندن نقشه‌های منبع دستورگان"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "ذخیره"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "ذخیره کردن ردیابی…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "پیشرفته"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "کوکی‌های این درخواست به‌دلیل پرچم‌های Chrome یا پیکربندی مرورگر مسدود شده است. در پانل «مشکلات»، اطلاعات بیشتری کسب کنید."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "بافت صوتی: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "اندازه میان‌گیری فراخوانی"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "وقفه پاسخ تماس"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "زمان کنونی"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "حداکثرکانال‌های خروجی"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(هیچ ضبطی وجود ندارد)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "هیچ استفاده‌ای از میانای برنامه‌سازی کاربردی Web Audio شناسایی نشده است"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "برای شروع پایش، صفحه‌ای را باز کنید که از Web Audio API استفاده می‌کند."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "ظرفیت پرداز زدن"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "بسامد نمونه"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "وضعیت"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "صوتی"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "ابزارهای بیشتر"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "انتقال به آخر"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "انتقال به کشو"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "انتقال به بالا"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "انتقال به نوار زبانه اصلی"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "پانل‌ها"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "علامت زده شد"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "این ویژگی جدید است"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}،{PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "اجرای فرمان"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "این ویژگی جدید است"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "نتیجه‌ای پیدا نشد"

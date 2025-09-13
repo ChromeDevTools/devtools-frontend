@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -42,6 +42,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Extensions from '../../models/extensions/extensions.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
@@ -58,7 +59,6 @@ import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkOverview} from './NetworkOverview.js';
 import networkPanelStyles from './networkPanel.css.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';
-import {type NetworkTimeCalculator, NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';
 
 const UIStrings = {
   /**
@@ -212,7 +212,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   private readonly overviewPane: PerfUI.TimelineOverviewPane.TimelineOverviewPane;
   private readonly networkOverview: NetworkOverview;
   private readonly overviewPlaceholderElement: HTMLElement;
-  private readonly calculator: NetworkTransferTimeCalculator;
+  private readonly calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
   private splitWidget: UI.SplitWidget.SplitWidget;
   private readonly sidebarLocation: UI.View.TabbedViewLocation;
   private readonly progressBarContainer: HTMLDivElement;
@@ -291,7 +291,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.overviewPane.setOverviewControls([this.networkOverview]);
     this.overviewPlaceholderElement = panel.contentElement.createChild('div');
 
-    this.calculator = new NetworkTransferTimeCalculator();
+    this.calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
 
     this.splitWidget = new UI.SplitWidget.SplitWidget(true, false, 'network-panel-split-view-state');
     this.splitWidget.hideMain();
@@ -391,7 +391,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     return networkPanelInstance;
   }
 
-  static revealAndFilter(filters: Array<{
+  static async revealAndFilter(filters: Array<{
     filterType: NetworkForward.UIFilter.FilterType | null,
     filterValue: string,
   }>): Promise<void> {
@@ -404,8 +404,10 @@ export class NetworkPanel extends UI.Panel.Panel implements
         filterString += `${filter.filterValue} `;
       }
     }
+    await UI.ViewManager.ViewManager.instance().showView('network');
     panel.networkLogView.setTextFilterValue(filterString);
-    return UI.ViewManager.ViewManager.instance().showView('network');
+    panel.filterBar.setting().set(true);
+    panel.filterBar.focus();
   }
 
   throttlingSelectForTest(): UI.Toolbar.ToolbarItem {
@@ -888,7 +890,7 @@ export class NetworkLogWithFilterRevealer implements
 export class FilmStripRecorder implements Tracing.TracingManager.TracingManagerClient {
   #tracingManager: Tracing.TracingManager.TracingManager|null = null;
   #resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null = null;
-  readonly #timeCalculator: NetworkTimeCalculator;
+  readonly #timeCalculator: NetworkTimeCalculator.NetworkTimeCalculator;
   readonly #filmStripView: PerfUI.FilmStripView.FilmStripView;
   #callback: ((filmStrip: Trace.Extras.FilmStrip.Data) => void)|null = null;
   // Used to fetch screenshots of the page load and show them in the panel.
@@ -898,7 +900,7 @@ export class FilmStripRecorder implements Tracing.TracingManager.TracingManagerC
   #collectedTraceEvents: Trace.Types.Events.Event[] = [];
 
   constructor(
-      timeCalculator: NetworkTimeCalculator,
+      timeCalculator: NetworkTimeCalculator.NetworkTimeCalculator,
       filmStripView: PerfUI.FilmStripView.FilmStripView,
   ) {
     this.#timeCalculator = timeCalculator;
@@ -916,14 +918,15 @@ export class FilmStripRecorder implements Tracing.TracingManager.TracingManagerC
     this.#tracingManager = null;
     await this.#traceEngine.parse(this.#collectedTraceEvents);
 
-    const data = this.#traceEngine.parsedTrace(this.#traceEngine.size() - 1) as
-        Trace.Extras.FilmStrip.HandlerDataWithScreenshots;
+    const data = this.#traceEngine.parsedTrace(this.#traceEngine.size() - 1)?.data as
+            Trace.Extras.FilmStrip.HandlerDataWithScreenshots |
+        null;
     if (!data) {
       return;
     }
     const zeroTimeInSeconds = Trace.Types.Timing.Seconds(this.#timeCalculator.minimumBoundary());
     const filmStrip =
-        Trace.Extras.FilmStrip.fromParsedTrace(data, Trace.Helpers.Timing.secondsToMicro(zeroTimeInSeconds));
+        Trace.Extras.FilmStrip.fromHandlerData(data, Trace.Helpers.Timing.secondsToMicro(zeroTimeInSeconds));
 
     if (this.#callback) {
       this.#callback(filmStrip);

@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -229,7 +229,7 @@ function hasTokenInSet(tokenTypes: Set<string>, type: string): boolean {
 
 export class HTMLModel {
   #state: ParseState = ParseState.INITIAL;
-  readonly #documentInternal: FormatterElement;
+  readonly #document: FormatterElement;
   #stack: FormatterElement[];
   readonly #tokens: Token[] = [];
   #tokenIndex = 0;
@@ -241,11 +241,11 @@ export class HTMLModel {
   #tagEndOffset?: number|null;
 
   constructor(text: string) {
-    this.#documentInternal = new FormatterElement('document');
-    this.#documentInternal.openTag = new Tag('document', 0, 0, new Map(), true, false);
-    this.#documentInternal.closeTag = new Tag('document', text.length, text.length, new Map(), false, false);
+    this.#document = new FormatterElement('document');
+    this.#document.openTag = new Tag('document', 0, 0, new Map(), true, false);
+    this.#document.closeTag = new Tag('document', text.length, text.length, new Map(), false, false);
 
-    this.#stack = [this.#documentInternal];
+    this.#stack = [this.#document];
 
     this.#build(text);
   }
@@ -432,7 +432,7 @@ export class HTMLModel {
       const topElement = this.#stack[this.#stack.length - 1];
       if (topElement) {
         const tagSet = AutoClosingTags.get(topElement.name);
-        if (topElement !== this.#documentInternal && topElement.openTag?.selfClosingTag) {
+        if (topElement !== this.#document && topElement.openTag?.selfClosingTag) {
           this.#popElement(autocloseTag(topElement, topElement.openTag.endOffset));
         } else if (tagSet?.has(tag.name)) {
           this.#popElement(autocloseTag(topElement, tag.startOffset));
@@ -485,7 +485,7 @@ export class HTMLModel {
   }
 
   document(): FormatterElement {
-    return this.#documentInternal;
+    return this.#document;
   }
 }
 

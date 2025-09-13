@@ -1,11 +1,12 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import * as Network from '../../../panels/network/network.js';
 import * as Logs from '../../logs/logs.js';
+import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
+
+import {seconds} from './UnitFormatters.js';
 
 const MAX_HEADERS_SIZE = 1000;
 
@@ -22,6 +23,7 @@ function sanitizeHeaders(headers: Array<{name: string, value: string}>): Array<{
 }
 
 export class NetworkRequestFormatter {
+  #calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
   static allowHeader(headerName: string): boolean {
     return allowedHeaders.has(headerName.toLowerCase().trim());
   }
@@ -45,8 +47,10 @@ export class NetworkRequestFormatter {
 
   #request: SDK.NetworkRequest.NetworkRequest;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest) {
+  constructor(
+      request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator) {
     this.#request = request;
+    this.#calculator = calculator;
   }
 
   formatRequestHeaders(): string {
@@ -99,26 +103,24 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
   }
 
   formatNetworkRequestTiming(): string {
-    const calculator = Network.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-    const results = Network.RequestTimingView.RequestTimingView.calculateRequestTimeRanges(
-        this.#request, calculator.minimumBoundary());
+    const results = NetworkTimeCalculator.calculateRequestTimeRanges(this.#request, this.#calculator.minimumBoundary());
 
-    function getDuration(name: string): string|undefined {
+    const getDuration = (name: string): string|undefined => {
       const result = results.find(r => r.name === name);
       if (!result) {
         return;
       }
-      return i18n.TimeUtilities.secondsToString(result.end - result.start, true);
-    }
+      return seconds(result.end - result.start);
+    };
 
     const labels = [
       {
         label: 'Queued at (timestamp)',
-        value: calculator.formatValue(this.#request.issueTime(), 2),
+        value: seconds(this.#request.issueTime() - this.#calculator.zeroTime()),
       },
       {
         label: 'Started at (timestamp)',
-        value: calculator.formatValue(this.#request.startTime, 2),
+        value: seconds(this.#request.startTime - this.#calculator.zeroTime()),
       },
       {
         label: 'Queueing (duration)',

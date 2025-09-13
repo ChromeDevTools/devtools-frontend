@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -125,7 +125,7 @@ describe('The Sources Tab', function() {
     await addBreakpointForLine(4, devToolsPage);
     await addBreakpointForLine(9, devToolsPage);
 
-    const scriptEvaluation = inspectedPage.evaluate('f2();') as Promise<void>;
+    const scriptEvaluation = inspectedPage.evaluate('f2();');
 
     await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
     const scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);

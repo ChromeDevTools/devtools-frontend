@@ -1,4 +1,4 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
+// Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -23,26 +23,26 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ReportSelector {
   private readonly renderNewLighthouseView: () => void;
   private newLighthouseItem: HTMLOptionElement;
-  private readonly comboBoxInternal: UI.Toolbar.ToolbarComboBox;
+  readonly #comboBox: UI.Toolbar.ToolbarComboBox;
   private readonly itemByOptionElement: Map<Element, Item>;
 
   constructor(renderNewLighthouseView: () => void) {
     this.renderNewLighthouseView = renderNewLighthouseView;
     this.newLighthouseItem = document.createElement('option');
-    this.comboBoxInternal = new UI.Toolbar.ToolbarComboBox(
+    this.#comboBox = new UI.Toolbar.ToolbarComboBox(
         this.handleChange.bind(this), i18nString(UIStrings.reports), 'lighthouse-report');
     this.itemByOptionElement = new Map();
     this.setEmptyState();
   }
 
   private setEmptyState(): void {
-    this.comboBoxInternal.removeOptions();
+    this.#comboBox.removeOptions();
 
-    this.comboBoxInternal.setEnabled(false);
+    this.#comboBox.setEnabled(false);
     this.newLighthouseItem = document.createElement('option');
     this.newLighthouseItem.label = i18nString(UIStrings.newReport);
-    this.comboBoxInternal.addOption(this.newLighthouseItem);
-    this.comboBoxInternal.select(this.newLighthouseItem);
+    this.#comboBox.addOption(this.newLighthouseItem);
+    this.#comboBox.select(this.newLighthouseItem);
   }
 
   private handleChange(_event: Event): void {
@@ -55,7 +55,7 @@ export class ReportSelector {
   }
 
   private selectedItem(): Item {
-    const option = this.comboBoxInternal.selectedOption();
+    const option = this.#comboBox.selectedOption();
     return this.itemByOptionElement.get(option as Element) as Item;
   }
 
@@ -64,22 +64,22 @@ export class ReportSelector {
   }
 
   comboBox(): UI.Toolbar.ToolbarComboBox {
-    return this.comboBoxInternal;
+    return this.#comboBox;
   }
 
   prepend(item: Item): void {
     const optionEl = item.optionElement();
-    const selectEl = this.comboBoxInternal.element;
+    const selectEl = this.#comboBox.element;
 
     this.itemByOptionElement.set(optionEl, item);
     selectEl.insertBefore(optionEl, selectEl.firstElementChild);
-    this.comboBoxInternal.setEnabled(true);
-    this.comboBoxInternal.select(optionEl);
+    this.#comboBox.setEnabled(true);
+    this.#comboBox.select(optionEl);
     item.select();
   }
 
   clearAll(): void {
-    for (const elem of this.comboBoxInternal.options()) {
+    for (const elem of this.#comboBox.options()) {
       if (elem === this.newLighthouseItem) {
         continue;
       }
@@ -92,7 +92,7 @@ export class ReportSelector {
   }
 
   selectNewReport(): void {
-    this.comboBoxInternal.select(this.newLighthouseItem);
+    this.#comboBox.select(this.newLighthouseItem);
   }
 }
 

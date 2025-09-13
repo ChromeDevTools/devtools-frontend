@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -455,7 +455,7 @@ describe('User Metric with setting', () => {
 
 describe('User Metric with experiment', () => {
   setup({
-    enabledDevToolsExperiments: ['vertical-drawer'],
+    enabledFeatures: ['DevToolsVerticalDrawer'],
   });
 
   it('dispatches a metric event during drawer orientation toggle', async ({devToolsPage}) => {

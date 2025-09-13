@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -117,6 +117,26 @@ function nodeSpecifiersSpecialImportsOnly(
       ['ls', 'assertNotNullOrUndefined'].includes(firstSpecifier.imported.name));
 }
 
+function reportIncorrectSameNamespaceTestImport(
+    context: RuleContext,
+    node: ImportDeclaration,
+    importingDirectoryName: string,
+    importPathForErrorMessage: string,
+    ): void {
+  const namespaceNameForErrorMessage =
+      importingDirectoryName.substring(0, 1).toUpperCase() + importingDirectoryName.substring(1);
+  const namespaceFilenameForErrorMessage = importingDirectoryName;
+  context.report({
+    node,
+    messageId: 'incorrectSameNamespaceTestImport',
+    data: {
+      importPathForErrorMessage,
+      namespaceNameForErrorMessage,
+      namespaceFilenameForErrorMessage,
+    },
+  });
+}
+
 function checkStarImport(
     context: RuleContext,
     node: ImportDeclaration,
@@ -146,6 +166,26 @@ function checkStarImport(
   const invalidSameFolderUsage = isSameFolder && isModuleEntrypoint(exportingFileName);
   const invalidCrossFolderUsage = !isSameFolder && !isModuleEntrypoint(exportingFileName);
 
+  // Unit tests must import from the entry points even for same-namespace
+  // imports, as we otherwise break the module system (in Release builds).
+  if (isSameFolder && importingFileName.endsWith('.test.ts') && !isModuleEntrypoint(exportingFileName)) {
+    const importingDirectoryName = path.basename(
+        path.dirname(importingFileName),
+    );
+
+    if (importingDirectoryName === 'testing') {
+      // Special case of Foo.test.ts for a helper Foo.ts.
+      return;
+    }
+
+    reportIncorrectSameNamespaceTestImport(
+        context,
+        node,
+        importPathForErrorMessage,
+        importingDirectoryName,
+    );
+    return;
+  }
   if (invalidSameFolderUsage) {
     // Meta files import their entrypoints and are considered separate entrypoints.
     // Additionally, any file ending with `-entrypoint.ts` is considered an entrypoint
@@ -245,6 +285,11 @@ export default createRule<[], MessageIds>({
               return fixer.replaceText(node.source, `'${fixedValue}'`);
             },
           });
+        }
+
+        // We don't check for bare imports (e.g. import * as fs from 'fs')
+        if (!value.includes('/')) {
+          return;
         }
 
         const importPath = path.normalize(value);
@@ -385,18 +430,12 @@ export default createRule<[], MessageIds>({
           // Unit tests must import from the entry points even for same-namespace
           // imports, as we otherwise break the module system (in Release builds).
           if (!isModuleEntrypoint(exportingFileName)) {
-            const namespaceNameForErrorMessage =
-                importingDirectoryName.substring(0, 1).toUpperCase() + importingDirectoryName.substring(1);
-            const namespaceFilenameForErrorMessage = importingDirectoryName;
-            context.report({
-              node,
-              messageId: 'incorrectSameNamespaceTestImport',
-              data: {
+            reportIncorrectSameNamespaceTestImport(
+                context,
+                node,
                 importPathForErrorMessage,
-                namespaceNameForErrorMessage,
-                namespaceFilenameForErrorMessage,
-              },
-            });
+                importingDirectoryName,
+            );
           }
         }
       },

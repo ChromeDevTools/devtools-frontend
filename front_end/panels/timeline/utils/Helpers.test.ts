@@ -1,15 +1,15 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import type * as Trace from '../../../models/trace/trace.js';
 
-import * as Helpers from './Helpers.js';
+import * as Utils from './utils.js';
 
 describe('Helpers', () => {
   it('createUrlLabels', function() {
     function fn(urls: string[], expected: string[]) {
-      assert.deepEqual(Helpers.createUrlLabels(urls.map(url => new URL(url))), expected);
+      assert.deepEqual(Utils.Helpers.createUrlLabels(urls.map(url => new URL(url))), expected);
     }
 
     fn([], []);
@@ -39,8 +39,8 @@ describe('Helpers', () => {
   it('shortenUrl', function() {
     const url = new URL('https://cdn.permutive.com/models/v2/d2fb08da-1c03-4c8a-978f-ad8a96b4c31f-models.bin');
     // Shows lastPath and then reveals more of it, per maxCharacters
-    assert.strictEqual(Helpers.shortenUrl(url, 40), 'd2fb08da-1c03-4c8a-9…96b4c31f-models.bin');
-    assert.strictEqual(Helpers.shortenUrl(url, 70), '/models/v2/d2fb08da-1c03-4c8a-978f-ad8a96b4c31f-models.bin');
+    assert.strictEqual(Utils.Helpers.shortenUrl(url, 40), 'd2fb08da-1c03-4c8a-9…96b4c31f-models.bin');
+    assert.strictEqual(Utils.Helpers.shortenUrl(url, 70), '/models/v2/d2fb08da-1c03-4c8a-978f-ad8a96b4c31f-models.bin');
   });
   describe('formatOriginWithEntity', () => {
     it('recognized entities', function() {
@@ -55,10 +55,10 @@ describe('Helpers', () => {
         totalExecutionTime: 0,
         totalOccurrences: 0,
       };
-      let originWithEntity = Helpers.formatOriginWithEntity(url, mockEntity);
+      let originWithEntity = Utils.Helpers.formatOriginWithEntity(url, mockEntity);
       assert.deepEqual('securepubads.g.doubleclick.net - Google/Doubleclick Ads', originWithEntity);
 
-      originWithEntity = Helpers.formatOriginWithEntity(url, mockEntity, true);
+      originWithEntity = Utils.Helpers.formatOriginWithEntity(url, mockEntity, true);
       assert.deepEqual('securepubads.g.doubleclick.net (Google/Doubleclick Ads)', originWithEntity);
     });
     it('unrecognized entities', function() {
@@ -75,10 +75,10 @@ describe('Helpers', () => {
         isUnrecognized: true,
       };
       // Shouldn't return the entity with the origin.
-      let originWithEntity = Helpers.formatOriginWithEntity(url, mockEntity);
+      let originWithEntity = Utils.Helpers.formatOriginWithEntity(url, mockEntity);
       assert.deepEqual('securepubads.g.doubleclick.net', originWithEntity);
 
-      originWithEntity = Helpers.formatOriginWithEntity(url, mockEntity, true);
+      originWithEntity = Utils.Helpers.formatOriginWithEntity(url, mockEntity, true);
       assert.deepEqual('securepubads.g.doubleclick.net', originWithEntity);
     });
   });

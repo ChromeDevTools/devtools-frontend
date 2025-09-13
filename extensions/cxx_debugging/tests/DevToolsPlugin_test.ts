@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -249,9 +249,9 @@ describe('DevToolsPlugin', () => {
     it('provides access to wasm state', async () => {
       class TestAsyncHostInterface implements AsyncHostInterface {
         readonly memory = {offset: 1026, length: 5, stopId: 9, result: new Uint8Array([5, 6, 7, 8, 9]).buffer};
-        readonly local = {local: 9, stopId: 10, result: {type: 'i32', value: 5} as WasmValue};
-        readonly global = {global: 10, stopId: 11, result: {type: 'i32', value: 6} as WasmValue};
-        readonly op = {op: 11, stopId: 12, result: {type: 'i32', value: 7} as WasmValue};
+        readonly local = {local: 9, stopId: 10, result: {type: 'i32', value: 5} as const};
+        readonly global = {global: 10, stopId: 11, result: {type: 'i32', value: 6} as const};
+        readonly op = {op: 11, stopId: 12, result: {type: 'i32', value: 7} as const};
         async getWasmLinearMemory(offset: number, length: number, stopId: unknown): Promise<ArrayBuffer> {
           if (offset === this.memory.offset && length === this.memory.length && stopId === this.memory.stopId) {
             return this.memory.result;

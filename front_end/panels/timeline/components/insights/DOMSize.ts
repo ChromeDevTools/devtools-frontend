@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -10,10 +10,10 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type {DOMSizeInsightModel} from '../../../../models/trace/insights/DOMSize.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import {md} from '../../utils/Helpers.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
+import {md} from './Helpers.js';
 import type * as NodeLink from './NodeLink.js';
 import type {TableData, TableDataRow} from './Table.js';
 
@@ -24,6 +24,10 @@ const {html} = Lit;
 export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-dom-size`;
   override internalName = 'dom-size';
+
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
 
   #renderNodeTable(domStatsData: Trace.Types.Events.DOMStats['args']['data']): Lit.LitTemplate {
     const rows: TableData['rows'] = [];

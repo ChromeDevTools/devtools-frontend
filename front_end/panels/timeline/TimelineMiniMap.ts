@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -23,7 +23,7 @@ import miniMapStyles from './timelineMiniMap.css.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export interface OverviewData {
-  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
   isCpuProfile?: boolean;
   settings: {
     showScreenshots: boolean,
@@ -244,10 +244,10 @@ export class TimelineMiniMap extends
     this.#overviewComponent.reset();
   }
 
-  #setMarkers(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
+  #setMarkers(parsedTrace: Trace.TraceModel.ParsedTrace): void {
     const markers = new Map<number, HTMLDivElement>();
 
-    const {Meta} = parsedTrace;
+    const {Meta} = parsedTrace.data;
 
     // Only add markers for navigation start times.
     const navStartEvents = Meta.mainFrameNavigations;
@@ -261,8 +261,8 @@ export class TimelineMiniMap extends
     this.#overviewComponent.setMarkers(markers);
   }
 
-  #setNavigationStartEvents(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
-    this.#overviewComponent.setNavStartTimes(parsedTrace.Meta.mainFrameNavigations);
+  #setNavigationStartEvents(parsedTrace: Trace.TraceModel.ParsedTrace): void {
+    this.#overviewComponent.setNavStartTimes(parsedTrace.data.Meta.mainFrameNavigations);
   }
 
   getControls(): TimelineEventOverview[] {
@@ -291,7 +291,7 @@ export class TimelineMiniMap extends
 
     this.#controls.push(new TimelineEventOverviewNetwork(data.parsedTrace));
     if (data.settings.showScreenshots) {
-      const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(data.parsedTrace);
+      const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
       if (filmStrip.frames.length) {
         this.#controls.push(new TimelineFilmStripOverview(filmStrip));
       }

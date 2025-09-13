@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -9,17 +9,17 @@ import * as Protocol from '../../generated/protocol.js';
 
 export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<Record<string, never>> {
   readonly #model: ExtensionStorageModel;
-  readonly #extensionIdInternal: string;
-  readonly #nameInternal: string;
-  readonly #storageAreaInternal: Protocol.Extensions.StorageArea;
+  readonly #extensionId: string;
+  readonly #name: string;
+  readonly #storageArea: Protocol.Extensions.StorageArea;
 
   constructor(
       model: ExtensionStorageModel, extensionId: string, name: string, storageArea: Protocol.Extensions.StorageArea) {
     super();
     this.#model = model;
-    this.#extensionIdInternal = extensionId;
-    this.#nameInternal = name;
-    this.#storageAreaInternal = storageArea;
+    this.#extensionId = extensionId;
+    this.#name = name;
+    this.#storageArea = storageArea;
   }
 
   get model(): ExtensionStorageModel {
@@ -27,11 +27,11 @@ export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<Record<
   }
 
   get extensionId(): string {
-    return this.#extensionIdInternal;
+    return this.#extensionId;
   }
 
   get name(): string {
-    return this.#nameInternal;
+    return this.#name;
   }
 
   // Returns a key that uniquely identifies this extension ID and storage area,
@@ -42,13 +42,13 @@ export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<Record<
   }
 
   get storageArea(): Protocol.Extensions.StorageArea {
-    return this.#storageAreaInternal;
+    return this.#storageArea;
   }
 
   async getItems(keys?: string[]): Promise<Record<string, unknown>> {
     const params: Protocol.Extensions.GetStorageItemsRequest = {
-      id: this.#extensionIdInternal,
-      storageArea: this.#storageAreaInternal,
+      id: this.#extensionId,
+      storageArea: this.#storageArea,
     };
     if (keys) {
       params.keys = keys;
@@ -62,7 +62,7 @@ export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<Record<
 
   async setItem(key: string, value: unknown): Promise<void> {
     const response = await this.#model.agent.invoke_setStorageItems(
-        {id: this.#extensionIdInternal, storageArea: this.#storageAreaInternal, values: {[key]: value}});
+        {id: this.#extensionId, storageArea: this.#storageArea, values: {[key]: value}});
     if (response.getError()) {
       throw new Error(response.getError());
     }
@@ -70,15 +70,15 @@ export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<Record<
 
   async removeItem(key: string): Promise<void> {
     const response = await this.#model.agent.invoke_removeStorageItems(
-        {id: this.#extensionIdInternal, storageArea: this.#storageAreaInternal, keys: [key]});
+        {id: this.#extensionId, storageArea: this.#storageArea, keys: [key]});
     if (response.getError()) {
       throw new Error(response.getError());
     }
   }
 
   async clear(): Promise<void> {
-    const response = await this.#model.agent.invoke_clearStorageItems(
-        {id: this.#extensionIdInternal, storageArea: this.#storageAreaInternal});
+    const response =
+        await this.#model.agent.invoke_clearStorageItems({id: this.#extensionId, storageArea: this.#storageArea});
     if (response.getError()) {
       throw new Error(response.getError());
     }
@@ -95,16 +95,16 @@ export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<Record<
 }
 
 export class ExtensionStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
-  readonly #runtimeModelInternal: SDK.RuntimeModel.RuntimeModel|null;
-  #storagesInternal: Map<string, Map<Protocol.Extensions.StorageArea, ExtensionStorage>>;
+  readonly #runtimeModel: SDK.RuntimeModel.RuntimeModel|null;
+  #storages: Map<string, Map<Protocol.Extensions.StorageArea, ExtensionStorage>>;
   readonly agent: ProtocolProxyApi.ExtensionsApi;
   #enabled?: boolean;
 
   constructor(target: SDK.Target.Target) {
     super(target);
 
-    this.#runtimeModelInternal = target.model(SDK.RuntimeModel.RuntimeModel);
-    this.#storagesInternal = new Map();
+    this.#runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    this.#storages = new Map();
     this.agent = target.extensionsAgent();
   }
 
@@ -113,26 +113,26 @@ export class ExtensionStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       return;
     }
 
-    if (this.#runtimeModelInternal) {
-      this.#runtimeModelInternal.addEventListener(
+    if (this.#runtimeModel) {
+      this.#runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.ExecutionContextCreated, this.#onExecutionContextCreated, this);
-      this.#runtimeModelInternal.addEventListener(
+      this.#runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.ExecutionContextDestroyed, this.#onExecutionContextDestroyed, this);
-      this.#runtimeModelInternal.executionContexts().forEach(this.#executionContextCreated, this);
+      this.#runtimeModel.executionContexts().forEach(this.#executionContextCreated, this);
     }
 
     this.#enabled = true;
   }
 
   #getStoragesForExtension(id: string): Map<Protocol.Extensions.StorageArea, ExtensionStorage> {
-    const existingStorages = this.#storagesInternal.get(id);
+    const existingStorages = this.#storages.get(id);
 
     if (existingStorages) {
       return existingStorages;
     }
 
     const newStorages = new Map();
-    this.#storagesInternal.set(id, newStorages);
+    this.#storages.set(id, newStorages);
     return newStorages;
   }
 
@@ -148,7 +148,7 @@ export class ExtensionStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       storage.getItems([])
           .then(() => {
             // The extension may have been removed in the meantime.
-            if (this.#storagesInternal.get(id) !== storages) {
+            if (this.#storages.get(id) !== storages) {
               return;
             }
             // The storage area may have been added in the meantime.
@@ -167,7 +167,7 @@ export class ExtensionStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   #removeExtension(id: string): void {
-    const storages = this.#storagesInternal.get(id);
+    const storages = this.#storages.get(id);
 
     if (!storages) {
       return;
@@ -180,7 +180,7 @@ export class ExtensionStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       this.dispatchEventToListeners(Events.EXTENSION_STORAGE_REMOVED, storage);
     }
 
-    this.#storagesInternal.delete(id);
+    this.#storages.delete(id);
   }
 
   #executionContextCreated(context: SDK.RuntimeModel.ExecutionContext): void {
@@ -203,7 +203,7 @@ export class ExtensionStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     const extensionId = this.#extensionIdForContext(context);
     if (extensionId) {
       // Ignore event if there is still another context for this extension.
-      if (this.#runtimeModelInternal?.executionContexts().some(c => this.#extensionIdForContext(c) === extensionId)) {
+      if (this.#runtimeModel?.executionContexts().some(c => this.#extensionIdForContext(c) === extensionId)) {
         return;
       }
 
@@ -216,12 +216,12 @@ export class ExtensionStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   storageForIdAndArea(id: string, storageArea: Protocol.Extensions.StorageArea): ExtensionStorage|undefined {
-    return this.#storagesInternal.get(id)?.get(storageArea);
+    return this.#storages.get(id)?.get(storageArea);
   }
 
   storages(): ExtensionStorage[] {
     const result = [];
-    for (const storages of this.#storagesInternal.values()) {
+    for (const storages of this.#storages.values()) {
       result.push(...storages.values());
     }
     return result;

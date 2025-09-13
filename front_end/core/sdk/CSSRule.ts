@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -265,10 +265,10 @@ export class CSSFontPaletteValuesRule extends CSSRule {
 
 export class CSSKeyframesRule {
   readonly #animationName: CSSValue;
-  readonly #keyframesInternal: CSSKeyframeRule[];
+  readonly #keyframes: CSSKeyframeRule[];
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSKeyframesRule) {
     this.#animationName = new CSSValue(payload.animationName);
-    this.#keyframesInternal =
+    this.#keyframes =
         payload.keyframes.map(keyframeRule => new CSSKeyframeRule(cssModel, keyframeRule, this.#animationName.text));
   }
 
@@ -277,7 +277,7 @@ export class CSSKeyframesRule {
   }
 
   keyframes(): CSSKeyframeRule[] {
-    return this.#keyframesInternal;
+    return this.#keyframes;
   }
 }
 

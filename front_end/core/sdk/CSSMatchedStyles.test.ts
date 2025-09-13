@@ -1,8 +1,9 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
@@ -695,6 +696,109 @@ describe('CSSMatchedStyles', () => {
     assert.strictEqual(matchedStyles.resolveProperty('--f', styles[1])?.value, 'F');
     assert.strictEqual(matchedStyles.resolveProperty('color', styles[0])?.value, 'y');
     assert.isNull(matchedStyles.resolveProperty('background-color', styles[0]));
+  });
+
+  it('reads attributes from the parent node of a pseudo-element', async () => {
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+    node.nodeType.returns(Node.ELEMENT_NODE);
+    node.getAttribute.callsFake((name: string) => `parent-${name}`);
+    const pseudoElement = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    pseudoElement.id = 2 as Protocol.DOM.NodeId;
+    pseudoElement.nodeType.returns(Node.ELEMENT_NODE);
+    pseudoElement.parentNode = node;
+    pseudoElement.pseudoType.returns('before');
+    const matchedStyles = await getMatchedStyles({
+      matchedPayload: [ruleMatch('div::before', {content: 'attr(data-content)'})],
+      node: pseudoElement,
+    });
+
+    const property = matchedStyles.rawAttributeValueFromStyle(matchedStyles.nodeStyles()[0], 'data-content');
+    assert.strictEqual(property, 'parent-data-content');
+  });
+
+  it('evaluates variables with attr() calls in the same way as blink', async () => {
+    const attributes = [
+      {name: 'data-test-nonexistent', value: 'attr(data-nonexistent)'},
+      {name: 'data-test-nonexistent-raw-string', value: 'attr(data-nonexistent raw-string)'},
+      {name: 'data-test-empty', value: ''},
+      {name: 'data-test-self-loop', value: 'attr(data-test-self-loop)'},
+      {name: 'data-test-loop-1', value: 'attr(data-test-loop-2 type(<length>), 1px)'},
+      {name: 'data-test-loop-2', value: 'var(--test-loop-1, 2px)'},
+      {name: 'data-test-loop-indirect-2', value: 'attr(data-test-loop-1 type(<length>), 6px)'},
+      {name: 'data-test-number', value: '70'},
+      {name: 'data-test-length', value: 'attr(data-test-number in)'},
+      {name: 'data-test-bad-unit', value: 'attr(data-test-number parsecs, 2px)'},
+      {name: 'data-test-bad-type', value: 'attr(data-test-number type(<nomber>), 2)'},
+      {name: 'data-cant-parse', value: 'attr('},
+    ];
+    const variables = [
+      {name: '--test-missing', value: 'attr(data-nonexistent)'},
+      {name: '--test-missing-fallback', value: 'attr(data-nonexistent, 2px)'},
+      {name: '--test-missing-var-indirect', value: 'var(--test-missing, 2px)'},
+      {name: '--test-missing-attr-indirect-raw', value: 'attr(data-test-nonexistent, 2px)'},
+      {name: '--test-missing-attr-indirect', value: 'attr(data-test-nonexistent type(*), 2px)'},
+      {name: '--test-missing-raw-string', value: 'attr(data-nonexistent raw-string)'},
+      {name: '--test-missing-raw-string-fallback', value: 'attr(data-nonexistent raw-string, 2px)'},
+      {name: '--test-missing-raw-string-var-indirect', value: 'var(--test-missing-raw-string, 2px)'},
+      {name: '--test-missing-raw-string-attr-indirect', value: 'attr(data-test-nonexistent-raw-string, 2px)'},
+      {name: '--test-empty-any', value: 'attr(data-test-empty type(*))'},
+      {name: '--test-empty-number', value: 'attr(data-test-empty type(<number>))'},
+      {name: '--test-empty-any-fallback', value: 'attr(data-test-empty type(*), 2px)'},
+      {name: '--test-empty-number-fallback', value: 'attr(data-test-empty type(<number>), 2px)'},
+      {name: '--test-self-loop', value: 'attr(data-test-self-loop type(*))'},
+      {name: '--test-self-loop-raw', value: 'attr(data-test-self-loop)'},
+      {name: '--test-self-loop-fallback', value: 'attr(data-test-self-loop type(*), 2px)'},
+      {name: '--test-self-loop-fallback-2', value: 'var(--test-self-loop-fallback, 4px)'},
+      {name: '--test-self-loop-fallback-self', value: 'attr(data-test-self-loop type(*), attr(data-test-self-loop))'},
+      {name: '--test-loop-1', value: 'var(--test-loop-2, 3px)'},
+      {name: '--test-loop-2', value: 'attr(data-test-loop-1 type(<length>), 4px)'},
+      {name: '--test-loop-indirect-1', value: 'attr(data-test-loop-1 type(<length>), 5px)'},
+      {name: '--test-loop-indirect-2', value: 'attr(data-test-loop-indirect-2 type(<length>), 7px)'},
+      {name: '--test-number', value: 'attr(data-test-number type(<number>))'},
+      {name: '--test-number-to-length', value: 'attr(data-test-number in)'},
+      {
+        name: '--test-number-as-length',
+        value: 'attr(data-test-number type(<length>), var(--test-self-loop-fallback-2))'
+      },
+      {name: '--test-length', value: 'attr(data-test-length type(<length>))'},
+      {name: '--test-bad-unit-indirect', value: 'attr(data-test-bad-unit type(*), 4px)'},
+      {name: '--test-bad-type-indirect', value: 'attr(data-test-bad-type type(*), 4)'},
+      {name: '--test-cant-parse', value: 'attr(data-cant-parse type(*), red)'},
+    ];
+    // Create an element
+    const element = document.createElement('div');
+    for (const {name, value} of attributes) {
+      element.setAttribute(name, value);
+    }
+    for (const {name, value} of variables) {
+      element.style.setProperty(name, value);
+    }
+
+    renderElementIntoDOM(element);
+    const computedProperties = element.computedStyleMap();
+
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+    node.nodeType.returns(Node.ELEMENT_NODE);
+    // Create a sinon stub to return the requested attribute
+    node.getAttribute.callsFake((name: string) => attributes.find(attr => attr.name === name)?.value);
+
+    const matchedStyles = await getMatchedStyles({
+      matchedPayload: [ruleMatch('div', variables)],
+      node,
+    });
+
+    for (const {name} of variables) {
+      const frontendComputedValue =
+          matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], name)?.value ?? null;
+      const backendComputedValue = computedProperties.get(name) ?? null;
+      if (backendComputedValue === null) {
+        assert.isNull(frontendComputedValue, `evaluating variable ${name}`);
+      } else {
+        assert.strictEqual(frontendComputedValue, backendComputedValue.toString(), `evaluating variable ${name}`);
+      }
+    }
   });
 });
 

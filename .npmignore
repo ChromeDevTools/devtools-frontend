@@ -1,7 +1,9 @@
 BUILD.gn
 .gn
+.gni
 build_overrides
 DEPS
+*.test.ts
 
 PRESUBMIT.py
 OWNERS
@@ -10,8 +12,23 @@ ENG_REVIEW_OWNERS
 test
 htaccess
 v8/include
+# Exclude /third_party code, but we want to keep front_end/third_party in the package.
+/third_party
+codereview.settings
 
 /out
-
-# Exclude the root third_party, but not front_end/third_party, etc
-/third_party
+/build
+/.gemini
+/.eslintcache
+/.github
+/.vscode
+/config/gni
+/config/OWNERS
+/scripts
+/extensions
+/front_end/testing
+/front_end/Test.js
+/front_end/integration_test_runner.html
+/front_end/legacy_test_runner
+/front_end/panels/timeline/fixtures/traces
+/front_end/core/i18n/locales/*.json

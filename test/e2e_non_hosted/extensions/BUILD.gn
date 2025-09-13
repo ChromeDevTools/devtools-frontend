@@ -1,4 +1,4 @@
-# Copyright 2025 The Chromium Authors. All rights reserved.
+# Copyright 2025 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -10,6 +10,7 @@ ts_e2e_library("extensions") {
     "can-open-resources-with-columns_test.ts",
     "can-reveal-requests_test.ts",
     "can-search-in-extension-panel_test.ts",
+    "debugger-language-plugins_test.ts",
   ]
 
   deps = [

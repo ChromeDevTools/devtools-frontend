@@ -1,4 +1,4 @@
-// Copyright 2019 The Chromium Authors. All rights reserved.
+// Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -8,22 +8,22 @@ import type * as Platform from '../platform/platform.js';
 const OPAQUE_PARTITION_KEY = '<opaque>';
 
 export class Cookie {
-  readonly #nameInternal: string;
-  readonly #valueInternal: string;
-  readonly #typeInternal: Type|null|undefined;
+  readonly #name: string;
+  readonly #value: string;
+  readonly #type: Type|null|undefined;
   #attributes = new Map<Attribute, string|number|boolean|undefined>();
-  #sizeInternal = 0;
-  #priorityInternal: Protocol.Network.CookiePriority;
+  #size = 0;
+  #priority: Protocol.Network.CookiePriority;
   #cookieLine: string|null = null;
   #partitionKey: Protocol.Network.CookiePartitionKey|undefined;
 
   constructor(
       name: string, value: string, type?: Type|null, priority?: Protocol.Network.CookiePriority,
       partitionKey?: Protocol.Network.CookiePartitionKey) {
-    this.#nameInternal = name;
-    this.#valueInternal = value;
-    this.#typeInternal = type;
-    this.#priorityInternal = (priority || 'Medium' as Protocol.Network.CookiePriority);
+    this.#name = name;
+    this.#value = value;
+    this.#type = type;
+    this.#priority = (priority || 'Medium' as Protocol.Network.CookiePriority);
     this.#partitionKey = partitionKey;
   }
 
@@ -70,15 +70,15 @@ export class Cookie {
   }
 
   name(): string {
-    return this.#nameInternal;
+    return this.#name;
   }
 
   value(): string {
-    return this.#valueInternal;
+    return this.#value;
   }
 
   type(): Type|null|undefined {
-    return this.#typeInternal;
+    return this.#type;
   }
 
   httpOnly(): boolean {
@@ -148,7 +148,7 @@ export class Cookie {
   }
 
   priority(): Protocol.Network.CookiePriority {
-    return this.#priorityInternal;
+    return this.#priority;
   }
 
   session(): boolean {
@@ -182,7 +182,7 @@ export class Cookie {
   }
 
   size(): number {
-    return this.#sizeInternal;
+    return this.#size;
   }
 
   /**
@@ -205,7 +205,7 @@ export class Cookie {
   }
 
   setSize(size: number): void {
-    this.#sizeInternal = size;
+    this.#size = size;
   }
 
   expiresDate(requestDate: Date): Date|null {
@@ -227,7 +227,7 @@ export class Cookie {
     }
     switch (key) {
       case Attribute.PRIORITY:
-        this.#priorityInternal = (value as Protocol.Network.CookiePriority);
+        this.#priority = (value as Protocol.Network.CookiePriority);
         break;
       default:
         this.#attributes.set(key, value);

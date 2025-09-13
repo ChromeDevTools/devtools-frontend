@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -66,8 +66,8 @@ describeWithEnvironment('Timing helpers', () => {
 
   describe('timeStampForEventAdjustedByClosestNavigation', () => {
     it('can use the navigation ID to adjust the time correctly', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const lcpEvent = parsedTrace.PageLoadMetrics.allMarkerEvents.find(event => {
+      const {data} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const lcpEvent = data.PageLoadMetrics.allMarkerEvents.find(event => {
         // Just one LCP Event so we do not need to worry about ordering and finding the right one.
         return event.name === 'largestContentfulPaint::Candidate';
       });
@@ -78,13 +78,13 @@ describeWithEnvironment('Timing helpers', () => {
       assert.exists(lcpEvent.args.data?.navigationId);
       const adjustedTime = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
           lcpEvent,
-          parsedTrace.Meta.traceBounds,
-          parsedTrace.Meta.navigationsByNavigationId,
-          parsedTrace.Meta.navigationsByFrameId,
+          data.Meta.traceBounds,
+          data.Meta.navigationsByNavigationId,
+          data.Meta.navigationsByFrameId,
       );
 
       const unadjustedTime = Trace.Helpers.Timing.microToMilli(
-          Trace.Types.Timing.Micro(lcpEvent.ts - parsedTrace.Meta.traceBounds.min),
+          Trace.Types.Timing.Micro(lcpEvent.ts - data.Meta.traceBounds.min),
       );
       assert.strictEqual(unadjustedTime.toFixed(2), String(130.31));
 
@@ -94,9 +94,9 @@ describeWithEnvironment('Timing helpers', () => {
     });
 
     it('can use the frame ID to adjust the time correctly', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const dclEvent = parsedTrace.PageLoadMetrics.allMarkerEvents.find(event => {
-        return event.name === 'MarkDOMContent' && event.args.data?.frame === parsedTrace.Meta.mainFrameId;
+      const {data} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const dclEvent = data.PageLoadMetrics.allMarkerEvents.find(event => {
+        return event.name === 'MarkDOMContent' && event.args.data?.frame === data.Meta.mainFrameId;
       });
       if (!dclEvent) {
         throw new Error('Could not find DCL event');
@@ -105,14 +105,14 @@ describeWithEnvironment('Timing helpers', () => {
       assert.isUndefined(dclEvent.args.data?.navigationId);
 
       const unadjustedTime = Trace.Helpers.Timing.microToMilli(
-          Trace.Types.Timing.Micro(dclEvent.ts - parsedTrace.Meta.traceBounds.min),
+          Trace.Types.Timing.Micro(dclEvent.ts - data.Meta.traceBounds.min),
       );
       assert.strictEqual(unadjustedTime.toFixed(2), String(190.79));
       const adjustedTime = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
           dclEvent,
-          parsedTrace.Meta.traceBounds,
-          parsedTrace.Meta.navigationsByNavigationId,
-          parsedTrace.Meta.navigationsByFrameId,
+          data.Meta.traceBounds,
+          data.Meta.navigationsByNavigationId,
+          data.Meta.navigationsByFrameId,
       );
 
       // To make the assertion easier to read.

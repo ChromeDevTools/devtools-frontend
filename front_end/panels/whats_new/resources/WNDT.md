@@ -1,8 +1,8 @@
-### [Ask AI about more insights](ai-insights)
-You can now ask Gemini about more performance insights: image delivery, legacy JavaScript, duplicate JavaScript, and modern HTTP.
+### [Debug the network dependency tree with Gemini](ai-insight)
+In Performance > Insights > Network dependency tree, click the corresponding AI button to discuss and debug said tree with Gemini in the 'AI assistance' panel.
 
-### [Emulate the 'Save-Data' header](save-data)
-In 'Network conditions', you can now emulate the 'Save-Data' request header that indicates the client's preference for reduced data usage.
+### [Export your chats with Gemini](ai-chat-export)
+You can now export your current chat with Gemini or copy its response to clipboard with a click of a button.
 
-### [Debug complex CSS values easier](debug-css)
-See also, from version 138: The Elements > Styles tab can now show you a tooltip with a breakdown of the definition chain and step-by-step evaluations of complex CSS variables, so you can find bugs quicker and gain a deeper understanding of how a value is computed.
+### [Filter IP protected network requests](ipp)
+In the Network panel, you can now filter requests sent to IP Protection proxies.

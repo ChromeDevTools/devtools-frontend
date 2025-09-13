@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -6,7 +6,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import * as AutofillManager from './autofill_manager.js';
 
@@ -14,17 +13,11 @@ describeWithMockConnection('AutofillManager', () => {
   let target: SDK.Target.Target;
   let model: SDK.AutofillModel.AutofillModel;
   let autofillManager: AutofillManager.AutofillManager.AutofillManager;
-  let showViewStub: sinon.SinonStub;
 
   beforeEach(() => {
     target = createTarget();
     model = target.model(SDK.AutofillModel.AutofillModel)!;
-    showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
     autofillManager = AutofillManager.AutofillManager.AutofillManager.instance({forceNew: true});
-  });
-
-  afterEach(() => {
-    showViewStub.restore();
   });
 
   describe('emits AddressFormFilled events', () => {
@@ -38,7 +31,6 @@ describeWithMockConnection('AutofillManager', () => {
       model.dispatchEventToListeners(
           SDK.AutofillModel.Events.ADDRESS_FORM_FILLED, {autofillModel: model, event: inEvent});
       await new Promise(resolve => setTimeout(resolve, 0));
-      sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
       assert.deepEqual(dispatchedAutofillEvents, [outEvent]);
     };
 

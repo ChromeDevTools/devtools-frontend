@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -595,6 +595,7 @@ export const generatedProperties = [
    "overflow-y",
    "overlay",
    "override-colors",
+   "overscroll-area",
    "overscroll-behavior-block",
    "overscroll-behavior-inline",
    "overscroll-behavior-x",
@@ -891,6 +892,9 @@ export const generatedProperties = [
   "name": "animation-timing-function"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "animation-trigger"
  },
  {
@@ -3345,6 +3349,12 @@ export const generatedProperties = [
   "name": "override-colors"
  },
  {
+  "keywords": [
+   "none"
+  ],
+  "name": "overscroll-area"
+ },
+ {
   "longhands": [
    "overscroll-behavior-x",
    "overscroll-behavior-y"
@@ -4877,6 +4887,11 @@ export const generatedPropertyValues = {
    "step-end"
   ]
  },
+ "animation-trigger": {
+  "values": [
+   "none"
+  ]
+ },
  "app-region": {
   "values": [
    "none",
@@ -6246,6 +6261,11 @@ export const generatedPropertyValues = {
   "values": [
    "none",
    "auto"
+  ]
+ },
+ "overscroll-area": {
+  "values": [
+   "none"
   ]
  },
  "overscroll-behavior-x": {

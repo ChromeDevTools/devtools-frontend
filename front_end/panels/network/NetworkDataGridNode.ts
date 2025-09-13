@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -45,6 +45,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
+import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
@@ -54,8 +55,6 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
 import {PanelUtils} from '../utils/utils.js';
-
-import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 
 const UIStrings = {
   /**
@@ -380,9 +379,9 @@ export interface NetworkLogViewInterface extends Common.EventTarget.EventTarget<
   addFilmStripFrames(times: number[]): void;
   selectFilmStripFrame(time: number): void;
   clearFilmStripFrame(): void;
-  timeCalculator(): NetworkTimeCalculator;
-  calculator(): NetworkTimeCalculator;
-  setCalculator(x: NetworkTimeCalculator): void;
+  timeCalculator(): NetworkTimeCalculator.NetworkTimeCalculator;
+  calculator(): NetworkTimeCalculator.NetworkTimeCalculator;
+  setCalculator(x: NetworkTimeCalculator.NetworkTimeCalculator): void;
   flatNodesList(): NetworkNode[];
   updateNodeBackground(): void;
   updateNodeSelectedClass(isSelected: boolean): void;

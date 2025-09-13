@@ -32,6 +32,10 @@ export declare class CdpPage extends Page {
     #private;
     static _create(client: CdpCDPSession, target: CdpTarget, defaultViewport: Viewport | null): Promise<CdpPage>;
     constructor(client: CdpCDPSession, target: CdpTarget);
+    resize(params: {
+        contentWidth: number;
+        contentHeight: number;
+    }): Promise<void>;
     _client(): CDPSession;
     isServiceWorkerBypassed(): boolean;
     isDragInterceptionEnabled(): boolean;

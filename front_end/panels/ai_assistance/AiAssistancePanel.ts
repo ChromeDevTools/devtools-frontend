@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -20,6 +20,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../network/forward/forward.js';
+import * as NetworkPanel from '../network/network.js';
 import * as TimelinePanel from '../timeline/timeline.js';
 import * as TimelineUtils from '../timeline/utils/utils.js';
 
@@ -428,7 +429,8 @@ function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|null): 
   if (!request) {
     return null;
   }
-  return new AiAssistanceModel.RequestContext(request);
+  const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
+  return new AiAssistanceModel.RequestContext(request, calculator);
 }
 
 function createPerformanceTraceContext(focus: TimelineUtils.AIContext.AgentFocus|null):
@@ -826,7 +828,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           return;
         }
 
-        this.#selectedRequest = Boolean(ev.data) ? new AiAssistanceModel.RequestContext(ev.data) : null;
+        if (Boolean(ev.data)) {
+          const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
+          this.#selectedRequest = new AiAssistanceModel.RequestContext(ev.data, calculator);
+        } else {
+          this.#selectedRequest = null;
+        }
         this.#updateConversationState({agent: this.#conversationAgent});
       };
 
@@ -1479,6 +1486,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (this.#conversation) {
       void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
     }
+
     const generator = this.#conversationAgent.run(
         text, {
           signal,
@@ -1682,6 +1690,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     switch (actionId) {
       case 'freestyler.elements-floating-button':
       case 'freestyler.element-panel-context':
+      case 'freestyler.main-menu':
       case 'drjones.network-floating-button':
       case 'drjones.network-panel-context':
       case 'drjones.performance-panel-full-context':

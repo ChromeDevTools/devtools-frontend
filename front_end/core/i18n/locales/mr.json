@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "परफॉर्मन्स पॅनल"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "खाते"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "अडोर्नर"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "स्रोत"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "सिंक करा"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "स्क्रिप्ट दाखवा"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "AI साहाय्य"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "DevTools कस्टमाइझ आणि नियंत्रित करा"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "मागील पॅनल"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "बॅज मिळवा"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "DevTools रीलोड करा"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "हे वैशिष्ट्य फक्त अ‍ॅक्टिव्ह इंटरनेट कनेक्शनसह उपलब्ध आहे."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "DevTools ला बाह्य विनंती मिळाली आहे"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "फाइल लोड करताना अज्ञात एरर आली"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "काँप्रेशन डिक्शनरी ट्रान्सपोर्ट"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "सर्व्हरने सुरू केलेल्या इंटेग्रिटी तपासण्या"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "HTTP एन्कोड केलेले डायजेस्ट यासंबंधित तपशील"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "पेज लोड झाल्यानंतर नवीन डिव्हाइस सिम्युलेटेड करणे LCP वर परिणाम करू शकते. अचूक LCP डेटासाठी नवीन डिव्हाइस सिम्युलेटेड केल्यानंतर पेज रीलोड करा."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "स्थानिक चॅट हटवा"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "संभाषण एक्सपोर्ट करा"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "प्रश्न विचारण्यासाठी वरील पायऱ्या फॉलो करा"
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "कोणतीही मागील संभाषणे नाहीत"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "प्रतिसाद क्लिपबोर्डवर कॉपी केला आहे"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "फीडबॅक पाठवा"
   },
@@ -2685,7 +2706,7 @@
     "message": "सेटिंग्ज"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
-    "message": "AI चे साहाय्य"
+    "message": "AI साहाय्य"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "AI ला विचारा"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "अनुमानात्मक लोड"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "कोणत्याही अहवालाचा मुख्य मथळा पाहण्यासाठी त्यावर क्लिक करा"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "अहवाल निवडलेला नाही"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "रिपोर्टिंग API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "कोणत्याही अहवालाचा मुख्य मथळा पाहण्यासाठी त्यावर क्लिक करा"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "कोणतीही तक्रार किंवा एंडपॉइंट नाही"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "अहवाल निवडलेला नाही"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "या पेजवर तुम्हाला Reporting API शी संबंधित तक्रारींची आणि एंडपॉइंटची तपासणी करता येईल."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC असलेली पेज बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "बॅक/फॉरवर्ड कॅशे बंद केले आहेत, कारण WebRTC वापरले आहे."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "WebShare वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocket असलेली पेज बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "बॅक/फॉरवर्ड कॅशे बंद केले आहेत, कारण WebSocket वापरले आहे."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransport असलेली पेज बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "बॅक/फॉरवर्ड कॅशे बंद केले आहेत, कारण WebTransport वापरले आहे."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "WebXR वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "ग्रिड मोड बंद करा"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "मेसनरी मोड बंद करा"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "स्क्रोल-स्नॅप ओव्हरले बंद करा"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "ग्रिड मोड सुरू करा"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "मेसनरी मोड सुरू करा"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "स्क्रोल-स्नॅप ओव्हरले सुरू करा"
@@ -6771,7 +6789,7 @@
     "message": "इव्‍हेंट ऐकणार्‍यांची वर्गवारी"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework ऐकणारे"
+    "message": "Framework ऐकणाऱ्यांच्या समस्यांचे निराकरण करा"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "पॅसिव्‍ह"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "फ्लेक्सबॉक्स ओव्हरले"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "ग्रिड / मेसनरी"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "ग्रिड / मेसनरी ओव्हरले"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "या पेजवर फ्लेक्सबॉक्स लेआउट सापडले नाहीत"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "या पेजवर कोणतेही ग्रिड किंवा मेसनरी लेआउट आढळले नाहीत"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "ओव्हरले डिस्प्ले सेटिंग्ज"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "विनंत्या स्थानिकरीत्या ओव्हरराइड केल्या जाऊ शकतात, स्रोत पॅनल पहा"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "जोडा…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "{PH1} जोडा"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "कस्टम"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "प्रीसेट"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – शिफारस केलेला"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "कॅलिब्रेट करा…"
@@ -8646,10 +8685,10 @@
     "message": "डीफॉल्ट मूल्य रीसेट करा"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "'Save-Data': सक्तीने बंद करा"
+    "message": "'Save-Data': बंद आहे"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "'Save-Data': सक्तीने सुरू करा"
+    "message": "'Save-Data': सुरू आहे"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "पेजवर navigator.connection.saveData ने नोंदवलेले मूल्य ओव्हरराइड करा"
@@ -9357,7 +9396,7 @@
     "message": "फक्त ब्लॉक केलेल्या विनंत्या दाखवा"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(फक्त गुप्त मोडमध्ये) IP संरक्षण प्रॉक्सीना पाठवलेल्या विनंत्याच दाखवा"
+    "message": "फक्त IP संरक्षण प्रॉक्सीना पाठवलेल्या विनंत्या दाखवा. नियमित ब्राउझिंगवर कोणताही परिणाम होत नाही."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "फक्त ब्लॉक केलेल्या प्रतिसाद कुकी असलेल्या विनंत्या दाखवा"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1} डाउनलोड"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (कॅशेमधून)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (ServiceWorker कडून)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "{PH1} लेटन्सी"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "{PH1} लेटन्सी, {PH2} डाउनलोड (एकूण {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "प्रतिसादाच्या 'set-cookie' हेडरमध्ये सर्व्हरकडून मिळवलेल्या कुकी"
@@ -11574,7 +11598,7 @@
     "message": "शोधण्यासाठी टाइप करा आणि {PH1} प्रेस करा"
   },
   "panels/security/CookieControlsView.ts | cardDisclaimer": {
-    "message": "फक्त DevTools उघडे असेल, तेव्हाच"
+    "message": "DevTools उघडे असेल, तेव्हाच"
   },
   "panels/security/CookieControlsView.ts | cardTitle": {
     "message": "तृतीय पक्ष कुकी तात्पुरत्या मर्यादित करा"
@@ -11740,6 +11764,36 @@
   },
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "व्हिडिओ"
+  },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "IP संरक्षण बायपास करा"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "आयडी"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "पद्धत"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "IP प्रॉक्सी उपलब्ध नाही"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "IP प्रॉक्सी फक्त गुप्त मोडमध्ये उपलब्ध आहे. साइट गुप्त मोडमध्ये उघडा."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "प्रॉक्सी विनंत्या"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "स्टेटस"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "Chrome मध्ये IP प्रॉक्सी सुरू केलेली असल्यास, ही साइट कशी परफॉर्म करेल याची चाचणी करा"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "IP संरक्षण प्रॉक्सी नियंत्रणे"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH2} सह {PH1}"
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "नियंत्रणे"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "IP संरक्षण"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "मुख्य ओरिजिन"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "वापरकर्ता निष्क्रिय, स्क्रीन अनलॉक केली"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "परफॉर्मन्स ट्रेस भाष्यांसाठी शीर्षके आपोआप जनरेट करा"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "तुम्ही कन्सोल किंवा स्रोत पॅनल यामध्ये टाइप करत असताना तुम्हाला कोडसंबंधित सूचना मिळतील. त्यातील एक स्वीकारण्यासाठी टॅब प्रेस करा."
   },
@@ -12336,16 +12396,16 @@
     "message": "AI वापरून तुमची उत्पादकता वाढवा"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "कोड सूचना जनरेट करण्यासाठी, तुमचे कन्सोल इनपुट, तुमच्या सद्य कन्सोल सेशनचा इतिहास आणि सध्या उघड्या असलेल्या फाइलचा आशय या गोष्टी Google सोबत शेअर केल्या जातात. या वैशिष्ट्यामध्ये सुधारणा करण्यासाठी हा डेटा मानवी परीक्षणकर्त्यांद्वारे पाहिला जाऊ शकतो."
+    "message": "कोड सूचना जनरेट करण्यासाठी, तुमचे कन्सोल इनपुट, तुमच्या सध्याच्या कन्सोल सेशनचा इतिहास, नुकतेच तपासलेले CSS आणि अलीकडेच उघडलेल्या फाइलमधील आशय या गोष्टी Google सोबत शेअर केल्या जातात. या वैशिष्ट्यामध्ये सुधारणा करण्यासाठी हा डेटा मानवी परीक्षणकर्त्यांद्वारे पाहिला जाऊ शकतो."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "कोड सूचना जनरेट करण्यासाठी, तुमचे कन्सोल इनपुट, तुमच्या सद्य कन्सोल सेशनचा इतिहास आणि सध्या उघड्या असलेल्या फाइलचा आशय या गोष्टी Google सोबत शेअर केल्या जातात. हा डेटा Google AI मॉडेलमध्ये सुधारणा करण्यासाठी वापरला जाणार नाही."
+    "message": "कोड सूचना जनरेट करण्यासाठी, तुमचे कन्सोल इनपुट, तुमच्या सध्याच्या कन्सोल सेशनचा इतिहास, नुकतेच तपासलेले CSS आणि अलीकडेच उघडलेल्या फाइलमधील आशय या गोष्टी Google सोबत शेअर केल्या जातात. हा डेटा Google AI मॉडेलमध्ये सुधारणा करण्यासाठी वापरला जाणार नाही. तुमची संस्था ही सेटिंग्ज कधीही बदलू शकते."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "स्पष्टीकरणे जनरेट करण्यासाठी, कन्सोल मेसेज, संलग्न केलेली स्टॅक ट्रेस, संबंधित सोर्स कोड आणि संलग्न नेटवर्क हेडर Google ला पाठवले आहेत. या वैशिष्ट्यामध्ये सुधारणा करण्यासाठी हा डेटा मानवी परीक्षणकर्त्यांद्वारे पाहिला जाऊ शकतो."
+    "message": "स्पष्टीकरणे जनरेट करण्यासाठी, कन्सोल मेसेज, संलग्न स्टॅक ट्रेस, संबंधित सोर्स कोड आणि संलग्न नेटवर्क हेडर या गोष्टी Google ला पाठवल्या जातात. या वैशिष्ट्यामध्ये सुधारणा करण्यासाठी मानवी परीक्षणकर्ते हा डेटा पाहू शकतात."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "स्पष्टीकरणे जनरेट करण्यासाठी, कन्सोल मेसेज, संलग्न केलेली स्टॅक ट्रेस, संबंधित सोर्स कोड आणि संलग्न नेटवर्क हेडर Google ला पाठवले आहेत. हा डेटा Google च्या AI मॉडेलमध्ये सुधारणा करण्यासाठी वापरला जाणार नाही."
+    "message": "स्पष्टीकरणे जनरेट करण्यासाठी, कन्सोल मेसेज, संलग्न स्टॅक ट्रेस, संबंधित सोर्स कोड आणि संलग्न नेटवर्क हेडर या गोष्टी Google ला पाठवल्या जातात. हा डेटा Google AI मॉडेलमध्ये सुधारणा करण्यासाठी वापरला जाणार नाही. तुमची संस्था ही सेटिंग्ज कधीही बदलू शकते."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "तुमच्या प्रदेशानुसार Google हे डेटा गोळा करणे टाळू शकते"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "AI चे साहाय्य सुरू करा"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "AI कोड सूचना सुरू करा"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "परफॉर्मन्स पॅनल भाष्यांसाठी AI सूचना सुरू करा"
@@ -12381,19 +12444,19 @@
     "message": "AI द्वारे सक्षम केलेल्या इनसाइटसह CSS शैली, नेटवर्क अ‍ॅक्टिव्हिटी, परफॉर्मन्स बॉटलनेक आणि फाइलची मुळे समजून घ्या"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Web APIs, नेटवर्क विनंत्या, फाइल आणि परफॉर्मन्स ट्रेसद्वारे ॲक्सेस केली जाऊ शकणारी वापरकर्त्याची कोणतीही क्वेरी व तपासणी केलेल्या पेजवरील डेटा हा स्पष्टीकरणे जनरेट करण्यासाठी Google ला पाठवला जातो. या वैशिष्ट्यामध्ये सुधारणा करण्यासाठी हा डेटा मानवी परीक्षणकर्त्यांद्वारे पाहिला जाऊ शकतो. वैयक्तिक किंवा संवेदनशील माहिती असलेल्या पेजवर वापरू नका."
+    "message": "स्पष्टीकरणे जनरेट करण्यासाठी, तपासणी केलेल्या पेजला वेब APIs, नेटवर्क विनंत्या, फाइल आणि परफॉर्मन्स ट्रेस यांद्वारे ॲक्सेस करता येणारी वापरकर्त्याची कोणतीही क्वेरी व डेटा Google ला पाठवला जातो. या वैशिष्ट्यामध्ये सुधारणा करण्यासाठी मानवी परीक्षणकर्ते हा डेटा पाहू शकतात. वैयक्तिक किंवा संवेदनशील माहिती असलेल्या पेजवर वापरू नका."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Web APIs, नेटवर्क विनंत्या, फाइल आणि परफॉर्मन्स ट्रेसद्वारे ॲक्सेस केली जाऊ शकणारी वापरकर्त्याची कोणतीही क्वेरी व तपासणी केलेल्या पेजवरील डेटा हा स्पष्टीकरणे जनरेट करण्यासाठी Google ला पाठवला जातो. हा डेटा Google च्या AI मॉडेलमध्ये सुधारणा करण्यासाठी वापरला जाणार नाही."
+    "message": "स्पष्टीकरणे जनरेट करण्यासाठी, तपासणी केलेल्या पेजला वेब APIs, नेटवर्क विनंत्या, फाइल आणि परफॉर्मन्स ट्रेस यांद्वारे ॲक्सेस करता येणारी वापरकर्त्याची कोणतीही क्वेरी व डेटा Google ला पाठवला जातो. हा डेटा Google AI मॉडेलमध्ये सुधारणा करण्यासाठी वापरला जाणार नाही. तुमची संस्था ही सेटिंग्ज कधीही बदलू शकते."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "स्पष्टीकरण जनरेट करण्यासाठी तुमचा परफॉर्मन्स ट्रेस Google ला पाठवला जातो. हा डेटा Google च्या AI मॉडेलमध्ये सुधारणा करण्यासाठी वापरला जाईल."
+    "message": "भाष्यासंबंधित सूचना जनरेट करण्यासाठी, तुमचा परफॉर्मन्स ट्रेस Google ला पाठवला जातो. या वैशिष्ट्यामध्ये सुधारणा करण्यासाठी हा डेटा मानवी परीक्षणकर्त्यांद्वारे पाहिला जाऊ शकतो."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "स्पष्टीकरण जनरेट करण्यासाठी तुमचा परफॉर्मन्स ट्रेस Google ला पाठवला जातो. हा डेटा Google च्या AI मॉडेलमध्ये सुधारणा करण्यासाठी वापरला जाणार नाही."
+    "message": "भाष्यासंबंधित सूचना जनरेट करण्यासाठी, तुमचा परफॉर्मन्स ट्रेस Google ला पाठवला जातो. हा डेटा Google AI मॉडेलमध्ये सुधारणा करण्यासाठी वापरला जाणार नाही. तुमची संस्था ही सेटिंग्ज कधीही बदलू शकते."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "परफॉर्मन्स पॅनल भाष्यांसाठी AI सूचना मिळवा"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "ऑटोमॅटिक जनरेट केलेल्या लेबलसह तुमच्या परफॉर्मन्स ट्रेसवर भाष्य करण्यात तुम्हाला मदत करते"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "तुमचा कोड पूर्ण करण्यात मदत मिळवा"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "अस्थिर प्रयोग"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "Premium (वार्षिक)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "Premium (मासिक)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "Pro (वार्षिक)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "Pro (मासिक)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "साधारण प्लॅन"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "अज्ञात प्लॅन"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "तुम्ही Chrome मध्ये साइन इन केलेले नाही."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "हे सेटिंग सुरू करण्यासाठी, तुम्ही प्रथम Chrome मध्ये सिंक सुरू करणे आवश्यक आहे."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "सेटिंग्ज वर जा"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(Google ला सुसंबद्ध डेटा पाठवला जातो)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "साइन अप करा"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Chrome मध्ये हे ईमेल खाते वापरून साइन इन केले आहे:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "हे सेटिंग सुरू करण्यासाठी, तुम्ही Chrome सिंक सुरू करणे आवश्यक आहे."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "प्रोफाइल पहा"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "कस्टम डिव्हाइस जोडा"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU थ्रॉटलिंग सुरू केले आहे"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- JavaScript सँपलिंग बंद आहे"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- नेटवर्क थ्रॉटलिंग सुरू केले आहे"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "डिम तृतीय पक्ष"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "JavaScript नमुने बंद करा"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "JavaScript सँपलिंग बंद करते, मोबाइल डिव्हाइसविरुद्ध रन होत असताना ओव्हरहेड कमी करते"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "इथे ट्रेस फाइल किंवा URL ड्रॉप करा"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "रिपीट होईल"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "टाइमआउट"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH2} वर {PH1}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "वेळा"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "ट्रॅक कॉन्फिगर करा"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "सर्व दाखवा"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "काही ट्रॅक या ट्रेसमध्ये लपवलेले आहेत. तुम्ही ट्रॅकच्या नावावर राइट क्लिक करून ट्रॅक कॉन्फिगर करू शकता."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "सिंक न केलेले"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket प्रोटोकॉल"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "परफॉर्मन्स ट्रेस सेव्ह करा "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "भाष्यांचा समावेश करा"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "स्क्रिप्ट आशयाचा समावेश करा"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "स्क्रिप्ट स्रोत नकाशांचा समावेश करा"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "सेव्ह करा"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "ट्रेस सेव्ह करा…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "प्रगत"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "Chrome फ्लॅग किंवा ब्राउझर कॉन्फिगरेशन यांमुळे या विनंतीसाठी कुकी ब्लॉक केल्या आहेत. समस्या पॅनलमध्ये अधिक जाणून घ्या."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "ऑडिओ संदर्भ: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "कॉलबॅक बफरचा आकार"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "कॉलबॅक मध्यांतर"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "सध्याची वेळ"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "कमाल आउटपुट चॅनल"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(रेकॉर्डिंग नाहीत)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "Web Audio API वापर आढळलेला नाही"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "परीक्षण करणे सुरू करण्यासाठी वेब ऑडिओ API वापरणारे पेज उघडा."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "रेंडर करण्याची क्षमता"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "सॅंपल रेट"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "स्‍थिती"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "ऑडिओ"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "आणखी टूल"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "तळाशी हलवा"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "ड्रॉवरमध्ये हलवा"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "सर्वात वर हलवा"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "मुख्य टॅब बारवर हलवा"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "पॅनल"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "तपासलेले"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "हे नवीन वैशिष्ट्य आहे"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}, {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "कमांड रन करा"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "हे नवीन वैशिष्ट्य आहे"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "परिणाम सापडले नाहीत"

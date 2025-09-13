@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -70,13 +70,16 @@ export class FrameImpl implements StackTrace.StackTrace.Frame {
   readonly line: number;
   readonly column: number;
 
+  readonly missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo;
+
   constructor(
       url: string|undefined, uiSourceCode: Workspace.UISourceCode.UISourceCode|undefined, name: string|undefined,
-      line: number, column: number) {
+      line: number, column: number, missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo) {
     this.url = url;
     this.uiSourceCode = uiSourceCode;
     this.name = name;
     this.line = line;
     this.column = column;
+    this.missingDebugInfo = missingDebugInfo;
   }
 }

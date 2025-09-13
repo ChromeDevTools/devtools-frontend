@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -41,10 +41,11 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
-import {Directives, type LitTemplate, render} from '../lit/lit.js';
+import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ActionRegistration from './ActionRegistration.js';
@@ -53,7 +54,6 @@ import * as ARIAUtils from './ARIAUtils.js';
 import checkboxTextLabelStyles from './checkboxTextLabel.css.js';
 import confirmDialogStyles from './confirmDialog.css.js';
 import {Dialog} from './Dialog.js';
-import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import inlineButtonStyles from './inlineButton.css.js';
 import inspectorCommonStyles from './inspectorCommon.css.js';
@@ -61,7 +61,6 @@ import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import smallBubbleStyles from './smallBubble.css.js';
 import type {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
-import type {TreeOutline} from './Treeoutline.js';
 import {Widget} from './Widget.js';
 import type {XWidget} from './XWidget.js';
 
@@ -73,6 +72,7 @@ declare global {
     'dt-small-bubble': DevToolsSmallBubble;
   }
 }
+const {Directives, render} = Lit;
 
 const UIStrings = {
   /**
@@ -887,7 +887,7 @@ export function revertDomChanges(domChanges: HighlightChange[]): void {
   }
 }
 
-export function measurePreferredSize(element: Element, containerElement?: Element|null): Size {
+export function measurePreferredSize(element: Element, containerElement?: Element|null): Geometry.Size {
   const oldParent = element.parentElement;
   const oldNextSibling = element.nextSibling;
   containerElement = containerElement || element.ownerDocument.body;
@@ -901,7 +901,7 @@ export function measurePreferredSize(element: Element, containerElement?: Elemen
   } else {
     element.remove();
   }
-  return new Size(result.width, result.height);
+  return new Geometry.Size(result.width, result.height);
 }
 
 class InvokeOnceHandlers {
@@ -963,13 +963,6 @@ export function endBatchUpdate(): void {
     postUpdateHandlers.scheduleInvoke();
     postUpdateHandlers = null;
   }
-}
-
-export function invokeOnceAfterBatchUpdate(object: Object, method: () => void): void {
-  if (!postUpdateHandlers) {
-    postUpdateHandlers = new InvokeOnceHandlers(true);
-  }
-  postUpdateHandlers.add(object, method);
 }
 
 export function animateFunction(
@@ -1774,16 +1767,15 @@ export function createInlineButton(toolbarButton: ToolbarButton): Element {
   return element;
 }
 
-export abstract class Renderer {
-  abstract render(object: Object, options?: Options): Promise<{
-    node: Node,
-    tree: TreeOutline|null,
-  }|null>;
+export interface RenderedObject {
+  element: HTMLElement;
+  forceSelect(): void;
+}
 
-  static async render(object: Object, options?: Options): Promise<{
-    node: Node,
-    tree: TreeOutline|null,
-  }|null> {
+export abstract class Renderer {
+  abstract render(object: Object, options?: Options): Promise<RenderedObject|null>;
+
+  static async render(object: Object, options?: Options): Promise<RenderedObject|null> {
     if (!object) {
       throw new Error('Can\'t render ' + object);
     }
@@ -2189,7 +2181,44 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
   });
 }
 
+class InterceptBindingDirective extends Lit.Directive.Directive {
+  static readonly #interceptedBindings = new WeakMap<Element, Map<string, (e: Event) => void>>();
+
+  constructor(part: Lit.Directive.PartInfo) {
+    super(part);
+    if (part.type !== Lit.Directive.PartType.EVENT) {
+      throw new Error('This directive is for event bindings only');
+    }
+  }
+
+  override update(part: Lit.Directive.EventPart, [listener]: [(e: Event) => void]): undefined {
+    let eventListeners = InterceptBindingDirective.#interceptedBindings.get(part.element);
+    if (!eventListeners) {
+      eventListeners = new Map();
+      InterceptBindingDirective.#interceptedBindings.set(part.element, eventListeners);
+    }
+    eventListeners.set(part.name, listener);
+
+    return this.render(listener);
+  }
+
+  render(_listener: (e: Event) => void): undefined {
+    return undefined;
+  }
+
+  static attachEventListeners(templateElement: Element, renderedElement: Element): void {
+    const eventListeners = InterceptBindingDirective.#interceptedBindings.get(templateElement);
+    if (!eventListeners) {
+      return;
+    }
+    for (const [name, listener] of eventListeners) {
+      renderedElement.addEventListener(name, listener);
+    }
+  }
+}
+
 export class HTMLElementWithLightDOMTemplate extends HTMLElement {
+  static readonly on = Lit.Directive.directive(InterceptBindingDirective);
   readonly #mutationObserver = new MutationObserver(this.#onChange.bind(this));
   #contentTemplate: HTMLTemplateElement|null = null;
 
@@ -2198,7 +2227,18 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     this.#mutationObserver.observe(this, {childList: true, attributes: true, subtree: true, characterData: true});
   }
 
-  set template(template: LitTemplate) {
+  static cloneNode(node: Node): Node {
+    const clone = node.cloneNode(false);
+    for (const child of node.childNodes) {
+      clone.appendChild(HTMLElementWithLightDOMTemplate.cloneNode(child));
+    }
+    if (node instanceof Element && clone instanceof Element) {
+      InterceptBindingDirective.attachEventListeners(node, clone);
+    }
+    return clone;
+  }
+
+  set template(template: Lit.LitTemplate) {
     if (!this.#contentTemplate) {
       this.removeChildren();
       this.#contentTemplate = this.createChild('template');
@@ -2211,14 +2251,18 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
   }
 
   #onChange(mutationList: MutationRecord[]): void {
+    this.onChange(mutationList);
     for (const mutation of mutationList) {
       this.removeNodes(mutation.removedNodes);
       this.addNodes(mutation.addedNodes);
-      this.updateNodes(mutation.target, mutation.attributeName);
+      this.updateNode(mutation.target, mutation.attributeName);
     }
   }
 
-  protected updateNodes(_node: Node, _attributeName: string|null): void {
+  protected onChange(_mutationList: MutationRecord[]): void {
+  }
+
+  protected updateNode(_node: Node, _attributeName: string|null): void {
   }
 
   protected addNodes(_nodes: NodeList|Node[]): void {

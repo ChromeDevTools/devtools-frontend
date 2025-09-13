@@ -1,4 +1,4 @@
-// Copyright 2019 The Chromium Authors. All rights reserved.
+// Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -175,7 +175,7 @@ describe('Color', () => {
     deepCloseTo(colorThree.rgba(), [1, 0.484, 1, 1], colorSpaceConversionTolerance);
 
     // Parses syntax from Color Syntax mega list https://cdpn.io/pen/debug/RwyOyeq
-    const colorCases = [
+    const colorCases: Array<[string, number[]]> = [
       ['lch(58% 32 241deg)', [0.2830, 0.5834, 0.7366, 1]],
       ['lch(58 32 241deg)', [0.2830, 0.5834, 0.7366, 1]],
       ['lch(58 32 241)', [0.2830, 0.5834, 0.7366, 1]],
@@ -190,10 +190,9 @@ describe('Color', () => {
     ];
 
     for (const [syntax, expectedRgba] of colorCases) {
-      const color = parseAndAssertNotNull(syntax as string);
+      const color = parseAndAssertNotNull(syntax);
       deepCloseTo(
-          color.rgba(), expectedRgba as number[], colorSpaceConversionTolerance,
-          'LCH parsing from syntax list is not correct');
+          color.rgba(), expectedRgba, colorSpaceConversionTolerance, 'LCH parsing from syntax list is not correct');
     }
   });
 
@@ -212,7 +211,7 @@ describe('Color', () => {
     deepCloseTo(colorThree.rgba(), [0.989, 0.989, 0.989, 1], colorSpaceConversionTolerance);
 
     // Parses syntax from Color Syntax mega list https://cdpn.io/pen/debug/RwyOyeq
-    const colorCases = [
+    const colorCases: Array<[string, number[]]> = [
       ['lab(58% -16 -30)', [0.2585, 0.5848, 0.7505, 1]],
       ['lab(58 -16 -30)', [0.2585, 0.5848, 0.7505, 1]],
       ['lab(58% -16 -30 / 50%)', [0.2585, 0.5848, 0.7505, 0.5]],
@@ -226,10 +225,9 @@ describe('Color', () => {
     ];
 
     for (const [syntax, expectedRgba] of colorCases) {
-      const color = parseAndAssertNotNull(syntax as string);
+      const color = parseAndAssertNotNull(syntax);
       deepCloseTo(
-          color.rgba(), expectedRgba as number[], colorSpaceConversionTolerance,
-          'lab() parsing from syntax list is not correct');
+          color.rgba(), expectedRgba, colorSpaceConversionTolerance, 'lab() parsing from syntax list is not correct');
     }
   });
 
@@ -280,7 +278,7 @@ describe('Color', () => {
     }
 
     // Parses correctly from syntax list
-    const colorCases = [
+    const colorCases: Array<[string, number[]]> = [
       ['color(display-p3 34% 58% 73%)', [0.246, 0.587, 0.745, 1]],
       ['color(display-p3 1 0.71 0.73)', [1, 0.695, 0.725, 1]],
       ['color(display-p3 34% / 50%)', [0.3748, 0, 0, 0.5]],
@@ -295,9 +293,9 @@ describe('Color', () => {
     ];
 
     for (const [syntax, expectedRgba] of colorCases) {
-      const color = parseAndAssertNotNull(syntax as string);
+      const color = parseAndAssertNotNull(syntax);
       deepCloseTo(
-          color.rgba(), expectedRgba as number[], colorSpaceConversionTolerance,
+          color.rgba(), expectedRgba, colorSpaceConversionTolerance,
           `color() parsing from syntax list is not correct for ${syntax}`);
     }
   });

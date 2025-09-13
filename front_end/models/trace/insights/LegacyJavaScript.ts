@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -77,8 +77,8 @@ export function isLegacyJavaScript(model: InsightModel): model is LegacyJavaScri
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): LegacyJavaScriptInsightModel {
-  const scripts = parsedTrace.Scripts.scripts.filter(script => {
+    data: Handlers.Types.HandlerData, context: InsightSetContext): LegacyJavaScriptInsightModel {
+  const scripts = data.Scripts.scripts.filter(script => {
     if (script.frame !== context.frameId) {
       return false;
     }

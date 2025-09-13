@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -62,8 +62,7 @@ export interface SourceMapV3Object {
   names?: string[];
   ignoreList?: number[];
   scopes?: string;
-  originalScopes?: string[];
-  generatedRanges?: string;
+  debugId?: string;
   x_google_linecount?: number;
   x_google_ignoreList?: number[];
   x_com_bloomberg_sourcesFunctionMappings?: string[];
@@ -112,6 +111,8 @@ export function parseSourceMap(content: string): SourceMapV3 {
   return JSON.parse(content) as SourceMapV3;
 }
 
+export type DebugId = Platform.Brand.Brand<string, 'DebugId'>;
+
 export class SourceMapEntry {
   readonly lineNumber: number;
   readonly columnNumber: number;
@@ -152,15 +153,17 @@ export class SourceMap {
   static retainRawSourceMaps = false;
 
   #json: SourceMapV3|null;
-  readonly #compiledURLInternal: Platform.DevToolsPath.UrlString;
+  readonly #compiledURL: Platform.DevToolsPath.UrlString;
   readonly #sourceMappingURL: Platform.DevToolsPath.UrlString;
   readonly #baseURL: Platform.DevToolsPath.UrlString;
-  #mappingsInternal: SourceMapEntry[]|null;
+  #mappings: SourceMapEntry[]|null;
 
   readonly #sourceInfos: SourceInfo[] = [];
   readonly #sourceInfoByURL = new Map<Platform.DevToolsPath.UrlString, SourceInfo>();
 
   #scopesInfo: SourceMapScopesInfo|null = null;
+
+  readonly #debugId?: DebugId;
 
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
@@ -170,11 +173,12 @@ export class SourceMap {
       compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString,
       payload: SourceMapV3) {
     this.#json = payload;
-    this.#compiledURLInternal = compiledURL;
+    this.#compiledURL = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
     this.#baseURL = (Common.ParsedURL.schemeIs(sourceMappingURL, 'data:')) ? compiledURL : sourceMappingURL;
+    this.#debugId = 'debugId' in payload ? (payload.debugId as DebugId | undefined) : undefined;
 
-    this.#mappingsInternal = null;
+    this.#mappings = null;
     if ('sections' in this.#json) {
       if (this.#json.sections.find(section => 'url' in section)) {
         Common.Console.Console.instance().warn(
@@ -214,11 +218,15 @@ export class SourceMap {
   }
 
   compiledURL(): Platform.DevToolsPath.UrlString {
-    return this.#compiledURLInternal;
+    return this.#compiledURL;
   }
 
   url(): Platform.DevToolsPath.UrlString {
     return this.#sourceMappingURL;
+  }
+
+  debugId(): DebugId|null {
+    return this.#debugId ?? null;
   }
 
   sourceURLs(): Platform.DevToolsPath.UrlString[] {
@@ -395,7 +403,7 @@ export class SourceMap {
 
   mappings(): SourceMapEntry[] {
     this.#ensureMappingsProcessed();
-    return this.#mappingsInternal ?? [];
+    return this.#mappings ?? [];
   }
 
   private reversedMappings(sourceURL: Platform.DevToolsPath.UrlString): number[] {
@@ -404,19 +412,19 @@ export class SourceMap {
   }
 
   #ensureMappingsProcessed(): void {
-    if (this.#mappingsInternal === null) {
-      this.#mappingsInternal = [];
+    if (this.#mappings === null) {
+      this.#mappings = [];
       try {
         this.eachSection(this.parseMap.bind(this));
       } catch (e) {
         console.error('Failed to parse source map', e);
-        this.#mappingsInternal = [];
+        this.#mappings = [];
       }
 
       // As per spec, mappings are not necessarily sorted.
       this.mappings().sort(SourceMapEntry.compare);
 
-      this.#computeReverseMappings(this.#mappingsInternal);
+      this.#computeReverseMappings(this.#mappings);
     }
 
     if (!SourceMap.retainRawSourceMaps) {

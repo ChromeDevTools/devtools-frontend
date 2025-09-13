@@ -87,3 +87,63 @@ The
 file in the `infra/config` branch contains the logic that determines
 which builders are needed to verify a CQ. See `custom_locationsfilters`
 for the current logic.
+
+## Branch cutting process
+
+At the end of every release cycle Chromium will cut a new branch for the current release.
+
+The branch cut process for DevTools is as simple as updating the beta, stable
+and extended branch numbers in infra/config (example [CL](https://crrev.com/c/6850649)):
+  - checkout infra/config branch
+  - pull and create a new branch ([see](#Submitting an infra config change))
+  - update the definitions.star file:
+    - extended number gets updated every second release:
+      - if the extended number is equal to the stable number, then update
+        extended to the current beta number
+      - otherwise update it to the current stable number
+    - stable number updates to the current beta number
+    - beta number updates to the Chromium beta brunch number ([see](https://chromiumdash.appspot.com/branches))
+  - regenrate the cfg files (`lucicfg main.star`), commit, upload and add
+    liviurau@chromium.org as reviewer (or another infra team member)
+
+Changing these numbers will reconfigure the CI and CQ for [beta](https://ci.chromium.org/p/devtools-frontend/g/beta/console),
+[stable](https://ci.chromium.org/p/devtools-frontend/g/stable/console) and
+[extended](https://ci.chromium.org/p/devtools-frontend/g/extended/console) branches.
+After landing the change the three branch consoles will get reset.
+
+## Toggle tree closing behaviour on CI builders
+
+Sometimes we might need to avoid a misbehaing builder closing the tree. Or maybe
+we need to make a FYI builder a tree closer.
+
+To do so find your builder buckets/ci.star file and toggle the
+`notification_muted` property (defaults to False if not present). Setting the
+property to True/False will remove/add the tree closer notifier for this builder.
+Make sure you regenerated the cfg files and upload your changes. [Example](https://crrev.com/c/6903184).
+
+## Toggle blocking behaviour of CQ builders
+
+CQ builders come in 3 flavors:
+  - regular try builder: will always prevent a CL from landing when the builder
+    fails
+  - includable builder: will run only if expecitly added to a CQ run and will
+    prevent a CL from landing if the builder fails
+  - experimental builder: will run a percentage of the times it gets an
+    oppotunity run and will not block the CL from landing if the builder fails
+
+To toggle this behaviour you need to edit `buckets/try.star` file ([example](https://crrev.com/c/6903181)):
+  - all builders must be enumetated in `cq_builders.devtools_builders` list
+  - to make a builder includable add it's name `cq_builders.includable_only_builders`
+    list; remove it from the list to make it a regular builder
+  - to make a builder experimental add it's name `cq_builders.experiment_builders`
+    dictionary together with the desired experiment rate percentage; remove it
+    from the list to make it a regular builder
+
+## Controlling when a builder runs
+// TODO
+
+## Adding a new builder
+// TODO
+
+## Anatomy of a CQ build
+// TODO

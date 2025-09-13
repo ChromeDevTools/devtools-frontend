@@ -1,4 +1,4 @@
-// Copyright (c) 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -35,8 +35,8 @@ export type TokenOrComment = Acorn.Token|Acorn.Comment;
  */
 export class AcornTokenizer {
   #textCursor: TextUtils.TextCursor.TextCursor;
-  #tokenLineStartInternal: number;
-  #tokenLineEndInternal: number;
+  #tokenLineStart: number;
+  #tokenLineEnd: number;
   #tokens: Array<Acorn.Comment|Acorn.Token>;
   #idx = 0;
 
@@ -44,8 +44,8 @@ export class AcornTokenizer {
     this.#tokens = tokens;
     const contentLineEndings = Platform.StringUtilities.findLineEndingIndexes(content);
     this.#textCursor = new TextUtils.TextCursor.TextCursor(contentLineEndings);
-    this.#tokenLineStartInternal = 0;
-    this.#tokenLineEndInternal = 0;
+    this.#tokenLineStart = 0;
+    this.#tokenLineEnd = 0;
   }
 
   static punctuator(token: Acorn.Token, values?: string): boolean {
@@ -83,10 +83,10 @@ export class AcornTokenizer {
     }
 
     this.#textCursor.advance(token.start);
-    this.#tokenLineStartInternal = this.#textCursor.lineNumber();
+    this.#tokenLineStart = this.#textCursor.lineNumber();
 
     this.#textCursor.advance(token.end);
-    this.#tokenLineEndInternal = this.#textCursor.lineNumber();
+    this.#tokenLineEnd = this.#textCursor.lineNumber();
     return token;
   }
 
@@ -99,11 +99,11 @@ export class AcornTokenizer {
   }
 
   tokenLineStart(): number {
-    return this.#tokenLineStartInternal;
+    return this.#tokenLineStart;
   }
 
   tokenLineEnd(): number {
-    return this.#tokenLineEndInternal;
+    return this.#tokenLineEnd;
   }
 }
 

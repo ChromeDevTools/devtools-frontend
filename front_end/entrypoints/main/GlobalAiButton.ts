@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -155,6 +155,22 @@ export class GlobalAiButton extends UI.Widget.Widget {
   #onClick(): void {
     UI.ViewManager.ViewManager.instance().showViewInLocation('freestyler', 'drawer-view');
     incrementClickCountSetting();
+
+    const hasExplicitUserPreference =
+        UI.InspectorView.InspectorView.instance().isUserExplicitlyUpdatedDrawerOrientation();
+    const isVerticalDrawerFeatureEnabled =
+        Boolean(Root.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled);
+    if (isVerticalDrawerFeatureEnabled && !hasExplicitUserPreference) {
+      // This mimics what we're doing while showing the drawer via `ESC`.
+      // There is a bug where opening the sidebar directly for the first time,
+      // and triggering a drawer rotation without calling `showDrawer({focus: true})` makes the drawer disappear.
+      UI.InspectorView.InspectorView.instance().showDrawer({
+        focus: true,
+        hasTargetDrawer: false,
+      });
+      UI.InspectorView.InspectorView.instance().toggleDrawerOrientation(
+          {force: UI.InspectorView.DrawerOrientation.VERTICAL});
+    }
   }
 
   override performUpdate(): Promise<void>|void {

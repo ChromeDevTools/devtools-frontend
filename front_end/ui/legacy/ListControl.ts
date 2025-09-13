@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -43,8 +43,8 @@ export class ListControl<T> {
   private bottomHeight: number;
   private model: ListModel<T>;
   private itemToElement: Map<T, Element>;
-  private selectedIndexInternal: number;
-  private selectedItemInternal: T|null;
+  #selectedIndex: number;
+  #selectedItem: T|null;
   private delegate: ListDelegate<T>;
   private readonly mode: ListMode;
   private fixedHeight: number;
@@ -64,8 +64,8 @@ export class ListControl<T> {
     this.model = model;
     this.model.addEventListener(ListModelEvents.ITEMS_REPLACED, this.replacedItemsInRange, this);
     this.itemToElement = new Map();
-    this.selectedIndexInternal = -1;
-    this.selectedItemInternal = null;
+    this.#selectedIndex = -1;
+    this.#selectedItem = null;
 
     this.element.tabIndex = -1;
     this.element.addEventListener('click', this.onClick.bind(this), false);
@@ -100,17 +100,17 @@ export class ListControl<T> {
     const to = from + data.removed.length;
     const keepSelectedIndex = data.keepSelectedIndex;
 
-    const oldSelectedItem = this.selectedItemInternal;
+    const oldSelectedItem = this.#selectedItem;
     const oldSelectedElement = oldSelectedItem !== null ? (this.itemToElement.get(oldSelectedItem) || null) : null;
     for (let i = 0; i < data.removed.length; i++) {
       this.itemToElement.delete(data.removed[i]);
     }
     this.invalidate(from, to, data.inserted);
 
-    if (this.selectedIndexInternal >= to) {
-      this.selectedIndexInternal += data.inserted - (to - from);
-      this.selectedItemInternal = this.model.at(this.selectedIndexInternal);
-    } else if (this.selectedIndexInternal >= from) {
+    if (this.#selectedIndex >= to) {
+      this.#selectedIndex += data.inserted - (to - from);
+      this.#selectedItem = this.model.at(this.#selectedIndex);
+    } else if (this.#selectedIndex >= from) {
       const selectableIndex = keepSelectedIndex ? from : from + data.inserted;
       let index = this.findFirstSelectable(selectableIndex, +1, false);
       if (index === -1) {
@@ -134,16 +134,16 @@ export class ListControl<T> {
     const item = this.model.at(index);
     this.itemToElement.delete(item);
     this.invalidateRange(index, index + 1);
-    if (this.selectedIndexInternal !== -1) {
-      this.select(this.selectedIndexInternal, null, null);
+    if (this.#selectedIndex !== -1) {
+      this.select(this.#selectedIndex, null, null);
     }
   }
 
   refreshAllItems(): void {
     this.itemToElement.clear();
     this.invalidateRange(0, this.model.length);
-    if (this.selectedIndexInternal !== -1) {
-      this.select(this.selectedIndexInternal, null, null);
+    if (this.#selectedIndex !== -1) {
+      this.select(this.#selectedIndex, null, null);
     }
   }
 
@@ -197,11 +197,11 @@ export class ListControl<T> {
   }
 
   selectedItem(): T|null {
-    return this.selectedItemInternal;
+    return this.#selectedItem;
   }
 
   selectedIndex(): number {
-    return this.selectedIndexInternal;
+    return this.#selectedIndex;
   }
 
   selectItem(item: T|null, center?: boolean, dontScroll?: boolean): void {
@@ -221,16 +221,16 @@ export class ListControl<T> {
     if (index !== -1 && !dontScroll) {
       this.scrollIntoView(index, center);
     }
-    if (this.selectedIndexInternal !== index) {
+    if (this.#selectedIndex !== index) {
       this.select(index);
     }
   }
 
   selectPreviousItem(canWrap?: boolean, center?: boolean): boolean {
-    if (this.selectedIndexInternal === -1 && !canWrap) {
+    if (this.#selectedIndex === -1 && !canWrap) {
       return false;
     }
-    let index: number = this.selectedIndexInternal === -1 ? this.model.length - 1 : this.selectedIndexInternal - 1;
+    let index: number = this.#selectedIndex === -1 ? this.model.length - 1 : this.#selectedIndex - 1;
     index = this.findFirstSelectable(index, -1, Boolean(canWrap));
     if (index !== -1) {
       this.scrollIntoView(index, center);
@@ -241,10 +241,10 @@ export class ListControl<T> {
   }
 
   selectNextItem(canWrap?: boolean, center?: boolean): boolean {
-    if (this.selectedIndexInternal === -1 && !canWrap) {
+    if (this.#selectedIndex === -1 && !canWrap) {
       return false;
     }
-    let index: number = this.selectedIndexInternal === -1 ? 0 : this.selectedIndexInternal + 1;
+    let index: number = this.#selectedIndex === -1 ? 0 : this.#selectedIndex + 1;
     index = this.findFirstSelectable(index, +1, Boolean(canWrap));
     if (index !== -1) {
       this.scrollIntoView(index, center);
@@ -258,7 +258,7 @@ export class ListControl<T> {
     if (this.mode === ListMode.NonViewport) {
       return false;
     }
-    let index: number = this.selectedIndexInternal === -1 ? this.model.length - 1 : this.selectedIndexInternal;
+    let index: number = this.#selectedIndex === -1 ? this.model.length - 1 : this.#selectedIndex;
     index = this.findPageSelectable(index, -1);
     if (index !== -1) {
       this.scrollIntoView(index, center);
@@ -272,7 +272,7 @@ export class ListControl<T> {
     if (this.mode === ListMode.NonViewport) {
       return false;
     }
-    let index: number = this.selectedIndexInternal === -1 ? 0 : this.selectedIndexInternal;
+    let index: number = this.#selectedIndex === -1 ? 0 : this.#selectedIndex;
     index = this.findPageSelectable(index, +1);
     if (index !== -1) {
       this.scrollIntoView(index, center);
@@ -415,15 +415,15 @@ export class ListControl<T> {
 
   private select(index: number, oldItem?: T|null, oldElement?: Element|null): void {
     if (oldItem === undefined) {
-      oldItem = this.selectedItemInternal;
+      oldItem = this.#selectedItem;
     }
     if (oldElement === undefined) {
       oldElement = this.itemToElement.get((oldItem as T)) || null;
     }
-    this.selectedIndexInternal = index;
-    this.selectedItemInternal = index === -1 ? null : this.model.at(index);
-    const newItem = this.selectedItemInternal;
-    const newElement = this.selectedIndexInternal !== -1 ? this.elementAtIndex(index) : null;
+    this.#selectedIndex = index;
+    this.#selectedItem = index === -1 ? null : this.model.at(index);
+    const newItem = this.#selectedItem;
+    const newElement = this.#selectedIndex !== -1 ? this.elementAtIndex(index) : null;
     this.delegate.selectedItemChanged(
         oldItem, newItem, (oldElement as HTMLElement | null), (newElement as HTMLElement | null));
     if (!this.delegate.updateSelectedItemARIA((oldElement), newElement)) {

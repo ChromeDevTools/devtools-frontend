@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -7,6 +7,7 @@ import '../../ui/components/adorners/adorners.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -293,7 +294,8 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: ViewOutput, target: HTMLE
 export class AutofillView extends UI.Widget.VBox {
   readonly #view: View;
   readonly #autofillManager: AutofillManager.AutofillManager.AutofillManager;
-  #autoOpenViewSetting: Common.Settings.Setting<boolean>;
+  #autoOpenViewSetting: Common.Settings.Setting<boolean> =
+      Common.Settings.Settings.instance().createSetting('auto-open-autofill-view-on-event', true);
   #showTestAddressesInAutofillMenuSetting: Common.Settings.Setting<boolean>;
   #address = '';
   #filledFields: Protocol.Autofill.FilledField[] = [];
@@ -304,8 +306,6 @@ export class AutofillView extends UI.Widget.VBox {
     super({useShadowDom: true});
     this.#autofillManager = autofillManager;
     this.#view = view;
-    this.#autoOpenViewSetting =
-        Common.Settings.Settings.instance().createSetting('auto-open-autofill-view-on-event', true);
     this.#showTestAddressesInAutofillMenuSetting =
         Common.Settings.Settings.instance().createSetting('show-test-addresses-in-autofill-menu-on-event', false);
   }
@@ -348,13 +348,18 @@ export class AutofillView extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  #onAddressFormFilled(
-      {data}: Common.EventTarget.EventTargetEvent<AutofillManager.AutofillManager.AddressFormFilledEvent>): void {
-    ({
-      address: this.#address,
-      filledFields: this.#filledFields,
-      matches: this.#matches,
-    } = data);
+  async #onAddressFormFilled(
+      {data}: Common.EventTarget.EventTargetEvent<AutofillManager.AutofillManager.AddressFormFilledEvent>):
+      Promise<void> {
+    if (this.#autoOpenViewSetting.get()) {
+      await UI.ViewManager.ViewManager.instance().showView('autofill-view');
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AutofillReceivedAndTabAutoOpened);
+    } else {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AutofillReceived);
+    }
+    this.#address = data.address;
+    this.#filledFields = data.filledFields;
+    this.#matches = data.matches;
     this.#highlightedMatches = [];
     this.requestUpdate();
   }

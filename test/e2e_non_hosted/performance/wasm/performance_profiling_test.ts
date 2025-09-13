@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -109,7 +109,7 @@ describe('The Performance panel', function() {
 
         await navigateToBottomUpTab(devToolsPage, 'url');
 
-        const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+        const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
         const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
         assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
         await rootActivity.click();
@@ -133,7 +133,7 @@ describe('The Performance panel', function() {
 
         await navigateToCallTreeTab(devToolsPage);
 
-        const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+        const timelineTree = await devToolsPage.$<HTMLSelectElement>('.timeline-tree-view');
         const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
         assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
         await rootActivity.click();

@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -28,6 +28,7 @@ DEFAULT_FEATURE_SET.enable('DevToolsFreestyler', {
   function_calling: true,
 });
 DEFAULT_FEATURE_SET.enable('DevToolsWellKnown');
+DEFAULT_FEATURE_SET.enable('DevToolsVerticalDrawer');
 
 // The unstable feature set (can be enabled via `--enable-unstable-features`).
 const UNSTABLE_FEATURE_SET = new FeatureSet();

@@ -1,4 +1,4 @@
-# Copyright 2020 The Chromium Authors. All rights reserved.
+# Copyright 2020 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -90,6 +90,7 @@ ts_library("unittests") {
   sources = [
     "CookieControlsView.test.ts",
     "CookieReportView.test.ts",
+    "IPProtectionView.test.ts",
     "SecurityModel.test.ts",
     "SecurityPanel.test.ts",
   ]

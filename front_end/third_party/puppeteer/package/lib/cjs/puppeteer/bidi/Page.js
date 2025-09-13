@@ -110,7 +110,6 @@ const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const encoding_js_1 = require("../util/encoding.js");
-const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
 const Frame_js_1 = require("./Frame.js");
 const Input_js_1 = require("./Input.js");
@@ -251,6 +250,9 @@ let BidiPage = (() => {
         }
         mainFrame() {
             return this.#frame;
+        }
+        resize(_params) {
+            throw new Error('Method not implemented for WebDriver BiDi yet.');
         }
         async focusedFrame() {
             const env_1 = { stack: [], error: void 0, hasError: false };
@@ -637,7 +639,7 @@ let BidiPage = (() => {
             }
             if (!this.#emulatedNetworkConditions) {
                 this.#emulatedNetworkConditions = {
-                    offline: false,
+                    offline: networkConditions?.offline ?? false,
                     upload: -1,
                     download: -1,
                     latency: 0,
@@ -652,6 +654,8 @@ let BidiPage = (() => {
             this.#emulatedNetworkConditions.latency = networkConditions
                 ? networkConditions.latency
                 : 0;
+            this.#emulatedNetworkConditions.offline =
+                networkConditions?.offline ?? false;
             return await this.#applyNetworkConditions();
         }
         async #applyNetworkConditions() {
@@ -752,11 +756,6 @@ let BidiPage = (() => {
             }
             catch (error) {
                 controller.abort();
-                if ((0, ErrorLike_js_1.isErrorLike)(error)) {
-                    if (error.message.includes('no such history entry')) {
-                        return null;
-                    }
-                }
                 throw error;
             }
         }

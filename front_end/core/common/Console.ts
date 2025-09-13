@@ -1,4 +1,4 @@
-// Copyright 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -8,13 +8,13 @@ import {reveal} from './Revealer.js';
 let consoleInstance: Console|undefined;
 
 export class Console extends ObjectWrapper<EventTypes> {
-  readonly #messagesInternal: Message[];
+  readonly #messages: Message[];
   /**
    * Instantiable via the instance() factory below.
    */
   constructor() {
     super();
-    this.#messagesInternal = [];
+    this.#messages = [];
   }
 
   static instance(opts?: {forceNew: boolean}): Console {
@@ -39,7 +39,7 @@ export class Console extends ObjectWrapper<EventTypes> {
    */
   addMessage(text: string, level = MessageLevel.INFO, show = false, source?: FrontendMessageSource): void {
     const message = new Message(text, level, Date.now(), show, source);
-    this.#messagesInternal.push(message);
+    this.#messages.push(message);
     this.dispatchEventToListeners(Events.MESSAGE_ADDED, message);
   }
 
@@ -62,7 +62,7 @@ export class Console extends ObjectWrapper<EventTypes> {
   }
 
   messages(): Message[] {
-    return this.#messagesInternal;
+    return this.#messages;
   }
 
   show(): void {

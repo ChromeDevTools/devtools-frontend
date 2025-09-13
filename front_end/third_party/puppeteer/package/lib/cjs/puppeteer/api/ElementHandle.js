@@ -105,6 +105,7 @@ const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
 const decorators_js_1 = require("../util/decorators.js");
 const ElementHandleSymbol_js_1 = require("./ElementHandleSymbol.js");
 const JSHandle_js_1 = require("./JSHandle.js");
+const locators_js_1 = require("./locators/locators.js");
 /**
  * A given method will have it's `this` replaced with an isolated version of
  * `this` when decorated with this decorator.
@@ -225,6 +226,7 @@ let ElementHandle = (() => {
     let _screenshot_decorators;
     let _isIntersectingViewport_decorators;
     let _scrollIntoView_decorators;
+    let _asLocator_decorators;
     return class ElementHandle extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
@@ -259,6 +261,7 @@ let ElementHandle = (() => {
             _screenshot_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
             _isIntersectingViewport_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
             _scrollIntoView_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _asLocator_decorators = [(0, decorators_js_1.throwIfDisposed)()];
             __esDecorate(this, null, _getProperty_decorators, { kind: "method", name: "getProperty", static: false, private: false, access: { has: obj => "getProperty" in obj, get: obj => obj.getProperty }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _getProperties_decorators, { kind: "method", name: "getProperties", static: false, private: false, access: { has: obj => "getProperties" in obj, get: obj => obj.getProperties }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _jsonValue_decorators, { kind: "method", name: "jsonValue", static: false, private: false, access: { has: obj => "jsonValue" in obj, get: obj => obj.jsonValue }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -292,6 +295,7 @@ let ElementHandle = (() => {
             __esDecorate(this, null, _screenshot_decorators, { kind: "method", name: "screenshot", static: false, private: false, access: { has: obj => "screenshot" in obj, get: obj => obj.screenshot }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _isIntersectingViewport_decorators, { kind: "method", name: "isIntersectingViewport", static: false, private: false, access: { has: obj => "isIntersectingViewport" in obj, get: obj => obj.isIntersectingViewport }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _scrollIntoView_decorators, { kind: "method", name: "scrollIntoView", static: false, private: false, access: { has: obj => "scrollIntoView" in obj, get: obj => obj.scrollIntoView }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _asLocator_decorators, { kind: "method", name: "asLocator", static: false, private: false, access: { has: obj => "asLocator" in obj, get: obj => obj.asLocator }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         /**
@@ -1360,6 +1364,14 @@ let ElementHandle = (() => {
                     behavior: 'instant',
                 });
             });
+        }
+        /**
+         * Creates a locator based on an ElementHandle. This would not allow
+         * refreshing the element handle if it is stale but it allows re-using other
+         * locator pre-conditions.
+         */
+        asLocator() {
+            return locators_js_1.NodeLocator.createFromHandle(this.frame, this);
         }
         /**
          * Returns true if an element is an SVGElement (included svg, path, rect

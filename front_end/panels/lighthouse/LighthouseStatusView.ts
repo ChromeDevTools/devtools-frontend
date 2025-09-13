@@ -1,10 +1,11 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
+// Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -217,7 +218,7 @@ export class StatusView {
 
     this.dialog.setDefaultFocusedElement(cancelButton);
     this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
-    this.dialog.setMaxContentSize(new UI.Geometry.Size(500, 400));
+    this.dialog.setMaxContentSize(new Geometry.Size(500, 400));
   }
 
   private reset(): void {

@@ -1,4 +1,4 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
+// Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -15,7 +15,6 @@ import type {TimelineModeViewDelegate} from './TimelinePanel.js';
 import {selectionIsEvent, type TimelineSelection} from './TimelineSelection.js';
 import {TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
-import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -128,16 +127,16 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly categoryFilter: Category;
   private readonly durationFilter: IsLong;
-  private readonly filtersInternal: Array<IsLong|Category>;
+  readonly #filters: Array<IsLong|Category>;
   constructor() {
     super();
     this.categoryFilter = new Category();
     this.durationFilter = new IsLong();
-    this.filtersInternal = [this.categoryFilter, this.durationFilter];
+    this.#filters = [this.categoryFilter, this.durationFilter];
   }
 
   filters(): Trace.Extras.TraceFilter.TraceFilter[] {
-    return this.filtersInternal;
+    return this.#filters;
   }
 
   populateToolbar(toolbar: UI.Toolbar.Toolbar): void {
@@ -151,15 +150,15 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     toolbar.appendToolbarItem(durationFilterUI);
 
     const categoryFiltersUI = new Map<string, UI.Toolbar.ToolbarCheckbox>();
-    const categories = Utils.EntryStyles.getCategoryStyles();
+    const categories = Trace.Styles.getCategoryStyles();
     for (const categoryName in categories) {
-      const category = categories[categoryName as Utils.EntryStyles.EventCategory];
+      const category = categories[categoryName as Trace.Styles.EventCategory];
       if (!category.visible) {
         continue;
       }
       const checkbox = new UI.Toolbar.ToolbarCheckbox(
-          category.title, undefined,
-          categoriesFilterChanged.bind(this, categoryName as Utils.EntryStyles.EventCategory), categoryName);
+          category.title, undefined, categoriesFilterChanged.bind(this, categoryName as Trace.Styles.EventCategory),
+          categoryName);
       checkbox.setChecked(true);
       categoryFiltersUI.set(category.name, checkbox);
       toolbar.appendToolbarItem(checkbox);
@@ -172,8 +171,8 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       this.notifyFiltersChanged();
     }
 
-    function categoriesFilterChanged(this: Filters, name: Utils.EntryStyles.EventCategory): void {
-      const categories = Utils.EntryStyles.getCategoryStyles();
+    function categoriesFilterChanged(this: Filters, name: Trace.Styles.EventCategory): void {
+      const categories = Trace.Styles.getCategoryStyles();
       const checkBox = categoryFiltersUI.get(name);
       categories[name].hidden = !checkBox?.checked();
       this.notifyFiltersChanged();

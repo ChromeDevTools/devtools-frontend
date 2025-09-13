@@ -1,13 +1,13 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
@@ -51,9 +51,9 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'LayoutShifts';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
+  #parsedTrace: Readonly<Trace.TraceModel.ParsedTrace>;
 
-  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.TraceModel.ParsedTrace) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#parsedTrace = parsedTrace;
   }
@@ -68,7 +68,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
-    if (this.#parsedTrace.LayoutShifts.clusters.length === 0) {
+    if (this.#parsedTrace.data.LayoutShifts.clusters.length === 0) {
       return trackStartLevel;
     }
     this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
@@ -101,10 +101,10 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * layout shifts (the first available level to append more data).
    */
   #appendLayoutShiftsAtLevel(currentLevel: number): number {
-    const allClusters = this.#parsedTrace.LayoutShifts.clusters;
+    const allClusters = this.#parsedTrace.data.LayoutShifts.clusters;
     this.#compatibilityBuilder.appendEventsAtLevel(allClusters, currentLevel, this);
 
-    const allLayoutShifts = this.#parsedTrace.LayoutShifts.clusters.flatMap(cluster => cluster.events);
+    const allLayoutShifts = this.#parsedTrace.data.LayoutShifts.clusters.flatMap(cluster => cluster.events);
     void this.preloadScreenshots(allLayoutShifts);
     return this.#compatibilityBuilder.appendEventsAtLevel(allLayoutShifts, currentLevel, this);
   }
@@ -144,7 +144,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
     if (Trace.Types.Events.isSyntheticLayoutShift(event)) {
       // Screenshots are max 500x500 naturally, but on a laptop in dock-to-right, 500px tall usually doesn't fit.
       // In the future, we may investigate a way to dynamically scale this tooltip content per available space.
-      const maxSize = new UI.Geometry.Size(510, 400);
+      const maxSize = new Geometry.Size(510, 400);
       const vizElem = LayoutShiftsTrackAppender.createShiftViz(event, this.#parsedTrace, maxSize);
       if (vizElem) {
         info.additionalElements.push(vizElem);
@@ -226,10 +226,10 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   }
 
   static createShiftViz(
-      event: Trace.Types.Events.SyntheticLayoutShift, parsedTrace: Trace.Handlers.Types.ParsedTrace,
-      maxSize: UI.Geometry.Size): HTMLElement|undefined {
+      event: Trace.Types.Events.SyntheticLayoutShift, parsedTrace: Trace.TraceModel.ParsedTrace,
+      maxSize: Geometry.Size): HTMLElement|undefined {
     const screenshots = event.parsedData.screenshots;
-    const {viewportRect, devicePixelRatio: dpr} = parsedTrace.Meta;
+    const {viewportRect, devicePixelRatio: dpr} = parsedTrace.data.Meta;
     const vizContainer = document.createElement('div');
     vizContainer.classList.add('layout-shift-viz');
 

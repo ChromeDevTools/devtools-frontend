@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -53,7 +53,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/Reso
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ResourceSourceFrame extends SourceFrameImpl {
-  private readonly resourceInternal: TextUtils.ContentProvider.ContentProvider;
+  readonly #resource: TextUtils.ContentProvider.ContentProvider;
   readonly #givenContentType: string;
 
   constructor(
@@ -66,7 +66,7 @@ export class ResourceSourceFrame extends SourceFrameImpl {
     super(lazyContent, options);
 
     this.#givenContentType = givenContentType;
-    this.resourceInternal = resource;
+    this.#resource = resource;
     if (isStreamingProvider) {
       void resource.requestStreamingContent().then(streamingContent => {
         if (!TextUtils.StreamingContentData.isError(streamingContent)) {
@@ -88,13 +88,13 @@ export class ResourceSourceFrame extends SourceFrameImpl {
   }
 
   get resource(): TextUtils.ContentProvider.ContentProvider {
-    return this.resourceInternal;
+    return this.#resource;
   }
 
   protected override populateTextAreaContextMenu(
       contextMenu: UI.ContextMenu.ContextMenu, lineNumber: number, columnNumber: number): void {
     super.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
-    contextMenu.appendApplicableItems(this.resourceInternal);
+    contextMenu.appendApplicableItems(this.#resource);
   }
 }
 

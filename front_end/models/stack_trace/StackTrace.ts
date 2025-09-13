@@ -1,8 +1,9 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
 
 export interface StackTrace extends Common.EventTarget.EventTarget<EventTypes> {
@@ -24,7 +25,24 @@ export interface Frame {
   readonly name?: string;
   readonly line: number;
   readonly column: number;
+
+  readonly missingDebugInfo?: MissingDebugInfo;
 }
+
+export const enum MissingDebugInfoType {
+  /** No debug information at all for the call frame */
+  NO_INFO = 'NO_INFO',
+
+  /** Some debug information available, but it references files with debug information we were not able to retrieve */
+  PARTIAL_INFO = 'PARTIAL_INFO',
+}
+
+export type MissingDebugInfo = {
+  type: MissingDebugInfoType.NO_INFO,
+}|{
+  type: MissingDebugInfoType.PARTIAL_INFO,
+  missingDebugFiles: SDK.DebuggerModel.MissingDebugFiles[],
+};
 
 export const enum Events {
   UPDATED = 'UPDATED',

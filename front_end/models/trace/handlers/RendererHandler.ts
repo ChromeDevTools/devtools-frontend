@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -58,7 +58,7 @@ const makeRendererThread = (): RendererThread => ({
   entries: [],
   profileCalls: [],
   layoutEvents: [],
-  updateLayoutTreeEvents: [],
+  recalcStyleEvents: [],
 });
 
 const getOrCreateRendererProcess =
@@ -118,10 +118,10 @@ export function handleEvent(event: Types.Events.Event): void {
     thread.layoutEvents.push(event);
   }
 
-  if (Types.Events.isUpdateLayoutTree(event)) {
+  if (Types.Events.isRecalcStyle(event)) {
     const process = getOrCreateRendererProcess(processes, event.pid);
     const thread = getOrCreateRendererThread(process, event.tid);
-    thread.updateLayoutTreeEvents.push(event);
+    thread.recalcStyleEvents.push(event);
   }
 }
 
@@ -423,6 +423,6 @@ export interface RendererThread {
   entries: Types.Events.Event[];
   profileCalls: Types.Events.SyntheticProfileCall[];
   layoutEvents: Types.Events.Layout[];
-  updateLayoutTreeEvents: Types.Events.UpdateLayoutTree[];
+  recalcStyleEvents: Types.Events.RecalcStyle[];
   tree?: Helpers.TreeHelpers.TraceEntryTree;
 }

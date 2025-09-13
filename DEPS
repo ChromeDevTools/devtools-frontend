@@ -1,4 +1,4 @@
-# Copyright 2019 The Chromium Authors. All rights reserved.
+# Copyright 2019 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -12,19 +12,19 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '800bdadb6c11e7152551824e98cfce9ffd85d386',
+  'build_revision': '7133d7642a7f3a61dd3154f8685a6018c1f159a0',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': 'b0b6f725c28dbe2d5d7ca6edc9b81a352965eee9',
+  'buildtools_revision': '958004daacdd90070d44b236a1581c81d71740ca',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '0699a53d841453368d0ad17deb1c7d29b6db09a6',
+  'depot_tools_revision': '3accee0833540add4e5e608d222e01a768d9f94e',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '07272ab9a30fd555890fda0718f4c2c25931653a',
 
   # Keeping track of the last time we rolled the browser protocol files.
-  'chromium_browser_protocol_revision' : '67b3be36a4efb989a69c585f68bee1d86f193768',
+  'chromium_browser_protocol_revision' : 'a0857bc5fc46c520d7fe71beb1b0a0d7b0e60136',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': '37f6e68a107df43b7d7e044fd36a13cbae3413f2',
@@ -49,7 +49,7 @@ vars = {
   # Chrome version used for tests. It should be regularly updated to
   # match the Canary version listed here:
   # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
-  'chrome': '141.0.7377.0',
+  'chrome': '142.0.7409.0',
 
   # 'magic' text to tell depot_tools that git submodules should be accepted but
   # but parity with DEPS file is expected.
@@ -59,7 +59,7 @@ vars = {
   'non_git_source': 'True',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:15568691576f74b11a3c73c85a3c8dd5efb72f05',
+  'siso_version': 'git_revision:02cbec18d7b18a0733fec402f2e90ff071b98f63',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.
@@ -222,10 +222,10 @@ deps = {
     "bucket": "chrome-devtools-ai-evals",
     "objects": [
       {
-        "object_name": "f0e8e7b99dc61f7a943bfdf284552982c63bdf8d6217091f5260bc8ebd84ca9f",
-        "sha256sum": "af579f30f2384089e1bece67db9afb71b902aa6ff99cb9749d4694ce53783670",
-        "size_bytes": 3582,
-        "generation": 1755705853621054
+        "object_name": "8aaaea341cac9e6dad90a0685f4eeae39fabb9f655761eed9c3af16795a40f14",
+        "sha256sum": "c2e5b18a77095451dbaae27cea913aace1fc267e8e9e0f0b4f297a6215eb5299",
+        "size_bytes": 6801,
+        "generation": 1756718606230139
       }
     ]
   },

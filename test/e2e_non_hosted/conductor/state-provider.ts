@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -68,7 +68,7 @@ export class StateProvider {
     }
 
     if (!browser?.connected) {
-      browser = await Launcher.browserSetup(browserSettings);
+      browser = await Launcher.browserSetup(browserSettings, StateProvider.serverPort);
       this.#settingToBrowser.set(browserKey, browser);
     }
     this.#suiteToBrowser.set(suite, browser);

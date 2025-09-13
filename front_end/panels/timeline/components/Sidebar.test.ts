@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -15,25 +15,22 @@ import * as Insights from './insights/insights.js';
 
 describeWithEnvironment('Sidebar', () => {
   async function renderSidebar(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace,
-      metadata: Trace.Types.File.MetaData|null,
-      insights: Trace.Insights.Types.TraceInsightSets|null,
+      parsedTrace: Trace.TraceModel.ParsedTrace,
       ): Promise<Components.Sidebar.SidebarWidget> {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
     const sidebar = new Components.Sidebar.SidebarWidget();
     sidebar.markAsRoot();
-    sidebar.setParsedTrace(parsedTrace, metadata);
-    sidebar.setInsights(insights);
+    sidebar.setParsedTrace(parsedTrace);
     sidebar.show(container);
     await raf();
     return sidebar;
   }
 
   it('renders with two tabs for insights & annotations', async function() {
-    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
-    const sidebar = await renderSidebar(parsedTrace, metadata, insights);
+    const sidebar = await renderSidebar(parsedTrace);
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
     const tabs = Array.from(tabbedPane.querySelectorAll('[role="tab"]'));
@@ -43,9 +40,9 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('selects the insights tab by default', async function() {
-    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
-    const sidebar = await renderSidebar(parsedTrace, metadata, insights);
+    const sidebar = await renderSidebar(parsedTrace);
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
 
@@ -56,12 +53,12 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('collapses the active insight when the sidebar is closed', async function() {
-    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    assert.isOk(insights);
-    const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    assert.isOk(parsedTrace.insights);
+    const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
     assert.isOk(firstNav.args.data?.navigationId);
-    const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
-    const sidebar = await renderSidebar(parsedTrace, metadata, insights);
+    const insight = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+    const sidebar = await renderSidebar(parsedTrace);
     sidebar.setActiveInsight({model: insight, insightSetKey: firstNav.args.data.navigationId}, {highlight: false});
 
     const deactivateEvent = getEventPromise(sidebar.element, Insights.SidebarInsight.InsightDeactivated.eventName);
@@ -70,12 +67,12 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('restores the active insight when it is opened again', async function() {
-    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    assert.isOk(insights);
-    const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    assert.isOk(parsedTrace.insights);
+    const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
     assert.isOk(firstNav.args.data?.navigationId);
-    const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
-    const sidebar = await renderSidebar(parsedTrace, metadata, insights);
+    const insight = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+    const sidebar = await renderSidebar(parsedTrace);
     sidebar.setActiveInsight({model: insight, insightSetKey: firstNav.args.data.navigationId}, {highlight: false});
 
     const deactivateEvent = getEventPromise(sidebar.element, Insights.SidebarInsight.InsightDeactivated.eventName);
@@ -92,8 +89,8 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('disables the insights tab if there are no insights', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const sidebar = await renderSidebar(parsedTrace, metadata, null);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const sidebar = await renderSidebar({...parsedTrace, insights: null});
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
     const tabs = Array.from(tabbedPane.querySelectorAll('[role="tab"]'));
@@ -108,7 +105,7 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('shows the count for the active annotations', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const events = allThreadEntriesInTrace(parsedTrace);
     const annotation1: Trace.Types.File.Annotation = {
       type: 'ENTRY_LABEL',
@@ -122,7 +119,7 @@ describeWithEnvironment('Sidebar', () => {
       label: 'Entry Label 2',
     };
 
-    const sidebar = await renderSidebar(parsedTrace, metadata, null);
+    const sidebar = await renderSidebar(parsedTrace);
     sidebar.setAnnotations([annotation1, annotation2], new Map());
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
@@ -133,7 +130,7 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('de-duplicates annotations that are pending to not show an incorrect count', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const events = allThreadEntriesInTrace(parsedTrace);
 
     // Create Empty Entry Label Annotation (considered not started)
@@ -150,7 +147,7 @@ describeWithEnvironment('Sidebar', () => {
       state: Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED,
     };
 
-    const sidebar = await renderSidebar(parsedTrace, metadata, null);
+    const sidebar = await renderSidebar(parsedTrace);
     sidebar.setAnnotations([entryLabelAnnotation, entriesLink], new Map());
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
@@ -161,14 +158,14 @@ describeWithEnvironment('Sidebar', () => {
   });
 
   it('removes the annotations badge when the user deletes the final annotation', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const entryLabelAnnotation: Trace.Types.File.Annotation = {
       type: 'ENTRY_LABEL',
       entry: allThreadEntriesInTrace(parsedTrace)[0],  // random event, doesn't matter
       label: 'hello world',
     };
 
-    const sidebar = await renderSidebar(parsedTrace, metadata, null);
+    const sidebar = await renderSidebar(parsedTrace);
     sidebar.setAnnotations([entryLabelAnnotation], new Map());
     await RenderCoordinator.done();
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;

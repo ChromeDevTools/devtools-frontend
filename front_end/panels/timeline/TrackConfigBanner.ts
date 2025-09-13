@@ -35,12 +35,12 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * is no entry for a trace in this map it is assumed to be a new trace and the
  * banner will be shown if the user has any hidden track config.
  */
-const hiddenTracksInfoBarPerTrace = new WeakMap<Trace.Handlers.Types.ParsedTrace, UI.Infobar.Infobar|'DISMISSED'>();
+const hiddenTracksInfoBarByParsedTrace = new WeakMap<Trace.TraceModel.ParsedTrace, UI.Infobar.Infobar|'DISMISSED'>();
 
 /**
  * Creates an overlay for the timeline that will show a banner informing the user that at least one track is hidden.
  *
- * @param trace The trace parsed data.
+ * @param parsedTrace The trace parsed data.
  * @param callbacks An object containing the callback functions to be executed
  * when the user interacts with the banner.
  *   - `onShowAllTracks`: called when the user clicks the "Unhide all" button.
@@ -49,12 +49,12 @@ const hiddenTracksInfoBarPerTrace = new WeakMap<Trace.Handlers.Types.ParsedTrace
  * @returns A `Trace.Types.Overlays.Overlay` object to be rendered, or `null` if
  * no banner should be shown (because the user has already seen the banner)
  */
-export function createHiddenTracksOverlay(trace: Trace.Handlers.Types.ParsedTrace, callbacks: {
+export function createHiddenTracksOverlay(parsedTrace: Trace.TraceModel.ParsedTrace, callbacks: {
   onShowAllTracks: () => void,
   onShowTrackConfigurationMode: () => void,
   onClose: () => void,
 }): Trace.Types.Overlays.BottomInfoBar|null {
-  const status = hiddenTracksInfoBarPerTrace.get(trace);
+  const status = hiddenTracksInfoBarByParsedTrace.get(parsedTrace);
   if (status === 'DISMISSED') {
     // The user has already seen the banner + dismissed it for this trace, so
     // we don't need to do anything.
@@ -89,9 +89,9 @@ export function createHiddenTracksOverlay(trace: Trace.Handlers.Types.ParsedTrac
   );
   infobarForTrace.setCloseCallback(() => {
     callbacks.onClose();
-    hiddenTracksInfoBarPerTrace.set(trace, 'DISMISSED');
+    hiddenTracksInfoBarByParsedTrace.set(parsedTrace, 'DISMISSED');
   });
 
-  hiddenTracksInfoBarPerTrace.set(trace, infobarForTrace);
+  hiddenTracksInfoBarByParsedTrace.set(parsedTrace, infobarForTrace);
   return {type: 'BOTTOM_INFO_BAR', infobar: infobarForTrace};
 }

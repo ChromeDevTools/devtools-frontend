@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -38,14 +38,14 @@ import type * as Protocol from '../../generated/protocol.js';
 
 export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.EventTypes> {
   private readonly model: DOMStorageModel;
-  private readonly storageKeyInternal: string;
-  private readonly isLocalStorageInternal: boolean;
+  readonly #storageKey: string;
+  readonly #isLocalStorage: boolean;
 
   constructor(model: DOMStorageModel, storageKey: string, isLocalStorage: boolean) {
     super();
     this.model = model;
-    this.storageKeyInternal = storageKey;
-    this.isLocalStorageInternal = isLocalStorage;
+    this.#storageKey = storageKey;
+    this.#isLocalStorage = isLocalStorage;
   }
 
   static storageId(storageKey: string, isLocalStorage: boolean): Protocol.DOMStorage.StorageId {
@@ -53,15 +53,15 @@ export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.Ev
   }
 
   get id(): Protocol.DOMStorage.StorageId {
-    return DOMStorage.storageId(this.storageKeyInternal, this.isLocalStorageInternal);
+    return DOMStorage.storageId(this.#storageKey, this.#isLocalStorage);
   }
 
   get storageKey(): string|null {
-    return this.storageKeyInternal;
+    return this.#storageKey;
   }
 
   get isLocalStorage(): boolean {
-    return this.isLocalStorageInternal;
+    return this.#isLocalStorage;
   }
 
   getItems(): Promise<Protocol.DOMStorage.Item[]|null> {
@@ -113,16 +113,16 @@ export namespace DOMStorage {
 }
 
 export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
-  private readonly storageKeyManagerInternal: SDK.StorageKeyManager.StorageKeyManager|null;
-  private storagesInternal: Record<string, DOMStorage>;
+  readonly #storageKeyManager: SDK.StorageKeyManager.StorageKeyManager|null;
+  #storages: Record<string, DOMStorage>;
   readonly agent: ProtocolProxyApi.DOMStorageApi;
   private enabled?: boolean;
 
   constructor(target: SDK.Target.Target) {
     super(target);
 
-    this.storageKeyManagerInternal = target.model(SDK.StorageKeyManager.StorageKeyManager);
-    this.storagesInternal = {};
+    this.#storageKeyManager = target.model(SDK.StorageKeyManager.StorageKeyManager);
+    this.#storages = {};
     this.agent = target.domstorageAgent();
   }
 
@@ -132,13 +132,13 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
 
     this.target().registerDOMStorageDispatcher(new DOMStorageDispatcher(this));
-    if (this.storageKeyManagerInternal) {
-      this.storageKeyManagerInternal.addEventListener(
+    if (this.#storageKeyManager) {
+      this.#storageKeyManager.addEventListener(
           SDK.StorageKeyManager.Events.STORAGE_KEY_ADDED, this.storageKeyAdded, this);
-      this.storageKeyManagerInternal.addEventListener(
+      this.#storageKeyManager.addEventListener(
           SDK.StorageKeyManager.Events.STORAGE_KEY_REMOVED, this.storageKeyRemoved, this);
 
-      for (const storageKey of this.storageKeyManagerInternal.storageKeys()) {
+      for (const storageKey of this.#storageKeyManager.storageKeys()) {
         this.addStorageKey(storageKey);
       }
     }
@@ -153,7 +153,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
     for (const isLocal of [true, false]) {
       const key = this.storageKey(storageKey, isLocal);
-      const storage = this.storagesInternal[key];
+      const storage = this.#storages[key];
       if (!storage) {
         return;
       }
@@ -170,9 +170,9 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private addStorageKey(storageKey: string): void {
     for (const isLocal of [true, false]) {
       const key = this.storageKey(storageKey, isLocal);
-      console.assert(!this.storagesInternal[key]);
+      console.assert(!this.#storages[key]);
       const storage = new DOMStorage(this, storageKey, isLocal);
-      this.storagesInternal[key] = storage;
+      this.#storages[key] = storage;
       this.dispatchEventToListeners(Events.DOM_STORAGE_ADDED, storage);
     }
   }
@@ -184,11 +184,11 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private removeStorageKey(storageKey: string): void {
     for (const isLocal of [true, false]) {
       const key = this.storageKey(storageKey, isLocal);
-      const storage = this.storagesInternal[key];
+      const storage = this.#storages[key];
       if (!storage) {
         continue;
       }
-      delete this.storagesInternal[key];
+      delete this.#storages[key];
       this.dispatchEventToListeners(Events.DOM_STORAGE_REMOVED, storage);
     }
   }
@@ -238,13 +238,13 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
   storageForId(storageId: Protocol.DOMStorage.StorageId): DOMStorage {
     console.assert(Boolean(storageId.storageKey));
-    return this.storagesInternal[this.storageKey(storageId.storageKey || '', storageId.isLocalStorage)];
+    return this.#storages[this.storageKey(storageId.storageKey || '', storageId.isLocalStorage)];
   }
 
   storages(): DOMStorage[] {
     const result = [];
-    for (const id in this.storagesInternal) {
-      result.push(this.storagesInternal[id]);
+    for (const id in this.#storages) {
+      result.push(this.#storages[id]);
     }
     return result;
   }

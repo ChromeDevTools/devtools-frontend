@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import type * as Trace from '../../models/trace/trace.js';
@@ -39,6 +39,6 @@ export function buildPersistedConfig(groups: readonly PerfUI.FlameChart.Group[],
  * trace with the exact same start time is very unlikely.
  * It's not impossible, but unlikely enough that we think the min trace bounds time is a good enough value to use as a uuid.
  */
-export function keyForTraceConfig(trace: Trace.Handlers.Types.ParsedTrace): Trace.Types.Timing.Micro {
+export function keyForTraceConfig(trace: Trace.Handlers.Types.HandlerData): Trace.Types.Timing.Micro {
   return trace.Meta.traceBounds.min;
 }

@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -354,7 +355,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       currentProject?: Workspace.Workspace.Project): void {
     const dialog = new UI.Dialog.Dialog('select-workspace');
     dialog.setAriaLabel(UIStringsNotTranslate.selectFolderAccessibleLabel);
-    dialog.setMaxContentSize(new UI.Geometry.Size(384, 340));
+    dialog.setMaxContentSize(new Geometry.Size(384, 340));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog.setDimmed(true);
 

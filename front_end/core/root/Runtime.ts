@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -306,6 +306,10 @@ export class Experiment {
 // This must be constructed after the query parameters have been parsed.
 export const experiments = new ExperimentsSupport();
 
+/**
+ * @deprecated Experiments should not be used anymore, instead use base::Feature.
+ * See docs/contributing/settings-experiments-features.md
+ */
 export const enum ExperimentName {
   CAPTURE_NODE_CREATION_STACKS = 'capture-node-creation-stacks',
   CSS_OVERVIEW = 'css-overview',
@@ -317,15 +321,12 @@ export const enum ExperimentName {
   INSTRUMENTATION_BREAKPOINTS = 'instrumentation-breakpoints',
   AUTHORED_DEPLOYED_GROUPING = 'authored-deployed-grouping',
   JUST_MY_CODE = 'just-my-code',
-  HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlight-errors-elements-panel',
   USE_SOURCE_MAP_SCOPES = 'use-source-map-scopes',
   TIMELINE_SHOW_POST_MESSAGE_EVENTS = 'timeline-show-postmessage-events',
   TIMELINE_DEBUG_MODE = 'timeline-debug-mode',
   TIMELINE_ENHANCED_TRACES = 'timeline-enhanced-traces',
   TIMELINE_COMPILED_SOURCES = 'timeline-compiled-sources',
-  TIMELINE_ASK_AI_FULL_BUTTON = 'timeline-ask-ai-full-button',
   TIMELINE_SAVE_AS_GZ = 'timeline-save-as-gz',
-  VERTICAL_DRAWER = 'vertical-drawer',
   // Adding or removing an entry from this enum?
   // You will need to update:
   // 1. REGISTERED_EXPERIMENTS in EnvironmentHelpers.ts (to create this experiment in the test env)
@@ -474,6 +475,19 @@ interface GlobalAiButton {
   promotionEnabled: boolean;
 }
 
+interface GdpProfiles {
+  enabled: boolean;
+  starterBadgeEnabled: boolean;
+}
+
+interface LiveEdit {
+  enabled: boolean;
+}
+
+interface DevToolsFlexibleLayout {
+  verticalDrawerEnabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -515,6 +529,9 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAiSubmenuPrompts: AiSubmenuPrompts,
   devToolsIpProtectionInDevTools: IpProtectionInDevTools,
   devToolsGlobalAiButton: GlobalAiButton,
+  devToolsGdpProfiles: GdpProfiles,
+  devToolsLiveEdit: LiveEdit,
+  devToolsFlexibleLayout: DevToolsFlexibleLayout,
 }>;
 
 /**

@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -29,16 +29,16 @@ export class AnimationsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'Animations';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
+  #parsedTrace: Readonly<Trace.TraceModel.ParsedTrace>;
   #eventAppendedCallback = this.#eventAppendedCallbackFunction.bind(this);
 
-  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.TraceModel.ParsedTrace) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#parsedTrace = parsedTrace;
   }
 
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean|undefined): number {
-    const animations = this.#parsedTrace.Animations.animations;
+    const animations = this.#parsedTrace.data.Animations.animations;
     if (animations.length === 0) {
       return trackStartLevel;
     }

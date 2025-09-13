@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -599,7 +599,7 @@ export class PatchWidget extends UI.Widget.Widget {
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
       },
       ariaLabel: lockedString(UIStringsNotTranslate.freDisclaimerHeader),
-      learnMoreButtonTitle: lockedString(UIStringsNotTranslate.learnMore),
+      learnMoreButtonText: lockedString(UIStringsNotTranslate.learnMore),
     });
 
     if (result) {

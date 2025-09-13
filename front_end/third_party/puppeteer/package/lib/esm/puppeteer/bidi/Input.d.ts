@@ -3,7 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import * as Bidi from 'webdriver-bidi-protocol';
 import { Keyboard, Mouse, Touchscreen, type TouchHandle, type KeyboardTypeOptions, type KeyDownOptions, type KeyPressOptions, type MouseClickOptions, type MouseMoveOptions, type MouseOptions, type MouseWheelOptions } from '../api/Input.js';
 import type { KeyInput } from '../common/USKeyboardLayout.js';
 import type { BidiPage } from './Page.js';

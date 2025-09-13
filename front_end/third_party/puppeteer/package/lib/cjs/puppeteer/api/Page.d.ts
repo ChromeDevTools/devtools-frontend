@@ -781,9 +781,10 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     abstract setDragInterception(enabled: boolean): Promise<void>;
     /**
-     * Sets the network connection to offline.
+     * Emulates the offline mode.
      *
-     * It does not change the parameters used in {@link Page.emulateNetworkConditions}
+     * It does not change the download/upload/latency parameters set by
+     * {@link Page.emulateNetworkConditions}
      *
      * @param enabled - When `true`, enables offline mode for the page.
      */
@@ -1181,7 +1182,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     abstract cookies(...urls: string[]): Promise<Cookie[]>;
     /**
      * @deprecated Page-level cookie API is deprecated. Use
-     * {@link Browser.deleteCookie} or {@link BrowserContext.deleteCookie}
+     * {@link Browser.deleteCookie}, {@link BrowserContext.deleteCookie},
+     * {@link Browser.deleteMatchingCookies} or {@link BrowserContext.deleteMatchingCookies}
      * instead.
      */
     abstract deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;
@@ -1527,7 +1529,9 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @param options - Navigation parameters
      * @returns Promise which resolves to the main resource response. In case of
      * multiple redirects, the navigation will resolve with the response of the
-     * last redirect. If can not go back, resolves to `null`.
+     * last redirect.
+     * If the navigation is same page, returns null.
+     * If no history entry is found throws.
      */
     abstract goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;
     /**
@@ -1535,7 +1539,9 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @param options - Navigation Parameter
      * @returns Promise which resolves to the main resource response. In case of
      * multiple redirects, the navigation will resolve with the response of the
-     * last redirect. If can not go forward, resolves to `null`.
+     * last redirect.
+     * If the navigation is same page, returns null.
+     * If no history entry is found throws.
      */
     abstract goForward(options?: WaitForOptions): Promise<HTTPResponse | null>;
     /**
@@ -2343,6 +2349,17 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      */
     abstract waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
+    /**
+     * Resizes the browser window the page is in so that the content area
+     * (excluding browser UI) is according to the specified widht and height.
+     *
+     * @experimental
+     * @internal
+     */
+    abstract resize(params: {
+        contentWidth: number;
+        contentHeight: number;
+    }): Promise<void>;
     /** @internal */
     [disposeSymbol](): void;
     /** @internal */

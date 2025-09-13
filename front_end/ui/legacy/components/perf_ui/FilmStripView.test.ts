@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -29,8 +29,8 @@ describeWithEnvironment('FilmStripView', function() {
   }
 
   it('generates frames and timestamps', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const filmStrip = await renderView(Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace));
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const filmStrip = await renderView(Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data));
     const renderedFrames = Array.from(filmStrip.contentElement.querySelectorAll<HTMLElement>('button.frame'));
     assert.lengthOf(renderedFrames, 5);
     const expectedTimeLabelsForFrames = [
@@ -44,8 +44,8 @@ describeWithEnvironment('FilmStripView', function() {
     // data. And that the time label is as expected.
     renderedFrames.forEach((frame, index) => {
       const img = querySelectorErrorOnMissing<HTMLImageElement>(frame, 'img');
-      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
-      assert.isTrue(img.src.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[index].args.dataUri));
+      assert.isOk(parsedTrace.data.Screenshots.legacySyntheticScreenshots);
+      assert.isTrue(img.src.includes(parsedTrace.data.Screenshots.legacySyntheticScreenshots[index].args.dataUri));
 
       const timeElement = querySelectorErrorOnMissing<HTMLDivElement>(frame, '.time');
       // Remove whitespace to avoid having to compare with &nbsp; in the
@@ -87,19 +87,19 @@ describeWithEnvironment('FilmStripView', function() {
     }
 
     it('renders and shows the provided frame by default', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
       const {dialog, shadowRoot} = await renderDialogWithTrace(filmStrip, 0);
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isOk(parsedTrace.data.Screenshots.legacySyntheticScreenshots);
       assert.isTrue(
-          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
+          renderedImage?.currentSrc.includes(parsedTrace.data.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
       dialog.hide();
     });
 
     it('does not let the user navigate back if they are at the first frame already', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
       const {dialog, shadowRoot} = await renderDialogWithTrace(filmStrip, 0);
       const previousBtn = shadowRoot.querySelector('devtools-button');
       assert.isTrue(previousBtn?.textContent === '◀' || previousBtn?.textContent === '&#9664;');
@@ -109,15 +109,15 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(previousBtn);
       await raf();
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isOk(parsedTrace.data.Screenshots.legacySyntheticScreenshots);
       assert.isTrue(
-          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
+          renderedImage?.currentSrc.includes(parsedTrace.data.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
       dialog.hide();
     });
 
     it('lets the user navigate back to the previous frame with the mouse', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
       const {dialog, shadowRoot} = await renderDialogWithTrace(filmStrip, 1);
       const previousBtn = shadowRoot.querySelector('devtools-button');
       assert.isTrue(previousBtn?.textContent === '◀' || previousBtn?.textContent === '&#9664;');
@@ -127,15 +127,15 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(previousBtn);
       await raf();
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isOk(parsedTrace.data.Screenshots.legacySyntheticScreenshots);
       assert.isTrue(
-          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
+          renderedImage?.currentSrc.includes(parsedTrace.data.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
       dialog.hide();
     });
 
     it('lets the user navigate back to the previous frame with the keyboard', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
       const {dialog, shadowRoot} = await renderDialogWithTrace(filmStrip, 1);
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
       if (!renderedImage) {
@@ -146,15 +146,15 @@ describeWithEnvironment('FilmStripView', function() {
         bubbles: true,
       });
       await raf();
-      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isOk(parsedTrace.data.Screenshots.legacySyntheticScreenshots);
       assert.isTrue(
-          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
+          renderedImage?.currentSrc.includes(parsedTrace.data.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
       dialog.hide();
     });
 
     it('lets the user navigate forwards to the next frame with the mouse', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
       const {dialog, shadowRoot} = await renderDialogWithTrace(filmStrip, 0);
 
       const nextBtn = shadowRoot.querySelectorAll('devtools-button')[1];
@@ -165,22 +165,22 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(nextBtn);
       await raf();
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isOk(parsedTrace.data.Screenshots.legacySyntheticScreenshots);
       assert.isTrue(
-          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[1].args.dataUri));
+          renderedImage?.currentSrc.includes(parsedTrace.data.Screenshots.legacySyntheticScreenshots[1].args.dataUri));
       dialog.hide();
     });
 
     it('does not let the user go beyond the last image', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
       const numberOfFrames = filmStrip.frames.length;
       const {dialog, shadowRoot} = await renderDialogWithTrace(filmStrip, numberOfFrames - 1);
 
       let renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isOk(parsedTrace.data.Screenshots.legacySyntheticScreenshots);
       assert.isTrue(renderedImage?.currentSrc.includes(
-          parsedTrace.Screenshots.legacySyntheticScreenshots[numberOfFrames - 1].args.dataUri));
+          parsedTrace.data.Screenshots.legacySyntheticScreenshots[numberOfFrames - 1].args.dataUri));
 
       const nextBtn = shadowRoot.querySelectorAll('devtools-button')[1];
       assert.isTrue(nextBtn.textContent === '▶' || nextBtn.textContent === '&#9654;');
@@ -190,15 +190,15 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(nextBtn);
       await raf();
       renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isOk(parsedTrace.data.Screenshots.legacySyntheticScreenshots);
       assert.isTrue(renderedImage?.currentSrc.includes(
-          parsedTrace.Screenshots.legacySyntheticScreenshots[numberOfFrames - 1].args.dataUri));
+          parsedTrace.data.Screenshots.legacySyntheticScreenshots[numberOfFrames - 1].args.dataUri));
       dialog.hide();
     });
 
     it('lets the user navigate forwards to the next frame with the keyboard', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
       const {dialog, shadowRoot} = await renderDialogWithTrace(filmStrip, 0);
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
       if (!renderedImage) {
@@ -209,9 +209,9 @@ describeWithEnvironment('FilmStripView', function() {
         bubbles: true,
       });
       await raf();
-      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isOk(parsedTrace.data.Screenshots.legacySyntheticScreenshots);
       assert.isTrue(
-          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[1].args.dataUri));
+          renderedImage?.currentSrc.includes(parsedTrace.data.Screenshots.legacySyntheticScreenshots[1].args.dataUri));
       dialog.hide();
     });
   });

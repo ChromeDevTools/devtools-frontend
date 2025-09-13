@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -21,10 +21,10 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('LCP breakdown', () => {
     it('serializes the correct details', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       assert.isOk(insight.lcpRequest);
@@ -32,10 +32,10 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
     });
 
     it('formats correctly when the LCP is text based and has no load delay or time phases', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
 
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
@@ -44,10 +44,10 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
   });
 
   it('formats correctly when the LCP image has nodeName', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'dpr.json.gz');
-    assert.isOk(insights);
-    const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
+    const parsedTrace = await TraceLoader.traceEngine(this, 'dpr.json.gz');
+    assert.isOk(parsedTrace.insights);
+    const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+    const insight = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
 
     const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
     const output = formatter.formatInsight();
@@ -56,20 +56,20 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('Render blocking requests', () => {
     it('tells the LLM if there are no render blocking requests', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('RenderBlocking', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('RenderBlocking', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
 
     it('serializes the correct details', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'render-blocking-requests.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('RenderBlocking', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'render-blocking-requests.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('RenderBlocking', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
@@ -78,10 +78,10 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('LCP Request discovery', () => {
     it('serializes the correct details', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('LCPDiscovery', parsedTrace.insights, firstNav);
 
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
@@ -93,10 +93,10 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('Document request latency', () => {
     it('serializes the correct details', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('DocumentLatency', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('DocumentLatency', parsedTrace.insights, firstNav);
 
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
@@ -110,10 +110,10 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('CLS', () => {
     it('serializes the correct details', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'layout-shifts-root-causes.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('CLSCulprits', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'layout-shifts-root-causes.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('CLSCulprits', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
@@ -122,9 +122,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('INP breakdown', () => {
     it('serializes the correct details', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-      assert.isOk(insights);
-      const insight = getInsightOrError('INPBreakdown', insights);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const insight = getInsightOrError('INPBreakdown', parsedTrace.insights);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
@@ -133,20 +133,20 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('ModernHTTP', () => {
     it('serializes the correct details when no requests are using legacy http', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('ModernHTTP', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ModernHTTP', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
 
     it('serializes the correct details when requests are using legacy http', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'http1.1.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('ModernHTTP', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'http1.1.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ModernHTTP', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
@@ -155,45 +155,45 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('Formatting TraceEvents', () => {
     it('formats network requests that have redirects', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
       const requestUrl = 'http://localhost:3000/redirect3';
-      const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
+      const request = parsedTrace.data.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
       assert.isOk(request);
       const output = TraceEventFormatter.networkRequests([request], parsedTrace, {verbose: true});
       assert.include(output, `Redirects:
 #### Redirect 1: http://localhost:3000/
-- Start time: 3.04 ms
-- Duration: 512.02 ms
+- Start time: 3\xA0ms
+- Duration: 512\xA0ms
 #### Redirect 2: http://localhost:3000/redirect1
-- Start time: 515.06 ms
-- Duration: 505.67 ms
+- Start time: 515.1\xA0ms
+- Duration: 505.7\xA0ms
 #### Redirect 3: http://localhost:3000/redirect2
-- Start time: 1,020.73 ms
-- Duration: 507.09 ms
+- Start time: 1,020.7\xA0ms
+- Duration: 507.1\xA0ms
 `);
     });
 
     it('formats network requests in verbose mode', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
-      const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
+      const request = parsedTrace.data.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
       assert.isOk(request);
       const output = TraceEventFormatter.networkRequests([request], parsedTrace, {verbose: true});
       snapshotTester.assert(this, output);
     });
 
     it('defaults to verbose mode when 1 request and verbose option is not defined', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
-      const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
+      const request = parsedTrace.data.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
       assert.isOk(request);
       const output = TraceEventFormatter.networkRequests([request], parsedTrace);
       snapshotTester.assert(this, output);
     });
 
     it('getNetworkRequestsNewFormat correctly formats network requests for bad request latency trace', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
-      const requests = parsedTrace.NetworkRequests.byTime;
+      const parsedTrace = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
+      const requests = parsedTrace.data.NetworkRequests.byTime;
       // Duplicate request so that the compressed format is used
       const output = TraceEventFormatter.networkRequests([requests[0], requests[0]], parsedTrace);
       const urlMapIndex = output.indexOf('allUrls = ');
@@ -210,13 +210,13 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const fields = [...parts.slice(0, 18), parts.slice(18).join(';')];
 
       assert.strictEqual(fields[0], '0', 'urlIndex');
-      assert.strictEqual(fields[1], '3.04 ms', 'queuedTime');
-      assert.strictEqual(fields[2], '1,529.47 ms', 'requestSentTime');
-      assert.strictEqual(fields[3], '3,532.63 ms', 'downloadCompleteTime');
-      assert.strictEqual(fields[4], '3,537.75 ms', 'processingCompleteTime');
-      assert.strictEqual(fields[5], '3,534.71 ms', 'totalDuration');
-      assert.strictEqual(fields[6], '0.13 ms', 'downloadDuration');
-      assert.strictEqual(fields[7], '5.12 ms', 'mainThreadProcessingDuration');
+      assert.strictEqual(fields[1], '3\xA0ms', 'queuedTime');
+      assert.strictEqual(fields[2], '1,529.5\xA0ms', 'requestSentTime');
+      assert.strictEqual(fields[3], '3,532.6\xA0ms', 'downloadCompleteTime');
+      assert.strictEqual(fields[4], '3,537.8\xA0ms', 'processingCompleteTime');
+      assert.strictEqual(fields[5], '3,534.7\xA0ms', 'totalDuration');
+      assert.strictEqual(fields[6], '0.1\xA0ms', 'downloadDuration');
+      assert.strictEqual(fields[7], '5.1\xA0ms', 'mainThreadProcessingDuration');
       assert.strictEqual(fields[8], '200', 'statusCode');
       assert.strictEqual(fields[9], 'text/html', 'mimeType');
       assert.strictEqual(fields[10], 'VeryHigh', 'priority');
@@ -227,16 +227,16 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.strictEqual(fields[15], 'f', 'fromServiceWorker');
       assert.strictEqual(fields[16], '', 'initiators');
       assert.strictEqual(
-          fields[17], '[[1|3.04 ms|512.02 ms],[2|515.06 ms|505.67 ms],[3|1,020.73 ms|507.09 ms]]', 'redirects');
+          fields[17], '[[1|3\xA0ms|512\xA0ms],[2|515.1\xA0ms|505.7\xA0ms],[3|1,020.7\xA0ms|507.1\xA0ms]]', 'redirects');
       assert.strictEqual(
           fields[18],
-          '[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]\n0;3.04 ms;1,529.47 ms;3,532.63 ms;3,537.75 ms;3,534.71 ms;0.13 ms;5.12 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;f;;[[1|3.04 ms|512.02 ms],[2|515.06 ms|505.67 ms],[3|1,020.73 ms|507.09 ms]];[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]',
+          '[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]\n0;3\xA0ms;1,529.5\xA0ms;3,532.6\xA0ms;3,537.8\xA0ms;3,534.7\xA0ms;0.1\xA0ms;5.1\xA0ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;f;;[[1|3\xA0ms|512\xA0ms],[2|515.1\xA0ms|505.7\xA0ms],[3|1,020.7\xA0ms|507.1\xA0ms]];[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]',
           'responseHeaders');
     });
 
     it('getNetworkRequestsNewFormat correctly formats network requests for lcp-images trace', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
-      const request = parsedTrace.NetworkRequests.byTime;
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      const request = parsedTrace.data.NetworkRequests.byTime;
       assert.isOk(request);
       const output = TraceEventFormatter.networkRequests(request, parsedTrace);
       const urlMapIndex = output.indexOf('allUrls = ');
@@ -253,13 +253,13 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const fields = [...parts.slice(0, 18), parts.slice(18).join(';')];
 
       assert.strictEqual(fields[0], '1', 'urlIndex');
-      assert.strictEqual(fields[1], '37.62 ms', 'queuedTime');
-      assert.strictEqual(fields[2], '41.71 ms', 'requestSentTime');
-      assert.strictEqual(fields[3], '48.04 ms', 'downloadCompleteTime');
-      assert.strictEqual(fields[4], '51.55 ms', 'processingCompleteTime');
-      assert.strictEqual(fields[5], '13.93 ms', 'totalDuration');
-      assert.strictEqual(fields[6], '4.79 ms', 'downloadDuration');
-      assert.strictEqual(fields[7], '3.51 ms', 'mainThreadProcessingDuration');
+      assert.strictEqual(fields[1], '37.6\xA0ms', 'queuedTime');
+      assert.strictEqual(fields[2], '41.7\xA0ms', 'requestSentTime');
+      assert.strictEqual(fields[3], '48\xA0ms', 'downloadCompleteTime');
+      assert.strictEqual(fields[4], '51.5\xA0ms', 'processingCompleteTime');
+      assert.strictEqual(fields[5], '13.9\xA0ms', 'totalDuration');
+      assert.strictEqual(fields[6], '4.8\xA0ms', 'downloadDuration');
+      assert.strictEqual(fields[7], '3.5\xA0ms', 'mainThreadProcessingDuration');
       assert.strictEqual(fields[8], '200', 'statusCode');
       assert.strictEqual(fields[9], 'text/css', 'mimeType');
       assert.strictEqual(fields[10], 'VeryHigh', 'priority');
@@ -278,8 +278,8 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
     it('getNetworkRequestsNewFormat correctly formats an initiator chain for network-requests-initiators trace',
        async function() {
-         const {parsedTrace} = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
-         const request = parsedTrace.NetworkRequests.byTime;
+         const parsedTrace = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
+         const request = parsedTrace.data.NetworkRequests.byTime;
          assert.isOk(request);
          const output = TraceEventFormatter.networkRequests(request, parsedTrace);
          const urlMapIndex = output.indexOf('allUrls = ');
@@ -299,22 +299,44 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
        });
   });
 
+  describe('DomSize', () => {
+    it('serializes correctly when there are no results', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('DOMSize', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details showing DOM issues', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'dom-size.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('DOMSize', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
   describe('Duplicated javascript', () => {
     it('serializes the correct details', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'dupe-js.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('DuplicatedJavaScript', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'dupe-js.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('DuplicatedJavaScript', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
 
     it('serializes no details if there is no duplicate javascript', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('DuplicatedJavaScript', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('DuplicatedJavaScript', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
@@ -323,20 +345,42 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('Legacy JavaScript', () => {
     it('serializes the correct details when there is no legacy javascript in modules', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('LegacyJavaScript', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('LegacyJavaScript', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
 
     it('serializes the correct details when modules contain legacy javascript', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'yahoo-news.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('LegacyJavaScript', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'yahoo-news.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('LegacyJavaScript', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
+  describe('FontDisplay', () => {
+    it('serializes correctly when there are no results', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('FontDisplay', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details when problems are found with font display', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'font-display.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('FontDisplay', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
@@ -345,20 +389,42 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('ImageDelivery', () => {
     it('serializes the correct details when there are no optimizable images', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('ImageDelivery', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ImageDelivery', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
 
     it('serializes the correct details when there are images that can be optimized', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'image-delivery.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('ImageDelivery', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'image-delivery.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ImageDelivery', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
+  describe('ForcedReflow', () => {
+    it('serializes correctly when there are no results', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ForcedReflow', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details when there are problems found in the network dependency tree', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'forced-reflow.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ForcedReflow', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
@@ -367,20 +433,108 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   describe('NetworkDependencyTree', () => {
     it('serializes correctly when there are no results', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('NetworkDependencyTree', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);
     });
 
     it('serializes the correct details when there are problems found in the network dependency tree', async function() {
-      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-multiple-frames.json.gz');
-      assert.isOk(insights);
-      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-multiple-frames.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('NetworkDependencyTree', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
+  describe('SlowCssSelector', () => {
+    it('serializes correctly when there are no results', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('SlowCSSSelector', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details when CSS selectors are found', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'selector-stats.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('SlowCSSSelector', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
+  describe('ThirdParties', () => {
+    it('serializes correctly when there are no results', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ThirdParties', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes 3rd party scripts correctly', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('ThirdParties', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
+  describe('Cache', () => {
+    it('serializes correctly when there are no results', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('Cache', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details showing cache problems', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('Cache', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+  });
+
+  describe('Viewport', () => {
+    it('serializes correctly when there are no results', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'image-delivery.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('Viewport', parsedTrace.insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
+      const output = formatter.formatInsight();
+      snapshotTester.assert(this, output);
+    });
+
+    it('serializes the correct details showing viewport problems on mobile', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('Viewport', parsedTrace.insights, firstNav);
       const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       snapshotTester.assert(this, output);

@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2011 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2011 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
@@ -97,12 +71,12 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/ConsoleModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ConsoleModel extends SDKModel<EventTypes> {
-  #messagesInternal: ConsoleMessage[] = [];
+  #messages: ConsoleMessage[] = [];
   readonly #messagesByTimestamp = new Platform.MapUtilities.Multimap<number, ConsoleMessage>();
   readonly #messageByExceptionId = new Map<RuntimeModel, Map<number, ConsoleMessage>>();
-  #warningsInternal = 0;
-  #errorsInternal = 0;
-  #violationsInternal = 0;
+  #warnings = 0;
+  #errors = 0;
+  #violations = 0;
   #pageLoadSequenceNumber = 0;
   readonly #targetListeners = new WeakMap<Target, Common.EventTarget.EventDescriptor[]>();
 
@@ -207,7 +181,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
       this.clearIfNecessary();
     }
 
-    this.#messagesInternal.push(msg);
+    this.#messages.push(msg);
     this.#messagesByTimestamp.set(msg.timestamp, msg);
     const runtimeModel = msg.runtimeModel();
     const exceptionId = msg.getExceptionId();
@@ -241,7 +215,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     if (!exceptionMessage) {
       return;
     }
-    this.#errorsInternal--;
+    this.#errors--;
     exceptionMessage.level = Protocol.Log.LogEntryLevel.Verbose;
     this.dispatchEventToListeners(Events.MessageUpdated, exceptionMessage);
   }
@@ -361,21 +335,21 @@ export class ConsoleModel extends SDKModel<EventTypes> {
 
   private incrementErrorWarningCount(msg: ConsoleMessage): void {
     if (msg.source === Protocol.Log.LogEntrySource.Violation) {
-      this.#violationsInternal++;
+      this.#violations++;
       return;
     }
     switch (msg.level) {
       case Protocol.Log.LogEntryLevel.Warning:
-        this.#warningsInternal++;
+        this.#warnings++;
         break;
       case Protocol.Log.LogEntryLevel.Error:
-        this.#errorsInternal++;
+        this.#errors++;
         break;
     }
   }
 
   messages(): ConsoleMessage[] {
-    return this.#messagesInternal;
+    return this.#messages;
   }
 
   // messages[] are not ordered by timestamp.
@@ -403,17 +377,17 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 
   private clear(): void {
-    this.#messagesInternal = [];
+    this.#messages = [];
     this.#messagesByTimestamp.clear();
     this.#messageByExceptionId.clear();
-    this.#errorsInternal = 0;
-    this.#warningsInternal = 0;
-    this.#violationsInternal = 0;
+    this.#errors = 0;
+    this.#warnings = 0;
+    this.#violations = 0;
     this.dispatchEventToListeners(Events.ConsoleCleared);
   }
 
   errors(): number {
-    return this.#errorsInternal;
+    return this.#errors;
   }
 
   static allErrors(): number {
@@ -425,7 +399,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 
   warnings(): number {
-    return this.#warningsInternal;
+    return this.#warnings;
   }
 
   static allWarnings(): number {
@@ -437,7 +411,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 
   violations(): number {
-    return this.#violationsInternal;
+    return this.#violations;
   }
 
   async saveToTempVariable(currentExecutionContext: ExecutionContext|null, remoteObject: RemoteObject|null):
@@ -575,7 +549,7 @@ export interface ConsoleMessageDetails {
 }
 
 export class ConsoleMessage {
-  readonly #runtimeModelInternal: RuntimeModel|null;
+  readonly #runtimeModel: RuntimeModel|null;
   source: MessageSource;
   level: Protocol.Log.LogEntryLevel|null;
   messageText: string;
@@ -610,7 +584,7 @@ export class ConsoleMessage {
   constructor(
       runtimeModel: RuntimeModel|null, source: MessageSource, level: Protocol.Log.LogEntryLevel|null,
       messageText: string, details?: ConsoleMessageDetails) {
-    this.#runtimeModelInternal = runtimeModel;
+    this.#runtimeModel = runtimeModel;
     this.source = source;
     this.level = (level);
     this.messageText = messageText;
@@ -628,11 +602,11 @@ export class ConsoleMessage {
     this.category = details?.category;
     this.isCookieReportIssue = Boolean(details?.isCookieReportIssue);
 
-    if (!this.#executionContextId && this.#runtimeModelInternal) {
+    if (!this.#executionContextId && this.#runtimeModel) {
       if (this.scriptId) {
-        this.#executionContextId = this.#runtimeModelInternal.executionContextIdForScriptId(this.scriptId);
+        this.#executionContextId = this.#runtimeModel.executionContextIdForScriptId(this.scriptId);
       } else if (this.stackTrace) {
-        this.#executionContextId = this.#runtimeModelInternal.executionContextForStackTrace(this.stackTrace);
+        this.#executionContextId = this.#runtimeModel.executionContextForStackTrace(this.stackTrace);
       }
     }
 
@@ -680,11 +654,11 @@ export class ConsoleMessage {
   }
 
   runtimeModel(): RuntimeModel|null {
-    return this.#runtimeModelInternal;
+    return this.#runtimeModel;
   }
 
   target(): Target|null {
-    return this.#runtimeModelInternal ? this.#runtimeModelInternal.target() : null;
+    return this.#runtimeModel ? this.#runtimeModel.target() : null;
   }
 
   setOriginatingMessage(originatingMessage: ConsoleMessage): void {

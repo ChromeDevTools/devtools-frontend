@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -184,7 +184,7 @@ export class TracingContext {
     this.#hasMoreSubstitutions =
         matchedResult?.hasMatches(
             SDK.CSSPropertyParserMatchers.VariableMatch, SDK.CSSPropertyParserMatchers.BaseVariableMatch,
-            SDK.CSSPropertyParserMatchers.EnvFunctionMatch) ??
+            SDK.CSSPropertyParserMatchers.AttributeMatch, SDK.CSSPropertyParserMatchers.EnvFunctionMatch) ??
         false;
     this.#propertyName = matchedResult?.ast.propertyName ?? null;
     this.#longhandOffset = initialLonghandOffset;

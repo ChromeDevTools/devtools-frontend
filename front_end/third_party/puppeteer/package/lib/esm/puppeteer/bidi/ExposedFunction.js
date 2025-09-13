@@ -55,7 +55,6 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
 import { DisposableStack } from '../util/disposable.js';
@@ -95,7 +94,7 @@ export class ExposableFunction {
             },
         };
         const connectionEmitter = this.#disposables.use(new EventEmitter(connection));
-        connectionEmitter.on(Bidi.ChromiumBidi.Script.EventNames.Message, this.#handleMessage);
+        connectionEmitter.on('script.message', this.#handleMessage);
         const functionDeclaration = stringifyFunction(interpolateFunction((callback) => {
             Object.assign(globalThis, {
                 [PLACEHOLDER('name')]: function (...args) {

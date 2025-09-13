@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -275,8 +275,8 @@ describe('Treemap', () => {
 
   describeWithEnvironment('createTreemapData', () => {
     it('works (source maps)', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'dupe-js.json.gz');
-      const data = Utils.Treemap.createTreemapData(parsedTrace.Scripts, new Map())
+      const parsedTrace = await TraceLoader.traceEngine(this, 'dupe-js.json.gz');
+      const data = Utils.Treemap.createTreemapData(parsedTrace.data.Scripts, new Map())
                        .map(d => [d.name, d.resourceBytes, d.encodedBytes, !!d.children?.length]);
       assert.deepEqual(data, [
         ['extensions::SafeBuiltins', 3204, 3204, false], ['v8/LoadTimes', 198, 198, false],
@@ -293,8 +293,8 @@ describe('Treemap', () => {
     });
 
     it('works (no source maps; inline scripts)', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'yahoo-news.json.gz');
-      const data = Utils.Treemap.createTreemapData(parsedTrace.Scripts, new Map())
+      const parsedTrace = await TraceLoader.traceEngine(this, 'yahoo-news.json.gz');
+      const data = Utils.Treemap.createTreemapData(parsedTrace.data.Scripts, new Map())
                        .filter(d => d.children?.[0].name.includes('inline'))
                        .map(d => [d.name.substring(0, 70), d.resourceBytes, d.encodedBytes, !!d.children?.length]);
       assert.deepEqual(data, [

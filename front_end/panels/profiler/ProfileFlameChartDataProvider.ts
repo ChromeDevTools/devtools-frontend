@@ -33,13 +33,14 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
+import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 let colorGeneratorInstance: Common.Color.Generator|null = null;
 
 export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
-  readonly colorGeneratorInternal: Common.Color.Generator;
+  readonly #colorGenerator: Common.Color.Generator;
   maxStackDepthInternal: number;
   timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null;
   entryNodes: CPUProfile.ProfileTreeModel.ProfileNode[];
@@ -47,7 +48,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   boldFont?: string;
 
   constructor() {
-    this.colorGeneratorInternal = ProfileFlameChartDataProvider.colorGenerator();
+    this.#colorGenerator = ProfileFlameChartDataProvider.colorGenerator();
     this.maxStackDepthInternal = 0;
     this.timelineDataInternal = null;
     this.entryNodes = [];
@@ -120,8 +121,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
     const node = this.entryNodes[entryIndex];
     // For idle and program, we want different 'shades of gray', so we fallback to functionName as scriptId = 0
     // For rest of nodes e.g eval scripts, if url is empty then scriptId will be guaranteed to be non-zero
-    return this.colorGeneratorInternal.colorForID(
-        node.url || (node.scriptId !== '0' ? node.scriptId : node.functionName));
+    return this.#colorGenerator.colorForID(node.url || (node.scriptId !== '0' ? node.scriptId : node.functionName));
   }
 
   decorateEntry(
@@ -267,7 +267,7 @@ export class ProfileFlameChart extends
   }
 }
 
-export class OverviewCalculator implements PerfUI.TimelineGrid.Calculator {
+export class OverviewCalculator implements NetworkTimeCalculator.Calculator {
   readonly formatter: (arg0: number, arg1?: number|undefined) => string;
   minimumBoundaries!: number;
   maximumBoundaries!: number;

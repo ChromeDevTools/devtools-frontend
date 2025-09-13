@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CdpTouchscreen = exports.CdpMouse = exports.CdpKeyboard = void 0;
+exports.CdpTouchscreen = exports.CdpTouchHandle = exports.CdpMouse = exports.CdpKeyboard = void 0;
 const Input_js_1 = require("../api/Input.js");
 const Errors_js_1 = require("../common/Errors.js");
 const USKeyboardLayout_js_1 = require("../common/USKeyboardLayout.js");
@@ -468,6 +468,7 @@ class CdpTouchHandle {
         this.#touchScreen.removeHandle(this);
     }
 }
+exports.CdpTouchHandle = CdpTouchHandle;
 /**
  * @internal
  */

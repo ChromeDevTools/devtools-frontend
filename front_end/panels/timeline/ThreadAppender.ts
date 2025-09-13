@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
@@ -9,6 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {
   addDecorationToEvent,
@@ -144,7 +145,7 @@ export class ThreadAppender implements TrackAppender {
 
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
 
   #entries: readonly Trace.Types.Events.Event[] = [];
   #tree: Trace.Helpers.TreeHelpers.TraceEntryTree;
@@ -159,7 +160,7 @@ export class ThreadAppender implements TrackAppender {
   #url = '';
   #headerNestingLevel: number|null = null;
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.TraceModel.ParsedTrace,
       processId: Trace.Types.Events.ProcessID, threadId: Trace.Types.Events.ThreadID, threadName: string|null,
       type: Trace.Handlers.Threads.ThreadType, entries: readonly Trace.Types.Events.Event[],
       tree: Trace.Helpers.TreeHelpers.TraceEntryTree) {
@@ -184,15 +185,15 @@ export class ThreadAppender implements TrackAppender {
     this.#entries = entries;
     this.#tree = tree;
     this.#threadDefaultName = threadName || i18nString(UIStrings.threadS, {PH1: threadId});
-    this.isOnMainFrame = Boolean(this.#parsedTrace.Renderer?.processes.get(processId)?.isOnMainFrame);
+    this.isOnMainFrame = Boolean(this.#parsedTrace.data.Renderer?.processes.get(processId)?.isOnMainFrame);
     this.threadType = type;
     // AuctionWorklets are threads, so we re-use this appender rather than
     // duplicate it, but we change the name because we want to render these
     // lower down than other threads.
-    if (this.#parsedTrace.AuctionWorklets.worklets.has(processId)) {
+    if (this.#parsedTrace.data.AuctionWorklets.worklets.has(processId)) {
       this.appenderName = 'Thread_AuctionWorklet';
     }
-    this.#url = this.#parsedTrace.Renderer?.processes.get(this.#processId)?.url || '';
+    this.#url = this.#parsedTrace.data.Renderer?.processes.get(this.#processId)?.url || '';
   }
 
   processId(): Trace.Types.Events.ProcessID {
@@ -353,7 +354,7 @@ export class ThreadAppender implements TrackAppender {
         return Platform.assertNever(this.threadType, `Unknown thread type: ${this.threadType}`);
     }
     let suffix = '';
-    if (this.#parsedTrace.Meta.traceIsGeneric) {
+    if (this.#parsedTrace.data.Meta.traceIsGeneric) {
       suffix = suffix + ` (${this.threadId()})`;
     }
     return (threadTypeLabel || this.#threadDefaultName) + suffix;
@@ -368,7 +369,7 @@ export class ThreadAppender implements TrackAppender {
   }
 
   #buildNameForAuctionWorklet(): string {
-    const workletMetadataEvent = this.#parsedTrace.AuctionWorklets.worklets.get(this.#processId);
+    const workletMetadataEvent = this.#parsedTrace.data.AuctionWorklets.worklets.get(this.#processId);
     // We should always have this event - if we do not, we were instantiated with invalid data.
     if (!workletMetadataEvent) {
       return i18nString(UIStrings.unknownWorklet);
@@ -422,9 +423,9 @@ export class ThreadAppender implements TrackAppender {
   }
 
   #buildNameForWorker(): string {
-    const url = this.#parsedTrace.Renderer?.processes.get(this.#processId)?.url || '';
-    const workerId = this.#parsedTrace.Workers.workerIdByThread.get(this.#threadId);
-    const workerURL = workerId ? this.#parsedTrace.Workers.workerURLById.get(workerId) : url;
+    const url = this.#parsedTrace.data.Renderer?.processes.get(this.#processId)?.url || '';
+    const workerId = this.#parsedTrace.data.Workers.workerIdByThread.get(this.#threadId);
+    const workerURL = workerId ? this.#parsedTrace.data.Workers.workerURLById.get(workerId) : url;
     // Try to create a name using the worker url if present. If not, use a generic label.
     let workerName =
         workerURL ? i18nString(UIStrings.workerS, {PH1: workerURL}) : i18nString(UIStrings.dedicatedWorker);
@@ -514,7 +515,7 @@ export class ThreadAppender implements TrackAppender {
       addDecorationToEvent(
           flameChartData, index, {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW});
     }
-    const warnings = this.#parsedTrace.Warnings.perEvent.get(entry);
+    const warnings = this.#parsedTrace.data.Warnings.perEvent.get(entry);
     if (!warnings) {
       return;
     }
@@ -539,28 +540,31 @@ export class ThreadAppender implements TrackAppender {
    * Gets the color an event added by this appender should be rendered with.
    */
   colorForEvent(event: Trace.Types.Events.Event): string {
-    if (this.#parsedTrace.Meta.traceIsGeneric) {
+    if (this.#parsedTrace.data.Meta.traceIsGeneric) {
       return event.name ? `hsl(${Platform.StringUtilities.hashCode(event.name) % 300 + 30}, 40%, 70%)` : '#ccc';
     }
 
     if (Trace.Types.Events.isProfileCall(event)) {
       if (event.callFrame.functionName === '(idle)') {
-        return Utils.EntryStyles.getCategoryStyles().idle.getComputedColorValue();
+        return categoryColorValue(Trace.Styles.getCategoryStyles().idle);
       }
       if (event.callFrame.functionName === '(program)') {
-        return Utils.EntryStyles.getCategoryStyles().other.getComputedColorValue();
+        return categoryColorValue(Trace.Styles.getCategoryStyles().other);
       }
       if (event.callFrame.scriptId === '0') {
         // If we can not match this frame to a script, return the
         // generic "scripting" color.
-        return Utils.EntryStyles.getCategoryStyles().scripting.getComputedColorValue();
+        return categoryColorValue(Trace.Styles.getCategoryStyles().scripting);
       }
       // Otherwise, return a color created based on its URL.
       return this.#colorGenerator.colorForID(event.callFrame.url);
     }
-    const defaultColor =
-        Utils.EntryStyles.getEventStyle(event.name as Trace.Types.Events.Name)?.category.getComputedColorValue();
-    return defaultColor || Utils.EntryStyles.getCategoryStyles().other.getComputedColorValue();
+    const eventStyles = Trace.Styles.getEventStyle(event.name as Trace.Types.Events.Name);
+    if (eventStyles) {
+      return categoryColorValue(eventStyles.category);
+    }
+
+    return categoryColorValue(Trace.Styles.getCategoryStyles().other);
   }
 
   /**
@@ -571,7 +575,7 @@ export class ThreadAppender implements TrackAppender {
       const rule = Utils.IgnoreList.getIgnoredReasonString(entry);
       return i18nString(UIStrings.onIgnoreList, {rule});
     }
-    return Utils.EntryName.nameForEntry(entry, this.#parsedTrace);
+    return Trace.Name.forEntry(entry, this.#parsedTrace);
   }
 
   setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
@@ -583,7 +587,11 @@ export class ThreadAppender implements TrackAppender {
       const range = (endLine !== -1 || endLine === startLine) ? `${startLine}...${endLine}` : startLine;
       info.title += ` - ${url} [${range}]`;
     }
-    const selfTime = this.#parsedTrace.Renderer.entryToNode.get(event)?.selfTime;
+    const selfTime = this.#parsedTrace.data.Renderer.entryToNode.get(event)?.selfTime;
     info.formattedTime = getDurationString(event.dur, selfTime);
   }
+}
+
+function categoryColorValue(category: Trace.Styles.TimelineCategory): string {
+  return ThemeSupport.ThemeSupport.instance().getComputedValue(category.cssVariable);
 }

@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -11,9 +11,9 @@ import type * as Trace from '../../models/trace/trace.js';
  * page's target.
  **/
 export function targetForEvent(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace, event: Trace.Types.Events.Event): SDK.Target.Target|null {
+    parsedTrace: Trace.TraceModel.ParsedTrace, event: Trace.Types.Events.Event): SDK.Target.Target|null {
   const targetManager = SDK.TargetManager.TargetManager.instance();
-  const workerId = parsedTrace.Workers.workerIdByThread.get(event.tid);
+  const workerId = parsedTrace.data.Workers.workerIdByThread.get(event.tid);
   if (workerId) {
     return targetManager.targetById(workerId);
   }

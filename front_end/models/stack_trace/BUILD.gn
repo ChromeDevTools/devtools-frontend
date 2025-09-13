@@ -1,4 +1,4 @@
-# Copyright 2025 The Chromium Authors. All rights reserved.
+# Copyright 2025 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -10,6 +10,7 @@ devtools_module("stack_trace") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/sdk:bundle",
     "../workspace:bundle",
   ]
 }
@@ -47,6 +48,7 @@ devtools_entrypoint("impl") {
   visibility = [
     ":unittests",
     "../bindings",
+    "../bindings:unittests",
   ]
 }
 

@@ -1,0 +1,35 @@
+name: Tag commits
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    # Run everyday at: https://crontab.guru/#0_6_*_*_*.
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  tag-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Get devtools version
+        id: devtools_version
+        shell: bash
+        run: ./scripts/devtools_version.sh
+      - name: Create tag
+        uses: actions/github-script@v7
+        # This can fail if the tag exists but this is expected.
+        continue-on-error: true
+        env:
+          TAG: ${{ steps.devtools_version.outputs.tag }}
+        with:
+          github-token: ${{ secrets.BROWSER_AUTOMATION_BOT_TOKEN }}
+          script: |
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/' + process.env.TAG,
+              sha: context.sha
+            });

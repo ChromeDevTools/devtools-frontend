@@ -361,6 +361,21 @@ export class CdpPage extends Page {
     }
   }
 
+  override async resize(params: {
+    contentWidth: number;
+    contentHeight: number;
+  }): Promise<void> {
+    const {windowId} = await this.#primaryTargetClient.send(
+      'Browser.getWindowForTarget',
+    );
+
+    await this.#primaryTargetClient.send('Browser.setContentsSize', {
+      windowId,
+      width: params.contentWidth,
+      height: params.contentHeight,
+    });
+  }
+
   async #onFileChooser(
     event: Protocol.Page.FileChooserOpenedEvent,
   ): Promise<void> {
@@ -906,7 +921,7 @@ export class CdpPage extends Page {
     );
     const entry = history.entries[history.currentIndex + delta];
     if (!entry) {
-      return null;
+      throw new Error('History entry to navigate to not found.');
     }
     const result = await Promise.all([
       this.waitForNavigation(options),

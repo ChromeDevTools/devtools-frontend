@@ -9,6 +9,7 @@
         "name": "ts-lit-plugin",
         "rules": {
           "no-complex-attribute-binding": "off",
+          "no-noncallable-event-binding": "off",
           "no-missing-import": "error",
           "no-unknown-tag-name": "error",
           "no-unclosed-tag": "error"

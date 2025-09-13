@@ -1,4 +1,4 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
+// Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -7,7 +7,8 @@ import * as Platform from '../platform/platform.js';
 
 import type {FrameAssociated} from './FrameAssociated.js';
 import {PageResourceLoader, type PageResourceLoadInitiator} from './PageResourceLoader.js';
-import {parseSourceMap, SourceMap, type SourceMapV3} from './SourceMap.js';
+import {type DebugId, parseSourceMap, SourceMap, type SourceMapV3} from './SourceMap.js';
+import {SourceMapCache} from './SourceMapCache.js';
 import {type Target, Type} from './Target.js';
 
 export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
@@ -105,7 +106,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
           this.#attachingClient = null;
           const initiator = client.createPageResourceLoadInitiator();
           clientData.sourceMapPromise =
-              loadSourceMap(sourceMapURL, initiator)
+              loadSourceMap(sourceMapURL, client.debugId(), initiator)
                   .then(
                       payload => {
                         const sourceMap = new SourceMap(sourceURL, sourceMapURL, payload);
@@ -169,10 +170,23 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
 }
 
 export async function loadSourceMap(
-    url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<SourceMapV3> {
+    url: Platform.DevToolsPath.UrlString, debugId: DebugId|null,
+    initiator: PageResourceLoadInitiator): Promise<SourceMapV3> {
   try {
+    if (debugId) {
+      const cachedSourceMap = await SourceMapCache.instance().get(debugId);
+      if (cachedSourceMap) {
+        return cachedSourceMap;
+      }
+    }
+
     const {content} = await PageResourceLoader.instance().loadResource(url, initiator);
-    return parseSourceMap(content);
+    const sourceMap = parseSourceMap(content);
+    if ('debugId' in sourceMap && sourceMap.debugId) {
+      // In case something goes wrong with updating the cache, we still want to use the source map.
+      await SourceMapCache.instance().set(sourceMap.debugId as DebugId, sourceMap).catch();
+    }
+    return sourceMap;
   } catch (cause) {
     throw new Error(`Could not load content for ${url}: ${cause.message}`, {cause});
   }
@@ -181,10 +195,9 @@ export async function loadSourceMap(
 export async function tryLoadSourceMap(
     url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<SourceMapV3|null> {
   try {
-    const {content} = await PageResourceLoader.instance().loadResource(url, initiator);
-    return parseSourceMap(content);
+    return await loadSourceMap(url, null, initiator);
   } catch (cause) {
-    console.error(`Could not load content for ${url}: ${cause.message}`, {cause});
+    console.error(cause);
     return null;
   }
 }

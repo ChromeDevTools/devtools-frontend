@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -95,8 +95,8 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
   });
 
   it('uses the URL for displaying network event labels and truncates it', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const event = parsedTrace.NetworkRequests.byTime.find(event => {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const event = parsedTrace.data.NetworkRequests.byTime.find(event => {
       return event.args.data.url.includes('private-aggregation-test');
     });
     assert.isOk(event);

@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -32,13 +32,13 @@ export interface Config {
 export class ChartViewport extends UI.Widget.VBox {
   private readonly delegate: ChartViewportDelegate;
   viewportElement: HTMLElement;
-  private alwaysShowVerticalScrollInternal: boolean;
+  #alwaysShowVerticalScroll: boolean;
   private rangeSelectionEnabled: boolean;
   private vScrollElement: HTMLElement;
   private vScrollContent: HTMLElement;
   private readonly selectionOverlay: HTMLElement;
   private cursorElement: HTMLElement;
-  private isDraggingInternal!: boolean;
+  #isDragging!: boolean;
   private totalHeight!: number;
   private offsetHeight!: number;
   private scrollTop!: number;
@@ -83,7 +83,7 @@ export class ChartViewport extends UI.Widget.VBox {
         this.viewportElement, this.startRangeSelection.bind(this), this.rangeSelectionDragging.bind(this),
         this.endRangeSelection.bind(this), 'text', null);
 
-    this.alwaysShowVerticalScrollInternal = false;
+    this.#alwaysShowVerticalScroll = false;
     this.rangeSelectionEnabled = true;
     this.vScrollElement = this.contentElement.createChild('div', 'chart-viewport-v-scroll');
     this.vScrollContent = this.vScrollElement.createChild('div');
@@ -99,7 +99,7 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   alwaysShowVerticalScroll(): void {
-    this.alwaysShowVerticalScrollInternal = true;
+    this.#alwaysShowVerticalScroll = true;
     this.vScrollElement.classList.add('always-show-scrollbar');
   }
 
@@ -110,7 +110,7 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   isDragging(): boolean {
-    return this.isDraggingInternal;
+    return this.#isDragging;
   }
 
   override elementsToRestoreScrollPositionsFor(): Element[] {
@@ -122,7 +122,7 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   private updateScrollBar(): void {
-    const showScroll = this.alwaysShowVerticalScrollInternal || this.totalHeight > this.offsetHeight;
+    const showScroll = this.#alwaysShowVerticalScroll || this.totalHeight > this.offsetHeight;
     if (this.vScrollElement.classList.contains('hidden') !== showScroll) {
       return;
     }
@@ -141,7 +141,7 @@ export class ChartViewport extends UI.Widget.VBox {
     this.scrollTop = 0;
     this.rangeSelectionStart = null;
     this.rangeSelectionEnd = null;
-    this.isDraggingInternal = false;
+    this.#isDragging = false;
     this.dragStartPointX = 0;
     this.dragStartPointY = 0;
     this.dragStartScrollTop = 0;
@@ -270,7 +270,7 @@ export class ChartViewport extends UI.Widget.VBox {
     if (event.shiftKey) {
       return false;
     }
-    this.isDraggingInternal = true;
+    this.#isDragging = true;
     this.dragStartPointX = event.pageX;
     this.dragStartPointY = event.pageY;
     this.dragStartScrollTop = this.vScrollElement.scrollTop;
@@ -287,21 +287,21 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   private endDragging(): void {
-    this.isDraggingInternal = false;
+    this.#isDragging = false;
   }
 
   private startRangeSelection(event: MouseEvent): boolean {
     if (!event.shiftKey || !this.rangeSelectionEnabled) {
       return false;
     }
-    this.isDraggingInternal = true;
+    this.#isDragging = true;
     this.selectionOffsetShiftX = event.offsetX - event.pageX;
     this.selectionStartX = event.offsetX;
     return true;
   }
 
   private endRangeSelection(): void {
-    this.isDraggingInternal = false;
+    this.#isDragging = false;
     this.selectionStartX = null;
   }
 
@@ -380,7 +380,7 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   private showCursor(visible: boolean): void {
-    this.cursorElement.classList.toggle('hidden', !visible || this.isDraggingInternal);
+    this.cursorElement.classList.toggle('hidden', !visible || this.#isDragging);
   }
 
   private onChartKeyDown(keyboardEvent: KeyboardEvent): void {

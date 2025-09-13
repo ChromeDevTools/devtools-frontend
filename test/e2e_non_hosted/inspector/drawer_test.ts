@@ -1,11 +1,11 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import {assert} from 'chai';
 
 describe('Drawer', () => {
-  setup({enabledDevToolsExperiments: ['vertical-drawer']});
+  setup({enabledFeatures: ['DevToolsVerticalDrawer']});
 
   it('orientation can be toggled between horizontal and vertical', async ({devToolsPage}) => {
     // To show the drawer

@@ -1,8 +1,7 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -22,7 +21,6 @@ describeWithMockConnection('ElementsTreeOutline', () => {
   beforeEach(() => {
     target = createTarget();
 
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL);
     treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(/* omitRootDOMNode */ true);
     treeOutline.wireToDOMModel(target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel);
 

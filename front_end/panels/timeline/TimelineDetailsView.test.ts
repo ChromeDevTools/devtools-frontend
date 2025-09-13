@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -27,12 +27,12 @@ describeWithEnvironment('TimelineDetailsView', function() {
   const mockViewDelegate = new MockViewDelegate();
 
   it('displays the details of a network request event correctly', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
 
     renderElementIntoDOM(detailsView);
 
-    const networkRequests = parsedTrace.NetworkRequests.byTime;
+    const networkRequests = parsedTrace.data.NetworkRequests.byTime;
     const cssRequest = networkRequests.find(request => {
       return request.args.data.url === 'https://chromedevtools.github.io/performance-stories/lcp-web-font/app.css';
     });
@@ -49,7 +49,6 @@ describeWithEnvironment('TimelineDetailsView', function() {
     await detailsView.setModel({
       parsedTrace,
       selectedEvents: null,
-      traceInsightsSets: insights,
       eventToRelatedInsightsMap: relatedInsights,
       entityMapper: null
     });
@@ -61,18 +60,17 @@ describeWithEnvironment('TimelineDetailsView', function() {
   });
 
   it('displays the details for a frame correctly', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     renderElementIntoDOM(detailsView);
     await detailsView.setModel({
       parsedTrace,
       selectedEvents: null,
-      traceInsightsSets: null,
       eventToRelatedInsightsMap: null,
       entityMapper: null
     });
 
-    const frame = parsedTrace.Frames.frames.at(0);
+    const frame = parsedTrace.data.Frames.frames.at(0);
     assert.isOk(frame);
     const selection = Timeline.TimelineSelection.selectionFromEvent(frame);
     await detailsView.setSelection(selection);
@@ -88,18 +86,17 @@ describeWithEnvironment('TimelineDetailsView', function() {
   });
 
   it('renders the layout shift component for a single layout shift', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     renderElementIntoDOM(detailsView);
     await detailsView.setModel({
       parsedTrace,
       selectedEvents: null,
-      traceInsightsSets: null,
       eventToRelatedInsightsMap: null,
       entityMapper: null
     });
 
-    const layoutShift = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
+    const layoutShift = parsedTrace.data.LayoutShifts.clusters.at(0)?.events.at(0);
     assert.isOk(layoutShift);
     const selection = Timeline.TimelineSelection.selectionFromEvent(layoutShift);
     await detailsView.setSelection(selection);
@@ -111,18 +108,17 @@ describeWithEnvironment('TimelineDetailsView', function() {
   });
 
   it('renders the layout shift component for a selected cluster', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     renderElementIntoDOM(detailsView);
     await detailsView.setModel({
       parsedTrace,
       selectedEvents: null,
-      traceInsightsSets: null,
       eventToRelatedInsightsMap: null,
       entityMapper: null
     });
 
-    const layoutShiftCluster = parsedTrace.LayoutShifts.clusters.at(0);
+    const layoutShiftCluster = parsedTrace.data.LayoutShifts.clusters.at(0);
     assert.isOk(layoutShiftCluster);
     const selection = Timeline.TimelineSelection.selectionFromEvent(layoutShiftCluster);
     await detailsView.setSelection(selection);
@@ -134,7 +130,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
   });
 
   it('renders information for a generic event on the main thread', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     renderElementIntoDOM(detailsView);
     const evalScriptEvent = allThreadEntriesInTrace(parsedTrace).find(event => {
@@ -144,7 +140,6 @@ describeWithEnvironment('TimelineDetailsView', function() {
     await detailsView.setModel({
       parsedTrace,
       selectedEvents: null,
-      traceInsightsSets: null,
       eventToRelatedInsightsMap: null,
       entityMapper: null
     });
@@ -160,7 +155,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
   });
 
   it('updates the range details when the user has a range selected', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     renderElementIntoDOM(detailsView);
     await detailsView.setModel({
@@ -168,11 +163,10 @@ describeWithEnvironment('TimelineDetailsView', function() {
       // We have to set selected events for the range selection UI to be drawn
       // (without the set of events we can't generate the range stats)
       selectedEvents: allThreadEntriesInTrace(parsedTrace),
-      traceInsightsSets: null,
       eventToRelatedInsightsMap: null,
       entityMapper: null
     });
-    const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds);
+    const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds);
     const selection = Timeline.TimelineSelection.selectionFromRangeMilliSeconds(
         bounds.min,
         bounds.max,

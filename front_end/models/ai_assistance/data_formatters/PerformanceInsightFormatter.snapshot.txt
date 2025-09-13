@@ -6,18 +6,18 @@ Content:
 This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 239.85 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 239.8 ms.
 The LCP element (IMG) is an image fetched from `https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp`.
 ## LCP resource network request: https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp
 Timings:
-- Queued at: 54.57 ms
-- Request sent at: 60.05 ms
-- Download complete at: 220.25 ms
-- Main thread processing completed at: 220.46 ms
+- Queued at: 54.6 ms
+- Request sent at: 60.1 ms
+- Download complete at: 220.2 ms
+- Main thread processing completed at: 220.5 ms
 Durations:
-- Download time: 8.60 ms
-- Main thread processing time: 0.21 ms
-- Total duration: 165.89 ms
+- Download time: 8.6 ms
+- Main thread processing time: 0.2 ms
+- Total duration: 165.9 ms
 Initiator: file:///Users/cjamcl/surge/misc/display-dpr/index.html
 Redirects: no redirects
 Status code: 200
@@ -46,10 +46,10 @@ Response headers
 
 We can break this time down into the 4 phases that combine to make the LCP time:
 
-- Time to first byte: 1.58 ms (0.7% of total LCP time)
-- Resource load delay: 52.98 ms (22.1% of total LCP time)
-- Resource load duration: 165.68 ms (69.1% of total LCP time)
-- Element render delay: 19.60 ms (8.2% of total LCP time)
+- Time to first byte: 1.6 ms (0.7% of total LCP time)
+- Resource load delay: 53 ms (22.1% of total LCP time)
+- Resource load duration: 165.7 ms (69.1% of total LCP time)
+- Element render delay: 19.6 ms (8.2% of total LCP time)
 
 ## Estimated savings: none
 
@@ -66,18 +66,18 @@ Content:
 This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 129.21 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 129.2 ms.
 The LCP element is an image fetched from `https://web-dev.imgix.net/image/kheDArv5csY6rvQUJDbWRscckLr1/4i7JstVZvgTFk9dxCe4a.svg`.
 ## LCP resource network request: https://web-dev.imgix.net/image/kheDArv5csY6rvQUJDbWRscckLr1/4i7JstVZvgTFk9dxCe4a.svg
 Timings:
-- Queued at: 41.10 ms
-- Request sent at: 46.56 ms
-- Download complete at: 55.80 ms
-- Main thread processing completed at: 58.15 ms
+- Queued at: 41.1 ms
+- Request sent at: 46.6 ms
+- Download complete at: 55.8 ms
+- Main thread processing completed at: 58.2 ms
 Durations:
-- Download time: 0.30 ms
-- Main thread processing time: 2.35 ms
-- Total duration: 17.05 ms
+- Download time: 0.3 ms
+- Main thread processing time: 2.3 ms
+- Total duration: 17.1 ms
 Redirects: no redirects
 Status code: 200
 MIME Type: image/svg+xml
@@ -90,10 +90,10 @@ Initiators (root request to the request that directly loaded this one): none
 
 We can break this time down into the 4 phases that combine to make the LCP time:
 
-- Time to first byte: 7.94 ms (6.1% of total LCP time)
-- Resource load delay: 33.16 ms (25.7% of total LCP time)
-- Resource load duration: 14.70 ms (11.4% of total LCP time)
-- Element render delay: 73.41 ms (56.8% of total LCP time)
+- Time to first byte: 7.9 ms (6.1% of total LCP time)
+- Resource load delay: 33.2 ms (25.7% of total LCP time)
+- Resource load duration: 14.7 ms (11.4% of total LCP time)
+- Element render delay: 73.4 ms (56.8% of total LCP time)
 
 ## Estimated savings: none
 
@@ -110,13 +110,13 @@ Content:
 This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 106.48 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 106.5 ms.
 The LCP element is text and was not fetched from the network.
 
 We can break this time down into the 2 phases that combine to make the LCP time:
 
-- Time to first byte: 6.12 ms (5.7% of total LCP time)
-- Element render delay: 100.37 ms (94.3% of total LCP time)
+- Time to first byte: 6.1 ms (5.7% of total LCP time)
+- Element render delay: 100.4 ms (94.3% of total LCP time)
 
 ## Estimated savings: none
 
@@ -159,9 +159,9 @@ Network requests data:
 
 allUrls = [0: https://code.jquery.com/jquery-3.7.1.js, 1: http://localhost:8000/, 2: http://localhost:8000/render-blocking-stylesheet.css, 3: http://localhost:8000/render-blocking-script.js]
 
-0;581.40 ms;584.53 ms;1,942.70 ms;1,944.05 ms;1,362.65 ms;775.53 ms;1.35 ms;200;application/javascript;High;High;High;t;h2;f;1;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]
-2;581.60 ms;583.11 ms;1,192.93 ms;1,193.16 ms;611.56 ms;0.19 ms;0.23 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
-3;581.56 ms;583.25 ms;1,176.60 ms;1,177.86 ms;596.30 ms;0.36 ms;1.27 ms;200;text/javascript;High;High;High;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+0;581.4 ms;584.5 ms;1,942.7 ms;1,944.1 ms;1,362.7 ms;775.5 ms;1.3 ms;200;application/javascript;High;High;High;t;h2;f;1;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]
+2;581.6 ms;583.1 ms;1,192.9 ms;1,193.2 ms;611.6 ms;0.2 ms;0.2 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+3;581.6 ms;583.3 ms;1,176.6 ms;1,177.9 ms;596.3 ms;0.4 ms;1.3 ms;200;text/javascript;High;High;High;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
 
 ## Estimated savings: FCP 2015 ms, LCP 0 ms
 
@@ -183,18 +183,18 @@ This insight analyzes the time taken to discover the LCP resource and request it
 It is important that all of these checks pass to minimize the delay between the initial page load and the LCP resource being loaded.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 1,077.06 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 1,077.1 ms.
 The LCP element is an image fetched from `http://localhost:8787/lcp-discovery-delay/lcp-image.jpg`.
 ## LCP resource network request: http://localhost:8787/lcp-discovery-delay/lcp-image.jpg
 Timings:
-- Queued at: 1,010.10 ms
-- Request sent at: 1,011.46 ms
-- Download complete at: 1,013.70 ms
-- Main thread processing completed at: 1,016.93 ms
+- Queued at: 1,010.1 ms
+- Request sent at: 1,011.5 ms
+- Download complete at: 1,013.7 ms
+- Main thread processing completed at: 1,016.9 ms
 Durations:
-- Download time: 1.00 ms
-- Main thread processing time: 3.23 ms
-- Total duration: 6.83 ms
+- Download time: 1 ms
+- Main thread processing time: 3.2 ms
+- Total duration: 6.8 ms
 Initiator: http://localhost:8787/lcp-discovery-delay/index.html
 Redirects: no redirects
 Status code: 200
@@ -239,29 +239,29 @@ This insight checks that the first request is responded to promptly. We use the 
 3. Was there compression applied to the response to minimize the transfer size?
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 3,604.15 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 3,604.1 ms.
 The LCP element is text and was not fetched from the network.
 
 ## Document network request: http://localhost:3000/redirect3
 Timings:
-- Queued at: 3.04 ms
-- Request sent at: 1,529.47 ms
-- Download complete at: 3,532.63 ms
-- Main thread processing completed at: 3,537.75 ms
+- Queued at: 3 ms
+- Request sent at: 1,529.5 ms
+- Download complete at: 3,532.6 ms
+- Main thread processing completed at: 3,537.8 ms
 Durations:
-- Download time: 0.13 ms
-- Main thread processing time: 5.12 ms
-- Total duration: 3,534.71 ms
+- Download time: 0.1 ms
+- Main thread processing time: 5.1 ms
+- Total duration: 3,534.7 ms
 Redirects:
 #### Redirect 1: http://localhost:3000/
-- Start time: 3.04 ms
-- Duration: 512.02 ms
+- Start time: 3 ms
+- Duration: 512 ms
 #### Redirect 2: http://localhost:3000/redirect1
-- Start time: 515.06 ms
-- Duration: 505.67 ms
+- Start time: 515.1 ms
+- Duration: 505.7 ms
 #### Redirect 3: http://localhost:3000/redirect2
-- Start time: 1,020.73 ms
-- Duration: 507.09 ms
+- Start time: 1,020.7 ms
+- Duration: 507.1 ms
 Status code: 200
 MIME Type: text/html
 Protocol: http/1.1
@@ -298,32 +298,32 @@ Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shift
 - Bad: over 0.25
 
 ## Detailed analysis:
-The worst layout shift cluster was the cluster that started at 471.76 ms and ended at 3,342.83 ms, with a duration of 2,871.07 ms.
+The worst layout shift cluster was the cluster that started at 471.8 ms and ended at 3,342.8 ms, with a duration of 2,871.1 ms.
 The score for this cluster is 0.7656.
 
 Layout shifts in this cluster:
 ### Layout shift 1:
-- Start time: 471.76 ms
+- Start time: 471.8 ms
 - Score: 0.0003
 - Potential root causes:
   - A font that was loaded over the network (https://fonts.gstatic.com/s/specialgothicexpandedone/v2/IurO6Zxk74-YaYk1r3HOet4g75ENmBxUmOK61tA0Iu5QmJF_.woff2).
 ### Layout shift 2:
-- Start time: 857.25 ms
+- Start time: 857.3 ms
 - Score: 0.0844
 - Potential root causes:
   - An iframe (id: 8AF3A9ADB81CA7B35302D07E0B591104, url: https://www.google.com/ was injected into the page)
 ### Layout shift 3:
-- Start time: 1,352.45 ms
+- Start time: 1,352.5 ms
 - Score: 0.0068
 - Potential root causes:
   - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png).
 ### Layout shift 4:
-- Start time: 1,537.46 ms
+- Start time: 1,537.5 ms
 - Score: 0.3344
 - Potential root causes:
   - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png).
 ### Layout shift 5:
-- Start time: 2,342.83 ms
+- Start time: 2,342.8 ms
 - Score: 0.3396
 - No potential root causes identified
 
@@ -352,11 +352,11 @@ For a given slow interaction, we can break it down into 3 phases:
 The sum of these three phases is the total latency. It is important to optimize each of these phases to ensure interactions take as little time as possible. Focusing on the phase that has the largest score is a good way to start optimizing.
 
 ## Detailed analysis:
-The longest interaction on the page was a `click` which had a total duration of `979.97 ms`. The timings of each of the three phases were:
+The longest interaction on the page was a `click` which had a total duration of `980 ms`. The timings of each of the three phases were:
 
-1. Input delay: 1.00 ms
-2. Processing duration: 977.00 ms
-3. Presentation delay: 1.97 ms.
+1. Input delay: 1 ms
+2. Processing duration: 977 ms
+3. Presentation delay: 2 ms.
 
 ## Estimated savings: none
 
@@ -413,13 +413,13 @@ Network requests data:
 
 allUrls = [0: https://ads.jetpackdigital.com/sites/_uploads/1742278386bg_opt_640x350-avif.avif, 1: http://localhost/old-http.html, 2: https://ads.jetpackdigital.com/sites/_uploads/1583540859Play.png, 3: https://ads.jetpackdigital.com/sites/_uploads/1583540859Muted.png, 4: https://ads.jetpackdigital.com/h5media/sites/_uploads/1742363510mm_allthefeels_20_mob.mp4, 5: https://ads.jetpackdigital.com/sites/_uploads/1583540860Pause.png, 6: https://ads.jetpackdigital.com/tracking_pixel.gif?8852762616, 7: https://ads.jetpackdigital.com/tracking_pixel.gif?7753243273]
 
-0;8.08 ms;12.43 ms;25.72 ms;25.81 ms;17.74 ms;1.58 ms;0.09 ms;200;image/avif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 18 Mar 2025 06:13:07 GMT|Content-Type: image/avif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-2;8.20 ms;12.53 ms;24.00 ms;24.30 ms;16.10 ms;0.60 ms;0.29 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-3;8.30 ms;12.57 ms;24.64 ms;24.98 ms;16.68 ms;1.15 ms;0.34 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-4;8.36 ms;12.82 ms;24.47 ms;24.48 ms;16.12 ms;0.36 ms;0.01 ms;200;video/mp4;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Wed, 19 Mar 2025 05:51:52 GMT|Content-Type: video/mp4|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-5;8.40 ms;12.86 ms;24.74 ms;25.02 ms;16.62 ms;1.28 ms;0.28 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:18 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-6;8.43 ms;24.40 ms;38.53 ms;38.71 ms;30.28 ms;0.10 ms;0.18 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-7;8.44 ms;24.87 ms;37.75 ms;38.00 ms;29.56 ms;0.23 ms;0.25 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+0;8.1 ms;12.4 ms;25.7 ms;25.8 ms;17.7 ms;1.6 ms;93 μs;200;image/avif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 18 Mar 2025 06:13:07 GMT|Content-Type: image/avif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+2;8.2 ms;12.5 ms;24 ms;24.3 ms;16.1 ms;0.6 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+3;8.3 ms;12.6 ms;24.6 ms;25 ms;16.7 ms;1.2 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+4;8.4 ms;12.8 ms;24.5 ms;24.5 ms;16.1 ms;0.4 ms;11 μs;200;video/mp4;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Wed, 19 Mar 2025 05:51:52 GMT|Content-Type: video/mp4|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+5;8.4 ms;12.9 ms;24.7 ms;25 ms;16.6 ms;1.3 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:18 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+6;8.4 ms;24.4 ms;38.5 ms;38.7 ms;30.3 ms;0.1 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+7;8.4 ms;24.9 ms;37.8 ms;38 ms;29.6 ms;0.2 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
 
 ## Estimated savings: FCP 0 ms, LCP 0 ms
 
@@ -431,14 +431,14 @@ Title: PerformanceInsightFormatter Formatting TraceEvents formats network reques
 Content:
 ## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
 Timings:
-- Queued at: 37.62 ms
-- Request sent at: 41.71 ms
-- Download complete at: 48.04 ms
-- Main thread processing completed at: 51.55 ms
+- Queued at: 37.6 ms
+- Request sent at: 41.7 ms
+- Download complete at: 48 ms
+- Main thread processing completed at: 51.5 ms
 Durations:
-- Download time: 4.79 ms
-- Main thread processing time: 3.51 ms
-- Total duration: 13.93 ms
+- Download time: 4.8 ms
+- Main thread processing time: 3.5 ms
+- Total duration: 13.9 ms
 Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Redirects: no redirects
 Status code: 200
@@ -470,14 +470,14 @@ Title: PerformanceInsightFormatter Formatting TraceEvents defaults to verbose mo
 Content:
 ## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
 Timings:
-- Queued at: 37.62 ms
-- Request sent at: 41.71 ms
-- Download complete at: 48.04 ms
-- Main thread processing completed at: 51.55 ms
+- Queued at: 37.6 ms
+- Request sent at: 41.7 ms
+- Download complete at: 48 ms
+- Main thread processing completed at: 51.5 ms
 Durations:
-- Download time: 4.79 ms
-- Main thread processing time: 3.51 ms
-- Total duration: 13.93 ms
+- Download time: 4.8 ms
+- Main thread processing time: 3.5 ms
+- Total duration: 13.9 ms
 Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Redirects: no redirects
 Status code: 200
@@ -503,6 +503,57 @@ Response headers
 - link: <https://fonts.gstatic.com>; rel=preconnect; crossorigin
 - x-xss-protection: 0
 - expires: Thu, 07 Mar 2024 21:17:02 GMT
+=== end content
+
+Title: PerformanceInsightFormatter DomSize serializes correctly when there are no results
+Content:
+## Insight Title: Optimize DOM size
+
+## Insight Summary:
+This insight evaluates some key metrics about the Document Object Model (DOM) and identifies excess in the DOM tree, for example:
+- The maximum number of elements within the DOM.
+- The maximum number of children for any given element.
+- Excessive depth of the DOM structure.
+- The largest layout and style recalculation events.
+
+## Detailed analysis:
+No DOM size issues were detected.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/lighthouse/performance/dom-size/
+=== end content
+
+Title: PerformanceInsightFormatter DomSize serializes the correct details showing DOM issues
+Content:
+## Insight Title: Optimize DOM size
+
+## Insight Summary:
+This insight evaluates some key metrics about the Document Object Model (DOM) and identifies excess in the DOM tree, for example:
+- The maximum number of elements within the DOM.
+- The maximum number of children for any given element.
+- Excessive depth of the DOM structure.
+- The largest layout and style recalculation events.
+
+## Detailed analysis:
+A large DOM can increase the duration of style calculations and layout reflows, impacting page responsiveness. A large DOM will also increase memory usage. [Learn how to avoid an excessive DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size/).
+
+Statistic:
+
+Total elements: 1006.
+DOM depth: 1001 nodes, starting with element 'SPAN' (node id: 27).
+Most children: 5, for parent 'BODY' (node id: 19).
+
+Large layout updates/style calculations:
+
+  - Layout update: Duration: 58.9 ms, with 2004 of 2012 nodes needing layout.
+  - Style recalculation: Duration: 150.5 ms, with 1001 elements affected.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/lighthouse/performance/dom-size/
 === end content
 
 Title: PerformanceInsightFormatter Duplicated javascript serializes the correct details
@@ -664,6 +715,51 @@ Line: 0, Column: 390688, Name: Object.values
 - https://philipwalton.com/articles/the-state-of-es5-on-the-web/
 === end content
 
+Title: PerformanceInsightFormatter FontDisplay serializes correctly when there are no results
+Content:
+## Insight Title: Font display
+
+## Insight Summary:
+This insight identifies font issues when a webpage uses custom fonts, for example when font-display is not set to `swap`, `fallback` or `optional`, causing the "Flash of Invisible Text" problem (FOIT).
+
+## Detailed analysis:
+No font display issues were detected.
+
+## Estimated savings: FCP -Infinity ms
+
+## External resources:
+- https://web.dev/articles/preload-optional-fonts
+- https://fonts.google.com/knowledge/glossary/foit
+- https://developer.chrome.com/blog/font-fallbacks
+=== end content
+
+Title: PerformanceInsightFormatter FontDisplay serializes the correct details when problems are found with font display
+Content:
+## Insight Title: Font display
+
+## Insight Summary:
+This insight identifies font issues when a webpage uses custom fonts, for example when font-display is not set to `swap`, `fallback` or `optional`, causing the "Flash of Invisible Text" problem (FOIT).
+
+## Detailed analysis:
+The following font display issues were found:
+
+ - Font name: jizaRExUiTo99u79D0KExcOPIDU.woff2, URL: https://fonts.gstatic.com/s/ptsans/v17/jizaRExUiTo99u79D0KExcOPIDU.woff2, Property 'font-display' set to: 'auto', Wasted time: 20 ms.
+ - Font name: SlGVmQWMvZQIdix7AFxXkHNSbRYXags.woff2, URL: https://fonts.gstatic.com/s/droidsans/v18/SlGVmQWMvZQIdix7AFxXkHNSbRYXags.woff2, Property 'font-display' set to: 'auto', Wasted time: 15 ms.
+ - Font name: jizfRExUiTo99u79B_mh0O6tLR8a8zI.woff2, URL: https://fonts.gstatic.com/s/ptsans/v17/jizfRExUiTo99u79B_mh0O6tLR8a8zI.woff2, Property 'font-display' set to: 'auto', Wasted time: 15 ms.
+ - Font name: SlGWmQWMvZQIdix7AFxXmMh3eDs1ZyHKpWg.woff2, URL: https://fonts.gstatic.com/s/droidsans/v18/SlGWmQWMvZQIdix7AFxXmMh3eDs1ZyHKpWg.woff2, Property 'font-display' set to: 'auto', Wasted time: 15 ms.
+ - Font name: EJRVQgYoZZY2vCFuvAFWzr-_dSb_.woff2, URL: https://fonts.gstatic.com/s/ptserif/v18/EJRVQgYoZZY2vCFuvAFWzr-_dSb_.woff2, Property 'font-display' set to: 'auto', Wasted time: 15 ms.
+ - Font name: S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2, URL: https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2, Property 'font-display' set to: 'auto', Wasted time: 10 ms.
+
+Consider setting [`font-display`](https://developer.chrome.com/blog/font-display) to `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).
+
+## Estimated savings: FCP 20 ms
+
+## External resources:
+- https://web.dev/articles/preload-optional-fonts
+- https://fonts.google.com/knowledge/glossary/foit
+- https://developer.chrome.com/blog/font-fallbacks
+=== end content
+
 Title: PerformanceInsightFormatter ImageDelivery serializes the correct details when there are no optimizable images
 Content:
 ## Insight Title: Improve image delivery
@@ -688,7 +784,7 @@ Content:
 This insight identifies unoptimized images that are downloaded at a much higher resolution than they are displayed. Properly sizing and compressing these assets will decrease their download time, directly improving the perceived page load time and LCP
 
 ## Detailed analysis:
-Total potential savings: 2.0 MB
+Total potential savings: 2 MB
 
 The following images could be optimized:
 
@@ -705,8 +801,8 @@ Using video formats instead of GIFs can improve the download size of animated co
 ### https://onlinepngtools.com/images/examples-onlinepngtools/elephant-hd-quality.png
 - Potential savings: 176 kB
 - Optimizations:
-Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size. (Est 134 kB)
-This image file is larger than it needs to be (640x436) for its displayed dimensions (200x136). Use responsive images to reduce the image download size. (Est 163 kB)
+Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size. (Est 134.1 kB)
+This image file is larger than it needs to be (640x436) for its displayed dimensions (200x136). Use responsive images to reduce the image download size. (Est 162.9 kB)
 
 ### https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg?fm=webp
 - Potential savings: 49.8 kB
@@ -724,6 +820,66 @@ This image file is larger than it needs to be (2048x1356) for its displayed dime
 - https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/
 === end content
 
+Title: PerformanceInsightFormatter ForcedReflow serializes correctly when there are no results
+Content:
+## Insight Title: Forced reflow
+
+## Insight Summary:
+This insight identifies forced synchronous layouts (also known as forced reflows) and layout thrashing caused by JavaScript accessing layout properties at suboptimal points in time.
+
+## Detailed analysis:
+A forced reflow occurs when JavaScript queries geometric properties (such as `offsetWidth`) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) and possible mitigations.
+
+The forced reflow checks revealed no problems.
+
+## Estimated savings: none
+
+## External resources:
+- https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts
+=== end content
+
+Title: PerformanceInsightFormatter ForcedReflow serializes the correct details when there are problems found in the network dependency tree
+Content:
+## Insight Title: Forced reflow
+
+## Insight Summary:
+This insight identifies forced synchronous layouts (also known as forced reflows) and layout thrashing caused by JavaScript accessing layout properties at suboptimal points in time.
+
+## Detailed analysis:
+A forced reflow occurs when JavaScript queries geometric properties (such as `offsetWidth`) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) and possible mitigations.
+
+The forced reflow checks revealed one or more problems.
+
+The following is the top function call that caused forced reflow(s):
+
+ - (anonymous) @ https://player.aniview.com/script/6.1/player.js:6:25217
+
+Total reflow time: 26.1 ms
+
+Stack trace (including total time):
+
+ - 56.2 ms in sidemenuitemintoview @ https://www.w3schools.com/lib/w3schools_footer.js?update=20240910:383:11
+ - 4.6 ms in ko @ https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202411070102/pubads_impl.js?cb=31088843:32:197203
+ - 14.5 ms in e @ unknown location
+ - 0.1 ms in position @ https://tg1.aniview.com/api/adserver/spt?AV_TAGID=5fc0cff7da5879436d110535&AV_PUBLISHERID=5f280c598c04cd5e910ff0a1:453:30
+ - 0.7 ms in o @ https://adengine.snigelweb.com/w3schools.com/12609-1731501024324/adngin.js:0:6042
+ - 2.3 ms in [unattributed]
+ - 0.3 ms in Aq @ https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:273:705
+ - 0.2 ms in E @ https://player.aniview.com/script/6.1/player.js:6:21336
+ - 0.4 ms in getPlaceholderWidth @ https://player.aniview.com/script/6.1/player.js:6:38512
+ - 24.3 ms in (anonymous) @ https://player.aniview.com/script/6.1/AVmanager.js?v=1.0&type=s&pid=5f280c598c04cd5e910ff0a1:7:364165
+ - 1.8 ms in e.getAdPosition @ https://player.aniview.com/script/6.1/AVmanager.js?v=1.0&type=s&pid=5f280c598c04cd5e910ff0a1:6:104270
+ - 0.5 ms in detect_visibility_inview_1s @ unknown location
+ - 0 ms in (anonymous) @ https://player.aniview.com/script/6.1/AVmanager.js?v=1.0&type=s&pid=5f280c598c04cd5e910ff0a1:6:101588
+ - 0.3 ms in Wr @ https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202411070102/pubads_impl.js?cb=31088843:32:94243
+ - 0.1 ms in (anonymous) @ https://player.aniview.com/script/webm/ads.js:5:156566
+
+## Estimated savings: none
+
+## External resources:
+- https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts
+=== end content
+
 Title: PerformanceInsightFormatter NetworkDependencyTree serializes correctly when there are no results
 Content:
 ## Insight Title: Network dependency tree
@@ -738,7 +894,7 @@ This insight analyzes the network dependency tree to identify:
 - Opportunities to add [preconnect] for a faster loading experience.
 
 ## Detailed analysis:
-The network dependency tree checks found no problems, but optimization suggestions may be available.
+The network dependency tree checks revealed no problems, but optimization suggestions may be available.
 
 No rendering tasks impacted by network dependencies.
 
@@ -767,12 +923,12 @@ This insight analyzes the network dependency tree to identify:
 ## Detailed analysis:
 The network dependency tree checks found one or more problems.
 
-Max critical path latency is 5,014.91 ms
+Max critical path latency is 5,014.9 ms
 
 The following is the critical request chain:
-- http://localhost:8787/lcp-iframes/index.html (5,005.59 ms) (longest chain)
-  - http://localhost:8787/lcp-iframes/app.js (5,014.91 ms) (longest chain)
-  - http://localhost:8787/lcp-iframes/app.css (5,010.12 ms)
+- http://localhost:8787/lcp-iframes/index.html (5,005.6 ms) (longest chain)
+  - http://localhost:8787/lcp-iframes/app.js (5,014.9 ms) (longest chain)
+  - http://localhost:8787/lcp-iframes/app.css (5,010.1 ms)
 
 no origins were preconnected.
 
@@ -781,4 +937,168 @@ no origins were preconnected.
 ## External resources:
 - https://web.dev/learn/performance/understanding-the-critical-path
 - https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/
+=== end content
+
+Title: PerformanceInsightFormatter SlowCssSelector serializes correctly when there are no results
+Content:
+## Insight Title: CSS Selector costs
+
+## Insight Summary:
+This insight identifies CSS selectors that are slowing down your page's rendering performance.
+
+## Detailed analysis:
+No CSS selector data was found. CSS selector stats need to be enabled in the performance panel settings.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/devtools/performance/selector-stats
+=== end content
+
+Title: PerformanceInsightFormatter SlowCssSelector serializes the correct details when CSS selectors are found
+Content:
+## Insight Title: CSS Selector costs
+
+## Insight Summary:
+This insight identifies CSS selectors that are slowing down your page's rendering performance.
+
+## Detailed analysis:
+One or more slow CSS selectors were identified as negatively affecting page performance:
+
+Top selector match attempt:
+169 attempts for selector: '.gb_Bd > :only-child'
+
+Total:
+Elapsed time: 0 ms
+Match attempts: 2444
+Match count: 465
+
+If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/devtools/performance/selector-stats) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/devtools/performance/selector-stats
+=== end content
+
+Title: PerformanceInsightFormatter ThirdParties serializes correctly when there are no results
+Content:
+## Insight Title: 3rd parties
+
+## Insight Summary:
+This insight analyzes the performance impact of resources loaded from third-party servers and aggregates the performance cost, in terms of download transfer sizes and total amount of time that third party scripts spent executing on the main thread.
+
+## Detailed analysis:
+No 3rd party scripts were found on this page.
+
+## Estimated savings: none
+
+## External resources:
+- https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/
+=== end content
+
+Title: PerformanceInsightFormatter ThirdParties serializes 3rd party scripts correctly
+Content:
+## Insight Title: 3rd parties
+
+## Insight Summary:
+This insight analyzes the performance impact of resources loaded from third-party servers and aggregates the performance cost, in terms of download transfer sizes and total amount of time that third party scripts spent executing on the main thread.
+
+## Detailed analysis:
+The following list contains the largest transfer sizes by a 3rd party script:
+
+- imgix: 171.6 kB
+- Google Tag Manager: 163.1 kB
+- Google Analytics: 20.5 kB
+- web.app: 823 B
+
+The following list contains the largest amount spent by a 3rd party script on the main thread:
+
+- Google Tag Manager: 28.1 ms
+- Google Analytics: 5.8 ms
+- noondiphcddnnabmjcihcjfbhfklnnep: 1.7 ms
+- web.app: 0.2 ms
+
+3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) to prioritize your page's content.
+
+## Estimated savings: none
+
+## External resources:
+- https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/
+=== end content
+
+Title: PerformanceInsightFormatter Cache serializes correctly when there are no results
+Content:
+## Insight Title: Use efficient cache lifetimes
+
+## Insight Summary:
+This insight identifies static resources that are not cached effectively by the browser.
+
+## Detailed analysis:
+No requests with inefficient cache policies.
+
+## Estimated savings: none
+
+## External resources:
+- https://web.dev/uses-long-cache-ttl/
+=== end content
+
+Title: PerformanceInsightFormatter Cache serializes the correct details showing cache problems
+Content:
+## Insight Title: Use efficient cache lifetimes
+
+## Insight Summary:
+This insight identifies static resources that are not cached effectively by the browser.
+
+## Detailed analysis:
+The following resources were associated with ineffficient cache policies:
+
+- https://chromedevtools.github.io/performance-stories/lcp-large-image/app.css
+  - Cache Time to Live (TTL): 600 seconds
+  - Wasted bytes: 0 B
+
+A long cache lifetime can speed up repeat visits to your page. [Learn more](https://web.dev/uses-long-cache-ttl/).
+
+## Estimated savings: none
+
+## External resources:
+- https://web.dev/uses-long-cache-ttl/
+=== end content
+
+Title: PerformanceInsightFormatter Viewport serializes correctly when there are no results
+Content:
+## Insight Title: Optimize viewport for mobile
+
+## Insight Summary:
+The insight identifies web pages that are not specifying the viewport meta tag for mobile devies, which avoids the artificial 300-350ms delay designed to help differentiate between tap and double-click.
+
+## Detailed analysis:
+The webpage is not optimized for mobile viewing.
+
+The viewport meta tag was found: `width=device-width, initial-scale=0.25`.
+
+## Estimated savings: INP 0 ms
+
+## External resources:
+- https://developer.chrome.com/blog/300ms-tap-delay-gone-away/
+=== end content
+
+Title: PerformanceInsightFormatter Viewport serializes the correct details showing viewport problems on mobile
+Content:
+## Insight Title: Optimize viewport for mobile
+
+## Insight Summary:
+The insight identifies web pages that are not specifying the viewport meta tag for mobile devies, which avoids the artificial 300-350ms delay designed to help differentiate between tap and double-click.
+
+## Detailed analysis:
+The webpage is not optimized for mobile viewing.
+
+The viewport meta tag is missing.
+
+Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) if the viewport is not optimized for mobile.
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/blog/300ms-tap-delay-gone-away/
 === end content

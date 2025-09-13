@@ -1,0 +1,54 @@
+# Copyright 2025 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/typescript/typescript.gni")
+import("../visibility.gni")
+
+devtools_module("badges") {
+  sources = [
+    "AiExplorerBadge.ts",
+    "Badge.ts",
+    "CodeWhispererBadge.ts",
+    "DOMDetectiveBadge.ts",
+    "SpeedsterBadge.ts",
+    "StarterBadge.ts",
+    "UserBadges.ts",
+  ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "badges.ts"
+
+  deps = [ ":badges" ]
+
+  visibility = [
+    ":*",
+    "//front_end/panels/*",
+  ]
+
+  visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "Badge.test.ts",
+    "UserBadges.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../testing",
+  ]
+}

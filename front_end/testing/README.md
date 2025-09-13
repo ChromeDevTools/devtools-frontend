@@ -92,7 +92,7 @@ The above test will fail if any DOM mutations are detected.
 
 For Karma unit tests, you can add regression tests for string output (similar to Jest snapshots) via SnapshotTester.
 
-> Note: Prefer unit tests that test behavior more directly when possible. Some good candidates for snapshot tests is code the formats long strings. A bad candidate would be a `JSON.stringify` of a complex object structure (prefer explicit asserts instead).
+> Note: Prefer unit tests that test behavior more directly when possible. Some good candidates for snapshot tests is code that formats long strings. A bad candidate would be a `JSON.stringify` of a complex object structure (prefer explicit asserts instead).
 
 Results for all snapshots for a test file `MyFile.test.ts` are written to `MyFile.snapshot.txt`.
 
@@ -108,14 +108,6 @@ before(async () => {
 after(async () => {
   await snapshotTester.finish();
 });
-```
-
-Then add the `.snapshot.txt` file to the appropriate BUILD.gn:
-
-```
-copy_to_gen("snapshots") {
-  sources = [ "myfile.snapshot.txt" ]
-}
 ```
 
 Then inside a test, call `snapshotTester.assert(this, output)`. For an example, see SnapshotTester.test.ts.

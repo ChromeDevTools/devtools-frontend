@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -188,7 +188,7 @@ describe('Sources Tab', function() {
       ]);
       let selectedThreadElement = await devToolsPage.waitFor(SELECTED_THREAD_SELECTOR);
       let selectedThreadName = await selectedThreadElement.evaluate(element => {
-        return (element as HTMLElement).innerText;
+        return element.innerText;
       });
       assert.strictEqual(selectedThreadName, 'Main', 'the Main thread is not active');
       assert.deepEqual(await getNonBreakableLines(devToolsPage), [
@@ -231,7 +231,7 @@ describe('Sources Tab', function() {
 
       selectedThreadElement = await devToolsPage.waitFor(SELECTED_THREAD_SELECTOR);
       selectedThreadName = await selectedThreadElement.evaluate(element => {
-        return (element as HTMLElement).innerText;
+        return element.innerText;
       });
       assert.strictEqual(selectedThreadName, 'Main', 'the Main thread is not active');
 
@@ -265,7 +265,7 @@ describe('Sources Tab', function() {
 
       let selectedThreadElement = await devToolsPage.waitFor(SELECTED_THREAD_SELECTOR);
       let selectedThreadName = await selectedThreadElement.evaluate(element => {
-        return (element as HTMLElement).innerText;
+        return element.innerText;
       });
       assert.strictEqual(selectedThreadName, 'Main', 'the Main thread is not active');
 
@@ -280,7 +280,7 @@ describe('Sources Tab', function() {
 
       selectedThreadElement = await devToolsPage.waitFor(SELECTED_THREAD_SELECTOR);
       selectedThreadName = await selectedThreadElement.evaluate(element => {
-        return (element as HTMLElement).innerText;
+        return element.innerText;
       });
       assert.strictEqual(
           selectedThreadName, 'worker-stepping-with-state-and-threads.js', 'the worker thread is not active');
@@ -308,7 +308,7 @@ describe('Sources Tab', function() {
 
       selectedThreadElement = await devToolsPage.waitFor(SELECTED_THREAD_SELECTOR);
       selectedThreadName = await selectedThreadElement.evaluate(element => {
-        return (element as HTMLElement).innerText;
+        return element.innerText;
       });
       assert.strictEqual(
           selectedThreadName, 'worker-stepping-with-state-and-threads.js', 'the worker thread is not active');

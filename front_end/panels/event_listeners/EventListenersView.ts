@@ -1,4 +1,4 @@
-// Copyright 2015 The Chromium Authors. All rights reserved.
+// Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -278,7 +278,7 @@ export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
 }
 
 export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
-  private eventListenerInternal: SDK.DOMDebuggerModel.EventListener;
+  #eventListener: SDK.DOMDebuggerModel.EventListener;
   editable: boolean;
   private readonly changeCallback: () => void;
   private valueTitle?: Element;
@@ -286,7 +286,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
       eventListener: SDK.DOMDebuggerModel.EventListener, object: SDK.RemoteObject.RemoteObject,
       linkifier: Components.Linkifier.Linkifier, changeCallback: () => void) {
     super('', true);
-    this.eventListenerInternal = eventListener;
+    this.#eventListener = eventListener;
     this.editable = false;
     this.setTitle(object, linkifier);
     this.changeCallback = changeCallback;
@@ -294,7 +294,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
 
   override async onpopulate(): Promise<void> {
     const properties = [];
-    const eventListener = this.eventListenerInternal;
+    const eventListener = this.#eventListener;
     const runtimeModel = eventListener.domDebuggerModel().runtimeModel();
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', eventListener.useCapture()));
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('passive', eventListener.passive()));
@@ -314,7 +314,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     this.valueTitle = propertyValue.element;
     title.appendChild(this.valueTitle);
 
-    if (this.eventListenerInternal.canRemove()) {
+    if (this.#eventListener.canRemove()) {
       const deleteButton = new Buttons.Button.Button();
       deleteButton.data = {
         variant: Buttons.Button.Variant.ICON,
@@ -330,7 +330,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
       title.appendChild(deleteButton);
     }
 
-    if (this.eventListenerInternal.isScrollBlockingType() && this.eventListenerInternal.canTogglePassive()) {
+    if (this.#eventListener.isScrollBlockingType() && this.#eventListener.canTogglePassive()) {
       const passiveButton = title.createChild('button', 'event-listener-button');
       passiveButton.textContent = i18nString(UIStrings.togglePassive);
       passiveButton.setAttribute('jslog', `${VisualLogging.action('passive').track({click: true})}`);
@@ -343,8 +343,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     }
 
     const subtitle = title.createChild('span', 'event-listener-tree-subtitle');
-    const linkElement =
-        linkifier.linkifyRawLocation(this.eventListenerInternal.location(), this.eventListenerInternal.sourceURL());
+    const linkElement = linkifier.linkifyRawLocation(this.#eventListener.location(), this.#eventListener.sourceURL());
     subtitle.appendChild(linkElement);
 
     this.listItemElement.addEventListener('contextmenu', event => {
@@ -359,10 +358,10 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
       }
       menu.defaultSection().appendItem(
           i18nString(UIStrings.deleteEventListener), this.removeListener.bind(this),
-          {disabled: !this.eventListenerInternal.canRemove(), jslogContext: 'delete-event-listener'});
+          {disabled: !this.#eventListener.canRemove(), jslogContext: 'delete-event-listener'});
       menu.defaultSection().appendCheckboxItem(i18nString(UIStrings.passive), this.togglePassiveListener.bind(this), {
-        checked: this.eventListenerInternal.passive(),
-        disabled: !this.eventListenerInternal.canTogglePassive(),
+        checked: this.#eventListener.passive(),
+        disabled: !this.#eventListener.canTogglePassive(),
         jslogContext: 'passive',
       });
       void menu.show();
@@ -371,11 +370,11 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
 
   private removeListener(): void {
     this.removeListenerBar();
-    void this.eventListenerInternal.remove();
+    void this.#eventListener.remove();
   }
 
   private togglePassiveListener(): void {
-    void this.eventListenerInternal.togglePassive().then(() => this.changeCallback());
+    void this.#eventListener.togglePassive().then(() => this.changeCallback());
   }
 
   private removeListenerBar(): void {
@@ -397,7 +396,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
   }
 
   eventListener(): SDK.DOMDebuggerModel.EventListener {
-    return this.eventListenerInternal;
+    return this.#eventListener;
   }
 
   override onenter(): boolean {
@@ -410,7 +409,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
   }
 
   override ondelete(): boolean {
-    if (this.eventListenerInternal.canRemove()) {
+    if (this.#eventListener.canRemove()) {
       this.removeListener();
       return true;
     }

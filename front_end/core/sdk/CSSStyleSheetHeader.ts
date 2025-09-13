@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -13,6 +13,7 @@ import {DeferredDOMNode} from './DOMModel.js';
 import type {FrameAssociated} from './FrameAssociated.js';
 import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
+import type {DebugId} from './SourceMap.js';
 
 const UIStrings = {
   /**
@@ -28,7 +29,7 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/CSSStyleSheetHeader.ts', UISt
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
-  #cssModelInternal: CSSModel;
+  #cssModel: CSSModel;
   id: Protocol.CSS.StyleSheetId;
   frameId: Protocol.Page.FrameId;
   sourceURL: Platform.DevToolsPath.UrlString;
@@ -47,10 +48,10 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   ownerNode: DeferredDOMNode|undefined;
   sourceMapURL: Platform.DevToolsPath.UrlString|undefined;
   readonly loadingFailed: boolean;
-  #originalContentProviderInternal: TextUtils.StaticContentProvider.StaticContentProvider|null;
+  #originalContentProvider: TextUtils.StaticContentProvider.StaticContentProvider|null;
 
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSStyleSheetHeader) {
-    this.#cssModelInternal = cssModel;
+    this.#cssModel = cssModel;
     this.id = payload.styleSheetId;
     this.frameId = payload.frameId;
     this.sourceURL = payload.sourceURL as Platform.DevToolsPath.UrlString;
@@ -71,22 +72,22 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     }
     this.sourceMapURL = payload.sourceMapURL as Platform.DevToolsPath.UrlString;
     this.loadingFailed = payload.loadingFailed ?? false;
-    this.#originalContentProviderInternal = null;
+    this.#originalContentProvider = null;
   }
 
   originalContentProvider(): TextUtils.ContentProvider.ContentProvider {
-    if (!this.#originalContentProviderInternal) {
+    if (!this.#originalContentProvider) {
       const lazyContent = (async(): Promise<TextUtils.ContentData.ContentDataOrError> => {
-        const originalText = await this.#cssModelInternal.originalStyleSheetText(this);
+        const originalText = await this.#cssModel.originalStyleSheetText(this);
         if (originalText === null) {
           return {error: i18nString(UIStrings.couldNotFindTheOriginalStyle)};
         }
         return new TextUtils.ContentData.ContentData(originalText, /* isBase64=*/ false, 'text/css');
       });
-      this.#originalContentProviderInternal =
+      this.#originalContentProvider =
           new TextUtils.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
-    return this.#originalContentProviderInternal;
+    return this.#originalContentProvider;
   }
 
   setSourceMapURL(sourceMapURL?: Platform.DevToolsPath.UrlString): void {
@@ -94,11 +95,11 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   cssModel(): CSSModel {
-    return this.#cssModelInternal;
+    return this.#cssModel;
   }
 
   isAnonymousInlineStyleSheet(): boolean {
-    return !this.resourceURL() && !this.#cssModelInternal.sourceMapManager().sourceMapForClient(this);
+    return !this.resourceURL() && !this.#cssModel.sourceMapManager().sourceMapForClient(this);
   }
 
   isConstructedByNew(): boolean {
@@ -110,7 +111,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   private getFrameURLPath(): string {
-    const model = this.#cssModelInternal.target().model(ResourceTreeModel);
+    const model = this.#cssModel.target().model(ResourceTreeModel);
     console.assert(Boolean(model));
     if (!model) {
       return '';
@@ -164,7 +165,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   async requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
-    const cssText = await this.#cssModelInternal.getStyleSheetText(this.id);
+    const cssText = await this.#cssModel.getStyleSheetText(this.id);
     if (cssText === null) {
       return {error: i18nString(UIStrings.thereWasAnErrorRetrievingThe)};
     }
@@ -183,9 +184,13 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
 
   createPageResourceLoadInitiator(): PageResourceLoadInitiator {
     return {
-      target: this.#cssModelInternal.target(),
+      target: this.#cssModel.target(),
       frameId: this.frameId,
       initiatorUrl: this.hasSourceURL ? Platform.DevToolsPath.EmptyUrlString : this.sourceURL,
     };
+  }
+
+  debugId(): DebugId|null {
+    return null;
   }
 }

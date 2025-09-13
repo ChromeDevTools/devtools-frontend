@@ -1,4 +1,4 @@
-# Copyright 2024 The Chromium Authors. All rights reserved.
+# Copyright 2024 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -53,10 +53,12 @@ devtools_module("insights") {
     "../../../../core/sdk:bundle",
     "../../../../models/trace:bundle",
     "../../../../services/trace_bounds:bundle",
+    "../../../../third_party/marked:bundle",
     "../../../../ui/components/buttons:bundle",
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/components/icon_button:bundle",
     "../../../../ui/components/linkifier:bundle",
+    "../../../../ui/components/markdown_view:bundle",
     "../../../../ui/lit:bundle",
     "../../overlays:bundle",
     "../../utils:bundle",

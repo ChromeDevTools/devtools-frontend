@@ -1,4 +1,4 @@
-// Copyright 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -50,7 +50,7 @@ export class EmulatedDevice {
   isFoldableScreen: boolean;
   verticalSpanned: Orientation;
   horizontalSpanned: Orientation;
-  #showInternal: Show;
+  #show: Show;
   #showByDefault: boolean;
 
   constructor() {
@@ -69,7 +69,7 @@ export class EmulatedDevice {
     this.verticalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
     this.horizontalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
 
-    this.#showInternal = Show.Default;
+    this.#show = Show.Default;
     this.#showByDefault = true;
   }
 
@@ -263,7 +263,7 @@ export class EmulatedDevice {
       if (!Object.values(Show).includes(show)) {
         throw new Error('Emulated device has wrong show mode: ' + show);
       }
-      result.#showInternal = show;
+      result.#show = show;
 
       return result;
     } catch {
@@ -364,7 +364,7 @@ export class EmulatedDevice {
     json['show-by-default'] = this.#showByDefault;
     json['dual-screen'] = this.isDualScreen;
     json['foldable-screen'] = this.isFoldableScreen;
-    json['show'] = this.#showInternal;
+    json['show'] = this.#show;
 
     if (this.userAgentMetadata) {
       json['user-agent-metadata'] = this.userAgentMetadata;
@@ -453,18 +453,18 @@ export class EmulatedDevice {
     }
   }
   show(): boolean {
-    if (this.#showInternal === Show.Default) {
+    if (this.#show === Show.Default) {
       return this.#showByDefault;
     }
-    return this.#showInternal === Show.Always;
+    return this.#show === Show.Always;
   }
 
   setShow(show: boolean): void {
-    this.#showInternal = show ? Show.Always : Show.Never;
+    this.#show = show ? Show.Always : Show.Never;
   }
 
   copyShowFrom(other: EmulatedDevice): void {
-    this.#showInternal = other.#showInternal;
+    this.#show = other.#show;
   }
 
   touch(): boolean {
@@ -508,20 +508,20 @@ let emulatedDevicesListInstance: EmulatedDevicesList;
 
 export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #standardSetting: Common.Settings.Setting<any[]>;
-  #standardInternal: Set<EmulatedDevice>;
+  #standard: Set<EmulatedDevice>;
   readonly #customSetting: Common.Settings.Setting<any[]>;
-  readonly #customInternal: Set<EmulatedDevice>;
+  readonly #custom: Set<EmulatedDevice>;
   constructor() {
     super();
 
     this.#standardSetting = Common.Settings.Settings.instance().createSetting('standard-emulated-device-list', []);
-    this.#standardInternal = new Set();
-    this.listFromJSONV1(this.#standardSetting.get(), this.#standardInternal);
+    this.#standard = new Set();
+    this.listFromJSONV1(this.#standardSetting.get(), this.#standard);
     this.updateStandardDevices();
 
     this.#customSetting = Common.Settings.Settings.instance().createSetting('custom-emulated-device-list', []);
-    this.#customInternal = new Set();
-    if (!this.listFromJSONV1(this.#customSetting.get(), this.#customInternal)) {
+    this.#custom = new Set();
+    if (!this.listFromJSONV1(this.#customSetting.get(), this.#custom)) {
       this.saveCustomDevices();
     }
   }
@@ -541,8 +541,8 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
         devices.add(device);
       }
     }
-    this.copyShowValues(this.#standardInternal, devices);
-    this.#standardInternal = devices;
+    this.copyShowValues(this.#standard, devices);
+    this.#standard = devices;
     this.saveStandardDevices();
   }
 
@@ -571,11 +571,11 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 
   standard(): EmulatedDevice[] {
-    return [...this.#standardInternal];
+    return [...this.#standard];
   }
 
   custom(): EmulatedDevice[] {
-    return [...this.#customInternal];
+    return [...this.#custom];
   }
 
   revealCustomSetting(): void {
@@ -583,18 +583,18 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 
   addCustomDevice(device: EmulatedDevice): void {
-    this.#customInternal.add(device);
+    this.#custom.add(device);
     this.saveCustomDevices();
   }
 
   removeCustomDevice(device: EmulatedDevice): void {
-    this.#customInternal.delete(device);
+    this.#custom.delete(device);
     this.saveCustomDevices();
   }
 
   saveCustomDevices(): void {
     const json: any[] = [];
-    this.#customInternal.forEach(device => json.push(device.toJSON()));
+    this.#custom.forEach(device => json.push(device.toJSON()));
 
     this.#customSetting.set(json);
     this.dispatchEventToListeners(Events.CUSTOM_DEVICES_UPDATED);
@@ -602,7 +602,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
 
   saveStandardDevices(): void {
     const json: any[] = [];
-    this.#standardInternal.forEach(device => json.push(device.toJSON()));
+    this.#standard.forEach(device => json.push(device.toJSON()));
 
     this.#standardSetting.set(json);
     this.dispatchEventToListeners(Events.STANDARD_DEVICES_UPDATED);

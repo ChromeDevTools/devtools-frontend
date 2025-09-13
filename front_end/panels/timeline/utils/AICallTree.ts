@@ -1,13 +1,10 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
-
-import {nameForEntry} from './EntryName.js';
-import {visibleTypes} from './EntryStyles.js';
-import {SourceMapsResolver} from './SourceMapsResolver.js';
+import * as SourceMapsResolver from '../../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 
 /** Iterates from a node down through its descendents. If the callback returns true, the loop stops. */
 function depthFirstWalk(
@@ -22,7 +19,7 @@ function depthFirstWalk(
 
 export interface FromTimeOnThreadOptions {
   thread: {pid: Trace.Types.Events.ProcessID, tid: Trace.Types.Events.ThreadID};
-  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
   bounds: Trace.Types.Timing.TraceWindowMicro;
 }
 
@@ -30,13 +27,12 @@ export class AICallTree {
   constructor(
       public selectedNode: Trace.Extras.TraceTree.Node|null,
       public rootNode: Trace.Extras.TraceTree.TopDownRootNode,
-      // TODO: see if we can avoid passing around this entire thing.
-      public parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      public parsedTrace: Trace.TraceModel.ParsedTrace,
   ) {
   }
 
   static findEventsForThread({thread, parsedTrace, bounds}: FromTimeOnThreadOptions): Trace.Types.Events.Event[]|null {
-    const threadEvents = parsedTrace.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
+    const threadEvents = parsedTrace.data.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
     if (!threadEvents) {
       return null;
     }
@@ -46,7 +42,7 @@ export class AICallTree {
 
   static findMainThreadTasks({thread, parsedTrace, bounds}: FromTimeOnThreadOptions):
       Trace.Types.Events.RunTask[]|null {
-    const threadEvents = parsedTrace.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
+    const threadEvents = parsedTrace.data.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
     if (!threadEvents) {
       return null;
     }
@@ -66,7 +62,7 @@ export class AICallTree {
       return null;
     }
 
-    const visibleEventsFilter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleTypes());
+    const visibleEventsFilter = new Trace.Extras.TraceFilter.VisibleEventsFilter(Trace.Styles.visibleTypes());
 
     // By default, we remove events whose duration is less than 0.5% of the total
     // range. So if the range is 10s, an event must be 0.05s+ to be included.
@@ -100,7 +96,7 @@ export class AICallTree {
    * This filters out other events we make such as SyntheticLayoutShifts which are not valid
    * If the event is not valid, or there is an unexpected error building the tree, `null` is returned.
    */
-  static fromEvent(selectedEvent: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree
+  static fromEvent(selectedEvent: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): AICallTree
       |null {
     // Special case: performance.mark events are shown on the main thread
     // technically, but because they are instant events they are shown with a
@@ -117,7 +113,7 @@ export class AICallTree {
     }
 
     // First: check that the selected event is on the thread we have identified as the main thread.
-    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace);
+    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace.data);
     const thread = threads.find(t => t.pid === selectedEvent.pid && t.tid === selectedEvent.tid);
     if (!thread) {
       return null;
@@ -139,7 +135,8 @@ export class AICallTree {
     // information such as Layout Shift clusters.
     // We check Renderer + Samples to ensure we support CPU Profiles (which do
     // not populate the Renderer Handler)
-    if (!parsedTrace.Renderer.entryToNode.has(selectedEvent) && !parsedTrace.Samples.entryToNode.has(selectedEvent)) {
+    const data = parsedTrace.data;
+    if (!data.Renderer.entryToNode.has(selectedEvent) && !data.Samples.entryToNode.has(selectedEvent)) {
       return null;
     }
 
@@ -147,10 +144,10 @@ export class AICallTree {
     const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(selectedEvent);
     const selectedEventBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
         Trace.Helpers.Timing.milliToMicro(startTime), Trace.Helpers.Timing.milliToMicro(endTime));
-    let threadEvents = parsedTrace.Renderer.processes.get(selectedEvent.pid)?.threads.get(selectedEvent.tid)?.entries;
+    let threadEvents = data.Renderer.processes.get(selectedEvent.pid)?.threads.get(selectedEvent.tid)?.entries;
     if (!threadEvents) {
       // None from the renderer: try the samples handler, this might be a CPU trace.
-      threadEvents = parsedTrace.Samples.profilesInProcess.get(selectedEvent.pid)?.get(selectedEvent.tid)?.profileCalls;
+      threadEvents = data.Samples.profilesInProcess.get(selectedEvent.pid)?.get(selectedEvent.tid)?.profileCalls;
     }
 
     if (!threadEvents) {
@@ -166,7 +163,7 @@ export class AICallTree {
     // events here, otherwise the generated call tree will not match what the
     // user is seeing.
     if (!allEventsEnabled) {
-      filters.push(new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleTypes()));
+      filters.push(new Trace.Extras.TraceFilter.VisibleEventsFilter(Trace.Styles.visibleTypes()));
     }
 
     // Build a tree bounded by the selected event's timestamps, and our other filters applied
@@ -300,7 +297,7 @@ export class AICallTree {
   *     - This node is the selected node (S marker)
   */
   stringifyNode(
-      node: Trace.Extras.TraceTree.Node, nodeId: number, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      node: Trace.Extras.TraceTree.Node, nodeId: number, parsedTrace: Trace.TraceModel.ParsedTrace,
       selectedNode: Trace.Extras.TraceTree.Node|null, allUrls: string[], childStartingNodeIndex?: number): string {
     const event = node.event;
     if (!event) {
@@ -311,7 +308,7 @@ export class AICallTree {
     const idStr = String(nodeId);
 
     // 2. Name
-    const name = nameForEntry(event, parsedTrace);
+    const name = Trace.Name.forEntry(event, parsedTrace);
 
     // Round milliseconds to one decimal place, return empty string if zero/undefined
     const roundToTenths = (num: number|undefined): string => {
@@ -328,7 +325,7 @@ export class AICallTree {
     const selfTimeStr = roundToTenths(node.selfTime);
 
     // 5. URL Index
-    const url = SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
+    const url = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
     let urlIndexStr = '';
     if (url) {
       const existingIndex = allUrls.indexOf(url);

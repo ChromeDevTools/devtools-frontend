@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -6,7 +6,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -193,6 +192,11 @@ const UIStrings = {
    */
   enableSync: 'Enable settings sync',
   /**
+   * @description Label for a checkbox in the settings UI. Allows developers to opt-in/opt-out
+   * of receiving Google Developer Program (GDP) badges based on their activity in Chrome DevTools.
+   */
+  receiveBadges: 'Receive badges',
+  /**
    * @description A command available in the command menu to perform searches, for example in the
    * elements panel, as user types, rather than only when they press Enter.
    */
@@ -291,7 +295,7 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Shift+Esc',
     },
   ],
-  experiment: Root.Runtime.ExperimentName.VERTICAL_DRAWER,
+  condition: config => Boolean(config?.devToolsFlexibleLayout?.verticalDrawerEnabled)
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -786,6 +790,16 @@ Common.Settings.registerSettingExtension({
   settingName: 'sync-preferences',
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableSync),
+  defaultValue: false,
+  reloadRequired: true,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.ACCOUNT,
+  settingName: 'receive-gdp-badges',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+  title: i18nLazyString(UIStrings.receiveBadges),
   defaultValue: false,
   reloadRequired: true,
 });

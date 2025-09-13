@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -42,12 +42,12 @@ export class CategorizedBreakpoint {
   readonly name: string;
 
   readonly #category: Category;
-  private enabledInternal: boolean;
+  #enabled: boolean;
 
   constructor(category: Category, name: string) {
     this.#category = category;
     this.name = name;
-    this.enabledInternal = false;
+    this.#enabled = false;
   }
 
   category(): Category {
@@ -55,10 +55,10 @@ export class CategorizedBreakpoint {
   }
 
   enabled(): boolean {
-    return this.enabledInternal;
+    return this.#enabled;
   }
 
   setEnabled(enabled: boolean): void {
-    this.enabledInternal = enabled;
+    this.#enabled = enabled;
   }
 }

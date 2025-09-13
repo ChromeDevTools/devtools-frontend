@@ -1,4 +1,4 @@
-// Copyright 2015 The Chromium Authors. All rights reserved.
+// Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -1588,19 +1588,19 @@ export class SecurityOriginView extends UI.Widget.VBox {
 }
 
 export class SecurityDetailsTable {
-  private readonly elementInternal: HTMLTableElement;
+  readonly #element: HTMLTableElement;
 
   constructor() {
-    this.elementInternal = document.createElement('table');
-    this.elementInternal.classList.add('details-table');
+    this.#element = document.createElement('table');
+    this.#element.classList.add('details-table');
   }
 
   element(): HTMLTableElement {
-    return this.elementInternal;
+    return this.#element;
   }
 
   addRow(key: string, value: string|Node): void {
-    const row = this.elementInternal.createChild('tr', 'details-table-row');
+    const row = this.#element.createChild('tr', 'details-table-row');
     row.createChild('td').textContent = key;
 
     const valueCell = row.createChild('td');

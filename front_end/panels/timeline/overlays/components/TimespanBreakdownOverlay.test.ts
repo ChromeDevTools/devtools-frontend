@@ -1,7 +1,8 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Trace from '../../../../models/trace/trace.js';
 import {getCleanTextContentFromElements} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {
@@ -14,7 +15,7 @@ import * as Components from './components.js';
 describeWithEnvironment('TimespanBreakdownOverlay', () => {
   it('renders the sections with the labels and time', async () => {
     const component = new Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay();
-    const sections: Components.TimespanBreakdownOverlay.EntryBreakdown[] = [
+    const sections: Trace.Types.Overlays.TimespanBreakdownEntryBreakdown[] = [
       {
         bounds: microsecondsTraceWindow(0, 1_000),
         label: 'section one',

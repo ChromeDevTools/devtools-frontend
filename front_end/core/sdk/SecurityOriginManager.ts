@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -10,21 +10,21 @@ export class SecurityOriginManager extends SDKModel<EventTypes> {
   // 'chrome-error://chromewebdata/', and |this.#mainSecurityOriginInternal| stores
   // its origin. In this situation, the original unreachable URL's security
   // origin will be stored in |this.#unreachableMainSecurityOriginInternal|.
-  #mainSecurityOriginInternal = '';
-  #unreachableMainSecurityOriginInternal: string|null = '';
-  #securityOriginsInternal = new Set<string>();
+  #mainSecurityOrigin = '';
+  #unreachableMainSecurityOrigin: string|null = '';
+  #securityOrigins = new Set<string>();
 
   updateSecurityOrigins(securityOrigins: Set<string>): void {
-    const oldOrigins = this.#securityOriginsInternal;
-    this.#securityOriginsInternal = securityOrigins;
+    const oldOrigins = this.#securityOrigins;
+    this.#securityOrigins = securityOrigins;
 
     for (const origin of oldOrigins) {
-      if (!this.#securityOriginsInternal.has(origin)) {
+      if (!this.#securityOrigins.has(origin)) {
         this.dispatchEventToListeners(Events.SecurityOriginRemoved, origin);
       }
     }
 
-    for (const origin of this.#securityOriginsInternal) {
+    for (const origin of this.#securityOrigins) {
       if (!oldOrigins.has(origin)) {
         this.dispatchEventToListeners(Events.SecurityOriginAdded, origin);
       }
@@ -32,23 +32,23 @@ export class SecurityOriginManager extends SDKModel<EventTypes> {
   }
 
   securityOrigins(): string[] {
-    return [...this.#securityOriginsInternal];
+    return [...this.#securityOrigins];
   }
 
   mainSecurityOrigin(): string {
-    return this.#mainSecurityOriginInternal;
+    return this.#mainSecurityOrigin;
   }
 
   unreachableMainSecurityOrigin(): string|null {
-    return this.#unreachableMainSecurityOriginInternal;
+    return this.#unreachableMainSecurityOrigin;
   }
 
   setMainSecurityOrigin(securityOrigin: string, unreachableSecurityOrigin: string): void {
-    this.#mainSecurityOriginInternal = securityOrigin;
-    this.#unreachableMainSecurityOriginInternal = unreachableSecurityOrigin || null;
+    this.#mainSecurityOrigin = securityOrigin;
+    this.#unreachableMainSecurityOrigin = unreachableSecurityOrigin || null;
     this.dispatchEventToListeners(Events.MainSecurityOriginChanged, {
-      mainSecurityOrigin: this.#mainSecurityOriginInternal,
-      unreachableMainSecurityOrigin: this.#unreachableMainSecurityOriginInternal,
+      mainSecurityOrigin: this.#mainSecurityOrigin,
+      unreachableMainSecurityOrigin: this.#unreachableMainSecurityOrigin,
     });
   }
 }

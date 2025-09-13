@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2011 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2011 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 /* eslint-disable rulesdir/prefer-private-class-members */
 
@@ -197,7 +171,7 @@ export class HeapSnapshotEdgeIterator implements HeapSnapshotItemIterator {
 
 export class HeapSnapshotRetainerEdge implements HeapSnapshotItem {
   protected snapshot: HeapSnapshot;
-  #retainerIndexInternal!: number;
+  #retainerIndex!: number;
   #globalEdgeIndex!: number;
   #retainingNodeIndex?: number;
   #edgeInstance?: JSHeapSnapshotEdge|null;
@@ -224,7 +198,7 @@ export class HeapSnapshotRetainerEdge implements HeapSnapshotItem {
   }
 
   node(): HeapSnapshotNode {
-    return this.nodeInternal();
+    return this.#node();
   }
 
   nodeIndex(): number {
@@ -236,11 +210,11 @@ export class HeapSnapshotRetainerEdge implements HeapSnapshotItem {
   }
 
   retainerIndex(): number {
-    return this.#retainerIndexInternal;
+    return this.#retainerIndex;
   }
 
   setRetainerIndex(retainerIndex: number): void {
-    if (retainerIndex === this.#retainerIndexInternal) {
+    if (retainerIndex === this.#retainerIndex) {
       return;
     }
 
@@ -248,7 +222,7 @@ export class HeapSnapshotRetainerEdge implements HeapSnapshotItem {
       throw new Error('Snapshot does not contain retaining edges or retaining nodes');
     }
 
-    this.#retainerIndexInternal = retainerIndex;
+    this.#retainerIndex = retainerIndex;
     this.#globalEdgeIndex = this.snapshot.retainingEdges[retainerIndex];
     this.#retainingNodeIndex = this.snapshot.retainingNodes[retainerIndex];
     this.#edgeInstance = null;
@@ -259,7 +233,7 @@ export class HeapSnapshotRetainerEdge implements HeapSnapshotItem {
     this.setRetainerIndex(edgeIndex);
   }
 
-  private nodeInternal(): HeapSnapshotNode {
+  #node(): HeapSnapshotNode {
     if (!this.#nodeInstance) {
       this.#nodeInstance = this.snapshot.createNode(this.#retainingNodeIndex);
     }
@@ -278,7 +252,7 @@ export class HeapSnapshotRetainerEdge implements HeapSnapshotItem {
   }
 
   itemIndex(): number {
-    return this.#retainerIndexInternal;
+    return this.#retainerIndex;
   }
 
   serialize(): HeapSnapshotModel.HeapSnapshotModel.Edge {
@@ -893,7 +867,7 @@ export abstract class HeapSnapshot {
   readonly #noDistance = -5;
   rootNodeIndexInternal = 0;
   #snapshotDiffs: Record<string, Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff>> = {};
-  #aggregatesForDiffInternal?: {
+  #aggregatesForDiff?: {
     interfaceDefinitions: string,
     aggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>,
   };
@@ -1446,7 +1420,7 @@ export abstract class HeapSnapshot {
       // for class keys.
       aggregates = Object.create(null);
       for (const [classKey, aggregate] of aggregatesMap.entries()) {
-        const newKey = this.classKeyFromClassKeyInternal(classKey);
+        const newKey = this.#classKeyFromClassKey(classKey);
         aggregates[newKey] = aggregate;
       }
       if (key) {
@@ -1483,8 +1457,8 @@ export abstract class HeapSnapshot {
 
   aggregatesForDiff(interfaceDefinitions: string):
       Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff> {
-    if (this.#aggregatesForDiffInternal?.interfaceDefinitions === interfaceDefinitions) {
-      return this.#aggregatesForDiffInternal.aggregates;
+    if (this.#aggregatesForDiff?.interfaceDefinitions === interfaceDefinitions) {
+      return this.#aggregatesForDiff.aggregates;
     }
 
     // Temporarily apply the interface definitions from the other snapshot.
@@ -1509,7 +1483,7 @@ export abstract class HeapSnapshot {
       result[classKey] = {name: node.className(), indexes, ids, selfSizes};
     }
 
-    this.#aggregatesForDiffInternal = {interfaceDefinitions, aggregates: result};
+    this.#aggregatesForDiff = {interfaceDefinitions, aggregates: result};
     return result;
   }
 
@@ -2702,14 +2676,14 @@ export abstract class HeapSnapshot {
   // Converts an internal class key, suitable for categorizing within this
   // snapshot, to a public class key, which can be used in comparisons
   // between multiple snapshots.
-  classKeyFromClassKeyInternal(key: string|number): string {
+  #classKeyFromClassKey(key: string|number): string {
     return typeof key === 'number' ? (',' + this.strings[key]) : key;
   }
 
   nodeClassKey(snapshotObjectId: number): string|null {
     const node = this.nodeForSnapshotObjectId(snapshotObjectId);
     if (node) {
-      return this.classKeyFromClassKeyInternal(node.classKeyInternal());
+      return this.#classKeyFromClassKey(node.classKeyInternal());
     }
     return null;
   }
@@ -2921,7 +2895,7 @@ export interface HeapSnapshotHeader {
 export abstract class HeapSnapshotItemProvider {
   protected readonly iterator: HeapSnapshotItemIterator;
   readonly #indexProvider: HeapSnapshotItemIndexProvider;
-  readonly #isEmptyInternal: boolean;
+  readonly #isEmpty: boolean;
   protected iterationOrder: number[]|null;
   protected currentComparator: HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig|null;
   #sortedPrefixLength: number;
@@ -2929,7 +2903,7 @@ export abstract class HeapSnapshotItemProvider {
   constructor(iterator: HeapSnapshotItemIterator, indexProvider: HeapSnapshotItemIndexProvider) {
     this.iterator = iterator;
     this.#indexProvider = indexProvider;
-    this.#isEmptyInternal = !iterator.hasNext();
+    this.#isEmpty = !iterator.hasNext();
     this.iterationOrder = null;
     this.currentComparator = null;
     this.#sortedPrefixLength = 0;
@@ -2947,7 +2921,7 @@ export abstract class HeapSnapshotItemProvider {
   }
 
   isEmpty(): boolean {
-    return this.#isEmptyInternal;
+    return this.#isEmpty;
   }
 
   serializeItemsRange(begin: number, end: number): HeapSnapshotModel.HeapSnapshotModel.ItemsRange {
@@ -3849,10 +3823,10 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
 
   override hasStringName(): boolean {
     if (!this.isShortcut()) {
-      return this.hasStringNameInternal();
+      return this.#hasStringName();
     }
     // @ts-expect-error parseInt is successful against numbers.
-    return isNaN(parseInt(this.nameInternal(), 10));
+    return isNaN(parseInt(this.#name(), 10));
   }
 
   isElement(): boolean {
@@ -3880,7 +3854,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
   }
 
   override name(): string {
-    const name = this.nameInternal();
+    const name = this.#name();
     if (!this.isShortcut()) {
       return String(name);
     }
@@ -3913,14 +3887,14 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     return '?' + name + '?';
   }
 
-  private hasStringNameInternal(): boolean {
+  #hasStringName(): boolean {
     const type = this.rawType();
     const snapshot = this.snapshot;
     return type !== snapshot.edgeElementType && type !== snapshot.edgeHiddenType;
   }
 
-  private nameInternal(): string|number {
-    return this.hasStringNameInternal() ? this.snapshot.strings[this.nameOrIndex()] : this.nameOrIndex();
+  #name(): string|number {
+    return this.#hasStringName() ? this.snapshot.strings[this.nameOrIndex()] : this.nameOrIndex();
   }
 
   private nameOrIndex(): number {
@@ -3932,7 +3906,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
   }
 
   override nameIndex(): number {
-    if (!this.hasStringNameInternal()) {
+    if (!this.#hasStringName()) {
       throw new Error('Edge does not have string name');
     }
     return this.nameOrIndex();

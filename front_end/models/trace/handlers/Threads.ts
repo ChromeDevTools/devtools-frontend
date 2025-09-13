@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
@@ -7,7 +7,7 @@ import type * as Types from '../types/types.js';
 
 import type {AuctionWorkletsData} from './AuctionWorkletsHandler.js';
 import type * as Renderer from './RendererHandler.js';
-import type {ParsedTrace} from './types.js';
+import type {HandlerData} from './types.js';
 
 export interface ThreadData {
   pid: Types.Events.ProcessID;
@@ -82,7 +82,7 @@ export function threadsInRenderer(
   return foundThreads;
 }
 
-const threadsInTraceCache = new WeakMap<ParsedTrace, readonly ThreadData[]>();
+const threadsInHandlerDataCache = new WeakMap<HandlerData, readonly ThreadData[]>();
 
 /**
  * Given trace parsed data, this helper will return a high level array of
@@ -92,24 +92,24 @@ const threadsInTraceCache = new WeakMap<ParsedTrace, readonly ThreadData[]>();
  * for both trace types.
  * The resulting data is cached per-trace, so you can safely call this multiple times.
  */
-export function threadsInTrace(parsedTrace: ParsedTrace): readonly ThreadData[] {
-  const cached = threadsInTraceCache.get(parsedTrace);
+export function threadsInTrace(handlerData: HandlerData): readonly ThreadData[] {
+  const cached = threadsInHandlerDataCache.get(handlerData);
   if (cached) {
     return cached;
   }
 
   // If we have Renderer threads, we prefer to use those.
-  const threadsFromRenderer = threadsInRenderer(parsedTrace.Renderer, parsedTrace.AuctionWorklets);
+  const threadsFromRenderer = threadsInRenderer(handlerData.Renderer, handlerData.AuctionWorklets);
   if (threadsFromRenderer.length) {
-    threadsInTraceCache.set(parsedTrace, threadsFromRenderer);
+    threadsInHandlerDataCache.set(handlerData, threadsFromRenderer);
     return threadsFromRenderer;
   }
 
   // If it's a CPU Profile trace, there will be no Renderer threads.
   // We can fallback to using the data from the SamplesHandler.
   const foundThreads: ThreadData[] = [];
-  if (parsedTrace.Samples.profilesInProcess.size) {
-    for (const [pid, process] of parsedTrace.Samples.profilesInProcess) {
+  if (handlerData.Samples.profilesInProcess.size) {
+    for (const [pid, process] of handlerData.Samples.profilesInProcess) {
       for (const [tid, thread] of process) {
         if (!thread.profileTree) {
           // Drop threads where we could not create the tree; this indicates
@@ -128,12 +128,12 @@ export function threadsInTrace(parsedTrace: ParsedTrace): readonly ThreadData[] 
           processIsOnMainFrame: false,
           tree: thread.profileTree,
           type: ThreadType.CPU_PROFILE,
-          entryToNode: parsedTrace.Samples.entryToNode,
+          entryToNode: handlerData.Samples.entryToNode,
         });
       }
     }
   }
 
-  threadsInTraceCache.set(parsedTrace, foundThreads);
+  threadsInHandlerDataCache.set(handlerData, foundThreads);
   return foundThreads;
 }

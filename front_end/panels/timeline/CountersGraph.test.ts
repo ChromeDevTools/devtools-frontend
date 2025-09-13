@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -24,14 +24,14 @@ class FakeTimelineModeViewDelegate implements Timeline.TimelinePanel.TimelineMod
 
 async function renderCountersGraphForMainThread(context: Mocha.Context): Promise<{
   countersGraph: Timeline.CountersGraph.CountersGraph,
-  parsedTrace: Trace.Handlers.Types.ParsedTrace,
+  parsedTrace: Trace.TraceModel.ParsedTrace,
 }> {
   const timelineModeViewDelegate = new FakeTimelineModeViewDelegate();
-  const {parsedTrace} = await TraceLoader.traceEngine(context, 'web-dev-with-commit.json.gz');
+  const parsedTrace = await TraceLoader.traceEngine(context, 'web-dev-with-commit.json.gz');
   const countersGraph = new Timeline.CountersGraph.CountersGraph(timelineModeViewDelegate);
   renderElementIntoDOM(countersGraph);
 
-  const mainThread = getMainThread(parsedTrace.Renderer);
+  const mainThread = getMainThread(parsedTrace.data.Renderer);
   countersGraph.setModel(parsedTrace, mainThread.entries);
   await raf();
   return {countersGraph, parsedTrace};

@@ -1,8 +1,8 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as UI from '../../legacy.js';
+import * as Geometry from '../../../../models/geometry/geometry.js';
 
 import * as InlineEditor from './inline_editor.js';
 
@@ -28,7 +28,7 @@ describe('BezierUI', () => {
   });
 
   it('can draw velocity chart correctly', () => {
-    const bezier = new UI.Geometry.CubicBezier(new UI.Geometry.Point(1, 1), new UI.Geometry.Point(3, 4));
+    const bezier = new Geometry.CubicBezier(new Geometry.Point(1, 1), new Geometry.Point(3, 4));
     const path = document.createElement('path');
     InlineEditor.BezierUI.BezierUI.drawVelocityChart(bezier, path, 10);
     assert.strictEqual(
@@ -67,7 +67,7 @@ describe('BezierUI', () => {
       controlPointRadius: 3,
       shouldDrawLine: true,
     });
-    const bezier = new UI.Geometry.CubicBezier(new UI.Geometry.Point(1, 1), new UI.Geometry.Point(3, 4));
+    const bezier = new Geometry.CubicBezier(new Geometry.Point(1, 1), new Geometry.Point(3, 4));
     const svg = document.createElement('svg');
     bezierUI.drawCurve(bezier, svg);
     /*

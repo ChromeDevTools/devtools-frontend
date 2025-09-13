@@ -1,25 +1,19 @@
 /*
- * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Copyright 2023 The Chromium Authors
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
 
 .select-button {
   display: flex;
-  gap: 12px;
+  gap: var(--sys-size-6);
+}
+
+.groups-label {
+  display: inline-block;
+  padding: 0 var(--sys-size-4) var(--sys-size-4) 0;
 }
 
 .select-button devtools-button {
   position: relative; /* Needed for outline to appear on top of the next element */
-}
-
-.select-button devtools-select-menu {
-  position: relative;
-  top: var(--sys-size-1);
-  height: var(--sys-size-9);
-}
-
-.select-menu-item-content-with-icon {
-  display: flex;
-  align-items: center;
 }

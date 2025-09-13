@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -78,7 +78,7 @@ function getCallFrameId(callFrame: Types.Events.CallFrame|Protocol.Runtime.CallF
 }
 
 function getLargestTopLevelFunctionData(
-    forcedReflowEvents: Types.Events.Event[], traceParsedData: Handlers.Types.ParsedTrace): ForcedReflowAggregatedData|
+    forcedReflowEvents: Types.Events.Event[], traceParsedData: Handlers.Types.HandlerData): ForcedReflowAggregatedData|
     undefined {
   const entryToNodeMap = traceParsedData.Renderer.entryToNode;
   const dataByTopLevelFunction = new Map<string, ForcedReflowAggregatedData>();
@@ -150,16 +150,20 @@ function finalize(partialModel: PartialInsightModel<ForcedReflowInsightModel>): 
   };
 }
 
-function getBottomCallFrameForEvent(event: Types.Events.Event, traceParsedData: Handlers.Types.ParsedTrace):
+function getBottomCallFrameForEvent(event: Types.Events.Event, traceParsedData: Handlers.Types.HandlerData):
     Types.Events.CallFrame|Protocol.Runtime.CallFrame|null {
   const profileStackTrace = Extras.StackTraceForEvent.get(event, traceParsedData);
-  const eventStackTrace = Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
+  const eventTopCallFrame = Helpers.Trace.getStackTraceTopCallFrameInEventPayload(event);
 
-  return profileStackTrace?.callFrames[0] ?? eventStackTrace?.[0] ?? null;
+  return profileStackTrace?.callFrames[0] ?? eventTopCallFrame ?? null;
+}
+
+export function isForcedReflowInsight(model: InsightModel): model is ForcedReflowInsightModel {
+  return model.insightKey === InsightKeys.FORCED_REFLOW;
 }
 
 export function generateInsight(
-    traceParsedData: Handlers.Types.ParsedTrace, context: InsightSetContext): ForcedReflowInsightModel {
+    traceParsedData: Handlers.Types.HandlerData, context: InsightSetContext): ForcedReflowInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => {
     const frameId = Helpers.Trace.frameIDForEvent(event);
     if (frameId !== context.frameId) {

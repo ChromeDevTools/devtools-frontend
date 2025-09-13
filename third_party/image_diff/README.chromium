@@ -4,7 +4,7 @@ URL: https://source.chromium.org/chromium/chromium/src/+/main:tools/imagediff/
 Version: N/A
 Date: 2023-01-31
 Update Mechanism: Static.HardFork (https://crbug/422062951)
-License: Chromium
+License: BSD-3-Clause
 Security Critical: No
 Shipped: no
 

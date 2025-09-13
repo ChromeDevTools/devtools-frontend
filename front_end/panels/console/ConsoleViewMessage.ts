@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -289,7 +289,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     element: HTMLElement,
     forceSelect: () => void,
   }>;
-  private readonly messageResized: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void;
+  private readonly messageResized:
+      (arg0: Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>) => void;
   // The wrapper that contains consoleRowWrapper and other elements in a column.
   protected elementInternal: HTMLElement|null;
   // The element that wraps console message elements in a row.
@@ -323,7 +324,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
+      onResize: (arg0: Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>) => void) {
     this.message = consoleMessage;
     this.linkifier = linkifier;
     this.requestResolver = requestResolver;
@@ -945,13 +946,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       }
       const renderResult = await UI.UIUtils.Renderer.render(node);
       if (renderResult) {
-        if (renderResult.tree) {
-          this.selectableChildren.push(renderResult.tree);
-          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementAttached, this.messageResized);
-          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementExpanded, this.messageResized);
-          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this.messageResized);
-        }
-        result.appendChild(renderResult.node);
+        this.selectableChildren.push(renderResult);
+        const resizeObserver = new ResizeObserver(() => {
+          this.messageResized({data: renderResult.element});
+        });
+        resizeObserver.observe(renderResult.element);
+        result.appendChild(renderResult.element);
       } else {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
       }
@@ -1967,7 +1967,8 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      onToggle: () => void, onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
+      onToggle: () => void,
+      onResize: (arg0: Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>) => void) {
     console.assert(consoleMessage.isGroupStartMessage());
     super(consoleMessage, linkifier, requestResolver, issueResolver, onResize);
     this.collapsedInternal = consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed;
@@ -2054,7 +2055,7 @@ export class ConsoleCommand extends ConsoleViewMessage {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
+      onResize: (arg0: Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>) => void) {
     super(consoleMessage, linkifier, requestResolver, issueResolver, onResize);
     this.formattedCommand = null;
   }
@@ -2116,7 +2117,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
+      onResize: (arg0: Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>) => void) {
     super(consoleMessage, linkifier, requestResolver, issueResolver, onResize);
     console.assert(consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.Table);
     this.dataGrid = null;

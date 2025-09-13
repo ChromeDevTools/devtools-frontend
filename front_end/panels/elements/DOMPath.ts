@@ -1,4 +1,4 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
+// Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -17,7 +17,7 @@ export const cssPath = function(node: SDK.DOMModel.DOMNode, optimized?: boolean)
   }
 
   const steps = [];
-  let contextNode: (SDK.DOMModel.DOMNode|null) = (node as SDK.DOMModel.DOMNode | null);
+  let contextNode: SDK.DOMModel.DOMNode|null = node;
   while (contextNode) {
     const step = cssPathStep(contextNode, Boolean(optimized), contextNode === node);
     if (!step) {
@@ -176,7 +176,7 @@ export const xPath = function(node: SDK.DOMModel.DOMNode, optimized?: boolean): 
   }
 
   const steps = [];
-  let contextNode: (SDK.DOMModel.DOMNode|null) = (node as SDK.DOMModel.DOMNode | null);
+  let contextNode: SDK.DOMModel.DOMNode|null = node;
   while (contextNode) {
     const step = xPathValue(contextNode, optimized);
     if (!step) {

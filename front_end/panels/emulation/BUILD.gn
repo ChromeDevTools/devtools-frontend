@@ -1,4 +1,4 @@
-# Copyright 2020 The Chromium Authors. All rights reserved.
+# Copyright 2020 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -37,6 +37,7 @@ devtools_module("emulation") {
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/emulation:bundle",
+    "../../models/geometry:bundle",
     "../../models/workspace:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../ui/components/icon_button:bundle",

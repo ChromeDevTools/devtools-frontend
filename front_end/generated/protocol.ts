@@ -1,4 +1,4 @@
-// Copyright (c) 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -172,7 +172,8 @@ export namespace Accessibility {
    * - from 'live' to 'root': attributes which apply to nodes in live regions
    * - from 'autocomplete' to 'valuetext': attributes which apply to widgets
    * - from 'checked' to 'selected': states which apply to widgets
-   * - from 'activedescendant' to 'owns' - relationships between elements other than parent/child/sibling.
+   * - from 'activedescendant' to 'owns': relationships between elements other than parent/child/sibling
+   * - from 'activeFullscreenElement' to 'uninteresting': reasons why this noode is hidden
    */
   export const enum AXPropertyName {
     Actions = 'actions',
@@ -216,6 +217,23 @@ export namespace Accessibility {
     Labelledby = 'labelledby',
     Owns = 'owns',
     Url = 'url',
+    ActiveFullscreenElement = 'activeFullscreenElement',
+    ActiveModalDialog = 'activeModalDialog',
+    ActiveAriaModalDialog = 'activeAriaModalDialog',
+    AriaHiddenElement = 'ariaHiddenElement',
+    AriaHiddenSubtree = 'ariaHiddenSubtree',
+    EmptyAlt = 'emptyAlt',
+    EmptyText = 'emptyText',
+    InertElement = 'inertElement',
+    InertSubtree = 'inertSubtree',
+    LabelContainer = 'labelContainer',
+    LabelFor = 'labelFor',
+    NotRendered = 'notRendered',
+    NotVisible = 'notVisible',
+    PresentationalRole = 'presentationalRole',
+    ProbablyPresentational = 'probablyPresentational',
+    InactiveCarouselTabContent = 'inactiveCarouselTabContent',
+    Uninteresting = 'uninteresting',
   }
 
   /**
@@ -1617,6 +1635,8 @@ export namespace Autofill {
   export interface AddressField {
     /**
      * address field name, for example GIVEN_NAME.
+     * The full list of supported field names:
+     * https://source.chromium.org/chromium/chromium/src/+/main:components/autofill/core/browser/field_types.cc;l=38
      */
     name: string;
     /**
@@ -1708,9 +1728,13 @@ export namespace Autofill {
      */
     frameId?: Page.FrameId;
     /**
-     * Credit card information to fill out the form. Credit card data is not saved.
+     * Credit card information to fill out the form. Credit card data is not saved.  Mutually exclusive with `address`.
      */
-    card: CreditCard;
+    card?: CreditCard;
+    /**
+     * Address to fill out the form. Address data is not saved. Mutually exclusive with `card`.
+     */
+    address?: Address;
   }
 
   export interface SetAddressesRequest {
@@ -4586,6 +4610,7 @@ export namespace DOM {
     compatibilityMode?: CompatibilityMode;
     assignedSlot?: BackendNode;
     isScrollable?: boolean;
+    affectedByStartingStyles?: boolean;
   }
 
   /**
@@ -5627,6 +5652,20 @@ export namespace DOM {
      * If the node is scrollable.
      */
     isScrollable: boolean;
+  }
+
+  /**
+   * Fired when a node's starting styles changes.
+   */
+  export interface AffectedByStartingStylesFlagUpdatedEvent {
+    /**
+     * The id of the node.
+     */
+    nodeId: DOM.NodeId;
+    /**
+     * If the node has starting styles.
+     */
+    affectedByStartingStyles: boolean;
   }
 
   /**
@@ -8293,9 +8332,9 @@ export namespace IndexedDB {
      */
     objectStoreName: string;
     /**
-     * Index name, empty string for object store data requests.
+     * Index name. If not specified or empty string, it performs an object store data request.
      */
-    indexName: string;
+    indexName?: string;
     /**
      * Number of records to skip.
      */
@@ -11189,6 +11228,13 @@ export namespace Network {
     status: IpProxyStatus;
   }
 
+  export interface SetIPProtectionProxyBypassEnabledRequest {
+    /**
+     * Whether IP Proxy is being bypassed by devtools; false by default.
+     */
+    enabled: boolean;
+  }
+
   export interface SetAcceptedEncodingsRequest {
     /**
      * List of accepted content encodings.
@@ -13531,6 +13577,7 @@ export namespace Page {
     DigitalCredentialsCreate = 'digital-credentials-create',
     DigitalCredentialsGet = 'digital-credentials-get',
     DirectSockets = 'direct-sockets',
+    DirectSocketsMulticast = 'direct-sockets-multicast',
     DirectSocketsPrivate = 'direct-sockets-private',
     DisplayCapture = 'display-capture',
     DocumentDomain = 'document-domain',
@@ -14417,9 +14464,9 @@ export namespace Page {
     IndexedDBEvent = 'IndexedDBEvent',
     Dummy = 'Dummy',
     JsNetworkRequestReceivedCacheControlNoStoreResource = 'JsNetworkRequestReceivedCacheControlNoStoreResource',
-    WebRTCSticky = 'WebRTCSticky',
-    WebTransportSticky = 'WebTransportSticky',
-    WebSocketSticky = 'WebSocketSticky',
+    WebRTCUsedWithCCNS = 'WebRTCUsedWithCCNS',
+    WebTransportUsedWithCCNS = 'WebTransportUsedWithCCNS',
+    WebSocketUsedWithCCNS = 'WebSocketUsedWithCCNS',
     SmartCard = 'SmartCard',
     LiveMediaStreamTrack = 'LiveMediaStreamTrack',
     UnloadHandler = 'UnloadHandler',
@@ -15951,6 +15998,11 @@ export namespace Preload {
      * @deprecated
      */
     errorMessage?: string;
+    /**
+     * For more details, see:
+     * https://github.com/WICG/nav-speculation/blob/main/speculation-rules-tags.md
+     */
+    tag?: string;
   }
 
   export const enum RuleSetErrorType {

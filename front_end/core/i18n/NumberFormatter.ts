@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -39,6 +39,13 @@ export function defineFormatter(options: Intl.NumberFormatOptions): NumberFormat
  * We don't like that, so when there is no space literal we inject the provided separator manually.
  */
 function formatAndEnsureSpace(formatter: Intl.NumberFormat, value: number, separator = '\xA0'): string {
+  // TODO(crbug.com/443038315): this method is defined in
+  // models/ai_assistance in the UnitFormatters file. We can't currently
+  // re-use it because various models depend on i18n and that creates a
+  // circular build.
+  // We should move the unit formatters to their own model so it can be
+  // used across the codebase.
+
   const parts = formatter.formatToParts(value);
 
   let hasSpace = false;

@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -11,10 +11,10 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {md} from '../utils/Helpers.js';
+import * as Utils from '../utils/utils.js';
 
 import type {BaseInsightComponent} from './insights/BaseInsightComponent.js';
-import {shouldRenderForCategory} from './insights/Helpers.js';
+import {md, shouldRenderForCategory} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
 import sidebarSingleInsightSetStyles from './sidebarSingleInsightSet.css.js';
@@ -73,12 +73,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarSing
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface SidebarSingleInsightSetData {
-  insights: Trace.Insights.Types.TraceInsightSets|null;
   insightSetKey: Trace.Types.Events.NavigationId|null;
   activeCategory: Trace.Insights.Types.InsightCategory;
   activeInsight: ActiveInsight|null;
-  parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
-  traceMetadata: Trace.Types.File.MetaData|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
 }
 
 type InsightNameToComponentMapping =
@@ -121,12 +119,10 @@ export class SidebarSingleInsightSet extends HTMLElement {
   #activeInsightElement: BaseInsightComponent<Trace.Insights.Types.InsightModel>|null = null;
 
   #data: SidebarSingleInsightSetData = {
-    insights: null,
     insightSetKey: null,
     activeCategory: Trace.Insights.Types.InsightCategory.ALL,
     activeInsight: null,
     parsedTrace: null,
-    traceMetadata: null,
   };
 
   #dismissedFieldMismatchNotice = false;
@@ -224,7 +220,11 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   #getLocalMetrics(insightSetKey: string) {
-    const insightSet = this.#data.insights?.get(insightSetKey);
+    if (!this.#data.parsedTrace) {
+      return {};
+    }
+
+    const insightSet = this.#data.parsedTrace.insights?.get(insightSetKey);
     if (!insightSet) {
       return {};
     }
@@ -237,13 +237,17 @@ export class SidebarSingleInsightSet extends HTMLElement {
   }
 
   #getFieldMetrics(insightSetKey: string): Trace.Insights.Common.CrUXFieldMetricResults|null {
-    const insightSet = this.#data.insights?.get(insightSetKey);
+    if (!this.#data.parsedTrace) {
+      return null;
+    }
+
+    const insightSet = this.#data.parsedTrace.insights?.get(insightSetKey);
     if (!insightSet) {
       return null;
     }
 
     const fieldMetricsResults = Trace.Insights.Common.getFieldMetricsForInsightSet(
-        insightSet, this.#data.traceMetadata, CrUXManager.CrUXManager.instance().getSelectedScope());
+        insightSet, this.#data.parsedTrace.metadata, CrUXManager.CrUXManager.instance().getSelectedScope());
     if (!fieldMetricsResults) {
       return null;
     }
@@ -408,10 +412,10 @@ export class SidebarSingleInsightSet extends HTMLElement {
   }
 
   #renderInsights(
-      insightSets: Trace.Insights.Types.TraceInsightSets|null,
+      insights: Trace.Insights.Types.TraceInsightSets|null,
       insightSetKey: string,
       ): Lit.LitTemplate {
-    const insightSet = insightSets?.get(insightSetKey);
+    const insightSet = insights?.get(insightSetKey);
     if (!insightSet) {
       return Lit.nothing;
     }
@@ -419,13 +423,18 @@ export class SidebarSingleInsightSet extends HTMLElement {
     const fieldMetrics = this.#getFieldMetrics(insightSetKey);
     const {shownInsights: shownInsightsData, passedInsights: passedInsightsData} =
         SidebarSingleInsightSet.categorizeInsights(
-            insightSets,
+            insights,
             insightSetKey,
             this.#data.activeCategory,
         );
 
     const renderInsightComponent = (insightData: CategorizedInsightData): Lit.TemplateResult => {
       const {componentClass, model} = insightData;
+      if (!this.#data.parsedTrace?.insights) {
+        return html``;
+      }
+
+      const agentFocus = Utils.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
       // clang-format off
       return html`<div>
         <${componentClass.litTagName}
@@ -438,7 +447,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
           .model=${model}
           .bounds=${insightSet.bounds}
           .insightSetKey=${insightSetKey}
-          .parsedTrace=${this.#data.parsedTrace}
+          .agentFocus=${agentFocus}
           .fieldMetrics=${fieldMetrics}>
         </${componentClass.litTagName}>
       </div>`;
@@ -465,10 +474,10 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
   #render(): void {
     const {
-      insights,
+      parsedTrace,
       insightSetKey,
     } = this.#data;
-    if (!insights || !insightSetKey) {
+    if (!parsedTrace?.insights || !insightSetKey) {
       Lit.render(html``, this.#shadow, {host: this});
       return;
     }
@@ -478,7 +487,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
       <style>${sidebarSingleInsightSetStyles}</style>
       <div class="navigation">
         ${this.#renderMetrics(insightSetKey)}
-        ${this.#renderInsights(insights, insightSetKey)}
+        ${this.#renderInsights(parsedTrace.insights, insightSetKey)}
         </div>
       `, this.#shadow, {host: this});
     // clang-format on

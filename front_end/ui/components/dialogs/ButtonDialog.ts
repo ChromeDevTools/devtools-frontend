@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -53,8 +53,14 @@ export class ButtonDialog extends HTMLElement {
       throw new Error('Dialog not found');
     }
 
-    this.state = DialogState.EXPANDED;
-    void this.#dialog.setDialogVisible(true);
+    if (this.#data?.state === DialogState.DISABLED) {
+      // If dialog is disabled start teardown process to return
+      // focus to caller.
+      void this.#dialog.setDialogVisible(false);
+    } else {
+      void this.#dialog.setDialogVisible(true);
+    }
+
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
@@ -63,7 +69,6 @@ export class ButtonDialog extends HTMLElement {
       throw new Error('Dialog not found');
     }
     void this.#dialog.setDialogVisible(false);
-    this.state = DialogState.EXPANDED;
     if (evt) {
       evt.stopImmediatePropagation();
     }

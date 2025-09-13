@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -21,7 +21,7 @@ describeWithEnvironment('CLSCulprits component', () => {
     const component = new Insights.CLSCulprits.CLSCulprits();
     component.model = clsModel;
     component.insightSetKey = firstNavInsights.id;
-    component.bounds = traceData.parsedTrace.Meta.traceBounds;
+    component.bounds = traceData.data.Meta.traceBounds;
     component.selected = true;
 
     renderElementIntoDOM(component);

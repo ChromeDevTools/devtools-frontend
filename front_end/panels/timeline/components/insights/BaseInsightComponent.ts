@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -15,10 +15,10 @@ import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import type * as Overlays from '../../overlays/overlays.js';
-import {md} from '../../utils/Helpers.js';
 import * as Utils from '../../utils/utils.js';
 
 import baseInsightComponentStyles from './baseInsightComponent.css.js';
+import {md} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import type {TableState} from './Table.js';
 
@@ -86,7 +86,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
   #selected = false;
   #model: T|null = null;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #agentFocus: Utils.AIContext.AgentFocus|null = null;
   #fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults|null = null;
 
   get model(): T|null {
@@ -158,8 +158,8 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
-  set parsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
-    this.#parsedTrace = parsedTrace;
+  set agentFocus(agentFocus: Utils.AIContext.AgentFocus) {
+    this.#agentFocus = agentFocus;
   }
 
   set fieldMetrics(fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults) {
@@ -349,7 +349,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   }
 
   #askAIButtonClick(): void {
-    if (!this.#model || !this.#parsedTrace || !this.data.bounds) {
+    if (!this.#agentFocus) {
       return;
     }
 
@@ -359,8 +359,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return;
     }
 
-    const context = Utils.AIContext.AgentFocus.fromInsight(this.#parsedTrace, this.#model, this.data.bounds);
-    UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
+    UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, this.#agentFocus);
 
     // Trigger the AI Assistance panel to open.
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);

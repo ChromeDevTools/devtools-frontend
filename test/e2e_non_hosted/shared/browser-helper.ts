@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -77,13 +77,13 @@ export class BrowserWrapper {
   }
 }
 export class Launcher {
-  static async browserSetup(settings: BrowserSettings) {
-    const browser = await Launcher.launchChrome(settings);
+  static async browserSetup(settings: BrowserSettings, serverPort: number) {
+    const browser = await Launcher.launchChrome(settings, serverPort);
     setupBrowserProcessIO(browser);
     return new BrowserWrapper(browser);
   }
 
-  private static launchChrome(settings: BrowserSettings) {
+  private static launchChrome(settings: BrowserSettings, serverPort: number) {
     const frontEndDirectory = url.pathToFileURL(path.join(GEN_DIR, 'front_end'));
     const disabledFeatures = settings.disabledFeatures?.slice() ?? [];
     const launchArgs = [
@@ -101,6 +101,7 @@ export class Launcher {
       '--enable-crash-reporter',
       // This has no effect (see https://crbug.com/435638630)
       `--crash-dumps-dir=${TestConfig.artifactsDir}`,
+      `--privacy-sandbox-enrollment-overrides=https://localhost:${serverPort}`,
     ];
     const headless = TestConfig.headless;
     // CDP commands in e2e and interaction should not generally take
@@ -166,12 +167,14 @@ export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
     'PrivacySandboxAdsAPIsOverride',
     'AutofillEnableDevtoolsIssues',
     'DevToolsVeLogging:testing/true',
+    'CADisplayLink',
   ],
   disabledFeatures: [
     'PMProcessPriorityPolicy',                     // crbug.com/361252079
     'MojoChannelAssociatedSendUsesRunOrPostTask',  // crbug.com/376228320
     'RasterInducingScroll',                        // crbug.com/381055647
     'CompositeBackgroundColorAnimation',           // crbug.com/381055647
+    'ScriptSrcHashesV1',                           // crbug.com/443216445
   ]
   // LINT.ThenChange(/test/conductor/hooks.ts:features)
 };

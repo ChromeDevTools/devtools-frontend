@@ -1,11 +1,11 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -66,7 +66,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
   }
 
   private isARIAAttribute(attribute: SDK.DOMModel.Attribute): boolean {
-    return ATTRIBUTES.has(attribute.name);
+    return SDK.DOMModel.ARIA_ATTRIBUTES.has(attribute.name);
   }
 }
 
@@ -235,61 +235,3 @@ export class ARIAAttributePrompt extends UI.TextPrompt.TextPrompt {
     });
   }
 }
-
-// Keep this list in sync with https://w3c.github.io/aria/#state_prop_def
-const ATTRIBUTES = new Set<string>([
-  'role',
-  'aria-activedescendant',
-  'aria-atomic',
-  'aria-autocomplete',
-  'aria-braillelabel',
-  'aria-brailleroledescription',
-  'aria-busy',
-  'aria-checked',
-  'aria-colcount',
-  'aria-colindex',
-  'aria-colindextext',
-  'aria-colspan',
-  'aria-controls',
-  'aria-current',
-  'aria-describedby',
-  'aria-description',
-  'aria-details',
-  'aria-disabled',
-  'aria-dropeffect',
-  'aria-errormessage',
-  'aria-expanded',
-  'aria-flowto',
-  'aria-grabbed',
-  'aria-haspopup',
-  'aria-hidden',
-  'aria-invalid',
-  'aria-keyshortcuts',
-  'aria-label',
-  'aria-labelledby',
-  'aria-level',
-  'aria-live',
-  'aria-modal',
-  'aria-multiline',
-  'aria-multiselectable',
-  'aria-orientation',
-  'aria-owns',
-  'aria-placeholder',
-  'aria-posinset',
-  'aria-pressed',
-  'aria-readonly',
-  'aria-relevant',
-  'aria-required',
-  'aria-roledescription',
-  'aria-rowcount',
-  'aria-rowindex',
-  'aria-rowindextext',
-  'aria-rowspan',
-  'aria-selected',
-  'aria-setsize',
-  'aria-sort',
-  'aria-valuemax',
-  'aria-valuemin',
-  'aria-valuenow',
-  'aria-valuetext',
-]);

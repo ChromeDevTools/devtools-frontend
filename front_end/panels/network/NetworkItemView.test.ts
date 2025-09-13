@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   deinitializeGlobalVars,
@@ -27,7 +28,7 @@ function renderNetworkItemView(request?: SDK.NetworkRequest.NetworkRequest): Net
         null);
   }
   const networkItemView =
-      new Network.NetworkItemView.NetworkItemView(request, {} as Network.NetworkTimeCalculator.NetworkTimeCalculator);
+      new Network.NetworkItemView.NetworkItemView(request, {} as NetworkTimeCalculator.NetworkTimeCalculator);
   const div = document.createElement('div');
   renderElementIntoDOM(div);
   networkItemView.markAsRoot();

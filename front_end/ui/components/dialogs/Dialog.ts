@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -142,7 +142,7 @@ export class Dialog extends HTMLElement {
   #isPendingCloseDialog = false;
   #hitArea = new DOMRect(0, 0, 0, 0);
   #dialogClientRect = new DOMRect(0, 0, 0, 0);
-  #bestVerticalPositionInternal: DialogVerticalPosition|null = null;
+  #bestVerticalPosition: DialogVerticalPosition|null = null;
   #bestHorizontalAlignment: DialogHorizontalAlignment|null = null;
   readonly #devtoolsMutationObserver = new MutationObserver(mutations => {
     if (this.#props.expectedMutationsSelector) {
@@ -211,7 +211,7 @@ export class Dialog extends HTMLElement {
   }
 
   get bestVerticalPosition(): DialogVerticalPosition|null {
-    return this.#bestVerticalPositionInternal;
+    return this.#bestVerticalPosition;
   }
 
   get bestHorizontalAlignment(): DialogHorizontalAlignment|null {
@@ -266,6 +266,12 @@ export class Dialog extends HTMLElement {
 
   set state(state: DialogState) {
     this.#props.state = state;
+
+    // Handles teardown process in case dialog is collapsed or disabled
+    if (this.#props.state === DialogState.COLLAPSED || this.#props.state === DialogState.DISABLED) {
+      this.#forceDialogCloseInDevToolsBound();
+    }
+
     this.#onStateChange();
   }
 
@@ -312,12 +318,10 @@ export class Dialog extends HTMLElement {
 
   async setDialogVisible(show: boolean): Promise<void> {
     if (show) {
-      this.state = DialogState.EXPANDED;
       await this.#showDialog();
       return;
     }
 
-    this.state = DialogState.COLLAPSED;
     this.#closeDialog();
   }
 
@@ -472,11 +476,11 @@ export class Dialog extends HTMLElement {
             this.#getBestHorizontalAlignment(absoluteAnchorBounds, devtoolsBounds) :
             this.#props.horizontalAlignment;
 
-        this.#bestVerticalPositionInternal = this.#props.position === DialogVerticalPosition.AUTO ?
+        this.#bestVerticalPosition = this.#props.position === DialogVerticalPosition.AUTO ?
             this.#getBestVerticalPosition(absoluteAnchorBounds, dialogHeight, devtoolsBounds) :
             this.#props.position;
         if (this.#bestHorizontalAlignment === DialogHorizontalAlignment.AUTO ||
-            this.#bestVerticalPositionInternal === DialogVerticalPosition.AUTO) {
+            this.#bestVerticalPosition === DialogVerticalPosition.AUTO) {
           return;
         }
         this.#hitArea.height = anchorBottom - anchorTop + CONNECTOR_HEIGHT;
@@ -538,7 +542,7 @@ export class Dialog extends HTMLElement {
                 this.#bestHorizontalAlignment, `Unknown alignment type: ${this.#bestHorizontalAlignment}`);
         }
 
-        switch (this.#bestVerticalPositionInternal) {
+        switch (this.#bestVerticalPosition) {
           case DialogVerticalPosition.TOP: {
             this.style.setProperty('--dialog-top', '0');
             this.style.setProperty('--dialog-margin', 'auto');
@@ -559,8 +563,7 @@ export class Dialog extends HTMLElement {
             break;
           }
           default:
-            Platform.assertNever(
-                this.#bestVerticalPositionInternal, `Unknown position type: ${this.#bestVerticalPositionInternal}`);
+            Platform.assertNever(this.#bestVerticalPosition, `Unknown position type: ${this.#bestVerticalPosition}`);
         }
 
         dialog.close();
@@ -775,7 +778,8 @@ export const enum DialogVerticalPosition {
 
 export const enum DialogState {
   EXPANDED = 'expanded',
-  COLLAPSED = 'collapsed'
+  COLLAPSED = 'collapsed',
+  DISABLED = 'disabled'
 }
 
 export const enum DialogHorizontalAlignment {

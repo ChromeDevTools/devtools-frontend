@@ -47,7 +47,7 @@ export declare class CdpMouse extends Mouse {
 /**
  * @internal
  */
-declare class CdpTouchHandle implements TouchHandle {
+export declare class CdpTouchHandle implements TouchHandle {
     #private;
     constructor(client: CDPSession, touchScreen: CdpTouchscreen, keyboard: CdpKeyboard, touchPoint: Protocol.Input.TouchPoint);
     updateClient(client: CDPSession): void;
@@ -65,5 +65,4 @@ export declare class CdpTouchscreen extends Touchscreen {
     updateClient(client: CDPSession): void;
     touchStart(x: number, y: number): Promise<TouchHandle>;
 }
-export {};
 //# sourceMappingURL=Input.d.ts.map

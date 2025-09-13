@@ -1,4 +1,4 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
+// Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -88,8 +88,7 @@ export interface NewHistoryRecordingData {
   // We do not store this, but need it to build the thumbnail preview.
   filmStripForPreview: Trace.Extras.FilmStrip.Data|null;
   // Also not stored, but used to create the preview overview for a new trace.
-  parsedTrace: Trace.Handlers.Types.ParsedTrace;
-  metadata: Trace.Types.File.MetaData|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
 }
 
 // Lazily instantiate the formatter as the constructor takes 50ms+
@@ -111,9 +110,9 @@ export class TimelineHistoryManager {
   private recordings: TraceRecordingHistoryItem[];
   private readonly action: UI.ActionRegistration.Action;
   private readonly nextNumberByDomain: Map<string, number>;
-  private readonly buttonInternal: ToolbarButton;
+  readonly #button: ToolbarButton;
   private readonly allOverviews: Array<{
-    constructor: (parsedTrace: Trace.Handlers.Types.ParsedTrace) => TimelineEventOverview,
+    constructor: (parsedTrace: Trace.TraceModel.ParsedTrace) => TimelineEventOverview,
     height: number,
   }>;
   private totalHeight: number;
@@ -127,12 +126,12 @@ export class TimelineHistoryManager {
     this.#minimapComponent = minimapComponent;
     this.action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
     this.nextNumberByDomain = new Map();
-    this.buttonInternal = new ToolbarButton(this.action);
+    this.#button = new ToolbarButton(this.action);
 
     this.#landingPageTitle =
         isNode ? i18nString(UIStrings.nodeLandingPageTitle) : i18nString(UIStrings.landingPageTitle);
 
-    UI.ARIAUtils.markAsMenuButton(this.buttonInternal.element);
+    UI.ARIAUtils.markAsMenuButton(this.#button.element);
     this.clear();
 
     // Attempt to reuse the overviews coming from the panel's minimap
@@ -182,13 +181,13 @@ export class TimelineHistoryManager {
 
     // Order is important: this needs to happen first because lots of the
     // subsequent code depends on us storing the preview data into the map.
-    this.#buildAndStorePreviewData(newInput.data.parsedTraceIndex, newInput.parsedTrace, newInput.metadata, filmStrip);
+    this.#buildAndStorePreviewData(newInput.data.parsedTraceIndex, newInput.parsedTrace, filmStrip);
 
     const modelTitle = this.title(newInput.data);
-    this.buttonInternal.setText(modelTitle);
+    this.#button.setText(modelTitle);
     const buttonTitle = this.action.title();
     UI.ARIAUtils.setLabel(
-        this.buttonInternal.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
+        this.#button.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
     this.updateState();
     if (this.recordings.length <= maxRecordings) {
       return;
@@ -212,14 +211,14 @@ export class TimelineHistoryManager {
   }
 
   button(): ToolbarButton {
-    return this.buttonInternal;
+    return this.#button;
   }
 
   clear(): void {
     this.recordings = [];
     this.lastActiveTrace = null;
     this.updateState();
-    this.buttonInternal.setText(this.#landingPageTitle);
+    this.#button.setText(this.#landingPageTitle);
     this.nextNumberByDomain.clear();
   }
 
@@ -241,7 +240,7 @@ export class TimelineHistoryManager {
     // DropDown.show() function finishes when the dropdown menu is closed via selection or losing focus
     const activeTraceIndex = await DropDown.show(
         this.recordings.map(recording => recording.parsedTraceIndex), this.#getActiveTraceIndexForListControl(),
-        this.buttonInternal.element, this.#landingPageTitle);
+        this.#button.element, this.#landingPageTitle);
 
     if (activeTraceIndex === null) {
       return null;
@@ -311,9 +310,9 @@ export class TimelineHistoryManager {
     this.lastActiveTrace = item;
     const modelTitle = this.title(item);
     const buttonTitle = this.action.title();
-    this.buttonInternal.setText(modelTitle);
+    this.#button.setText(modelTitle);
     UI.ARIAUtils.setLabel(
-        this.buttonInternal.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
+        this.#button.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
   }
 
   private updateState(): void {
@@ -341,9 +340,9 @@ export class TimelineHistoryManager {
   }
 
   #buildAndStorePreviewData(
-      parsedTraceIndex: number, parsedTrace: Trace.Handlers.Types.ParsedTrace, metadata: Trace.Types.File.MetaData|null,
+      parsedTraceIndex: number, parsedTrace: Trace.TraceModel.ParsedTrace,
       filmStrip: Trace.Extras.FilmStrip.Data|null): HTMLDivElement {
-    const parsedURL = Common.ParsedURL.ParsedURL.fromString(parsedTrace.Meta.mainFrameURL);
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(parsedTrace.data.Meta.mainFrameURL);
     const domain = parsedURL ? parsedURL.host : '';
 
     const sequenceNumber = this.nextNumberByDomain.get(domain) || 1;
@@ -362,7 +361,7 @@ export class TimelineHistoryManager {
     };
     parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
 
-    preview.appendChild(this.#buildTextDetails(metadata, domain));
+    preview.appendChild(this.#buildTextDetails(parsedTrace.metadata, domain));
     const screenshotAndOverview = preview.createChild('div', 'hbox');
     screenshotAndOverview.appendChild(this.#buildScreenshotThumbnail(filmStrip));
     screenshotAndOverview.appendChild(this.#buildOverview(parsedTrace));
@@ -412,7 +411,7 @@ export class TimelineHistoryManager {
     return container;
   }
 
-  #buildOverview(parsedTrace: Trace.Handlers.Types.ParsedTrace): Element {
+  #buildOverview(parsedTrace: Trace.TraceModel.ParsedTrace): Element {
     const container = document.createElement('div');
     const dPR = window.devicePixelRatio;
     container.style.width = previewWidth + 'px';

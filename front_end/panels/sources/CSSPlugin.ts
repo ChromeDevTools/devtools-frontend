@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -10,6 +10,7 @@ import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
@@ -103,7 +104,7 @@ function findColorsAndCurves(
     from: number,
     to: number,
     onColor: (pos: number, parsedColor: Common.Color.Color, text: string) => void,
-    onCurve: (pos: number, curve: UI.Geometry.CubicBezier, text: string) => void,
+    onCurve: (pos: number, curve: Geometry.CubicBezier, text: string) => void,
     ): void {
   let line = state.doc.lineAt(from);
   function getToken(from: number, to: number): string {
@@ -134,7 +135,7 @@ function findColorsAndCurves(
         if (parsedColor) {
           onColor(node.from, parsedColor, content);
         } else {
-          const parsedCurve = UI.Geometry.CubicBezier.parse(content);
+          const parsedCurve = Geometry.CubicBezier.parse(content);
           if (parsedCurve) {
             onCurve(node.from, parsedCurve, content);
           }
@@ -199,7 +200,7 @@ class ColorSwatchWidget extends CodeMirror.WidgetType {
 }
 
 class CurveSwatchWidget extends CodeMirror.WidgetType {
-  constructor(readonly curve: UI.Geometry.CubicBezier, readonly text: string) {
+  constructor(readonly curve: Geometry.CubicBezier, readonly text: string) {
     super();
   }
 
@@ -249,7 +250,7 @@ type ActiveTooltip = {
   type: TooltipType.CURVE,
   pos: number,
   text: string,
-  curve: UI.Geometry.CubicBezier,
+  curve: Geometry.CubicBezier,
   swatch: IconButton.Icon.Icon,
 };
 

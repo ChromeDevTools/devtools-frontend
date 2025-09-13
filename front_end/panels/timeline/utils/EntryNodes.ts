@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -15,7 +15,7 @@ const domNodesForEventCache =
  * The result is cached so you can safely call this multiple times.
  **/
 export function nodeIdsForEvent(
-    modelData: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
     event: Trace.Types.Events.Event,
     ): Set<Protocol.DOM.BackendNodeId> {
   const fromCache = nodeIdsForEventCache.get(event);
@@ -45,12 +45,12 @@ export function nodeIdsForEvent(
     // For a DecodeImage event, we can use the ImagePaintingHandler, which has
     // done the work to build the relationship between a DecodeImage event and
     // the corresponding PaintImage event.
-    const paintImageEvent = modelData.ImagePainting.paintImageForEvent.get(event);
+    const paintImageEvent = parsedTrace.data.ImagePainting.paintImageForEvent.get(event);
     if (typeof paintImageEvent?.args.data.nodeId !== 'undefined') {
       foundIds.add(paintImageEvent.args.data.nodeId);
     }
   } else if (Trace.Types.Events.isDrawLazyPixelRef(event) && event.args?.LazyPixelRef) {
-    const paintImageEvent = modelData.ImagePainting.paintImageByDrawLazyPixelRef.get(event.args.LazyPixelRef);
+    const paintImageEvent = parsedTrace.data.ImagePainting.paintImageByDrawLazyPixelRef.get(event.args.LazyPixelRef);
     if (typeof paintImageEvent?.args.data.nodeId !== 'undefined') {
       foundIds.add(paintImageEvent.args.data.nodeId);
     }
@@ -67,14 +67,14 @@ export function nodeIdsForEvent(
  * This method is cached for the given event.
  */
 export async function relatedDOMNodesForEvent(
-    modelData: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
     event: Trace.Types.Events.Event): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>|null> {
   const fromCache = domNodesForEventCache.get(event);
   if (fromCache) {
     return fromCache;
   }
 
-  const nodeIds = nodeIdsForEvent(modelData, event);
+  const nodeIds = nodeIdsForEvent(parsedTrace, event);
   if (nodeIds.size) {
     const frame = event.args?.data?.frame as Protocol.Page.FrameId;
     const result = await domNodesForBackendIds(frame, nodeIds);

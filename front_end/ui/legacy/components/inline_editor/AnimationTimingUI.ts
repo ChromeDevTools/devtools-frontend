@@ -1,9 +1,10 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Platform from '../../../../core/platform/platform.js';
+import * as Geometry from '../../../../models/geometry/geometry.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -15,18 +16,18 @@ const DOUBLE_CLICK_DELAY = 500;
 
 interface Params {
   container: Element;
-  bezier: UI.Geometry.CubicBezier;
-  onBezierChange: (bezier: UI.Geometry.CubicBezier) => void;
+  bezier: Geometry.CubicBezier;
+  onBezierChange: (bezier: Geometry.CubicBezier) => void;
 }
 
 class BezierCurveUI {
   #curveUI: BezierUI;
-  #bezier: UI.Geometry.CubicBezier;
+  #bezier: Geometry.CubicBezier;
   #curve: Element;
-  #mouseDownPosition?: UI.Geometry.Point;
-  #controlPosition?: UI.Geometry.Point;
+  #mouseDownPosition?: Geometry.Point;
+  #controlPosition?: Geometry.Point;
   #selectedPoint?: number;
-  #onBezierChange: (bezier: UI.Geometry.CubicBezier) => void;
+  #onBezierChange: (bezier: Geometry.CubicBezier) => void;
 
   constructor({bezier, container, onBezierChange}: Params) {
     this.#bezier = bezier;
@@ -46,9 +47,9 @@ class BezierCurveUI {
   }
 
   private dragStart(event: MouseEvent): boolean {
-    this.#mouseDownPosition = new UI.Geometry.Point(event.x, event.y);
+    this.#mouseDownPosition = new Geometry.Point(event.x, event.y);
     const ui = this.#curveUI;
-    this.#controlPosition = new UI.Geometry.Point(
+    this.#controlPosition = new Geometry.Point(
         Platform.NumberUtilities.clamp((event.offsetX - ui.radius) / ui.curveWidth(), 0, 1),
         (ui.curveHeight() + ui.marginTop + ui.radius - event.offsetY) / ui.curveHeight());
 
@@ -70,7 +71,7 @@ class BezierCurveUI {
     }
     const deltaX = (mouseX - this.#mouseDownPosition.x) / this.#curveUI.curveWidth();
     const deltaY = (mouseY - this.#mouseDownPosition.y) / this.#curveUI.curveHeight();
-    const newPosition = new UI.Geometry.Point(
+    const newPosition = new Geometry.Point(
         Platform.NumberUtilities.clamp(this.#controlPosition.x + deltaX, 0, 1), this.#controlPosition.y - deltaY);
     this.#bezier.controlPoints[this.#selectedPoint] = newPosition;
   }
@@ -85,7 +86,7 @@ class BezierCurveUI {
     this.#onBezierChange(this.#bezier);
   }
 
-  setBezier(bezier: UI.Geometry.CubicBezier): void {
+  setBezier(bezier: Geometry.CubicBezier): void {
     this.#bezier = bezier;
     this.draw();
   }
@@ -327,7 +328,7 @@ export class PresetUI {
   draw(model: AnimationTimingModel, svg: Element): void {
     if (model instanceof CSSLinearEasingModel) {
       this.#linearEasingPresentation.draw(model, svg);
-    } else if (model instanceof UI.Geometry.CubicBezier) {
+    } else if (model instanceof Geometry.CubicBezier) {
       this.#bezierPresentation.drawCurve(model, svg);
     }
   }
@@ -363,7 +364,7 @@ export class AnimationTimingUI {
     this.#model = model;
     this.#onChange = onChange;
 
-    if (this.#model instanceof UI.Geometry.CubicBezier) {
+    if (this.#model instanceof Geometry.CubicBezier) {
       this.#bezierCurveUI =
           new BezierCurveUI({bezier: this.#model, container: this.#bezierContainer, onBezierChange: this.#onChange});
     } else if (this.#model instanceof CSSLinearEasingModel) {
@@ -381,7 +382,7 @@ export class AnimationTimingUI {
 
   setModel(model: AnimationTimingModel): void {
     this.#model = model;
-    if (this.#model instanceof UI.Geometry.CubicBezier) {
+    if (this.#model instanceof Geometry.CubicBezier) {
       if (this.#bezierCurveUI) {
         this.#bezierCurveUI.setBezier(this.#model);
       } else {
@@ -402,7 +403,7 @@ export class AnimationTimingUI {
 
   draw(): void {
     this.#linearEasingContainer.classList.toggle('hidden', !(this.#model instanceof CSSLinearEasingModel));
-    this.#bezierContainer.classList.toggle('hidden', !(this.#model instanceof UI.Geometry.CubicBezier));
+    this.#bezierContainer.classList.toggle('hidden', !(this.#model instanceof Geometry.CubicBezier));
 
     if (this.#bezierCurveUI) {
       this.#bezierCurveUI.draw();

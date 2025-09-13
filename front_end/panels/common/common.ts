@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -7,6 +7,7 @@
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -38,7 +39,7 @@ export class TypeToAllowDialog {
     inputPlaceholder: Platform.UIString.LocalizedString,
   }): Promise<boolean> {
     const dialog = new UI.Dialog.Dialog(options.jslogContext.dialog);
-    dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
+    dialog.setMaxContentSize(new Geometry.Size(504, 340));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog.setDimmed(true);
     const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: commonStyles});
@@ -95,5 +96,7 @@ export class TypeToAllowDialog {
 
 export {AiCodeCompletionTeaser} from './AiCodeCompletionTeaser.js';
 export {FreDialog} from './FreDialog.js';
+export {GdpSignUpDialog} from './GdpSignUpDialog.js';
 export {AiCodeCompletionDisclaimer} from './AiCodeCompletionDisclaimer.js';
 export {AiCodeCompletionSummaryToolbar} from './AiCodeCompletionSummaryToolbar.js';
+export * from './BadgeNotification.js';

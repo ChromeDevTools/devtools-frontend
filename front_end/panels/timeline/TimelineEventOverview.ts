@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2013 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2013 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
@@ -35,9 +9,8 @@ import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-
-import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -81,8 +54,8 @@ export abstract class TimelineEventOverview extends PerfUI.TimelineOverviewPane.
 }
 
 export class TimelineEventOverviewNetwork extends TimelineEventOverview {
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
     super('network', i18nString(UIStrings.net));
     this.#parsedTrace = parsedTrace;
   }
@@ -105,7 +78,7 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
           max: end,
           range: end - start,
         } :
-        Trace.Helpers.Timing.traceWindowMilliSeconds(this.#parsedTrace.Meta.traceBounds);
+        Trace.Helpers.Timing.traceWindowMilliSeconds(this.#parsedTrace.data.Meta.traceBounds);
 
     // We draw two paths, so each can take up half the height
     const pathHeight = this.height() / 2;
@@ -119,7 +92,7 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
     const highPath = new Path2D();
     const lowPath = new Path2D();
 
-    for (const request of this.#parsedTrace.NetworkRequests.byTime) {
+    for (const request of this.#parsedTrace.data.NetworkRequests.byTime) {
       const path = Trace.Helpers.Network.isSyntheticNetworkRequestHighPriority(request) ? highPath : lowPath;
       const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(request);
       const rectStart = Math.max(Math.floor((startTime - traceBoundsMilli.min) * scale), 0);
@@ -141,16 +114,16 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
   }
 }
 
-const categoryToIndex = new WeakMap<Utils.EntryStyles.TimelineCategory, number>();
+const categoryToIndex = new WeakMap<Trace.Styles.TimelineCategory, number>();
 
 export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   private backgroundCanvas: HTMLCanvasElement;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
   #drawn = false;
   #start: Trace.Types.Timing.Milli;
   #end: Trace.Types.Timing.Milli;
 
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
     // During the sync tracks migration this component can use either legacy
     // Performance Model data or the new engine's data. Once the migration is
     // complete this will be updated to only use the new engine and mentions of
@@ -158,23 +131,23 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     super('cpu-activity', i18nString(UIStrings.cpu));
     this.#parsedTrace = parsedTrace;
     this.backgroundCanvas = this.element.createChild('canvas', 'fill background');
-    this.#start = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds).min;
-    this.#end = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds).max;
+    this.#start = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).min;
+    this.#end = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).max;
   }
 
-  #entryCategory(entry: Trace.Types.Events.Event): Utils.EntryStyles.EventCategory|undefined {
+  #entryCategory(entry: Trace.Types.Events.Event): Trace.Styles.EventCategory|undefined {
     // Special case: in CPU Profiles we get a lot of ProfileCalls that
     // represent Idle time. We typically represent ProfileCalls in the
     // Scripting Category, but if they represent idle time, we do not want
     // that.
     if (Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === '(idle)') {
-      return Utils.EntryStyles.EventCategory.IDLE;
+      return Trace.Styles.EventCategory.IDLE;
     }
     if (Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === '(program)') {
-      return Utils.EntryStyles.EventCategory.OTHER;
+      return Trace.Styles.EventCategory.OTHER;
     }
-    const eventStyle = Utils.EntryStyles.getEventStyle(entry.name as Trace.Types.Events.Name)?.category ||
-        Utils.EntryStyles.getCategoryStyles().other;
+    const eventStyle = Trace.Styles.getEventStyle(entry.name as Trace.Types.Events.Name)?.category ||
+        Trace.Styles.getCategoryStyles().other;
     const categoryName = eventStyle.name;
     return categoryName;
   }
@@ -186,7 +159,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     this.backgroundCanvas.height = this.element.clientHeight * window.devicePixelRatio;
   }
 
-  #draw(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
+  #draw(parsedTrace: Trace.TraceModel.ParsedTrace): void {
     const quantSizePx = 4 * window.devicePixelRatio;
     const width = this.width();
     const height = this.height();
@@ -194,11 +167,11 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     const timeRange = this.#end - this.#start;
     const scale = width / timeRange;
     const quantTime = quantSizePx / scale;
-    const categories = Utils.EntryStyles.getCategoryStyles();
-    const categoryOrder = Utils.EntryStyles.getTimelineMainEventCategories();
-    const otherIndex = categoryOrder.indexOf(Utils.EntryStyles.EventCategory.OTHER);
+    const categories = Trace.Styles.getCategoryStyles();
+    const categoryOrder = Trace.Styles.getTimelineMainEventCategories();
+    const otherIndex = categoryOrder.indexOf(Trace.Styles.EventCategory.OTHER);
     const idleIndex = 0;
-    console.assert(idleIndex === categoryOrder.indexOf(Utils.EntryStyles.EventCategory.IDLE));
+    console.assert(idleIndex === categoryOrder.indexOf(Trace.Styles.EventCategory.IDLE));
     for (let i = 0; i < categoryOrder.length; ++i) {
       categoryToIndex.set(categories[categoryOrder[i]], i);
     }
@@ -268,7 +241,8 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
           quantizer.appendInterval(this.#start + timeRange + quantTime, idleIndex);  // Kick drawing the last bucket.
           for (let i = categoryOrder.length - 1; i > 0; --i) {
             paths[i].lineTo(width, height);
-            const computedColorValue = categories[categoryOrder[i]].getComputedColorValue();
+            const computedColorValue =
+                ThemeSupport.ThemeSupport.instance().getComputedValue(categories[categoryOrder[i]].cssVariable);
             context.fillStyle = computedColorValue;
             context.fill(paths[i]);
             context.strokeStyle = 'white';
@@ -281,7 +255,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
       throw new Error('Could not find 2d canvas');
     }
 
-    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace);
+    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace.data);
     const mainThreadContext = this.context();
     for (const thread of threads) {
       // We treat CPU_PROFILE as main thread because in a CPU Profile trace there is only ever one thread.
@@ -329,14 +303,14 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
 }
 
 export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
     super('responsiveness', null);
     this.#parsedTrace = parsedTrace;
   }
 
   #gatherEventsWithRelevantWarnings(): Set<Trace.Types.Events.Event> {
-    const {topLevelRendererIds} = this.#parsedTrace.Meta;
+    const {topLevelRendererIds} = this.#parsedTrace.data.Meta;
 
     // All the warnings that we care about regarding responsiveness and want to represent on the overview.
     const warningsForResponsiveness = new Set<Trace.Handlers.ModelHandlers.Warnings.Warning>([
@@ -347,7 +321,7 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
 
     const allWarningEvents = new Set<Trace.Types.Events.Event>();
     for (const warning of warningsForResponsiveness) {
-      const eventsForWarning = this.#parsedTrace.Warnings.perWarning.get(warning);
+      const eventsForWarning = this.#parsedTrace.data.Warnings.perWarning.get(warning);
       if (!eventsForWarning) {
         continue;
       }
@@ -368,7 +342,7 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
     this.resetCanvas();
 
     const height = this.height();
-    const visibleTimeWindow = !(start && end) ? this.#parsedTrace.Meta.traceBounds : {
+    const visibleTimeWindow = !(start && end) ? this.#parsedTrace.data.Meta.traceBounds : {
       min: Trace.Helpers.Timing.milliToMicro(start),
       max: Trace.Helpers.Timing.milliToMicro(end),
       range: Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(end - start)),
@@ -544,9 +518,9 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
 
 export class TimelineEventOverviewMemory extends TimelineEventOverview {
   private heapSizeLabel: HTMLElement;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
 
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
     super('memory', i18nString(UIStrings.heap));
     this.heapSizeLabel = this.element.createChild('div', 'memory-graph-label');
     this.#parsedTrace = parsedTrace;
@@ -560,26 +534,27 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     this.resetCanvas();
     const ratio = window.devicePixelRatio;
 
-    if (this.#parsedTrace.Memory.updateCountersByProcess.size === 0) {
+    if (this.#parsedTrace.data.Memory.updateCountersByProcess.size === 0) {
       this.resetHeapSizeLabels();
       return;
     }
 
-    const mainRendererIds = Array.from(this.#parsedTrace.Meta.topLevelRendererIds);
+    const mainRendererIds = Array.from(this.#parsedTrace.data.Meta.topLevelRendererIds);
     const counterEventsPerTrack =
-        mainRendererIds.map(pid => this.#parsedTrace.Memory.updateCountersByProcess.get(pid) || [])
+        mainRendererIds.map(pid => this.#parsedTrace.data.Memory.updateCountersByProcess.get(pid) || [])
             .filter(eventsPerRenderer => eventsPerRenderer.length > 0);
 
     const lowerOffset = 3 * ratio;
     let maxUsedHeapSize = 0;
     let minUsedHeapSize = 100000000000;
 
-    const boundsMs = (start && end) ? {
-      min: start,
-      max: end,
-      range: end - start,
-    } :
-                                      Trace.Helpers.Timing.traceWindowMilliSeconds(this.#parsedTrace.Meta.traceBounds);
+    const boundsMs = (start && end) ?
+        {
+          min: start,
+          max: end,
+          range: end - start,
+        } :
+        Trace.Helpers.Timing.traceWindowMilliSeconds(this.#parsedTrace.data.Meta.traceBounds);
     const minTime = boundsMs.min;
     const maxTime = boundsMs.max;
 

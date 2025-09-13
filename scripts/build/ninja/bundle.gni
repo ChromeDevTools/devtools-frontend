@@ -1,4 +1,4 @@
-# Copyright 2021 The Chromium Authors. All rights reserved.
+# Copyright 2021 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -40,7 +40,7 @@ template("bundle") {
       args = [
         rebase_path(invoker.entrypoint, root_build_dir),
         rebase_path(invoker.output_file_location, root_build_dir),
-        "--configSourcemaps"
+        "--configSourcemaps",
       ]
 
       outputs = [ invoker.output_file_location ]

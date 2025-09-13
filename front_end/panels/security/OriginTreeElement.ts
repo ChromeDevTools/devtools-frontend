@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -18,9 +18,9 @@ export class ShowOriginEvent extends Event {
 }
 
 export class OriginTreeElement extends SecurityPanelSidebarTreeElement {
-  #securityStateInternal: Protocol.Security.SecurityState|null;
+  #securityState: Protocol.Security.SecurityState|null;
   readonly #renderTreeElement: (element: SecurityPanelSidebarTreeElement) => void;
-  readonly #originInternal: Platform.DevToolsPath.UrlString|null = null;
+  readonly #origin: Platform.DevToolsPath.UrlString|null = null;
 
   constructor(
       className: string, renderTreeElement: (element: SecurityPanelSidebarTreeElement) => void,
@@ -28,28 +28,28 @@ export class OriginTreeElement extends SecurityPanelSidebarTreeElement {
     super();
 
     this.#renderTreeElement = renderTreeElement;
-    this.#originInternal = origin;
+    this.#origin = origin;
 
     this.listItemElement.classList.add(className);
-    this.#securityStateInternal = null;
+    this.#securityState = null;
     this.setSecurityState(Protocol.Security.SecurityState.Unknown);
   }
 
   setSecurityState(newSecurityState: Protocol.Security.SecurityState): void {
-    this.#securityStateInternal = newSecurityState;
+    this.#securityState = newSecurityState;
     this.#renderTreeElement(this);
   }
 
   securityState(): Protocol.Security.SecurityState|null {
-    return this.#securityStateInternal;
+    return this.#securityState;
   }
 
   origin(): Platform.DevToolsPath.UrlString|null {
-    return this.#originInternal;
+    return this.#origin;
   }
 
   override showElement(): void {
-    this.listItemElement.dispatchEvent(new ShowOriginEvent(this.#originInternal));
+    this.listItemElement.dispatchEvent(new ShowOriginEvent(this.#origin));
   }
 }
 

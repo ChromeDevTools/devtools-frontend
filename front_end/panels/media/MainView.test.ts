@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -122,6 +122,40 @@ describeWithMockConnection('MediaMainView', () => {
     assert.deepEqual(
         mainView.contentElement.querySelector('.empty-state-description span')?.textContent,
         'On this page you can view and export media player details.');
+    mainView.detach();
+  });
+
+  it('can select player by dom node id', () => {
+    const model = target.model(Media.MediaModel.MediaModel);
+    assert.exists(model);
+
+    const mainView = new Media.MainView.MainView();
+    const renderMainPanelSpy = sinon.spy(mainView, 'renderMainPanel');
+
+    renderElementIntoDOM(mainView);
+
+    const domNodeId = 42 as Protocol.DOM.BackendNodeId;
+    const player = {playerId: PLAYER_ID, domNodeId};
+    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, player);
+
+    mainView.selectPlayerByDOMNodeId(domNodeId);
+    sinon.assert.calledWith(renderMainPanelSpy, PLAYER_ID);
+    mainView.detach();
+  });
+
+  it('waitForInitialPlayers resolves after player is created', async () => {
+    const model = target.model(Media.MediaModel.MediaModel);
+    assert.exists(model);
+
+    const mainView = new Media.MainView.MainView();
+    renderElementIntoDOM(mainView);
+
+    const promise = mainView.waitForInitialPlayers();
+    const domNodeId = 42 as Protocol.DOM.BackendNodeId;
+    const player = {playerId: PLAYER_ID, domNodeId};
+    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, player);
+
+    await promise;  // This will time out if the promise is not resolved.
     mainView.detach();
   });
 });

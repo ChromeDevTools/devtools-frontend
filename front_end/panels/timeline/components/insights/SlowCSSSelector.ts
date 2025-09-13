@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -25,6 +25,10 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-slow-css-selector`;
   override internalName = 'slow-css-selector';
   #selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
+
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
 
   private async toSourceFileLocation(cssModel: SDK.CSSModel.CSSModel, selector: Trace.Types.Events.SelectorTiming):
       Promise<Linkifier.Linkifier.LinkifierData[]|undefined> {

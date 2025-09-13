@@ -1,13 +1,12 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
+import * as SourceMapsResolver from '../../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
-
-import {SourceMapsResolver} from './SourceMapsResolver.js';
 
 const UIStrings = {
   /**
@@ -35,7 +34,7 @@ function getUrlAndIgnoreListOptions(entry: Trace.Types.Events.SyntheticProfileCa
     {url: Platform.DevToolsPath.UrlString, ignoreListOptions: Workspace.IgnoreListManager.IgnoreListGeneralRules} {
   const rawUrl = entry.callFrame.url as Platform.DevToolsPath.UrlString;
 
-  const sourceMappedData = SourceMapsResolver.resolvedCodeLocationForEntry(entry);
+  const sourceMappedData = SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForEntry(entry);
   const script = sourceMappedData?.script;
   const uiSourceCode = sourceMappedData?.devtoolsLocation?.uiSourceCode;
   const resolvedUrl = uiSourceCode?.url();

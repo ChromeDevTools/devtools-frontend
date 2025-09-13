@@ -56,6 +56,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 import { CDPSessionEvent } from '../api/CDPSession.js';
+import { ARIAQueryHandler } from '../common/AriaQueryHandler.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { LazyArg } from '../common/LazyArg.js';
 import { scriptInjector } from '../common/ScriptInjector.js';
@@ -64,7 +65,6 @@ import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { DisposableStack, disposeSymbol } from '../util/disposable.js';
 import { stringifyFunction } from '../util/Function.js';
 import { Mutex } from '../util/Mutex.js';
-import { ARIAQueryHandler } from './AriaQueryHandler.js';
 import { Binding } from './Binding.js';
 import { CdpElementHandle } from './ElementHandle.js';
 import { CdpJSHandle } from './JSHandle.js';

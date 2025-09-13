@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -109,8 +109,8 @@ describe('Recorder', function() {
     await inspectedPage.bringToFront();
     await inspectedPage.page.click('#mouse-button', {button: 'middle'});
     await inspectedPage.page.click('#mouse-button', {button: 'right'});
-    await inspectedPage.page.click('#mouse-button', {button: 'forward' as 'left'});
-    await inspectedPage.page.click('#mouse-button', {button: 'back' as 'left'});
+    await inspectedPage.page.click('#mouse-button', {button: 'forward'});
+    await inspectedPage.page.click('#mouse-button', {button: 'back'});
     await inspectedPage.page.click('#mouse-button', {clickCount: 1});
     await inspectedPage.page.click('#mouse-button', {clickCount: 2});
 
@@ -1364,7 +1364,7 @@ describe('Recorder', function() {
 
     const eventPromise = step.evaluate(element => {
       return new Promise(resolve => {
-        element.addEventListener('stepchanged', (event: Event) => {
+        element.addEventListener('stepchanged', event => {
           resolve((event as StepChanged).newStep);
         }, {once: true});
       });

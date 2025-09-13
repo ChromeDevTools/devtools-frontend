@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -33,19 +33,17 @@ describe('InvalidationsHandler', () => {
     }
     await Trace.Handlers.ModelHandlers.Invalidations.finalize();
     const data = Trace.Handlers.ModelHandlers.Invalidations.data();
-    // Find the Layout event that we want to test - we are testing
-    // the layout that happens after button click that happened in
-    // the trace.
-    const updateLayoutTreeEvent = events.find(event => {
-      return Trace.Types.Events.isUpdateLayoutTree(event) &&
+    // Find the recalc event that we want to test - we are testing the recalc that happens after button click that
+    // happened in the trace.
+    const recalcStyleEvent = events.find(event => {
+      return Trace.Types.Events.isRecalcStyle(event) &&
           event.args.beginData?.stackTrace?.[0].functionName === 'testFuncs.changeAttributeAndDisplay';
     });
-    if (!updateLayoutTreeEvent) {
-      throw new Error('Could not find UpdateLayoutTree event.');
+    if (!recalcStyleEvent) {
+      throw new Error('Could not find RecalcStyle event.');
     }
 
-    const invalidations =
-        data.invalidationsForEvent.get(updateLayoutTreeEvent)?.map(invalidationDataForTestAssertion) ?? [];
+    const invalidations = data.invalidationsForEvent.get(recalcStyleEvent)?.map(invalidationDataForTestAssertion) ?? [];
 
     assert.deepEqual(invalidations, [
       {
@@ -168,7 +166,7 @@ describe('InvalidationsHandler', () => {
     await Trace.Handlers.ModelHandlers.Invalidations.finalize();
     const data = Trace.Handlers.ModelHandlers.Invalidations.data();
 
-    // Find the UpdateLayoutEvent that had 26 invalidations
+    // Find the RecalcStyleEvent that had 26 invalidations
     const layoutEvent = Array.from(data.invalidationCountForEvent.entries())
                             .filter(entry => {
                               const [, count] = entry;

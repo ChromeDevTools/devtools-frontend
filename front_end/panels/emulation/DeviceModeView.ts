@@ -1,4 +1,4 @@
-// Copyright 2015 The Chromium Authors. All rights reserved.
+// Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -9,6 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -84,7 +85,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     x: number,
     y: number,
   }|null;
-  private resizeStart?: UI.Geometry.Size;
+  private resizeStart?: Geometry.Size;
   private cachedCssScreenRect?: EmulationModel.DeviceModeModel.Rect;
   private cachedCssVisiblePageRect?: EmulationModel.DeviceModeModel.Rect;
   private cachedOutlineRect?: EmulationModel.DeviceModeModel.Rect;
@@ -214,7 +215,7 @@ export class DeviceModeView extends UI.Widget.VBox {
   private onResizeStart(): void {
     this.slowPositionStart = null;
     const rect = this.model.screenRect();
-    this.resizeStart = new UI.Geometry.Size(rect.width, rect.height);
+    this.resizeStart = new Geometry.Size(rect.width, rect.height);
   }
 
   private onResizeUpdate(widthFactor: number, heightFactor: number, event: {
@@ -400,7 +401,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const rect = element.getBoundingClientRect();
     const availableSize =
-        new UI.Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+        new Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
     this.model.setAvailableSize(availableSize, availableSize);
   }
 
@@ -408,8 +409,8 @@ export class DeviceModeView extends UI.Widget.VBox {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const rect = this.contentArea.getBoundingClientRect();
     const availableSize =
-        new UI.Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
-    const preferredSize = new UI.Geometry.Size(
+        new Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+    const preferredSize = new Geometry.Size(
         Math.max((rect.width - 2 * (this.handleWidth || 0)) * zoomFactor, 1),
         Math.max((rect.height - (this.handleHeight || 0)) * zoomFactor, 1));
     this.model.setAvailableSize(availableSize, preferredSize);
@@ -565,7 +566,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 }
 
 export class Ruler extends UI.Widget.VBox {
-  private contentElementInternal: HTMLElement;
+  #contentElement: HTMLElement;
   private readonly horizontal: boolean;
   private scale: number;
   private count: number;
@@ -576,7 +577,7 @@ export class Ruler extends UI.Widget.VBox {
   constructor(horizontal: boolean, applyCallback: (arg0: number) => void) {
     super({jslog: `${VisualLogging.deviceModeRuler().track({click: true})}`});
     this.element.classList.add('device-mode-ruler');
-    this.contentElementInternal =
+    this.#contentElement =
         this.element.createChild('div', 'device-mode-ruler-content').createChild('div', 'device-mode-ruler-inner');
     this.horizontal = horizontal;
     this.scale = 1;
@@ -596,10 +597,10 @@ export class Ruler extends UI.Widget.VBox {
 
   update(): void {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
-    const size = this.horizontal ? this.contentElementInternal.offsetWidth : this.contentElementInternal.offsetHeight;
+    const size = this.horizontal ? this.#contentElement.offsetWidth : this.#contentElement.offsetHeight;
 
     if (this.scale !== this.renderedScale || zoomFactor !== this.renderedZoomFactor) {
-      this.contentElementInternal.removeChildren();
+      this.#contentElement.removeChildren();
       this.count = 0;
       this.renderedScale = this.scale;
       this.renderedZoomFactor = zoomFactor;
@@ -626,7 +627,7 @@ export class Ruler extends UI.Widget.VBox {
 
     for (let i = count; i < this.count; i++) {
       if (!(i % step)) {
-        const lastChild = this.contentElementInternal.lastChild;
+        const lastChild = this.#contentElement.lastChild;
         if (lastChild) {
           lastChild.remove();
         }
@@ -637,7 +638,7 @@ export class Ruler extends UI.Widget.VBox {
       if (i % step) {
         continue;
       }
-      const marker = this.contentElementInternal.createChild('div', 'device-mode-ruler-marker');
+      const marker = this.#contentElement.createChild('div', 'device-mode-ruler-marker');
       if (i) {
         if (this.horizontal) {
           marker.style.left = (5 * i) * this.scale / zoomFactor + 'px';

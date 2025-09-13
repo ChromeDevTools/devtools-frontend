@@ -1,4 +1,4 @@
-// Copyright (c) 2015 The Chromium Authors. All rights reserved.
+// Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -253,6 +253,36 @@ export interface EventTypes {
   [Events.ShowPanel]: string;
 }
 
+export type DispatchHttpRequestRequest = {
+  service: string,
+  path: string,
+  method: 'GET',
+  queryParams?: Record<string, string|string[]>,
+  body?: never,
+}|{
+  service: string,
+  path: string,
+  method: 'POST',
+  queryParams?: Record<string, string|string[]>,
+  // A JSON string containing the request body.
+  body?: string,
+};
+
+interface DispatchHttpRequestSuccessResult {
+  response: string;
+  statusCode: number;
+}
+
+interface DispatchHttpRequestErrorResult {
+  error: string;
+  detail?: string;
+  netError?: number;
+  netErrorName?: string;
+  statusCode?: number;
+}
+
+export type DispatchHttpRequestResult = DispatchHttpRequestSuccessResult|DispatchHttpRequestErrorResult;
+
 export interface InspectorFrontendHostAPI {
   events: Common.EventTarget.EventTarget<EventTypes>;
 
@@ -402,6 +432,7 @@ export interface InspectorFrontendHostAPI {
   doAidaConversation: (request: string, streamId: number, cb: (result: DoAidaConversationResult) => void) => void;
   registerAidaClientEvent: (request: string, cb: (result: AidaClientResult) => void) => void;
   aidaCodeComplete: (request: string, cb: (result: AidaCodeCompleteResult) => void) => void;
+  dispatchHttpRequest: (request: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => void;
 
   recordImpression(event: ImpressionEvent): void;
   recordClick(event: ClickEvent): void;
@@ -511,7 +542,6 @@ export const enum EnumeratedHistogram {
   SourcesPanelFileOpened = 'DevTools.SourcesPanelFileOpened',
   NetworkPanelResponsePreviewOpened = 'DevTools.NetworkPanelResponsePreviewOpened',
   TimelineNavigationSettingState = 'DevTools.TimelineNavigationSettingState',
-  CSSHintShown = 'DevTools.CSSHintShown',
   LighthouseModeRun = 'DevTools.LighthouseModeRun',
   LighthouseCategoryUsed = 'DevTools.LighthouseCategoryUsed',
   SwatchActivated = 'DevTools.SwatchActivated',

@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -42,8 +42,8 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   text: string|null|undefined;
   range: TextUtils.TextRange.TextRange|null;
   #active: boolean;
-  #nameRangeInternal: TextUtils.TextRange.TextRange|null;
-  #valueRangeInternal: TextUtils.TextRange.TextRange|null;
+  #nameRange: TextUtils.TextRange.TextRange|null;
+  #valueRange: TextUtils.TextRange.TextRange|null;
   #invalidString?: Common.UIString.LocalizedString;
   #longhandProperties: CSSProperty[] = [];
 
@@ -63,8 +63,8 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     this.text = text;
     this.range = range ? TextUtils.TextRange.TextRange.fromObject(range) : null;
     this.#active = true;
-    this.#nameRangeInternal = null;
-    this.#valueRangeInternal = null;
+    this.#nameRange = null;
+    this.#valueRange = null;
 
     if (longhandProperties && longhandProperties.length > 0) {
       for (const property of longhandProperties) {
@@ -125,7 +125,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   private ensureRanges(): void {
-    if (this.#nameRangeInternal && this.#valueRangeInternal) {
+    if (this.#nameRange && this.#valueRange) {
       return;
     }
     const range = this.range;
@@ -143,8 +143,8 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     const nameSourceRange = new TextUtils.TextRange.SourceRange(nameIndex, this.name.length);
     const valueSourceRange = new TextUtils.TextRange.SourceRange(valueIndex, this.value.length);
 
-    this.#nameRangeInternal = rebase(text.toTextRange(nameSourceRange), range.startLine, range.startColumn);
-    this.#valueRangeInternal = rebase(text.toTextRange(valueSourceRange), range.startLine, range.startColumn);
+    this.#nameRange = rebase(text.toTextRange(nameSourceRange), range.startLine, range.startColumn);
+    this.#valueRange = rebase(text.toTextRange(valueSourceRange), range.startLine, range.startColumn);
 
     function rebase(oneLineRange: TextUtils.TextRange.TextRange, lineOffset: number, columnOffset: number):
         TextUtils.TextRange.TextRange {
@@ -160,12 +160,12 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
   nameRange(): TextUtils.TextRange.TextRange|null {
     this.ensureRanges();
-    return this.#nameRangeInternal;
+    return this.#nameRange;
   }
 
   valueRange(): TextUtils.TextRange.TextRange|null {
     this.ensureRanges();
-    return this.#valueRangeInternal;
+    return this.#valueRange;
   }
 
   rebase(edit: Edit): void {

@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -16,7 +16,7 @@ const filename = fileURLToPath(import.meta.url);
 const FILE = 'front_end/ui/visual_logging/KnownContextValues.ts';
 const FRONT_END_PARENT_FOLDER = path.join(filename, '..', '..', '..', '..');
 const ABSOLUTE_FILE_PATH = path.join(FRONT_END_PARENT_FOLDER, FILE);
-const LICENSE_HEADER = `// Copyright 2024 The Chromium Authors. All rights reserved.
+const LICENSE_HEADER = `// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 

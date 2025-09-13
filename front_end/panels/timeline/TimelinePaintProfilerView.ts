@@ -1,10 +1,11 @@
-// Copyright 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
@@ -22,9 +23,9 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   private event: Trace.Types.Events.Event|null;
   private paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
   private lastLoadedSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #parsedTrace: Trace.TraceModel.ParsedTrace;
 
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
     super(false, false);
     this.element.classList.add('timeline-paint-profiler-view');
     this.setSidebarSize(60);
@@ -75,7 +76,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       return false;
     }
 
-    const frame = this.#parsedTrace.Frames.framesById[data.sourceFrameNumber];
+    const frame = this.#parsedTrace.data.Frames.framesById[data.sourceFrameNumber];
     if (!frame?.layerTree) {
       return false;
     }
@@ -90,7 +91,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
 
     this.updateWhenVisible();
     if (Trace.Types.Events.isPaint(event)) {
-      const snapshot = this.#parsedTrace.LayerTree.paintsToSnapshots.get(event);
+      const snapshot = this.#parsedTrace.data.LayerTree.paintsToSnapshots.get(event);
       return Boolean(snapshot);
     }
     if (Trace.Types.Events.isRasterTask(event)) {
@@ -125,7 +126,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       return null;
     }
 
-    const frame = this.#parsedTrace.Frames.framesById[data.sourceFrameNumber];
+    const frame = this.#parsedTrace.data.Frames.framesById[data.sourceFrameNumber];
     if (!frame?.layerTree) {
       return null;
     }
@@ -154,7 +155,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       // snapshot to that paint event. That is why here if the event is a Paint
       // event, we look to see if it has had a matching picture event set for
       // it.
-      const snapshotEvent = this.#parsedTrace.LayerTree.paintsToSnapshots.get(this.event);
+      const snapshotEvent = this.#parsedTrace.data.LayerTree.paintsToSnapshots.get(this.event);
       if (snapshotEvent) {
         const encodedData = snapshotEvent.args.snapshot.skp64;
         snapshotPromise = this.paintProfilerModel.loadSnapshot(encodedData).then(snapshot => {
@@ -257,7 +258,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
                      .translate(clientWidth / 2, clientHeight / 2)
                      .scale(scale, scale)
                      .translate(-width / 2, -height / 2);
-    const bounds = UI.Geometry.boundsForTransformedPoints(matrix, [0, 0, 0, width, height, 0]);
+    const bounds = Geometry.boundsForTransformedPoints(matrix, [0, 0, 0, width, height, 0]);
     this.transformController.clampOffsets(
         paddingX - bounds.maxX, clientWidth - paddingX - bounds.minX, paddingY - bounds.maxY,
         clientHeight - paddingY - bounds.minY);

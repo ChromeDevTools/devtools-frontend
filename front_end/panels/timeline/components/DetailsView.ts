@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -72,8 +72,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/DetailsView
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function buildWarningElementsForEvent(
-    event: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): HTMLSpanElement[] {
-  const warnings = parsedTrace.Warnings.perEvent.get(event);
+    event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): HTMLSpanElement[] {
+  const warnings = parsedTrace.data.Warnings.perEvent.get(event);
   const warningElements: HTMLSpanElement[] = [];
   if (!warnings) {
     return warningElements;
@@ -130,10 +130,10 @@ export interface DetailRow {
 }
 export function buildRowsForWebSocketEvent(
     event: Trace.Types.Events.WebSocketCreate|Trace.Types.Events.WebSocketInfo|Trace.Types.Events.WebSocketTransfer,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace): readonly DetailRow[] {
+    parsedTrace: Trace.TraceModel.ParsedTrace): readonly DetailRow[] {
   const rows: DetailRow[] = [];
 
-  const initiator = parsedTrace.Initiators.eventToInitiator.get(event);
+  const initiator = parsedTrace.data.Initiators.eventToInitiator.get(event);
   if (initiator && Trace.Types.Events.isWebSocketCreate(initiator)) {
     // The initiator will be a WebSocketCreate, but this check helps TypeScript to understand.
     rows.push({key: i18n.i18n.lockedString('URL'), value: initiator.args.data.url});

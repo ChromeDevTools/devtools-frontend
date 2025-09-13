@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -9,6 +9,7 @@ import puppeteer from 'puppeteer-core';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
+import {convertRawOutputToEval, type RawOutput} from '../suite/to_eval_output.ts';
 import type {
   ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId, RunResult, TestTarget} from
   '../types';
@@ -56,6 +57,11 @@ const globalUserArgs =
           choices: ['elements', 'performance-main-thread', 'performance-insights', 'elements-multimodal', 'patching'] as
               const,
           demandOption: true,
+        })
+        .option('eval', {
+          describe: 'Also output to the format required for the DevTools Eval framework',
+          boolean: true,
+          default: false,
         })
         .parseSync();
 
@@ -420,6 +426,17 @@ async function main() {
     fs.mkdirSync(OUTPUT_DIR);
   }
   fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
+  if (globalUserArgs.eval) {
+    const convertedOutput = convertRawOutputToEval({
+      inputFromAutoRun: output as RawOutput,
+      label: globalUserArgs.label,
+    });
+    const evalOutputPath = outputPath.replace('.json', '.eval.json');
+    fs.writeFileSync(evalOutputPath, JSON.stringify(convertedOutput, null, 2));
+    console.info(
+        `\n[Info]: Exported eval output to ${evalOutputPath}`,
+    );
+  }
   console.info(
       `\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`,
   );

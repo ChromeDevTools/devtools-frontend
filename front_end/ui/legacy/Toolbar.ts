@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2009 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2009 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
@@ -492,7 +466,7 @@ export interface ToolbarButtonOptions {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class ToolbarItem<T = any, E extends HTMLElement = HTMLElement> extends Common.ObjectWrapper.ObjectWrapper<T> {
   element: E;
-  private visibleInternal: boolean;
+  #visible: boolean;
   enabled: boolean;
   toolbar: Toolbar|null;
   protected title?: string;
@@ -500,7 +474,7 @@ export class ToolbarItem<T = any, E extends HTMLElement = HTMLElement> extends C
   constructor(element: E) {
     super();
     this.element = element;
-    this.visibleInternal = true;
+    this.#visible = true;
     this.enabled = true;
 
     /**
@@ -537,15 +511,15 @@ export class ToolbarItem<T = any, E extends HTMLElement = HTMLElement> extends C
   }
 
   visible(): boolean {
-    return this.visibleInternal;
+    return this.#visible;
   }
 
   setVisible(x: boolean): void {
-    if (this.visibleInternal === x) {
+    if (this.#visible === x) {
       return;
     }
     this.element.classList.toggle('hidden', !x);
-    this.visibleInternal = x;
+    this.#visible = x;
     if (this.toolbar && !(this instanceof ToolbarSeparator)) {
       this.toolbar.hideSeparatorDupes();
     }
@@ -980,6 +954,7 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
   private readonly contextMenuHandler: (arg0: ContextMenu) => void;
   private readonly useSoftMenu: boolean;
   private readonly keepOpen: boolean;
+  private readonly isIconDropdown: boolean;
   private triggerTimeoutId?: number;
   #triggerDelay = 200;
 
@@ -1013,6 +988,7 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.contextMenuHandler = contextMenuHandler;
     this.useSoftMenu = Boolean(useSoftMenu);
     this.keepOpen = Boolean(keepOpen);
+    this.isIconDropdown = Boolean(isIconDropdown);
     ARIAUtils.markAsMenuButton(this.element);
   }
 
@@ -1074,10 +1050,12 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
   private trigger(event: Event): void {
     delete this.triggerTimeoutId;
 
+    const horizontalPosition =
+        this.isIconDropdown ? this.element.getBoundingClientRect().right : this.element.getBoundingClientRect().left;
     const contextMenu = new ContextMenu(event, {
       useSoftMenu: this.useSoftMenu,
       keepOpen: this.keepOpen,
-      x: this.element.getBoundingClientRect().right,
+      x: horizontalPosition,
       y: this.element.getBoundingClientRect().top + this.element.offsetHeight,
       // Without adding a delay, pointer events will be un-ignored too early, and a single click causes
       // the context menu to be closed and immediately re-opened on Windows (https://crbug.com/339560549).
@@ -1225,7 +1203,6 @@ export class ToolbarComboBox extends ToolbarItem<void, HTMLSelectElement> {
   selectedIndex(): number {
     return this.element.selectedIndex;
   }
-
 }
 
 export interface Option {
@@ -1234,12 +1211,12 @@ export interface Option {
 }
 
 export class ToolbarSettingComboBox extends ToolbarComboBox {
-  private optionsInternal: Option[];
+  #options: Option[];
   private readonly setting: Common.Settings.Setting<string>;
   private muteSettingListener?: boolean;
   constructor(options: Option[], setting: Common.Settings.Setting<string>, accessibleName: string) {
     super(null, accessibleName, undefined, setting.name);
-    this.optionsInternal = options;
+    this.#options = options;
     this.setting = setting;
     this.element.addEventListener('change', this.onSelectValueChange.bind(this), false);
     this.setOptions(options);
@@ -1247,7 +1224,7 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
   }
 
   setOptions(options: Option[]): void {
-    this.optionsInternal = options;
+    this.#options = options;
     this.element.removeChildren();
     for (let i = 0; i < options.length; ++i) {
       const dataOption = options[i];
@@ -1260,7 +1237,7 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
   }
 
   value(): string {
-    return this.optionsInternal[this.selectedIndex()].value;
+    return this.#options[this.selectedIndex()].value;
   }
 
   override select(option: Element): void {
@@ -1270,7 +1247,7 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
 
   override setSelectedIndex(index: number): void {
     super.setSelectedIndex(index);
-    const option = this.optionsInternal.at(index);
+    const option = this.#options.at(index);
     if (option) {
       this.setTitle(option.label);
     }
@@ -1294,8 +1271,8 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
     }
 
     const value = this.setting.get();
-    for (let i = 0; i < this.optionsInternal.length; ++i) {
-      if (value === this.optionsInternal[i].value) {
+    for (let i = 0; i < this.#options.length; ++i) {
+      if (value === this.#options[i].value) {
         this.setSelectedIndex(i);
         break;
       }
@@ -1306,7 +1283,7 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
    * Run when the user interacts with the <select> element.
    */
   private onSelectValueChange(_event: Event): void {
-    const option = this.optionsInternal[this.selectedIndex()];
+    const option = this.#options[this.selectedIndex()];
     this.muteSettingListener = true;
     this.setting.set(option.value);
     this.muteSettingListener = false;

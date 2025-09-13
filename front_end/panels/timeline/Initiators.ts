@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -34,12 +34,12 @@ const MAX_PREDECESSOR_INITIATOR_LIMIT = 10;
  * work backwards to draw each one, as well as the events initiated directly by the entry.
  */
 export function initiatorsDataToDraw(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace, selectedEvent: Trace.Types.Events.Event,
+    parsedTrace: Trace.TraceModel.ParsedTrace, selectedEvent: Trace.Types.Events.Event,
     hiddenEntries: Trace.Types.Events.Event[],
     expandableEntries: Trace.Types.Events.Event[]): readonly InitiatorData[] {
   const initiatorsData = [
-    ...findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.Initiators.eventToInitiator),
-    ...findInitiatorDataDirectSuccessors(selectedEvent, parsedTrace.Initiators.initiatorToEvents),
+    ...findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.data.Initiators.eventToInitiator),
+    ...findInitiatorDataDirectSuccessors(selectedEvent, parsedTrace.data.Initiators.initiatorToEvents),
   ];
 
   // For each InitiatorData, call a function that makes sure that neither the initiator or initiated entry is hidden.
@@ -51,14 +51,14 @@ export function initiatorsDataToDraw(
 }
 
 export function initiatorsDataToDrawForNetwork(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
     selectedEvent: Trace.Types.Events.Event,
     ): readonly InitiatorData[] {
-  return findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.NetworkRequests.eventToInitiator);
+  return findInitiatorDataPredecessors(parsedTrace, selectedEvent, parsedTrace.data.NetworkRequests.eventToInitiator);
 }
 
 function findInitiatorDataPredecessors(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
     selectedEvent: Trace.Types.Events.Event,
     eventToInitiator: Map<Trace.Types.Events.Event, Trace.Types.Events.Event>,
     ): readonly InitiatorData[] {
@@ -85,7 +85,7 @@ function findInitiatorDataPredecessors(
       continue;
     }
 
-    const nodeForCurrentEvent = parsedTrace.Renderer.entryToNode.get(currentEvent);
+    const nodeForCurrentEvent = parsedTrace.data.Renderer.entryToNode.get(currentEvent);
     if (!nodeForCurrentEvent) {
       // Should not happen - if it does something odd is going
       // on so let's give up.
@@ -125,9 +125,9 @@ function findInitiatorDataDirectSuccessors(
  */
 function getClosestVisibleInitiatorEntriesAncestors(
     initiatorData: InitiatorData, expandableEntries: Trace.Types.Events.Event[],
-    hiddenEntries: Trace.Types.Events.Event[], parsedTrace: Trace.Handlers.Types.ParsedTrace): InitiatorData {
+    hiddenEntries: Trace.Types.Events.Event[], parsedTrace: Trace.TraceModel.ParsedTrace): InitiatorData {
   if (hiddenEntries.includes(initiatorData.event)) {
-    let nextParent = parsedTrace.Renderer.entryToNode.get(initiatorData.event)?.parent;
+    let nextParent = parsedTrace.data.Renderer.entryToNode.get(initiatorData.event)?.parent;
     while (nextParent?.entry && !expandableEntries.includes(nextParent?.entry)) {
       nextParent = nextParent.parent ?? undefined;
     }
@@ -136,7 +136,7 @@ function getClosestVisibleInitiatorEntriesAncestors(
   }
 
   if (hiddenEntries.includes(initiatorData.initiator)) {
-    let nextParent = parsedTrace.Renderer.entryToNode.get(initiatorData.initiator)?.parent;
+    let nextParent = parsedTrace.data.Renderer.entryToNode.get(initiatorData.initiator)?.parent;
     while (nextParent?.entry && !expandableEntries.includes(nextParent?.entry)) {
       nextParent = nextParent.parent ?? undefined;
     }

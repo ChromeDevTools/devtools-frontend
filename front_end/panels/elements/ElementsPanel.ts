@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -201,7 +201,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
                                                              SDK.TargetManager.SDKModelObserver<SDK.DOMModel.DOMModel>,
                                                              UI.View.ViewLocationResolver {
   private splitWidget: UI.SplitWidget.SplitWidget;
-  private readonly searchableViewInternal: UI.SearchableView.SearchableView;
+  readonly #searchableView: UI.SearchableView.SearchableView;
   private mainContainer: HTMLDivElement;
   private domTreeContainer: HTMLDivElement;
   private splitMode: SplitMode|null;
@@ -252,11 +252,11 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
         UI.SplitWidget.Events.SIDEBAR_SIZE_CHANGED, this.updateTreeOutlineVisibleWidth.bind(this));
     this.splitWidget.show(this.element);
 
-    this.searchableViewInternal = new UI.SearchableView.SearchableView(this, null);
-    this.searchableViewInternal.setMinimalSearchQuerySize(0);
-    this.searchableViewInternal.setMinimumSize(25, 28);
-    this.searchableViewInternal.setPlaceholder(i18nString(UIStrings.findByStringSelectorOrXpath));
-    const stackElement = this.searchableViewInternal.element;
+    this.#searchableView = new UI.SearchableView.SearchableView(this, null);
+    this.#searchableView.setMinimalSearchQuerySize(0);
+    this.#searchableView.setMinimumSize(25, 28);
+    this.#searchableView.setPlaceholder(i18nString(UIStrings.findByStringSelectorOrXpath));
+    const stackElement = this.#searchableView.element;
 
     this.mainContainer = document.createElement('div');
     this.domTreeContainer = document.createElement('div');
@@ -271,7 +271,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     UI.ARIAUtils.markAsMain(this.domTreeContainer);
     UI.ARIAUtils.setLabel(this.domTreeContainer, i18nString(UIStrings.domTreeExplorer));
 
-    this.splitWidget.setMainWidget(this.searchableViewInternal);
+    this.splitWidget.setMainWidget(this.#searchableView);
     this.splitMode = null;
 
     this.mainContainer.id = 'main-content';
@@ -351,7 +351,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private showDOMTree(): void {
-    this.splitWidget.setMainWidget(this.searchableViewInternal);
+    this.splitWidget.setMainWidget(this.#searchableView);
     const selectedNode = this.selectedDOMNode();
     if (!selectedNode) {
       return;
@@ -477,7 +477,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   override searchableView(): UI.SearchableView.SearchableView {
-    return this.searchableViewInternal;
+    return this.#searchableView;
   }
 
   override wasShown(): void {
@@ -560,7 +560,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private documentUpdated(domModel: SDK.DOMModel.DOMModel): void {
-    this.searchableViewInternal.cancelSearch();
+    this.#searchableView.cancelSearch();
 
     if (!domModel.existingDocument()) {
       if (this.isShowing()) {
@@ -625,7 +625,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.searchConfig = undefined;
     this.hideSearchHighlights();
 
-    this.searchableViewInternal.updateSearchMatchesCount(0);
+    this.#searchableView.updateSearchMatchesCount(0);
 
     this.currentSearchResultIndex = -1;
     delete this.searchResults;
@@ -660,7 +660,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
           this.searchResults.push({domModel: domModels[i], index: j, node: undefined});
         }
       }
-      this.searchableViewInternal.updateSearchMatchesCount(this.searchResults.length);
+      this.#searchableView.updateSearchMatchesCount(this.searchResults.length);
       if (!this.searchResults.length) {
         return;
       }
@@ -725,7 +725,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
     const searchResult = searchResults[index];
 
-    this.searchableViewInternal.updateCurrentMatchIndex(index);
+    this.#searchableView.updateCurrentMatchIndex(index);
     if (searchResult.node === null) {
       return;
     }

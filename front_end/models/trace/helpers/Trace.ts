@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -36,7 +36,7 @@ export function stackTraceInEvent(event: Types.Events.Event): Types.Events.CallF
   if (event.args?.stackTrace) {
     return event.args.stackTrace;
   }
-  if (Types.Events.isUpdateLayoutTree(event)) {
+  if (Types.Events.isRecalcStyle(event)) {
     return event.args.beginData?.stackTrace || null;
   }
   if (Types.Events.isLayout(event)) {
@@ -187,7 +187,7 @@ export function mergeEventsInOrder<T1 extends Types.Events.Event, T2 extends Typ
   return result;
 }
 
-export function parseDevtoolsDetails(timingDetail: string, key: string): Types.Extensions.ExtensionDataPayload|
+export function parseDevtoolsDetails(timingDetail: string, key: string): Types.Extensions.DevToolsObj|
     Types.Extensions.ExtensionTrackEntryPayloadDeeplink|null {
   try {
     // Attempt to parse the detail as an object that might be coming from a
@@ -233,8 +233,8 @@ export function getNavigationForTraceEvent(
   return navigations[eventNavigationIndex];
 }
 
-export function extractId(event: Types.Events.PairableAsync|
-                          Types.Events.SyntheticEventPair<Types.Events.PairableAsync>): string|undefined {
+export function extractId(
+    event: Types.Events.PairableAsync|Types.Events.SyntheticEventPair<Types.Events.PairableAsync>): string|undefined {
   return event.id ?? event.id2?.global ?? event.id2?.local;
 }
 
@@ -471,23 +471,52 @@ export function getZeroIndexedStackTraceInEventPayload(event: Types.Events.Event
   if (!stack) {
     return null;
   }
-  return stack.map(callFrame => {
-    switch (event.name) {
-      case Types.Events.Name.SCHEDULE_STYLE_RECALCULATION:
-      case Types.Events.Name.INVALIDATE_LAYOUT:
-      case Types.Events.Name.FUNCTION_CALL:
-      case Types.Events.Name.LAYOUT:
-      case Types.Events.Name.UPDATE_LAYOUT_TREE: {
-        return makeZeroBasedCallFrame(callFrame);
-      }
-      default: {
-        if (Types.Events.isUserTiming(event) || Types.Extensions.isSyntheticExtensionEntry(event)) {
-          return makeZeroBasedCallFrame(callFrame);
-        }
-      }
+
+  switch (event.name) {
+    case Types.Events.Name.SCHEDULE_STYLE_RECALCULATION:
+    case Types.Events.Name.INVALIDATE_LAYOUT:
+    case Types.Events.Name.FUNCTION_CALL:
+    case Types.Events.Name.LAYOUT:
+    case Types.Events.Name.RECALC_STYLE: {
+      return stack.map(makeZeroBasedCallFrame);
     }
-    return callFrame;
-  });
+
+    default: {
+      if (Types.Events.isUserTiming(event) || Types.Extensions.isSyntheticExtensionEntry(event)) {
+        return stack.map(makeZeroBasedCallFrame);
+      }
+
+      return stack;
+    }
+  }
+}
+
+/**
+ * Same as getZeroIndexedStackTraceInEventPayload, but only returns the top call frame.
+ */
+export function getStackTraceTopCallFrameInEventPayload(event: Types.Events.Event): Types.Events.CallFrame|null {
+  const stack = stackTraceInEvent(event);
+  if (!stack || stack.length === 0) {
+    return null;
+  }
+
+  switch (event.name) {
+    case Types.Events.Name.SCHEDULE_STYLE_RECALCULATION:
+    case Types.Events.Name.INVALIDATE_LAYOUT:
+    case Types.Events.Name.FUNCTION_CALL:
+    case Types.Events.Name.LAYOUT:
+    case Types.Events.Name.RECALC_STYLE: {
+      return makeZeroBasedCallFrame(stack[0]);
+    }
+
+    default: {
+      if (Types.Events.isUserTiming(event) || Types.Extensions.isSyntheticExtensionEntry(event)) {
+        return makeZeroBasedCallFrame(stack[0]);
+      }
+
+      return stack[0];
+    }
+  }
 }
 
 /**
@@ -533,7 +562,7 @@ function getRawLineAndColumnNumbersForEvent(event: Types.Events.Event): {
 }
 
 export function frameIDForEvent(event: Types.Events.Event): string|null {
-  // There are a few events (for example UpdateLayoutTree, ParseHTML) that have
+  // There are a few events (for example RecalcStyle, ParseHTML) that have
   // the frame stored in args.beginData
   // Rather than list them all we just check for the presence of the field, so
   // we are robust against future trace events also doing this.
@@ -569,14 +598,14 @@ function topLevelEventIndexEndingAfter(events: Types.Events.Event[], time: Types
   }
   return Math.max(index, 0);
 }
-export function findUpdateLayoutTreeEvents(
+export function findRecalcStyleEvents(
     events: Types.Events.Event[], startTime: Types.Timing.Micro,
-    endTime?: Types.Timing.Micro): Types.Events.UpdateLayoutTree[] {
-  const foundEvents: Types.Events.UpdateLayoutTree[] = [];
+    endTime?: Types.Timing.Micro): Types.Events.RecalcStyle[] {
+  const foundEvents: Types.Events.RecalcStyle[] = [];
   const startEventIndex = topLevelEventIndexEndingAfter(events, startTime);
   for (let i = startEventIndex; i < events.length; i++) {
     const event = events[i];
-    if (!Types.Events.isUpdateLayoutTree(event)) {
+    if (!Types.Events.isRecalcStyle(event)) {
       continue;
     }
     if (event.ts >= (endTime || Infinity)) {
@@ -820,7 +849,7 @@ export const VISIBLE_TRACE_EVENT_TYPES = new Set<Types.Events.Name>([
   Types.Events.Name.TIMER_INSTALL,
   Types.Events.Name.TIMER_REMOVE,
   Types.Events.Name.UPDATE_LAYER_TREE,
-  Types.Events.Name.UPDATE_LAYOUT_TREE,
+  Types.Events.Name.RECALC_STYLE,
   Types.Events.Name.USER_TIMING,
   Types.Events.Name.V8_CONSOLE_RUN_TASK,
   Types.Events.Name.WASM_CACHED_MODULE,

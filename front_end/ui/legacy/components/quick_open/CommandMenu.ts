@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -45,9 +45,9 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let commandMenuInstance: CommandMenu;
 
 export class CommandMenu {
-  private readonly commandsInternal: Command[];
+  readonly #commands: Command[];
   private constructor() {
-    this.commandsInternal = [];
+    this.#commands = [];
     this.loadCommands();
   }
 
@@ -216,7 +216,7 @@ export class CommandMenu {
         id: view.viewId(),
         featurePromotionId: view.featurePromotionId(),
       };
-      this.commandsInternal.push(CommandMenu.createRevealViewCommand(options));
+      this.#commands.push(CommandMenu.createRevealViewCommand(options));
     }
     // Populate allowlisted settings.
     const settingsRegistrations = Common.Settings.Settings.instance().getRegisteredSettings();
@@ -227,13 +227,13 @@ export class CommandMenu {
       }
       for (const pair of options) {
         const setting = Common.Settings.Settings.instance().moduleSetting(settingRegistration.settingName);
-        this.commandsInternal.push(CommandMenu.createSettingCommand(setting, pair.title(), pair.value));
+        this.#commands.push(CommandMenu.createSettingCommand(setting, pair.title(), pair.value));
       }
     }
   }
 
   commands(): Command[] {
-    return this.commandsInternal;
+    return this.#commands;
   }
 }
 export interface ActionCommandOptions {

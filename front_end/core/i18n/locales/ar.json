@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "لوحة الأداء"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "الحساب"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "علامة تفسيرية"
   },
@@ -147,7 +150,7 @@
     "message": "اختصارات وإعدادات عامة"
   },
   "core/common/SettingRegistration.ts | grid": {
-    "message": "شبكة"
+    "message": "التصميم الشبكي"
   },
   "core/common/SettingRegistration.ts | memory": {
     "message": "الذاكرة"
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "المصادر"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "المزامنة"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "أدوات مطوري البرامج: {PH1}"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "عرض النصوص البرمجية"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "الدعم الذكي"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "تخصيص أدوات مطوّري البرامج والتحكّم فيها"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "اللوحة السابقة"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "تلقّي الشارات"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "إعادة تحميل أدوات مطوري البرامج"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "لا تتوفّر هذه الميزة إلا مع وجود اتصال إنترنت نشط."
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "تم إرسال طلب خارجي إلى \"DevTools\""
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "حدث خطأ غير معروف أثناء تحميل الملف."
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "نقل قاموس ضغط البيانات"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "عمليات التحقّق من السلامة التي يبدأها الخادم"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "مواصفات \"ملخّص HTTP غير المشفّر\""
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "إنّ محاكاة جهاز جديد بعد تحميل الصفحة يمكن أن تؤثّر في سرعة عرض أكبر محتوى مرئي. يُرجى إعادة تحميل الصفحة بعد محاكاة جهاز جديد للحصول على بيانات دقيقة عن سرعة العرض."
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "حذف المحادثات المحلية"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "تصدير المحادثة"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "يُرجى اتّباع الخطوات الموضّحة أعلاه لطرح سؤال"
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "ما مِن محادثات سابقة"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "تم نسخ الردّ إلى الحافظة"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "إرسال ملاحظات"
   },
@@ -2685,7 +2706,7 @@
     "message": "الإعدادات"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
-    "message": "المساعدة المستنِدة إلى الذكاء الاصطناعي"
+    "message": "الدعم الذكي"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "طرح سؤال على أداة الذكاء الاصطناعي"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "عمليات التحميل المبني على توقُّع"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "يُرجى النقر على أي تقرير لعرض نصه."
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "لم يتم اختيار أي تقرير"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "واجهة برمجة التطبيقات لإعداد التقارير"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "يُرجى النقر على أي تقرير لعرض نصه."
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "ما مِن تقرير أو نقطة نهاية"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "لم يتم اختيار أي تقرير"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "يمكنك في هذه الصفحة فحص تقارير واجهة برمجة التطبيقات Reporting API ونقاط نهايتها."
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "الصفحات التي تحتوي على WebRTC يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "ميزة \"التخزين المؤقت للصفحات\" غير مفعَّلة بسبب استخدام WebRTC."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "الصفحات التي تستخدِم WebShare يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "الصفحات التي تحتوي على WebSocket يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "ميزة \"التخزين المؤقت للصفحات\" غير مفعّلة بسبب استخدام WebSocket."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "الصفحات التي تحتوي على WebTransport يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "ميزة \"التخزين المؤقت للصفحات\" غير مفعَّلة بسبب استخدام WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "الصفحات التي تستخدِم WebXR يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "إيقاف \"وضع الشبكة\""
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "إيقاف وضع التصميم المُتراص"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "إيقاف العنصر المركب لانطباق الانتقال للأسفل أو للأعلى"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "تفعيل \"وضع الشبكة\""
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "تفعيل وضع التصميم المُتراص"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "تفعيل العنصر المركب لانطباق الانتقال للأعلى أو للأسفل"
@@ -6771,7 +6789,7 @@
     "message": "فئة أدوات معالجة الأحداث"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "أدوات معالجة الأحداث في Framework"
+    "message": "حلّ متتبِّعي Framework"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "أداة معالجة الحدث السلبية"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "طبقات Flexbox المركّبة"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "التصميم الشبكي / التصميم المُتراص"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "عناصر مركّبة على التصميم الشبكي أو التصميم المُتراص"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "لم يتم العثور على تصميمات flexbox في هذه الصفحة."
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "لم يتم العثور على تصميمات شبكية أو متراصة في هذه الصفحة"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "إعدادات عرض العناصر المركّبة"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "من المحتمل أن يتم تجاوز الطلبات على الجهاز. يُرجى الاطّلاع على لوحة \"المصادر\" لمزيد من المعلومات."
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "إضافة…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "إضافة \"{PH1}\""
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "مخصَّص"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "الإعدادات المسبقة"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "‫{PH1} (يُنصح به)"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "معايرة…"
@@ -8646,10 +8685,10 @@
     "message": "إعادة الضبط على القيمة التلقائية"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "‫Save-Data: تم إيقاف هذا الخيار"
+    "message": "‫Save-Data: غير مفعَّل"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "‫Save-Data: تم تفعيل هذا الخيار"
+    "message": "‫Save-Data: مفعَّل"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "يتم تجاهُل القيمة التي تم الإبلاغ عنها بواسطة navigator.connection.saveData على الصفحة"
@@ -9357,7 +9396,7 @@
     "message": "عرض الطلبات المحظورة فقط"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "(وضع التصفّح المتخفي فقط) يتم عرض الطلبات المُرسَلة إلى خوادم حماية عنوان IP فقط"
+    "message": "يتم عرض الطلبات المُرسَلة إلى خوادم حماية عنوان IP فقط. ولا يؤثّر هذا الفلتر في التصفّح العادي."
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "عرض الطلبات التي تتضمَّن ملفّات تعريف الارتباط المحظورة الخاصة بالاستجابة فقط"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "عنوان URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "مدة التنزيل: {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (من ذاكرة التخزين المؤقت)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (من ServiceWorker)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "وقت الاستجابة: {PH1}"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "وقت الاستجابة {PH1}، مدة التنزيل {PH2}، (الإجمالي {PH3})"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "ملفات تعريف الارتباط التي تم تلقّيها من الخادم في عنوان الاستجابة \"set-cookie\""
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "الفيديو"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "تجاوُز حماية عنوان IP"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "رقم التعريف"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "الطريقة"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "خادم IP الوكيل غير متوفّر"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "لا يتوفّر وكيل عنوان IP إلا في وضع التصفّح المتخفي. يُرجى فتح الموقع الإلكتروني في وضع التصفّح المتخفي."
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "طلبات الخادم الوكيل"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "الحالة"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "عنوان URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "اختبار أداء هذا الموقع الإلكتروني في حال تم تفعيل وكيل IP في Chrome"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "عناصر التحكُّم في الخادم الوكيل لحماية عنوان IP"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} مع {PH2}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "عناصر التحكّم"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "حماية عنوان IP"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "المصدر الرئيسي"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "مستخدم غير نشِط لفترة قصيرة، والشاشة غير مقفولة"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "إنشاء عناوين تلقائيًا لتعليقات تتبُّع الأداء التوضيحية"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "أثناء الكتابة في لوحة \"وحدة التحكّم\" أو لوحة \"المصادر\"، ستظهر لك اقتراحات للرموز البرمجية. يمكنك الضغط على مفتاح Tab لقبول أحد الاقتراحات."
   },
@@ -12336,16 +12396,16 @@
     "message": "تعزيز إنتاجيتك باستخدام الذكاء الاصطناعي"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "لإنشاء اقتراحات بشأن الرموز البرمجية، تتم مشاركة إدخالاتك في وحدة التحكّم وسجلّ الجلسة الحالية ومحتوى الملف المفتوح حاليًا مع Google. قد يطّلع على هذه البيانات فريق من المراجعين لتحسين هذه الميزة."
+    "message": "لإنشاء اقتراحات بشأن الرموز البرمجية، تتم مشاركة إدخالاتك في وحدة التحكّم وسجلّ الجلسة الحالية ومحتوى CSS الذي يتم فحصه حاليًا ومحتوى الملف المفتوح حاليًا مع Google. قد يطّلع فريق من المراجعين على هذه البيانات لتحسين هذه الميزة."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "لإنشاء اقتراحات بشأن الرموز البرمجية، تتم مشاركة إدخالاتك في وحدة التحكّم وسجلّ الجلسة الحالية ومحتوى الملف المفتوح حاليًا مع Google. ولن يتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي."
+    "message": "لإنشاء اقتراحات بشأن الرموز البرمجية، تتم مشاركة إدخالاتك في وحدة التحكّم وسجلّ الجلسة الحالية ومحتوى CSS الذي يتم فحصه حاليًا ومحتوى الملف المفتوح حاليًا مع Google. ولن يتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي. وقد تُغيّر مؤسستك هذه الإعدادات في أي وقت."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "للحصول على تفسيرات، نرسل إلى Google كل من رسالة وحدة التحكّم وما يرتبط بها من عمليات تتبُّع تسلسل استدعاء الدوال البرمجية ورمز المصدر المرتبط بها ورؤوس الشبكة المرتبطة بها. قد يطّلع على هذه البيانات فريق من المراجعين لتحسين هذه الميزة."
+    "message": "للحصول على تفسيرات، نرسل إلى Google كلاً من رسالة وحدة التحكّم وما يرتبط بها من عمليات تتبُّع تسلسل استدعاء الدوال البرمجية ورمز المصدر المرتبط بها ورؤوس الشبكة المرتبطة بها. قد يطّلع على هذه البيانات فريق من المراجعين لتحسين هذه الميزة."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "للحصول على تفسيرات، نرسل إلى Google كل من رسالة وحدة التحكّم وما يرتبط بها من عمليات تتبُّع تسلسل استدعاء الدوال البرمجية ورمز المصدر المرتبط بها ورؤوس الشبكة المرتبطة بها. ولن يتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي."
+    "message": "للحصول على تفسيرات، نرسل إلى Google كلاً من رسالة وحدة التحكّم وما يرتبط بها من عمليات تتبُّع تسلسل استدعاء الدوال البرمجية ورمز المصدر المرتبط بها ورؤوس الشبكة المرتبطة بها. ولن يتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي. وقد تغيّر مؤسستك هذه الإعدادات في أي وقت."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "قد تمتنع Google عن جمع البيانات استنادًا إلى منطقة إقامتك"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "تفعيل ميزة \"الدعم الذكي\""
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "تفعيل اقتراحات الرموز البرمجية المستنِدة إلى الذكاء الاصطناعي"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "تفعيل اقتراحات الذكاء الاصطناعي للتعليقات التوضيحية في لوحة الأداء"
@@ -12381,19 +12444,19 @@
     "message": "فهم أنماط CSS ونشاط الشبكة والمؤثِّرات السلبية في الأداء ومصادِر الملفات من خلال الإحصاءات المستنِدة إلى الذكاء الاصطناعي"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "للحصول على تفسيرات، تُرسَل إلى Google أي طلبات وبيانات للمستخدمين يمكن للصفحة التي تم فحصها الوصول إليها من خلال واجهات برمجة تطبيقات الويب وطلبات الشبكة والملفات وعمليات تتبُّع الأداء. قد يطّلع على هذه البيانات فريق من المراجعين لتحسين هذه الميزة. يُرجى عدم استخدام الميزة في الصفحات التي تحتوي على معلومات شخصية أو حسّاسة."
+    "message": "للحصول على تفسيرات، تُرسَل إلى Google أي طلبات وبيانات تخصّ المستخدمين يمكن للصفحة التي تم فحصها الوصول إليها من خلال واجهات برمجة تطبيقات الويب وطلبات الشبكة والملفات وعمليات تتبُّع الأداء. قد يطّلع على هذه البيانات فريق من المراجعين لتحسين هذه الميزة. يُرجى عدم استخدام الميزة في الصفحات التي تحتوي على معلومات شخصية أو حسّاسة."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "للحصول على تفسيرات، تُرسَل إلى Google أي طلبات وبيانات للمستخدمين يمكن للصفحة التي تم فحصها الوصول إليها من خلال واجهات برمجة تطبيقات الويب وطلبات الشبكة والملفات وعمليات تتبُّع الأداء. ولن يتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي."
+    "message": "للحصول على تفسيرات، تُرسَل إلى Google أي طلبات وبيانات تخصّ المستخدمين يمكن للصفحة التي تم فحصها الوصول إليها من خلال واجهات برمجة تطبيقات الويب وطلبات الشبكة والملفات وعمليات تتبُّع الأداء. ولن يتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي. وقد تغيّر مؤسستك هذه الإعدادات في أي وقت."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "يتم إرسال بيانات تتبُّع أدائك إلى Google لإنشاء تفسير. وسيتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي."
+    "message": "لإنشاء اقتراحات بشأن التعليقات التوضيحية، يتم إرسال بيانات تتبُّع أدائك إلى Google. قد يطّلع فريق من المراجعين على هذه البيانات لتحسين هذه الميزة."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "يتم إرسال بيانات تتبُّع أدائك إلى Google لإنشاء تفسير. ولن يتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي."
+    "message": "لإنشاء اقتراحات بشأن التعليقات التوضيحية، يتم إرسال بيانات تتبُّع أدائك إلى Google. ولن يتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي. وقد تُغيّر مؤسستك هذه الإعدادات في أي وقت."
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "يمكنك الحصول على اقتراحات من الذكاء الاصطناعي لتعليقات توضيحية حول لوحة الأداء"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "تساعدك هذه الميزة في إضافة تعليقات توضيحية إلى تتبُّع الأداء باستخدام تصنيفات يتم إنشاؤها تلقائيًا"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "الحصول على مساعدة في إكمال الرمز"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "التجارب غير المستقرة"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "اشتراك Premium (سنوي)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "اشتراك Premium (شهري)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "اشتراك Pro (سنوي)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "اشتراك Pro (شهري)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "خطة Standard"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "خطة غير معروفة"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "لم يتم تسجيل دخولك إلى Chrome."
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "لتفعيل هذا الإعداد، يجب أولاً أن تفعِّل مزامنة الإعدادات في Chrome."
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "الانتقال إلى \"الإعدادات\""
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(يتم إرسال البيانات ذات الصلة إلى Google)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "اشتراك"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "تم تسجيل الدخول إلى Chrome بحساب:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "لتفعيل هذا الإعداد، يجب تفعيل ميزة \"مزامنة Chrome\"."
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "عرض الملف الشخصي"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "إضافة جهاز مخصَّص"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- تقييد سرعة وحدة المعالجة المركزية (CPU) مُفعّل"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- عيّنات تعليمات JavaScript متوقّفة"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- ضبط الحد الأقصى المسموح لعرض نطاق الشبكة مفعّل"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "تعتيم المحتوى التابع لجهات خارجية"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "إيقاف عينات JavaScript"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "يتيح هذا الخيار إمكانية إيقاف عيّنات تعليمات JavaScript، وبالتالي يقلِّل أعباء الأداء عند تفعيلها على الأجهزة الجوّالة."
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "يُرجى إفلات ملف التتبُّع أو عنوان URL هنا"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "تكرار"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "المهلة"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} في {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "الأوقات"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "ضبط المسارات"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "عرض الكل"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "تم إخفاء بعض المسارات في سجلّ التتبُّع هذا. يمكنك ضبط المسارات من خلال النقر بزر الماوس الأيمن على اسم المسار."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "غير متزامن"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "بروتوكول WebSocket"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "حفظ بيانات تتبُّع الأداء "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "تضمين التعليقات التوضيحية"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "تضمين محتوى النص البرمجي"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "تضمين خرائط مصدر النص البرمجي"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "حفظ"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "حفظ بيانات التتبع…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "الإعدادات المتقدّمة"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "تم حظر ملفات تعريف الارتباط لهذا الطلب بسبب إعدادات المتصفّح أو الميزات التجريبية في Chrome. يمكنك الاطّلاع على مزيد من المعلومات في لوحة \"المشاكل\"."
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "سياق الصوت: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "حجم ذاكرة التخزين المؤقت لمعاودة الاتصال"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "الفاصل الزمني لمعاودة الاتصال"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "الوقت الحالي"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "الحد الأقصى لعدد قنوات الإخراج"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(ما مِن تسجيلات)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "لم يتم رصد أي استخدام لواجهة برمجة التطبيقات Web Audio API"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "يجب فتح صفحة تستخدم Web Audio API لبدء الرصد."
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "سعة العرض"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "معدّل البيانات في الملف الصوتي"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "الحالة"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "الصوت"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "مزيد من الأدوات"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "نقل إلى الأسفل"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "الانتقال إلى الدرج"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "نقل إلى الأعلى"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "الانتقال إلى شريط علامات التبويب الرئيسي"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "اللوحات"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "تم وضع علامة في المربّع"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "ميزة جديدة متوفّرة"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1} و{PH2}"
@@ -16968,7 +17127,7 @@
     "message": "لقطة شاشة لمدة {PH1} - الاختيار لعرض الطلبات السابقة"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
-    "message": "ضبط إعدادات قنوات الإصدار"
+    "message": "ضبط المسارات"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
     "message": "تم اختيار حدث \"{PH1}\" ضمن \"{PH2}\". يُرجى الضغط على مفتاح Enter للتركيز على هذا الحدث."
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "تنفيذ الأمر"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "ميزة جديدة متوفّرة"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "لم يتم العثور على نتائج."

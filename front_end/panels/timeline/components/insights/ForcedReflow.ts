@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import './Table.js';
@@ -21,6 +21,10 @@ const {html, nothing} = Lit;
 export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-forced-reflow`;
   override internalName = 'forced-reflow';
+
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
 
   mapToRow(data: Trace.Insights.Models.ForcedReflow.BottomUpCallStack): TableDataRow {
     return {

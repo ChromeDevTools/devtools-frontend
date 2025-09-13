@@ -1,4 +1,4 @@
-// Copyright (c) 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -22,44 +22,44 @@ export interface CoreOrProtocolAxProperty {
 }
 
 export class AccessibilityNode {
-  readonly #accessibilityModelInternal: AccessibilityModel;
-  readonly #idInternal: Protocol.Accessibility.AXNodeId;
-  readonly #backendDOMNodeIdInternal: Protocol.DOM.BackendNodeId|null;
-  readonly #deferredDOMNodeInternal: DeferredDOMNode|null;
-  readonly #ignoredInternal: boolean;
-  readonly #ignoredReasonsInternal: Protocol.Accessibility.AXProperty[]|undefined;
-  readonly #roleInternal: Protocol.Accessibility.AXValue|null;
-  readonly #nameInternal: Protocol.Accessibility.AXValue|null;
-  readonly #descriptionInternal: Protocol.Accessibility.AXValue|null;
-  readonly #valueInternal: Protocol.Accessibility.AXValue|null;
-  readonly #propertiesInternal: Protocol.Accessibility.AXProperty[]|null;
+  readonly #accessibilityModel: AccessibilityModel;
+  readonly #id: Protocol.Accessibility.AXNodeId;
+  readonly #backendDOMNodeId: Protocol.DOM.BackendNodeId|null;
+  readonly #deferredDOMNode: DeferredDOMNode|null;
+  readonly #ignored: boolean;
+  readonly #ignoredReasons: Protocol.Accessibility.AXProperty[]|undefined;
+  readonly #role: Protocol.Accessibility.AXValue|null;
+  readonly #name: Protocol.Accessibility.AXValue|null;
+  readonly #description: Protocol.Accessibility.AXValue|null;
+  readonly #value: Protocol.Accessibility.AXValue|null;
+  readonly #properties: Protocol.Accessibility.AXProperty[]|null;
   readonly #parentId: Protocol.Accessibility.AXNodeId|null;
   readonly #frameId: Protocol.Page.FrameId|null;
   readonly #childIds: Protocol.Accessibility.AXNodeId[]|null;
 
   constructor(accessibilityModel: AccessibilityModel, payload: Protocol.Accessibility.AXNode) {
-    this.#accessibilityModelInternal = accessibilityModel;
+    this.#accessibilityModel = accessibilityModel;
 
-    this.#idInternal = payload.nodeId;
-    accessibilityModel.setAXNodeForAXId(this.#idInternal, this);
+    this.#id = payload.nodeId;
+    accessibilityModel.setAXNodeForAXId(this.#id, this);
     if (payload.backendDOMNodeId) {
       accessibilityModel.setAXNodeForBackendDOMNodeId(payload.backendDOMNodeId, this);
-      this.#backendDOMNodeIdInternal = payload.backendDOMNodeId;
-      this.#deferredDOMNodeInternal = new DeferredDOMNode(accessibilityModel.target(), payload.backendDOMNodeId);
+      this.#backendDOMNodeId = payload.backendDOMNodeId;
+      this.#deferredDOMNode = new DeferredDOMNode(accessibilityModel.target(), payload.backendDOMNodeId);
     } else {
-      this.#backendDOMNodeIdInternal = null;
-      this.#deferredDOMNodeInternal = null;
+      this.#backendDOMNodeId = null;
+      this.#deferredDOMNode = null;
     }
-    this.#ignoredInternal = payload.ignored;
-    if (this.#ignoredInternal && 'ignoredReasons' in payload) {
-      this.#ignoredReasonsInternal = payload.ignoredReasons;
+    this.#ignored = payload.ignored;
+    if (this.#ignored && 'ignoredReasons' in payload) {
+      this.#ignoredReasons = payload.ignoredReasons;
     }
 
-    this.#roleInternal = payload.role || null;
-    this.#nameInternal = payload.name || null;
-    this.#descriptionInternal = payload.description || null;
-    this.#valueInternal = payload.value || null;
-    this.#propertiesInternal = payload.properties || null;
+    this.#role = payload.role || null;
+    this.#name = payload.name || null;
+    this.#description = payload.description || null;
+    this.#value = payload.value || null;
+    this.#properties = payload.properties || null;
     this.#childIds = [...new Set(payload.childIds)];
     this.#parentId = payload.parentId || null;
     if (payload.frameId && !payload.parentId) {
@@ -71,74 +71,74 @@ export class AccessibilityNode {
   }
 
   id(): Protocol.Accessibility.AXNodeId {
-    return this.#idInternal;
+    return this.#id;
   }
 
   accessibilityModel(): AccessibilityModel {
-    return this.#accessibilityModelInternal;
+    return this.#accessibilityModel;
   }
 
   ignored(): boolean {
-    return this.#ignoredInternal;
+    return this.#ignored;
   }
 
   ignoredReasons(): Protocol.Accessibility.AXProperty[]|null {
-    return this.#ignoredReasonsInternal || null;
+    return this.#ignoredReasons || null;
   }
 
   role(): Protocol.Accessibility.AXValue|null {
-    return this.#roleInternal || null;
+    return this.#role || null;
   }
 
   coreProperties(): CoreOrProtocolAxProperty[] {
     const properties: CoreOrProtocolAxProperty[] = [];
 
-    if (this.#nameInternal) {
-      properties.push({name: CoreAxPropertyName.NAME, value: this.#nameInternal});
+    if (this.#name) {
+      properties.push({name: CoreAxPropertyName.NAME, value: this.#name});
     }
-    if (this.#descriptionInternal) {
-      properties.push({name: CoreAxPropertyName.DESCRIPTION, value: this.#descriptionInternal});
+    if (this.#description) {
+      properties.push({name: CoreAxPropertyName.DESCRIPTION, value: this.#description});
     }
-    if (this.#valueInternal) {
-      properties.push({name: CoreAxPropertyName.VALUE, value: this.#valueInternal});
+    if (this.#value) {
+      properties.push({name: CoreAxPropertyName.VALUE, value: this.#value});
     }
 
     return properties;
   }
 
   name(): Protocol.Accessibility.AXValue|null {
-    return this.#nameInternal || null;
+    return this.#name || null;
   }
 
   description(): Protocol.Accessibility.AXValue|null {
-    return this.#descriptionInternal || null;
+    return this.#description || null;
   }
 
   value(): Protocol.Accessibility.AXValue|null {
-    return this.#valueInternal || null;
+    return this.#value || null;
   }
 
   properties(): Protocol.Accessibility.AXProperty[]|null {
-    return this.#propertiesInternal || null;
+    return this.#properties || null;
   }
 
   parentNode(): AccessibilityNode|null {
     if (this.#parentId) {
-      return this.#accessibilityModelInternal.axNodeForId(this.#parentId);
+      return this.#accessibilityModel.axNodeForId(this.#parentId);
     }
     return null;
   }
 
   isDOMNode(): boolean {
-    return Boolean(this.#backendDOMNodeIdInternal);
+    return Boolean(this.#backendDOMNodeId);
   }
 
   backendDOMNodeId(): Protocol.DOM.BackendNodeId|null {
-    return this.#backendDOMNodeIdInternal;
+    return this.#backendDOMNodeId;
   }
 
   deferredDOMNode(): DeferredDOMNode|null {
-    return this.#deferredDOMNodeInternal;
+    return this.#deferredDOMNode;
   }
 
   highlightDOMNode(): void {
@@ -157,7 +157,7 @@ export class AccessibilityNode {
 
     const children = [];
     for (const childId of this.#childIds) {
-      const child = this.#accessibilityModelInternal.axNodeForId(childId);
+      const child = this.#accessibilityModel.axNodeForId(childId);
       if (child) {
         children.push(child);
       }
@@ -177,14 +177,14 @@ export class AccessibilityNode {
     if (!this.#childIds || !this.#childIds.length) {
       return false;
     }
-    return this.#childIds.every(id => this.#accessibilityModelInternal.axNodeForId(id) === null);
+    return this.#childIds.every(id => this.#accessibilityModel.axNodeForId(id) === null);
   }
 
   hasUnloadedChildren(): boolean {
     if (!this.#childIds || !this.#childIds.length) {
       return false;
     }
-    return this.#childIds.some(id => this.#accessibilityModelInternal.axNodeForId(id) === null);
+    return this.#childIds.some(id => this.#accessibilityModel.axNodeForId(id) === null);
   }
   // Only the root node gets a frameId, so nodes have to walk up the tree to find their frameId.
   getFrameId(): Protocol.Page.FrameId|null {

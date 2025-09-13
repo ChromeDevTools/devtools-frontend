@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -12,6 +12,7 @@ import {metricSavingsForWastedBytes} from './Common.js';
 import {linearInterpolation} from './Statistics.js';
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
@@ -62,7 +63,7 @@ const IGNORE_THRESHOLD_IN_PERCENT = 0.925;
 
 function finalize(partialModel: PartialInsightModel<CacheInsightModel>): CacheInsightModel {
   return {
-    insightKey: 'Cache',
+    insightKey: InsightKeys.CACHE,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
@@ -188,10 +189,13 @@ export interface CacheableRequest {
   wastedBytes: number;
 }
 
-export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): CacheInsightModel {
+export function isCacheInsight(model: InsightModel): model is CacheInsightModel {
+  return model.insightKey === InsightKeys.CACHE;
+}
+
+export function generateInsight(data: Handlers.Types.HandlerData, context: InsightSetContext): CacheInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
-  const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
+  const contextRequests = data.NetworkRequests.byTime.filter(isWithinContext);
 
   const results: CacheableRequest[] = [];
   let totalWastedBytes = 0;

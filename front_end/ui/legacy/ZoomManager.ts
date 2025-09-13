@@ -1,4 +1,4 @@
-// Copyright 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -9,12 +9,12 @@ let zoomManagerInstance: ZoomManager|undefined;
 
 export class ZoomManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private frontendHost: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI;
-  private zoomFactorInternal: number;
+  #zoomFactor: number;
 
   private constructor(window: Window, frontendHost: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI) {
     super();
     this.frontendHost = frontendHost;
-    this.zoomFactorInternal = this.frontendHost.zoomFactor();
+    this.#zoomFactor = this.frontendHost.zoomFactor();
     window.addEventListener('resize', this.onWindowResize.bind(this), true);
   }
 
@@ -41,22 +41,22 @@ export class ZoomManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   zoomFactor(): number {
-    return this.zoomFactorInternal;
+    return this.#zoomFactor;
   }
 
   cssToDIP(value: number): number {
-    return value * this.zoomFactorInternal;
+    return value * this.#zoomFactor;
   }
 
   dipToCSS(valueDIP: number): number {
-    return valueDIP / this.zoomFactorInternal;
+    return valueDIP / this.#zoomFactor;
   }
 
   private onWindowResize(): void {
-    const oldZoomFactor = this.zoomFactorInternal;
-    this.zoomFactorInternal = this.frontendHost.zoomFactor();
-    if (oldZoomFactor !== this.zoomFactorInternal) {
-      this.dispatchEventToListeners(Events.ZOOM_CHANGED, {from: oldZoomFactor, to: this.zoomFactorInternal});
+    const oldZoomFactor = this.#zoomFactor;
+    this.#zoomFactor = this.frontendHost.zoomFactor();
+    if (oldZoomFactor !== this.#zoomFactor) {
+      this.dispatchEventToListeners(Events.ZOOM_CHANGED, {from: oldZoomFactor, to: this.#zoomFactor});
     }
   }
 }

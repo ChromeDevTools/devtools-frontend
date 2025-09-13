@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2012 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2012 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -53,16 +27,16 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let isolatedFileSystemManagerInstance: IsolatedFileSystemManager|null;
 
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private readonly fileSystemsInternal: Map<Platform.DevToolsPath.UrlString, PlatformFileSystem>;
+  readonly #fileSystems: Map<Platform.DevToolsPath.UrlString, PlatformFileSystem>;
   private readonly callbacks: Map<number, (arg0: Platform.DevToolsPath.RawPathString[]) => void>;
   private readonly progresses: Map<number, Common.Progress.Progress>;
-  private readonly workspaceFolderExcludePatternSettingInternal: Common.Settings.RegExpSetting;
+  readonly #workspaceFolderExcludePatternSetting: Common.Settings.RegExpSetting;
   private fileSystemRequestResolve: ((arg0: IsolatedFileSystem|null) => void)|null;
   private readonly fileSystemsLoadedPromise: Promise<IsolatedFileSystem[]>;
   private constructor() {
     super();
 
-    this.fileSystemsInternal = new Map();
+    this.#fileSystems = new Map();
     this.callbacks = new Map();
     this.progresses = new Map();
 
@@ -116,7 +90,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
     }
     const defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
-    this.workspaceFolderExcludePatternSettingInternal = Common.Settings.Settings.instance().createRegExpSetting(
+    this.#workspaceFolderExcludePatternSetting = Common.Settings.Settings.instance().createRegExpSetting(
         'workspace-folder-exclude-pattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
 
     this.fileSystemRequestResolve = null;
@@ -194,7 +168,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       if (!fileSystem) {
         return null;
       }
-      this.fileSystemsInternal.set(fileSystemURL, fileSystem);
+      this.#fileSystems.set(fileSystemURL, fileSystem);
       fileSystem.addEventListener(PlatformFileSystemEvents.FILE_SYSTEM_ERROR, this.#onFileSystemError, this);
       if (dispatchEvent) {
         this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
@@ -204,7 +178,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   addPlatformFileSystem(fileSystemURL: Platform.DevToolsPath.UrlString, fileSystem: PlatformFileSystem): void {
-    this.fileSystemsInternal.set(fileSystemURL, fileSystem);
+    this.#fileSystems.set(fileSystemURL, fileSystem);
     fileSystem.addEventListener(PlatformFileSystemEvents.FILE_SYSTEM_ERROR, this.#onFileSystemError, this);
     this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
   }
@@ -238,11 +212,11 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent<Platform.DevToolsPath.RawPathString>): void {
     const embedderPath = event.data;
     const fileSystemPath = Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath);
-    const isolatedFileSystem = this.fileSystemsInternal.get(fileSystemPath);
+    const isolatedFileSystem = this.#fileSystems.get(fileSystemPath);
     if (!isolatedFileSystem) {
       return;
     }
-    this.fileSystemsInternal.delete(fileSystemPath);
+    this.#fileSystems.delete(fileSystemPath);
     isolatedFileSystem.removeEventListener(PlatformFileSystemEvents.FILE_SYSTEM_ERROR, this.#onFileSystemError, this);
     isolatedFileSystem.fileSystemRemoved();
     this.dispatchEventToListeners(Events.FileSystemRemoved, isolatedFileSystem);
@@ -265,8 +239,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
           new Platform.MapUtilities.Multimap<Platform.DevToolsPath.UrlString, Platform.DevToolsPath.UrlString>();
       for (const embedderPath of embedderPaths) {
         const filePath = Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath);
-        for (const fileSystemPath of this.fileSystemsInternal.keys()) {
-          const fileSystem = this.fileSystemsInternal.get(fileSystemPath);
+        for (const fileSystemPath of this.#fileSystems.keys()) {
+          const fileSystem = this.#fileSystems.get(fileSystemPath);
           if (fileSystem?.isFileExcluded(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(embedderPath))) {
             continue;
           }
@@ -282,15 +256,15 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   fileSystems(): PlatformFileSystem[] {
-    return [...this.fileSystemsInternal.values()];
+    return [...this.#fileSystems.values()];
   }
 
   fileSystem(fileSystemPath: Platform.DevToolsPath.UrlString): PlatformFileSystem|null {
-    return this.fileSystemsInternal.get(fileSystemPath) || null;
+    return this.#fileSystems.get(fileSystemPath) || null;
   }
 
   workspaceFolderExcludePatternSetting(): Common.Settings.RegExpSetting {
-    return this.workspaceFolderExcludePatternSettingInternal;
+    return this.#workspaceFolderExcludePatternSetting;
   }
 
   registerCallback(callback: (arg0: Platform.DevToolsPath.RawPathString[]) => void): number {

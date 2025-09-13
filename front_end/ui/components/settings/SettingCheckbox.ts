@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -88,6 +88,14 @@ export class SettingCheckbox extends HTMLElement {
     return undefined;
   }
 
+  get checked(): boolean {
+    if (!this.#setting || this.#setting.disabledReasons().length > 0) {
+      return false;
+    }
+
+    return this.#setting.get();
+  }
+
   #render(): void {
     if (!this.#setting) {
       throw new Error('No "Setting" object provided for rendering');
@@ -111,7 +119,7 @@ export class SettingCheckbox extends HTMLElement {
         <label title=${title}>
           <input
             type="checkbox"
-            .checked=${disabledReasons.length ? false : this.#setting.get()}
+            .checked=${this.checked}
             ?disabled=${this.#setting.disabled()}
             @change=${this.#checkboxChanged}
             jslog=${VisualLogging.toggle().track({click: true}).context(this.#setting.name)}

@@ -1,15 +1,15 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 
-import * as Network from './NetworkTimeCalculator.js';
-import * as RequestTimingView from './RequestTimingView.js';
+import * as Network from './network.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -63,18 +63,18 @@ describeWithLocale('ResourceTimingView', () => {
     const request = createNetworkRequest(
         Protocol.Network.ServiceWorkerRouterSource.Network, Protocol.Network.ServiceWorkerRouterSource.Network);
     const timingInfo = request.timing as Protocol.Network.ResourceTiming;
-    const timeRanges = RequestTimingView.RequestTimingView.calculateRequestTimeRanges(request, 100);
+    const timeRanges = NetworkTimeCalculator.calculateRequestTimeRanges(request, 100);
     const routerEvaluationTime = timingInfo.workerRouterEvaluationStart as number;
     const sendStart = timingInfo.sendStart;
 
     const routerEvaluation = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
+        timeRange => timeRange.name === NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
     assert.isTrue(Boolean(routerEvaluation), 'worker router evaluation exists');
     assert.strictEqual(routerEvaluation?.start, timingInfo.requestTime + routerEvaluationTime / 1000);
     assert.strictEqual(routerEvaluation?.end, timingInfo.requestTime + sendStart / 1000);
 
     const cacheLookup = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
+        timeRange => timeRange.name === NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
     assert.isFalse(Boolean(cacheLookup), 'worker cache lookup does not exist');
   });
 
@@ -82,18 +82,18 @@ describeWithLocale('ResourceTimingView', () => {
     const request = createNetworkRequest(
         Protocol.Network.ServiceWorkerRouterSource.FetchEvent, Protocol.Network.ServiceWorkerRouterSource.FetchEvent);
     const timingInfo = request.timing as Protocol.Network.ResourceTiming;
-    const timeRanges = RequestTimingView.RequestTimingView.calculateRequestTimeRanges(request, 100);
+    const timeRanges = NetworkTimeCalculator.calculateRequestTimeRanges(request, 100);
     const routerEvaluationTime = timingInfo.workerRouterEvaluationStart as number;
     const workerStart = timingInfo.workerStart;
 
     const routerEvaluation = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
+        timeRange => timeRange.name === NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
     assert.isTrue(Boolean(routerEvaluation), 'worker router evaluation exists');
     assert.strictEqual(routerEvaluation?.start, timingInfo.requestTime + routerEvaluationTime / 1000);
     assert.strictEqual(routerEvaluation?.end, timingInfo.requestTime + workerStart / 1000);
 
     const cacheLookup = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
+        timeRange => timeRange.name === NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
     assert.isFalse(Boolean(cacheLookup), 'worker cache lookup does not exist');
   });
 
@@ -101,18 +101,18 @@ describeWithLocale('ResourceTimingView', () => {
     const request = createNetworkRequest(
         Protocol.Network.ServiceWorkerRouterSource.Cache, Protocol.Network.ServiceWorkerRouterSource.Cache);
     const timingInfo = request.timing as Protocol.Network.ResourceTiming;
-    const timeRanges = RequestTimingView.RequestTimingView.calculateRequestTimeRanges(request, 100);
+    const timeRanges = NetworkTimeCalculator.calculateRequestTimeRanges(request, 100);
     const routerEvaluationTime = timingInfo.workerRouterEvaluationStart as number;
     const cacheLookupStart = timingInfo.workerCacheLookupStart as number;
 
     const routerEvaluation = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
+        timeRange => timeRange.name === NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
     assert.isTrue(Boolean(routerEvaluation), 'worker router evaluation exists');
     assert.strictEqual(routerEvaluation?.start, timingInfo.requestTime + routerEvaluationTime / 1000);
     assert.strictEqual(routerEvaluation?.end, timingInfo.requestTime + cacheLookupStart / 1000);
 
     const cacheLookup = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
+        timeRange => timeRange.name === NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
     assert.isTrue(Boolean(cacheLookup), 'worker cache lookup does not exist');
     assert.strictEqual(cacheLookup?.start, timingInfo.requestTime + cacheLookupStart / 1000);
     assert.strictEqual(cacheLookup?.end, timingInfo.requestTime + timingInfo.receiveHeadersStart / 1000);
@@ -122,18 +122,18 @@ describeWithLocale('ResourceTimingView', () => {
     const request = createNetworkRequest(
         Protocol.Network.ServiceWorkerRouterSource.Cache, Protocol.Network.ServiceWorkerRouterSource.Network);
     const timingInfo = request.timing as Protocol.Network.ResourceTiming;
-    const timeRanges = RequestTimingView.RequestTimingView.calculateRequestTimeRanges(request, 100);
+    const timeRanges = NetworkTimeCalculator.calculateRequestTimeRanges(request, 100);
     const routerEvaluationTime = timingInfo.workerRouterEvaluationStart as number;
     const cacheLookupStart = timingInfo.workerCacheLookupStart as number;
 
     const routerEvaluation = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
+        timeRange => timeRange.name === NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
     assert.isTrue(Boolean(routerEvaluation), 'worker router evaluation exists');
     assert.strictEqual(routerEvaluation?.start, timingInfo.requestTime + routerEvaluationTime / 1000);
     assert.strictEqual(routerEvaluation?.end, timingInfo.requestTime + cacheLookupStart / 1000);
 
     const cacheLookup = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
+        timeRange => timeRange.name === NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
     assert.isTrue(Boolean(cacheLookup), 'worker cache lookup does not exist');
     assert.strictEqual(cacheLookup?.start, timingInfo.requestTime + cacheLookupStart / 1000);
     assert.strictEqual(cacheLookup?.end, timingInfo.requestTime + timingInfo.sendStart / 1000);
@@ -143,7 +143,8 @@ describeWithLocale('ResourceTimingView', () => {
     const request = createNetworkRequest(
         Protocol.Network.ServiceWorkerRouterSource.Network, Protocol.Network.ServiceWorkerRouterSource.Network);
 
-    const component = new RequestTimingView.RequestTimingView(request, new Network.NetworkTimeCalculator(true));
+    const component =
+        new Network.RequestTimingView.RequestTimingView(request, new NetworkTimeCalculator.NetworkTimeCalculator(true));
     const div = document.createElement('div');
     renderElementIntoDOM(div);
     component.markAsRoot();

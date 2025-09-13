@@ -10,10 +10,10 @@ import * as Timeline from './timeline.js';
 
 const {createHiddenTracksOverlay} = Timeline.TrackConfigBanner;
 
-function fakeTrace(): Trace.Handlers.Types.ParsedTrace {
+function fakeParsedTrace(): Trace.TraceModel.ParsedTrace {
   // We don't need a real trace here; it is used as the cache key.
   // So to keep the tests lightweight, let's just fake it
-  return {} as Trace.Handlers.Types.ParsedTrace;
+  return {} as Trace.TraceModel.ParsedTrace;
 }
 const NO_OP_CALLBACKS = {
   onShowAllTracks: () => {},
@@ -27,13 +27,13 @@ function overlayIsBottomBar(overlay: Trace.Types.Overlays.Overlay|null): overlay
 
 describeWithEnvironment('TrackConfigBanner', () => {
   it('creates the overlay if the user has not seen it for this trace', async () => {
-    const trace = fakeTrace();
+    const trace = fakeParsedTrace();
     const maybeOverlay = createHiddenTracksOverlay(trace, NO_OP_CALLBACKS);
     assert.isOk(overlayIsBottomBar(maybeOverlay));
   });
 
   it('re-uses the same infobar for the same trace', async () => {
-    const trace = fakeTrace();
+    const trace = fakeParsedTrace();
     const overlay1 = createHiddenTracksOverlay(trace, NO_OP_CALLBACKS);
     assert.isOk(overlayIsBottomBar(overlay1));
 
@@ -43,8 +43,8 @@ describeWithEnvironment('TrackConfigBanner', () => {
   });
 
   it('creates new infobars for each trace', async () => {
-    const trace1 = fakeTrace();
-    const trace2 = fakeTrace();
+    const trace1 = fakeParsedTrace();
+    const trace2 = fakeParsedTrace();
     const overlay1 = createHiddenTracksOverlay(trace1, NO_OP_CALLBACKS);
     assert.isOk(overlayIsBottomBar(overlay1));
 
@@ -55,7 +55,7 @@ describeWithEnvironment('TrackConfigBanner', () => {
   });
 
   it('does not create a new overlay if the user has seen and dismissed it', async () => {
-    const trace = fakeTrace();
+    const trace = fakeParsedTrace();
     const overlay1 = createHiddenTracksOverlay(trace, NO_OP_CALLBACKS);
     assert.isOk(overlayIsBottomBar(overlay1));
     // This is equivalent to the user clicking the button to close it.

@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -79,8 +79,8 @@ function finalize(partialModel: PartialInsightModel<INPBreakdownInsightModel>): 
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): INPBreakdownInsightModel {
-  const interactionEvents = parsedTrace.UserInteractions.interactionEventsWithNoNesting.filter(event => {
+    data: Handlers.Types.HandlerData, context: InsightSetContext): INPBreakdownInsightModel {
+  const interactionEvents = data.UserInteractions.interactionEventsWithNoNesting.filter(event => {
     return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });
 

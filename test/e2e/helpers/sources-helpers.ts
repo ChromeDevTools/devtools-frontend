@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -11,7 +11,6 @@ import {GEN_DIR} from '../../conductor/paths.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
-  $$,
   click,
   clickMoreTabsButton,
   getBrowserAndPages,
@@ -693,6 +692,16 @@ export async function getValuesForScope(
   });
 }
 
+export async function waitValuesForScope(
+    scope: string, expandCount: number, expectedValues: string[],
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<string[]> {
+  await devToolsPage.waitForFunction(async () => {
+    const values = await getValuesForScope(scope, expandCount, expectedValues.length, devToolsPage);
+    return values.every((value, i) => value === expectedValues[i]);
+  });
+  return expectedValues;
+}
+
 export async function getPausedMessages(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const messageElement = await devToolsPage.page.waitForSelector('.paused-message');
   assert.isOk(messageElement, 'getPausedMessages: did not find .paused-message element.');
@@ -761,13 +770,21 @@ export class WasmLocationLabels {
   readonly #mappings: Map<string, LabelMapping[]>;
   readonly #source: string;
   readonly #wasm: string;
-  constructor(source: string, wasm: string, mappings: Map<string, LabelMapping[]>) {
+  readonly #devToolsPage: DevToolsPage;
+  readonly #inspectedPage: InspectedPage;
+
+  constructor(
+      source: string, wasm: string, mappings: Map<string, LabelMapping[]>, devToolsPage: DevToolsPage,
+      inspectedPage: InspectedPage) {
     this.#mappings = mappings;
     this.#source = source;
     this.#wasm = wasm;
+    this.#devToolsPage = devToolsPage;
+    this.#inspectedPage = inspectedPage;
   }
 
-  static load(source: string, wasm: string): WasmLocationLabels {
+  static load(source: string, wasm: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage):
+      WasmLocationLabels {
     const mapFileName = path.join(GEN_DIR, 'test', 'e2e', 'resources', `${wasm}.map.json`);
     const mapFile = JSON.parse(fs.readFileSync(mapFileName, {encoding: 'utf-8'})) as Array<{
                       source: string,
@@ -806,11 +823,11 @@ export class WasmLocationLabels {
         labelColumn,
       });
     }
-    return new WasmLocationLabels(source, wasm, mappings);
+    return new WasmLocationLabels(source, wasm, mappings, devToolsPage, inspectedPage);
   }
 
   async checkLocationForLabel(label: string) {
-    const pauseLocation = await retrieveTopCallFrameWithoutResuming();
+    const pauseLocation = await retrieveTopCallFrameWithoutResuming(this.#devToolsPage);
     const pausedLine = this.#mappings.get(label)!.find(
         line => pauseLocation === `${path.basename(this.#wasm)}:0x${line.moduleOffset.toString(16)}` ||
             pauseLocation === `${path.basename(this.#source)}:${line.sourceLine}`);
@@ -819,38 +836,37 @@ export class WasmLocationLabels {
   }
 
   async addBreakpointsForLabelInSource(label: string) {
-    await openFileInEditor(path.basename(this.#source));
-    await Promise.all(this.#mappings.get(label)!.map(({sourceLine}) => addBreakpointForLine(sourceLine)));
+    await openFileInEditor(path.basename(this.#source), this.#devToolsPage);
+    await Promise.all(
+        this.#mappings.get(label)!.map(({sourceLine}) => addBreakpointForLine(sourceLine, this.#devToolsPage)));
   }
 
   async addBreakpointsForLabelInWasm(label: string) {
-    await openFileInEditor(path.basename(this.#wasm));
-    const visibleLines = await $$(CODE_LINE_SELECTOR);
+    await openFileInEditor(path.basename(this.#wasm), this.#devToolsPage);
+    const visibleLines = await this.#devToolsPage.$$(CODE_LINE_SELECTOR);
     const lineNumbers = await Promise.all(visibleLines.map(line => line.evaluate(node => node.textContent)));
     const lineNumberLabels = new Map(lineNumbers.map(label => [Number(label), label]));
     await Promise.all(this.#mappings.get(label)!.map(
 
-        ({moduleOffset}) => addBreakpointForLine(lineNumberLabels.get(moduleOffset)!)));
+        ({moduleOffset}) => addBreakpointForLine(lineNumberLabels.get(moduleOffset)!, this.#devToolsPage)));
   }
 
   async setBreakpointInSourceAndRun(label: string, script: string) {
-    const {target} = getBrowserAndPages();
     await this.addBreakpointsForLabelInSource(label);
 
-    void target.evaluate(script);
+    void this.#inspectedPage.evaluate(script);
     await this.checkLocationForLabel(label);
   }
 
   async setBreakpointInWasmAndRun(label: string, script: string) {
-    const {target} = getBrowserAndPages();
     await this.addBreakpointsForLabelInWasm(label);
 
-    void target.evaluate(script);
+    void this.#inspectedPage.evaluate(script);
     await this.checkLocationForLabel(label);
   }
 
   async continueAndCheckForLabel(label: string) {
-    await click(RESUME_BUTTON);
+    await this.#devToolsPage.click(RESUME_BUTTON);
     await this.checkLocationForLabel(label);
   }
 

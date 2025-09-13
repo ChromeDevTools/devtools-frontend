@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -84,7 +84,7 @@ const STYLE_RECALC_ELEMENTS_THRESHOLD = 300;
 
 export type DOMSizeInsightModel = InsightModel<typeof UIStrings, {
   largeLayoutUpdates: Types.Events.Layout[],
-  largeStyleRecalcs: Types.Events.UpdateLayoutTree[],
+  largeStyleRecalcs: Types.Events.RecalcStyle[],
   largeUpdates: Array<
       {label: Common.UIString.LocalizedString, duration: Types.Timing.Milli, size: number, event: Types.Events.Event}>,
   maxDOMStats?: Types.Events.DOMStats,
@@ -104,16 +104,19 @@ function finalize(partialModel: PartialInsightModel<DOMSizeInsightModel>): DOMSi
   };
 }
 
-export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DOMSizeInsightModel {
+export function isDomSizeInsight(model: InsightModel): model is DOMSizeInsightModel {
+  return model.insightKey === InsightKeys.DOM_SIZE;
+}
+
+export function generateInsight(data: Handlers.Types.HandlerData, context: InsightSetContext): DOMSizeInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
   const mainTid = context.navigation?.tid;
 
   const largeLayoutUpdates: Types.Events.Layout[] = [];
-  const largeStyleRecalcs: Types.Events.UpdateLayoutTree[] = [];
+  const largeStyleRecalcs: Types.Events.RecalcStyle[] = [];
 
-  const threads = Handlers.Threads.threadsInRenderer(parsedTrace.Renderer, parsedTrace.AuctionWorklets);
+  const threads = Handlers.Threads.threadsInRenderer(data.Renderer, data.AuctionWorklets);
   for (const thread of threads) {
     if (thread.type !== Handlers.Threads.ThreadType.MAIN_THREAD) {
       continue;
@@ -129,12 +132,12 @@ export function generateInsight(
       continue;
     }
 
-    const rendererThread = parsedTrace.Renderer.processes.get(thread.pid)?.threads.get(thread.tid);
+    const rendererThread = data.Renderer.processes.get(thread.pid)?.threads.get(thread.tid);
     if (!rendererThread) {
       continue;
     }
 
-    const {entries, layoutEvents, updateLayoutTreeEvents} = rendererThread;
+    const {entries, layoutEvents, recalcStyleEvents} = rendererThread;
     if (!entries.length) {
       continue;
     }
@@ -158,7 +161,7 @@ export function generateInsight(
       }
     }
 
-    for (const event of updateLayoutTreeEvents) {
+    for (const event of recalcStyleEvents) {
       if (event.dur < DOM_SIZE_DURATION_THRESHOLD || !isWithinContext(event)) {
         continue;
       }
@@ -185,7 +188,7 @@ export function generateInsight(
     }),
   ].sort((a, b) => b.duration - a.duration).slice(0, 5);
 
-  const domStatsEvents = parsedTrace.DOMStats.domStatsByFrameId.get(context.frameId)?.filter(isWithinContext) ?? [];
+  const domStatsEvents = data.DOMStats.domStatsByFrameId.get(context.frameId)?.filter(isWithinContext) ?? [];
   let maxDOMStats: Types.Events.DOMStats|undefined;
   for (const domStats of domStatsEvents) {
     // While recording a cross-origin navigation, there can be overlapping dom stats from before & after

@@ -1,4 +1,4 @@
-// Copyright 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -452,32 +452,32 @@ export class ShortcutRegistry {
 }
 
 export class ShortcutTreeNode {
-  private readonly keyInternal: number;
-  private actionsInternal: string[];
-  private chordsInternal: Map<number, ShortcutTreeNode>;
+  readonly #key: number;
+  #actions: string[];
+  #chords: Map<number, ShortcutTreeNode>;
   private readonly depth: number;
 
   constructor(key: number, depth = 0) {
-    this.keyInternal = key;
-    this.actionsInternal = [];
-    this.chordsInternal = new Map();
+    this.#key = key;
+    this.#actions = [];
+    this.#chords = new Map();
     this.depth = depth;
   }
 
   addAction(action: string): void {
-    this.actionsInternal.push(action);
+    this.#actions.push(action);
   }
 
   key(): number {
-    return this.keyInternal;
+    return this.#key;
   }
 
   chords(): Map<number, ShortcutTreeNode> {
-    return this.chordsInternal;
+    return this.#chords;
   }
 
   hasChords(): boolean {
-    return this.chordsInternal.size > 0;
+    return this.#chords.size > 0;
   }
 
   addKeyMapping(keys: number[], action: string): void {
@@ -489,24 +489,24 @@ export class ShortcutTreeNode {
       this.addAction(action);
     } else {
       const key = keys[this.depth];
-      if (!this.chordsInternal.has(key)) {
-        this.chordsInternal.set(key, new ShortcutTreeNode(key, this.depth + 1));
+      if (!this.#chords.has(key)) {
+        this.#chords.set(key, new ShortcutTreeNode(key, this.depth + 1));
       }
-      (this.chordsInternal.get(key) as ShortcutTreeNode).addKeyMapping(keys, action);
+      (this.#chords.get(key) as ShortcutTreeNode).addKeyMapping(keys, action);
     }
   }
 
   getNode(key: number): ShortcutTreeNode|null {
-    return this.chordsInternal.get(key) || null;
+    return this.#chords.get(key) || null;
   }
 
   actions(): string[] {
-    return this.actionsInternal;
+    return this.#actions;
   }
 
   clear(): void {
-    this.actionsInternal = [];
-    this.chordsInternal = new Map();
+    this.#actions = [];
+    this.#chords = new Map();
   }
 }
 

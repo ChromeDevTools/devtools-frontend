@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -98,6 +98,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       const options = addAuthenticator.firstCall.firstArg;
       assert.isTrue(options.hasLargeBlob);
       assert.isTrue(options.hasResidentKey);
+      assert.strictEqual(options.ctap2Version, Protocol.WebAuthn.Ctap2Version.Ctap2_1);
     });
 
     it('adds an authenticator without the large blob option', async () => {

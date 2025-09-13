@@ -1,13 +1,11 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import * as Protocol from '../../../generated/protocol.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
-import type * as Trace from '../trace.js';
-
-import * as Cache from './Cache.js';
+import * as Trace from '../trace.js';
 
 describeWithEnvironment('Cache', function() {
   describe('isCacheable', () => {
@@ -21,7 +19,7 @@ describeWithEnvironment('Cache', function() {
           },
         },
       } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
-      assert.isTrue(Cache.isCacheable(cacheableRequest));
+      assert.isTrue(Trace.Insights.Cache.isCacheable(cacheableRequest));
     });
 
     it('should return false for non-network scheme: file', () => {
@@ -34,7 +32,7 @@ describeWithEnvironment('Cache', function() {
           },
         },
       } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
-      assert.isFalse(Cache.isCacheable(nonNetworkRequest));
+      assert.isFalse(Trace.Insights.Cache.isCacheable(nonNetworkRequest));
     });
 
     it('should return false for non-cacheable status codes', () => {
@@ -47,7 +45,7 @@ describeWithEnvironment('Cache', function() {
           },
         },
       } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
-      assert.isFalse(Cache.isCacheable(nonCacheableRequest));
+      assert.isFalse(Trace.Insights.Cache.isCacheable(nonCacheableRequest));
     });
 
     it('should return false for non-static resource types', () => {
@@ -60,7 +58,7 @@ describeWithEnvironment('Cache', function() {
           },
         },
       } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
-      assert.isFalse(Cache.isCacheable(nonCacheableRequest));
+      assert.isFalse(Trace.Insights.Cache.isCacheable(nonCacheableRequest));
     });
   });
 
@@ -70,7 +68,7 @@ describeWithEnvironment('Cache', function() {
       const cacheControl = {
         'max-age': 3600,
       };
-      assert.strictEqual(Cache.computeCacheLifetimeInSeconds(headers, cacheControl), 3600);
+      assert.strictEqual(Trace.Insights.Cache.computeCacheLifetimeInSeconds(headers, cacheControl), 3600);
     });
 
     it('should return expires header if defined and max-age is not defined', () => {
@@ -78,26 +76,26 @@ describeWithEnvironment('Cache', function() {
       const future = new Date(now + 5000).toUTCString();
       const headers = [{name: 'expires', value: future}];
       const cacheControl = null;
-      assert.strictEqual(Cache.computeCacheLifetimeInSeconds(headers, cacheControl), 5);
+      assert.strictEqual(Trace.Insights.Cache.computeCacheLifetimeInSeconds(headers, cacheControl), 5);
     });
 
     it('should handle negative max-age', () => {
       const past = new Date(Date.now() - 5000).toUTCString();
       const headers = [{name: 'expires', value: past}];
       const cacheControl = null;
-      assert.strictEqual(Cache.computeCacheLifetimeInSeconds(headers, cacheControl), -5);
+      assert.strictEqual(Trace.Insights.Cache.computeCacheLifetimeInSeconds(headers, cacheControl), -5);
     });
 
     it('should return null if neither max-age nor expires is defined', () => {
       const headers: Array<{name: string, value: string}> = [];
       const cacheControl = null;
-      assert.isNull(Cache.computeCacheLifetimeInSeconds(headers, cacheControl));
+      assert.isNull(Trace.Insights.Cache.computeCacheLifetimeInSeconds(headers, cacheControl));
     });
 
     it('should return 0 if expires is invalid', () => {
       const headers = [{name: 'expires', value: 'invalid date'}];
       const cacheControl = null;
-      assert.strictEqual(Cache.computeCacheLifetimeInSeconds(headers, cacheControl), 0);
+      assert.strictEqual(Trace.Insights.Cache.computeCacheLifetimeInSeconds(headers, cacheControl), 0);
     });
   });
 
@@ -107,7 +105,7 @@ describeWithEnvironment('Cache', function() {
       const parsedCacheControl = {
         'no-cache': true,
       };
-      assert.isTrue(Cache.cachingDisabled(headers, parsedCacheControl));
+      assert.isTrue(Trace.Insights.Cache.cachingDisabled(headers, parsedCacheControl));
     });
 
     it('should return true if cache-control contains no-store', () => {
@@ -115,7 +113,7 @@ describeWithEnvironment('Cache', function() {
       const parsedCacheControl = {
         'no-store': true,
       };
-      assert.isTrue(Cache.cachingDisabled(headers, parsedCacheControl));
+      assert.isTrue(Trace.Insights.Cache.cachingDisabled(headers, parsedCacheControl));
     });
 
     it('should return true if cache-control contains must-revalidate', () => {
@@ -123,7 +121,7 @@ describeWithEnvironment('Cache', function() {
       const parsedCacheControl = {
         'must-revalidate': true,
       };
-      assert.isTrue(Cache.cachingDisabled(headers, parsedCacheControl));
+      assert.isTrue(Trace.Insights.Cache.cachingDisabled(headers, parsedCacheControl));
     });
 
     it('should return true if cache-control contains private', () => {
@@ -132,13 +130,13 @@ describeWithEnvironment('Cache', function() {
       const parsedCacheControl = {
         private: true,
       };
-      assert.isTrue(Cache.cachingDisabled(headers, parsedCacheControl));
+      assert.isTrue(Trace.Insights.Cache.cachingDisabled(headers, parsedCacheControl));
     });
 
     it('should return true if pragma contains no-cache and no cache-control', () => {
       const headers = new Map([['pragma', 'no-cache']]);
       const parsedCacheControl = null;
-      assert.isTrue(Cache.cachingDisabled(headers, parsedCacheControl));
+      assert.isTrue(Trace.Insights.Cache.cachingDisabled(headers, parsedCacheControl));
     });
 
     it('should return false if no disabling headers are present', () => {
@@ -146,7 +144,7 @@ describeWithEnvironment('Cache', function() {
       const parsedCacheControl = {
         'max-age': 3600,
       };
-      assert.isFalse(Cache.cachingDisabled(headers, parsedCacheControl));
+      assert.isFalse(Trace.Insights.Cache.cachingDisabled(headers, parsedCacheControl));
     });
 
     it('should return false if pragma contains no-cache but cache-control is present', () => {
@@ -154,7 +152,7 @@ describeWithEnvironment('Cache', function() {
       const parsedCacheControl = {
         'max-age': 3600,
       };
-      assert.isFalse(Cache.cachingDisabled(headers, parsedCacheControl));
+      assert.isFalse(Trace.Insights.Cache.cachingDisabled(headers, parsedCacheControl));
     });
   });
   describe('getHeaders', () => {
@@ -164,7 +162,7 @@ describeWithEnvironment('Cache', function() {
         {name: 'cache-control', value: 'public'},
         {name: 'content-type', value: 'text/css'},
       ];
-      const headers = Cache.getCombinedHeaders(responseHeaders);
+      const headers = Trace.Insights.Cache.getCombinedHeaders(responseHeaders);
       assert.strictEqual(headers.get('cache-control'), 'max-age=3600, public');
       assert.strictEqual(headers.get('content-type'), 'text/css');
     });
@@ -179,7 +177,7 @@ describeWithEnvironment('Cache', function() {
       const relatedEvents = insight.relatedEvents as Trace.Types.Events.SyntheticNetworkRequest[];
       assert.strictEqual(insight.insightKey, 'Cache');
       assert.strictEqual(insight.state, 'pass');
-      assert.deepEqual(insight.strings, Cache.UIStrings);
+      assert.deepEqual(insight.strings, Trace.Insights.Cache.UIStrings);
       assert.strictEqual(insight.requests?.length, 0);
       assert.deepEqual(insight.wastedBytes, 0);
       assert.strictEqual(relatedEvents?.length, 0);
@@ -201,7 +199,7 @@ describeWithEnvironment('Cache', function() {
       const relatedEvents = insight.relatedEvents as Trace.Types.Events.SyntheticNetworkRequest[] ?? [];
       assert.strictEqual(insight.insightKey, 'Cache');
       assert.strictEqual(insight.state, 'fail');
-      assert.deepEqual(insight.strings, Cache.UIStrings);
+      assert.deepEqual(insight.strings, Trace.Insights.Cache.UIStrings);
 
       const gotCacheable = insight.requests;
       // Should have the 1 cacheable request.

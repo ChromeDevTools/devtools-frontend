@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -32,9 +32,9 @@
 import '../../core/dom_extension/dom_extension.js';
 
 import * as Platform from '../../core/platform/platform.js';
+import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
 
-import {Constraints, Size} from './Geometry.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 import {XWidget} from './XWidget.js';
 
@@ -266,8 +266,8 @@ export class Widget {
   #invalidationsSuspended = 0;
   #parentWidget: Widget|null = null;
   #defaultFocusedElement?: Element|null;
-  #cachedConstraints?: Constraints;
-  #constraints?: Constraints;
+  #cachedConstraints?: Geometry.Constraints;
+  #constraints?: Geometry.Constraints;
   #invalidationsRequested?: boolean;
   #externallyManaged?: boolean;
   #updateComplete = UPDATE_COMPLETE;
@@ -497,7 +497,7 @@ export class Widget {
       }
       this.attach(currentWidget);
     }
-    this.showWidgetInternal(parentElement, insertBefore);
+    this.#showWidget(parentElement, insertBefore);
   }
 
   private attach(parentWidget: Widget): void {
@@ -519,10 +519,10 @@ export class Widget {
     if (!this.element.parentElement) {
       throw new Error('Attempt to show widget that is not hidden using hideWidget().');
     }
-    this.showWidgetInternal(this.element.parentElement, this.element.nextSibling);
+    this.#showWidget(this.element.parentElement, this.element.nextSibling);
   }
 
-  private showWidgetInternal(parentElement: Element, insertBefore?: Node|null): void {
+  #showWidget(parentElement: Element, insertBefore?: Node|null): void {
     let currentParent: Element|null = parentElement;
     while (currentParent && !widgetMap.get(currentParent)) {
       currentParent = currentParent.parentElementOrShadowHost();
@@ -576,10 +576,10 @@ export class Widget {
     if (!this.#visible) {
       return;
     }
-    this.hideWidgetInternal(false);
+    this.#hideWidget(false);
   }
 
-  private hideWidgetInternal(removeFromDOM: boolean): void {
+  #hideWidget(removeFromDOM: boolean): void {
     this.#visible = false;
     const {parentElement} = this.element;
 
@@ -627,7 +627,7 @@ export class Widget {
     // responsibility for the consequences.
     const removeFromDOM = overrideHideOnDetach || !this.shouldHideOnDetach();
     if (this.#visible) {
-      this.hideWidgetInternal(removeFromDOM);
+      this.#hideWidget(removeFromDOM);
     } else if (removeFromDOM) {
       const {parentElement} = this.element;
       if (parentElement) {
@@ -770,11 +770,11 @@ export class Widget {
     return this.element.hasFocus();
   }
 
-  calculateConstraints(): Constraints {
-    return new Constraints();
+  calculateConstraints(): Geometry.Constraints {
+    return new Geometry.Constraints();
   }
 
-  constraints(): Constraints {
+  constraints(): Geometry.Constraints {
     if (typeof this.#constraints !== 'undefined') {
       return this.#constraints;
     }
@@ -785,16 +785,17 @@ export class Widget {
   }
 
   setMinimumAndPreferredSizes(width: number, height: number, preferredWidth: number, preferredHeight: number): void {
-    this.#constraints = new Constraints(new Size(width, height), new Size(preferredWidth, preferredHeight));
+    this.#constraints =
+        new Geometry.Constraints(new Geometry.Size(width, height), new Geometry.Size(preferredWidth, preferredHeight));
     this.invalidateConstraints();
   }
 
   setMinimumSize(width: number, height: number): void {
-    this.minimumSize = new Size(width, height);
+    this.minimumSize = new Geometry.Size(width, height);
   }
 
-  set minimumSize(size: Size) {
-    this.#constraints = new Constraints(size);
+  set minimumSize(size: Geometry.Size) {
+    this.#constraints = new Geometry.Constraints(size);
     this.invalidateConstraints();
   }
 
@@ -949,8 +950,8 @@ export class VBox extends Widget {
     this.contentElement.classList.add('vbox');
   }
 
-  override calculateConstraints(): Constraints {
-    let constraints: Constraints = new Constraints();
+  override calculateConstraints(): Geometry.Constraints {
+    let constraints: Geometry.Constraints = new Geometry.Constraints();
 
     function updateForChild(this: Widget): void {
       const child = this.constraints();
@@ -988,8 +989,8 @@ export class HBox extends Widget {
     this.contentElement.classList.add('hbox');
   }
 
-  override calculateConstraints(): Constraints {
-    let constraints: Constraints = new Constraints();
+  override calculateConstraints(): Geometry.Constraints {
+    let constraints: Geometry.Constraints = new Geometry.Constraints();
 
     function updateForChild(this: Widget): void {
       const child = this.constraints();

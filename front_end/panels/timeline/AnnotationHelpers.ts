@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -8,7 +8,6 @@ import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 
 import type {AnnotationModifiedEvent} from './ModificationsManager.js';
-import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -221,8 +220,8 @@ export function ariaAnnouncementForModifiedEvent(event: AnnotationModifiedEvent)
     }
     case 'UpdateLinkToEntry': {
       if (isEntriesLink(overlay) && overlay.entryFrom && overlay.entryTo) {
-        const from = Utils.EntryName.nameForEntry(overlay.entryFrom);
-        const to = Utils.EntryName.nameForEntry(overlay.entryTo);
+        const from = Trace.Name.forEntry(overlay.entryFrom);
+        const to = Trace.Name.forEntry(overlay.entryTo);
         return (i18nString(UIStrings.srEntriesLinked, {PH1: from, PH2: to}));
       }
       break;

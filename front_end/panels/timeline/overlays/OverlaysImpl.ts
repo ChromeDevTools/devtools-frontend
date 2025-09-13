@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -204,7 +204,7 @@ export interface TimelineCharts {
 }
 
 export interface OverlayEntryQueries {
-  parsedTrace: () => Trace.Handlers.Types.ParsedTrace | null;
+  parsedTrace: () => Trace.TraceModel.ParsedTrace | null;
   isEntryCollapsedByUser: (entry: Trace.Types.Events.Event) => boolean;
   firstVisibleParentForEntry: (entry: Trace.Types.Events.Event) => Trace.Types.Events.Event | null;
 }
@@ -1564,7 +1564,7 @@ export class Overlays extends EventTarget {
         return overlayElement;
       }
       case 'TIMINGS_MARKER': {
-        const {color} = Utils.EntryStyles.markerDetailsForEvent(overlay.entries[0]);
+        const {color} = Trace.Styles.markerDetailsForEvent(overlay.entries[0]);
         const markersComponent = this.#createTimingsMarkerElement(overlay);
         overlayElement.appendChild(markersComponent);
         overlayElement.style.backgroundColor = color;
@@ -1633,7 +1633,7 @@ export class Overlays extends EventTarget {
     const markers = document.createElement('div');
     markers.classList.add('markers');
     for (const entry of overlay.entries) {
-      const {color, title} = Utils.EntryStyles.markerDetailsForEvent(entry);
+      const {color, title} = Trace.Styles.markerDetailsForEvent(entry);
       const marker = document.createElement('div');
       marker.classList.add('marker-title');
       marker.textContent = title;

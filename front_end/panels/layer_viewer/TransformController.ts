@@ -1,4 +1,4 @@
-// Copyright 2014 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -29,11 +29,11 @@ const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/TransformControlle
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TransformController extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private mode!: Modes;
-  private scaleInternal: number;
-  private offsetXInternal: number;
-  private offsetYInternal: number;
-  private rotateXInternal: number;
-  private rotateYInternal: number;
+  #scale: number;
+  #offsetX: number;
+  #offsetY: number;
+  #rotateX: number;
+  #rotateY: number;
   private oldRotateX: number;
   private oldRotateY: number;
   private originX: number;
@@ -50,11 +50,11 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
    */
   constructor(element: HTMLElement, disableRotate?: boolean, preventDefaultOnMouseDown = true) {
     super();
-    this.scaleInternal = 1;
-    this.offsetXInternal = 0;
-    this.offsetYInternal = 0;
-    this.rotateXInternal = 0;
-    this.rotateYInternal = 0;
+    this.#scale = 1;
+    this.#offsetX = 0;
+    this.#offsetY = 0;
+    this.#rotateX = 0;
+    this.#rotateY = 0;
     this.oldRotateX = 0;
     this.oldRotateY = 0;
     this.originX = 0;
@@ -128,11 +128,11 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 
   private reset(): void {
-    this.scaleInternal = 1;
-    this.offsetXInternal = 0;
-    this.offsetYInternal = 0;
-    this.rotateXInternal = 0;
-    this.rotateYInternal = 0;
+    this.#scale = 1;
+    this.#offsetX = 0;
+    this.#offsetY = 0;
+    this.#rotateX = 0;
+    this.#rotateY = 0;
   }
 
   private setMode(mode: Modes): void {
@@ -161,52 +161,51 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   setScaleConstraints(minScale: number, maxScale: number): void {
     this.minScale = minScale;
     this.maxScale = maxScale;
-    this.scaleInternal = Platform.NumberUtilities.clamp(this.scaleInternal, minScale, maxScale);
+    this.#scale = Platform.NumberUtilities.clamp(this.#scale, minScale, maxScale);
   }
 
   clampOffsets(minX: number, maxX: number, minY: number, maxY: number): void {
-    this.offsetXInternal = Platform.NumberUtilities.clamp(this.offsetXInternal, minX, maxX);
-    this.offsetYInternal = Platform.NumberUtilities.clamp(this.offsetYInternal, minY, maxY);
+    this.#offsetX = Platform.NumberUtilities.clamp(this.#offsetX, minX, maxX);
+    this.#offsetY = Platform.NumberUtilities.clamp(this.#offsetY, minY, maxY);
   }
 
   scale(): number {
-    return this.scaleInternal;
+    return this.#scale;
   }
 
   offsetX(): number {
-    return this.offsetXInternal;
+    return this.#offsetX;
   }
 
   offsetY(): number {
-    return this.offsetYInternal;
+    return this.#offsetY;
   }
 
   rotateX(): number {
-    return this.rotateXInternal;
+    return this.#rotateX;
   }
 
   rotateY(): number {
-    return this.rotateYInternal;
+    return this.#rotateY;
   }
 
   private onScale(scaleFactor: number, x: number, y: number): void {
-    scaleFactor = Platform.NumberUtilities.clamp(this.scaleInternal * scaleFactor, this.minScale, this.maxScale) /
-        this.scaleInternal;
-    this.scaleInternal *= scaleFactor;
-    this.offsetXInternal -= (x - this.offsetXInternal) * (scaleFactor - 1);
-    this.offsetYInternal -= (y - this.offsetYInternal) * (scaleFactor - 1);
+    scaleFactor = Platform.NumberUtilities.clamp(this.#scale * scaleFactor, this.minScale, this.maxScale) / this.#scale;
+    this.#scale *= scaleFactor;
+    this.#offsetX -= (x - this.#offsetX) * (scaleFactor - 1);
+    this.#offsetY -= (y - this.#offsetY) * (scaleFactor - 1);
     this.postChangeEvent();
   }
 
   private onPan(offsetX: number, offsetY: number): void {
-    this.offsetXInternal += offsetX;
-    this.offsetYInternal += offsetY;
+    this.#offsetX += offsetX;
+    this.#offsetY += offsetY;
     this.postChangeEvent();
   }
 
   private onRotate(rotateX: number, rotateY: number): void {
-    this.rotateXInternal = rotateX;
-    this.rotateYInternal = rotateY;
+    this.#rotateX = rotateX;
+    this.#rotateY = rotateY;
     this.postChangeEvent();
   }
 
@@ -222,8 +221,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
     if (this.mode === Modes.ROTATE) {
       // Sic! onRotate treats X and Y as "rotate around X" and "rotate around Y", so swap X/Y multipliers.
       this.onRotate(
-          this.rotateXInternal + yMultiplier * rotateStepInDegrees,
-          this.rotateYInternal + xMultiplier * rotateStepInDegrees);
+          this.#rotateX + yMultiplier * rotateStepInDegrees, this.#rotateY + xMultiplier * rotateStepInDegrees);
     } else {
       this.onPan(xMultiplier * panStepInPixels, yMultiplier * panStepInPixels);
     }
@@ -259,8 +257,8 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
     this.element.focus();
     this.originX = event.clientX;
     this.originY = event.clientY;
-    this.oldRotateX = this.rotateXInternal;
-    this.oldRotateY = this.rotateYInternal;
+    this.oldRotateX = this.#rotateX;
+    this.oldRotateY = this.#rotateY;
     return true;
   }
 

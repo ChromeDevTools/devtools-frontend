@@ -1,32 +1,6 @@
-/*
- * Copyright (C) 2013 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright 2013 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Platform from '../../core/platform/platform.js';
@@ -45,7 +19,7 @@ export class ConsoleViewport {
   element: HTMLElement;
   private topGapElement: HTMLElement;
   private topGapElementActive: boolean;
-  private contentElementInternal: HTMLElement;
+  #contentElement: HTMLElement;
   private bottomGapElement: HTMLElement;
   private bottomGapElementActive: boolean;
   private provider: ConsoleViewportProvider;
@@ -63,7 +37,7 @@ export class ConsoleViewport {
     childList: boolean,
     subtree: boolean,
   };
-  private stickToBottomInternal: boolean;
+  #stickToBottom: boolean;
   private selectionIsBackward: boolean;
   private lastSelectedElement?: HTMLElement|null;
   private cachedProviderElements?: Array<ConsoleViewportElement|null>;
@@ -75,7 +49,7 @@ export class ConsoleViewport {
     this.topGapElement.style.height = '0px';
     this.topGapElement.style.color = 'transparent';
     this.topGapElementActive = false;
-    this.contentElementInternal = this.element.createChild('div');
+    this.#contentElement = this.element.createChild('div');
     this.bottomGapElement = this.element.createChild('div');
     this.bottomGapElement.style.height = '0px';
     this.bottomGapElement.style.color = 'transparent';
@@ -93,11 +67,11 @@ export class ConsoleViewport {
     this.element.addEventListener('scroll', this.onScroll.bind(this), false);
     this.element.addEventListener('copy', (this.onCopy.bind(this) as EventListener), false);
     this.element.addEventListener('dragstart', (this.onDragStart.bind(this) as (arg0: Event) => unknown), false);
-    this.contentElementInternal.addEventListener('focusin', (this.onFocusIn.bind(this) as EventListener), false);
-    this.contentElementInternal.addEventListener('focusout', (this.onFocusOut.bind(this) as EventListener), false);
-    this.contentElementInternal.addEventListener('keydown', (this.onKeyDown.bind(this) as EventListener), false);
+    this.#contentElement.addEventListener('focusin', (this.onFocusIn.bind(this) as EventListener), false);
+    this.#contentElement.addEventListener('focusout', (this.onFocusOut.bind(this) as EventListener), false);
+    this.#contentElement.addEventListener('keydown', (this.onKeyDown.bind(this) as EventListener), false);
     this.virtualSelectedIndex = -1;
-    this.contentElementInternal.tabIndex = -1;
+    this.#contentElement.tabIndex = -1;
 
     this.firstActiveIndex = -1;
     this.lastActiveIndex = -1;
@@ -113,18 +87,18 @@ export class ConsoleViewport {
     // if they change the scroll height.
     this.observer = new MutationObserver(this.refresh.bind(this));
     this.observerConfig = {childList: true, subtree: true};
-    this.stickToBottomInternal = false;
+    this.#stickToBottom = false;
     this.selectionIsBackward = false;
   }
 
   stickToBottom(): boolean {
-    return this.stickToBottomInternal;
+    return this.#stickToBottom;
   }
 
   setStickToBottom(value: boolean): void {
-    this.stickToBottomInternal = value;
-    if (this.stickToBottomInternal) {
-      this.observer.observe(this.contentElementInternal, this.observerConfig);
+    this.#stickToBottom = value;
+    if (this.#stickToBottom) {
+      this.observer.observe(this.#contentElement, this.observerConfig);
     } else {
       this.observer.disconnect();
     }
@@ -168,7 +142,7 @@ export class ConsoleViewport {
     let focusLastChild = false;
     // Make default selection when moving from external (e.g. prompt) to the container.
     if (this.virtualSelectedIndex === -1 && this.isOutsideViewport((event.relatedTarget as Element | null)) &&
-        event.target === this.contentElementInternal && this.itemCount) {
+        event.target === this.#contentElement && this.itemCount) {
       focusLastChild = true;
       this.virtualSelectedIndex = this.itemCount - 1;
 
@@ -187,7 +161,7 @@ export class ConsoleViewport {
   }
 
   private isOutsideViewport(element: Element|null): boolean {
-    return element !== null && !element.isSelfOrDescendant(this.contentElementInternal);
+    return element !== null && !element.isSelfOrDescendant(this.#contentElement);
   }
 
   private onDragStart(event: DragEvent): boolean {
@@ -242,7 +216,7 @@ export class ConsoleViewport {
     const selectedElement = this.renderedElementAt(this.virtualSelectedIndex);
     const changed = this.lastSelectedElement !== selectedElement;
     const containerHasFocus =
-        this.contentElementInternal === Platform.DOMUtilities.deepActiveElement(this.element.ownerDocument);
+        this.#contentElement === Platform.DOMUtilities.deepActiveElement(this.element.ownerDocument);
     if (this.lastSelectedElement && changed) {
       this.lastSelectedElement.classList.remove('console-selected');
     }
@@ -260,16 +234,16 @@ export class ConsoleViewport {
         selectedElement.focus({preventScroll: true});
       }
     }
-    if (this.itemCount && !this.contentElementInternal.hasFocus()) {
-      this.contentElementInternal.tabIndex = 0;
+    if (this.itemCount && !this.#contentElement.hasFocus()) {
+      this.#contentElement.tabIndex = 0;
     } else {
-      this.contentElementInternal.tabIndex = -1;
+      this.#contentElement.tabIndex = -1;
     }
     this.lastSelectedElement = selectedElement;
   }
 
   contentElement(): Element {
-    return this.contentElementInternal;
+    return this.#contentElement;
   }
 
   invalidate(): void {
@@ -462,8 +436,8 @@ export class ConsoleViewport {
   refresh(): void {
     this.observer.disconnect();
     this.innerRefresh();
-    if (this.stickToBottomInternal) {
-      this.observer.observe(this.contentElementInternal, this.observerConfig);
+    if (this.#stickToBottom) {
+      this.observer.observe(this.#contentElement, this.observerConfig);
     }
   }
 
@@ -477,7 +451,7 @@ export class ConsoleViewport {
         this.renderedItems[i].willHide();
       }
       this.renderedItems = [];
-      this.contentElementInternal.removeChildren();
+      this.#contentElement.removeChildren();
       this.topGapElement.style.height = '0px';
       this.bottomGapElement.style.height = '0px';
       this.firstActiveIndex = -1;
@@ -497,7 +471,7 @@ export class ConsoleViewport {
     // When the viewport is scrolled to the bottom, using the cumulative heights estimate is not
     // precise enough to determine next visible indices. This stickToBottom check avoids extra
     // calls to refresh in those cases.
-    if (this.stickToBottomInternal) {
+    if (this.#stickToBottom) {
       this.firstActiveIndex = Math.max(this.itemCount - Math.ceil(activeHeight / this.provider.minimumRowHeight()), 0);
       this.lastActiveIndex = this.itemCount - 1;
     } else {
@@ -520,16 +494,16 @@ export class ConsoleViewport {
       this.bottomGapElement.style.height = bottomGapHeight + 'px';
       this.topGapElementActive = Boolean(topGapHeight);
       this.bottomGapElementActive = Boolean(bottomGapHeight);
-      this.contentElementInternal.style.setProperty('height', '10000000px');
+      this.#contentElement.style.setProperty('height', '10000000px');
     }
 
     this.partialViewportUpdate(prepare.bind(this));
-    this.contentElementInternal.style.removeProperty('height');
+    this.#contentElement.style.removeProperty('height');
     // Should be the last call in the method as it might force layout.
     if (shouldRestoreSelection) {
       this.restoreSelection(selection);
     }
-    if (this.stickToBottomInternal) {
+    if (this.#stickToBottom) {
       this.element.scrollTop = 10000000;
     }
   }
@@ -555,7 +529,7 @@ export class ConsoleViewport {
     }
 
     const wasShown = [];
-    let anchor: (ChildNode|null) = this.contentElementInternal.firstChild;
+    let anchor: (ChildNode|null) = this.#contentElement.firstChild;
     for (const viewportElement of itemsToRender) {
       const element = viewportElement.element();
       if (element !== anchor) {
@@ -563,7 +537,7 @@ export class ConsoleViewport {
         if (shouldCallWasShown) {
           wasShown.push(viewportElement);
         }
-        this.contentElementInternal.insertBefore(element, anchor);
+        this.#contentElement.insertBefore(element, anchor);
       } else {
         anchor = anchor.nextSibling;
       }
@@ -574,7 +548,7 @@ export class ConsoleViewport {
     this.renderedItems = Array.from(itemsToRender);
 
     if (hadFocus) {
-      this.contentElementInternal.focus();
+      this.#contentElement.focus();
     }
     this.updateFocusedItem();
   }

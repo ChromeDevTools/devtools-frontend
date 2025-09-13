@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -12,8 +12,7 @@ import {createCSSStyle, getMatchedStyles, ruleMatch} from '../../testing/StyleHe
 import * as Bindings from '../bindings/bindings.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import * as ExtensionScope from './ExtensionScope.js';
-import * as Injected from './injected.js';
+import * as AiAssistance from './ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -43,13 +42,13 @@ async function getSelector(
     ...payload,
   });
 
-  const styleRule = ExtensionScope.ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles);
+  const styleRule = AiAssistance.ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles);
 
   if (!styleRule) {
     return '';
   }
 
-  return ExtensionScope.ExtensionScope.getSelectorsFromStyleRule(styleRule, matchedStyles);
+  return AiAssistance.ExtensionScope.getSelectorsFromStyleRule(styleRule, matchedStyles);
 }
 
 describe('ExtensionScope', () => {
@@ -71,7 +70,7 @@ describe('ExtensionScope', () => {
           return undefined;
         }
       });
-      const selector = ExtensionScope.ExtensionScope.getSelectorForNode(node);
+      const selector = AiAssistance.ExtensionScope.getSelectorForNode(node);
       assert.strictEqual(selector, '.my-class-a.my-class-b');
     });
 
@@ -79,13 +78,13 @@ describe('ExtensionScope', () => {
       const node = createNode({
         getAttribute: attribute => {
           if (attribute === 'class') {
-            return `my-class-a my-class-b ${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
+            return `my-class-a my-class-b ${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
           }
 
           return undefined;
         }
       });
-      const selector = ExtensionScope.ExtensionScope.getSelectorForNode(node);
+      const selector = AiAssistance.ExtensionScope.getSelectorForNode(node);
       assert.strictEqual(selector, '.my-class-a.my-class-b');
     });
 
@@ -93,13 +92,13 @@ describe('ExtensionScope', () => {
       const node = createNode({
         getAttribute: attribute => {
           if (attribute === 'class') {
-            return `my.special-class my-class-b ${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
+            return `my.special-class my-class-b ${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
           }
 
           return undefined;
         }
       });
-      const selector = ExtensionScope.ExtensionScope.getSelectorForNode(node);
+      const selector = AiAssistance.ExtensionScope.getSelectorForNode(node);
       assert.strictEqual(selector, '.my\\.special-class.my-class-b');
     });
 
@@ -107,13 +106,13 @@ describe('ExtensionScope', () => {
       const node = createNode({
         getAttribute: attribute => {
           if (attribute === 'class') {
-            return `${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
+            return `${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
           }
 
           return undefined;
         }
       });
-      const selector = ExtensionScope.ExtensionScope.getSelectorForNode(node);
+      const selector = AiAssistance.ExtensionScope.getSelectorForNode(node);
       assert.strictEqual(selector, 'div');
     });
   });
@@ -232,7 +231,7 @@ describe('ExtensionScope', () => {
       // front_end/core/sdk/CSSMatchedStyles.ts:373
       const matchedPayload = [
         ruleMatch('.test', MOCK_STYLE),
-        ruleMatch(`.${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`, MOCK_STYLE),
+        ruleMatch(`.${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-1`, MOCK_STYLE),
       ];
       const selector = await getSelector({matchedPayload});
       assert.strictEqual(selector, '.test');
@@ -244,8 +243,8 @@ describe('ExtensionScope', () => {
       const matchedPayload = [
         ruleMatch(
             {
-              selectors: [{text: `.${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`}, {text: '.test'}],
-              text: `.${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1, .test`
+              selectors: [{text: `.${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-1`}, {text: '.test'}],
+              text: `.${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-1, .test`
             },
             MOCK_STYLE),
       ];
@@ -267,7 +266,7 @@ describe('ExtensionScope', () => {
             },
             MOCK_STYLE,
             {
-              nestingSelectors: [`.${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`],
+              nestingSelectors: [`.${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-1`],
             },
             ),
       ];
@@ -425,7 +424,7 @@ describe('ExtensionScope', () => {
             },
             MOCK_STYLE,
             {
-              nestingSelectors: [`.${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`],
+              nestingSelectors: [`.${AiAssistance.AI_ASSISTANCE_CSS_CLASS_NAME}-1`],
             },
             ),
       ];
@@ -436,12 +435,12 @@ describe('ExtensionScope', () => {
         cssModel,
       });
 
-      return ExtensionScope.ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles)!;
+      return AiAssistance.ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles)!;
     }
 
     it('should compute a source location', async () => {
       const styleRule = await setupMockedStyleRules();
-      assert.strictEqual(ExtensionScope.ExtensionScope.getSourceLocation(styleRule), 'style.css:1:1');
+      assert.strictEqual(AiAssistance.ExtensionScope.getSourceLocation(styleRule), 'style.css:1:1');
     });
   });
 });

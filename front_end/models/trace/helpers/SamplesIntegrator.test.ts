@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -93,8 +93,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
 
   describe('buildProfileCalls', () => {
     it('generates profile calls using trace events and JS samples from a trace file', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
-      const samplesData = parsedTrace.Samples;
+      const parsedTrace = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
+      const samplesData = parsedTrace.data.Samples;
       assert.strictEqual(samplesData.profilesInProcess.size, 1);
       const [[pid, profileByThread]] = samplesData.profilesInProcess.entries();
       const [[tid, cpuProfileData]] = profileByThread.entries();
@@ -342,8 +342,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       assert.strictEqual(framesForFunctionA[1].dur, runMicroTasks.ts + (runMicroTasks.dur || 0) - expectedBTimestamp);
     });
     it('skips samples from (program), (idle), (root) and (garbage collector) nodes', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
-      const samplesData = parsedTrace.Samples;
+      const parsedTrace = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
+      const samplesData = parsedTrace.data.Samples;
       assert.strictEqual(samplesData.profilesInProcess.size, 1);
       const [[pid, profileByThread]] = samplesData.profilesInProcess.entries();
       const [[tid, cpuProfileData]] = profileByThread.entries();

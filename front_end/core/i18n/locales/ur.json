@@ -122,6 +122,9 @@
   "core/common/Revealer.ts | timelinePanel": {
     "message": "کارکردگی کا پینل"
   },
+  "core/common/SettingRegistration.ts | account": {
+    "message": "اکاؤنٹ"
+  },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "ایڈارنر"
   },
@@ -172,9 +175,6 @@
   },
   "core/common/SettingRegistration.ts | sources": {
     "message": "مآخذ"
-  },
-  "core/common/SettingRegistration.ts | sync": {
-    "message": "مطابقت پذیری کریں"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}‎"
@@ -1001,6 +1001,9 @@
   "entrypoints/js_app/js_app.ts | showNode": {
     "message": "اسکرپٹس دکھائیں"
   },
+  "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
+    "message": "‫AI کی مدد"
+  },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "DevTools کو حسب ضرورت بنائیں اور ان کو کنٹرول کریں"
   },
@@ -1126,6 +1129,9 @@
   },
   "entrypoints/main/main-meta.ts | previousPanel": {
     "message": "گزشتہ پینل"
+  },
+  "entrypoints/main/main-meta.ts | receiveBadges": {
+    "message": "بَیجز وصول کریں"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "DevTools کو دوبارہ لوڈ کریں"
@@ -1412,6 +1418,9 @@
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "یہ خصوصیت صرف فعال انٹرنیٹ کنکشن کے ساتھ دستیاب ہے۔"
   },
+  "models/ai_assistance/ConversationHandler.ts | externalRequestReceived": {
+    "message": "‫DevTools کو ایک بیرونی درخواست موصول ہوئی ہے"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "فائل لوڈ کرتے وقت نامعلوم خرابی پیش آ گئی"
   },
@@ -1627,6 +1636,12 @@
   },
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "کمپریشن ڈکشنری ٹرانسپورٹ"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
+    "message": "سرور کی طرف سے شروع کردہ درستگی کی جانچ"
+  },
+  "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
+    "message": "‫HTTP اینکوڈ نہ کیے گئے ڈائجسٹ سے متعلق خاص معلومات"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "صفحہ لوڈ ہونے کے بعد نئے آلے کو سیمولیٹ کرنے سے LCP متاثر ہو سکتا ہے۔ درست LCP ڈیٹا کے لیے ایک نئے آلے کو سیمولیٹ کرنے کے بعد صفحہ کو دوبارہ لوڈ کریں۔"
@@ -2657,6 +2672,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "مقامی چیٹ کو حذف کریں"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | exportConversation": {
+    "message": "گفتگو برآمد کریں"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "سوال پوچھنے کے لیے اوپر کے مراحل کی پیروی کریں"
   },
@@ -2678,6 +2696,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
     "message": "کوئی بھی گزشتہ گفتگو نہیں"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | responseCopiedToClipboard": {
+    "message": "جواب کلپ بورڈ پر کاپی ہو گیا"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
     "message": "تاثرات بھیجیں"
   },
@@ -2685,7 +2706,7 @@
     "message": "ترتیبات"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
-    "message": "‫AI اسسٹنٹ"
+    "message": "‫AI کی مدد"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
     "message": "‫AI سے پوچھیں"
@@ -3500,17 +3521,17 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "قیاس آرائی پر مبنی لوڈز"
   },
-  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "کسی بھی رپورٹ کا مرکزی حصہ دکھانے کے لیے کلک کریں"
-  },
-  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
-    "message": "کسی رپورٹ کا انتخاب نہیں کیا گیا"
-  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ReportingApiView.ts | clickToDisplayBody": {
+    "message": "کسی بھی رپورٹ کا مرکزی حصہ دکھانے کے لیے کلک کریں"
+  },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "کوئی رپورٹ یا اختتامی پوائنٹ نہیں"
+  },
+  "panels/application/ReportingApiView.ts | noReportSelected": {
+    "message": "کسی رپورٹ کا انتخاب نہیں کیا گیا"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
     "message": "اس صفحہ پر Reporting API رپورٹس اور اختتامی پوائنٹس کا معائنہ کر سکیں گے۔"
@@ -4187,23 +4208,14 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC کے حامل صفحات بیک/فارورڈ کیش درج نہیں کر سکتے۔"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
-    "message": "بیک/فارورڈ کیش غیر فعال ہے کیونکہ WebRTC کا استعمال کیا گیا ہے۔"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "WebShare استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocket کے حامل صفحات بیک/فارورڈ کیش درج نہیں کر سکتے۔"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
-    "message": "بیک/فارورڈ کیش غیر فعال ہے کیونکہ WebSocket کا استعمال کیا گیا ہے۔"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransport کے حامل صفحات بیک/فارورڈ کیش درج نہیں کر سکتے۔"
-  },
-  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
-    "message": "بیک/فارورڈ کیش غیر فعال ہے کیونکہ WebTransport کا استعمال کیا گیا ہے۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "WebXR استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
@@ -6632,6 +6644,9 @@
   "panels/elements/ElementsTreeElement.ts | disableGridMode": {
     "message": "گرڈ موڈ غیر فعال کریں"
   },
+  "panels/elements/ElementsTreeElement.ts | disableMasonryMode": {
+    "message": "میسنری موڈ کو غیر فعال کریں"
+  },
   "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
     "message": "اسکرول اسنیپ اوورلے کو غیر فعال کریں"
   },
@@ -6658,6 +6673,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableGridMode": {
     "message": "گرڈ وضع کو فعال کریں"
+  },
+  "panels/elements/ElementsTreeElement.ts | enableMasonryMode": {
+    "message": "میسنری موڈ کو فعال کریں"
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "اسکرول اسنیپ اوورلے کو فعال کریں"
@@ -6771,7 +6789,7 @@
     "message": "ایونٹ لسنرز کا زمرہ"
   },
   "panels/elements/EventListenersWidget.ts | frameworkListeners": {
-    "message": "Framework لسنرز"
+    "message": "‫Framework سننے والوں کو حل کریں"
   },
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "پیسو"
@@ -6800,8 +6818,17 @@
   "panels/elements/LayoutPane.ts | flexboxOverlays": {
     "message": "فلیکس باکس اوورلیز"
   },
+  "panels/elements/LayoutPane.ts | gridOrMasonry": {
+    "message": "گرڈ / میسنری"
+  },
+  "panels/elements/LayoutPane.ts | gridOrMasonryOverlays": {
+    "message": "گرڈ / میسنری اوورلیز"
+  },
   "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
     "message": "اس صفحے پر کوئی فلیکس باکس لے آؤٹ نہیں ملا"
+  },
+  "panels/elements/LayoutPane.ts | noGridOrMasonryLayoutsFoundOnThisPage": {
+    "message": "اس صفحہ پر کوئی گرڈ یا میسنری لے آؤٹ نہیں ملا"
   },
   "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
     "message": "ڈسپلے کی ترتیبات کا اورلے"
@@ -8600,6 +8627,12 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "درخواستیں مقامی طور پر اوور رائیڈ ہو سکتی ہیں، مآخذ کا پینل دیکھیں"
   },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
+    "message": "شامل کریں…"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | addS": {
+    "message": "{PH1} شامل کریں"
+  },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "حسب ضرورت"
   },
@@ -8608,6 +8641,12 @@
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | presets": {
     "message": "پہلے سے ترتیب شدہ"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – تجویز کردہ"
+  },
+  "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
+    "message": "{PH1}: {PH2}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
     "message": "کیلیبریٹ کریں…"
@@ -8646,10 +8685,10 @@
     "message": "ڈیفالٹ قدر پر ری سیٹ کریں"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOff": {
-    "message": "'ڈیٹا محفوظ کریں': زبردستی بند کریں"
+    "message": "'ڈیٹا محفوظ کریں': آف"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataOn": {
-    "message": "'ڈیٹا محفوظ کریں': زبردستی آن کریں"
+    "message": "'ڈیٹا محفوظ کریں': آن"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | saveDataSettingTooltip": {
     "message": "صفحے پر navigator.connection.saveData کے ذریعے رپورٹ کردہ قدر کو اوور رائیڈ کریں"
@@ -9357,7 +9396,7 @@
     "message": "صرف مسدود کردہ درخواستیں دکھائیں"
   },
   "panels/network/NetworkLogView.ts | onlyShowIPProtectedRequests": {
-    "message": "‫(Incognito Only) صرف وہ درخواستیں دکھائیں جو IP پروٹیکشن پراکسیز کو بھیجی گئی ہیں"
+    "message": "صرف وہ درخواستیں دکھائیں جو IP پروٹیکشن پراکسیز کو بھیجی گئی ہیں۔ ریگولر براؤزنگ میں کوئی اثر نہیں ہوتا ہے۔"
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
     "message": "مسدود کردہ جوابی کوکیز کے ساتھ صرف درخواستیں دکھائیں"
@@ -9619,21 +9658,6 @@
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sDownload": {
-    "message": "{PH1} ڈاؤن لوڈ"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromCache": {
-    "message": "{PH1} (کیش سے)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sFromServiceworker": {
-    "message": "{PH1} (ServiceWorker سے)"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatency": {
-    "message": "{PH1} تاخیر"
-  },
-  "panels/network/NetworkTimeCalculator.ts | sLatencySDownloadSTotal": {
-    "message": "{PH1} تاخیر، {PH2} ڈاؤن لوڈ ({PH3} کل)"
   },
   "panels/network/RequestCookiesView.ts | cookiesThatWereReceivedFromThe": {
     "message": "کوکیز جو جواب کے 'set-cookie' ہیڈر میں سرور سے موصول ہوئیں"
@@ -11741,6 +11765,36 @@
   "panels/security/CookieReportView.ts | videoCookieTypeString": {
     "message": "ویڈیو"
   },
+  "panels/security/IPProtectionView.ts | cardTitle": {
+    "message": "‫IP پروٹیکشن بائی پاس کریں"
+  },
+  "panels/security/IPProtectionView.ts | idColumn": {
+    "message": "‫ID"
+  },
+  "panels/security/IPProtectionView.ts | methodColumn": {
+    "message": "طریقہ"
+  },
+  "panels/security/IPProtectionView.ts | notInIncognito": {
+    "message": "‫IP پراکسی دستیاب نہیں ہے"
+  },
+  "panels/security/IPProtectionView.ts | openIncognito": {
+    "message": "‫IP پراکسی صرف پوشیدگی وضع میں دستیاب ہے۔ پوشیدگی میں سائٹ کھولیں۔"
+  },
+  "panels/security/IPProtectionView.ts | proxyRequests": {
+    "message": "پراکسی کی درخواستیں"
+  },
+  "panels/security/IPProtectionView.ts | statusColumn": {
+    "message": "اسٹیٹس"
+  },
+  "panels/security/IPProtectionView.ts | urlColumn": {
+    "message": "URL"
+  },
+  "panels/security/IPProtectionView.ts | viewExplanation": {
+    "message": "جانچ کریں کہ اگر Chrome میں IP پراکسی فعال ہو تو یہ سائٹ کیسی کارکردگی دکھائے گی"
+  },
+  "panels/security/IPProtectionView.ts | viewTitle": {
+    "message": "‫IP پروٹیکشن پراکسی کنٹرولز"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH2} کے ساتھ {PH1}"
   },
@@ -12047,6 +12101,9 @@
   "panels/security/SecurityPanelSidebar.ts | flagControls": {
     "message": "کنٹرولز"
   },
+  "panels/security/SecurityPanelSidebar.ts | ipProtection": {
+    "message": "‫IP پروٹیکشن"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "اصل اوریجن"
   },
@@ -12329,6 +12386,9 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "صارف غیر فعال، اسکرین غیر مقفل ہے"
   },
+  "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
+    "message": "کارکردگی ٹریس تشریحات کے لیے خودکار طور پر عنوانات تیار کریں"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "کونسول یا مآخذ کے پینل میں ٹائپ کرتے وقت آپ کو کوڈ کی تجاویز ملیں گی۔ ایک کو قبول کرنے کے لیے ٹیب دبائیں۔"
   },
@@ -12336,16 +12396,16 @@
     "message": "‫AI کے ساتھ اپنی پروڈکٹیوٹی کو بوسٹ کریں"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendData": {
-    "message": "کوڈ کی تجاویز تخلیق کرنے کے لیے، آپ کے کونسول ان پٹ، آپ کے موجودہ کونسول سیشن کی سرگزشت اور فی الحال کھلی ہوئی فائل کے مواد کا Google کے ساتھ اشتراک کیا جاتا ہے۔ اس خصوصیت کو بہتر بنانے کے لیے یہ ڈیٹا انسانی جائزہ کاران دیکھ سکتے ہیں۔"
+    "message": "کوڈ کی تجاویز تخلیق کرنے کے لیے، آپ کے کونسول ان پٹ، آپ کے موجودہ کونسول سیشن کی سرگزشت، حالیہ معائنہ کیا جانے والا CSS اور فی الحال کھلی ہوئی فائل کے مواد کا Google کے ساتھ اشتراک کیا جاتا ہے۔ اس خصوصیت کو بہتر بنانے کے لیے یہ ڈیٹا انسانی جائزہ کاران دیکھ سکتے ہیں۔"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "کوڈ کی تجاویز تخلیق کرنے کے لیے، آپ کے کونسول ان پٹ، آپ کے موجودہ کونسول سیشن کی سرگزشت اور فی الحال کھلی ہوئی فائل کے مواد کا Google کے ساتھ اشتراک کیا جاتا ہے۔ یہ ڈیٹا Google کے AI ماڈلز کو بہتر بنانے کے لیے استعمال نہیں کیا جائے گا۔"
+    "message": "کوڈ کی تجاویز تخلیق کرنے کے لیے، آپ کے کونسول ان پٹ، آپ کے موجودہ کونسول سیشن کی سرگزشت، حالیہ معائنہ کیا جانے والا CSS اور فی الحال کھلی ہوئی فائل کے مواد کا Google کے ساتھ اشتراک کیا جاتا ہے۔ یہ ڈیٹا Google کے AI ماڈلز کو بہتر بنانے کے لیے استعمال نہیں کیا جائے گا۔ آپ کی تنظیم کسی بھی وقت ان ترتیبات کو تبدیل کر سکتی ہے۔"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
-    "message": "کنسول پیغام، متعلقہ اسٹیک ٹریس، متعلقہ سورس کوڈ، اور متعلقہ نیٹ ورک ہیڈر وضاحتیں تخلیق کرنے کے لیے Google کو بھیجے جاتے ہیں۔ اس خصوصیت کو بہتر بنانے کے لیے یہ ڈیٹا انسانی جائزہ کاران دیکھ سکتے ہیں۔"
+    "message": "وضاحتیں تخلیق کرنے کے لیے، کونسول پیغام، متعلقہ اسٹیک ٹریس، متعلقہ ماخذ کوڈ اور متعلقہ نیٹ ورک ہیڈرز Google کو بھیجے جاتے ہیں۔ اس خصوصیت کو بہتر بنانے کے لیے یہ ڈیٹا انسانی جائزہ کاران دیکھ سکتے ہیں۔"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "کنسول پیغام، وابستہ اسٹیک ٹریس، متعلقہ ماخذ کوڈ اور وابستہ نیٹ ورک ہیڈر وضاحتیں تخلیق کرنے کے لیے Google کو بھیجے جاتے ہیں۔ یہ ڈیٹا Google کے AI ماڈلز کو بہتر بنانے کے لیے استعمال نہیں کیا جائے گا۔"
+    "message": "وضاحتیں تخلیق کرنے کے لیے، کونسول پیغام، متعلقہ اسٹیک ٹریس، متعلقہ ماخذ کوڈ اور متعلقہ نیٹ ورک ہیڈرز Google کو بھیجے جاتے ہیں۔ یہ ڈیٹا Google کے AI ماڈلز کو بہتر بنانے کے لیے استعمال نہیں کیا جائے گا۔ آپ کی تنظیم کسی بھی وقت ان ترتیبات کو تبدیل کر سکتی ہے۔"
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "آپ کے علاقے کے لحاظ سے، Google ڈیٹا کی جمع آوری سے گریز کر سکتا ہے"
@@ -12355,6 +12415,9 @@
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "‫AI اسسٹنٹ فعال کریں"
+  },
+  "panels/settings/AISettingsTab.ts | enableAiCodeSuggestions": {
+    "message": "‫AI کوڈ کی تجاویز کو فعال کریں"
   },
   "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
     "message": "کارکردگی پینل تشریحات کیلئے AI تجاویز کو فعال کریں"
@@ -12381,19 +12444,19 @@
     "message": "‫AI تقویت یافتہ بصیرتوں کے ساتھ CSS کے اسٹائلز، نیٹ ورک کی سرگرمی، کارکردگی کی رکاوٹوں اور فائل کے ماخذات کو سمجھیں"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "ویب APIs، نیٹ ورک کی درخواستوں، فائلز اور کارکردگی کے ٹریسز کے ذریعے رسائی حاصل کئے جا سکنے والے صارف کے کسی بھی استفسار اور معائنہ شدہ صفحے کے کسی بھی ڈیٹا کو وضاحتیں تخلیق کرنے کیلئے Google کو بھیجا جا سکتا ہے۔ اس خصوصیت کو بہتر بنانے کیلئے، انسانی جائزہ کاران اس ڈیٹا کو دیکھ سکتے ہیں۔ ذاتی یا حساس معلومات والے صفحات پر استعمال نہ کریں۔"
+    "message": "وضاحتیں تخلیق کرنے کے لیے، ویب APIs، نیٹ ورک کی درخواستوں، فائلز اور کارکردگی کے ٹریسز کے ذریعے رسائی حاصل کئے جا سکنے والے صارف کے کسی بھی استفسار اور معائنہ شدہ صفحے کے کسی بھی ڈیٹا کو Google کو بھیجا جاتا ہے۔ اس خصوصیت کو بہتر بنانے کے لیے یہ ڈیٹا انسانی جائزہ کاران دیکھ سکتے ہیں۔ ذاتی یا حساس معلومات والے صفحات پر استعمال نہ کریں۔"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "ویب APIs، نیٹ ورک کی درخواستوں، فائلز اور کارکردگی کے ٹریسز کے ذریعے رسائی حاصل کئے جا سکنے والے صارف کے کسی بھی استفسار اور معائنہ شدہ صفحے کے کسی بھی ڈیٹا کو وضاحتیں تخلیق کرنے کیلئے Google کو بھیجا جا سکتا ہے۔ یہ ڈیٹا Google کے AI ماڈلز کو بہتر بنانے کیلئے استعمال نہیں کیا جائے گا۔"
+    "message": "وضاحتیں تخلیق کرنے کے لیے، ویب APIs، نیٹ ورک کی درخواستوں، فائلز اور کارکردگی کے ٹریسز کے ذریعے رسائی حاصل کئے جا سکنے والے صارف کے کسی بھی استفسار اور معائنہ شدہ صفحے کے کسی بھی ڈیٹا کو Google کو بھیجا جاتا ہے۔ یہ ڈیٹا Google کے AI ماڈلز کو بہتر بنانے کے لیے استعمال نہیں کیا جائے گا۔ آپ کی تنظیم کسی بھی وقت ان ترتیبات کو تبدیل کر سکتی ہے۔"
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
-    "message": "آپ کی کارکردگی کا سراغ وضاحت تخلیق کرنے کیلئے Google کو بھیجا جاتا ہے۔ یہ ڈیٹا Google کے AI ماڈلز کو بہتر بنانے کیلئے استعمال کیا جائے گا۔"
+    "message": "تشریحی تجاویز تخلیق کرنے کے لیے، آپ کی کارکردگی کا سراغ Google کو بھیجا جاتا ہے۔ اس خصوصیت کو بہتر بنانے کے لیے یہ ڈیٹا انسانی جائزہ کاران دیکھ سکتے ہیں۔"
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "آپ کی کارکردگی کا سراغ وضاحت تخلیق کرنے کیلئے Google کو بھیجا جاتا ہے۔ یہ ڈیٹا Google کے AI ماڈلز کو بہتر بنانے کے لیے استعمال نہیں کیا جائے گا۔"
+    "message": "تشریحی تجاویز تخلیق کرنے کے لیے، آپ کی کارکردگی کا سراغ Google کو بھیجا جاتا ہے۔ یہ ڈیٹا Google کے AI ماڈلز کو بہتر بنانے کے لیے استعمال نہیں کیا جائے گا۔ آپ کی تنظیم کسی بھی وقت ان ترتیبات کو تبدیل کر سکتی ہے۔"
   },
-  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
-    "message": "کارکردگی پینل تشریحات کیلئے AI تجاویز حاصل کریں"
+  "panels/settings/AISettingsTab.ts | helpAnnotatePerformance": {
+    "message": "خود کار طریقے سے تیار کردہ لیبلز کے ساتھ آپ کی کارکردگی کا پتہ لگانے میں آپ کی مدد کرتا ہے"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandCodeSuggestions": {
     "message": "اپنا کوڈ مکمل کرنے میں مدد حاصل کریں"
@@ -12593,17 +12656,44 @@
   "panels/settings/SettingsScreen.ts | unstableExperiments": {
     "message": "غیر مستحکم تجربات"
   },
+  "panels/settings/components/SyncSection.ts | gdpPremiumAnnualSubscription": {
+    "message": "‫Premium (سالانہ)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpPremiumMonthlySubscription": {
+    "message": "‫Premium (ماہانہ)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProAnnualSubscription": {
+    "message": "‫Pro (سالانہ)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpProMonthlySubscription": {
+    "message": "‫Pro (ماہانہ)"
+  },
+  "panels/settings/components/SyncSection.ts | gdpStandardPlan": {
+    "message": "معیاری پلان"
+  },
+  "panels/settings/components/SyncSection.ts | gdpUnknownSubscription": {
+    "message": "نامعلوم پلان"
+  },
+  "panels/settings/components/SyncSection.ts | notSignedIn": {
+    "message": "آپ Chrome میں سائن ان نہیں ہیں۔"
+  },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "اس ترتیب کو آن کرنے کیلئے، آپ کو پہلے Chrome میں ترتیبات کی مطابقت پذیری کو آن کرنا ہوگا۔"
   },
-  "panels/settings/components/SyncSection.ts | settings": {
-    "message": "ترتیبات پر جائیں"
+  "panels/settings/components/SyncSection.ts | relevantDataDisclaimer": {
+    "message": "(متعلقہ ڈیٹا Google کو بھیج دیا گیا ہے)"
+  },
+  "panels/settings/components/SyncSection.ts | signUp": {
+    "message": "سائن اپ کریں"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
     "message": "Chrome میں سائن ان ہیں بطور:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "اس ترتیب کو آن کرنے کیلئے، آپ کو Chrome سِنک کو آن کرنا ہوگا۔"
+  },
+  "panels/settings/components/SyncSection.ts | viewProfile": {
+    "message": "پروفائل دیکھیں"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "حسب ضرورت آلہ شامل کریں"
@@ -14162,6 +14252,9 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU تھروٹلنگ فعال ہے"
   },
+  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
+    "message": "- JavaScript سیمپلنگ غیر فعال ہے"
+  },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- نیٹ ورک تھروٹلنگ فعال ہے"
   },
@@ -14200,6 +14293,12 @@
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "فریقین ثالث کو مدھم کریں"
+  },
+  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
+    "message": "JavaScript نمونے غیر فعال کریں"
+  },
+  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
+    "message": "JavaScript سیمپلنگ کو غیر فعال کرتا ہے، موبائل آلات کے خلاف چلتے وقت اوورہیڈ کو کم کرتا ہے"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "ٹریس فائل یا URL یہاں ڈراپ کریں"
@@ -14693,6 +14792,9 @@
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "دہرایا جاتا ہے"
   },
+  "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
+    "message": "ٹائم آؤٹ"
+  },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} بوقت {PH2}"
   },
@@ -14773,6 +14875,15 @@
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "ٹائمنگز"
+  },
+  "panels/timeline/TrackConfigBanner.ts | configureTracks": {
+    "message": "ٹریکس کنفیگر کریں"
+  },
+  "panels/timeline/TrackConfigBanner.ts | showAll": {
+    "message": "سبھی دکھائیں"
+  },
+  "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
+    "message": "اس ٹریس میں کچھ ٹریکس چھپے ہوئے ہیں۔ آپ ٹریک کے نام پر دائیں کلک کر کے ٹریکس کو کنفیگر کر سکتے ہیں۔"
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "نا ہم وقت"
@@ -14875,6 +14986,24 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "‫WebSocket پروٹوکول"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
+    "message": "کارکردگی کا سراغ محفوظ کریں "
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
+    "message": "تشریحات شامل کریں"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeScriptContent": {
+    "message": "اسکرپٹ کا مواد شامل کریں"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | includeSourcemap": {
+    "message": "اسکرپٹ سورس نقشے شامل کریں"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | saveButtonTitle": {
+    "message": "محفوظ کریں"
+  },
+  "panels/timeline/components/ExportTraceOptions.ts | showExportTraceOptionsDialogTitle": {
+    "message": "ٹریس کو محفوظ کریں…"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "جدید ترین"
@@ -16010,11 +16139,38 @@
   "panels/utils/utils.ts | thirdPartyPhaseout": {
     "message": "اس درخواست کے لیے کوکیز یا تو Chrome پرچم یا براؤزر کنفیگریشن کی وجہ سے مسدود ہیں۔ مسائل کے پینل میں مزید جانیں۔"
   },
+  "panels/web_audio/WebAudioView.ts | audioContextS": {
+    "message": "آڈیو کا سیاق و سباق: {PH1}"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
+    "message": "کال بیک بفر کا سائز"
+  },
+  "panels/web_audio/WebAudioView.ts | callbackInterval": {
+    "message": "کال بیک کا وقفہ"
+  },
+  "panels/web_audio/WebAudioView.ts | currentTime": {
+    "message": "موجودہ وقت"
+  },
+  "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
+    "message": "زیادہ سے زیادہ آؤٹ پٹ کے چینلز"
+  },
+  "panels/web_audio/WebAudioView.ts | noRecordings": {
+    "message": "(کوئی ریکارڈنگ نہیں ہے)"
+  },
   "panels/web_audio/WebAudioView.ts | noWebAudio": {
     "message": "کسی ویب آڈیو API کے استعمال کا پتا نہیں چلا"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "نگرانی شروع کرنے کے لیے ویب آڈیو API استعمال کرنے والا صفحہ کھولیں۔"
+  },
+  "panels/web_audio/WebAudioView.ts | renderCapacity": {
+    "message": "رینڈر کرنے کی صلاحیت"
+  },
+  "panels/web_audio/WebAudioView.ts | sampleRate": {
+    "message": "نمونے کی شرح"
+  },
+  "panels/web_audio/WebAudioView.ts | state": {
+    "message": "صورتحال"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "آڈیو"
@@ -16367,11 +16523,11 @@
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "مزید ٹولز"
   },
-  "ui/legacy/InspectorView.ts | moveToBottom": {
-    "message": "نیچے منتقل کریں"
+  "ui/legacy/InspectorView.ts | moveToDrawer": {
+    "message": "دراز پر جائیں"
   },
-  "ui/legacy/InspectorView.ts | moveToTop": {
-    "message": "اوپر منتقل کریں"
+  "ui/legacy/InspectorView.ts | moveToMainTabBar": {
+    "message": "مرکزی ٹیب بار پر جائیں"
   },
   "ui/legacy/InspectorView.ts | panels": {
     "message": "پینلز"
@@ -16489,6 +16645,9 @@
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "چیک کیا گیا"
+  },
+  "ui/legacy/SoftContextMenu.ts | newFeature": {
+    "message": "یہ نئی خصوصیت ہے"
   },
   "ui/legacy/SoftContextMenu.ts | sS": {
     "message": "{PH1}، {PH2}"
@@ -17062,6 +17221,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "کمانڈ چلائیں"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
+    "message": "یہ نئی خصوصیت ہے"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "کوئی نتیجہ نہیں ملا"

@@ -1,12 +1,15 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Autofill from './autofill.js';
 
@@ -220,5 +223,68 @@ describeWithEnvironment('AutofillView', () => {
     sinon.assert.calledOnce(autofillManager.clearHighlightedFilledFields);
     input = await view.nextInput;
     assert.isEmpty(input.highlightedMatches);
+  });
+
+  describe('onAddressFormFilled handling', () => {
+    function dispatchFormFilledEvent(manager: AutofillManager.AutofillManager.AutofillManager): void {
+      const filledFields = [
+        {
+          htmlType: 'text',
+          id: 'input1',
+          name: '',
+          value: 'Crocodile',
+          autofillType: 'First name',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+          fieldId: 1 as Protocol.DOM.BackendNodeId,
+          frameId: '1' as Protocol.Page.FrameId,
+        },
+      ];
+      manager.dispatchEventToListeners(AutofillManager.AutofillManager.Events.ADDRESS_FORM_FILLED, {
+        address: '1 Test Road',
+        filledFields,
+        matches: [{startIndex: 0, endIndex: 9, filledFieldIndex: 0}],
+      });
+    }
+
+    function setupView(): {
+      manager: AutofillManager.AutofillManager.AutofillManager,
+      view: Autofill.AutofillView.AutofillView,
+      showViewStub: sinon.SinonStub,
+      actionTakenStub: sinon.SinonStub,
+    } {
+      const viewManager = UI.ViewManager.ViewManager.instance({forceNew: true});
+      const showViewStub = sinon.stub(viewManager, 'showView').resolves();
+      const actionTakenStub = sinon.stub(Host.userMetrics, 'actionTaken');
+
+      const view = createViewFunctionStub(Autofill.AutofillView.AutofillView);
+      const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance({forceNew: true});
+      const autofillView = new Autofill.AutofillView.AutofillView(autofillManager, view);
+      renderElementIntoDOM(autofillView);
+      return {manager: autofillManager, view: autofillView, showViewStub, actionTakenStub};
+    }
+
+    it('shows the autofill-view when an address form is filled', async () => {
+      const {showViewStub, actionTakenStub, view, manager} = setupView();
+      const setting = Common.Settings.Settings.instance().createSetting('auto-open-autofill-view-on-event', true);
+      setting.set(true);
+
+      dispatchFormFilledEvent(manager);
+      await view.updateComplete;
+
+      sinon.assert.calledOnce(showViewStub);
+      sinon.assert.calledOnceWithExactly(actionTakenStub, Host.UserMetrics.Action.AutofillReceivedAndTabAutoOpened);
+    });
+
+    it('does not show the autofill view if the setting is false', async () => {
+      const {showViewStub, actionTakenStub, view, manager} = setupView();
+      const setting = Common.Settings.Settings.instance().createSetting('auto-open-autofill-view-on-event', true);
+      setting.set(false);
+
+      dispatchFormFilledEvent(manager);
+      await view.updateComplete;
+
+      sinon.assert.calledOnceWithExactly(actionTakenStub, Host.UserMetrics.Action.AutofillReceived);
+      sinon.assert.notCalled(showViewStub);
+    });
   });
 });

@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -40,17 +40,17 @@ import type {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js'
 
 export class Resource implements TextUtils.ContentProvider.ContentProvider {
   readonly #resourceTreeModel: ResourceTreeModel;
-  #requestInternal: NetworkRequest|null;
-  #urlInternal!: Platform.DevToolsPath.UrlString;
-  readonly #documentURLInternal: Platform.DevToolsPath.UrlString;
-  readonly #frameIdInternal: Protocol.Page.FrameId|null;
-  readonly #loaderIdInternal: Protocol.Network.LoaderId|null;
+  #request: NetworkRequest|null;
+  #url!: Platform.DevToolsPath.UrlString;
+  readonly #documentURL: Platform.DevToolsPath.UrlString;
+  readonly #frameId: Protocol.Page.FrameId|null;
+  readonly #loaderId: Protocol.Network.LoaderId|null;
   readonly #type: Common.ResourceType.ResourceType;
-  #mimeTypeInternal: string;
-  #isGeneratedInternal: boolean;
-  #lastModifiedInternal: Date|null;
-  readonly #contentSizeInternal: number|null;
-  #parsedURLInternal?: Common.ParsedURL.ParsedURL;
+  #mimeType: string;
+  #isGenerated: boolean;
+  #lastModified: Date|null;
+  readonly #contentSize: number|null;
+  #parsedURL?: Common.ParsedURL.ParsedURL;
   #contentData: TextUtils.ContentData.ContentData|null = null;
   /**
    * There is always at most one CDP "getResourceContent" call in-flight. But once it's done
@@ -64,76 +64,76 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
       loaderId: Protocol.Network.LoaderId|null, type: Common.ResourceType.ResourceType, mimeType: string,
       lastModified: Date|null, contentSize: number|null) {
     this.#resourceTreeModel = resourceTreeModel;
-    this.#requestInternal = request;
+    this.#request = request;
     this.url = url;
 
-    this.#documentURLInternal = documentURL;
-    this.#frameIdInternal = frameId;
-    this.#loaderIdInternal = loaderId;
+    this.#documentURL = documentURL;
+    this.#frameId = frameId;
+    this.#loaderId = loaderId;
     this.#type = type || Common.ResourceType.resourceTypes.Other;
-    this.#mimeTypeInternal = mimeType;
-    this.#isGeneratedInternal = false;
+    this.#mimeType = mimeType;
+    this.#isGenerated = false;
 
-    this.#lastModifiedInternal = lastModified && Platform.DateUtilities.isValid(lastModified) ? lastModified : null;
-    this.#contentSizeInternal = contentSize;
+    this.#lastModified = lastModified && Platform.DateUtilities.isValid(lastModified) ? lastModified : null;
+    this.#contentSize = contentSize;
   }
 
   lastModified(): Date|null {
-    if (this.#lastModifiedInternal || !this.#requestInternal) {
-      return this.#lastModifiedInternal;
+    if (this.#lastModified || !this.#request) {
+      return this.#lastModified;
     }
-    const lastModifiedHeader = this.#requestInternal.responseLastModified();
+    const lastModifiedHeader = this.#request.responseLastModified();
     const date = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
-    this.#lastModifiedInternal = date && Platform.DateUtilities.isValid(date) ? date : null;
-    return this.#lastModifiedInternal;
+    this.#lastModified = date && Platform.DateUtilities.isValid(date) ? date : null;
+    return this.#lastModified;
   }
 
   contentSize(): number|null {
-    if (typeof this.#contentSizeInternal === 'number' || !this.#requestInternal) {
-      return this.#contentSizeInternal;
+    if (typeof this.#contentSize === 'number' || !this.#request) {
+      return this.#contentSize;
     }
-    return this.#requestInternal.resourceSize;
+    return this.#request.resourceSize;
   }
 
   get request(): NetworkRequest|null {
-    return this.#requestInternal;
+    return this.#request;
   }
 
   get url(): Platform.DevToolsPath.UrlString {
-    return this.#urlInternal;
+    return this.#url;
   }
 
   set url(x: Platform.DevToolsPath.UrlString) {
-    this.#urlInternal = x;
-    this.#parsedURLInternal = new Common.ParsedURL.ParsedURL(x);
+    this.#url = x;
+    this.#parsedURL = new Common.ParsedURL.ParsedURL(x);
   }
 
   get parsedURL(): Common.ParsedURL.ParsedURL|undefined {
-    return this.#parsedURLInternal;
+    return this.#parsedURL;
   }
 
   get documentURL(): Platform.DevToolsPath.UrlString {
-    return this.#documentURLInternal;
+    return this.#documentURL;
   }
 
   get frameId(): Protocol.Page.FrameId|null {
-    return this.#frameIdInternal;
+    return this.#frameId;
   }
 
   get loaderId(): Protocol.Network.LoaderId|null {
-    return this.#loaderIdInternal;
+    return this.#loaderId;
   }
 
   get displayName(): string {
-    return this.#parsedURLInternal ? this.#parsedURLInternal.displayName : '';
+    return this.#parsedURL ? this.#parsedURL.displayName : '';
   }
 
   resourceType(): Common.ResourceType.ResourceType {
-    return this.#requestInternal ? this.#requestInternal.resourceType() : this.#type;
+    return this.#request ? this.#request.resourceType() : this.#type;
   }
 
   get mimeType(): string {
-    return this.#requestInternal ? this.#requestInternal.mimeType : this.#mimeTypeInternal;
+    return this.#request ? this.#request.mimeType : this.#mimeType;
   }
 
   get content(): string|null {
@@ -144,15 +144,15 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   }
 
   get isGenerated(): boolean {
-    return this.#isGeneratedInternal;
+    return this.#isGenerated;
   }
 
   set isGenerated(val: boolean) {
-    this.#isGeneratedInternal = val;
+    this.#isGenerated = val;
   }
 
   contentURL(): Platform.DevToolsPath.UrlString {
-    return this.#urlInternal;
+    return this.#url;
   }
 
   contentType(): Common.ResourceType.ResourceType {
@@ -204,7 +204,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     if (TextUtils.ContentData.ContentData.isError(contentData)) {
       return;
     }
-    image.src = contentData.asDataUrl() ?? this.#urlInternal;
+    image.src = contentData.asDataUrl() ?? this.#url;
   }
 
   private async innerRequestContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
@@ -223,10 +223,10 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   }
 
   frame(): ResourceTreeFrame|null {
-    return this.#frameIdInternal ? this.#resourceTreeModel.frameForId(this.#frameIdInternal) : null;
+    return this.#frameId ? this.#resourceTreeModel.frameForId(this.#frameId) : null;
   }
 
   statusCode(): number {
-    return this.#requestInternal ? this.#requestInternal.statusCode : 0;
+    return this.#request ? this.#request.statusCode : 0;
   }
 }

@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -13,13 +13,13 @@ import {
   reloadPageAndWaitForSourceFile,
   RESUME_BUTTON,
   retrieveTopCallFrameWithoutResuming,
+  waitValuesForScope,
 } from '../../e2e/helpers/sources-helpers.js';
 
 describe('Source Tab', () => {
   it('shows and updates the module, local, and stack scope while pausing', async ({devToolsPage, inspectedPage}) => {
     const breakpointLine = '0x05f';
     const fileName = 'scopes.wasm';
-    let stackScopeValues: string[];
     let expectedValues: string[];
 
     await openSourceCodeEditorForFile('scopes.wasm', 'wasm/scopes.html', devToolsPage, inspectedPage);
@@ -43,8 +43,7 @@ describe('Source Tab', () => {
     expectedValues = [
       'stack: Stack\xA0{}',
     ];
-    stackScopeValues = await getValuesForScope('Expression', 0, expectedValues.length, devToolsPage);
-    assert.deepEqual(stackScopeValues, expectedValues);
+    await waitValuesForScope('Expression', 0, expectedValues, devToolsPage);
 
     expectedValues = [
       '$f32_var: f32 {value: 5.5}',
@@ -52,8 +51,7 @@ describe('Source Tab', () => {
       '$i32: i32 {value: 42}',
       '$i64_var: i64 {value: 9221120237041090n}',
     ];
-    const localScopeValues = await getValuesForScope('Local', 0, expectedValues.length, devToolsPage);
-    assert.deepEqual(localScopeValues, expectedValues);
+    const localScopeValues = await waitValuesForScope('Local', 0, expectedValues, devToolsPage);
 
     expectedValues = [
       'functions: Functions\xA0{$foo: ƒ}',
@@ -73,18 +71,13 @@ describe('Source Tab', () => {
     await devToolsPage.pressKey('F9');
     await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 
-    const currentModuleScopeValues = await getValuesForScope('Module', 0, moduleScopeValues.length, devToolsPage);
-    assert.deepEqual(currentModuleScopeValues, moduleScopeValues);
-
-    const updatedLocalScopeValues = await getValuesForScope('Local', 0, localScopeValues.length, devToolsPage);
-    assert.deepEqual(updatedLocalScopeValues, localScopeValues);
+    await waitValuesForScope('Module', 0, moduleScopeValues, devToolsPage);
+    await waitValuesForScope('Local', 0, localScopeValues, devToolsPage);
 
     expectedValues = [
       'stack: Stack\xA0{0: i32}',
     ];
-    stackScopeValues = await getValuesForScope('Expression', 0, expectedValues.length, devToolsPage);
-    assert.deepEqual(stackScopeValues, expectedValues);
-
+    await waitValuesForScope('Expression', 0, expectedValues, devToolsPage);
     await devToolsPage.click(RESUME_BUTTON);
   });
 });

@@ -3,7 +3,7 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type { Session } from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import type { Session } from 'webdriver-bidi-protocol';
 import type { IsPageTargetCallback, TargetFilterCallback } from '../api/Browser.js';
 import type { ConnectionTransport } from './ConnectionTransport.js';
 import type { DownloadBehavior } from './DownloadBehavior.js';

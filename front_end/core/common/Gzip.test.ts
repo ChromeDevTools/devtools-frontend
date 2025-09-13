@@ -1,4 +1,4 @@
-// Copyright 2025 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -41,7 +41,7 @@ describe('arrayBufferToString', () => {
   });
   it('can decode a plaintext buffer', async () => {
     const text = 'Hello, buddy!';
-    const buffer = new TextEncoder().encode(text).buffer as ArrayBuffer;
+    const buffer = new TextEncoder().encode(text).buffer;
     const result = await Common.Gzip.arrayBufferToString(buffer);
     assert.strictEqual(result, text);
   });

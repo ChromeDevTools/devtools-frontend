@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
@@ -11,19 +11,10 @@ import timespanBreakdownOverlayStyles from './timespanBreakdownOverlay.css.js';
 
 const {html} = Lit;
 
-/**
- * An EntryBreakdown, or section, that makes up a TimespanBreakdown.
- */
-export interface EntryBreakdown {
-  bounds: Trace.Types.Timing.TraceWindowMicro;
-  label: string|Lit.LitTemplate;
-  showDuration: boolean;
-}
-
 export class TimespanBreakdownOverlay extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #canvasRect: DOMRect|null = null;
-  #sections: EntryBreakdown[]|null = null;
+  #sections: Trace.Types.Overlays.TimespanBreakdownEntryBreakdown[]|null = null;
 
   set isBelowEntry(isBelow: boolean) {
     this.classList.toggle('is-below', isBelow);
@@ -37,7 +28,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
     this.#render();
   }
 
-  set sections(sections: EntryBreakdown[]|null) {
+  set sections(sections: Trace.Types.Overlays.TimespanBreakdownEntryBreakdown[]|null) {
     if (sections === this.#sections) {
       return;
     }
@@ -152,7 +143,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
     return Array.from(this.#shadow.querySelectorAll('.timespan-breakdown-overlay-section'));
   }
 
-  #renderSection(section: EntryBreakdown): Lit.TemplateResult {
+  #renderSection(section: Trace.Types.Overlays.TimespanBreakdownEntryBreakdown): Lit.TemplateResult {
     // clang-format off
     return html`
       <div class="timespan-breakdown-overlay-section">

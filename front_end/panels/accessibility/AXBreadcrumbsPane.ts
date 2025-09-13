@@ -1,4 +1,4 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
@@ -434,96 +434,96 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
 const elementsToAXBreadcrumb = new WeakMap<Element, AXBreadcrumb>();
 
 export class AXBreadcrumb {
-  private readonly axNodeInternal: SDK.AccessibilityModel.AccessibilityNode;
-  private readonly elementInternal: HTMLDivElement;
-  private nodeElementInternal: HTMLDivElement;
+  readonly #axNode: SDK.AccessibilityModel.AccessibilityNode;
+  readonly #element: HTMLDivElement;
+  #nodeElement: HTMLDivElement;
   private readonly nodeWrapper: HTMLDivElement;
   private readonly selectionElement: HTMLDivElement;
   private readonly childrenGroupElement: HTMLDivElement;
   private readonly children: AXBreadcrumb[];
   private hovered: boolean;
-  private preselectedInternal: boolean;
+  #preselected: boolean;
   private parent: AXBreadcrumb|null;
-  private inspectedInternal: boolean;
+  #inspected: boolean;
   expandLoggable = {};
   constructor(axNode: SDK.AccessibilityModel.AccessibilityNode, depth: number, inspected: boolean) {
-    this.axNodeInternal = axNode;
+    this.#axNode = axNode;
 
-    this.elementInternal = document.createElement('div');
-    this.elementInternal.classList.add('ax-breadcrumb');
-    this.elementInternal.setAttribute(
+    this.#element = document.createElement('div');
+    this.#element.classList.add('ax-breadcrumb');
+    this.#element.setAttribute(
         'jslog',
         `${VisualLogging.treeItem().track({click: true, keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter'})}`);
-    elementsToAXBreadcrumb.set(this.elementInternal, this);
+    elementsToAXBreadcrumb.set(this.#element, this);
 
-    this.nodeElementInternal = document.createElement('div');
-    this.nodeElementInternal.classList.add('ax-node');
-    UI.ARIAUtils.markAsTreeitem(this.nodeElementInternal);
-    this.nodeElementInternal.tabIndex = -1;
-    this.elementInternal.appendChild(this.nodeElementInternal);
+    this.#nodeElement = document.createElement('div');
+    this.#nodeElement.classList.add('ax-node');
+    UI.ARIAUtils.markAsTreeitem(this.#nodeElement);
+    this.#nodeElement.tabIndex = -1;
+    this.#element.appendChild(this.#nodeElement);
     this.nodeWrapper = document.createElement('div');
     this.nodeWrapper.classList.add('wrapper');
-    this.nodeElementInternal.appendChild(this.nodeWrapper);
+    this.#nodeElement.appendChild(this.nodeWrapper);
 
     this.selectionElement = document.createElement('div');
     this.selectionElement.classList.add('selection');
     this.selectionElement.classList.add('fill');
-    this.nodeElementInternal.appendChild(this.selectionElement);
+    this.#nodeElement.appendChild(this.selectionElement);
 
     this.childrenGroupElement = document.createElement('div');
     this.childrenGroupElement.classList.add('children');
     UI.ARIAUtils.markAsGroup(this.childrenGroupElement);
-    this.elementInternal.appendChild(this.childrenGroupElement);
+    this.#element.appendChild(this.childrenGroupElement);
 
     this.children = [];
     this.hovered = false;
-    this.preselectedInternal = false;
+    this.#preselected = false;
     this.parent = null;
 
-    this.inspectedInternal = inspected;
-    this.nodeElementInternal.classList.toggle('inspected', inspected);
+    this.#inspected = inspected;
+    this.#nodeElement.classList.toggle('inspected', inspected);
 
-    this.nodeElementInternal.style.paddingLeft = (16 * depth + 4) + 'px';
+    this.#nodeElement.style.paddingLeft = (16 * depth + 4) + 'px';
 
-    if (this.axNodeInternal.ignored()) {
+    if (this.#axNode.ignored()) {
       this.appendIgnoredNodeElement();
     } else {
-      this.appendRoleElement(this.axNodeInternal.role());
-      const axNodeName = this.axNodeInternal.name();
+      this.appendRoleElement(this.#axNode.role());
+      const axNodeName = this.#axNode.name();
       if (axNodeName?.value) {
         this.nodeWrapper.createChild('span', 'separator').textContent = '\xA0';
         this.appendNameElement(axNodeName.value as string);
       }
     }
 
-    if (!this.axNodeInternal.ignored() && this.axNodeInternal.hasOnlyUnloadedChildren()) {
-      this.nodeElementInternal.classList.add('children-unloaded');
-      UI.ARIAUtils.setExpanded(this.nodeElementInternal, false);
+    if (!this.#axNode.ignored() && this.#axNode.hasOnlyUnloadedChildren()) {
+      this.#nodeElement.classList.add('children-unloaded');
+      UI.ARIAUtils.setExpanded(this.#nodeElement, false);
       VisualLogging.registerLoggable(
-          this.expandLoggable, `${VisualLogging.expand()}`, this.elementInternal, new DOMRect(0, 0, 16, 16));
+          this.expandLoggable, `${VisualLogging.expand()}`, this.#element, new DOMRect(0, 0, 16, 16));
     }
 
-    if (!this.axNodeInternal.isDOMNode()) {
-      this.nodeElementInternal.classList.add('no-dom-node');
+    if (!this.#axNode.isDOMNode()) {
+      this.#nodeElement.classList.add('no-dom-node');
     }
   }
 
   element(): HTMLElement {
-    return this.elementInternal;
+    return this.#element;
   }
 
   nodeElement(): HTMLElement {
-    return this.nodeElementInternal;
+    return this.#nodeElement;
   }
 
   appendChild(breadcrumb: AXBreadcrumb): void {
     this.children.push(breadcrumb);
     breadcrumb.setParent(this);
-    this.nodeElementInternal.classList.add('parent');
-    UI.ARIAUtils.setExpanded(this.nodeElementInternal, true);
+    this.#nodeElement.classList.add('parent');
+    UI.ARIAUtils.setExpanded(this.#nodeElement, true);
     this.childrenGroupElement.appendChild(breadcrumb.element());
     VisualLogging.registerLoggable(
-        this.expandLoggable, `${VisualLogging.expand()}`, this.elementInternal, new DOMRect(0, 0, 16, 16));
+        this.expandLoggable, `${VisualLogging.expand()}`, this.#element, new DOMRect(0, 0, 16, 16));
   }
 
   hasExpandedChildren(): number {
@@ -535,26 +535,26 @@ export class AXBreadcrumb {
   }
 
   preselected(): boolean {
-    return this.preselectedInternal;
+    return this.#preselected;
   }
 
   setPreselected(preselected: boolean, selectedByUser: boolean): void {
-    if (this.preselectedInternal === preselected) {
+    if (this.#preselected === preselected) {
       return;
     }
-    this.preselectedInternal = preselected;
-    this.nodeElementInternal.classList.toggle('preselected', preselected);
+    this.#preselected = preselected;
+    this.#nodeElement.classList.toggle('preselected', preselected);
     if (preselected) {
-      this.nodeElementInternal.tabIndex = 0;
+      this.#nodeElement.tabIndex = 0;
     } else {
-      this.nodeElementInternal.tabIndex = -1;
+      this.#nodeElement.tabIndex = -1;
     }
-    if (this.preselectedInternal) {
+    if (this.#preselected) {
       if (selectedByUser) {
-        this.nodeElementInternal.focus();
+        this.#nodeElement.focus();
       }
-      if (!this.inspectedInternal) {
-        this.axNodeInternal.highlightDOMNode();
+      if (!this.#inspected) {
+        this.#axNode.highlightDOMNode();
       } else {
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
       }
@@ -566,23 +566,23 @@ export class AXBreadcrumb {
       return;
     }
     this.hovered = hovered;
-    this.nodeElementInternal.classList.toggle('hovered', hovered);
+    this.#nodeElement.classList.toggle('hovered', hovered);
     if (this.hovered) {
-      this.nodeElementInternal.classList.toggle('hovered', true);
-      this.axNodeInternal.highlightDOMNode();
+      this.#nodeElement.classList.toggle('hovered', true);
+      this.#axNode.highlightDOMNode();
     }
   }
 
   axNode(): SDK.AccessibilityModel.AccessibilityNode {
-    return this.axNodeInternal;
+    return this.#axNode;
   }
 
   inspected(): boolean {
-    return this.inspectedInternal;
+    return this.#inspected;
   }
 
   isDOMNode(): boolean {
-    return this.axNodeInternal.isDOMNode();
+    return this.#axNode.isDOMNode();
   }
 
   nextBreadcrumb(): AXBreadcrumb|null {

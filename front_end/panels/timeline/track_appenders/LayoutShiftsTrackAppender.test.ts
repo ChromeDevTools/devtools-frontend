@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -9,10 +9,10 @@ import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
-    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.TraceModel.ParsedTrace,
     entryData: Trace.Types.Events.Event[], entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
     Timeline.LayoutShiftsTrackAppender.LayoutShiftsTrackAppender {
-  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+  const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
       flameChartData, parsedTrace, entryData, entryTypeByLevel, entityMapper);
   return compatibilityTracksAppender.layoutShiftsTrackAppender();
@@ -24,12 +24,12 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     layoutShiftsTrackAppender: Timeline.LayoutShiftsTrackAppender.LayoutShiftsTrackAppender,
     entryData: Trace.Types.Events.Event[],
-    parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>,
+    parsedTrace: Readonly<Trace.TraceModel.ParsedTrace>,
   }> {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Trace.Types.Events.Event[] = [];
     const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-    const {parsedTrace} = await TraceLoader.traceEngine(context, trace);
+    const parsedTrace = await TraceLoader.traceEngine(context, trace);
     const layoutShiftsTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
     layoutShiftsTrackAppender.appendTrackAtLevel(0);
 
@@ -65,7 +65,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
 
   it('adds all layout shifts with the correct start times', async function() {
     const {flameChartData, parsedTrace, entryData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
-    const events = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
+    const events = parsedTrace.data.LayoutShifts.clusters.flatMap(c => c.events);
     for (const event of events) {
       const markerIndex = entryData.indexOf(event);
       assert.exists(markerIndex);
@@ -75,7 +75,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
 
   it('does not define any title for a layout shift or a cluster', async () => {
     const {layoutShiftsTrackAppender, parsedTrace} = await renderTrackAppender(this, 'cls-no-nav.json.gz');
-    const cluster = parsedTrace.LayoutShifts.clusters.at(0);
+    const cluster = parsedTrace.data.LayoutShifts.clusters.at(0);
     assert.isOk(cluster);
     const shift = cluster.events.at(0);
     assert.isOk(shift);
@@ -85,7 +85,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
 
   it('shows "Layout shift" tooltip on hover', async function() {
     const {layoutShiftsTrackAppender, parsedTrace} = await renderTrackAppender(this, 'cls-no-nav.json.gz');
-    const shifts = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
+    const shifts = parsedTrace.data.LayoutShifts.clusters.flatMap(c => c.events);
     await layoutShiftsTrackAppender.preloadScreenshots(shifts);
 
     const info: Timeline.CompatibilityTracksAppender.PopoverInfo = {

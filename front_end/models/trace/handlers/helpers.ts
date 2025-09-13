@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -7,7 +7,7 @@ import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party
 import * as Types from '../types/types.js';
 
 import type {TraceEventsForNetworkRequest} from './NetworkRequestsHandler.js';
-import type {ParsedTrace} from './types.js';
+import type {HandlerData} from './types.js';
 
 export type Entity = typeof ThirdPartyWeb.ThirdPartyWeb.entities[number]&{
   isUnrecognized?: boolean,
@@ -41,7 +41,7 @@ export function getEntityForUrl(url: string, entityMappings: EntityMappings): En
 }
 
 export function getNonResolvedURL(
-    entry: Types.Events.Event, parsedTrace?: ParsedTrace): Platform.DevToolsPath.UrlString|null {
+    entry: Types.Events.Event, handlerData?: HandlerData): Platform.DevToolsPath.UrlString|null {
   if (Types.Events.isProfileCall(entry)) {
     return entry.callFrame.url as Platform.DevToolsPath.UrlString;
   }
@@ -63,17 +63,17 @@ export function getNonResolvedURL(
     return entry.args.beginData.url as Platform.DevToolsPath.UrlString;
   }
 
-  if (parsedTrace) {
+  if (handlerData) {
     // DecodeImage events use the URL from the relevant PaintImage event.
     if (Types.Events.isDecodeImage(entry)) {
-      const paintEvent = parsedTrace.ImagePainting.paintImageForEvent.get(entry);
-      return paintEvent ? getNonResolvedURL(paintEvent, parsedTrace) : null;
+      const paintEvent = handlerData.ImagePainting.paintImageForEvent.get(entry);
+      return paintEvent ? getNonResolvedURL(paintEvent, handlerData) : null;
     }
 
     // DrawLazyPixelRef events use the URL from the relevant PaintImage event.
     if (Types.Events.isDrawLazyPixelRef(entry) && entry.args?.LazyPixelRef) {
-      const paintEvent = parsedTrace.ImagePainting.paintImageByDrawLazyPixelRef.get(entry.args.LazyPixelRef);
-      return paintEvent ? getNonResolvedURL(paintEvent, parsedTrace) : null;
+      const paintEvent = handlerData.ImagePainting.paintImageByDrawLazyPixelRef.get(entry.args.LazyPixelRef);
+      return paintEvent ? getNonResolvedURL(paintEvent, handlerData) : null;
     }
   }
 
@@ -85,8 +85,8 @@ export function getNonResolvedURL(
   // Many events don't have a url, but are associated with a request. Use the
   // request's url.
   const requestId = (entry.args?.data as {requestId?: string})?.requestId;
-  if (parsedTrace && requestId) {
-    const url = parsedTrace.NetworkRequests.byId.get(requestId)?.args.data.url;
+  if (handlerData && requestId) {
+    const url = handlerData.NetworkRequests.byId.get(requestId)?.args.data.url;
     if (url) {
       return url as Platform.DevToolsPath.UrlString;
     }

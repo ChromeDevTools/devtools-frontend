@@ -207,7 +207,7 @@
                 },
                 {
                     "id": "AXPropertyName",
-                    "description": "Values of AXProperty name:\n- from 'busy' to 'roledescription': states which apply to every AX node\n- from 'live' to 'root': attributes which apply to nodes in live regions\n- from 'autocomplete' to 'valuetext': attributes which apply to widgets\n- from 'checked' to 'selected': states which apply to widgets\n- from 'activedescendant' to 'owns' - relationships between elements other than parent/child/sibling.",
+                    "description": "Values of AXProperty name:\n- from 'busy' to 'roledescription': states which apply to every AX node\n- from 'live' to 'root': attributes which apply to nodes in live regions\n- from 'autocomplete' to 'valuetext': attributes which apply to widgets\n- from 'checked' to 'selected': states which apply to widgets\n- from 'activedescendant' to 'owns': relationships between elements other than parent/child/sibling\n- from 'activeFullscreenElement' to 'uninteresting': reasons why this noode is hidden",
                     "type": "string",
                     "enum": [
                         "actions",
@@ -250,7 +250,24 @@
                         "flowto",
                         "labelledby",
                         "owns",
-                        "url"
+                        "url",
+                        "activeFullscreenElement",
+                        "activeModalDialog",
+                        "activeAriaModalDialog",
+                        "ariaHiddenElement",
+                        "ariaHiddenSubtree",
+                        "emptyAlt",
+                        "emptyText",
+                        "inertElement",
+                        "inertSubtree",
+                        "labelContainer",
+                        "labelFor",
+                        "notRendered",
+                        "notVisible",
+                        "presentationalRole",
+                        "probablyPresentational",
+                        "inactiveCarouselTabContent",
+                        "uninteresting"
                     ]
                 },
                 {
@@ -2454,7 +2471,7 @@
                     "properties": [
                         {
                             "name": "name",
-                            "description": "address field name, for example GIVEN_NAME.",
+                            "description": "address field name, for example GIVEN_NAME.\nThe full list of supported field names:\nhttps://source.chromium.org/chromium/chromium/src/+/main:components/autofill/core/browser/field_types.cc;l=38",
                             "type": "string"
                         },
                         {
@@ -2602,8 +2619,15 @@
                         },
                         {
                             "name": "card",
-                            "description": "Credit card information to fill out the form. Credit card data is not saved.",
+                            "description": "Credit card information to fill out the form. Credit card data is not saved.  Mutually exclusive with `address`.",
+                            "optional": true,
                             "$ref": "CreditCard"
+                        },
+                        {
+                            "name": "address",
+                            "description": "Address to fill out the form. Address data is not saved. Mutually exclusive with `card`.",
+                            "optional": true,
+                            "$ref": "Address"
                         }
                     ]
                 },
@@ -6997,6 +7021,12 @@
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "affectedByStartingStyles",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -8526,6 +8556,23 @@
                         {
                             "name": "isScrollable",
                             "description": "If the node is scrollable.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "affectedByStartingStylesFlagUpdated",
+                    "description": "Fired when a node's starting styles changes.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "The id of the node.",
+                            "$ref": "DOM.NodeId"
+                        },
+                        {
+                            "name": "affectedByStartingStyles",
+                            "description": "If the node has starting styles.",
                             "type": "boolean"
                         }
                     ]
@@ -12811,7 +12858,8 @@
                         },
                         {
                             "name": "indexName",
-                            "description": "Index name, empty string for object store data requests.",
+                            "description": "Index name. If not specified or empty string, it performs an object store data request.",
+                            "optional": true,
                             "type": "string"
                         },
                         {
@@ -16931,6 +16979,18 @@
                     ]
                 },
                 {
+                    "name": "setIPProtectionProxyBypassEnabled",
+                    "description": "Sets bypass IP Protection Proxy boolean.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enabled",
+                            "description": "Whether IP Proxy is being bypassed by devtools; false by default.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "setAcceptedEncodings",
                     "description": "Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.",
                     "experimental": true,
@@ -20067,7 +20127,7 @@
                 },
                 {
                     "name": "install",
-                    "description": "Installs the given manifest identity, optionally using the given installUrlOrBundleUrl\n\nIWA-specific install description:\nmanifestId corresponds to isolated-app:// + web_package::SignedWebBundleId\n\nFile installation mode:\nThe installUrlOrBundleUrl can be either file:// or http(s):// pointing\nto a signed web bundle (.swbn). In this case SignedWebBundleId must correspond to\nThe .swbn file's signing key.\n\nDev proxy installation mode:\ninstallUrlOrBundleUrl must be http(s):// that serves dev mode IWA.\nweb_package::SignedWebBundleId must be of type dev proxy.\n\nThe advantage of dev proxy mode is that all changes to IWA\nautomatically will be reflected in the running app without\nreinstallation.\n\nTo generate bundle id for proxy mode:\n1. Generate 32 random bytes.\n2. Add a specific suffix 0x00 at the end.\n3. Encode the entire sequence using Base32 without padding.\n\nIf Chrome is not in IWA dev\nmode, the installation will fail, regardless of the state of the allowlist.",
+                    "description": "Installs the given manifest identity, optionally using the given installUrlOrBundleUrl\n\nIWA-specific install description:\nmanifestId corresponds to isolated-app:// + web_package::SignedWebBundleId\n\nFile installation mode:\nThe installUrlOrBundleUrl can be either file:// or http(s):// pointing\nto a signed web bundle (.swbn). In this case SignedWebBundleId must correspond to\nThe .swbn file's signing key.\n\nDev proxy installation mode:\ninstallUrlOrBundleUrl must be http(s):// that serves dev mode IWA.\nweb_package::SignedWebBundleId must be of type dev proxy.\n\nThe advantage of dev proxy mode is that all changes to IWA\nautomatically will be reflected in the running app without\nreinstallation.\n\nTo generate bundle id for proxy mode:\n1. Generate 32 random bytes.\n2. Add a specific suffix at the end following the documentation\n   https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix\n3. Encode the entire sequence using Base32 without padding.\n\nIf Chrome is not in IWA dev\nmode, the installation will fail, regardless of the state of the allowlist.",
                     "parameters": [
                         {
                             "name": "manifestId",
@@ -20355,6 +20415,7 @@
                         "digital-credentials-create",
                         "digital-credentials-get",
                         "direct-sockets",
+                        "direct-sockets-multicast",
                         "direct-sockets-private",
                         "display-capture",
                         "document-domain",
@@ -21729,9 +21790,9 @@
                         "IndexedDBEvent",
                         "Dummy",
                         "JsNetworkRequestReceivedCacheControlNoStoreResource",
-                        "WebRTCSticky",
-                        "WebTransportSticky",
-                        "WebSocketSticky",
+                        "WebRTCUsedWithCCNS",
+                        "WebTransportUsedWithCCNS",
+                        "WebSocketUsedWithCCNS",
                         "SmartCard",
                         "LiveMediaStreamTrack",
                         "UnloadHandler",
@@ -23999,6 +24060,12 @@
                             "name": "errorMessage",
                             "description": "TODO(https://crbug.com/1425354): Replace this property with structured error.",
                             "deprecated": true,
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "tag",
+                            "description": "For more details, see:\nhttps://github.com/WICG/nav-speculation/blob/main/speculation-rules-tags.md",
                             "optional": true,
                             "type": "string"
                         }

@@ -33,6 +33,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import type * as NetworkTimeCalculator from '../../../../models/network_time_calculator/network_time_calculator.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
@@ -43,7 +44,7 @@ import {drawExpansionArrow, drawIcon, horizontalLine} from './CanvasHelper.js';
 import {ChartViewport, type ChartViewportDelegate} from './ChartViewport.js';
 import flameChartStyles from './flameChart.css.js';
 import {DEFAULT_FONT_SIZE, getFontFamilyForCanvas} from './Font.js';
-import {type Calculator, TimelineGrid} from './TimelineGrid.js';
+import {TimelineGrid} from './TimelineGrid.js';
 
 /**
  * Set as the `details` value on the fake context menu event we dispatch to
@@ -256,7 +257,7 @@ export type DrawOverride =
      timeToPosition: (time: number) => number, transformColor: (color: string) => string) => PositionOverride;
 
 export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
-    implements Calculator, ChartViewportDelegate {
+    implements NetworkTimeCalculator.Calculator, ChartViewportDelegate {
   private readonly flameChartDelegate: FlameChartDelegate;
   private chartViewport: ChartViewport;
   private dataProvider: FlameChartDataProvider;
@@ -300,7 +301,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private dragStartX!: number;
   private dragStartY!: number;
   private lastMouseOffsetY!: number;
-  private minimumBoundaryInternal!: number;
+  #minimumBoundary!: number;
   private maxDragOffset!: number;
   private timelineLevels?: number[][]|null;
   private visibleLevelOffsets?: Uint32Array|null;
@@ -4022,8 +4023,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   private updateBoundaries(): void {
     this.totalTime = this.dataProvider.totalTime();
-    this.minimumBoundaryInternal = this.dataProvider.minimumBoundary();
-    this.chartViewport.setBoundaries(this.minimumBoundaryInternal, this.totalTime);
+    this.#minimumBoundary = this.dataProvider.minimumBoundary();
+    this.chartViewport.setBoundaries(this.#minimumBoundary, this.totalTime);
   }
 
   private updateHeight(): void {

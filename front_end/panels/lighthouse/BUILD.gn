@@ -1,4 +1,4 @@
-# Copyright 2020 The Chromium Authors. All rights reserved.
+# Copyright 2020 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -38,11 +38,12 @@ devtools_module("lighthouse") {
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../models/geometry:bundle",
     "../../models/text_utils:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../panels/emulation:bundle",
-    "../../third_party/lighthouse/report:report",
+    "../../third_party/lighthouse/report",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
   ]

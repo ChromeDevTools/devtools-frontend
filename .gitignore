@@ -11,6 +11,7 @@
 *.vcproj*
 *.vcxproj*
 *.xcodeproj*
+/GEMINI.md
 /.dev_profile
 /.test_cache
 /front_end/protocol_externs.js

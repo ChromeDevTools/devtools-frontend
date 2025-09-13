@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -51,9 +51,9 @@ describeWithEnvironment('DocumentLatency', function() {
     traceEvents[mainRequestEventIndex] = mainRequestEvent;
 
     await processor.parse(traceEvents, {isCPUProfile: false, isFreshRecording: true});
-    const data = processor.parsedTrace;
+    const data = processor.data;
     if (!data) {
-      throw new Error('missing parsedTrace');
+      throw new Error('missing data');
     }
 
     const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
@@ -85,9 +85,9 @@ describeWithEnvironment('DocumentLatency', function() {
     traceEvents[mainRequestEventIndex] = mainRequestEvent;
 
     await processor.parse(traceEvents, {isCPUProfile: false, isFreshRecording: true});
-    const data = processor.parsedTrace;
+    const data = processor.data;
     if (!data) {
-      throw new Error('missing parsedTrace');
+      throw new Error('missing data');
     }
 
     const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());

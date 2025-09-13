@@ -1,10 +1,8 @@
-// Copyright (c) 2015 The Chromium Authors. All rights reserved.
+// Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Protocol from '../../generated/protocol.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CategorizedBreakpointsSidebarPane} from './CategorizedBreakpointsSidebarPane.js';
@@ -13,8 +11,9 @@ export class CSPViolationBreakpointsSidebarPane extends CategorizedBreakpointsSi
   constructor() {
     const breakpoints: SDK.DOMDebuggerModel.CSPViolationBreakpoint[] =
         SDK.DOMDebuggerModel.DOMDebuggerManager.instance().cspViolationBreakpoints();
-    super(breakpoints, 'sources.csp-violation-breakpoints', Protocol.Debugger.PausedEventReason.CSPViolation);
-    this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.csp-violation-breakpoints')}`);
+    super(
+        breakpoints, `${VisualLogging.section('sources.csp-violation-breakpoints')}`,
+        'sources.csp-violation-breakpoints');
   }
 
   protected override getBreakpointFromPausedDetails(details: SDK.DebuggerModel.DebuggerPausedDetails):
@@ -25,9 +24,9 @@ export class CSPViolationBreakpointsSidebarPane extends CategorizedBreakpointsSi
     return breakpoint ? breakpoint : null;
   }
 
-  protected override toggleBreakpoint(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint, enabled: boolean):
+  protected override onBreakpointChanged(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint, enabled: boolean):
       void {
-    breakpoint.setEnabled(enabled);
+    super.onBreakpointChanged(breakpoint, enabled);
     SDK.DOMDebuggerModel.DOMDebuggerManager.instance().updateCSPViolationBreakpoints();
   }
 }

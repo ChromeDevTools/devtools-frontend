@@ -37,7 +37,7 @@ describeWithEnvironment('Common', function() {
       return {insightSet, metadata: clonedMetadata};
     }
 
-    it('returns default weights when there is no field data', async () => {
+    it('returns default weights when there is no field data', async function() {
       const {insightSet, metadata} = await process(this, 'image-delivery.json.gz');
 
       // No field data defaults to even split of weights.
@@ -50,7 +50,7 @@ describeWithEnvironment('Common', function() {
       assert.deepEqual(weights, {lcp: 1 / 3, inp: 1 / 3, cls: 1 / 3});
     });
 
-    it('returns weights based on field data', async () => {
+    it('returns weights based on field data', async function() {
       const {insightSet, metadata} = await process(this, 'image-delivery.json.gz');
 
       const weights = calculateMetricWeightsForSorting(insightSet, metadata);

@@ -324,7 +324,7 @@ describeWithEnvironment('Cache', function() {
     });
   });
 
-  it('identifies HTTP/1.1 requests in a real trace', async () => {
+  it('identifies HTTP/1.1 requests in a real trace', async function() {
     const {data, insights} = await processTrace(this, 'http1.1.json.gz');
     const insight =
         getInsightOrError('ModernHTTP', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));

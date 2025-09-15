@@ -7,7 +7,7 @@ import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing
 import type * as Trace from '../trace.js';
 
 describeWithEnvironment('LegacyJavaScript', function() {
-  it('has no results when savings are too small', async () => {
+  it('has no results when savings are too small', async function() {
     const {data, insights} = await processTrace(this, 'dupe-js.json.gz');
     assert.strictEqual(insights.size, 1);
     const insight =

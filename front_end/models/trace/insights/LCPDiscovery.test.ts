@@ -6,7 +6,7 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
 
 describeWithEnvironment('LCPDiscovery', function() {
-  it('calculates image lcp attributes', async () => {
+  it('calculates image lcp attributes', async function() {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
     const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
@@ -18,7 +18,7 @@ describeWithEnvironment('LCPDiscovery', function() {
     assert.isTrue(checklist.eagerlyLoaded.value);
   });
 
-  it('uses the fetchpriority=high text when the image has fetchpriority set', async () => {
+  it('uses the fetchpriority=high text when the image has fetchpriority set', async function() {
     const {data, insights} = await processTrace(this, 'lcp-fetchpriority-high.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
     const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
@@ -27,7 +27,7 @@ describeWithEnvironment('LCPDiscovery', function() {
     assert.strictEqual(insight.checklist.priorityHinted.label, 'fetchpriority=high applied');
   });
 
-  it('uses the should apply fetchpriority=high text when the image does not fetchpriority set', async () => {
+  it('uses the should apply fetchpriority=high text when the image does not fetchpriority set', async function() {
     const {data, insights} = await processTrace(this, 'web-dev-with-commit.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
     const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
@@ -36,7 +36,7 @@ describeWithEnvironment('LCPDiscovery', function() {
     assert.strictEqual(insight.checklist.priorityHinted.label, 'fetchpriority=high should be applied');
   });
 
-  it('calculates the LCP optimal time as the document request download start time', async () => {
+  it('calculates the LCP optimal time as the document request download start time', async function() {
     const {data, insights} = await processTrace(this, 'web-dev-with-commit.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
     const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
@@ -48,7 +48,7 @@ describeWithEnvironment('LCPDiscovery', function() {
   });
 
   describe('warnings', function() {
-    it('warns when there is no lcp', async () => {
+    it('warns when there is no lcp', async function() {
       const {data, insights} = await processTrace(this, 'user-timings.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
@@ -56,7 +56,7 @@ describeWithEnvironment('LCPDiscovery', function() {
       assert.strictEqual(insight.warnings?.[0], 'NO_LCP');
     });
 
-    it('no main document url', async () => {
+    it('no main document url', async function() {
       const {data, insights} = await processTrace(this, 'about-blank-first.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPDiscovery', insights, firstNav);

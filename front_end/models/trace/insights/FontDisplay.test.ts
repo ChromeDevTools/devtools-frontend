@@ -7,7 +7,7 @@ import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing
 import type * as Types from '../types/types.js';
 
 describeWithEnvironment('FontDisplay', function() {
-  it('finds no requests for remote fonts', async () => {
+  it('finds no requests for remote fonts', async function() {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
     assert.strictEqual(insights.size, 1);
     const insight =
@@ -16,7 +16,7 @@ describeWithEnvironment('FontDisplay', function() {
     assert.lengthOf(insight.fonts, 0);
   });
 
-  it('finds requests for remote fonts', async () => {
+  it('finds requests for remote fonts', async function() {
     const {data, insights} = await processTrace(this, 'font-display.json.gz');
     assert.strictEqual(insights.size, 1);
     const insight =

@@ -8,7 +8,7 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 describeWithEnvironment('DuplicatedJavaScript', function() {
-  it('works (external source maps)', async () => {
+  it('works (external source maps)', async function() {
     const {data, insights} = await processTrace(this, 'dupe-js.json.gz');
     assert.strictEqual(insights.size, 1);
     const insight = getInsightOrError(

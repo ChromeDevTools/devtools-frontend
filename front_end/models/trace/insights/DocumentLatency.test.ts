@@ -18,7 +18,7 @@ describeWithEnvironment('DocumentLatency', function() {
     error: ['Error: missing metric scores for specified navigation'],
   });
 
-  it('reports savings for main document with redirects', async () => {
+  it('reports savings for main document with redirects', async function() {
     const {data, insights} = await processTrace(this, 'lantern/redirect/trace.json.gz');
     const insight =
         getInsightOrError('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
@@ -26,7 +26,7 @@ describeWithEnvironment('DocumentLatency', function() {
     assert.deepEqual(insight.metricSavings, {FCP: 1779, LCP: 1779} as Trace.Insights.Types.MetricSavings);
   });
 
-  it('reports no savings for server with fast server response time', async () => {
+  it('reports no savings for server with fast server response time', async function() {
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
     const insight =
         getInsightOrError('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
@@ -64,7 +64,7 @@ describeWithEnvironment('DocumentLatency', function() {
     assert.deepEqual(insight.metricSavings, {FCP: 943, LCP: 943} as Trace.Insights.Types.MetricSavings);
   });
 
-  it('reports no compression savings for compressed text', async () => {
+  it('reports no compression savings for compressed text', async function() {
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
     const insight =
         getInsightOrError('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
@@ -97,7 +97,7 @@ describeWithEnvironment('DocumentLatency', function() {
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0} as Trace.Insights.Types.MetricSavings);
   });
 
-  it('reports savings for main document with many issues, many redirects', async () => {
+  it('reports savings for main document with many issues, many redirects', async function() {
     const {data, insights} = await processTrace(this, 'many-redirects.json.gz');
     const insight =
         getInsightOrError('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));

@@ -20,10 +20,6 @@ import styles from './gdpSignUpDialog.css.js';
 
 const UIStrings = {
   /**
-   * @description Heading of the Google Developer Program sign up dialog.
-   */
-  gdpSignUp: 'Google Developer Program',
-  /**
    * @description Aria label for the Google Developer Program sign up dialog
    */
   gdpDialogAriaLabel: 'Google Developer Program sign up dialog',
@@ -110,7 +106,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
   render(
     html`
       <style>${styles}</style>
-      <h2 class="gdp-sign-up-dialog-header">${i18nString(UIStrings.gdpSignUp)}</h2>
+      <div class="gdp-sign-up-dialog-header"></div>
       <div class="main-content">
         <div class="section">
           <div class="icon-container">

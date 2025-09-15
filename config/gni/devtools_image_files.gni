@@ -18,6 +18,8 @@ devtools_image_files = [
   "toolbarResizerVertical.png",
   "touchCursor_2x.png",
   "touchCursor.png",
+  "gdp-logo-light.png",
+  "gdp-logo-dark.png",
 ]
 
 devtools_svg_sources = [
@@ -166,7 +168,6 @@ devtools_svg_sources = [
   "frame-crossed.svg",
   "frame-icon.svg",
   "frame.svg",
-  "gdp-logo-standalone.svg",
   "gear-filled.svg",
   "gear.svg",
   "gears.svg",

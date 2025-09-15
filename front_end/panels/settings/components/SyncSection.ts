@@ -88,7 +88,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/components/SyncSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const lockedString = i18n.i18n.lockedString;
 
 const {html, Directives: {ref, createRef}} = Lit;
 
@@ -111,8 +110,6 @@ function getGdpSubscriptionText(profile: Host.GdpClient.Profile): Platform.UIStr
       return i18nString(UIStrings.gdpUnknownSubscription);
   }
 }
-
-const GDP_LOGO_IMAGE_URL = new URL('../../../Images/gdp-logo-standalone.svg', import.meta.url).toString();
 
 export interface SyncSectionData {
   syncInfo: Host.InspectorFrontendHostAPI.SyncInformation;
@@ -237,7 +234,7 @@ function renderAccountInfo(syncInfo: Host.InspectorFrontendHostAPI.SyncInformati
   // clang-format off
   return html`
     <div class="account-info">
-      <img src="data:image/png;base64, ${syncInfo.accountImage}" alt="Account avatar" />
+      <img class="account-avatar" src="data:image/png;base64, ${syncInfo.accountImage}" alt="Account avatar" />
       <div class="account-email">
         <span>${i18nString(UIStrings.signedIn)}</span>
         <span>${syncInfo.accountEmail}</span>
@@ -263,8 +260,7 @@ function renderGdpSectionIfNeeded({
   function renderBrand(): Lit.LitTemplate {
     return html`
       <div class="gdp-profile-header">
-        <img src=${GDP_LOGO_IMAGE_URL} class="gdp-logo" alt="Google Developer Program">
-        ${lockedString('Google Developer Program')}
+        <div class="gdp-logo" role="img" aria-label="Google Developer Program"></div>
       </div>
     `;
   }

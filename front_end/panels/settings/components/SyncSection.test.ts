@@ -174,10 +174,6 @@ describeWithLocale('SyncSection', () => {
       const signUpButton = gdpSection.querySelector('devtools-button');
       assert.instanceOf(signUpButton, HTMLElement);
       assert.strictEqual(signUpButton.innerText, 'Sign up');
-
-      const brandHeader = gdpSection.querySelector('.gdp-profile-header');
-      assert.instanceOf(brandHeader, HTMLElement);
-      assert.include(brandHeader.innerText, 'Google Developer Program');
     });
 
     it('renders the profile details with standard plan', async () => {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as CrUXManager from '../../crux-manager/crux-manager.js';
 import * as Trace from '../../trace/trace.js';
 import type {AICallTree} from '../performance/AICallTree.js';
 import type {AgentFocus} from '../performance/AIContext.js';
@@ -47,7 +48,7 @@ export class PerformanceTraceFormatter {
     parts.push('CPU throttling: ' + (traceMetadata.cpuThrottling ? `${traceMetadata.cpuThrottling}x` : 'none'));
     parts.push(`Network throttling: ${traceMetadata.networkThrottling ?? 'none'}`);
     if (lcp || cls || inp) {
-      parts.push('Metrics:');
+      parts.push('Metrics (lab / observed):');
       if (lcp) {
         parts.push(`  - LCP: ${Math.round(lcp.value / 1000)} ms, event: ${this.serializeEvent(lcp.event)}`);
         const subparts = insightSet?.model.LCPBreakdown.subparts;
@@ -55,6 +56,7 @@ export class PerformanceTraceFormatter {
           const serializeSubpart = (subpart: Trace.Insights.Models.LCPBreakdown.Subpart): string => {
             return `${micros(subpart.range)}, bounds: ${this.serializeBounds(subpart)}`;
           };
+          parts.push('  - LCP breakdown:');
           parts.push(`    - TTFB: ${serializeSubpart(subparts.ttfb)}`);
           if (subparts.loadDelay !== undefined) {
             parts.push(`    - Load delay: ${serializeSubpart(subparts.loadDelay)}`);
@@ -73,7 +75,69 @@ export class PerformanceTraceFormatter {
         parts.push(`  - CLS: ${cls.value.toFixed(2)}${eventText}`);
       }
     } else {
-      parts.push('Metrics: n/a');
+      parts.push('Metrics (lab / observed): n/a');
+    }
+
+    const fieldMetrics = insightSet &&
+        Trace.Insights.Common.getFieldMetricsForInsightSet(
+            insightSet, traceMetadata, CrUXManager.CrUXManager.instance().getSelectedScope());
+    const fieldLcp = fieldMetrics?.lcp;
+    const fieldInp = fieldMetrics?.inp;
+    const fieldCls = fieldMetrics?.cls;
+
+    if (fieldLcp || fieldInp || fieldCls) {
+      parts.push('Metrics (field / real users):');
+
+      const serializeFieldMetricTimingResult =
+          (fieldMetric: Trace.Insights.Common.CrUXFieldMetricTimingResult): string => {
+            return `${Math.round(fieldMetric.value / 1000)} ms (scope: ${fieldMetric.pageScope})`;
+          };
+
+      const serializeFieldMetricNumberResult =
+          (fieldMetric: Trace.Insights.Common.CrUXFieldMetricNumberResult): string => {
+            return `${fieldMetric.value.toFixed(2)} (scope: ${fieldMetric.pageScope})`;
+          };
+
+      if (fieldLcp) {
+        parts.push(`  - LCP: ${serializeFieldMetricTimingResult(fieldLcp)}`);
+
+        const fieldLcpBreakdown = fieldMetrics?.lcpBreakdown;
+        if (fieldLcpBreakdown &&
+            (fieldLcpBreakdown.ttfb || fieldLcpBreakdown.loadDelay || fieldLcpBreakdown.loadDuration ||
+             fieldLcpBreakdown.renderDelay)) {
+          parts.push('  - LCP breakdown:');
+          if (fieldLcpBreakdown.ttfb) {
+            parts.push(`    - TTFB: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.ttfb)}`);
+          }
+          if (fieldLcpBreakdown.loadDelay) {
+            parts.push(`    - Load delay: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.loadDelay)}`);
+          }
+          if (fieldLcpBreakdown.loadDuration) {
+            parts.push(`    - Load duration: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.loadDuration)}`);
+          }
+          if (fieldLcpBreakdown.renderDelay) {
+            parts.push(`    - Render delay: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.renderDelay)}`);
+          }
+        }
+      }
+      if (fieldInp) {
+        parts.push(`  - INP: ${serializeFieldMetricTimingResult(fieldInp)}`);
+      }
+      if (fieldCls) {
+        parts.push(`  - CLS: ${serializeFieldMetricNumberResult(fieldCls)}`);
+      }
+
+      parts.push(
+          '  - The above data is from CrUX–Chrome User Experience Report. It\'s how the page performs for real users.');
+      parts.push('  - The values shown above are the p75 measure of all real Chrome users');
+      parts.push('  - The scope indicates if the data came from the entire origin, or a specific url');
+      parts.push(
+          '  - Lab metrics describe how this specific page load performed, while field metrics are an aggregation ' +
+          'of results from real-world users. Best practice is to prioritize metrics that are bad in field data. ' +
+          'Lab metrics may be better or worse than fields metrics depending on the developer\'s machine, network, or the ' +
+          'actions performed while tracing.');
+    } else {
+      parts.push('Metrics (field / real users): n/a – no data for this page in CrUX');
     }
 
     if (insightSet) {

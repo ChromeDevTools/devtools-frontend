@@ -41,6 +41,13 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
       const output = formatter.formatTraceSummary();
       snapshotTester.assert(this, output);
     });
+
+    // This one has field data.
+    it('image-delivery.json.gz', async function() {
+      const {formatter} = await createFormatter(this, 'image-delivery.json.gz');
+      const output = formatter.formatTraceSummary();
+      snapshotTester.assert(this, output);
+    });
   });
 
   it('formatCriticalRequests', async function() {

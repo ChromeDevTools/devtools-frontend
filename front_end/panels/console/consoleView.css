@@ -325,12 +325,22 @@
 .console-view-object-properties-section {
   padding: 0;
   position: relative;
-  vertical-align: top;
   color: inherit;
   display: inline-block;
   overflow-wrap: break-word;
   max-width: 100%;
+  vertical-align: top;
   margin-top: -1.5px;
+}
+
+/* Console content is rendered in "Noto Sans Mono" on Linux, which has a
+ * different actual line-height than the fonts used on Windows or MacOS.
+ * "vertical-align: middle" breaks the layout when expanding an object such
+ * that it spans multiple lines. We therefore align to the top, and use a
+ * different "margin-top" on Linux to compensate for the line-height difference.
+ */
+.platform-linux .console-view-object-properties-section {
+  margin-top: 0;
 }
 
 .info-note {

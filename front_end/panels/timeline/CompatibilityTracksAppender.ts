@@ -81,6 +81,10 @@ export function entryIsVisibleInTimeline(
   return (eventStyle && !eventStyle.hidden) || eventIsTiming;
 }
 
+// These threads have no useful information. Omit them from the UI.
+const HIDDEN_THREAD_NAMES: ReadonlySet<string> =
+    new Set(['Chrome_ChildIOThread', 'Compositor', 'GpuMemoryThread', 'PerfettoTrace']);
+
 /**
  * Track appenders add the data of each track into the timeline flame
  * chart. Each track appender also implements functions tha allow the
@@ -330,8 +334,7 @@ export class CompatibilityTracksAppender {
             this, this.#parsedTrace, pid, tid, name, Trace.Handlers.Threads.ThreadType.OTHER, entries, tree));
         continue;
       }
-      // These threads have no useful information. Omit them
-      if ((name === 'Chrome_ChildIOThread' || name === 'Compositor' || name === 'GpuMemoryThread') && !showAllEvents) {
+      if ((name && HIDDEN_THREAD_NAMES.has(name)) && !showAllEvents) {
         continue;
       }
 

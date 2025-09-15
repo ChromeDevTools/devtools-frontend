@@ -226,4 +226,13 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
     const groupForLevel1 = tracksAppender.groupForLevel(1);
     assert.strictEqual(groupForLevel1?.name, 'Main — https://web.dev/');
   });
+
+  it('does not create threads for PerfettoTrace tracks', async () => {
+    await initTrackAppender(this, 'perfettotrace-track.json.gz');
+    const threads = tracksAppender.threadAppenders();
+    const perfettoTraceThreads = threads.filter(thread => {
+      return thread.trackName() === 'PerfettoTrace';
+    });
+    assert.lengthOf(perfettoTraceThreads, 0);
+  });
 });

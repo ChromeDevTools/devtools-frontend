@@ -339,3 +339,7 @@ A trace of web.dev recorded in May 2025. Done because it contains performance ti
 
 A trace with generated with a simple html page that has three `<link rel=preconnect>`, and with
 HTTP [Link](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Link) header (by Header override)
+
+### perfettotrace-track
+
+A trace with a "PerfettoTrack" in the trace, which is a new track we want to filter out on the frontnend.

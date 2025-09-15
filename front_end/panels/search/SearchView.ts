@@ -108,7 +108,125 @@ const str_ = i18n.i18n.registerUIStrings('panels/search/SearchView.ts', UIString
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {ref} = Directives;
 
+interface SearchViewInput {
+  matchCase: boolean;
+  isRegex: boolean;
+  searchMessage: string;
+  searchResultsMessage: string;
+  onQueryKeyDown: (evt: KeyboardEvent) => void;
+  onPanelKeyDown: (evt: KeyboardEvent) => void;
+  onClearSearchInput: () => void;
+  onToggleRegex: () => void;
+  onToggleMatchCase: () => void;
+  onRefresh: () => void;
+  onClearSearch: () => void;
+}
+
+interface SearchViewOutput {
+  searchInputElement?: HTMLInputElement;
+  searchResultsElement?: HTMLElement;
+  searchProgressPlaceholderElement?: HTMLElement;
+  matchCaseButton?: Buttons.Button.Button;
+  regexButton?: Buttons.Button.Button;
+}
+
+type View = (input: SearchViewInput, output: SearchViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const {
+    matchCase,
+    isRegex,
+    searchMessage,
+    searchResultsMessage,
+    onQueryKeyDown,
+    onPanelKeyDown,
+    onClearSearchInput,
+    onToggleRegex,
+    onToggleMatchCase,
+    onRefresh,
+    onClearSearch,
+  } = input;
+  // clang-format off
+  render(html`
+      <style>${searchViewStyles}</style>
+      <div class="search-drawer-header" @keydown=${onPanelKeyDown}>
+        <div class="search-container">
+          <div class="toolbar-item-search">
+            <devtools-icon name="search"></devtools-icon>
+            <input type="text"
+                class="search-toolbar-input"
+                placeholder=${i18nString(UIStrings.find)}
+                jslog=${VisualLogging.textField().track({
+                    change: true, keydown: 'ArrowUp|ArrowDown|Enter'})}
+                aria-label=${i18nString(UIStrings.find)}
+                size="100" results="0"
+                @keydown=${onQueryKeyDown}
+                ${ref(e => {output.searchInputElement = e as HTMLInputElement;})}>
+            <devtools-button class="clear-button" tabindex="-1"
+                @click=${onClearSearchInput}
+                .data=${{
+                  variant: Buttons.Button.Variant.ICON,
+                  iconName: 'cross-circle-filled',
+                  jslogContext: 'clear-input',
+                  size: Buttons.Button.Size.SMALL,
+                  title: i18nString(UIStrings.clearInput),
+                } as Buttons.Button.ButtonData}
+            ></devtools-button>
+            <devtools-button @click=${onToggleRegex} .data=${{
+                variant: Buttons.Button.Variant.ICON_TOGGLE,
+                iconName: 'regular-expression',
+                toggledIconName: 'regular-expression',
+                toggleType: Buttons.Button.ToggleType.PRIMARY,
+                size: Buttons.Button.Size.SMALL,
+                toggled: isRegex,
+                title: isRegex ? i18nString(UIStrings.disableRegularExpression) : i18nString(UIStrings.enableRegularExpression),
+                jslogContext: 'regular-expression',
+              } as Buttons.Button.ButtonData}
+              ${ref(e => {output.regexButton = e as Buttons.Button.Button;})}
+            ></devtools-button>
+            <devtools-button @click=${onToggleMatchCase} .data=${{
+                variant: Buttons.Button.Variant.ICON_TOGGLE,
+                iconName: 'match-case',
+                toggledIconName: 'match-case',
+                toggleType: Buttons.Button.ToggleType.PRIMARY,
+                size: Buttons.Button.Size.SMALL,
+                toggled: matchCase,
+                title: matchCase ? i18nString(UIStrings.disableCaseSensitive) : i18nString(UIStrings.enableCaseSensitive),
+                jslogContext: 'match-case',
+              } as Buttons.Button.ButtonData}
+              ${ref(e => {output.matchCaseButton = e as Buttons.Button.Button;})}
+            ></devtools-button>
+          </div>
+        </div>
+        <devtools-toolbar class="search-toolbar" jslog=${VisualLogging.toolbar()}>
+          <devtools-button title=${i18nString(UIStrings.refresh)} @click=${onRefresh}
+              .data=${{
+                variant: Buttons.Button.Variant.TOOLBAR,
+                iconName: 'refresh',
+                jslogContext: 'search.refresh',
+              } as Buttons.Button.ButtonData}></devtools-button>
+          <devtools-button title=${i18nString(UIStrings.clear)} @click=${onClearSearch}
+              .data=${{
+                variant: Buttons.Button.Variant.TOOLBAR,
+                iconName: 'clear',
+                jslogContext: 'search.clear',
+              } as Buttons.Button.ButtonData}></devtools-button>
+        </devtools-toolbar>
+      </div>
+      <div class="search-results" @keydown=${onPanelKeyDown}
+           ${ref(e => {output.searchResultsElement = e as HTMLElement;})}>
+      </div>
+      <div class="search-toolbar-summary" @keydown=${onPanelKeyDown}>
+        <div class="search-message">${searchMessage}</div>
+        <div class="flex-centered" ${ref(e => {output.searchProgressPlaceholderElement = e as HTMLElement;})}>
+        </div>
+        <div class="search-message">${searchResultsMessage}</div>
+      </div>`, target);
+  // clang-format on
+};
+
 export class SearchView extends UI.Widget.VBox {
+  readonly #view: View;
   #focusOnShow: boolean;
   #isIndexing: boolean;
   #searchId: number;
@@ -124,11 +242,13 @@ export class SearchView extends UI.Widget.VBox {
   #visiblePane: UI.Widget.Widget|null;
   #searchResultsElement!: HTMLElement;
   #searchInputElement!: HTMLInputElement;
+  #matchCase = false;
   #matchCaseButton!: Buttons.Button.Button;
+  #isRegex = false;
   #regexButton!: Buttons.Button.Button;
-  #searchMessageElement!: HTMLElement;
+  #searchMessage = '';
   #searchProgressPlaceholderElement!: HTMLElement;
-  #searchResultsMessageElement!: HTMLElement;
+  #searchResultsMessage = '';
   readonly #advancedSearchConfig: Common.Settings.Setting<{
     query: string,
     ignoreCase: boolean,
@@ -142,11 +262,12 @@ export class SearchView extends UI.Widget.VBox {
   #pendingSearchResults: SearchResult[] = [];
   #emptyStartView: UI.EmptyWidget.EmptyWidget;
 
-  constructor(settingKey: string, throttler: Common.Throttler.Throttler) {
+  constructor(settingKey: string, throttler: Common.Throttler.Throttler, view = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.panel('search').track({resize: true})}`,
       useShadowDom: true,
     });
+    this.#view = view;
     this.setMinimumSize(0, 40);
 
     this.#focusOnShow = false;
@@ -164,90 +285,12 @@ export class SearchView extends UI.Widget.VBox {
     this.#visiblePane = null;
     this.#throttler = throttler;
 
-    // clang-format off
-    /* eslint-disable-next-line rulesdir/no-lit-render-outside-of-view */
-    render(html`
-      <style>${searchViewStyles}</style>
-      <div class="search-drawer-header" @keydown=${this.#onPanelKeyDown}>
-        <div class="search-container">
-          <div class="toolbar-item-search">
-            <devtools-icon name="search"></devtools-icon>
-            <input type="text"
-                class="search-toolbar-input"
-                placeholder=${i18nString(UIStrings.find)}
-                jslog=${VisualLogging.textField().track({
-                    change: true, keydown: 'ArrowUp|ArrowDown|Enter'})}
-                aria-label=${i18nString(UIStrings.find)}
-                size="100" results="0"
-                @keydown=${this.#onQueryKeyDown}
-                ${ref(e => {this.#searchInputElement = e as HTMLInputElement;})}>
-            <devtools-button class="clear-button" tabindex="-1"
-                @click=${this.#onClearSearchInput}
-                .data=${{
-                  variant: Buttons.Button.Variant.ICON,
-                  iconName: 'cross-circle-filled',
-                  jslogContext: 'clear-input',
-                  size: Buttons.Button.Size.SMALL,
-                  title: i18nString(UIStrings.clearInput),
-                } as Buttons.Button.ButtonData}
-            ></devtools-button>
-            <devtools-button @click=${this.#onToggleRegex} .data=${{
-                variant: Buttons.Button.Variant.ICON_TOGGLE,
-                iconName: 'regular-expression',
-                toggledIconName: 'regular-expression',
-                toggleType: Buttons.Button.ToggleType.PRIMARY,
-                size: Buttons.Button.Size.SMALL,
-                toggled: false,
-                title: i18nString(UIStrings.enableRegularExpression),
-                jslogContext: 'regular-expression',
-              } as Buttons.Button.ButtonData}
-              ${ref(e => {this.#regexButton = e as Buttons.Button.Button;})}
-            ></devtools-button>
-            <devtools-button @click=${this.#onToggleMatchCase} .data=${{
-                variant: Buttons.Button.Variant.ICON_TOGGLE,
-                iconName: 'match-case',
-                toggledIconName: 'match-case',
-                toggleType: Buttons.Button.ToggleType.PRIMARY,
-                size: Buttons.Button.Size.SMALL,
-                toggled: false,
-                title: i18nString(UIStrings.enableCaseSensitive),
-                jslogContext: 'match-case',
-              } as Buttons.Button.ButtonData}
-              ${ref(e => {this.#matchCaseButton = e as Buttons.Button.Button;})}
-            ></devtools-button>
-          </div>
-        </div>
-        <devtools-toolbar class="search-toolbar" jslog=${VisualLogging.toolbar()}>
-          <devtools-button title=${i18nString(UIStrings.refresh)} @click=${this.#onRefresh}
-              .data=${{
-                variant: Buttons.Button.Variant.TOOLBAR,
-                iconName: 'refresh',
-                jslogContext: 'search.refresh',
-              } as Buttons.Button.ButtonData}></devtools-button>
-          <devtools-button title=${i18nString(UIStrings.clear)} @click=${this.#onClearSearch}
-              .data=${{
-                variant: Buttons.Button.Variant.TOOLBAR,
-                iconName: 'clear',
-                jslogContext: 'search.clear',
-              } as Buttons.Button.ButtonData}></devtools-button>
-        </devtools-toolbar>
-      </div>
-      <div class="search-results" @keydown=${this.#onPanelKeyDown}
-           ${ref(e => {this.#searchResultsElement = e as HTMLElement;})}>
-      </div>
-      <div class="search-toolbar-summary" @keydown=${this.#onPanelKeyDown}>
-        <div class="search-message" ${ref(e => {this.#searchMessageElement = e as HTMLElement;})}></div>
-        <div class="flex-centered" ${ref(e => {this.#searchProgressPlaceholderElement = e as HTMLElement;})}>
-        </div>
-        <div class="search-message" ${ref(e => {this.#searchResultsMessageElement = e as HTMLElement;})}>
-        </div>
-      </div>`, this.contentElement, {host: this});
-    // clang-format on
-
     this.#advancedSearchConfig = Common.Settings.Settings.instance().createLocalSetting(
         settingKey + '-search-config', new Workspace.SearchConfig.SearchConfig('', true, false).toPlainObject());
 
+    this.performUpdate();
     this.#load();
+    this.performUpdate();
     this.#searchScope = null;
 
     this.#emptyStartView = new UI.EmptyWidget.EmptyWidget(
@@ -257,19 +300,51 @@ export class SearchView extends UI.Widget.VBox {
     this.#showPane(this.#emptyStartView);
   }
 
+  override performUpdate(): void {
+    const input: SearchViewInput = {
+      matchCase: this.#matchCase,
+      isRegex: this.#isRegex,
+      searchMessage: this.#searchMessage,
+      searchResultsMessage: this.#searchResultsMessage,
+      onQueryKeyDown: this.#onQueryKeyDown.bind(this),
+      onPanelKeyDown: this.#onPanelKeyDown.bind(this),
+      onClearSearchInput: this.#onClearSearchInput.bind(this),
+      onToggleRegex: this.#onToggleRegex.bind(this),
+      onToggleMatchCase: this.#onToggleMatchCase.bind(this),
+      onRefresh: this.#onRefresh.bind(this),
+      onClearSearch: this.#onClearSearch.bind(this),
+    };
+    const output: SearchViewOutput = {};
+    this.#view(input, output, this.contentElement);
+    if (output.searchInputElement) {
+      this.#searchInputElement = output.searchInputElement;
+    }
+    if (output.searchResultsElement) {
+      this.#searchResultsElement = output.searchResultsElement;
+    }
+    if (output.searchProgressPlaceholderElement) {
+      this.#searchProgressPlaceholderElement = output.searchProgressPlaceholderElement;
+    }
+    if (output.matchCaseButton) {
+      this.#matchCaseButton = output.matchCaseButton;
+    }
+    if (output.regexButton) {
+      this.#regexButton = output.regexButton;
+    }
+  }
+
   #onToggleRegex(): void {
-    this.#regexButton.title = this.#regexButton.toggled ? i18nString(UIStrings.disableRegularExpression) :
-                                                          i18nString(UIStrings.enableRegularExpression);
+    this.#isRegex = !this.#isRegex;
+    this.performUpdate();
   }
 
   #onToggleMatchCase(): void {
-    this.#matchCaseButton.title = this.#matchCaseButton.toggled ? i18nString(UIStrings.disableCaseSensitive) :
-                                                                  i18nString(UIStrings.enableCaseSensitive);
+    this.#matchCase = !this.#matchCase;
+    this.performUpdate();
   }
 
   #buildSearchConfig(): Workspace.SearchConfig.SearchConfig {
-    return new Workspace.SearchConfig.SearchConfig(
-        this.#searchInputElement.value, !this.#matchCaseButton.toggled, this.#regexButton.toggled);
+    return new Workspace.SearchConfig.SearchConfig(this.#searchInputElement.value, !this.#matchCase, this.#isRegex);
   }
 
   toggle(queryCandidate: string, searchImmediately?: boolean): void {
@@ -313,10 +388,11 @@ export class SearchView extends UI.Widget.VBox {
     this.#progressIndicator.done();
     this.#progressIndicator = null;
     this.#isIndexing = false;
-    this.#searchMessageElement.textContent = finished ? '' : i18nString(UIStrings.indexingInterrupted);
+    this.#searchMessage = finished ? '' : i18nString(UIStrings.indexingInterrupted);
     if (!finished) {
       this.#pendingSearchConfig = null;
     }
+    this.performUpdate();
     if (!this.#pendingSearchConfig) {
       return;
     }
@@ -331,8 +407,9 @@ export class SearchView extends UI.Widget.VBox {
       this.#progressIndicator.done();
     }
     this.#progressIndicator = document.createElement('devtools-progress');
-    this.#searchMessageElement.textContent = i18nString(UIStrings.indexing);
+    this.#searchMessage = i18nString(UIStrings.indexing);
     this.#searchProgressPlaceholderElement.appendChild(this.#progressIndicator);
+    this.performUpdate();
     if (this.#searchScope) {
       this.#searchScope.performIndexing(
           new Common.Progress.ProgressProxy(this.#progressIndicator, this.#onIndexingFinished.bind(this)));
@@ -385,8 +462,7 @@ export class SearchView extends UI.Widget.VBox {
     }
     this.#searchFinished(finished);
     this.#searchConfig = null;
-    UI.ARIAUtils.LiveAnnouncer.alert(
-        this.#searchMessageElement.textContent + ' ' + this.#searchResultsMessageElement.textContent);
+    UI.ARIAUtils.LiveAnnouncer.alert(this.#searchMessage + ' ' + this.#searchResultsMessage);
   }
 
   #innerStartSearch(searchConfig: Workspace.SearchConfig.SearchConfig): void {
@@ -407,8 +483,9 @@ export class SearchView extends UI.Widget.VBox {
     this.#stopSearch();
     this.#showPane(null);
     this.#searchResultsPane = null;
-    this.#searchMessageElement.textContent = '';
-    this.#searchResultsMessageElement.textContent = '';
+    this.#searchMessage = '';
+    this.#searchResultsMessage = '';
+    this.performUpdate();
   }
 
   #stopSearch(): void {
@@ -429,7 +506,8 @@ export class SearchView extends UI.Widget.VBox {
       this.#searchingView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.searching), '');
     }
     this.#showPane(this.#searchingView);
-    this.#searchMessageElement.textContent = i18nString(UIStrings.searching);
+    this.#searchMessage = i18nString(UIStrings.searching);
+    this.performUpdate();
     this.#searchProgressPlaceholderElement.appendChild(progressIndicator);
     this.#updateSearchResultsMessage();
   }
@@ -437,18 +515,18 @@ export class SearchView extends UI.Widget.VBox {
   #updateSearchResultsMessage(): void {
     if (this.#searchMatchesCount && this.#searchResultsCount) {
       if (this.#searchMatchesCount === 1 && this.#nonEmptySearchResultsCount === 1) {
-        this.#searchResultsMessageElement.textContent = i18nString(UIStrings.foundMatchingLineInFile);
+        this.#searchResultsMessage = i18nString(UIStrings.foundMatchingLineInFile);
       } else if (this.#searchMatchesCount > 1 && this.#nonEmptySearchResultsCount === 1) {
-        this.#searchResultsMessageElement.textContent =
-            i18nString(UIStrings.foundDMatchingLinesInFile, {PH1: this.#searchMatchesCount});
+        this.#searchResultsMessage = i18nString(UIStrings.foundDMatchingLinesInFile, {PH1: this.#searchMatchesCount});
       } else {
-        this.#searchResultsMessageElement.textContent = i18nString(
+        this.#searchResultsMessage = i18nString(
             UIStrings.foundDMatchingLinesInDFiles,
             {PH1: this.#searchMatchesCount, PH2: this.#nonEmptySearchResultsCount});
       }
     } else {
-      this.#searchResultsMessageElement.textContent = '';
+      this.#searchResultsMessage = '';
     }
+    this.performUpdate();
   }
 
   #showPane(panel: UI.Widget.Widget|null): void {
@@ -480,8 +558,8 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   #searchFinished(finished: boolean): void {
-    this.#searchMessageElement.textContent =
-        finished ? i18nString(UIStrings.searchFinished) : i18nString(UIStrings.searchInterrupted);
+    this.#searchMessage = finished ? i18nString(UIStrings.searchFinished) : i18nString(UIStrings.searchInterrupted);
+    this.performUpdate();
   }
 
   override focus(): void {
@@ -552,11 +630,8 @@ export class SearchView extends UI.Widget.VBox {
     const searchConfig = Workspace.SearchConfig.SearchConfig.fromPlainObject(this.#advancedSearchConfig.get());
     this.#searchInputElement.value = searchConfig.query();
 
-    this.#matchCaseButton.toggled = !searchConfig.ignoreCase();
-    this.#onToggleMatchCase();
-
-    this.#regexButton.toggled = searchConfig.isRegex();
-    this.#onToggleRegex();
+    this.#matchCase = !searchConfig.ignoreCase();
+    this.#isRegex = searchConfig.isRegex();
   }
 
   #onRefresh(): void {

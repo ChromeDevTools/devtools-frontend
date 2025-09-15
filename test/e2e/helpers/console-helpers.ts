@@ -6,8 +6,6 @@ import {assert} from 'chai';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import {
-} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {
@@ -61,12 +59,10 @@ export const SidebarItem = {
 
 export async function deleteConsoleMessagesFilter(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const main = await devToolsPage.waitFor('.console-main-toolbar');
-  await devToolsPage.evaluate(toolbar => {
-    const deleteButton = toolbar.querySelector<HTMLElement>('.toolbar-input-clear-button');
-    if (deleteButton) {
-      deleteButton.click();
-    }
-  }, main);
+  await devToolsPage.click('.toolbar-input-clear-button', {
+    root: main,
+  });
+
   await expectVeEvents(
       [veClick('Toolbar > TextField: filter > Action: clear')], await veRoot(devToolsPage), devToolsPage);
 }

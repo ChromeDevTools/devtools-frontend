@@ -10,7 +10,6 @@ devtools_module("utils") {
     "AICallTree.ts",
     "AIContext.ts",
     "EntryNodes.ts",
-    "FreshRecording.ts",
     "Helpers.ts",
     "IgnoreList.ts",
     "ImageCache.ts",
@@ -61,7 +60,6 @@ ts_library("unittests") {
   sources = [
     "AICallTree.test.ts",
     "EntryNodes.test.ts",
-    "FreshRecording.test.ts",
     "Helpers.test.ts",
     "IgnoreList.test.ts",
     "ImageCache.test.ts",

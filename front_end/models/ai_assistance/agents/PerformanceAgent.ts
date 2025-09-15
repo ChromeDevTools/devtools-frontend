@@ -10,6 +10,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
+import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Trace from '../../trace/trace.js';
 import type {ConversationType} from '../AiHistoryStorage.js';
 import {
@@ -796,7 +797,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
 
     });
 
-    const isFresh = TimelineUtils.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
+    const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
     const hasScriptContents =
         parsedTrace.metadata.enhancedTraceVersion && parsedTrace.data.Scripts.scripts.some(s => s.content);
 

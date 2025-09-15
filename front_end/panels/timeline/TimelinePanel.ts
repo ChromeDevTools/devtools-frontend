@@ -50,6 +50,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
+import * as Tracing from '../../services/tracing/tracing.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
@@ -2535,7 +2536,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
 
       if (recordingIsFresh) {
-        Utils.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
+        Tracing.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
       }
 
       // We store the index of the active trace so we can load it back easily

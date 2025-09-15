@@ -41,6 +41,7 @@ devtools_module("ai_assistance") {
     "../../panels/elements:bundle",
     "../../panels/timeline/utils:bundle",
     "../../panels/utils:bundle",
+    "../../services/tracing:bundle",
     "../../third_party/diff:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",

@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("tracing") {
   sources = [
+    "FreshRecording.ts",
     "PerformanceTracing.ts",
     "TracingManager.ts",
   ]
@@ -30,7 +31,10 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "TracingManager.test.ts" ]
+  sources = [
+    "FreshRecording.test.ts",
+    "TracingManager.test.ts",
+  ]
 
   deps = [
     ":bundle",

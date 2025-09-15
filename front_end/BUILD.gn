@@ -223,6 +223,7 @@ group("unittests") {
     "panels/webauthn:unittests",
     "panels/whats_new:unittests",
     "services/trace_bounds:unittests",
+    "services/tracing:unittests",
     "testing",
     "third_party/chromium/client-variations:unittests",
     "third_party/i18n:unittests",

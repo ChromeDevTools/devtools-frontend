@@ -560,7 +560,7 @@ code
   });
 });
 
-describeWithEnvironment('PerformanceAgent – all focus', () => {
+describeWithEnvironment('PerformanceAgent – all focus', function() {
   it('uses the min and max bounds of the trace as the origin', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     const context = PerformanceTraceContext.full(parsedTrace);

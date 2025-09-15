@@ -612,7 +612,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     let parsedTrace: Trace.TraceModel.ParsedTrace;
     const flameChartContainer = document.createElement('div');
 
-    this.beforeEach(async () => {
+    this.beforeEach(async function() {
       parsedTrace = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
       const mockViewDelegate = new MockViewDelegate();
 

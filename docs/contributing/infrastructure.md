@@ -88,6 +88,12 @@ file in the `infra/config` branch contains the logic that determines
 which builders are needed to verify a CQ. See `custom_locationsfilters`
 for the current logic.
 
+Some of the filters currently in use are:
+ - `cpp_debug_extension` builders only trigger on changes related to the extension
+ - `dtf_check_no_bundle` builder only trigger on GN changes
+ - all other builders will not trigger if only documentation files are updated
+
+
 ## Branch cutting process
 
 At the end of every release cycle Chromium will cut a new branch for the current release.
@@ -139,11 +145,35 @@ To toggle this behaviour you need to edit `buckets/try.star` file ([example](htt
     dictionary together with the desired experiment rate percentage; remove it
     from the list to make it a regular builder
 
-## Controlling when a builder runs
-// TODO
+## Adding a new builder in CQ
 
-## Adding a new builder
-// TODO
+To add a new try-builder edit the `buckets/try.start` file to call one of the
+existing functions that generate builder definitions:
+  - `try_builder` used for builder with recipes that do not orchestrate other
+    builders:
+      - build only builders (`dtf_check_no_bundle`)
+      - chromium builders (`devtools_frontend_linux_blink_light_rel_fastbuild`)
+  - `try_pair` used for builders with orchestrating recipes (delegates to a
+    compilator builder before delegating testing to swarming)
+
+Alternatively define your own builder function and call it for the instances you
+need (see `presubmit_builder` and `cpp_debug_extension_try`).
+
+You will need add your new builder to the `cq_builders.devtools_builders` list.
+
+To control the CL blocking behaviour of your builder see above.
+
+To control if the builder should be not present in the CQ for branches, add your
+builder to `cq_builders.chromium_builders` list.
+
+## Adding a new builder in CI
+
+To add a new try-builder edit the `buckets/ci.start` file to add a new
+`builder_descriptor` to the `builders` of `generate_ci_configs` function call.
+
+In your descriptor decide for the name of builder, the recipe, any other custom
+properties you might need and for which configurations (consoles) to include
+your builder (`ci` stands for the main waterfall console). [Example](https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/infra/config/buckets/ci.star#:~:text=name%20%3D%20%22-,Linux,-Compile%20Debug%22%2C).
 
 ## Anatomy of a CQ build
 

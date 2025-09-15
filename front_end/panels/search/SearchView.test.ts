@@ -56,7 +56,6 @@ class TestSearchView extends Search.SearchView.SearchView {
    * that behaves normally with no override, but returns the mock if one is provided.
    */
   #searchResultsPane: Search.SearchResultsPane.SearchResultsPane|null = null;
-  readonly #overrideResultsPane: boolean;
 
   constructor(
       scopeCreator: () => Search.SearchScope.SearchScope,
@@ -66,17 +65,10 @@ class TestSearchView extends Search.SearchView.SearchView {
     this.throttler = throttler;
     this.#scopeCreator = scopeCreator;
     this.#searchResultsPane = searchResultsPane ?? null;
-    this.#overrideResultsPane = Boolean(searchResultsPane);
+  }
 
-    // Use 'Object.defineProperty' or TS won't be happy that we replace a prop with an accessor.
-    Object.defineProperty(this, 'searchResultsPane', {
-      get: () => this.#searchResultsPane,
-      set: (pane: Search.SearchResultsPane.SearchResultsPane|null) => {
-        if (!this.#overrideResultsPane) {
-          this.#searchResultsPane = pane;
-        }
-      },
-    });
+  override createSearchResultsPane(): Search.SearchResultsPane.SearchResultsPane {
+    return this.#searchResultsPane ?? super.createSearchResultsPane();
   }
 
   override createScope(): Search.SearchScope.SearchScope {

@@ -367,6 +367,10 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     return true;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return false;
+  }
+
   supportsRegexSearch(): boolean {
     return false;
   }

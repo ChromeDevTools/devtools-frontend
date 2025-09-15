@@ -188,6 +188,7 @@ ts_library("unittests") {
     "KeyboardShortcut.test.ts",
     "ListModel.test.ts",
     "ListWidget.test.ts",
+    "SearchableView.test.ts",
     "SettingsUI.test.ts",
     "ShortcutRegistry.test.ts",
     "SplitWidget.test.ts",

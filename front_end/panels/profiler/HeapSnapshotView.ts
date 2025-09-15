@@ -622,6 +622,10 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     return true;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return false;
+  }
+
   supportsRegexSearch(): boolean {
     return false;
   }
@@ -639,7 +643,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
     const nextQuery = new HeapSnapshotModel.HeapSnapshotModel.SearchConfig(
-        searchConfig.query.trim(), searchConfig.caseSensitive, searchConfig.isRegex, shouldJump,
+        searchConfig.query.trim(), searchConfig.caseSensitive, searchConfig.wholeWord, searchConfig.isRegex, shouldJump,
         jumpBackwards || false);
 
     void this.searchThrottler.schedule(this.performSearchInternal.bind(this, nextQuery));

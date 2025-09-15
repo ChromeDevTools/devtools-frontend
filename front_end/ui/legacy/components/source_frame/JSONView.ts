@@ -260,6 +260,10 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     return true;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return true;
+  }
+
   supportsRegexSearch(): boolean {
     return true;
   }

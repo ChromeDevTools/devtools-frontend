@@ -1592,6 +1592,10 @@ export class ConsoleView extends UI.Widget.VBox implements
     return true;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return true;
+  }
+
   supportsRegexSearch(): boolean {
     return true;
   }

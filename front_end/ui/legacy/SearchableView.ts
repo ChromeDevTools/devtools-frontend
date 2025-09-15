@@ -76,21 +76,17 @@ const UIStrings = {
    */
   searchNext: 'Show next result',
   /**
-   * @description Tooltip text on a toggle to enable search by matching case of the input
+   * @description Tooltip text on a toggle to enable/disable search by matching the exact case.
    */
-  enableCaseSensitive: 'Enable case sensitive search',
+  matchCase: 'Match case',
   /**
-   * @description Tooltip text on a toggle to disable search by matching case of the input
+   * @description Tooltip text on a toggle to enable/disable search by matching the exact word.
    */
-  disableCaseSensitive: 'Disable case sensitive search',
+  matchWholeWord: 'Match whole word',
   /**
-   * @description Tooltip text on a toggle to enable searching with regular expression
+   * @description Tooltip text on a toggle to enable/disable searching with regular expression.
    */
-  enableRegularExpression: 'Enable regular expressions',
-  /**
-   * @description Tooltip text on a toggle to disable searching with regular expression
-   */
-  disableRegularExpression: 'Disable regular expressions',
+  useRegularExpression: 'Use regular expression',
   /**
    * @description Tooltip text on a button to close the search bar
    */
@@ -158,6 +154,7 @@ export class SearchableView extends VBox {
   private searchNavigationNextElement: ToolbarButton;
   private readonly replaceInputElement: HTMLInputElement;
   private caseSensitiveButton: Buttons.Button.Button|undefined;
+  private wholeWordButton: Buttons.Button.Button|undefined;
   private regexButton: Buttons.Button.Button|undefined;
   private replaceButtonElement: Buttons.Button.Button;
   private replaceAllButtonElement: Buttons.Button.Button;
@@ -228,22 +225,11 @@ export class SearchableView extends VBox {
       this.searchInputElement.focus();
     });
     searchConfigButtons.appendChild(clearButton);
-    if (this.searchProvider.supportsRegexSearch()) {
-      const iconName = 'regular-expression';
-      this.regexButton = new Buttons.Button.Button();
-      this.regexButton.data = {
-        variant: Buttons.Button.Variant.ICON_TOGGLE,
-        size: Buttons.Button.Size.SMALL,
-        iconName,
-        toggledIconName: iconName,
-        toggleType: Buttons.Button.ToggleType.PRIMARY,
-        toggled: false,
-        jslogContext: iconName,
-        title: i18nString(UIStrings.enableCaseSensitive),
-      };
-      this.regexButton.addEventListener('click', () => this.toggleRegexSearch());
-      searchConfigButtons.appendChild(this.regexButton);
-    }
+
+    const saveSettingAndPerformSearch = (): void => {
+      this.saveSetting();
+      this.performSearch(false, true);
+    };
 
     if (this.searchProvider.supportsCaseSensitiveSearch()) {
       const iconName = 'match-case';
@@ -255,11 +241,48 @@ export class SearchableView extends VBox {
         toggledIconName: iconName,
         toggled: false,
         toggleType: Buttons.Button.ToggleType.PRIMARY,
-        title: i18nString(UIStrings.enableCaseSensitive),
+        title: i18nString(UIStrings.matchCase),
         jslogContext: iconName,
       };
-      this.caseSensitiveButton.addEventListener('click', () => this.toggleCaseSensitiveSearch());
+      ARIAUtils.setLabel(this.caseSensitiveButton, i18nString(UIStrings.matchCase));
+      this.caseSensitiveButton.addEventListener('click', saveSettingAndPerformSearch);
       searchConfigButtons.appendChild(this.caseSensitiveButton);
+    }
+
+    if (this.searchProvider.supportsWholeWordSearch()) {
+      const iconName = 'match-whole-word';
+      this.wholeWordButton = new Buttons.Button.Button();
+      this.wholeWordButton.data = {
+        variant: Buttons.Button.Variant.ICON_TOGGLE,
+        size: Buttons.Button.Size.SMALL,
+        iconName,
+        toggledIconName: iconName,
+        toggled: false,
+        toggleType: Buttons.Button.ToggleType.PRIMARY,
+        title: i18nString(UIStrings.matchWholeWord),
+        jslogContext: iconName,
+      };
+      ARIAUtils.setLabel(this.wholeWordButton, i18nString(UIStrings.matchWholeWord));
+      this.wholeWordButton.addEventListener('click', saveSettingAndPerformSearch);
+      searchConfigButtons.appendChild(this.wholeWordButton);
+    }
+
+    if (this.searchProvider.supportsRegexSearch()) {
+      const iconName = 'regular-expression';
+      this.regexButton = new Buttons.Button.Button();
+      this.regexButton.data = {
+        variant: Buttons.Button.Variant.ICON_TOGGLE,
+        size: Buttons.Button.Size.SMALL,
+        iconName,
+        toggledIconName: iconName,
+        toggleType: Buttons.Button.ToggleType.PRIMARY,
+        toggled: false,
+        jslogContext: iconName,
+        title: i18nString(UIStrings.useRegularExpression),
+      };
+      ARIAUtils.setLabel(this.regexButton, i18nString(UIStrings.useRegularExpression));
+      this.regexButton.addEventListener('click', saveSettingAndPerformSearch);
+      searchConfigButtons.appendChild(this.regexButton);
     }
 
     // Introduce a separate element for the background of the `Find` input line (instead of
@@ -336,24 +359,6 @@ export class SearchableView extends VBox {
     return view;
   }
 
-  private toggleCaseSensitiveSearch(): void {
-    if (this.caseSensitiveButton) {
-      this.caseSensitiveButton.title = this.caseSensitiveButton.toggled ? i18nString(UIStrings.disableCaseSensitive) :
-                                                                          i18nString(UIStrings.enableCaseSensitive);
-    }
-    this.saveSetting();
-    this.performSearch(false, true);
-  }
-
-  private toggleRegexSearch(): void {
-    if (this.regexButton) {
-      this.regexButton.title = this.regexButton.toggled ? i18nString(UIStrings.disableRegularExpression) :
-                                                          i18nString(UIStrings.enableRegularExpression);
-    }
-    this.saveSetting();
-    this.performSearch(false, true);
-  }
-
   private toggleReplace(): void {
     const replaceEnabled = this.replaceToggleButton.isToggled();
     const label =
@@ -371,6 +376,9 @@ export class SearchableView extends VBox {
     if (this.caseSensitiveButton) {
       settingValue.caseSensitive = this.caseSensitiveButton.toggled;
     }
+    if (this.wholeWordButton) {
+      settingValue.wholeWord = this.wholeWordButton.toggled;
+    }
     if (this.regexButton) {
       settingValue.isRegex = this.regexButton.toggled;
     }
@@ -379,19 +387,14 @@ export class SearchableView extends VBox {
 
   private loadSetting(): void {
     const settingValue = this.setting ? (this.setting.get() || {}) : {};
-    if (this.searchProvider.supportsCaseSensitiveSearch() && this.caseSensitiveButton) {
+    if (this.caseSensitiveButton) {
       this.caseSensitiveButton.toggled = Boolean(settingValue.caseSensitive);
-      const label = settingValue.caseSensitive ? i18nString(UIStrings.disableCaseSensitive) :
-                                                 i18nString(UIStrings.enableCaseSensitive);
-      this.caseSensitiveButton.title = label;
-      ARIAUtils.setLabel(this.caseSensitiveButton, label);
     }
-    if (this.searchProvider.supportsRegexSearch() && this.regexButton) {
+    if (this.wholeWordButton) {
+      this.wholeWordButton.toggled = Boolean(settingValue.wholeWord);
+    }
+    if (this.regexButton) {
       this.regexButton.toggled = Boolean(settingValue.isRegex);
-      const label = settingValue.regular ? i18nString(UIStrings.disableRegularExpression) :
-                                           i18nString(UIStrings.enableRegularExpression);
-      this.regexButton.title = label;
-      ARIAUtils.setLabel(this.regexButton, label);
     }
   }
 
@@ -622,8 +625,9 @@ export class SearchableView extends VBox {
   private currentSearchConfig(): SearchConfig {
     const query = this.searchInputElement.value;
     const caseSensitive = this.caseSensitiveButton ? this.caseSensitiveButton.toggled : false;
+    const wholeWord = this.wholeWordButton ? this.wholeWordButton.toggled : false;
     const isRegex = this.regexButton ? this.regexButton.toggled : false;
-    return new SearchConfig(query, caseSensitive, isRegex);
+    return new SearchConfig(query, caseSensitive, wholeWord, isRegex);
   }
 
   private updateSecondRowVisibility(): void {
@@ -688,6 +692,7 @@ export interface Searchable {
   jumpToNextSearchResult(): void;
   jumpToPreviousSearchResult(): void;
   supportsCaseSensitiveSearch(): boolean;
+  supportsWholeWordSearch(): boolean;
   supportsRegexSearch(): boolean;
 }
 
@@ -704,11 +709,13 @@ export interface SearchRegexResult {
 export class SearchConfig {
   query: string;
   caseSensitive: boolean;
+  wholeWord: boolean;
   isRegex: boolean;
 
-  constructor(query: string, caseSensitive: boolean, isRegex: boolean) {
+  constructor(query: string, caseSensitive: boolean, wholeWord: boolean, isRegex: boolean) {
     this.query = query;
     this.caseSensitive = caseSensitive;
+    this.wholeWord = wholeWord;
     this.isRegex = isRegex;
   }
 
@@ -737,6 +744,17 @@ export class SearchConfig {
     // Otherwise just do a plain text search.
     if (!regex) {
       regex = Platform.StringUtilities.createPlainTextSearchRegex(query, modifiers);
+    }
+
+    if (this.wholeWord) {
+      let {source} = regex;
+      if (!source.startsWith('^') && !source.startsWith('\\b')) {
+        source = '\\b' + source;
+      }
+      if (!source.endsWith('$') && !source.endsWith('\\b')) {
+        source = source + '\\b';
+      }
+      regex = new RegExp(source, regex.flags);
     }
 
     return {

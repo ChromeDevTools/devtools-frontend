@@ -208,7 +208,7 @@ export async function toggleCaseSensitive(devToolsPage: DevToolsPage = getBrowse
 
 export async function toggleRegExButtonBottomUp(
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const regexButton = await devToolsPage.waitFor('[aria-label="Use regular expression"]');
+  const regexButton = await devToolsPage.waitFor('.timeline-tree-view [aria-label="Use regular expression"]');
   await regexButton.click();
   await expectVeEvents(
       [

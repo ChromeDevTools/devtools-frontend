@@ -575,6 +575,10 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     return true;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return true;
+  }
+
   supportsRegexSearch(): boolean {
     return true;
   }

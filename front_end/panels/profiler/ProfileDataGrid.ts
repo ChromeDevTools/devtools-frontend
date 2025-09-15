@@ -641,6 +641,10 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
     return true;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return false;
+  }
+
   supportsRegexSearch(): boolean {
     return false;
   }

@@ -862,6 +862,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     return true;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return true;
+  }
+
   supportsRegexSearch(): boolean {
     return true;
   }

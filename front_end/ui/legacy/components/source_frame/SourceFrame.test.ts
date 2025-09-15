@@ -50,7 +50,8 @@ describeWithEnvironment('SourceFrame', () => {
     const sourceFrame = await createSourceFrame('Example');
 
     sourceFrame.performSearch(
-        new UI.SearchableView.SearchConfig('xa', /* caseSensitive */ false, /* isRegex */ true), true);
+        new UI.SearchableView.SearchConfig('xa', /* caseSensitive */ false, /* wholeWord */ false, /* isRegex */ true),
+        true);
     sourceFrame.jumpToSearchResult(0);
 
     assert.strictEqual(sourceFrame.textEditor.state.selection.main.from, 1);
@@ -61,7 +62,8 @@ describeWithEnvironment('SourceFrame', () => {
     const sourceFrame = await createSourceFrame('Example');
 
     sourceFrame.performSearch(
-        new UI.SearchableView.SearchConfig('Z*', /* caseSensitive */ false, /* isRegex */ true), true);
+        new UI.SearchableView.SearchConfig('Z*', /* caseSensitive */ false, /* wholeWord */ false, /* isRegex */ true),
+        true);
 
     // Check that the search did not find anything.
     // We do this in a roundabout way: select the whole document, then try to select
@@ -80,7 +82,8 @@ describeWithEnvironment('SourceFrame', () => {
     const sourceFrame = await createSourceFrame('Example');
 
     sourceFrame.performSearch(
-        new UI.SearchableView.SearchConfig('a?', /* caseSensitive */ false, /* isRegex */ true), true);
+        new UI.SearchableView.SearchConfig('a?', /* caseSensitive */ false, /* wholeWord */ false, /* isRegex */ true),
+        true);
 
     sourceFrame.jumpToSearchResult(0);
 

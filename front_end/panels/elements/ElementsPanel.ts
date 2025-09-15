@@ -713,6 +713,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     return false;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return false;
+  }
+
   supportsRegexSearch(): boolean {
     return false;
   }

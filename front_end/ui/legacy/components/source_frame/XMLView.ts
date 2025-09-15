@@ -342,6 +342,10 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     return true;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return true;
+  }
+
   supportsRegexSearch(): boolean {
     return true;
   }

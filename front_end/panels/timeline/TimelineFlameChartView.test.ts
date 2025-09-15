@@ -385,8 +385,8 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     flameChartView.setModel(parsedTrace, new Map());
 
     const searchQuery = 'Paint';
-    const searchConfig =
-        new UI.SearchableView.SearchConfig(/* query */ searchQuery, /* caseSensitive */ false, /* isRegex */ false);
+    const searchConfig = new UI.SearchableView.SearchConfig(/* query */ searchQuery, /* caseSensitive */ false,
+                                                            /* wholeWord */ false, /* isRegex */ false);
     flameChartView.performSearch(searchConfig, true);
 
     assert.strictEqual(flameChartView.getSearchResults()?.length, 14);
@@ -425,8 +425,8 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     flameChartView.setModel(parsedTrace, new Map());
 
     const searchQuery = 'app.js';
-    const searchConfig =
-        new UI.SearchableView.SearchConfig(/* query */ searchQuery, /* caseSensitive */ false, /* isRegex */ false);
+    const searchConfig = new UI.SearchableView.SearchConfig(/* query */ searchQuery, /* caseSensitive */ false,
+                                                            /* wholeWord */ false, /* isRegex */ false);
     flameChartView.performSearch(searchConfig, true);
 
     const results = flameChartView.getSearchResults();

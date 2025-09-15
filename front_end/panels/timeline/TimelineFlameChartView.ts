@@ -1762,6 +1762,10 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     return true;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return true;
+  }
+
   supportsRegexSearch(): boolean {
     return true;
   }

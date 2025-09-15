@@ -69,6 +69,10 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
     return false;
   }
 
+  supportsWholeWordSearch(): boolean {
+    return false;
+  }
+
   supportsRegexSearch(): boolean {
     return false;
   }

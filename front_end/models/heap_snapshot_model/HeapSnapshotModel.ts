@@ -239,12 +239,16 @@ export class NodeFilter {
 export class SearchConfig {
   query: string;
   caseSensitive: boolean;
+  wholeWord: boolean;
   isRegex: boolean;
   shouldJump: boolean;
   jumpBackward: boolean;
-  constructor(query: string, caseSensitive: boolean, isRegex: boolean, shouldJump: boolean, jumpBackward: boolean) {
+  constructor(
+      query: string, caseSensitive: boolean, wholeWord: boolean, isRegex: boolean, shouldJump: boolean,
+      jumpBackward: boolean) {
     this.query = query;
     this.caseSensitive = caseSensitive;
+    this.wholeWord = wholeWord;
     this.isRegex = isRegex;
     this.shouldJump = shouldJump;
     this.jumpBackward = jumpBackward;

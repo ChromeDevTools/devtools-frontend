@@ -137,6 +137,7 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
             properties = {
                 "coverage": False,
             },
+            notification_muted = True,
             use_siso = SISO.CHROMIUM_TRUSTED,
         ),
         builder_descriptor(

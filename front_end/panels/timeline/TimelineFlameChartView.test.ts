@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
@@ -20,7 +21,6 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
-import * as Utils from './utils/utils.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -1098,16 +1098,16 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       // Find some task in the main thread that we can build an AI Call Tree from
       const task = allThreadEntriesInTrace(parsedTrace).find(event => {
         return Trace.Types.Events.isRunTask(event) && event.dur > 5_000 &&
-            Utils.AICallTree.AICallTree.fromEvent(event, parsedTrace) !== null;
+            AIAssistance.AICallTree.fromEvent(event, parsedTrace) !== null;
       });
 
       assert.isOk(task);
-      UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, null);
+      UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, null);
       const selection = Timeline.TimelineSelection.selectionFromEvent(task);
       flameChartView.setSelectionAndReveal(selection);
       await doubleRaf();  // the updating of the AI Call Tree is done in a rAF to not block.
-      const flavor = UI.Context.Context.instance().flavor(Utils.AIContext.AgentFocus);
-      assert.instanceOf(flavor, Utils.AIContext.AgentFocus);
+      const flavor = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
+      assert.instanceOf(flavor, AIAssistance.AgentFocus);
       assert.strictEqual(flavor.data.type, 'call-tree');
     });
   });

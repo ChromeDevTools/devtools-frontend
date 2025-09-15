@@ -935,7 +935,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   getOrCreateExternalAIConversationData(): AiAssistanceModel.ExternalPerformanceAIConversationData {
     if (!this.#externalAIConversationData) {
       const conversationHandler = AiAssistanceModel.ConversationHandler.instance();
-      const focus = Utils.AIContext.getPerformanceAgentFocusFromModel(this.model);
+      const focus = AiAssistanceModel.getPerformanceAgentFocusFromModel(this.model);
       if (!focus) {
         throw new Error('could not create performance agent focus');
       }
@@ -2044,7 +2044,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.flameChart.getNetworkDataProvider().reset();
     this.flameChart.reset();
     this.#changeView({mode: 'LANDING_PAGE'});
-    UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, null);
+    UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, null);
   }
 
   #hasActiveTrace(): boolean {

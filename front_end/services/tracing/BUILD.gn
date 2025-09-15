@@ -16,7 +16,6 @@ devtools_module("tracing") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../models/trace:bundle",
-    "../../panels/timeline/utils:bundle",
   ]
 }
 

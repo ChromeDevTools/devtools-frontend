@@ -14,7 +14,6 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as ElementsPanel from '../../../panels/elements/elements.js';
-import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import * as PanelUtils from '../../../panels/utils/utils.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -1040,7 +1039,7 @@ function renderContextIcon(context: AiAssistanceModel.ConversationContext<unknow
   if (item instanceof Workspace.UISourceCode.UISourceCode) {
     return PanelUtils.PanelUtils.getIconForSourceFile(item);
   }
-  if (item instanceof TimelineUtils.AIContext.AgentFocus) {
+  if (item instanceof AiAssistanceModel.AgentFocus) {
     return html`<devtools-icon name="performance" title="Performance"></devtools-icon>`;
   }
   if (item instanceof SDK.DOMModel.DOMNode) {

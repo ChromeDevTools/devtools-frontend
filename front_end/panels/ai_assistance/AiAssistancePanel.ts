@@ -22,7 +22,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../network/forward/forward.js';
 import * as NetworkPanel from '../network/network.js';
 import * as TimelinePanel from '../timeline/timeline.js';
-import * as TimelineUtils from '../timeline/utils/utils.js';
 
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
 import {
@@ -275,7 +274,7 @@ async function getEmptyStateSuggestions(
       ];
     case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
     case AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE: {
-      const focus = context?.getItem() as TimelineUtils.AIContext.AgentFocus | null;
+      const focus = context?.getItem() as AiAssistanceModel.AgentFocus | null;
       if (focus?.data.type === 'call-tree') {
         return [
           {title: 'What\'s the purpose of this work?', jslogContext: 'performance-default'},
@@ -433,7 +432,7 @@ function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|null): 
   return new AiAssistanceModel.RequestContext(request, calculator);
 }
 
-function createPerformanceTraceContext(focus: TimelineUtils.AIContext.AgentFocus|null):
+function createPerformanceTraceContext(focus: AiAssistanceModel.AgentFocus|null):
     AiAssistanceModel.PerformanceTraceContext|null {
   if (!focus) {
     return null;
@@ -710,7 +709,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#selectedRequest =
         createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest));
     this.#selectedPerformanceTrace =
-        createPerformanceTraceContext(UI.Context.Context.instance().flavor(TimelineUtils.AIContext.AgentFocus));
+        createPerformanceTraceContext(UI.Context.Context.instance().flavor(AiAssistanceModel.AgentFocus));
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
     this.#updateConversationState({agent: this.#conversationAgent});
 
@@ -723,7 +722,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
-        TimelineUtils.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+        AiAssistanceModel.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
 
@@ -760,7 +759,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.Context.Context.instance().removeFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
-        TimelineUtils.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+        AiAssistanceModel.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI.ViewManager.ViewManager.instance().removeEventListener(
@@ -838,7 +837,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       };
 
   #handlePerformanceTraceFlavorChange =
-      (ev: Common.EventTarget.EventTargetEvent<TimelineUtils.AIContext.AgentFocus>): void => {
+      (ev: Common.EventTarget.EventTargetEvent<AiAssistanceModel.AgentFocus>): void => {
         if (this.#selectedPerformanceTrace?.getItem() === ev.data) {
           return;
         }

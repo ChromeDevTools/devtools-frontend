@@ -5,8 +5,7 @@
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightSetOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-
-import * as Utils from './utils.js';
+import {AIQueries} from '../ai_assistance.js';
 
 describeWithEnvironment('AIQueries', () => {
   it('can query for the longest tasks', async function() {
@@ -15,8 +14,7 @@ describeWithEnvironment('AIQueries', () => {
 
     const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());
     const insightSet = getInsightSetOrError(parsedTrace.insights, firstNav);
-    const tasks =
-        Utils.InsightAIContext.AIQueries.longestTasks(firstNav.args.data?.navigationId, insightSet.bounds, parsedTrace);
+    const tasks = AIQueries.longestTasks(firstNav.args.data?.navigationId, insightSet.bounds, parsedTrace);
     assert.isOk(tasks);
 
     const expected = [33, 21, 16];

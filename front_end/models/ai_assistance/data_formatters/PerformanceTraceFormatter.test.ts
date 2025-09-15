@@ -3,17 +3,16 @@
 // found in the LICENSE file.
 
 import * as Trace from '../../../models/trace/trace.js';
-import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import {PerformanceTraceFormatter} from '../ai_assistance.js';
+import {AgentFocus, AICallTree, PerformanceTraceFormatter} from '../ai_assistance.js';
 
 async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: string):
     Promise<{formatter: PerformanceTraceFormatter, parsedTrace: Trace.TraceModel.ParsedTrace}> {
   const parsedTrace = await TraceLoader.traceEngine(context, name);
   assert.isOk(parsedTrace.insights);
-  const focus = TimelineUtils.AIContext.AgentFocus.full(parsedTrace);
+  const focus = AgentFocus.full(parsedTrace);
   const eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
   const formatter = new PerformanceTraceFormatter(focus, eventsSerializer);
   return {formatter, parsedTrace};
@@ -92,7 +91,7 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
   it('formatCallTree', async function() {
     const {formatter, parsedTrace} = await createFormatter(this, 'long-task-from-worker-thread.json.gz');
     const event = new Trace.EventsSerializer.EventsSerializer().eventForKey('r-62', parsedTrace);
-    const tree = TimelineUtils.AICallTree.AICallTree.fromEvent(event, parsedTrace);
+    const tree = AICallTree.fromEvent(event, parsedTrace);
     assert.exists(tree);
     const output = formatter.formatCallTree(tree);
     snapshotTester.assert(this, output);

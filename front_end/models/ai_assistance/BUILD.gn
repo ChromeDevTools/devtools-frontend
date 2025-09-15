@@ -30,6 +30,9 @@ devtools_module("ai_assistance") {
     "data_formatters/UnitFormatters.ts",
     "debug.ts",
     "injected.ts",
+    "performance/AICallTree.ts",
+    "performance/AIContext.ts",
+    "performance/AIQueries.ts",
   ]
 
   deps = [
@@ -39,7 +42,6 @@ devtools_module("ai_assistance") {
     "../../core/root:bundle",
     "../../models/network_time_calculator:bundle",
     "../../panels/elements:bundle",
-    "../../panels/timeline/utils:bundle",
     "../../panels/utils:bundle",
     "../../services/tracing:bundle",
     "../../third_party/diff:bundle",
@@ -49,6 +51,7 @@ devtools_module("ai_assistance") {
     "../logs:bundle",
     "../network_time_calculator:bundle",
     "../trace:bundle",
+    "../trace_source_maps_resolver:bundle",
     "../workspace:bundle",
   ]
 }
@@ -92,6 +95,8 @@ ts_library("unittests") {
     "data_formatters/PerformanceInsightFormatter.test.ts",
     "data_formatters/PerformanceTraceFormatter.test.ts",
     "data_formatters/UnitFormatters.test.ts",
+    "performance/AICallTree.test.ts",
+    "performance/AIQueries.test.ts",
   ]
 
   deps = [

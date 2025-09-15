@@ -7,13 +7,10 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("utils") {
   sources = [
-    "AICallTree.ts",
-    "AIContext.ts",
     "EntryNodes.ts",
     "Helpers.ts",
     "IgnoreList.ts",
     "ImageCache.ts",
-    "InsightAIContext.ts",
     "Treemap.ts",
   ]
 
@@ -22,6 +19,7 @@ devtools_module("utils") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
+    "../../../models/ai_assistance:bundle",
     "../../../models/bindings:bundle",
     "../../../models/crux-manager:bundle",
     "../../../models/source_map_scopes:bundle",
@@ -58,12 +56,10 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
-    "AICallTree.test.ts",
     "EntryNodes.test.ts",
     "Helpers.test.ts",
     "IgnoreList.test.ts",
     "ImageCache.test.ts",
-    "InsightAIContext.test.ts",
     "Treemap.test.ts",
   ]
 

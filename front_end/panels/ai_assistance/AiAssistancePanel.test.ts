@@ -34,7 +34,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Network from '../network/network.js';
 import type * as TimelineComponents from '../timeline/components/components.js';
 import * as Timeline from '../timeline/timeline.js';
-import * as TimelineUtils from '../timeline/utils/utils.js';
 
 import * as AiAssistancePanel from './ai_assistance.js';
 
@@ -53,7 +52,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, null);
     UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
-    UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, null);
+    UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, null);
     UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
 
     const mockStore = new MockStore();
@@ -273,7 +272,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         action: 'drjones.network-floating-button'
       },
       {
-        flavor: TimelineUtils.AIContext.AgentFocus,
+        flavor: AiAssistanceModel.AgentFocus,
         createContext: () => {
           const parsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
           return AiAssistanceModel.PerformanceTraceContext.full(parsedTrace);
@@ -281,7 +280,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         action: 'drjones.performance-panel-context'
       },
       {
-        flavor: TimelineUtils.AIContext.AgentFocus,
+        flavor: AiAssistanceModel.AgentFocus,
         createContext: () => {
           // @ts-expect-error: don't need any data.
           const context = AiAssistanceModel.PerformanceTraceContext.fromInsight({insights: new Map()}, new Map());
@@ -361,12 +360,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
       // Firstly, start a conversation and set a context
       const fakeParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
       const context = AiAssistanceModel.PerformanceTraceContext.full(fakeParsedTrace);
-      UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, context.getItem());
+      UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, context.getItem());
       panel.handleAction('drjones.performance-panel-context');
       await view.nextInput;
 
       // Now clear the context and check we cleared out the text
-      UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, null);
+      UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, null);
       sinon.assert.callCount(chatView.clearTextInput, 1);
     });
   });
@@ -1499,8 +1498,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
            UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, timelinePanel);
 
            const fakeParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
-           const focus = TimelineUtils.AIContext.AgentFocus.full(fakeParsedTrace);
-           UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, focus);
+           const focus = AiAssistanceModel.AgentFocus.full(fakeParsedTrace);
+           UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, focus);
 
            Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
            const {panel, view} =

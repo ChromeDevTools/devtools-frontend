@@ -5,7 +5,8 @@
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
-import type * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
+import type {AICallTree} from '../performance/AICallTree.js';
+import type {AgentFocus} from '../performance/AIContext.js';
 
 import {AiAgent, type ContextResponse, type ConversationContext, type RequestOptions, ResponseType} from './AiAgent.js';
 import {PerformanceTraceContext} from './PerformanceAgent.js';
@@ -87,7 +88,7 @@ The 'calculatePosition' function, taking 80ms, is a potential bottleneck.
 Consider optimizing the position calculation logic or reducing the frequency of calls to improve animation performance.
 `;
 
-export class PerformanceAnnotationsAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus> {
+export class PerformanceAnnotationsAgent extends AiAgent<AgentFocus> {
   override preamble = callTreePreamble;
 
   get clientFeature(): Host.AidaClient.ClientFeature {
@@ -109,8 +110,7 @@ export class PerformanceAnnotationsAgent extends AiAgent<TimelineUtils.AIContext
   }
 
   async *
-      handleContextDetails(context: ConversationContext<TimelineUtils.AIContext.AgentFocus>|null):
-          AsyncGenerator<ContextResponse, void, void> {
+      handleContextDetails(context: ConversationContext<AgentFocus>|null): AsyncGenerator<ContextResponse, void, void> {
     if (!context) {
       return;
     }
@@ -134,8 +134,7 @@ export class PerformanceAnnotationsAgent extends AiAgent<TimelineUtils.AIContext
     };
   }
 
-  override async enhanceQuery(query: string, context: ConversationContext<TimelineUtils.AIContext.AgentFocus>|null):
-      Promise<string> {
+  override async enhanceQuery(query: string, context: ConversationContext<AgentFocus>|null): Promise<string> {
     if (!context) {
       return query;
     }
@@ -153,7 +152,7 @@ export class PerformanceAnnotationsAgent extends AiAgent<TimelineUtils.AIContext
   /**
    * Used in the Performance panel to automatically generate a label for a selected entry.
    */
-  async generateAIEntryLabel(callTree: TimelineUtils.AICallTree.AICallTree): Promise<string> {
+  async generateAIEntryLabel(callTree: AICallTree): Promise<string> {
     const context = PerformanceTraceContext.fromCallTree(callTree);
     const response = await Array.fromAsync(this.run(AI_LABEL_GENERATION_PROMPT, {selected: context}));
     const lastResponse = response.at(-1);

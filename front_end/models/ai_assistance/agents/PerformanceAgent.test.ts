@@ -5,7 +5,6 @@
 import type * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   describeWithEnvironment,
@@ -19,6 +18,7 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../../trace/trace.js';
 import {
   type ActionResponse,
+  AICallTree,
   ConversationType,
   PerformanceAgent,
   PerformanceTraceContext,
@@ -123,7 +123,7 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
       // A basic Layout.
       const layoutEvt = allThreadEntriesInTrace(parsedTrace).find(event => event.ts === 465457096322);
       assert.exists(layoutEvt);
-      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(layoutEvt, parsedTrace);
+      const aiCallTree = AICallTree.fromEvent(layoutEvt, parsedTrace);
       assert.exists(aiCallTree);
 
       const agent = new PerformanceAgent(
@@ -200,7 +200,7 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
         serialize: () => 'Mock call tree',
         parsedTrace: FAKE_PARSED_TRACE,
         rootNode: {event: {ts: 0, dur: 0}},
-      } as unknown as TimelineUtils.AICallTree.AICallTree;
+      } as unknown as AICallTree;
 
       const context1 = PerformanceTraceContext.fromCallTree(mockAiCallTree);
       const context2 = PerformanceTraceContext.fromCallTree(mockAiCallTree);

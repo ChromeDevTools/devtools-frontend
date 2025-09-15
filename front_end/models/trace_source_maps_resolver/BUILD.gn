@@ -29,6 +29,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../panels/timeline/*",
     "../../testing/*",
+    "../ai_assistance/*",
     "../trace:bundle",
   ]
 }

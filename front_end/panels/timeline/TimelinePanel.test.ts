@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -189,16 +190,15 @@ describeWithEnvironment('TimelinePanel', function() {
 
   it('clears out AI related contexts when the user presses "Clear"', async () => {
     const context = UI.Context.Context.instance();
-    const {AIContext} = Timeline.Utils;
 
     const mockParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
-    context.setFlavor(AIContext.AgentFocus, AIContext.AgentFocus.full(mockParsedTrace));
+    context.setFlavor(AIAssistance.AgentFocus, AIAssistance.AgentFocus.full(mockParsedTrace));
 
     const clearButton = timeline.element.querySelector('[aria-label="Clear"]');
     assert.isOk(clearButton);
     dispatchClickEvent(clearButton);
 
-    assert.isNull(context.flavor(AIContext.AgentFocus));
+    assert.isNull(context.flavor(AIAssistance.AgentFocus));
   });
 
   it('includes the trace metadata when saving to a file', async function() {

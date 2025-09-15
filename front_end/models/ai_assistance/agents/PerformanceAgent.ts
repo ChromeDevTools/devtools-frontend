@@ -9,7 +9,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Trace from '../../trace/trace.js';
 import type {ConversationType} from '../AiHistoryStorage.js';
@@ -19,6 +18,8 @@ import {
 } from '../data_formatters/PerformanceInsightFormatter.js';
 import {PerformanceTraceFormatter} from '../data_formatters/PerformanceTraceFormatter.js';
 import {debugLog} from '../debug.js';
+import {AICallTree} from '../performance/AICallTree.js';
+import {AgentFocus} from '../performance/AIContext.js';
 
 import {
   type AgentOptions,
@@ -157,23 +158,23 @@ enum ScorePriority {
   DEFAULT = 1,
 }
 
-export class PerformanceTraceContext extends ConversationContext<TimelineUtils.AIContext.AgentFocus> {
+export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   static full(parsedTrace: Trace.TraceModel.ParsedTrace): PerformanceTraceContext {
-    return new PerformanceTraceContext(TimelineUtils.AIContext.AgentFocus.full(parsedTrace));
+    return new PerformanceTraceContext(AgentFocus.full(parsedTrace));
   }
 
   static fromInsight(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel):
       PerformanceTraceContext {
-    return new PerformanceTraceContext(TimelineUtils.AIContext.AgentFocus.fromInsight(parsedTrace, insight));
+    return new PerformanceTraceContext(AgentFocus.fromInsight(parsedTrace, insight));
   }
 
-  static fromCallTree(callTree: TimelineUtils.AICallTree.AICallTree): PerformanceTraceContext {
-    return new PerformanceTraceContext(TimelineUtils.AIContext.AgentFocus.fromCallTree(callTree));
+  static fromCallTree(callTree: AICallTree): PerformanceTraceContext {
+    return new PerformanceTraceContext(AgentFocus.fromCallTree(callTree));
   }
 
-  #focus: TimelineUtils.AIContext.AgentFocus;
+  #focus: AgentFocus;
 
-  constructor(focus: TimelineUtils.AIContext.AgentFocus) {
+  constructor(focus: AgentFocus) {
     super();
     this.#focus = focus;
   }
@@ -183,7 +184,7 @@ export class PerformanceTraceContext extends ConversationContext<TimelineUtils.A
     return `trace-${min}-${max}`;
   }
 
-  override getItem(): TimelineUtils.AIContext.AgentFocus {
+  override getItem(): AgentFocus {
     return this.#focus;
   }
 
@@ -227,13 +228,13 @@ type PerformanceConversationType =
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
  */
-export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus> {
+export class PerformanceAgent extends AiAgent<AgentFocus> {
   // TODO: would make more sense on AgentOptions
   #conversationType: PerformanceConversationType;
   #formatter: PerformanceTraceFormatter|null = null;
   #lastInsightForEnhancedQuery: Trace.Insights.Types.InsightModel|undefined;
   #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
-  #lastFocusHandledForContextDetails: TimelineUtils.AIContext.AgentFocus|null = null;
+  #lastFocusHandledForContextDetails: AgentFocus|null = null;
 
   constructor(opts: AgentOptions, conversationType: PerformanceConversationType) {
     super(opts);
@@ -251,8 +252,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
    *
    * The record key is the result of a function's displayInfoFromArgs.
    */
-  #functionCallCacheForFocus =
-      new Map<TimelineUtils.AIContext.AgentFocus, Record<string, Host.AidaClient.RequestFact>>();
+  #functionCallCacheForFocus = new Map<AgentFocus, Record<string, Host.AidaClient.RequestFact>>();
 
   #networkDataDescriptionFact: Host.AidaClient.RequestFact = {
     text: TraceEventFormatter.networkDataFormatDescription,
@@ -306,8 +306,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
   }
 
   async *
-      handleContextDetails(context: ConversationContext<TimelineUtils.AIContext.AgentFocus>|null):
-          AsyncGenerator<ContextResponse, void, void> {
+      handleContextDetails(context: ConversationContext<AgentFocus>|null): AsyncGenerator<ContextResponse, void, void> {
     if (!context) {
       return;
     }
@@ -369,8 +368,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     return super.parseTextResponse(response);
   }
 
-  override async enhanceQuery(query: string, context: ConversationContext<TimelineUtils.AIContext.AgentFocus>|null):
-      Promise<string> {
+  override async enhanceQuery(query: string, context: ConversationContext<AgentFocus>|null): Promise<string> {
     if (!context) {
       this.clearDeclaredFunctions();
       return query;
@@ -427,7 +425,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
   }
 
   override async * run(initialQuery: string, options: {
-    selected: ConversationContext<TimelineUtils.AIContext.AgentFocus>|null,
+    selected: ConversationContext<AgentFocus>|null,
     signal?: AbortSignal,
   }): AsyncGenerator<ResponseData, void, void> {
     const focus = options.selected?.getItem();
@@ -519,7 +517,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     });
   }
 
-  #addFacts(focus: TimelineUtils.AIContext.AgentFocus): void {
+  #addFacts(focus: AgentFocus): void {
     this.addFact(this.#callFrameDataDescriptionFact);
     this.addFact(this.#networkDataDescriptionFact);
 
@@ -544,7 +542,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     }
   }
 
-  #cacheFunctionResult(focus: TimelineUtils.AIContext.AgentFocus, key: string, result: string): void {
+  #cacheFunctionResult(focus: AgentFocus, key: string, result: string): void {
     const fact: Host.AidaClient.RequestFact = {
       text: `This is the result of calling ${key}:\n${result}`,
       metadata: {source: key, score: ScorePriority.DEFAULT},
@@ -554,7 +552,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     this.#functionCallCacheForFocus.set(focus, cache);
   }
 
-  #declareFunctions(context: ConversationContext<TimelineUtils.AIContext.AgentFocus>): void {
+  #declareFunctions(context: ConversationContext<AgentFocus>): void {
     const focus = context.getItem();
     const {parsedTrace, insightSet} = focus.data;
 
@@ -787,7 +785,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
           return {error: 'Invalid eventKey'};
         }
 
-        const tree = TimelineUtils.AICallTree.AICallTree.fromEvent(event, parsedTrace);
+        const tree = AICallTree.fromEvent(event, parsedTrace);
         const callTree = tree ? this.#formatter.formatCallTree(tree) : 'No call tree found';
 
         const key = `getDetailedCallTree(${args.eventKey})`;

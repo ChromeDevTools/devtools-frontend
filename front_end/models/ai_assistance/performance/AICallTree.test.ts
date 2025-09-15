@@ -7,8 +7,7 @@ import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-
-import * as Utils from './utils.js';
+import {AICallTree, ExcludeCompileCodeFilter, SelectedEventDurationFilter} from '../ai_assistance.js';
 
 describeWithEnvironment('AICallTree', () => {
   beforeEach(() => {
@@ -23,7 +22,7 @@ describeWithEnvironment('AICallTree', () => {
       return e.name === Trace.Types.Events.Name.RASTER_TASK && e.pid === 4274 && e.tid === 23555;
     });
     assert.isOk(rasterTask);
-    assert.isNull(Utils.AICallTree.AICallTree.fromEvent(rasterTask, parsedTrace));
+    assert.isNull(AICallTree.fromEvent(rasterTask, parsedTrace));
   });
 
   it('does not build a tree from events the renderer is not aware of', async function() {
@@ -32,7 +31,7 @@ describeWithEnvironment('AICallTree', () => {
     const shift = parsedTrace.data.LayoutShifts.clusters.at(0)?.events.at(0);
     assert.isOk(shift);
     assert.isTrue(Trace.Types.Events.isSyntheticLayoutShift(shift));
-    assert.isNull(Utils.AICallTree.AICallTree.fromEvent(shift, parsedTrace));
+    assert.isNull(AICallTree.fromEvent(shift, parsedTrace));
   });
 
   it('does not build a call tree from a performance.mark', async function() {
@@ -40,7 +39,7 @@ describeWithEnvironment('AICallTree', () => {
 
     const mark = parsedTrace.data.UserTimings.performanceMarks.at(0);
     assert.isOk(mark);
-    assert.isNull(Utils.AICallTree.AICallTree.fromEvent(mark, parsedTrace));
+    assert.isNull(AICallTree.fromEvent(mark, parsedTrace));
   });
 
   it('does not build a call tree from a performance.measure', async function() {
@@ -48,7 +47,7 @@ describeWithEnvironment('AICallTree', () => {
 
     const measure = parsedTrace.data.UserTimings.performanceMeasures.at(0);
     assert.isOk(measure);
-    assert.isNull(Utils.AICallTree.AICallTree.fromEvent(measure, parsedTrace));
+    assert.isNull(AICallTree.fromEvent(measure, parsedTrace));
   });
 
   it('supports NodeJS traces that do not have a "main thread"', async function() {
@@ -66,7 +65,7 @@ describeWithEnvironment('AICallTree', () => {
       return Trace.Types.Events.isProfileCall(event) && event.callFrame.functionName === 'callAndPauseOnStart';
     });
     assert.isOk(funcCall);
-    const callTree = Utils.AICallTree.AICallTree.fromEvent(funcCall, parsedTrace);
+    const callTree = AICallTree.fromEvent(funcCall, parsedTrace);
     assert.isOk(callTree);
     const expectedData = '\n' +
         `
@@ -101,7 +100,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+    const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
     const expectedData = '\n' +
         `
 
@@ -129,7 +128,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+    const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
 
     let stringifiedNode = '';
     if (callTree?.selectedNode) {
@@ -158,7 +157,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+    const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
 
     const visited: Array<{name: string, nodeIndex: number, childStartingIndex?: number}> = [];
 
@@ -202,7 +201,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+    const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
 
     const visited: Array<{name: string, nodeIndex: number, childStartingIndex?: number}> = [];
 
@@ -239,7 +238,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+    const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
 
     // Entry Format: id;name;duration;selfTime;urlIndex;childRange;[S]
     const expectedData = `
@@ -266,7 +265,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+    const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
 
     // Entry Format: id;name;duration;selfTime;urlIndex;childRange;[S]
     const expectedData = `
@@ -301,7 +300,7 @@ describeWithEnvironment('AICallTree', () => {
       return entry.name === 'v8.run' && entry.ts === 122411196071;
     });
     assert.exists(event);
-    const callTree = Utils.AICallTree.AICallTree.fromEvent(event, parsedTrace);
+    const callTree = AICallTree.fromEvent(event, parsedTrace);
     assert.isNotNull(callTree);
     const treeStr = callTree.serialize();
     assert.include(treeStr, 'v8.run');  // make sure the event is in the tree
@@ -314,7 +313,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+    const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
     assert.isOk(callTree);
 
     // We don't need to validate the whole tree, just that it has recursion
@@ -341,7 +340,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!tinyEvent) {
       throw new Error('Could not find expected event.');
     }
-    const tinyStr = Utils.AICallTree.AICallTree.fromEvent(tinyEvent, parsedTrace)?.serialize();
+    const tinyStr = AICallTree.fromEvent(tinyEvent, parsedTrace)?.serialize();
     assert.strictEqual(
         getNodeNames(tinyStr), ['Task', 'Parse HTML', 'Evaluate script', '(anonymous)', 'get storage'].join('\n'));
     assert.include(tinyStr, 'get storage');
@@ -351,7 +350,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!evaluateEvent) {
       throw new Error('Could not find expected event.');
     }
-    const treeStr = Utils.AICallTree.AICallTree.fromEvent(evaluateEvent, parsedTrace)?.serialize();
+    const treeStr = AICallTree.fromEvent(evaluateEvent, parsedTrace)?.serialize();
     assert.strictEqual(
         getNodeNames(treeStr),
         ['Task', 'Parse HTML', 'Evaluate script', 'Compile script', '(anonymous)', 'H.la'].join('\n'));
@@ -362,7 +361,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!compileEvent) {
       throw new Error('Could not find expected event.');
     }
-    const compileStr = Utils.AICallTree.AICallTree.fromEvent(compileEvent, parsedTrace)?.serialize();
+    const compileStr = AICallTree.fromEvent(compileEvent, parsedTrace)?.serialize();
     assert.strictEqual(
         getNodeNames(compileStr), ['Task', 'Parse HTML', 'Evaluate script', '(anonymous)', 'Compile code'].join('\n'));
     assert.include(compileStr, 'Compile code');
@@ -381,7 +380,7 @@ describeWithEnvironment('AICallTree', () => {
     assert.isOk(interaction);
     const timings = Trace.Helpers.Timing.eventTimingsMicroSeconds(interaction);
     const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(timings.startTime, timings.endTime);
-    const tree = Utils.AICallTree.AICallTree.fromTimeOnThread({
+    const tree = AICallTree.fromTimeOnThread({
       thread: {pid: interaction.pid, tid: interaction.tid},
       parsedTrace,
       bounds,
@@ -413,13 +412,13 @@ const makeEvent = (name: string, ts: number, dur: number): Trace.Types.Events.Ev
 describe('AITreeFilter', () => {
   it('always includes the selected event', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
-    const filter = new Utils.AICallTree.SelectedEventDurationFilter(selectedEvent);
+    const filter = new SelectedEventDurationFilter(selectedEvent);
     assert.isTrue(filter.accept(selectedEvent));
   });
 
   it('includes events that are long enough', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
-    const filter = new Utils.AICallTree.SelectedEventDurationFilter(selectedEvent);
+    const filter = new SelectedEventDurationFilter(selectedEvent);
 
     assert.isTrue(filter.accept(makeEvent('short', 0, 1)));
     assert.isTrue(filter.accept(makeEvent('short', 0, 0.6)));
@@ -430,7 +429,7 @@ describe('AITreeFilter', () => {
 
   it('excludes events that are too short', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
-    const filter = new Utils.AICallTree.SelectedEventDurationFilter(selectedEvent);
+    const filter = new SelectedEventDurationFilter(selectedEvent);
 
     assert.isFalse(filter.accept(makeEvent('short', 0, 0)));
     assert.isFalse(filter.accept(makeEvent('short', 0, 0.1)));
@@ -442,13 +441,13 @@ describe('CompileCode filter', () => {
   it('excludes COMPILE_CODE nodes if non-selected', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
     const compileCodeEvent = makeEvent(Trace.Types.Events.Name.COMPILE_CODE, 0, 100);
-    const filter = new Utils.AICallTree.ExcludeCompileCodeFilter(selectedEvent);
+    const filter = new ExcludeCompileCodeFilter(selectedEvent);
     assert.isFalse(filter.accept(compileCodeEvent));
   });
 
   it('includes COMPILE_CODE nodes if selected', () => {
     const selectedEvent = makeEvent(Trace.Types.Events.Name.COMPILE_CODE, 0, 100);
-    const filter = new Utils.AICallTree.ExcludeCompileCodeFilter(selectedEvent);
+    const filter = new ExcludeCompileCodeFilter(selectedEvent);
     assert.isTrue(filter.accept(selectedEvent));
   });
 });

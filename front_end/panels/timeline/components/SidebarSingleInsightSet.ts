@@ -5,13 +5,13 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as AIAssistance from '../../../models/ai_assistance/ai_assistance.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import * as Utils from '../utils/utils.js';
 
 import type {BaseInsightComponent} from './insights/BaseInsightComponent.js';
 import {md, shouldRenderForCategory} from './insights/Helpers.js';
@@ -434,7 +434,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
         return html``;
       }
 
-      const agentFocus = Utils.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
+      const agentFocus = AIAssistance.AgentFocus.fromInsight(this.#data.parsedTrace, model);
       // clang-format off
       return html`<div>
         <${componentClass.litTagName}

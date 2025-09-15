@@ -23,3 +23,6 @@ export * from './data_formatters/PerformanceTraceFormatter.js';
 export * from './data_formatters/UnitFormatters.js';
 export * from './ConversationHandler.js';
 export * from './injected.js';
+export * from './performance/AICallTree.js';
+export * from './performance/AIContext.js';
+export * from './performance/AIQueries.js';

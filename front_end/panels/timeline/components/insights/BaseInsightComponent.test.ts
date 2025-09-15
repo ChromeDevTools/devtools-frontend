@@ -4,13 +4,13 @@
 
 import type * as Common from '../../../../core/common/common.js';
 import * as Root from '../../../../core/root/root.js';
+import * as AIAssistance from '../../../../models/ai_assistance/ai_assistance.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import * as Utils from '../../utils/utils.js';
 
 import * as Insights from './insights.js';
 
@@ -313,8 +313,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     });
 
     it('sets the context when the user clicks the button', async () => {
-      const focus =
-          new Utils.AIContext.AgentFocus({type: 'insight'} as unknown as Utils.AIContext.AgentFocusDataInsight);
+      const focus = new AIAssistance.AgentFocus({type: 'insight'} as unknown as AIAssistance.AgentFocusDataInsight);
       updateHostConfig({
         aidaAvailability: {
           enabled: true,
@@ -339,20 +338,19 @@ describeWithEnvironment('BaseInsightComponent', () => {
           .returns(FAKE_ACTION);
 
       dispatchClickEvent(button);
-      const context = UI.Context.Context.instance().flavor(Utils.AIContext.AgentFocus);
-      assert.instanceOf(context, Utils.AIContext.AgentFocus);
+      const context = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
+      assert.instanceOf(context, AIAssistance.AgentFocus);
     });
 
     it('clears the active context when it gets toggled shut', async () => {
-      const focus =
-          new Utils.AIContext.AgentFocus({type: 'insight'} as unknown as Utils.AIContext.AgentFocusDataInsight);
-      UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, focus);
+      const focus = new AIAssistance.AgentFocus({type: 'insight'} as unknown as AIAssistance.AgentFocusDataInsight);
+      UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus);
       const component = await renderComponent({insightHasAISupport: true});
       component.agentFocus = focus;
       const header = component.shadowRoot?.querySelector('header');
       assert.isOk(header);
       dispatchClickEvent(header);
-      const context = UI.Context.Context.instance().flavor(Utils.AIContext.AgentFocus);
+      const context = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
       assert.isNull(context);
     });
 

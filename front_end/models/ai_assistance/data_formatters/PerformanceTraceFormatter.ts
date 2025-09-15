@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import * as Trace from '../../trace/trace.js';
+import type {AICallTree} from '../performance/AICallTree.js';
+import type {AgentFocus} from '../performance/AIContext.js';
+import {AIQueries} from '../performance/AIQueries.js';
 
 import {PerformanceInsightFormatter, TraceEventFormatter} from './PerformanceInsightFormatter.js';
 import {bytes, micros, millis} from './UnitFormatters.js';
@@ -13,7 +15,7 @@ export class PerformanceTraceFormatter {
   #insightSet: Trace.Insights.Types.InsightSet|null;
   #eventsSerializer: Trace.EventsSerializer.EventsSerializer;
 
-  constructor(focus: TimelineUtils.AIContext.AgentFocus, eventsSerializer: Trace.EventsSerializer.EventsSerializer) {
+  constructor(focus: AgentFocus, eventsSerializer: Trace.EventsSerializer.EventsSerializer) {
     this.#parsedTrace = focus.data.parsedTrace;
     this.#insightSet = focus.data.insightSet;
     this.#eventsSerializer = eventsSerializer;
@@ -176,7 +178,7 @@ export class PerformanceTraceFormatter {
     const insightSet = this.#insightSet;
 
     const bounds = parsedTrace.data.Meta.traceBounds;
-    const rootNode = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityBottomUp(
+    const rootNode = AIQueries.mainThreadActivityBottomUp(
         insightSet?.navigation?.args.data?.navigationId,
         bounds,
         parsedTrace,
@@ -229,8 +231,8 @@ export class PerformanceTraceFormatter {
     const insightSet = this.#insightSet;
 
     const bounds = parsedTrace.data.Meta.traceBounds;
-    const longestTaskTrees = TimelineUtils.InsightAIContext.AIQueries.longestTasks(
-        insightSet?.navigation?.args.data?.navigationId, bounds, parsedTrace, 3);
+    const longestTaskTrees =
+        AIQueries.longestTasks(insightSet?.navigation?.args.data?.navigationId, bounds, parsedTrace, 3);
     if (!longestTaskTrees || longestTaskTrees.length === 0) {
       return 'Longest tasks: none';
     }
@@ -288,7 +290,7 @@ export class PerformanceTraceFormatter {
   formatMainThreadTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): string {
     const results = [];
 
-    const topDownTree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityTopDown(
+    const topDownTree = AIQueries.mainThreadActivityTopDown(
         this.#insightSet?.navigation?.args.data?.navigationId,
         bounds,
         this.#parsedTrace,
@@ -298,7 +300,7 @@ export class PerformanceTraceFormatter {
       results.push(this.formatCallTree(topDownTree, 2 /* headerLevel */));
     }
 
-    const bottomUpRootNode = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivityBottomUp(
+    const bottomUpRootNode = AIQueries.mainThreadActivityBottomUp(
         this.#insightSet?.navigation?.args.data?.navigationId,
         bounds,
         this.#parsedTrace,
@@ -349,7 +351,7 @@ export class PerformanceTraceFormatter {
     return results.join('\n\n');
   }
 
-  formatCallTree(tree: TimelineUtils.AICallTree.AICallTree, headerLevel = 1): string {
+  formatCallTree(tree: AICallTree, headerLevel = 1): string {
     const results = [tree.serialize(headerLevel), ''];
 
     // TODO(b/425270067): add eventKey to tree.serialize, but need to wait for other

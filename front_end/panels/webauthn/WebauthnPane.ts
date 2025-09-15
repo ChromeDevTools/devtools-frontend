@@ -748,7 +748,7 @@ export class WebauthnPaneImpl extends UI.Panel.Panel implements
   }
 
   async #handleAddAuthenticatorButton(): Promise<void> {
-    const options = this.#newAuthenticatorOptions;
+    const options = {...this.#newAuthenticatorOptions};
     if (this.#model) {
       const authenticatorId = await this.#addAuthenticator(options);
       this.#activeAuthId = authenticatorId;  // Newly added authenticator is automatically set as active.

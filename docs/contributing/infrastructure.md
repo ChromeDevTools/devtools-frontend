@@ -146,4 +146,70 @@ To toggle this behaviour you need to edit `buckets/try.star` file ([example](htt
 // TODO
 
 ## Anatomy of a CQ build
-// TODO
+
+In CQ the builders that get most attention are `dtf_*_rel` builders. These builders
+run the devtools/trybot_tester recipe and are responsible with building DevTools
+Frontend and running our tests.
+
+Below is a detailed description of what happens in such a build:
+  - The recipe will perform the `bot_update` and `gclient runhooks` step where
+    the tip-of-tree for devtools-frontend gets checked out, your changes get
+    patched on top of it and dependencies get updated.
+  - The compilator bot get triggered (`initialization` step)
+  - We wait for the compilator bot to finish. This bot is responsible for
+    the actual build of devtools-frontend.
+       - It does a `bot_update` of its own
+       - Generates the GN files (`gn` step)
+       - Compiles (`compile`) the project
+       - Reads the e2e_non_hosted test lists
+       - Creates a CAS archive with project and the compilation output
+       - Ouputs the `compilator_properties`
+  - Once the compilator is done we read the `compilator_properties` to find
+     - the `cas_digest` to be used when triggering tests on swarming
+     - the `e2e_non_hosted_test_list` for sharding the e2e tests execution
+  - Write the e2e test list at the location where building would have written it
+  - The default test run phase starts at `Run tests` step:
+     - We trigger all tests on swarming in parallel (`Trigger Tests`) substep.
+        - For all types of tests we calculate the command we want to run on swarming
+         and trigger a task with that command and the collected CAS digest
+        - Before calculating the command for e2e test we read the test list and
+         and split it in a number of shards. Each shard will have the allocated
+         tests specified in the command.
+     - We wait for all swarming task to complete
+  - Next we re-run the failed tests in attemt to exonerate their initial
+   failures (`Flake exonaration attempt` step):
+     - We query ResultDB for any tests that might have failed
+     - We collect the failed test names and contruct new commands to re-run
+      them on new swarming tasks
+     - We wait for all swarming task to complete
+  - Finally we will stress test the tests that were added/modified by the
+   current CL in the `Detect flakes in new tests` step
+     - Run `git diff` to determine which tests were added/modifed
+     - Construct the command to be run on swatming
+     - Trigger and wait for the swarming tasks to finish
+  - Calculate the outcome of the builder:
+     - fail the builder if tests failed in the default run and the exoneration
+      run was unsuccesful
+     - fail the builder if tests failed in the deflaking phase
+     - otherwise report build as passing
+
+### Common build failures
+
+The first place where a build usualy fails is on `bot_update` and this usually
+happens because your changes cannot be applied on top of the current tip-of-tree.
+Rebase your CL and solve any merge conflicts and this failure will go away.
+
+Another common failure is a compilation failure. You can insepct the compilator
+builder (`dtf_*_compiler_rel`) separately by following the link next to the
+`compilator steps` step.
+
+If you have too many tests failing in the default phase the exoneration phase
+gets skipped.
+
+A test might not get exonerated in your build even if your CL does not touch
+anything related to it. The exoneration phase will re-run previously faling
+tests a number of times and at any point the test passes the tests gets
+exonerated. Therefore a test can have a recent history of getting exonerated
+even if it consitently failed 4 times out of 5 runs for some time. Try to
+correlate your failure with a luci-analysys report on this test and skip it
+untill the flakiness gets resolved.

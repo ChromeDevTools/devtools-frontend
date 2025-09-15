@@ -29,7 +29,7 @@ Once you get approval from the existing committers, you'll be added to [chrome-d
 
 In the most unfavorable circumstances, the process could extend up to two weeks. Maintain your commitment to writing patches. Even in the uncommon instances where a nomination fails, the objection is frequently something specific to resolve, such as "more patches" or "not enough people are familiar with this person's work."
 
-Two-factor authentication is a requirement for adding your account as a committer. If you haven't done so already, you'll need to set up a security key on your account.
+Two-factor authentication is a requirement for adding your account as a committer. If you haven't done so already, you'll need to set up a security key on your account. For more information about this requirement see [Gerrit ReAuth](https://chromium.googlesource.com/chromium/src/+/main/docs/gerrit_reauth.md).
 
 # **Maintaining committer status**
 

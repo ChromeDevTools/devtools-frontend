@@ -536,9 +536,9 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     });
   }
 
-  private onSectionClick(event: Event): void {
+  private onSectionClick(event: MouseEvent): void {
     event.consume(true);
-    const mouseEvent = (event as MouseEvent);
+    const mouseEvent = event;
     if (mouseEvent.detail === 1) {
       this.preventClickTimeout = window.setTimeout(handleClick.bind(this), 333);
     } else if (this.preventClickTimeout !== undefined) {

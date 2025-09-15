@@ -128,7 +128,7 @@ const ResizerOffset = 5;
 const OffsetFromWindowEnds = 10;
 
 export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private parentElement: Element;
+  private parentElement: HTMLElement;
   private calculator: NetworkTimeCalculator.Calculator|undefined;
   private leftResizeElement: HTMLElement;
   private rightResizeElement: HTMLElement;
@@ -618,8 +618,8 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.setWindowRatio(windowLeft || 0, windowRight || 0);
   }
 
-  private onMouseWheel(event: Event): void {
-    const wheelEvent = (event as WheelEvent);
+  private onMouseWheel(event: WheelEvent): void {
+    const wheelEvent = event;
     if (!this.resizeEnabled) {
       return;
     }

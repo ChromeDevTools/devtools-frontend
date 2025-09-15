@@ -103,18 +103,18 @@ const createSettingSelect = function(
 };
 
 export const bindToSetting =
-    (setting: string|Common.Settings.Setting<boolean|string>|Common.Settings.RegExpSetting,
+    (settingOrName: string|Common.Settings.Setting<boolean|string>|Common.Settings.RegExpSetting,
      stringValidator?: (newSettingValue: string) => boolean): ReturnType<typeof Directives.ref> => {
-      if (typeof setting === 'string') {
-        setting = Common.Settings.Settings.instance().moduleSetting(setting);
-      }
+      const setting = typeof settingOrName === 'string' ?
+          Common.Settings.Settings.instance().moduleSetting(settingOrName) :
+          settingOrName;
 
       // We can't use `setValue` as the change listener directly, otherwise we won't
       // be able to remove it again.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let setValue: (value: any) => void;
       function settingChanged(): void {
-        setValue((setting as Common.Settings.Setting<unknown>| Common.Settings.RegExpSetting).get());
+        setValue(setting.get());
       }
 
       if (setting.type() === Common.Settings.SettingType.BOOLEAN || typeof setting.defaultValue === 'boolean') {

@@ -217,8 +217,8 @@ export class Dialog {
     this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
   }
 
-  private keyDown(event: Event): void {
-    const keyboardEvent = (event as KeyboardEvent);
+  private keyDown(event: KeyboardEvent): void {
+    const keyboardEvent = event;
     switch (keyboardEvent.key) {
       case 'ArrowLeft':
         if (Host.Platform.isMac() && keyboardEvent.metaKey) {

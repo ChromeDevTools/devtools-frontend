@@ -325,8 +325,8 @@ export class ChartViewport extends UI.Widget.VBox {
     this.delegate.updateRangeSelection(this.rangeSelectionStart, this.rangeSelectionEnd);
   }
 
-  onClick(event: Event): void {
-    const mouseEvent = (event as MouseEvent);
+  onClick(event: MouseEvent): void {
+    const mouseEvent = event;
     const time = this.pixelToTime(mouseEvent.offsetX);
     if (this.rangeSelectionStart !== null && this.rangeSelectionEnd !== null && time >= this.rangeSelectionStart &&
         time <= this.rangeSelectionEnd) {

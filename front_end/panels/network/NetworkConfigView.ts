@@ -274,7 +274,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
       userAgentUpdateButtonStatusText.textContent = '';
     });
 
-    clientHints.addEventListener('clienthintssubmit', (event: Event) => {
+    clientHints.addEventListener('clienthintssubmit', event => {
       const metaData: Protocol.Emulation.UserAgentMetadata = (event as CustomEvent).detail.value;
       const customUA = customUserAgentSetting.get();
       userAgentMetadataSetting.set(metaData);

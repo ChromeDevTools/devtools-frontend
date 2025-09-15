@@ -30,7 +30,6 @@ type DeducedElementType<ElementType extends Element|null, Selector extends strin
 
 const CONTROL_OR_META = platform === 'mac' ? 'Meta' : 'Control';
 
-// TODO: Remove once Chromium updates its version of Node.js to 12+.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;
 

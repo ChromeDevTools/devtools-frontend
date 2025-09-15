@@ -136,7 +136,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   private infoBarDiv!: HTMLDivElement|null;
   private readonly tabbedLocation: TabbedViewLocation;
   readonly tabbedPane: TabbedPane;
-  private readonly keyDownBound: (event: Event) => void;
+  private readonly keyDownBound: (event: KeyboardEvent) => void;
   private currentPanelLocked?: boolean;
   private focusRestorer?: WidgetFocusRestorer|null;
   private ownerSplitWidget?: SplitWidget;
@@ -476,9 +476,8 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     return this.drawerSplitWidget.isVertical();
   }
 
-  private keyDown(event: Event): void {
-    const keyboardEvent = (event as KeyboardEvent);
-    if (!KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent) || keyboardEvent.altKey || keyboardEvent.shiftKey) {
+  private keyDown(event: KeyboardEvent): void {
+    if (!KeyboardShortcut.eventHasCtrlEquivalentKey(event) || event.altKey || event.shiftKey) {
       return;
     }
 
@@ -486,12 +485,11 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     const panelShortcutEnabled = Common.Settings.moduleSetting('shortcut-panel-switch').get();
     if (panelShortcutEnabled) {
       let panelIndex = -1;
-      if (keyboardEvent.keyCode > 0x30 && keyboardEvent.keyCode < 0x3A) {
-        panelIndex = keyboardEvent.keyCode - 0x31;
+      if (event.keyCode > 0x30 && event.keyCode < 0x3A) {
+        panelIndex = event.keyCode - 0x31;
       } else if (
-          keyboardEvent.keyCode > 0x60 && keyboardEvent.keyCode < 0x6A &&
-          keyboardEvent.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD) {
-        panelIndex = keyboardEvent.keyCode - 0x61;
+          event.keyCode > 0x60 && event.keyCode < 0x6A && event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD) {
+        panelIndex = event.keyCode - 0x61;
       }
       if (panelIndex !== -1) {
         const panelName = this.tabbedPane.tabIds()[panelIndex];

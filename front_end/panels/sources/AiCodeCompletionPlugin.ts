@@ -40,7 +40,7 @@ export class AiCodeCompletionPlugin extends Plugin {
   #aiCodeCompletionCitationsToolbarContainer = document.createElement('div');
   #aiCodeCompletionCitationsToolbarAttached = false;
 
-  #boundEditorKeyDown: (event: Event) => Promise<void>;
+  #boundEditorKeyDown: (event: KeyboardEvent) => Promise<void>;
   #boundOnAiCodeCompletionSettingChanged: () => void;
 
   constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
@@ -167,11 +167,11 @@ export class AiCodeCompletionPlugin extends Plugin {
     ];
   }
 
-  async #editorKeyDown(event: Event): Promise<void> {
+  async #editorKeyDown(event: KeyboardEvent): Promise<void> {
     if (!this.#teaser?.isShowing()) {
       return;
     }
-    const keyboardEvent = (event as KeyboardEvent);
+    const keyboardEvent = event;
     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent)) {
       if (keyboardEvent.key === 'i') {
         keyboardEvent.consume(true);

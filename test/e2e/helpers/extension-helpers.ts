@@ -7,7 +7,6 @@ import type {CdpPage} from 'puppeteer-core/internal/cdp/Page.js';
 
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
-// TODO: Remove once Chromium updates its version of Node.js to 12+.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;
 

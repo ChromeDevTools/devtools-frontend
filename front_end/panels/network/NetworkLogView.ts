@@ -1166,8 +1166,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     return this.dataGrid;
   }
 
-  private dataGridMouseMove(event: Event): void {
-    const mouseEvent = (event as MouseEvent);
+  private dataGridMouseMove(event: MouseEvent): void {
+    const mouseEvent = event;
     const node = (this.dataGrid.dataGridNodeFromNode((mouseEvent.target as Node)));
     const highlightInitiatorChain = mouseEvent.shiftKey;
     this.setHoveredNode(node as NetworkNode, highlightInitiatorChain);

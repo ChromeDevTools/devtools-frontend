@@ -68,9 +68,9 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   }
 
   private static parseJSON(text: string|null): Promise<ParsedJSON|null> {
-    let returnObj: (ParsedJSON|null)|null = null;
+    let returnObj: ParsedJSON<string>|null = null;
     if (text) {
-      returnObj = JSONView.extractJSON((text));
+      returnObj = JSONView.extractJSON(text);
     }
     if (!returnObj) {
       return Promise.resolve(null);
@@ -88,7 +88,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     return Promise.resolve(returnObj);
   }
 
-  private static extractJSON(text: string): ParsedJSON|null {
+  private static extractJSON(text: string): ParsedJSON<string>|null {
     // Do not treat HTML as JSON.
     if (text.startsWith('<')) {
       return null;
@@ -269,16 +269,12 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   }
 }
 
-export class ParsedJSON {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+export class ParsedJSON<T extends unknown = unknown> {
+  data: T;
   prefix: string;
   suffix: string;
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(data: any, prefix: string, suffix: string) {
+  constructor(data: T, prefix: string, suffix: string) {
     this.data = data;
     this.prefix = prefix;
     this.suffix = suffix;

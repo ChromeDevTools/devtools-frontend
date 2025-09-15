@@ -974,10 +974,7 @@ function listenForNewComponentLinkifierEvents(): void {
   listeningToNewEvents = true;
 
   window.addEventListener('linkifieractivated', function(event: Event) {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const unknownEvent = (event as any);
-    const eventWithData = (unknownEvent as {
+    const eventWithData = (event as unknown as {
       data: LinkInfo,
     });
     Linkifier.handleClickFromNewComponentLand(eventWithData.data);

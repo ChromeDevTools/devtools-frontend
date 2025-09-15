@@ -140,7 +140,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private dataTableHeaders: Record<string, Element>;
   scrollContainerInternal: Element;
   #dataContainer: Element;
-  private readonly dataTable: Element;
+  private readonly dataTable: HTMLTableElement;
   protected inline: boolean;
   private columnsArray: ColumnDescriptor[];
   columns: Record<string, ColumnDescriptor>;
@@ -1516,19 +1516,19 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     void contextMenu.show();
   }
 
-  private clickInDataTable(event: Event): void {
+  private clickInDataTable(event: MouseEvent): void {
     const gridNode = this.dataGridNodeFromNode((event.target as Node));
-    if (!gridNode || !gridNode.hasChildren() || !gridNode.isEventWithinDisclosureTriangle((event as MouseEvent))) {
+    if (!gridNode || !gridNode.hasChildren() || !gridNode.isEventWithinDisclosureTriangle(event)) {
       return;
     }
 
     if (gridNode.expanded) {
-      if ((event as MouseEvent).altKey) {
+      if (event.altKey) {
         gridNode.collapseRecursively();
       } else {
         gridNode.collapse();
       }
-    } else if ((event as MouseEvent).altKey) {
+    } else if (event.altKey) {
       gridNode.expandRecursively();
     } else {
       gridNode.expand();

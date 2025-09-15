@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint @typescript-eslint/no-explicit-any: 0 */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import * as fs from 'fs';
 import * as path from 'path';

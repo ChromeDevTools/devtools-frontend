@@ -375,7 +375,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.chartSplitWidget.setMainWidget(flameChartsContainer);
     this.chartSplitWidget.setSidebarWidget(this.countersView);
     this.chartSplitWidget.hideDefaultResizer();
-    this.chartSplitWidget.installResizer((this.countersView.resizerElement() as Element));
+    this.chartSplitWidget.installResizer(this.countersView.resizerElement());
 
     // Create top level properties splitter.
     this.detailsSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'timeline-panel-details-split-view-state');

@@ -162,13 +162,13 @@ export class CreateRecordingView extends HTMLElement {
     this.#defaultRecordingName = this.#recorderSettings.defaultTitle;
   }
 
-  #onKeyDown(event: Event): void {
+  #onKeyDown(event: KeyboardEvent): void {
     if (this.#error) {
       this.#error = undefined;
       this.#render();
     }
 
-    const keyboardEvent = event as KeyboardEvent;
+    const keyboardEvent = event;
     if (keyboardEvent.key === 'Enter') {
       this.startRecording();
       event.stopPropagation();

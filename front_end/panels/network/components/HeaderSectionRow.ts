@@ -400,10 +400,9 @@ export class HeaderSectionRow extends HTMLElement {
     this.dispatchEvent(new HeaderRemovedEvent(this.#header.name, this.#header.value || ''));
   }
 
-  #onKeyDown(event: Event): void {
-    const keyboardEvent = event as KeyboardEvent;
+  #onKeyDown(event: KeyboardEvent): void {
     const target = event.target as EditableSpan;
-    if (keyboardEvent.key === 'Escape') {
+    if (event.key === 'Escape') {
       event.consume();
       if (target.matches('.header-name devtools-editable-span')) {
         target.value = this.#header?.name || '';

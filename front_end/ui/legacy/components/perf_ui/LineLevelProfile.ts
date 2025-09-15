@@ -39,10 +39,7 @@ export class Performance {
     const nodesToGo: CPUProfile.CPUProfileDataModel.CPUProfileNode[] = [profile.profileHead];
     const sampleDuration = (profile.profileEndTime - profile.profileStartTime) / profile.totalHitCount;
     while (nodesToGo.length) {
-      const nodes: CPUProfile.CPUProfileDataModel.CPUProfileNode[] =
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (nodesToGo.pop() as any).children;  // Cast to any because runtime checks assert the props.
+      const nodes: CPUProfile.CPUProfileDataModel.CPUProfileNode[] = nodesToGo.pop()?.children ?? [];
       for (let i = 0; i < nodes.length; ++i) {
         const node = nodes[i];
         nodesToGo.push(node);

@@ -208,7 +208,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     Host.userMetrics.settingsPanelShown(tabId);
   }
 
-  private onEscapeKeyPressed(event: Event): void {
+  private onEscapeKeyPressed(event: KeyboardEvent): void {
     if (this.tabbedLocation.tabbedPane().selectedTabId === 'keybinds' && this.keybindsTab) {
       this.keybindsTab.onEscapeKeyPressed(event);
     }

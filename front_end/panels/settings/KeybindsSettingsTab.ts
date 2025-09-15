@@ -591,7 +591,7 @@ export class ShortcutListItem {
     const activeElement = Platform.DOMUtilities.deepActiveElement(document);
     for (const [shortcut, shortcutInput] of this.shortcutInputs.entries()) {
       if (activeElement === shortcutInput) {
-        this.onShortcutInputKeyDown(shortcut, shortcutInput as HTMLInputElement, event as KeyboardEvent);
+        this.onShortcutInputKeyDown(shortcut, shortcutInput as HTMLInputElement, event);
       }
     }
   }

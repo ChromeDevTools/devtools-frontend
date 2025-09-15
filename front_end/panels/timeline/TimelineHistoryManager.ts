@@ -539,8 +539,8 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
     this.close(this.listControl.selectedItem());
   }
 
-  private onKeyDown(event: Event): void {
-    switch ((event as KeyboardEvent).key) {
+  private onKeyDown(event: KeyboardEvent): void {
+    switch (event.key) {
       case 'Tab':
       case 'Escape':
         this.close(null);

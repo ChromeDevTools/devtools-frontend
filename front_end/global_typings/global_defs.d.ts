@@ -12,7 +12,7 @@ declare module '*.css.js' {
   export default styles;
 }
 
-// Types for the Scheduler API.
+// [start] Types for the Scheduler API.
 // These are taken from
 // https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/wicg-task-scheduling
 // but modified because within Chrome we can use the API without worrying that
@@ -66,3 +66,17 @@ interface Window {
 interface WorkerGlobalScope {
   readonly scheduler?: Scheduler;
 }
+// [end] Types for the Scheduler API.
+
+// [start] Type definition for EyeDropper
+
+interface EyeDropper {
+  open: (options?: {signal?: AbortSignal}) => Promise<{sRGBHex: string}>;
+}
+
+interface Window {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  EyeDropper: {new(): EyeDropper};
+}
+
+// [end] Type definition for EyeDropper

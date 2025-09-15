@@ -196,7 +196,7 @@ export class CountersGraph extends UI.Widget.VBox {
     return counter;
   }
 
-  resizerElement(): Element|null {
+  resizerElement(): Element {
     return this.header.element;
   }
 
@@ -228,8 +228,8 @@ export class CountersGraph extends UI.Widget.VBox {
     }
   }
 
-  private onClick(event: Event): void {
-    const x = (event as MouseEvent).x - this.canvasContainer.getBoundingClientRect().left;
+  private onClick(event: MouseEvent): void {
+    const x = event.x - this.canvasContainer.getBoundingClientRect().left;
     let minDistance = Infinity;
     let bestTime;
     for (const counterUI of this.counterUI) {
@@ -259,8 +259,8 @@ export class CountersGraph extends UI.Widget.VBox {
     }
   }
 
-  private onMouseMove(event: Event): void {
-    const x = (event as MouseEvent).x - this.canvasContainer.getBoundingClientRect().left;
+  private onMouseMove(event: MouseEvent): void {
+    const x = event.x - this.canvasContainer.getBoundingClientRect().left;
     this.markerXPosition = x;
     this.refreshCurrentValues();
   }

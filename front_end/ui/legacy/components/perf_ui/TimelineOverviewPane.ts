@@ -91,11 +91,11 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.hasPointer = false;
   }
 
-  private onMouseMove(event: Event): void {
+  private onMouseMove(event: MouseEvent): void {
     if (!this.cursorEnabled) {
       return;
     }
-    const mouseEvent = (event as MouseEvent);
+    const mouseEvent = event;
     const target = (event.target as HTMLElement);
     const offsetLeftRelativeToCursorArea =
         target.getBoundingClientRect().left - this.cursorArea.getBoundingClientRect().left;

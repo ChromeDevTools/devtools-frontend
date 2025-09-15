@@ -1419,10 +1419,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     } else if (IS_NATIVE_EYE_DROPPER_AVAILABLE && enabled) {
       // Use EyeDropper API, can pick up colors outside the browser window,
       // Note: The current EyeDropper API is not designed to pick up colors continuously.
-      // Wait for TypeScript to support the definition of EyeDropper API:
-      // https://github.com/microsoft/TypeScript/issues/48638
-      /* eslint-disable  @typescript-eslint/no-explicit-any */
-      const eyeDropper = new (window as any).EyeDropper();
+      const eyeDropper = new window.EyeDropper();
       this.eyeDropperAbortController = new AbortController();
 
       try {

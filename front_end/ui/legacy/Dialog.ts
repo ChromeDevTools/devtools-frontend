@@ -21,8 +21,8 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
   private focusRestorer: WidgetFocusRestorer|null = null;
   private closeOnEscape = true;
   private targetDocument: Document|null = null;
-  private readonly targetDocumentKeyDownHandler: (event: Event) => void;
-  private escapeKeyCallback: ((arg0: Event) => void)|null = null;
+  private readonly targetDocumentKeyDownHandler: (event: KeyboardEvent) => void;
+  private escapeKeyCallback: ((arg0: KeyboardEvent) => void)|null = null;
 
   constructor(jslogContext?: string) {
     super();
@@ -109,7 +109,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     this.closeOnEscape = close;
   }
 
-  setEscapeKeyCallback(callback: (arg0: Event) => void): void {
+  setEscapeKeyCallback(callback: (arg0: KeyboardEvent) => void): void {
     this.escapeKeyCallback = callback;
   }
 
@@ -187,12 +187,11 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     this.tabIndexMap.clear();
   }
 
-  private onKeyDown(event: Event): void {
-    const keyboardEvent = (event as KeyboardEvent);
+  private onKeyDown(event: KeyboardEvent): void {
+    const keyboardEvent = event;
     if (Dialog.getInstance() !== this) {
       return;
     }
-
     if (keyboardEvent.keyCode === Keys.Esc.code && KeyboardShortcut.hasNoModifiers(event)) {
       if (this.escapeKeyCallback) {
         this.escapeKeyCallback(event);

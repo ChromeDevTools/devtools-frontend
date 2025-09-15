@@ -9,7 +9,7 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Trace from './trace.js';
 
-describeWithEnvironment('EntryName', () => {
+describeWithEnvironment('Name', () => {
   it('uses the URL for the name of a network request', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const request = parsedTrace.data.NetworkRequests.byTime.at(0);

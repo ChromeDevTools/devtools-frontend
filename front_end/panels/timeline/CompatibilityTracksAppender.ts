@@ -604,7 +604,7 @@ export class CompatibilityTracksAppender {
 
     // Historically all tracks would have a titleForEvent() method. However a
     // lot of these were duplicated so we worked on removing them in favour of
-    // the EntryName.nameForEntry method called below (see crbug.com/365047728).
+    // the Name.forEntry method called below (see crbug.com/365047728).
     // However, sometimes an appender needs to customise the titles slightly;
     // for example the LayoutShiftsTrackAppender does not show any titles as we
     // use diamonds to represent layout shifts.

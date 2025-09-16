@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
-import {dispatchClickEvent, dispatchKeyDownEvent} from '../../testing/DOMHelpers.js';
+import {dispatchClickEvent, dispatchInputEvent, dispatchKeyDownEvent} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -77,7 +77,9 @@ class TestSearchView extends Search.SearchView.SearchView {
 
   /** Fills in the UI elements of the SearchView and hits 'Enter'. */
   triggerSearch(query: string, matchCase: boolean, isRegex: boolean): void {
-    this.search.value = query;
+    const search = this.contentElement.querySelector<HTMLInputElement>('.search-toolbar-input')!;
+    search.value = query;
+    dispatchInputEvent(search);
     if (matchCase) {
       this.matchCaseButton.click();
     }
@@ -85,7 +87,7 @@ class TestSearchView extends Search.SearchView.SearchView {
       this.regexButton.click();
     }
 
-    dispatchKeyDownEvent(this.search, {keyCode: UI.KeyboardShortcut.Keys.Enter.code});
+    dispatchKeyDownEvent(search, {keyCode: UI.KeyboardShortcut.Keys.Enter.code});
   }
 
   get currentSearchResultMessage(): string {

@@ -109,10 +109,13 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {ref} = Directives;
 
 interface SearchViewInput {
+  query: string;
+  focusSearchInput: boolean;
   matchCase: boolean;
   isRegex: boolean;
   searchMessage: string;
   searchResultsMessage: string;
+  onQueryChange: (query: string) => void;
   onQueryKeyDown: (evt: KeyboardEvent) => void;
   onPanelKeyDown: (evt: KeyboardEvent) => void;
   onClearSearchInput: () => void;
@@ -123,7 +126,6 @@ interface SearchViewInput {
 }
 
 interface SearchViewOutput {
-  searchInputElement?: HTMLInputElement;
   searchResultsElement?: HTMLElement;
   searchProgressPlaceholderElement?: HTMLElement;
   matchCaseButton?: Buttons.Button.Button;
@@ -134,10 +136,13 @@ type View = (input: SearchViewInput, output: SearchViewOutput, target: HTMLEleme
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const {
+    query,
+    focusSearchInput,
     matchCase,
     isRegex,
     searchMessage,
     searchResultsMessage,
+    onQueryChange,
     onQueryKeyDown,
     onPanelKeyDown,
     onClearSearchInput,
@@ -160,8 +165,15 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                     change: true, keydown: 'ArrowUp|ArrowDown|Enter'})}
                 aria-label=${i18nString(UIStrings.find)}
                 size="100" results="0"
+                .value=${query}
                 @keydown=${onQueryKeyDown}
-                ${ref(e => {output.searchInputElement = e as HTMLInputElement;})}>
+                @input=${(e: Event) => onQueryChange((e.target as HTMLInputElement).value)}
+                ${ref(e => {
+                  if (e instanceof HTMLInputElement && focusSearchInput) {
+                    e.focus();
+                    e.select();
+                  }
+                })}>
             <devtools-button class="clear-button" tabindex="-1"
                 @click=${onClearSearchInput}
                 .data=${{
@@ -227,7 +239,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
 export class SearchView extends UI.Widget.VBox {
   readonly #view: View;
-  #focusOnShow: boolean;
+  #focusSearchInput: boolean;
   #isIndexing: boolean;
   #searchId: number;
   #searchMatchesCount: number;
@@ -241,7 +253,7 @@ export class SearchView extends UI.Widget.VBox {
   #progressIndicator: UI.ProgressIndicator.ProgressIndicator|null;
   #visiblePane: UI.Widget.Widget|null;
   #searchResultsElement!: HTMLElement;
-  #searchInputElement!: HTMLInputElement;
+  #query: string;
   #matchCase = false;
   #matchCaseButton!: Buttons.Button.Button;
   #isRegex = false;
@@ -270,9 +282,10 @@ export class SearchView extends UI.Widget.VBox {
     this.#view = view;
     this.setMinimumSize(0, 40);
 
-    this.#focusOnShow = false;
+    this.#focusSearchInput = false;
     this.#isIndexing = false;
     this.#searchId = 1;
+    this.#query = '';
     this.#searchMatchesCount = 0;
     this.#searchResultsCount = 0;
     this.#nonEmptySearchResultsCount = 0;
@@ -302,10 +315,15 @@ export class SearchView extends UI.Widget.VBox {
 
   override performUpdate(): void {
     const input: SearchViewInput = {
+      query: this.#query,
+      focusSearchInput: this.#focusSearchInput,
       matchCase: this.#matchCase,
       isRegex: this.#isRegex,
       searchMessage: this.#searchMessage,
       searchResultsMessage: this.#searchResultsMessage,
+      onQueryChange: (query: string) => {
+        this.#query = query;
+      },
       onQueryKeyDown: this.#onQueryKeyDown.bind(this),
       onPanelKeyDown: this.#onPanelKeyDown.bind(this),
       onClearSearchInput: this.#onClearSearchInput.bind(this),
@@ -316,9 +334,7 @@ export class SearchView extends UI.Widget.VBox {
     };
     const output: SearchViewOutput = {};
     this.#view(input, output, this.contentElement);
-    if (output.searchInputElement) {
-      this.#searchInputElement = output.searchInputElement;
-    }
+    this.#focusSearchInput = false;
     if (output.searchResultsElement) {
       this.#searchResultsElement = output.searchResultsElement;
     }
@@ -344,16 +360,13 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   #buildSearchConfig(): Workspace.SearchConfig.SearchConfig {
-    return new Workspace.SearchConfig.SearchConfig(this.#searchInputElement.value, !this.#matchCase, this.#isRegex);
+    return new Workspace.SearchConfig.SearchConfig(this.#query, !this.#matchCase, this.#isRegex);
   }
 
   toggle(queryCandidate: string, searchImmediately?: boolean): void {
-    this.#searchInputElement.value = queryCandidate;
-    if (this.isShowing()) {
-      this.focus();
-    } else {
-      this.#focusOnShow = true;
-    }
+    this.#query = queryCandidate;
+    this.requestUpdate();
+    this.focus();
 
     this.#initScope();
     if (searchImmediately) {
@@ -369,14 +382,6 @@ export class SearchView extends UI.Widget.VBox {
 
   #initScope(): void {
     this.#searchScope = this.createScope();
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    if (this.#focusOnShow) {
-      this.focus();
-      this.#focusOnShow = false;
-    }
   }
 
   #onIndexingFinished(): void {
@@ -417,7 +422,8 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   #onClearSearchInput(): void {
-    this.#searchInputElement.value = '';
+    this.#query = '';
+    this.requestUpdate();
     this.#save();
     this.focus();
     this.#showPane(this.#emptyStartView);
@@ -563,8 +569,8 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   override focus(): void {
-    this.#searchInputElement.focus();
-    this.#searchInputElement.select();
+    this.#focusSearchInput = true;
+    this.requestUpdate();
   }
 
   override willHide(): void {
@@ -628,10 +634,11 @@ export class SearchView extends UI.Widget.VBox {
 
   #load(): void {
     const searchConfig = Workspace.SearchConfig.SearchConfig.fromPlainObject(this.#advancedSearchConfig.get());
-    this.#searchInputElement.value = searchConfig.query();
+    this.#query = searchConfig.query();
 
     this.#matchCase = !searchConfig.ignoreCase();
     this.#isRegex = searchConfig.isRegex();
+    this.requestUpdate();
   }
 
   #onRefresh(): void {
@@ -655,10 +662,6 @@ export class SearchView extends UI.Widget.VBox {
 
   get throttlerForTest(): Common.Throttler.Throttler {
     return this.#throttler;
-  }
-
-  get search(): HTMLInputElement {
-    return this.#searchInputElement;
   }
 
   get matchCaseButton(): Buttons.Button.Button {

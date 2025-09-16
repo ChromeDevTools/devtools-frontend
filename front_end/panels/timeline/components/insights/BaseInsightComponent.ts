@@ -8,6 +8,7 @@ import '../../../../ui/components/markdown_view/markdown_view.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Root from '../../../../core/root/root.js';
 import * as AIAssistance from '../../../../models/ai_assistance/ai_assistance.js';
+import * as Badges from '../../../../models/badges/badges.js';
 import type {InsightModel} from '../../../../models/trace/insights/types.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
@@ -194,6 +195,8 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     if (focus) {
       UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus.withInsight(this.model));
     }
+
+    Badges.UserBadges.instance().recordAction(Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
 
     this.sharedTableState.selectedRowEl?.classList.remove('selected');
     this.sharedTableState.selectedRowEl = null;

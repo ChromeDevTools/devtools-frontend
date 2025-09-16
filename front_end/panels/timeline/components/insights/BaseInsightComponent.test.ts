@@ -5,6 +5,7 @@
 import type * as Common from '../../../../core/common/common.js';
 import * as Root from '../../../../core/root/root.js';
 import * as AIAssistance from '../../../../models/ai_assistance/ai_assistance.js';
+import * as Badges from '../../../../models/badges/badges.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../../testing/EnvironmentHelpers.js';
@@ -103,6 +104,34 @@ describeWithEnvironment('BaseInsightComponent', () => {
       const contentElement = component.shadowRoot.querySelector<HTMLElement>('.insight-content');
       assert.isNotNull(contentElement);
       assert.strictEqual(contentElement.textContent, 'test content');
+    });
+
+    it('records badge action when an insight is clicked', async () => {
+      const recordAction = sinon.stub(Badges.UserBadges.instance(), 'recordAction');
+
+      const component = new TestInsightComponentNoAISupport();
+      component.selected = false;
+      component.insightSetKey = 'test-key';
+      component.model = {
+        insightKey: 'LCPBreakdown',
+        strings: {},
+        title: 'LCP by Phase' as Common.UIString.LocalizedString,
+        description: 'some description' as Common.UIString.LocalizedString,
+        category: Trace.Insights.Types.InsightCategory.ALL,
+        state: 'fail',
+        frameId: '123',
+      };
+      renderElementIntoDOM(component);
+      await RenderCoordinator.done();
+
+      assert.isNotNull(component.shadowRoot);
+      const header = component.shadowRoot.querySelector<HTMLElement>('header');
+      assert.isNotNull(header);
+
+      dispatchClickEvent(header);
+      await RenderCoordinator.done();
+
+      sinon.assert.calledWith(recordAction, Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED);
     });
   });
 

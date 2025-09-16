@@ -138,7 +138,7 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
         if (endpoint) {
           providers.push({
             provider: 'litellm' as const,
-            apiKey, // Can be empty for some LiteLLM endpoints
+            apiKey: apiKey || '', // Can be empty for some LiteLLM endpoints
             providerURL: endpoint
           });
         }
@@ -315,7 +315,7 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
     // Force reinitialization on next use
     try {
       const config = this.#configManager.getConfiguration();
-      await this.initialize(config.apiKey, config.mainModel, config.miniModel, config.nanoModel);
+      await this.initialize(config.apiKey || null, config.mainModel, config.miniModel || '', config.nanoModel || '');
       logger.info('Agent service reinitialized successfully');
     } catch (error) {
       logger.error('Failed to reinitialize agent service:', error);

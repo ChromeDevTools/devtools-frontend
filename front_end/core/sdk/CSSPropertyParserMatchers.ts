@@ -709,7 +709,6 @@ export const enum LinkableNameProperties {
   FONT_PALETTE = 'font-palette',
   POSITION_TRY_FALLBACKS = 'position-try-fallbacks',
   POSITION_TRY = 'position-try',
-  FUNCTION = 'function',  // Not a property; we use it to mark user defined functions.
 }
 
 const enum AnimationLonghandPart {
@@ -817,10 +816,6 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
     const parentNode = node.parent;
     if (!parentNode) {
       return null;
-    }
-
-    if (parentNode.name === 'CallExpression' && node.name === 'VariableName') {
-      return new LinkableNameMatch(text, node, LinkableNameProperties.FUNCTION);
     }
 
     if (!(propertyName && LinkableNameMatcher.isLinkableNameProperty(propertyName))) {
@@ -987,12 +982,14 @@ export const enum ArithmeticFunction {
 }
 type MathFunction = SelectFunction|ArithmeticFunction;
 
-export class MathFunctionMatch implements Match {
+export class BaseFunctionMatch<T extends string> implements Match {
   constructor(
-      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly func: MathFunction,
+      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly func: T,
       readonly args: CodeMirror.SyntaxNode[][]) {
   }
+}
 
+export class MathFunctionMatch extends BaseFunctionMatch<MathFunction> {
   isArithmeticFunctionCall(): boolean {
     const func = this.func as ArithmeticFunction;
     switch (func) {
@@ -1045,6 +1042,29 @@ export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
       return null;
     }
     return match;
+  }
+}
+
+export class CustomFunctionMatch extends BaseFunctionMatch<string> {}
+
+// clang-format off
+export class CustomFunctionMatcher extends matcherBase(CustomFunctionMatch) {
+  // clang-format on
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): CustomFunctionMatch|null {
+    if (node.name !== 'CallExpression') {
+      return null;
+    }
+    const callee = matching.ast.text(node.getChild('VariableName'));
+    if (!callee?.startsWith('--')) {
+      return null;
+    }
+    const args = ASTUtils.callArgs(node);
+    if (args.some(arg => arg.length === 0 || matching.hasUnresolvedSubstitutionsRange(arg[0], arg[arg.length - 1]))) {
+      return null;
+    }
+    const text = matching.ast.text(node);
+    return new CustomFunctionMatch(text, node, callee, args);
   }
 }
 

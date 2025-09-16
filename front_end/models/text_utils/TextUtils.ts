@@ -367,6 +367,32 @@ export const performSearchInSearchMatches = function(
   return result;
 };
 
+/**
+ * Finds the longest overlapping string segment between the end of the first
+ * string and the beginning of the second string.
+ *
+ * @param s1 The first string (whose suffix will be checked).
+ * @param s2 The second string (whose prefix will be checked).
+ * @returns The overlapping string segment, or an empty string ("")
+ * if no overlap is found.
+ */
+export const getOverlap = function(s1: string, s2: string): string|null {
+  const minLen = Math.min(s1.length, s2.length);
+  // Check from longest possible overlap down to 1
+  for (let n = minLen; n > 0; n--) {
+    // slice(-n) gets the last 'n' chars
+    const suffix = s1.slice(-n);
+    // substring(0, n) gets the first 'n' chars
+    const prefix = s2.substring(0, n);
+
+    if (suffix === prefix) {
+      return suffix;
+    }
+  }
+
+  return null;
+};
+
 export interface ParsedFilter {
   key?: string;
   text?: string|null;

@@ -87,10 +87,7 @@ export class AiCodeCompletionPlugin extends Plugin {
   override editorExtension(): CodeMirror.Extension {
     return [
       CodeMirror.EditorView.updateListener.of(update => this.#editorUpdate(update)), this.#teaserCompartment.of([]),
-      // conservativeCompletion is required so that the completion suggestions in the traditional
-      // autocomplete menu are only activated after the first keyDown/keyUp events.
-      TextEditor.Config.conservativeCompletion, TextEditor.Config.aiAutoCompleteSuggestion,
-      CodeMirror.Prec.highest(CodeMirror.keymap.of(this.#editorKeymap()))
+      TextEditor.Config.aiAutoCompleteSuggestion, CodeMirror.Prec.highest(CodeMirror.keymap.of(this.#editorKeymap()))
     ];
   }
 

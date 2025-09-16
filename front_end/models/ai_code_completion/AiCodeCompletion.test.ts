@@ -7,9 +7,21 @@ import {
   describeWithEnvironment,
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 
 import * as AiCodeCompletion from './ai_code_completion.js';
+
+function makeState(doc: string, extensions: CodeMirror.Extension = []) {
+  return CodeMirror.EditorState.create({
+    doc,
+    extensions: [
+      extensions,
+      TextEditor.Config.baseConfiguration(doc),
+      TextEditor.Config.autocompletion.instance(),
+    ],
+  });
+}
 
 describeWithEnvironment('AiCodeCompletion', () => {
   let clock: sinon.SinonFakeTimers;
@@ -58,7 +70,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
   });
 
   it('dispatches a suggestion to the editor when AIDA returns one', async () => {
-    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
+    const dispatchSpy = sinon.spy(editor, 'dispatch');
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
       completeCode: Promise.resolve({
         generatedSamples: [{
@@ -80,15 +93,16 @@ describeWithEnvironment('AiCodeCompletion', () => {
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
     sinon.assert.calledOnce(mockAidaClient.completeCode);
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
-    sinon.assert.calledOnce(editor.dispatch);
-    assert.deepEqual(editor.dispatch.firstCall.args[0], {
+    sinon.assert.calledOnce(dispatchSpy);
+    assert.deepEqual(dispatchSpy.firstCall.args[0], {
       effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
           {text: 'suggestion', from: 1, sampleId: 1, rpcGlobalId: undefined})
     });
   });
 
   it('trims a suggestion with suffix overlap and dispatches it to the editor', async () => {
-    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
+    const dispatchSpy = sinon.spy(editor, 'dispatch');
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
       completeCode: Promise.resolve({
         generatedSamples: [{
@@ -110,8 +124,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
     sinon.assert.calledOnce(mockAidaClient.completeCode);
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
-    sinon.assert.calledOnce(editor.dispatch);
-    assert.deepEqual(editor.dispatch.firstCall.args[0], {
+    sinon.assert.calledOnce(dispatchSpy);
+    assert.deepEqual(dispatchSpy.firstCall.args[0], {
       effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
           {text: '"Hello World"', from: 1, sampleId: 1, rpcGlobalId: undefined})
     });
@@ -137,7 +151,8 @@ describeWithEnvironment('AiCodeCompletion', () => {
   });
 
   it('does not dispatch suggestion or citation if recitation action is BLOCK', async () => {
-    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
+    const dispatchSpy = sinon.spy(editor, 'dispatch');
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
       completeCode: Promise.resolve({
         generatedSamples: [{
@@ -157,20 +172,20 @@ describeWithEnvironment('AiCodeCompletion', () => {
         editor,
         AiCodeCompletion.AiCodeCompletion.Panel.CONSOLE,
     );
-    const dispatchSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
+    const dispatchEventSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
 
     aiCodeCompletion.onTextChanged('prefix', '\n', 1);
 
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
     sinon.assert.calledOnce(mockAidaClient.completeCode);
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
-    sinon.assert.notCalled(editor.dispatch);
+    sinon.assert.notCalled(dispatchSpy);
     sinon.assert.calledWith(
-        dispatchSpy, sinon.match(AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED), sinon.match({}));
+        dispatchEventSpy, sinon.match(AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED), sinon.match({}));
   });
 
   it('dispatches response received event with citations', async () => {
-    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
     const citations = [{uri: 'https://example.com'}];
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
       completeCode: Promise.resolve({
@@ -198,12 +213,13 @@ describeWithEnvironment('AiCodeCompletion', () => {
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
 
-    sinon.assert.calledWith(
-        dispatchSpy, sinon.match(AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED), sinon.match({citations}));
+    assert.deepEqual(dispatchSpy.secondCall.args[0], AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED);
+    assert.deepEqual(dispatchSpy.secondCall.args[1], {citations});
   });
 
   it('caches suggestions from AIDA', async () => {
-    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
+    const dispatchSpy = sinon.spy(editor, 'dispatch');
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
       completeCode: Promise.resolve({
         generatedSamples: [{
@@ -231,17 +247,18 @@ describeWithEnvironment('AiCodeCompletion', () => {
         AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
 
     sinon.assert.calledOnce(mockAidaClient.completeCode);
-    sinon.assert.calledTwice(editor.dispatch);
-    assert.deepEqual(editor.dispatch.firstCall.args[0], {
+    sinon.assert.calledTwice(dispatchSpy);
+    assert.deepEqual(dispatchSpy.firstCall.args[0], {
       effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
           {text: 'suggestion', from: 1, sampleId: 1, rpcGlobalId: undefined})
     });
 
-    assert.deepEqual(editor.dispatch.secondCall.args[0], editor.dispatch.firstCall.args[0]);
+    assert.deepEqual(dispatchSpy.secondCall.args[0], dispatchSpy.firstCall.args[0]);
   });
 
   it('caches suggestions from AIDA and returns only valid generated samples from cache', async () => {
-    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
+    const dispatchSpy = sinon.spy(editor, 'dispatch');
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
       completeCode: Promise.resolve({
         generatedSamples: [
@@ -276,19 +293,19 @@ describeWithEnvironment('AiCodeCompletion', () => {
         AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
 
     sinon.assert.calledOnce(mockAidaClient.completeCode);
-    sinon.assert.calledTwice(editor.dispatch);
-    assert.deepEqual(editor.dispatch.firstCall.args[0], {
+    sinon.assert.calledTwice(dispatchSpy);
+    assert.deepEqual(dispatchSpy.firstCall.args[0], {
       effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
           {text: 'suggestion', from: 1, sampleId: 1, rpcGlobalId: undefined})
     });
-    assert.deepEqual(editor.dispatch.secondCall.args[0], {
+    assert.deepEqual(dispatchSpy.secondCall.args[0], {
       effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
           {text: 'commendation', from: 1, sampleId: 2, rpcGlobalId: undefined})
     });
   });
 
   it('does not use cache for different requests', async () => {
-    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
       completeCode: Promise.resolve({
         generatedSamples: [{
@@ -315,7 +332,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
   });
 
   it('does not use cache for different suffix', async () => {
-    const editor = sinon.createStubInstance(TextEditor.TextEditor.TextEditor);
+    const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
       completeCode: Promise.resolve({
         generatedSamples: [{

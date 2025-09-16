@@ -2965,7 +2965,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.20.0';
+  const packageVersion = '24.21.0';
 
   /**
    * @license
@@ -11374,7 +11374,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * @remarks
        * This method is a shortcut for calling two methods:
-       * {@link Page.setUserAgent} and {@link Page.setViewport}.
+       * {@link Page.(setUserAgent:2) } and {@link Page.setViewport}.
        *
        * This method will resize the page. A lot of websites don't expect phones to
        * change size, so you should emulate before navigating to the page.
@@ -11396,7 +11396,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * ```
        */
       async emulate(device) {
-        await Promise.all([this.setUserAgent(device.userAgent), this.setViewport(device.viewport)]);
+        await Promise.all([this.setUserAgent({
+          userAgent: device.userAgent
+        }), this.setViewport(device.viewport)]);
       }
       /**
        * Evaluates a function in the page's context and returns the result.
@@ -17637,6 +17639,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _emulatedNetworkConditions = /*#__PURE__*/new WeakMap();
   var _userAgent = /*#__PURE__*/new WeakMap();
   var _userAgentMetadata = /*#__PURE__*/new WeakMap();
+  var _platform = /*#__PURE__*/new WeakMap();
   var _handlers3 = /*#__PURE__*/new WeakMap();
   var _clients = /*#__PURE__*/new WeakMap();
   var _networkEnabled = /*#__PURE__*/new WeakMap();
@@ -17651,11 +17654,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _credentials, null);
       _classPrivateFieldInitSpec(this, _attemptedAuthentications, new Set());
       _classPrivateFieldInitSpec(this, _userRequestInterceptionEnabled, false);
-      _classPrivateFieldInitSpec(this, _protocolRequestInterceptionEnabled, false);
+      _classPrivateFieldInitSpec(this, _protocolRequestInterceptionEnabled, void 0);
       _classPrivateFieldInitSpec(this, _userCacheDisabled, void 0);
       _classPrivateFieldInitSpec(this, _emulatedNetworkConditions, void 0);
       _classPrivateFieldInitSpec(this, _userAgent, void 0);
       _classPrivateFieldInitSpec(this, _userAgentMetadata, void 0);
+      _classPrivateFieldInitSpec(this, _platform, void 0);
       _classPrivateFieldInitSpec(this, _handlers3, [['Fetch.requestPaused', _assertClassBrand(_NetworkManager_brand, this, _onRequestPaused)], ['Fetch.authRequired', _assertClassBrand(_NetworkManager_brand, this, _onAuthRequired)], ['Network.requestWillBeSent', _assertClassBrand(_NetworkManager_brand, this, _onRequestWillBeSent)], ['Network.requestServedFromCache', _assertClassBrand(_NetworkManager_brand, this, _onRequestServedFromCache)], ['Network.responseReceived', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceived)], ['Network.loadingFinished', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFinished)], ['Network.loadingFailed', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFailed)], ['Network.responseReceivedExtraInfo', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceivedExtraInfo)], [exports.CDPSessionEvent.Disconnected, _assertClassBrand(_NetworkManager_brand, this, _removeClient)]]);
       _classPrivateFieldInitSpec(this, _clients, new Map());
       _classPrivateFieldInitSpec(this, _networkEnabled, true);
@@ -17734,9 +17738,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldGet(_emulatedNetworkConditions, this).offline = networkConditions?.offline ?? false;
       await _assertClassBrand(_NetworkManager_brand, this, _applyToAllClients).call(this, _assertClassBrand(_NetworkManager_brand, this, _applyNetworkConditions).bind(this));
     }
-    async setUserAgent(userAgent, userAgentMetadata) {
+    async setUserAgent(userAgent, userAgentMetadata, platform) {
       _classPrivateFieldSet(_userAgent, this, userAgent);
       _classPrivateFieldSet(_userAgentMetadata, this, userAgentMetadata);
+      _classPrivateFieldSet(_platform, this, platform);
       await _assertClassBrand(_NetworkManager_brand, this, _applyToAllClients).call(this, _assertClassBrand(_NetworkManager_brand, this, _applyUserAgent).bind(this));
     }
     async setCacheEnabled(enabled) {
@@ -17811,7 +17816,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     try {
       await client.send('Network.setUserAgentOverride', {
         userAgent: _classPrivateFieldGet(_userAgent, this),
-        userAgentMetadata: _classPrivateFieldGet(_userAgentMetadata, this)
+        userAgentMetadata: _classPrivateFieldGet(_userAgentMetadata, this),
+        platform: _classPrivateFieldGet(_platform, this)
       });
     } catch (error) {
       if (_assertClassBrand(_NetworkManager_brand, this, _canIgnoreError).call(this, error)) {
@@ -17821,6 +17827,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
   }
   async function _applyProtocolRequestInterception(client) {
+    if (_classPrivateFieldGet(_protocolRequestInterceptionEnabled, this) === undefined) {
+      return;
+    }
     if (_classPrivateFieldGet(_userCacheDisabled, this) === undefined) {
       _classPrivateFieldSet(_userCacheDisabled, this, false);
     }
@@ -21158,8 +21167,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     async setExtraHTTPHeaders(headers) {
       return await _classPrivateFieldGet(_frameManager2, this).networkManager.setExtraHTTPHeaders(headers);
     }
-    async setUserAgent(userAgent, userAgentMetadata) {
-      return await _classPrivateFieldGet(_frameManager2, this).networkManager.setUserAgent(userAgent, userAgentMetadata);
+    async setUserAgent(userAgentOrOptions, userAgentMetadata) {
+      if (typeof userAgentOrOptions === 'string') {
+        return await _classPrivateFieldGet(_frameManager2, this).networkManager.setUserAgent(userAgentOrOptions, userAgentMetadata);
+      } else {
+        const userAgent = userAgentOrOptions.userAgent ?? (await this.browser().userAgent());
+        return await _classPrivateFieldGet(_frameManager2, this).networkManager.setUserAgent(userAgent, userAgentOrOptions.userAgentMetadata, userAgentOrOptions.platform);
+      }
     }
     async metrics() {
       const response = await _classPrivateFieldGet(_primaryTargetClient, this).send('Performance.getMetrics');

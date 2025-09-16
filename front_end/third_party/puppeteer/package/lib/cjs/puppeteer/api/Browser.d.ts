@@ -297,7 +297,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * Gets this {@link Browser | browser's} original user agent.
      *
      * {@link Page | Pages} can override the user agent with
-     * {@link Page.setUserAgent}.
+     * {@link Page.(setUserAgent:2) }.
      *
      */
     abstract userAgent(): Promise<string>;

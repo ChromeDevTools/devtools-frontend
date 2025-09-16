@@ -175,15 +175,31 @@ let BidiPage = (() => {
         _userAgentHeaders = {};
         #userAgentInterception;
         #userAgentPreloadScript;
-        async setUserAgent(userAgent, userAgentMetadata) {
-            if (!this.#browserContext.browser().cdpSupported && userAgentMetadata) {
-                throw new UnsupportedOperation('Current Browser does not support `userAgentMetadata`');
+        async setUserAgent(userAgentOrOptions, userAgentMetadata) {
+            let userAgent;
+            let metadata;
+            let platform;
+            if (typeof userAgentOrOptions === 'string') {
+                userAgent = userAgentOrOptions;
+                metadata = userAgentMetadata;
+            }
+            else {
+                userAgent =
+                    userAgentOrOptions.userAgent ??
+                        (await this.#browserContext.browser().userAgent());
+                metadata = userAgentOrOptions.userAgentMetadata;
+                platform = userAgentOrOptions.platform;
+            }
+            if (!this.#browserContext.browser().cdpSupported &&
+                (metadata || platform)) {
+                throw new UnsupportedOperation('Current Browser does not support `userAgentMetadata` or `platform`');
             }
             else if (this.#browserContext.browser().cdpSupported &&
-                userAgentMetadata) {
+                (metadata || platform)) {
                 return await this._client().send('Network.setUserAgentOverride', {
                     userAgent: userAgent,
-                    userAgentMetadata: userAgentMetadata,
+                    userAgentMetadata: metadata,
+                    platform: platform,
                 });
             }
             const enable = userAgent !== '';
@@ -194,11 +210,17 @@ let BidiPage = (() => {
                 }
                 : {};
             this.#userAgentInterception = await this.#toggleInterception(["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */], this.#userAgentInterception, enable);
-            const changeUserAgent = (userAgent) => {
+            const overrideNavigatorProperties = (userAgent, platform) => {
                 Object.defineProperty(navigator, 'userAgent', {
                     value: userAgent,
                     configurable: true,
                 });
+                if (platform) {
+                    Object.defineProperty(navigator, 'platform', {
+                        value: platform,
+                        configurable: true,
+                    });
+                }
             };
             const frames = [this.#frame];
             for (const frame of frames) {
@@ -209,12 +231,12 @@ let BidiPage = (() => {
             }
             const [evaluateToken] = await Promise.all([
                 enable
-                    ? this.evaluateOnNewDocument(changeUserAgent, userAgent)
+                    ? this.evaluateOnNewDocument(overrideNavigatorProperties, userAgent, platform || undefined)
                     : undefined,
                 // When we disable the UserAgent we want to
                 // evaluate the original value in all Browsing Contexts
                 ...frames.map(frame => {
-                    return frame.evaluate(changeUserAgent, userAgent);
+                    return frame.evaluate(overrideNavigatorProperties, userAgent, platform || undefined);
                 }),
             ]);
             this.#userAgentPreloadScript = evaluateToken?.identifier;

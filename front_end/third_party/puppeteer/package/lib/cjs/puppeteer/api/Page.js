@@ -743,7 +743,7 @@ let Page = (() => {
          *
          * @remarks
          * This method is a shortcut for calling two methods:
-         * {@link Page.setUserAgent} and {@link Page.setViewport}.
+         * {@link Page.(setUserAgent:2) } and {@link Page.setViewport}.
          *
          * This method will resize the page. A lot of websites don't expect phones to
          * change size, so you should emulate before navigating to the page.
@@ -766,7 +766,7 @@ let Page = (() => {
          */
         async emulate(device) {
             await Promise.all([
-                this.setUserAgent(device.userAgent),
+                this.setUserAgent({ userAgent: device.userAgent }),
                 this.setViewport(device.viewport),
             ]);
         }

@@ -537,9 +537,7 @@ let BrowsingContext = (() => {
             return result.result.nodes;
         }
         async setJavaScriptEnabled(enabled) {
-            await this.userContext.browser.session.send(
-            // @ts-expect-error missing types
-            'emulation.setScriptingEnabled', {
+            await this.userContext.browser.session.send('emulation.setScriptingEnabled', {
                 // Enabled `null` means `default`, `false` means `disabled`.
                 enabled: enabled ? null : false,
                 contexts: [this.id],

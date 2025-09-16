@@ -124,6 +124,11 @@ export class BrowserLauncher {
         }
         catch (error) {
             void browserCloseCallback();
+            if (browserProcess.getRecentLogs().some(line => {
+                return line.includes('Failed to create a ProcessSingleton for your profile directory');
+            })) {
+                throw new Error(`The browser is already running for ${launchArgs.userDataDir}. Use a different \`userDataDir\` or stop the running browser first.`);
+            }
             if (error instanceof BrowsersTimeoutError) {
                 throw new TimeoutError(error.message);
             }

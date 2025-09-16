@@ -574,8 +574,14 @@ export class CdpPage extends Page {
     async setExtraHTTPHeaders(headers) {
         return await this.#frameManager.networkManager.setExtraHTTPHeaders(headers);
     }
-    async setUserAgent(userAgent, userAgentMetadata) {
-        return await this.#frameManager.networkManager.setUserAgent(userAgent, userAgentMetadata);
+    async setUserAgent(userAgentOrOptions, userAgentMetadata) {
+        if (typeof userAgentOrOptions === 'string') {
+            return await this.#frameManager.networkManager.setUserAgent(userAgentOrOptions, userAgentMetadata);
+        }
+        else {
+            const userAgent = userAgentOrOptions.userAgent ?? (await this.browser().userAgent());
+            return await this.#frameManager.networkManager.setUserAgent(userAgent, userAgentOrOptions.userAgentMetadata, userAgentOrOptions.platform);
+        }
     }
     async metrics() {
         const response = await this.#primaryTargetClient.send('Performance.getMetrics');

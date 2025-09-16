@@ -77,11 +77,12 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
   #credentials: Credentials | null = null;
   #attemptedAuthentications = new Set<string>();
   #userRequestInterceptionEnabled = false;
-  #protocolRequestInterceptionEnabled = false;
+  #protocolRequestInterceptionEnabled?: boolean;
   #userCacheDisabled?: boolean;
   #emulatedNetworkConditions?: InternalNetworkConditions;
   #userAgent?: string;
   #userAgentMetadata?: Protocol.Emulation.UserAgentMetadata;
+  #platform?: string;
 
   readonly #handlers = [
     ['Fetch.requestPaused', this.#onRequestPaused],
@@ -265,9 +266,11 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
   async setUserAgent(
     userAgent: string,
     userAgentMetadata?: Protocol.Emulation.UserAgentMetadata,
+    platform?: string,
   ): Promise<void> {
     this.#userAgent = userAgent;
     this.#userAgentMetadata = userAgentMetadata;
+    this.#platform = platform;
     await this.#applyToAllClients(this.#applyUserAgent.bind(this));
   }
 
@@ -279,6 +282,7 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
       await client.send('Network.setUserAgentOverride', {
         userAgent: this.#userAgent,
         userAgentMetadata: this.#userAgentMetadata,
+        platform: this.#platform,
       });
     } catch (error) {
       if (this.#canIgnoreError(error)) {
@@ -306,6 +310,9 @@ export class NetworkManager extends EventEmitter<NetworkManagerEvents> {
   }
 
   async #applyProtocolRequestInterception(client: CDPSession): Promise<void> {
+    if (this.#protocolRequestInterceptionEnabled === undefined) {
+      return;
+    }
     if (this.#userCacheDisabled === undefined) {
       this.#userCacheDisabled = false;
     }

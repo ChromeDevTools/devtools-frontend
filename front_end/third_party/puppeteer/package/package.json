@@ -1,6 +1,6 @@
 {
   "name": "puppeteer-core",
-  "version": "24.20.0",
+  "version": "24.21.0",
   "description": "A high-level API to control headless Chrome over the DevTools Protocol",
   "keywords": [
     "puppeteer",
@@ -140,12 +140,12 @@
   "author": "The Chromium Authors",
   "license": "Apache-2.0",
   "dependencies": {
-    "@puppeteer/browsers": "2.10.9",
+    "@puppeteer/browsers": "2.10.10",
     "chromium-bidi": "8.0.0",
-    "debug": "^4.4.1",
+    "debug": "^4.4.3",
     "devtools-protocol": "0.0.1495869",
     "typed-query-selector": "^2.12.0",
-    "webdriver-bidi-protocol": "0.2.8",
+    "webdriver-bidi-protocol": "0.2.11",
     "ws": "^8.18.3"
   },
   "devDependencies": {

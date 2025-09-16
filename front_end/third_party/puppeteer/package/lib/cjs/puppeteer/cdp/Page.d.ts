@@ -71,7 +71,11 @@ export declare class CdpPage extends Page {
     removeExposedFunction(name: string): Promise<void>;
     authenticate(credentials: Credentials | null): Promise<void>;
     setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
-    setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
+    setUserAgent(userAgentOrOptions: string | {
+        userAgent?: string;
+        userAgentMetadata?: Protocol.Emulation.UserAgentMetadata;
+        platform?: string;
+    }, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
     metrics(): Promise<Metrics>;
     reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
     createCDPSession(): Promise<CDPSession>;

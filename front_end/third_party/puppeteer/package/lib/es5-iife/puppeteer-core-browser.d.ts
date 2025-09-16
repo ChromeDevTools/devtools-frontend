@@ -311,7 +311,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * Gets this {@link Browser | browser's} original user agent.
      *
      * {@link Page | Pages} can override the user agent with
-     * {@link Page.setUserAgent}.
+     * {@link Page.(setUserAgent:2) }.
      *
      */
     abstract userAgent(): Promise<string>;
@@ -5381,8 +5381,18 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @param userAgentData - Specific user agent client hint data to use in this
      * page
      * @returns Promise which resolves when the user agent is set.
+     * @deprecated Use {@link Page.(setUserAgent:2) } instead.
      */
     abstract setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
+    /**
+     * @param options - Object containing user agent and optional user agent metadata
+     * @returns Promise which resolves when the user agent is set.
+     */
+    abstract setUserAgent(options: {
+        userAgent?: string;
+        userAgentMetadata?: Protocol.Emulation.UserAgentMetadata;
+        platform?: string;
+    }): Promise<void>;
     /**
      * Object containing metrics as key/value pairs.
      *
@@ -5593,7 +5603,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @remarks
      * This method is a shortcut for calling two methods:
-     * {@link Page.setUserAgent} and {@link Page.setViewport}.
+     * {@link Page.(setUserAgent:2) } and {@link Page.setViewport}.
      *
      * This method will resize the page. A lot of websites don't expect phones to
      * change size, so you should emulate before navigating to the page.

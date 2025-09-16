@@ -1510,29 +1510,25 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     // supports (currently, only main thread events), then set the context's
     // "flavor" to be the AI Call Tree of the active event.
     // This is listened to by the AI Assistance panel to update its state.
-    // Note that we do not change the Context back to `null` if the user picks
-    // an invalid event - we don't want to reset it back as it may be they are
-    // clicking around in order to understand something.
     // We also do this in a rAF to not block the UI updating to show the selected event first.
-    if (selectionIsEvent(selection) && this.#parsedTrace) {
-      requestAnimationFrame(() => {
-        if (!this.#parsedTrace) {
-          return;
-        }
+    requestAnimationFrame(() => {
+      if (!this.#parsedTrace) {
+        return;
+      }
 
-        const callTree = AIAssistance.AICallTree.fromEvent(selection.event, this.#parsedTrace);
-        if (callTree) {
-          let focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
-          if (focus) {
-            focus = focus.withCallTree(callTree);
-          } else {
-            focus = AIAssistance.AgentFocus.fromCallTree(callTree);
-          }
+      const callTree =
+          selectionIsEvent(selection) ? AIAssistance.AICallTree.fromEvent(selection.event, this.#parsedTrace) : null;
+      let focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
+      if (focus) {
+        focus = focus.withCallTree(callTree);
+      } else if (callTree) {
+        focus = AIAssistance.AgentFocus.fromCallTree(callTree);
+      } else {
+        focus = null;
+      }
 
-          UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus);
-        }
-      });
-    }
+      UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus);
+    });
   }
 
   // Only opens the details view of a selection. This is used for Timing Markers. Timing markers replace

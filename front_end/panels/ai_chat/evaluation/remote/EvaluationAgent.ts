@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import { BUILD_CONFIG } from '../../core/BuildConfig.js';
 import { WebSocketRPCClient } from '../../common/WebSocketRPCClient.js';
 import { getEvaluationConfig, getEvaluationClientId } from '../../common/EvaluationConfig.js';
 import { ToolRegistry } from '../../agent_framework/ConfigurableAgentTool.js';
@@ -264,6 +265,14 @@ export class EvaluationAgent {
   }
 
   private async handleAuthRequest(message: RegistrationAckMessage): Promise<void> {
+    // In automated mode, skip authentication entirely
+    if (BUILD_CONFIG.AUTOMATED_MODE) {
+      logger.info('Automated mode: Skipping authentication verification');
+      const authMessage = createAuthVerifyMessage(message.clientId, true);
+      this.client?.send(authMessage);
+      return;
+    }
+
     if (!message.serverSecretKey) {
       logger.error('Server did not provide secret key for verification');
       this.disconnect();

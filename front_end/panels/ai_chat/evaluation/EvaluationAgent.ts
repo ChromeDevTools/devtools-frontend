@@ -4,6 +4,7 @@
 
 import { WebSocketRPCClient } from '../common/WebSocketRPCClient.js';
 import { getEvaluationConfig, getEvaluationClientId } from '../common/EvaluationConfig.js';
+import { BUILD_CONFIG } from '../core/BuildConfig.js';
 import { ToolRegistry } from '../agent_framework/ConfigurableAgentTool.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
@@ -252,6 +253,14 @@ export class EvaluationAgent {
   }
 
   private async handleAuthRequest(message: RegistrationAckMessage): Promise<void> {
+    // In automated mode, skip authentication entirely
+    if (BUILD_CONFIG.AUTOMATED_MODE) {
+      logger.info('Automated mode: Skipping authentication verification');
+      const authMessage = createAuthVerifyMessage(message.clientId, true);
+      this.client?.send(authMessage);
+      return;
+    }
+
     if (!message.serverSecretKey) {
       logger.error('Server did not provide secret key for verification');
       this.disconnect();
@@ -265,10 +274,10 @@ export class EvaluationAgent {
     // Verify if the server's secret key matches the client's configured key
     const verified = clientSecretKey === message.serverSecretKey;
 
-    logger.info('Verifying secret key', { 
+    logger.info('Verifying secret key', {
       hasClientKey: !!clientSecretKey,
       hasServerKey: !!message.serverSecretKey,
-      verified 
+      verified
     });
 
     // Send verification response

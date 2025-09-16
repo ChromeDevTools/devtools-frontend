@@ -11,30 +11,30 @@ import { HTTPWrapper } from '../src/lib/HTTPWrapper.js';
 
 console.log('🔧 Creating EvalServer...');
 const evalServer = new EvalServer({
-  authKey: 'hello',
+  // No authKey - authentication disabled for automated mode
   host: '127.0.0.1',
-  port: 8080
+  port: 8082
 });
 
 console.log('🔧 Creating HTTP wrapper...');
 const httpWrapper = new HTTPWrapper(evalServer, {
-  port: 8081,
+  port: 8080,
   host: '127.0.0.1'
 });
 
 
 console.log('🔧 Starting EvalServer...');
 await evalServer.start();
-console.log('✅ EvalServer started on ws://127.0.0.1:8080');
+console.log('✅ EvalServer started on ws://127.0.0.1:8082');
 
 console.log('🔧 Starting HTTP wrapper...');
 await httpWrapper.start();
-console.log('✅ HTTP API started on http://127.0.0.1:8081');
+console.log('✅ HTTP API started on http://127.0.0.1:8080');
 
 console.log('⏳ Waiting for DevTools client to connect...');
-console.log('   WebSocket URL: ws://127.0.0.1:8080');
-console.log('   HTTP API URL: http://127.0.0.1:8081');
-console.log('   Auth Key: hello');
+console.log('   WebSocket URL: ws://127.0.0.1:8082');
+console.log('   HTTP API URL: http://127.0.0.1:8080');
+console.log('   Auth: Disabled (automated mode)');
 
 // Add periodic status check
 setInterval(() => {

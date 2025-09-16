@@ -30,7 +30,7 @@ class EvaluationConfigStore {
   private static instance: EvaluationConfigStore;
   private config: EvaluationConfiguration = {
     enabled: false,
-    endpoint: 'ws://localhost:8080',
+    endpoint: 'ws://localhost:8082',
     secretKey: '',
     clientId: ''
   };
@@ -50,16 +50,23 @@ class EvaluationConfigStore {
 
   private loadFromLocalStorage(): void {
     try {
-      // In automated mode, set default to enabled if not already set
-      if (BUILD_CONFIG.AUTOMATED_MODE && 
-          localStorage.getItem('ai_chat_evaluation_enabled') === null) {
-        localStorage.setItem('ai_chat_evaluation_enabled', 'true');
-        logger.info('Automated mode: defaulted evaluation to enabled');
+      // In automated mode, set defaults if not already set
+      if (BUILD_CONFIG.AUTOMATED_MODE) {
+        if (localStorage.getItem('ai_chat_evaluation_enabled') === null) {
+          localStorage.setItem('ai_chat_evaluation_enabled', 'true');
+          logger.info('Automated mode: defaulted evaluation to enabled');
+        }
+        if (localStorage.getItem('ai_chat_evaluation_endpoint') === null) {
+          localStorage.setItem('ai_chat_evaluation_endpoint', 'ws://localhost:8082');
+          logger.info('Automated mode: defaulted endpoint to ws://localhost:8082');
+        }
+        // No secret key needed in automated mode
       }
 
       const enabled = localStorage.getItem('ai_chat_evaluation_enabled') === 'true';
-      const endpoint = localStorage.getItem('ai_chat_evaluation_endpoint') || 'ws://localhost:8080';
-      const secretKey = localStorage.getItem('ai_chat_evaluation_secret_key') || '';
+      const endpoint = localStorage.getItem('ai_chat_evaluation_endpoint') || 'ws://localhost:8082';
+      // Don't use secretKey in automated mode
+      const secretKey = BUILD_CONFIG.AUTOMATED_MODE ? undefined : (localStorage.getItem('ai_chat_evaluation_secret_key') || '');
       const clientId = localStorage.getItem('ai_chat_evaluation_client_id') || '';
 
       this.config = {
@@ -98,7 +105,10 @@ class EvaluationConfigStore {
     try {
       localStorage.setItem('ai_chat_evaluation_enabled', String(this.config.enabled));
       localStorage.setItem('ai_chat_evaluation_endpoint', this.config.endpoint);
-      localStorage.setItem('ai_chat_evaluation_secret_key', this.config.secretKey || '');
+      // Don't save secret key in automated mode
+      if (!BUILD_CONFIG.AUTOMATED_MODE) {
+        localStorage.setItem('ai_chat_evaluation_secret_key', this.config.secretKey || '');
+      }
       localStorage.setItem('ai_chat_evaluation_client_id', this.config.clientId || '');
     } catch (error) {
       logger.warn('Failed to save evaluation config to localStorage:', error);

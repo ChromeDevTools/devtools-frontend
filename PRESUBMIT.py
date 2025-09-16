@@ -31,7 +31,9 @@ _EXCLUDED_PATHS = [
     r'^front_end[\\/]core[\\/]platform[\\/]UIString\.ts$',  # Apple copyright
     r'^front_end[\\/]core[\\/]sdk[\\/]Resource\.ts$',  # Apple copyright
     r'^front_end[\\/]core[\\/]sdk[\\/]Script\.ts$',  # Apple copyright
+    r'^front_end[\\/]third_party[\\/].*',  # 3rd party code
     r'^front_end[\\/]ui[\\/]legacy[\\/]components[\\/]data_grid[\\/]DataGrid\.ts$',  # Apple copyright
+    r'^node_modules[\\/].*',  # 3rd party code
     r'^scripts[\\/]build[\\/]build_inspector_overlay\.py$',  # Lines too long
     r'^scripts[\\/]build[\\/]code_generator_frontend\.py$',
     r'^scripts[\\/]deps[\\/]manage_node_deps\.py$',  # Lines too long

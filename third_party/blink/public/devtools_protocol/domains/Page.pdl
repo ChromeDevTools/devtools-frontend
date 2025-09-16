@@ -1577,8 +1577,10 @@ domain Page
       WebXR
       SharedWorker
       SharedWorkerMessage
+      SharedWorkerWithNoActiveClient
       WebLocks
       WebHID
+      WebBluetooth
       WebShare
       RequestedStorageAccessGrant
       WebNfc

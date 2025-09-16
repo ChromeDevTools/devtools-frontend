@@ -27,7 +27,8 @@ _EXCLUDED_PATHS = [
     r'^front_end[\\/]core[\\/]common[\\/]Color\.ts$',  # Apple copyright
     r'^front_end[\\/]core[\\/]common[\\/]Object\.ts$',  # Apple copyright
     r'^front_end[\\/]core[\\/]common[\\/]ResourceType\.ts$',  # Apple copyright
-    r'^front_end[\\/]core[\\/]dom_extension[\\/]DOMExtension\.ts$',  # Apple copyright
+    # Apple copyright
+    r'^front_end[\\/]core[\\/]dom_extension[\\/]DOMExtension\.ts$',
     r'^front_end[\\/]core[\\/]platform[\\/]UIString\.ts$',  # Apple copyright
     r'^front_end[\\/]core[\\/]sdk[\\/]Resource\.ts$',  # Apple copyright
     r'^front_end[\\/]core[\\/]sdk[\\/]Script\.ts$',  # Apple copyright
@@ -37,7 +38,10 @@ _EXCLUDED_PATHS = [
     r'^scripts[\\/]build[\\/]build_inspector_overlay\.py$',  # Lines too long
     r'^scripts[\\/]build[\\/]code_generator_frontend\.py$',
     r'^scripts[\\/]deps[\\/]manage_node_deps\.py$',  # Lines too long
+    r'front_end[\\/]generated[\\/]ARIAProperties\.ts$'  # Auto-generated files
+    r'front_end[\\/]generated[\\/]InspectorBackendCommands\.ts$'  # Auto-generated files
 ]
+
 
 def _ExecuteSubProcess(input_api,
                        output_api,
@@ -466,7 +470,6 @@ def CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api):
 
 def CheckGenderNeutral(input_api, output_api):
     return input_api.canned_checks.CheckGenderNeutral(input_api, output_api)
-
 
 
 def CheckAuthorizedAuthor(input_api, output_api):

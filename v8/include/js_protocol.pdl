@@ -1,4 +1,4 @@
-# Copyright 2017 The Chromium Authors
+# Copyright 2017 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -794,6 +794,8 @@ experimental domain HeapProfiler
       # Average sample interval in bytes. Poisson distribution is used for the intervals. The
       # default value is 32768 bytes.
       optional number samplingInterval
+      # Maximum stack depth. The default value is 128.
+      optional number stackDepth
       # By default, the sampling heap profiler reports only objects which are
       # still alive when the profile is returned via getSamplingProfile or
       # stopSampling, which is useful for determining what functions contribute

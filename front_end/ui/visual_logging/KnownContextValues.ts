@@ -2739,6 +2739,7 @@ export const knownContextValues = new Set([
   'overscroll-behavior-inline',
   'overscroll-behavior-x',
   'overscroll-behavior-y',
+  'overscroll-position',
   'p3',
   'pa',
   'packetLoss',

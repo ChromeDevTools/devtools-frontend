@@ -6088,7 +6088,7 @@ export const NativeFunctions = [
   },
   {
     name: "addAnimation",
-    signatures: [["animation"]]
+    signatures: [["animation","action","behavior"]]
   },
   {
     name: "removeAnimation",
@@ -6763,6 +6763,10 @@ export const NativeFunctions = [
   },
   {
     name: "DragEvent",
+    signatures: [["type","?eventInitDict"]]
+  },
+  {
+    name: "EmailVerifiedEvent",
     signatures: [["type","?eventInitDict"]]
   },
   {
@@ -7605,7 +7609,7 @@ export const NativeFunctions = [
     signatures: [["element","x","y","?dwidth","?dheight"]]
   },
   {
-    name: "drawHTML",
+    name: "drawElementImage",
     signatures: [["element","x","y","?dwidth","?dheight"]]
   },
   {
@@ -8421,10 +8425,6 @@ export const NativeFunctions = [
     signatures: [["worker","?options","?transfer"]]
   },
   {
-    name: "sendRtp",
-    signatures: [["packet","options"]]
-  },
-  {
     name: "setHeaderExtensionsToNegotiate",
     signatures: [["extensions"]]
   },
@@ -8891,7 +8891,7 @@ export const NativeFunctions = [
     signatures: [["provokeMode"]]
   },
   {
-    name: "texHTML2D",
+    name: "texElementImage2D",
     signatures: [["target","level","internalformat","format","type","element"]]
   },
   {

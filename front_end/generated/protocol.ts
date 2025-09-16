@@ -8332,7 +8332,7 @@ export namespace IndexedDB {
      */
     objectStoreName: string;
     /**
-     * Index name. If not specified or empty string, it performs an object store data request.
+     * Index name. If not specified, it performs an object store data request.
      */
     indexName?: string;
     /**
@@ -10530,6 +10530,9 @@ export namespace Network {
     path: string;
     /**
      * Cookie expiration date as the number of seconds since the UNIX epoch.
+     * The value is set to -1 if the expiry date is not set.
+     * The value can be null for values that cannot be represented in
+     * JSON (±Inf).
      */
     expires: number;
     /**
@@ -14440,8 +14443,10 @@ export namespace Page {
     WebXR = 'WebXR',
     SharedWorker = 'SharedWorker',
     SharedWorkerMessage = 'SharedWorkerMessage',
+    SharedWorkerWithNoActiveClient = 'SharedWorkerWithNoActiveClient',
     WebLocks = 'WebLocks',
     WebHID = 'WebHID',
+    WebBluetooth = 'WebBluetooth',
     WebShare = 'WebShare',
     RequestedStorageAccessGrant = 'RequestedStorageAccessGrant',
     WebNfc = 'WebNfc',
@@ -20426,6 +20431,10 @@ export namespace HeapProfiler {
      * default value is 32768 bytes.
      */
     samplingInterval?: number;
+    /**
+     * Maximum stack depth. The default value is 128.
+     */
+    stackDepth?: number;
     /**
      * By default, the sampling heap profiler reports only objects which are
      * still alive when the profile is returned via getSamplingProfile or

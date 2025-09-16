@@ -12858,7 +12858,7 @@
                         },
                         {
                             "name": "indexName",
-                            "description": "Index name. If not specified or empty string, it performs an object store data request.",
+                            "description": "Index name. If not specified, it performs an object store data request.",
                             "optional": true,
                             "type": "string"
                         },
@@ -15927,7 +15927,7 @@
                         },
                         {
                             "name": "expires",
-                            "description": "Cookie expiration date as the number of seconds since the UNIX epoch.",
+                            "description": "Cookie expiration date as the number of seconds since the UNIX epoch.\nThe value is set to -1 if the expiry date is not set.\nThe value can be null for values that cannot be represented in\nJSON (\u00b1Inf).",
                             "type": "number"
                         },
                         {
@@ -21766,8 +21766,10 @@
                         "WebXR",
                         "SharedWorker",
                         "SharedWorkerMessage",
+                        "SharedWorkerWithNoActiveClient",
                         "WebLocks",
                         "WebHID",
+                        "WebBluetooth",
                         "WebShare",
                         "RequestedStorageAccessGrant",
                         "WebNfc",
@@ -31196,6 +31198,12 @@
                         {
                             "name": "samplingInterval",
                             "description": "Average sample interval in bytes. Poisson distribution is used for the intervals. The\ndefault value is 32768 bytes.",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "stackDepth",
+                            "description": "Maximum stack depth. The default value is 128.",
                             "optional": true,
                             "type": "number"
                         },

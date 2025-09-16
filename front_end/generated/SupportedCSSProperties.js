@@ -600,6 +600,7 @@ export const generatedProperties = [
    "overscroll-behavior-inline",
    "overscroll-behavior-x",
    "overscroll-behavior-y",
+   "overscroll-position",
    "pad",
    "padding-block-end",
    "padding-block-start",
@@ -3382,6 +3383,12 @@ export const generatedProperties = [
    "none"
   ],
   "name": "overscroll-behavior-y"
+ },
+ {
+  "keywords": [
+   "none"
+  ],
+  "name": "overscroll-position"
  },
  {
   "name": "pad"
@@ -6279,6 +6286,11 @@ export const generatedPropertyValues = {
   "values": [
    "auto",
    "contain",
+   "none"
+  ]
+ },
+ "overscroll-position": {
+  "values": [
    "none"
   ]
  },

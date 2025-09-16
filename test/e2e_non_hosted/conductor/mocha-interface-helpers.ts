@@ -61,7 +61,7 @@ export async function screenshotError(state: E2E.State, error: Error) {
           return {inspectedPage: undefined, devToolsPage: undefined};
         }),
       ]);
-      return ScreenshotError.fromBase64Images(error, inspectedPage, devToolsPage);
+      return ScreenshotError.fromBase64Images(error, inspectedPage, devToolsPage, state.devToolsPage.screenshotLog);
     } catch (e) {
       console.error('Unexpected error saving screenshots', e);
       return e;

@@ -72,15 +72,25 @@ export class ScreenshotError extends Error {
    * Creates a ScreenshotError when an unexpected error occurs. Screenshots are
    * taken for both the inspected page and the DevTools page.
    */
-  static fromBase64Images(error: Error, inspectedPageScreenshot?: string, devToolsPageScreenshot?: string) {
+  static fromBase64Images(
+      error: Error, inspectedPageScreenshot?: string, devToolsPageScreenshot?: string,
+      collectedScreenshots?: string[]) {
     if (!inspectedPageScreenshot || !devToolsPageScreenshot) {
       console.error('No artifacts to save.');
       return error;
     }
-    const screenshots = {
+    const screenshots: ArtifactGroup = {
       inspectedPage: {filePath: this.saveArtifact(inspectedPageScreenshot)},
       devToolsPage: {filePath: this.saveArtifact(devToolsPageScreenshot)},
     };
+    if (collectedScreenshots) {
+      for (let i = 0; i <= collectedScreenshots.length; i++) {
+        if (!collectedScreenshots[i]) {
+          continue;
+        }
+        screenshots[`screenshot${i + 1}`] = {filePath: this.saveArtifact(collectedScreenshots[i])};
+      }
+    }
     return new ScreenshotError(screenshots, undefined, error);
   }
 

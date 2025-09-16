@@ -39,6 +39,7 @@ interface DevToolsReloadParams {
 }
 
 export class DevToolsPage extends PageWrapper {
+  screenshotLog: string[] = [];
   #currentHighlightedElement?: HighlightedElement;
   #cdpSession?: puppeteer.CDPSession;
 
@@ -542,7 +543,7 @@ export class DevToolsPage extends PageWrapper {
   }
 
   async clickMoreTabsButton(root?: puppeteer.ElementHandle<Element>) {
-    await this.click('aria/More tabs', {root});
+    await this.click('.tabbed-pane-header-tabs-drop-down-container', {root});
   }
 
   async closePanelTab(panelTabSelector: string) {
@@ -735,6 +736,12 @@ export class DevToolsPage extends PageWrapper {
     const session = await this.#getCDPSession();
     await session.send('Animation.setPlaybackRate', {playbackRate: 1});
   }
+
+  // Debugging utility to be used around flaky code and hopefully reveal visual glitches.
+  // Use it with the rdb wrapper to inspect the collected screenshots after a test failure.
+  async captureScreenshot() {
+    this.screenshotLog.push(await this.screenshot());
+  }
 }
 
 export interface DevtoolsSettings {
@@ -774,20 +781,16 @@ async function setDevToolsSettings(devToolsPata: DevToolsPage, settings: Record<
     }
   });
 
-  return await devToolsPata.evaluate(`(async () => {
+  const expression = `(async () => {
       const Common = await import('./core/common/common.js');
+      var setting;
       ${
       rawValues
-          .map(([settingName, value]) => {
-            // Creating the setting might not be enough if it already exists, so we
-            // create it and then forcibly set the value
-            return `{
-              const setting = Common.Settings.Settings.instance().createSetting('${settingName}', ${value});
-              setting.set(${value});
-            }`;
-          })
-          .join('')}
-    })()`);
+          .map(([settingName, value]) => `setting = Common.Settings.Settings.instance().createSetting('${settingName}');
+      setting.set(${value})`)
+          .join('\n      ')}
+    })()`;
+  return await devToolsPata.evaluate(expression);
 }
 
 /**

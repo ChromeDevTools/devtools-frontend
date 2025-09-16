@@ -255,7 +255,7 @@ class APIServer {
   }
 
   /**
-   * Handle OpenAI Responses API compatible requests
+   * Handle OpenAI Responses API compatible requests with nested model format
    */
   async handleResponsesRequest(requestBody) {
     try {
@@ -264,12 +264,12 @@ class APIServer {
         throw new Error('Missing or invalid "input" field. Expected a string.');
       }
 
-      // Merge request parameters with config defaults
-      const modelConfig = this.mergeModelConfig(requestBody);
-      
+      // Handle nested model configuration directly
+      const nestedModelConfig = this.processNestedModelConfig(requestBody);
+
       logger.info('Processing responses request:', {
         input: requestBody.input,
-        modelConfig
+        modelConfig: nestedModelConfig
       });
 
       // Find a connected and ready client
@@ -279,7 +279,7 @@ class APIServer {
       }
 
       // Create a dynamic evaluation for this request
-      const evaluation = this.createDynamicEvaluation(requestBody.input, modelConfig);
+      const evaluation = this.createDynamicEvaluationNested(requestBody.input, nestedModelConfig);
 
       // Execute the evaluation on the DevTools client
       logger.info('Executing evaluation on DevTools client', {
@@ -288,10 +288,10 @@ class APIServer {
       });
 
       const result = await this.evaluationServer.executeEvaluation(readyClient, evaluation);
-      
+
       // Debug: log the result structure
       logger.debug('executeEvaluation result:', result);
-      
+
       // Extract the response text from the result
       const responseText = this.extractResponseText(result);
 
@@ -305,16 +305,86 @@ class APIServer {
   }
 
   /**
-   * Merge request model parameters with config.yaml defaults
+   * Process nested model configuration from request body
+   */
+  processNestedModelConfig(requestBody) {
+    const defaults = this.configDefaults?.model || {};
+
+    // If nested format is provided, use it directly with fallbacks
+    if (requestBody.model) {
+      return {
+        main_model: requestBody.model.main_model || this.createDefaultModelConfig('main', defaults),
+        mini_model: requestBody.model.mini_model || this.createDefaultModelConfig('mini', defaults),
+        nano_model: requestBody.model.nano_model || this.createDefaultModelConfig('nano', defaults)
+      };
+    }
+
+    // Legacy flat format support - convert to nested
+    if (requestBody.main_model || requestBody.provider || requestBody.api_key) {
+      const legacyConfig = this.mergeModelConfig(requestBody);
+      return this.convertFlatToNested(legacyConfig);
+    }
+
+    // No model config provided, use defaults
+    return {
+      main_model: this.createDefaultModelConfig('main', defaults),
+      mini_model: this.createDefaultModelConfig('mini', defaults),
+      nano_model: this.createDefaultModelConfig('nano', defaults)
+    };
+  }
+
+  /**
+   * Create default model configuration for a tier
+   */
+  createDefaultModelConfig(tier, defaults) {
+    const defaultModels = {
+      main: defaults.main_model || 'gpt-4',
+      mini: defaults.mini_model || 'gpt-4-mini',
+      nano: defaults.nano_model || 'gpt-3.5-turbo'
+    };
+
+    return {
+      provider: defaults.provider || 'openai',
+      model: defaultModels[tier],
+      api_key: process.env.OPENAI_API_KEY
+    };
+  }
+
+  /**
+   * Convert flat model config to nested format (legacy support)
+   */
+  convertFlatToNested(flatConfig) {
+    return {
+      main_model: {
+        provider: flatConfig.provider,
+        model: flatConfig.main_model,
+        api_key: flatConfig.api_key
+      },
+      mini_model: {
+        provider: flatConfig.provider,
+        model: flatConfig.mini_model,
+        api_key: flatConfig.api_key
+      },
+      nano_model: {
+        provider: flatConfig.provider,
+        model: flatConfig.nano_model,
+        api_key: flatConfig.api_key
+      }
+    };
+  }
+
+  /**
+   * Merge request model parameters with config.yaml defaults (legacy)
    */
   mergeModelConfig(requestBody) {
     const defaults = this.configDefaults?.model || {};
-    
+
     return {
-      main_model: requestBody.main_model || defaults.main_model || 'gpt-4.1',
-      mini_model: requestBody.mini_model || defaults.mini_model || 'gpt-4.1-mini',
-      nano_model: requestBody.nano_model || defaults.nano_model || 'gpt-4.1-nano',
-      provider: requestBody.provider || defaults.provider || 'openai'
+      main_model: requestBody.main_model || defaults.main_model || 'gpt-4',
+      mini_model: requestBody.mini_model || defaults.mini_model || 'gpt-4-mini',
+      nano_model: requestBody.nano_model || defaults.nano_model || 'gpt-3.5-turbo',
+      provider: requestBody.provider || defaults.provider || 'openai',
+      api_key: requestBody.api_key || process.env.OPENAI_API_KEY
     };
   }
 
@@ -331,30 +401,76 @@ class APIServer {
   }
 
   /**
-   * Create a dynamic evaluation object for the API request
+   * Create a dynamic evaluation object with nested model configuration
    */
-  createDynamicEvaluation(input, modelConfig) {
+  createDynamicEvaluationNested(input, nestedModelConfig) {
     const evaluationId = `api-eval-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    
+
     return {
       id: evaluationId,
-      name: 'OpenAI API Request',
-      description: 'Dynamic evaluation created from OpenAI Responses API request',
+      name: 'API Request',
+      description: 'Dynamic evaluation created from API request',
       enabled: true,
       tool: 'chat',
       timeout: 1500000, // 25 minutes
       input: {
-        message: input,
-        reasoning: 'API request processing'
+        message: input
       },
-      model: modelConfig,
+      model: nestedModelConfig,
       validation: {
         type: 'none' // No validation needed for API responses
       },
       metadata: {
-        tags: ['api', 'dynamic', 'openai-responses'],
+        tags: ['api', 'dynamic'],
         priority: 'high',
-        source: 'openai-api'
+        source: 'api'
+      }
+    };
+  }
+
+  /**
+   * Create a dynamic evaluation object for the API request (legacy)
+   */
+  createDynamicEvaluation(input, modelConfig) {
+    const evaluationId = `api-eval-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
+    // Convert flat modelConfig to nested format
+    const nestedModelConfig = {
+      main_model: {
+        provider: modelConfig.provider || 'openai',
+        model: modelConfig.main_model || 'gpt-4',
+        api_key: modelConfig.api_key
+      },
+      mini_model: {
+        provider: modelConfig.provider || 'openai',
+        model: modelConfig.mini_model || modelConfig.main_model || 'gpt-4-mini',
+        api_key: modelConfig.api_key
+      },
+      nano_model: {
+        provider: modelConfig.provider || 'openai',
+        model: modelConfig.nano_model || modelConfig.mini_model || modelConfig.main_model || 'gpt-3.5-turbo',
+        api_key: modelConfig.api_key
+      }
+    };
+
+    return {
+      id: evaluationId,
+      name: 'API Request',
+      description: 'Dynamic evaluation created from API request',
+      enabled: true,
+      tool: 'chat',
+      timeout: 1500000, // 25 minutes
+      input: {
+        message: input
+      },
+      model: nestedModelConfig,
+      validation: {
+        type: 'none' // No validation needed for API responses
+      },
+      metadata: {
+        tags: ['api', 'dynamic'],
+        priority: 'high',
+        source: 'api'
       }
     };
   }

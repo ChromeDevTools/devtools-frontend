@@ -15,6 +15,7 @@ import { ToolSurfaceProvider } from './ToolSurfaceProvider.js';
 import { createLogger } from './Logger.js';
 import type { AgentState } from './State.js';
 import type { Runnable } from './Types.js';
+import { LLMConfigurationManager } from './LLMConfigurationManager.js';
 import { AgentErrorHandler } from './AgentErrorHandler.js';
 import { createTracingProvider, withTracingContext } from '../tracing/TracingConfig.js';
 import * as ToolNameMap from './ToolNameMap.js';
@@ -590,13 +591,17 @@ export function createToolExecutorNode(state: AgentState, provider: LLMProvider,
               
         const result = await withTracingContext(executionContext, async () => {
           console.log(`[TOOL EXECUTION PATH 1] Inside withTracingContext for tool: ${toolName}`);
-          const apiKeyFromState = (state.context as any)?.apiKey;
-          return await selectedTool.execute(toolArgs as any, { 
-            apiKey: apiKeyFromState,
-            provider: this.provider, 
-            model: this.modelName,
-            miniModel: this.miniModel,
-            nanoModel: this.nanoModel
+
+          // Get configuration from manager (supports overrides)
+          const configManager = LLMConfigurationManager.getInstance();
+          const config = configManager.getConfiguration();
+
+          return await selectedTool.execute(toolArgs as any, {
+            apiKey: config.apiKey,
+            provider: config.provider,
+            model: config.mainModel,
+            miniModel: config.miniModel,
+            nanoModel: config.nanoModel
           });
         });
         console.log(`[TOOL EXECUTION PATH 1] ToolExecutorNode completed tool: ${toolName}`);

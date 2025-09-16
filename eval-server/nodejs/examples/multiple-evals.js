@@ -9,11 +9,12 @@
 
 import { EvalServer } from '../src/lib/EvalServer.js';
 import { EvaluationStack } from '../src/lib/EvaluationStack.js';
+import { CONFIG } from '../src/config.js';
 
 console.log('🔧 Creating evaluation stack...');
 const evalStack = new EvaluationStack();
 
-// Create multiple diverse evaluations for the stack
+// Create multiple diverse evaluations for the stack with different LLM configurations
 const evaluations = [
   {
     id: "math_eval",
@@ -22,25 +23,49 @@ const evaluations = [
     tool: "chat",
     input: {
       message: "What is 15 * 7 + 23? Please show your calculation steps."
-    }
+    },
+    // Use OpenAI if available, otherwise default
+    model: CONFIG.providers.openai.apiKey ? {
+      main_model: {
+        provider: 'openai',
+        model: 'gpt-4',
+        api_key: CONFIG.providers.openai.apiKey
+      }
+    } : {}
   },
   {
-    id: "geography_eval", 
+    id: "geography_eval",
     name: "Capital of France",
     description: "Geography knowledge test",
     tool: "chat",
     input: {
       message: "What is the capital of France?"
-    }
+    },
+    // Use Groq if available, otherwise default
+    model: CONFIG.providers.groq.apiKey ? {
+      main_model: {
+        provider: 'groq',
+        model: 'llama-3.1-8b-instant',
+        api_key: CONFIG.providers.groq.apiKey
+      }
+    } : {}
   },
   {
     id: "creative_eval",
     name: "Creative Writing",
     description: "Short creative writing task",
-    tool: "chat", 
+    tool: "chat",
     input: {
       message: "Write a two-sentence story about a robot discovering friendship."
-    }
+    },
+    // Use OpenRouter if available, otherwise default
+    model: CONFIG.providers.openrouter.apiKey ? {
+      main_model: {
+        provider: 'openrouter',
+        model: 'anthropic/claude-3-sonnet',
+        api_key: CONFIG.providers.openrouter.apiKey
+      }
+    } : {}
   },
   {
     id: "tech_eval",
@@ -49,7 +74,16 @@ const evaluations = [
     tool: "chat",
     input: {
       message: "Explain what HTTP stands for and what it's used for in simple terms."
-    }
+    },
+    // Use LiteLLM if available, otherwise default
+    model: (CONFIG.providers.litellm.apiKey && CONFIG.providers.litellm.endpoint) ? {
+      main_model: {
+        provider: 'litellm',
+        model: 'claude-3-haiku-20240307',
+        api_key: CONFIG.providers.litellm.apiKey,
+        endpoint: CONFIG.providers.litellm.endpoint
+      }
+    } : {}
   }
 ];
 
@@ -57,7 +91,8 @@ const evaluations = [
 console.log('📚 Adding evaluations to stack...');
 evaluations.forEach((evaluation, index) => {
   evalStack.push(evaluation);
-  console.log(`   ${index + 1}. ${evaluation.name} (${evaluation.id})`);
+  const providerInfo = evaluation.model?.main_model?.provider ? ` [${evaluation.model.main_model.provider}]` : ' [default]';
+  console.log(`   ${index + 1}. ${evaluation.name} (${evaluation.id})${providerInfo}`);
 });
 
 console.log(`✅ Stack initialized with ${evalStack.size()} evaluations`);
@@ -94,13 +129,18 @@ server.onConnect(async client => {
 
   // Pop the next evaluation from the stack
   const evaluation = evalStack.pop();
-  console.log(`📋 Assigning evaluation: "${evaluation.name}" (${evaluation.id})`);
+  const providerInfo = evaluation.model?.main_model?.provider ? ` using ${evaluation.model.main_model.provider}` : ' using default provider';
+  console.log(`📋 Assigning evaluation: "${evaluation.name}" (${evaluation.id})${providerInfo}`);
   console.log(`📊 Remaining evaluations in stack: ${evalStack.size()}`);
 
   try {
     console.log('🔄 Starting evaluation...');
+    if (evaluation.model?.main_model?.provider) {
+      console.log(`🔧 Using LLM provider: ${evaluation.model.main_model.provider} with model: ${evaluation.model.main_model.model}`);
+    }
+
     let response = await client.evaluate(evaluation);
-    
+
     console.log('✅ Evaluation completed!');
     console.log(`📊 Response for "${evaluation.name}":`, JSON.stringify(response, null, 2));
   } catch (error) {

@@ -90,6 +90,8 @@ export interface EvaluationParams {
     mini_model?: string;
     nano_model?: string;
     provider?: string;
+    api_key?: string;    // New: per-request API key
+    endpoint?: string;   // New: per-request endpoint (LiteLLM)
   };
   timeout: number;
   metadata: {
@@ -247,6 +249,85 @@ export function createErrorResponse(
       code,
       message,
       data
+    },
+    id
+  };
+}
+
+// LLM Configuration JSON-RPC Messages
+
+export interface LLMConfigurationRequest {
+  jsonrpc: '2.0';
+  method: 'configure_llm';
+  params: LLMConfigurationParams;
+  id: string;
+}
+
+export interface LLMConfigurationParams {
+  provider: 'openai' | 'litellm' | 'groq' | 'openrouter';
+  apiKey?: string;
+  endpoint?: string; // For LiteLLM
+  models: {
+    main: string;
+    mini?: string;
+    nano?: string;
+  };
+  // Optional: only update specific fields
+  partial?: boolean;
+}
+
+export interface LLMConfigurationResponse {
+  jsonrpc: '2.0';
+  result: {
+    status: 'success';
+    message: string;
+    appliedConfig: {
+      provider: string;
+      models: {
+        main: string;
+        mini: string;
+        nano: string;
+      };
+    };
+  };
+  id: string;
+}
+
+// Type guard for LLM configuration
+export function isLLMConfigurationRequest(msg: any): msg is LLMConfigurationRequest {
+  return msg?.jsonrpc === '2.0' && msg?.method === 'configure_llm';
+}
+
+// Helper function for LLM configuration
+export function createLLMConfigurationRequest(
+  id: string,
+  params: LLMConfigurationParams
+): LLMConfigurationRequest {
+  return {
+    jsonrpc: '2.0',
+    method: 'configure_llm',
+    params,
+    id
+  };
+}
+
+export function createLLMConfigurationResponse(
+  id: string,
+  appliedConfig: {
+    provider: string;
+    models: {
+      main: string;
+      mini: string;
+      nano: string;
+    };
+  }
+): LLMConfigurationResponse {
+  return {
+    jsonrpc: '2.0',
+    result: {
+      status: 'success',
+      message: 'LLM configuration updated successfully',
+      appliedConfig
     },
     id
   };

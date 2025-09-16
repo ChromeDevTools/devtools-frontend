@@ -4,6 +4,7 @@
 
 import { BUILD_CONFIG } from '../../core/BuildConfig.js';
 import { WebSocketRPCClient } from '../../common/WebSocketRPCClient.js';
+import { LLMConfigurationManager } from '../../core/LLMConfigurationManager.js';
 import { getEvaluationConfig, getEvaluationClientId } from '../../common/EvaluationConfig.js';
 import { ToolRegistry } from '../../agent_framework/ConfigurableAgentTool.js';
 import { AgentService } from '../../core/AgentService.js';
@@ -21,17 +22,21 @@ import {
   EvaluationRequest,
   EvaluationSuccessResponse,
   EvaluationErrorResponse,
+  LLMConfigurationRequest,
+  LLMConfigurationResponse,
   ErrorCodes,
   isWelcomeMessage,
   isRegistrationAckMessage,
   isEvaluationRequest,
+  isLLMConfigurationRequest,
   isPongMessage,
   createRegisterMessage,
   createReadyMessage,
   createAuthVerifyMessage,
   createStatusMessage,
   createSuccessResponse,
-  createErrorResponse
+  createErrorResponse,
+  createLLMConfigurationResponse
 } from './EvaluationProtocol.js';
 
 const logger = createLogger('EvaluationAgent');
@@ -182,6 +187,9 @@ export class EvaluationAgent {
       }
       else if (isEvaluationRequest(message)) {
         await this.handleEvaluationRequest(message);
+      }
+      else if (isLLMConfigurationRequest(message)) {
+        await this.handleLLMConfigurationRequest(message);
       }
       else if (isPongMessage(message)) {
         logger.debug('Received pong');
@@ -716,22 +724,46 @@ export class EvaluationAgent {
       let chatObservationId: string | undefined;
 
       try {
+        // Get configuration manager for override support
+        const configManager = LLMConfigurationManager.getInstance();
+
+        // Set override configuration if provided in input
+        if (input.provider || input.main_model || input.api_key) {
+          logger.info('Setting configuration override for chat evaluation', {
+            provider: input.provider,
+            mainModel: input.main_model,
+            hasApiKey: !!input.api_key
+          });
+
+          configManager.setOverride({
+            provider: input.provider,
+            mainModel: input.main_model,
+            miniModel: input.mini_model,
+            nanoModel: input.nano_model,
+            apiKey: input.api_key,
+            endpoint: input.endpoint
+          });
+        }
+
         // Get or create AgentService instance
         const agentService = AgentService.getInstance();
-        
-        // Use explicit models from constructor
-        const modelName = this.judgeModel;
-        const miniModel = this.miniModel;
-        const nanoModel = this.nanoModel;
-        
+
+        // Use override configuration if set, otherwise use constructor models
+        const config = configManager.getConfiguration();
+        const modelName = config.mainModel || this.judgeModel;
+        const miniModel = config.miniModel || this.miniModel;
+        const nanoModel = config.nanoModel || this.nanoModel;
+        const apiKey = config.apiKey || agentService.getApiKey();
+
         logger.info('Initializing AgentService for chat evaluation', {
           modelName,
-          hasApiKey: !!agentService.getApiKey(),
-          isInitialized: agentService.isInitialized()
+          hasApiKey: !!apiKey,
+          isInitialized: agentService.isInitialized(),
+          hasOverride: configManager.hasOverride()
         });
-        
-        // Always reinitialize with the current model and explicit mini/nano
-        await agentService.initialize(agentService.getApiKey(), modelName, miniModel, nanoModel);
+
+        // Always reinitialize with the current configuration
+        await agentService.initialize(apiKey, modelName, miniModel, nanoModel);
         
         // Create a child observation for the chat execution
         if (tracingContext) {
@@ -799,7 +831,7 @@ export class EvaluationAgent {
         });
         
         resolve(result);
-        
+
       } catch (error) {
         clearTimeout(timer);
         
@@ -814,10 +846,87 @@ export class EvaluationAgent {
             logger.warn('Failed to update chat execution observation with error:', updateError);
           }
         }
-        
+
         logger.error('Chat evaluation failed:', error);
         reject(error);
+      } finally {
+        // Clear any configuration override
+        const configManager = LLMConfigurationManager.getInstance();
+        configManager.clearOverride();
       }
     });
+  }
+
+  /**
+   * Handle LLM configuration requests for persistent configuration
+   */
+  private async handleLLMConfigurationRequest(request: LLMConfigurationRequest): Promise<void> {
+    const { params, id } = request;
+
+    logger.info('Received LLM configuration request', {
+      provider: params.provider,
+      hasApiKey: !!params.apiKey,
+      models: params.models,
+      partial: params.partial
+    });
+
+    try {
+      // Get configuration manager
+      const configManager = LLMConfigurationManager.getInstance();
+
+      // Save configuration to localStorage (persistent mode)
+      configManager.saveConfiguration({
+        provider: params.provider,
+        apiKey: params.apiKey,
+        endpoint: params.endpoint,
+        mainModel: params.models.main,
+        miniModel: params.models.mini,
+        nanoModel: params.models.nano
+      });
+
+      // Reinitialize AgentService with new configuration
+      const agentService = AgentService.getInstance();
+      await agentService.refreshCredentials();
+
+      // Prepare response with applied configuration
+      const appliedConfig = {
+        provider: params.provider,
+        models: {
+          main: params.models.main,
+          mini: params.models.mini || '',
+          nano: params.models.nano || ''
+        }
+      };
+
+      // Send success response
+      const response = createLLMConfigurationResponse(id, appliedConfig);
+
+      if (this.client) {
+        this.client.send(response);
+      }
+
+      logger.info('LLM configuration applied successfully', {
+        provider: params.provider,
+        mainModel: params.models.main
+      });
+
+    } catch (error) {
+      logger.error('Failed to apply LLM configuration:', error);
+
+      // Send error response
+      const errorResponse = createErrorResponse(
+        id,
+        ErrorCodes.INTERNAL_ERROR,
+        'Failed to apply LLM configuration',
+        {
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: new Date().toISOString()
+        }
+      );
+
+      if (this.client) {
+        this.client.send(errorResponse);
+      }
+    }
   }
 }

@@ -12,6 +12,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {AgentService, Events as AgentEvents} from '../core/AgentService.js';
 import { LLMClient } from '../LLM/LLMClient.js';
+import { LLMConfigurationManager } from '../core/LLMConfigurationManager.js';
 import { LLMProviderRegistry } from '../LLM/LLMProviderRegistry.js';
 import { OpenAIProvider } from '../LLM/OpenAIProvider.js';
 import { LiteLLMProvider } from '../LLM/LiteLLMProvider.js';
@@ -318,27 +319,28 @@ export class AIChatPanel extends UI.Panel.Panel {
   }
 
   static getMiniModel(): string {
-    const instance = AIChatPanel.instance();
-    
-    // Validate the model selection before returning
-    instance.#validateAndFixModelSelections();
-    
-    return instance.#miniModel || instance.#selectedModel;
+    const configManager = LLMConfigurationManager.getInstance();
+    const miniModel = configManager.getMiniModel();
+
+    // Fallback to main model if mini model not set
+    return miniModel || configManager.getMainModel();
   }
 
   static getNanoModel(): string {
-    const instance = AIChatPanel.instance();
-    
-    // Validate the model selection before returning
-    instance.#validateAndFixModelSelections();
-    
-    return instance.#nanoModel || instance.#miniModel || instance.#selectedModel;
+    const configManager = LLMConfigurationManager.getInstance();
+    const nanoModel = configManager.getNanoModel();
+    const miniModel = configManager.getMiniModel();
+    const mainModel = configManager.getMainModel();
+
+    // Fallback hierarchy: nano -> mini -> main
+    return nanoModel || miniModel || mainModel;
   }
 
   static getNanoModelWithProvider(): { model: string, provider: 'openai' | 'litellm' | 'groq' | 'openrouter' } {
+    const configManager = LLMConfigurationManager.getInstance();
     const modelName = AIChatPanel.getNanoModel();
-    const provider = AIChatPanel.getProviderForModel(modelName);
-    
+    const provider = configManager.getProvider();
+
     return {
       model: modelName,
       provider: provider
@@ -346,9 +348,10 @@ export class AIChatPanel extends UI.Panel.Panel {
   }
 
   static getMiniModelWithProvider(): { model: string, provider: 'openai' | 'litellm' | 'groq' | 'openrouter' } {
+    const configManager = LLMConfigurationManager.getInstance();
     const modelName = AIChatPanel.getMiniModel();
-    const provider = AIChatPanel.getProviderForModel(modelName);
-    
+    const provider = configManager.getProvider();
+
     return {
       model: modelName,
       provider: provider
@@ -721,6 +724,7 @@ export class AIChatPanel extends UI.Panel.Panel {
   #apiKey: string | null = null; // Regular API key
   #evaluationAgent: EvaluationAgent | null = null; // Evaluation agent for this tab
   #mcpUnsubscribe: (() => void) | null = null;
+  #configManager: LLMConfigurationManager;
 
   // Store bound event listeners to properly add/remove without duplications
   #boundOnMessagesChanged?: (e: Common.EventTarget.EventTargetEvent<ChatMessage[]>) => void;
@@ -732,6 +736,9 @@ export class AIChatPanel extends UI.Panel.Panel {
 
   constructor() {
     super(AIChatPanel.panelName);
+
+    // Initialize configuration manager
+    this.#configManager = LLMConfigurationManager.getInstance();
 
     // Initialize storage monitoring for debugging
     StorageMonitor.getInstance();
@@ -1096,6 +1103,23 @@ export class AIChatPanel extends UI.Panel.Panel {
 
   getSelectedModel(): string {
     return this.#selectedModel;
+  }
+
+  /**
+   * Set LLM configuration programmatically (for manual mode and persistent automated mode)
+   */
+  setLLMConfiguration(config: import('../core/LLMConfigurationManager.js').LLMConfig): void {
+    logger.info('Setting LLM configuration programmatically', {
+      provider: config.provider,
+      mainModel: config.mainModel,
+      hasApiKey: !!config.apiKey
+    });
+
+    // Save configuration to localStorage
+    this.#configManager.saveConfiguration(config);
+
+    // Refresh the agent service with new configuration
+    this.refreshCredentials();
   }
 
   /**

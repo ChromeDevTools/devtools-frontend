@@ -265,6 +265,12 @@ export class EvalServer extends EventEmitter {
         return;
       }
 
+      // Handle RPC requests from client to server
+      if (data.jsonrpc === '2.0' && data.method && data.id) {
+        await this.handleRpcRequest(connection, data);
+        return;
+      }
+
       // Handle other message types
       switch (data.type) {
         case 'register':
@@ -311,6 +317,129 @@ export class EvalServer extends EventEmitter {
         error: error.message
       });
     }
+  }
+
+  /**
+   * Handle RPC requests from client to server
+   */
+  async handleRpcRequest(connection, request) {
+    try {
+      const { method, params, id } = request;
+
+      logger.info('Received RPC request', {
+        connectionId: connection.id,
+        clientId: connection.clientId,
+        method,
+        requestId: id
+      });
+
+      let result = null;
+
+      switch (method) {
+        case 'configure_llm':
+          result = await this.handleConfigureLLM(connection, params);
+          break;
+        default:
+          throw new Error(`Unknown method: ${method}`);
+      }
+
+      // Send success response
+      this.sendMessage(connection.ws, {
+        jsonrpc: '2.0',
+        result,
+        id
+      });
+
+    } catch (error) {
+      logger.error('RPC request failed', {
+        connectionId: connection.id,
+        clientId: connection.clientId,
+        method: request.method,
+        requestId: request.id,
+        error: error.message
+      });
+
+      // Send error response
+      this.sendMessage(connection.ws, {
+        jsonrpc: '2.0',
+        error: {
+          code: -32603, // Internal error
+          message: error.message
+        },
+        id: request.id
+      });
+    }
+  }
+
+  /**
+   * Handle configure_llm RPC method
+   */
+  async handleConfigureLLM(connection, params) {
+    if (!connection.registered) {
+      throw new Error('Client must be registered before configuring LLM');
+    }
+
+    const { provider, apiKey, endpoint, models, partial = false } = params;
+
+    // Validate provider
+    const supportedProviders = ['openai', 'litellm', 'groq', 'openrouter'];
+    if (!supportedProviders.includes(provider)) {
+      throw new Error(`Unsupported provider: ${provider}. Supported providers: ${supportedProviders.join(', ')}`);
+    }
+
+    // Validate models
+    if (!models || !models.main) {
+      throw new Error('Main model is required');
+    }
+
+    // Store configuration for this client connection
+    if (!connection.llmConfig) {
+      connection.llmConfig = {};
+    }
+
+    // Apply configuration (full or partial update)
+    if (partial && connection.llmConfig) {
+      // Partial update - merge with existing config
+      connection.llmConfig = {
+        ...connection.llmConfig,
+        provider: provider || connection.llmConfig.provider,
+        apiKey: apiKey || connection.llmConfig.apiKey,
+        endpoint: endpoint || connection.llmConfig.endpoint,
+        models: {
+          ...connection.llmConfig.models,
+          ...models
+        }
+      };
+    } else {
+      // Full update - replace entire config
+      connection.llmConfig = {
+        provider,
+        apiKey: apiKey || CONFIG.providers[provider]?.apiKey,
+        endpoint: endpoint || CONFIG.providers[provider]?.endpoint,
+        models: {
+          main: models.main,
+          mini: models.mini || models.main,
+          nano: models.nano || models.mini || models.main
+        }
+      };
+    }
+
+    logger.info('LLM configuration updated', {
+      clientId: connection.clientId,
+      provider: connection.llmConfig.provider,
+      models: connection.llmConfig.models,
+      hasApiKey: !!connection.llmConfig.apiKey,
+      hasEndpoint: !!connection.llmConfig.endpoint
+    });
+
+    return {
+      status: 'success',
+      message: 'LLM configuration updated successfully',
+      appliedConfig: {
+        provider: connection.llmConfig.provider,
+        models: connection.llmConfig.models
+      }
+    };
   }
 
   /**
@@ -562,6 +691,35 @@ export class EvalServer extends EventEmitter {
         'running'
       );
 
+      // Prepare model configuration - use client config if available, otherwise evaluation config, otherwise defaults
+      let modelConfig = evaluation.model || {};
+
+      if (connection.llmConfig) {
+        // New nested format: separate config objects for each model tier
+        modelConfig = {
+          main_model: {
+            provider: connection.llmConfig.provider,
+            model: connection.llmConfig.models.main,
+            api_key: connection.llmConfig.apiKey,
+            endpoint: connection.llmConfig.endpoint
+          },
+          mini_model: {
+            provider: connection.llmConfig.provider,
+            model: connection.llmConfig.models.mini,
+            api_key: connection.llmConfig.apiKey,
+            endpoint: connection.llmConfig.endpoint
+          },
+          nano_model: {
+            provider: connection.llmConfig.provider,
+            model: connection.llmConfig.models.nano,
+            api_key: connection.llmConfig.apiKey,
+            endpoint: connection.llmConfig.endpoint
+          },
+          // Include any evaluation-specific overrides
+          ...modelConfig
+        };
+      }
+
       // Prepare RPC request
       const rpcRequest = {
         jsonrpc: '2.0',
@@ -572,7 +730,7 @@ export class EvalServer extends EventEmitter {
           url: evaluation.target?.url || evaluation.url,
           tool: evaluation.tool,
           input: evaluation.input,
-          model: evaluation.model,
+          model: modelConfig,
           timeout: evaluation.timeout || 30000,
           metadata: {
             tags: evaluation.metadata?.tags || [],

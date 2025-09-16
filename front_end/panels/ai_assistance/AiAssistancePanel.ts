@@ -253,15 +253,6 @@ async function getEmptyStateSuggestions(
         {title: 'Why is the request failing?', jslogContext: 'network-default'},
       ];
     case AiAssistanceModel.ConversationType.PERFORMANCE: {
-      const focus = context?.getItem() as AiAssistanceModel.AgentFocus | null;
-      if (focus?.data.callTree) {
-        return [
-          {title: 'What\'s the purpose of this work?', jslogContext: 'performance-default'},
-          {title: 'Where is time being spent?', jslogContext: 'performance-default'},
-          {title: 'How can I optimize this?', jslogContext: 'performance-default'},
-        ];
-      }
-
       return [
         {title: 'What performance issues exist with my page?', jslogContext: 'performance-default'},
       ];

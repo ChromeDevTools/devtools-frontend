@@ -18,7 +18,7 @@ import {
   AiAgent,
   type ContextResponse,
   ConversationContext,
-  type ConversationSuggestion,
+  type ConversationSuggestions,
   type FunctionCallHandlerResult,
   MultimodalInputType,
   type ParsedResponse,
@@ -182,7 +182,7 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
     throw new Error('Not implemented');
   }
 
-  override async getSuggestions(): Promise<[ConversationSuggestion, ...ConversationSuggestion[]]|undefined> {
+  override async getSuggestions(): Promise<ConversationSuggestions|undefined> {
     const layoutProps = await this.#node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.#node.id);
 
     if (!layoutProps) {

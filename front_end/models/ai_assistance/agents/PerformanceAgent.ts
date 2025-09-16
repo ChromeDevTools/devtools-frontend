@@ -25,7 +25,7 @@ import {
   AiAgent,
   type ContextResponse,
   ConversationContext,
-  type ConversationSuggestion,
+  type ConversationSuggestions,
   type ParsedResponse,
   type RequestOptions,
   type ResponseData,
@@ -209,14 +209,44 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
    * Presents the default suggestions that are shown when the user first clicks
    * "Ask AI".
    */
-  override async getSuggestions(): Promise<[ConversationSuggestion, ...ConversationSuggestion[]]|undefined> {
-    const focus = this.#focus.data;
+  override async getSuggestions(): Promise<ConversationSuggestions|undefined> {
+    const data = this.#focus.data;
 
-    if (!focus.insight) {
-      return;
+    if (data.callTree) {
+      return [
+        {title: 'What\'s the purpose of this work?', jslogContext: 'performance-default'},
+        {title: 'Where is time being spent?', jslogContext: 'performance-default'},
+        {title: 'How can I optimize this?', jslogContext: 'performance-default'},
+      ];
     }
 
-    return new PerformanceInsightFormatter(focus.parsedTrace, focus.insight).getSuggestions();
+    if (data.insight) {
+      return new PerformanceInsightFormatter(data.parsedTrace, data.insight).getSuggestions();
+    }
+
+    const suggestions: ConversationSuggestions =
+        [{title: 'What performance issues exist with my page?', jslogContext: 'performance-default'}];
+
+    if (data.insightSet) {
+      const lcp = data.insightSet ? Trace.Insights.Common.getLCP(data.insightSet) : null;
+      const cls = data.insightSet ? Trace.Insights.Common.getCLS(data.insightSet) : null;
+      const inp = data.insightSet ? Trace.Insights.Common.getINP(data.insightSet) : null;
+
+      const ModelHandlers = Trace.Handlers.ModelHandlers;
+      const GOOD = Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD;
+
+      if (lcp && ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(lcp.value) !== GOOD) {
+        suggestions.push({title: 'How can I improve LCP?', jslogContext: 'performance-default'});
+      }
+      if (inp && ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp.value) !== GOOD) {
+        suggestions.push({title: 'How can I improve INP?', jslogContext: 'performance-default'});
+      }
+      if (cls && ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value) !== GOOD) {
+        suggestions.push({title: 'How can I improve CLS?', jslogContext: 'performance-default'});
+      }
+    }
+
+    return suggestions;
   }
 }
 

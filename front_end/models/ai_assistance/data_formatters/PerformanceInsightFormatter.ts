@@ -4,7 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Trace from '../../trace/trace.js';
-import type {ConversationSuggestion} from '../agents/AiAgent.js';
+import type {ConversationSuggestions} from '../agents/AiAgent.js';
 
 import {
   NetworkRequestFormatter,
@@ -103,7 +103,7 @@ export class PerformanceInsightFormatter {
     return this.#description().length > 0;
   }
 
-  getSuggestions(): [ConversationSuggestion, ...ConversationSuggestion[]] {
+  getSuggestions(): ConversationSuggestions {
     switch (this.#insight.insightKey) {
       case 'CLSCulprits':
         return [

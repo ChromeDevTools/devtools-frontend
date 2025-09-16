@@ -148,6 +148,9 @@ export interface ConversationSuggestion {
   jslogContext?: string;
 }
 
+/** At least one. */
+export type ConversationSuggestions = [ConversationSuggestion, ...ConversationSuggestion[]];
+
 export const enum ExternalRequestResponseType {
   ANSWER = 'answer',
   NOTIFICATION = 'notification',
@@ -196,7 +199,7 @@ export abstract class ConversationContext<T> {
     return;
   }
 
-  async getSuggestions(): Promise<[ConversationSuggestion, ...ConversationSuggestion[]]|undefined> {
+  async getSuggestions(): Promise<ConversationSuggestions|undefined> {
     return;
   }
 }

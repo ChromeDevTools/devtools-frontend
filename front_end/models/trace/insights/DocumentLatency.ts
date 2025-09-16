@@ -190,10 +190,13 @@ function finalize(partialModel: PartialInsightModel<DocumentLatencyInsightModel>
 }
 
 export function generateInsight(
-    data: Handlers.Types.HandlerData, context: InsightSetContext): DocumentLatencyInsightModel {
+    data: Handlers.Types.HandlerData, context: InsightSetContext,
+    timeFormatters?: Types.Configuration.InsightTimeFormatters): DocumentLatencyInsightModel {
   if (!context.navigation) {
     return finalize({});
   }
+
+  const millisToString = timeFormatters?.milli ?? i18n.TimeUtilities.millisToString;
 
   const documentRequest = data.NetworkRequests.byId.get(context.navigationId);
   if (!documentRequest) {
@@ -212,7 +215,8 @@ export function generateInsight(
     overallSavingsMs = Math.max(serverResponseTime - TARGET_MS, 0);
   }
 
-  const redirectDuration = Math.round(documentRequest.args.data.syntheticData.redirectionDuration / 1000);
+  const redirectDuration =
+      Math.round(documentRequest.args.data.syntheticData.redirectionDuration / 1000) as Types.Timing.Milli;
   overallSavingsMs += redirectDuration;
 
   const metricSavings = {
@@ -237,16 +241,14 @@ export function generateInsight(
         noRedirects: {
           label: noRedirects ? i18nString(UIStrings.passingRedirects) : i18nString(UIStrings.failedRedirects, {
             PH1: documentRequest.args.data.redirects.length,
-            PH2: i18n.TimeUtilities.millisToString(redirectDuration),
+            PH2: millisToString(redirectDuration),
           }),
           value: noRedirects
         },
         serverResponseIsFast: {
           label: serverResponseIsFast ?
-              i18nString(
-                  UIStrings.passingServerResponseTime, {PH1: i18n.TimeUtilities.millisToString(serverResponseTime)}) :
-              i18nString(
-                  UIStrings.failedServerResponseTime, {PH1: i18n.TimeUtilities.millisToString(serverResponseTime)}),
+              i18nString(UIStrings.passingServerResponseTime, {PH1: millisToString(serverResponseTime)}) :
+              i18nString(UIStrings.failedServerResponseTime, {PH1: millisToString(serverResponseTime)}),
           value: serverResponseIsFast
         },
         usesCompression: {

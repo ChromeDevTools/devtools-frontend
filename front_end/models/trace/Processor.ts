@@ -443,7 +443,7 @@ export class TraceProcessor extends EventTarget {
       let model: Insights.Types.InsightModel|Error;
       try {
         options.logger?.start(`insights:${name}`);
-        model = insight.generateInsight(data, context);
+        model = insight.generateInsight(data, context, options.insightTimeFormatters);
         model.frameId = context.frameId;
         const navId = context.navigation?.args.data?.navigationId;
         if (navId) {

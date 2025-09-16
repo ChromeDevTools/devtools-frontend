@@ -322,7 +322,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   private buildHiddenCacheTimeout?: number;
   private searchShouldJumpBackwards?: boolean;
   private searchProgressIndicator?: UI.ProgressIndicator.ProgressIndicator;
-  private innerSearchTimeoutId?: number;
+  #searchTimeoutId?: number;
   private muteViewportUpdates?: boolean;
   private waitForScrollTimeout?: number;
   private issueCounter: IssueCounter.IssueCounter.IssueCounter;
@@ -1523,14 +1523,14 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.searchProgressIndicator.setTotalWork(this.visibleViewMessages.length);
     this.progressToolbarItem.element.appendChild(this.searchProgressIndicator);
 
-    this.innerSearch(0);
+    this.#search(0);
   }
 
   private cleanupAfterSearch(): void {
     delete this.searchShouldJumpBackwards;
-    if (this.innerSearchTimeoutId) {
-      clearTimeout(this.innerSearchTimeoutId);
-      delete this.innerSearchTimeoutId;
+    if (this.#searchTimeoutId) {
+      clearTimeout(this.#searchTimeoutId);
+      this.#searchTimeoutId = undefined;
     }
     if (this.searchProgressIndicator) {
       this.searchProgressIndicator.done();
@@ -1542,8 +1542,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     // This method is sniffed in tests.
   }
 
-  private innerSearch(index: number): void {
-    delete this.innerSearchTimeoutId;
+  #search(index: number): void {
+    this.#searchTimeoutId = undefined;
     if (this.searchProgressIndicator?.isCanceled()) {
       this.cleanupAfterSearch();
       return;
@@ -1566,7 +1566,7 @@ export class ConsoleView extends UI.Widget.VBox implements
       return;
     }
 
-    this.innerSearchTimeoutId = window.setTimeout(this.innerSearch.bind(this, index), 100);
+    this.#searchTimeoutId = window.setTimeout(this.#search.bind(this, index), 100);
     if (this.searchProgressIndicator) {
       this.searchProgressIndicator.setWorked(index);
     }

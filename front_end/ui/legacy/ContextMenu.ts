@@ -743,7 +743,7 @@ export class ContextMenu extends SubMenu {
 
     this.pendingTargets = [];
 
-    this.innerShow();
+    this.#show();
   }
 
   /**
@@ -780,7 +780,7 @@ export class ContextMenu extends SubMenu {
     }
   }
 
-  private innerShow(): void {
+  #show(): void {
     if (!this.eventTarget) {
       return;
     }

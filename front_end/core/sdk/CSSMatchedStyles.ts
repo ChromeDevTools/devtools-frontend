@@ -1263,11 +1263,11 @@ class DOMInheritanceCascade {
     if (!nodeCascade) {
       return null;
     }
-    return this.innerComputeCSSVariable(nodeCascade, variableName);
+    return this.#computeCSSVariable(nodeCascade, variableName);
   }
 
-  private innerComputeCSSVariable(nodeCascade: NodeCascade, variableName: string, sccRecord = new SCCRecord()):
-      CSSVariableValue|null {
+  #computeCSSVariable(nodeCascade: NodeCascade, variableName: string, sccRecord = new SCCRecord()): CSSVariableValue
+      |null {
     const availableCSSVariables = this.#availableCSSVariables.get(nodeCascade);
     const computedCSSVariables = this.#computedCSSVariables.get(nodeCascade);
     if (!computedCSSVariables || !availableCSSVariables?.has(variableName)) {
@@ -1303,7 +1303,7 @@ class DOMInheritanceCascade {
       return null;
     }
 
-    return this.innerWalkTree(
+    return this.#walkTree(
                nodeCascade, ast, definedValue.declaration.style, variableName, sccRecord, definedValue.declaration) as
         CSSVariableValue |
         null;
@@ -1315,7 +1315,7 @@ class DOMInheritanceCascade {
     if (!nodeCascade) {
       return null;
     }
-    return this.innerComputeAttribute(nodeCascade, style, attributeName, type, new SCCRecord());
+    return this.#computeAttribute(nodeCascade, style, attributeName, type, new SCCRecord());
   }
 
   private attributeValueAsType(style: CSSStyleDeclaration, attributeName: string, type: string): string|null {
@@ -1336,10 +1336,10 @@ class DOMInheritanceCascade {
     if (!ast) {
       return null;
     }
-    return this.innerWalkTree(nodeCascade, ast, style, `attr(${attributeName})`, sccRecord)?.value ?? null;
+    return this.#walkTree(nodeCascade, ast, style, `attr(${attributeName})`, sccRecord)?.value ?? null;
   }
 
-  private innerComputeAttribute(
+  #computeAttribute(
       nodeCascade: NodeCascade, style: CSSStyleDeclaration, attributeName: string, type: CSSType,
       sccRecord = new SCCRecord()): string|null {
     if (type.isCSSTokens) {
@@ -1352,7 +1352,7 @@ class DOMInheritanceCascade {
     return this.attributeValueAsType(style, attributeName, type.type);
   }
 
-  private innerWalkTree(
+  #walkTree(
       outerNodeCascade: NodeCascade, ast: SyntaxTree, parentStyle: CSSStyleDeclaration, substitutionName: string,
       sccRecord: SCCRecord, declaration?: CSSValueSource): CSSVariableValue|CSSAttributeValue|null {
     const record = sccRecord.add(outerNodeCascade, substitutionName);
@@ -1370,7 +1370,7 @@ class DOMInheritanceCascade {
     const matching = PropertyParser.BottomUpTreeMatching.walk(ast, [
       new BaseVariableMatcher(match => {
         const {value, mayFallback} = recurseWithCycleDetection(
-            match.name, nodeCascade => this.innerComputeCSSVariable(nodeCascade, match.name, sccRecord)?.value ?? null);
+            match.name, nodeCascade => this.#computeCSSVariable(nodeCascade, match.name, sccRecord)?.value ?? null);
         if (!mayFallback || value !== null) {
           return value;
         }
@@ -1581,7 +1581,7 @@ class DOMInheritanceCascade {
       for (const variableName of variableNames) {
         const prevValue = accumulatedCSSVariables.get(variableName);
         accumulatedCSSVariables.delete(variableName);
-        const computedValue = this.innerComputeCSSVariable(nodeCascade, variableName);
+        const computedValue = this.#computeCSSVariable(nodeCascade, variableName);
         if (prevValue && computedValue?.value === prevValue.value) {
           computedValue.declaration = prevValue.declaration;
         }

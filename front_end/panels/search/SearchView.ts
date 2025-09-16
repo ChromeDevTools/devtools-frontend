@@ -393,7 +393,7 @@ export class SearchView extends UI.Widget.VBox {
     }
     const searchConfig = this.#pendingSearchConfig;
     this.#pendingSearchConfig = null;
-    this.#innerStartSearch(searchConfig);
+    this.#startSearch(searchConfig);
   }
 
   #startIndexing(): void {
@@ -461,7 +461,7 @@ export class SearchView extends UI.Widget.VBox {
     UI.ARIAUtils.LiveAnnouncer.alert(this.#searchMessage + ' ' + this.#searchResultsMessage);
   }
 
-  #innerStartSearch(searchConfig: Workspace.SearchConfig.SearchConfig): void {
+  #startSearch(searchConfig: Workspace.SearchConfig.SearchConfig): void {
     this.#searchConfig = searchConfig;
     if (this.#progressIndicator) {
       this.#progressIndicator.done();

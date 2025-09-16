@@ -242,7 +242,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     const focused = this.hasFocus();
     for (let i = 0; i < ids.length; ++i) {
-      this.innerCloseTab(ids[i], userGesture);
+      this.#closeTab(ids[i], userGesture);
     }
     this.requestUpdate();
     if (this.tabsHistory.length) {
@@ -253,7 +253,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
   }
 
-  private innerCloseTab(id: string, userGesture?: boolean): true|undefined {
+  #closeTab(id: string, userGesture?: boolean): true|undefined {
     const tab = this.tabsById.get(id);
     if (!tab) {
       return;

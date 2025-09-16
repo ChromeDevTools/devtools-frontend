@@ -138,7 +138,7 @@ export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
 
   async setLayers(payload: Protocol.LayerTree.Layer[]|null): Promise<void> {
     if (!payload) {
-      this.innerSetLayers(payload);
+      this.#setLayers(payload);
       return;
     }
     const idsToResolve = new Set<Protocol.DOM.BackendNodeId>();
@@ -150,10 +150,10 @@ export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
       idsToResolve.add(backendNodeId);
     }
     await this.resolveBackendNodeIds(idsToResolve);
-    this.innerSetLayers(payload);
+    this.#setLayers(payload);
   }
 
-  private innerSetLayers(layers: Protocol.LayerTree.Layer[]|null): void {
+  #setLayers(layers: Protocol.LayerTree.Layer[]|null): void {
     this.setRoot(null);
     this.setContentRoot(null);
     // Payload will be null when not in the composited mode.

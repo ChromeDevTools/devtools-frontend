@@ -279,7 +279,7 @@ export class NetworkLogViewColumns {
 
     this.updateColumns();
     this.#dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortHandler, this);
-    this.#dataGrid.setHeaderContextMenuCallback(this.innerHeaderContextMenu.bind(this));
+    this.#dataGrid.setHeaderContextMenuCallback(this.#headerContextMenu.bind(this));
 
     this.activeWaterfallSortId = WaterfallSortIds.StartTime;
     this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid.DataGrid.Order.Ascending);
@@ -405,7 +405,7 @@ export class NetworkLogViewColumns {
     this.waterfallHeaderElement.addEventListener('click', waterfallHeaderClicked.bind(this));
     this.waterfallHeaderElement.addEventListener('contextmenu', event => {
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      this.innerHeaderContextMenu(contextMenu);
+      this.#headerContextMenu(contextMenu);
       void contextMenu.show();
     });
     this.waterfallHeaderElement.createChild('div', 'hover-layer');
@@ -627,7 +627,7 @@ export class NetworkLogViewColumns {
     return fragment;
   }
 
-  private innerHeaderContextMenu(contextMenu: UI.ContextMenu.SubMenu): void {
+  #headerContextMenu(contextMenu: UI.ContextMenu.SubMenu): void {
     const columnConfigs = this.columns.filter(columnConfig => columnConfig.hideable);
     const nonRequestResponseHeaders =
         columnConfigs.filter(columnConfig => !columnConfig.isRequestHeader && !columnConfig.isResponseHeader);

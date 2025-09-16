@@ -599,10 +599,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     } else {
       this.positionToReveal = {...position, shouldHighlight};
     }
-    this.innerRevealPositionIfNeeded();
+    this.#revealPositionIfNeeded();
   }
 
-  private innerRevealPositionIfNeeded(): void {
+  #revealPositionIfNeeded(): void {
     if (!this.positionToReveal) {
       return;
     }
@@ -627,10 +627,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   scrollToLine(line: number): void {
     this.clearPositionToReveal();
     this.lineToScrollTo = line;
-    this.innerScrollToLineIfNeeded();
+    this.#scrollToLineIfNeeded();
   }
 
-  private innerScrollToLineIfNeeded(): void {
+  #scrollToLineIfNeeded(): void {
     if (this.lineToScrollTo !== null) {
       if (this.loaded && this.isShowing()) {
         const {textEditor} = this;
@@ -643,10 +643,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   setSelection(textRange: TextUtils.TextRange.TextRange): void {
     this.selectionToSet = textRange;
-    this.innerSetSelectionIfNeeded();
+    this.#setSelectionIfNeeded();
   }
 
-  private innerSetSelectionIfNeeded(): void {
+  #setSelectionIfNeeded(): void {
     const sel = this.selectionToSet;
     if (sel && this.loaded && this.isShowing()) {
       const {textEditor} = this;
@@ -660,9 +660,9 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   private wasShownOrLoaded(): void {
-    this.innerRevealPositionIfNeeded();
-    this.innerSetSelectionIfNeeded();
-    this.innerScrollToLineIfNeeded();
+    this.#revealPositionIfNeeded();
+    this.#setSelectionIfNeeded();
+    this.#scrollToLineIfNeeded();
     this.textEditor.shadowRoot?.querySelector('.cm-lineNumbers')
         ?.setAttribute('jslog', `${VisualLogging.gutter('line-numbers').track({click: true})}`);
     this.textEditor.shadowRoot?.querySelector('.cm-foldGutter')

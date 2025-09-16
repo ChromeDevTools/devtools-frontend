@@ -123,7 +123,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       const fileSystems = event.data;
       const promises = [];
       for (let i = 0; i < fileSystems.length; ++i) {
-        promises.push(this.innerAddFileSystem(fileSystems[i], false));
+        promises.push(this.#addFileSystem(fileSystems[i], false));
       }
       void Promise.all(promises).then(onFileSystemsAdded);
     }
@@ -154,7 +154,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return this.fileSystemsLoadedPromise;
   }
 
-  private innerAddFileSystem(fileSystem: Host.InspectorFrontendHostAPI.DevToolsFileSystem, dispatchEvent: boolean):
+  #addFileSystem(fileSystem: Host.InspectorFrontendHostAPI.DevToolsFileSystem, dispatchEvent: boolean):
       Promise<IsolatedFileSystem|null> {
     const embedderPath = fileSystem.fileSystemPath;
     const fileSystemURL = Common.ParsedURL.ParsedURL.rawPathToUrlString(fileSystem.fileSystemPath);
@@ -196,7 +196,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       this.fileSystemRequestResolve.call(null, null);
       this.fileSystemRequestResolve = null;
     } else if (fileSystem) {
-      void this.innerAddFileSystem(fileSystem, true).then(fileSystem => {
+      void this.#addFileSystem(fileSystem, true).then(fileSystem => {
         if (this.fileSystemRequestResolve) {
           this.fileSystemRequestResolve.call(null, fileSystem);
           this.fileSystemRequestResolve = null;

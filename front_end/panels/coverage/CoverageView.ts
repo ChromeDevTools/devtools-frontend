@@ -643,12 +643,12 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
           const view = UI.ViewManager.ViewManager.instance().view(coverageViewId);
           return view?.widget();
         })
-        .then(widget => this.innerHandleAction(widget as CoverageView, actionId));
+        .then(widget => this.#handleAction(widget as CoverageView, actionId));
 
     return true;
   }
 
-  private innerHandleAction(coverageView: CoverageView, actionId: string): void {
+  #handleAction(coverageView: CoverageView, actionId: string): void {
     switch (actionId) {
       case 'coverage.toggle-recording':
         coverageView.toggleRecording();

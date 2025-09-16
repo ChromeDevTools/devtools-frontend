@@ -493,7 +493,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       const positionFraction = (sliderPosition - hueAlphaLeft) / this.hueAlphaWidth;
       const newHue = 1 - positionFraction;
       hsva[0] = Platform.NumberUtilities.clamp(newHue, 0, 1);
-      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
+      this.#setColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
       const color = getColorFromHsva(this.gamut, hsva);
       const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
       UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
@@ -506,7 +506,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       const positionFraction = (sliderPosition - hueAlphaLeft) / this.hueAlphaWidth;
       const newAlpha = Math.round(positionFraction * 100) / 100;
       hsva[3] = Platform.NumberUtilities.clamp(newAlpha, 0, 1);
-      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
+      this.#setColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
       const color = getColorFromHsva(this.gamut, hsva);
       const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
       UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
@@ -518,7 +518,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       this.colorOffset = this.colorElement.getBoundingClientRect();
       hsva[1] = Platform.NumberUtilities.clamp((colorPosition.x - this.colorOffset.left) / this.dragWidth, 0, 1);
       hsva[2] = Platform.NumberUtilities.clamp(1 - (colorPosition.y - this.colorOffset.top) / this.dragHeight, 0, 1);
-      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
+      this.#setColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
     }
 
     function getUpdatedColorPosition(dragElement: Element, event: Event): {
@@ -959,7 +959,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       const colorName = palette.colorNames[colorIndex];
       const color = Common.Color.parse(colorText);
       if (color) {
-        this.innerSetColor(
+        this.#setColor(
             color, colorText, colorName, palette.matchUserFormat ? this.colorFormat : color.format(),
             ChangeSource.Other);
       }
@@ -991,7 +991,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     if (event instanceof MouseEvent || Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       const color = Common.Color.parse(shade);
       if (color) {
-        this.innerSetColor(color, shade, shade, color.format(), ChangeSource.Other);
+        this.#setColor(color, shade, shade, color.format(), ChangeSource.Other);
       }
       // Continue bubbling so that the color picker will close and submit the selected color.
       return;
@@ -1063,14 +1063,14 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   setColor(color: Common.Color.Color): void {
-    this.innerSetColor(color, '', undefined /* colorName */, color.format(), ChangeSource.Model);
+    this.#setColor(color, '', undefined /* colorName */, color.format(), ChangeSource.Model);
     const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
     UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
     UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
   }
 
   private colorSelected(color: Common.Color.Legacy): void {
-    this.innerSetColor(color, '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
+    this.#setColor(color, '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
   }
 
   get color(): Common.Color.Color {
@@ -1081,7 +1081,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     return getColorFromHsva(this.gamut, this.hsv);
   }
 
-  private innerSetColor(
+  #setColor(
       colorOrHsv: Common.Color.Color|Common.ColorUtils.Color4D|undefined, colorString: string|undefined,
       colorName: string|undefined, colorFormat: Common.Color.Format|undefined, changeSource: string): void {
     // It is important to do `undefined` check here since we want to update the
@@ -1289,7 +1289,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     const contextMenu = new FormatPickerContextMenu(this.color);
     this.isFormatPickerShown = true;
     await contextMenu.show(event, newColor => {
-      this.innerSetColor(newColor, undefined, undefined, newColor.format(), ChangeSource.Other);
+      this.#setColor(newColor, undefined, undefined, newColor.format(), ChangeSource.Other);
     });
     this.isFormatPickerShown = false;
   }
@@ -1306,7 +1306,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     if (!color) {
       return;
     }
-    this.innerSetColor(color, text, undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
+    this.#setColor(color, text, undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
     event.preventDefault();
   }
 
@@ -1360,7 +1360,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       return;
     }
 
-    this.innerSetColor(color, undefined, undefined /* colorName */, colorFormat, ChangeSource.Input);
+    this.#setColor(color, undefined, undefined /* colorName */, colorFormat, ChangeSource.Input);
   }
 
   override wasShown(): void {
@@ -1369,7 +1369,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.dragWidth = this.colorElement.offsetWidth;
     this.dragHeight = this.colorElement.offsetHeight;
     this.colorDragElementHeight = this.colorDragElement.offsetHeight / 2;
-    this.innerSetColor(undefined, undefined, undefined /* colorName */, undefined, ChangeSource.Model);
+    this.#setColor(undefined, undefined, undefined /* colorName */, undefined, ChangeSource.Model);
     // When flag is turned on, eye dropper is not turned on by default.
     // This is because the global change of the cursor into a dropper will disturb the user.
     if (!IS_NATIVE_EYE_DROPPER_AVAILABLE) {
@@ -1426,7 +1426,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         const hexColor = await eyeDropper.open({signal: this.eyeDropperAbortController.signal});
         const color = Common.Color.parse(hexColor.sRGBHex);
 
-        this.innerSetColor(color ?? undefined, '', undefined /* colorName */, undefined, ChangeSource.Other);
+        this.#setColor(color ?? undefined, '', undefined /* colorName */, undefined, ChangeSource.Other);
       } catch (error) {
         if (error.name !== 'AbortError') {
           console.error(error);
@@ -1445,7 +1445,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.EyeDropperPickedColorEvent>): void {
     const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
     const color = Common.Color.Legacy.fromRGBA(rgba);
-    this.innerSetColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
+    this.#setColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
   }
 }

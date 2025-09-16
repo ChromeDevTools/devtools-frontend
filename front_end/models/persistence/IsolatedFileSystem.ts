@@ -184,7 +184,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     let activePath = '';
     for (const path of paths) {
       activePath = activePath + '/' + path;
-      dirEntry = await this.innerCreateFolderIfNeeded(activePath);
+      dirEntry = await this.#createFolderIfNeeded(activePath);
       if (!dirEntry) {
         return null;
       }
@@ -192,7 +192,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     return dirEntry;
   }
 
-  private innerCreateFolderIfNeeded(path: string): Promise<DirectoryEntry|null> {
+  #createFolderIfNeeded(path: string): Promise<DirectoryEntry|null> {
     return new Promise(resolve => {
       this.domFileSystem.root.getDirectory(path, {create: true}, dirEntry => resolve(dirEntry), error => {
         this.domFileSystem.root.getFile(

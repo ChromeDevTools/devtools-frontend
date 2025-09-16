@@ -272,7 +272,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       if (!BreakpointManager.isValidPositionInScript(lineNumber, columnNumber, script)) {
         continue;
       }
-      this.innerSetBreakpoint(
+      this.#setBreakpoint(
           uiSourceCode, lineNumber, columnNumber, breakpoint.condition, breakpoint.enabled, breakpoint.isLogpoint,
           BreakpointOrigin.OTHER);
     }
@@ -316,7 +316,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       const normalizedLocation = await this.debuggerWorkspaceBinding.normalizeUILocation(uiLocation);
       const breakpointLocation = BreakpointManager.breakpointLocationFromUiLocation(normalizedLocation);
 
-      const breakpoint = this.innerSetBreakpoint(
+      const breakpoint = this.#setBreakpoint(
           normalizedLocation.uiSourceCode, breakpointLocation.lineNumber, breakpointLocation.columnNumber, condition,
           enabled, isLogpoint, origin);
 
@@ -333,7 +333,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     return primaryBreakpoint;
   }
 
-  private innerSetBreakpoint(
+  #setBreakpoint(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number|undefined,
       condition: UserCondition, enabled: boolean, isLogpoint: boolean, origin: BreakpointOrigin): Breakpoint {
     const url = BreakpointManager.getScriptForInlineUiSourceCode(uiSourceCode)?.sourceURL ?? uiSourceCode.url();

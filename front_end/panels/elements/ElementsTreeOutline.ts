@@ -1830,7 +1830,7 @@ export class ElementsTreeOutline extends
 
     console.assert(!treeElement.isClosingTag());
 
-    this.innerUpdateChildren(treeElement);
+    this.#updateChildren(treeElement);
   }
 
   insertChildElement(
@@ -1858,7 +1858,7 @@ export class ElementsTreeOutline extends
     }
   }
 
-  private innerUpdateChildren(treeElement: ElementsTreeElement): void {
+  #updateChildren(treeElement: ElementsTreeElement): void {
     if (this.treeElementsBeingUpdated.has(treeElement)) {
       return;
     }

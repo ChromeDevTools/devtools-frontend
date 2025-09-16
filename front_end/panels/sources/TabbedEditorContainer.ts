@@ -196,7 +196,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
         frame?.currentUISourceCode() === uiSourceCode) {
       Common.EventTarget.fireEvent('source-file-loaded', uiSourceCode.displayName(true));
     } else {
-      this.innerShowFile(uiSourceCode, true);
+      this.#showFile(uiSourceCode, true);
     }
   }
 
@@ -279,7 +279,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     }
   }
 
-  private innerShowFile(uiSourceCode: Workspace.UISourceCode.UISourceCode, userGesture?: boolean): void {
+  #showFile(uiSourceCode: Workspace.UISourceCode.UISourceCode, userGesture?: boolean): void {
     if (this.reentrantShow) {
       return;
     }
@@ -430,7 +430,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
 
     // Select tab if this file was the last to be shown.
     if (!index) {
-      this.innerShowFile(uiSourceCode, false);
+      this.#showFile(uiSourceCode, false);
       return;
     }
 
@@ -441,7 +441,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     const currentProjectIsSnippets = Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.#currentFile);
     const addedProjectIsSnippets = Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode);
     if (this.history.index(historyItemKey(this.#currentFile)) && currentProjectIsSnippets && !addedProjectIsSnippets) {
-      this.innerShowFile(uiSourceCode, false);
+      this.#showFile(uiSourceCode, false);
     }
   }
 
@@ -578,7 +578,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
 
     const uiSourceCode = this.files.get(tabId);
     if (uiSourceCode) {
-      this.innerShowFile(uiSourceCode, isUserGesture);
+      this.#showFile(uiSourceCode, isUserGesture);
     }
   }
 

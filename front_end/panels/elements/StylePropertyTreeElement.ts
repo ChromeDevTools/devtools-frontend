@@ -2264,15 +2264,15 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
     this.lastComputedValue = computedValue;
-    this.innerUpdateTitle();
+    this.#updateTitle();
   }
 
   updateTitle(): void {
     this.lastComputedValue = this.#computeCSSExpression(this.property.ownerStyle, this.property.value);
-    this.innerUpdateTitle();
+    this.#updateTitle();
   }
 
-  private innerUpdateTitle(): void {
+  #updateTitle(): void {
     this.#tooltipKeyCounts.clear();
     this.updateState();
     if (this.isExpandable()) {

@@ -735,12 +735,12 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
       this.updateScheduled = true;
       requestAnimationFrame(() => requestAnimationFrame(() => {
                               this.updateScheduled = false;
-                              this.innerUpdate();
+                              this.#update();
                             }));
     }
   }
 
-  private innerUpdate(): void {
+  #update(): void {
     if (!this.layerTree?.root()) {
       this.failBanner.show(this.contentElement);
       return;

@@ -623,10 +623,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   override onResize(): void {
-    void this.resizeThrottler.schedule(this.innerResize.bind(this));
+    void this.resizeThrottler.schedule(this.#resize.bind(this));
   }
 
-  private innerResize(): Promise<void> {
+  #resize(): Promise<void> {
     const width = this.contentElement.getBoundingClientRect().width + 'px';
     this.allSections().forEach(section => {
       section.propertiesTreeOutline.element.style.width = width;

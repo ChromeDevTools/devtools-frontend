@@ -31,6 +31,81 @@ export class PerformanceTraceFormatter {
     return `{min: ${bounds.min}, max: ${bounds.max}}`;
   }
 
+  /**
+   * Fetching the Crux summary can error outside of DevTools, hence the
+   * try-catch around it here.
+   */
+  #getCruxTraceSummary(insightSet: Trace.Insights.Types.InsightSet|null): string[] {
+    if (insightSet === null) {
+      return [];
+    }
+    try {
+      const cruxScope = CrUXManager.CrUXManager.instance().getSelectedScope();
+      const parts: string[] = [];
+      const fieldMetrics =
+          Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, this.#parsedTrace.metadata, cruxScope);
+      const fieldLcp = fieldMetrics?.lcp;
+      const fieldInp = fieldMetrics?.inp;
+      const fieldCls = fieldMetrics?.cls;
+
+      if (fieldLcp || fieldInp || fieldCls) {
+        parts.push('Metrics (field / real users):');
+
+        const serializeFieldMetricTimingResult =
+            (fieldMetric: Trace.Insights.Common.CrUXFieldMetricTimingResult): string => {
+              return `${Math.round(fieldMetric.value / 1000)} ms (scope: ${fieldMetric.pageScope})`;
+            };
+
+        const serializeFieldMetricNumberResult =
+            (fieldMetric: Trace.Insights.Common.CrUXFieldMetricNumberResult): string => {
+              return `${fieldMetric.value.toFixed(2)} (scope: ${fieldMetric.pageScope})`;
+            };
+
+        if (fieldLcp) {
+          parts.push(`  - LCP: ${serializeFieldMetricTimingResult(fieldLcp)}`);
+
+          const fieldLcpBreakdown = fieldMetrics?.lcpBreakdown;
+          if (fieldLcpBreakdown &&
+              (fieldLcpBreakdown.ttfb || fieldLcpBreakdown.loadDelay || fieldLcpBreakdown.loadDuration ||
+               fieldLcpBreakdown.renderDelay)) {
+            parts.push('  - LCP breakdown:');
+            if (fieldLcpBreakdown.ttfb) {
+              parts.push(`    - TTFB: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.ttfb)}`);
+            }
+            if (fieldLcpBreakdown.loadDelay) {
+              parts.push(`    - Load delay: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.loadDelay)}`);
+            }
+            if (fieldLcpBreakdown.loadDuration) {
+              parts.push(`    - Load duration: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.loadDuration)}`);
+            }
+            if (fieldLcpBreakdown.renderDelay) {
+              parts.push(`    - Render delay: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.renderDelay)}`);
+            }
+          }
+        }
+        if (fieldInp) {
+          parts.push(`  - INP: ${serializeFieldMetricTimingResult(fieldInp)}`);
+        }
+        if (fieldCls) {
+          parts.push(`  - CLS: ${serializeFieldMetricNumberResult(fieldCls)}`);
+        }
+
+        parts.push(
+            '  - The above data is from CrUX–Chrome User Experience Report. It\'s how the page performs for real users.');
+        parts.push('  - The values shown above are the p75 measure of all real Chrome users');
+        parts.push('  - The scope indicates if the data came from the entire origin, or a specific url');
+        parts.push(
+            '  - Lab metrics describe how this specific page load performed, while field metrics are an aggregation ' +
+            'of results from real-world users. Best practice is to prioritize metrics that are bad in field data. ' +
+            'Lab metrics may be better or worse than fields metrics depending on the developer\'s machine, network, or the ' +
+            'actions performed while tracing.');
+      }
+      return parts;
+    } catch {
+      return [];
+    }
+  }
+
   formatTraceSummary(): string {
     const parsedTrace = this.#parsedTrace;
     const insightSet = this.#insightSet;
@@ -78,64 +153,9 @@ export class PerformanceTraceFormatter {
       parts.push('Metrics (lab / observed): n/a');
     }
 
-    const fieldMetrics = insightSet &&
-        Trace.Insights.Common.getFieldMetricsForInsightSet(
-            insightSet, traceMetadata, CrUXManager.CrUXManager.instance().getSelectedScope());
-    const fieldLcp = fieldMetrics?.lcp;
-    const fieldInp = fieldMetrics?.inp;
-    const fieldCls = fieldMetrics?.cls;
-
-    if (fieldLcp || fieldInp || fieldCls) {
-      parts.push('Metrics (field / real users):');
-
-      const serializeFieldMetricTimingResult =
-          (fieldMetric: Trace.Insights.Common.CrUXFieldMetricTimingResult): string => {
-            return `${Math.round(fieldMetric.value / 1000)} ms (scope: ${fieldMetric.pageScope})`;
-          };
-
-      const serializeFieldMetricNumberResult =
-          (fieldMetric: Trace.Insights.Common.CrUXFieldMetricNumberResult): string => {
-            return `${fieldMetric.value.toFixed(2)} (scope: ${fieldMetric.pageScope})`;
-          };
-
-      if (fieldLcp) {
-        parts.push(`  - LCP: ${serializeFieldMetricTimingResult(fieldLcp)}`);
-
-        const fieldLcpBreakdown = fieldMetrics?.lcpBreakdown;
-        if (fieldLcpBreakdown &&
-            (fieldLcpBreakdown.ttfb || fieldLcpBreakdown.loadDelay || fieldLcpBreakdown.loadDuration ||
-             fieldLcpBreakdown.renderDelay)) {
-          parts.push('  - LCP breakdown:');
-          if (fieldLcpBreakdown.ttfb) {
-            parts.push(`    - TTFB: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.ttfb)}`);
-          }
-          if (fieldLcpBreakdown.loadDelay) {
-            parts.push(`    - Load delay: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.loadDelay)}`);
-          }
-          if (fieldLcpBreakdown.loadDuration) {
-            parts.push(`    - Load duration: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.loadDuration)}`);
-          }
-          if (fieldLcpBreakdown.renderDelay) {
-            parts.push(`    - Render delay: ${serializeFieldMetricTimingResult(fieldLcpBreakdown.renderDelay)}`);
-          }
-        }
-      }
-      if (fieldInp) {
-        parts.push(`  - INP: ${serializeFieldMetricTimingResult(fieldInp)}`);
-      }
-      if (fieldCls) {
-        parts.push(`  - CLS: ${serializeFieldMetricNumberResult(fieldCls)}`);
-      }
-
-      parts.push(
-          '  - The above data is from CrUX–Chrome User Experience Report. It\'s how the page performs for real users.');
-      parts.push('  - The values shown above are the p75 measure of all real Chrome users');
-      parts.push('  - The scope indicates if the data came from the entire origin, or a specific url');
-      parts.push(
-          '  - Lab metrics describe how this specific page load performed, while field metrics are an aggregation ' +
-          'of results from real-world users. Best practice is to prioritize metrics that are bad in field data. ' +
-          'Lab metrics may be better or worse than fields metrics depending on the developer\'s machine, network, or the ' +
-          'actions performed while tracing.');
+    const cruxParts = insightSet && this.#getCruxTraceSummary(insightSet);
+    if (cruxParts?.length) {
+      parts.push(...cruxParts);
     } else {
       parts.push('Metrics (field / real users): n/a – no data for this page in CrUX');
     }

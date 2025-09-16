@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
@@ -38,6 +39,15 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
 
     it('yahoo-news.json.gz', async function() {
       const {formatter} = await createFormatter(this, 'yahoo-news.json.gz');
+      const output = formatter.formatTraceSummary();
+      snapshotTester.assert(this, output);
+    });
+
+    it('deals with CrUX manager errors', async function() {
+      const {formatter} = await createFormatter(this, 'image-delivery.json.gz');
+      sinon.stub(CrUXManager.CrUXManager, 'instance').callsFake(() => {
+        throw new Error('something went wrong with CrUX Manager');
+      });
       const output = formatter.formatTraceSummary();
       snapshotTester.assert(this, output);
     });

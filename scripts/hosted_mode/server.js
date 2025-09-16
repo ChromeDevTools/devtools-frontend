@@ -188,7 +188,8 @@ async function requestHandler(request, response) {
       // based on the origin that made the request. E.g. the target page loads a script first
       // but then DevTools also wants to load it. In the former, we disallow cross-origin requests by default,
       // while for the latter we allow it.
-      const requestedByDevTools = request.headers.origin?.includes('devtools-frontend.test');
+      const requestedByDevTools = request.headers.origin?.includes('devtools-frontend.test') ||
+          request.headers.origin?.includes('devtools://devtools');
       if (requestedByDevTools) {
         headers.set('Access-Control-Allow-Origin', request.headers.origin);
       }

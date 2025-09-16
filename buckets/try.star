@@ -58,11 +58,7 @@ def presubmit_builder(name, dimensions, **kvargs):
         **kvargs
     )
 
-builder_coverage(
-    covered_oss = ["linux", "win64"],
-    builder_factory = presubmit_builder,
-    builder_name_pattern = "dtf_presubmit_%s",
-)
+presubmit_builder("dtf_presubmit", dimensions.default_ubuntu)
 
 try_builder(
     name = "devtools_frontend_linux_blink_light_rel",
@@ -195,8 +191,7 @@ cq_builders = struct(
         "dtf_mac_arm64_rel",
         "dtf_mac_cross_rel",
         "dtf_win64_rel",
-        "dtf_presubmit_linux",
-        "dtf_presubmit_win64",
+        "dtf_presubmit",
     ],
     chromium_builders = [
         "devtools_frontend_linux_blink_light_rel",
@@ -280,7 +275,7 @@ luci.cq_group(
     acls = cq_acls,
     retry_config = cq_retry_config,
     verifiers = [
-        luci.cq_tryjob_verifier(builder = "dtf_presubmit_linux", disable_reuse = True),
+        luci.cq_tryjob_verifier(builder = "dtf_presubmit", disable_reuse = True),
     ],
 )
 

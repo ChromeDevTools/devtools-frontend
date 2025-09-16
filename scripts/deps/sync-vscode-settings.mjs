@@ -5,6 +5,7 @@
 import childProcess from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import url from 'url';
 
 // JSON files under .vscode/ synced by this script
 const VSCODE_SETTINGS_TO_MERGE = [
@@ -23,15 +24,11 @@ if (Boolean(process.env['SKIP_VSCODE_SETTINGS_SYNC'])) {
 }
 
 for (const { settingsFile, mergeField, byField } of VSCODE_SETTINGS_TO_MERGE) {
-  const vscodeSettingsLocation = path.join(
-    process.cwd(),
-    '.vscode',
-    settingsFile,
+  const vscodeSettingsLocation = path.resolve(
+    path.join(process.cwd(), '.vscode', settingsFile),
   );
-  const devtoolsSettingsLocation = path.join(
-    process.cwd(),
-    '.vscode',
-    'devtools-workspace-' + settingsFile,
+  const devtoolsSettingsLocation = path.resolve(
+    path.join(process.cwd(), '.vscode', 'devtools-workspace-' + settingsFile),
   );
 
   // If there are no settings to copy and paste, skip.
@@ -41,14 +38,14 @@ for (const { settingsFile, mergeField, byField } of VSCODE_SETTINGS_TO_MERGE) {
 
   try {
     const devtoolsSettings = (
-      await import(devtoolsSettingsLocation, {
+      await import(url.pathToFileURL(devtoolsSettingsLocation).href, {
         with: { type: 'json' },
       })
     ).default;
     let preExistingSettings = {};
     if (fs.existsSync(vscodeSettingsLocation)) {
       preExistingSettings = (
-        await import(vscodeSettingsLocation, {
+        await import(url.pathToFileURL(vscodeSettingsLocation).href, {
           with: { type: 'json' },
         })
       ).default;

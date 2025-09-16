@@ -39,8 +39,10 @@ except ImportError:
     import simplejson as json
 
 ROOT_DIRECTORY = path.join(path.dirname(__file__), '..', '..')
-GENERATED_LOCATION = path.join(ROOT_DIRECTORY, 'front_end', 'generated', 'InspectorBackendCommands.js')
-READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'public', 'devtools_protocol', 'browser_protocol.json')
+GENERATED_LOCATION = path.join(ROOT_DIRECTORY, 'front_end', 'generated',
+                               'InspectorBackendCommands.js')
+READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'public',
+                          'devtools_protocol', 'browser_protocol.json')
 
 
 def fix_camel_case(name):
@@ -227,7 +229,8 @@ class Generator:
             if domain_name_lower == "console":
                 continue
 
-            Generator.backend_js_domain_initializer_list.append("// %s.\n" % domain_name)
+            Generator.backend_js_domain_initializer_list.append("// %s.\n" %
+                                                                domain_name)
 
             if "types" in json_domain:
                 for json_type in json_domain["types"]:
@@ -238,8 +241,11 @@ class Generator:
                         if "properties" in json_type:
                             for json_property in json_type["properties"]:
                                 if "type" in json_property and json_property["type"] == "string" and "enum" in json_property:
-                                    enum_name = "%s.%s%s" % (domain_name, json_type["id"], to_title_case(json_property["name"]))
-                                    Generator.process_enum(json_property, enum_name)
+                                    enum_name = "%s.%s%s" % (
+                                        domain_name, json_type["id"],
+                                        to_title_case(json_property["name"]))
+                                    Generator.process_enum(
+                                        json_property, enum_name)
 
             if "events" in json_domain:
                 for json_event in json_domain["events"]:
@@ -281,7 +287,8 @@ class Generator:
     def process_enum(json_enum, enum_name):
         enum_members = []
         for member in json_enum["enum"]:
-            enum_members.append("%s: \"%s\"" % (fix_camel_case(member), member))
+            enum_members.append("%s: \"%s\"" %
+                                (fix_camel_case(member), member))
 
         Generator.backend_js_domain_initializer_list.append(
             "inspectorBackend.registerEnum(\"%s\", {%s});\n" % (enum_name, ", ".join(enum_members)))
@@ -404,7 +411,7 @@ class Generator:
 
 Generator.go()
 
-backend_js_file = open(GENERATED_LOCATION, "w+")
+backend_js_file = open(GENERATED_LOCATION, "w+", newline='\n')
 
 backend_js_file.write(
     Templates.backend_js.substitute(None, domainInitializers="".join(Generator.backend_js_domain_initializer_list)))

@@ -93,7 +93,7 @@ def properties_from_file(file_name):
 
 properties, property_values, aliases_for = properties_from_file(READ_LOCATION)
 now = datetime.datetime.now()
-with open(GENERATED_LOCATION, "w+") as f:
+with open(GENERATED_LOCATION, "w+", newline='\n') as f:
     f.write('// Copyright %d The Chromium Authors\n' % now.year)
     f.write(
         '// Use of this source code is governed by a BSD-style license that can be\n'

@@ -280,17 +280,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
         action: 'drjones.performance-panel-context'
       },
       {
-        flavor: AiAssistanceModel.AgentFocus,
-        createContext: () => {
-          // @ts-expect-error: don't need any data.
-          const context = AiAssistanceModel.PerformanceTraceContext.fromInsight({insights: new Map()}, new Map());
-          sinon.stub(AiAssistanceModel.PerformanceTraceContext.prototype, 'getSuggestions')
-              .returns(Promise.resolve([{title: 'test suggestion'}]));
-          return context;
-        },
-        action: 'drjones.performance-insight-context'
-      },
-      {
         flavor: Workspace.UISourceCode.UISourceCode,
         createContext: () => {
           return new AiAssistanceModel.FileContext(sinon.createStubInstance(Workspace.UISourceCode.UISourceCode));
@@ -565,7 +554,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
          view.input.onNewChatClick();
 
          assert.deepEqual((await view.nextInput).messages, []);
-         assert.deepEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
+         assert.deepEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE);
        });
 
     it('should select the Dr Jones performance agent if insights are not enabled', async () => {
@@ -602,7 +591,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       view.input.onNewChatClick();
 
       assert.deepEqual((await view.nextInput).messages, []);
-      assert.deepEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE);
+      assert.deepEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE);
     });
 
     it('should switch agents and restore history', async () => {
@@ -1197,7 +1186,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           },
           {
             panelName: 'timeline',
-            expectedConversationType: AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE,
+            expectedConversationType: AiAssistanceModel.ConversationType.PERFORMANCE,
             featureFlagName: 'devToolsAiAssistancePerformanceAgent',
           }
         ];
@@ -1291,7 +1280,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
                new Timeline.TimelinePanel.SelectedInsight({} as unknown as TimelineComponents.Sidebar.ActiveInsight));
            const {view} = await createAiAssistancePanel();
 
-           assert.strictEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
+           assert.strictEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE);
          });
 
       it('should select the PERFORMANCE agent when the performance panel is open and insights are enabled but the user has not selected an insight',
@@ -1308,7 +1297,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
            UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.SelectedInsight, null);
 
            const {view} = await createAiAssistancePanel();
-           assert.strictEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE_CALL_TREE);
+           assert.strictEqual(view.input.conversationType, AiAssistanceModel.ConversationType.PERFORMANCE);
          });
     });
   });
@@ -1481,7 +1470,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
            assert.isNull((await view.nextInput).selectedContext);
            assert.isTrue(view.input.isTextInputDisabled);
-           assert.strictEqual(view.input.inputPlaceholder, 'Select an item to ask a question');
+           assert.strictEqual(view.input.inputPlaceholder, 'Record or select a performance trace to ask a question');
          });
 
       it('shows the right placeholder for the performance agent when the user has a trace and a selected item',
@@ -1506,7 +1495,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
                await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
            panel.handleAction('drjones.performance-panel-context');
 
-           assert.strictEqual(view.input.inputPlaceholder, 'Ask a question about the selected item and its call tree');
+           assert.strictEqual(view.input.inputPlaceholder, 'Ask a question about the selected performance trace');
            assert.isFalse(view.input.isTextInputDisabled);
          });
     });

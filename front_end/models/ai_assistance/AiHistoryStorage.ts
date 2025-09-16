@@ -13,9 +13,7 @@ export const enum ConversationType {
   STYLING = 'freestyler',
   FILE = 'drjones-file',
   NETWORK = 'drjones-network-request',
-  PERFORMANCE_CALL_TREE = 'drjones-performance',
-  PERFORMANCE_INSIGHT = 'performance-insight',
-  PERFORMANCE_FULL = 'drjones-performance-full',
+  PERFORMANCE = 'drjones-performance-full',
 }
 
 export const NOT_FOUND_IMAGE_DATA = '';

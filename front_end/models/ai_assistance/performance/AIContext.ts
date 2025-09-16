@@ -6,27 +6,12 @@ import * as Trace from '../../../models/trace/trace.js';
 
 import type {AICallTree} from './AICallTree.js';
 
-export interface AgentFocusDataFull {
-  type: 'full';
+export interface AgentFocusData {
   parsedTrace: Trace.TraceModel.ParsedTrace;
   insightSet: Trace.Insights.Types.InsightSet|null;
+  callTree: AICallTree|null;
+  insight: Trace.Insights.Types.InsightModel|null;
 }
-
-interface AgentFocusDataCallTree {
-  type: 'call-tree';
-  parsedTrace: Trace.TraceModel.ParsedTrace;
-  insightSet: Trace.Insights.Types.InsightSet|null;
-  callTree: AICallTree;
-}
-
-export interface AgentFocusDataInsight {
-  type: 'insight';
-  parsedTrace: Trace.TraceModel.ParsedTrace;
-  insightSet: Trace.Insights.Types.InsightSet|null;
-  insight: Trace.Insights.Types.InsightModel;
-}
-
-type AgentFocusData = AgentFocusDataCallTree|AgentFocusDataInsight|AgentFocusDataFull;
 
 function getFirstInsightSet(insights: Trace.Insights.Types.TraceInsightSets): Trace.Insights.Types.InsightSet|null {
   // Currently only support a single insight set. Pick the first one with a navigation.
@@ -43,9 +28,10 @@ export class AgentFocus {
 
     const insightSet = getFirstInsightSet(parsedTrace.insights);
     return new AgentFocus({
-      type: 'full',
       parsedTrace,
       insightSet,
+      callTree: null,
+      insight: null,
     });
   }
 
@@ -57,9 +43,9 @@ export class AgentFocus {
 
     const insightSet = getFirstInsightSet(parsedTrace.insights);
     return new AgentFocus({
-      type: 'insight',
       parsedTrace,
       insightSet,
+      callTree: null,
       insight,
     });
   }
@@ -79,7 +65,7 @@ export class AgentFocus {
           getFirstInsightSet(insights);
     }
 
-    return new AgentFocus({type: 'call-tree', parsedTrace: callTree.parsedTrace, insightSet, callTree});
+    return new AgentFocus({parsedTrace: callTree.parsedTrace, insightSet, callTree, insight: null});
   }
 
   #data: AgentFocusData;
@@ -90,6 +76,18 @@ export class AgentFocus {
 
   get data(): AgentFocusData {
     return this.#data;
+  }
+
+  withInsight(insight: Trace.Insights.Types.InsightModel|null): AgentFocus {
+    const focus = new AgentFocus(this.#data);
+    focus.#data.insight = insight;
+    return focus;
+  }
+
+  withCallTree(callTree: AICallTree|null): AgentFocus {
+    const focus = new AgentFocus(this.#data);
+    focus.#data.callTree = callTree;
+    return focus;
   }
 }
 

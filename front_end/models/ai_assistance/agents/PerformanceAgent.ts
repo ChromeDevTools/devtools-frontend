@@ -11,7 +11,7 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Trace from '../../trace/trace.js';
-import type {ConversationType} from '../AiHistoryStorage.js';
+import {ConversationType} from '../AiHistoryStorage.js';
 import {
   PerformanceInsightFormatter,
   TraceEventFormatter,
@@ -22,7 +22,6 @@ import {AICallTree} from '../performance/AICallTree.js';
 import {AgentFocus} from '../performance/AIContext.js';
 
 import {
-  type AgentOptions,
   AiAgent,
   type ContextResponse,
   ConversationContext,
@@ -38,7 +37,6 @@ const UIStringsNotTranslated = {
    *@description Shown when the agent is investigating a trace
    */
   analyzingTrace: 'Analyzing trace',
-  analyzingCallTree: 'Analyzing call tree',
   /**
    * @description Shown when the agent is investigating network activity
    */
@@ -196,7 +194,15 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
       url = new URL(focus.parsedTrace.data.Meta.mainFrameURL);
     }
 
-    return `Trace: ${url.hostname}`;
+    const parts = [`Trace: ${url.hostname}`];
+    if (focus.insight) {
+      parts.push(focus.insight.title);
+    }
+    if (focus.callTree) {
+      const node = focus.callTree.selectedNode ?? focus.callTree.rootNode;
+      parts.push(Trace.Name.forEntry(node.event));
+    }
+    return parts.join(' – ');
   }
 
   /**
@@ -206,7 +212,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   override async getSuggestions(): Promise<[ConversationSuggestion, ...ConversationSuggestion[]]|undefined> {
     const focus = this.#focus.data;
 
-    if (focus.type !== 'insight') {
+    if (!focus.insight) {
       return;
     }
 
@@ -218,28 +224,14 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
 const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
 
 /**
- * Union of all the performance conversation types, which are all implemented by this file.
- * This temporary until all Performance Panel AI features use the "Full" type. go/chrome-devtools:more-powerful-performance-agent-design
- */
-type PerformanceConversationType =
-    ConversationType.PERFORMANCE_FULL|ConversationType.PERFORMANCE_CALL_TREE|ConversationType.PERFORMANCE_INSIGHT;
-
-/**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
  */
 export class PerformanceAgent extends AiAgent<AgentFocus> {
-  // TODO: would make more sense on AgentOptions
-  #conversationType: PerformanceConversationType;
   #formatter: PerformanceTraceFormatter|null = null;
   #lastInsightForEnhancedQuery: Trace.Insights.Types.InsightModel|undefined;
   #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
   #lastFocusHandledForContextDetails: AgentFocus|null = null;
-
-  constructor(opts: AgentOptions, conversationType: PerformanceConversationType) {
-    super(opts);
-    this.#conversationType = conversationType;
-  }
 
   /**
    * Cache of all function calls made by the agent. This allows us to include (as a
@@ -285,7 +277,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   }
 
   getConversationType(): ConversationType {
-    return this.#conversationType;
+    return ConversationType.PERFORMANCE;
   }
 
   #lookupEvent(key: Trace.Types.File.SerializableKey): Trace.Types.Events.Event|null {
@@ -318,31 +310,16 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
     this.#lastFocusHandledForContextDetails = focus;
 
-    if (focus.data.type === 'full' || focus.data.type === 'insight') {
-      yield {
-        type: ResponseType.CONTEXT,
-        title: lockedString(UIStringsNotTranslated.analyzingTrace),
-        details: [
-          {
-            title: 'Trace',
-            text: this.#formatter?.formatTraceSummary() ?? '',
-          },
-        ],
-      };
-    } else if (focus.data.type === 'call-tree') {
-      yield {
-        type: ResponseType.CONTEXT,
-        title: lockedString(UIStringsNotTranslated.analyzingCallTree),
-        details: [
-          {
-            title: 'Selected call tree',
-            text: focus.data.callTree.serialize(),
-          },
-        ],
-      };
-    } else {
-      Platform.assertNever(focus.data, 'Unknown agent focus');
-    }
+    yield {
+      type: ResponseType.CONTEXT,
+      title: lockedString(UIStringsNotTranslated.analyzingTrace),
+      details: [
+        {
+          title: 'Trace',
+          text: this.#formatter?.formatTraceSummary() ?? '',
+        },
+      ],
+    };
   }
 
   #callTreeContextSet = new WeakSet();
@@ -378,12 +355,9 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     this.#declareFunctions(context);
 
     const focus = context.getItem();
+    const selected: string[] = [];
 
-    if (focus.data.type === 'full') {
-      return query;
-    }
-
-    if (focus.data.type === 'call-tree') {
+    if (focus.data.callTree) {
       // If this is a followup chat about the same call tree, don't include the call tree serialization again.
       // We don't need to repeat it and we'd rather have more the context window space.
       let contextString = '';
@@ -392,17 +366,12 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         this.#callTreeContextSet.add(focus.data.callTree);
       }
 
-      if (!contextString) {
-        return query;
+      if (contextString) {
+        selected.push(`User selected the following call tree:\n\n${contextString}\n\n`);
       }
-
-      let enhancedQuery = '';
-      enhancedQuery += `User selected the following call tree:\n\n${contextString}\n\n`;
-      enhancedQuery += `# User query\n\n${query}`;
-      return enhancedQuery;
     }
 
-    if (focus.data.type === 'insight') {
+    if (focus.data.insight) {
       // We only need to add Insight info to a prompt when the context changes. For example:
       // User clicks Insight A. We need to send info on Insight A with the prompt.
       // User asks follow up question. We do not need to resend Insight A with the prompt.
@@ -411,17 +380,17 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       const includeInsightInfo = focus.data.insight !== this.#lastInsightForEnhancedQuery;
       this.#lastInsightForEnhancedQuery = focus.data.insight;
 
-      if (!includeInsightInfo) {
-        return query;
+      if (includeInsightInfo) {
+        selected.push(`User selected the ${focus.data.insight.insightKey} insight.\n\n`);
       }
-
-      let enhancedQuery = '';
-      enhancedQuery += `User selected the ${focus.data.insight.insightKey} insight.\n\n`;
-      enhancedQuery += `# User query\n\n${query}`;
-      return enhancedQuery;
     }
 
-    Platform.assertNever(focus.data, 'Unknown agent focus');
+    if (!selected.length) {
+      return query;
+    }
+
+    selected.push(`# User query\n\n${query}`);
+    return selected.join('');
   }
 
   override async * run(initialQuery: string, options: {

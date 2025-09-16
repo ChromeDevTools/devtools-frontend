@@ -1108,7 +1108,6 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       await doubleRaf();  // the updating of the AI Call Tree is done in a rAF to not block.
       const flavor = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
       assert.instanceOf(flavor, AIAssistance.AgentFocus);
-      assert.strictEqual(flavor.data.type, 'call-tree');
     });
   });
 

@@ -175,20 +175,24 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   }
 
   #dispatchInsightToggle(): void {
+    if (!this.data.insightSetKey || !this.model) {
+      // Shouldn't happen, but needed to satisfy TS.
+      return;
+    }
+
+    const focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
     if (this.#selected) {
       this.dispatchEvent(new SidebarInsight.InsightDeactivated());
 
       // Clear agent (but only if currently focused on an insight).
-      const focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
-      if (focus && focus.data.type === 'insight') {
-        UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, null);
+      if (focus) {
+        UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus.withInsight(null));
       }
       return;
     }
 
-    if (!this.data.insightSetKey || !this.model) {
-      // Shouldn't happen, but needed to satisfy TS.
-      return;
+    if (focus) {
+      UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus.withInsight(this.model));
     }
 
     this.sharedTableState.selectedRowEl?.classList.remove('selected');
@@ -359,7 +363,13 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return;
     }
 
-    UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, this.#agentFocus);
+    let focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
+    if (focus) {
+      focus = focus.withInsight(this.model);
+    } else {
+      focus = this.#agentFocus;
+    }
+    UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus);
 
     // Trigger the AI Assistance panel to open.
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);

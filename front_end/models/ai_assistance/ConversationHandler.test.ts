@@ -327,7 +327,7 @@ describeWithMockConnection('ConversationHandler', () => {
 
       const generator = await conversationHandler.handleExternalRequest({
         prompt: 'Please help me debug this problem',
-        conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_FULL,
+        conversationType: AiAssistanceModel.ConversationType.PERFORMANCE,
         data: Timeline.TimelinePanel.TimelinePanel.instance().getOrCreateExternalAIConversationData(),
       });
       let response = await generator.next();

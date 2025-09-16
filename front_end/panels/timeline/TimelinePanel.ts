@@ -940,9 +940,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         throw new Error('could not create performance agent focus');
       }
 
-      const agent = conversationHandler.createAgent(AiAssistanceModel.ConversationType.PERFORMANCE_FULL);
+      const agent = conversationHandler.createAgent(AiAssistanceModel.ConversationType.PERFORMANCE);
       const conversation = new AiAssistanceModel.Conversation(
-          AiAssistanceModel.ConversationType.PERFORMANCE_FULL,
+          AiAssistanceModel.ConversationType.PERFORMANCE,
           [],
           agent.id,
           /* isReadOnly */ true,
@@ -2226,6 +2226,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
             Host.UserMetrics.TimelineNavigationSetting.MODERN_AT_SESSION_FIRST_TRACE);
       }
     }
+
+    UI.Context.Context.instance().setFlavor(
+        AiAssistanceModel.AgentFocus, AiAssistanceModel.AgentFocus.full(parsedTrace));
   }
 
   #onAnnotationModifiedEvent(e: Event): void {
@@ -3112,7 +3115,7 @@ ${responseTextForPassedInsights}`;
       Promise<AsyncGenerator<AiAssistanceModel.ExternalRequestResponse, AiAssistanceModel.ExternalRequestResponse>> {
     const data = TimelinePanel.instance().getOrCreateExternalAIConversationData();
     return await data.conversationHandler.handleExternalRequest({
-      conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_FULL,
+      conversationType: AiAssistanceModel.ConversationType.PERFORMANCE,
       prompt,
       data,
     });

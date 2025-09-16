@@ -313,7 +313,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     });
 
     it('sets the context when the user clicks the button', async () => {
-      const focus = new AIAssistance.AgentFocus({type: 'insight'} as unknown as AIAssistance.AgentFocusDataInsight);
+      const focus = new AIAssistance.AgentFocus({} as unknown as AIAssistance.AgentFocusData);
       updateHostConfig({
         aidaAvailability: {
           enabled: true,
@@ -342,16 +342,29 @@ describeWithEnvironment('BaseInsightComponent', () => {
       assert.instanceOf(context, AIAssistance.AgentFocus);
     });
 
-    it('clears the active context when it gets toggled shut', async () => {
-      const focus = new AIAssistance.AgentFocus({type: 'insight'} as unknown as AIAssistance.AgentFocusDataInsight);
+    it('clears "insight" from the active context when it gets toggled shut', async () => {
+      const mockInsight = {
+        insightKey: 'LCPBreakdown',
+        strings: {},
+        title: 'LCP by Phase' as Common.UIString.LocalizedString,
+        description: 'some description' as Common.UIString.LocalizedString,
+        category: Trace.Insights.Types.InsightCategory.ALL,
+        state: 'fail',
+        frameId: '123',
+      } as const;
+      const focus = new AIAssistance.AgentFocus(
+          {parsedTrace: true, insight: mockInsight} as unknown as AIAssistance.AgentFocusData);
       UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus);
       const component = await renderComponent({insightHasAISupport: true});
       component.agentFocus = focus;
+      component.insightSetKey = 'key';
+      component.model = mockInsight;
       const header = component.shadowRoot?.querySelector('header');
       assert.isOk(header);
       dispatchClickEvent(header);
       const context = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
-      assert.isNull(context);
+      assert.isNull(context?.data.insight);
+      assert.isTrue(context?.data.parsedTrace);
     });
 
     it('does not render the "Ask AI" button when the perf agent is not enabled', async () => {

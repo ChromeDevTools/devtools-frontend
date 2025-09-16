@@ -50,7 +50,7 @@ export interface ExternalPerformanceAIConversationData {
 }
 
 export interface ExternalPerformanceRequestParameters {
-  conversationType: ConversationType.PERFORMANCE_FULL;
+  conversationType: ConversationType.PERFORMANCE;
   prompt: string;
   data: ExternalPerformanceAIConversationData;
 }
@@ -201,7 +201,7 @@ export class ConversationHandler {
         case ConversationType.STYLING: {
           return await this.#handleExternalStylingConversation(parameters.prompt, parameters.selector);
         }
-        case ConversationType.PERFORMANCE_FULL:
+        case ConversationType.PERFORMANCE:
           return await this.#handleExternalPerformanceConversation(parameters.prompt, parameters.data);
         case ConversationType.NETWORK:
           if (!parameters.requestUrl) {
@@ -348,10 +348,8 @@ export class ConversationHandler {
         agent = new FileAgent(options);
         break;
       }
-      case ConversationType.PERFORMANCE_FULL:
-      case ConversationType.PERFORMANCE_INSIGHT:
-      case ConversationType.PERFORMANCE_CALL_TREE: {
-        agent = new PerformanceAgent(options, conversationType);
+      case ConversationType.PERFORMANCE: {
+        agent = new PerformanceAgent(options);
         break;
       }
     }

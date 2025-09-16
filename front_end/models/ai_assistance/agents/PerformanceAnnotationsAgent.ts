@@ -116,7 +116,7 @@ export class PerformanceAnnotationsAgent extends AiAgent<AgentFocus> {
     }
 
     const focus = context.getItem();
-    if (focus.data.type !== 'call-tree') {
+    if (!focus.data.callTree) {
       throw new Error('unexpected context');
     }
 
@@ -140,7 +140,7 @@ export class PerformanceAnnotationsAgent extends AiAgent<AgentFocus> {
     }
 
     const focus = context.getItem();
-    if (focus.data.type !== 'call-tree') {
+    if (!focus.data.callTree) {
       throw new Error('unexpected context');
     }
 

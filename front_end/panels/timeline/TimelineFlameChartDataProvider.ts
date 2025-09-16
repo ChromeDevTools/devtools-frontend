@@ -248,12 +248,17 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     const contextMenu = new UI.ContextMenu.ContextMenu(mouseEvent);
     if (perfAIEntryPointEnabled && this.parsedTrace) {
-      const aiCallTree = AIAssistance.AICallTree.fromEvent(entry, this.parsedTrace);
-      if (aiCallTree) {
+      const callTree = AIAssistance.AICallTree.fromEvent(entry, this.parsedTrace);
+      if (callTree) {
+        let focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
+        if (focus) {
+          focus = focus.withCallTree(callTree);
+        } else {
+          focus = AIAssistance.AgentFocus.fromCallTree(callTree);
+        }
+        UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus);
+
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(PERF_AI_ACTION_ID);
-        // The other side of setFlavor is handleTraceEntryNodeFlavorChange() in FreestylerPanel
-        const context = AIAssistance.AgentFocus.fromCallTree(aiCallTree);
-        UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, context);
 
         if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {
           function appendSubmenuPromptAction(

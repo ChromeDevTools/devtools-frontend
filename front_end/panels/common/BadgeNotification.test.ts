@@ -105,9 +105,9 @@ describeWithEnvironment('BadgeNotification', () => {
 
     assert.strictEqual(input.imageUri, badge.imageUri);
     assert.lengthOf(input.actions, 2);
-    assert.strictEqual(input.actions[0].label, 'Badge settings');
+    assert.strictEqual(input.actions[0].label, 'Manage settings');
     assert.strictEqual(input.actions[1].label, 'View profile');
-    assertMessageIncludes(input.message, 'It has been added to your Developer Profile.');
+    assertMessageIncludes(input.message, 'It’s been added to your Developer Profile.');
 
     widget.detach();
   });
@@ -126,9 +126,9 @@ describeWithEnvironment('BadgeNotification', () => {
        // Should fall back to the activity-based badge flow.
        assert.strictEqual(input.imageUri, 'starter-badge-image-uri');
        assert.lengthOf(input.actions, 2);
-       assert.strictEqual(input.actions[0].label, 'Badge settings');
+       assert.strictEqual(input.actions[0].label, 'Manage settings');
        assert.strictEqual(input.actions[1].label, 'View profile');
-       assertMessageIncludes(input.message, 'It has been added to your Developer Profile.');
+       assertMessageIncludes(input.message, 'It’s been added to your Developer Profile.');
 
        widget.detach();
      });
@@ -146,7 +146,7 @@ describeWithEnvironment('BadgeNotification', () => {
     assert.strictEqual(input.imageUri, badge.imageUri);
     assert.lengthOf(input.actions, 2);
     assert.strictEqual(input.actions[0].label, 'Remind me later');
-    assert.strictEqual(input.actions[1].label, 'Receive badges');
+    assert.strictEqual(input.actions[1].label, 'Turn on badges');
     assertMessageIncludes(input.message, 'Turn on badges to claim it.');
 
     widget.detach();

@@ -26,11 +26,11 @@ const UIStrings = {
    * @description Activity based badge award notification text
    * @example {Badge Title} PH1
    */
-  activityBasedBadgeAwardMessage: 'You earned the {PH1} badge! It has been added to your Developer Profile.',
+  activityBasedBadgeAwardMessage: 'You earned the {PH1} badge! It’s been added to your Developer Profile.',
   /**
    * @description Action title for navigating to the badge settings in Google Developer Profile section
    */
-  badgeSettings: 'Badge settings',
+  manageSettings: 'Manage settings',
   /**
    * @description Action title for opening the Google Developer Program profile page of the user in a new tab
    */
@@ -55,7 +55,7 @@ const UIStrings = {
   /**
    * @description Action title for enabling the "Receive badges" setting
    */
-  receiveBadges: 'Receive badges',
+  receiveBadges: 'Turn on badges',
   /**
    * @description Action title for creating a Google Developer Program profle
    */
@@ -240,7 +240,7 @@ export class BadgeNotification extends UI.Widget.Widget {
       message: i18nString(UIStrings.activityBasedBadgeAwardMessage, {PH1: badge.title}),
       actions: [
         {
-          label: i18nString(UIStrings.badgeSettings),
+          label: i18nString(UIStrings.manageSettings),
           onClick: () => {
             this.#close();
             revealBadgeSettings();

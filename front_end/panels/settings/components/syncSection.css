@@ -114,5 +114,11 @@ fieldset {
       align-items: center;
       gap: var(--sys-size-2);
     }
+
+    & .tooltip-content {
+      max-width: 278px;
+      padding: var(--sys-size-2) var(--sys-size-3);
+      font: var(--sys-typescale-body5-regular);
+    }
   }
 }

@@ -39,8 +39,7 @@ const UIStrings = {
   /**
    * @description Body for the first section of the GDP sign up dialog.
    */
-  designedForSuccessBody:
-      'Grow your skills, build with AI, and receive badges you can showcase in your developer profile',
+  designedForSuccessBody: 'Grow your skills, build with AI, and earn badges you can showcase in your developer profile',
   /**
    * @description Title for the second section of the GDP sign up dialog.
    */
@@ -48,19 +47,24 @@ const UIStrings = {
   /**
    * @description Body for the second section of the GDP sign up dialog.
    */
-  keepUpdatedBody: 'The latest DevTools features, event invites, and tailored insights directly in your inbox',
+  keepUpdatedBody: 'The latest DevTools features, event invites, and tailored insights land directly in your inbox',
   /**
    * @description Title for the third section of the GDP sign up dialog.
    */
-  thingsToConsider: 'Things to consider',
+  tailorProfile: 'Tailor your profile',
+  /**
+   * @description Body for the third section of the GDP sign up dialog.
+   */
+  tailorProfileBody:
+      'The name on your Google Account and your interests will be used in your Google Developer Profile. Your name may appear where you contribute and can be changed at any time.',
   /**
    * @description Body for the third section of the GDP sign up dialog.
    * @example {Content Policy} PH1
    * @example {Terms of Service} PH2
    * @example {Privacy Policy} PH3
    */
-  thingsToConsiderBody:
-      'By creating a Developer Profile, you agree to the {PH1}. Google’s {PH2} and {PH3} apply to your use of this service. The name on your Google Account and your interests will be used in your Google Developer Profile. Your name may appear where you contribute and can be changed at any time.',
+  tailorProfileBodyDisclaimer:
+      'By creating a Developer Profile, you agree to the {PH1}. Google’s {PH2} and {PH3} apply to your use of this service.',
   /**
    * @description Button text for learning more about the Google Developer Program.
    */
@@ -140,14 +144,17 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             <devtools-icon name="google"></devtools-icon>
           </div>
           <div class="text-container">
-            <h3 class="section-title">${i18nString(UIStrings.thingsToConsider)}</h3>
-            <div class="section-text">${i18n.i18n.getFormatLocalizedString(str_, UIStrings.thingsToConsiderBody, {
+            <h3 class="section-title">${i18nString(UIStrings.tailorProfile)}</h3>
+            <div class="section-text">
+              <div>${i18nString(UIStrings.tailorProfileBody)}</div><br/>
+              <div>${i18n.i18n.getFormatLocalizedString(str_, UIStrings.tailorProfileBodyDisclaimer, {
       PH1: UI.XLink.XLink.create(CONTENT_POLICY_URL, i18nString(UIStrings.contentPolicy), 'link', undefined, 'gdp.content-policy'),
       PH2: UI.XLink.XLink.create(TERMS_OF_SERVICE_URL, i18nString(UIStrings.termsOfService), 'link',
         undefined, 'gdp.terms-of-service'),
       PH3: UI.XLink.XLink.create(PRIVACY_POLICY_URL, i18nString(UIStrings.privacyPolicy), 'link',
         undefined, 'gdp.privacy-policy'),
     })}</div>
+            </div>
           </div>
         </div>
       </div>

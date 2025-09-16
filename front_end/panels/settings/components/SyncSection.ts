@@ -78,18 +78,53 @@ const UIStrings = {
    */
   signUp: 'Sign up',
   /**
-   * @description Text for the data notice right after the settings checkbox.
-   */
-  relevantDataDisclaimer: '(Relevant data is sent to Google)',
-  /**
    * @description Link text for opening the Google Developer Program profile page.
    */
   viewProfile: 'View profile',
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
+   */
+  tooltipDisclaimerText:
+      'When you qualify for a badge, the badge’s identifier and the type of activity you did to earn it are sent to Google',
+  /**
+   * @description Text for the data notice right after the settings checkbox.
+   */
+  relevantData: 'Relevant data',
+  /**
+   * @description Text for the data notice right after the settings checkbox.
+   * @example {Relevant data} PH1
+   */
+  dataDisclaimer: '({PH1} is sent to Google)',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/components/SyncSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const {html, Directives: {ref, createRef}} = Lit;
+
+let cachedTooltipElement: HTMLElement|undefined;
+
+function renderDataDisclaimer(): HTMLElement {
+  if (cachedTooltipElement) {
+    return cachedTooltipElement;
+  }
+
+  const relevantDataTooltipTemplate = html`
+    <span
+      tabIndex="0"
+      class="link"
+      aria-details="gdp-profile-tooltip"
+      >${i18nString(UIStrings.relevantData)}</span>
+    <devtools-tooltip id="gdp-profile-tooltip" variant=${'rich'}>
+      <div class="tooltip-content">${i18nString(UIStrings.tooltipDisclaimerText)}</div>
+    </devtools-tooltip>`;
+
+  const container = document.createElement('span');
+  Lit.render(relevantDataTooltipTemplate, container);
+  cachedTooltipElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.dataDisclaimer, {
+    PH1: container,
+  });
+  return cachedTooltipElement;
+}
 
 function getGdpSubscriptionText(profile: Host.GdpClient.Profile): Platform.UIString.LocalizedString {
   if (!profile.activeSubscription ||
@@ -289,7 +324,7 @@ function renderGdpSectionIfNeeded({
                     Badges.UserBadges.instance().recordAction(Badges.BadgeAction.RECEIVE_BADGES_SETTING_ENABLED);
                   });
                 }}></setting-checkbox>
-                <span>${i18nString(UIStrings.relevantDataDisclaimer)}</span>
+                ${renderDataDisclaimer()}
               </div>` : Lit.nothing}
         </div>
       ` : html`

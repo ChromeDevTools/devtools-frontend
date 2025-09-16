@@ -5,7 +5,7 @@
 type TrackedAsyncOperation = 'Promise'|'requestAnimationFrame'|'setTimeout'|'setInterval'|'requestIdleCallback'|
     'cancelIdleCallback'|'cancelAnimationFrame'|'clearTimeout'|'clearInterval';
 
-type OriginalTrackedAsyncOperations = {
+type TrackedAsyncOperations = {
   [K in TrackedAsyncOperation]: typeof window[K];
 };
 /**
@@ -13,7 +13,7 @@ type OriginalTrackedAsyncOperations = {
  * Unless something before this is loaded
  * This should always be the original
  */
-const originals: Readonly<OriginalTrackedAsyncOperations> = {
+const originals: Readonly<TrackedAsyncOperations> = {
   Promise,
   requestAnimationFrame: requestAnimationFrame.bind(window),
   requestIdleCallback: requestIdleCallback.bind(window),
@@ -25,23 +25,6 @@ const originals: Readonly<OriginalTrackedAsyncOperations> = {
   cancelIdleCallback: cancelIdleCallback.bind(window)
 };
 
-// We can't use Sinon for stubbing as 1) we need to double wrap sometimes
-interface Stub<TKey extends TrackedAsyncOperation> {
-  name: TKey;
-  stubWith: (typeof window)[TKey];
-}
-const stubs: Array<Stub<TrackedAsyncOperation>> = [];
-function stub<T extends TrackedAsyncOperation>(name: T, stubWith: (typeof window)[T]) {
-  window[name] = stubWith;
-  stubs.push({name, stubWith});
-}
-
-function restoreAll() {
-  for (const {name} of stubs) {
-    (window[name] as unknown) = originals[name];
-  }
-  stubs.length = 0;
-}
 interface AsyncActivity {
   type: TrackedAsyncOperation;
   pending: boolean;
@@ -53,23 +36,6 @@ interface AsyncActivity {
 }
 
 const asyncActivity: AsyncActivity[] = [];
-
-export function startTrackingAsyncActivity() {
-  // Reset everything before starting a new tracking session.
-  // Do this in case something went wrong with cleanup
-  stopTrackingAsyncActivity();
-  // We are tracking all asynchronous activity but let it run normally during
-  // the test.
-  stub('requestAnimationFrame', trackingRequestAnimationFrame);
-  stub('setTimeout', trackingSetTimeout as unknown as typeof setTimeout);
-  stub('setInterval', trackingSetInterval as unknown as typeof setInterval);
-  stub('requestIdleCallback', trackingRequestIdleCallback);
-  stub('cancelAnimationFrame', id => cancelTrackingActivity('a' + id));
-  stub('clearTimeout', id => cancelTrackingActivity('t' + id));
-  stub('clearInterval', id => cancelTrackingActivity('i' + id));
-  stub('cancelIdleCallback', id => cancelTrackingActivity('d' + id));
-  stub('Promise', TrackingPromise);
-}
 
 export async function checkForPendingActivity(testName = '') {
   let stillPending: AsyncActivity[] = [];
@@ -288,6 +254,51 @@ const TrackingPromise: PromiseConstructor = Object.assign(
     },
     BasePromise as PromiseConstructor,
 );
+
+const stubMethods: TrackedAsyncOperations = {
+  requestAnimationFrame: trackingRequestAnimationFrame,
+  setTimeout: trackingSetTimeout as unknown as typeof setTimeout,
+  setInterval: trackingSetInterval as unknown as typeof setInterval,
+  requestIdleCallback: trackingRequestIdleCallback,
+  cancelAnimationFrame: id => cancelTrackingActivity('a' + id),
+  clearTimeout: id => cancelTrackingActivity('t' + id),
+  clearInterval: id => cancelTrackingActivity('i' + id),
+  cancelIdleCallback: id => cancelTrackingActivity('d' + id),
+  Promise: TrackingPromise,
+};
+
+export function startTrackingAsyncActivity() {
+  // Reset everything before starting a new tracking session.
+  // Do this in case something went wrong with cleanup
+  stopTrackingAsyncActivity();
+  // We are tracking all asynchronous activity but let it run normally during
+  // the test.
+  stub('requestAnimationFrame');
+  stub('setTimeout');
+  stub('setInterval');
+  stub('requestIdleCallback');
+  stub('cancelAnimationFrame');
+  stub('clearTimeout');
+  stub('clearInterval');
+  stub('cancelIdleCallback');
+  stub('Promise');
+}
+
+const stubs = new Set<TrackedAsyncOperation>();
+function stub<T extends TrackedAsyncOperation>(name: T) {
+  (window[name] as unknown) = stubMethods[name];
+  stubs.add(name);
+}
+
+function restoreAll() {
+  for (const name of stubs) {
+    if (window[name] !== stubMethods[name]) {
+      throw new Error(`Unexpected stub for method ${name} found`);
+    }
+    (window[name] as unknown) = originals[name];
+  }
+  stubs.clear();
+}
 
 function getStack(error: Error): string {
   return (error.stack ?? 'No stack').split('\n').slice(2).join('\n');

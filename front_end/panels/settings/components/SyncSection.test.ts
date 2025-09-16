@@ -153,28 +153,51 @@ describeWithLocale('SyncSection', () => {
       updateHostConfig({});
     });
 
-    it('renders the sign-up state when the user does not have a GDP profile', async () => {
-      const gdpClient = Host.GdpClient.GdpClient.instance();
-      sinon.stub(gdpClient, 'getProfile').resolves(null);
+    it('renders the sign-up state when the user does not have a GDP profile but is eligible to create one',
+       async () => {
+         const gdpClient = Host.GdpClient.GdpClient.instance();
+         sinon.stub(gdpClient, 'getProfile').resolves(null);
+         sinon.stub(gdpClient, 'isEligibleToCreateProfile').resolves(true);
 
-      const syncSetting = createFakeSetting<boolean>('setting', true);
-      const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
-      const {shadowRoot} = await renderSyncSection({
-        syncInfo: {
-          isSyncActive: true,
-          arePreferencesSynced: true,
-          accountEmail: 'user@gmail.com',
-        },
-        syncSetting,
-        receiveBadgesSetting,
-      });
-      const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
-      assert.instanceOf(gdpSection, HTMLElement);
+         const syncSetting = createFakeSetting<boolean>('setting', true);
+         const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
+         const {shadowRoot} = await renderSyncSection({
+           syncInfo: {
+             isSyncActive: true,
+             arePreferencesSynced: true,
+             accountEmail: 'user@gmail.com',
+           },
+           syncSetting,
+           receiveBadgesSetting,
+         });
+         const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
+         assert.instanceOf(gdpSection, HTMLElement);
 
-      const signUpButton = gdpSection.querySelector('devtools-button');
-      assert.instanceOf(signUpButton, HTMLElement);
-      assert.strictEqual(signUpButton.innerText, 'Sign up');
-    });
+         const signUpButton = gdpSection.querySelector('devtools-button');
+         assert.instanceOf(signUpButton, HTMLElement);
+         assert.strictEqual(signUpButton.innerText, 'Sign up');
+       });
+
+    it('does not render the GDP section when the user does not have a GDP profile and is not eligible to create one',
+       async () => {
+         const gdpClient = Host.GdpClient.GdpClient.instance();
+         sinon.stub(gdpClient, 'getProfile').resolves(null);
+         sinon.stub(gdpClient, 'isEligibleToCreateProfile').resolves(false);
+
+         const syncSetting = createFakeSetting<boolean>('setting', true);
+         const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
+         const {shadowRoot} = await renderSyncSection({
+           syncInfo: {
+             isSyncActive: true,
+             arePreferencesSynced: true,
+             accountEmail: 'user@gmail.com',
+           },
+           syncSetting,
+           receiveBadgesSetting,
+         });
+         const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
+         assert.isNull(gdpSection);
+       });
 
     it('renders the profile details with standard plan', async () => {
       const gdpClient = Host.GdpClient.GdpClient.instance();

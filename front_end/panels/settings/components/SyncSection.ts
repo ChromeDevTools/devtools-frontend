@@ -160,14 +160,19 @@ export class SyncSection extends HTMLElement {
   #syncSetting?: Common.Settings.Setting<boolean>;
   #receiveBadgesSetting?: Common.Settings.Setting<boolean>;
   #receiveBadgesSettingContainerRef = createRef<HTMLElement>();
+  #isEligibleToCreateGdpProfile = false;
   #gdpProfile?: Host.GdpClient.Profile;
 
   set data(data: SyncSectionData) {
     this.#syncInfo = data.syncInfo;
     this.#syncSetting = data.syncSetting;
     this.#receiveBadgesSetting = data.receiveBadgesSetting;
-    void this.#updateGdpProfile();
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+
+    // Trigger fetching GDP profile if the user is signed in.
+    if (data.syncInfo.accountEmail) {
+      void this.#fetchGdpDetails();
+    }
   }
 
   async highlightReceiveBadgesSetting(): Promise<void> {
@@ -197,15 +202,21 @@ export class SyncSection extends HTMLElement {
         ${renderGdpSectionIfNeeded({
           receiveBadgesSetting: this.#receiveBadgesSetting,
           receiveBadgesSettingContainerRef: this.#receiveBadgesSettingContainerRef,
-          gdpProfile: this.#gdpProfile
+          gdpProfile: this.#gdpProfile,
+          isEligibleToCreateProfile: this.#isEligibleToCreateGdpProfile,
         })}
       </fieldset>
     `, this.#shadow, {host: this});
     // clang-format on
   }
 
-  async #updateGdpProfile(): Promise<void> {
+  async #fetchGdpDetails(): Promise<void> {
+    if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled) {
+      return;
+    }
+
     this.#gdpProfile = await Host.GdpClient.GdpClient.instance().getProfile() ?? undefined;
+    this.#isEligibleToCreateGdpProfile = await Host.GdpClient.GdpClient.instance().isEligibleToCreateProfile();
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 }
@@ -283,13 +294,15 @@ function renderGdpSectionIfNeeded({
   receiveBadgesSetting,
   receiveBadgesSettingContainerRef,
   gdpProfile,
+  isEligibleToCreateProfile,
 }: {
   receiveBadgesSettingContainerRef: Lit.Directives.Ref<HTMLElement>,
   receiveBadgesSetting?: Common.Settings.Setting<boolean>,
   gdpProfile?: Host.GdpClient.Profile,
+  isEligibleToCreateProfile?: boolean,
 }): Lit.LitTemplate {
   // clang-format off
-  if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled) {
+  if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled || (!gdpProfile && !isEligibleToCreateProfile)) {
     return Lit.nothing;
   }
 

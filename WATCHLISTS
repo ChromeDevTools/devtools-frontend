@@ -26,7 +26,7 @@
 
   'WATCHLISTS': {
     'all': ['devtools-reviews+devtools@chromium.org'],
-    'chromedriver': ['johnchen+watch@chromium.org'],
+    'chromedriver': [],
     'lighthouse': ['lighthouse-eng+devtools-cl@google.com'],
     'third_party': ['devtools-reviews+third_party@chromium.org'],
   },

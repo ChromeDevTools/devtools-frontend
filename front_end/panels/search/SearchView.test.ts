@@ -81,10 +81,12 @@ class TestSearchView extends Search.SearchView.SearchView {
     search.value = query;
     dispatchInputEvent(search);
     if (matchCase) {
-      this.matchCaseButton.click();
+      const matchCaseButton = this.contentElement.querySelector<HTMLElement>('.match-case-button')!;
+      matchCaseButton.click();
     }
     if (isRegex) {
-      this.regexButton.click();
+      const regexButton = this.contentElement.querySelector<HTMLElement>('.regex-button')!;
+      regexButton.click();
     }
 
     dispatchKeyDownEvent(search, {keyCode: UI.KeyboardShortcut.Keys.Enter.code});

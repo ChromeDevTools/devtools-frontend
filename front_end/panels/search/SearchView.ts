@@ -128,8 +128,6 @@ interface SearchViewInput {
 interface SearchViewOutput {
   searchResultsElement?: HTMLElement;
   searchProgressPlaceholderElement?: HTMLElement;
-  matchCaseButton?: Buttons.Button.Button;
-  regexButton?: Buttons.Button.Button;
 }
 
 type View = (input: SearchViewInput, output: SearchViewOutput, target: HTMLElement) => void;
@@ -194,7 +192,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 title: isRegex ? i18nString(UIStrings.disableRegularExpression) : i18nString(UIStrings.enableRegularExpression),
                 jslogContext: 'regular-expression',
               } as Buttons.Button.ButtonData}
-              ${ref(e => {output.regexButton = e as Buttons.Button.Button;})}
+              class="regex-button"
             ></devtools-button>
             <devtools-button @click=${onToggleMatchCase} .data=${{
                 variant: Buttons.Button.Variant.ICON_TOGGLE,
@@ -206,7 +204,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 title: matchCase ? i18nString(UIStrings.disableCaseSensitive) : i18nString(UIStrings.enableCaseSensitive),
                 jslogContext: 'match-case',
               } as Buttons.Button.ButtonData}
-              ${ref(e => {output.matchCaseButton = e as Buttons.Button.Button;})}
+              class="match-case-button"
             ></devtools-button>
           </div>
         </div>
@@ -255,9 +253,7 @@ export class SearchView extends UI.Widget.VBox {
   #searchResultsElement!: HTMLElement;
   #query: string;
   #matchCase = false;
-  #matchCaseButton!: Buttons.Button.Button;
   #isRegex = false;
-  #regexButton!: Buttons.Button.Button;
   #searchMessage = '';
   #searchProgressPlaceholderElement!: HTMLElement;
   #searchResultsMessage = '';
@@ -340,12 +336,6 @@ export class SearchView extends UI.Widget.VBox {
     }
     if (output.searchProgressPlaceholderElement) {
       this.#searchProgressPlaceholderElement = output.searchProgressPlaceholderElement;
-    }
-    if (output.matchCaseButton) {
-      this.#matchCaseButton = output.matchCaseButton;
-    }
-    if (output.regexButton) {
-      this.#regexButton = output.regexButton;
     }
   }
 
@@ -662,13 +652,5 @@ export class SearchView extends UI.Widget.VBox {
 
   get throttlerForTest(): Common.Throttler.Throttler {
     return this.#throttler;
-  }
-
-  get matchCaseButton(): Buttons.Button.Button {
-    return this.#matchCaseButton;
-  }
-
-  get regexButton(): Buttons.Button.Button {
-    return this.#regexButton;
   }
 }

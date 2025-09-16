@@ -21,7 +21,7 @@ const UIStrings = {
   /**
    * @description Title for close button
    */
-  dismiss: 'Dismiss',
+  close: 'Close',
   /**
    * @description Activity based badge award notification text
    * @example {Badge Title} PH1
@@ -103,10 +103,10 @@ const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement)
         class="dismiss notification-button"
         @click=${input.onCloseClick}
         jslog=${VisualLogging.action('badge-notification.dismiss').track({click: true})}
-        aria-label=${i18nString(UIStrings.dismiss)}
+        aria-label=${i18nString(UIStrings.close)}
         .iconName=${'cross'}
         .variant=${Buttons.Button.Variant.ICON}
-        .title=${i18nString(UIStrings.dismiss)}
+        .title=${i18nString(UIStrings.close)}
         .inverseColorTheme=${true}
     ></devtools-button>`;
 
@@ -114,7 +114,7 @@ const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement)
     <style>${badgeNotificationStyles}</style>
     <div class="container">
       <div class="badge-container">
-        <img class="badge-image" src=${input.imageUri}>
+        <img class="badge-image" role="presentation" src=${input.imageUri}>
       </div>
       <div class="action-and-text-container">
         <div class="label-container">
@@ -145,6 +145,8 @@ export class BadgeNotification extends UI.Widget.Widget {
     super(element);
     this.#view = view;
 
+    // eslint-disable-next-line
+    this.contentElement.role = 'alert';
     this.markAsRoot();
   }
 

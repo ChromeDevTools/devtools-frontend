@@ -70,6 +70,10 @@ const UIStrings = {
    */
   learnMore: 'Learn more',
   /**
+   * @description Accessible text for learning more about the Google Developer Program.
+   */
+  learnMoreAccessibleText: 'Learn more about the Google Developer Program',
+  /**
    * @description Link text for Content Policy.
    */
   contentPolicy: 'Content Policy',
@@ -110,14 +114,14 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
   render(
     html`
       <style>${styles}</style>
-      <div class="gdp-sign-up-dialog-header"></div>
+      <div class="gdp-sign-up-dialog-header" role="img" tabindex="0" aria-label="Google Developer Program"></div>
       <div class="main-content">
         <div class="section">
           <div class="icon-container">
             <devtools-icon name="trophy"></devtools-icon>
           </div>
           <div class="text-container">
-            <h3 class="section-title">${i18nString(UIStrings.designedForSuccess)}</h3>
+            <h2 class="section-title">${i18nString(UIStrings.designedForSuccess)}</h2>
             <div class="section-text">${i18nString(UIStrings.designedForSuccessBody)}</div>
           </div>
         </div>
@@ -126,7 +130,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             <devtools-icon name="mark-email-unread"></devtools-icon>
           </div>
           <div class="text-container">
-            <h3 class="section-title">${i18nString(UIStrings.keepUpdated)}</h3>
+            <h2 class="section-title">${i18nString(UIStrings.keepUpdated)}</h2>
             <div class="section-text">${i18nString(UIStrings.keepUpdatedBody)}</div>
           </div>
           <div class="switch-container">
@@ -144,7 +148,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             <devtools-icon name="google"></devtools-icon>
           </div>
           <div class="text-container">
-            <h3 class="section-title">${i18nString(UIStrings.tailorProfile)}</h3>
+            <h2 class="section-title">${i18nString(UIStrings.tailorProfile)}</h2>
             <div class="section-text">
               <div>${i18nString(UIStrings.tailorProfileBody)}</div><br/>
               <div>${i18n.i18n.getFormatLocalizedString(str_, UIStrings.tailorProfileBodyDisclaimer, {
@@ -160,6 +164,8 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
       </div>
       <div class="buttons">
         <devtools-button
+          aria-label=${i18nString(UIStrings.learnMoreAccessibleText)}
+          .title=${i18nString(UIStrings.learnMoreAccessibleText)}
           .variant=${Buttons.Button.Variant.OUTLINED}
           .jslogContext=${'learn-more'}
           @click=${() => UI.UIUtils.openInNewTab(GDP_PROGRAM_URL as Platform.DevToolsPath.UrlString)}>${i18nString(UIStrings.learnMore)}</devtools-button>

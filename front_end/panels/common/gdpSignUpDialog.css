@@ -17,6 +17,10 @@
         background-repeat: no-repeat;
         background-size: contain;
         margin: 0;
+
+        &:focus-visible {
+            outline: 2px solid var(--sys-color-state-focus-ring);
+        }
     }
 
     :host-context(.theme-with-dark-background) & .gdp-sign-up-dialog-header {

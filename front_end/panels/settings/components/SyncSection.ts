@@ -113,9 +113,10 @@ function renderDataDisclaimer(): HTMLElement {
       tabIndex="0"
       class="link"
       aria-details="gdp-profile-tooltip"
+      aria-describedby="gdp-profile-tooltip"
       >${i18nString(UIStrings.relevantData)}</span>
     <devtools-tooltip id="gdp-profile-tooltip" variant=${'rich'}>
-      <div class="tooltip-content">${i18nString(UIStrings.tooltipDisclaimerText)}</div>
+      <div class="tooltip-content" tabindex="0">${i18nString(UIStrings.tooltipDisclaimerText)}</div>
     </devtools-tooltip>`;
 
   const container = document.createElement('span');
@@ -295,7 +296,7 @@ function renderGdpSectionIfNeeded({
   function renderBrand(): Lit.LitTemplate {
     return html`
       <div class="gdp-profile-header">
-        <div class="gdp-logo" role="img" aria-label="Google Developer Program"></div>
+        <div class="gdp-logo" role="img" tabindex="0" aria-label="Google Developer Program"></div>
       </div>
     `;
   }

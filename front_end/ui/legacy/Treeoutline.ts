@@ -1618,8 +1618,8 @@ function getTreeNodes(nodeList: NodeList|Node[]): HTMLLIElement[] {
 
 /**
  * A tree element that can be used as progressive enhancement over a <ul> element. A `template` IDL attribute allows
- * additionally to insert the <ul> into a <template>, avoiding rendering anything into light DOM. The <ul> itself will
- * be cloned into shadow DOM and rendered there.
+ * additionally to insert the <ul> into a <template>, avoiding rendering anything into light DOM, which is recommended.
+ * The <ul> itself will be cloned into shadow DOM and rendered there.
  *
  * ## Usage ##
  *
@@ -1663,12 +1663,17 @@ function getTreeNodes(nodeList: NodeList|Node[]): HTMLLIElement[] {
  *
  * ## Event Handling ##
  *
+ * This section is only relevant if NOT using the `template`.
+ *
  * Since config elements are cloned into the shadow DOM, it's not possible to directly attach event listeners to the
- * children of config elements. Instead, the `HTMLElementWithLightDOMTemplate.on` directive should be used as a wrapper:
+ * children of config elements. Instead, the `UI.UIUtils.InterceptBindingDirective` directive needs to be used as a
+ * wrapper:
  * ```
- * <li role="treeitem">
+ * const on = Lit.Directive.directive(UI.UIUtils.InterceptBindingDirective);
+ *
+ * html`<li role="treeitem">
  *   <button @click=${on(clickHandler)}>click me</button>
- * </li>
+ * </li>`
  * ```
  *
  * @property template Define the tree contents

@@ -2181,17 +2181,15 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
   });
 }
 
-class InterceptBindingDirective extends Lit.Directive.Directive {
-  static readonly #interceptedBindings = new WeakMap<Element, Map<string, (e: Event) => void>>();
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+type BindingEventListener = (arg: any) => any;
+export class InterceptBindingDirective extends Lit.Directive.Directive {
+  static readonly #interceptedBindings = new WeakMap<Element, Map<string, BindingEventListener>>();
 
-  constructor(part: Lit.Directive.PartInfo) {
-    super(part);
+  override update(part: Lit.Directive.Part, [listener]: [BindingEventListener]): unknown {
     if (part.type !== Lit.Directive.PartType.EVENT) {
-      throw new Error('This directive is for event bindings only');
+      return listener;
     }
-  }
-
-  override update(part: Lit.Directive.EventPart, [listener]: [(e: Event) => void]): undefined {
     let eventListeners = InterceptBindingDirective.#interceptedBindings.get(part.element);
     if (!eventListeners) {
       eventListeners = new Map();
@@ -2202,7 +2200,8 @@ class InterceptBindingDirective extends Lit.Directive.Directive {
     return this.render(listener);
   }
 
-  render(_listener: (e: Event) => void): undefined {
+  /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
+  render(_listener: Function): undefined {
     return undefined;
   }
 
@@ -2218,7 +2217,6 @@ class InterceptBindingDirective extends Lit.Directive.Directive {
 }
 
 export class HTMLElementWithLightDOMTemplate extends HTMLElement {
-  static readonly on = Lit.Directive.directive(InterceptBindingDirective);
   readonly #mutationObserver = new MutationObserver(this.#onChange.bind(this));
   #contentTemplate: HTMLTemplateElement|null = null;
 
@@ -2238,6 +2236,39 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     return clone;
   }
 
+  private static patchLitTemplate(template: Lit.LitTemplate): void {
+    const wrapper = Lit.Directive.directive(InterceptBindingDirective);
+    if (template === Lit.nothing) {
+      return;
+    }
+    template.values = template.values.map(patchValue);
+
+    function isLitTemplate(value: unknown): value is Lit.TemplateResult<1> {
+      return Boolean(
+          typeof value === 'object' && value && '_$litType$' in value && 'strings' in value && 'values' in value &&
+          value['_$litType$'] === 1);
+    }
+
+    function patchValue(value: unknown): unknown {
+      if (typeof value === 'function') {
+        try {
+          return wrapper(value);
+        } catch {
+          return value;
+        }
+      }
+      if (isLitTemplate(value)) {
+        HTMLElementWithLightDOMTemplate.patchLitTemplate(value);
+        return value;
+      }
+      if (Array.isArray(value)) {
+        return value.map(patchValue);
+      }
+
+      return value;
+    }
+  }
+
   set template(template: Lit.LitTemplate) {
     if (!this.#contentTemplate) {
       this.removeChildren();
@@ -2246,6 +2277,7 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
       this.#mutationObserver.observe(
           this.#contentTemplate.content, {childList: true, attributes: true, subtree: true, characterData: true});
     }
+    HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
     // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
     render(template, this.#contentTemplate.content);
   }

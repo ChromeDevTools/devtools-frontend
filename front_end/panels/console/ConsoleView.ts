@@ -1051,18 +1051,13 @@ export class ConsoleView extends UI.Widget.VBox implements
       return;
     }
 
-    // Track any adjacent messages.
-    const originatingMessage = viewMessage.consoleMessage().originatingMessage();
-    const adjacent = Boolean(originatingMessage && lastMessage?.consoleMessage() === originatingMessage);
-    viewMessage.setAdjacentUserCommandResult(adjacent);
-
-    // Ensure any parent groups for this message are shown.
     const currentGroup = viewMessage.consoleGroup();
-    showGroup(currentGroup, this.visibleViewMessages);
 
-    // Determine whether this message should actually be visible.
-    const shouldShowMessage = !currentGroup?.messagesHidden();
-    if (shouldShowMessage) {
+    if (!currentGroup?.messagesHidden()) {
+      const originatingMessage = viewMessage.consoleMessage().originatingMessage();
+      const adjacent = Boolean(originatingMessage && lastMessage?.consoleMessage() === originatingMessage);
+      viewMessage.setAdjacentUserCommandResult(adjacent);
+      showGroup(currentGroup, this.visibleViewMessages);
       this.visibleViewMessages.push(viewMessage);
       this.searchMessage(this.visibleViewMessages.length - 1);
     }

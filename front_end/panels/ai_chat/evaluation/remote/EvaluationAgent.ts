@@ -769,10 +769,10 @@ export class EvaluationAgent {
       }, timeout);
 
       let chatObservationId: string | undefined;
+      // Get configuration manager for override support (defined outside try-catch for finally block)
+      const configManager = LLMConfigurationManager.getInstance();
 
       try {
-        // Get configuration manager for override support
-        const configManager = LLMConfigurationManager.getInstance();
 
         // Set override configuration if provided in input
         if (input.provider || input.main_model || input.api_key) {
@@ -813,7 +813,7 @@ export class EvaluationAgent {
         // This is the key change that allows API keys to come from request body instead of localStorage
         configManager.setOverride({
           provider: 'openai', // TODO: Extract from model config
-          apiKey: apiKey,
+          apiKey: apiKey || undefined,
           mainModel: modelName,
           miniModel: miniModel,
           nanoModel: nanoModel

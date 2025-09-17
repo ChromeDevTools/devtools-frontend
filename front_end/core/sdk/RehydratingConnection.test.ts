@@ -20,6 +20,8 @@ const mockExecutionContext1: RehydratingExecutionContext = {
   id: 1 as Protocol.Runtime.ExecutionContextId,
   origin: 'example.com',
   v8Context: 'example context 1',
+  name: 'example context 1',
+  uniqueId: 'example context 1',
   auxData: {
     frameId: 'ABCDE' as Protocol.Page.FrameId,
     isDefault: true,
@@ -32,6 +34,8 @@ const mockExecutionContext2: RehydratingExecutionContext = {
   id: 2 as Protocol.Runtime.ExecutionContextId,
   origin: 'example.com',
   v8Context: 'example context 2',
+  name: 'example context 2',
+  uniqueId: 'example context 2',
   auxData: {
     frameId: 'ABCDE' as Protocol.Page.FrameId,
     isDefault: true,
@@ -55,11 +59,12 @@ const mockScript1: RehydratingScript = {
   sourceMapURL: undefined,
   length: 10,
   sourceText: 'source text 1',
-  auxData: {
+  executionContextAuxData: {
     frameId: 'ABCDE' as Protocol.Page.FrameId,
     isDefault: true,
     type: 'type',
   },
+  buildId: ''
 };
 
 const mockScript2: RehydratingScript = {
@@ -77,11 +82,12 @@ const mockScript2: RehydratingScript = {
   sourceMapURL: undefined,
   length: 10,
   sourceText: 'source text 2',
-  auxData: {
+  executionContextAuxData: {
     frameId: 'ABCDE' as Protocol.Page.FrameId,
     isDefault: true,
     type: 'type',
   },
+  buildId: ''
 };
 
 describe('RehydratingSession', () => {

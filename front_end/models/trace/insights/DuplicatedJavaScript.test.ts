@@ -103,7 +103,7 @@ describeWithEnvironment('DuplicatedJavaScript', function() {
     // The original trace here was recorded at a time where sourceMapUrl could be a
     // large data url.
     for (const event of fileContents.traceEvents) {
-      if (Trace.Types.Events.isV8SourceRundownEvent(event)) {
+      if (Trace.Types.Events.isRundownScript(event)) {
         const {sourceMapUrl, url} = event.args.data;
         if (sourceMapUrl?.startsWith('data:') && url) {
           const sourceMap = await (await fetch(sourceMapUrl)).json();

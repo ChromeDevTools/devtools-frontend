@@ -1407,7 +1407,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     const traceEvents = parsedTrace.traceEvents.map(event => {
-      if (Trace.Types.Events.isAnyScriptCatchupEvent(event) && event.name !== 'StubScriptCatchup') {
+      if (Trace.Types.Events.isAnyScriptSourceEvent(event) && event.name !== 'StubScriptCatchup') {
         const mappedScript = scriptByIdMap.get(`${event.args.data.isolate}.${event.args.data.scriptId}`);
 
         // If the checkbox to include script content is not checked or if it comes from and
@@ -1425,7 +1425,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
             args: {
               data: {isolate: event.args.data.isolate, scriptId: event.args.data.scriptId},
             },
-          } as Trace.Types.Events.V8SourceRundownSourcesStubScriptCatchupEvent;
+          } as Trace.Types.Events.RundownScriptStub;
         }
       }
 

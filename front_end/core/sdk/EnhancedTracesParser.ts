@@ -8,36 +8,51 @@ import type * as Platform from '../platform/platform.js';
 import {UserVisibleError} from '../platform/platform.js';
 
 import type {
-  HydratingDataPerTarget, RehydratingExecutionContext, RehydratingScript, RehydratingTarget, TraceFile} from
+  HydratingDataPerTarget, RehydratingExecutionContext, RehydratingScript, RehydratingTarget} from
   './RehydratingObject.js';
 import type {SourceMapV3} from './SourceMap.js';
+import type {TraceObject} from './TraceObject.js';
 
-interface RehydratingTraceBase {
+interface EventBase {
   cat: string;
   pid: number;
   args: {data: object};
   name: string;
 }
 
-interface TraceEventTargetRundown extends RehydratingTraceBase {
+/**
+ * While called 'TargetRundown', this event is emitted for each script that is compiled or evaluated.
+ * Within EnhancedTraceParser, this event is used to construct targets and execution contexts (and to associate scripts to frames).
+ *
+ * See `inspector_target_rundown_event::Data` https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/inspector/inspector_trace_events.cc;l=1189-1232;drc=48d6f7175422b2c969c14258f9f8d5b196c28d18
+ */
+export interface RundownScriptCompiled extends EventBase {
   cat: 'disabled-by-default-devtools.target-rundown';
+  name: 'ScriptCompiled'|'ModuleEvaluated';
   args: {
     data: {
       frame: Protocol.Page.FrameId,
-      frameType: string,
+      frameType: 'page'|'iframe',
       url: string,
       isolate: string,
+      /** AKA V8ContextToken. https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/inspector/inspector_trace_events.cc;l=1229;drc=3c88f61e18b043e70c225d8d57c77832a85e7f58 */
       v8context: string,
       origin: string,
       scriptId: number,
+      /** script->World().isMainWorld() */
       isDefault?: boolean,
-      contextType?: string,
+      contextType?: 'default'|'isolated'|'worker',
     },
   };
 }
-
-interface TraceEventScriptRundown extends RehydratingTraceBase {
+/**
+ * When profiling starts, all currently loaded scripts are emitted via this event.
+ *
+ * See `Script::TraceScriptRundown()` https://source.chromium.org/chromium/chromium/src/+/main:v8/src/objects/script.cc;l=184-220;drc=328f6c467b940f322544567740c9c871064d045c
+ */
+export interface RundownScript extends EventBase {
   cat: 'disabled-by-default-devtools.v8-source-rundown';
+  name: 'ScriptCatchup';
   args: {
     data: {
       isolate: string,
@@ -47,19 +62,25 @@ interface TraceEventScriptRundown extends RehydratingTraceBase {
       url: string,
       hash: string,
       isModule: boolean,
+      /** aka HasSourceURLComment */
       hasSourceUrl: boolean,
+      /** value of the sourceURL comment. */
+      sourceUrl?: string,
+      /* value of the sourceMappingURL comment */
+      sourceMapUrl?: string,
+      /** If true, the source map url was a data URL, so the `sourceMapUrl` was removed. */
+      sourceMapUrlElided?: boolean,
       startLine?: number,
       startColumn?: number,
       endLine?: number,
       endColumn?: number,
-      sourceUrl?: string,
-      sourceMapUrl?: string,
     },
   };
 }
 
-interface TraceEventScriptRundownSource extends RehydratingTraceBase {
+export interface RundownScriptSource extends EventBase {
   cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
+  name: 'ScriptCatchup'|'LargeScriptCatchup'|'TooLargeScriptCatchup';
   args: {
     data: {
       isolate: string,
@@ -70,7 +91,7 @@ interface TraceEventScriptRundownSource extends RehydratingTraceBase {
   };
 }
 
-interface TraceEventTracingStartedInBrowser extends RehydratingTraceBase {
+interface TracingStartedInBrowser extends EventBase {
   cat: 'disabled-by-default-devtools.timeline';
   args: {
     data: {
@@ -87,7 +108,7 @@ interface TraceEventTracingStartedInBrowser extends RehydratingTraceBase {
   };
 }
 
-interface TraceEventFunctionCall extends RehydratingTraceBase {
+interface FunctionCall extends EventBase {
   cat: 'devtools.timeline';
   args: {
     data: {
@@ -99,8 +120,8 @@ interface TraceEventFunctionCall extends RehydratingTraceBase {
 }
 
 export class EnhancedTracesParser {
-  #trace: TraceFile;
-  #scriptRundownEvents: TraceEventScriptRundown[] = [];
+  #trace: TraceObject;
+  #scriptRundownEvents: RundownScript[] = [];
   #scriptToV8Context: Map<string, string> = new Map<string, string>();
   #scriptToFrame: Map<string, Protocol.Page.FrameId> = new Map<string, Protocol.Page.FrameId>();
   #scriptToScriptSource: Map<string, string> = new Map<string, string>();
@@ -111,7 +132,7 @@ export class EnhancedTracesParser {
   #scripts: RehydratingScript[] = [];
   static readonly enhancedTraceVersion: number = 1;
 
-  constructor(trace: TraceFile) {
+  constructor(trace: TraceObject) {
     this.#trace = trace;
 
     // Initialize with the trace provided.
@@ -124,7 +145,7 @@ export class EnhancedTracesParser {
 
   parseEnhancedTrace(): void {
     for (const event of this.#trace.traceEvents) {
-      if (this.isTracingStartInBrowserEvent(event)) {
+      if (this.isTracingStartedInBrowser(event)) {
         // constructs all targets by devtools.timeline TracingStartedInBrowser
         const data = event.args?.data;
         for (const frame of data.frames) {
@@ -148,7 +169,7 @@ export class EnhancedTracesParser {
         if (data.isolate) {
           this.#scriptToFrame.set(this.getScriptIsolateId(data.isolate, data.scriptId), data.frame);
         }
-      } else if (this.isTargetRundownEvent(event)) {
+      } else if (this.isRundownScriptCompiled(event)) {
         // Set up script to v8 context mapping
         const data = event.args?.data;
         this.#scriptToV8Context.set(this.getScriptIsolateId(data.isolate, data.scriptId), data.v8context);
@@ -176,9 +197,11 @@ export class EnhancedTracesParser {
               type: data.contextType,
             },
             isolate: data.isolate,
+            name: data.origin,
+            uniqueId: `${data.v8context}-${data.isolate}`,
           });
         }
-      } else if (this.isScriptRundownEvent(event)) {
+      } else if (this.isRundownScript(event)) {
         this.#scriptRundownEvents.push(event);
         const data = event.args.data;
         // Add script
@@ -187,6 +210,7 @@ export class EnhancedTracesParser {
           this.#scripts.push({
             scriptId: String(data.scriptId) as Protocol.Runtime.ScriptId,
             isolate: data.isolate,
+            buildId: '',
             executionContextId: data.executionContextId,
             startLine: data.startLine ?? 0,
             startColumn: data.startColumn ?? 0,
@@ -194,14 +218,14 @@ export class EnhancedTracesParser {
             endColumn: data.endColumn ?? 0,
             hash: data.hash,
             isModule: data.isModule,
-            url: data.url,
+            url: data.url ?? '',
             hasSourceURL: data.hasSourceUrl,
-            sourceURL: data.sourceUrl,
+            sourceURL: data.sourceUrl ?? '',
             sourceMapURL: data.sourceMapUrl,
             pid: event.pid,
           });
         }
-      } else if (this.isScriptRundownSourceEvent(event)) {
+      } else if (this.isRundownScriptSource(event)) {
         // Set up script to source text and length mapping
         const data = event.args.data;
         const scriptIsolateId = this.getScriptIsolateId(data.isolate, data.scriptId);
@@ -262,10 +286,10 @@ export class EnhancedTracesParser {
       const linkedExecutionContext = this.#executionContexts.find(
           context => context.id === script.executionContextId && context.isolate === script.isolate);
       if (linkedExecutionContext) {
-        script.auxData = linkedExecutionContext.auxData;
+        script.executionContextAuxData = linkedExecutionContext.auxData;
         // If a script successfully mapped to an execution context and aux data, link script to frame
-        if (script.auxData?.frameId) {
-          this.#scriptToFrame.set(scriptIsolateId, script.auxData?.frameId);
+        if (script.executionContextAuxData?.frameId) {
+          this.#scriptToFrame.set(scriptIsolateId, script.executionContextAuxData?.frameId);
         }
       }
     });
@@ -344,29 +368,29 @@ export class EnhancedTracesParser {
     return executionContextId + '@' + isolate;
   }
 
-  private isTraceEvent(event: unknown): event is RehydratingTraceBase {
-    return 'cat' in (event as RehydratingTraceBase) && 'pid' in (event as RehydratingTraceBase) &&
-        'args' in (event as RehydratingTraceBase) && 'data' in (event as RehydratingTraceBase).args;
+  private isTraceEvent(event: unknown): event is EventBase {
+    return 'cat' in (event as EventBase) && 'pid' in (event as EventBase) && 'args' in (event as EventBase) &&
+        'data' in (event as EventBase).args;
   }
 
-  private isTargetRundownEvent(event: unknown): event is TraceEventTargetRundown {
+  private isRundownScriptCompiled(event: unknown): event is RundownScriptCompiled {
     return this.isTraceEvent(event) && event.cat === 'disabled-by-default-devtools.target-rundown';
   }
 
-  private isScriptRundownEvent(event: unknown): event is TraceEventScriptRundown {
+  private isRundownScript(event: unknown): event is RundownScript {
     return this.isTraceEvent(event) && event.cat === 'disabled-by-default-devtools.v8-source-rundown';
   }
 
-  private isScriptRundownSourceEvent(event: unknown): event is TraceEventScriptRundownSource {
+  private isRundownScriptSource(event: unknown): event is RundownScriptSource {
     return this.isTraceEvent(event) && event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources';
   }
 
-  private isTracingStartInBrowserEvent(event: unknown): event is TraceEventTracingStartedInBrowser {
+  private isTracingStartedInBrowser(event: unknown): event is TracingStartedInBrowser {
     return this.isTraceEvent(event) && event.cat === 'disabled-by-default-devtools.timeline' &&
         event.name === 'TracingStartedInBrowser';
   }
 
-  private isFunctionCallEvent(event: unknown): event is TraceEventFunctionCall {
+  private isFunctionCallEvent(event: unknown): event is FunctionCall {
     return this.isTraceEvent(event) && event.cat === 'devtools.timeline' && event.name === 'FunctionCall';
   }
 
@@ -408,8 +432,8 @@ export class EnhancedTracesParser {
     for (const script of scripts) {
       const scriptExecutionContextIsolateId =
           this.getExecutionContextIsolateId(script.isolate, script.executionContextId);
-      const scriptFrameId = script.auxData?.frameId as string as Protocol.Target.TargetID;
-      if (script.auxData?.frameId && targetIds.has(scriptFrameId)) {
+      const scriptFrameId = script.executionContextAuxData?.frameId as string as Protocol.Target.TargetID;
+      if (script.executionContextAuxData?.frameId && targetIds.has(scriptFrameId)) {
         targetToScripts.get(scriptFrameId)?.push(script);
         executionContextIsolateToTarget.set(scriptExecutionContextIsolateId, scriptFrameId);
       } else if (this.#scriptToFrame.has(this.getScriptIsolateId(script.isolate, script.scriptId))) {
@@ -457,12 +481,14 @@ export class EnhancedTracesParser {
             id: script.executionContextId,
             origin: '',
             v8Context: '',
+            name: '',
             auxData: {
               frameId: targetId as string as Protocol.Page.FrameId,
               isDefault: false,
               type: 'type',
             },
             isolate: script.isolate,
+            uniqueId: `${targetId}-${script.isolate}`,
           };
           executionContexts.push(artificialContext);
         }

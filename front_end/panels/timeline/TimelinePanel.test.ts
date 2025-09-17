@@ -469,14 +469,12 @@ describeWithEnvironment('TimelinePanel', function() {
         // 7192505913775043000.8 matches a chrome-extension script in the trace
         let extensionTracesWithContent = traceEvents.filter(value => {
           return value.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' &&
-              `${(value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.isolate}.${
-                  (value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.scriptId}` ===
-              '7192505913775043000.8';
+              `${(value as Trace.Types.Events.RundownScriptSource).args.data.isolate}.${
+                  (value as Trace.Types.Events.RundownScriptSource).args.data.scriptId}` === '7192505913775043000.8';
         });
 
         // loading the trace and verifying the chrome extension script has associated source text
-        let castedEvent =
-            (extensionTracesWithContent[0] as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent);
+        let castedEvent = (extensionTracesWithContent[0] as Trace.Types.Events.RundownScriptSource);
         assert.lengthOf(extensionTracesWithContent, 1);
         assert.isDefined(castedEvent.args.data.sourceText);
 
@@ -498,24 +496,22 @@ describeWithEnvironment('TimelinePanel', function() {
         // getting the same trace as before, but this time after saving has happened.
         extensionTracesWithContent = file.traceEvents?.filter(value => {
           return value.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' &&
-              `${(value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.isolate}.${
-                  (value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.scriptId}` ===
-              '7192505913775043000.8';
+              `${(value as Trace.Types.Events.RundownScriptSource).args.data.isolate}.${
+                  (value as Trace.Types.Events.RundownScriptSource).args.data.scriptId}` === '7192505913775043000.8';
         });
 
         // the associated source text is now undefined from the chrome-extension script
-        castedEvent = (extensionTracesWithContent[0] as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent);
+        castedEvent = (extensionTracesWithContent[0] as Trace.Types.Events.RundownScriptSource);
         assert.lengthOf(extensionTracesWithContent, 1);
         assert.isUndefined(castedEvent.args.data.sourceText);
 
         // non-extension script content is still present (7192505913775043000.10)
         extensionTracesWithContent = file.traceEvents?.filter(value => {
           return value.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' &&
-              `${(value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.isolate}.${
-                  (value as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent).args.data.scriptId}` ===
-              '7192505913775043000.10';
+              `${(value as Trace.Types.Events.RundownScriptSource).args.data.isolate}.${
+                  (value as Trace.Types.Events.RundownScriptSource).args.data.scriptId}` === '7192505913775043000.10';
         });
-        castedEvent = (extensionTracesWithContent[0] as Trace.Types.Events.V8SourceRundownSourcesScriptCatchupEvent);
+        castedEvent = (extensionTracesWithContent[0] as Trace.Types.Events.RundownScriptSource);
         assert.lengthOf(extensionTracesWithContent, 1);
         assert.isDefined(castedEvent.args.data.sourceText);
       });

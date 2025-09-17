@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../core/platform/platform.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 
 import type {Micro, Milli, Seconds, TraceWindowMicro} from './Timing.js';
@@ -3177,70 +3178,46 @@ export interface LegacyLayerPaintEventPicture {
   serializedPicture: string;
 }
 
-export interface TargetRundownEvent extends Event {
+/** Same as `TraceEventTargetRundown` in `EnhancedTracesParser` */
+export interface RundownScriptCompiled extends Event {
   cat: 'disabled-by-default-devtools.target-rundown';
-  name: 'ScriptCompiled';
+  name: SDK.EnhancedTracesParser.RundownScriptCompiled['name'];
   args: Args&{
-    data?: {
-      frame: Protocol.Page.FrameId,
-      frameType: string,
-      url: string,
-      isolate: string,
-      v8context: string,
-      origin: string,
-      scriptId: number,
-      isDefault?: boolean,
-      contextType?: string,
-    },
+    data?: SDK.EnhancedTracesParser.RundownScriptCompiled['args']['data'],
   };
 }
 
-export function isTargetRundownEvent(event: Event): event is TargetRundownEvent {
-  return event.cat === 'disabled-by-default-devtools.target-rundown' && event.name === 'ScriptCompiled';
+export function isRundownScriptCompiled(event: Event): event is RundownScriptCompiled {
+  return event.cat === 'disabled-by-default-devtools.target-rundown';
 }
 
-export interface V8SourceRundownEvent extends Event {
+/** Same as `TraceEventScriptRundown` in `EnhancedTracesParser` */
+export interface RundownScript extends Event {
   cat: 'disabled-by-default-devtools.v8-source-rundown';
-  name: 'ScriptCatchup';
+  name: SDK.EnhancedTracesParser.RundownScript['name'];
   args: Args&{
-    data: {
-      isolate: string,
-      executionContextId: Protocol.Runtime.ExecutionContextId,
-      scriptId: number,
-      hash: string,
-      isModule: boolean,
-      hasSourceUrl: boolean,
-      url?: string,
-      sourceUrl?: string,
-      sourceMapUrl?: string,
-      sourceMapUrlElided?: boolean,
-    },
+    data: SDK.EnhancedTracesParser.RundownScript['args']['data'],
   };
 }
 
-export function isV8SourceRundownEvent(event: Event): event is V8SourceRundownEvent {
+export function isRundownScript(event: Event): event is RundownScript {
   return event.cat === 'disabled-by-default-devtools.v8-source-rundown' && event.name === 'ScriptCatchup';
 }
 
-export interface V8SourceRundownSourcesScriptCatchupEvent extends Event {
+/** Same as `TraceEventScriptRundownSource` in `EnhancedTracesParser` */
+export interface RundownScriptSource extends Event {
   cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
   name: 'ScriptCatchup';
   args: Args&{
-    data: {
-      isolate: string,
-      scriptId: number,
-      length: number,
-      sourceText: string,
-    },
+    data: SDK.EnhancedTracesParser.RundownScriptSource['args']['data'],
   };
 }
 
-export function isV8SourceRundownSourcesScriptCatchupEvent(event: Event):
-    event is V8SourceRundownSourcesScriptCatchupEvent {
+export function isRundownScriptSource(event: Event): event is RundownScriptSource {
   return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' && event.name === 'ScriptCatchup';
 }
 
-export interface V8SourceRundownSourcesLargeScriptCatchupEvent extends Event {
+export interface RundownScriptSourceLarge extends Event {
   cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
   name: 'LargeScriptCatchup';
   args: Args&{
@@ -3254,12 +3231,11 @@ export interface V8SourceRundownSourcesLargeScriptCatchupEvent extends Event {
   };
 }
 
-export function isV8SourceRundownSourcesLargeScriptCatchupEvent(event: Event):
-    event is V8SourceRundownSourcesLargeScriptCatchupEvent {
+export function isRundownScriptSourceLarge(event: Event): event is RundownScriptSourceLarge {
   return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' && event.name === 'LargeScriptCatchup';
 }
 
-export interface V8SourceRundownSourcesStubScriptCatchupEvent extends Event {
+export interface RundownScriptStub extends Event {
   cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
   name: 'StubScriptCatchup';
   args: Args&{
@@ -3270,7 +3246,7 @@ export interface V8SourceRundownSourcesStubScriptCatchupEvent extends Event {
   };
 }
 
-export function isAnyScriptCatchupEvent(event: Event): event is V8SourceRundownSourcesScriptCatchupEvent|
-    V8SourceRundownSourcesLargeScriptCatchupEvent|V8SourceRundownSourcesStubScriptCatchupEvent {
+export function isAnyScriptSourceEvent(event: Event): event is RundownScriptSource|RundownScriptSourceLarge|
+    RundownScriptStub {
   return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources';
 }

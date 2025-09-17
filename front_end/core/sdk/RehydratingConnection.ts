@@ -31,7 +31,7 @@ import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import * as EnhancedTraces from './EnhancedTracesParser.js';
 import type {
-  ProtocolMessage, RehydratingExecutionContext, RehydratingScript, RehydratingTarget, ServerMessage, TraceFile} from
+  ProtocolMessage, RehydratingExecutionContext, RehydratingScript, RehydratingTarget, ServerMessage} from
   './RehydratingObject.js';
 import {TraceObject} from './TraceObject.js';
 
@@ -66,7 +66,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
   rehydratingConnectionState: RehydratingConnectionState = RehydratingConnectionState.UNINITIALIZED;
   onDisconnect: ((arg0: string) => void)|null = null;
   onMessage: ((arg0: Object) => void)|null = null;
-  trace: TraceFile|null = null;
+  trace: TraceObject|null = null;
   sessions = new Map<number, RehydratingSessionBase>();
   #onConnectionLost: (message: Platform.UIString.LocalizedString) => void;
   #rehydratingWindow: Window&typeof globalThis;
@@ -97,7 +97,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
       const traceJson = event.data.traceJson as string;
       let trace;
       try {
-        trace = JSON.parse(traceJson) as TraceFile;
+        trace = new TraceObject(JSON.parse(traceJson));
       } catch {
         this.#onConnectionLost(i18nString(UIStrings.errorLoadingLog));
         return;
@@ -107,7 +107,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
     this.#rehydratingWindow.removeEventListener('message', this.#onReceiveHostWindowPayloadBound);
   }
 
-  async startHydration(trace: TraceFile): Promise<boolean> {
+  async startHydration(trace: TraceObject): Promise<boolean> {
     // OnMessage should've been set before hydration, and the connection should
     // be initialized and not hydrated already.
     if (!this.onMessage || this.rehydratingConnectionState !== RehydratingConnectionState.INITIALIZED) {
@@ -160,8 +160,8 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
 
     this.rehydratingConnectionState = RehydratingConnectionState.REHYDRATED;
     // Use revealer to load trace into performance panel
-    const trace = new TraceObject(this.trace.traceEvents as object[], this.trace.metadata);
-    await Common.Revealer.reveal(trace);
+
+    await Common.Revealer.reveal(this.trace);
   }
 
   setOnMessage(onMessage: (arg0: Object|string) => void): void {

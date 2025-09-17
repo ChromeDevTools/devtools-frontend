@@ -8,13 +8,18 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import type {NetworkRequest} from './NetworkRequest.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
+import type {SourceMapV3} from './SourceMap.js';
 
 // A thin wrapper class, mostly to enable instanceof-based revealing of traces to open in Timeline.
 export class TraceObject {
   readonly traceEvents: Protocol.Tracing.DataCollectedEvent['value'];
-  readonly metadata: Object;
-  constructor(traceEvents: Protocol.Tracing.DataCollectedEvent['value'], metadata: Object = {}) {
-    this.traceEvents = traceEvents;
+  readonly metadata: {sourceMaps?: Array<{sourceMapUrl: string, sourceMap: SourceMapV3, url: string}>};
+  constructor(payload: Protocol.Tracing.DataCollectedEvent['value']|TraceObject, meta: Object = {}) {
+    // Handle the typical traceEvent array juggling here.
+    const events = Array.isArray(payload) ? payload : payload.traceEvents;
+    const metadata = meta ?? (!Array.isArray(payload) && payload.metadata) ?? {};
+
+    this.traceEvents = events;
     this.metadata = metadata;
   }
 }

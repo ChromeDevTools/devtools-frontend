@@ -264,7 +264,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   #formatter: PerformanceTraceFormatter|null = null;
   #lastInsightForEnhancedQuery: Trace.Insights.Types.InsightModel|undefined;
   #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
-  #lastFocusHandledForContextDetails: AgentFocus|null = null;
+  #hasShownAnalyzeTraceContext = false;
 
   /**
    * Cache of all function calls made by the agent. This allows us to include (as a
@@ -336,12 +336,9 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       return;
     }
 
-    const focus = context.getItem();
-    if (this.#lastFocusHandledForContextDetails === focus) {
+    if (this.#hasShownAnalyzeTraceContext) {
       return;
     }
-
-    this.#lastFocusHandledForContextDetails = focus;
 
     yield {
       type: ResponseType.CONTEXT,
@@ -353,6 +350,8 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         },
       ],
     };
+
+    this.#hasShownAnalyzeTraceContext = true;
   }
 
   #callTreeContextSet = new WeakSet();

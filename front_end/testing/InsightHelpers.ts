@@ -35,6 +35,7 @@ export function createContextForNavigation(
   const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
 
   return {
+    options: {},
     bounds,
     frameId,
     navigation,

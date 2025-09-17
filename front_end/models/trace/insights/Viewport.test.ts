@@ -40,6 +40,7 @@ describeWithEnvironment('Viewport', function() {
   it('detects mobile unoptimized viewport (w/ pointer interactions)', async function() {
     const {data} = await processTrace(this, 'nytimes-bad-mobile-viewport.json.gz');
     const context = {
+      options: {},
       bounds: data.Meta.traceBounds,
       frameId: data.Meta.mainFrameId,
     };

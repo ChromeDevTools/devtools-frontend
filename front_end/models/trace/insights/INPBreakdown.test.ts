@@ -16,6 +16,7 @@ describeWithEnvironment('INPBreakdown', function() {
       const {data} = await processTrace(this, traceFile);
       const navigation = getFirst(data.Meta.navigationsByNavigationId.values());
       const context = navigation ? createContextForNavigation(data, navigation, data.Meta.mainFrameId) : {
+        options: {},
         bounds: data.Meta.traceBounds,
         frameId: data.Meta.mainFrameId,
       };

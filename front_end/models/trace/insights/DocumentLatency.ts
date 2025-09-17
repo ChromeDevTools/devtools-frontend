@@ -190,13 +190,12 @@ function finalize(partialModel: PartialInsightModel<DocumentLatencyInsightModel>
 }
 
 export function generateInsight(
-    data: Handlers.Types.HandlerData, context: InsightSetContext,
-    timeFormatters?: Types.Configuration.InsightTimeFormatters): DocumentLatencyInsightModel {
+    data: Handlers.Types.HandlerData, context: InsightSetContext): DocumentLatencyInsightModel {
   if (!context.navigation) {
     return finalize({});
   }
 
-  const millisToString = timeFormatters?.milli ?? i18n.TimeUtilities.millisToString;
+  const millisToString = context.options.insightTimeFormatters?.milli ?? i18n.TimeUtilities.millisToString;
 
   const documentRequest = data.NetworkRequests.byId.get(context.navigationId);
   if (!documentRequest) {

@@ -428,9 +428,9 @@ export class TraceProcessor extends EventTarget {
     insightSet.model = newModel;
   }
 
-  #computeInsightSet(
-      data: Handlers.Types.HandlerData, context: Insights.Types.InsightSetContext,
-      options: Types.Configuration.ParseOptions): void {
+  #computeInsightSet(data: Handlers.Types.HandlerData, context: Insights.Types.InsightSetContext): void {
+    const logger = context.options.logger;
+
     let id, urlString, navigation;
     if (context.navigation) {
       id = context.navigationId;
@@ -446,8 +446,8 @@ export class TraceProcessor extends EventTarget {
     for (const [name, insight] of Object.entries(TraceProcessor.getInsightRunners())) {
       let model: Insights.Types.InsightModel|Error;
       try {
-        options.logger?.start(`insights:${name}`);
-        model = insight.generateInsight(data, context, options.insightTimeFormatters);
+        logger?.start(`insights:${name}`);
+        model = insight.generateInsight(data, context);
         model.frameId = context.frameId;
         const navId = context.navigation?.args.data?.navigationId;
         if (navId) {
@@ -460,7 +460,7 @@ export class TraceProcessor extends EventTarget {
       } catch (err) {
         model = err;
       } finally {
-        options.logger?.end(`insights:${name}`);
+        logger?.end(`insights:${name}`);
       }
       Object.assign(insightSetModel, {[name]: model});
     }
@@ -507,7 +507,7 @@ export class TraceProcessor extends EventTarget {
       this.#insights = new Map();
     }
     this.#insights.set(insightSet.id, insightSet);
-    this.sortInsightSet(insightSet, options.metadata ?? null);
+    this.sortInsightSet(insightSet, context.options.metadata ?? null);
   }
 
   /**
@@ -547,11 +547,12 @@ export class TraceProcessor extends EventTarget {
         data.Meta.traceBounds;
 
     const context: Insights.Types.InsightSetContext = {
+      options,
       bounds,
       frameId: data.Meta.mainFrameId,
       // No navigation or lantern context applies to this initial/no-navigation period.
     };
-    this.#computeInsightSet(data, context, options);
+    this.#computeInsightSet(data, context);
   }
 
   /**
@@ -597,13 +598,14 @@ export class TraceProcessor extends EventTarget {
     }
 
     const context: Insights.Types.InsightSetContext = {
+      options,
       bounds,
       frameId,
       navigation,
       navigationId,
       lantern,
     };
-    this.#computeInsightSet(data, context, options);
+    this.#computeInsightSet(data, context);
   }
 }
 

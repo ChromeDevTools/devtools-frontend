@@ -14,12 +14,14 @@ import type * as Models from './Models.js';
 export type InsightSetContext = InsightSetContextWithoutNavigation|InsightSetContextWithNavigation;
 
 export interface InsightSetContextWithoutNavigation {
+  options: Types.Configuration.ParseOptions;
   bounds: Types.Timing.TraceWindowMicro;
   frameId: string;
   navigation?: never;
 }
 
 export interface InsightSetContextWithNavigation {
+  options: Types.Configuration.ParseOptions;
   bounds: Types.Timing.TraceWindowMicro;
   frameId: string;
   navigation: Types.Events.NavigationStart;

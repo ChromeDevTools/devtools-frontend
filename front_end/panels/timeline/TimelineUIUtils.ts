@@ -880,9 +880,9 @@ export class TimelineUIUtils {
     }
   }
 
-  static maybeCreateLinkElement(url: string): HTMLElement|null {
-    const protocol = URL.parse(url)?.protocol;
-    if (!protocol || protocol.length === 0) {
+  static maybeCreateLinkElement(url: string): Element|null {
+    const parsedURL = new Common.ParsedURL.ParsedURL(url);
+    if (!parsedURL.scheme) {
       return null;
     }
 
@@ -890,11 +890,16 @@ export class TimelineUIUtils {
     if (!splitResult) {
       return null;
     }
-    const {lineNumber, columnNumber} = splitResult;
-    const options = {text: url, lineNumber, columnNumber} as LegacyComponents.Linkifier.LinkifyURLOptions;
-    const linkElement =
-        LegacyComponents.Linkifier.Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, (options));
-    return linkElement;
+    const {url: rawURL, lineNumber, columnNumber} = splitResult;
+
+    const options = {
+      lineNumber,
+      columnNumber,
+      showColumnNumber: true,
+      omitOrigin: true,
+    };
+
+    return LegacyComponents.Linkifier.Linkifier.linkifyURL(rawURL as Platform.DevToolsPath.UrlString, options);
   }
 
   /**

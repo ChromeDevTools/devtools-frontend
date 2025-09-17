@@ -1838,7 +1838,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       container.appendChild(fragment);
       assert.strictEqual(
           container.innerHTML,
-          'Check out: <button class="devtools-link text-button link-style" jslog="Link; context: url; track: click" role="link" tabindex="-1">https://example.com</button>.');
+          'Check out: <button class="devtools-link text-button link-style" title="https://example.com" jslog="Link; context: url; track: click" role="link" tabindex="-1"></button>.');
     });
 
     it('should handle URLs anywhere within the string', () => {
@@ -1849,9 +1849,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
       container.appendChild(fragment);
       assert.strictEqual(
           container.innerHTML,
-          `<button class="devtools-link text-button link-style" jslog="Link; context: url; track: click" role="link" tabindex="-1">http://example.com</button>
-at the beginning. <button class="devtools-link text-button link-style" jslog="Link; context: url; track: click" role="link" tabindex="-1">http://example.com</button>
-in the middle or at the end: <button class="devtools-link text-button link-style" jslog="Link; context: url; track: click" role="link" tabindex="-1">http://example.com</button>`
+          `<button class="devtools-link text-button link-style" title="http://example.com" jslog="Link; context: url; track: click" role="link" tabindex="-1"></button>
+at the beginning. <button class="devtools-link text-button link-style" title="http://example.com" jslog="Link; context: url; track: click" role="link" tabindex="-1"></button>
+in the middle or at the end: <button class="devtools-link text-button link-style" title="http://example.com" jslog="Link; context: url; track: click" role="link" tabindex="-1"></button>`
               .replace(/\n/g, ' '));
     });
 

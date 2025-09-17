@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
-import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as ElementsComponents from './components/components.js';
@@ -120,7 +120,9 @@ export class StyleEditorWidget extends UI.Widget.VBox {
   static createTriggerButton(
       pane: StylesSidebarPane, section: StylePropertiesSection, editorClass: {new(): Editor}, buttonTitle: string,
       triggerKey: string): HTMLElement {
-    const triggerButton = createButton(buttonTitle);
+    const triggerButton = IconButton.Icon.create('flex-wrap', 'styles-pane-button');
+    triggerButton.title = buttonTitle;
+    triggerButton.role = 'button';
 
     triggerButton.onclick = async event => {
       event.stopPropagation();
@@ -146,26 +148,13 @@ export class StyleEditorWidget extends UI.Widget.VBox {
         scrollerElement.addEventListener('scroll', onScroll);
       }
     };
+    triggerButton.onmouseup = event => {
+      // Stop propagation to prevent the property editor from being activated.
+      event.stopPropagation();
+    };
 
     return triggerButton;
   }
-}
-
-function createButton(buttonTitle: string): Buttons.Button.Button {
-  const button = new Buttons.Button.Button();
-  button.data = {
-    variant: Buttons.Button.Variant.ICON,
-    size: Buttons.Button.Size.SMALL,
-    iconName: 'flex-wrap',
-    title: buttonTitle,
-    jslogContext: 'flex-wrap',
-  };
-  button.classList.add('styles-pane-button');
-  button.onmouseup = event => {
-    // Stop propagation to prevent the property editor from being activated.
-    event.stopPropagation();
-  };
-  return button;
 }
 
 function ensureTreeElementForProperty(section: StylePropertiesSection, propertyName: string): StylePropertyTreeElement {

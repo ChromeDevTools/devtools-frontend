@@ -99,6 +99,7 @@ devtools_module("elements") {
     "../../ui/components/code_highlighter:bundle",
     "../../ui/components/copy_to_clipboard:bundle",
     "../../ui/components/highlighting:bundle",
+    "../../ui/components/icon_button:bundle",
     "../../ui/components/text_editor:bundle",
     "../../ui/components/tooltips:bundle",
     "../../ui/components/tree_outline:bundle",

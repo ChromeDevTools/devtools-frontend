@@ -8,6 +8,7 @@ import { LLMConfigurationManager } from '../../core/LLMConfigurationManager.js';
 import { getEvaluationConfig, getEvaluationClientId } from '../../common/EvaluationConfig.js';
 import { ToolRegistry } from '../../agent_framework/ConfigurableAgentTool.js';
 import { AgentService } from '../../core/AgentService.js';
+import { AIChatPanel } from '../../ui/AIChatPanel.js';
 import { createLogger } from '../../core/Logger.js';
 import { createTracingProvider, withTracingContext, isTracingEnabled, getTracingConfig } from '../../tracing/TracingConfig.js';
 import type { TracingProvider, TracingContext } from '../../tracing/TracingProvider.js';
@@ -328,6 +329,7 @@ export class EvaluationAgent {
   private async handleEvaluationRequest(request: EvaluationRequest): Promise<void> {
     const { params, id } = request;
     const startTime = Date.now();
+    let hasSetEarlyOverride = false;
 
     logger.info('Received evaluation request', {
       evaluationId: params.evaluationId,
@@ -337,6 +339,38 @@ export class EvaluationAgent {
       modelOverride: params.input?.ai_chat_model,
       modelConfig: params.model
     });
+
+    // CRITICAL FIX: Set configuration override early for any model configuration provided
+    // This allows API keys from request body to be available for UI-level validation
+    if (params.model && (params.model.main_model || params.model.provider || params.model.api_key)) {
+      const configManager = LLMConfigurationManager.getInstance();
+
+      // Extract configuration from nested model structure
+      const mainModel = params.model.main_model as any;
+      const provider = mainModel?.provider || params.model.provider || 'openai';
+      const apiKey = mainModel?.api_key || params.model.api_key;
+      const modelName = mainModel?.model || mainModel || params.model.main_model;
+      const miniModel = (params.model.mini_model as any)?.model || params.model.mini_model;
+      const nanoModel = (params.model.nano_model as any)?.model || params.model.nano_model;
+
+      if (apiKey) {
+        logger.info('Setting early configuration override for evaluation', {
+          evaluationId: params.evaluationId,
+          provider,
+          hasApiKey: !!apiKey,
+          modelName
+        });
+
+        configManager.setOverride({
+          provider,
+          apiKey,
+          mainModel: modelName,
+          miniModel: miniModel || modelName,
+          nanoModel: nanoModel || miniModel || modelName
+        });
+        hasSetEarlyOverride = true;
+      }
+    }
 
     // Track active evaluation
     this.activeEvaluations.set(params.evaluationId, {
@@ -464,10 +498,12 @@ export class EvaluationAgent {
         const mergedInput = {
           ...params.input,
           ...(params.model && {
-            main_model: params.model.main_model,
-            mini_model: params.model.mini_model,
-            nano_model: params.model.nano_model,
-            provider: params.model.provider
+            // Extract nested model configuration properly
+            main_model: (params.model.main_model as any)?.model || params.model.main_model,
+            mini_model: (params.model.mini_model as any)?.model || params.model.mini_model,
+            nano_model: (params.model.nano_model as any)?.model || params.model.nano_model,
+            provider: (params.model.main_model as any)?.provider || params.model.provider,
+            api_key: (params.model.main_model as any)?.api_key || (params.model as any).api_key
           })
         };
         
@@ -574,6 +610,17 @@ export class EvaluationAgent {
 
     } finally {
       this.activeEvaluations.delete(params.evaluationId);
+
+      // Clean up early override if we set one
+      if (hasSetEarlyOverride) {
+        try {
+          const configManager = LLMConfigurationManager.getInstance();
+          configManager.clearOverride();
+          logger.info('Cleared early configuration override', { evaluationId: params.evaluationId });
+        } catch (clearError) {
+          logger.warn('Failed to clear early configuration override:', clearError);
+        }
+      }
     }
   }
 
@@ -762,8 +809,21 @@ export class EvaluationAgent {
           hasOverride: configManager.hasOverride()
         });
 
-        // Always reinitialize with the current configuration
-        await agentService.initialize(apiKey, modelName, miniModel, nanoModel);
+        // CRITICAL FIX: Set configuration override for this evaluation to use API key from request
+        // This is the key change that allows API keys to come from request body instead of localStorage
+        configManager.setOverride({
+          provider: 'openai', // TODO: Extract from model config
+          apiKey: apiKey,
+          mainModel: modelName,
+          miniModel: miniModel,
+          nanoModel: nanoModel
+        });
+
+        // Send the message using AgentService directly but with configuration override
+        // The configuration override ensures it uses the API key from the request
+        const finalMessage: ChatMessage = tracingContext
+          ? await withTracingContext(tracingContext, () => agentService.sendMessage(input.message))
+          : await agentService.sendMessage(input.message);
         
         // Create a child observation for the chat execution
         if (tracingContext) {
@@ -783,11 +843,6 @@ export class EvaluationAgent {
             logger.warn('Failed to create chat execution observation:', error);
           }
         }
-        
-        // Send the message with the evaluation tracing context
-        const finalMessage: ChatMessage = tracingContext 
-          ? await withTracingContext(tracingContext, () => agentService.sendMessage(input.message))
-          : await agentService.sendMessage(input.message);
         
         clearTimeout(timer);
         
@@ -850,8 +905,7 @@ export class EvaluationAgent {
         logger.error('Chat evaluation failed:', error);
         reject(error);
       } finally {
-        // Clear any configuration override
-        const configManager = LLMConfigurationManager.getInstance();
+        // Clear configuration override after evaluation
         configManager.clearOverride();
       }
     });

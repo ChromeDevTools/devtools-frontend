@@ -263,3 +263,28 @@ ancestor path of the failing test file).
 After updating the `luci-analysis.cfg` file make sure you run `lucicfg main.star` to
 refresh the copy of this file in the `generated/` folder.
 
+## Autorollers
+
+### Rolling DevTools to Chromium
+
+A [Skia autoroller](https://skia.googlesource.com/buildbot/+/main/autoroll/README.md)
+is responsible for rolling DevTools to Chromium. Follow the links to inspect the
+[status](https://autoroll.skia.org/r/devtools-frontend-chromium?tab=status) of
+the roller.
+
+To update the configuration you will need to clone the skia [repo](sso://skia/skia-autoroll-internal-config)
+and modify the `skia-infra-public/devtools-frontend-chromium.cfg` file ([example](https://review.skia.org/1014616)).
+
+### Rolling dependencies to DevTools
+
+To roll all DevTool's dependencies we rely on the [Roll deps and chromium pin
+into devtools-frontend](https://ci.chromium.org/ui/p/devtools-frontend/builders/ci-hp/Roll%20deps%20and%20chromium%20pin%20into%20devtools-frontend)
+builder that runs on the [infra](https://ci.chromium.org/ui/p/devtools-frontend/g/infra/builders)
+console.
+
+The builder is scheduled to run every day at 05 and 14 hours. In the [recipe](https://source.chromium.org/chromium/infra/infra_superproject/+/main:build/recipes/recipes/devtools/auto_roll_incoming.py?q=file:recipes%2Fdevtools%2Fauto_roll_incoming.py)
+that runs on this builder you can configure dependencies that you need excluded
+from the rolls and reviewer emails. The recipe uses the V8's autorolling rolling
+[module](https://source.chromium.org/chromium/infra/infra_superproject/+/main:build/recipes/recipe_modules/v8_auto_roller/api.py),
+that offers support for trusted and untrusted dependencies ([regular](https://source.chromium.org/chromium/infra/infra_superproject/+/main:build/recipes/recipe_modules/v8_auto_roller/deps_handlers.py)), [CfT](https://source.chromium.org/chromium/infra/infra_superproject/+/main:build/recipes/recipe_modules/v8_auto_roller/chrome_handler.py) pin rolling, and [script based](https://source.chromium.org/chromium/infra/infra_superproject/+/main:build/recipes/recipe_modules/v8_auto_roller/script_handlers.py) special rolls.
+

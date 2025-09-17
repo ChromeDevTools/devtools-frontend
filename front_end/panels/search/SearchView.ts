@@ -115,6 +115,7 @@ interface SearchViewInput {
   isRegex: boolean;
   searchMessage: string;
   searchResultsMessage: string;
+  progress: Common.Progress.Progress|null;
   onQueryChange: (query: string) => void;
   onQueryKeyDown: (evt: KeyboardEvent) => void;
   onPanelKeyDown: (evt: KeyboardEvent) => void;
@@ -127,7 +128,6 @@ interface SearchViewInput {
 
 interface SearchViewOutput {
   searchResultsElement?: HTMLElement;
-  searchProgressPlaceholderElement?: HTMLElement;
 }
 
 type View = (input: SearchViewInput, output: SearchViewOutput, target: HTMLElement) => void;
@@ -140,6 +140,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     isRegex,
     searchMessage,
     searchResultsMessage,
+    progress,
     onQueryChange,
     onQueryKeyDown,
     onPanelKeyDown,
@@ -228,7 +229,11 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       </div>
       <div class="search-toolbar-summary" @keydown=${onPanelKeyDown}>
         <div class="search-message">${searchMessage}</div>
-        <div class="flex-centered" ${ref(e => {output.searchProgressPlaceholderElement = e as HTMLElement;})}>
+        <div class="flex-centered">
+          ${progress ? html`
+            <devtools-progress .title=${progress.title ?? ''}
+                               .worked=${progress.worked} .totalWork=${progress.totalWork}>
+            </devtools-progress>` : ''}
         </div>
         <div class="search-message">${searchResultsMessage}</div>
       </div>`, target);
@@ -248,14 +253,13 @@ export class SearchView extends UI.Widget.VBox {
   #searchConfig: Workspace.SearchConfig.SearchConfig|null;
   #pendingSearchConfig: Workspace.SearchConfig.SearchConfig|null;
   #searchResultsPane: SearchResultsPane|null;
-  #progressIndicator: UI.ProgressIndicator.ProgressIndicator|null;
+  #progress: Common.Progress.Progress|null;
   #visiblePane: UI.Widget.Widget|null;
   #searchResultsElement!: HTMLElement;
   #query: string;
   #matchCase = false;
   #isRegex = false;
   #searchMessage = '';
-  #searchProgressPlaceholderElement!: HTMLElement;
   #searchResultsMessage = '';
   readonly #advancedSearchConfig: Common.Settings.Setting<{
     query: string,
@@ -290,7 +294,7 @@ export class SearchView extends UI.Widget.VBox {
     this.#searchConfig = null;
     this.#pendingSearchConfig = null;
     this.#searchResultsPane = null;
-    this.#progressIndicator = null;
+    this.#progress = null;
     this.#visiblePane = null;
     this.#throttler = throttler;
 
@@ -317,6 +321,7 @@ export class SearchView extends UI.Widget.VBox {
       isRegex: this.#isRegex,
       searchMessage: this.#searchMessage,
       searchResultsMessage: this.#searchResultsMessage,
+      progress: this.#progress,
       onQueryChange: (query: string) => {
         this.#query = query;
       },
@@ -333,9 +338,6 @@ export class SearchView extends UI.Widget.VBox {
     this.#focusSearchInput = false;
     if (output.searchResultsElement) {
       this.#searchResultsElement = output.searchResultsElement;
-    }
-    if (output.searchProgressPlaceholderElement) {
-      this.#searchProgressPlaceholderElement = output.searchProgressPlaceholderElement;
     }
   }
 
@@ -375,13 +377,12 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   #onIndexingFinished(): void {
-    if (!this.#progressIndicator) {
+    if (!this.#progress) {
       return;
     }
 
-    const finished = !this.#progressIndicator.canceled;
-    this.#progressIndicator.done = true;
-    this.#progressIndicator = null;
+    const finished = !this.#progress.canceled;
+    this.#progress = null;
     this.#isIndexing = false;
     this.#searchMessage = finished ? '' : i18nString(UIStrings.indexingInterrupted);
     if (!finished) {
@@ -398,16 +399,15 @@ export class SearchView extends UI.Widget.VBox {
 
   #startIndexing(): void {
     this.#isIndexing = true;
-    if (this.#progressIndicator) {
-      this.#progressIndicator.done = true;
+    if (this.#progress) {
+      this.#progress.done = true;
     }
-    this.#progressIndicator = document.createElement('devtools-progress');
+    this.#progress = new Common.Progress.ProgressProxy(
+        new Common.Progress.Progress(), this.#onIndexingFinished.bind(this), this.requestUpdate.bind(this));
     this.#searchMessage = i18nString(UIStrings.indexing);
-    this.#searchProgressPlaceholderElement.appendChild(this.#progressIndicator);
     this.performUpdate();
     if (this.#searchScope) {
-      this.#searchScope.performIndexing(
-          new Common.Progress.ProgressProxy(this.#progressIndicator, this.#onIndexingFinished.bind(this)));
+      this.#searchScope.performIndexing(this.#progress);
     }
   }
 
@@ -420,10 +420,10 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   #onSearchResult(searchId: number, searchResult: SearchResult): void {
-    if (searchId !== this.#searchId || !this.#progressIndicator) {
+    if (searchId !== this.#searchId || !this.#progress) {
       return;
     }
-    if (this.#progressIndicator?.canceled) {
+    if (this.#progress?.canceled) {
       this.#onIndexingFinished();
       return;
     }
@@ -450,12 +450,13 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   #onSearchFinished(searchId: number, finished: boolean): void {
-    if (searchId !== this.#searchId || !this.#progressIndicator) {
+    if (searchId !== this.#searchId || !this.#progress) {
       return;
     }
     if (!this.#searchResultsPane) {
       this.#nothingFound();
     }
+    this.#progress = null;
     this.#searchFinished(finished);
     this.#searchConfig = null;
     UI.ARIAUtils.LiveAnnouncer.alert(this.#searchMessage + ' ' + this.#searchResultsMessage);
@@ -463,14 +464,15 @@ export class SearchView extends UI.Widget.VBox {
 
   #startSearch(searchConfig: Workspace.SearchConfig.SearchConfig): void {
     this.#searchConfig = searchConfig;
-    if (this.#progressIndicator) {
-      this.#progressIndicator.done = true;
+    if (this.#progress) {
+      this.#progress.done = true;
     }
-    this.#progressIndicator = document.createElement('devtools-progress');
-    this.#searchStarted(this.#progressIndicator);
+    this.#progress =
+        new Common.Progress.ProgressProxy(new Common.Progress.Progress(), undefined, this.requestUpdate.bind(this));
+    this.#searchStarted();
     if (this.#searchScope) {
       void this.#searchScope.performSearch(
-          searchConfig, this.#progressIndicator, this.#onSearchResult.bind(this, this.#searchId),
+          searchConfig, this.#progress, this.#onSearchResult.bind(this, this.#searchId),
           this.#onSearchFinished.bind(this, this.#searchId));
     }
   }
@@ -485,8 +487,8 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   #stopSearch(): void {
-    if (this.#progressIndicator && !this.#isIndexing) {
-      this.#progressIndicator.canceled = true;
+    if (this.#progress && !this.#isIndexing) {
+      this.#progress.canceled = true;
     }
     if (this.#searchScope) {
       this.#searchScope.stopSearch();
@@ -494,7 +496,7 @@ export class SearchView extends UI.Widget.VBox {
     this.#searchConfig = null;
   }
 
-  #searchStarted(progressIndicator: UI.ProgressIndicator.ProgressIndicator): void {
+  #searchStarted(): void {
     this.#searchMatchesCount = 0;
     this.#searchResultsCount = 0;
     this.#nonEmptySearchResultsCount = 0;
@@ -504,7 +506,6 @@ export class SearchView extends UI.Widget.VBox {
     this.#showPane(this.#searchingView);
     this.#searchMessage = i18nString(UIStrings.searching);
     this.performUpdate();
-    this.#searchProgressPlaceholderElement.appendChild(progressIndicator);
     this.#updateSearchResultsMessage();
   }
 

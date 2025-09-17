@@ -114,9 +114,12 @@ export class SubProgress implements Progress {
 export class ProgressProxy implements Progress {
   readonly #delegate: Progress|null|undefined;
   readonly #doneCallback: (() => void)|undefined;
-  constructor(delegate?: Progress|null, doneCallback?: (() => void)) {
+  readonly #updateCallback: (() => void)|undefined;
+
+  constructor(delegate?: Progress|null, doneCallback?: (() => void), updateCallback?: (() => void)) {
     this.#delegate = delegate;
     this.#doneCallback = doneCallback;
+    this.#updateCallback = updateCallback;
   }
 
   get canceled(): boolean {
@@ -127,6 +130,13 @@ export class ProgressProxy implements Progress {
     if (this.#delegate) {
       this.#delegate.title = title;
     }
+    if (this.#updateCallback) {
+      this.#updateCallback();
+    }
+  }
+
+  get title(): string {
+    return this.#delegate?.title ?? '';
   }
 
   set done(done: boolean) {
@@ -138,15 +148,29 @@ export class ProgressProxy implements Progress {
     }
   }
 
+  get done(): boolean {
+    return this.#delegate ? this.#delegate.done : false;
+  }
+
   set totalWork(totalWork: number) {
     if (this.#delegate) {
       this.#delegate.totalWork = totalWork;
     }
+    if (this.#updateCallback) {
+      this.#updateCallback();
+    }
+  }
+
+  get totalWork(): number {
+    return this.#delegate ? this.#delegate.totalWork : 0;
   }
 
   set worked(worked: number) {
     if (this.#delegate) {
       this.#delegate.worked = worked;
+    }
+    if (this.#updateCallback) {
+      this.#updateCallback?.();
     }
   }
 

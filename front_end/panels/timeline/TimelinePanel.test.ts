@@ -261,10 +261,10 @@ describeWithEnvironment('TimelinePanel', function() {
         assert.include(message, `### Insight Title: ${title}`);
       }
 
-      assert.include(message, `- Time to first byte: 7.9\xA0ms (6.1% of total LCP time)
-- Resource load delay: 33.2\xA0ms (25.7% of total LCP time)
-- Resource load duration: 14.7\xA0ms (11.4% of total LCP time)
-- Element render delay: 73.4\xA0ms (56.8% of total LCP time)`);
+      assert.include(message, `- Time to first byte: 8\xA0ms (6.1% of total LCP time)
+- Resource load delay: 33\xA0ms (25.7% of total LCP time)
+- Resource load duration: 15\xA0ms (11.4% of total LCP time)
+- Element render delay: 73\xA0ms (56.8% of total LCP time)`);
     });
 
     it('includes information on passing insights under a separate heading', async function() {

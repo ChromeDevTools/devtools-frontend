@@ -10,7 +10,7 @@ const defaultTimeFormatterOptions: Intl.NumberFormatOptions = {
   style: 'unit',
   unitDisplay: 'narrow',
   minimumFractionDigits: 0,
-  maximumFractionDigits: 1,
+  maximumFractionDigits: 0,
 } as const;
 
 const defaultByteFormatterOptions: Intl.NumberFormatOptions = {
@@ -25,8 +25,14 @@ const timeFormatters = {
     ...defaultTimeFormatterOptions,
     unit: 'millisecond',
   }),
+  milliWithPrecision: new Intl.NumberFormat('en-US', {
+    ...defaultTimeFormatterOptions,
+    maximumFractionDigits: 1,
+    unit: 'millisecond',
+  }),
   second: new Intl.NumberFormat('en-US', {
     ...defaultTimeFormatterOptions,
+    maximumFractionDigits: 1,
     unit: 'second',
   }),
   micro: new Intl.NumberFormat('en-US', {
@@ -80,6 +86,9 @@ export function seconds(x: number): string {
 export function millis(x: number): string {
   if (numberIsTooLarge(x)) {
     return '-';
+  }
+  if (x < 1) {
+    return formatAndEnsureSpace(timeFormatters.milliWithPrecision, x);
   }
   return formatAndEnsureSpace(timeFormatters.milli, x);
 }

@@ -507,7 +507,11 @@ export enum Action {
   AiAssistanceOpenedFromPerformanceInsight = 182,
   AiAssistanceOpenedFromPerformanceFullButton = 183,
   AiCodeCompletionResponseServedFromCache = 184,
-  MAX_VALUE = 185,
+  AiCodeCompletionRequestTriggered = 185,
+  AiCodeCompletionSuggestionDisplayed = 186,
+  AiCodeCompletionSuggestionAccepted = 187,
+  AiCodeCompletionError = 188,
+  MAX_VALUE = 189,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

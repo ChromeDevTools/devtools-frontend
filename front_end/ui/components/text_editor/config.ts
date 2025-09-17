@@ -484,8 +484,10 @@ export const setAiAutoCompleteSuggestion = CM.StateEffect.define<ActiveSuggestio
 interface ActiveSuggestion {
   text: string;
   from: number;
-  sampleId?: number;
+  sampleId: number;
   rpcGlobalId?: Host.AidaClient.RpcGlobalId;
+  startTime: number;
+  onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number, latency: number) => void;
 }
 
 export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggestion|null>({
@@ -569,6 +571,7 @@ export const aiAutoCompleteSuggestion: CM.Extension = [
   CM.ViewPlugin.fromClass(
       class {
         decorations: CM.DecorationSet = CM.Decoration.none;
+        #lastLoggedSuggestion: ActiveSuggestion|null = null;
 
         update(update: CM.ViewUpdate): void {
           // If there is no text on the document, we don't want to show the AI suggestion.
@@ -647,6 +650,20 @@ export const aiAutoCompleteSuggestion: CM.Extension = [
 
           this.decorations =
               CM.Decoration.set([CM.Decoration.widget({widget: new CompletionHint(ghostText), side: 1}).range(head)]);
+          this.#registerImpressionIfNeeded(activeSuggestion);
+        }
+
+        #registerImpressionIfNeeded(activeSuggestion: ActiveSuggestion): void {
+          if (!activeSuggestion.rpcGlobalId) {
+            return;
+          }
+          if (this.#lastLoggedSuggestion?.rpcGlobalId === activeSuggestion?.rpcGlobalId &&
+              this.#lastLoggedSuggestion?.sampleId === activeSuggestion?.sampleId) {
+            return;
+          }
+          const latency = performance.now() - activeSuggestion.startTime;
+          // only register impression for the first time AI generated suggestion is shown to the user.
+          activeSuggestion.onImpression(activeSuggestion.rpcGlobalId, activeSuggestion.sampleId, latency);
         }
       },
       {decorations: p => p.decorations}),

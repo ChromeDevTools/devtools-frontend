@@ -291,6 +291,8 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
   async #requestAidaSuggestion(request: Host.AidaClient.CompletionRequest, cursor: number): Promise<void> {
     const startTime = performance.now();
     this.dispatchEventToListeners(Events.REQUEST_TRIGGERED, {});
+    // Registering AiCodeCompletionRequestTriggered metric even if the request is served from cache
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggered);
 
     try {
       const sampleResponse = await this.#generateSampleForRequest(request, cursor);
@@ -314,6 +316,8 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
             from: cursor,
             rpcGlobalId,
             sampleId,
+            startTime,
+            onImpression: this.#registerUserImpression.bind(this),
           })
         });
 
@@ -332,6 +336,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     } catch (e) {
       debugLog('Error while fetching code completion suggestions from AIDA', e);
       this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {});
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
     }
   }
 
@@ -418,6 +423,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       },
     });
     debugLog('Registered user impression with latency {seconds:', seconds, ', nanos:', nanos, '}');
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionSuggestionDisplayed);
   }
 
   registerUserAcceptance(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number): void {
@@ -433,6 +439,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       },
     });
     debugLog('Registered user acceptance');
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionSuggestionAccepted);
   }
 
   onTextChanged(

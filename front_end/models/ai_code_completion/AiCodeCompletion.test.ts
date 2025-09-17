@@ -79,7 +79,7 @@ describeWithEnvironment('AiCodeCompletion', () => {
           sampleId: 1,
           score: 1,
         }],
-        metadata: {},
+        metadata: {rpcGlobalId: 1},
       }),
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
@@ -93,11 +93,12 @@ describeWithEnvironment('AiCodeCompletion', () => {
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
     sinon.assert.calledOnce(mockAidaClient.completeCode);
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
+    const suggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
+    assert.strictEqual(suggestion?.text, 'suggestion');
+    assert.strictEqual(suggestion?.from, 1);
+    assert.strictEqual(suggestion?.sampleId, 1);
+    assert.strictEqual(suggestion?.rpcGlobalId, 1);
     sinon.assert.calledOnce(dispatchSpy);
-    assert.deepEqual(dispatchSpy.firstCall.args[0], {
-      effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-          {text: 'suggestion', from: 1, sampleId: 1, rpcGlobalId: undefined})
-    });
   });
 
   it('trims a suggestion with suffix overlap and dispatches it to the editor', async () => {
@@ -106,11 +107,11 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
       completeCode: Promise.resolve({
         generatedSamples: [{
-          generationString: '"Hello World");',
+          generationString: 'Hello World");',
           sampleId: 1,
           score: 1,
         }],
-        metadata: {},
+        metadata: {rpcGlobalId: 1},
       }),
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
@@ -119,16 +120,17 @@ describeWithEnvironment('AiCodeCompletion', () => {
         AiCodeCompletion.AiCodeCompletion.Panel.CONSOLE,
     );
 
-    aiCodeCompletion.onTextChanged('console.log(', ');\n', 1);
+    aiCodeCompletion.onTextChanged('console.log("', '");\n', 1);
 
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
     sinon.assert.calledOnce(mockAidaClient.completeCode);
     await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
+    const suggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
+    assert.strictEqual(suggestion?.text, 'Hello World');
+    assert.strictEqual(suggestion?.from, 1);
+    assert.strictEqual(suggestion?.sampleId, 1);
+    assert.strictEqual(suggestion?.rpcGlobalId, 1);
     sinon.assert.calledOnce(dispatchSpy);
-    assert.deepEqual(dispatchSpy.firstCall.args[0], {
-      effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-          {text: '"Hello World"', from: 1, sampleId: 1, rpcGlobalId: undefined})
-    });
   });
 
   it('debounces requests to AIDA', async () => {
@@ -227,7 +229,9 @@ describeWithEnvironment('AiCodeCompletion', () => {
           sampleId: 1,
           score: 1,
         }],
-        metadata: {},
+        metadata: {
+          rpcGlobalId: 1,
+        },
       }),
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
@@ -240,6 +244,11 @@ describeWithEnvironment('AiCodeCompletion', () => {
     await clock.tickAsync(
         AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS +
         AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
+    let suggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
+    assert.strictEqual(suggestion?.text, 'suggestion');
+    assert.strictEqual(suggestion?.from, 1);
+    assert.strictEqual(suggestion?.sampleId, 1);
+    assert.strictEqual(suggestion?.rpcGlobalId, 1);
 
     aiCodeCompletion.onTextChanged('prefix', 'suffix', 1);
     await clock.tickAsync(
@@ -247,13 +256,12 @@ describeWithEnvironment('AiCodeCompletion', () => {
         AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
 
     sinon.assert.calledOnce(mockAidaClient.completeCode);
+    suggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
+    assert.strictEqual(suggestion?.text, 'suggestion');
+    assert.strictEqual(suggestion?.from, 1);
+    assert.strictEqual(suggestion?.sampleId, 1);
+    assert.strictEqual(suggestion?.rpcGlobalId, 1);
     sinon.assert.calledTwice(dispatchSpy);
-    assert.deepEqual(dispatchSpy.firstCall.args[0], {
-      effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-          {text: 'suggestion', from: 1, sampleId: 1, rpcGlobalId: undefined})
-    });
-
-    assert.deepEqual(dispatchSpy.secondCall.args[0], dispatchSpy.firstCall.args[0]);
   });
 
   it('caches suggestions from AIDA and returns only valid generated samples from cache', async () => {
@@ -287,21 +295,22 @@ describeWithEnvironment('AiCodeCompletion', () => {
         AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS +
         AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
 
+    let suggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
+    assert.strictEqual(suggestion?.text, 'suggestion');
+    assert.strictEqual(suggestion?.from, 1);
+    assert.strictEqual(suggestion?.sampleId, 1);
+
     aiCodeCompletion.onTextChanged('prefix re', 'suffix', 1);
     await clock.tickAsync(
         AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS +
         AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
 
     sinon.assert.calledOnce(mockAidaClient.completeCode);
+    suggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
+    assert.strictEqual(suggestion?.text, 'commendation');
+    assert.strictEqual(suggestion?.from, 1);
+    assert.strictEqual(suggestion?.sampleId, 2);
     sinon.assert.calledTwice(dispatchSpy);
-    assert.deepEqual(dispatchSpy.firstCall.args[0], {
-      effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-          {text: 'suggestion', from: 1, sampleId: 1, rpcGlobalId: undefined})
-    });
-    assert.deepEqual(dispatchSpy.secondCall.args[0], {
-      effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-          {text: 'commendation', from: 1, sampleId: 2, rpcGlobalId: undefined})
-    });
   });
 
   it('does not use cache for different requests', async () => {

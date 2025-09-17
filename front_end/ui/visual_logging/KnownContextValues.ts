@@ -1598,6 +1598,7 @@ export const knownContextValues = new Set([
   'font-family',
   'font-feature-settings',
   'font-kerning',
+  'font-language-override',
   'font-optical-sizing',
   'font-palette',
   'font-size',

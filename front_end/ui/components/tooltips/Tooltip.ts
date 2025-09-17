@@ -162,12 +162,14 @@ export interface TooltipProperties {
  * @property variant - reflects the `"variant"` attribute.
  * @property padding - reflects the `"padding"` attribute.
  * @property useClick - reflects the `"click"` attribute.
+ * @property verticalDistanceIncrease - reflexts the `"vertical-distance-increase"` attribute.
  * @attribute id - Id of the tooltip. Used for searching an anchor element with aria-describedby.
  * @attribute hover-delay - Hover length in ms before the tooltip is shown and hidden.
  * @attribute variant - Variant of the tooltip, `"simple"` for strings only, inverted background,
  *                 `"rich"` for interactive content, background according to theme's surface.
  * @attribute padding - Which padding to use, defaults to `"small"`. Use `"large"` for richer content.
  * @attribute use-click - If present, the tooltip will be shown on click instead of on hover.
+ * @attribute vertical-distance-increase - The tooltip is moved vertically this many pixels further away from its anchor.
  * @attribute use-hotkey - If present, the tooltip will be shown on hover but not when receiving focus.
  *                    Requires a hotkey to open when fosed (Alt-down). When `"use-click"` is present
  *                    as well, use-click takes precedence.
@@ -242,6 +244,14 @@ export class Tooltip extends HTMLElement {
   set jslogContext(jslogContext: string) {
     this.setAttribute('jslogcontext', jslogContext);
     this.#updateJslog();
+  }
+
+  get verticalDistanceIncrease(): number {
+    return this.hasAttribute('vertical-distance-increase') ? Number(this.getAttribute('vertical-distance-increase')) :
+                                                             0;
+  }
+  set verticalDistanceIncrease(increase: number) {
+    this.setAttribute('vertical-distance-increase', increase.toString());
   }
 
   get anchor(): HTMLElement|null {
@@ -387,7 +397,13 @@ export class Tooltip extends HTMLElement {
         proposedRectForRichTooltip({inspectorViewRect, anchorRect, currentPopoverRect}) :
         proposedRectForSimpleTooltip({inspectorViewRect, anchorRect, currentPopoverRect});
     this.style.left = `${proposedPopoverRect.left}px`;
-    this.style.top = `${proposedPopoverRect.top}px`;
+
+    // If the tooltip is above its anchor, we need to decrease the tooltip's
+    // y-coordinate to increase the distance between tooltip and anchor.
+    // If the tooltip is below its anchor, we add to the tooltip's y-coord.
+    const actualVerticalOffset =
+        anchorRect.top < proposedPopoverRect.top ? this.verticalDistanceIncrease : -this.verticalDistanceIncrease;
+    this.style.top = `${proposedPopoverRect.top + actualVerticalOffset}px`;
     this.style.visibility = 'visible';
     requestAnimationFrame(this.#positionPopover);
   };

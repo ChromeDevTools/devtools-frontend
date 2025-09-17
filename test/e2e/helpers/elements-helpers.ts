@@ -978,6 +978,7 @@ export const navigateToElementsTab = async (devtoolsPage = getBrowserAndPagesWra
   // Open Elements panel
   await devtoolsPage.click('#tab-elements');
   await devtoolsPage.waitFor(ELEMENTS_PANEL_SELECTOR);
+  await devtoolsPage.timeout(100);
   await expectVeEvents([veImpressionForElementsPanel()], undefined, devtoolsPage);
 };
 

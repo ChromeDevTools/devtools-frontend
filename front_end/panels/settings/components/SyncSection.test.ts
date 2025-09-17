@@ -7,6 +7,7 @@ import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {createFakeSetting, describeWithLocale, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as SettingComponents from '../../../ui/components/settings/settings.js';
+import * as PanelCommon from '../../common/common.js';
 
 import * as PanelComponents from './components.js';
 
@@ -287,5 +288,37 @@ describeWithLocale('SyncSection', () => {
         assert.include(planDetails.innerText, expectedText);
       });
     }
+
+    it('refetches the GDP profile details after a successful sign-up', async () => {
+      const gdpClient = Host.GdpClient.GdpClient.instance();
+      const getProfileStub = sinon.stub(gdpClient, 'getProfile').resolves(null);
+      sinon.stub(gdpClient, 'isEligibleToCreateProfile').resolves(true);
+      const showStub = sinon.stub(PanelCommon.GdpSignUpDialog, 'show').callsFake(options => {
+        options?.onSuccess?.();
+      });
+      const syncSetting = createFakeSetting<boolean>('setting', true);
+      const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
+
+      const {shadowRoot} = await renderSyncSection({
+        syncInfo: {
+          isSyncActive: true,
+          arePreferencesSynced: true,
+          accountEmail: 'user@gmail.com',
+        },
+        syncSetting,
+        receiveBadgesSetting,
+      });
+      const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
+      assert.instanceOf(gdpSection, HTMLElement);
+      const signUpButton = gdpSection.querySelector('devtools-button');
+      assert.instanceOf(signUpButton, HTMLElement);
+      // The first call happens on render.
+      sinon.assert.calledOnce(getProfileStub);
+      signUpButton.click();
+
+      sinon.assert.calledOnce(showStub);
+      // The second call is triggered by the `onSuccess` callback.
+      sinon.assert.calledTwice(getProfileStub);
+    });
   });
 });

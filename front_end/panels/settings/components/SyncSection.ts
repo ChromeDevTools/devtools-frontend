@@ -204,6 +204,7 @@ export class SyncSection extends HTMLElement {
           receiveBadgesSettingContainerRef: this.#receiveBadgesSettingContainerRef,
           gdpProfile: this.#gdpProfile,
           isEligibleToCreateProfile: this.#isEligibleToCreateGdpProfile,
+          onSignUpSuccess: this.#fetchGdpDetails.bind(this),
         })}
       </fieldset>
     `, this.#shadow, {host: this});
@@ -295,8 +296,10 @@ function renderGdpSectionIfNeeded({
   receiveBadgesSettingContainerRef,
   gdpProfile,
   isEligibleToCreateProfile,
+  onSignUpSuccess,
 }: {
   receiveBadgesSettingContainerRef: Lit.Directives.Ref<HTMLElement>,
+  onSignUpSuccess: () => void,
   receiveBadgesSetting?: Common.Settings.Setting<boolean>,
   gdpProfile?: Host.GdpClient.Profile,
   isEligibleToCreateProfile?: boolean,
@@ -345,7 +348,9 @@ function renderGdpSectionIfNeeded({
         <div class="gdp-profile-sign-up-content">
           ${renderBrand()}
           <devtools-button
-            @click=${() => PanelCommon.GdpSignUpDialog.show()}
+            @click=${() => PanelCommon.GdpSignUpDialog.show({
+              onSuccess: onSignUpSuccess
+            })}
             .jslogContext=${'gdp.sign-up-dialog-open'}
             .variant=${Buttons.Button.Variant.OUTLINED}>
               ${i18nString(UIStrings.signUp)}

@@ -193,10 +193,12 @@ export class GdpSignUpDialog extends UI.Widget.VBox {
   #dialog: UI.Dialog.Dialog;
   #keepMeUpdated = false;
   #isSigningUp = false;
+  #onSuccess?: () => void;
 
-  constructor(options: {dialog: UI.Dialog.Dialog}, view?: View) {
+  constructor(options: {dialog: UI.Dialog.Dialog, onSuccess?: () => void}, view?: View) {
     super();
     this.#dialog = options.dialog;
+    this.#onSuccess = options.onSuccess;
     this.#view = view ?? DEFAULT_VIEW;
     this.requestUpdate();
   }
@@ -215,6 +217,7 @@ export class GdpSignUpDialog extends UI.Widget.VBox {
       Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges').set(true);
       await Badges.UserBadges.instance().initialize();
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.GDP_SIGN_UP_COMPLETE);
+      this.#onSuccess?.();
       this.#dialog.hide();
     } else {
       Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.signUpFailed)}, this.#dialog.contentElement);
@@ -240,14 +243,14 @@ export class GdpSignUpDialog extends UI.Widget.VBox {
     this.#view(viewInput, undefined, this.contentElement);
   }
 
-  static show(): void {
+  static show({onSuccess}: {onSuccess?: () => void} = {}): void {
     const dialog = new UI.Dialog.Dialog();
     dialog.setAriaLabel(i18nString(UIStrings.gdpDialogAriaLabel));
     dialog.setMaxContentSize(new Geometry.Size(384, 500));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog.setDimmed(true);
 
-    new GdpSignUpDialog({dialog}).show(dialog.contentElement);
+    new GdpSignUpDialog({dialog, onSuccess}).show(dialog.contentElement);
     dialog.show(undefined, /* stack */ true);
   }
 }

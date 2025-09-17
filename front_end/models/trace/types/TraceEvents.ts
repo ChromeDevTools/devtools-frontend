@@ -208,7 +208,7 @@ export interface RunTask extends Complete {
   name: Name.RUN_TASK;
 }
 export function isRunTask(event: Event): event is RunTask {
-  return event.name === Name.RUN_TASK;
+  return event.name === Name.RUN_TASK && event.ph === Phase.COMPLETE;
 }
 
 export interface FireIdleCallback extends Complete {
@@ -2073,7 +2073,7 @@ export function isEnd(event: Event): event is End {
 }
 
 export function isDispatch(event: Event): event is Dispatch {
-  return event.name === 'EventDispatch';
+  return event.name === 'EventDispatch' && event.ph === Phase.COMPLETE;
 }
 
 export function isInstant(event: Event): event is Instant {
@@ -2085,7 +2085,7 @@ export function isRendererEvent(event: Event): event is RendererEvent {
 }
 
 export function isFireIdleCallback(event: Event): event is FireIdleCallback {
-  return event.name === 'FireIdleCallback';
+  return event.name === 'FireIdleCallback' && event.ph === Phase.COMPLETE;
 }
 
 export function isSchedulePostMessage(event: Event): event is SchedulePostMessage {
@@ -2093,7 +2093,7 @@ export function isSchedulePostMessage(event: Event): event is SchedulePostMessag
 }
 
 export function isHandlePostMessage(event: Event): event is HandlePostMessage {
-  return event.name === Name.HANDLE_POST_MESSAGE;
+  return event.name === Name.HANDLE_POST_MESSAGE && event.ph === Phase.COMPLETE;
 }
 
 export function isUpdateCounters(event: Event): event is UpdateCounters {
@@ -2214,7 +2214,7 @@ export function isProfile(event: Event): event is Profile {
 }
 
 export function isSyntheticCpuProfile(event: Event): event is SyntheticCpuProfile {
-  return event.name === Name.CPU_PROFILE;
+  return event.name === Name.CPU_PROFILE && event.ph === Phase.COMPLETE;
 }
 
 export function isProfileChunk(event: Event): event is ProfileChunk {
@@ -2309,7 +2309,7 @@ export interface DidCommitSameDocumentNavigation extends Complete {
 }
 
 export function isDidCommitSameDocumentNavigation(event: Event): event is DidCommitSameDocumentNavigation {
-  return event.name === 'RenderFrameHostImpl::DidCommitSameDocumentNavigation';
+  return event.name === 'RenderFrameHostImpl::DidCommitSameDocumentNavigation' && event.ph === Phase.COMPLETE;
 }
 
 export function isMainFrameViewport(
@@ -2401,7 +2401,7 @@ export function isProfileCall(event: Event): event is SyntheticProfileCall {
   return 'callFrame' in event;
 }
 
-export interface Paint extends Complete {
+export interface Paint extends Event {
   name: Name.PAINT;
   args: Args&{
     data: ArgsData & {
@@ -2445,7 +2445,7 @@ export interface PaintImage extends Complete {
   };
 }
 export function isPaintImage(event: Event): event is PaintImage {
-  return event.name === Name.PAINT_IMAGE;
+  return event.name === Name.PAINT_IMAGE && event.ph === Phase.COMPLETE;
 }
 
 export interface ScrollLayer extends Complete {
@@ -2458,7 +2458,7 @@ export interface ScrollLayer extends Complete {
   };
 }
 export function isScrollLayer(event: Event): event is ScrollLayer {
-  return event.name === Name.SCROLL_LAYER;
+  return event.name === Name.SCROLL_LAYER && event.ph === Phase.COMPLETE;
 }
 
 export interface SetLayerTreeId extends Instant {
@@ -2473,7 +2473,7 @@ export interface SetLayerTreeId extends Instant {
 export function isSetLayerId(event: Event): event is SetLayerTreeId {
   return event.name === Name.SET_LAYER_TREE_ID;
 }
-export interface UpdateLayer extends Complete {
+export interface UpdateLayer extends Event {
   name: Name.UPDATE_LAYER;
   args: Args&{
     layerId: number,
@@ -2572,7 +2572,7 @@ export interface FireAnimationFrame extends Complete {
 }
 
 export function isFireAnimationFrame(event: Event): event is FireAnimationFrame {
-  return event.name === Name.FIRE_ANIMATION_FRAME;
+  return event.name === Name.FIRE_ANIMATION_FRAME && event.ph === Phase.COMPLETE;
 }
 
 export interface RequestAnimationFrame extends Instant {
@@ -2612,7 +2612,7 @@ export interface TimerFire extends Complete {
   };
 }
 export function isTimerFire(event: Event): event is TimerFire {
-  return event.name === Name.TIMER_FIRE;
+  return event.name === Name.TIMER_FIRE && event.ph === Phase.COMPLETE;
 }
 
 export interface RequestIdleCallback extends Instant {
@@ -2774,7 +2774,7 @@ export interface V8Compile extends Complete {
   };
 }
 export function isV8Compile(event: Event): event is V8Compile {
-  return event.name === Name.COMPILE;
+  return event.name === Name.COMPILE && event.ph === Phase.COMPLETE;
 }
 
 export interface FunctionCall extends Complete {
@@ -2786,7 +2786,7 @@ export interface FunctionCall extends Complete {
   };
 }
 export function isFunctionCall(event: Event): event is FunctionCall {
-  return event.name === Name.FUNCTION_CALL;
+  return event.name === Name.FUNCTION_CALL && event.ph === Phase.COMPLETE;
 }
 
 export interface SchedulePostTaskCallback extends Instant {
@@ -2817,7 +2817,7 @@ export interface RunPostTaskCallback extends Complete {
   };
 }
 export function isRunPostTaskCallback(event: Event): event is RunPostTaskCallback {
-  return event.name === Name.RUN_POST_TASK_CALLBACK;
+  return event.name === Name.RUN_POST_TASK_CALLBACK && event.ph === Phase.COMPLETE;
 }
 
 export interface AbortPostTaskCallback extends Complete {
@@ -2831,7 +2831,7 @@ export interface AbortPostTaskCallback extends Complete {
   };
 }
 export function isAbortPostTaskCallback(event: Event): event is RunPostTaskCallback {
-  return event.name === Name.ABORT_POST_TASK_CALLBACK;
+  return event.name === Name.ABORT_POST_TASK_CALLBACK && event.ph === Phase.COMPLETE;
 }
 
 /**
@@ -2895,7 +2895,7 @@ export interface ParseAuthorStyleSheet extends Complete {
 }
 
 export function isParseAuthorStyleSheetEvent(event: Event): event is ParseAuthorStyleSheet {
-  return event.name === Name.PARSE_AUTHOR_STYLE_SHEET;
+  return event.name === Name.PARSE_AUTHOR_STYLE_SHEET && event.ph === Phase.COMPLETE;
 }
 
 /**

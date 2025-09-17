@@ -17,7 +17,7 @@ describeWithEnvironment('AIQueries', () => {
     const tasks = AIQueries.longestTasks(firstNav.args.data?.navigationId, insightSet.bounds, parsedTrace);
     assert.isOk(tasks);
 
-    const expected = [33, 21, 16];
+    const expected = [39, 33, 21];
     assert.deepEqual(tasks.map(task => Math.round(task.rootNode.totalTime)), expected);
   });
 });

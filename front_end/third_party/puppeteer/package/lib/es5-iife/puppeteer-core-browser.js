@@ -2965,7 +2965,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.21.0';
+  const packageVersion = '24.22.0';
 
   /**
    * @license
@@ -12806,7 +12806,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _name = /*#__PURE__*/new WeakMap();
   var _role = /*#__PURE__*/new WeakMap();
   var _ignored = /*#__PURE__*/new WeakMap();
-  var _cachedHasFocusableChild = /*#__PURE__*/new WeakMap();
   var _realm2 = /*#__PURE__*/new WeakMap();
   var _AXNode_brand = /*#__PURE__*/new WeakSet();
   class AXNode {
@@ -12822,7 +12821,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _name, void 0);
       _classPrivateFieldInitSpec(this, _role, void 0);
       _classPrivateFieldInitSpec(this, _ignored, void 0);
-      _classPrivateFieldInitSpec(this, _cachedHasFocusableChild, void 0);
       _classPrivateFieldInitSpec(this, _realm2, void 0);
       this.payload = payload;
       _classPrivateFieldSet(_name, this, this.payload.name ? this.payload.name.value : '');
@@ -12880,13 +12878,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         case 'separator':
         case 'progressbar':
           return true;
-      }
-      // Here and below: Android heuristics
-      if (_assertClassBrand(_AXNode_brand, this, _hasFocusableChild).call(this)) {
-        return false;
-      }
-      if (_classPrivateFieldGet(_focusable, this) && _classPrivateFieldGet(_name, this) && _classPrivateFieldGet(_name, this) !== 'Document') {
-        return true;
       }
       if (_classPrivateFieldGet(_role, this) === 'heading' && _classPrivateFieldGet(_name, this)) {
         return true;
@@ -13065,18 +13056,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   function _isTextOnlyObject() {
     const role = _classPrivateFieldGet(_role, this);
     return role === 'LineBreak' || role === 'text' || role === 'InlineTextBox' || role === 'StaticText';
-  }
-  function _hasFocusableChild() {
-    if (_classPrivateFieldGet(_cachedHasFocusableChild, this) === undefined) {
-      _classPrivateFieldSet(_cachedHasFocusableChild, this, false);
-      for (const child of this.children) {
-        if (_classPrivateFieldGet(_focusable, child) || _assertClassBrand(_AXNode_brand, child, _hasFocusableChild).call(child)) {
-          _classPrivateFieldSet(_cachedHasFocusableChild, this, true);
-          break;
-        }
-      }
-    }
-    return _classPrivateFieldGet(_cachedHasFocusableChild, this);
   }
   var __addDisposableResource$3 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
@@ -24804,7 +24783,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   const PUPPETEER_REVISIONS = Object.freeze({
     chrome: '140.0.7339.82',
     'chrome-headless-shell': '140.0.7339.82',
-    firefox: 'stable_142.0.1'
+    firefox: 'stable_143.0'
   });
 
   /**

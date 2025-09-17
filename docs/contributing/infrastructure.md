@@ -147,7 +147,7 @@ To toggle this behaviour you need to edit `buckets/try.star` file ([example](htt
 
 ## Adding a new builder in CQ
 
-To add a new try-builder edit the `buckets/try.start` file to call one of the
+To add a new try-builder edit the [try.start](https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/infra/config/buckets/try.star) file to call one of the
 existing functions that generate builder definitions:
   - `try_builder` used for builder with recipes that do not orchestrate other
     builders:
@@ -168,7 +168,7 @@ builder to `cq_builders.chromium_builders` list.
 
 ## Adding a new builder in CI
 
-To add a new try-builder edit the `buckets/ci.start` file to add a new
+To add a new try-builder edit the [ci.start](https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/infra/config/buckets/ci.star) file to add a new
 `builder_descriptor` to the `builders` of `generate_ci_configs` function call.
 
 In your descriptor decide for the name of builder, the recipe, any other custom
@@ -242,4 +242,24 @@ tests a number of times and at any point the test passes the tests gets
 exonerated. Therefore a test can have a recent history of getting exonerated
 even if it consitently failed 4 times out of 5 runs for some time. Try to
 correlate your failure with a luci-analysys report on this test and skip it
-untill the flakiness gets resolved.
+until the flakiness gets resolved.
+
+## Luci Analysis configuration
+
+[Luci Analysis](go/luci-analysis)  is a tool that helps you understand the
+impact of test failures.
+
+You can find the DevTools configuration in [luci-analysis.cfg](https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/infra/config/luci-analysis.cfg).
+
+We configure the rules for test failure clustering based on _file_/_suite_ and
+_testcase_ names.
+
+A policy named `too-many-failures` is defined in the configuration with
+activation/deactivation thresholds and a bug template to be used when creating
+a new bug. The bugs will be automatically created in Buganizer on the configured
+default component (or on the component specified in a `DIR_METADATA` file on the
+ancestor path of the failing test file).
+
+After updating the `luci-analysis.cfg` file make sure you run `lucicfg main.star` to
+refresh the copy of this file in the `generated/` folder.
+

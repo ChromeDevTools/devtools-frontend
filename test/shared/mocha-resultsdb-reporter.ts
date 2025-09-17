@@ -64,7 +64,7 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
 
   constructor(runner: Mocha.Runner, options?: Mocha.MochaOptions) {
     super(runner, options);
-    // `reportOptions` doesn't work with .mocharc.js (configurig via exports).
+    // `reportOptions` doesn't work with .mocharc.js (configuring via exports).
     // BUT, every module.exports is forwarded onto the options object.
     this.suitePrefix = (options as {suiteName: string} | undefined)?.suiteName;
 

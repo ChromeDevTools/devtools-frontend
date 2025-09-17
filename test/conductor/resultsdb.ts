@@ -27,7 +27,7 @@ export type SanitizedTestId = string&{
 // ResultSink checks the testId against the regex /^[[print]]{1,512}$/:
 // https://source.chromium.org/chromium/infra/infra/+/main:go/src/go.chromium.org/luci/resultdb/pbutil/test_result.go;l=43;drc=7ba090da753a71be5a0f37785558e9102e57fa10
 //
-// This function removees non-printable characters and truncates the string
+// This function removes non-printable characters and truncates the string
 // to the max allowed length.
 export function sanitizedTestId(rawTestId: string): SanitizedTestId {
   return rawTestId.replace(/[^\x20-\x7E]/g, '').substring(0, 512) as SanitizedTestId;

@@ -33,13 +33,15 @@ _EXCLUDED_PATHS = [
     r'^front_end[\\/]core[\\/]sdk[\\/]Resource\.ts$',  # Apple copyright
     r'^front_end[\\/]core[\\/]sdk[\\/]Script\.ts$',  # Apple copyright
     r'^front_end[\\/]third_party[\\/].*',  # 3rd party code
-    r'^front_end[\\/]ui[\\/]legacy[\\/]components[\\/]data_grid[\\/]DataGrid\.ts$',  # Apple copyright
+    # Apple copyright
+    r'^front_end[\\/]ui[\\/]legacy[\\/]components[\\/]data_grid[\\/]DataGrid\.ts$',
     r'^node_modules[\\/].*',  # 3rd party code
     r'^scripts[\\/]build[\\/]build_inspector_overlay\.py$',  # Lines too long
     r'^scripts[\\/]build[\\/]code_generator_frontend\.py$',
     r'^scripts[\\/]deps[\\/]manage_node_deps\.py$',  # Lines too long
     r'front_end[\\/]generated[\\/]ARIAProperties\.ts$'  # Auto-generated files
-    r'front_end[\\/]generated[\\/]InspectorBackendCommands\.ts$'  # Auto-generated files
+    # Auto-generated files
+    r'front_end[\\/]generated[\\/]InspectorBackendCommands\.ts$'
 ]
 
 
@@ -252,13 +254,7 @@ def CheckDevToolsLint(input_api, output_api):
     ]
 
     lint_related_directories = [
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
-                               'eslint'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
-                               'stylelint'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
-                               '@typescript-eslint'),
-        input_api.os_path.join(scripts_directory, 'eslint_rules'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules'),
     ]
 
     lint_config_files = _GetAffectedFiles(
@@ -406,9 +402,38 @@ def CheckNodeModules(input_api, output_api):
         if not Path(file_path).is_file():
             results.extend([
                 output_api.PresubmitError(
-                    "node_modules/%s is missing. Use npm run install-deps to re-create it."
+                    "node_modules/%s is missing. Use `npm run install-deps` to re-create it."
                     % file)
             ])
+
+    node_module_files = _GetAffectedFiles(input_api, [
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules')
+    ], [], [])
+
+    # If the changes are above 100 assume that touching the node_modules
+    # was intentional
+    if len(node_module_files) == 0 or len(node_module_files) > 100:
+        return results
+
+    message = (
+        "Changes to `node_modules` detected.\n" +
+        "This is third party code and should not be modified.\n" +
+        "`node_module` are mainly used in testing infra\n" +
+        "For bug fixes and features usually you should not need this change.\n"
+        + "Was this change intentional?")
+    results.extend([
+        output_api.PresubmitPromptWarning(
+            message,
+            locations=[
+                output_api.PresubmitResultLocation(
+                    # Location expects relative path
+                    # But _GetAffectedFiles returns us absolute path
+                    input_api.os_path.relpath(
+                        node_module_files[0],
+                        input_api.PresubmitLocalPath()), ),
+            ])
+    ])
+
     return results
 
 

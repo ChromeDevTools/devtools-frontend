@@ -10,7 +10,6 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import * as PanelCommon from './common.js';
 
@@ -65,16 +64,6 @@ describeWithEnvironment('BadgeNotification', () => {
     return {view, widget};
   }
 
-  let inspectorViewRootElementStub: HTMLElement;
-  beforeEach(() => {
-    inspectorViewRootElementStub = document.createElement('div');
-    renderElementIntoDOM(inspectorViewRootElementStub, {allowMultipleChildren: true});
-
-    const inspectorViewStub = sinon.createStubInstance(UI.InspectorView.InspectorView);
-    Object.assign(inspectorViewStub, {element: inspectorViewRootElementStub});
-    sinon.stub(UI.InspectorView.InspectorView, 'instance').returns(inspectorViewStub);
-  });
-
   it('invokes action callback on click', async () => {
     const action1Spy = sinon.spy();
     const {view, widget} = await createWidget({actions: [{label: 'Action 1', onClick: action1Spy}]});
@@ -87,11 +76,10 @@ describeWithEnvironment('BadgeNotification', () => {
 
   it('is removed on close click', async () => {
     const {view, widget} = await createWidget();
-    widget.show(inspectorViewRootElementStub);
-    assert.isTrue(inspectorViewRootElementStub.contains(widget.element));
+    assert.isTrue(document.body.contains(widget.element));
 
-    view.input.onCloseClick();
-    assert.isFalse(inspectorViewRootElementStub.contains(widget.element));
+    view.input.onDismissClick();
+    assert.isFalse(document.body.contains(widget.element));
 
     widget.detach();
   });
@@ -168,5 +156,101 @@ describeWithEnvironment('BadgeNotification', () => {
     assertMessageIncludes(input.message, 'Create a profile to claim your badge.');
 
     widget.detach();
+  });
+
+  describe('dismissing', () => {
+    it('a starter badge notification calls `dismissStarterBadge`', async () => {
+      const dismissStarterBadgeSpy = sinon.spy(Badges.UserBadges.instance(), 'dismissStarterBadge');
+      const {view, widget} = await createWidget();
+      const badge = createMockBadge(TestStarterBadge);
+
+      await widget.present(badge);
+      await view.nextInput;
+
+      view.input.onDismissClick();
+
+      sinon.assert.calledOnce(dismissStarterBadgeSpy);
+      assert.isFalse(document.body.contains(widget.element));
+      widget.detach();
+    });
+
+    it('a non-starter badge notification does not call `dismissStarterBadge`', async () => {
+      const dismissStarterBadgeSpy = sinon.spy(Badges.UserBadges.instance(), 'dismissStarterBadge');
+      const {view, widget} = await createWidget();
+      const badge = createMockBadge(TestBadge);
+
+      await widget.present(badge);
+      await view.nextInput;
+
+      view.input.onDismissClick();
+
+      sinon.assert.notCalled(dismissStarterBadgeSpy);
+      assert.isFalse(document.body.contains(widget.element));
+      widget.detach();
+    });
+  });
+
+  describe('auto-closing', () => {
+    let clock: sinon.SinonFakeTimers;
+    beforeEach(() => {
+      clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
+    });
+
+    afterEach(() => {
+      clock.restore();
+    });
+
+    it('a starter badge notification calls `snoozeStarterBadge`', async () => {
+      const snoozeStarterBadgeSpy = sinon.spy(Badges.UserBadges.instance(), 'snoozeStarterBadge');
+      const {widget} = await createWidget();
+      const badge = createMockBadge(TestStarterBadge);
+
+      await widget.present(badge);
+      await clock.tickAsync(30000);
+
+      sinon.assert.calledOnce(snoozeStarterBadgeSpy);
+      assert.isFalse(document.body.contains(widget.element));
+    });
+
+    it('a non-starter badge notification does not call `snoozeStarterBadge`', async () => {
+      const snoozeStarterBadgeSpy = sinon.spy(Badges.UserBadges.instance(), 'snoozeStarterBadge');
+      const {widget} = await createWidget();
+      const badge = createMockBadge(TestBadge);
+
+      await widget.present(badge);
+
+      await clock.tickAsync(30000);
+
+      sinon.assert.notCalled(snoozeStarterBadgeSpy);
+      assert.isFalse(document.body.contains(widget.element));
+    });
+
+    it('is cancelled if the widget is detached manually', async () => {
+      const snoozeStarterBadgeSpy = sinon.spy(Badges.UserBadges.instance(), 'snoozeStarterBadge');
+      const {widget} = await createWidget();
+      const badge = createMockBadge(TestStarterBadge);
+
+      await widget.present(badge);
+      widget.detach();
+      await clock.tickAsync(30000);
+
+      sinon.assert.notCalled(snoozeStarterBadgeSpy);
+    });
+  });
+
+  it('snoozes the badge when "Remind me later" is clicked', async () => {
+    sinon.stub(Host.GdpClient.GdpClient.instance(), 'getProfile').resolves(null);
+    const snoozeStarterBadgeSpy = sinon.spy(Badges.UserBadges.instance(), 'snoozeStarterBadge');
+    const {view, widget} = await createWidget();
+    const badge = createMockBadge(TestStarterBadge);
+
+    await widget.present(badge);
+    const input = await view.nextInput;
+
+    const remindMeLaterAction = input.actions.find(action => action.label === 'Remind me later');
+    remindMeLaterAction!.onClick();
+
+    sinon.assert.calledOnce(snoozeStarterBadgeSpy);
+    assert.isFalse(document.body.contains(widget.element));
   });
 });

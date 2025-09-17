@@ -386,4 +386,158 @@ describeWithEnvironment('UserBadges', () => {
       });
     });
   });
+
+  describe('starter badge snooze and dismiss', () => {
+    function setSnoozeCount(value: number) {
+      Common.Settings.Settings.instance().createSetting('starter-badge-snooze-count', 0).set(value);
+    }
+
+    function setLastSnoozedTimestamp(value: number) {
+      Common.Settings.Settings.instance().createSetting('starter-badge-last-snoozed-timestamp', 0).set(value);
+    }
+
+    function setDismissed(value: boolean) {
+      Common.Settings.Settings.instance().createSetting('starter-badge-dismissed', false).set(value);
+    }
+
+    beforeEach(() => {
+      setSnoozeCount(0);
+      setLastSnoozedTimestamp(0);
+      setDismissed(false);
+    });
+
+    describe('snoozeStarterBadge', () => {
+      it('should increment the snooze count and update the timestamp', () => {
+        const clock = sinon.useFakeTimers({toFake: ['Date']});
+        Badges.UserBadges.instance().snoozeStarterBadge();
+        assert.strictEqual(Common.Settings.Settings.instance().settingForTest('starter-badge-snooze-count').get(), 1);
+        assert.strictEqual(
+            Common.Settings.Settings.instance().settingForTest('starter-badge-last-snoozed-timestamp').get(),
+            Date.now());
+        clock.restore();
+      });
+    });
+
+    describe('dismissStarterBadge', () => {
+      it('should set the dismissed setting to true', () => {
+        Badges.UserBadges.instance().dismissStarterBadge();
+        assert.isTrue(Common.Settings.Settings.instance().settingForTest('starter-badge-dismissed').get());
+      });
+    });
+
+    describe('reconcileBadges', () => {
+      it('should not activate the starter badge if it has been dismissed', async () => {
+        setDismissed(true);
+        mockGdpClientGetProfile(null);
+        mockIsEligibleToCreateProfile(true);
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGetAwardedBadgeNames([]);
+
+        await Badges.UserBadges.instance().initialize();
+
+        assertActiveBadges({
+          shouldActivityBadgeBeActive: false,
+          shouldStarterBadgeBeActive: false,
+        });
+      });
+
+      it('should not activate the starter badge if it was snoozed recently', async () => {
+        const clock = sinon.useFakeTimers({toFake: ['Date']});
+        setLastSnoozedTimestamp(Date.now() - 1000);
+        mockGdpClientGetProfile(null);
+        mockIsEligibleToCreateProfile(true);
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGetAwardedBadgeNames([]);
+
+        await Badges.UserBadges.instance().initialize();
+
+        assertActiveBadges({
+          shouldActivityBadgeBeActive: false,
+          shouldStarterBadgeBeActive: false,
+        });
+        clock.restore();
+      });
+
+      it('should not activate the starter badge if the max snooze count has been reached', async () => {
+        setSnoozeCount(3);
+        mockGdpClientGetProfile(null);
+        mockIsEligibleToCreateProfile(true);
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGetAwardedBadgeNames([]);
+
+        await Badges.UserBadges.instance().initialize();
+
+        assertActiveBadges({
+          shouldActivityBadgeBeActive: false,
+          shouldStarterBadgeBeActive: false,
+        });
+      });
+
+      it('should activate the starter badge if the snooze period has passed', async () => {
+        const clock = sinon.useFakeTimers({toFake: ['Date']});
+        setLastSnoozedTimestamp(Date.now() - 2 * 24 * 60 * 60 * 1000);
+        mockGdpClientGetProfile(null);
+        mockIsEligibleToCreateProfile(true);
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGetAwardedBadgeNames([]);
+
+        await Badges.UserBadges.instance().initialize();
+
+        assertActiveBadges({
+          shouldActivityBadgeBeActive: false,
+          shouldStarterBadgeBeActive: true,
+        });
+        clock.restore();
+      });
+    });
+
+    describe('onTriggerBadge', () => {
+      it('should not award the starter badge if it has been dismissed', async () => {
+        setDismissed(true);
+        setUpEnvironmentForActivatedBadges();
+        const createAwardStub = stubGdpClientCreateAward(null);
+        const badgeTriggeredSpy = sinon.spy();
+        await Badges.UserBadges.instance().initialize();
+        Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, badgeTriggeredSpy);
+
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        sinon.assert.notCalled(createAwardStub);
+        sinon.assert.notCalled(badgeTriggeredSpy);
+      });
+
+      it('should not award the starter badge if it was snoozed recently', async () => {
+        const clock = sinon.useFakeTimers({toFake: ['Date']});
+        setLastSnoozedTimestamp(Date.now() - 1000);
+        setUpEnvironmentForActivatedBadges();
+        const createAwardStub = stubGdpClientCreateAward(null);
+        const badgeTriggeredSpy = sinon.spy();
+        await Badges.UserBadges.instance().initialize();
+        Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, badgeTriggeredSpy);
+
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        sinon.assert.notCalled(createAwardStub);
+        sinon.assert.notCalled(badgeTriggeredSpy);
+        clock.restore();
+      });
+
+      it('should award the starter badge if the snooze period has passed', async () => {
+        const clock = sinon.useFakeTimers({toFake: ['Date']});
+        setLastSnoozedTimestamp(Date.now() - 2 * 24 * 60 * 60 * 1000);
+        setUpEnvironmentForActivatedBadges();
+        const createAwardStub = stubGdpClientCreateAward('test/test-badge');
+        await Badges.UserBadges.instance().initialize();
+        const badgeTriggeredPromise = Badges.UserBadges.instance().once(Badges.Events.BADGE_TRIGGERED);
+
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
+        await badgeTriggeredPromise;
+
+        sinon.assert.calledOnce(createAwardStub);
+        clock.restore();
+      });
+    });
+  });
 });

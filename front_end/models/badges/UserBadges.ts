@@ -22,12 +22,19 @@ export interface EventTypes {
   [Events.BADGE_TRIGGERED]: Badge;
 }
 
+const SNOOZE_TIME_MS = 24 * 60 * 60 * 1000;  // 24 hours
+const MAX_SNOOZE_COUNT = 3;
+
 let userBadgesInstance: UserBadges|undefined = undefined;
 export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #badgeActionEventTarget = new Common.ObjectWrapper.ObjectWrapper<BadgeActionEvents>();
 
   #receiveBadgesSetting: Common.Settings.Setting<Boolean>;
   #allBadges: Badge[];
+
+  #starterBadgeSnoozeCount: Common.Settings.Setting<number>;
+  #starterBadgeLastSnoozedTimestamp: Common.Settings.Setting<number>;
+  #starterBadgeDismissed: Common.Settings.Setting<boolean>;
 
   static readonly BADGE_REGISTRY: BadgeClass[] = [
     StarterBadge,
@@ -42,6 +49,13 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
 
     this.#receiveBadgesSetting = Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges');
     this.#receiveBadgesSetting.addChangeListener(this.#reconcileBadges, this);
+
+    this.#starterBadgeSnoozeCount = Common.Settings.Settings.instance().createSetting(
+        'starter-badge-snooze-count', 0, Common.Settings.SettingStorageType.SYNCED);
+    this.#starterBadgeLastSnoozedTimestamp = Common.Settings.Settings.instance().createSetting(
+        'starter-badge-last-snoozed-timestamp', 0, Common.Settings.SettingStorageType.SYNCED);
+    this.#starterBadgeDismissed = Common.Settings.Settings.instance().createSetting(
+        'starter-badge-dismissed', false, Common.Settings.SettingStorageType.SYNCED);
 
     this.#allBadges = UserBadges.BADGE_REGISTRY.map(badgeCtor => new badgeCtor({
                                                       onTriggerBadge: this.#onTriggerBadge.bind(this),
@@ -58,6 +72,15 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
 
   async initialize(): Promise<void> {
     return await this.#reconcileBadges();
+  }
+
+  snoozeStarterBadge(): void {
+    this.#starterBadgeSnoozeCount.set(this.#starterBadgeSnoozeCount.get() + 1);
+    this.#starterBadgeLastSnoozedTimestamp.set(Date.now());
+  }
+
+  dismissStarterBadge(): void {
+    this.#starterBadgeDismissed.set(true);
   }
 
   recordAction(action: BadgeAction): void {
@@ -79,7 +102,8 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       const gdpProfile = await Host.GdpClient.GdpClient.instance().getProfile();
       const receiveBadgesSettingEnabled = Boolean(this.#receiveBadgesSetting.get());
       // If there is a GDP profile and the user has enabled receiving badges, we award the starter badge as well.
-      if (gdpProfile && receiveBadgesSettingEnabled) {
+      if (gdpProfile && receiveBadgesSettingEnabled && !this.#isStarterBadgeDismissed() &&
+          !this.#isStarterBadgeSnoozed()) {
         shouldAwardBadge = true;
       }
     }
@@ -101,7 +125,17 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     });
   }
 
-  // TODO(ergunsh): Implement starter badge dismissal, snooze count & timestamp checks.
+  #isStarterBadgeDismissed(): boolean {
+    return this.#starterBadgeDismissed.get();
+  }
+
+  #isStarterBadgeSnoozed(): boolean {
+    const snoozeCount = this.#starterBadgeSnoozeCount.get();
+    const lastSnoozed = this.#starterBadgeLastSnoozedTimestamp.get();
+    const snoozedRecently = (Date.now() - lastSnoozed) < SNOOZE_TIME_MS;
+    return snoozeCount >= MAX_SNOOZE_COUNT || snoozedRecently;
+  }
+
   async #reconcileBadges(): Promise<void> {
     const syncInfo = await new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
         resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
@@ -148,7 +182,8 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
         continue;
       }
 
-      const shouldActivateStarterBadge = badge.isStarterBadge && isEligibleToCreateProfile;
+      const shouldActivateStarterBadge = badge.isStarterBadge && isEligibleToCreateProfile &&
+          !this.#isStarterBadgeDismissed() && !this.#isStarterBadgeSnoozed();
       const shouldActivateActivityBasedBadge =
           !badge.isStarterBadge && Boolean(gdpProfile) && receiveBadgesSettingEnabled;
       if (shouldActivateStarterBadge || shouldActivateActivityBasedBadge) {

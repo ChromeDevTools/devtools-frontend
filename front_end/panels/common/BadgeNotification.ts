@@ -69,6 +69,8 @@ const lockedString = i18n.i18n.lockedString;
 
 const LEFT_OFFSET = 5;
 const BOTTOM_OFFSET = 5;
+const AUTO_CLOSE_TIME_IN_MS = 30000;
+
 export interface BadgeNotificationAction {
   label: string;
   jslogContext?: string;
@@ -80,10 +82,11 @@ export interface BadgeNotificationProperties {
   message: HTMLElement|string;
   imageUri: string;
   actions: BadgeNotificationAction[];
+  isStarterBadge: boolean;
 }
 
 export interface ViewInput extends BadgeNotificationProperties {
-  onCloseClick: () => void;
+  onDismissClick: () => void;
 }
 
 // clang-format off
@@ -101,7 +104,7 @@ const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement)
 
   const crossButton = html`<devtools-button
         class="dismiss notification-button"
-        @click=${input.onCloseClick}
+        @click=${input.onDismissClick}
         jslog=${VisualLogging.action('badge-notification.dismiss').track({click: true})}
         aria-label=${i18nString(UIStrings.close)}
         .iconName=${'cross'}
@@ -138,9 +141,10 @@ export class BadgeNotification extends UI.Widget.Widget {
   message: HTMLElement|string = '';
   imageUri = '';
   actions: BadgeNotificationAction[] = [];
+  isStarterBadge = false;
 
+  #autoCloseTimeout?: number;
   #view: View;
-
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
@@ -170,12 +174,18 @@ export class BadgeNotification extends UI.Widget.Widget {
     this.message = properties.message;
     this.imageUri = properties.imageUri;
     this.actions = properties.actions;
+    this.isStarterBadge = properties.isStarterBadge;
     this.requestUpdate();
     this.show(document.body);
 
     void this.updateComplete.then(() => {
       this.#positionNotification();
     });
+
+    if (this.#autoCloseTimeout) {
+      window.clearTimeout(this.#autoCloseTimeout);
+    }
+    this.#autoCloseTimeout = window.setTimeout(this.#onAutoClose, AUTO_CLOSE_TIME_IN_MS);
   }
 
   async #presentStarterBadge(badge: Badges.Badge): Promise<void> {
@@ -201,17 +211,21 @@ export class BadgeNotification extends UI.Widget.Widget {
         actions: [
           {
             label: i18nString(UIStrings.remindMeLater),
-            onClick: () => {/* To implement */},
+            onClick: () => {
+              this.detach();
+              Badges.UserBadges.instance().snoozeStarterBadge();
+            },
           },
           {
             label: i18nString(UIStrings.receiveBadges),
             onClick: () => {
-              this.#close();
+              this.detach();
               revealBadgeSettings();
             }
           }
         ],
         imageUri: badge.imageUri,
+        isStarterBadge: true,
       });
       return;
     }
@@ -223,17 +237,21 @@ export class BadgeNotification extends UI.Widget.Widget {
       actions: [
         {
           label: i18nString(UIStrings.remindMeLater),
-          onClick: () => {/* TODO(ergunsh): Implement */},
+          onClick: () => {
+            this.detach();
+            Badges.UserBadges.instance().snoozeStarterBadge();
+          },
         },
         {
           label: i18nString(UIStrings.createProfile),
           onClick: () => {
-            this.#close();
+            this.detach();
             GdpSignUpDialog.GdpSignUpDialog.show();
           }
         }
       ],
       imageUri: badge.imageUri,
+      isStarterBadge: true,
     });
   }
 
@@ -244,7 +262,7 @@ export class BadgeNotification extends UI.Widget.Widget {
         {
           label: i18nString(UIStrings.manageSettings),
           onClick: () => {
-            this.#close();
+            this.detach();
             revealBadgeSettings();
           },
         },
@@ -256,11 +274,28 @@ export class BadgeNotification extends UI.Widget.Widget {
         }
       ],
       imageUri: badge.imageUri,
+      isStarterBadge: badge.isStarterBadge,
     });
   }
 
-  #close = (): void => {
+  override onDetach(): void {
+    window.clearTimeout(this.#autoCloseTimeout);
+  }
+
+  #onDismissClick = (): void => {
     this.detach();
+
+    if (this.isStarterBadge) {
+      Badges.UserBadges.instance().dismissStarterBadge();
+    }
+  };
+
+  #onAutoClose = (): void => {
+    this.detach();
+
+    if (this.isStarterBadge) {
+      Badges.UserBadges.instance().snoozeStarterBadge();
+    }
   };
 
   override wasShown(): void {
@@ -273,7 +308,8 @@ export class BadgeNotification extends UI.Widget.Widget {
       message: this.message,
       imageUri: this.imageUri,
       actions: this.actions,
-      onCloseClick: this.#close,
+      isStarterBadge: this.isStarterBadge,
+      onDismissClick: this.#onDismissClick,
     };
     this.#view(viewInput, undefined, this.contentElement);
   }

@@ -33,44 +33,57 @@ export class ProgressIndicator extends HTMLElement implements Common.Progress.Pr
     // using the 'no-stop-button' attribute on the element.
     if (!this.hasAttribute('no-stop-button')) {
       this.#stopButton = this.#contentElement.createChild('button', 'progress-indicator-shadow-stop-button');
-      this.#stopButton.addEventListener('click', this.cancel.bind(this));
+      this.#stopButton.addEventListener('click', () => {
+        this.canceled = true;
+      });
     }
   }
 
-  done(): void {
-    if (this.#isDone) {
+  set done(done: boolean) {
+    if (this.#isDone === done) {
       return;
     }
-    this.#isDone = true;
-    this.remove();
+    this.#isDone = done;
+    if (done) {
+      this.remove();
+    }
   }
 
-  cancel(): void {
-    this.#isCanceled = true;
+  get done(): boolean {
+    return this.#isDone;
   }
 
-  isCanceled(): boolean {
+  set canceled(value: boolean) {
+    this.#isCanceled = value;
+  }
+
+  get canceled(): boolean {
     return this.#isCanceled;
   }
 
-  setTitle(title: string): void {
+  override set title(title: string) {
     this.#labelElement.textContent = title;
   }
 
-  setTotalWork(totalWork: number): void {
+  override get title(): string {
+    return this.#labelElement.textContent ?? '';
+  }
+
+  set totalWork(totalWork: number) {
     this.#progressElement.max = totalWork;
   }
 
-  setWorked(worked: number, title?: string): void {
-    this.#worked = worked;
-    this.#progressElement.value = worked;
-    if (title) {
-      this.setTitle(title);
-    }
+  get totalWork(): number {
+    return this.#progressElement.max;
   }
 
-  incrementWorked(worked?: number): void {
-    this.setWorked(this.#worked + (worked || 1));
+  set worked(worked: number) {
+    this.#worked = worked;
+    this.#progressElement.value = worked;
+  }
+
+  get worked(): number {
+    return this.#worked;
   }
 }
 

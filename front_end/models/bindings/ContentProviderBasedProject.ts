@@ -126,9 +126,9 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
       progress: Common.Progress.Progress):
       Promise<Map<Workspace.UISourceCode.UISourceCode, TextUtils.ContentProvider.SearchMatch[]|null>> {
     const result = new Map();
-    progress.setTotalWork(filesMatchingFileQuery.length);
+    progress.totalWork = filesMatchingFileQuery.length;
     await Promise.all(filesMatchingFileQuery.map(searchInContent.bind(this)));
-    progress.done();
+    progress.done = true;
     return result;
 
     async function searchInContent(
@@ -148,12 +148,14 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
       if (allMatchesFound) {
         result.set(uiSourceCode, matches);
       }
-      progress.incrementWorked(1);
+      ++progress.worked;
     }
   }
 
   override indexContent(progress: Common.Progress.Progress): void {
-    queueMicrotask(progress.done.bind(progress));
+    queueMicrotask(() => {
+      progress.done = true;
+    });
   }
 
   addUISourceCodeWithProvider(

@@ -526,11 +526,11 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   protected async setContentDataOrError(contentDataPromise: Promise<TextUtils.ContentData.ContentDataOrError>):
       Promise<void> {
     const progressIndicator = document.createElement('devtools-progress');
-    progressIndicator.setTitle(i18nString(UIStrings.loading));
-    progressIndicator.setTotalWork(100);
+    progressIndicator.title = i18nString(UIStrings.loading);
+    progressIndicator.totalWork = 100;
     this.progressToolbarItem.element.appendChild(progressIndicator);
 
-    progressIndicator.setWorked(1);
+    progressIndicator.worked = 1;
     const contentData = await contentDataPromise;
 
     let error: string|undefined;
@@ -557,8 +557,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.wasmDisassemblyInternal = null;
     }
 
-    progressIndicator.setWorked(100);
-    progressIndicator.done();
+    progressIndicator.worked = 100;
+    progressIndicator.done = true;
 
     if (this.rawContent === content && error === undefined) {
       return;

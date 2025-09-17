@@ -1216,8 +1216,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     const stream = new Bindings.FileUtils.FileOutputStream();
 
     const progressIndicator = document.createElement('devtools-progress');
-    progressIndicator.setTitle(i18nString(UIStrings.writingFile));
-    progressIndicator.setTotalWork(this.itemCount());
+    progressIndicator.title = i18nString(UIStrings.writingFile);
+    progressIndicator.totalWork = this.itemCount();
 
     const chunkSize = 350;
 
@@ -1227,7 +1227,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.progressToolbarItem.element.appendChild(progressIndicator);
 
     let messageIndex = 0;
-    while (messageIndex < this.itemCount() && !progressIndicator.isCanceled()) {
+    while (messageIndex < this.itemCount() && !progressIndicator.canceled) {
       const messageContents = [];
       let i;
       for (i = 0; i < chunkSize && i + messageIndex < this.itemCount(); ++i) {
@@ -1236,11 +1236,11 @@ export class ConsoleView extends UI.Widget.VBox implements
       }
       messageIndex += i;
       await stream.write(messageContents.join('\n') + '\n');
-      progressIndicator.setWorked(messageIndex);
+      progressIndicator.worked = messageIndex;
     }
 
     void stream.close();
-    progressIndicator.done();
+    progressIndicator.done = true;
   }
 
   private async copyConsole(): Promise<void> {
@@ -1519,8 +1519,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     }
 
     this.searchProgressIndicator = document.createElement('devtools-progress');
-    this.searchProgressIndicator.setTitle(i18nString(UIStrings.searching));
-    this.searchProgressIndicator.setTotalWork(this.visibleViewMessages.length);
+    this.searchProgressIndicator.title = i18nString(UIStrings.searching);
+    this.searchProgressIndicator.totalWork = this.visibleViewMessages.length;
     this.progressToolbarItem.element.appendChild(this.searchProgressIndicator);
 
     this.#search(0);
@@ -1533,7 +1533,7 @@ export class ConsoleView extends UI.Widget.VBox implements
       this.#searchTimeoutId = undefined;
     }
     if (this.searchProgressIndicator) {
-      this.searchProgressIndicator.done();
+      this.searchProgressIndicator.done = true;
       delete this.searchProgressIndicator;
     }
   }
@@ -1544,7 +1544,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   #search(index: number): void {
     this.#searchTimeoutId = undefined;
-    if (this.searchProgressIndicator?.isCanceled()) {
+    if (this.searchProgressIndicator?.canceled) {
       this.cleanupAfterSearch();
       return;
     }
@@ -1568,7 +1568,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     this.#searchTimeoutId = window.setTimeout(this.#search.bind(this, index), 100);
     if (this.searchProgressIndicator) {
-      this.searchProgressIndicator.setWorked(index);
+      this.searchProgressIndicator.worked = index;
     }
   }
 

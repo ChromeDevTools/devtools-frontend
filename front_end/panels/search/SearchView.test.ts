@@ -35,7 +35,9 @@ class FakeSearchScope implements Search.SearchScope.SearchScope {
   }
 
   performIndexing(progress: Common.Progress.Progress): void {
-    setTimeout(() => progress.done(), 0);  // Allow microtasks to run.
+    setTimeout(() => {
+      progress.done = true;
+    }, 0);  // Allow microtasks to run.
   }
 
   stopSearch(): void {

@@ -276,14 +276,14 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     if (!queriesToRun.length) {
       queriesToRun.push('');
     }
-    progress.setTotalWork(queriesToRun.length);
+    progress.totalWork = queriesToRun.length;
 
     for (const query of queriesToRun) {
       const files = await this.#fileSystem.searchInPath(searchConfig.isRegex() ? '' : query, progress);
       files.sort(Platform.StringUtilities.naturalOrderComparator);
       workingFileSet = Platform.ArrayUtilities.intersectOrdered(
           workingFileSet, files, Platform.StringUtilities.naturalOrderComparator);
-      progress.incrementWorked(1);
+      ++progress.worked;
     }
 
     const result = new Map();
@@ -294,7 +294,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
       }
     }
 
-    progress.done();
+    progress.done = true;
     return result;
   }
 

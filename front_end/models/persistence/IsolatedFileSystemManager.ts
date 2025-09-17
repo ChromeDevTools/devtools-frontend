@@ -287,7 +287,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     if (!progress) {
       return;
     }
-    progress.setTotalWork(totalWork);
+    progress.totalWork = totalWork;
   }
 
   private onIndexingWorked(
@@ -297,8 +297,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     if (!progress) {
       return;
     }
-    progress.incrementWorked(worked);
-    if (progress.isCanceled()) {
+    progress.worked += worked;
+    if (progress.canceled) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.stopIndexing(requestId);
       this.onIndexingDone(event);
     }
@@ -311,7 +311,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     if (!progress) {
       return;
     }
-    progress.done();
+    progress.done = true;
     this.progresses.delete(requestId);
   }
 

@@ -148,7 +148,7 @@ export class PlatformFileSystem extends Common.ObjectWrapper.ObjectWrapper<Event
 
   indexContent(progress: Common.Progress.Progress): void {
     queueMicrotask(() => {
-      progress.done();
+      progress.done = true;
     });
   }
 

@@ -106,13 +106,13 @@ describe('ContentProviderBasedProject', () => {
         ],
       });
       const searchConfig = new Workspace.SearchConfig.SearchConfig('foo', false, false);
-      const progress = sinon.spy(new Common.Progress.Progress());
+      const progress = new Common.Progress.Progress();
 
       await project.findFilesMatchingSearchRequest(searchConfig, uiSourceCodes, progress);
 
-      sinon.assert.calledOnceWithExactly(progress.setTotalWork, 2);
-      sinon.assert.calledTwice(progress.incrementWorked);
-      sinon.assert.calledOnce(progress.done);
+      assert.strictEqual(progress.totalWork, 2);
+      assert.strictEqual(progress.worked, 2);
+      assert.isTrue(progress.done);
     });
   });
 });

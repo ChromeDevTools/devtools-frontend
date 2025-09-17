@@ -184,12 +184,12 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
 
     const files = this.searchResultCandidates;
     if (!files.length) {
-      progress.done();
+      progress.done = true;
       callback();
       return;
     }
 
-    progress.setTotalWork(files.length);
+    progress.totalWork = files.length;
 
     let fileIndex = 0;
     const maxFileContentRequests = 20;
@@ -213,7 +213,7 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
     function scheduleSearchInNextFileOrFinish(this: SourcesSearchScope): void {
       if (fileIndex >= files.length) {
         if (!callbacksLeft) {
-          progress.done();
+          progress.done = true;
           callback();
           return;
         }
@@ -228,7 +228,7 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
     function contentLoaded(
         this: SourcesSearchScope, uiSourceCode: Workspace.UISourceCode.UISourceCode,
         content: TextUtils.Text.Text): void {
-      progress.incrementWorked(1);
+      ++progress.worked;
       let matches: TextUtils.ContentProvider.SearchMatch[] = [];
       const searchConfig = (this.searchConfig as Workspace.SearchConfig.SearchConfig);
       const queries = searchConfig.queries();

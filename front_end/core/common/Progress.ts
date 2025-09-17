@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class Progress {
-  setTotalWork(_totalWork: number): void {
-  }
-  setTitle(_title: string): void {
-  }
-  setWorked(_worked: number, _title?: string): void {
-  }
-  incrementWorked(_worked?: number): void {
-  }
-  done(): void {
-  }
-  isCanceled(): boolean {
-    return false;
-  }
+export interface Progress {
+  totalWork: number;
+  worked: number;
+  title: string|undefined;
+  canceled: boolean;
+  done: boolean;
+}
+
+export class Progress implements Progress {
+  totalWork = 0;
+  worked = 0;
+  title: string|undefined = undefined;
+  canceled = false;
+  done = false;
 }
 
 export class CompositeProgress {
@@ -27,15 +27,15 @@ export class CompositeProgress {
     this.parent = parent;
     this.#children = [];
     this.#childrenDone = 0;
-    this.parent.setTotalWork(1);
-    this.parent.setWorked(0);
+    this.parent.totalWork = 1;
+    this.parent.worked = 0;
   }
 
   childDone(): void {
     if (++this.#childrenDone !== this.#children.length) {
       return;
     }
-    this.parent.done();
+    this.parent.done = true;
   }
 
   createSubProgress(weight?: number): SubProgress {
@@ -50,12 +50,12 @@ export class CompositeProgress {
 
     for (let i = 0; i < this.#children.length; ++i) {
       const child = this.#children[i];
-      if (child.getTotalWork()) {
-        done += child.getWeight() * child.getWorked() / child.getTotalWork();
+      if (child.totalWork) {
+        done += child.weight * child.worked / child.totalWork;
       }
-      totalWeights += child.getWeight();
+      totalWeights += child.weight;
     }
-    this.parent.setWorked(done / totalWeights);
+    this.parent.worked = done / totalWeights;
   }
 }
 
@@ -72,45 +72,41 @@ export class SubProgress implements Progress {
     this.#totalWork = 0;
   }
 
-  isCanceled(): boolean {
-    return this.#composite.parent.isCanceled();
+  get canceled(): boolean {
+    return this.#composite.parent.canceled;
   }
 
-  setTitle(title: string): void {
-    this.#composite.parent.setTitle(title);
+  set title(title: string) {
+    this.#composite.parent.title = title;
   }
 
-  done(): void {
-    this.setWorked(this.#totalWork);
+  set done(done: boolean) {
+    if (!done) {
+      return;
+    }
+    this.worked = this.#totalWork;
     this.#composite.childDone();
   }
 
-  setTotalWork(totalWork: number): void {
+  set totalWork(totalWork: number) {
     this.#totalWork = totalWork;
     this.#composite.update();
   }
 
-  setWorked(worked: number, title?: string): void {
+  set worked(worked: number) {
     this.#worked = worked;
-    if (typeof title !== 'undefined') {
-      this.setTitle(title);
-    }
     this.#composite.update();
   }
 
-  incrementWorked(worked?: number): void {
-    this.setWorked(this.#worked + (worked || 1));
-  }
-
-  getWeight(): number {
+  get weight(): number {
     return this.#weight;
   }
 
-  getWorked(): number {
+  get worked(): number {
     return this.#worked;
   }
 
-  getTotalWork(): number {
+  get totalWork(): number {
     return this.#totalWork;
   }
 }
@@ -123,40 +119,38 @@ export class ProgressProxy implements Progress {
     this.#doneCallback = doneCallback;
   }
 
-  isCanceled(): boolean {
-    return this.#delegate ? this.#delegate.isCanceled() : false;
+  get canceled(): boolean {
+    return this.#delegate ? this.#delegate.canceled : false;
   }
 
-  setTitle(title: string): void {
+  set title(title: string) {
     if (this.#delegate) {
-      this.#delegate.setTitle(title);
+      this.#delegate.title = title;
     }
   }
 
-  done(): void {
+  set done(done: boolean) {
     if (this.#delegate) {
-      this.#delegate.done();
+      this.#delegate.done = done;
     }
-    if (this.#doneCallback) {
+    if (done && this.#doneCallback) {
       this.#doneCallback();
     }
   }
 
-  setTotalWork(totalWork: number): void {
+  set totalWork(totalWork: number) {
     if (this.#delegate) {
-      this.#delegate.setTotalWork(totalWork);
+      this.#delegate.totalWork = totalWork;
     }
   }
 
-  setWorked(worked: number, title?: string): void {
+  set worked(worked: number) {
     if (this.#delegate) {
-      this.#delegate.setWorked(worked, title);
+      this.#delegate.worked = worked;
     }
   }
 
-  incrementWorked(worked?: number): void {
-    if (this.#delegate) {
-      this.#delegate.incrementWorked(worked);
-    }
+  get worked(): number {
+    return this.#delegate ? this.#delegate.worked : 0;
   }
 }

@@ -379,8 +379,8 @@ export class SearchView extends UI.Widget.VBox {
       return;
     }
 
-    const finished = !this.#progressIndicator.isCanceled();
-    this.#progressIndicator.done();
+    const finished = !this.#progressIndicator.canceled;
+    this.#progressIndicator.done = true;
     this.#progressIndicator = null;
     this.#isIndexing = false;
     this.#searchMessage = finished ? '' : i18nString(UIStrings.indexingInterrupted);
@@ -399,7 +399,7 @@ export class SearchView extends UI.Widget.VBox {
   #startIndexing(): void {
     this.#isIndexing = true;
     if (this.#progressIndicator) {
-      this.#progressIndicator.done();
+      this.#progressIndicator.done = true;
     }
     this.#progressIndicator = document.createElement('devtools-progress');
     this.#searchMessage = i18nString(UIStrings.indexing);
@@ -423,7 +423,7 @@ export class SearchView extends UI.Widget.VBox {
     if (searchId !== this.#searchId || !this.#progressIndicator) {
       return;
     }
-    if (this.#progressIndicator?.isCanceled()) {
+    if (this.#progressIndicator?.canceled) {
       this.#onIndexingFinished();
       return;
     }
@@ -464,7 +464,7 @@ export class SearchView extends UI.Widget.VBox {
   #startSearch(searchConfig: Workspace.SearchConfig.SearchConfig): void {
     this.#searchConfig = searchConfig;
     if (this.#progressIndicator) {
-      this.#progressIndicator.done();
+      this.#progressIndicator.done = true;
     }
     this.#progressIndicator = document.createElement('devtools-progress');
     this.#searchStarted(this.#progressIndicator);
@@ -486,7 +486,7 @@ export class SearchView extends UI.Widget.VBox {
 
   #stopSearch(): void {
     if (this.#progressIndicator && !this.#isIndexing) {
-      this.#progressIndicator.cancel();
+      this.#progressIndicator.canceled = true;
     }
     if (this.#searchScope) {
       this.#searchScope.stopSearch();

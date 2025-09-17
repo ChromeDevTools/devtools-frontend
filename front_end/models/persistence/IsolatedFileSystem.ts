@@ -517,13 +517,13 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
       function innerCallback(files: Platform.DevToolsPath.RawPathString[]): void {
         resolve(files.map(path => Common.ParsedURL.ParsedURL.rawPathToUrlString(path)));
-        progress.incrementWorked(1);
+        ++progress.worked;
       }
     });
   }
 
   override indexContent(progress: Common.Progress.Progress): void {
-    progress.setTotalWork(1);
+    progress.totalWork = 1;
     const requestId = this.manager.registerProgress(progress);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.indexPath(
         requestId, this.#embedderPath, JSON.stringify(this.excludedEmbedderFolders));

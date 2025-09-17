@@ -3,6 +3,11 @@
 // found in the LICENSE file.
 
 import type * as Protocol from '../../generated/protocol.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {SnapshotTester} from '../../testing/SnapshotTester.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
+import * as Common from '../common/common.js';
+import type {Message} from '../protocol_client/InspectorBackend.js';
 
 import type {
   RehydratingExecutionContext, RehydratingScript, RehydratingTarget, ServerMessage} from './RehydratingObject.js';
@@ -47,6 +52,7 @@ const mockExecutionContext2: RehydratingExecutionContext = {
 const mockScript1: RehydratingScript = {
   scriptId: '1' as Protocol.Runtime.ScriptId,
   isolate: '12345',
+  pid: 12345,
   executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
   startLine: 0,
   startColumn: 0,
@@ -70,6 +76,7 @@ const mockScript1: RehydratingScript = {
 const mockScript2: RehydratingScript = {
   scriptId: '2' as Protocol.Runtime.ScriptId,
   isolate: '12345',
+  pid: 12345,
   executionContextId: 2 as Protocol.Runtime.ExecutionContextId,
   startLine: 0,
   startColumn: 0,
@@ -116,11 +123,11 @@ describe('RehydratingSession', () => {
       this.connection?.postToFrontend(payload);
     }
   }
-
   beforeEach(() => {
     mockRehydratingConnection = new MockRehydratingConnection();
     mockRehydratingSession = new RehydratingSessionForTest(
         sessionId, target, executionContextsForTarget1, scriptsForTarget1, mockRehydratingConnection);
+    mockRehydratingSession.declareSessionAttachedToTarget();
   });
 
   it('send attach to target on construction', async function() {
@@ -192,5 +199,100 @@ describe('RehydratingSession', () => {
     assert.strictEqual(
         (scriptSourceTextMessage.result as Protocol.Debugger.GetScriptSourceResponse).scriptSource,
         mockScript1.sourceText);
+  });
+});
+
+describeWithEnvironment('RehydratingConnection emittance', () => {
+  let snapshotTester: SnapshotTester;
+
+  before(async () => {
+    snapshotTester = new SnapshotTester(import.meta);
+    await snapshotTester.load();
+
+    // Create fake popup opener as rehydrating connection needs it.
+    window.opener = {
+      postMessage: sinon.stub(),
+    };
+  });
+
+  after(async () => {
+    await snapshotTester.finish();
+    delete window.opener;
+  });
+
+  it('emits the expected CDP data', async function() {
+    const contents = await TraceLoader.fixtureContents(this, 'enhanced-paul.json.gz');
+
+    const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
+    const messageLog: Array<string|Message> = [];
+
+    const conn = new SDK.RehydratingConnection.RehydratingConnection((e: string) => {
+      throw new Error(`Connection lost: ${e}`);
+    });
+
+    // Impractical to invoke the real devtools frontend, so we fake the 3 CDP handlers that
+    // `RehydratingSession.handleFrontendMessageAsFakeCDPAgent` cares about
+    let id = 1;
+    const fakeDevToolsFrontend = (arg0: Message|string): void => {
+      const message = ((typeof arg0 === 'string') ? JSON.parse(arg0) : arg0) as Message;
+
+      messageLog.push('RehydratingConnection says:', message);
+
+      if (message.method === 'Target.attachedToTarget') {
+        const attachedParams = message.params as Protocol.Target.AttachedToTargetEvent;
+        const sessionId = attachedParams.sessionId;
+        conn.sendRawMessage({id: id++, sessionId, method: 'Runtime.enable'});
+        conn.sendRawMessage({id: id++, sessionId, method: 'Debugger.enable'});
+      }
+      if (message.method === 'Debugger.scriptParsed') {
+        const scriptParsedParams = message.params as Protocol.Debugger.ScriptParsedEvent;
+        const sessionId = message.sessionId;
+        conn.sendRawMessage(
+            {id: id++, sessionId, method: 'Debugger.getScriptSource', params: {scriptId: scriptParsedParams.scriptId}});
+      }
+    };
+    conn.setOnMessage(fakeDevToolsFrontend);
+
+    const oldSendRawMessage = conn.sendRawMessage;
+    conn.sendRawMessage = (message: Message) => {
+      messageLog.push('fakeDevToolsFrontend says:', message);
+      oldSendRawMessage.call(conn, message);
+    };
+
+    // Kick off the rehydration process
+    conn.onReceiveHostWindowPayload({
+      data: {type: 'REHYDRATING_TRACE_FILE', traceJson: JSON.stringify(contents)},
+    } as MessageEvent);
+
+    // Poll for REHYDRATED state
+    const poll = async () => {
+      const isRehydrated =
+          conn.rehydratingConnectionState === SDK.RehydratingConnection.RehydratingConnectionState.REHYDRATED;
+      // TODO(paulirish): delete once we drop the rAF in RehydratingConnection.sendMessageToFrontend
+      const messageLogPopulated = messageLog.length > 2;
+      if (isRehydrated && messageLogPopulated) {
+        return;
+      }
+      await new Promise<void>(res => setTimeout(res, 100));
+      void poll();
+    };
+    await poll();
+
+    // Elide any script sources in front_end/core/sdk/RehydratingConnection.snapshot.txt
+    function sanitizeLog(m: string|Message): string {
+      if (typeof m === 'object' && m.params?.sourceText) {
+        m.params.sourceText = m.params.sourceText.slice(0, 20) + '…';
+      }
+      // @ts-expect-error
+      if (typeof m === 'object' && m.result?.scriptSource) {
+        // @ts-expect-error
+        m.result.scriptSource = m.result.scriptSource.slice(0, 20) + '…';
+      }
+
+      return typeof m === 'string' ? `\n/* ${m} */` : JSON.stringify(m, null, 2);
+    }
+    const sanitizedLog = messageLog.map(sanitizeLog).join('\n');
+    snapshotTester.assert(this, sanitizedLog);
+    sinon.assert.calledOnce(reveal);
   });
 });

@@ -30,6 +30,7 @@ copy_to_gen("traces") {
     "dpr.json.gz",
     "dupe-js-inline-maps.json.gz",
     "dupe-js.json.gz",
+    "enhanced-paul.json.gz",
     "enhanced-traces.json.gz",
     "example-dot-com.json.gz",
     "extension-tracks-and-marks.json.gz",

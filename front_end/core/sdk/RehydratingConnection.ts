@@ -70,7 +70,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
   sessions = new Map<number, RehydratingSessionBase>();
   #onConnectionLost: (message: Platform.UIString.LocalizedString) => void;
   #rehydratingWindow: Window&typeof globalThis;
-  #onReceiveHostWindowPayloadBound = this.#onReceiveHostWindowPayload.bind(this);
+  #onReceiveHostWindowPayloadBound = this.onReceiveHostWindowPayload.bind(this);
 
   constructor(onConnectionLost: (message: Platform.UIString.LocalizedString) => void) {
     // If we're invoking this class, we're in the rehydrating pop-up window. Rename window for clarity.
@@ -92,7 +92,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
    * This is a callback for rehydrated session to receive payload from host window. Payload includes but not limited to
    * the trace event and all necessary data to power a rehydrated session.
    */
-  #onReceiveHostWindowPayload(event: MessageEvent): void {
+  onReceiveHostWindowPayload(event: MessageEvent): void {
     if (event.data.type === 'REHYDRATING_TRACE_FILE') {
       const traceJson = event.data.traceJson as string;
       let trace;
@@ -144,10 +144,10 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
         },
       });
 
-      // Create new session associated to the target created and send
-      // Target.attachedToTarget to frontend.
       sessionId += 1;
-      this.sessions.set(sessionId, new RehydratingSession(sessionId, target, executionContexts, scripts, this));
+      const session = new RehydratingSession(sessionId, target, executionContexts, scripts, this);
+      this.sessions.set(sessionId, session);
+      session.declareSessionAttachedToTarget();
     }
     await this.#onRehydrated();
     return true;
@@ -250,7 +250,6 @@ export class RehydratingSession extends RehydratingSessionBase {
     this.target = target;
     this.executionContexts = executionContexts;
     this.scripts = scripts;
-    this.sessionAttachToTarget();
   }
 
   override sendMessageToFrontend(payload: ServerMessage, attachSessionId = true): void {
@@ -284,7 +283,7 @@ export class RehydratingSession extends RehydratingSessionBase {
     }
   }
 
-  private sessionAttachToTarget(): void {
+  declareSessionAttachedToTarget(): void {
     this.sendMessageToFrontend(
         {
           method: 'Target.attachedToTarget',

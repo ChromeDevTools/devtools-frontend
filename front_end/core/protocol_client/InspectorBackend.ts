@@ -155,12 +155,14 @@ let connectionFactory: () => Connection;
 export class Connection {
   declare onMessage: ((arg0: Object) => void)|null;
 
+  // on message from browser
   setOnMessage(_onMessage: (arg0: Object|string) => void): void {
   }
 
   setOnDisconnect(_onDisconnect: (arg0: string) => void): void {
   }
 
+  // send raw CDP message to browser
   sendRawMessage(_message: string): void {
   }
 

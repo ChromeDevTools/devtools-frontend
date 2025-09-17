@@ -14,12 +14,6 @@ import * as Types from './types/types.js';
 // processors. Currently there is only one implemented, but you will see
 // references to "processors" plural because it can easily be extended in the future.
 
-export interface ParseConfig {
-  metadata?: Types.File.MetaData;
-  isFreshRecording?: boolean;
-  resolveSourceMap?: Types.Configuration.ParseOptions['resolveSourceMap'];
-}
-
 /**
  * The Model is responsible for parsing arrays of raw trace events and storing the
  * resulting data. It can store multiple traces at once, and can return the data for
@@ -87,10 +81,8 @@ export class Model extends EventTarget {
    * });
    * void this.traceModel.parse(events);
    **/
-  async parse(traceEvents: readonly Types.Events.Event[], config?: ParseConfig): Promise<void> {
+  async parse(traceEvents: readonly Types.Events.Event[], config?: Types.Configuration.ParseOptions): Promise<void> {
     const metadata = config?.metadata || {};
-    const isFreshRecording = config?.isFreshRecording || false;
-    const isCPUProfile = metadata?.dataOrigin === Types.File.DataOrigin.CPU_PROFILE;
     // During parsing, periodically update any listeners on each processors'
     // progress (if they have any updates).
     const onTraceUpdate = (event: Event): void => {
@@ -106,13 +98,7 @@ export class Model extends EventTarget {
     try {
       // Wait for all outstanding promises before finishing the async execution,
       // but perform all tasks in parallel.
-      const parseConfig: Types.Configuration.ParseOptions = {
-        isFreshRecording,
-        isCPUProfile,
-        metadata,
-        resolveSourceMap: config?.resolveSourceMap,
-      };
-      await this.#processor.parse(traceEvents, parseConfig);
+      await this.#processor.parse(traceEvents, config ?? {});
       if (!this.#processor.data) {
         throw new Error('processor did not parse trace');
       }

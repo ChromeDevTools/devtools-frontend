@@ -2653,7 +2653,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   #createSourceMapResolver(isFreshRecording: boolean, metadata: Trace.Types.File.MetaData|null):
-      Trace.TraceModel.ParseConfig['resolveSourceMap'] {
+      Trace.Types.Configuration.ParseOptions['resolveSourceMap'] {
     const debuggerModelForFrameId = new Map<string, SDK.DebuggerModel.DebuggerModel>();
     for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
@@ -2745,6 +2745,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       metadata: metadata ?? undefined,
       isFreshRecording,
       resolveSourceMap: this.#createSourceMapResolver(isFreshRecording, metadata),
+      isCPUProfile: metadata?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE,
     };
 
     if (window.location.href.includes('devtools/bundled') || window.location.search.includes('debugFrontend')) {

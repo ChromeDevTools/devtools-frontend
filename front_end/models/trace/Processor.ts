@@ -152,6 +152,10 @@ export class TraceProcessor extends EventTarget {
       throw new Error(`Trace processor can't start parsing when not idle. Current state: ${this.#status}`);
     }
 
+    if (typeof options.isCPUProfile === 'undefined' && options.metadata) {
+      options.isCPUProfile = options.metadata.dataOrigin === Types.File.DataOrigin.CPU_PROFILE;
+    }
+
     options.logger?.start('total');
     try {
       this.#status = Status.PARSING;

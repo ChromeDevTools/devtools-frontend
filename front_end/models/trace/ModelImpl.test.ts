@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {getFirstOrError, getInsightOrError} from '../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Trace from '../trace/trace.js';
 
@@ -153,5 +154,23 @@ describeWithEnvironment('TraceModel', function() {
     model.overrideModifications(0, modifications);
     // Make sure metadata contains overwritten modifications
     assert.strictEqual(model.parsedTrace(0)?.metadata.modifications, modifications);
+  });
+
+  it('supports a custom time formatter for insights', async function() {
+    const model = Trace.TraceModel.Model.createWithAllHandlers();
+    const file1 = await TraceLoader.rawEvents(this, 'many-redirects.json.gz');
+    await model.parse(file1, {
+      insightTimeFormatters: {
+        milli() {
+          return 'FAKE-MILLI-TIME-FORMATTER';
+        },
+      }
+    });
+    const result = model.parsedTrace();
+    assert.isOk(result);
+    assert.isOk(result.insights);
+    const insight = getInsightOrError(
+        'DocumentLatency', result.insights, getFirstOrError(result.data.Meta.navigationsByNavigationId.values()));
+    assert.include(insight.data?.checklist.noRedirects.label ?? '', 'FAKE-MILLI-TIME-FORMATTER');
   });
 });

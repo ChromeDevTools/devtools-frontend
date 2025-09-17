@@ -262,18 +262,21 @@ describe('The Console Tab', () => {
     await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply text filter matching collapsed group content', async ({devToolsPage, inspectedPage}) => {
-    const filter = '1collapsedGroup';
-    const expectedMessageFilter: MessageCheck = msg => {
-      // The matched content is within a collapsed group, so only the group
-      // title will be shown.
-      if (msg.includes('enterCollapsedGroup collapsedGroup')) {
-        return true;
-      }
-      return false;
-    };
-    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
-  });
+  // TODO(crbug.com/40832335): Reverted due to regression in http://crbug.com/443869419
+  it.skip(
+      '[crbug.com/40832335]: can apply text filter matching collapsed group content',
+      async ({devToolsPage, inspectedPage}) => {
+        const filter = '1collapsedGroup';
+        const expectedMessageFilter: MessageCheck = msg => {
+          // The matched content is within a collapsed group, so only the group
+          // title will be shown.
+          if (msg.includes('enterCollapsedGroup collapsedGroup')) {
+            return true;
+          }
+          return false;
+        };
+        await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
+      });
 
   it('can apply text filter matching non-grouped content', async ({devToolsPage, inspectedPage}) => {
     const filter = 'topGroup';
@@ -310,34 +313,36 @@ describe('The Console Tab', () => {
     await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can filter by selecting console sidebar items', async ({devToolsPage, inspectedPage}) => {
-    const withAnchor = true;
-    const allMessages = Level.All;
+  // TODO(crbug.com/40832335): Reverted due to regression in http://crbug.com/443869419
+  it.skip(
+      '[crbug.com/40832335]: can filter by selecting console sidebar items', async ({devToolsPage, inspectedPage}) => {
+        const withAnchor = true;
+        const allMessages = Level.All;
 
-    const initialMessages: string[] = await getConsoleMessages(
-        'console-filter', withAnchor, () => waitForConsoleMessagesToBeNonEmpty(18, devToolsPage), devToolsPage,
-        inspectedPage);
+        const initialMessages: string[] = await getConsoleMessages(
+            'console-filter', withAnchor, () => waitForConsoleMessagesToBeNonEmpty(18, devToolsPage), devToolsPage,
+            inspectedPage);
 
-    await openConsoleSidebar(devToolsPage);
+        await openConsoleSidebar(devToolsPage);
 
-    // Verify only verbose messages are shown.
-    await selectConsoleSidebarItem(devToolsPage, SidebarItem.Verbose);
-    const verboseMessages = await getCurrentConsoleMessages(
-        withAnchor, allMessages, () => waitForExactConsoleMessageCount(1, devToolsPage), devToolsPage);
-    assert.deepEqual(verboseMessages, ['console-filter.html:45 verbose debug message']);
+        // Verify only verbose messages are shown.
+        await selectConsoleSidebarItem(devToolsPage, SidebarItem.Verbose);
+        const verboseMessages = await getCurrentConsoleMessages(
+            withAnchor, allMessages, () => waitForExactConsoleMessageCount(1, devToolsPage), devToolsPage);
+        assert.deepEqual(verboseMessages, ['console-filter.html:45 verbose debug message']);
 
-    // Verify that groups containing matches are shown.
-    await selectConsoleSidebarItem(devToolsPage, SidebarItem.Errors);
-    const errorMessages = await getCurrentConsoleMessages(
-        withAnchor, allMessages, () => waitForExactConsoleMessageCount(1, devToolsPage), devToolsPage);
-    assert.deepEqual(errorMessages, ['console-filter.html:33 enterCollapsedGroup collapsedGroup']);
+        // Verify that groups containing matches are shown.
+        await selectConsoleSidebarItem(devToolsPage, SidebarItem.Errors);
+        const errorMessages = await getCurrentConsoleMessages(
+            withAnchor, allMessages, () => waitForExactConsoleMessageCount(1, devToolsPage), devToolsPage);
+        assert.deepEqual(errorMessages, ['console-filter.html:33 enterCollapsedGroup collapsedGroup']);
 
-    // Verify that closing the sidebar reverts any filtering.
-    await closeConsoleSidebar(devToolsPage);
-    const messagesAfterClose = await getCurrentConsoleMessages(
-        withAnchor, allMessages, () => waitForConsoleMessagesToBeNonEmpty(18, devToolsPage), devToolsPage);
-    assert.deepEqual(messagesAfterClose, initialMessages);
-  });
+        // Verify that closing the sidebar reverts any filtering.
+        await closeConsoleSidebar(devToolsPage);
+        const messagesAfterClose = await getCurrentConsoleMessages(
+            withAnchor, allMessages, () => waitForConsoleMessagesToBeNonEmpty(18, devToolsPage), devToolsPage);
+        assert.deepEqual(messagesAfterClose, initialMessages);
+      });
 
   it('can exclude CORS error messages', async ({devToolsPage, inspectedPage}) => {
     const CORS_DETAILED_ERROR_PATTERN =

@@ -2,30 +2,9 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "chrome",
-      "request": "launch",
-      "name": "Run unit tests in VS Code debugger",
-      "preLaunchTask": "1-build_Debug",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "test", "front_end"],
-      "port": 7722,
-      "timeout": 30000,
-      "browserLaunchLocation": "workspace",
-      "outputCapture": "std",
-      "trace": true
-    },
-    {
       "type": "node",
       "request": "launch",
-      "name": "Run end-to-end tests in VS Code debugger",
-      "preLaunchTask": "1-build_Debug",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "test", "test/e2e"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Run test",
+      "name": "Run current test file",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "test", "--", "${file}"]
@@ -33,11 +12,14 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug test",
+      "name": "Debug current test file",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "npm",
       "console": "integratedTerminal",
-      "runtimeArgs": ["run", "test", "--", "--debug", "${file}"]
+      "runtimeArgs": ["run", "test", "--", "--debug", "${file}"],
+      "env": {
+        "VSCODE_DEBUGGER": true
+      }
     }
   ]
 }

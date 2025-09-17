@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
@@ -215,6 +214,7 @@ describeWithEnvironment('TimelinePanel', function() {
       includeScriptContent: false,
       includeSourceMaps: false,
       addModifications: false,
+      shouldCompress: false,
     });
 
     sinon.assert.calledOnce(saveSpy);
@@ -311,20 +311,13 @@ describeWithEnvironment('TimelinePanel', function() {
     });
 
     describe('with gz', function() {
-      this.beforeAll(() => {
-        Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ);
-      });
-
-      this.afterAll(() => {
-        Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ);
-      });
-
       it('saves a regular trace file', async function() {
         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
         await timeline.innerSaveToFile(traceEvents, metadata, {
           includeScriptContent: false,
           includeSourceMaps: false,
           addModifications: false,
+          shouldCompress: true,
         });
 
         sinon.assert.calledOnce(saveSpy);
@@ -355,6 +348,7 @@ describeWithEnvironment('TimelinePanel', function() {
           includeScriptContent: false,
           includeSourceMaps: false,
           addModifications: false,
+          shouldCompress: true,
         });
 
         sinon.assert.calledOnce(saveSpy);
@@ -375,6 +369,7 @@ describeWithEnvironment('TimelinePanel', function() {
           includeScriptContent: true,
           includeSourceMaps: false,
           addModifications: false,
+          shouldCompress: true,
         });
 
         sinon.assert.calledOnce(saveSpy);
@@ -394,6 +389,7 @@ describeWithEnvironment('TimelinePanel', function() {
           includeScriptContent: true,
           includeSourceMaps: true,
           addModifications: false,
+          shouldCompress: true,
         });
 
         sinon.assert.calledOnce(saveSpy);
@@ -427,6 +423,7 @@ describeWithEnvironment('TimelinePanel', function() {
           includeScriptContent: false,
           includeSourceMaps: false,
           addModifications: true,
+          shouldCompress: true,
         });
 
         sinon.assert.calledOnce(saveSpy);
@@ -439,6 +436,7 @@ describeWithEnvironment('TimelinePanel', function() {
         assert.strictEqual(file.metadata.modifications.annotations.labelledTimeRanges[0].label, 'Test Annotation');
       });
     });
+
     describe('without gz', function() {
       it('saves a regular trace file', async function() {
         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev.json.gz');
@@ -446,6 +444,7 @@ describeWithEnvironment('TimelinePanel', function() {
           includeScriptContent: false,
           includeSourceMaps: false,
           addModifications: false,
+          shouldCompress: false,
         });
 
         sinon.assert.calledOnce(saveSpy);
@@ -482,6 +481,7 @@ describeWithEnvironment('TimelinePanel', function() {
           includeScriptContent: true,
           includeSourceMaps: false,
           addModifications: false,
+          shouldCompress: false,
         });
 
         sinon.assert.calledOnce(saveSpy);
@@ -524,6 +524,7 @@ describeWithEnvironment('TimelinePanel', function() {
           includeScriptContent: true,
           includeSourceMaps: true,
           addModifications: false,
+          shouldCompress: false,
         });
 
         sinon.assert.calledOnce(saveSpy);

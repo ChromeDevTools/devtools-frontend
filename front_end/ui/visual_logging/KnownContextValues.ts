@@ -3772,6 +3772,7 @@ export const knownContextValues = new Set([
   'timeline.export-trace-options',
   'timeline.export-trace-options.annotations-checkbox',
   'timeline.export-trace-options.script-content-checkbox',
+  'timeline.export-trace-options.should-compress-checkbox',
   'timeline.export-trace-options.source-maps-checkbox',
   'timeline.extension',
   'timeline.field-data.configure',

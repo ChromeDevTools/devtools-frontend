@@ -1373,18 +1373,17 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     void contextMenu.show();
   }
 
-  /**
-   * Saves a trace file to disk.
-   * Pass `config.savingEnhancedTrace === true` to include source maps in the resulting metadata.
-   * Pass `config.addModifications === true` to include user modifications to the trace file, which includes:
-   *      1. Annotations
-   *      2. Filtering / collapsing of the flame chart.
-   *      3. Visual track configuration (re-ordering or hiding tracks).
-   */
   async saveToFile(config: {
     includeScriptContent: boolean,
     includeSourceMaps: boolean,
+    /**
+     * Includes many things:
+     * 1. annotations
+     * 2. filtering / collapsing of the flame chart
+     * 3. visual track configuration (re-ordering or hiding tracks)
+     **/
     addModifications: boolean,
+    shouldCompress: boolean,
   }): Promise<void> {
     if (this.state !== State.IDLE) {
       return;
@@ -1447,7 +1446,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       await this.innerSaveToFile(traceEvents, metadata, {
         includeScriptContent: config.includeScriptContent,
         includeSourceMaps: config.includeSourceMaps,
-        addModifications: config.addModifications
+        addModifications: config.addModifications,
+        shouldCompress: config.shouldCompress,
       });
     } catch (e) {
       // We expect the error to be an Error class, but this deals with any weird case where it's not.
@@ -1467,6 +1467,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     includeScriptContent: boolean,
     includeSourceMaps: boolean,
     addModifications: boolean,
+    shouldCompress: boolean,
   }): Promise<void> {
     // Base the filename on the trace's time of recording
     const isoDate =
@@ -1501,8 +1502,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     let blob = new Blob(blobParts, {type: 'application/json'});
 
-    // TODO: Enable by default and connect with upcoming SaveDialog
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SAVE_AS_GZ)) {
+    if (config.shouldCompress) {
       fileName = `${fileName}.gz` as Platform.DevToolsPath.RawPathString;
       const gzStream = Common.Gzip.compressStream(blob.stream());
       blob = await new Response(gzStream, {
@@ -1535,6 +1535,18 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       a.click();
       URL.revokeObjectURL(url);
     }
+  }
+
+  async handleSaveToFileAction(): Promise<void> {
+    const exportTraceOptionsElement =
+        this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions;
+    const state = exportTraceOptionsElement.state;
+    await this.saveToFile({
+      includeScriptContent: state.includeScriptContent,
+      includeSourceMaps: state.includeSourceMaps,
+      addModifications: state.includeAnnotations,
+      shouldCompress: state.shouldCompress,
+    });
   }
 
   #filterMetadataSourceMaps(metadata: Trace.Types.File.MetaData): Trace.Types.File.MetadataSourceMap[]|undefined {
@@ -2125,8 +2137,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     const exclusiveFilter = this.#exclusiveFilterPerTrace.get(traceIndex) ?? null;
     this.#applyActiveFilters(parsedTrace.data.Meta.traceIsGeneric, exclusiveFilter);
-    (this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions)
-        .updateContentVisibility(currentManager ? currentManager.getAnnotations()?.length > 0 : false);
+    (this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions).updateContentVisibility({
+      annotationsExist: currentManager ? currentManager.getAnnotations()?.length > 0 : false
+    });
 
     // Add ModificationsManager listeners for annotations change to update the
     // Annotation Overlays.
@@ -2261,8 +2274,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const annotations = currentManager?.getAnnotations() ?? [];
     const annotationEntryToColorMap = this.buildColorsAnnotationsMap(annotations);
     this.#sideBar.setAnnotations(annotations, annotationEntryToColorMap);
-    (this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions)
-        .updateContentVisibility(currentManager ? currentManager.getAnnotations()?.length > 0 : false);
+    (this.saveButton.element as TimelineComponents.ExportTraceOptions.ExportTraceOptions).updateContentVisibility({
+      annotationsExist: currentManager ? currentManager.getAnnotations()?.length > 0 : false
+    });
   }
 
   /**
@@ -3200,7 +3214,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         panel.recordReload();
         return true;
       case 'timeline.save-to-file':
-        void panel.saveToFile({includeScriptContent: false, includeSourceMaps: false, addModifications: false});
+        void panel.handleSaveToFileAction();
         return true;
       case 'timeline.load-from-file':
         panel.selectFileToLoad();

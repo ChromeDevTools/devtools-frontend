@@ -422,7 +422,7 @@ def CheckNoUncheckedFiles(input_api, output_api):
     out, _ = process.communicate()
     if process.returncode != 0:
         files_changed_process = input_api.subprocess.Popen(
-            ['git', 'diff', '--name-only'],
+            ['git', 'diff'],
             stdout=input_api.subprocess.PIPE,
             stderr=input_api.subprocess.STDOUT)
         files_changed, _ = files_changed_process.communicate()

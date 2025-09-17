@@ -291,6 +291,7 @@ function snapshotTesterFactory() {
       const snapshotPath = path.join(SOURCE_ROOT, parsedUrl.query.snapshotPath);
       if (!fs.existsSync(snapshotPath)) {
         res.writeHead(404);
+        res.end();
         return;
       }
 

@@ -109,7 +109,7 @@ export interface Data {
   legacySyntheticScreenshots: Types.Events.LegacySyntheticScreenshot[]|null;
   screenshots: Types.Events.Screenshot[]|null;
 }
-// TODO(crbug/41484172): should be readonly
+
 export function data(): Data {
   return {
     legacySyntheticScreenshots: syntheticScreenshots.length ? syntheticScreenshots : null,

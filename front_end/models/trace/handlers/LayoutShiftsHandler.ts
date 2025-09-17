@@ -37,15 +37,14 @@ import type {HandlerName} from './types.js';
 // score for the given recording, and almost certainly not the
 // navigation-to-unload CLS score.
 
-interface LayoutShifts {
+interface LayoutShiftsData {
   clusters: readonly Types.Events.SyntheticLayoutShiftCluster[];
   clustersByNavigationId: Map<Types.Events.NavigationId, Types.Events.SyntheticLayoutShiftCluster[]>;
   sessionMaxScore: number;
   // The session window which contains the SessionMaxScore
   clsWindowID: number;
   // We use these to calculate root causes for a given LayoutShift
-  // TODO(crbug/41484172): should be readonly
-  prePaintEvents: Types.Events.PrePaint[];
+  prePaintEvents: readonly Types.Events.PrePaint[];
   paintImageEvents: Types.Events.PaintImage[];
   layoutInvalidationEvents: readonly Types.Events.LayoutInvalidationTracking[];
   scheduleStyleInvalidationEvents: readonly Types.Events.ScheduleStyleInvalidationTracking[];
@@ -55,8 +54,7 @@ interface LayoutShifts {
   layoutImageUnsizedEvents: readonly Types.Events.LayoutImageUnsized[];
   remoteFonts: readonly RemoteFont[];
   scoreRecords: readonly ScoreRecord[];
-  // TODO(crbug/41484172): should be readonly
-  backendNodeIds: Protocol.DOM.BackendNodeId[];
+  backendNodeIds: Set<Protocol.DOM.BackendNodeId>;
 }
 
 interface RemoteFont {
@@ -524,7 +522,7 @@ async function buildLayoutShiftsClusters(): Promise<void> {
   }
 }
 
-export function data(): LayoutShifts {
+export function data(): LayoutShiftsData {
   return {
     clusters,
     sessionMaxScore,
@@ -532,15 +530,14 @@ export function data(): LayoutShifts {
     prePaintEvents,
     layoutInvalidationEvents,
     scheduleStyleInvalidationEvents,
-    styleRecalcInvalidationEvents: [],
+    styleRecalcInvalidationEvents,
     renderFrameImplCreateChildFrameEvents,
     domLoadingEvents,
     layoutImageUnsizedEvents,
     remoteFonts,
     scoreRecords,
-    // TODO(crbug/41484172): change the type so no need to clone
-    backendNodeIds: [...backendNodeIds],
-    clustersByNavigationId: new Map(clustersByNavigationId),
+    backendNodeIds,
+    clustersByNavigationId,
     paintImageEvents,
   };
 }

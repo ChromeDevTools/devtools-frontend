@@ -93,9 +93,9 @@ function workletType(input: string): Types.Events.AuctionWorkletType {
  * create everything other than the `args` field, as those are identical
  * regardless of the type of event.
  */
-function makeSyntheticEventBase(event: Types.Events.AuctionWorkletDoneWithProcess|
-                                Types.Events.AuctionWorkletRunningInProcess):
-    Omit<Types.Events.SyntheticAuctionWorklet, 'args'> {
+function makeSyntheticEventBase(
+    event: Types.Events.AuctionWorkletDoneWithProcess|
+    Types.Events.AuctionWorkletRunningInProcess): Omit<Types.Events.SyntheticAuctionWorklet, 'args'> {
   return Helpers.SyntheticEvents.SyntheticEventsManager
       .registerSyntheticEvent<Omit<Types.Events.SyntheticAuctionWorklet, 'args'>>({
         rawSourceEvent: event,
@@ -178,6 +178,6 @@ export interface AuctionWorkletsData {
 
 export function data(): AuctionWorkletsData {
   return {
-    worklets: new Map(createdSyntheticEvents),
+    worklets: createdSyntheticEvents,
   };
 }

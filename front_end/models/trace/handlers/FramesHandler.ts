@@ -95,8 +95,8 @@ export interface FramesData {
 
 export function data(): FramesData {
   return {
-    frames: model ? Array.from(model.frames()) : [],
-    framesById: model ? {...model.framesById()} : {},
+    frames: model?.frames() ?? [],
+    framesById: model?.framesById() ?? {},
   };
 }
 

@@ -28,11 +28,15 @@ let devicePixelRatio: number|null = null;
 let processNames = new Map<Types.Events.ProcessID, Types.Events.ProcessName>();
 
 let topLevelRendererIds = new Set<Types.Events.ProcessID>();
-const traceBounds: Types.Timing.TraceWindowMicro = {
-  min: Types.Timing.Micro(Number.POSITIVE_INFINITY),
-  max: Types.Timing.Micro(Number.NEGATIVE_INFINITY),
-  range: Types.Timing.Micro(Number.POSITIVE_INFINITY),
-};
+
+function makeNewTraceBounds(): Types.Timing.TraceWindowMicro {
+  return {
+    min: Types.Timing.Micro(Number.POSITIVE_INFINITY),
+    max: Types.Timing.Micro(Number.NEGATIVE_INFINITY),
+    range: Types.Timing.Micro(Number.POSITIVE_INFINITY),
+  };
+}
+let traceBounds: Types.Timing.TraceWindowMicro = makeNewTraceBounds();
 
 /**
  * These represent the user navigating. Values such as First Contentful Paint,
@@ -98,9 +102,7 @@ export function reset(): void {
   rendererProcessesByFrameId = new Map();
   framesByProcessId = new Map();
 
-  traceBounds.min = Types.Timing.Micro(Number.POSITIVE_INFINITY);
-  traceBounds.max = Types.Timing.Micro(Number.NEGATIVE_INFINITY);
-  traceBounds.range = Types.Timing.Micro(Number.POSITIVE_INFINITY);
+  traceBounds = makeNewTraceBounds();
   traceStartedTimeFromTracingStartedEvent = Types.Timing.Micro(-1);
 
   traceIsGeneric = true;
@@ -490,7 +492,7 @@ export type FrameProcessData =
 
 export function data(): MetaHandlerData {
   return {
-    traceBounds: {...traceBounds},
+    traceBounds,
     browserProcessId,
     browserThreadId,
     processNames,

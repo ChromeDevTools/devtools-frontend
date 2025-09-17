@@ -41,21 +41,6 @@ describe('UserInteractionsHandler', function() {
     return event as unknown as Trace.Types.Events.SyntheticInteractionPair;
   }
 
-  it('returns all user interactions', async function() {
-    const traceEvents = await TraceLoader.rawEvents(this, 'slow-interaction-button-click.json.gz');
-    for (const event of traceEvents) {
-      Trace.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
-    }
-
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    const clicks = data.allEvents.filter(Trace.Types.Events.isEventTimingStart).filter(event => {
-      return event.args.data.type === 'click';
-    });
-
-    assert.lengthOf(data.allEvents, 58);
-    assert.lengthOf(clicks, 1);
-  });
-
   it('returns all interaction events', async () => {
     await processTrace(this, 'slow-interaction-button-click.json.gz');
     const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
@@ -161,18 +146,17 @@ describe('UserInteractionsHandler', function() {
   it('detects correct events for a click and keydown interaction', async () => {
     await processTrace(this, 'slow-interaction-keydown.json.gz');
     const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    const foundInteractions = data.allEvents.filter(Trace.Types.Events.isEventTimingStart)
-                                  .filter(e => e.args.data && e.args.data.duration > 1 && e.args.data.interactionId);
+    const foundInteractions =
+        data.interactionEvents.filter(Trace.Types.Events.isEventTimingStart).filter(e => e.dur > 1);
     // We expect there to be 3 interactions:
     // User clicks on input:
     // 1.pointerdown, 2. pointerup, 3. click
     // User types into input:
     // 4. keydown, 5. keyup
     assert.deepEqual(
-        foundInteractions.map(event => event.args.data?.type),
-        ['pointerdown', 'pointerup', 'click', 'keydown', 'keyup']);
+        foundInteractions.map(event => event.type), ['pointerdown', 'pointerup', 'click', 'keydown', 'keyup']);
 
-    assert.deepEqual(foundInteractions.map(e => e.args.data?.interactionId), [
+    assert.deepEqual(foundInteractions.map(e => e.interactionId), [
       // The first three events relate to the click, so they have the same InteractionID
       7371,
       7371,
@@ -181,87 +165,6 @@ describe('UserInteractionsHandler', function() {
       7378,
       7378,
     ]);
-  });
-
-  it('finds all interaction events with a duration and interactionId', async () => {
-    const events = [
-      {
-        cat: 'devtools.timeline',
-        ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
-        pid: 1537729,  // the Renderer Thread
-        tid: 1,        // CrRendererMain
-        id: '1234',
-        ts: 10,
-        dur: 500,
-        scope: 'scope',
-        name: 'EventTiming',
-        args: {
-          data: {
-            duration: 16,
-            interactionId: 9700,
-            nodeId: 0,
-            processingEnd: 993,
-            processingStart: 993,
-            timeStamp: 985,
-            type: 'pointerdown',
-          },
-        },
-      },
-      // Has an interactionId of 0, so should NOT be included.
-      {
-        cat: 'devtools.timeline',
-        ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
-        pid: 1537729,  // the Renderer Thread
-        tid: 1,        // CrRendererMain
-        id: '1234',
-        ts: 10,
-        dur: 500,
-        scope: 'scope',
-        name: 'EventTiming',
-        args: {
-          data: {
-            duration: 16,
-            interactionId: 0,
-            nodeId: 0,
-            processingEnd: 993,
-            processingStart: 993,
-            timeStamp: 985,
-            type: 'pointerdown',
-          },
-        },
-      },
-      // Has an duration of 0, so should NOT be included.
-      {
-        cat: 'devtools.timeline',
-        ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
-        pid: 1537729,  // the Renderer Thread
-        tid: 1,        // CrRendererMain
-        id: '1234',
-        ts: 10,
-        dur: 500,
-        scope: 'scope',
-        name: 'EventTiming',
-        args: {
-          data: {
-            duration: 0,
-            interactionId: 0,
-            nodeId: 0,
-            processingEnd: 993,
-            processingStart: 993,
-            timeStamp: 985,
-            type: 'pointerdown',
-          },
-        },
-      },
-    ] as unknown as Trace.Types.Events.EventTimingBeginOrEnd[];
-    Trace.Handlers.ModelHandlers.UserInteractions.reset();
-    for (const event of events) {
-      Trace.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
-    }
-    await Trace.Handlers.ModelHandlers.Meta.finalize();
-    await Trace.Handlers.ModelHandlers.UserInteractions.finalize();
-    const timings = Trace.Handlers.ModelHandlers.UserInteractions.data().allEvents;
-    assert.lengthOf(timings, 3);
   });
 
   describe('collapsing nested interactions', () => {

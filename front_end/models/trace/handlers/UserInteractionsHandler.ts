@@ -9,14 +9,8 @@ import {data as metaHandlerData} from './MetaHandler.js';
 import {ScoreClassification} from './PageLoadMetricsHandler.js';
 import type {HandlerName} from './types.js';
 
-// This handler serves two purposes. It generates a list of events that are
-// used to show user clicks in the timeline. It is also used to gather
-// EventTimings into Interactions, which we use to show interactions and
-// highlight long interactions to the user, along with INP.
-
-// We don't need to know which process / thread these events occurred in,
-// because they are effectively global, so we just track all that we find.
-let allEvents: Types.Events.EventTimingBeginOrEnd[] = [];
+// This handler gathers EventTimings into Interactions, which we use to show
+// interactions and highlight long interactions to the user, along with INP.
 
 let beginCommitCompositorFrameEvents: Types.Events.BeginCommitCompositorFrame[] = [];
 let parseMetaViewportEvents: Types.Events.ParseMetaViewport[] = [];
@@ -27,8 +21,6 @@ const INP_GOOD_TIMING = LONG_INTERACTION_THRESHOLD;
 const INP_MEDIUM_TIMING = Helpers.Timing.milliToMicro(Types.Timing.Milli(500));
 
 export interface UserInteractionsData {
-  /** All the user events we found in the trace */
-  allEvents: readonly Types.Events.EventTimingBeginOrEnd[];
   /** All the BeginCommitCompositorFrame events we found in the trace */
   beginCommitCompositorFrameEvents: readonly Types.Events.BeginCommitCompositorFrame[];
   /** All the ParseMetaViewport events we found in the trace */
@@ -68,7 +60,6 @@ let eventTimingEndEventsById = new Map<string, Types.Events.EventTimingEnd>();
 let eventTimingStartEventsForInteractions: Types.Events.EventTimingBegin[] = [];
 
 export function reset(): void {
-  allEvents = [];
   beginCommitCompositorFrameEvents = [];
   parseMetaViewportEvents = [];
   interactionEvents = [];
@@ -97,8 +88,6 @@ export function handleEvent(event: Types.Events.Event): void {
     // Store the end event; for each start event that is an interaction, we need the matching end event to calculate the duration correctly.
     eventTimingEndEventsById.set(event.id, event);
   }
-
-  allEvents.push(event);
 
   // From this point on we want to find events that represent interactions.
   // These events are always start events - those are the ones that contain all
@@ -351,7 +340,6 @@ export async function finalize(): Promise<void> {
 
 export function data(): UserInteractionsData {
   return {
-    allEvents,
     beginCommitCompositorFrameEvents,
     parseMetaViewportEvents,
     interactionEvents,

@@ -950,6 +950,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       );
 
       const selected = new AiAssistanceModel.PerformanceTraceContext(focus);
+      selected.external = true;
 
       this.#externalAIConversationData = {
         conversationHandler,

@@ -4,6 +4,7 @@
 
 import '../../../ui/components/icon_button/icon_button.js';
 
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
@@ -80,6 +81,7 @@ The 3 main performance metrics are:
 
 Trace events referenced in the information given to you will be marked with an \`eventKey\`. For example: \`LCP element: <img src="..."> (eventKey: r-123, ts: 123456)\`
 You can use this key with \`getEventByKey\` to get more information about that trace event. For example: \`getEventByKey('r-123')\`
+You can also use this key with \`selectEventByKey\` to show the user a specific event
 
 ## Step-by-step instructions for debugging performance issues
 
@@ -171,6 +173,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   }
 
   #focus: AgentFocus;
+  external = false;
 
   constructor(focus: AgentFocus) {
     super();
@@ -375,7 +378,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     return super.parseTextResponse(response);
   }
 
-  override async enhanceQuery(query: string, context: ConversationContext<AgentFocus>|null): Promise<string> {
+  override async enhanceQuery(query: string, context: PerformanceTraceContext|null): Promise<string> {
     if (!context) {
       this.clearDeclaredFunctions();
       return query;
@@ -551,7 +554,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     this.#functionCallCacheForFocus.set(focus, cache);
   }
 
-  #declareFunctions(context: ConversationContext<AgentFocus>): void {
+  #declareFunctions(context: PerformanceTraceContext): void {
     const focus = context.getItem();
     const {parsedTrace, insightSet} = focus.data;
 
@@ -837,6 +840,39 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           return {result: {content}};
         },
 
+      });
+    }
+
+    if (!context.external) {
+      this.declareFunction<{eventKey: string}, {success: boolean}>('selectEventByKey', {
+        description:
+            'Selects the event in the flamechart for the user. If the user asks to show them something, it\'s likely a good idea to call this function.',
+        parameters: {
+          type: Host.AidaClient.ParametersTypes.OBJECT,
+          description: '',
+          nullable: false,
+          properties: {
+            eventKey: {
+              type: Host.AidaClient.ParametersTypes.STRING,
+              description: 'The key for the event.',
+              nullable: false,
+            }
+          },
+        },
+        displayInfoFromArgs: params => {
+          return {title: lockedString('Selecting event…'), action: `selectEventByKey('${params.eventKey}')`};
+        },
+        handler: async params => {
+          debugLog('Function call: selectEventByKey', params);
+          const event = this.#lookupEvent(params.eventKey as Trace.Types.File.SerializableKey);
+          if (!event) {
+            return {error: 'Invalid eventKey'};
+          }
+
+          const revealable = new SDK.TraceObject.RevealableEvent(event);
+          await Common.Revealer.reveal(revealable);
+          return {result: {success: true}};
+        },
       });
     }
   }

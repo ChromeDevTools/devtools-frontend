@@ -471,7 +471,7 @@ function getUnsizedImageRootCauses(
   return rootCausesByShift;
 }
 
-export function isCLSCulprits(insight: InsightModel): insight is CLSCulpritsInsightModel {
+export function isCLSCulpritsInsight(insight: InsightModel): insight is CLSCulpritsInsightModel {
   return insight.insightKey === InsightKeys.CLS_CULPRITS;
 }
 

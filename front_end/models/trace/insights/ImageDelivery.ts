@@ -134,7 +134,7 @@ export type ImageDeliveryInsightModel = InsightModel<typeof UIStrings, {
   wastedBytes: number,
 }>;
 
-export function isImageDelivery(model: InsightModel): model is ImageDeliveryInsightModel {
+export function isImageDeliveryInsight(model: InsightModel): model is ImageDeliveryInsightModel {
   return model.insightKey === 'ImageDelivery';
 }
 

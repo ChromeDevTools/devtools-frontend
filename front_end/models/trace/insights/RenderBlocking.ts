@@ -48,7 +48,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/RenderBlocking.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function isRenderBlocking(insight: InsightModel): insight is RenderBlockingInsightModel {
+export function isRenderBlockingInsight(insight: InsightModel): insight is RenderBlockingInsightModel {
   return insight.insightKey === 'RenderBlocking';
 }
 

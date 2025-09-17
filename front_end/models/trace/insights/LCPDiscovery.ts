@@ -62,7 +62,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function isLCPDiscovery(model: InsightModel): model is LCPDiscoveryInsightModel {
+export function isLCPDiscoveryInsight(model: InsightModel): model is LCPDiscoveryInsightModel {
   return model.insightKey === 'LCPDiscovery';
 }
 export type LCPDiscoveryInsightModel = InsightModel<typeof UIStrings, {

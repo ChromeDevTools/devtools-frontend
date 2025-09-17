@@ -89,7 +89,7 @@ interface LCPSubparts {
   renderDelay: Subpart;
 }
 
-export function isLCPBreakdown(model: InsightModel): model is LCPBreakdownInsightModel {
+export function isLCPBreakdownInsight(model: InsightModel): model is LCPBreakdownInsightModel {
   return model.insightKey === 'LCPBreakdown';
 }
 export type LCPBreakdownInsightModel = InsightModel<typeof UIStrings, {

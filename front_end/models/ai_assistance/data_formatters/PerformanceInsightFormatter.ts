@@ -207,6 +207,75 @@ export class PerformanceInsightFormatter {
   }
 
   /**
+   * Create an AI prompt string out of the CLS Culprits Insight model to use with Ask AI.
+   * @param insight The CLS Culprits Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatClsCulpritsInsight(insight: Trace.Insights.Models.CLSCulprits.CLSCulpritsInsightModel): string {
+    const {worstCluster, shifts} = insight;
+    if (!worstCluster) {
+      return '';
+    }
+
+    const baseTime = this.#parsedTrace.data.Meta.traceBounds.min;
+
+    const clusterTimes = {
+      start: worstCluster.ts - baseTime,
+      end: worstCluster.ts + worstCluster.dur - baseTime,
+    } as const;
+
+    const shiftsFormatted = worstCluster.events.map((layoutShift, index) => {
+      return TraceEventFormatter.layoutShift(layoutShift, index, this.#parsedTrace, shifts.get(layoutShift));
+    });
+
+    return `The worst layout shift cluster was the cluster that started at ${
+        this.#formatMicro(clusterTimes.start)} and ended at ${
+        this.#formatMicro(clusterTimes.end)}, with a duration of ${this.#formatMicro(worstCluster.dur)}.
+The score for this cluster is ${worstCluster.clusterCumulativeScore.toFixed(4)}.
+
+Layout shifts in this cluster:
+${shiftsFormatted.join('\n')}`;
+  }
+
+  /**
+   * Create an AI prompt string out of the Document Latency Insight model to use with Ask AI.
+   * @param insight The Document Latency Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatDocumentLatencyInsight(insight: Trace.Insights.Models.DocumentLatency.DocumentLatencyInsightModel): string {
+    if (!insight.data) {
+      return '';
+    }
+    const {checklist, documentRequest} = insight.data;
+    if (!documentRequest) {
+      return '';
+    }
+    const checklistBulletPoints: Array<{name: string, passed: boolean}> = [];
+    checklistBulletPoints.push({
+      name: 'The request was not redirected',
+      passed: checklist.noRedirects.value,
+    });
+    checklistBulletPoints.push({
+      name: 'Server responded quickly',
+      passed: checklist.serverResponseIsFast.value,
+    });
+    checklistBulletPoints.push({
+      name: 'Compression was applied',
+      passed: checklist.usesCompression.value,
+    });
+
+    return `${this.#lcpMetricSharedContext()}
+
+${TraceEventFormatter.networkRequests([documentRequest], this.#parsedTrace, {
+      verbose: true,
+      customTitle: 'Document network request'
+    })}
+
+The result of the checks for this insight are:
+${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
+  }
+
+  /**
    * Create an AI prompt string out of the DOM Size model to use with Ask AI.
    * Note: This function accesses the UIStrings within DomSize to help build the
    * AI prompt, but does not (and should not) call i18nString to localize these strings. They
@@ -260,6 +329,32 @@ export class PerformanceInsightFormatter {
     }
 
     return output;
+  }
+
+  /**
+   * Create an AI prompt string out of the Duplicated JavaScript Insight model to use with Ask AI.
+   * @param insight The Duplicated JavaScript Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatDuplicatedJavaScriptInsight(
+      insight: Trace.Insights.Models.DuplicatedJavaScript.DuplicatedJavaScriptInsightModel): string {
+    const totalWastedBytes = insight.wastedBytes;
+    const duplicatedScriptsByModule = insight.duplicationGroupedByNodeModules;
+
+    if (duplicatedScriptsByModule.size === 0) {
+      return 'There is no duplicated JavaScript in the page modules';
+    }
+
+    const filesFormatted =
+        Array.from(duplicatedScriptsByModule)
+            .map(
+                ([module, duplication]) =>
+                    `- Source: ${module} - Duplicated bytes: ${duplication.estimatedDuplicateBytes} bytes`)
+            .join('\n');
+
+    return `Total wasted bytes: ${totalWastedBytes} bytes.
+
+Duplication grouped by Node modules: ${filesFormatted}`;
   }
 
   /**
@@ -345,6 +440,170 @@ export class PerformanceInsightFormatter {
   }
 
   /**
+   * Create an AI prompt string out of the INP Brekdown Insight model to use with Ask AI.
+   * @param insight The INP Breakdown Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatImageDeliveryInsight(insight: Trace.Insights.Models.ImageDelivery.ImageDeliveryInsightModel): string {
+    const optimizableImages = insight.optimizableImages;
+    if (optimizableImages.length === 0) {
+      return 'There are no unoptimized images on this page.';
+    }
+
+    const imageDetails = optimizableImages
+                             .map(image => {
+                               // List potential optimizations for the image
+                               const optimizations =
+                                   image.optimizations
+                                       .map(optimization => {
+                                         const message =
+                                             Trace.Insights.Models.ImageDelivery.getOptimizationMessage(optimization);
+                                         const byteSavings = bytes(optimization.byteSavings);
+                                         return `${message} (Est ${byteSavings})`;
+                                       })
+                                       .join('\n');
+
+                               return `### ${image.request.args.data.url}
+- Potential savings: ${bytes(image.byteSavings)}
+- Optimizations:\n${optimizations}`;
+                             })
+                             .join('\n\n');
+
+    return `Total potential savings: ${bytes(insight.wastedBytes)}
+
+The following images could be optimized:\n\n${imageDetails}`;
+  }
+
+  /**
+   * Create an AI prompt string out of the INP Brekdown Insight model to use with Ask AI.
+   * @param insight The INP Breakdown Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatInpBreakdownInsight(insight: Trace.Insights.Models.INPBreakdown.INPBreakdownInsightModel): string {
+    const event = insight.longestInteractionEvent;
+    if (!event) {
+      return '';
+    }
+
+    const inpInfoForEvent =
+        `The longest interaction on the page was a \`${event.type}\` which had a total duration of \`${
+            this.#formatMicro(event.dur)}\`. The timings of each of the three phases were:
+
+1. Input delay: ${this.#formatMicro(event.inputDelay)}
+2. Processing duration: ${this.#formatMicro(event.mainThreadHandling)}
+3. Presentation delay: ${this.#formatMicro(event.presentationDelay)}.`;
+
+    return inpInfoForEvent;
+  }
+
+  /**
+   * Create an AI prompt string out of the LCP Brekdown Insight model to use with Ask AI.
+   * @param insight The LCP Breakdown Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatLcpBreakdownInsight(insight: Trace.Insights.Models.LCPBreakdown.LCPBreakdownInsightModel): string {
+    const {subparts, lcpMs} = insight;
+    if (!lcpMs || !subparts) {
+      return '';
+    }
+
+    // Text based LCP has TTFB & Render delay
+    // Image based has TTFB, Load delay, Load time and Render delay
+    // Note that we expect every trace + LCP to have TTFB + Render delay, but
+    // very old traces are missing the data, so we have to code defensively
+    // in case the subparts are not present.
+    const phaseBulletPoints: Array<{name: string, value: string, percentage: string}> = [];
+
+    Object.values(subparts).forEach((subpart: Trace.Insights.Models.LCPBreakdown.Subpart) => {
+      const phaseMilli = Trace.Helpers.Timing.microToMilli(subpart.range);
+      const percentage = (phaseMilli / lcpMs * 100).toFixed(1);
+      phaseBulletPoints.push({name: subpart.label, value: this.#formatMilli(phaseMilli), percentage});
+    });
+
+    return `${this.#lcpMetricSharedContext()}
+
+We can break this time down into the ${phaseBulletPoints.length} phases that combine to make the LCP time:
+
+${
+        phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value} (${phase.percentage}% of total LCP time)`)
+            .join('\n')}`;
+  }
+
+  /**
+   * Create an AI prompt string out of the LCP Brekdown Insight model to use with Ask AI.
+   * @param insight The LCP Breakdown Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatLcpDiscoveryInsight(insight: Trace.Insights.Models.LCPDiscovery.LCPDiscoveryInsightModel): string {
+    const {checklist, lcpEvent, lcpRequest, earliestDiscoveryTimeTs} = insight;
+    if (!checklist || !lcpEvent || !lcpRequest || !earliestDiscoveryTimeTs) {
+      return '';
+    }
+
+    const checklistBulletPoints: Array<{name: string, passed: boolean}> = [];
+    checklistBulletPoints.push({
+      name: checklist.priorityHinted.label,
+      passed: checklist.priorityHinted.value,
+    });
+    checklistBulletPoints.push({
+      name: checklist.eagerlyLoaded.label,
+      passed: checklist.eagerlyLoaded.value,
+    });
+    checklistBulletPoints.push({
+      name: checklist.requestDiscoverable.label,
+      passed: checklist.requestDiscoverable.value,
+    });
+
+    return `${this.#lcpMetricSharedContext()}
+
+The result of the checks for this insight are:
+${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
+  }
+
+  /**
+   * Create an AI prompt string out of the Legacy JavaScript Insight model to use with Ask AI.
+   * @param insight The Legacy JavaScript Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatLegacyJavaScriptInsight(insight: Trace.Insights.Models.LegacyJavaScript.LegacyJavaScriptInsightModel): string {
+    const legacyJavaScriptResults = insight.legacyJavaScriptResults;
+
+    if (legacyJavaScriptResults.size === 0) {
+      return 'There is no significant amount of legacy JavaScript on the page.';
+    }
+
+    const filesFormatted =
+        Array.from(legacyJavaScriptResults)
+            .map(([script, result]) => `\n- Script: ${script.url} - Wasted bytes: ${result.estimatedByteSavings} bytes
+Matches:
+${result.matches.map(match => `Line: ${match.line}, Column: ${match.column}, Name: ${match.name}`).join('\n')}`)
+            .join('\n');
+
+    return `Total legacy JavaScript: ${legacyJavaScriptResults.size} files.
+
+Legacy JavaScript by file:
+${filesFormatted}`;
+  }
+
+  /**
+   * Create an AI prompt string out of the Modern HTTP Insight model to use with Ask AI.
+   * @param insight The Modern HTTP Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatModernHttpInsight(insight: Trace.Insights.Models.ModernHTTP.ModernHTTPInsightModel): string {
+    const requestSummary = (insight.http1Requests.length === 1) ?
+        TraceEventFormatter.networkRequests(insight.http1Requests, this.#parsedTrace, {verbose: true}) :
+        TraceEventFormatter.networkRequests(insight.http1Requests, this.#parsedTrace);
+
+    if (requestSummary.length === 0) {
+      return 'There are no requests that were served over a legacy HTTP protocol.';
+    }
+
+    return `Here is a list of the network requests that were served over a legacy HTTP protocol:
+${requestSummary}`;
+  }
+
+  /**
    * Create an AI prompt string out of the NetworkDependencyTree Insight model to use with Ask AI.
    * Note: This function accesses the UIStrings within NetworkDependencyTree to help build the
    * AI prompt, but does not (and should not) call i18nString to localize these strings. They
@@ -423,6 +682,23 @@ export class PerformanceInsightFormatter {
     }
 
     return output;
+  }
+
+  /**
+   * Create an AI prompt string out of the Render Blocking Insight model to use with Ask AI.
+   * @param insight The Render Blocking Model to query.
+   * @returns a string formatted for sending to Ask AI.
+   */
+  formatRenderBlockingInsight(insight: Trace.Insights.Models.RenderBlocking.RenderBlockingInsightModel): string {
+    const requestSummary = TraceEventFormatter.networkRequests(insight.renderBlockingRequests, this.#parsedTrace);
+
+    if (requestSummary.length === 0) {
+      return 'There are no network requests that are render blocking.';
+    }
+
+    return `Here is a list of the network requests that were render blocking on this page and their duration:
+
+${requestSummary}`;
   }
 
   /**
@@ -563,238 +839,24 @@ ${this.#links()}`;
   }
 
   #details(): string {
-    if (Trace.Insights.Models.ImageDelivery.isImageDelivery(this.#insight)) {
-      const optimizableImages = this.#insight.optimizableImages;
-      if (optimizableImages.length === 0) {
-        return 'There are no unoptimized images on this page.';
-      }
-
-      const imageDetails = optimizableImages
-                               .map(image => {
-                                 // List potential optimizations for the image
-                                 const optimizations =
-                                     image.optimizations
-                                         .map(optimization => {
-                                           const message =
-                                               Trace.Insights.Models.ImageDelivery.getOptimizationMessage(optimization);
-                                           const byteSavings = bytes(optimization.byteSavings);
-                                           return `${message} (Est ${byteSavings})`;
-                                         })
-                                         .join('\n');
-
-                                 return `### ${image.request.args.data.url}
-- Potential savings: ${bytes(image.byteSavings)}
-- Optimizations:\n${optimizations}`;
-                               })
-                               .join('\n\n');
-
-      return `Total potential savings: ${bytes(this.#insight.wastedBytes)}
-
-The following images could be optimized:\n\n${imageDetails}`;
-    }
-
-    if (Trace.Insights.Models.LCPBreakdown.isLCPBreakdown(this.#insight)) {
-      const {subparts, lcpMs} = this.#insight;
-      if (!lcpMs || !subparts) {
-        return '';
-      }
-
-      // Text based LCP has TTFB & Render delay
-      // Image based has TTFB, Load delay, Load time and Render delay
-      // Note that we expect every trace + LCP to have TTFB + Render delay, but
-      // very old traces are missing the data, so we have to code defensively
-      // in case the subparts are not present.
-      const phaseBulletPoints: Array<{name: string, value: string, percentage: string}> = [];
-
-      Object.values(subparts).forEach((subpart: Trace.Insights.Models.LCPBreakdown.Subpart) => {
-        const phaseMilli = Trace.Helpers.Timing.microToMilli(subpart.range);
-        const percentage = (phaseMilli / lcpMs * 100).toFixed(1);
-        phaseBulletPoints.push({name: subpart.label, value: this.#formatMilli(phaseMilli), percentage});
-      });
-
-      return `${this.#lcpMetricSharedContext()}
-
-We can break this time down into the ${phaseBulletPoints.length} phases that combine to make the LCP time:
-
-${
-          phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value} (${phase.percentage}% of total LCP time)`)
-              .join('\n')}`;
-    }
-
-    if (Trace.Insights.Models.LCPDiscovery.isLCPDiscovery(this.#insight)) {
-      const {checklist, lcpEvent, lcpRequest, earliestDiscoveryTimeTs} = this.#insight;
-      if (!checklist || !lcpEvent || !lcpRequest || !earliestDiscoveryTimeTs) {
-        return '';
-      }
-
-      const checklistBulletPoints: Array<{name: string, passed: boolean}> = [];
-      checklistBulletPoints.push({
-        name: checklist.priorityHinted.label,
-        passed: checklist.priorityHinted.value,
-      });
-      checklistBulletPoints.push({
-        name: checklist.eagerlyLoaded.label,
-        passed: checklist.eagerlyLoaded.value,
-      });
-      checklistBulletPoints.push({
-        name: checklist.requestDiscoverable.label,
-        passed: checklist.requestDiscoverable.value,
-      });
-
-      return `${this.#lcpMetricSharedContext()}
-
-The result of the checks for this insight are:
-${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
-    }
-
-    if (Trace.Insights.Models.RenderBlocking.isRenderBlocking(this.#insight)) {
-      const requestSummary =
-          TraceEventFormatter.networkRequests(this.#insight.renderBlockingRequests, this.#parsedTrace);
-
-      if (requestSummary.length === 0) {
-        return 'There are no network requests that are render blocking.';
-      }
-
-      return `Here is a list of the network requests that were render blocking on this page and their duration:
-
-${requestSummary}`;
-    }
-
-    if (Trace.Insights.Models.DocumentLatency.isDocumentLatency(this.#insight)) {
-      if (!this.#insight.data) {
-        return '';
-      }
-      const {checklist, documentRequest} = this.#insight.data;
-      if (!documentRequest) {
-        return '';
-      }
-      const checklistBulletPoints: Array<{name: string, passed: boolean}> = [];
-      checklistBulletPoints.push({
-        name: 'The request was not redirected',
-        passed: checklist.noRedirects.value,
-      });
-      checklistBulletPoints.push({
-        name: 'Server responded quickly',
-        passed: checklist.serverResponseIsFast.value,
-      });
-      checklistBulletPoints.push({
-        name: 'Compression was applied',
-        passed: checklist.usesCompression.value,
-      });
-
-      return `${this.#lcpMetricSharedContext()}
-
-${TraceEventFormatter.networkRequests([documentRequest], this.#parsedTrace, {
-        verbose: true,
-        customTitle: 'Document network request'
-      })}
-
-The result of the checks for this insight are:
-${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
-    }
-
-    if (Trace.Insights.Models.INPBreakdown.isINPBreakdown(this.#insight)) {
-      const event = this.#insight.longestInteractionEvent;
-      if (!event) {
-        return '';
-      }
-
-      const inpInfoForEvent =
-          `The longest interaction on the page was a \`${event.type}\` which had a total duration of \`${
-              this.#formatMicro(event.dur)}\`. The timings of each of the three phases were:
-
-1. Input delay: ${this.#formatMicro(event.inputDelay)}
-2. Processing duration: ${this.#formatMicro(event.mainThreadHandling)}
-3. Presentation delay: ${this.#formatMicro(event.presentationDelay)}.`;
-
-      return inpInfoForEvent;
-    }
-
-    if (Trace.Insights.Models.CLSCulprits.isCLSCulprits(this.#insight)) {
-      const {worstCluster, shifts} = this.#insight;
-      if (!worstCluster) {
-        return '';
-      }
-
-      const baseTime = this.#parsedTrace.data.Meta.traceBounds.min;
-
-      const clusterTimes = {
-        start: worstCluster.ts - baseTime,
-        end: worstCluster.ts + worstCluster.dur - baseTime,
-      } as const;
-
-      const shiftsFormatted = worstCluster.events.map((layoutShift, index) => {
-        return TraceEventFormatter.layoutShift(layoutShift, index, this.#parsedTrace, shifts.get(layoutShift));
-      });
-
-      return `The worst layout shift cluster was the cluster that started at ${
-          this.#formatMicro(clusterTimes.start)} and ended at ${
-          this.#formatMicro(clusterTimes.end)}, with a duration of ${this.#formatMicro(worstCluster.dur)}.
-The score for this cluster is ${worstCluster.clusterCumulativeScore.toFixed(4)}.
-
-Layout shifts in this cluster:
-${shiftsFormatted.join('\n')}`;
-    }
-
-    if (Trace.Insights.Models.ModernHTTP.isModernHTTP(this.#insight)) {
-      const requestSummary = (this.#insight.http1Requests.length === 1) ?
-          TraceEventFormatter.networkRequests(this.#insight.http1Requests, this.#parsedTrace, {verbose: true}) :
-          TraceEventFormatter.networkRequests(this.#insight.http1Requests, this.#parsedTrace);
-
-      if (requestSummary.length === 0) {
-        return 'There are no requests that were served over a legacy HTTP protocol.';
-      }
-
-      return `Here is a list of the network requests that were served over a legacy HTTP protocol:
-${requestSummary}`;
-    }
-
-    if (Trace.Insights.Models.DuplicatedJavaScript.isDuplicatedJavaScript(this.#insight)) {
-      const totalWastedBytes = this.#insight.wastedBytes;
-      const duplicatedScriptsByModule = this.#insight.duplicationGroupedByNodeModules;
-
-      if (duplicatedScriptsByModule.size === 0) {
-        return 'There is no duplicated JavaScript in the page modules';
-      }
-
-      const filesFormatted =
-          Array.from(duplicatedScriptsByModule)
-              .map(
-                  ([module, duplication]) =>
-                      `- Source: ${module} - Duplicated bytes: ${duplication.estimatedDuplicateBytes} bytes`)
-              .join('\n');
-
-      return `Total wasted bytes: ${totalWastedBytes} bytes.
-
-Duplication grouped by Node modules: ${filesFormatted}`;
-    }
-
-    if (Trace.Insights.Models.LegacyJavaScript.isLegacyJavaScript(this.#insight)) {
-      const legacyJavaScriptResults = this.#insight.legacyJavaScriptResults;
-
-      if (legacyJavaScriptResults.size === 0) {
-        return 'There is no significant amount of legacy JavaScript on the page.';
-      }
-
-      const filesFormatted =
-          Array.from(legacyJavaScriptResults)
-              .map(([script, result]) => `\n- Script: ${script.url} - Wasted bytes: ${result.estimatedByteSavings} bytes
-Matches:
-${result.matches.map(match => `Line: ${match.line}, Column: ${match.column}, Name: ${match.name}`).join('\n')}`)
-              .join('\n');
-
-      return `Total legacy JavaScript: ${legacyJavaScriptResults.size} files.
-
-Legacy JavaScript by file:
-${filesFormatted}`;
-    }
-
     if (Trace.Insights.Models.Cache.isCacheInsight(this.#insight)) {
       return this.formatCacheInsight(this.#insight);
     }
 
+    if (Trace.Insights.Models.CLSCulprits.isCLSCulpritsInsight(this.#insight)) {
+      return this.formatClsCulpritsInsight(this.#insight);
+    }
+
+    if (Trace.Insights.Models.DocumentLatency.isDocumentLatencyInsight(this.#insight)) {
+      return this.formatDocumentLatencyInsight(this.#insight);
+    }
+
     if (Trace.Insights.Models.DOMSize.isDomSizeInsight(this.#insight)) {
       return this.formatDomSizeInsight(this.#insight);
+    }
+
+    if (Trace.Insights.Models.DuplicatedJavaScript.isDuplicatedJavaScriptInsight(this.#insight)) {
+      return this.formatDuplicatedJavaScriptInsight(this.#insight);
     }
 
     if (Trace.Insights.Models.FontDisplay.isFontDisplayInsight(this.#insight)) {
@@ -805,8 +867,36 @@ ${filesFormatted}`;
       return this.formatForcedReflowInsight(this.#insight);
     }
 
-    if (Trace.Insights.Models.NetworkDependencyTree.isNetworkDependencyTree(this.#insight)) {
+    if (Trace.Insights.Models.ImageDelivery.isImageDeliveryInsight(this.#insight)) {
+      return this.formatImageDeliveryInsight(this.#insight);
+    }
+
+    if (Trace.Insights.Models.INPBreakdown.isINPBreakdownInsight(this.#insight)) {
+      return this.formatInpBreakdownInsight(this.#insight);
+    }
+
+    if (Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(this.#insight)) {
+      return this.formatLcpBreakdownInsight(this.#insight);
+    }
+
+    if (Trace.Insights.Models.LCPDiscovery.isLCPDiscoveryInsight(this.#insight)) {
+      return this.formatLcpDiscoveryInsight(this.#insight);
+    }
+
+    if (Trace.Insights.Models.LegacyJavaScript.isLegacyJavaScript(this.#insight)) {
+      return this.formatLegacyJavaScriptInsight(this.#insight);
+    }
+
+    if (Trace.Insights.Models.ModernHTTP.isModernHTTPInsight(this.#insight)) {
+      return this.formatModernHttpInsight(this.#insight);
+    }
+
+    if (Trace.Insights.Models.NetworkDependencyTree.isNetworkDependencyTreeInsight(this.#insight)) {
       return this.formatNetworkDependencyTreeInsight(this.#insight);
+    }
+
+    if (Trace.Insights.Models.RenderBlocking.isRenderBlockingInsight(this.#insight)) {
+      return this.formatRenderBlockingInsight(this.#insight);
     }
 
     if (Trace.Insights.Models.SlowCSSSelector.isSlowCSSSelectorInsight(this.#insight)) {

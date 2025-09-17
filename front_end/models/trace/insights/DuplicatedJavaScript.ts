@@ -60,7 +60,7 @@ function finalize(partialModel: PartialInsightModel<DuplicatedJavaScriptInsightM
   };
 }
 
-export function isDuplicatedJavaScript(model: InsightModel): model is DuplicatedJavaScriptInsightModel {
+export function isDuplicatedJavaScriptInsight(model: InsightModel): model is DuplicatedJavaScriptInsightModel {
   return model.insightKey === InsightKeys.DUPLICATE_JAVASCRIPT;
 }
 

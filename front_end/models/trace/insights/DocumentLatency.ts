@@ -81,7 +81,7 @@ const TARGET_MS = 100;
 // Threshold for compression savings.
 const IGNORE_THRESHOLD_IN_BYTES = 1400;
 
-export function isDocumentLatency(x: InsightModel): x is DocumentLatencyInsightModel {
+export function isDocumentLatencyInsight(x: InsightModel): x is DocumentLatencyInsightModel {
   return x.insightKey === 'DocumentLatency';
 }
 

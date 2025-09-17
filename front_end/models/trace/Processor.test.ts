@@ -266,8 +266,8 @@ describeWithEnvironment('TraceProcessor', function() {
             UIStrings: {} as any,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             i18nString: (() => {}) as any,
-            isRenderBlocking: (_x: unknown): _x is Trace.Insights.Models.RenderBlocking.RenderBlockingInsightModel =>
-                false,
+            isRenderBlockingInsight: (_x: unknown):
+                                         _x is Trace.Insights.Models.RenderBlocking.RenderBlockingInsightModel => false,
             generateInsight: () => {
               throw new Error('forced error');
             },

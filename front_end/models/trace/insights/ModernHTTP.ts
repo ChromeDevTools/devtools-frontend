@@ -50,7 +50,7 @@ export type ModernHTTPInsightModel = InsightModel<typeof UIStrings, {
   http1Requests: Types.Events.SyntheticNetworkRequest[],
 }>;
 
-export function isModernHTTP(model: InsightModel): model is ModernHTTPInsightModel {
+export function isModernHTTPInsight(model: InsightModel): model is ModernHTTPInsightModel {
   return model.insightKey === InsightKeys.MODERN_HTTP;
 }
 

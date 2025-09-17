@@ -62,7 +62,7 @@ export type INPBreakdownInsightModel = InsightModel<typeof UIStrings, {
   highPercentileInteractionEvent?: SyntheticInteractionPair,
 }>;
 
-export function isINPBreakdown(insight: InsightModel): insight is INPBreakdownInsightModel {
+export function isINPBreakdownInsight(insight: InsightModel): insight is INPBreakdownInsightModel {
   return insight.insightKey === InsightKeys.INP_BREAKDOWN;
 }
 

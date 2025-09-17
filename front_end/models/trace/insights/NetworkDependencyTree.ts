@@ -666,7 +666,7 @@ export function generatePreconnectCandidates(
   return preconnectCandidates.slice(0, TOO_MANY_PRECONNECTS_THRESHOLD);
 }
 
-export function isNetworkDependencyTree(model: InsightModel): model is NetworkDependencyTreeInsightModel {
+export function isNetworkDependencyTreeInsight(model: InsightModel): model is NetworkDependencyTreeInsightModel {
   return model.insightKey === InsightKeys.NETWORK_DEPENDENCY_TREE;
 }
 

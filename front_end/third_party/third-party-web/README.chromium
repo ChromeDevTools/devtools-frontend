@@ -3,6 +3,7 @@ Short Name: third-party-web
 URL: https://github.com/patrickhulce/third-party-web
 Version: 0.26.2
 Revision: d60863a2ea913ed26ae0446296a0cb1cc6c71291
+Update Mechanism: Manual
 License: MIT
 License File: LICENSE
 Security Critical: no

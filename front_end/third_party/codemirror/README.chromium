@@ -3,6 +3,7 @@ Short Name: CodeMirror
 URL: https://github.com/codemirror/CodeMirror/
 Version: 5.61.0
 Revision: eac70bb1a31a08201e5705c788cd72e6283958f0
+Update Mechanism: Manual
 License: MIT
 License File: package/LICENSE
 Security Critical: no

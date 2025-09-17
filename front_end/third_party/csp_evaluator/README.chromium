@@ -2,6 +2,7 @@ Name: CSP Evaluator Core Library, a tool that allows developers to check if a Co
 Short Name: csp_evaluator
 URL: https://www.npmjs.com/package/csp_evaluator
 Version: 1.1.1
+Update Mechanism: Manual
 License: Apache-2.0
 License File: package/LICENSE
 Security Critical: no

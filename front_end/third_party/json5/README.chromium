@@ -3,6 +3,7 @@ Short Name: json5
 URL: https://github.com/json5/json5
 Version: 2.2.3
 Revision: de344f0
+Update Mechanism: Manual
 License: MIT
 License File: LICENSE
 Shipped: yes

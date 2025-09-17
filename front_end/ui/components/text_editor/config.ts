@@ -605,6 +605,12 @@ export const aiAutoCompleteSuggestion: CM.Extension = [
 
           let ghostText = activeSuggestion.text.slice(additionallyTypedText.length);
           if (selectedCompletion) {
+            // Do not show AI generated suggestion if top traditional suggestion is of type
+            // 'keyword' - `do`, `while` etc.
+            if (selectedCompletion.type?.includes('keyword')) {
+              this.decorations = CM.Decoration.none;
+              return;
+            }
             // If the user typed the full selected completion, then we don't check for overlap.
             // (e.g. the user wrote `flex`, traditional suggestion is `flex` and the AI autocompletion is
             // `;\njustify-content: center`. Then, we want to show the AI completion)

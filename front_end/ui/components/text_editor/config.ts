@@ -571,6 +571,12 @@ export const aiAutoCompleteSuggestion: CM.Extension = [
         decorations: CM.DecorationSet = CM.Decoration.none;
 
         update(update: CM.ViewUpdate): void {
+          // If there is no text on the document, we don't want to show the AI suggestion.
+          if (update.state.doc.length === 0) {
+            this.decorations = CM.Decoration.none;
+            return;
+          }
+
           // Hide decorations if there is no active AI suggestion.
           const activeSuggestion = update.state.field(aiAutoCompleteSuggestionState);
           if (!activeSuggestion) {

@@ -51,6 +51,11 @@ export class SearchResultsPane extends UI.Widget.VBox {
     this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this.treeOutline.registerRequiredCSS(searchResultsPaneStyles);
     this.treeOutline.setHideOverflow(true);
+    this.treeOutline.addEventListener(
+        UI.TreeOutline.Events.ElementExpanded,
+        (event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => {
+          this.updateMatchesUI(event.data as SearchResultsTreeElement);
+        });
 
     this.contentElement.appendChild(this.treeOutline.element);
 
@@ -65,7 +70,8 @@ export class SearchResultsPane extends UI.Widget.VBox {
   showAllMatches(): void {
     this.treeElements.forEach(treeElement => {
       treeElement.expand();
-      treeElement.showAllMatches();
+      treeElement.removeChildren();
+      this.appendSearchMatches(treeElement, 0, treeElement.searchResult.matchesCount());
     });
   }
 
@@ -88,77 +94,24 @@ export class SearchResultsPane extends UI.Widget.VBox {
     this.matchesExpandedCount += searchResult.matchesCount();
     this.treeElements.push(treeElement);
   }
-}
 
-export const matchesExpandedByDefault = 200;
-export const matchesShownAtOnce = 20;
-
-export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
-  private searchConfig: Workspace.SearchConfig.SearchConfig;
-  private searchResult: SearchResult;
-  private initialized: boolean;
-  override toggleOnClick: boolean;
-
-  constructor(searchConfig: Workspace.SearchConfig.SearchConfig, searchResult: SearchResult) {
-    super('', true);
-    this.searchConfig = searchConfig;
-    this.searchResult = searchResult;
-    this.initialized = false;
-    this.toggleOnClick = true;
-  }
-
-  override onexpand(): void {
-    if (this.initialized) {
+  private updateMatchesUI(element: SearchResultsTreeElement): void {
+    if (element.initialized) {
       return;
     }
-
-    this.updateMatchesUI();
-    this.initialized = true;
-  }
-
-  showAllMatches(): void {
-    this.removeChildren();
-    this.appendSearchMatches(0, this.searchResult.matchesCount());
-  }
-
-  private updateMatchesUI(): void {
-    this.removeChildren();
-    const toIndex = Math.min(this.searchResult.matchesCount(), matchesShownAtOnce);
-    if (toIndex < this.searchResult.matchesCount()) {
-      this.appendSearchMatches(0, toIndex - 1);
-      this.appendShowMoreMatchesElement(toIndex - 1);
+    element.removeChildren();
+    const toIndex = Math.min(element.searchResult.matchesCount(), matchesShownAtOnce);
+    if (toIndex < element.searchResult.matchesCount()) {
+      this.appendSearchMatches(element, 0, toIndex - 1);
+      this.appendShowMoreMatchesElement(element, toIndex - 1);
     } else {
-      this.appendSearchMatches(0, toIndex);
+      this.appendSearchMatches(element, 0, toIndex);
     }
+    element.initialized = true;
   }
 
-  override onattach(): void {
-    this.updateSearchMatches();
-  }
-
-  private updateSearchMatches(): void {
-    this.listItemElement.classList.add('search-result');
-    // clang-format off
-    render(html`
-      <span class="search-result-file-name">${this.searchResult.label()}
-        <span class="search-result-dash">${'\u2014'}</span>
-        <span class="search-result-qualifier">${this.searchResult.description()}</span>
-      </span>
-      <span class="search-result-matches-count"
-          aria-label=${i18nString(UIStrings.matchesCountS, {PH1: this.searchResult.matchesCount()})}>
-          ${this.searchResult.matchesCount()}
-      </span>`,
-    this.listItemElement);
-    // clang-format on
-
-    this.tooltip = this.searchResult.description();
-    if (this.expanded) {
-      this.updateMatchesUI();
-    }
-  }
-
-  private appendSearchMatches(fromIndex: number, toIndex: number): void {
-    const searchResult = this.searchResult;
+  private appendSearchMatches(element: SearchResultsTreeElement, fromIndex: number, toIndex: number): void {
+    const searchResult = element.searchResult;
 
     const queries = this.searchConfig.queries();
     const regexes = [];
@@ -191,7 +144,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
       const resultLabel = searchResult.matchLabel(i);
 
       const searchMatchElement = new UI.TreeOutline.TreeElement();
-      this.appendChild(searchMatchElement);
+      element.appendChild(searchMatchElement);
       // clang-format off
       render(html`
         <button class="devtools-link text-button link-style search-match-link"
@@ -221,14 +174,14 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  private appendShowMoreMatchesElement(startMatchIndex: number): void {
-    const matchesLeftCount = this.searchResult.matchesCount() - startMatchIndex;
+  private appendShowMoreMatchesElement(element: SearchResultsTreeElement, startMatchIndex: number): void {
+    const matchesLeftCount = element.searchResult.matchesCount() - startMatchIndex;
     const showMoreMatchesText = i18nString(UIStrings.showDMore, {PH1: matchesLeftCount});
     const showMoreMatchesTreeElement = new UI.TreeOutline.TreeElement(showMoreMatchesText);
-    this.appendChild(showMoreMatchesTreeElement);
+    element.appendChild(showMoreMatchesTreeElement);
     showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
     showMoreMatchesTreeElement.onselect =
-        this.showMoreMatchesElementSelected.bind(this, showMoreMatchesTreeElement, startMatchIndex);
+        this.showMoreMatchesElementSelected.bind(this, element, showMoreMatchesTreeElement, startMatchIndex);
   }
 
   private regexMatchRanges(lineContent: string, regex: RegExp): TextUtils.TextRange.SourceRange[] {
@@ -243,10 +196,51 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private showMoreMatchesElementSelected(
-      showMoreMatchesTreeElement: UI.TreeOutline.TreeElement, startMatchIndex: number): boolean {
-    this.removeChild(showMoreMatchesTreeElement);
-    this.appendSearchMatches(startMatchIndex, this.searchResult.matchesCount());
+      parentElement: SearchResultsTreeElement, showMoreMatchesTreeElement: UI.TreeOutline.TreeElement,
+      startMatchIndex: number): boolean {
+    parentElement.removeChild(showMoreMatchesTreeElement);
+    this.appendSearchMatches(parentElement, startMatchIndex, parentElement.searchResult.matchesCount());
     return false;
+  }
+}
+
+export const matchesExpandedByDefault = 200;
+export const matchesShownAtOnce = 20;
+
+export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
+  searchConfig: Workspace.SearchConfig.SearchConfig;
+  searchResult: SearchResult;
+  initialized: boolean;
+  override toggleOnClick: boolean;
+
+  constructor(searchConfig: Workspace.SearchConfig.SearchConfig, searchResult: SearchResult) {
+    super('', true);
+    this.searchConfig = searchConfig;
+    this.searchResult = searchResult;
+    this.initialized = false;
+    this.toggleOnClick = true;
+  }
+
+  override onattach(): void {
+    this.updateSearchMatches();
+  }
+
+  private updateSearchMatches(): void {
+    this.listItemElement.classList.add('search-result');
+    // clang-format off
+    render(html`
+      <span class="search-result-file-name">${this.searchResult.label()}
+        <span class="search-result-dash">${'\u2014'}</span>
+        <span class="search-result-qualifier">${this.searchResult.description()}</span>
+      </span>
+      <span class="search-result-matches-count"
+          aria-label=${i18nString(UIStrings.matchesCountS, {PH1: this.searchResult.matchesCount()})}>
+          ${this.searchResult.matchesCount()}
+      </span>`,
+    this.listItemElement);
+    // clang-format on
+
+    this.tooltip = this.searchResult.description();
   }
 }
 

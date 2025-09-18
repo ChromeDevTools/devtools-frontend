@@ -80,7 +80,7 @@ function normalizeBadgeName(name: string): string {
 export const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.google.com/profile/u/me';
 
 async function makeHttpRequest<R extends object>(request: DispatchHttpRequestRequest): Promise<R|null> {
-  if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled) {
+  if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled || Root.Runtime.hostConfig.isOffTheRecord) {
     return null;
   }
 

@@ -212,7 +212,7 @@ export class SyncSection extends HTMLElement {
   }
 
   async #fetchGdpDetails(): Promise<void> {
-    if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled) {
+    if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled || Root.Runtime.hostConfig.isOffTheRecord) {
       return;
     }
 

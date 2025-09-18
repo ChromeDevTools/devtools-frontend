@@ -7,8 +7,6 @@ import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterA
 
 export {DefinitionKind, type ScopeTreeNode} from '../../entrypoints/formatter_worker/FormatterActions.js';
 
-const MAX_WORKERS = Math.max(2, navigator.hardwareConcurrency - 1);
-
 let formatterWorkerPoolInstance: FormatterWorkerPool;
 
 export class FormatterWorkerPool {
@@ -37,12 +35,14 @@ export class FormatterWorkerPool {
   }
 
   private processNextTask(): void {
+    const maxWorkers = Math.max(2, navigator.hardwareConcurrency - 1);
+
     if (!this.taskQueue.length) {
       return;
     }
 
     let freeWorker = [...this.workerTasks.keys()].find(worker => !this.workerTasks.get(worker));
-    if (!freeWorker && this.workerTasks.size < MAX_WORKERS) {
+    if (!freeWorker && this.workerTasks.size < maxWorkers) {
       freeWorker = this.createWorker();
     }
     if (!freeWorker) {

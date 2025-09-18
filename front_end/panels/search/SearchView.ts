@@ -111,7 +111,6 @@ const {widgetConfig} = UI.Widget;
 
 interface SearchViewInput {
   query: string;
-  focusSearchInput: boolean;
   matchCase: boolean;
   isRegex: boolean;
   searchMessage: string;
@@ -128,12 +127,15 @@ interface SearchViewInput {
   onClearSearch: () => void;
 }
 
-type View = (input: SearchViewInput, output: object, target: HTMLElement) => void;
+interface SearchViewOutput {
+  focusSearchInput: () => void;
+}
+
+type View = (input: SearchViewInput, output: SearchViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const {
     query,
-    focusSearchInput,
     matchCase,
     isRegex,
     searchMessage,
@@ -179,10 +181,12 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 @keydown=${onQueryKeyDown}
                 @input=${(e: Event) => onQueryChange((e.target as HTMLInputElement).value)}
                 ${ref(e => {
-                  if (e instanceof HTMLInputElement && focusSearchInput) {
-                    e.focus();
-                    e.select();
-                  }
+                  output.focusSearchInput = () => {
+                    if (e instanceof HTMLInputElement) {
+                      e.focus();
+                      e.select();
+                    }
+                  };
                 })}>
             <devtools-button class="clear-button" tabindex="-1"
                 @click=${onClearSearchInput}
@@ -258,7 +262,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
 export class SearchView extends UI.Widget.VBox {
   readonly #view: View;
-  #focusSearchInput: boolean;
+  #focusSearchInput = (): void => {};
   #isIndexing: boolean;
   #searchId: number;
   #searchMatchesCount: number;
@@ -294,7 +298,6 @@ export class SearchView extends UI.Widget.VBox {
     this.#view = view;
     this.setMinimumSize(0, 40);
 
-    this.#focusSearchInput = false;
     this.#isIndexing = false;
     this.#searchId = 1;
     this.#query = '';
@@ -320,7 +323,6 @@ export class SearchView extends UI.Widget.VBox {
   override performUpdate(): void {
     const input: SearchViewInput = {
       query: this.#query,
-      focusSearchInput: this.#focusSearchInput,
       matchCase: this.#matchCase,
       isRegex: this.#isRegex,
       searchMessage: this.#searchMessage,
@@ -338,9 +340,13 @@ export class SearchView extends UI.Widget.VBox {
       onRefresh: this.#onRefresh.bind(this),
       onClearSearch: this.#onClearSearch.bind(this),
     };
-    const output = {};
+    const that = this;
+    const output: SearchViewOutput = {
+      set focusSearchInput(value: () => void) {
+        that.#focusSearchInput = value;
+      }
+    };
     this.#view(input, output, this.contentElement);
-    this.#focusSearchInput = false;
   }
 
   #onToggleRegex(): void {
@@ -360,7 +366,9 @@ export class SearchView extends UI.Widget.VBox {
   toggle(queryCandidate: string, searchImmediately?: boolean): void {
     this.#query = queryCandidate;
     this.requestUpdate();
-    this.focus();
+    void this.updateComplete.then(() => {
+      this.focus();
+    });
 
     this.#initScope();
     if (searchImmediately) {
@@ -537,8 +545,7 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   override focus(): void {
-    this.#focusSearchInput = true;
-    this.requestUpdate();
+    this.#focusSearchInput();
   }
 
   override willHide(): void {

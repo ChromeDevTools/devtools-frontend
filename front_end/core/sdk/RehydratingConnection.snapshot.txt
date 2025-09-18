@@ -994,6 +994,217 @@ Content:
 
 /* RehydratingConnection says: */
 {
+  "method": "Debugger.scriptParsed",
+  "params": {
+    "scriptId": "6",
+    "isolate": "7348673817420155000",
+    "buildId": "",
+    "executionContextId": 1,
+    "startLine": 0,
+    "startColumn": 0,
+    "endLine": 0,
+    "endColumn": 0,
+    "hash": "",
+    "isModule": false,
+    "url": "",
+    "hasSourceURL": false,
+    "sourceURL": "",
+    "pid": 97964,
+    "sourceText": "(async function(){ a…",
+    "length": 32
+  },
+  "sessionId": 1
+}
+
+/* fakeDevToolsFrontend says: */
+{
+  "id": 21,
+  "sessionId": 1,
+  "method": "Debugger.getScriptSource",
+  "params": {
+    "scriptId": "6"
+  }
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 21,
+  "result": {
+    "scriptSource": "(async function(){ a…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "method": "Debugger.scriptParsed",
+  "params": {
+    "scriptId": "1",
+    "isolate": "7348673817420155000",
+    "buildId": "",
+    "executionContextId": 1,
+    "startLine": 0,
+    "startColumn": 0,
+    "endLine": 0,
+    "endColumn": 0,
+    "hash": "",
+    "isModule": false,
+    "url": "",
+    "hasSourceURL": false,
+    "sourceURL": "",
+    "pid": 97964
+  },
+  "sessionId": 1
+}
+
+/* fakeDevToolsFrontend says: */
+{
+  "id": 22,
+  "sessionId": 1,
+  "method": "Debugger.getScriptSource",
+  "params": {
+    "scriptId": "1"
+  }
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 22,
+  "result": {
+    "scriptSource": "No source text avail…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "method": "Debugger.scriptParsed",
+  "params": {
+    "scriptId": "2",
+    "isolate": "7348673817420155000",
+    "buildId": "",
+    "executionContextId": 1,
+    "startLine": 0,
+    "startColumn": 0,
+    "endLine": 0,
+    "endColumn": 0,
+    "hash": "",
+    "isModule": false,
+    "url": "",
+    "hasSourceURL": false,
+    "sourceURL": "",
+    "pid": 97964,
+    "sourceText": "() {}…",
+    "length": 5
+  },
+  "sessionId": 1
+}
+
+/* fakeDevToolsFrontend says: */
+{
+  "id": 23,
+  "sessionId": 1,
+  "method": "Debugger.getScriptSource",
+  "params": {
+    "scriptId": "2"
+  }
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 23,
+  "result": {
+    "scriptSource": "() {}…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "method": "Debugger.scriptParsed",
+  "params": {
+    "scriptId": "3",
+    "isolate": "7348673817420155000",
+    "buildId": "",
+    "executionContextId": 1,
+    "startLine": 0,
+    "startColumn": 0,
+    "endLine": 0,
+    "endColumn": 0,
+    "hash": "",
+    "isModule": false,
+    "url": "extensions::SafeBuiltins",
+    "hasSourceURL": false,
+    "sourceURL": "",
+    "pid": 97964
+  },
+  "sessionId": 1
+}
+
+/* fakeDevToolsFrontend says: */
+{
+  "id": 24,
+  "sessionId": 1,
+  "method": "Debugger.getScriptSource",
+  "params": {
+    "scriptId": "3"
+  }
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 24,
+  "result": {
+    "scriptSource": "No source text avail…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "method": "Debugger.scriptParsed",
+  "params": {
+    "scriptId": "4",
+    "isolate": "7348673817420155000",
+    "buildId": "",
+    "executionContextId": 1,
+    "startLine": 0,
+    "startColumn": 0,
+    "endLine": 0,
+    "endColumn": 0,
+    "hash": "",
+    "isModule": false,
+    "url": "v8/LoadTimes",
+    "hasSourceURL": false,
+    "sourceURL": "",
+    "pid": 97964,
+    "sourceText": "var chrome;if (!chro…",
+    "length": 198
+  },
+  "sessionId": 1
+}
+
+/* fakeDevToolsFrontend says: */
+{
+  "id": 25,
+  "sessionId": 1,
+  "method": "Debugger.getScriptSource",
+  "params": {
+    "scriptId": "4"
+  }
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 25,
+  "result": {
+    "scriptSource": "var chrome;if (!chro…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
   "id": 2,
   "result": {
     "debuggerId": "7777777777777777777.8888888888888888888"

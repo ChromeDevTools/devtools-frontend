@@ -459,11 +459,11 @@ export class EnhancedTracesParser {
     for (const orphanScript of orphanScripts) {
       const orphanScriptExecutionContextIsolateId =
           this.getExecutionContextIsolateId(orphanScript.isolate, orphanScript.executionContextId);
-      if (orphanScriptExecutionContextIsolateId in executionContextIsolateToTarget) {
-        const frameId = executionContextIsolateToTarget.get(orphanScriptExecutionContextIsolateId);
-        if (frameId) {
-          targetToScripts.get(frameId)?.push(orphanScript);
-        }
+      const frameId = executionContextIsolateToTarget.get(orphanScriptExecutionContextIsolateId);
+
+      if (frameId) {
+        // Found a link via execution context, use it.
+        targetToScripts.get(frameId)?.push(orphanScript);
       } else if (orphanScript.pid) {
         const target = targets.find(target => target.pid === orphanScript.pid);
         if (target) {

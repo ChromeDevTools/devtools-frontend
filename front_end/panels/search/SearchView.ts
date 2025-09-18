@@ -106,7 +106,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/search/SearchView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {ref} = Directives;
+const {ref, live} = Directives;
 const {widgetConfig} = UI.Widget;
 
 interface SearchViewInput {
@@ -175,7 +175,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                     change: true, keydown: 'ArrowUp|ArrowDown|Enter'})}
                 aria-label=${i18nString(UIStrings.find)}
                 size="100" results="0"
-                .value=${query}
+                .value=${live(query)}
                 @keydown=${onQueryKeyDown}
                 @input=${(e: Event) => onQueryChange((e.target as HTMLInputElement).value)}
                 ${ref(e => {

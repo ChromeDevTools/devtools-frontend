@@ -6,6 +6,7 @@ Revision: 0ae308daa77aeddb089cd6b7b0a443fca026266e
 Update Mechanism: Manual
 License: Apache-2.0
 License File: LICENSE
+Update Mechanism: Static.HardFork (https://crbug.com/422918273)
 Security Critical: no
 Shipped: yes
 

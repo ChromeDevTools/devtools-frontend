@@ -52,7 +52,7 @@ import {
   StylesSidebarPane,
 } from './StylesSidebarPane.js';
 
-const {html, nothing, render, Directives: {classMap, ifDefined}} = Lit;
+const {html, nothing, render, Directives: {classMap}} = Lit;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -446,19 +446,25 @@ export class AttributeRenderer extends rendererBase(SDK.CSSPropertyParserMatcher
     const attrCall =
         this.#treeElement?.getTracingTooltip('attr', match.node, this.#matchedStyles, this.#computedStyles, context);
     const tooltipId = attributeMissing ? undefined : this.#treeElement?.getTooltipId('custom-attribute');
+    const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
     render(html`
         <span data-title=${computedValue || ''}
               jslog=${VisualLogging.link('css-variable').track({click: true, hover: true})}
-        >${attrCall ?? 'attr'}(<span class=${attributeClass} aria-details=${ifDefined(tooltipId)}>${match.name}</span>${
-            match.type ? html` <span class=${typeClass}>${match.type}</span>` : nothing
-        }${renderedFallback ? html`, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing
-        })</span>${tooltipId ? html`
+        >${attrCall ?? 'attr'}(<devtools-link-swatch class=${attributeClass} .data=${{
+              tooltip,
+              text: match.name,
+              isDefined: true,
+              onLinkActivate: () => this.#handleAttributeActivate(this.#matchedStyles.originatingNodeForStyle(match.style), match.name),
+            }}></devtools-link-swatch>${tooltipId ? html`
           <devtools-tooltip
             id=${tooltipId}
             variant=rich
             jslogContext=elements.css-var
-          >${JSON.stringify(rawValue)}</devtools-tooltip>` : ''}`, varSwatch);
+          >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing}${
+            match.type ? html` <span class=${typeClass}>${match.type}</span>` : nothing
+        }${renderedFallback ? html`, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing
+        })</span>`, varSwatch);
     // clang-format on
 
     const color = computedValue && Common.Color.parse(computedValue);
@@ -477,6 +483,15 @@ export class AttributeRenderer extends rendererBase(SDK.CSSPropertyParserMatcher
     }
 
     return [colorSwatch, varSwatch];
+  }
+
+  #handleAttributeActivate(node: SDK.DOMModel.DOMNode|null, attribute: string): void {
+    if (!node) {
+      return;
+    }
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AttributeLinkClicked);
+    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ATTR_LINK);
+    ElementsPanel.instance().highlightNodeAttribute(node, attribute);
   }
 }
 

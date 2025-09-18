@@ -260,6 +260,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
   }
 
+  highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void {
+    this.#viewOutput?.elementsTreeOutline?.highlightNodeAttribute(node, attribute);
+  }
+
   setWordWrap(wrap: boolean): void {
     this.#wrap = wrap;
     this.performUpdate();
@@ -1004,6 +1008,15 @@ export class ElementsTreeOutline extends
     }
 
     treeElement.revealAndSelect(omitFocus);
+  }
+
+  highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void {
+    const treeElement = this.findTreeElement(node);
+    if (!treeElement) {
+      return;
+    }
+    treeElement.reveal();
+    treeElement.highlightAttribute(attribute);
   }
 
   treeElementFromEventInternal(event: MouseEvent): UI.TreeOutline.TreeElement|null {

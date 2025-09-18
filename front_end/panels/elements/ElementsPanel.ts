@@ -774,6 +774,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.#domTreeWidget.selectDOMNode(node, focus);
   }
 
+  highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void {
+    this.#domTreeWidget.highlightNodeAttribute(node, attribute);
+  }
+
   selectAndShowSidebarTab(tabId: SidebarPaneTabId): void {
     if (!this.sidebarPaneView) {
       return;

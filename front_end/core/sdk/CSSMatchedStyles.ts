@@ -869,14 +869,18 @@ export class CSSMatchedStyles {
     return domCascade ? domCascade.computeAttribute(style, attributeName, type) : null;
   }
 
-  rawAttributeValueFromStyle(style: CSSStyleDeclaration, attributeName: string): string|null {
+  originatingNodeForStyle(style: CSSStyleDeclaration): DOMNode|null {
     let node: DOMNode|null = this.nodeForStyle(style) ?? this.node();
 
     // If it's a pseudo-element, we need to find the originating element.
     while (node?.pseudoType()) {
       node = node.parentNode;
     }
+    return node;
+  }
 
+  rawAttributeValueFromStyle(style: CSSStyleDeclaration, attributeName: string): string|null {
+    const node = this.originatingNodeForStyle(style);
     if (!node) {
       return null;
     }

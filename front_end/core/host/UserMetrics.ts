@@ -511,7 +511,8 @@ export enum Action {
   AiCodeCompletionSuggestionDisplayed = 186,
   AiCodeCompletionSuggestionAccepted = 187,
   AiCodeCompletionError = 188,
-  MAX_VALUE = 189,
+  AttributeLinkClicked = 189,
+  MAX_VALUE = 190,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -1194,7 +1195,8 @@ export const enum SwatchType {
   ANGLE = 7,
   LENGTH = 8,
   POSITION_TRY_LINK = 10,
-  MAX_VALUE = 11,
+  ATTR_LINK = 11,
+  MAX_VALUE = 12,
 }
 
 export const enum BadgeType {

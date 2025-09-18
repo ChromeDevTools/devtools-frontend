@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 
 import * as Accessibility from './accessibility.js';
 
@@ -16,6 +16,8 @@ describeWithMockConnection('ARIAAttributesView', () => {
   let setAttributeValueSpy: sinon.SinonSpy;
 
   beforeEach(() => {
+    setMockConnectionResponseHandler('Debugger.enable', () => ({}));
+    setMockConnectionResponseHandler('Storage.getStorageKeyForFrame', () => ({}));
     stubNoopSettings();
     target = createTarget();
     domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
@@ -40,6 +42,13 @@ describeWithMockConnection('ARIAAttributesView', () => {
 
         proxyElement.dispatchEvent(new FocusEvent('blur'));
       };
+
+  it('should render attributes', async () => {
+    const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane();
+    renderElementIntoDOM(view, {includeCommonStyles: true});
+    view.setNode(node);
+    await assertScreenshot('accessibility/aria-attributes.png');
+  });
 
   it('can modify an ARIA attribute value', () => {
     const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane();

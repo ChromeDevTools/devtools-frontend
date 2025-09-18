@@ -4,6 +4,7 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {stripLitHtmlCommentNodes} from '../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 
 import * as Search from './search.js';
@@ -219,7 +220,7 @@ describeWithLocale('SearchResultsPane', () => {
 
     const matchSpans = resultPane['treeOutline'].shadowRoot.querySelectorAll('.search-match-content');
     assert.lengthOf(matchSpans, 3);
-    assert.deepEqual([...matchSpans].map(span => span.innerHTML), [
+    assert.deepEqual([...matchSpans].map(span => stripLitHtmlCommentNodes(span.innerHTML)), [
       'This is <span class="highlighted-search-result">the</span> line with multiple "the" matches',
       '… the line with multiple "<span class="highlighted-search-result">the</span>" matches',
       '…is a line with only one "<span class="highlighted-search-result">the</span>" match',

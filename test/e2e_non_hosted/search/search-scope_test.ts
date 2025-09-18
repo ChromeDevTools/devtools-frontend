@@ -55,7 +55,7 @@ describe('The Search Panel', () => {
 
       // Wrap the entries with the file details.
       return {
-        fileName: fileNameElement.firstChild?.textContent || '',
+        fileName: fileNameElement.deepInnerText().split('\u2014')[0],
         matchesCount: parseInt(matchesCountElement.textContent || '', 10),
       };
     })));

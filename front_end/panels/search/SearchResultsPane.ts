@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 
 import searchResultsPaneStyles from './searchResultsPane.css.js';
 import type {SearchResult} from './SearchScope.js';
@@ -137,30 +138,22 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
 
   private updateSearchMatches(): void {
     this.listItemElement.classList.add('search-result');
-
-    const fileNameSpan = span(this.searchResult.label(), 'search-result-file-name');
-    fileNameSpan.appendChild(span('\u2014', 'search-result-dash'));
-    fileNameSpan.appendChild(span(this.searchResult.description(), 'search-result-qualifier'));
+    // clang-format off
+    render(html`
+      <span class="search-result-file-name">${this.searchResult.label()}
+        <span class="search-result-dash">${'\u2014'}</span>
+        <span class="search-result-qualifier">${this.searchResult.description()}</span>
+      </span>
+      <span class="search-result-matches-count"
+          aria-label=${i18nString(UIStrings.matchesCountS, {PH1: this.searchResult.matchesCount()})}>
+          ${this.searchResult.matchesCount()}
+      </span>`,
+    this.listItemElement);
+    // clang-format on
 
     this.tooltip = this.searchResult.description();
-    this.listItemElement.appendChild(fileNameSpan);
-    const matchesCountSpan = document.createElement('span');
-    matchesCountSpan.className = 'search-result-matches-count';
-
-    matchesCountSpan.textContent = `${this.searchResult.matchesCount()}`;
-    UI.ARIAUtils.setLabel(
-        matchesCountSpan, i18nString(UIStrings.matchesCountS, {PH1: this.searchResult.matchesCount()}));
-
-    this.listItemElement.appendChild(matchesCountSpan);
     if (this.expanded) {
       this.updateMatchesUI();
-    }
-
-    function span(text: string, className: string): Element {
-      const span = document.createElement('span');
-      span.className = className;
-      span.textContent = text;
-      return span;
     }
   }
 
@@ -195,28 +188,29 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
         ({lineSegment: lineContent, matchRanges} = lineSegmentForMultipleMatches(lineContent, matchRanges));
       }
 
-      const anchor = Components.Linkifier.Linkifier.linkifyRevealable(
-          searchResult.matchRevealable(i), '', undefined, undefined, undefined, 'search-match');
-      anchor.classList.add('search-match-link');
-      anchor.tabIndex = 0;
-      const labelSpan = document.createElement('span');
-      labelSpan.classList.add('search-match-line-number');
       const resultLabel = searchResult.matchLabel(i);
-      labelSpan.textContent = resultLabel;
-      if (typeof resultLabel === 'number' && !isNaN(resultLabel)) {
-        UI.ARIAUtils.setLabel(labelSpan, i18nString(UIStrings.lineS, {PH1: resultLabel}));
-      } else {
-        UI.ARIAUtils.setLabel(labelSpan, resultLabel);
-      }
-      anchor.appendChild(labelSpan);
-
-      const contentSpan = this.createContentSpan(lineContent, matchRanges);
-      anchor.appendChild(contentSpan);
 
       const searchMatchElement = new UI.TreeOutline.TreeElement();
       this.appendChild(searchMatchElement);
+      // clang-format off
+      render(html`
+        <button class="devtools-link text-button link-style search-match-link"
+                jslog="Link; context: search-match; track: click" role="link" tabindex="0"
+                @click=${() => void Common.Revealer.reveal(searchResult.matchRevealable(i))}>
+          <span class="search-match-line-number"
+              aria-label=${typeof resultLabel === 'number' && !isNaN(resultLabel)
+                             ?  i18nString(UIStrings.lineS, {PH1: resultLabel}) : resultLabel}>
+            ${resultLabel}
+          </span>
+          <span class="search-match-content" aria-label="${lineContent} line">
+            ${lineContent}
+          </span>
+        </button>`,
+        searchMatchElement.listItemElement);
+      // clang-format on
+      const contentSpan = searchMatchElement.listItemElement.querySelector('.search-match-content') as HTMLElement;
+      UI.UIUtils.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-search-result');
       searchMatchElement.listItemElement.className = 'search-match';
-      searchMatchElement.listItemElement.appendChild(anchor);
       searchMatchElement.listItemElement.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
           event.consume(true);
@@ -235,15 +229,6 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
     showMoreMatchesTreeElement.onselect =
         this.showMoreMatchesElementSelected.bind(this, showMoreMatchesTreeElement, startMatchIndex);
-  }
-
-  private createContentSpan(lineContent: string, matchRanges: TextUtils.TextRange.SourceRange[]): Element {
-    const contentSpan = document.createElement('span');
-    contentSpan.className = 'search-match-content';
-    contentSpan.textContent = lineContent;
-    UI.ARIAUtils.setLabel(contentSpan, `${lineContent} line`);
-    UI.UIUtils.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-search-result');
-    return contentSpan;
   }
 
   private regexMatchRanges(lineContent: string, regex: RegExp): TextUtils.TextRange.SourceRange[] {

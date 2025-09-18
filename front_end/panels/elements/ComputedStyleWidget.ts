@@ -205,7 +205,6 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
     swatch.renderColor(color);
     const valueElement = document.createElement('span');
     valueElement.textContent = match.text;
-    swatch.append(valueElement);
 
     swatch.addEventListener(
         InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event: InlineEditor.ColorSwatch.ColorChangedEvent) => {
@@ -214,7 +213,7 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
         });
 
     context.addControl('color', swatch);
-    return [swatch];
+    return [swatch, valueElement];
   }
 
   matcher(): SDK.CSSPropertyParserMatchers.ColorMatcher {

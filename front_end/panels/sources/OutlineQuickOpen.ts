@@ -44,7 +44,9 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
 
   function subtitleFromParamList(): string {
     while (cursor.name !== 'ParamList') {
-      cursor.nextSibling();
+      if (!cursor.nextSibling()) {
+        break;
+      }
     }
     let parameters = '';
     if (cursor.name === 'ParamList' && cursor.firstChild()) {

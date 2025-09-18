@@ -651,6 +651,64 @@ const formatName = (name) => {
         );
       });
     });
+
+    it('doesn\'t get stuck in an endless loop on TextPrompt', () => {
+      typeScriptOutline(`
+export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SuggestBoxDelegate {
+  private proxyElement!: HTMLElement|undefined;
+  private proxyElementDisplay: string;
+  private autocompletionTimeout: number;
+  #title: string;
+  private queryRange: TextUtils.TextRange.TextRange|null;
+  private previousText: string;
+  private currentSuggestion: Suggestion|null;
+  private completionRequestId: number;
+  private ghostTextElement: HTMLSpanElement;
+  private leftParenthesesIndices: number[];
+  private loadCompletions!: (this: null, arg1: string, arg2: string, arg3?: boolean|undefined) => Promise<Suggestion[]>;
+  private completionStopCharacters!: string;
+  private usesSuggestionBuilder!: boolean;
+  #element?: Element;
+  private boundOnKeyDown?: ((ev: KeyboardEvent) => void);
+  private boundOnInput?: ((ev: Event) => void);
+  private boundOnMouseWheel?: ((event: Event) => void);
+  private boundClearAutocomplete?: (() => void);
+  private boundOnBlur?: ((ev: Event) => void);
+  private contentElement?: HTMLElement;
+  private suggestBox?: SuggestBox;
+  private isEditing?: boolean;
+  private focusRestorer?: ElementFocusRestorer;
+  private blurListener?: ((arg0: Event) => void);
+  private oldTabIndex?: number;
+  private completeTimeout?: number;
+  #disableDefaultSuggestionForEmptyInput?: boolean;
+  jslogContext: string|undefined = undefined;
+
+  constructor() {
+    super();
+    this.proxyElementDisplay = 'inline-block';
+    this.autocompletionTimeout = DefaultAutocompletionTimeout;
+    this.#title = '';
+    this.queryRange = null;
+    this.previousText = '';
+    this.currentSuggestion = null;
+    this.completionRequestId = 0;
+    this.ghostTextElement = document.createElement('span');
+    this.ghostTextElement.classList.add('auto-complete-text');
+    this.ghostTextElement.setAttribute('contenteditable', 'false');
+    this.leftParenthesesIndices = [];
+    ARIAUtils.setHidden(this.ghostTextElement, true);
+  }
+
+  initialize(
+      completions: (this: null, expression: string, filter: string, force?: boolean|undefined) => Promise<Suggestion[]>,
+      stopCharacters?: string, usesSuggestionBuilder?: boolean): void {
+    this.loadCompletions = completions;
+    this.completionStopCharacters = stopCharacters || ' =:[({;,!+-*/&|^<>.';
+    this.usesSuggestionBuilder = usesSuggestionBuilder || false;
+  }
+}`);
+    });
   });
 
   describe('generates a correct CSS outline', () => {

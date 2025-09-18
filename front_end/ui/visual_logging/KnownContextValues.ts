@@ -1907,6 +1907,8 @@ export const knownContextValues = new Set([
   'interactions',
   'interactivity',
   'interest-delay',
+  'interest-delay-end',
+  'interest-delay-start',
   'interest-groups',
   'interest-hide-delay',
   'interest-show-delay',

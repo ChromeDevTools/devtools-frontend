@@ -376,9 +376,10 @@ const UIStrings = {
   compositingFailedUnknownReason: 'Unknown Reason',
 
   /**
-   * @description Text for the execution stack trace
+   * @description Text for the execution "stack trace". It is not technically a stack trace, because it points to the beginning of each function
+   * and not to each call site, so we call it a function stack instead to avoid confusion.
    */
-  stackTrace: 'Stack trace',
+  functionStack: 'Function stack',
   /**
    * @description Text used to show any invalidations for a particular event that caused the browser to have to do more work to update the page.
    * @example {2} PH1
@@ -1711,10 +1712,10 @@ export class TimelineUIUtils {
       parsedTrace: Trace.TraceModel.ParsedTrace): Promise<void> {
     const {startTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
     let initiatorStackLabel = i18nString(UIStrings.initiatorStackTrace);
-    let stackLabel = i18nString(UIStrings.stackTrace);
+    let stackLabel = i18nString(UIStrings.functionStack);
     const stackTraceForEvent = Trace.Extras.StackTraceForEvent.get(event, parsedTrace.data);
     if (stackTraceForEvent?.callFrames.length || stackTraceForEvent?.description || stackTraceForEvent?.parent) {
-      contentHelper.addSection(i18nString(UIStrings.stackTrace));
+      contentHelper.addSection(i18nString(UIStrings.functionStack));
       contentHelper.createChildStackTraceElement(stackTraceForEvent);
       // TODO(andoli): also build stack trace component for other events
       // that have a stack trace using the StackTraceForEvent helper.

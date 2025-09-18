@@ -107,6 +107,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/search/SearchView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {ref} = Directives;
+const {widgetConfig} = UI.Widget;
 
 interface SearchViewInput {
   query: string;
@@ -115,6 +116,7 @@ interface SearchViewInput {
   isRegex: boolean;
   searchMessage: string;
   searchResultsMessage: string;
+  searchResultsPane: SearchResultsPane|null;
   progress: Common.Progress.Progress|null;
   onQueryChange: (query: string) => void;
   onQueryKeyDown: (evt: KeyboardEvent) => void;
@@ -126,11 +128,7 @@ interface SearchViewInput {
   onClearSearch: () => void;
 }
 
-interface SearchViewOutput {
-  searchResultsElement?: HTMLElement;
-}
-
-type View = (input: SearchViewInput, output: SearchViewOutput, target: HTMLElement) => void;
+type View = (input: SearchViewInput, output: object, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const {
@@ -139,6 +137,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     matchCase,
     isRegex,
     searchMessage,
+    searchResultsPane,
     searchResultsMessage,
     progress,
     onQueryChange,
@@ -150,6 +149,18 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     onRefresh,
     onClearSearch,
   } = input;
+  let header = '', text = '';
+  if (!query) {
+    header = i18nString(UIStrings.noSearchResult);
+    text = i18nString(
+        UIStrings.typeAndPressSToSearch,
+        {PH1: UI.KeyboardShortcut.KeyboardShortcut.shortcutToString(UI.KeyboardShortcut.Keys.Enter)});
+  } else if (progress) {
+    header = i18nString(UIStrings.searching);
+  } else if (!searchResultsPane) {
+    header = i18nString(UIStrings.noMatchesFound);
+    text = i18nString(UIStrings.nothingMatchedTheQuery);
+  }
   // clang-format off
   render(html`
       <style>${searchViewStyles}</style>
@@ -224,8 +235,13 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               } as Buttons.Button.ButtonData}></devtools-button>
         </devtools-toolbar>
       </div>
-      <div class="search-results" @keydown=${onPanelKeyDown}
-           ${ref(e => {output.searchResultsElement = e as HTMLElement;})}>
+      <div class="search-results" @keydown=${onPanelKeyDown}>
+        ${searchResultsPane
+           ? html`<devtools-widget .widgetConfig=${widgetConfig(UI.Widget.VBox)}>
+              ${searchResultsPane.element}
+            </devtools-widget>`
+           : html`<devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {header, text})}>
+                  </devtools-widget>`}
       </div>
       <div class="search-toolbar-summary" @keydown=${onPanelKeyDown}>
         <div class="search-message">${searchMessage}</div>
@@ -249,13 +265,10 @@ export class SearchView extends UI.Widget.VBox {
   #searchResultsCount: number;
   #nonEmptySearchResultsCount: number;
   #searchingView: UI.Widget.Widget|null;
-  #notFoundView: UI.Widget.Widget|null;
   #searchConfig: Workspace.SearchConfig.SearchConfig|null;
   #pendingSearchConfig: Workspace.SearchConfig.SearchConfig|null;
   #searchResultsPane: SearchResultsPane|null;
   #progress: Common.Progress.Progress|null;
-  #visiblePane: UI.Widget.Widget|null;
-  #searchResultsElement!: HTMLElement;
   #query: string;
   #matchCase = false;
   #isRegex = false;
@@ -272,7 +285,6 @@ export class SearchView extends UI.Widget.VBox {
   // result added.
   #throttler: Common.Throttler.Throttler;
   #pendingSearchResults: SearchResult[] = [];
-  #emptyStartView: UI.EmptyWidget.EmptyWidget;
 
   constructor(settingKey: string, throttler: Common.Throttler.Throttler, view = DEFAULT_VIEW) {
     super({
@@ -290,12 +302,10 @@ export class SearchView extends UI.Widget.VBox {
     this.#searchResultsCount = 0;
     this.#nonEmptySearchResultsCount = 0;
     this.#searchingView = null;
-    this.#notFoundView = null;
     this.#searchConfig = null;
     this.#pendingSearchConfig = null;
     this.#searchResultsPane = null;
     this.#progress = null;
-    this.#visiblePane = null;
     this.#throttler = throttler;
 
     this.#advancedSearchConfig = Common.Settings.Settings.instance().createLocalSetting(
@@ -305,12 +315,6 @@ export class SearchView extends UI.Widget.VBox {
     this.#load();
     this.performUpdate();
     this.#searchScope = null;
-
-    this.#emptyStartView = new UI.EmptyWidget.EmptyWidget(
-        i18nString(UIStrings.noSearchResult), i18nString(UIStrings.typeAndPressSToSearch, {
-          PH1: UI.KeyboardShortcut.KeyboardShortcut.shortcutToString(UI.KeyboardShortcut.Keys.Enter)
-        }));
-    this.#showPane(this.#emptyStartView);
   }
 
   override performUpdate(): void {
@@ -320,6 +324,7 @@ export class SearchView extends UI.Widget.VBox {
       matchCase: this.#matchCase,
       isRegex: this.#isRegex,
       searchMessage: this.#searchMessage,
+      searchResultsPane: this.#searchResultsPane,
       searchResultsMessage: this.#searchResultsMessage,
       progress: this.#progress,
       onQueryChange: (query: string) => {
@@ -333,12 +338,9 @@ export class SearchView extends UI.Widget.VBox {
       onRefresh: this.#onRefresh.bind(this),
       onClearSearch: this.#onClearSearch.bind(this),
     };
-    const output: SearchViewOutput = {};
+    const output = {};
     this.#view(input, output, this.contentElement);
     this.#focusSearchInput = false;
-    if (output.searchResultsElement) {
-      this.#searchResultsElement = output.searchResultsElement;
-    }
   }
 
   #onToggleRegex(): void {
@@ -416,7 +418,6 @@ export class SearchView extends UI.Widget.VBox {
     this.requestUpdate();
     this.#save();
     this.focus();
-    this.#showPane(this.#emptyStartView);
   }
 
   #onSearchResult(searchId: number, searchResult: SearchResult): void {
@@ -429,7 +430,6 @@ export class SearchView extends UI.Widget.VBox {
     }
     if (!this.#searchResultsPane) {
       this.#searchResultsPane = this.createSearchResultsPane();
-      this.#showPane(this.#searchResultsPane);
     }
     this.#pendingSearchResults.push(searchResult);
     void this.#throttler.schedule(async () => this.#addPendingSearchResults());
@@ -452,9 +452,6 @@ export class SearchView extends UI.Widget.VBox {
   #onSearchFinished(searchId: number, finished: boolean): void {
     if (searchId !== this.#searchId || !this.#progress) {
       return;
-    }
-    if (!this.#searchResultsPane) {
-      this.#nothingFound();
     }
     this.#progress = null;
     this.#searchFinished(finished);
@@ -479,7 +476,6 @@ export class SearchView extends UI.Widget.VBox {
 
   #resetSearch(): void {
     this.#stopSearch();
-    this.#showPane(null);
     this.#searchResultsPane = null;
     this.#searchMessage = '';
     this.#searchResultsMessage = '';
@@ -503,7 +499,6 @@ export class SearchView extends UI.Widget.VBox {
     if (!this.#searchingView) {
       this.#searchingView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.searching), '');
     }
-    this.#showPane(this.#searchingView);
     this.#searchMessage = i18nString(UIStrings.searching);
     this.performUpdate();
     this.#updateSearchResultsMessage();
@@ -524,24 +519,6 @@ export class SearchView extends UI.Widget.VBox {
       this.#searchResultsMessage = '';
     }
     this.performUpdate();
-  }
-
-  #showPane(panel: UI.Widget.Widget|null): void {
-    if (this.#visiblePane) {
-      this.#visiblePane.detach();
-    }
-    if (panel) {
-      panel.show(this.#searchResultsElement);
-    }
-    this.#visiblePane = panel;
-  }
-
-  #nothingFound(): void {
-    if (!this.#notFoundView) {
-      this.#notFoundView = new UI.EmptyWidget.EmptyWidget(
-          i18nString(UIStrings.noMatchesFound), i18nString(UIStrings.nothingMatchedTheQuery));
-    }
-    this.#showPane(this.#notFoundView);
   }
 
   #addSearchResult(searchResult: SearchResult): void {

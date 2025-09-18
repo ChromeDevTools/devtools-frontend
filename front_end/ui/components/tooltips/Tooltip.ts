@@ -360,9 +360,7 @@ export class Tooltip extends HTMLElement {
     if (this.open && Tooltip.lastOpenedTooltipId === this.id) {
       Tooltip.lastOpenedTooltipId = null;
     }
-    this.#timeout = window.setTimeout(() => {
-      this.hidePopover();
-    }, this.hoverDelay);
+    this.hidePopover();
   };
 
   toggle = (): void => {

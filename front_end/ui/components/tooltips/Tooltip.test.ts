@@ -114,17 +114,20 @@ describe('Tooltip', () => {
     assert.isTrue(tooltip.open);
   });
 
-  it('should not be activated if un-hovered', () => {
-    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+  it('should not be activated if un-hovered', async () => {
     const container = renderTooltip();
+    const tooltip = container.querySelector('devtools-tooltip');
+    assert.exists(tooltip);
 
     const button = container.querySelector('button');
+    const opened = waitForToggle(tooltip, 'open');
     button?.dispatchEvent(new MouseEvent('mouseenter'));
-    button?.dispatchEvent(new MouseEvent('mouseleave'));
 
-    clock.runAll();
-    assert.isFalse(container.querySelector('devtools-tooltip')?.open);
-    clock.restore();
+    await opened;
+    assert.isTrue(tooltip.open);
+
+    button?.dispatchEvent(new MouseEvent('mouseleave'));
+    assert.isFalse(tooltip.open);
   });
 
   it('should not be activated if dragged', () => {
@@ -139,17 +142,20 @@ describe('Tooltip', () => {
     clock.restore();
   });
 
-  it('should not be activated if un-focused', () => {
-    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+  it('should not be activated if un-focused', async () => {
     const container = renderTooltip();
+    const tooltip = container.querySelector('devtools-tooltip');
+    assert.exists(tooltip);
 
     const button = container.querySelector('button');
+    const opened = waitForToggle(tooltip, 'open');
     button?.dispatchEvent(new FocusEvent('focus'));
-    button?.dispatchEvent(new FocusEvent('blur'));
 
-    clock.runAll();
-    assert.isFalse(container.querySelector('devtools-tooltip')?.open);
-    clock.restore();
+    await opened;
+    assert.isTrue(tooltip.open);
+
+    button?.dispatchEvent(new FocusEvent('blur'));
+    assert.isFalse(tooltip.open);
   });
 
   it('should not open on hover if use-click is set', () => {

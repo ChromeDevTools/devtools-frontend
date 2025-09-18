@@ -159,8 +159,10 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
   }
 
   #debouncedRequestAidaSuggestion = Common.Debouncer.debounce(
-      (prefix: string, suffix: string, cursor: number, inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage) => {
-        void this.#requestAidaSuggestion(this.#buildRequest(prefix, suffix, inferenceLanguage), cursor);
+      (prefix: string, suffix: string, cursorPositionAtRequest: number,
+       inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage) => {
+        void this.#requestAidaSuggestion(
+            this.#buildRequest(prefix, suffix, inferenceLanguage), cursorPositionAtRequest);
       },
       AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
 
@@ -288,14 +290,15 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     };
   }
 
-  async #requestAidaSuggestion(request: Host.AidaClient.CompletionRequest, cursor: number): Promise<void> {
+  async #requestAidaSuggestion(request: Host.AidaClient.CompletionRequest, cursorPositionAtRequest: number):
+      Promise<void> {
     const startTime = performance.now();
     this.dispatchEventToListeners(Events.REQUEST_TRIGGERED, {});
     // Registering AiCodeCompletionRequestTriggered metric even if the request is served from cache
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggered);
 
     try {
-      const sampleResponse = await this.#generateSampleForRequest(request, cursor);
+      const sampleResponse = await this.#generateSampleForRequest(request, cursorPositionAtRequest);
       if (!sampleResponse) {
         this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {});
         return;
@@ -310,10 +313,15 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       } = sampleResponse;
       const remainingDelay = Math.max(DELAY_BEFORE_SHOWING_RESPONSE_MS - (performance.now() - startTime), 0);
       this.#renderingTimeout = window.setTimeout(() => {
+        const currentCursorPosition = this.#editor.editor.state.selection.main.head;
+        if (currentCursorPosition !== cursorPositionAtRequest) {
+          this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {});
+          return;
+        }
         this.#editor.dispatch({
           effects: TextEditor.Config.setAiAutoCompleteSuggestion.of({
             text: suggestionText,
-            from: cursor,
+            from: cursorPositionAtRequest,
             rpcGlobalId,
             sampleId,
             startTime,
@@ -330,7 +338,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
           this.#registerUserImpression(rpcGlobalId, sampleId, latency);
         }
 
-        debugLog('Suggestion dispatched to the editor', suggestionText, 'at cursor position', cursor);
+        debugLog('Suggestion dispatched to the editor', suggestionText, 'at cursor position', cursorPositionAtRequest);
         this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {citations});
       }, remainingDelay);
     } catch (e) {
@@ -443,8 +451,9 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
   }
 
   onTextChanged(
-      prefix: string, suffix: string, cursor: number, inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage): void {
-    this.#debouncedRequestAidaSuggestion(prefix, suffix, cursor, inferenceLanguage);
+      prefix: string, suffix: string, cursorPositionAtRequest: number,
+      inferenceLanguage?: Host.AidaClient.AidaInferenceLanguage): void {
+    this.#debouncedRequestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage);
   }
 
   remove(): void {

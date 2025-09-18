@@ -30,11 +30,11 @@ describe('RPP supporting multiple traces', () => {
     await navigateToPerformanceTab('fake-image-lcp', devToolsPage, inspectedPage);
     await uploadTraceFile(devToolsPage, 'web.dev-trace.json.gz');
     const firstTimings = await devToolsPage.waitFor<HTMLElement>('.summary-range');
-    const firstTimingsText = await firstTimings.evaluate(t => t.innerText);
-    assert.strictEqual(firstTimingsText, 'Range:  0 ms – 6.25 s');
+    const firstTimingsText = await firstTimings.evaluate(t => t.innerText.replace(/\s/g, ''));
+    assert.strictEqual(firstTimingsText, 'Range:0ms–6.25s');
     await uploadTraceFile(devToolsPage, 'treeView-test-trace.json');
     const secondTimings = await devToolsPage.waitFor<HTMLElement>('.summary-range');
-    const secondTimingsText = await secondTimings.evaluate(t => t.innerText);
-    assert.strictEqual(secondTimingsText, 'Range: 547 ms – 1.78 s');
+    const secondTimingsText = await secondTimings.evaluate(t => t.innerText.replace(/\s/g, ''));
+    assert.strictEqual(secondTimingsText, 'Range:547ms–1.78s');
   });
 });

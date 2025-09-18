@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
@@ -63,7 +64,7 @@ export class GPUTrackAppender implements TrackAppender {
    * @param expanded whether the track should be rendered expanded.
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
-    const style = buildGroupStyle({collapsible: false});
+    const style = buildGroupStyle({collapsible: PerfUI.FlameChart.GroupCollapsibleState.NEVER});
     const group = buildTrackHeader(
         VisualLoggingTrackName.GPU, currentLevel, i18nString(UIStrings.gpu), style, /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);

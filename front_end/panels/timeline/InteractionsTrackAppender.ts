@@ -69,7 +69,11 @@ export class InteractionsTrackAppender implements TrackAppender {
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#parsedTrace.data.UserInteractions.interactionEvents.length > 0;
-    const style = buildGroupStyle({collapsible: trackIsCollapsible, useDecoratorsForOverview: true});
+    const style = buildGroupStyle({
+      collapsible: trackIsCollapsible ? PerfUI.FlameChart.GroupCollapsibleState.ALWAYS :
+                                        PerfUI.FlameChart.GroupCollapsibleState.NEVER,
+      useDecoratorsForOverview: true,
+    });
     const group = buildTrackHeader(
         VisualLoggingTrackName.INTERACTIONS, currentLevel, i18nString(UIStrings.interactions), style,
         /* selectable= */ true, expanded);

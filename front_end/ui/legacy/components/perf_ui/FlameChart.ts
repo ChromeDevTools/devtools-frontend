@@ -148,6 +148,12 @@ export const enum HoverType {
   ERROR = 'ERROR',
 }
 
+export const enum GroupCollapsibleState {
+  ALWAYS = 0,
+  NEVER = 1,
+  IF_MULTI_ROW = 2
+}
+
 export interface FlameChartDelegate {
   windowChanged(_startTime: number, _endTime: number, _animate: boolean): void;
   updateRangeSelection(_startTime: number, _endTime: number): void;
@@ -3793,10 +3799,21 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     const groups = this.rawTimelineData.groups || [];
     const style = groups[index].style;
-    if (!style.shareHeaderLine || !style.collapsible) {
-      return Boolean(style.collapsible);
+    if (style.collapsible === GroupCollapsibleState.NEVER) {
+      return false;
+    }
+    if (!style.shareHeaderLine) {
+      return style.collapsible === GroupCollapsibleState.ALWAYS;
     }
     const isLastGroup = index + 1 >= groups.length;
+    if (style.collapsible === GroupCollapsibleState.IF_MULTI_ROW) {
+      const nextRowStartLevel = isLastGroup ? this.dataProvider.maxStackDepth() : groups[index + 1].startLevel;
+      const rowsInCurrentGroup = nextRowStartLevel - groups[index].startLevel;
+      // If everything fits in one line, there's no need to offer the expand capability.
+      if (rowsInCurrentGroup < 2) {
+        return false;
+      }
+    }
     if (!isLastGroup && groups[index + 1].style.nestingLevel > style.nestingLevel) {
       return true;
     }
@@ -4421,8 +4438,7 @@ export interface Group {
 export interface GroupStyle {
   height: number;
   padding: number;
-  /* Can it be collapsed? True by default! */
-  collapsible: boolean;
+  collapsible: GroupCollapsibleState;
   /** The color of the group title text. */
   color: string;
   /**

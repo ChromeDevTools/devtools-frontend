@@ -4,6 +4,7 @@
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {buildGroupStyle, buildTrackHeader, getDurationString} from './AppenderUtils.js';
 import {
@@ -103,7 +104,11 @@ export class TimingsTrackAppender implements TrackAppender {
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#parsedTrace.data.UserTimings.performanceMeasures.length > 0;
-    const style = buildGroupStyle({useFirstLineForOverview: true, collapsible: trackIsCollapsible});
+    const style = buildGroupStyle({
+      useFirstLineForOverview: true,
+      collapsible: trackIsCollapsible ? PerfUI.FlameChart.GroupCollapsibleState.IF_MULTI_ROW :
+                                        PerfUI.FlameChart.GroupCollapsibleState.NEVER,
+    });
     const group = buildTrackHeader(
         VisualLoggingTrackName.TIMINGS, currentLevel, i18nString(UIStrings.timings), style, /* selectable= */ true,
         expanded);

@@ -152,8 +152,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     [this.droppedFramePattern, this.partialFramePattern] = this.preparePatternCanvas();
 
     this.framesGroupStyle = this.buildGroupStyle({useFirstLineForOverview: true});
-    this.screenshotsGroupStyle =
-        this.buildGroupStyle({useFirstLineForOverview: true, nestingLevel: 1, collapsible: false, itemsHeight: 150});
+    this.screenshotsGroupStyle = this.buildGroupStyle({
+      useFirstLineForOverview: true,
+      nestingLevel: 1,
+      collapsible: PerfUI.FlameChart.GroupCollapsibleState.NEVER,
+      itemsHeight: 150
+    });
 
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
       const headers = [
@@ -427,7 +431,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const defaultGroupStyle = {
       padding: 4,
       height: 17,
-      collapsible: true,
+      collapsible: PerfUI.FlameChart.GroupCollapsibleState.ALWAYS,
       color: ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface'),
       backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container'),
       nestingLevel: 0,
@@ -774,7 +778,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return;
     }
 
-    this.framesGroupStyle.collapsible = hasScreenshots;
+    this.framesGroupStyle.collapsible =
+        hasScreenshots ? PerfUI.FlameChart.GroupCollapsibleState.ALWAYS : PerfUI.FlameChart.GroupCollapsibleState.NEVER;
     const expanded = Root.Runtime.Runtime.queryParam('flamechart-force-expand') === 'frames';
 
     this.appendHeader(i18nString(UIStrings.frames), this.framesGroupStyle, false /* selectable */, expanded);

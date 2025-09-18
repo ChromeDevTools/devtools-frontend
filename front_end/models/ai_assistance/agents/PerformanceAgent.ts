@@ -829,14 +829,14 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
             }
           }
 
-          const content = resource.content;
-          if (!content) {
-            return {error: 'Resource has no content'};
+          const content = await resource.requestContentData();
+          if ('error' in content) {
+            return {error: `Could not get resource content: ${content.error}`};
           }
 
           const key = `getResourceContent(${args.url})`;
-          this.#cacheFunctionResult(focus, key, content);
-          return {result: {content}};
+          this.#cacheFunctionResult(focus, key, content.text);
+          return {result: {content: content.text}};
         },
 
       });

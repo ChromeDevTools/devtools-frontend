@@ -14,7 +14,7 @@ import {formatAsPatch, resultAssertionsDiff, ResultsDBReporter} from '../../test
 import {CHECKOUT_ROOT, GEN_DIR, SOURCE_ROOT} from '../../test/conductor/paths.js';
 import * as ResultsDb from '../../test/conductor/resultsdb.js';
 import {loadTests, TestConfig} from '../../test/conductor/test_config.js';
-import {ScreenshotError} from '../conductor/screenshot-error.js';
+import {ScreenshotError, ScreenshotErrorReporter} from '../conductor/screenshot-error.js';
 import {assertElementScreenshotUnchanged} from '../shared/screenshots.js';
 
 const COVERAGE_OUTPUT_DIRECTORY = 'karma-coverage';
@@ -29,6 +29,7 @@ function* reporters() {
   if (ResultsDb.available()) {
     yield 'resultsdb';
   } else {
+    yield 'screenshots';
     yield 'progress-diff';
   }
   if (TestConfig.coverage) {
@@ -243,6 +244,7 @@ module.exports = function(config: any) {
       require('karma-spec-reporter'),
       require('karma-coverage'),
       {'reporter:resultsdb': ['type', ResultsDBReporter]},
+      {'reporter:screenshots': ['type', ScreenshotErrorReporter]},
       {'reporter:progress-diff': ['type', ProgressWithDiffReporter]},
       {'middleware:snapshotTester': ['factory', snapshotTesterFactory]},
     ],

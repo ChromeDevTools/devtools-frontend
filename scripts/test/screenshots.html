@@ -1,0 +1,89 @@
+<style>
+  body {
+    padding: 1em;
+  }
+</style>
+<template id="template">
+  <style>
+    details {
+      border: 1px black solid;
+      padding: 1em;
+      border-radius: 4px;
+    }
+    section {
+      margin: 1em;
+    }
+    #generated:not(:checked) ~ section.generated {
+      display: none;
+    }
+    #golden:not(:checked) ~ section.golden {
+      display: none;
+    }
+    #diff:not(:checked) ~ section.diff {
+      display: none;
+    }
+    #toggle:not(:checked) ~ section.toggle {
+      display: none;
+    }
+  </style>
+  <details>
+    <summary><slot name="summary"></slot></summary>
+      <input type="radio" name="screenshot" id=generated checked tabindex=0></input><label for=generated>Generated</label>
+    <input type="radio" name="screenshot" id=golden></input><label for=golden>Golden</label>
+    <input type="radio" name="screenshot" id=diff></input><label for=diff>Diff</label>
+    <input type="radio" name="screenshot" id=toggle hidden></input><label for=toggle>Toggle</label>
+    <section class="generated">
+      <slot name="generated"></slot>
+    </section>
+    <section class="golden">
+      <slot name="golden"></slot>
+    </section>
+    <section class="diff">
+      <slot name="diff"></slot>
+    </section>
+    <section class="toggle">
+      <slot name="generated"></slot>
+      <slot name="golden"></slot>
+    </section>
+  </details>
+</template>
+<h1>
+  Failed screenshot test artifacts
+</h1>
+
+<script src='../../out/Default/gen/test/.generated/errors.js'> type="module"></script>
+<script type="module">
+  class ScreenshotView extends HTMLElement {
+    #shadow = this.attachShadow({mode: 'open'});
+
+    constructor() {
+      super();
+      this.#shadow.append(document.getElementById('template').content.cloneNode(true));
+      for (const section of this.#shadow.querySelectorAll('details')) {
+      section.ontoggle = e => section.open && section.querySelector('input').select({focusVisible: true});
+      }
+    }
+
+    expand() {
+      this.#shadow.querySelector('details').open = true;
+    }
+  }
+  customElements.define('screenshot-view', ScreenshotView);
+  
+  for (const {screenshotPath, expected_image, actual_image, image_diff} of window.SCREENSHOT_ERRORS) {
+    const details = document.createElement('screenshot-view');
+    const append = (tag, slot) => {
+      const node = document.createElement(tag);
+      node.slot = slot;
+      details.appendChild(node);
+      return node;
+    };
+    document.body.appendChild(details);
+    append('span', 'summary').textContent = screenshotPath;
+    append('img', 'golden').src = expected_image.filePath;
+    append('img', 'generated').src = actual_image.filePath;
+    append('img', 'diff').src = image_diff.filePath;
+
+  }
+  document.body.querySelector('screenshot-view')?.expand();
+</script>

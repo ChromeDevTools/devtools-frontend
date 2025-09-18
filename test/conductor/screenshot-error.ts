@@ -133,3 +133,18 @@ export class ScreenshotError extends Error {
     return artifactPath;
   }
 }
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export const ScreenshotErrorReporter = function(this: any, baseReporterDecorator: (arg0: unknown) => void) {
+  const JSON_PATH = path.join(GEN_DIR, 'test', '.generated', 'errors.js');
+
+  baseReporterDecorator(this);
+  this.onRunComplete = () => {
+    const screenshotErrors = ScreenshotError.errors.splice(0).map(
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
+        ({screenshotPath, screenshots: {expected_image, actual_image, image_diff}}) =>
+            ({screenshotPath, expected_image, actual_image, image_diff}));
+    fs.writeFileSync(JSON_PATH, `window.SCREENSHOT_ERRORS = ${JSON.stringify(screenshotErrors)}`);
+  };
+};
+ScreenshotErrorReporter.$inject = ['baseReporterDecorator'];

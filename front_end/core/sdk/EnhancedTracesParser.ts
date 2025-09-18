@@ -34,7 +34,12 @@ export interface RundownScriptCompiled extends EventBase {
       frame: Protocol.Page.FrameId,
       frameType: 'page'|'iframe',
       url: string,
-      isolate: string,
+      /**
+       * isolate is a `uint64_t`, which is too much for JS number to represent exactly.
+       * TODO: consider adjusting the trace event impl to either string or reduced precision. see https://crrev.com/c/6300647
+       * This applies for all `isolate` in trace events we consume.
+       */
+      isolate: number,
       /** AKA V8ContextToken. https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/inspector/inspector_trace_events.cc;l=1229;drc=3c88f61e18b043e70c225d8d57c77832a85e7f58 */
       v8context: string,
       origin: string,
@@ -55,15 +60,15 @@ export interface RundownScript extends EventBase {
   name: 'ScriptCatchup';
   args: {
     data: {
-      isolate: string,
+      isolate: number,
       executionContextId: Protocol.Runtime.ExecutionContextId,
       scriptId: number,
-      // These don't actually get set in v8.
-      url: string,
-      hash: string,
       isModule: boolean,
       /** aka HasSourceURLComment */
       hasSourceUrl: boolean,
+      // These don't actually get set in v8.
+      url?: string,
+      hash?: string,
       /** value of the sourceURL comment. */
       sourceUrl?: string,
       /* value of the sourceMappingURL comment */
@@ -83,7 +88,7 @@ export interface RundownScriptSource extends EventBase {
   name: 'ScriptCatchup'|'LargeScriptCatchup'|'TooLargeScriptCatchup';
   args: {
     data: {
-      isolate: string,
+      isolate: number,
       scriptId: number,
       length?: number,
       sourceText?: string,
@@ -114,7 +119,7 @@ interface FunctionCall extends EventBase {
     data: {
       frame: Protocol.Page.FrameId,
       scriptId: Protocol.Runtime.ScriptId,
-      isolate?: string,
+      isolate?: number,
     },
   };
 }
@@ -180,7 +185,7 @@ export class EnhancedTracesParser {
           this.#targets.push({
             targetId: frameId,
             type: data.frameType,
-            isolate: data.isolate,
+            isolate: String(data.isolate),
             pid: event.pid,
             url: data.url,
           });
@@ -196,7 +201,7 @@ export class EnhancedTracesParser {
               isDefault: data.isDefault,
               type: data.contextType,
             },
-            isolate: data.isolate,
+            isolate: String(data.isolate),
             name: data.origin,
             uniqueId: `${data.v8context}-${data.isolate}`,
           });
@@ -206,17 +211,17 @@ export class EnhancedTracesParser {
         const data = event.args.data;
         // Add script
         if (!this.#scripts.find(
-                script => script.scriptId === String(data.scriptId) && script.isolate === data.isolate)) {
+                script => script.scriptId === String(data.scriptId) && script.isolate === String(data.isolate))) {
           this.#scripts.push({
             scriptId: String(data.scriptId) as Protocol.Runtime.ScriptId,
-            isolate: data.isolate,
+            isolate: String(data.isolate),
             buildId: '',
             executionContextId: data.executionContextId,
             startLine: data.startLine ?? 0,
             startColumn: data.startColumn ?? 0,
             endLine: data.endLine ?? 0,
             endColumn: data.endColumn ?? 0,
-            hash: data.hash,
+            hash: data.hash ?? '',
             isModule: data.isModule,
             url: data.url ?? '',
             hasSourceURL: data.hasSourceUrl,
@@ -359,13 +364,13 @@ export class EnhancedTracesParser {
     return sourceMap;
   }
 
-  private getScriptIsolateId(isolate: string, scriptId: Protocol.Runtime.ScriptId|number): string {
-    return scriptId + '@' + isolate;
+  private getScriptIsolateId(isolate: number|string, scriptId: Protocol.Runtime.ScriptId|number): string {
+    return `${scriptId}@${isolate}`;
   }
 
-  private getExecutionContextIsolateId(isolate: string, executionContextId: Protocol.Runtime.ExecutionContextId):
+  private getExecutionContextIsolateId(isolate: number|string, executionContextId: Protocol.Runtime.ExecutionContextId):
       string {
-    return executionContextId + '@' + isolate;
+    return `${executionContextId}@${isolate}`;
   }
 
   private isTraceEvent(event: unknown): event is EventBase {

@@ -54,7 +54,7 @@ export function reset(): void {
 }
 
 export function handleEvent(event: Types.Events.Event): void {
-  const getOrMakeScript = (isolate: string, scriptIdAsNumber: number): Script => {
+  const getOrMakeScript = (isolate: string|number, scriptIdAsNumber: number): Script => {
     const scriptId = String(scriptIdAsNumber) as Protocol.Runtime.ScriptId;
     const key = `${isolate}.${scriptId}`;
     return Platform.MapUtilities.getWithDefault(

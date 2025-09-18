@@ -11,7 +11,7 @@ export interface RehydratingScript extends Protocol.Debugger.ScriptParsedEvent {
   isolate: string;
   /** The manually provided string via the `//# sourceURL` directive. Meanwhile the `url` is the script's `src`  */
   sourceURL?: string;
-  pid?: number;
+  pid: number;
 }
 
 export interface RehydratingExecutionContextAuxData {

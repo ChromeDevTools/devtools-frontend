@@ -2782,6 +2782,7 @@ export interface FunctionCall extends Complete {
   args: Args&{
     data?: Partial<CallFrame>& {
       frame?: string,
+      isolate?: number,
     },
   };
 }
@@ -3222,7 +3223,7 @@ export interface RundownScriptSourceLarge extends Event {
   name: 'LargeScriptCatchup';
   args: Args&{
     data: {
-      isolate: string,
+      isolate: number,
       scriptId: number,
       splitIndex: number,
       splitCount: number,
@@ -3240,7 +3241,7 @@ export interface RundownScriptStub extends Event {
   name: 'StubScriptCatchup';
   args: Args&{
     data: {
-      isolate: string,
+      isolate: number,
       scriptId: number,
     },
   };

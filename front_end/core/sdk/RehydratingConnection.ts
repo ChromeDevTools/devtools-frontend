@@ -220,11 +220,7 @@ class RehydratingSessionBase {
   }
 
   sendMessageToFrontend(payload: ServerMessage): void {
-    requestAnimationFrame(() => {
-      if (this.connection) {
-        this.connection.postToFrontend(payload);
-      }
-    });
+    this.connection?.postToFrontend(payload);
   }
 
   handleFrontendMessageAsFakeCDPAgent(data: ProtocolMessage): void {

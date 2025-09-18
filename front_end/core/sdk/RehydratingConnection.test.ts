@@ -266,11 +266,7 @@ describeWithEnvironment('RehydratingConnection emittance', () => {
 
     // Poll for REHYDRATED state
     const poll = async () => {
-      const isRehydrated =
-          conn.rehydratingConnectionState === SDK.RehydratingConnection.RehydratingConnectionState.REHYDRATED;
-      // TODO(paulirish): delete once we drop the rAF in RehydratingConnection.sendMessageToFrontend
-      const messageLogPopulated = messageLog.length > 2;
-      if (isRehydrated && messageLogPopulated) {
+      if (conn.rehydratingConnectionState === SDK.RehydratingConnection.RehydratingConnectionState.REHYDRATED) {
         return;
       }
       await new Promise<void>(res => setTimeout(res, 100));

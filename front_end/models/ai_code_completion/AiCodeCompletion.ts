@@ -143,13 +143,14 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
   #stopSequences: string[];
   #renderingTimeout?: number;
   #aidaRequestCache?: CachedRequest;
-  #panel: Panel;
+  #panel: ContextFlavor;
 
   readonly #sessionId: string = crypto.randomUUID();
   readonly #aidaClient: Host.AidaClient.AidaClient;
   readonly #serverSideLoggingEnabled: boolean;
 
-  constructor(opts: AgentOptions, editor: TextEditor.TextEditor.TextEditor, panel: Panel, stopSequences?: string[]) {
+  constructor(
+      opts: AgentOptions, editor: TextEditor.TextEditor.TextEditor, panel: ContextFlavor, stopSequences?: string[]) {
     super();
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
@@ -177,12 +178,12 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     // As a temporary fix for b/441221870 we are prepending a newline for each prefix.
     prefix = '\n' + prefix;
 
-    const additionalFiles = this.#panel === Panel.CONSOLE ? [{
+    const additionalFiles = this.#panel === ContextFlavor.CONSOLE ? [{
       path: 'devtools-console-context.js',
       content: consoleAdditionalContextFileContent,
       included_reason: Host.AidaClient.Reason.RELATED_FILE,
     }] :
-                                                            undefined;
+                                                                    undefined;
 
     return {
       client: Host.AidaClient.CLIENT_NAME,
@@ -462,8 +463,8 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
   }
 }
 
-export const enum Panel {
-  CONSOLE = 'console',
+export const enum ContextFlavor {
+  CONSOLE = 'console',  // generated code can contain console specific APIs like `$0`.
   SOURCES = 'sources',
 }
 

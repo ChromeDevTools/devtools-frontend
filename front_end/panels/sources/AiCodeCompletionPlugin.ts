@@ -212,8 +212,11 @@ export class AiCodeCompletionPlugin extends Plugin {
       this.#teaser = undefined;
     }
     if (!this.#aiCodeCompletion) {
+      const contextFlavor = this.uiSourceCode.url().startsWith('snippet://') ?
+          AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE :
+          AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES;
       this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
-          {aidaClient: this.#aidaClient}, this.#editor, AiCodeCompletion.AiCodeCompletion.Panel.SOURCES);
+          {aidaClient: this.#aidaClient}, this.#editor, contextFlavor);
       this.#aiCodeCompletion.addEventListener(
           AiCodeCompletion.AiCodeCompletion.Events.REQUEST_TRIGGERED, this.#onAiRequestTriggered, this);
       this.#aiCodeCompletion.addEventListener(

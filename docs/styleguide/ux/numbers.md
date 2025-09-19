@@ -52,7 +52,7 @@ initialized.
 Prefer the helper exported by [ByteUtilities.ts] when formatting byte values.
 For example:
 
-```js
+```ts
 // Formatting bytes
 i18n.ByteUtilities.bytesToString(99);
 
@@ -68,7 +68,7 @@ i18n.ByteUtilities.bytesToString(1500 * 1000);
 Prefer the helpers exported by [time-utilities.ts] when formatting time values.
 For example:
 
-```js
+```ts
 // Formatting precise milliseconds
 i18n.TimeUtilities.preciseMillisToString(6.12345);
 
@@ -90,7 +90,7 @@ invocation of `format()` or `formatToParts()` methods, and therefore it's safe
 to define the formatters this way without running into the issue that the
 `DevToolsLocale` isn't initialized yet:
 
-```js
+```ts
 import * as i18n from 'path/to/i18n/i18n.js';
 
 const percentageFormatter = i18n.NumberFormatter.defineFormatter({
@@ -98,7 +98,6 @@ const percentageFormatter = i18n.NumberFormatter.defineFormatter({
   maximumFractionDigits: 1,
 });
 ```
-
 
 [Intl.NumberFormat]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
 [ByteUtilities.ts]: ../../../front_end/core/i18n/ByteUtilities.ts

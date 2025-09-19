@@ -15,7 +15,7 @@ Before proceeding, make sure you know the different
 
 Code example:
 
-```js
+```ts
 import * as i18n from '../i18n/i18n.js';
 
 // at the top of example.js file, after import statements
@@ -57,7 +57,7 @@ console.log(message2);
     to it. If there isn't `UIStrings = {}` in the file, create one and add your
     string, also register the new UIStrings into the `en-US.json` by adding:
 
-    ```js
+    ```ts
     // Filename should be relative to front_end folder
     const str_ = i18n.i18n.registerUIStrings('<filename>', UIStrings);
     const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -145,7 +145,7 @@ The basic API to make a string (with or without placeholder) localizable. The
 first argument is the string reference in `UIStrings` The second argument is an
 object for placeholders (if any)
 
-```js
+```ts
 // at the top of example.js file, after import statements
 
 const UIStrings = {
@@ -172,7 +172,7 @@ locale, which are not available until after DevTools has finished starting up.
 Calls to `i18nString` in the module scope will therefore fail when the module is
 imported.
 
-```js
+```ts
 // Fails because i18nString runs at module-import time.
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
@@ -188,7 +188,7 @@ function notTopLevel() {
 closure that returns a `LocalizedString`. It can be used in top-level calls;
 just make sure use-sites know it's a function now.
 
-```js
+```ts
 // Works because i18nLazyString defers the loading of the translated string until later.
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
@@ -207,7 +207,7 @@ This call returns a **span element**, not a string. It is used when you want to
 construct a DOM element with a localizable string, or localizable content that
 contains some other DOM element.
 
-```js
+```ts
 // Create the string in UIString
 /**
 *@description Message in Coverage View of the Coverage tab
@@ -228,7 +228,7 @@ This call is a named cast. Use it in places where a localized string is expected
 but the term you want to use does not require translation. Instead of locking
 the whole phrase or using a placeholder-only phrase, use `lockedString`.
 
-```js
+```ts
 someFunctionRequiringALocalizedString(i18n.i18n.lockedString('HTTP'));
 ```
 
@@ -240,7 +240,7 @@ languages!
 
 **Good description**:
 
-```js
+```ts
 const UIStrings = {
   /**
    * @description Tooltip text that appears when hovering over the 'Focusable' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane.
@@ -251,7 +251,7 @@ const UIStrings = {
 
 **Bad description**:
 
-```js
+```ts
 const UIStrings = {
   /**
    * @description Elements pane 'Focusable' tooltip.
@@ -289,7 +289,7 @@ const UIStrings = {
 Any text within the backticks will not be translated. For example, if the
 'robots.txt' in string 'Requesting for robots.txt …' should not be translated:
 
-```js
+```ts
 // in example.js file
 
 import * as i18n from '../i18n/i18n.js';

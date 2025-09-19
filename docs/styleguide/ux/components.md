@@ -76,7 +76,7 @@ space.
 
 Usage with lit-html:
 
-```js
+```ts
 html`<devtools-button class="some-class"
                       .variant=${Buttons.Button.Variant.PRIMARY}
                       .title=${i18nString(UIStrings.someString)}
@@ -86,13 +86,13 @@ html`<devtools-button class="some-class"
 
 Usage with the imperative API:
 
-```js
+```ts
 const button = new Buttons.Button.Button();
 button.data = {
-    variant: Buttons.Button.Variant.PRIMARY,
-    title: i18nString(UIStrings.someString),
-    jslogContext: 'some-context',
-  };
+  variant: Buttons.Button.Variant.PRIMARY,
+  title: i18nString(UIStrings.someString),
+  jslogContext: 'some-context',
+};
 button.classList.add('some-class');
 button.addEventListener('click', event => onClick(event));
 ```
@@ -164,28 +164,36 @@ button.addEventListener('click', event => onClick(event));
 
 Usage with lit-html:
 
-```js
-html`<select aria-label="Choose your champion"
-             @onchange=${onChange}>
+```ts
+html`<select aria-label="Choose your champion" @onchange=${onChange}>
   <option hidden value="Choose your champion"></option>
-  <option jslog=${VisualLogging.item('hamster').track({click: true})}
-          value="Hamster">Hamster</option>
-  <option jslog=${VisualLogging.item('mouse').track({click: true})}
-          value="Mouse">Mouse</option>
-  <option jslog=${VisualLogging.item('cat').track({click: true})}
-          value="Cat">Cat</option>
-</select>`
+  <option
+    jslog=${VisualLogging.item('hamster').track({ click: true })}
+    value="Hamster"
+  >
+    Hamster
+  </option>
+  <option
+    jslog=${VisualLogging.item('mouse').track({ click: true })}
+    value="Mouse"
+  >
+    Mouse
+  </option>
+  <option jslog=${VisualLogging.item('cat').track({ click: true })} value="Cat">
+    Cat
+  </option>
+</select>`;
 ```
 
 Usage with the imperative API:
 
-```js
+```ts
 const select = UI.UIUtils.createSelect('Choose your champion', [
   'Hamster',
   'Mouse',
   'Cat',
 ]);
-select.addEventListener('change', event => onChange(event))
+select.addEventListener('change', event => onChange(event));
 ```
 
 ## Radio Buttons
@@ -212,16 +220,22 @@ select.addEventListener('change', event => onChange(event))
 
 Usage with lit-html:
 
-```js
-const jslog = VisualLogging.toggle().track({change: true}).context(jslogContext);
-html`<label><input type="radio" name=${name} jslog=${jslog}>${title}</label>`
+```ts
+const jslog = VisualLogging.toggle()
+  .track({ change: true })
+  .context(jslogContext);
+html`<label><input type="radio" name=${name} jslog=${jslog} />${title}</label>`;
 ```
 
 Usage with the imperative API:
 
-```js
-const {label, radio} = UI.UIUtils.createRadioButton(name, title, jslogContext);
-radio.addEventListener('change', event => onChange(event))
+```ts
+const { label, radio } = UI.UIUtils.createRadioButton(
+  name,
+  title,
+  jslogContext,
+);
+radio.addEventListener('change', event => onChange(event));
 ```
 
 ## Sliders
@@ -247,19 +261,21 @@ radio.addEventListener('change', event => onChange(event))
 
 Usage with lit-html:
 
-```js
-html`<input type="range"
-            min=${min}
-            max=${max}
-            tabindex=${tabIndex}
-            @change=${onChange}>`
+```ts
+html`<input
+  type="range"
+  min=${min}
+  max=${max}
+  tabindex=${tabIndex}
+  @change=${onChange}
+/>`;
 ```
 
 Usage with the imperative API:
 
-```js
+```ts
 const slider = UI.UIUtils.createSlider(min, max, tabIndex);
-slider.addEventListener('change', event => onChange(event))
+slider.addEventListener('change', event => onChange(event));
 ```
 
 ## Icons
@@ -293,13 +309,13 @@ For some frequently used icons e.g. cross-circle, warning-filled etc. colors are
 
 Usage with lit-html:
 
-```js
-html`<devtools-icon name=${'some-icon-name'}></devtools-icon>`
+```ts
+html`<devtools-icon name=${'some-icon-name'}></devtools-icon>`;
 ```
 
 Usage with the imperative API:
 
-```js
+```ts
 const someIcon = IconButton.Icon.create('some-icon-name', 'some-class');
 ```
 
@@ -379,53 +395,71 @@ Generally, we do not recommend using shortcuts in context menus since this goes 
 
 Usage with lit-html (left-click on a `<devtools-menu-button>` opens a menu):
 
-```js
+```ts
 html`
-<devtools-menu-button
-  icon-name="some-icon-name"
-  .populateMenuCall=${(menu: UI.ContextMenu.ContextMenu) => {
-    menu.defaultSection().appendItem('Item', () => {
-      console.log('Item clicked');
-    }, {jslogContext: 'item'});
-  }}
-  jslogContext="my-menu-button"
-></devtools-menu-button>
-`
+  <devtools-menu-button
+    icon-name="some-icon-name"
+    .populateMenuCall=${(menu: UI.ContextMenu.ContextMenu) => {
+      menu.defaultSection().appendItem(
+        'Item',
+        () => {
+          console.log('Item clicked');
+        },
+        { jslogContext: 'item' },
+      );
+    }}
+    jslogContext="my-menu-button"
+  ></devtools-menu-button>
+`;
 ```
 
 Usage with the imperative API (menu shows on a right-click)
 
 Various simple menu items:
 
-```js
+```ts
 const element = this.shadowRoot.querySelector('.element-to-add-menu-to');
 element.addEventListener('contextmenu', (event: MouseEvent) => {
   const contextMenu = new UI.ContextMenu.ContextMenu(event);
 
-// Regular item
-  contextMenu.defaultSection().appendItem('Regular item', () => {
-    console.log('Regular item clicked ');
-  }, { jslogContext: 'regular-item' });
+  // Regular item
+  contextMenu.defaultSection().appendItem(
+    'Regular item',
+    () => {
+      console.log('Regular item clicked ');
+    },
+    { jslogContext: 'regular-item' },
+  );
 
-// Disabled item
-  contextMenu.defaultSection().appendItem('Disabled item', () => {
-    console.log('Will not be printed');
-  }, { jslogContext: 'disabled-item',
-       disabled: true });
+  // Disabled item
+  contextMenu.defaultSection().appendItem(
+    'Disabled item',
+    () => {
+      console.log('Will not be printed');
+    },
+    { jslogContext: 'disabled-item', disabled: true },
+  );
 
-// Experimental item
-  const item = contextMenu.defaultSection().appendItem('Experimental item', () => {
-    console.log('Experimental item clicked');
-  }, { jslogContext: 'experimental-item',
-       isPreviewFeature: true });
+  // Experimental item
+  const item = contextMenu.defaultSection().appendItem(
+    'Experimental item',
+    () => {
+      console.log('Experimental item clicked');
+    },
+    { jslogContext: 'experimental-item', isPreviewFeature: true },
+  );
 
-// Separator
+  // Separator
   contextMenu.defaultSection().appendSeparator();
 
-// Checkbox item
-  contextMenu.defaultSection().appendCheckboxItem('Checkbox item', () => {
-    console.log('Checkbox item clicked');
-  }, { checked: true, jslogContext: 'checkbox-item' });
+  // Checkbox item
+  contextMenu.defaultSection().appendCheckboxItem(
+    'Checkbox item',
+    () => {
+      console.log('Checkbox item clicked');
+    },
+    { checked: true, jslogContext: 'checkbox-item' },
+  );
 
   void contextMenu.show();
 });
@@ -433,39 +467,85 @@ element.addEventListener('contextmenu', (event: MouseEvent) => {
 
 Custom section:
 
-```js
-  const customSection = contextMenu.section('Custom section');
-  customSection.appendItem('Section inner item 1', () => { /* ... */ }, {jslogContext: 'my-inner-item-1'});
+```ts
+const customSection = contextMenu.section('Custom section');
+customSection.appendItem(
+  'Section inner item 1',
+  () => {
+    /* ... */
+  },
+  { jslogContext: 'my-inner-item-1' },
+);
 
-  customSection.appendItem('Section inner item 2', () => { /* ... */ }, {jslogContext: 'my-inner-item-2'});
+customSection.appendItem(
+  'Section inner item 2',
+  () => {
+    /* ... */
+  },
+  { jslogContext: 'my-inner-item-2' },
+);
 ```
 
 Sub menu:
 
-```js
-const subMenu = contextMenu.defaultSection().appendSubMenuItem('Item to open sub menu', /* disabled */ false, 'my-sub-menu');
-subMenu.defaultSection().appendItem('Sub menu inner item 1', () => { /* ... */ }, {jslogContext: 'my-inner-item-1'});
-subMenu.defaultSection().appendItem('Sub menu inner item 2', () => { /* ... */ }, {jslogContext: 'my-inner-item-2'});
+```ts
+const subMenu = contextMenu
+  .defaultSection()
+  .appendSubMenuItem(
+    'Item to open sub menu',
+    /* disabled */ false,
+    'my-sub-menu',
+  );
+subMenu.defaultSection().appendItem(
+  'Sub menu inner item 1',
+  () => {
+    /* ... */
+  },
+  { jslogContext: 'my-inner-item-1' },
+);
+subMenu.defaultSection().appendItem(
+  'Sub menu inner item 2',
+  () => {
+    /* ... */
+  },
+  { jslogContext: 'my-inner-item-2' },
+);
 ```
 
 Context menu provider registration (adds items dynamically based on the context menu’s target):
 
 ```js
 // Define provider
-class MyCustomNodeProvider implements UI.ContextMenu.Provider<SomeTarget|SomeOtherTarget> {
-  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: SomeTarget|SomeOtherTarget) {
+class MyCustomNodeProvider
+  implements UI.ContextMenu.Provider<SomeTarget | SomeOtherTarget>
+{
+  appendApplicableItems(
+    event: Event,
+    contextMenu: UI.ContextMenu.ContextMenu,
+    target: SomeTarget | SomeOtherTarget,
+  ) {
     if (target instanceof SomeTarget) {
-      contextMenu.defaultSection().appendItem('Item 1', () => {
-        console.log('Item 1 clicked');}, {jsLogContext: 'my-item-1'});
+      contextMenu.defaultSection().appendItem(
+        'Item 1',
+        () => {
+          console.log('Item 1 clicked');
+        },
+        { jsLogContext: 'my-item-1' },
+      );
     } else {
-      contextMenu.defaultSection().appendItem('Item 2', () => {
-        console.log('Item 2 clicked');}, {jsLogContext: 'my-item-2'});
+      contextMenu.defaultSection().appendItem(
+        'Item 2',
+        () => {
+          console.log('Item 2 clicked');
+        },
+        { jsLogContext: 'my-item-2' },
+      );
     }
   }
 }
 ```
 
-```js
+```ts
 // Register provider
 UI.ContextMenu.registerProvider<SDK.DOMModel.DOMNode>({
   contextTypes: () => [SomeTarget, SomeOtherTarget],
@@ -479,11 +559,12 @@ UI.ContextMenu.registerProvider<SDK.DOMModel.DOMNode>({
 
 Static menu item registration via ItemLocation (adds an action to a predefined menu location):
 
-```js
+```ts
 UI.ContextMenu.registerItem({
   location: UI.ContextMenu.ItemLocation.NAVIGATOR_MENU_DEFAULT,
   actionId: 'quick-open.show',
   order: undefined,
 });
 ```
+
 This will automatically add the "Open file" action to the context menu that appears when clicking the Elements panel's 3-dot button.

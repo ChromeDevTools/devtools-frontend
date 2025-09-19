@@ -49,7 +49,7 @@ The structure of files in this folder is like so: `outputs/type/YYYY-MM-DD/label
 
 Then, run (from the DevTools root directory in this case, but it doesn't matter):
 
-```
+```bash
 node scripts/ai_assistance/suite/upload_to_gcp.ts
 ```
 
@@ -61,4 +61,3 @@ This will upload the changes to the GCP bucket and update the `DEPS` file for yo
 4. Commit the `DEPS` change and send the CL for review.
 
 If you get any authorisation errors, run `gsutil.py config` to refresh your authentication status.
-

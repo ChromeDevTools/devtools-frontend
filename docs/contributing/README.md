@@ -187,7 +187,7 @@ Once you’re done preparing your patch, it’s time to upload your changes.
 
 After that, you are ready to start the patch upload:
 
-```
+```bash
 # upload your patch to codereview…
 git cl upload
 ```

@@ -59,7 +59,6 @@ gn gen out/fast-build --args="devtools_skip_typecheck=true devtools_bundle=false
 and use `npm run build -- -t fast-build` to build this target (you can of course
 also just change the `Default` target to skip bundling and type checking).
 
-
 ### Rebuilding automatically
 
 You can use
@@ -175,7 +174,6 @@ npm start -- --verbose
 
 to enable verbose logging, which among other things, also prints all output from Chrome to the terminal, which is
 otherwise suppressed.
-
 
 ##### Controlling the feature set
 

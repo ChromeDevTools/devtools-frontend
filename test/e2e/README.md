@@ -17,27 +17,27 @@ The end-to-end tests are implicitly run as part of `npm run test`,
 but that also runs all the other test suites. To run only
 **all end-to-end tests**, use:
 
-```
+```bash
 npm run test test/e2e
 ```
 
 To use `out/Debug` instead of the default `out/Default` target
 directory, use:
 
-```
+```bash
 npm run test -- -t Debug test/e2e
 ```
 
 To run the end-to-end tests in **debug mode**, use:
 
-```
+```bash
 npm run test -- --debug test/e2e
 ```
 
 To run only **specific end-to-end tests** from a single `_test.ts`
 file, say `console-log_test.ts` for example, use:
 
-```
+```bash
 npm run test test/e2e/console/console-log_test.ts
 ```
 
@@ -57,7 +57,7 @@ code this way.
 
 To listen to the frontend's console:
 
-```js
+```ts
 getBrowserAndPages().frontend.on('console', msg => console.log(msg.text()));
 ```
 
@@ -68,7 +68,7 @@ within VSCode. Open the "Run and Debug" sidebar, select "Run end-to-end tests
 in VS Code debugger" from the dropdown, and click the start button or
 press F5.
 
-![Debugging E2E tests with VSCode](../../docs/images/debugging-e2e-tests-with-vscode.png "Debugging E2E tests with VSCode")
+![Debugging E2E tests with VSCode](../../docs/images/debugging-e2e-tests-with-vscode.png 'Debugging E2E tests with VSCode')
 
 Current limitations when using VSCode for e2e tests:
 
@@ -84,7 +84,7 @@ block accordingly by adding `.skip` to it, adding a preceeding comment
 why the test is skipp and adding the `crbug.com` reference to the test
 block string. For example
 
-```js
+```ts
 describe('Foo', () => {
   it('can return bar', () => {
     assert.strictEqual((new Foo()).bar(), 'bar');
@@ -96,7 +96,7 @@ describe('Foo', () => {
 
 would be changed to look like this
 
-```js
+```ts
 describe('Foo', () => {
   // Flaking on multiple bots on CQ after recent CL xyz.
   it.skip('[crbug.com/12345678] can return bar', () => {
@@ -109,7 +109,7 @@ describe('Foo', () => {
 
 if only the one test case should be skipped, or like this
 
-```js
+```ts
 // Flaking on multiple bots on CQ after recent CL xyz.
 describe.skip('[crbug.com/12345678] Foo', () => {
   it('can return bar', () => {
@@ -127,7 +127,7 @@ skipping groups of tests.
 If you are disabling a flaky test, consider disabling it only on the affected
 platforms. For example:
 
-```js
+```ts
 // Consistently flakes on Mac and Windows bots.
 it.skipOnPlatforms(['mac', 'win32'], '[crbug.com/xxx] ...', () => {...});
 
@@ -139,7 +139,7 @@ it.skipOnPlatforms(['linux'], '[crbug.com/xxx] ...', () => {...});
 
 The `it.repeat` helper is useful for reproducing a flaky test failure. e.g.
 
-```js
+```ts
 it.repeat(20, 'find element', async () => {...});
 ```
 
@@ -179,16 +179,16 @@ To that end, the "what" from the "how" are separate in end-to-end tests. The "wh
 
 For example, an end-to-end test might read like this:
 
-```js
-it("can show newly created snippets show up in command menu", async () => {
+```ts
+it('can show newly created snippets show up in command menu', async () => {
   await openSourcesPanel();
   await openSnippetsSubPane();
-  await createNewSnippet("New snippet");
+  await createNewSnippet('New snippet');
 
   await openCommandMenu();
   await showSnippetsAutocompletion();
 
-  assert.deepEqual(await getAvailableSnippets(), ["New snippet\u200B"]);
+  assert.deepEqual(await getAvailableSnippets(), ['New snippet\u200B']);
 });
 ```
 
@@ -198,35 +198,35 @@ The separation of the two concepts allows us to change the underlying implementa
 
 For example, this is the implementation of `openCommandMenu()`:
 
-```js
+```ts
 export const openCommandMenu = async () => {
   const { frontend } = getBrowserAndPages();
 
   switch (platform) {
-    case "mac":
-      await frontend.keyboard.down("Meta");
-      await frontend.keyboard.down("Shift");
+    case 'mac':
+      await frontend.keyboard.down('Meta');
+      await frontend.keyboard.down('Shift');
       break;
 
-    case "linux":
-    case "win32":
-      await frontend.keyboard.down("Control");
-      await frontend.keyboard.down("Shift");
+    case 'linux':
+    case 'win32':
+      await frontend.keyboard.down('Control');
+      await frontend.keyboard.down('Shift');
       break;
   }
 
-  await frontend.keyboard.press("P");
+  await frontend.keyboard.press('P');
 
   switch (platform) {
-    case "mac":
-      await frontend.keyboard.up("Meta");
-      await frontend.keyboard.up("Shift");
+    case 'mac':
+      await frontend.keyboard.up('Meta');
+      await frontend.keyboard.up('Shift');
       break;
 
-    case "linux":
-    case "win32":
-      await frontend.keyboard.up("Control");
-      await frontend.keyboard.up("Shift");
+    case 'linux':
+    case 'win32':
+      await frontend.keyboard.up('Control');
+      await frontend.keyboard.up('Shift');
       break;
   }
 

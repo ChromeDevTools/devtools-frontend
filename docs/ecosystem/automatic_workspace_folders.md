@@ -54,7 +54,7 @@ workspace folders, it has to contain a `workspace` object with two properties:
 
 An example `com.chrome.devtools.json` would look like this:
 
-```
+```json
 {
   "workspace": {
     "root": "/Users/foobar/Projects/my-awesome-web-project",
@@ -81,7 +81,7 @@ turn on two feature flags in `about:flags`:
 Instead of enabling the feature via `about:flags`, you can instead also enable
 them from the command line:
 
-```
+```bash
 google-chrome-canary --enable-features=DevToolsWellKnown,DevToolsAutomaticFileSystems
 ```
 
@@ -99,7 +99,7 @@ need to do is to create a `.well-known/appspecific` folder and place a
 and you're directly serving the artifacts for your project from its source
 directory in `/Users/foo/bar`, then you could can accomplish the setup via:
 
-```
+```bash
 cd /Users/foo/bar
 mkdir -p .well-known/appspecific
 echo "{\"workspace\":{\"root\":\"${PWD}\",\"uuid\":\"`npx --package uuid uuid v4`\"}}" > .well-known/appspecific/com.chrome.devtools.json

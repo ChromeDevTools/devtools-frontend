@@ -11,7 +11,7 @@ For a detailed explanation of the behavior of each property, please see the docu
 
 As an example, take the registration of the `Network conditions` pane, which is located in the drawer:
 
-```js
+```ts
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.config',
@@ -24,11 +24,11 @@ UI.ViewManager.registerViewExtension({
     ls`network throttling`,
     ls`useragent`,
     ls`user agent`,
-    ls`user-agent`
+    ls`user-agent`,
   ],
-  async loadView(): UI.Widget.Widget  {
-    const  Network  = await loadNetworkModule();
-    return  Network.NetworkConfigView.NetworkConfigView.instance();
+  async loadView(): UI.Widget.Widget {
+    const Network = await loadNetworkModule();
+    return Network.NetworkConfigView.NetworkConfigView.instance();
   },
 });
 ```
@@ -43,38 +43,40 @@ For a detailed explanation of the behavior of each property, please see the docu
 
 As an example, take the registration of the  `network.toggle-recording` action, which allows to start or stop recording a network log:
 
-```js
+```ts
 UI.ActionRegistration.registerActionExtension({
-  actionId:  'network.toggle-recording',
+  actionId: 'network.toggle-recording',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
-  toggleable:  true,
+  toggleable: true,
   toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
-  toggleWithRedColor:  true,
+  toggleWithRedColor: true,
   contextTypes(): unknown[] {
-    return maybeRetrieveContextTypes(Network  =>  [Network.NetworkPanel.NetworkPanel]);
+    return maybeRetrieveContextTypes(Network => [
+      Network.NetworkPanel.NetworkPanel,
+    ]);
   },
-  async loadActionDelegate(): UI.ActionRegistration.ActionDelegate  {
-    const  Network  = await loadNetworkModule();
-    return  Network.NetworkPanel.ActionDelegate.instance();
+  async loadActionDelegate(): UI.ActionRegistration.ActionDelegate {
+    const Network = await loadNetworkModule();
+    return Network.NetworkPanel.ActionDelegate.instance();
   },
-  options:  [
+  options: [
     {
-      value:  true,
+      value: true,
       title: ls`Record network log`,
     },
     {
-      value:  false,
+      value: false,
       title: ls`Stop recording network log`,
     },
   ],
-  bindings:  [
+  bindings: [
     {
-      shortcut:  'Ctrl+E',
+      shortcut: 'Ctrl+E',
       platform: UI.ActionRegistration.Platforms.WindowsLinux,
     },
     {
-      shortcut:  'Meta+E',
+      shortcut: 'Meta+E',
       platform: UI.ActionRegistration.Platforms.Mac,
     },
   ],
@@ -105,10 +107,12 @@ A key binding will be used when the selected preset matches any of the keybind s
 If you don't specify additional constraints, the keybinding will be always available.
 It is possible that this results in duplicate keybindings, for example:
 
-```js
+```ts
 UI.ActionRegistration.registerActionExtension({
   contextTypes() {
-    return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
+    return maybeRetrieveContextTypes(Elements => [
+      Elements.ElementsPanel.ElementsPanel,
+    ]);
   },
   bindings: [
     {
@@ -133,10 +137,12 @@ These two key bindings both allocate the same key for the `windows, linux` platf
 If key bindings were declared such that **at least one** of the three variables (`platform, contextTypes` and `keybindSets`) doesn't overlap, then no duplication would occur.
 For example, the following is **not** a form of duplication:
 
-```js
+```ts
 UI.ActionRegistration.registerActionExtension({
   contextTypes() {
-    return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
+    return maybeRetrieveContextTypes(Elements => [
+      Elements.ElementsPanel.ElementsPanel,
+    ]);
   },
   bindings: [
     {
@@ -146,8 +152,10 @@ UI.ActionRegistration.registerActionExtension({
   ],
 });
 ```
+
 And
-```js
+
+```ts
 UI.ActionRegistration.registerActionExtension({
   contextTypes: undefined,
   bindings: [
@@ -159,4 +167,5 @@ UI.ActionRegistration.registerActionExtension({
   ],
 });
 ```
+
 In this case, they keybindings are declared for different keybind sets and thus do not result in duplcation.

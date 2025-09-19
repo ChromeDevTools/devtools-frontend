@@ -73,9 +73,9 @@ Open the file
 `third_party/blink/renderer/core/inspector/inspector_protocol_config.json` and
 under `protocol.options`, add your new domain:
 
-```
+```json
 {
-    "domain": "YourNewDomain"
+  "domain": "YourNewDomain"
 }
 ```
 
@@ -85,7 +85,7 @@ Build chromium as you normally would.
 #### 1.6- See the newly generated protocol C++ files
 Your new domain files should be generated in this folder:
 
-```
+```bash
 src/out/Default/gen/third_party/blink/renderer/core/inspector/protocol/your_new_domain.cc
 src/out/Default/gen/third_party/blink/renderer/core/inspector/protocol/your_new_domain.h
 ```
@@ -94,7 +94,7 @@ src/out/Default/gen/third_party/blink/renderer/core/inspector/protocol/your_new_
 
 Open the file `devtools-frontend/front_end/core/protocol_client/InspectorBackend.ts` and add a new method to expose your Agent.
 
-```
+```ts
 youNewDomainAgent(): ProtocolProxyApi.YourNewAgentApi {
     return this.getAgent('YourNewAgent');
 }
@@ -112,13 +112,14 @@ outputs = [
 ...
 "inspector/protocol/your_new_domain.cc",
 "inspector/protocol/your_new_domain.h",
+]
 ```
 
 ### 2- Sync the browser_protocol files and generate the protocol resources
 As mentioned before, there are many browser_protocol files. To synchronize the
 modifications, run this command from your Chrome DevTools repository:
 
-```
+```bash
 scripts/deps/roll_deps.py ~/chromium/src .
 ```
 
@@ -132,7 +133,7 @@ Chrome DevTools repository.
 The Agent class should inherit the newly created protocol
 `protocol::YourNewDomainAgent::Metainfo`
 
-```
+```cpp
 class MODULES_EXPORT YourNewDomainAgent final : public InspectorBaseAgent<protocol::YourNewDomainAgent::Metainfo> {
 ```
 
@@ -141,7 +142,7 @@ The Agent must be registered with the Session. To do so, go to the file
 `third_party/blink/renderer/modules/modules_initializer.cc` and append it to the
  session in this method:
 
-```
+```cpp
 void ModulesInitializer::InitInspectorAgentSession {
 …
 session->CreateAndAppend<YourNewAgent>...
@@ -151,7 +152,7 @@ session->CreateAndAppend<YourNewAgent>...
 In the TypeScript class, your agent can now be accessible directly from the
 target. With the target, you can simply access your agent like this:
 
-```
+```ts
 initialize(target: SDK.Target.Target) {
     target.yourNewDomainAgent();
 }

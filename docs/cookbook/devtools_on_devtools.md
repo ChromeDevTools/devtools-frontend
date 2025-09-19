@@ -43,7 +43,7 @@ set up your Chrome or Chromium instance for earlier versions of M-136 and M-135.
 
 Then in your `devtools-frontend` checkout, use
 
-```
+```bash
 ./third_party/chrome/chrome-linux/chrome \
    --disable-infobars \
    --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
@@ -51,7 +51,7 @@ Then in your `devtools-frontend` checkout, use
 
 on Linux or
 
-```
+```bash
 ./third_party/chrome/chrome-mac/Google\ Chrome\ for\ Testing.app/Contents/MacOS/Google\ Chrome\ for\ Testing \
   --disable-infobars \
   --disable-features=MediaRouter \

@@ -14,27 +14,27 @@ The unit tests are implicitly run as part of `npm run test`,
 but that also runs all the other test suites. To run only
 **all unit tests**, use:
 
-```
+```bash
 npm run test front_end
 ```
 
 To use `out/Debug` instead of the default `out/Default` target
 directory, use:
 
-```
+```bash
 npm run test -- -t Debug front_end
 ```
 
 To run the unit tests in **debug mode**, use:
 
-```
+```bash
 npm run test -- --debug front_end
 ```
 
 To run only **specific unit tests** from a single `.test.ts`
 file, say `SourcesView.test.ts` for example, use:
 
-```
+```bash
 npm run test front_end/panels/sources/SourcesView.test.ts
 ```
 
@@ -47,7 +47,7 @@ If you want to run a specific (set of) unit test(s) and you don't want
 to pass the name of the `.test.ts` file to `npm run test`, you can use
 `it.only` or `describe.only` for those tests that you want to run.
 
-```js
+```ts
 // Run only the tests within this `describe` block.
 describe.only('The test suite that you want to run', () => {
   it('A test that would run', () => {});
@@ -75,7 +75,7 @@ documentation for details on various available helpers.
 
 To debug unit tests with DevTools, start the test runner like this
 
-```
+```bash
 npm run test -- --debug front_end
 ```
 
@@ -83,7 +83,7 @@ and optionally pass the (relative) path to the `.test.ts` file that
 you want to debug. This will bring up Chrome with a Karma launcher
 page.
 
-![Debugging unit tests with DevTools](../../docs/images/debugging-unit-tests-with-devtools.png "Debugging unit tests with DevTools")
+![Debugging unit tests with DevTools](../../docs/images/debugging-unit-tests-with-devtools.png 'Debugging unit tests with DevTools')
 
 Click on the "Debug" button, which opens a new page, on which
 you can open DevTools, set breakpoints in the tests and reload the
@@ -96,7 +96,7 @@ within VSCode. Open the "Run and Debug" sidebar, select "Run unit tests
 in VS Code debugger" from the dropdown, and click the start button or
 press F5.
 
-![Debugging unit tests with VSCode](../../docs/images/debugging-unit-tests-with-vscode.png "Debugging unit tests with VSCode")
+![Debugging unit tests with VSCode](../../docs/images/debugging-unit-tests-with-vscode.png 'Debugging unit tests with VSCode')
 
 ## Dealing with flaky unit tests
 
@@ -106,10 +106,10 @@ block accordingly by adding `.skip` to it, adding a preceeding comment
 why the test is skipp and adding the `crbug.com` reference to the test
 block string. For example
 
-```js
+```ts
 describe('Foo', () => {
   it('can return bar', () => {
-    assert.strictEqual((new Foo()).bar(), 'bar');
+    assert.strictEqual(new Foo().bar(), 'bar');
   });
 
   // ...
@@ -118,11 +118,11 @@ describe('Foo', () => {
 
 would be changed to look like this
 
-```js
+```ts
 describe('Foo', () => {
   // Flaking on multiple bots on CQ after recent CL xyz.
   it.skip('[crbug.com/12345678] can return bar', () => {
-    assert.strictEqual((new Foo()).bar(), 'bar');
+    assert.strictEqual(new Foo().bar(), 'bar');
   });
 
   // ...
@@ -131,11 +131,11 @@ describe('Foo', () => {
 
 if only the one test case should be skipped, or like this
 
-```js
+```ts
 // Flaking on multiple bots on CQ after recent CL xyz.
 describe.skip('[crbug.com/12345678] Foo', () => {
   it('can return bar', () => {
-    assert.strictEqual((new Foo()).bar(), 'bar');
+    assert.strictEqual(new Foo().bar(), 'bar');
   });
 
   // ...
@@ -157,20 +157,22 @@ describe('view', () => {
     const target = document.createElement('div');
     renderElementIntoDOM(target);
     AiAssistance.UserActionRow.DEFAULT_VIEW(
-        {
-          onRatingClick: () => {},
-          onReportClick: () => {},
-          scrollSuggestionsScrollContainer: () => {},
-          onSuggestionsScrollOrResize: () => {},
-          onSuggestionClick: () => {},
-          onSubmit: () => {},
-          onClose: () => {},
-          onInputChange: () => {},
-          showRateButtons: true,
-          isSubmitButtonDisabled: false,
-          isShowingFeedbackForm: true,
-        },
-        {}, target);
+      {
+        onRatingClick: () => {},
+        onReportClick: () => {},
+        scrollSuggestionsScrollContainer: () => {},
+        onSuggestionsScrollOrResize: () => {},
+        onSuggestionClick: () => {},
+        onSubmit: () => {},
+        onClose: () => {},
+        onInputChange: () => {},
+        showRateButtons: true,
+        isSubmitButtonDisabled: false,
+        isShowingFeedbackForm: true,
+      },
+      {},
+      target,
+    );
     await assertScreenshot('ai_assistance/user_action_row.png');
   });
 });

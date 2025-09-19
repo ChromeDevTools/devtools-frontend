@@ -60,20 +60,22 @@ element. There’s a number of fluent builder functions exported
 the attribute value. These are all bound versions of
 `LoggingConfig.makeConfigStringBuilder` and are used in the legacy UI as:
 
-```js
+```ts
 this.element.setAttribute('jslog', `${VisualLogging.panel(context)}`);
 ```
 
 or
 
-```js
-button.element.setAttribute('jslog', `${VisualLogging.dropDown('rendering-emulations')
-    .track({click: true})}`);
+```ts
+button.element.setAttribute(
+  'jslog',
+  `${VisualLogging.dropDown('rendering-emulations').track({ click: true })}`,
+);
 ```
 
 In LitHTML, the usage is:
 
-```js
+```ts
 Lit.html`<td jslog=${VisualLogging.tableCell(/* context */ col.id)
         .track({click: true})}>
 ```
@@ -121,27 +123,37 @@ First argument is a provider name that is later used as an argument in the
 `jslog` builder `context()` method. Second is a function that takes an Element or Event
 and returns a number. For a disclosure triangle, this is as follows:
 
-```js
+```ts
 function disclosureTriangleLoggingContextProvider(
-    e: VisualLogging.Loggable|Event): Promise<number|undefined> {
+  e: VisualLogging.Loggable | Event,
+): Promise<number | undefined> {
   if (e instanceof Element) {
     return Promise.resolve(e.classList.contains('parent') ? 1 : 0);
   }
   if (e instanceof MouseEvent && e.currentTarget instanceof Node) {
-    const treeElement = TreeElement.getTreeElementBylistItemNode(e.currentTarget);
+    const treeElement = TreeElement.getTreeElementBylistItemNode(
+      e.currentTarget,
+    );
     if (treeElement) {
-      return Promise.resolve(treeElement.isEventWithinDisclosureTriangle(e) ? 1 : 0);
+      return Promise.resolve(
+        treeElement.isEventWithinDisclosureTriangle(e) ? 1 : 0,
+      );
     }
   }
   return Promise.resolve(undefined);
 }
 
+VisualLogging.registerContextProvider(
+  'disclosureTriangle',
+  disclosureTriangleLoggingContextProvider,
+);
 
-VisualLogging.registerContextProvider('disclosureTriangle',
-    disclosureTriangleLoggingContextProvider);
-
-listItemNode.setAttribute('jslog', `${VisualLogging.treeItem()
-    .track({click: true}).context('disclosureTriangle')}`);
+listItemNode.setAttribute(
+  'jslog',
+  `${VisualLogging.treeItem()
+    .track({ click: true })
+    .context('disclosureTriangle')}`,
+);
 ```
 
 Similarly parent provides are used to specify parent visual elements in
@@ -150,18 +162,18 @@ to identify the parent. However, sometimes, markup doesn’t reflect the logical
 structure, for example, when a legacy tree outline has children in an `<ol>` element, which is a
 sibling of `<li>` that specifies the parent. In this case, you can do the following:
 
-```js
-function loggingParentProvider(e: Element): Element|undefined {
+```ts
+function loggingParentProvider(e: Element): Element | undefined {
   const treeElement = TreeElement.getTreeElementBylistItemNode(e);
   return treeElement?.parent?.listItemElement;
 }
 
-VisualLogging.registerParentProvider('parentTreeItem',
-        loggingParentProvider);
+VisualLogging.registerParentProvider('parentTreeItem', loggingParentProvider);
 
 this.listItemNode.setAttribute(
-       'jslog',
-       `${VisualLogging.treeItem().track({click: true}).parent('parentTreeItem')}`);
+  'jslog',
+  `${VisualLogging.treeItem().track({ click: true }).parent('parentTreeItem')}`,
+);
 ```
 
 ### Logging beyond DOM
@@ -182,11 +194,15 @@ Then call `registerLoggable` with the corresponding JavaScript
 object, config string in the same format as the `jslog` attribute would have,
 and an optional parent JavaScript object. For a native menu item, this is:
 
-
-```js
-VisualLogging.registerLoggable(descriptor, `${VisualLogging.action()
-    .track({click: true}).context(descriptor.jslogContext)}`,
-    parent || descriptors, size);
+```ts
+VisualLogging.registerLoggable(
+  descriptor,
+  `${VisualLogging.action()
+    .track({ click: true })
+    .context(descriptor.jslogContext)}`,
+  parent || descriptors,
+  size,
+);
 ```
 
 This only registers the element and doesn’t log anything yet. To log
@@ -198,7 +214,7 @@ Similarly to log click, call `VisualLogging.logClick`.
 You may find it useful to see which UI elements are annotated and how the tree
 structure look like. To do that, run
 
-```js
+```ts
 setVeDebuggingEnabled(true);
 ```
 

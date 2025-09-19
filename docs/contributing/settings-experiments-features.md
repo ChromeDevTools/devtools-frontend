@@ -49,13 +49,13 @@ const base::FeatureParam<double> kDevToolsNewFeatureDoubleParam{
 
 Start Chrome via command line including flags:
 
-```
+```bash
 out/Default/chrome --enable-features=DevToolsNewFeature
 ```
 
 You can even pass additional feature parameters:
 
-```
+```bash
 out/Default/chrome --enable-features="DevToolsNewFeature:string_param/foo/double_param/0.5"
 ```
 
@@ -113,7 +113,8 @@ In DevTools, you need to register the experiment. This is done in
 Root.Runtime.experiments.register(
   'yourExperimentNameHere',
   'User facing short description of experiment here',
-  false);
+  false,
+);
 ```
 
 The first argument is the experiment's label, and **this must match the label
@@ -134,9 +135,9 @@ documentation and a way to provide feedback:
 Root.Runtime.experiments.register(
   'jsProfilerTemporarilyEnable',
   'Enable JavaScript Profiler temporarily',
-   /* unstable= */ false,
-   /* documentation */ 'https://goo.gle/js-profiler-deprecation',
-   /* feedback */ 'https://crbug.com/1354548'
+  /* unstable= */ false,
+  /* documentation */ 'https://goo.gle/js-profiler-deprecation',
+  /* feedback */ 'https://crbug.com/1354548',
 );
 ```
 
@@ -149,7 +150,7 @@ Once the experiment is registered, you can check if it is enabled and use this
 to run certain code blocks conditionally:
 
 ```ts
-if(Root.Runtime.experiments.isEnabled('yourExperimentNameHere')) {
-   // Experiment code here
+if (Root.Runtime.experiments.isEnabled('yourExperimentNameHere')) {
+  // Experiment code here
 }
 ```

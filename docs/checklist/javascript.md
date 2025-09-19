@@ -306,7 +306,7 @@ NLFs that contain control flow (e.g branches, loops, etc.).
 
 Run `d8` with `--lcov` and check whether the produced coverage information is correct. E.g. like this:
 
-```
+```bash
 ./d8 --lcov=cov.info test.js
 genhtml cov.info -o coverage
 ```

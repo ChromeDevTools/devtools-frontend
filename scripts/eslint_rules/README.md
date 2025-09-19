@@ -3,7 +3,7 @@
 The [`lib/` folder](./lib/) contains a set of [ESLint](https://eslint.org) rules
 specific to Chromium DevTools. These rules are executed as part of the
 
-```
+```bash
 npm run lint
 ```
 
@@ -20,7 +20,7 @@ add a corresponding test for the logic to `tests/foo.test.ts`.
 
 You can use
 
-```
+```bash
 npm run test -- ./scripts/eslint_rules/tests
 ```
 

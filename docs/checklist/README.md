@@ -46,7 +46,7 @@ in the Elements tab looks alright and works as expected (typically, this require
 
 Verify that the new properties show up in the DevTools Console autocomplete functionality (typically, this requires no additional implementation effort).
 To enable argument hints for new or changed parameterized functions, run
-```
+```bash
 devtools-frontend/src/scripts/deps/roll_deps.py
 ```
 to re-generate `devtools-frontend/src/front_end/models/javascript\_metadata/NativeFunctions.js` ([Example CL](http://crrev.com/c/3432787)).
@@ -88,7 +88,7 @@ Example for `:target`: [Chromium back-end CL](https://chromium-review.googlesour
 
 To recognize new CSS properties/values in the DevTools Styles panel’s autocomplete functionality, roll
 [Chromium’s `css_properties.json5`](https://source.chromium.org/chromium/chromium/src/+/main:third\_party/blink/renderer/core/css/css_properties.json5;drc=be2c473625b9c28a4ff6735547cb0c1b6743f4ae) into the `devtools-frontend` repository by running
-```
+```bash
 devtools-frontend/src/scripts/deps/roll_deps.py
 ```
 see this [example CL](https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/2972583).

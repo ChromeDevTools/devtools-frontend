@@ -16,7 +16,7 @@ As of September 2025, we also have an evaluation suite where we can define evalu
 
 **Steps**
 1. Run a AI Assistance enabled Chrome executable with `--remote-debugging-port 9222`, `--user-data-dir=/tmp/aida` and `--auto-open-devtools-for-tabs` targeting `about:blank` and login with a Google account. For example:
-```
+```bash
 /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --remote-debugging-port=9222 --user-data-dir=/tmp/aida --auto-open-devtools-for-tabs about:blank
 ```
 > `--user-data-dir` is now required for `--remote-debugging-port` to take effect.
@@ -26,14 +26,14 @@ As of September 2025, we also have an evaluation suite where we can define evalu
 3. Close the DevTools window for the initial `about:blank` page but keep the tab open.
 
 4. Run the following command from the `scripts/ai_assistance` folder. See below for the list of values `--test-target` supports. This flag is used to determine which AI experience is evaluated.
-```
+```bash
 npm run auto-run -- --test-target elements --example-urls <example-url-1> <example-url-2>
 ```
 
 At the end of these steps, the examples in the urls `<example-url-1>` and `<example-url-2>` should be run and the results must be saved to the `auto-run/data/` folder.
 
 Tip: You can add a `--label <label>` argument to the run to label the dataset. For example:
-```
+```bash
 npm run auto-run -- --label title-change --example-urls <example-url-1> <example-url-2>
 ```
 
@@ -53,7 +53,7 @@ compatible with the eval UI.
 
 **Steps**
 1. Serve the `scripts/ai_assistance` folder in 8000 port by using a simple file server. For example:
-```
+```bash
 python3 -m http.server
 ```
 2. Visit http://localhost:8000/eval URL to see the UI.

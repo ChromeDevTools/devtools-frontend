@@ -17,14 +17,14 @@ out the individual guides below:
 
 You can use
 
-```
+```bash
 npm test
 ```
 
 to run all tests in the devtools frontend repo. You can also run just a
 subset of tests like this:
 
-```
+```bash
 npm test \
    front_end/core/common/Color.test.ts \
    front_end/core/sdk
@@ -46,13 +46,14 @@ coverage for individual files.
 
 After building content shell as part of Chromium, we can also run layout tests that are relevant for DevTools front-end:
 
-```
+```bash
 autoninja -C out/Default blink_tests
 third_party/blink/tools/run_web_tests.py -t Default http/tests/devtools
 ```
 
 To debug a failing layout test we can run
-```
+
+```bash
 npm run debug-webtest -- http/tests/devtools/<path>/<to>/<test>.js
 ```
 
@@ -85,9 +86,11 @@ for more details.
 
 The DevTools front-end is written in TypeScript and uses `tsc` (TypeScript Compiler) to check type consistency.
 Unless you specify `devtools_skip_typecheck = true` in your `out/Default/args.gn`, running
-```
+
+```bash
 autoninja -C out/Default
 ```
+
 will automatically check for type consistency.
 
 ## Presubmit checks
@@ -97,15 +100,19 @@ license headers, formatting, and the like that are automatically run while uploa
 the CQ (commit queue), and on the [CI (continous integration)](https://ci.chromium.org/p/devtools-frontend/g/main/console).
 
 You can manually trigger the presubmit checks with
-```
+
+```bash
 git cl presubmit
 ```
+
 on a clean checkout with no uncommitted local changes (you can otherwise pass `--force` to have it execute even
 on a dirty tree). This will execute the checks against all the file changed compared to the base branch, because
 that's much faster. You can use
-```
+
+```bash
 git cl presubmit --all
 ```
+
 if you need to run the checks on all files, and not just the modified ones.
 
 Check the section on [Presubmit Scripts](https://www.chromium.org/developers/how-tos/depottools/presubmit-scripts/)
@@ -117,14 +124,18 @@ We use a set of [ESLint](https://eslint.org) and [Stylelint](https://stylelint.i
 which are also run as part of the [presubmit checks](#Presubmit-checks).
 
 You can use
-```
+
+```bash
 npm run lint
 ```
+
 to execute all lint checks, or
-```
+
+```bash
 npm run lint -- '**/*.ts'
 npm run lint -- '**/*.css'
 ```
+
 to execute only the lint checks for TypeScript or CSS files respectively. By default this will fix all issues
 that can be automatically corrected; you can pass `--no-fix` to disable this behavior.
 
@@ -141,7 +152,7 @@ In `.vscode/launch.conf` there are some launch options available for running tes
 The following shell function allows running all tests changed in a given git commit range, in addition to all unit tests
 files for all changed code files. Store it in your `.bashrc`.
 
-```
+```bash
 affected() {
   ref="$1"
   if [ -n "$ref" ]; then

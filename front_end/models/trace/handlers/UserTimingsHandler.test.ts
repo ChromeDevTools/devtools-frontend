@@ -28,7 +28,7 @@ export async function createEventDataFromTestInput(
   return await createUserTimingsDataFromEvents(events);
 }
 
-async function createUserTimingsDataFromEvents(events: Trace.Types.Events.Event[]):
+async function createUserTimingsDataFromEvents(events: readonly Trace.Types.Events.Event[]):
     Promise<Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData> {
   Trace.Helpers.SyntheticEvents.SyntheticEventsManager.createAndActivate(events);
 
@@ -520,6 +520,108 @@ describeWithEnvironment('UserTimingsHandler', function() {
 
       sortAll(events);
       assert.deepEqual(events, [event1a, event2a, event3a, event4a, event1b, event2b, event3b, event4b]);
+    });
+  });
+
+  describe('parsing performance.measures with re-used IDs', () => {
+    const {
+      microToMilli,
+    } = Trace.Helpers.Timing;
+    const {Micro} = Trace.Types.Timing;
+
+    let measures: readonly Trace.Types.Events.SyntheticUserTimingPair[] = [];
+    let traceBoundMin: Trace.Types.Timing.Micro;
+
+    /**
+     * Get the start & end time for a perf.measure, accounting for the min trace time.
+     * The numbers are converted to Milliseconds and then rounded. We don't
+     * care about the exact precise timings, but we can use this to check the
+     * ordering of the events is correct as it's important the handler returns
+     * them in the right order.
+     */
+    function roundedMilliTimings(events: readonly Trace.Types.Events.SyntheticUserTimingPair[]):
+        Array<{start: number, end: number}> {
+      return events.map(e => {
+        return {
+          start: Number(microToMilli(Micro(e.ts - traceBoundMin)).toFixed(0)),
+          end: Number(microToMilli(Micro(e.ts + e.dur - traceBoundMin)).toFixed(0)),
+        };
+      });
+    }
+
+    before(async function() {
+      const {data} = await TraceLoader.traceEngine(this, 'user-timings-overlaps.json.gz');
+
+      measures = data.UserTimings.performanceMeasures;
+      traceBoundMin = data.Meta.traceBounds.min;
+    });
+
+    it('can parse pairs that are non-unique across non-overlapping measures', async () => {
+      // const name = 'ConsecutiveNonOverlapping';
+      // const start = performance.now();
+      // performance.measure(name, {
+      //   start: start,
+      //   end: start + 500,
+      // });
+      // performance.measure(name, {
+      //   start: start + 500,
+      //   end: start + 1000,
+      // });
+      // }
+
+      const nonOverlappingMeasures = measures.filter(e => {
+        return e.name === 'ConsecutiveNonOverlapping';
+      });
+      assert.lengthOf(nonOverlappingMeasures, 2);
+      assert.deepEqual(roundedMilliTimings(nonOverlappingMeasures), [
+        {start: 135, end: 635},
+        {start: 635, end: 1135},
+      ]);
+    });
+
+    it('can parse pairs that are overlapping but not parent > child', async () => {
+      // const name = 'OverlappingNonNested';
+      // const start = performance.now();
+
+      // performance.measure(name, {
+      //   start: start,
+      //   end: start + 500,
+      // });
+      // performance.measure(name, {
+      //   start: start + 100,
+      //   end: start + 600,
+      // });
+      const overlappingMeasures = measures.filter(e => {
+        return e.name === 'OverlappingNonNested';
+      });
+      assert.lengthOf(overlappingMeasures, 2);
+      assert.deepEqual(roundedMilliTimings(overlappingMeasures), [
+        {start: 2035, end: 2535},
+        {start: 2135, end: 2635},
+      ]);
+    });
+
+    it('can parse pairs that are overlapping and parent > child', async () => {
+      // const name = 'OverlappingNested';
+      // const start = performance.now();
+
+      // performance.measure(name, {
+      //   start: start,
+      //   end: start + 500,
+      // });
+      // performance.measure(name, {
+      //   start: start + 100,
+      //   end: start + 200,
+      // });
+
+      const overlappingMeasures = measures.filter(e => {
+        return e.name === 'OverlappingNested';
+      });
+      assert.lengthOf(overlappingMeasures, 2);
+      assert.deepEqual(roundedMilliTimings(overlappingMeasures), [
+        {start: 3035, end: 3535},
+        {start: 3135, end: 3235},
+      ]);
     });
   });
 });

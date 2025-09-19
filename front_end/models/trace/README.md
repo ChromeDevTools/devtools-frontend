@@ -31,7 +31,7 @@ This folder contains the new trace engine that was first implemented for the Per
                          │
                          │
       ┌──────────────────▼─────────────────┐
-      │const data = model.parsedTrace()│
+      │const data = model.parsedTrace()    │
       └────────────────────────────────────┘
 ```
 
@@ -97,4 +97,31 @@ The object returned from `parsedTrace()` is an object of key-value pairs where e
   LayoutShiftHandler: ReturnType<typeof LayoutShiftHandler['data']>,
   // and so on for each enabled Handler
 }
+```
+
+## Pairing begin & end events
+
+Note: this detail is not useful if you are using the Trace Engine, but it is if you are working on it.
+
+Trace events are often emitted as `begin` & `end` events to represent the lifetime of the event. These have the `b` and `e` phase.
+
+When we find these events, we often try to pair them into what we call a "Synthetic" event. This is a trace event that doesn't exist in the raw trace, but one that we create to make it easier to deal with. This means we can represent a `b` & `e` pair as a single event rather than pass two events around.
+
+When we pair these events, we look for an ID. Some events have a top level `id` field, others have a nested `id2.local` field (this is for various historical reasons). `getSyntheticId` in `Trace.Helpers` takes care of this, and tries to account for potential collisions by appending a few other pieces of metadata onto the ID.
+
+This approach worked well until July 2025 when an upstream change in Perfetto [https://chromium.googlesource.com/external/github.com/google/perfetto.git/+/aef636b27ffbf379fd722e7798030da2c5c4d699] meant that Perfetto will try to minimise the amount of unique IDs it uses. A consequence of this change is that IDs can be reused by consecutive, non-overlapping events.
+
+For example, take the following set of events:
+
+```
+=== E1 === === E2 ===
+```
+
+These could have the same ID, because they do not overlap.
+
+Whereas these events will have different IDs because otherwise you cannot reliably pair them up:
+
+```
+=== E1 ===
+  === E2 ===
 ```

@@ -135,6 +135,7 @@ copy_to_gen("traces") {
     "unsized-images.json.gz",
     "user-timings-complex.json.gz",
     "user-timings-details.json.gz",
+    "user-timings-overlaps.json.gz",
     "user-timings.json.gz",
     "web-dev-animation-frames.json.gz",
     "web-dev-initial-url.json.gz",

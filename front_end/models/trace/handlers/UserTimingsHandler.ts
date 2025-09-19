@@ -26,6 +26,10 @@ let measureTraceByTraceId = new Map<number, Types.Events.UserTimingMeasure>();
 let performanceMeasureEvents: Types.Events.PerformanceMeasure[] = [];
 let performanceMarkEvents: Types.Events.PerformanceMark[] = [];
 
+// This is the array we populate in the finalize() call to pair up all the
+// begin & end events we find.
+let pairedPerformanceMeasures: Types.Events.SyntheticUserTimingPair[] = [];
+
 let consoleTimings: Array<Types.Events.ConsoleTimeBegin|Types.Events.ConsoleTimeEnd> = [];
 
 let timestampEvents: Types.Events.ConsoleTimeStamp[] = [];
@@ -65,6 +69,7 @@ export function reset(): void {
   performanceMarkEvents = [];
   consoleTimings = [];
   timestampEvents = [];
+  pairedPerformanceMeasures = [];
   measureTraceByTraceId = new Map();
 }
 
@@ -219,15 +224,76 @@ export async function finalize(): Promise<void> {
   syntheticEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
   syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, [...syntheticEvents]));
   timestampEvents = timestampEvents.sort((a, b) => userTimingComparator(a, b, [...timestampEvents]));
+
+  pairedPerformanceMeasures = pairPerformanceMeasureEvents(performanceMeasureEvents);
+  pairedPerformanceMeasures =
+      pairedPerformanceMeasures.sort((a, b) => userTimingComparator(a, b, [...pairedPerformanceMeasures]));
 }
 
 export function data(): UserTimingsData {
   return {
-    performanceMeasures: syntheticEvents.filter(e => e.cat === 'blink.user_timing') as
-        Types.Events.SyntheticUserTimingPair[],
+    performanceMeasures: pairedPerformanceMeasures,
     consoleTimings: syntheticEvents.filter(e => e.cat === 'blink.console') as Types.Events.SyntheticConsoleTimingPair[],
     performanceMarks: performanceMarkEvents,
     timestampEvents,
     measureTraceByTraceId,
   };
+}
+
+function pairPerformanceMeasureEvents(events: Types.Events.PerformanceMeasure[]):
+    Types.Events.SyntheticUserTimingPair[] {
+  const pairs: Types.Events.SyntheticUserTimingPair[] = [];
+
+  // To pair up the events, we walk through all begin & end events in ASC order
+  // and treat it like a stack. However we cannot have just one stack, because
+  // we need to pair events up not just by timing but also by their ID, as
+  // Perfetto may reuse IDs in non-overlapping events. So we maintain stacks
+  // of begin events, based on their IDs. We then look to find the last begin
+  // event with the right ID every time we find an end event.
+  const beginEventsById = new Map<string, Types.Events.PerformanceMeasureBegin[]>();
+
+  // First, before we start, we need to process events in timestamp order.
+  Helpers.Trace.sortTraceEventsInPlace(events);
+
+  for (const event of events) {
+    const id = Helpers.Trace.getSyntheticId(event);
+    if (!id) {
+      // Drop events without an ID, we cannot pair them.
+      continue;
+    }
+    if (Types.Events.isPerformanceMeasureBegin(event)) {
+      const byId = beginEventsById.get(id) ?? [];
+      byId.push(event);
+      beginEventsById.set(id, byId);
+    } else {
+      // Find matching begin event.
+      const beginEventsWithMatchingId = beginEventsById.get(id) ?? [];
+      const beginEvent = beginEventsWithMatchingId.pop();
+      if (!beginEvent) {
+        // We should always find the begin event, but if we don't, just drop
+        // the end event.
+        continue;
+      }
+      const syntheticEvent =
+          Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent<Types.Events.SyntheticUserTimingPair>({
+            rawSourceEvent: beginEvent,
+            cat: event.cat,
+            ph: event.ph,
+            pid: event.pid,
+            tid: event.tid,
+            id,
+            // Both events have the same name, so it doesn't matter which we pick to
+            // use as the description
+            name: beginEvent.name,
+            dur: Types.Timing.Micro(event.ts - beginEvent.ts),
+            ts: beginEvent.ts,
+            args: {
+              data: {beginEvent, endEvent: event},
+            },
+
+          });
+      pairs.push(syntheticEvent);
+    }
+  }
+  return pairs;
 }

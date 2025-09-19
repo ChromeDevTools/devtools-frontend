@@ -331,7 +331,7 @@ export function matchEvents(unpairedEvents: Types.Events.PairableAsync[]): Map<s
   return matchedPairs;
 }
 
-function getSyntheticId(event: Types.Events.PairableAsync): string|undefined {
+export function getSyntheticId(event: Types.Events.PairableAsync): string|undefined {
   const id = extractId(event);
   return id && `${event.cat}:${id}:${event.name}`;
 }

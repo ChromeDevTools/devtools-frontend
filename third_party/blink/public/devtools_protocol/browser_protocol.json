@@ -1563,8 +1563,10 @@
                         "WriteErrorInsufficientResources",
                         "WriteErrorInvalidMatchField",
                         "WriteErrorInvalidStructuredHeader",
+                        "WriteErrorInvalidTTLField",
                         "WriteErrorNavigationRequest",
                         "WriteErrorNoMatchField",
+                        "WriteErrorNonIntegerTTLField",
                         "WriteErrorNonListMatchDestField",
                         "WriteErrorNonSecureContext",
                         "WriteErrorNonStringIdField",
@@ -15211,6 +15213,13 @@
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "isAdRelated",
+                            "description": "True when the resource request is ad-related.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -16529,6 +16538,57 @@
                     ]
                 },
                 {
+                    "id": "NetworkConditions",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "urlPattern",
+                            "description": "Only matching requests will be affected by these conditions. Patterns use the URLPattern constructor string\nsyntax (https://urlpattern.spec.whatwg.org/). If the pattern is empty, all requests are matched (including p2p\nconnections).",
+                            "type": "string"
+                        },
+                        {
+                            "name": "latency",
+                            "description": "Minimum latency from request sent to response headers received (ms).",
+                            "type": "number"
+                        },
+                        {
+                            "name": "downloadThroughput",
+                            "description": "Maximal aggregated download throughput (bytes/sec). -1 disables download throttling.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "uploadThroughput",
+                            "description": "Maximal aggregated upload throughput (bytes/sec).  -1 disables upload throttling.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "connectionType",
+                            "description": "Connection type if known.",
+                            "optional": true,
+                            "$ref": "ConnectionType"
+                        },
+                        {
+                            "name": "packetLoss",
+                            "description": "WebRTC packet loss (percent, 0-100). 0 disables packet loss emulation, 100 drops all the packets.",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "packetQueueLength",
+                            "description": "WebRTC packet queue length (packet). 0 removes any queue length limitations.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "packetReordering",
+                            "description": "WebRTC packetReordering feature.",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "id": "DirectSocketDnsQueryType",
                     "experimental": true,
                     "type": "string",
@@ -17150,7 +17210,8 @@
                 },
                 {
                     "name": "emulateNetworkConditions",
-                    "description": "Activates emulation of network conditions.",
+                    "description": "Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule\nand overrideNetworkState commands, which can be used together to the same effect.",
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "offline",
@@ -17198,6 +17259,69 @@
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "emulateNetworkConditionsByRule",
+                    "description": "Activates emulation of network conditions for individual requests using URL match patterns.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "offline",
+                            "description": "True to emulate internet disconnection.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "matchedNetworkConditions",
+                            "description": "Configure conditions for matching requests. If multiple entries match a request, the first entry wins.  Global\nconditions can be configured by leaving the urlPattern for the conditions empty. These global conditions are\nalso applied for throttling of p2p connections.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "NetworkConditions"
+                            }
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "ruleIds",
+                            "description": "An id for each entry in matchedNetworkConditions. The id will be included in the requestWillBeSentExtraInfo for\nrequests affected by a rule.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "overrideNetworkState",
+                    "description": "Override the state of navigator.onLine and navigator.connection.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "offline",
+                            "description": "True to emulate internet disconnection.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "latency",
+                            "description": "Minimum latency from request sent to response headers received (ms).",
+                            "type": "number"
+                        },
+                        {
+                            "name": "downloadThroughput",
+                            "description": "Maximal aggregated download throughput (bytes/sec). -1 disables download throttling.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "uploadThroughput",
+                            "description": "Maximal aggregated upload throughput (bytes/sec).  -1 disables upload throttling.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "connectionType",
+                            "description": "Connection type if known.",
+                            "optional": true,
+                            "$ref": "ConnectionType"
                         }
                     ]
                 },
@@ -18645,6 +18769,12 @@
                             "description": "Whether the site has partitioned cookies stored in a partition different than the current one.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "appliedNetworkConditionsId",
+                            "description": "The network conditions id if this request was affected by network conditions configured via\nemulateNetworkConditionsByRule.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },
@@ -23188,6 +23318,17 @@
                 {
                     "name": "setPrerenderingAllowed",
                     "description": "Enable/disable prerendering manually.\n\nThis command is a short-term solution for https://crbug.com/1440085.\nSee https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA\nfor more details.\n\nTODO(https://crbug.com/1440085): Remove this once Puppeteer supports tab targets.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "isAllowed",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "setPrewarmingAllowed",
+                    "description": "Enable/disable prewarming triggers manually.\n\nThis command manages DSE Prewarming triggers. While a client is connected,\nprewarming triggers are disabled by default. This command can change this\ndefault behavior to allow the triggers, or to disallow them again.\nSee https://chromestatus.com/feature/6266608741908480 for more details on\nthe DSE Prewarming feature.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -31869,7 +32010,8 @@
                                 "arraybuffer",
                                 "dataview",
                                 "webassemblymemory",
-                                "wasmvalue"
+                                "wasmvalue",
+                                "trustedtype"
                             ]
                         },
                         {
@@ -31987,7 +32129,8 @@
                                 "arraybuffer",
                                 "dataview",
                                 "webassemblymemory",
-                                "wasmvalue"
+                                "wasmvalue",
+                                "trustedtype"
                             ]
                         },
                         {
@@ -32082,7 +32225,8 @@
                                 "arraybuffer",
                                 "dataview",
                                 "webassemblymemory",
-                                "wasmvalue"
+                                "wasmvalue",
+                                "trustedtype"
                             ]
                         }
                     ]

@@ -473,6 +473,7 @@ export const generatedProperties = [
    "font-family",
    "font-feature-settings",
    "font-kerning",
+   "font-language-override",
    "font-optical-sizing",
    "font-palette",
    "font-size",
@@ -517,8 +518,8 @@ export const generatedProperties = [
    "inset-block-start",
    "inset-inline-end",
    "inset-inline-start",
-   "interest-hide-delay",
-   "interest-show-delay",
+   "interest-delay-end",
+   "interest-delay-start",
    "interpolate-size",
    "isolation",
    "item-tolerance",
@@ -2264,7 +2265,8 @@ export const generatedProperties = [
    "font-size-adjust",
    "font-kerning",
    "font-feature-settings",
-   "font-variation-settings"
+   "font-variation-settings",
+   "font-language-override"
   ],
   "name": "font"
  },
@@ -2290,6 +2292,13 @@ export const generatedProperties = [
    "none"
   ],
   "name": "font-kerning"
+ },
+ {
+  "inherited": true,
+  "keywords": [
+   "normal"
+  ],
+  "name": "font-language-override"
  },
  {
   "inherited": true,
@@ -2752,16 +2761,16 @@ export const generatedProperties = [
  },
  {
   "longhands": [
-   "interest-show-delay",
-   "interest-hide-delay"
+   "interest-delay-start",
+   "interest-delay-end"
   ],
   "name": "interest-delay"
  },
  {
-  "name": "interest-hide-delay"
+  "name": "interest-delay-end"
  },
  {
-  "name": "interest-show-delay"
+  "name": "interest-delay-start"
  },
  {
   "inherited": true,
@@ -5658,6 +5667,11 @@ export const generatedPropertyValues = {
    "auto",
    "normal",
    "none"
+  ]
+ },
+ "font-language-override": {
+  "values": [
+   "normal"
   ]
  },
  "font-optical-sizing": {

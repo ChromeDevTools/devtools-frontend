@@ -8470,7 +8470,7 @@ export const NativeFunctions = [
   },
   {
     name: "submitPrintJob",
-    signatures: [["job_name","document","attributes"]]
+    signatures: [["job_name","document_data","attributes"]]
   },
   {
     name: "PushEvent",

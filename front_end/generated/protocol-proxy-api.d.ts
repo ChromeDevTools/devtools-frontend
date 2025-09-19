@@ -2514,9 +2514,21 @@ declare namespace ProtocolProxyApi {
     invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Activates emulation of network conditions.
+     * Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule
+     * and overrideNetworkState commands, which can be used together to the same effect.
+     * @deprecated
      */
     invoke_emulateNetworkConditions(params: Protocol.Network.EmulateNetworkConditionsRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Activates emulation of network conditions for individual requests using URL match patterns.
+     */
+    invoke_emulateNetworkConditionsByRule(params: Protocol.Network.EmulateNetworkConditionsByRuleRequest): Promise<Protocol.Network.EmulateNetworkConditionsByRuleResponse>;
+
+    /**
+     * Override the state of navigator.onLine and navigator.connection.
+     */
+    invoke_overrideNetworkState(params: Protocol.Network.OverrideNetworkStateRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enables network tracking, network events will now be delivered to the client.
@@ -3479,6 +3491,17 @@ declare namespace ProtocolProxyApi {
      * TODO(https://crbug.com/1440085): Remove this once Puppeteer supports tab targets.
      */
     invoke_setPrerenderingAllowed(params: Protocol.Page.SetPrerenderingAllowedRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Enable/disable prewarming triggers manually.
+     *
+     * This command manages DSE Prewarming triggers. While a client is connected,
+     * prewarming triggers are disabled by default. This command can change this
+     * default behavior to allow the triggers, or to disallow them again.
+     * See https://chromestatus.com/feature/6266608741908480 for more details on
+     * the DSE Prewarming feature.
+     */
+    invoke_setPrewarmingAllowed(params: Protocol.Page.SetPrewarmingAllowedRequest): Promise<Protocol.ProtocolResponseWithError>;
 
   }
   export interface PageDispatcher {

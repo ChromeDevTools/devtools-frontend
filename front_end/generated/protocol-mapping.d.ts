@@ -3340,10 +3340,25 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * Activates emulation of network conditions.
+     * Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule
+     * and overrideNetworkState commands, which can be used together to the same effect.
      */
     'Network.emulateNetworkConditions': {
       paramsType: [Protocol.Network.EmulateNetworkConditionsRequest];
+      returnType: void;
+    };
+    /**
+     * Activates emulation of network conditions for individual requests using URL match patterns.
+     */
+    'Network.emulateNetworkConditionsByRule': {
+      paramsType: [Protocol.Network.EmulateNetworkConditionsByRuleRequest];
+      returnType: Protocol.Network.EmulateNetworkConditionsByRuleResponse;
+    };
+    /**
+     * Override the state of navigator.onLine and navigator.connection.
+     */
+    'Network.overrideNetworkState': {
+      paramsType: [Protocol.Network.OverrideNetworkStateRequest];
       returnType: void;
     };
     /**
@@ -4263,6 +4278,19 @@ export namespace ProtocolMapping {
      */
     'Page.setPrerenderingAllowed': {
       paramsType: [Protocol.Page.SetPrerenderingAllowedRequest];
+      returnType: void;
+    };
+    /**
+     * Enable/disable prewarming triggers manually.
+     *
+     * This command manages DSE Prewarming triggers. While a client is connected,
+     * prewarming triggers are disabled by default. This command can change this
+     * default behavior to allow the triggers, or to disallow them again.
+     * See https://chromestatus.com/feature/6266608741908480 for more details on
+     * the DSE Prewarming feature.
+     */
+    'Page.setPrewarmingAllowed': {
+      paramsType: [Protocol.Page.SetPrewarmingAllowedRequest];
       returnType: void;
     };
     /**

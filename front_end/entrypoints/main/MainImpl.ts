@@ -516,7 +516,7 @@ export class MainImpl {
     this.#registerMessageSinkListener();
 
     // Initialize `GDPClient` and `UserBadges` for Google Developer Program integration
-    if (Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled && !Root.Runtime.hostConfig.isOffTheRecord) {
+    if (Host.GdpClient.isGdpProfilesAvailable()) {
       void Host.GdpClient.GdpClient.instance().initialize();
       void Badges.UserBadges.instance().initialize();
       Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, async ev => {

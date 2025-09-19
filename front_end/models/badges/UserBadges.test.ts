@@ -4,10 +4,12 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as Root from '../../core/root/root.js';
+import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 
 import * as Badges from './badges.js';
+
 class MockActivityBadge extends Badges.Badge {
   override name = 'badges/test-badge';
   override title = 'test-badge-title';
@@ -108,6 +110,15 @@ function assertActiveBadges({
 
 describeWithEnvironment('UserBadges', () => {
   beforeEach(() => {
+    updateHostConfig({
+      devToolsGdpProfiles: {
+        enabled: true,
+      },
+      devToolsGdpProfilesAvailability: {
+        enabled: true,
+        enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
+      },
+    });
     Object.assign(Badges.UserBadges.BADGE_REGISTRY, MOCK_BADGE_REGISTRY);
     Badges.UserBadges.instance({forceNew: true});
   });
@@ -258,6 +269,48 @@ describeWithEnvironment('UserBadges', () => {
         mockGdpClientGetProfile({name: 'profiles/test'});
         mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
         mockGetAwardedBadgeNames(null);
+
+        await Badges.UserBadges.instance().initialize();
+
+        assertActiveBadges({
+          shouldActivityBadgeBeActive: false,
+          shouldStarterBadgeBeActive: false,
+        });
+      });
+
+      it('should not activate any badges on non-branded builds', async () => {
+        setReceiveBadgesSetting(true);
+        mockIsEligibleToCreateProfile(true);
+        mockGdpClientGetProfile({name: 'profiles/test'});
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGetAwardedBadgeNames([]);
+        updateHostConfig({
+          devToolsGdpProfilesAvailability: {
+            enabled: false,
+            enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
+          },
+        });
+
+        await Badges.UserBadges.instance().initialize();
+
+        assertActiveBadges({
+          shouldActivityBadgeBeActive: false,
+          shouldStarterBadgeBeActive: false,
+        });
+      });
+
+      it('should not activate any badges if not allowed by enterprise policy', async () => {
+        setReceiveBadgesSetting(true);
+        mockIsEligibleToCreateProfile(true);
+        mockGdpClientGetProfile({name: 'profiles/test'});
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGetAwardedBadgeNames([]);
+        updateHostConfig({
+          devToolsGdpProfilesAvailability: {
+            enabled: true,
+            enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED_WITHOUT_BADGES,
+          },
+        });
 
         await Badges.UserBadges.instance().initialize();
 

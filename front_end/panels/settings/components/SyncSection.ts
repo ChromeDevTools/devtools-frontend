@@ -212,7 +212,7 @@ export class SyncSection extends HTMLElement {
   }
 
   async #fetchGdpDetails(): Promise<void> {
-    if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled || Root.Runtime.hostConfig.isOffTheRecord) {
+    if (!Host.GdpClient.isGdpProfilesAvailable()) {
       return;
     }
 
@@ -304,19 +304,23 @@ function renderGdpSectionIfNeeded({
   gdpProfile?: Host.GdpClient.Profile,
   isEligibleToCreateProfile?: boolean,
 }): Lit.LitTemplate {
-  // clang-format off
-  if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled || (!gdpProfile && !isEligibleToCreateProfile)) {
+  if (!Host.GdpClient.isGdpProfilesAvailable() || (!gdpProfile && !isEligibleToCreateProfile)) {
     return Lit.nothing;
   }
+  const hasReceiveBadgesCheckbox = receiveBadgesSetting &&
+      Host.GdpClient.getGdpProfilesEnterprisePolicy() === Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED;
 
   function renderBrand(): Lit.LitTemplate {
+    // clang-format off
     return html`
       <div class="gdp-profile-header">
         <div class="gdp-logo" role="img" tabindex="0" aria-label="Google Developer Program"></div>
       </div>
     `;
+    // clang-format on
   }
 
+  // clang-format off
   return html`
     <div class="gdp-profile-container">
       <div class="divider"></div>
@@ -329,7 +333,7 @@ function renderGdpSectionIfNeeded({
             <x-link class="link" href=${Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK}>
               ${i18nString(UIStrings.viewProfile)}
             </x-link></div>
-            ${receiveBadgesSetting ? html`
+            ${hasReceiveBadgesCheckbox ? html`
               <div class="setting-container"  ${ref(receiveBadgesSettingContainerRef)}>
                 <setting-checkbox class="setting-checkbox" .data=${{setting: receiveBadgesSetting}} @change=${(e: Event) => {
                   const settingCheckbox = e.target as SettingsComponents.SettingCheckbox.SettingCheckbox;
@@ -359,8 +363,8 @@ function renderGdpSectionIfNeeded({
       `}
     </div>
   `;
+  // clang-format on
 }
-// clang-format on
 
 customElements.define('devtools-sync-section', SyncSection);
 

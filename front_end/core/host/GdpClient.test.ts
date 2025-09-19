@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import * as Root from '../root/root.js';
 
 import * as Host from './host.js';
 
@@ -13,7 +14,11 @@ describe('GdpClient', () => {
     updateHostConfig({
       devToolsGdpProfiles: {
         enabled: true,
-      }
+      },
+      devToolsGdpProfilesAvailability: {
+        enabled: true,
+        enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
+      },
     });
 
     dispatchHttpRequestStub =

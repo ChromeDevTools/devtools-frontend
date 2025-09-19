@@ -479,6 +479,18 @@ interface GdpProfiles {
   starterBadgeEnabled: boolean;
 }
 
+export enum GdpProfilesEnterprisePolicyValue {
+  ENABLED = 0,
+  ENABLED_WITHOUT_BADGES = 1,
+  DISABLED = 2,
+}
+
+interface GdpProfilesAvailability {
+  // Whether GDP profiles can be enabled on this host (only possible on branded builds).
+  enabled: boolean;
+  enterprisePolicyValue: GdpProfilesEnterprisePolicyValue;
+}
+
 interface LiveEdit {
   enabled: boolean;
 }
@@ -529,6 +541,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsIpProtectionInDevTools: IpProtectionInDevTools,
   devToolsGlobalAiButton: GlobalAiButton,
   devToolsGdpProfiles: GdpProfiles,
+  devToolsGdpProfilesAvailability: GdpProfilesAvailability,
   devToolsLiveEdit: LiveEdit,
   devToolsFlexibleLayout: DevToolsFlexibleLayout,
 }>;

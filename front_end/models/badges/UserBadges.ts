@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 
 import {AiExplorerBadge} from './AiExplorerBadge.js';
 import type {Badge, BadgeAction, BadgeActionEvents, BadgeContext} from './Badge.js';
@@ -48,6 +49,10 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     super();
 
     this.#receiveBadgesSetting = Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges');
+    if (Host.GdpClient.getGdpProfilesEnterprisePolicy() ===
+        Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED_WITHOUT_BADGES) {
+      this.#receiveBadgesSetting.set(false);
+    }
     this.#receiveBadgesSetting.addChangeListener(this.#reconcileBadges, this);
 
     this.#starterBadgeSnoozeCount = Common.Settings.Settings.instance().createSetting(
@@ -141,6 +146,12 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
         resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
     // If the user is not signed in, do not activate any badges.
     if (!syncInfo.accountEmail) {
+      this.#deactivateAllBadges();
+      return;
+    }
+
+    if (!Host.GdpClient.isGdpProfilesAvailable() ||
+        Host.GdpClient.getGdpProfilesEnterprisePolicy() !== Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED) {
       this.#deactivateAllBadges();
       return;
     }

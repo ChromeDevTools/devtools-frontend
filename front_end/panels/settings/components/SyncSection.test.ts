@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as Root from '../../../core/root/root.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {createFakeSetting, describeWithLocale, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
@@ -26,6 +27,18 @@ async function renderSyncSection(data: PanelComponents.SyncSection.SyncSectionDa
 }
 
 describeWithLocale('SyncSection', () => {
+  beforeEach(() => {
+    updateHostConfig({
+      devToolsGdpProfiles: {
+        enabled: true,
+      },
+      devToolsGdpProfilesAvailability: {
+        enabled: true,
+        enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
+      },
+    });
+  });
+
   it('shows a warning tooltip when sync is not active and the user is signed in', async () => {
     const syncSetting = createFakeSetting<boolean>('setting', true);
     const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
@@ -125,7 +138,55 @@ describeWithLocale('SyncSection', () => {
   });
 
   it('does not render the GDP section if the feature is disabled', async () => {
-    updateHostConfig({});  // Disable feature
+    updateHostConfig({
+      devToolsGdpProfiles: {
+        enabled: false,
+      },
+    });
+    const syncSetting = createFakeSetting<boolean>('setting', true);
+    const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
+    const {shadowRoot} = await renderSyncSection({
+      syncInfo: {
+        isSyncActive: true,
+        arePreferencesSynced: true,
+        accountEmail: 'user@gmail.com',
+      },
+      syncSetting,
+      receiveBadgesSetting,
+    });
+    const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
+    assert.isNull(gdpSection);
+  });
+
+  it('does not render the GDP section on non-branded builds', async () => {
+    updateHostConfig({
+      devToolsGdpProfilesAvailability: {
+        enabled: false,
+        enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
+      },
+    });
+    const syncSetting = createFakeSetting<boolean>('setting', true);
+    const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
+    const {shadowRoot} = await renderSyncSection({
+      syncInfo: {
+        isSyncActive: true,
+        arePreferencesSynced: true,
+        accountEmail: 'user@gmail.com',
+      },
+      syncSetting,
+      receiveBadgesSetting,
+    });
+    const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
+    assert.isNull(gdpSection);
+  });
+
+  it('does not render the GDP section if enterprise policy disables the feature', async () => {
+    updateHostConfig({
+      devToolsGdpProfilesAvailability: {
+        enabled: true,
+        enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED,
+      },
+    });
     const syncSetting = createFakeSetting<boolean>('setting', true);
     const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
     const {shadowRoot} = await renderSyncSection({
@@ -146,6 +207,10 @@ describeWithLocale('SyncSection', () => {
       updateHostConfig({
         devToolsGdpProfiles: {
           enabled: true,
+        },
+        devToolsGdpProfilesAvailability: {
+          enabled: true,
+          enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
         },
       });
     });
@@ -232,6 +297,49 @@ describeWithLocale('SyncSection', () => {
 
       const receiveBadgesCheckbox = gdpSection.querySelector('setting-checkbox');
       assert.instanceOf(receiveBadgesCheckbox, SettingComponents.SettingCheckbox.SettingCheckbox);
+    });
+
+    it('renders the profile details without badges if badges are blocked by enterprise policy', async () => {
+      updateHostConfig({
+        devToolsGdpProfiles: {
+          enabled: true,
+        },
+        devToolsGdpProfilesAvailability: {
+          enabled: true,
+          enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED_WITHOUT_BADGES,
+        },
+      });
+      const gdpClient = Host.GdpClient.GdpClient.instance();
+      sinon.stub(gdpClient, 'getProfile').resolves({
+        name: 'test-profile',
+        activeSubscription: undefined,
+      });
+
+      const syncSetting = createFakeSetting<boolean>('setting', true);
+      const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
+      const {shadowRoot} = await renderSyncSection({
+        syncInfo: {
+          isSyncActive: true,
+          arePreferencesSynced: true,
+          accountEmail: 'user@gmail.com',
+        },
+        syncSetting,
+        receiveBadgesSetting,
+      });
+
+      const gdpSection = shadowRoot.querySelector('.gdp-profile-container');
+      assert.instanceOf(gdpSection, HTMLElement);
+
+      const planDetails = gdpSection.querySelector('.plan-details');
+      assert.instanceOf(planDetails, HTMLElement);
+      assert.include(planDetails.innerText, 'Standard plan');
+
+      const viewProfileLink = gdpSection.querySelector('x-link');
+      assert.instanceOf(viewProfileLink, HTMLElement);
+      assert.strictEqual(viewProfileLink.innerText, 'View profile');
+
+      const receiveBadgesCheckbox = gdpSection.querySelector('setting-checkbox');
+      assert.isNull(receiveBadgesCheckbox);
     });
 
     const subscriptionTiers = [

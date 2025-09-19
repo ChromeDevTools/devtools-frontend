@@ -80,7 +80,7 @@ function normalizeBadgeName(name: string): string {
 export const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = 'https://developers.google.com/profile/u/me';
 
 async function makeHttpRequest<R extends object>(request: DispatchHttpRequestRequest): Promise<R|null> {
-  if (!Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled || Root.Runtime.hostConfig.isOffTheRecord) {
+  if (!isGdpProfilesAvailable()) {
     return null;
   }
 
@@ -222,6 +222,21 @@ function setDebugGdpIntegrationEnabled(enabled: boolean): void {
   } else {
     localStorage.removeItem('debugGdpIntegrationEnabled');
   }
+}
+
+export function isGdpProfilesAvailable(): boolean {
+  const isBaseFeatureEnabled = Boolean(Root.Runtime.hostConfig.devToolsGdpProfiles?.enabled);
+  const isBrandedBuild = Boolean(Root.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enabled);
+  const isOffTheRecordProfile = Root.Runtime.hostConfig.isOffTheRecord;
+  const isDisabledByEnterprisePolicy =
+      getGdpProfilesEnterprisePolicy() === Root.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED;
+  return isBaseFeatureEnabled && isBrandedBuild && !isOffTheRecordProfile && !isDisabledByEnterprisePolicy;
+}
+
+export function getGdpProfilesEnterprisePolicy(): Root.Runtime.GdpProfilesEnterprisePolicyValue {
+  return (
+      Root.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enterprisePolicyValue ??
+      Root.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED);
 }
 
 // @ts-expect-error

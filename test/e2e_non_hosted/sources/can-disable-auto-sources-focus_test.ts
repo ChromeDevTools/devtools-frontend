@@ -28,21 +28,26 @@ async function breakAndCheckFocusedPanel(
 }
 
 describe('Sources Panel', () => {
-  it('is not opened on Debugger.paused if autoFocusOnDebuggerPausedEnabled is false',
-     async ({devToolsPage, inspectedPage}) => {
-       await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
-       await togglePreferenceInSettingsTab('Focus Sources panel when triggering a breakpoint', undefined, devToolsPage);
+  // Flaky VE events
+  it.skip(
+      '[crbug.com/416405487] is not opened on Debugger.paused if autoFocusOnDebuggerPausedEnabled is false',
+      async ({devToolsPage, inspectedPage}) => {
+        await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
+        await togglePreferenceInSettingsTab(
+            'Focus Sources panel when triggering a breakpoint', undefined, devToolsPage);
 
-       // Note: This test checks if we *do not* switch panels after receiving
-       // a Debugger.paused event. If this functionality that we are testing is not
-       // working anymore, then this test may become flaky (sometimes we check before switching,
-       // sometimes after switching to the sources panel).
-       await breakAndCheckFocusedPanel('elements', devToolsPage, inspectedPage);
-     });
+        // Note: This test checks if we *do not* switch panels after receiving
+        // a Debugger.paused event. If this functionality that we are testing is not
+        // working anymore, then this test may become flaky (sometimes we check before switching,
+        // sometimes after switching to the sources panel).
+        await breakAndCheckFocusedPanel('elements', devToolsPage, inspectedPage);
+      });
 
-  it('is opened on Debugger.pause if autoFocusOnDebuggerPausedEnabled is true (default)',
-     async ({devToolsPage, inspectedPage}) => {
-       await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
-       await breakAndCheckFocusedPanel('sources', devToolsPage, inspectedPage);
-     });
+  // Flaky VE events
+  it.skip(
+      '[crbug.com/416405487] is opened on Debugger.pause if autoFocusOnDebuggerPausedEnabled is true (default)',
+      async ({devToolsPage, inspectedPage}) => {
+        await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
+        await breakAndCheckFocusedPanel('sources', devToolsPage, inspectedPage);
+      });
 });

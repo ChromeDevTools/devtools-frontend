@@ -43,7 +43,8 @@ export class ExtensionTrackAppender implements TrackAppender {
     if (totalEntryCount === 0) {
       return trackStartLevel;
     }
-    this.#appendTopLevelHeaderAtLevel(trackStartLevel, expanded);
+    const compact = !this.#extensionTopLevelTrack.isTrackGroup && totalEntryCount < 2;
+    this.#appendTopLevelHeaderAtLevel(trackStartLevel, compact, expanded);
     return this.#appendExtensionTrackData(trackStartLevel);
   }
 
@@ -53,9 +54,10 @@ export class ExtensionTrackAppender implements TrackAppender {
    * header corresponds to the track name, in the latter it corresponds
    * to the track group name.
    */
-  #appendTopLevelHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
-    const style =
-        buildGroupStyle({shareHeaderLine: true, collapsible: PerfUI.FlameChart.GroupCollapsibleState.IF_MULTI_ROW});
+  #appendTopLevelHeaderAtLevel(currentLevel: number, compact: boolean, expanded?: boolean): void {
+    const style = compact ?
+        buildGroupStyle({shareHeaderLine: true, collapsible: PerfUI.FlameChart.GroupCollapsibleState.NEVER}) :
+        buildGroupStyle({shareHeaderLine: false, collapsible: PerfUI.FlameChart.GroupCollapsibleState.ALWAYS});
     const headerTitle = this.#extensionTopLevelTrack.name;
     const jsLogContext = this.#extensionTopLevelTrack.name === '🅰️ Angular' ? VisualLoggingTrackName.ANGULAR_TRACK :
                                                                              VisualLoggingTrackName.EXTENSION;

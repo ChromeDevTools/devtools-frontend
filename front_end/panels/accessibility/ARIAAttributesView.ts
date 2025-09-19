@@ -1,14 +1,15 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import accessibilityPropertiesStyles from './accessibilityProperties.css.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 import {ariaMetadata} from './ARIAMetadata.js';
 
@@ -24,214 +25,135 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/ARIAAttributesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class ARIAAttributesPane extends AccessibilitySubPane {
-  private readonly noPropertiesInfo: Element;
-  private readonly treeOutline: UI.TreeOutline.TreeOutline;
+const {render, html} = Lit;
 
-  constructor() {
+interface ViewInput {
+  propertyCompletions: Map<SDK.DOMModel.Attribute, string[]>;
+  onStartEditing: (attribute: SDK.DOMModel.Attribute) => void;
+  onCommitEditing: (attribute: SDK.DOMModel.Attribute, result: string) => void;
+  onCancelEditing: (attribute: SDK.DOMModel.Attribute) => void;
+  attributeBeingEdited: SDK.DOMModel.Attribute|null;
+  attributes: SDK.DOMModel.Attribute[];
+}
+
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const MAX_CONTENT_LENGTH = 10000;
+
+  const onStartEditing = (attribute: SDK.DOMModel.Attribute, e: MouseEvent): void => {
+    e.consume(true);
+    input.onStartEditing(attribute);
+  };
+
+  const propertyCompletions = (attribute: SDK.DOMModel.Attribute): Lit.LitTemplate => {
+    const values = input.propertyCompletions.get(attribute);
+    if (!values?.length) {
+      return Lit.nothing;
+    }
+
+    return html`<datalist id=completions>
+      ${values.map(value => html`<option>${value}</option>`)}
+    </datalist>`;
+  };
+
+  render(
+      // clang-format off
+      input.attributes.length === 0 ?
+         html`
+          <style>${accessibilityPropertiesStyles}</style>
+          <devtools-widget
+            .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget,
+                                                   {text: i18nString(UIStrings.noAriaAttributes)})}
+            class="gray-info-message info-message-overflow"></devtools-widget>` :
+         html`<devtools-tree
+           hide-overflow
+           .template=${html`
+             <ul role="tree">
+              ${input.attributes?.map(attribute => html`
+                <li role="treeitem">
+                  <style>${accessibilityPropertiesStyles}</style>
+                  <span class="ax-name monospace" @mousedown=${onStartEditing.bind(null, attribute)}>
+                    ${attribute.name}
+                  </span>
+                  <span class="separator" @mousedown=${onStartEditing.bind(null, attribute)}>${':\xA0'}</span>
+                  <devtools-prompt
+                    completions=completions
+                    class="monospace"
+                    @mousedown=${onStartEditing.bind(null, attribute)}
+                    .completionTimeout=${0}
+                    ?editing=${input.attributeBeingEdited === attribute}
+                    @commit=${(e: UI.TextPrompt.TextPromptElement.CommitEvent) =>
+                      input.onCommitEditing(attribute, e.detail)}
+                    @cancel=${() => input.onCancelEditing(attribute)}>
+                      ${Platform.StringUtilities.trimMiddle(attribute.value, MAX_CONTENT_LENGTH)}
+                      ${propertyCompletions(attribute)}
+                  </devtools-prompt>
+                </li>`)}
+             </ul>
+           `}></devtools-tree>`,
+      // clang-format on
+      target);
+};
+
+export class ARIAAttributesPane extends AccessibilitySubPane {
+  readonly #view: View;
+  #attributeBeingEdited: SDK.DOMModel.Attribute|null = null;
+
+  constructor(view = DEFAULT_VIEW) {
     super({
       title: i18nString(UIStrings.ariaAttributes),
       viewId: 'aria-attributes',
       jslog: `${VisualLogging.section('aria-attributes')}`,
     });
 
-    this.noPropertiesInfo = this.createInfo(i18nString(UIStrings.noAriaAttributes));
-    this.treeOutline = this.createTreeOutline();
+    this.#view = view;
   }
 
   override setNode(node: SDK.DOMModel.DOMNode|null): void {
     super.setNode(node);
-    this.treeOutline.removeChildren();
-    if (!node) {
-      return;
-    }
-    const target = node.domModel().target();
-    const attributes = node.attributes();
-    for (let i = 0; i < attributes.length; ++i) {
-      const attribute = attributes[i];
-      if (!this.isARIAAttribute(attribute)) {
-        continue;
-      }
-
-      this.treeOutline.appendChild(new ARIAAttributesTreeElement(this, attribute, target));
-    }
-
-    const foundAttributes = (this.treeOutline.rootElement().childCount() !== 0);
-    this.noPropertiesInfo.classList.toggle('hidden', foundAttributes);
-    this.treeOutline.element.classList.toggle('hidden', !foundAttributes);
+    this.requestUpdate();
   }
 
-  getTreeOutlineForTesting(): Readonly<UI.TreeOutline.TreeOutline>|undefined {
-    return this.treeOutline;
+  override performUpdate(): void {
+    const onStartEditing = (attribute: SDK.DOMModel.Attribute): void => {
+      this.#attributeBeingEdited = attribute;
+      this.requestUpdate();
+    };
+    const onCancelEditing = (attribute: SDK.DOMModel.Attribute): void => {
+      if (attribute === this.#attributeBeingEdited) {
+        this.#attributeBeingEdited = null;
+      }
+      this.requestUpdate();
+    };
+
+    const onCommitEditing = (attribute: SDK.DOMModel.Attribute, result: string): void => {
+      // Make the changes to the attribute
+      const node = this.node();
+      if (node && attribute.value !== result) {
+        node.setAttributeValue(attribute.name, result);
+      }
+      if (attribute === this.#attributeBeingEdited) {
+        this.#attributeBeingEdited = null;
+      }
+      this.requestUpdate();
+    };
+
+    const attributes = this.node()?.attributes()?.filter(attribute => this.isARIAAttribute(attribute)) ?? [];
+    const propertyCompletions =
+        new Map(attributes.map(attribute => [attribute, ariaMetadata().valuesForProperty(attribute.name)]));
+
+    const input: ViewInput = {
+      attributeBeingEdited: this.#attributeBeingEdited,
+      attributes,
+      onStartEditing,
+      onCommitEditing,
+      onCancelEditing,
+      propertyCompletions,
+    };
+    this.#view(input, {}, this.contentElement);
   }
 
   private isARIAAttribute(attribute: SDK.DOMModel.Attribute): boolean {
     return SDK.DOMModel.ARIA_ATTRIBUTES.has(attribute.name);
-  }
-}
-
-export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
-  private readonly parentPane: ARIAAttributesPane;
-  private readonly attribute: SDK.DOMModel.Attribute;
-  private nameElement?: HTMLSpanElement;
-  private valueElement?: Element;
-  private prompt?: ARIAAttributePrompt;
-
-  constructor(parentPane: ARIAAttributesPane, attribute: SDK.DOMModel.Attribute, _target: SDK.Target.Target) {
-    super('');
-
-    this.parentPane = parentPane;
-    this.attribute = attribute;
-
-    this.selectable = false;
-  }
-
-  static createARIAValueElement(value: string): Element {
-    const valueElement = document.createElement('span');
-    valueElement.classList.add('monospace');
-    // TODO(aboxhall): quotation marks?
-    valueElement.setTextContentTruncatedIfNeeded(value || '');
-    return valueElement;
-  }
-
-  override onattach(): void {
-    this.populateListItem();
-    this.listItemElement.addEventListener('click', this.mouseClick.bind(this));
-  }
-
-  getPromptForTesting(): Readonly<ARIAAttributePrompt>|undefined {
-    return this.prompt;
-  }
-
-  private populateListItem(): void {
-    this.listItemElement.removeChildren();
-    this.appendNameElement(this.attribute.name);
-    this.listItemElement.createChild('span', 'separator').textContent = ':\xA0';
-    this.appendAttributeValueElement(this.attribute.value);
-  }
-
-  appendNameElement(name: string): void {
-    this.nameElement = document.createElement('span');
-    this.nameElement.textContent = name;
-    this.nameElement.classList.add('ax-name');
-    this.nameElement.classList.add('monospace');
-    this.listItemElement.appendChild(this.nameElement);
-  }
-
-  appendAttributeValueElement(value: string): void {
-    this.valueElement = ARIAAttributesTreeElement.createARIAValueElement(value);
-    this.listItemElement.appendChild(this.valueElement);
-  }
-
-  private mouseClick(event: Event): void {
-    if (event.target === this.listItemElement) {
-      return;
-    }
-
-    event.consume(true);
-
-    this.startEditing();
-  }
-
-  private startEditing(): void {
-    const valueElement = this.valueElement;
-
-    if (!valueElement || UI.UIUtils.isBeingEdited(valueElement)) {
-      return;
-    }
-
-    const previousContent = valueElement.textContent || '';
-
-    function blurListener(this: ARIAAttributesTreeElement, previousContent: string, event: Event): void {
-      const target = event.target as HTMLElement;
-      const text = target.textContent || '';
-      this.editingCommitted(text, previousContent);
-    }
-
-    const attributeName = (this.nameElement as HTMLSpanElement).textContent || '';
-    this.prompt = new ARIAAttributePrompt(ariaMetadata().valuesForProperty(attributeName));
-    this.prompt.setAutocompletionTimeout(0);
-    const proxyElement =
-        this.prompt.attachAndStartEditing(valueElement, blurListener.bind(this, previousContent)) as HTMLElement;
-
-    proxyElement.addEventListener('keydown', event => this.editingValueKeyDown(previousContent, event), false);
-
-    const selection = valueElement.getComponentSelection();
-    if (selection) {
-      selection.selectAllChildren(valueElement);
-    }
-  }
-
-  private removePrompt(): void {
-    if (!this.prompt) {
-      return;
-    }
-    this.prompt.detach();
-    delete this.prompt;
-  }
-
-  private editingCommitted(userInput: string, previousContent: string): void {
-    this.removePrompt();
-
-    // Make the changes to the attribute
-    if (userInput !== previousContent) {
-      const node = this.parentPane.node() as SDK.DOMModel.DOMNode;
-      node.setAttributeValue(this.attribute.name, userInput);
-    }
-  }
-
-  private editingCancelled(): void {
-    this.removePrompt();
-    this.populateListItem();
-  }
-
-  private editingValueKeyDown(previousContent: string, event: KeyboardEvent): void {
-    if (event.handled) {
-      return;
-    }
-
-    if (event.key === 'Enter') {
-      const target = event.target as HTMLElement;
-      this.editingCommitted(target.textContent || '', previousContent);
-      event.consume();
-      return;
-    }
-
-    if (Platform.KeyboardUtilities.isEscKey(event)) {
-      this.editingCancelled();
-      event.consume();
-      return;
-    }
-  }
-}
-
-export class ARIAAttributePrompt extends UI.TextPrompt.TextPrompt {
-  private readonly ariaCompletions: string[];
-  constructor(ariaCompletions: string[]) {
-    super();
-    this.initialize(this.buildPropertyCompletions.bind(this));
-
-    this.ariaCompletions = ariaCompletions;
-  }
-
-  private async buildPropertyCompletions(expression: string, prefix: string, force?: boolean):
-      Promise<UI.SuggestBox.Suggestions> {
-    prefix = prefix.toLowerCase();
-    if (!prefix && !force && expression) {
-      return [];
-    }
-    return this.ariaCompletions.filter(value => value.startsWith(prefix)).map(c => {
-      return {
-        text: c,
-        title: undefined,
-        subtitle: undefined,
-        priority: undefined,
-        isSecondary: undefined,
-        subtitleRenderer: undefined,
-        selectionRange: undefined,
-        hideGhostText: undefined,
-        iconElement: undefined,
-      };
-    });
   }
 }

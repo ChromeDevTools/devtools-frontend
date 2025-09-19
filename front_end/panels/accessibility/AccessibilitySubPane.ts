@@ -33,10 +33,12 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
     this.nodeInternal = node;
   }
 
-  createInfo(textContent: string, className?: string): Element {
-    const info = this.element.createChild('div', className || 'gray-info-message');
-    info.classList.add('info-message-overflow');
-    info.textContent = textContent;
+  createInfo(textContent: string, ...classNames: string[]): UI.Widget.Widget {
+    const info = new UI.EmptyWidget.EmptyWidget(textContent);
+    if (classNames.length === 0) {
+      classNames.push('gray-info-message');
+    }
+    info.element.classList.add(...classNames, 'info-message-overflow');
     return info;
   }
 

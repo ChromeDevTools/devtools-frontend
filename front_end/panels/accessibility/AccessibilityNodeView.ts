@@ -120,8 +120,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNode
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXNodeSubPane extends AccessibilitySubPane {
   override axNode: SDK.AccessibilityModel.AccessibilityNode|null;
-  private readonly noNodeInfo: Element;
-  private readonly ignoredInfo: Element;
+  private readonly noNodeInfo: UI.Widget.Widget;
+  private readonly ignoredInfo: UI.Widget.Widget;
   private readonly treeOutline: UI.TreeOutline.TreeOutline;
   private readonly ignoredReasonsTree: UI.TreeOutline.TreeOutline;
   constructor() {
@@ -137,7 +137,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this.contentElement.classList.add('ax-subpane');
 
     this.noNodeInfo = this.createInfo(i18nString(UIStrings.noAccessibilityNode));
-    this.ignoredInfo = this.createInfo(i18nString(UIStrings.accessibilityNodeNotExposed), 'ax-ignored-info hidden');
+    this.ignoredInfo = this.createInfo(i18nString(UIStrings.accessibilityNodeNotExposed), 'ax-ignored-info', 'hidden');
 
     this.treeOutline = this.createTreeOutline();
     this.ignoredReasonsTree = this.createTreeOutline();
@@ -160,21 +160,21 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 
     if (!axNode) {
       treeOutline.element.classList.add('hidden');
-      this.ignoredInfo.classList.add('hidden');
+      this.ignoredInfo.element.classList.add('hidden');
       ignoredReasons.element.classList.add('hidden');
 
-      this.noNodeInfo.classList.remove('hidden');
+      this.noNodeInfo.element.classList.remove('hidden');
       this.element.classList.add('ax-ignored-node-pane');
 
       return;
     }
 
     if (axNode.ignored()) {
-      this.noNodeInfo.classList.add('hidden');
+      this.noNodeInfo.element.classList.add('hidden');
       treeOutline.element.classList.add('hidden');
       this.element.classList.add('ax-ignored-node-pane');
 
-      this.ignoredInfo.classList.remove('hidden');
+      this.ignoredInfo.element.classList.remove('hidden');
       ignoredReasons.element.classList.remove('hidden');
       function addIgnoredReason(property: Protocol.Accessibility.AXProperty): void {
         ignoredReasons.appendChild(
@@ -191,9 +191,9 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     }
     this.element.classList.remove('ax-ignored-node-pane');
 
-    this.ignoredInfo.classList.add('hidden');
+    this.ignoredInfo.element.classList.add('hidden');
     ignoredReasons.element.classList.add('hidden');
-    this.noNodeInfo.classList.add('hidden');
+    this.noNodeInfo.element.classList.add('hidden');
 
     treeOutline.element.classList.remove('hidden');
 

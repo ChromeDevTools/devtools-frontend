@@ -333,11 +333,6 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
         }
 
-        if (rpcGlobalId) {
-          const latency = performance.now() - startTime;
-          this.#registerUserImpression(rpcGlobalId, sampleId, latency);
-        }
-
         debugLog('Suggestion dispatched to the editor', suggestionText, 'at cursor position', cursorPositionAtRequest);
         this.dispatchEventToListeners(Events.RESPONSE_RECEIVED, {citations});
       }, remainingDelay);

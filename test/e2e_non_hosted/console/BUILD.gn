@@ -21,6 +21,7 @@ ts_e2e_library("console") {
     "console-fetch-logging_test.ts",
     "console-filter_test.ts",
     "console-ignore-list_test.ts",
+    "console-insight_test.ts",
     "console-last-result_test.ts",
     "console-live-expressions_test.ts",
     "console-log_test.ts",
@@ -38,6 +39,7 @@ ts_e2e_library("console") {
   ]
 
   deps = [
+    "../../../front_end/panels/console:bundle",
     "../../e2e/helpers",
     "../shared",
   ]

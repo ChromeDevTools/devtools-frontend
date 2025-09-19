@@ -75,6 +75,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/e2e/console/*",
+    "../../../test/e2e_non_hosted/console/*",
     "../../entrypoints/*",
     "../../panels/explain/*",
   ]

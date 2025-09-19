@@ -39,7 +39,7 @@ interface DevToolsReloadParams {
 }
 
 export class DevToolsPage extends PageWrapper {
-  screenshotLog: string[] = [];
+  screenshotLog: Record<string, string> = {};
   #currentHighlightedElement?: HighlightedElement;
   #cdpSession?: puppeteer.CDPSession;
 
@@ -103,8 +103,8 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  override async reload() {
-    await super.reload();
+  override async reload(options?: puppeteer.WaitForOptions) {
+    await super.reload(options);
     await this.ensureReadyForTesting();
   }
 
@@ -145,6 +145,8 @@ export class DevToolsPage extends PageWrapper {
   }
 
   async ensureReadyForTesting() {
+    const devToolsVeLogging = {enabled: true, testing: true};
+    await this.evaluateOnNewDocument(`globalThis.hostConfigForTesting = ${JSON.stringify({devToolsVeLogging})};`);
     await this.waitForFunction(async () => {
       const result = await this.page.evaluate(`(async function() {
         const Main = await import('./entrypoints/main/main.js');
@@ -162,7 +164,10 @@ export class DevToolsPage extends PageWrapper {
   }
 
   async useSoftMenu() {
-    await this.page.evaluate('window.DevToolsAPI.setUseSoftMenu(true)');
+    await this.evaluate(() => {
+      // @ts-expect-error different context
+      DevToolsAPI.setUseSoftMenu(true);
+    });
   }
 
   /**
@@ -739,8 +744,10 @@ export class DevToolsPage extends PageWrapper {
 
   // Debugging utility to be used around flaky code and hopefully reveal visual glitches.
   // Use it with the rdb wrapper to inspect the collected screenshots after a test failure.
-  async captureScreenshot() {
-    this.screenshotLog.push(await this.screenshot());
+  async captureScreenshot(name?: string) {
+    const index = Object.keys(this.screenshotLog).length + 1;
+    const fullName = index + ' ' + (name ?? 'screenshot');
+    this.screenshotLog[fullName] = await this.screenshot();
   }
 }
 
@@ -780,7 +787,6 @@ async function setDevToolsSettings(devToolsPata: DevToolsPage, settings: Record<
         return [value[0], JSON.stringify(value[1])];
     }
   });
-
   const expression = `(async () => {
       const Common = await import('./core/common/common.js');
       var setting;

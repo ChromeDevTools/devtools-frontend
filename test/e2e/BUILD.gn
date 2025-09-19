@@ -8,20 +8,12 @@ import("../../scripts/build/typescript/typescript.gni")
 group("e2e") {
   deps = [
     ":test_inputs",
-    ":tests",
     "resources",
   ]
-}
-
-node_ts_library("tests") {
-  deps = [ "console" ]
-  sources = [ "mocharc.ts" ]
 }
 
 generated_file("test_inputs") {
   outputs = [ "$target_gen_dir/tests.txt" ]
   data_keys = [ "tests" ]
   rebase = target_gen_dir
-
-  deps = [ ":tests" ]
 }

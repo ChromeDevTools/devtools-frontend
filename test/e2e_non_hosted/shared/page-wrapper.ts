@@ -59,8 +59,8 @@ export class PageWrapper {
     });
   }
 
-  async reload() {
-    await this.page.reload();
+  async reload(options?: puppeteer.WaitForOptions) {
+    await this.page.reload(options);
   }
 
   async raf() {

@@ -303,7 +303,17 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   baseProfile!: HeapProfileHeader|null;
   trackingOverviewGrid?: HeapTimelineOverview;
   currentSearchResultIndex = -1;
-  currentQuery?: HeapSnapshotModel.HeapSnapshotModel.SearchConfig;
+  currentSearch?: HeapSnapshotModel.HeapSnapshotModel.SearchConfig;
+
+  get currentQuery(): string|undefined {
+    return this.currentSearch?.query;
+  }
+  set currentQuery(value: string) {
+    if (this.currentSearch) {
+      this.currentSearch.query = value;
+    }
+  }
+
   constructor(dataDisplayDelegate: DataDisplayDelegate, profile: HeapProfileHeader) {
     super({
       title: i18nString(UIStrings.heapSnapshot),
@@ -643,8 +653,13 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
     const nextQuery = new HeapSnapshotModel.HeapSnapshotModel.SearchConfig(
-        searchConfig.query.trim(), searchConfig.caseSensitive, searchConfig.wholeWord, searchConfig.isRegex, shouldJump,
-        jumpBackwards || false);
+        searchConfig.query.trim(),
+        searchConfig.caseSensitive,
+        searchConfig.wholeWord,
+        searchConfig.isRegex,
+        shouldJump,
+        jumpBackwards || false,
+    );
 
     void this.searchThrottler.schedule(this.performSearchInternal.bind(this, nextQuery));
   }
@@ -657,7 +672,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
       return;
     }
 
-    this.currentQuery = nextQuery;
+    this.currentSearch = nextQuery;
     const query = nextQuery.query.trim();
 
     if (!query) {
@@ -682,7 +697,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
 
     const filter = this.dataGrid.nodeFilter();
-    this.searchResults = filter ? await this.profile.snapshotProxy.search(this.currentQuery, filter) : [];
+    this.searchResults = filter ? await this.profile.snapshotProxy.search(this.currentSearch, filter) : [];
 
     this.searchableViewInternal.updateSearchMatchesCount(this.searchResults.length);
     if (this.searchResults.length) {
@@ -724,10 +739,10 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     if (!this.dataGrid) {
       return;
     }
-    let child: (HeapSnapshotGridNode|null) = (this.dataGrid.rootNode().children[0] as HeapSnapshotGridNode | null);
+    let child: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>|null = this.dataGrid.rootNode().children[0];
     while (child) {
       child.refresh();
-      child = (child.traverseNextNode(false, null, true) as HeapSnapshotGridNode | null);
+      child = child.traverseNextNode(false, null, true);
     }
   }
 
@@ -735,28 +750,28 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     if (this.baseProfile === this.profiles()[this.baseSelect.selectedIndex()]) {
       return;
     }
-    this.baseProfile = (this.profiles()[this.baseSelect.selectedIndex()] as HeapProfileHeader);
+    this.baseProfile = this.profiles()[this.baseSelect.selectedIndex()];
     const dataGrid = (this.dataGrid as HeapSnapshotDiffDataGrid);
     // Change set base data source only if main data source is already set.
     if (dataGrid.snapshot) {
       void this.baseProfile.loadPromise.then(dataGrid.setBaseDataSource.bind(dataGrid));
     }
 
-    if (!this.currentQuery || !this.searchResults) {
+    if (!this.currentSearch || !this.searchResults) {
       return;
     }
 
     // The current search needs to be performed again. First negate out previous match
     // count by calling the search finished callback with a negative number of matches.
     // Then perform the search again with the same query and callback.
-    this.performSearch(this.currentQuery, false);
+    this.performSearch(this.currentSearch, false);
   }
 
-  static readonly ALWAYS_AVAILABLE_FILTERS = [
+  static readonly ALWAYS_AVAILABLE_FILTERS: ReadonlyArray<{uiName: string, filterName: string}> = [
     {uiName: i18nString(UIStrings.duplicatedStrings), filterName: 'duplicatedStrings'},
     {uiName: i18nString(UIStrings.objectsRetainedByDetachedDomNodes), filterName: 'objectsRetainedByDetachedDomNodes'},
     {uiName: i18nString(UIStrings.objectsRetainedByConsole), filterName: 'objectsRetainedByConsole'},
-  ] as ReadonlyArray<{uiName: string, filterName: string}>;
+  ];
 
   changeFilter(): void {
     let selectedIndex = this.filterSelect.selectedIndex();
@@ -773,19 +788,19 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
       return;
     }
     (this.dataGrid as HeapSnapshotConstructorsDataGrid)
-        .filterSelectIndexChanged((this.profiles() as HeapProfileHeader[]), profileIndex, filterName);
+        .filterSelectIndexChanged(this.profiles(), profileIndex, filterName);
 
-    if (!this.currentQuery || !this.searchResults) {
+    if (!this.currentSearch || !this.searchResults) {
       return;
     }
 
     // The current search needs to be performed again. First negate out previous match
     // count by calling the search finished callback with a negative number of matches.
     // Then perform the search again with the same query and callback.
-    this.performSearch(this.currentQuery, false);
+    this.performSearch(this.currentSearch, false);
   }
 
-  profiles(): ProfileHeader[] {
+  profiles(): HeapProfileHeader[] {
     return this.profile.profileType().getProfiles();
   }
 
@@ -866,7 +881,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
       return;
     }
     if (!this.baseProfile) {
-      this.baseProfile = (this.profiles()[this.baseSelect.selectedIndex()] as HeapProfileHeader);
+      this.baseProfile = this.profiles()[this.baseSelect.selectedIndex()];
     }
 
     const baseSnapshotProxy = await this.baseProfile.loadPromise;
@@ -900,14 +915,14 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
 
     void this.updateDataSourceAndView();
 
-    if (!this.currentQuery || !this.searchResults) {
+    if (!this.currentSearch || !this.searchResults) {
       return;
     }
 
     // The current search needs to be performed again. First negate out previous match
     // count by calling the search finished callback with a negative number of matches.
     // Then perform the search again the with same query and callback.
-    this.performSearch(this.currentQuery, false);
+    this.performSearch(this.currentSearch, false);
   }
 
   async selectLiveObject(perspectiveName: string, snapshotObjectId: string): Promise<void> {

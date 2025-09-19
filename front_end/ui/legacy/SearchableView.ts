@@ -414,21 +414,19 @@ export class SearchableView extends VBox {
   }
 
   updateSearchMatchesCount(matches: number): void {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const untypedSearchProvider = (this.searchProvider as any);
-    if (untypedSearchProvider.currentSearchMatches === matches) {
+    if (this.searchProvider.currentSearchMatches === matches) {
       return;
     }
-    untypedSearchProvider.currentSearchMatches = matches;
-    this.updateSearchMatchesCountAndCurrentMatchIndex(untypedSearchProvider.currentQuery ? matches : 0, -1);
+    this.searchProvider.currentSearchMatches = matches;
+    this.updateSearchMatchesCountAndCurrentMatchIndex(this.searchProvider.currentQuery ? matches : 0, -1);
   }
 
   updateCurrentMatchIndex(currentMatchIndex: number): void {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const untypedSearchProvider = (this.searchProvider as any);
-    this.updateSearchMatchesCountAndCurrentMatchIndex(untypedSearchProvider.currentSearchMatches, currentMatchIndex);
+    if (!this.searchProvider.currentSearchMatches) {
+      return;
+    }
+
+    this.updateSearchMatchesCountAndCurrentMatchIndex(this.searchProvider.currentSearchMatches, currentMatchIndex);
   }
 
   closeSearch(): void {
@@ -595,12 +593,9 @@ export class SearchableView extends VBox {
   }
 
   private clearSearch(): void {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const untypedSearchProvider = (this.searchProvider as any);
-    delete this.currentQuery;
-    if (Boolean(untypedSearchProvider.currentQuery)) {
-      delete untypedSearchProvider.currentQuery;
+    this.currentQuery = undefined;
+    if (Boolean(this.searchProvider.currentQuery)) {
+      this.searchProvider.currentQuery = undefined;
       this.searchProvider.onSearchCanceled();
     }
     this.updateSearchMatchesCountAndCurrentMatchIndex(0, -1);
@@ -614,9 +609,7 @@ export class SearchableView extends VBox {
     }
 
     this.currentQuery = query;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.searchProvider as any).currentQuery = query;
+    this.searchProvider.currentQuery = query;
 
     const searchConfig = this.currentSearchConfig();
     this.searchProvider.performSearch(searchConfig, shouldJump, jumpBackwards);
@@ -644,17 +637,17 @@ export class SearchableView extends VBox {
 
   private replace(): void {
     if (!this.replaceProvider) {
-      throw new Error('No \'replacable\' provided to SearchableView!');
+      throw new Error('No \'replaceable\' provided to SearchableView!');
     }
     const searchConfig = this.currentSearchConfig();
     this.replaceProvider.replaceSelectionWith(searchConfig, this.replaceInputElement.value);
-    delete this.currentQuery;
+    this.currentQuery = undefined;
     this.performSearch(true, true);
   }
 
   private replaceAll(): void {
     if (!this.replaceProvider) {
-      throw new Error('No \'replacable\' provided to SearchableView!');
+      throw new Error('No \'replaceable\' provided to SearchableView!');
     }
     const searchConfig = this.currentSearchConfig();
     this.replaceProvider.replaceAllWith(searchConfig, this.replaceInputElement.value);
@@ -666,9 +659,7 @@ export class SearchableView extends VBox {
       return;
     }
 
-    if (this.valueChangedTimeoutId) {
-      clearTimeout(this.valueChangedTimeoutId);
-    }
+    clearTimeout(this.valueChangedTimeoutId);
     const timeout = this.searchInputElement.value.length < 3 ? 200 : 0;
     this.valueChangedTimeoutId = window.setTimeout(this.onValueChanged.bind(this), timeout);
   }
@@ -677,7 +668,7 @@ export class SearchableView extends VBox {
     if (!this.searchIsVisible) {
       return;
     }
-    delete this.valueChangedTimeoutId;
+    this.valueChangedTimeoutId = undefined;
     this.performSearch(false, true);
   }
 }
@@ -685,6 +676,8 @@ export class SearchableView extends VBox {
 const searchableViewsByElement = new WeakMap<Element, SearchableView>();
 
 export interface Searchable {
+  currentQuery?: string;
+  currentSearchMatches?: number;
   onSearchCanceled(): void;
   // Called when the search toolbar is closed
   onSearchClosed?: () => void;

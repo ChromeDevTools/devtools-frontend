@@ -41,7 +41,168 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {SuggestBox, type SuggestBoxDelegate, type Suggestion} from './SuggestBox.js';
 import textPromptStyles from './textPrompt.css.js';
 import {Tooltip} from './Tooltip.js';
-import {ElementFocusRestorer} from './UIUtils.js';
+import {cloneCustomElement, ElementFocusRestorer} from './UIUtils.js';
+
+/**
+ * A custom element wrapper around TextPrompt that allows text-editing contents in-place.
+ *
+ * ## Usage ##
+ *
+ * ```
+ * <devtools-prompt>
+ *  <b>Structured</b> content
+ * </devtools-prompt>
+ *
+ * ```
+ *
+ * @property completionTimeout Sets the delay for showing the autocomplete suggestion box.
+ * @event commit Editing is done and the result was accepted.
+ * @event expand Editing was canceled.
+ * @event beforeautocomplete This is sent before the autocomplete suggestion box is triggered and before the <datalist>
+ *                           is read.
+ * @attribute editing Setting/removing this attribute starts/stops editing.
+ * @attribute completions Sets the `id` of the <datalist> containing the autocomplete options.
+ */
+export class TextPromptElement extends HTMLElement {
+  static readonly observedAttributes = ['editing', 'completions'];
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #entrypoint = this.#shadow.createChild('span');
+  readonly #slot = this.#entrypoint.createChild('slot');
+  readonly #textPrompt = new TextPrompt();
+  #completionTimeout: number|null = null;
+
+  constructor() {
+    super();
+    this.#textPrompt.initialize(this.#willAutoComplete.bind(this));
+  }
+
+  attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void {
+    if (oldValue === newValue || !this.isConnected) {
+      return;
+    }
+
+    switch (name) {
+      case 'editing':
+        if (newValue !== null && newValue !== 'false' && oldValue === null) {
+          this.#startEditing();
+        } else {
+          this.#stopEditing();
+        }
+        break;
+      case 'completions':
+        if (this.#textPrompt.isSuggestBoxVisible()) {
+          void this.#textPrompt.complete(/* force=*/ true);
+        }
+        break;
+    }
+  }
+
+  async #willAutoComplete(expression?: string, filter?: string, force?: boolean): Promise<Suggestion[]> {
+    if (!force) {
+      this.dispatchEvent(new TextPromptElement.BeforeAutoCompleteEvent({expression, filter}));
+    }
+
+    const listId = this.getAttribute('completions');
+    if (!listId) {
+      return [];
+    }
+
+    const datalist = this.getComponentRoot()?.querySelectorAll<HTMLOptionElement>(`datalist#${listId} > option`);
+    if (!datalist?.length) {
+      return [];
+    }
+
+    filter = filter?.toLowerCase();
+    return datalist.values()
+        .filter(option => option.textContent.startsWith(filter ?? ''))
+        .map(option => ({text: option.textContent}))
+        .toArray();
+  }
+
+  #startEditing(): void {
+    const placeholder = this.#entrypoint.createChild('span');
+    placeholder.textContent = this.#slot.deepInnerText();
+    this.#slot.remove();
+
+    const proxy = this.#textPrompt.attachAndStartEditing(placeholder, e => this.#done(e, /* commit=*/ true));
+    proxy.addEventListener('keydown', this.#editingValueKeyDown.bind(this));
+    placeholder.getComponentSelection()?.selectAllChildren(placeholder);
+  }
+
+  #stopEditing(): void {
+    this.#entrypoint.removeChildren();
+    this.#entrypoint.appendChild(this.#slot);
+    this.#textPrompt.detach();
+  }
+
+  connectedCallback(): void {
+    if (this.hasAttribute('editing')) {
+      this.attributeChangedCallback('editing', null, '');
+    }
+  }
+
+  #done(e: Event, commit: boolean): void {
+    const target = e.target as HTMLElement;
+    const text = target.textContent || '';
+    if (commit) {
+      this.dispatchEvent(new TextPromptElement.CommitEvent(text));
+    } else {
+      this.dispatchEvent(new TextPromptElement.CancelEvent());
+    }
+    e.consume();
+  }
+
+  #editingValueKeyDown(event: Event): void {
+    if (event.handled || !(event instanceof KeyboardEvent)) {
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      this.#done(event, /* commit=*/ true);
+    } else if (Platform.KeyboardUtilities.isEscKey(event)) {
+      this.#done(event, /* commit=*/ false);
+    }
+  }
+
+  set completionTimeout(timeout: number) {
+    this.#completionTimeout = timeout;
+    this.#textPrompt.setAutocompletionTimeout(timeout);
+  }
+
+  override cloneNode(): Node {
+    const clone = cloneCustomElement(this);
+    if (this.#completionTimeout !== null) {
+      clone.completionTimeout = this.#completionTimeout;
+    }
+    return clone;
+  }
+}
+
+export namespace TextPromptElement {
+  export class CommitEvent extends CustomEvent<string> {
+    constructor(detail: string) {
+      super('commit', {detail});
+    }
+  }
+  export class CancelEvent extends CustomEvent<string> {
+    constructor() {
+      super('cancel');
+    }
+  }
+  export class BeforeAutoCompleteEvent extends CustomEvent<{expression?: string, filter?: string}> {
+    constructor(detail: {expression?: string, filter?: string}) {
+      super('beforeautocomplete', {detail});
+    }
+  }
+}
+
+customElements.define('devtools-prompt', TextPromptElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'devtools-prompt': TextPromptElement;
+  }
+}
 
 export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SuggestBoxDelegate {
   private proxyElement!: HTMLElement|undefined;
@@ -510,6 +671,10 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
 
   async complete(force?: boolean): Promise<void> {
     this.clearAutocompleteTimeout();
+    if (!this.element().isConnected) {
+      return;
+    }
+
     const selection = this.element().getComponentSelection();
     if (!selection || selection.rangeCount === 0) {
       return;

@@ -2216,6 +2216,19 @@ export class InterceptBindingDirective extends Lit.Directive.Directive {
   }
 }
 
+export const cloneCustomElement = <T extends HTMLElement>(element: T, deep?: boolean): T => {
+  const clone = document.createElement(element.localName) as T;
+  for (const attribute of element.attributes) {
+    clone.setAttribute(attribute.name, attribute.value);
+  }
+  if (deep) {
+    for (const child of element.childNodes) {
+      clone.appendChild(child.cloneNode(deep));
+    }
+  }
+  return clone;
+};
+
 export class HTMLElementWithLightDOMTemplate extends HTMLElement {
   readonly #mutationObserver = new MutationObserver(this.#onChange.bind(this));
   #contentTemplate: HTMLTemplateElement|null = null;

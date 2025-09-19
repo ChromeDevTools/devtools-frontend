@@ -195,6 +195,7 @@ ts_library("unittests") {
     "SplitWidget.test.ts",
     "SuggestBox.test.ts",
     "TabbedPane.test.ts",
+    "TextPrompt.test.ts",
     "Toolbar.test.ts",
     "Treeoutline.test.ts",
     "UIUtils.test.ts",

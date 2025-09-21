@@ -35,65 +35,28 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/search/SearchResultsPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+interface SearchMatch {
+  lineContent: string;
+  matchRanges: TextUtils.TextRange.SourceRange[];
+  resultLabel: string|number;
+}
+
 export class SearchResultsPane extends UI.Widget.VBox {
   private readonly searchConfig: Workspace.SearchConfig.SearchConfig;
-  private readonly searchResults: SearchResult[];
-  private readonly treeElements = new Map<UI.TreeOutline.TreeElement, SearchResult>();
-  private readonly initializedTreeElements = new WeakSet<UI.TreeOutline.TreeElement>();
+  private readonly searchResults = new Map<SearchResult, UI.TreeOutline.TreeElement>();
+  private expandedResults = new WeakSet<SearchResult>();
+  private readonly searchMatches = new WeakMap<SearchResult, SearchMatch[]>();
   private treeOutline: UI.TreeOutline.TreeOutlineInShadow;
-  private matchesExpandedCount: number;
-
-  constructor(searchConfig: Workspace.SearchConfig.SearchConfig) {
-    super({useShadowDom: true});
-    this.searchConfig = searchConfig;
-
-    this.searchResults = [];
-    this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this.treeOutline.registerRequiredCSS(searchResultsPaneStyles);
-    this.treeOutline.setHideOverflow(true);
-    this.treeOutline.addEventListener(
-        UI.TreeOutline.Events.ElementExpanded,
-        (event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => {
-          this.updateMatchesUI(event.data);
-        });
-
-    this.contentElement.appendChild(this.treeOutline.element);
-
-    this.matchesExpandedCount = 0;
-  }
-
-  addSearchResult(searchResult: SearchResult): void {
-    this.searchResults.push(searchResult);
-    this.addTreeElement(searchResult);
-  }
-
-  showAllMatches(): void {
-    for (const [treeElement, searchResult] of this.treeElements.entries()) {
-      treeElement.expand();
-      treeElement.removeChildren();
-      this.appendSearchMatches(treeElement, 0, searchResult.matchesCount());
-    }
-  }
-
-  collapseAllResults(): void {
-    for (const treeElement of this.treeElements.keys()) {
-      treeElement.collapse();
-    }
-  }
+  private matchesExpandedCount = 0;
 
   private addTreeElement(searchResult: SearchResult): void {
     const treeElement = new UI.TreeOutline.TreeElement('', true);
     treeElement.toggleOnClick = true;
-    this.treeElements.set(treeElement, searchResult);
+    this.searchResults.set(searchResult, treeElement);
     this.treeOutline.appendChild(treeElement);
     if (!this.treeOutline.selectedTreeElement) {
       treeElement.select(/* omitFocus */ true, /* selectedByUser */ true);
     }
-    // Expand until at least a certain number of matches is expanded.
-    if (this.matchesExpandedCount < matchesExpandedByDefault) {
-      treeElement.expand();
-    }
-    this.matchesExpandedCount += searchResult.matchesCount();
     treeElement.listItemElement.classList.add('search-result');
     // clang-format off
     render(html`
@@ -110,32 +73,112 @@ export class SearchResultsPane extends UI.Widget.VBox {
     treeElement.tooltip = searchResult.description();
   }
 
-  private updateMatchesUI(element: UI.TreeOutline.TreeElement): void {
-    const searchResult = this.treeElements.get(element);
-    if (!searchResult || this.initializedTreeElements.has(element)) {
+  private appendSearchMatchElement(searchResult: SearchResult, match: SearchMatch, i: number): void {
+    const {lineContent, matchRanges, resultLabel} = match;
+    const element = this.searchResults.get(searchResult);
+    if (!element) {
       return;
     }
-    element.removeChildren();
-    const toIndex = Math.min(searchResult.matchesCount(), matchesShownAtOnce);
-    if (toIndex < searchResult.matchesCount()) {
-      this.appendSearchMatches(element, 0, toIndex - 1);
-      this.appendShowMoreMatchesElement(element, toIndex - 1);
-    } else {
-      this.appendSearchMatches(element, 0, toIndex);
-    }
-    this.initializedTreeElements.add(element);
+    const searchMatchElement = new UI.TreeOutline.TreeElement();
+    element.appendChild(searchMatchElement);
+    // clang-format off
+    render(html`
+      <button class="devtools-link text-button link-style search-match-link"
+              jslog="Link; context: search-match; track: click" role="link" tabindex="0"
+              @click=${() => void Common.Revealer.reveal(searchResult.matchRevealable(i))}>
+        <span class="search-match-line-number"
+            aria-label=${typeof resultLabel === 'number' && !isNaN(resultLabel)
+                            ?  i18nString(UIStrings.lineS, {PH1: resultLabel}) : resultLabel}>
+          ${resultLabel}
+        </span>
+        <span class="search-match-content" aria-label="${lineContent} line">
+          ${lineContent}
+        </span>
+      </button>`,
+      searchMatchElement.listItemElement);
+    // clang-format on
+    const contentSpan = searchMatchElement.listItemElement.querySelector('.search-match-content') as HTMLElement;
+    UI.UIUtils.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-search-result');
+    searchMatchElement.listItemElement.className = 'search-match';
+    searchMatchElement.listItemElement.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.consume(true);
+        void Common.Revealer.reveal(searchResult.matchRevealable(i));
+      }
+    });
+    searchMatchElement.tooltip = lineContent;
   }
 
-  private appendSearchMatches(element: UI.TreeOutline.TreeElement, fromIndex: number, toIndex: number): void {
-    const searchResult = this.treeElements.get(element);
-    if (!searchResult) {
-      return;
+  constructor(searchConfig: Workspace.SearchConfig.SearchConfig) {
+    super({useShadowDom: true});
+    this.searchConfig = searchConfig;
+    this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
+    this.treeOutline.registerRequiredCSS(searchResultsPaneStyles);
+    this.treeOutline.setHideOverflow(true);
+    this.treeOutline.addEventListener(
+        UI.TreeOutline.Events.ElementExpanded,
+        (event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => {
+          const searchResult = this.searchResults.entries().find(entry => entry[1] === event.data)?.[0];
+          if (!searchResult) {
+            return;
+          }
+          this.expandSearchResult(searchResult);
+        });
+
+    this.contentElement.appendChild(this.treeOutline.element);
+
+    this.matchesExpandedCount = 0;
+  }
+
+  addSearchResult(searchResult: SearchResult): void {
+    this.addTreeElement(searchResult);
+    // Expand until at least a certain number of matches is expanded.
+    if (this.matchesExpandedCount < matchesExpandedByDefault) {
+      this.searchResults.get(searchResult)?.expand();
     }
+  }
+
+  showAllMatches(): void {
+    for (const searchResult of this.searchResults.keys()) {
+      const startMatchIndex = this.searchMatches.get(searchResult)?.length ?? 0;
+      this.appendSearchMatches(searchResult, startMatchIndex, searchResult.matchesCount());
+    }
+  }
+
+  collapseAllResults(): void {
+    for (const treeElement of this.searchResults.values()) {
+      treeElement.collapse();
+    }
+  }
+
+  private expandSearchResult(searchResult: SearchResult): void {
+    const toIndex = Math.min(searchResult.matchesCount(), matchesShownAtOnce);
+    if (toIndex < searchResult.matchesCount()) {
+      this.appendSearchMatches(searchResult, 0, toIndex - 1);
+      this.appendShowMoreMatchesElement(searchResult, toIndex - 1);
+    } else {
+      this.appendSearchMatches(searchResult, 0, toIndex);
+    }
+    this.matchesExpandedCount += toIndex;
+    this.requestUpdate();
+  }
+
+  private collapseSearchResult(searchResult: SearchResult): void {
+    this.searchResults.get(searchResult)?.collapse();
+  }
+
+  private appendSearchMatches(searchResult: SearchResult, fromIndex: number, toIndex: number): void {
     const queries = this.searchConfig.queries();
     const regexes = [];
     for (let i = 0; i < queries.length; ++i) {
       regexes.push(Platform.StringUtilities.createSearchRegex(
           queries[i], !this.searchConfig.ignoreCase(), this.searchConfig.isRegex()));
+    }
+
+    const searchMatches = this.searchMatches.get(searchResult) ?? [];
+    this.searchMatches.set(searchResult, searchMatches);
+    if (searchMatches.length > toIndex) {
+      return;
     }
 
     for (let i = fromIndex; i < toIndex; ++i) {
@@ -160,41 +203,14 @@ export class SearchResultsPane extends UI.Widget.VBox {
       }
 
       const resultLabel = searchResult.matchLabel(i);
-
-      const searchMatchElement = new UI.TreeOutline.TreeElement();
-      element.appendChild(searchMatchElement);
-      // clang-format off
-      render(html`
-        <button class="devtools-link text-button link-style search-match-link"
-                jslog="Link; context: search-match; track: click" role="link" tabindex="0"
-                @click=${() => void Common.Revealer.reveal(searchResult.matchRevealable(i))}>
-          <span class="search-match-line-number"
-              aria-label=${typeof resultLabel === 'number' && !isNaN(resultLabel)
-                             ?  i18nString(UIStrings.lineS, {PH1: resultLabel}) : resultLabel}>
-            ${resultLabel}
-          </span>
-          <span class="search-match-content" aria-label="${lineContent} line">
-            ${lineContent}
-          </span>
-        </button>`,
-        searchMatchElement.listItemElement);
-      // clang-format on
-      const contentSpan = searchMatchElement.listItemElement.querySelector('.search-match-content') as HTMLElement;
-      UI.UIUtils.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-search-result');
-      searchMatchElement.listItemElement.className = 'search-match';
-      searchMatchElement.listItemElement.addEventListener('keydown', event => {
-        if (event.key === 'Enter') {
-          event.consume(true);
-          void Common.Revealer.reveal(searchResult.matchRevealable(i));
-        }
-      });
-      searchMatchElement.tooltip = lineContent;
+      searchMatches.push({lineContent, matchRanges, resultLabel});
+      this.appendSearchMatchElement(searchResult, searchMatches[i], i);
     }
   }
 
-  private appendShowMoreMatchesElement(element: UI.TreeOutline.TreeElement, startMatchIndex: number): void {
-    const searchResult = this.treeElements.get(element);
-    if (!searchResult) {
+  private appendShowMoreMatchesElement(searchResult: SearchResult, startMatchIndex: number): void {
+    const element = this.searchResults.get(searchResult);
+    if (!element) {
       return;
     }
     const matchesLeftCount = searchResult.matchesCount() - startMatchIndex;
@@ -203,7 +219,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
     element.appendChild(showMoreMatchesTreeElement);
     showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
     showMoreMatchesTreeElement.onselect =
-        this.showMoreMatchesElementSelected.bind(this, element, showMoreMatchesTreeElement, startMatchIndex);
+        this.showMoreMatchesElementSelected.bind(this, searchResult, showMoreMatchesTreeElement, startMatchIndex);
   }
 
   private regexMatchRanges(lineContent: string, regex: RegExp): TextUtils.TextRange.SourceRange[] {
@@ -218,15 +234,12 @@ export class SearchResultsPane extends UI.Widget.VBox {
   }
 
   private showMoreMatchesElementSelected(
-      parentElement: UI.TreeOutline.TreeElement, showMoreMatchesTreeElement: UI.TreeOutline.TreeElement,
+      searchResult: SearchResult, showMoreMatchesTreeElement: UI.TreeOutline.TreeElement,
       startMatchIndex: number): boolean {
-    const searchResult = this.treeElements.get(parentElement);
-    if (!searchResult) {
-      return false;
-    }
-    parentElement.removeChild(showMoreMatchesTreeElement);
-    this.appendSearchMatches(parentElement, startMatchIndex, searchResult.matchesCount());
-    return false;
+    const parentElement = showMoreMatchesTreeElement.parent;
+    parentElement?.removeChild(showMoreMatchesTreeElement);
+    this.appendSearchMatches(searchResult, startMatchIndex, searchResult.matchesCount());
+    return true;
   }
 }
 

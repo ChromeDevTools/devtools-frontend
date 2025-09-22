@@ -620,18 +620,16 @@ export const aiAutoCompleteSuggestion: CM.Extension = [
               this.decorations = CM.Decoration.none;
               return;
             }
-            // If the user typed the full selected completion, then we don't check for overlap.
-            // (e.g. the user wrote `flex`, traditional suggestion is `flex` and the AI autocompletion is
-            // `;\njustify-content: center`. Then, we want to show the AI completion)
-            const endsWithCompleteSelectedCompletion =
-                update.state.doc.sliceString(head - selectedCompletion.label.length, head) === selectedCompletion.label;
             // If a traditional autocomplete menu is shown, the AI suggestion is only
             // shown if it builds upon the currently selected item. If there is no
             // overlap, we hide the AI suggestion. For example, for the text `console`
             // if the traditional autocomplete suggests `log` and the AI
             // suggests `warn`, there is no overlap and the AI suggestion is hidden.
-            if (!endsWithCompleteSelectedCompletion &&
-                !TextUtils.TextUtils.getOverlap(selectedCompletion.label, ghostText)) {
+            const overlappingText = TextUtils.TextUtils.getOverlap(selectedCompletion.label, ghostText) ?? '';
+            const lineAtAiSuggestion = update.state.doc.lineAt(activeSuggestion.from).text;
+            const overlapsWithSelectedCompletion =
+                (lineAtAiSuggestion + overlappingText).endsWith(selectedCompletion.label);
+            if (!overlapsWithSelectedCompletion) {
               this.decorations = CM.Decoration.none;
               return;
             }

@@ -191,7 +191,7 @@ describeWithEnvironment('TimelinePanel', function() {
     const context = UI.Context.Context.instance();
 
     const mockParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
-    context.setFlavor(AIAssistance.AgentFocus, AIAssistance.AgentFocus.full(mockParsedTrace));
+    context.setFlavor(AIAssistance.AgentFocus, AIAssistance.AgentFocus.fromParsedTrace(mockParsedTrace));
 
     const clearButton = timeline.element.querySelector('[aria-label="Clear"]');
     assert.isOk(clearButton);

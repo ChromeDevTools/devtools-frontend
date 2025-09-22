@@ -15,7 +15,6 @@ import * as Trace from '../../trace/trace.js';
 import {ConversationType} from '../AiHistoryStorage.js';
 import {
   PerformanceInsightFormatter,
-  TraceEventFormatter,
 } from '../data_formatters/PerformanceInsightFormatter.js';
 import {PerformanceTraceFormatter} from '../data_formatters/PerformanceTraceFormatter.js';
 import {debugLog} from '../debug.js';
@@ -131,7 +130,10 @@ Adhere to the following critical requirements:
 
 const extraPreambleWhenNotExternal = `Additional notes:
 
-- When referring to a trace event that has a corresponding \`eventKey\`, annotate your output using markdown link syntax. For example: [Long task](#r-123).
+When referring to a trace event that has a corresponding \`eventKey\`, annotate your output using markdown link syntax. For example:
+- When referring to an event that is a long task: [Long task](#r-123)
+- When referring to a URL for which you know the eventKey of: [https://www.example.com](#s-1827)
+- Never show the eventKey (like "eventKey: s-1852"); instead, use a markdown link as described above.
 `;
 
 const callFrameDataFormatDescription = `Each call frame is presented in the following format:
@@ -164,8 +166,8 @@ enum ScorePriority {
 }
 
 export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
-  static full(parsedTrace: Trace.TraceModel.ParsedTrace): PerformanceTraceContext {
-    return new PerformanceTraceContext(AgentFocus.full(parsedTrace));
+  static fromParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace): PerformanceTraceContext {
+    return new PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace));
   }
 
   static fromInsight(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel):
@@ -229,7 +231,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     }
 
     if (data.insight) {
-      return new PerformanceInsightFormatter(data.parsedTrace, data.insight).getSuggestions();
+      return new PerformanceInsightFormatter(this.#focus, data.insight).getSuggestions();
     }
 
     const suggestions: ConversationSuggestions =
@@ -288,7 +290,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     metadata: {source: 'devtools', score: ScorePriority.CRITICAL}
   };
   #networkDataDescriptionFact: Host.AidaClient.RequestFact = {
-    text: TraceEventFormatter.networkDataFormatDescription,
+    text: PerformanceTraceFormatter.networkDataFormatDescription,
     metadata: {source: 'devtools', score: ScorePriority.CRITICAL}
   };
   #callFrameDataDescriptionFact: Host.AidaClient.RequestFact = {
@@ -351,7 +353,65 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     return response.length > MAX_FUNCTION_RESULT_BYTE_LENGTH;
   }
 
+  /**
+   * Sometimes the model will output URLs as plaintext; or a markdown link
+   * where the link is the actual URL. This function transforms such output
+   * to an eventKey link.
+   *
+   * A simple way to see when this gets utilized is:
+   *   1. go to paulirish.com, record a trace
+   *   2. say "What performance issues exist with my page?"
+   *   3. then say "images"
+   *
+   * TODO(cjamcl): reduce the reliance on this by making sure all URL references
+   * (such as the insight formatters) add the "eventKey" as a suffix, just like all
+   * other events.
+   */
+  #parseForKnownUrls(response: string): string {
+    const focus = this.context?.getItem();
+    if (!focus) {
+      return response;
+    }
+
+    // Regex with two main parts, separated by | (OR):
+    // 1. (\[(.*?)\]\((.*?)\)): Captures a full markdown link.
+    //    - Group 1: The whole link, e.g., "[text](url)"
+    //    - Group 2: The link text, e.g., "text"
+    //    - Group 3: The link destination, e.g., "url"
+    // 2. (https?:\/\/[^\s<>()]+): Captures a standalone URL.
+    //    - Group 4: The standalone URL, e.g., "https://google.com"
+    const urlRegex = /(\[(.*?)\]\((.*?)\))|(https?:\/\/[^\s<>()]+)/g;
+
+    return response.replace(urlRegex, (match, markdownLink, linkText, linkDest, standaloneUrlText) => {
+      if (markdownLink) {
+        if (linkDest.startsWith('#')) {
+          return match;
+        }
+      }
+
+      const urlText = linkDest ?? standaloneUrlText;
+      if (!urlText) {
+        return match;
+      }
+
+      const request =
+          focus.data.parsedTrace.data.NetworkRequests.byTime.find(request => request.args.data.url === urlText);
+      if (!request) {
+        return match;
+      }
+
+      const eventKey = focus.eventsSerializer.keyForEvent(request);
+      if (!eventKey) {
+        return match;
+      }
+
+      return `[${urlText}](#${eventKey})`;
+    });
+  }
+
   override parseTextResponse(response: string): ParsedResponse {
+    response = this.#parseForKnownUrls(response);
+
     /**
      * Sometimes the LLM responds with code chunks that wrap a text based markdown response.
      * If this happens, we want to remove those before continuing.
@@ -582,7 +642,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           return {error: 'No insight available'};
         }
 
-        const details = new PerformanceInsightFormatter(parsedTrace, insight).formatInsight();
+        const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
 
         const key = `getInsightDetails('${params.insightName}')`;
         this.#cacheFunctionResult(focus, key, details);

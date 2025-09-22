@@ -21,7 +21,7 @@ function getFirstInsightSet(insights: Trace.Insights.Types.TraceInsightSets): Tr
 }
 
 export class AgentFocus {
-  static full(parsedTrace: Trace.TraceModel.ParsedTrace): AgentFocus {
+  static fromParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace): AgentFocus {
     if (!parsedTrace.insights) {
       throw new Error('missing insights');
     }
@@ -110,5 +110,5 @@ export function getPerformanceAgentFocusFromModel(model: Trace.TraceModel.Model)
     return null;
   }
 
-  return AgentFocus.full(parsedTrace);
+  return AgentFocus.fromParsedTrace(parsedTrace);
 }

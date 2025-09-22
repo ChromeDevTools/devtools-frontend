@@ -9,6 +9,7 @@ This insight is used to analyze the time spent that contributed to the final LCP
 The Largest Contentful Paint (LCP) time for this navigation was 240 ms.
 The LCP element (IMG) is an image fetched from `https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp`.
 ## LCP resource network request: https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp
+eventKey: s-1418
 Timings:
 - Queued at: 55 ms
 - Request sent at: 60 ms
@@ -69,6 +70,7 @@ This insight is used to analyze the time spent that contributed to the final LCP
 The Largest Contentful Paint (LCP) time for this navigation was 129 ms.
 The LCP element is an image fetched from `https://web-dev.imgix.net/image/kheDArv5csY6rvQUJDbWRscckLr1/4i7JstVZvgTFk9dxCe4a.svg`.
 ## LCP resource network request: https://web-dev.imgix.net/image/kheDArv5csY6rvQUJDbWRscckLr1/4i7JstVZvgTFk9dxCe4a.svg
+eventKey: s-1314
 Timings:
 - Queued at: 41 ms
 - Request sent at: 47 ms
@@ -159,9 +161,9 @@ Network requests data:
 
 allUrls = [0: https://code.jquery.com/jquery-3.7.1.js, 1: http://localhost:8000/, 2: http://localhost:8000/render-blocking-stylesheet.css, 3: http://localhost:8000/render-blocking-script.js]
 
-0;581 ms;585 ms;1,943 ms;1,944 ms;1,363 ms;776 ms;1 ms;200;application/javascript;High;High;High;t;h2;f;1;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]
-2;582 ms;583 ms;1,193 ms;1,193 ms;612 ms;0.2 ms;0.2 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
-3;582 ms;583 ms;1,177 ms;1,178 ms;596 ms;0.4 ms;1 ms;200;text/javascript;High;High;High;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+0;s-1920;581 ms;585 ms;1,943 ms;1,944 ms;1,363 ms;776 ms;1 ms;200;application/javascript;High;High;High;t;h2;f;1;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]
+2;s-1924;582 ms;583 ms;1,193 ms;1,193 ms;612 ms;0.2 ms;0.2 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
+3;s-1922;582 ms;583 ms;1,177 ms;1,178 ms;596 ms;0.4 ms;1 ms;200;text/javascript;High;High;High;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
 
 ## Estimated savings: FCP 2015 ms, LCP 0 ms
 
@@ -186,6 +188,7 @@ It is important that all of these checks pass to minimize the delay between the 
 The Largest Contentful Paint (LCP) time for this navigation was 1,077 ms.
 The LCP element is an image fetched from `http://localhost:8787/lcp-discovery-delay/lcp-image.jpg`.
 ## LCP resource network request: http://localhost:8787/lcp-discovery-delay/lcp-image.jpg
+eventKey: s-25281
 Timings:
 - Queued at: 1,010 ms
 - Request sent at: 1,011 ms
@@ -243,6 +246,7 @@ The Largest Contentful Paint (LCP) time for this navigation was 3,604 ms.
 The LCP element is text and was not fetched from the network.
 
 ## Document network request: http://localhost:3000/redirect3
+eventKey: s-9843
 Timings:
 - Queued at: 3 ms
 - Request sent at: 1,529 ms
@@ -413,189 +417,18 @@ Network requests data:
 
 allUrls = [0: https://ads.jetpackdigital.com/sites/_uploads/1742278386bg_opt_640x350-avif.avif, 1: http://localhost/old-http.html, 2: https://ads.jetpackdigital.com/sites/_uploads/1583540859Play.png, 3: https://ads.jetpackdigital.com/sites/_uploads/1583540859Muted.png, 4: https://ads.jetpackdigital.com/h5media/sites/_uploads/1742363510mm_allthefeels_20_mob.mp4, 5: https://ads.jetpackdigital.com/sites/_uploads/1583540860Pause.png, 6: https://ads.jetpackdigital.com/tracking_pixel.gif?8852762616, 7: https://ads.jetpackdigital.com/tracking_pixel.gif?7753243273]
 
-0;8 ms;12 ms;26 ms;26 ms;18 ms;2 ms;93 μs;200;image/avif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 18 Mar 2025 06:13:07 GMT|Content-Type: image/avif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-2;8 ms;13 ms;24 ms;24 ms;16 ms;0.6 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-3;8 ms;13 ms;25 ms;25 ms;17 ms;1 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-4;8 ms;13 ms;24 ms;24 ms;16 ms;0.4 ms;11 μs;200;video/mp4;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Wed, 19 Mar 2025 05:51:52 GMT|Content-Type: video/mp4|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-5;8 ms;13 ms;25 ms;25 ms;17 ms;1 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:18 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-6;8 ms;24 ms;39 ms;39 ms;30 ms;0.1 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-7;8 ms;25 ms;38 ms;38 ms;30 ms;0.2 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+0;s-1285;8 ms;12 ms;26 ms;26 ms;18 ms;2 ms;93 μs;200;image/avif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 18 Mar 2025 06:13:07 GMT|Content-Type: image/avif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+2;s-1298;8 ms;13 ms;24 ms;24 ms;16 ms;0.6 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+3;s-1312;8 ms;13 ms;25 ms;25 ms;17 ms;1 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+4;s-1329;8 ms;13 ms;24 ms;24 ms;16 ms;0.4 ms;11 μs;200;video/mp4;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Wed, 19 Mar 2025 05:51:52 GMT|Content-Type: video/mp4|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+5;s-1336;8 ms;13 ms;25 ms;25 ms;17 ms;1 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:18 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+6;s-1338;8 ms;24 ms;39 ms;39 ms;30 ms;0.1 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+7;s-1341;8 ms;25 ms;38 ms;38 ms;30 ms;0.2 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
 
 ## Estimated savings: FCP 0 ms, LCP 0 ms
 
 ## External resources:
 - https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2
-=== end content
-
-Title: PerformanceInsightFormatter Formatting TraceEvents formats network requests that have redirects
-Content:
-## Network request: http://localhost:3000/redirect3
-Timings:
-- Queued at: 3 ms
-- Request sent at: 1,529 ms
-- Download complete at: 3,533 ms
-- Main thread processing completed at: 3,538 ms
-Durations:
-- Download time: 0.1 ms
-- Main thread processing time: 5 ms
-- Total duration: 3,535 ms
-Redirects:
-#### Redirect 1: http://localhost:3000/
-- Start time: 3 ms
-- Duration: 512 ms
-#### Redirect 2: http://localhost:3000/redirect1
-- Start time: 515 ms
-- Duration: 506 ms
-#### Redirect 3: http://localhost:3000/redirect2
-- Start time: 1,021 ms
-- Duration: 507 ms
-Status code: 200
-MIME Type: text/html
-Protocol: http/1.1
-Priority: VeryHigh
-Render blocking: No
-From a service worker: No
-Initiators (root request to the request that directly loaded this one): none
-Response headers
-- Transfer-Encoding: chunked
-- Keep-Alive: <redacted>
-- Date: Tue, 11 Mar 2025 10:19:12 GMT
-- Content-Type: text/html
-- Connection: keep-alive
-=== end content
-
-Title: PerformanceInsightFormatter Formatting TraceEvents formats network requests in verbose mode
-Content:
-## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
-Timings:
-- Queued at: 38 ms
-- Request sent at: 42 ms
-- Download complete at: 48 ms
-- Main thread processing completed at: 52 ms
-Durations:
-- Download time: 5 ms
-- Main thread processing time: 4 ms
-- Total duration: 14 ms
-Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
-Redirects: no redirects
-Status code: 200
-MIME Type: text/css
-Protocol: unknown
-Priority: VeryHigh
-Render blocking: Yes
-From a service worker: No
-Initiators (root request to the request that directly loaded this one): https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
-Response headers
-- date: Thu, 07 Mar 2024 21:17:02 GMT
-- content-encoding: gzip
-- x-content-type-options: nosniff
-- last-modified: Thu, 07 Mar 2024 21:17:02 GMT
-- server: ESF
-- cross-origin-opener-policy: <redacted>
-- x-frame-options: SAMEORIGIN
-- content-type: text/css; charset=utf-8
-- access-control-allow-origin: *
-- cache-control: private, max-age=86400, stale-while-revalidate=604800
-- cross-origin-resource-policy: <redacted>
-- timing-allow-origin: *
-- link: <https://fonts.gstatic.com>; rel=preconnect; crossorigin
-- x-xss-protection: 0
-- expires: Thu, 07 Mar 2024 21:17:02 GMT
-=== end content
-
-Title: PerformanceInsightFormatter Formatting TraceEvents defaults to verbose mode when 1 request and verbose option is not defined
-Content:
-## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
-Timings:
-- Queued at: 38 ms
-- Request sent at: 42 ms
-- Download complete at: 48 ms
-- Main thread processing completed at: 52 ms
-Durations:
-- Download time: 5 ms
-- Main thread processing time: 4 ms
-- Total duration: 14 ms
-Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
-Redirects: no redirects
-Status code: 200
-MIME Type: text/css
-Protocol: unknown
-Priority: VeryHigh
-Render blocking: Yes
-From a service worker: No
-Initiators (root request to the request that directly loaded this one): https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
-Response headers
-- date: Thu, 07 Mar 2024 21:17:02 GMT
-- content-encoding: gzip
-- x-content-type-options: nosniff
-- last-modified: Thu, 07 Mar 2024 21:17:02 GMT
-- server: ESF
-- cross-origin-opener-policy: <redacted>
-- x-frame-options: SAMEORIGIN
-- content-type: text/css; charset=utf-8
-- access-control-allow-origin: *
-- cache-control: private, max-age=86400, stale-while-revalidate=604800
-- cross-origin-resource-policy: <redacted>
-- timing-allow-origin: *
-- link: <https://fonts.gstatic.com>; rel=preconnect; crossorigin
-- x-xss-protection: 0
-- expires: Thu, 07 Mar 2024 21:17:02 GMT
-=== end content
-
-Title: PerformanceInsightFormatter Formatting TraceEvents formats in compressed mode if a request is duplicated in the array
-Content:
-Network requests data:
-
-
-
-allUrls = [0: http://localhost:3000/redirect3, 1: http://localhost:3000/, 2: http://localhost:3000/redirect1, 3: http://localhost:3000/redirect2]
-
-0;3 ms;1,529 ms;3,533 ms;3,538 ms;3,535 ms;0.1 ms;5 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;f;;[[1|3 ms|512 ms],[2|515 ms|506 ms],[3|1,021 ms|507 ms]];[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]
-0;3 ms;1,529 ms;3,533 ms;3,538 ms;3,535 ms;0.1 ms;5 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;f;;[[1|3 ms|512 ms],[2|515 ms|506 ms],[3|1,021 ms|507 ms]];[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]
-=== end content
-
-Title: PerformanceInsightFormatter Formatting TraceEvents correctly formats an initiator chain for network-requests-initiators trace
-Content:
-Network requests data:
-
-
-
-allUrls = [0: https://www.youtube.com/, 1: https://i.ytimg.com/generate_204, 2: https://www.youtube.com/s/desktop/28bb7000/jsbin/desktop_polymer.vflset/desktop_polymer.js, 3: https://www.youtube.com/s/desktop/28bb7000/jsbin/web-animations-next-lite.min.vflset/web-animations-next-lite.min.js, 4: https://www.youtube.com/s/desktop/28bb7000/jsbin/custom-elements-es5-adapter.vflset/custom-elements-es5-adapter.js, 5: https://www.youtube.com/s/desktop/28bb7000/jsbin/webcomponents-sd.vflset/webcomponents-sd.js, 6: https://www.youtube.com/s/desktop/28bb7000/jsbin/intersection-observer.min.vflset/intersection-observer.min.js, 7: https://www.youtube.com/s/desktop/28bb7000/jsbin/scheduler.vflset/scheduler.js, 8: https://www.youtube.com/s/desktop/28bb7000/jsbin/www-i18n-constants-en_US.vflset/www-i18n-constants.js, 9: https://www.youtube.com/s/desktop/28bb7000/jsbin/www-tampering.vflset/www-tampering.js, 10: https://www.youtube.com/s/desktop/28bb7000/jsbin/spf.vflset/spf.js, 11: https://www.youtube.com/s/desktop/28bb7000/jsbin/network.vflset/network.js, 12: https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=YouTube+Sans:wght@300..900&display=swap, 13: https://www.youtube.com/s/desktop/28bb7000/cssbin/www-main-desktop-home-page-skeleton.css, 14: https://www.youtube.com/s/desktop/28bb7000/cssbin/www-onepick.css, 15: https://www.youtube.com/s/_/ytmainappweb/_/ss/k=ytmainappweb.kevlar_base.YzCM3q0siy4.L.B1.O/am=ADA7AQ/d=0/br=1/rs=AGKMywG7cU8b38Gfv3WYn4_os7hoqR-TIw, 16: https://googleads.g.doubleclick.net/pagead/id?slf_rd=1, 17: https://googleads.g.doubleclick.net/pagead/id, 18: https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2, 19: https://www.youtube.com/s/search/audio/failure.mp3, 20: https://www.youtube.com/s/search/audio/no_input.mp3, 21: https://www.youtube.com/s/search/audio/open.mp3, 22: https://www.youtube.com/s/search/audio/success.mp3, 23: https://www.youtube.com/s/desktop/28bb7000/cssbin/www-main-desktop-watch-page-skeleton.css, 24: https://www.youtube.com/youtubei/v1/att/get?prettyPrint=false, 25: https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4.woff2, 26: https://fonts.gstatic.com/s/youtubesans/v30/Qw38ZQNGEDjaO2m6tqIqX5E-AVS5_rSejo46_PCTRspJ0OosolrBEJL3HO_T7fE.woff2, 27: https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmEU9fBBc4.woff2, 28: https://www.youtube.com/youtubei/v1/feedback?prettyPrint=false, 29: https://www.google.com/js/th/EirmVnnNlSgqRyHN1YLvHhRw11SWUqUPb76JYHphonQ.js, 30: https://www.youtube.com/manifest.webmanifest, 31: https://www.youtube.com/s/desktop/28bb7000/img/favicon.ico, 32: https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png, 33: https://www.youtube.com/s/player/5b22937f/player_ias.vflset/en_US/base.js, 34: https://www.youtube.com/s/player/5b22937f/www-player.css]
-
-0;2 ms;11 ms;267 ms;281 ms;278 ms;189 ms;13 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;h2;t;;[];[date: Mon, 01 Jul 2024 08:58:55 GMT|content-encoding: br|x-content-type-options: nosniff|strict-transport-security: max-age=31536000|p3p: <redacted>|x-xss-protection: 0|pragma: no-cache|accept-ch: Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Full-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Model, Sec-CH-UA-WoW64, Sec-CH-UA-Form-Factors, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version|cross-origin-opener-policy: <redacted>|server: ESF|vary: Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Full-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Model, Sec-CH-UA-WoW64, Sec-CH-UA-Form-Factors, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version|report-to: {"group":"youtube_main","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube_main"}]}|content-type: text/html; charset=utf-8|x-frame-options: SAMEORIGIN|cache-control: no-cache, no-store, max-age=0, must-revalidate|origin-trial: <redacted>|permissions-policy: ch-ua-arch=*, ch-ua-bitness=*, ch-ua-full-version=*, ch-ua-full-version-list=*, ch-ua-model=*, ch-ua-wow64=*, ch-ua-form-factors=*, ch-ua-platform=*, ch-ua-platform-version=*|expires: Mon, 01 Jan 1990 00:00:00 GMT]
-1;87 ms;146 ms;148 ms;149 ms;62 ms;1 ms;0.7 ms;204;text/plain;High;High;High;f;h2;f;0;[];[date: Mon, 01 Jul 2024 08:58:55 GMT|content-length: <redacted>|cross-origin-resource-policy: <redacted>]
-2;87 ms;89 ms;170 ms;203 ms;115 ms;78 ms;33 ms;200;text/javascript;High;High;High;f;h2;t;0;[];[date: Sat, 29 Jun 2024 03:09:37 GMT|content-encoding: br|x-content-type-options: nosniff|age: 193359|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 03:09:37 GMT]
-3;88 ms;89 ms;99 ms;102 ms;15 ms;7 ms;3 ms;200;text/javascript;High;High;High;t;h2;t;0;[];[date: Sat, 29 Jun 2024 03:09:37 GMT|content-encoding: br|x-content-type-options: nosniff|age: 193359|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 03:09:37 GMT]
-4;88 ms;102 ms;104 ms;107 ms;19 ms;0.5 ms;3 ms;200;text/javascript;High;High;High;t;h2;t;0;[];[date: Sat, 29 Jun 2024 03:09:37 GMT|content-encoding: br|x-content-type-options: nosniff|age: 193359|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 03:09:37 GMT]
-5;88 ms;108 ms;110 ms;113 ms;25 ms;0.9 ms;3 ms;200;text/javascript;High;High;High;t;h2;t;0;[];[date: Sat, 29 Jun 2024 03:09:37 GMT|content-encoding: br|x-content-type-options: nosniff|age: 193359|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 03:09:37 GMT]
-6;88 ms;113 ms;115 ms;122 ms;34 ms;0.6 ms;7 ms;200;text/javascript;High;High;High;t;h2;t;0;[];[date: Sat, 29 Jun 2024 03:09:37 GMT|content-encoding: br|x-content-type-options: nosniff|age: 193359|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 03:09:37 GMT]
-7;134 ms;134 ms;137 ms;140 ms;7 ms;0.9 ms;3 ms;200;text/javascript;High;High;High;t;h2;t;0;[];[date: Sat, 29 Jun 2024 03:09:37 GMT|content-encoding: br|x-content-type-options: nosniff|age: 193359|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 03:09:37 GMT]
-8;135 ms;140 ms;149 ms;151 ms;17 ms;4 ms;2 ms;200;text/javascript;High;High;High;t;h2;t;0;[];[date: Sat, 29 Jun 2024 06:56:36 GMT|content-encoding: br|x-content-type-options: nosniff|age: 179740|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 06:56:36 GMT]
-9;135 ms;141 ms;149 ms;153 ms;18 ms;3 ms;3 ms;200;text/javascript;High;High;High;t;h2;t;0;[];[date: Sat, 29 Jun 2024 03:09:37 GMT|content-encoding: br|x-content-type-options: nosniff|age: 193359|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 03:09:37 GMT]
-10;135 ms;141 ms;150 ms;154 ms;19 ms;3 ms;4 ms;200;text/javascript;High;High;High;t;h2;t;0;[];[date: Sat, 29 Jun 2024 04:36:47 GMT|content-encoding: br|x-content-type-options: nosniff|age: 188129|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 04:36:47 GMT]
-11;135 ms;141 ms;151 ms;168 ms;33 ms;3 ms;17 ms;200;text/javascript;High;High;High;t;h2;t;0;[];[date: Sat, 29 Jun 2024 04:36:47 GMT|content-encoding: br|x-content-type-options: nosniff|age: 188129|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 04:36:47 GMT]
-12;136 ms;140 ms;143 ms;145 ms;10 ms;2 ms;2 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;h2;f;0;[];[date: Mon, 01 Jul 2024 08:52:16 GMT|content-encoding: gzip|x-content-type-options: nosniff|last-modified: Mon, 01 Jul 2024 07:19:04 GMT|server: ESF|cross-origin-opener-policy: <redacted>|x-frame-options: SAMEORIGIN|content-type: text/css; charset=utf-8|access-control-allow-origin: *|cache-control: private, max-age=86400, stale-while-revalidate=604800|cross-origin-resource-policy: <redacted>|timing-allow-origin: *|link: <https://fonts.gstatic.com>; rel=preconnect; crossorigin|x-xss-protection: 0|expires: Mon, 01 Jul 2024 08:52:16 GMT]
-13;136 ms;140 ms;146 ms;146 ms;10 ms;4 ms;0.1 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;h2;t;0;[];[date: Sat, 29 Jun 2024 07:14:39 GMT|content-encoding: br|x-content-type-options: nosniff|age: 178657|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/css|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 07:14:39 GMT]
-14;136 ms;140 ms;149 ms;149 ms;13 ms;6 ms;0.6 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;h2;t;0;[];[date: Sat, 29 Jun 2024 07:00:38 GMT|content-encoding: br|x-content-type-options: nosniff|age: 179498|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/css|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 07:00:38 GMT]
-15;136 ms;140 ms;156 ms;167 ms;31 ms;11 ms;11 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;h2;t;0;[];[content-security-policy: require-trusted-types-for 'script'; report-uri https://csp.withgoogle.com/csp/youtube-main-app-web-scs-key|content-encoding: br|x-content-type-options: nosniff|date: Sat, 29 Jun 2024 03:09:37 GMT|age: 193359|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 03:14:18 GMT|server: sffe|cross-origin-opener-policy: <redacted>|vary: Accept-Encoding|report-to: {"group":"youtube-main-app-web-scs-key","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube-main-app-web-scs-key"}]}|content-type: text/css; charset=UTF-8|cache-control: public, max-age=31536000|accept-ranges: bytes|expires: Sun, 29 Jun 2025 03:09:37 GMT]
-16;663 ms;964 ms;969 ms;983 ms;321 ms;2 ms;14 ms;200;application/json;High;High;High;f;h3;f;0;[[17|663 ms|300 ms]];[date: Mon, 01 Jul 2024 08:58:56 GMT|content-encoding: gzip|x-content-type-options: nosniff|p3p: <redacted>|cross-origin-resource-policy: <redacted>|content-disposition: attachment; filename="f.txt"|alt-svc: h3=":443"; ma=2592000|content-length: <redacted>|x-xss-protection: 0|pragma: no-cache|server: cafe|content-type: application/json; charset=UTF-8|access-control-allow-origin: https://www.youtube.com|cache-control: no-cache, no-store, must-revalidate|access-control-allow-credentials: true|timing-allow-origin: *|expires: Fri, 01 Jan 1990 00:00:00 GMT]
-18;795 ms;798 ms;800 ms;938 ms;142 ms;2 ms;138 ms;200;font/woff2;VeryHigh;VeryHigh;VeryHigh;f;h2;f;0,12;[];[date: Fri, 21 Jun 2024 11:22:06 GMT|x-content-type-options: nosniff|age: 269647|content-security-policy-report-only: <redacted>|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Wed, 11 May 2022 19:24:48 GMT|server: sffe|cross-origin-opener-policy: <redacted>|report-to: {"group":"apps-themes","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/apps-themes"}]}|content-type: font/woff2|access-control-allow-origin: *|cache-control: public, max-age=31536000|accept-ranges: bytes|timing-allow-origin: *|expires: Sat, 21 Jun 2025 11:22:06 GMT]
-19;961 ms;965 ms;975 ms;984 ms;24 ms;6 ms;9 ms;206;audio/mpeg;Low;Low;Low;f;h2;f;0;[];[date: Mon, 01 Jul 2024 08:58:56 GMT|x-content-type-options: nosniff|last-modified: Wed, 12 Jan 2022 21:08:00 GMT|server: sffe|report-to: {"group":"youtube-marketing","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube-marketing"}]}|content-type: audio/mpeg|Content-Range: bytes 0-6528/6529|cache-control: public, max-age=0|cross-origin-resource-policy: <redacted>|accept-ranges: bytes|Content-Length: <redacted>|x-xss-protection: 0|cross-origin-opener-policy-report-only: <redacted>|expires: Mon, 01 Jul 2024 08:58:56 GMT]
-20;961 ms;965 ms;975 ms;987 ms;25 ms;2 ms;11 ms;206;audio/mpeg;Low;Low;Low;f;h2;f;0;[];[date: Mon, 01 Jul 2024 08:58:56 GMT|x-content-type-options: nosniff|last-modified: Wed, 12 Jan 2022 21:08:00 GMT|server: sffe|report-to: {"group":"youtube-marketing","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube-marketing"}]}|content-type: audio/mpeg|Content-Range: bytes 0-6952/6953|cache-control: public, max-age=0|cross-origin-resource-policy: <redacted>|accept-ranges: bytes|Content-Length: <redacted>|x-xss-protection: 0|cross-origin-opener-policy-report-only: <redacted>|expires: Mon, 01 Jul 2024 08:58:56 GMT]
-21;962 ms;966 ms;976 ms;985 ms;23 ms;4 ms;9 ms;206;audio/mpeg;Low;Low;Low;f;h2;f;0;[];[date: Mon, 01 Jul 2024 08:58:56 GMT|x-content-type-options: nosniff|last-modified: Wed, 12 Jan 2022 21:08:00 GMT|server: sffe|report-to: {"group":"youtube-marketing","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube-marketing"}]}|content-type: audio/mpeg|Content-Range: bytes 0-6166/6167|cache-control: public, max-age=0|cross-origin-resource-policy: <redacted>|accept-ranges: bytes|Content-Length: <redacted>|x-xss-protection: 0|cross-origin-opener-policy-report-only: <redacted>|expires: Mon, 01 Jul 2024 08:58:56 GMT]
-22;962 ms;966 ms;976 ms;986 ms;24 ms;3 ms;10 ms;206;audio/mpeg;Low;Low;Low;f;h2;f;0;[];[date: Mon, 01 Jul 2024 08:58:56 GMT|x-content-type-options: nosniff|last-modified: Wed, 12 Jan 2022 21:08:00 GMT|server: sffe|report-to: {"group":"youtube-marketing","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube-marketing"}]}|content-type: audio/mpeg|Content-Range: bytes 0-6635/6636|cache-control: public, max-age=0|cross-origin-resource-policy: <redacted>|accept-ranges: bytes|Content-Length: <redacted>|x-xss-protection: 0|cross-origin-opener-policy-report-only: <redacted>|expires: Mon, 01 Jul 2024 08:58:56 GMT]
-23;970 ms;971 ms;975 ms;981 ms;10 ms;3 ms;5 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;h2;t;0;[];[date: Sat, 29 Jun 2024 07:00:38 GMT|content-encoding: br|x-content-type-options: nosniff|age: 179498|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/css|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 07:00:38 GMT]
-24;1,068 ms;1,070 ms;1,095 ms;1,257 ms;189 ms;2 ms;162 ms;200;application/json;High;High;High;f;h2;f;0,2;[];[date: Mon, 01 Jul 2024 08:58:56 GMT|content-encoding: br|x-content-type-options: nosniff|server: scaffolding on HTTPServer2|x-frame-options: SAMEORIGIN|vary: Origin, X-Origin, Referer|content-type: application/json; charset=UTF-8|content-length: <redacted>|x-xss-protection: 0]
-25;1,132 ms;1,134 ms;1,136 ms;1,185 ms;53 ms;2 ms;49 ms;200;font/woff2;VeryHigh;VeryHigh;VeryHigh;f;h2;f;0,12;[];[date: Fri, 21 Jun 2024 11:38:26 GMT|x-content-type-options: nosniff|age: 268667|content-security-policy-report-only: <redacted>|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Wed, 11 May 2022 19:24:42 GMT|server: sffe|cross-origin-opener-policy: <redacted>|report-to: {"group":"apps-themes","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/apps-themes"}]}|content-type: font/woff2|access-control-allow-origin: *|cache-control: public, max-age=31536000|accept-ranges: bytes|timing-allow-origin: *|expires: Sat, 21 Jun 2025 11:38:26 GMT]
-26;1,173 ms;1,174 ms;1,176 ms;1,186 ms;13 ms;2 ms;9 ms;200;font/woff2;VeryHigh;VeryHigh;VeryHigh;f;h2;f;0,12;[];[date: Fri, 21 Jun 2024 11:49:35 GMT|x-content-type-options: nosniff|age: 267998|content-security-policy-report-only: <redacted>|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Tue, 16 Apr 2024 20:00:48 GMT|server: sffe|cross-origin-opener-policy: <redacted>|report-to: {"group":"apps-themes","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/apps-themes"}]}|content-type: font/woff2|access-control-allow-origin: *|cache-control: public, max-age=31536000|accept-ranges: bytes|timing-allow-origin: *|expires: Sat, 21 Jun 2025 11:49:35 GMT]
-27;1,221 ms;1,223 ms;1,225 ms;1,231 ms;10 ms;2 ms;6 ms;200;font/woff2;VeryHigh;VeryHigh;VeryHigh;f;h2;f;0,12;[];[date: Fri, 21 Jun 2024 11:16:48 GMT|x-content-type-options: nosniff|age: 269965|content-security-policy-report-only: <redacted>|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Wed, 11 May 2022 19:24:45 GMT|server: sffe|cross-origin-opener-policy: <redacted>|report-to: {"group":"apps-themes","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/apps-themes"}]}|content-type: font/woff2|access-control-allow-origin: *|cache-control: public, max-age=31536000|accept-ranges: bytes|timing-allow-origin: *|expires: Sat, 21 Jun 2025 11:16:48 GMT]
-28;1,230 ms;1,232 ms;1,274 ms;1,433 ms;203 ms;1 ms;159 ms;200;application/json;High;High;High;f;h2;f;0,2;[];[date: Mon, 01 Jul 2024 08:58:56 GMT|content-encoding: br|x-content-type-options: nosniff|server: scaffolding on HTTPServer2|x-frame-options: SAMEORIGIN|vary: Origin, X-Origin, Referer|content-type: application/json; charset=UTF-8|content-length: <redacted>|x-xss-protection: 0]
-29;1,260 ms;1,261 ms;1,266 ms;1,269 ms;9 ms;2 ms;3 ms;200;text/javascript;Low;Low;Low;f;h3;f;0,2;[];[date: Sun, 23 Jun 2024 15:10:07 GMT|content-encoding: br|x-content-type-options: nosniff|age: 83158|content-security-policy-report-only: <redacted>|cross-origin-resource-policy: <redacted>|alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000|content-length: <redacted>|x-xss-protection: 0|last-modified: Mon, 03 Jun 2024 09:30:00 GMT|server: sffe|cross-origin-opener-policy: <redacted>|vary: Accept-Encoding|report-to: {"group":"botguard-scs","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/botguard-scs"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|expires: Mon, 23 Jun 2025 15:10:07 GMT]
-30;1,260 ms;1,262 ms;1,265 ms;1,266 ms;6 ms;3 ms;1 ms;200;application/manifest+json;Medium;Medium;Medium;f;h2;f;;[];[date: Mon, 01 Jul 2024 08:52:17 GMT|x-content-type-options: nosniff|accept-ch: Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Full-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Model, Sec-CH-UA-WoW64, Sec-CH-UA-Form-Factors, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version|cross-origin-opener-policy: <redacted>|server: ESF|x-frame-options: SAMEORIGIN|vary: Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Full-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Model, Sec-CH-UA-WoW64, Sec-CH-UA-Form-Factors, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version|content-type: application/manifest+json; charset=utf-8|report-to: {"group":"youtube_main","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube_main"}]}|cache-control: public, max-age=86400|origin-trial: <redacted>|permissions-policy: ch-ua-arch=*, ch-ua-bitness=*, ch-ua-full-version=*, ch-ua-full-version-list=*, ch-ua-model=*, ch-ua-wow64=*, ch-ua-form-factors=*, ch-ua-platform=*, ch-ua-platform-version=*|x-xss-protection: 0|expires: Tue, 02 Jul 2024 08:52:17 GMT]
-31;1,261 ms;1,261 ms;1,266 ms;1,269 ms;8 ms;1 ms;3 ms;200;image/x-icon;High;High;High;f;h2;t;;[];[date: Sat, 29 Jun 2024 03:09:37 GMT|content-encoding: br|x-content-type-options: nosniff|age: 193360|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Fri, 28 Jun 2024 09:12:42 GMT|server: sffe|vary: Accept-Encoding|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: image/x-icon|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 03:09:37 GMT]
-32;1,269 ms;1,271 ms;1,274 ms;1,376 ms;106 ms;3 ms;101 ms;200;image/png;High;High;High;f;h2;f;;[];[date: Fri, 21 Jun 2024 11:32:23 GMT|x-content-type-options: nosniff|last-modified: Thu, 03 Oct 2019 10:15:00 GMT|server: sffe|age: 269031|report-to: {"group":"static-on-bigtable","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/static-on-bigtable"}]}|content-type: image/png|cache-control: public, max-age=31536000|cross-origin-resource-policy: <redacted>|accept-ranges: bytes|content-length: <redacted>|x-xss-protection: 0|cross-origin-opener-policy-report-only: <redacted>|expires: Sat, 21 Jun 2025 11:32:23 GMT]
-33;1,372 ms;1,373 ms;1,433 ms;1,448 ms;76 ms;58 ms;15 ms;200;text/javascript;Low;Low;Low;f;h2;t;0,2;[];[date: Sat, 29 Jun 2024 02:54:09 GMT|content-encoding: gzip|x-content-type-options: nosniff|age: 194288|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Wed, 26 Jun 2024 04:16:28 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/javascript|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 02:54:09 GMT]
-34;1,373 ms;1,373 ms;1,381 ms;1,420 ms;47 ms;4 ms;39 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;f;h2;t;0,2;[];[date: Sat, 29 Jun 2024 02:54:09 GMT|content-encoding: br|x-content-type-options: nosniff|age: 194288|cross-origin-resource-policy: <redacted>|content-length: <redacted>|x-xss-protection: 0|last-modified: Wed, 26 Jun 2024 04:16:28 GMT|server: sffe|vary: Accept-Encoding, Origin|report-to: {"group":"youtube","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube"}]}|content-type: text/css|cache-control: public, max-age=31536000|accept-ranges: bytes|cross-origin-opener-policy-report-only: <redacted>|expires: Sun, 29 Jun 2025 02:54:09 GMT]
 === end content
 
 Title: PerformanceInsightFormatter DomSize serializes correctly when there are no results

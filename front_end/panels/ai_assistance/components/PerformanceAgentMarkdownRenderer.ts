@@ -4,7 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import type * as Trace from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
@@ -21,11 +21,19 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
     if (token.type === 'link' && token.href.startsWith('#')) {
       const event = this.lookupEvent(token.href.slice(1) as Trace.Types.File.SerializableKey);
       if (event) {
+        let label = token.text;
+        let title = '';
+        if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+          title = event.args.data.url;
+        } else {
+          label += ` (${event.name})`;
+        }
+
         // eslint-disable-next-line rulesdir/no-a-tags-in-lit
-        return html`<a href="#" draggable=false @click=${(e: Event) => {
+        return html`<a href="#" draggable=false .title=${title} @click=${(e: Event) => {
           e.stopPropagation();
           void Common.Revealer.reveal(new SDK.TraceObject.RevealableEvent(event));
-        }}>${token.text} (${event.name})</a>`;
+        }}>${label}</a>`;
       }
     }
 

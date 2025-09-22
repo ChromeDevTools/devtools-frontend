@@ -2242,7 +2242,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     UI.Context.Context.instance().setFlavor(
-        AiAssistanceModel.AgentFocus, AiAssistanceModel.AgentFocus.full(parsedTrace));
+        AiAssistanceModel.AgentFocus, AiAssistanceModel.AgentFocus.fromParsedTrace(parsedTrace));
   }
 
   #onAnnotationModifiedEvent(e: Event): void {
@@ -3079,7 +3079,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       for (const modelName in insightsForNav.model) {
         const model = modelName as keyof Trace.Insights.Types.InsightModelsType;
         const insight = insightsForNav.model[model];
-        const formatter = new AiAssistanceModel.PerformanceInsightFormatter(parsedTrace, insight);
+        const focus = AiAssistanceModel.AgentFocus.fromParsedTrace(parsedTrace);
+        const formatter = new AiAssistanceModel.PerformanceInsightFormatter(focus, insight);
         if (!formatter.insightIsSupported()) {
           // Not all Insights are integrated with "Ask AI" yet, let's avoid
           // filling up the response with those ones because there will be no

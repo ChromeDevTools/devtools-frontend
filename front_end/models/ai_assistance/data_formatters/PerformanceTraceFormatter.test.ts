@@ -13,7 +13,7 @@ async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: st
     Promise<{formatter: PerformanceTraceFormatter, parsedTrace: Trace.TraceModel.ParsedTrace}> {
   const parsedTrace = await TraceLoader.traceEngine(context, name);
   assert.isOk(parsedTrace.insights);
-  const focus = AgentFocus.full(parsedTrace);
+  const focus = AgentFocus.fromParsedTrace(parsedTrace);
   const formatter = new PerformanceTraceFormatter(focus);
   return {formatter, parsedTrace};
 }
@@ -111,5 +111,50 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
     assert.exists(tree);
     const output = formatter.formatCallTree(tree);
     snapshotTester.assert(this, output);
+  });
+
+  describe('formatNetworkRequests', () => {
+    it('formats network requests that have redirects', async function() {
+      const {formatter, parsedTrace} = await createFormatter(this, 'bad-document-request-latency.json.gz');
+      const requestUrl = 'http://localhost:3000/redirect3';
+      const request = parsedTrace.data.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
+      assert.isOk(request);
+      const output = formatter.formatNetworkRequests([request], {verbose: true});
+      snapshotTester.assert(this, output);
+    });
+
+    it('formats network requests in verbose mode', async function() {
+      const {formatter, parsedTrace} = await createFormatter(this, 'lcp-images.json.gz');
+      const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
+      const request = parsedTrace.data.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
+      assert.isOk(request);
+      const output = formatter.formatNetworkRequests([request], {verbose: true});
+      snapshotTester.assert(this, output);
+    });
+
+    it('defaults to verbose mode when 1 request and verbose option is not defined', async function() {
+      const {formatter, parsedTrace} = await createFormatter(this, 'lcp-images.json.gz');
+      const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
+      const request = parsedTrace.data.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
+      assert.isOk(request);
+      const output = formatter.formatNetworkRequests([request]);
+      snapshotTester.assert(this, output);
+    });
+
+    it('formats in compressed mode if a request is duplicated in the array', async function() {
+      const {formatter, parsedTrace} = await createFormatter(this, 'bad-document-request-latency.json.gz');
+      const requests = parsedTrace.data.NetworkRequests.byTime;
+      // Duplicate request so that the compressed format is used
+      const output = formatter.formatNetworkRequests([requests[0], requests[0]]);
+      snapshotTester.assert(this, output);
+    });
+
+    it('correctly formats an initiator chain for network-requests-initiators trace', async function() {
+      const {formatter, parsedTrace} = await createFormatter(this, 'network-requests-initiators.json.gz');
+      const request = parsedTrace.data.NetworkRequests.byTime;
+      assert.isOk(request);
+      const output = formatter.formatNetworkRequests(request);
+      snapshotTester.assert(this, output);
+    });
   });
 });

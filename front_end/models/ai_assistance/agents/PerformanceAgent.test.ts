@@ -245,14 +245,17 @@ const FAKE_PARSED_TRACE = {
   metadata: FAKE_METADATA,
 } as unknown as Trace.TraceModel.ParsedTrace;
 
-function createAgentForInsightConversation(opts: {aidaClient?: Host.AidaClient.AidaClient} = {}) {
-  return new PerformanceAgent({aidaClient: opts.aidaClient ?? mockAidaClient()});
+function createAgentForConversation(opts: {aidaClient?: Host.AidaClient.AidaClient} = {}) {
+  const agent = new PerformanceAgent({aidaClient: opts.aidaClient ?? mockAidaClient()});
+  const context = PerformanceTraceContext.fromParsedTrace(FAKE_PARSED_TRACE);
+  agent.run('', {selected: context});
+  return agent;
 }
 
 describeWithEnvironment('PerformanceAgent', () => {
   it('uses the min and max bounds of the trace as the origin', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
-    const context = PerformanceTraceContext.full(parsedTrace);
+    const context = PerformanceTraceContext.fromParsedTrace(parsedTrace);
     assert.strictEqual(context.getOrigin(), 'trace-658799706428-658804825864');
   });
 
@@ -264,37 +267,37 @@ describeWithEnvironment('PerformanceAgent', () => {
   // See b/405054694 for context on why we do this.
   describe('parsing text responses', () => {
     it('strips out 5 backticks if the response has them', async () => {
-      const agent = createAgentForInsightConversation();
+      const agent = createAgentForConversation();
       const response = agent.parseTextResponse('`````hello world`````');
       assert.deepEqual(response, {answer: 'hello world'});
     });
 
     it('strips any newlines before the backticks', async () => {
-      const agent = createAgentForInsightConversation();
+      const agent = createAgentForConversation();
       const response = agent.parseTextResponse('\n\n`````hello world`````');
       assert.deepEqual(response, {answer: 'hello world'});
     });
 
     it('does not strip the backticks if the response does not fully start and end with them', async () => {
-      const agent = createAgentForInsightConversation();
+      const agent = createAgentForConversation();
       const response = agent.parseTextResponse('answer: `````hello world`````');
       assert.deepEqual(response, {answer: 'answer: `````hello world`````'});
     });
 
     it('does not strip the backticks in the middle of the response even if the response is also wrapped', async () => {
-      const agent = createAgentForInsightConversation();
+      const agent = createAgentForConversation();
       const response = agent.parseTextResponse('`````hello ````` world`````');
       assert.deepEqual(response, {answer: 'hello ````` world'});
     });
 
     it('does not strip out inline code backticks', async () => {
-      const agent = createAgentForInsightConversation();
+      const agent = createAgentForConversation();
       const response = agent.parseTextResponse('This is code `console.log("hello")`');
       assert.deepEqual(response, {answer: 'This is code `console.log("hello")`'});
     });
 
     it('does not strip out code block 3 backticks', async () => {
-      const agent = createAgentForInsightConversation();
+      const agent = createAgentForConversation();
       const response = agent.parseTextResponse(`\`\`\`
 code
 \`\`\``);
@@ -311,7 +314,7 @@ code
       const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       assert.isOk(parsedTrace.insights);
       const context = PerformanceTraceContext.fromInsight(parsedTrace, FAKE_LCP_MODEL);
-      const agent = createAgentForInsightConversation({
+      const agent = createAgentForConversation({
         aidaClient: mockAidaClient([[{
           explanation: 'This is the answer',
           metadata: {
@@ -353,7 +356,7 @@ code
 
   describe('enhanceQuery', () => {
     it('adds the context to the query from the user', async () => {
-      const agent = createAgentForInsightConversation({
+      const agent = createAgentForConversation({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
 
@@ -365,7 +368,7 @@ code
     });
 
     it('does not add the context for follow-up queries with the same context', async () => {
-      const agent = createAgentForInsightConversation({
+      const agent = createAgentForConversation({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
 
@@ -379,7 +382,7 @@ code
     });
 
     it('does add context to queries if the insight context changes', async () => {
-      const agent = createAgentForInsightConversation({
+      const agent = createAgentForConversation({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       const context1 = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL);
@@ -401,7 +404,7 @@ code
       const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
       const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
       const bounds = parsedTrace.data.Meta.traceBounds;
-      const agent = createAgentForInsightConversation({
+      const agent = createAgentForConversation({
         aidaClient: mockAidaClient([
           [{
             explanation: '',
@@ -456,7 +459,7 @@ code
       const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
       const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
       const bounds = parsedTrace.data.Meta.traceBounds;
-      const agent = createAgentForInsightConversation({
+      const agent = createAgentForConversation({
         aidaClient: mockAidaClient([
           [{
             explanation: '',
@@ -498,7 +501,7 @@ code
       const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
       const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
       const renderBlocking = getInsightOrError('RenderBlocking', parsedTrace.insights, firstNav);
-      const agent = createAgentForInsightConversation({
+      const agent = createAgentForConversation({
         aidaClient: mockAidaClient([
           [{explanation: '', functionCalls: [{name: 'getMainThreadTrackSummary', args: {}}]}],
         ])
@@ -521,7 +524,7 @@ code
       assert.isOk(parsedTrace.insights);
       const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
       const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
-      const agent = createAgentForInsightConversation({
+      const agent = createAgentForConversation({
         aidaClient: mockAidaClient([
           [{explanation: '', functionCalls: [{name: 'getMainThreadTrackSummary', args: {}}]}],
           [{explanation: '', functionCalls: [{name: 'getNetworkTrackSummary', args: {}}]}], [{explanation: 'done'}]

@@ -5,7 +5,6 @@
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import '../../../ui/components/icon_button/icon_button.js';
-import './CPUThrottlingSelector.js';
 import './FieldSettingsDialog.js';
 import './NetworkThrottlingSelector.js';
 import '../../../ui/components/menus/menus.js';
@@ -30,6 +29,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {getThrottlingRecommendations} from '../utils/Helpers.js';
 
+import {CPUThrottlingSelector} from './CPUThrottlingSelector.js';
 import {md} from './insights/Helpers.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
 import type {MetricCardData} from './MetricCard.js';
@@ -638,7 +638,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         </ul>
       ` : nothing}
       <div class="environment-option">
-        <devtools-cpu-throttling-selector .recommendedOption=${recs.cpuOption}></devtools-cpu-throttling-selector>
+        <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(CPUThrottlingSelector, {recommendedOption: recs.cpuOption})}></devtools-widget>
       </div>
       <div class="environment-option">
         <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>

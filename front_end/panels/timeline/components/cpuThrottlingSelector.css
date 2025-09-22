@@ -4,21 +4,23 @@
  * found in the LICENSE file.
  */
 
-:host {
-  display: flex;
-  align-items: center;
-  max-width: 100%;
-  height: 20px;
-}
+ @scope to (devtools-widget > *) {
+  :scope {
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    height: 20px;
+  }
 
-devtools-icon[name="info"] {
-  margin-left: var(--sys-size-3);
-  width: var(--sys-size-8);
-  height: var(--sys-size-8);
-}
+  devtools-icon[name="info"] {
+    margin-left: var(--sys-size-3);
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+  }
 
-devtools-select-menu {
-  min-width: 160px;
-  max-width: 100%;
-  height: 20px;
+  devtools-select-menu {
+    min-width: 160px;
+    max-width: 100%;
+    height: 20px;
+  }
 }

@@ -7728,13 +7728,6 @@ parser](https://github.com/lezer-parser/html), extended with the
 JavaScript and CSS parsers to parse the content of `<script>` and
 `<style>` tags.
 */
-declare const htmlPlain: LRLanguage;
-/**
-A language provider based on the [Lezer HTML
-parser](https://github.com/lezer-parser/html), extended with the
-JavaScript and CSS parsers to parse the content of `<script>` and
-`<style>` tags.
-*/
 declare const htmlLanguage: LRLanguage;
 /**
 Language support for HTML, including
@@ -7749,6 +7742,11 @@ declare function html(config?: {
     document).
     */
     matchClosingTags?: boolean;
+    /**
+    By default, the parser does not allow arbitrary self-closing tags.
+    Set this to `true` to turn on support for `/>` self-closing tag
+    syntax.
+    */
     selfClosingTags?: boolean;
     /**
     Determines whether [`autoCloseTags`](https://codemirror.net/6/docs/ref/#lang-html.autoCloseTags)
@@ -7786,9 +7784,8 @@ declare const index_d$1_html: typeof html;
 declare const index_d$1_htmlCompletionSource: typeof htmlCompletionSource;
 declare const index_d$1_htmlCompletionSourceWith: typeof htmlCompletionSourceWith;
 declare const index_d$1_htmlLanguage: typeof htmlLanguage;
-declare const index_d$1_htmlPlain: typeof htmlPlain;
 declare namespace index_d$1 {
-  export { type index_d$1_TagSpec as TagSpec, autoCloseTags$1 as autoCloseTags, index_d$1_html as html, index_d$1_htmlCompletionSource as htmlCompletionSource, index_d$1_htmlCompletionSourceWith as htmlCompletionSourceWith, index_d$1_htmlLanguage as htmlLanguage, index_d$1_htmlPlain as htmlPlain };
+  export { type index_d$1_TagSpec as TagSpec, autoCloseTags$1 as autoCloseTags, index_d$1_html as html, index_d$1_htmlCompletionSource as htmlCompletionSource, index_d$1_htmlCompletionSourceWith as htmlCompletionSourceWith, index_d$1_htmlLanguage as htmlLanguage };
 }
 
 type Severity = "hint" | "info" | "warning" | "error";

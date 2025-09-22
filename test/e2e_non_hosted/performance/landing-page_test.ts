@@ -66,7 +66,8 @@ describeSkipForWindows('The Performance panel landing page', function() {
     this.timeout(20000);
   }
 
-  it('displays live metrics', async ({devToolsPage, inspectedPage}) => {
+  // Consistently failing on macOS bots
+  it.skipOnPlatforms(['mac'], '[crbug.com/415271011] displays live metrics', async ({devToolsPage, inspectedPage}) => {
     await devToolsPage.reloadWithParams({panel: 'timeline'});
     await inspectedPage.bringToFront();
 

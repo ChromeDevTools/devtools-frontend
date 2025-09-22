@@ -1762,7 +1762,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     }
   }
 
-  protected override addNodes(nodes: NodeList|Node[]): void {
+  protected override addNodes(nodes: NodeList|Node[], nextSibling?: Node|null): void {
     for (const node of getTreeNodes(nodes)) {
       if (TreeViewTreeElement.get(node)) {
         continue;  // Not sure this can happen
@@ -1771,8 +1771,13 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
       if (!parent) {
         continue;
       }
+      while (nextSibling && nextSibling.nodeType !== Node.ELEMENT_NODE) {
+        nextSibling = nextSibling.nextSibling;
+      }
+      const nextElement = nextSibling ? TreeViewTreeElement.get(nextSibling) : null;
+      const index = nextElement ? parent.treeElement.indexOfChild(nextElement) : parent.treeElement.children().length;
       const treeElement = new TreeViewTreeElement(this.#treeOutline, node);
-      parent.treeElement.appendChild(treeElement, /* FIXME comparator */);
+      parent.treeElement.insertChild(treeElement, index);
       if (hasBooleanAttribute(node, 'selected')) {
         treeElement.revealAndSelect(true);
       }

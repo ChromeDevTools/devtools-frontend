@@ -339,6 +339,30 @@ describe('TreeViewElement', () => {
         ?.click();
     sinon.assert.calledOnce(onClick);
   });
+
+  it('handles adding tree elements in the moddile', async () => {
+    const makeTemplate = (items: string[]): Lit.TemplateResult => {
+      return html`
+        <ul role="tree">
+          <li role="treeitem">node
+            <ul role="group">
+              ${items.map(item => html`<li role="treeitem">${item}</li>`)}
+              <li role="treeitem">extra node</li>
+            </ul>
+          </li>
+        </ul>
+      `;
+    };
+    const component = await makeTree(html`<devtools-tree .template=${makeTemplate(['second child'])}></devtools-tree>`);
+    component.template = makeTemplate(['first child', 'second child']);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const children = treeOutline.rootElement().childAt(0)!.children();
+    assert.lengthOf(children, 3);
+    assert.strictEqual(children[0].titleElement.textContent?.trim(), 'first child');
+    assert.strictEqual(children[1].titleElement.textContent?.trim(), 'second child');
+    assert.strictEqual(children[2].titleElement.textContent?.trim(), 'extra node');
+  });
 });
 
 type NodeSpec = {

@@ -4,7 +4,7 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as MobileThrottling from '../../../panels/mobile_throttling/mobile_throttling.js';
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
@@ -96,5 +96,23 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     // Ensure that the component picks up the new changes and has selected the right thorttling setting
     const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item');
     assert.isTrue(menuItems[2].selected);
+  });
+
+  const containerCss = `
+      box-sizing: border-box;
+      background-color: aqua;
+    `;
+
+  it('renders hint correctly', async () => {
+    const view = new Components.CPUThrottlingSelector.CPUThrottlingSelector();
+    view.recommendedOption = SDK.CPUThrottlingManager.LowTierThrottlingOption;
+
+    const container = document.createElement('div');
+    container.style.cssText = containerCss;
+    container.appendChild(view);
+    renderElementIntoDOM(container);
+
+    await RenderCoordinator.done();
+    await assertScreenshot('timeline/cpu_throttling_selector_recommendation.png');
   });
 });

@@ -23325,17 +23325,6 @@
                             "type": "boolean"
                         }
                     ]
-                },
-                {
-                    "name": "setPrewarmingAllowed",
-                    "description": "Enable/disable prewarming triggers manually.\n\nThis command manages DSE Prewarming triggers. While a client is connected,\nprewarming triggers are disabled by default. This command can change this\ndefault behavior to allow the triggers, or to disallow them again.\nSee https://chromestatus.com/feature/6266608741908480 for more details on\nthe DSE Prewarming feature.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "isAllowed",
-                            "type": "boolean"
-                        }
-                    ]
                 }
             ],
             "events": [

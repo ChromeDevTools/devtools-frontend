@@ -4281,19 +4281,6 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * Enable/disable prewarming triggers manually.
-     *
-     * This command manages DSE Prewarming triggers. While a client is connected,
-     * prewarming triggers are disabled by default. This command can change this
-     * default behavior to allow the triggers, or to disallow them again.
-     * See https://chromestatus.com/feature/6266608741908480 for more details on
-     * the DSE Prewarming feature.
-     */
-    'Page.setPrewarmingAllowed': {
-      paramsType: [Protocol.Page.SetPrewarmingAllowedRequest];
-      returnType: void;
-    };
-    /**
      * Disable collecting and reporting metrics.
      */
     'Performance.disable': {

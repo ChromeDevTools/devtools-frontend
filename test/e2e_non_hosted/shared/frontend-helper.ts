@@ -45,7 +45,10 @@ export class DevToolsPage extends PageWrapper {
 
   constructor(page: puppeteer.Page) {
     super(page);
-    this.#startHeartbeat();
+    if (!TestConfig.debug) {
+      // Timeout here is not useful if we pause the DevTools page
+      this.#startHeartbeat();
+    }
   }
 
   async delayPromisesIfRequired(): Promise<void> {

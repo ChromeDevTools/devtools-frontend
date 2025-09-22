@@ -112,6 +112,12 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
     await page.goto(url);
   };
   this._getOptions = function(url: string) {
+    const flagsDisabledWithDebugging = TestConfig.debug ? [] : [
+      // If the user has non 1 scale factor DevTools renders
+      // Small and makes it not useful for debugging
+      '--force-device-scale-factor=1',
+    ];
+
     return [
       '--remote-allow-origins=*',
       `--remote-debugging-port=${REMOTE_DEBUGGING_PORT}`,
@@ -122,9 +128,9 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       '--disable-gpu',
       '--disable-font-subpixel-positioning',
       '--disable-lcd-text',
-      '--force-device-scale-factor=1',
       '--disable-device-discovery-notifications',
       '--window-size=1280,768',
+      ...flagsDisabledWithDebugging,
       ...args.flags,
       url,
     ];

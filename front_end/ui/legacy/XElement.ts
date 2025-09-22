@@ -65,53 +65,10 @@ class XBox extends XElement {
   }
 }
 
-class XVBox extends XBox {
-  constructor() {
-    super('column');
-  }
-}
-
 class XHBox extends XBox {
   constructor() {
     super('row');
   }
 }
 
-class XCBox extends XElement {
-  constructor() {
-    super();
-    this.style.setProperty('display', 'flex');
-    this.style.setProperty('flex-direction', 'column');
-    this.style.setProperty('justify-content', 'center');
-    this.style.setProperty('align-items', 'center');
-  }
-}
-
-class XDiv extends XElement {
-  constructor() {
-    super();
-    this.style.setProperty('display', 'block');
-  }
-}
-
-class XSpan extends XElement {
-  constructor() {
-    super();
-    this.style.setProperty('display', 'inline');
-  }
-}
-
-class XText extends XElement {
-  constructor() {
-    super();
-    this.style.setProperty('display', 'inline');
-    this.style.setProperty('white-space', 'pre');
-  }
-}
-
-customElements.define('x-vbox', XVBox);
 customElements.define('x-hbox', XHBox);
-customElements.define('x-cbox', XCBox);
-customElements.define('x-div', XDiv);
-customElements.define('x-span', XSpan);
-customElements.define('x-text', XText);

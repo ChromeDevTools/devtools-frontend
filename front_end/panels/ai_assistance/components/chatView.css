@@ -89,6 +89,18 @@
   color: var(--sys-color-on-surface-subtle);
 }
 
+.info-tooltip-container {
+  max-width: var(--sys-size-28);
+  padding: var(--sys-size-4) var(--sys-size-5);
+}
+
+.tooltip-link {
+  display: block;
+  margin-top: var(--sys-size-4);
+  color: var(--sys-color-primary);
+  padding-left: 0;
+}
+
 .chat-input-container {
   width: 100%;
   display: flex;

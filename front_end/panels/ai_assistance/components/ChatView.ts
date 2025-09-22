@@ -214,8 +214,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
 const SCROLL_ROUNDING_OFFSET = 1;
-const TOOLTIP_POPOVER_OFFSET = 4;
-const RELEVANT_DATA_LINK_ID = 'relevant-data-link';
+const RELEVANT_DATA_LINK_FOOTER_ID = 'relevant-data-link-footer';
+const RELEVANT_DATA_LINK_CHAT_ID = 'relevant-data-link-chat';
 
 export interface Step {
   isLoading: boolean;
@@ -313,7 +313,6 @@ export class ChatView extends HTMLElement {
   #messagesContainerElement?: Element;
   #mainElementRef?: Lit.Directives.Ref<Element> = Lit.Directives.createRef();
   #messagesContainerResizeObserver = new ResizeObserver(() => this.#handleMessagesContainerResize());
-  #popoverHelper: UI.PopoverHelper.PopoverHelper|null = null;
   /**
    * Indicates whether the chat scroll position should be pinned to the bottom.
    *
@@ -389,63 +388,6 @@ export class ChatView extends HTMLElement {
     }
 
     this.#setMainElementScrollTop(this.#mainElementRef.value.scrollHeight);
-  }
-
-  #handleChatUiRef(el: Element|undefined): void {
-    if (!el || this.#popoverHelper) {
-      return;
-    }
-
-    // TODO: Update here when b/409965560 is fixed.
-    this.#popoverHelper = new UI.PopoverHelper.PopoverHelper((el as HTMLElement), event => {
-      const popoverShownNode =
-          event.target instanceof HTMLElement && event.target.id === RELEVANT_DATA_LINK_ID ? event.target : null;
-      if (!popoverShownNode) {
-        return null;
-      }
-
-      // We move the glass pane to be a bit lower so
-      // that it does not disappear when moving the cursor
-      // over to link.
-      const nodeBox = popoverShownNode.boxInWindow();
-      nodeBox.y = nodeBox.y + TOOLTIP_POPOVER_OFFSET;
-      return {
-        box: nodeBox,
-        show: async (popover: UI.GlassPane.GlassPane) => {
-          // clang-format off
-          Lit.render(html`
-            <style>
-              .info-tooltip-container {
-                max-width: var(--sys-size-28);
-                padding: var(--sys-size-4) var(--sys-size-5);
-
-                .tooltip-link {
-                  display: block;
-                  margin-top: var(--sys-size-4);
-                  color: var(--sys-color-primary);
-                  padding-left: 0;
-                }
-              }
-            </style>
-            <div class="info-tooltip-container">
-              ${this.#props.disclaimerText}
-              <button
-                class="link tooltip-link"
-                role="link"
-                jslog=${VisualLogging.link('open-ai-settings').track({
-                  click: true,
-                })}
-                @click=${() => {
-                  void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-                }}
-              >${i18nString(UIStrings.learnAbout)}</button>
-            </div>`, popover.contentElement, {host: this});
-          // clang-format on
-          return true;
-        },
-      };
-    });
-    this.#popoverHelper.setTimeout(0);
   }
 
   #handleMessagesContainerResize(): void {
@@ -583,9 +525,11 @@ export class ChatView extends HTMLElement {
       // clang-format off
       const footerContents = this.#props.conversationType
         ? renderRelevantDataDisclaimer({
-            isLoading: this.#props.isLoading,
-            blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
-          })
+          isLoading: this.#props.isLoading,
+          blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
+          tooltipId: RELEVANT_DATA_LINK_FOOTER_ID,
+          disclaimerText: this.#props.disclaimerText,
+        })
         : html`<p>
             ${lockedString(UIStringsNotTranslate.inputDisclaimerForEmptyState)}
             <button
@@ -611,7 +555,7 @@ export class ChatView extends HTMLElement {
     // clang-format off
     Lit.render(html`
       <style>${chatViewStyles}</style>
-      <div class="chat-ui" ${Lit.Directives.ref(this.#handleChatUiRef)}>
+      <div class="chat-ui">
         <main @scroll=${this.#handleScroll} ${ref(this.#mainElementRef)}>
           ${renderMainContents({
             state: this.#props.state,
@@ -643,6 +587,7 @@ export class ChatView extends HTMLElement {
                 isTextInputDisabled: this.#props.isTextInputDisabled,
                 inputPlaceholder: this.#props.inputPlaceholder,
                 state: this.#props.state,
+                disclaimerText: this.#props.disclaimerText,
                 selectedContext: this.#props.selectedContext,
                 inspectElementToggled: this.#props.inspectElementToggled,
                 multimodalInputEnabled: this.#props.multimodalInputEnabled,
@@ -1433,8 +1378,12 @@ function renderImageInput({
   // clang-format on
 }
 
-function renderRelevantDataDisclaimer(
-    {isLoading, blockedByCrossOrigin}: {isLoading: boolean, blockedByCrossOrigin: boolean}): Lit.LitTemplate {
+function renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin, tooltipId, disclaimerText}: {
+  isLoading: boolean,
+  blockedByCrossOrigin: boolean,
+  tooltipId: string,
+  disclaimerText: string,
+}): Lit.LitTemplate {
   const classes =
       Lit.Directives.classMap({'chat-input-disclaimer': true, 'hide-divider': !isLoading && blockedByCrossOrigin});
   // clang-format off
@@ -1443,7 +1392,7 @@ function renderRelevantDataDisclaimer(
       <button
         class="link"
         role="link"
-        id=${RELEVANT_DATA_LINK_ID}
+        aria-details=${tooltipId}
         jslog=${VisualLogging.link('open-ai-settings').track({
           click: true,
         })}
@@ -1451,6 +1400,7 @@ function renderRelevantDataDisclaimer(
           void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
         }}
       >${lockedString('Relevant data')}</button>&nbsp;${lockedString('is sent to Google')}
+      ${renderDisclamerTooltip(tooltipId, disclaimerText)}
     </p>
   `;
   // clang-format on
@@ -1470,6 +1420,7 @@ function renderChatInput({
   isTextInputEmpty,
   uploadImageInputEnabled,
   aidaAvailability,
+  disclaimerText,
   onContextClick,
   onInspectElementClick,
   onSubmit,
@@ -1490,6 +1441,7 @@ function renderChatInput({
   inspectElementToggled: boolean,
   isTextInputEmpty: boolean,
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
+  disclaimerText: string,
   onContextClick: () => void,
   onInspectElementClick: () => void,
   onSubmit: (ev: SubmitEvent) => void,
@@ -1547,7 +1499,7 @@ function renderChatInput({
         </div>
         <div class="chat-input-actions-right">
           <div class="chat-input-disclaimer-container">
-            ${renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin})}
+            ${renderRelevantDataDisclaimer({ isLoading, blockedByCrossOrigin, tooltipId: RELEVANT_DATA_LINK_CHAT_ID, disclaimerText})}
           </div>
           ${renderMultimodalInputButtons({
             multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, imageInput, uploadImageInputEnabled, onTakeScreenshot, onImageUpload
@@ -1695,6 +1647,30 @@ function renderMainContents({
   }
 
   return renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick});
+}
+
+function renderDisclamerTooltip(id: string, disclaimerText: string): Lit.TemplateResult {
+  // clang-format off
+  return html`
+    <devtools-tooltip
+      id=${id}
+      variant=${'rich'}
+    >
+      <div class="info-tooltip-container">
+        ${disclaimerText}
+        <button
+          class="link tooltip-link"
+          role="link"
+          jslog=${VisualLogging.link('open-ai-settings').track({
+            click: true,
+          })}
+          @click=${() => {
+            void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+          }}>${i18nString(UIStrings.learnAbout)}
+        </button>
+      </div>
+    </devtools-tooltip>`;
+  // clang-format on
 }
 
 declare global {

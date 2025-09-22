@@ -1149,6 +1149,8 @@ export const getPropertiesWithHints =
 
 export const summonAndWaitForSearchBox =
     async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  // Wait for elements to load.
+  await devToolsPage.waitFor('devtools-elements-breadcrumbs');
   await summonSearchBox(devToolsPage);
   await devToolsPage.waitFor(SEARCH_BOX_SELECTOR);
   await expectVeEvents(

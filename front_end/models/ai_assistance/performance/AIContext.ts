@@ -69,6 +69,7 @@ export class AgentFocus {
   }
 
   #data: AgentFocusData;
+  readonly eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
 
   constructor(data: AgentFocusData) {
     this.#data = data;
@@ -88,6 +89,18 @@ export class AgentFocus {
     const focus = new AgentFocus(this.#data);
     focus.#data.callTree = callTree;
     return focus;
+  }
+
+  lookupEvent(key: Trace.Types.File.SerializableKey): Trace.Types.Events.Event|null {
+    try {
+      return this.eventsSerializer.eventForKey(key, this.#data.parsedTrace);
+    } catch (err) {
+      if (err.toString().includes('Unknown trace event')) {
+        return null;
+      }
+
+      throw err;
+    }
   }
 }
 

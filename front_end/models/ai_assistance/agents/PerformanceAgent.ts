@@ -62,7 +62,7 @@ const lockedString = i18n.i18n.lockedString;
  *
  * Check token length in https://aistudio.google.com/
  */
-const fullTracePreamble = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
+const preamble = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
 Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
 
@@ -127,6 +127,11 @@ Adhere to the following critical requirements:
 - Do not mention that you are an AI, or refer to yourself in the third person. You are simulating a performance expert.
 - If asked about sensitive topics (religion, race, politics, sexuality, gender, etc.), respond with: "My expertise is limited to website performance analysis. I cannot provide information on that topic.".
 - Do not provide answers on non-web-development topics, such as legal, financial, medical, or personal advice.
+`;
+
+const extraPreambleWhenNotExternal = `Additional notes:
+
+- When referring to a trace event that has a corresponding \`eventKey\`, annotate your output using markdown link syntax. For example: [Long task](#r-123).
 `;
 
 const callFrameDataFormatDescription = `Each call frame is presented in the following format:
@@ -263,7 +268,6 @@ const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
 export class PerformanceAgent extends AiAgent<AgentFocus> {
   #formatter: PerformanceTraceFormatter|null = null;
   #lastInsightForEnhancedQuery: Trace.Insights.Types.InsightModel|undefined;
-  #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
   #hasShownAnalyzeTraceContext = false;
 
   /**
@@ -279,6 +283,10 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
    */
   #functionCallCacheForFocus = new Map<AgentFocus, Record<string, Host.AidaClient.RequestFact>>();
 
+  #notExternalExtraPreambleFact: Host.AidaClient.RequestFact = {
+    text: extraPreambleWhenNotExternal,
+    metadata: {source: 'devtools', score: ScorePriority.CRITICAL}
+  };
   #networkDataDescriptionFact: Host.AidaClient.RequestFact = {
     text: TraceEventFormatter.networkDataFormatDescription,
     metadata: {source: 'devtools', score: ScorePriority.CRITICAL}
@@ -290,7 +298,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   #traceFacts: Host.AidaClient.RequestFact[] = [];
 
   get preamble(): string {
-    return fullTracePreamble;
+    return preamble;
   }
 
   get clientFeature(): Host.AidaClient.ClientFeature {
@@ -311,23 +319,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
   getConversationType(): ConversationType {
     return ConversationType.PERFORMANCE;
-  }
-
-  #lookupEvent(key: Trace.Types.File.SerializableKey): Trace.Types.Events.Event|null {
-    const parsedTrace = this.context?.getItem().data.parsedTrace;
-    if (!parsedTrace) {
-      return null;
-    }
-
-    try {
-      return this.#eventsSerializer.eventForKey(key, parsedTrace);
-    } catch (err) {
-      if (err.toString().includes('Unknown trace event')) {
-        return null;
-      }
-
-      throw err;
-    }
   }
 
   async *
@@ -426,15 +417,15 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   }
 
   override async * run(initialQuery: string, options: {
-    selected: ConversationContext<AgentFocus>|null,
+    selected: PerformanceTraceContext|null,
     signal?: AbortSignal,
   }): AsyncGenerator<ResponseData, void, void> {
     const focus = options.selected?.getItem();
 
     // Clear any previous facts in case the user changed the active context.
     this.clearFacts();
-    if (focus) {
-      this.#addFacts(focus);
+    if (options.selected && focus) {
+      this.#addFacts(options.selected);
     }
 
     return yield* super.run(initialQuery, options);
@@ -518,12 +509,18 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     });
   }
 
-  #addFacts(focus: AgentFocus): void {
+  #addFacts(context: PerformanceTraceContext): void {
+    const focus = context.getItem();
+
+    if (!context.external) {
+      this.addFact(this.#notExternalExtraPreambleFact);
+    }
+
     this.addFact(this.#callFrameDataDescriptionFact);
     this.addFact(this.#networkDataDescriptionFact);
 
     if (!this.#traceFacts.length) {
-      this.#formatter = new PerformanceTraceFormatter(focus, this.#eventsSerializer);
+      this.#formatter = new PerformanceTraceFormatter(focus);
       this.#createFactForTraceSummary();
       this.#createFactForCriticalRequests();
       this.#createFactForMainThreadBottomUpSummary();
@@ -613,7 +610,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       },
       handler: async params => {
         debugLog('Function call: getEventByKey', params);
-        const event = this.#lookupEvent(params.eventKey as Trace.Types.File.SerializableKey);
+        const event = focus.lookupEvent(params.eventKey as Trace.Types.File.SerializableKey);
         if (!event) {
           return {error: 'Invalid eventKey'};
         }
@@ -772,7 +769,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         },
       },
       displayInfoFromArgs: args => {
-        return {title: lockedString('Looking at call tree…'), action: `getDetailedCallTree(${args.eventKey})`};
+        return {title: lockedString('Looking at call tree…'), action: `getDetailedCallTree('${args.eventKey}')`};
       },
       handler: async args => {
         debugLog('Function call: getDetailedCallTree');
@@ -781,7 +778,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           throw new Error('missing formatter');
         }
 
-        const event = this.#lookupEvent(args.eventKey as Trace.Types.File.SerializableKey);
+        const event = focus.lookupEvent(args.eventKey as Trace.Types.File.SerializableKey);
         if (!event) {
           return {error: 'Invalid eventKey'};
         }
@@ -816,7 +813,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           },
         },
         displayInfoFromArgs: args => {
-          return {title: lockedString('Looking at resource content…'), action: `getResourceContent(${args.url})`};
+          return {title: lockedString('Looking at resource content…'), action: `getResourceContent('${args.url}')`};
         },
         handler: async args => {
           debugLog('Function call: getResourceContent');
@@ -863,7 +860,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         },
         handler: async params => {
           debugLog('Function call: selectEventByKey', params);
-          const event = this.#lookupEvent(params.eventKey as Trace.Types.File.SerializableKey);
+          const event = focus.lookupEvent(params.eventKey as Trace.Types.File.SerializableKey);
           if (!event) {
             return {error: 'Invalid eventKey'};
           }

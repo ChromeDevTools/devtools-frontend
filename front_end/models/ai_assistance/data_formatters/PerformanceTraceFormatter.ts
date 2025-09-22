@@ -16,10 +16,10 @@ export class PerformanceTraceFormatter {
   #insightSet: Trace.Insights.Types.InsightSet|null;
   #eventsSerializer: Trace.EventsSerializer.EventsSerializer;
 
-  constructor(focus: AgentFocus, eventsSerializer: Trace.EventsSerializer.EventsSerializer) {
+  constructor(focus: AgentFocus) {
     this.#parsedTrace = focus.data.parsedTrace;
     this.#insightSet = focus.data.insightSet;
-    this.#eventsSerializer = eventsSerializer;
+    this.#eventsSerializer = focus.eventsSerializer;
   }
 
   serializeEvent(event: Trace.Types.Events.Event): string {

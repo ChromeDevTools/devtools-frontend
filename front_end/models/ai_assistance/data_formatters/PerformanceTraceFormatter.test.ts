@@ -14,8 +14,7 @@ async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: st
   const parsedTrace = await TraceLoader.traceEngine(context, name);
   assert.isOk(parsedTrace.insights);
   const focus = AgentFocus.full(parsedTrace);
-  const eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
-  const formatter = new PerformanceTraceFormatter(focus, eventsSerializer);
+  const formatter = new PerformanceTraceFormatter(focus);
   return {formatter, parsedTrace};
 }
 

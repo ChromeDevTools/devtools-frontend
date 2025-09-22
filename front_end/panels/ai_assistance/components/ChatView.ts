@@ -18,13 +18,13 @@ import * as PanelUtils from '../../../panels/utils/utils.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
+import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {PatchWidget} from '../PatchWidget.js';
 
 import chatViewStyles from './chatView.css.js';
-import {MarkdownRendererWithCodeBlock} from './MarkdownRendererWithCodeBlock.js';
 import {UserActionRow} from './UserActionRow.js';
 
 const {html, Directives: {ifDefined, ref}} = Lit;
@@ -303,11 +303,11 @@ export interface Props {
   disclaimerText: Platform.UIString.LocalizedString;
   isTextInputEmpty: boolean;
   uploadImageInputEnabled?: boolean;
+  markdownRenderer: MarkdownLitRenderer;
 }
 
 export class ChatView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #markdownRenderer = new MarkdownRendererWithCodeBlock();
   #scrollTop?: number;
   #props: Props;
   #messagesContainerElement?: Element;
@@ -338,7 +338,6 @@ export class ChatView extends HTMLElement {
   }
 
   set props(props: Props) {
-    this.#markdownRenderer = new MarkdownRendererWithCodeBlock();
     this.#props = props;
     this.#render();
   }
@@ -624,7 +623,7 @@ export class ChatView extends HTMLElement {
             isTextInputDisabled: this.#props.isTextInputDisabled,
             suggestions: this.#props.emptyStateSuggestions,
             userInfo: this.#props.userInfo,
-            markdownRenderer: this.#markdownRenderer,
+            markdownRenderer: this.#props.markdownRenderer,
             conversationType: this.#props.conversationType,
             changeSummary: this.#props.changeSummary,
             changeManager: this.#props.changeManager,
@@ -672,7 +671,7 @@ export class ChatView extends HTMLElement {
   }
 }
 
-function renderTextAsMarkdown(text: string, markdownRenderer: MarkdownRendererWithCodeBlock, {animate, ref: refFn}: {
+function renderTextAsMarkdown(text: string, markdownRenderer: MarkdownLitRenderer, {animate, ref: refFn}: {
   animate?: boolean,
   ref?: (element?: Element) => void,
 } = {}): Lit.TemplateResult {
@@ -753,7 +752,7 @@ function renderStepDetails({
   isLast,
 }: {
   step: Step,
-  markdownRenderer: MarkdownRendererWithCodeBlock,
+  markdownRenderer: MarkdownLitRenderer,
   isLast: boolean,
 }): Lit.LitTemplate {
   const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit.nothing;
@@ -817,7 +816,7 @@ function renderStepBadge({step, isLoading, isLast}: {
 function renderStep({step, isLoading, markdownRenderer, isLast}: {
   step: Step,
   isLoading: boolean,
-  markdownRenderer: MarkdownRendererWithCodeBlock,
+  markdownRenderer: MarkdownLitRenderer,
   isLast: boolean,
 }): Lit.LitTemplate {
   const stepClasses = Lit.Directives.classMap({
@@ -926,7 +925,7 @@ function renderChatMessage({
   canShowFeedbackForm: boolean,
   isLast: boolean,
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
-  markdownRenderer: MarkdownRendererWithCodeBlock,
+  markdownRenderer: MarkdownLitRenderer,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
   onCopyResponseClick: (message: ModelChatMessage) => void,
@@ -1156,7 +1155,7 @@ function renderMessages({
   isReadOnly: boolean,
   canShowFeedbackForm: boolean,
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
-  markdownRenderer: MarkdownRendererWithCodeBlock,
+  markdownRenderer: MarkdownLitRenderer,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
   onCopyResponseClick: (message: ModelChatMessage) => void,
@@ -1657,7 +1656,7 @@ function renderMainContents({
   isTextInputDisabled: boolean,
   suggestions: AiAssistanceModel.ConversationSuggestion[],
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
-  markdownRenderer: MarkdownRendererWithCodeBlock,
+  markdownRenderer: MarkdownLitRenderer,
   changeManager: AiAssistanceModel.ChangeManager,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,

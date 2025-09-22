@@ -130,9 +130,7 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
 
       const context = PerformanceTraceContext.fromCallTree(aiCallTree);
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
-      const expectedData =
-          new PerformanceTraceFormatter(context.getItem(), new Trace.EventsSerializer.EventsSerializer())
-              .formatTraceSummary();
+      const expectedData = new PerformanceTraceFormatter(context.getItem()).formatTraceSummary();
 
       assert.deepEqual(responses, [
         {
@@ -322,9 +320,7 @@ code
         }]])
       });
 
-      const expectedDetailText =
-          new PerformanceTraceFormatter(context.getItem(), new Trace.EventsSerializer.EventsSerializer())
-              .formatTraceSummary();
+      const expectedDetailText = new PerformanceTraceFormatter(context.getItem()).formatTraceSummary();
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       assert.deepEqual(responses, [
@@ -432,7 +428,7 @@ code
         assert.isOk(match, `no request found for ${url}`);
       });
 
-      const formatter = new PerformanceTraceFormatter(context.getItem(), new Trace.EventsSerializer.EventsSerializer());
+      const formatter = new PerformanceTraceFormatter(context.getItem());
       const expectedRequestsOutput = formatter.formatNetworkTrackSummary(bounds);
 
       const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestsOutput);
@@ -479,7 +475,7 @@ code
       const action = responses.find(response => response.type === ResponseType.ACTION);
       assert.exists(action);
 
-      const formatter = new PerformanceTraceFormatter(context.getItem(), new Trace.EventsSerializer.EventsSerializer());
+      const formatter = new PerformanceTraceFormatter(context.getItem());
       const summary = formatter.formatMainThreadTrackSummary(bounds);
       assert.isOk(summary);
 
@@ -512,12 +508,12 @@ code
 
       // Populate the function calls for the LCP Context
       await Array.fromAsync(agent.run('test 1 LCP', {selected: lcpContext}));
-      assert.strictEqual(agent.currentFacts().size, 6);  // always adds 6 facts for high-level summary of trace.
+      assert.strictEqual(agent.currentFacts().size, 7);  // always adds 7 facts for high-level summary of trace.
       await Array.fromAsync(agent.run('test 2 LCP', {selected: lcpContext}));
-      assert.strictEqual(agent.currentFacts().size, 7);  // added the function call as a fact.
+      assert.strictEqual(agent.currentFacts().size, 8);  // added the function call as a fact.
       // Now change the context and send a request.
       await Array.fromAsync(agent.run('test 1 RenderBlocking', {selected: renderBlockingContext}));
-      assert.strictEqual(agent.currentFacts().size, 6);  // back to 6.
+      assert.strictEqual(agent.currentFacts().size, 7);  // back to 7.
     });
 
     it('will cache function calls as facts', async function() {
@@ -534,7 +530,7 @@ code
       const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
       await Array.fromAsync(agent.run('test 1', {selected: context}));
       await Array.fromAsync(agent.run('test 2', {selected: context}));
-      // First 6 are the always included high-level facts. The rests are from the function calls.
+      // First 7 are the always included high-level facts. The rests are from the function calls.
       assert.deepEqual(
           Array.from(
               agent.currentFacts(),
@@ -542,7 +538,7 @@ code
                 return fact.metadata.source;
               }),
           [
-            'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools',
+            'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools',
             'getMainThreadTrackSummary({min: 197695826524, max: 197698633660})',
             'getNetworkTrackSummary({min: 197695826524, max: 197698633660})'
           ]);

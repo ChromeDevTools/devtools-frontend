@@ -35,6 +35,8 @@ import {
   type Step
 } from './components/ChatView.js';
 import {ExploreWidget} from './components/ExploreWidget.js';
+import {MarkdownRendererWithCodeBlock} from './components/MarkdownRendererWithCodeBlock.js';
+import {PerformanceAgentMarkdownRenderer} from './components/PerformanceAgentMarkdownRenderer.js';
 import {isAiAssistancePatchingEnabled} from './PatchWidget.js';
 
 const {html} = Lit;
@@ -261,6 +263,16 @@ async function getEmptyStateSuggestions(
     default:
       Platform.assertNever(conversation.type, 'Unknown conversation type');
   }
+}
+
+function getMarkdownRenderer(context: AiAssistanceModel.ConversationContext<unknown>|null):
+    MarkdownRendererWithCodeBlock {
+  if (context instanceof AiAssistanceModel.PerformanceTraceContext && !context.external) {
+    const focus = context.getItem();
+    return new PerformanceAgentMarkdownRenderer(focus.lookupEvent.bind(focus));
+  }
+
+  return new MarkdownRendererWithCodeBlock();
 }
 
 interface ToolbarViewInput {
@@ -837,6 +849,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   override async performUpdate(): Promise<void> {
     const emptyStateSuggestions = await getEmptyStateSuggestions(this.#selectedContext, this.#conversation);
+    const markdownRenderer = getMarkdownRenderer(this.#selectedContext);
 
     this.view(
         {
@@ -865,6 +878,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           changeManager: this.#changeManager,
           uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
               this.#conversation?.type === AiAssistanceModel.ConversationType.STYLING,
+          markdownRenderer,
           onNewChatClick: this.#handleNewChatRequest.bind(this),
           populateHistoryMenu: this.#populateHistoryMenu.bind(this),
           onDeleteClick: this.#onDeleteClicked.bind(this),
@@ -1054,8 +1068,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       const focus = context.getItem().data;
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
-        const trace = new SDK.TraceObject.RevealableEvent(event);
-        return Common.Revealer.reveal(trace);
+        const revealable = new SDK.TraceObject.RevealableEvent(event);
+        return Common.Revealer.reveal(revealable);
       }
       if (focus.insight) {
         return Common.Revealer.reveal(focus.insight);

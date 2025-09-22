@@ -302,6 +302,43 @@ describe('TreeViewElement', () => {
       }
     ]);
   });
+
+  it('applies classes to tree elements', async () => {
+    const component = await makeTree(html`
+      <devtools-tree
+        .template=${html`
+          <ul role="tree">
+            <li role="treeitem" class="first">first node</li>
+            <li role="treeitem" class="second">second node</li>
+          </ul>
+        `}></devtools-tree>`);
+    assert.deepEqual(
+        component.getInternalTreeOutlineForTest().rootElement().children().map(
+            element => [...element.listItemElement.classList]),
+        [
+          ['first'],
+          ['second'],
+        ]);
+  });
+
+  it('applies event listeners to tree elements', async () => {
+    const onClick = sinon.stub();
+    const component = await makeTree(html`
+      <devtools-tree
+        .template=${html`
+          <ul role="tree">
+            <li role="treeitem">
+              <button @click=${onClick}>click me</button>
+            </li>
+          </ul>
+        `}></devtools-tree>`);
+    component.getInternalTreeOutlineForTest()
+        .rootElement()
+        .children()[0]
+        .listItemElement.querySelector('button')
+        ?.click();
+    sinon.assert.calledOnce(onClick);
+  });
 });
 
 type NodeSpec = {

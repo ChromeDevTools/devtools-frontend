@@ -55,6 +55,7 @@ import {
   deepElementFromPoint,
   enclosingNodeOrSelfWithNodeNameInArray,
   HTMLElementWithLightDOMTemplate,
+  InterceptBindingDirective,
   isEditing,
 } from './UIUtils.js';
 
@@ -1549,6 +1550,7 @@ class ActiveHighlights {
 class TreeViewTreeElement extends TreeElement {
   #activeHighlights = new ActiveHighlights();
   #clonedAttributes = new Set<string>();
+  #clonedClasses = new Set<string>();
 
   static #elementToTreeElement = new WeakMap<Node, TreeViewTreeElement>();
   readonly configElement: HTMLLIElement;
@@ -1569,7 +1571,9 @@ class TreeViewTreeElement extends TreeElement {
   refresh(): void {
     this.titleElement.textContent = '';
     this.#clonedAttributes.forEach(attr => this.listItemElement.attributes.removeNamedItem(attr));
+    this.#clonedClasses.forEach(className => this.listItemElement.classList.remove(className));
     this.#clonedAttributes.clear();
+    this.#clonedClasses.clear();
     for (let i = 0; i < this.configElement.attributes.length; ++i) {
       const attribute = this.configElement.attributes.item(i);
       if (attribute && attribute.name !== 'role' && SDK.DOMModel.ARIA_ATTRIBUTES.has(attribute.name)) {
@@ -1577,6 +1581,11 @@ class TreeViewTreeElement extends TreeElement {
         this.#clonedAttributes.add(attribute.name);
       }
     }
+    for (const className of this.configElement.classList) {
+      this.listItemElement.classList.add(className);
+      this.#clonedClasses.add(className);
+    }
+    InterceptBindingDirective.attachEventListeners(this.configElement, this.listItemElement);
 
     for (const child of this.configElement.childNodes) {
       if (child instanceof HTMLUListElement && child.role === 'group') {

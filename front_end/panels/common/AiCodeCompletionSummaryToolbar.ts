@@ -30,11 +30,13 @@ const lockedString = i18n.i18n.lockedString;
 export interface AiCodeCompletionSummaryToolbarProps {
   citationsTooltipId: string;
   disclaimerTooltipId?: string;
+  spinnerTooltipId?: string;
   hasTopBorder?: boolean;
 }
 
 export interface ViewInput {
   disclaimerTooltipId?: string;
+  spinnerTooltipId?: string;
   citations?: Set<string>;
   citationsTooltipId: string;
   loading: boolean;
@@ -57,10 +59,11 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, _output, target) => {
   });
 
   // clang-format off
-  const disclaimer = input.disclaimerTooltipId ?
+  const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ?
     html`<devtools-widget
             .widgetConfig=${UI.Widget.widgetConfig(AiCodeCompletionDisclaimer, {
       disclaimerTooltipId: input.disclaimerTooltipId,
+      spinnerTooltipId: input.spinnerTooltipId,
       loading: input.loading,
     })} class="disclaimer-widget"></devtools-widget>` : nothing;
 
@@ -102,6 +105,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
   readonly #view: View;
 
   #disclaimerTooltipId?: string;
+  #spinnerTooltipId?: string;
   #citationsTooltipId: string;
   #citations = new Set<string>();
   #loading = false;
@@ -113,6 +117,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
   constructor(props: AiCodeCompletionSummaryToolbarProps, view?: View) {
     super();
     this.#disclaimerTooltipId = props.disclaimerTooltipId;
+    this.#spinnerTooltipId = props.spinnerTooltipId;
     this.#citationsTooltipId = props.citationsTooltipId;
     this.#hasTopBorder = props.hasTopBorder ?? false;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
@@ -147,6 +152,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
     this.#view(
         {
           disclaimerTooltipId: this.#disclaimerTooltipId,
+          spinnerTooltipId: this.#spinnerTooltipId,
           citations: this.#citations,
           citationsTooltipId: this.#citationsTooltipId,
           loading: this.#loading,

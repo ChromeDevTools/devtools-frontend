@@ -18,6 +18,7 @@ import {Plugin} from './Plugin.js';
 
 const AI_CODE_COMPLETION_CHARACTER_LIMIT = 20_000;
 const DISCLAIMER_TOOLTIP_ID = 'sources-ai-code-completion-disclaimer-tooltip';
+const SPINNER_TOOLTIP_ID = 'sources-ai-code-completion-spinner-tooltip';
 const CITATIONS_TOOLTIP_ID = 'sources-ai-code-completion-citations-tooltip';
 
 export class AiCodeCompletionPlugin extends Plugin {
@@ -232,6 +233,7 @@ export class AiCodeCompletionPlugin extends Plugin {
     }
     this.#aiCodeCompletionDisclaimer = new PanelCommon.AiCodeCompletionDisclaimer();
     this.#aiCodeCompletionDisclaimer.disclaimerTooltipId = DISCLAIMER_TOOLTIP_ID;
+    this.#aiCodeCompletionDisclaimer.spinnerTooltipId = SPINNER_TOOLTIP_ID;
     this.#aiCodeCompletionDisclaimer.show(this.#aiCodeCompletionDisclaimerContainer, undefined, true);
   }
 

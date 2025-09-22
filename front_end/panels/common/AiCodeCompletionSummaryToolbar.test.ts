@@ -13,7 +13,12 @@ describeWithEnvironment('AiCodeCompletionSummaryToolbar', () => {
   async function createToolbar() {
     const view = createViewFunctionStub(Common.AiCodeCompletionSummaryToolbar);
     const widget = new Common.AiCodeCompletionSummaryToolbar(
-        {citationsTooltipId: 'citations-tooltip', disclaimerTooltipId: 'disclaimer-tooltip', hasTopBorder: false},
+        {
+          citationsTooltipId: 'citations-tooltip',
+          disclaimerTooltipId: 'disclaimer-tooltip',
+          spinnerTooltipId: 'spinner-tooltip',
+          hasTopBorder: false
+        },
         view);
     widget.markAsRoot();
     renderElementIntoDOM(widget);

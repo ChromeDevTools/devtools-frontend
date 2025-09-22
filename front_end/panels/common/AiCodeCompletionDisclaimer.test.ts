@@ -16,6 +16,7 @@ describeWithEnvironment('AiCodeCompletionDisclaimer', () => {
     const view = createViewFunctionStub(Common.AiCodeCompletionDisclaimer);
     const widget = new Common.AiCodeCompletionDisclaimer(undefined, view);
     widget.disclaimerTooltipId = 'disclaimer-tooltip';
+    widget.spinnerTooltipId = 'spinner-tooltip';
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     await view.nextInput;

@@ -270,6 +270,7 @@ let consoleViewInstance: ConsoleView;
 
 const MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING = 5;
 const DISCLAIMER_TOOLTIP_ID = 'console-ai-code-completion-disclaimer-tooltip';
+const SPINNER_TOOLTIP_ID = 'console-ai-code-completion-spinner-tooltip';
 const CITATIONS_TOOLTIP_ID = 'console-ai-code-completion-citations-tooltip';
 
 export class ConsoleView extends UI.Widget.VBox implements
@@ -624,8 +625,11 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   createAiCodeCompletionSummaryToolbar(): void {
-    this.aiCodeCompletionSummaryToolbar = new AiCodeCompletionSummaryToolbar(
-        {citationsTooltipId: CITATIONS_TOOLTIP_ID, disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID});
+    this.aiCodeCompletionSummaryToolbar = new AiCodeCompletionSummaryToolbar({
+      citationsTooltipId: CITATIONS_TOOLTIP_ID,
+      disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
+      spinnerTooltipId: SPINNER_TOOLTIP_ID
+    });
     this.aiCodeCompletionSummaryToolbarContainer = this.element.createChild('div');
     this.aiCodeCompletionSummaryToolbar.show(this.aiCodeCompletionSummaryToolbarContainer, undefined, true);
   }

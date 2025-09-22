@@ -74,6 +74,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "ChangesSidebar.test.ts",
     "CombinedDiffView.test.ts",
     "changes.test.ts",
   ]

@@ -277,6 +277,11 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       return null;
     }
 
+    const isRepetitive = this.#checkIfSuggestionRepeatsExistingText(suggestionSample.generationString, request);
+    if (isRepetitive) {
+      return null;
+    }
+
     const suggestionText = this.#trimSuggestionOverlap(suggestionSample.generationString, request);
     if (suggestionText.length === 0) {
       return null;
@@ -375,6 +380,11 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
       }
     }
     return generationString;
+  }
+
+  #checkIfSuggestionRepeatsExistingText(generationString: string, request: Host.AidaClient.CompletionRequest): boolean {
+    const {prefix, suffix} = request;
+    return Boolean(prefix.includes(generationString.trim()) || suffix?.includes(generationString.trim()));
   }
 
   #checkCachedRequestForResponse(request: Host.AidaClient.CompletionRequest): Host.AidaClient.CompletionResponse|null {

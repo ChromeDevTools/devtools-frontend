@@ -189,6 +189,36 @@ describeWithEnvironment('AiCodeCompletion', () => {
         dispatchEventSpy, sinon.match(AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED), sinon.match({}));
   });
 
+  it('does not dispatch suggestion or citation if generated suggestion repeats existing text', async () => {
+    const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
+    const dispatchSpy = sinon.spy(editor, 'dispatch');
+    const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
+      completeCode: Promise.resolve({
+        generatedSamples: [{
+          generationString: 'suggestion',
+          sampleId: 1,
+          score: 1,
+        }],
+        metadata: {},
+      }),
+    });
+    const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
+        {aidaClient: mockAidaClient},
+        editor,
+        AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+    );
+    const dispatchEventSpy = sinon.spy(aiCodeCompletion, 'dispatchEventToListeners');
+
+    aiCodeCompletion.onTextChanged('prefix suggestion', '\n', DEFAULT_CURSOR_POSITION);
+
+    await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
+    sinon.assert.calledOnce(mockAidaClient.completeCode);
+    await clock.tickAsync(AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS + 1);
+    sinon.assert.notCalled(dispatchSpy);
+    sinon.assert.calledWith(
+        dispatchEventSpy, sinon.match(AiCodeCompletion.AiCodeCompletion.Events.RESPONSE_RECEIVED), sinon.match({}));
+  });
+
   it('does not dispatch if cursor position changes', async () => {
     const editor =
         new TextEditor.TextEditor.TextEditor(makeState('prefix', TextEditor.Config.aiAutoCompleteSuggestion));

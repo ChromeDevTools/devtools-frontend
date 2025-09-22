@@ -415,13 +415,14 @@ describeWithEnvironment('Trace helpers', function() {
         '@ 40735.508 for    3.667: ReceiveCompositorFrameToStartDraw',
         '@ 40739.175 for   54.136: StartDrawToSwapStart',
         '@ 40793.311 for    0.461: Swap',
-        '@ 40810.809 for  205.424: first measure',
         '@ 40810.809 for  606.224: second measure',
+        '@ 40810.809 for  205.424: first measure',
         '@ 40825.971 for   11.802: InputLatency::MouseMove',
         '@ 41818.833 for 2005.601: third measure',
       ]);
       assert.lengthOf(synthEvents, 237);
     });
+
     describe('createSortedSyntheticEvents()', () => {
       it('correctly creates synthetic events when instant animation events are present', async function() {
         const events = await TraceLoader.rawEvents(this, 'instant-animation-events.json.gz');
@@ -472,6 +473,125 @@ describeWithEnvironment('Trace helpers', function() {
             assert.deepEqual(event.args.data.unsupportedProperties, wantPairs.get(id)?.unsupportedProperties);
           });
         });
+      });
+    });
+
+    describe('dealing with duplicate IDs and overlapping events', () => {
+      const {createMatchedSortedSyntheticEvents} = Trace.Helpers.Trace;
+
+      // Helper functions for creating async begin/instant/end events.
+      function makeBeginEvent(id: string, tsMicro: number): Trace.Types.Events.PairableAsyncBegin {
+        return {
+          name: `fake-event:${id}`,
+          ts: tsMicro,
+          id2: {local: id},
+          ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
+          pid: Trace.Types.Events.ProcessID(1),
+          tid: Trace.Types.Events.ThreadID(1),
+          cat: 'blink.user_timing',
+        } as unknown as Trace.Types.Events.PairableAsyncBegin;
+      }
+
+      function makeEndEvent(id: string, tsMicro: number): Trace.Types.Events.PairableAsyncEnd {
+        const event = makeBeginEvent(id, tsMicro) as unknown as Trace.Types.Events.PairableAsyncEnd;
+        event.ph = Trace.Types.Events.Phase.ASYNC_NESTABLE_END;
+        return event;
+      }
+
+      function makeInstantEvent(id: string, tsMicro: number): Trace.Types.Events.PairableAsyncInstant {
+        const event = makeBeginEvent(id, tsMicro) as unknown as Trace.Types.Events.PairableAsyncInstant;
+        event.ph = Trace.Types.Events.Phase.ASYNC_NESTABLE_INSTANT;
+        return event;
+      }
+
+      it('can match up begin and end events with any instant events in the time period', async () => {
+        const b1 = makeBeginEvent('1', 1);
+        const i1 = makeInstantEvent('1', 5);
+        const e1 = makeEndEvent('1', 10);
+        const b2 = makeBeginEvent('2', 11);
+        const i2 = makeInstantEvent('2', 12);
+        const e2 = makeEndEvent('2', 13);
+
+        const pairedEvents = createMatchedSortedSyntheticEvents([b1, i1, e1, b2, i2, e2]);
+        assert.lengthOf(pairedEvents, 2);
+        assert.strictEqual(pairedEvents[0].name, 'fake-event:1');
+        assert.strictEqual(pairedEvents[0].args.data.beginEvent, b1);
+        assert.strictEqual(pairedEvents[0].args.data.endEvent, e1);
+        assert.deepEqual(pairedEvents[0].args.data.instantEvents, [i1]);
+
+        assert.strictEqual(pairedEvents[1].name, 'fake-event:2');
+        assert.strictEqual(pairedEvents[1].args.data.beginEvent, b2);
+        assert.strictEqual(pairedEvents[1].args.data.endEvent, e2);
+        assert.deepEqual(pairedEvents[1].args.data.instantEvents, [i2]);
+      });
+
+      it('deals with the fact that IDs can be re-used if the events do not overlap', async () => {
+        const b1 = makeBeginEvent('1', 1);
+        const i1 = makeInstantEvent('1', 5);
+        const e1 = makeEndEvent('1', 10);
+        // This can happen: Perfetto may reuse IDs if they are not overlapping.
+        const b2 = makeBeginEvent('1', 11);
+        b2.name = 'fake-event:2';
+        const i2 = makeInstantEvent('1', 12);
+        i2.name = 'fake-event:2';
+        const e2 = makeEndEvent('1', 13);
+        e2.name = 'fake-event:2';
+
+        const pairedEvents = createMatchedSortedSyntheticEvents([b1, i1, e1, b2, i2, e2]);
+        assert.lengthOf(pairedEvents, 2);
+        assert.strictEqual(pairedEvents[0].name, 'fake-event:1');
+        assert.strictEqual(pairedEvents[0].args.data.beginEvent, b1);
+        assert.strictEqual(pairedEvents[0].args.data.endEvent, e1);
+        assert.deepEqual(pairedEvents[0].args.data.instantEvents, [i1]);
+
+        assert.strictEqual(pairedEvents[1].name, 'fake-event:2');
+        assert.strictEqual(pairedEvents[1].args.data.beginEvent, b2);
+        assert.strictEqual(pairedEvents[1].args.data.endEvent, e2);
+        assert.deepEqual(pairedEvents[1].args.data.instantEvents, [i2]);
+      });
+
+      it('deals with overlapping events', async () => {
+        // event1 here: 1=>10, event2: 5=>15.
+        const b1 = makeBeginEvent('1', 1);
+        const i1 = makeInstantEvent('1', 5);
+        const b2 = makeBeginEvent('2', 5);
+        const e1 = makeEndEvent('1', 10);
+        const i2 = makeInstantEvent('2', 12);
+        const e2 = makeEndEvent('2', 15);
+
+        const pairedEvents = createMatchedSortedSyntheticEvents([b1, i1, b2, e1, i2, e2]);
+        assert.lengthOf(pairedEvents, 2);
+        assert.strictEqual(pairedEvents[0].name, 'fake-event:1');
+        assert.strictEqual(pairedEvents[0].args.data.beginEvent, b1);
+        assert.strictEqual(pairedEvents[0].args.data.endEvent, e1);
+        assert.deepEqual(pairedEvents[0].args.data.instantEvents, [i1]);
+
+        assert.strictEqual(pairedEvents[1].name, 'fake-event:2');
+        assert.strictEqual(pairedEvents[1].args.data.beginEvent, b2);
+        assert.strictEqual(pairedEvents[1].args.data.endEvent, e2);
+        assert.deepEqual(pairedEvents[1].args.data.instantEvents, [i2]);
+      });
+
+      it('deals with events that are visually nested', async () => {
+        // event1 here: 1=>10, event2: 5=>8.
+        const b1 = makeBeginEvent('1', 1);
+        const i1 = makeInstantEvent('1', 5);
+        const b2 = makeBeginEvent('2', 5);
+        const i2 = makeInstantEvent('2', 6);
+        const e2 = makeEndEvent('2', 8);
+        const e1 = makeEndEvent('1', 10);
+
+        const pairedEvents = createMatchedSortedSyntheticEvents([b1, i1, b2, i2, e2, e1]);
+        assert.lengthOf(pairedEvents, 2);
+        assert.strictEqual(pairedEvents[0].name, 'fake-event:1');
+        assert.strictEqual(pairedEvents[0].args.data.beginEvent, b1);
+        assert.strictEqual(pairedEvents[0].args.data.endEvent, e1);
+        assert.deepEqual(pairedEvents[0].args.data.instantEvents, [i1]);
+
+        assert.strictEqual(pairedEvents[1].name, 'fake-event:2');
+        assert.strictEqual(pairedEvents[1].args.data.beginEvent, b2);
+        assert.strictEqual(pairedEvents[1].args.data.endEvent, e2);
+        assert.deepEqual(pairedEvents[1].args.data.instantEvents, [i2]);
       });
     });
   });

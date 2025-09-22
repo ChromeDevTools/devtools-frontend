@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/**
+ * @file This script provides automatic bisecting between
+ * test file in cases where file A makes B fail due to improper
+ * clean up.
+ */
 import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';

@@ -38,6 +38,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Extensions from '../../models/extensions/extensions.js';
@@ -484,6 +485,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
     } else if (!this.#paused) {
       UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
     }
+
+    Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DEBUGGER_PAUSED);
   }
 
   private debugInfoAttached(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {

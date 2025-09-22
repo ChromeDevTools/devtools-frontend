@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {Badge, type BadgeAction} from './Badge.js';
+import {Badge, BadgeAction} from './Badge.js';
 
 const CODE_WHISPERER_BADGE_IMAGE_URI = new URL('../../Images/code-whisperer-badge.svg', import.meta.url).toString();
 export class CodeWhispererBadge extends Badge {
@@ -11,9 +11,7 @@ export class CodeWhispererBadge extends Badge {
   override readonly title = 'Code Whisperer';
   override readonly imageUri = CODE_WHISPERER_BADGE_IMAGE_URI;
 
-  override readonly interestedActions = [
-    // TODO(ergunsh): Instrument related actions.
-  ] as const;
+  override readonly interestedActions = [BadgeAction.DEBUGGER_PAUSED] as const;
 
   handleAction(_action: BadgeAction): void {
     this.trigger();

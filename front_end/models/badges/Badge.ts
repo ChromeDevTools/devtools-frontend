@@ -12,6 +12,7 @@ export enum BadgeAction {
   MODERN_DOM_BADGE_CLICKED = 'modern-dom-badge-clicked',
   // TODO(ergunsh): Instrument performance insight clicks.
   PERFORMANCE_INSIGHT_CLICKED = 'performance-insight-clicked',
+  DEBUGGER_PAUSED = 'debugger-paused'
 }
 
 export type BadgeActionEvents = Record<BadgeAction, void>;

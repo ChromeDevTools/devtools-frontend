@@ -158,6 +158,28 @@ describeWithEnvironment('BadgeNotification', () => {
     widget.detach();
   });
 
+  it('Calls snoozeStarterBadge when the GDP sign up dialog is opened from starter badge and is canceled', async () => {
+    sinon.stub(Host.GdpClient.GdpClient.instance(), 'getProfile').resolves(null);
+    const snoozeStarterBadgeStub = sinon.stub(Badges.UserBadges.instance(), 'snoozeStarterBadge');
+    const gdpSignUpDialogShowStub = sinon.stub(PanelCommon.GdpSignUpDialog, 'show');
+
+    const {view, widget} = await createWidget();
+    const badge = createMockBadge(TestStarterBadge);
+
+    await widget.present(badge);
+    const input = await view.nextInput;
+
+    assert.strictEqual(input.actions[1].label, 'Create profile');
+    input.actions[1].onClick();
+    sinon.assert.calledOnce(gdpSignUpDialogShowStub);
+
+    const showArgs = gdpSignUpDialogShowStub.lastCall.args[0];
+    showArgs!.onCancel!();
+
+    sinon.assert.calledOnce(snoozeStarterBadgeStub);
+    widget.detach();
+  });
+
   describe('dismissing', () => {
     it('a starter badge notification calls `dismissStarterBadge`', async () => {
       const dismissStarterBadgeSpy = sinon.spy(Badges.UserBadges.instance(), 'dismissStarterBadge');

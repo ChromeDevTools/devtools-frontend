@@ -23,11 +23,17 @@ function stubCreateProfileWithResolvers() {
 }
 
 describeWithEnvironment('GdpSignUpDialog', () => {
-  async function createWidget(options: {onSuccess?: () => void} = {}) {
+  async function createWidget(options: {onSuccess?: () => void, onCancel?: () => void} = {}) {
     const view = createViewFunctionStub(PanelCommon.GdpSignUpDialog);
     const dialog = new UI.Dialog.Dialog();
     const hideSpy = sinon.spy(dialog, 'hide');
-    const widget = new PanelCommon.GdpSignUpDialog({dialog, onSuccess: options.onSuccess ?? (() => {})}, view);
+    const widget = new PanelCommon.GdpSignUpDialog(
+        {
+          dialog,
+          onSuccess: options.onSuccess ?? (() => {}),
+          onCancel: options.onCancel ?? (() => {}),
+        },
+        view);
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     await view.nextInput;
@@ -162,6 +168,16 @@ describeWithEnvironment('GdpSignUpDialog', () => {
       sinon.assert.calledOnce(createProfileStub);
       sinon.assert.calledOnce(onSuccessSpy);
       sinon.assert.calledOnce(hideSpy);
+    });
+
+    it('calls `onCancel` when user clicks cancel', async () => {
+      const onCancelSpy = sinon.spy();
+      const {view, hideSpy} = await createWidget({onCancel: onCancelSpy});
+
+      void view.input.onCancelClick();
+
+      sinon.assert.calledOnce(hideSpy);
+      sinon.assert.calledOnce(onCancelSpy);
     });
   });
 });

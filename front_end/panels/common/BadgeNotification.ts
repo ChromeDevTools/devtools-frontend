@@ -255,7 +255,10 @@ export class BadgeNotification extends UI.Widget.Widget {
           jslogContext: 'create-profile',
           onClick: () => {
             this.detach();
-            GdpSignUpDialog.GdpSignUpDialog.show();
+            GdpSignUpDialog.GdpSignUpDialog.show({
+              // We want to consider cancelling from the starter badge as a "snooze" for starter badge.
+              onCancel: () => Badges.UserBadges.instance().snoozeStarterBadge(),
+            });
           }
         }
       ],

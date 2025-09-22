@@ -194,11 +194,19 @@ export class GdpSignUpDialog extends UI.Widget.VBox {
   #keepMeUpdated = false;
   #isSigningUp = false;
   #onSuccess?: () => void;
+  #onCancel?: () => void;
 
-  constructor(options: {dialog: UI.Dialog.Dialog, onSuccess?: () => void}, view?: View) {
+  constructor(
+      options: {
+        dialog: UI.Dialog.Dialog,
+        onSuccess?: () => void,
+        onCancel?: () => void,
+      },
+      view?: View) {
     super();
     this.#dialog = options.dialog;
     this.#onSuccess = options.onSuccess;
+    this.#onCancel = options.onCancel;
     this.#view = view ?? DEFAULT_VIEW;
     this.requestUpdate();
   }
@@ -231,6 +239,7 @@ export class GdpSignUpDialog extends UI.Widget.VBox {
       onSignUpClick: this.#onSignUpClick.bind(this),
       onCancelClick: () => {
         this.#dialog.hide();
+        this.#onCancel?.();
       },
       keepMeUpdated: this.#keepMeUpdated,
       onKeepMeUpdatedChange: (value: boolean) => {
@@ -243,14 +252,14 @@ export class GdpSignUpDialog extends UI.Widget.VBox {
     this.#view(viewInput, undefined, this.contentElement);
   }
 
-  static show({onSuccess}: {onSuccess?: () => void} = {}): void {
+  static show({onSuccess, onCancel}: {onSuccess?: () => void, onCancel?: () => void} = {}): void {
     const dialog = new UI.Dialog.Dialog('gdp-sign-up-dialog');
     dialog.setAriaLabel(i18nString(UIStrings.gdpDialogAriaLabel));
     dialog.setMaxContentSize(new Geometry.Size(384, 500));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog.setDimmed(true);
 
-    new GdpSignUpDialog({dialog, onSuccess}).show(dialog.contentElement);
+    new GdpSignUpDialog({dialog, onSuccess, onCancel}).show(dialog.contentElement);
     dialog.show(undefined, /* stack */ true);
   }
 }

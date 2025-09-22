@@ -17,6 +17,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import type * as SettingsComponents from '../../../ui/components/settings/settings.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as PanelCommon from '../../common/common.js';
 import * as PanelUtils from '../../utils/utils.js';
 
@@ -322,7 +323,7 @@ function renderGdpSectionIfNeeded({
 
   // clang-format off
   return html`
-    <div class="gdp-profile-container">
+    <div class="gdp-profile-container" jslog=${VisualLogging.section().context('gdp-profile')}>
       <div class="divider"></div>
       ${gdpProfile ? html`
         <div class="gdp-profile-details-content">
@@ -330,7 +331,10 @@ function renderGdpSectionIfNeeded({
           <div class="plan-details">
             ${getGdpSubscriptionText(gdpProfile)}
             &nbsp;·&nbsp;
-            <x-link class="link" href=${Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK}>
+            <x-link
+              jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('view-profile')}
+              class="link"
+              href=${Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK}>
               ${i18nString(UIStrings.viewProfile)}
             </x-link></div>
             ${hasReceiveBadgesCheckbox ? html`
@@ -355,7 +359,7 @@ function renderGdpSectionIfNeeded({
             @click=${() => PanelCommon.GdpSignUpDialog.show({
               onSuccess: onSignUpSuccess
             })}
-            .jslogContext=${'gdp.sign-up-dialog-open'}
+            .jslogContext=${'open-sign-up-dialog'}
             .variant=${Buttons.Button.Variant.OUTLINED}>
               ${i18nString(UIStrings.signUp)}
           </devtools-button>

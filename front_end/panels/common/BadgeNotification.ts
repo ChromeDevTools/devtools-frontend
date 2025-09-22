@@ -73,13 +73,14 @@ const AUTO_CLOSE_TIME_IN_MS = 30000;
 
 export interface BadgeNotificationAction {
   label: string;
-  jslogContext?: string;
+  jslogContext: string;
   title?: string;
   onClick: () => void;
 }
 
 export interface BadgeNotificationProperties {
   message: HTMLElement|string;
+  jslogContext: string;
   imageUri: string;
   actions: BadgeNotificationAction[];
   isStarterBadge: boolean;
@@ -115,8 +116,8 @@ const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement)
 
   render(html`
     <style>${badgeNotificationStyles}</style>
-    <div class="container">
-      <div class="badge-container">
+    <div class="container" jslog=${VisualLogging.dialog('badge-notification')}>
+      <div class="badge-container" jslog=${VisualLogging.item(input.jslogContext)}>
         <img class="badge-image" role="presentation" src=${input.imageUri}>
       </div>
       <div class="action-and-text-container">
@@ -138,6 +139,7 @@ function revealBadgeSettings(): void {
 }
 
 export class BadgeNotification extends UI.Widget.Widget {
+  jslogContext = '';
   message: HTMLElement|string = '';
   imageUri = '';
   actions: BadgeNotificationAction[] = [];
@@ -175,6 +177,7 @@ export class BadgeNotification extends UI.Widget.Widget {
     this.imageUri = properties.imageUri;
     this.actions = properties.actions;
     this.isStarterBadge = properties.isStarterBadge;
+    this.jslogContext = properties.jslogContext;
     this.requestUpdate();
     this.show(document.body);
 
@@ -193,7 +196,7 @@ export class BadgeNotification extends UI.Widget.Widget {
     const receiveBadgesSettingEnabled = Badges.UserBadges.instance().isReceiveBadgesSettingEnabled();
     const googleDeveloperProgramLink = UI.XLink.XLink.create(
         'https://developers.google.com/program', lockedString('Google Developer Program'), 'badge-link', undefined,
-        'gdp.program-link');
+        'program-link');
 
     // If the user already has a GDP profile and the receive badges setting enabled,
     // starter badge behaves as if it's an activity based badge.
@@ -208,9 +211,11 @@ export class BadgeNotification extends UI.Widget.Widget {
       this.#show({
         message: i18nFormatString(
             UIStrings.starterBadgeAwardMessageSettingDisabled, {PH1: badge.title, PH2: googleDeveloperProgramLink}),
+        jslogContext: badge.name,
         actions: [
           {
             label: i18nString(UIStrings.remindMeLater),
+            jslogContext: 'remind-me-later',
             onClick: () => {
               this.detach();
               Badges.UserBadges.instance().snoozeStarterBadge();
@@ -218,6 +223,7 @@ export class BadgeNotification extends UI.Widget.Widget {
           },
           {
             label: i18nString(UIStrings.receiveBadges),
+            jslogContext: 'receive-badges',
             onClick: () => {
               this.detach();
               revealBadgeSettings();
@@ -234,9 +240,11 @@ export class BadgeNotification extends UI.Widget.Widget {
     this.#show({
       message: i18nFormatString(
           UIStrings.starterBadgeAwardMessageNoGdpProfile, {PH1: badge.title, PH2: googleDeveloperProgramLink}),
+      jslogContext: badge.name,
       actions: [
         {
           label: i18nString(UIStrings.remindMeLater),
+          jslogContext: 'remind-me-later',
           onClick: () => {
             this.detach();
             Badges.UserBadges.instance().snoozeStarterBadge();
@@ -244,6 +252,7 @@ export class BadgeNotification extends UI.Widget.Widget {
         },
         {
           label: i18nString(UIStrings.createProfile),
+          jslogContext: 'create-profile',
           onClick: () => {
             this.detach();
             GdpSignUpDialog.GdpSignUpDialog.show();
@@ -258,9 +267,11 @@ export class BadgeNotification extends UI.Widget.Widget {
   #presentActivityBasedBadge(badge: Badges.Badge): void {
     this.#show({
       message: i18nString(UIStrings.activityBasedBadgeAwardMessage, {PH1: badge.title}),
+      jslogContext: badge.name,
       actions: [
         {
           label: i18nString(UIStrings.manageSettings),
+          jslogContext: 'manage-settings',
           onClick: () => {
             this.detach();
             revealBadgeSettings();
@@ -268,6 +279,7 @@ export class BadgeNotification extends UI.Widget.Widget {
         },
         {
           label: i18nString(UIStrings.viewProfile),
+          jslogContext: 'view-profile',
           onClick: () => {
             UI.UIUtils.openInNewTab(Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
           }
@@ -310,6 +322,7 @@ export class BadgeNotification extends UI.Widget.Widget {
       actions: this.actions,
       isStarterBadge: this.isStarterBadge,
       onDismissClick: this.#onDismissClick,
+      jslogContext: this.jslogContext,
     };
     this.#view(viewInput, undefined, this.contentElement);
   }

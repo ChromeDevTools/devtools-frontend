@@ -137,7 +137,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             <devtools-switch
             .checked=${input.keepMeUpdated}
             @switchchange=${(e: Switch.Switch.SwitchChangeEvent) => input.onKeepMeUpdatedChange(e.checked)}
-            jslog=${VisualLogging.toggle('gdp.signup.keep-me-updated').track({ click: true })}
+            jslog=${VisualLogging.toggle('keep-me-updated').track({ click: true })}
             aria-label=${i18nString(UIStrings.keepUpdated)}
           >
             </devtools-switch>
@@ -152,11 +152,11 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             <div class="section-text">
               <div>${i18nString(UIStrings.tailorProfileBody)}</div><br/>
               <div>${i18n.i18n.getFormatLocalizedString(str_, UIStrings.tailorProfileBodyDisclaimer, {
-      PH1: UI.XLink.XLink.create(CONTENT_POLICY_URL, i18nString(UIStrings.contentPolicy), 'link', undefined, 'gdp.content-policy'),
+      PH1: UI.XLink.XLink.create(CONTENT_POLICY_URL, i18nString(UIStrings.contentPolicy), 'link', undefined, 'content-policy'),
       PH2: UI.XLink.XLink.create(TERMS_OF_SERVICE_URL, i18nString(UIStrings.termsOfService), 'link',
-        undefined, 'gdp.terms-of-service'),
+        undefined, 'terms-of-service'),
       PH3: UI.XLink.XLink.create(PRIVACY_POLICY_URL, i18nString(UIStrings.privacyPolicy), 'link',
-        undefined, 'gdp.privacy-policy'),
+        undefined, 'privacy-policy'),
     })}</div>
             </div>
           </div>
@@ -176,7 +176,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             @click=${input.onCancelClick}>${i18nString(UIStrings.cancel)}</devtools-button>
           <devtools-button
             .variant=${Buttons.Button.Variant.PRIMARY}
-            .jslogContext=${'gdp.sign-up'}
+            .jslogContext=${'sign-up'}
             .spinner=${input.isSigningUp}
             .disabled=${input.isSigningUp}
             @click=${input.onSignUpClick}>${i18nString(UIStrings.signUp)}</devtools-button>
@@ -244,7 +244,7 @@ export class GdpSignUpDialog extends UI.Widget.VBox {
   }
 
   static show({onSuccess}: {onSuccess?: () => void} = {}): void {
-    const dialog = new UI.Dialog.Dialog();
+    const dialog = new UI.Dialog.Dialog('gdp-sign-up-dialog');
     dialog.setAriaLabel(i18nString(UIStrings.gdpDialogAriaLabel));
     dialog.setMaxContentSize(new Geometry.Size(384, 500));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);

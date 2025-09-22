@@ -66,7 +66,7 @@ describeWithEnvironment('BadgeNotification', () => {
 
   it('invokes action callback on click', async () => {
     const action1Spy = sinon.spy();
-    const {view, widget} = await createWidget({actions: [{label: 'Action 1', onClick: action1Spy}]});
+    const {view, widget} = await createWidget({actions: [{jslogContext: '', label: 'Action 1', onClick: action1Spy}]});
 
     view.input.actions[0].onClick();
     sinon.assert.calledOnce(action1Spy);

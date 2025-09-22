@@ -26,6 +26,7 @@ devtools_module("components") {
     "../../../ui/components/settings:bundle",
     "../../../ui/components/tooltips:bundle",
     "../../../ui/lit:bundle",
+    "../../../ui/visual_logging:bundle",
   ]
 }
 

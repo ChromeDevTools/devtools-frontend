@@ -20,7 +20,7 @@ export class StarterBadge extends Badge {
     BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED,
   ] as const;
 
-  handleAction(_action: BadgeAction): void {
-    this.trigger();
+  handleAction(action: BadgeAction): void {
+    this.trigger({immediate: action === BadgeAction.GDP_SIGN_UP_COMPLETE});
   }
 }

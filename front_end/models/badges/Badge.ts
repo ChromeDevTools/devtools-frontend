@@ -21,8 +21,12 @@ export interface BadgeContext {
   badgeActionEventTarget: Common.ObjectWrapper.ObjectWrapper<BadgeActionEvents>;
 }
 
+export interface TriggerOptions {
+  immediate?: boolean;
+}
+
 export abstract class Badge {
-  #onTriggerBadge: (badge: Badge) => void;
+  #onTriggerBadge: (badge: Badge, opts?: TriggerOptions) => void;
   #badgeActionEventTarget: Common.ObjectWrapper.ObjectWrapper<BadgeActionEvents>;
   #eventListeners: Common.EventTarget.EventDescriptor[] = [];
   #triggeredBefore = false;
@@ -39,14 +43,14 @@ export abstract class Badge {
   }
 
   abstract handleAction(action: BadgeAction): void;
-  protected trigger(): void {
+  protected trigger(opts?: TriggerOptions): void {
     if (this.#triggeredBefore) {
       return;
     }
 
     this.#triggeredBefore = true;
     this.deactivate();
-    this.#onTriggerBadge(this);
+    this.#onTriggerBadge(this, opts);
   }
 
   activate(): void {

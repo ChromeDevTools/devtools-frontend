@@ -7,7 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 
 import {AiExplorerBadge} from './AiExplorerBadge.js';
-import type {Badge, BadgeAction, BadgeActionEvents, BadgeContext} from './Badge.js';
+import type {Badge, BadgeAction, BadgeActionEvents, BadgeContext, TriggerOptions} from './Badge.js';
 import {CodeWhispererBadge} from './CodeWhispererBadge.js';
 import {DOMDetectiveBadge} from './DOMDetectiveBadge.js';
 import {SpeedsterBadge} from './SpeedsterBadge.js';
@@ -25,6 +25,7 @@ export interface EventTypes {
 
 const SNOOZE_TIME_MS = 24 * 60 * 60 * 1000;  // 24 hours
 const MAX_SNOOZE_COUNT = 3;
+const DELAY_BEFORE_TRIGGER = 1500;
 
 let userBadgesInstance: UserBadges|undefined = undefined;
 export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -98,7 +99,8 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.#badgeActionEventTarget.dispatchEventToListeners(action);
   }
 
-  async #onTriggerBadge(badge: Badge): Promise<void> {
+  async #onTriggerBadge(badge: Badge, opts?: TriggerOptions): Promise<void> {
+    const triggerTime = Date.now();
     let shouldAwardBadge = false;
     // By default, we award non-starter badges directly when they are triggered.
     if (!badge.isStarterBadge) {
@@ -121,7 +123,12 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       }
     }
 
-    this.dispatchEventToListeners(Events.BADGE_TRIGGERED, badge);
+    const timeElapsedAfterTriggerCall = Date.now() - triggerTime;
+    // We want to add exactly 1.5 second delay between the trigger action & the notification.
+    const delay = opts?.immediate ? 0 : Math.max(DELAY_BEFORE_TRIGGER - timeElapsedAfterTriggerCall, 0);
+    setTimeout(() => {
+      this.dispatchEventToListeners(Events.BADGE_TRIGGERED, badge);
+    }, delay);
   }
 
   #deactivateAllBadges(): void {

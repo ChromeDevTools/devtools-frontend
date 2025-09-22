@@ -208,7 +208,7 @@ describeWithEnvironment('TextEditor', () => {
       const text = 'hello';
       editor.dispatch({
         effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-            {text, from: 0, sampleId: 1, startTime: 0, onImpression: () => {}}),
+            {text, from: 0, sampleId: 1, startTime: 0, onImpression: () => {}, clearCachedRequest: () => {}}),
       });
 
       const actualSuggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
@@ -223,7 +223,7 @@ describeWithEnvironment('TextEditor', () => {
 
       editor.dispatch({
         effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-            {text: 'hello', from: 0, sampleId: 1, startTime: 0, onImpression: () => {}}),
+            {text: 'hello', from: 0, sampleId: 1, startTime: 0, onImpression: () => {}, clearCachedRequest: () => {}}),
       });
       assert.isOk(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
 
@@ -241,7 +241,7 @@ describeWithEnvironment('TextEditor', () => {
 
       editor.dispatch({
         effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-            {text: 'hello', from: 0, sampleId: 1, startTime: 0, onImpression: () => {}}),
+            {text: 'hello', from: 0, sampleId: 1, startTime: 0, onImpression: () => {}, clearCachedRequest: () => {}}),
       });
       assert.isOk(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
 
@@ -256,7 +256,7 @@ describeWithEnvironment('TextEditor', () => {
       const text = 'hello';
       editor.dispatch({
         effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(
-            {text, from: 0, sampleId: 1, startTime: 0, onImpression: () => {}}),
+            {text, from: 0, sampleId: 1, startTime: 0, onImpression: () => {}, clearCachedRequest: () => {}}),
       });
 
       const {accepted, suggestion} = TextEditor.Config.acceptAiAutoCompleteSuggestion(editor.editor);

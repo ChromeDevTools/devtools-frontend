@@ -332,6 +332,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
             sampleId,
             startTime,
             onImpression: this.#registerUserImpression.bind(this),
+            clearCachedRequest: this.#clearCachedRequest.bind(this),
           })
         });
 
@@ -412,6 +413,10 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   #updateCachedRequest(request: Host.AidaClient.CompletionRequest, response: Host.AidaClient.CompletionResponse): void {
     this.#aidaRequestCache = {request, response};
+  }
+
+  #clearCachedRequest(): void {
+    this.#aidaRequestCache = undefined;
   }
 
   #registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number, latency: number): void {

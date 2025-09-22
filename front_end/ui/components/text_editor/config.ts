@@ -488,6 +488,7 @@ interface ActiveSuggestion {
   rpcGlobalId?: Host.AidaClient.RpcGlobalId;
   startTime: number;
   onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number, latency: number) => void;
+  clearCachedRequest: () => void;
 }
 
 export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggestion|null>({
@@ -498,6 +499,7 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
         if (effect.value) {
           return effect.value;
         }
+        value?.clearCachedRequest();
         return null;
       }
     }
@@ -509,13 +511,15 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
     // A suggestion from an effect can be stale if the document was changed
     // between when the request was sent and the response was received.
     // We check if the position is still valid before trying to map it.
-    if (value.from > tr.startState.doc.length) {
+    if (value.from > tr.state.doc.length) {
+      value.clearCachedRequest();
       return null;
     }
 
     // If deletion occurs, set to null. Otherwise, the mapping might fail if
     // the position is inside the deleted range.
     if (tr.docChanged && tr.state.doc.length < tr.startState.doc.length) {
+      value.clearCachedRequest();
       return null;
     }
 
@@ -523,7 +527,8 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
     const {head} = tr.state.selection.main;
 
     // If a change happened before the position from which suggestion was generated, set to null.
-    if (head < from) {
+    if (tr.docChanged && head < from) {
+      value.clearCachedRequest();
       return null;
     }
 
@@ -563,6 +568,8 @@ export function acceptAiAutoCompleteSuggestion(view: CM.EditorView):
     effects: setAiAutoCompleteSuggestion.of(null),
     userEvent: 'input.complete',
   });
+
+  suggestion.clearCachedRequest();
   return {accepted: true, suggestion};
 }
 
@@ -603,6 +610,13 @@ export const aiAutoCompleteSuggestion: CM.Extension = [
           }
 
           const {head} = update.state.selection.main;
+          // Hide AI suggestion if the user moves the cursor to a location
+          // before the position from which suggestion was generated.
+          if (head < activeSuggestion.from) {
+            this.decorations = CM.Decoration.none;
+            return;
+          }
+
           const selectedCompletion = CM.selectedCompletion(update.state);
           const additionallyTypedText = update.state.doc.sliceString(activeSuggestion.from, head);
           // The user might have typed text after the suggestion is triggered.

@@ -96,13 +96,10 @@ describe('The Memory Panel', function() {
     await findSearchResult('leaking()', undefined, devToolsPage);
     await waitForRetainerChain(
         [
-          'Detached V8EventListener',
-          'Detached EventListener',
-          'Detached InternalNode',
-          'Detached InternalNode',
-          'Detached <div>',
-          'Retainer',
-          'Window',
+          'Detached V8EventListener', 'Detached EventListener', 'Detached InternalNode', 'Detached InternalNode',
+          'Detached InternalNode', 'Detached <div>', 'Retainer',
+          `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`
         ],
         devToolsPage);
   });
@@ -201,7 +198,8 @@ describe('The Memory Panel', function() {
     // iframe window is not detached.
     await waitUntilRetainerChainSatisfies(
         retainerChain => retainerChain.some(
-            ({propertyName, retainerClassName}) => propertyName === 'aUniqueName' && retainerClassName === 'Window'),
+            ({propertyName, retainerClassName}) =>
+                propertyName === 'aUniqueName' && retainerClassName === `Window (global*) / ://`),
         devToolsPage);
   });
 
@@ -459,10 +457,10 @@ describe('The Memory Panel', function() {
     await takeHeapSnapshot(undefined, devToolsPage);
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
     await setClassFilter('CustomClass', devToolsPage);
-    assert.strictEqual(5, await getDistanceFromCategoryRow('CustomClass1', devToolsPage));
-    assert.strictEqual(6, await getDistanceFromCategoryRow('CustomClass2', devToolsPage));
-    assert.strictEqual(2, await getDistanceFromCategoryRow('CustomClass3', devToolsPage));
-    assert.strictEqual(8, await getDistanceFromCategoryRow('CustomClass4', devToolsPage));
+    assert.strictEqual(6, await getDistanceFromCategoryRow('CustomClass1', devToolsPage));
+    assert.strictEqual(7, await getDistanceFromCategoryRow('CustomClass2', devToolsPage));
+    assert.strictEqual(3, await getDistanceFromCategoryRow('CustomClass3', devToolsPage));
+    assert.strictEqual(9, await getDistanceFromCategoryRow('CustomClass4', devToolsPage));
     assert.isTrue((await getSizesFromCategoryRow('CustomClass1Key', devToolsPage)).retainedSize >= 2 ** 15);
     assert.isTrue((await getSizesFromCategoryRow('CustomClass2Key', devToolsPage)).retainedSize >= 2 ** 15);
     assert.isTrue((await getSizesFromCategoryRow('CustomClass3Key', devToolsPage)).retainedSize < 2 ** 15);
@@ -478,11 +476,26 @@ describe('The Memory Panel', function() {
     await setSearchFilter('searchable_string', devToolsPage);
     await waitForSearchResultNumber(2, devToolsPage);
     await findSearchResult('"searchable_string"', undefined, devToolsPage);
-    await waitForRetainerChain(['{y}', 'KeyType', 'Window'], devToolsPage);
+    await waitForRetainerChain(
+        [
+          '{y}', 'KeyType', `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`
+        ],
+        devToolsPage);
     await clickOnContextMenuForRetainer('KeyType', 'Ignore this retainer', devToolsPage);
-    await waitForRetainerChain(['{y}', '{x}', 'Window'], devToolsPage);
+    await waitForRetainerChain(
+        [
+          '{y}', '{x}', `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`
+        ],
+        devToolsPage);
     await clickOnContextMenuForRetainer('x', 'Ignore this retainer', devToolsPage);
-    await waitForRetainerChain(['{y}', '(internal array)[]', 'WeakMap', 'Window'], devToolsPage);
+    await waitForRetainerChain(
+        [
+          '{y}', '(internal array)[]', 'WeakMap', `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`
+        ],
+        devToolsPage);
     await clickOnContextMenuForRetainer('(internal array)[]', 'Ignore this retainer', devToolsPage);
     await waitForRetainerChain(
         [
@@ -491,13 +504,19 @@ describe('The Memory Panel', function() {
           `{${'#'.repeat(130)}, …}`,
           '{b, irrelevantProperty, <symbol also irrelevant>, "}"}',
           '{a, extraProp0, extraProp1, extraProp2, extraProp3, …, extraProp6, extraProp7, extraProp8, extraProp9}',
-          'Window',
+          `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
         ],
         devToolsPage);
     await clickOnContextMenuForRetainer('b', 'Ignore this retainer', devToolsPage);
     await waitForRetainerChain(['(Internalized strings)', '(GC roots)'], devToolsPage);
     await restoreIgnoredRetainers(devToolsPage);
-    await waitForRetainerChain(['{y}', 'KeyType', 'Window'], devToolsPage);
+    await waitForRetainerChain(
+        [
+          '{y}', 'KeyType', `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          `system / NativeContext / https://localhost:${inspectedPage.serverPort}`
+        ],
+        devToolsPage);
   });
 
   it('Can filter the summary view', async ({devToolsPage, inspectedPage}) => {

@@ -1358,6 +1358,15 @@ export interface PairableAsyncInstant extends PairableAsync {
 export interface PairableAsyncEnd extends PairableAsync {
   ph: Phase.ASYNC_NESTABLE_END;
 }
+export function isPairableAsyncBegin(e: Event): e is PairableAsyncBegin {
+  return e.ph === Phase.ASYNC_NESTABLE_START;
+}
+export function isPairableAsyncEnd(e: Event): e is PairableAsyncEnd {
+  return e.ph === Phase.ASYNC_NESTABLE_END;
+}
+export function isPairableAsyncInstant(e: Event): e is PairableAsyncInstant {
+  return e.ph === Phase.ASYNC_NESTABLE_INSTANT;
+}
 
 export interface AnimationFrame extends PairableAsync {
   name: Name.ANIMATION_FRAME;

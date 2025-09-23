@@ -34,8 +34,8 @@ export declare abstract class Realm extends EventEmitter<{
 }> {
     #private;
     protected readonly disposables: {
-        "__#59109@#disposed": boolean;
-        "__#59109@#stack": Disposable[];
+        "__#59154@#disposed": boolean;
+        "__#59154@#stack": Disposable[];
         readonly disposed: boolean;
         dispose(): void;
         use<T extends Disposable | null | undefined>(value: T): T;

@@ -10,8 +10,8 @@ exports.PUPPETEER_REVISIONS = void 0;
  * @internal
  */
 exports.PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '140.0.7339.82',
-    'chrome-headless-shell': '140.0.7339.82',
-    firefox: 'stable_143.0',
+    chrome: '140.0.7339.185',
+    'chrome-headless-shell': '140.0.7339.185',
+    firefox: 'stable_143.0.1',
 });
 //# sourceMappingURL=revisions.js.map

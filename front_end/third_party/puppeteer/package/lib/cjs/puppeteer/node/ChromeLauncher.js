@@ -127,6 +127,7 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             'AcceptCHFrame',
             'MediaRouter',
             'OptimizationHints',
+            'RenderDocument', // https://crbug.com/444150315
             ...(turnOnExperimentalFeaturesForTesting
                 ? []
                 : [

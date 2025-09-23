@@ -326,6 +326,8 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return false;
     }
 
+    this.lastSelectedOverflowTab = tab;
+
     const eventData: EventData = {
       prevTabId: this.currentTab ? this.currentTab.id : undefined,
       tabId: id,
@@ -676,7 +678,6 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private dropDownMenuItemSelected(tab: TabbedPaneTab): void {
-    this.lastSelectedOverflowTab = tab;
     this.selectTab(tab.id, true, true);
   }
 

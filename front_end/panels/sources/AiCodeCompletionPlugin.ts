@@ -59,6 +59,9 @@ export class AiCodeCompletionPlugin extends Plugin {
     if (showTeaser) {
       this.#teaser = new PanelCommon.AiCodeCompletionTeaser({onDetach: this.#detachAiCodeCompletionTeaser.bind(this)});
     }
+
+    this.#aiCodeCompletionDisclaimerContainer.classList.add('ai-code-completion-disclaimer-container');
+    this.#aiCodeCompletionDisclaimerContainer.style.paddingInline = 'var(--sys-size-3)';
   }
 
   static override accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {

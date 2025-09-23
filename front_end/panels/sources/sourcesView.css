@@ -14,11 +14,16 @@
 
 #sources-panel-sources-view .sources-toolbar {
   display: flex;
-  flex: 0 0 27px;
+  flex: 0 0 auto;
   background-color: var(--sys-color-cdt-base-container);
   border-top: 1px solid var(--sys-color-divider);
   overflow: hidden;
   z-index: 0;
+  align-items: flex-end;
+
+  devtools-toolbar:first-of-type {
+    flex-wrap: wrap;
+  }
 }
 
 .source-frame-debugger-script {

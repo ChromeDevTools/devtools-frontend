@@ -13,6 +13,7 @@ for more details about the presubmit API built into gcl.
 `git cl presubmit -v -v` to debug presubmit checks.
 """
 
+import re
 import sys
 import six
 import time
@@ -459,6 +460,50 @@ def CheckNoUncheckedFiles(input_api, output_api):
         ]
 
     return []
+
+
+def CheckKnownContextValues(input_api, output_api):
+    """Ensure all additions to `KnownContextValues.ts` following the naming convention.
+
+    This check ensures that all new cases added to the enum in `KnownContextValues.ts`
+    follow the extended Kebab Case naming convention. Specifically it doesn't look at
+    unchanged lines, because there are various existing values that cannot be changed
+    (easily).
+    """
+    # This regexp matches the one we use in `StringUtilities.isExtendedKebabCase()`.
+    kebab_case_re = re.compile(
+        r"^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[a-z0-9]+)*$")
+    local_path = input_api.os_path.join('front_end', 'ui', 'visual_logging',
+                                        'KnownContextValues.ts')
+    invalid_contexts = []
+    for f in filter(
+            lambda x: (x.LocalPath() == local_path and x.Action() == 'M'),
+            input_api.AffectedFiles()):
+        # Loop only through the changed lines of the affected file.
+        for _, line in f.ChangedContents():
+            match = re.search(r"\s+'(.+)',", line)
+            if match:
+                context = match.group(1)
+                if not kebab_case_re.match(context):
+                    invalid_contexts.append(context)
+                    continue
+
+    if not invalid_contexts:
+        return []
+    return [
+        output_api.PresubmitError(
+            message=f"Invalid jslog context(s): {', '.join(invalid_contexts)}",
+            long_text=
+            ("""The jslog contexts must follow the extended Kebab Case naming convention, where
+words are separated with either a dash (`-`) or a dot (`.`), and all characters
+must be lower-case alphanumeric.
+"""),
+            locations=[
+                output_api.PresubmitResultLocation(file_path=local_path)
+            ],
+        )
+    ]
+
 
 
 # Canned check wrappers below.

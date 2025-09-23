@@ -139,7 +139,7 @@ describeWithLocale('SearchResultsPane', () => {
       {lineNumber: 10, lineContent: 'This is the line with multiple "the" matches'},
       {lineNumber: 15, lineContent: 'This is a line with only one "the" match'},
     ]);
-    resultPane.addSearchResult(searchResult);
+    resultPane.searchResults = [searchResult];
     resultPane.showAllMatches();
 
     const matches = (await view.nextInput).matches.get(searchResult)!;
@@ -170,7 +170,7 @@ describeWithLocale('SearchResultsPane', () => {
         matchRange: r`                              [  )`,
       },
     ]);
-    resultPane.addSearchResult(searchResult);
+    resultPane.searchResults = [searchResult];
 
     resultPane.showAllMatches();
 
@@ -191,7 +191,7 @@ describeWithLocale('SearchResultsPane', () => {
       {lineNumber: 10, lineContent: 'This is the line with multiple "the" matches'},
       {lineNumber: 15, lineContent: 'This is a line with only one "the" match'},
     ]);
-    resultPane.addSearchResult(searchResult);
+    resultPane.searchResults = [searchResult];
 
     resultPane.showAllMatches();
 
@@ -224,7 +224,7 @@ describeWithLocale('SearchResultsPane', () => {
         matchRange: r`                              [  )`,
       },
     ]);
-    resultPane.addSearchResult(searchResult);
+    resultPane.searchResults = [searchResult];
 
     resultPane.showAllMatches();
 

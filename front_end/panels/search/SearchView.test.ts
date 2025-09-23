@@ -172,7 +172,7 @@ describeWithEnvironment('SearchView', () => {
 
   it('updates the search result message with a count when search results are added', async () => {
     const fakeScope = new FakeSearchScope();
-    const fakeResultsPane = sinon.createStubInstance(Search.SearchResultsPane.SearchResultsPane);
+    const fakeResultsPane = {searchResults: []} as unknown as Search.SearchResultsPane.SearchResultsPane;
     const searchView = new TestSearchView(() => fakeScope, fakeResultsPane);
 
     searchView.triggerSearch('a query', true, true);
@@ -190,7 +190,7 @@ describeWithEnvironment('SearchView', () => {
 
   it('forwards each SearchResult to the results pane', async () => {
     const fakeScope = new FakeSearchScope();
-    const fakeResultsPane = sinon.createStubInstance(Search.SearchResultsPane.SearchResultsPane);
+    const fakeResultsPane = {searchResults: []} as unknown as Search.SearchResultsPane.SearchResultsPane;
     const searchView = new TestSearchView(() => fakeScope, fakeResultsPane);
 
     searchView.triggerSearch('a query', true, true);
@@ -204,8 +204,6 @@ describeWithEnvironment('SearchView', () => {
     searchResultCallback(searchResult2);
     await searchView.throttler.process?.();
 
-    sinon.assert.calledTwice(fakeResultsPane.addSearchResult);
-    assert.strictEqual(fakeResultsPane.addSearchResult.args[0][0], searchResult1);
-    assert.strictEqual(fakeResultsPane.addSearchResult.args[1][0], searchResult2);
+    assert.deepEqual(fakeResultsPane.searchResults, [searchResult1, searchResult2]);
   });
 });

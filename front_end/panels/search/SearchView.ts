@@ -288,7 +288,7 @@ export class SearchView extends UI.Widget.VBox {
   // We throttle adding search results, otherwise we trigger DOM layout for each
   // result added.
   #throttler: Common.Throttler.Throttler;
-  #pendingSearchResults: SearchResult[] = [];
+  #searchResults: SearchResult[] = [];
 
   constructor(settingKey: string, throttler: Common.Throttler.Throttler, view = DEFAULT_VIEW) {
     super({
@@ -439,22 +439,24 @@ export class SearchView extends UI.Widget.VBox {
     if (!this.#searchResultsPane) {
       this.#searchResultsPane = this.createSearchResultsPane();
     }
-    this.#pendingSearchResults.push(searchResult);
-    void this.#throttler.schedule(async () => this.#addPendingSearchResults());
+    this.#searchResults.push(searchResult);
+    void this.#throttler.schedule(async () => this.#setSearchResults());
   }
 
   protected createSearchResultsPane(): SearchResultsPane {
     return new SearchResultsPane((this.#searchConfig as Workspace.SearchConfig.SearchConfig));
   }
 
-  #addPendingSearchResults(): void {
-    for (const searchResult of this.#pendingSearchResults) {
+  #setSearchResults(): void {
+    this.#searchMatchesCount = 0;
+    this.#searchResultsCount = 0;
+    this.#nonEmptySearchResultsCount = 0;
+    for (const searchResult of this.#searchResults) {
       this.#addSearchResult(searchResult);
-      if (searchResult.matchesCount()) {
-        this.#searchResultsPane?.addSearchResult(searchResult);
-      }
     }
-    this.#pendingSearchResults = [];
+    if (this.#searchResultsPane) {
+      this.#searchResultsPane.searchResults = this.#searchResults.filter(searchResult => searchResult.matchesCount());
+    }
   }
 
   #onSearchFinished(searchId: number, finished: boolean): void {
@@ -503,6 +505,7 @@ export class SearchView extends UI.Widget.VBox {
   #searchStarted(): void {
     this.#searchMatchesCount = 0;
     this.#searchResultsCount = 0;
+    this.#searchResults = [];
     this.#nonEmptySearchResultsCount = 0;
     if (!this.#searchingView) {
       this.#searchingView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.searching), '');

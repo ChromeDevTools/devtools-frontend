@@ -137,10 +137,9 @@ const renderSearchMatches =
 
 export class SearchResultsPane extends UI.Widget.VBox {
   readonly #searchConfig: Workspace.SearchConfig.SearchConfig;
-  readonly #searchResults: SearchResult[] = [];
+  #searchResults: SearchResult[] = [];
   #expandedResults = new WeakSet<SearchResult>();
   readonly #searchMatches = new WeakMap<SearchResult, SearchMatch[]>();
-  #matchesExpandedCount = 0;
   #view: View;
 
   constructor(searchConfig: Workspace.SearchConfig.SearchConfig, view: View = DEFAULT_VIEW) {
@@ -149,11 +148,24 @@ export class SearchResultsPane extends UI.Widget.VBox {
     this.#searchConfig = searchConfig;
   }
 
-  addSearchResult(searchResult: SearchResult): void {
-    this.#searchResults.push(searchResult);
-    if (this.#matchesExpandedCount < matchesExpandedByDefault) {
-      this.#expandedResults.add(searchResult);
-      this.#onExpandSearchResult(searchResult);
+  get searchResults(): SearchResult[] {
+    return this.#searchResults;
+  }
+
+  set searchResults(searchResults: SearchResult[]) {
+    this.#searchResults = searchResults;
+    let matchesExpandedCount = 0;
+    for (const searchResult of searchResults) {
+      if (this.#expandedResults.has(searchResult)) {
+        matchesExpandedCount += this.#searchMatches.get(searchResult)?.length ?? 0;
+      }
+    }
+    for (const searchResult of searchResults) {
+      if (matchesExpandedCount < matchesExpandedByDefault && !this.#expandedResults.has(searchResult)) {
+        this.#expandedResults.add(searchResult);
+        this.#onExpandSearchResult(searchResult);
+        matchesExpandedCount += this.#searchMatches.get(searchResult)?.length ?? 0;
+      }
     }
     this.requestUpdate();
   }
@@ -174,7 +186,6 @@ export class SearchResultsPane extends UI.Widget.VBox {
   #onExpandSearchResult(searchResult: SearchResult): void {
     const toIndex = Math.min(searchResult.matchesCount(), matchesShownAtOnce);
     this.#appendSearchMatches(searchResult, 0, toIndex);
-    this.#matchesExpandedCount += toIndex;
     this.requestUpdate();
   }
 

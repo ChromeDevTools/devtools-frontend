@@ -150,11 +150,12 @@ describe('UserInteractionsHandler', function() {
         data.interactionEvents.filter(Trace.Types.Events.isEventTimingStart).filter(e => e.dur > 1);
     // We expect there to be 3 interactions:
     // User clicks on input:
-    // 1.pointerdown, 2. pointerup, 3. click
+    // 1.pointerdown, 2. click, 3. pointerup.
     // User types into input:
-    // 4. keydown, 5. keyup
+    // 4. keydown, 5. keyup.
+
     assert.deepEqual(
-        foundInteractions.map(event => event.type), ['pointerdown', 'pointerup', 'click', 'keydown', 'keyup']);
+        foundInteractions.map(event => event.type), ['pointerdown', 'click', 'pointerup', 'keydown', 'keyup']);
 
     assert.deepEqual(foundInteractions.map(e => e.interactionId), [
       // The first three events relate to the click, so they have the same InteractionID
@@ -167,8 +168,42 @@ describe('UserInteractionsHandler', function() {
     ]);
   });
 
+  it('sets the main thread handling duration for the non-nested keyboard interaction', async () => {
+    await processTrace(this, 'slow-interaction-keydown.json.gz');
+    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
+
+    const keyboardInteraction = data.interactionEventsWithNoNesting.find(e => e.interactionId === 7378);
+    assert.isOk(keyboardInteraction);
+    assert.strictEqual(keyboardInteraction.mainThreadHandling, 143901);
+  });
+
+  it('works with a trace that has reused event IDs', async () => {
+    await processTrace(this, 'interaction-events-with-shared-ids.json.gz');
+    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
+
+    // The two particular events that we care about with this test.
+    const pointerEvent = data.interactionEvents.find(e => e.interactionId === 421);
+    assert.isOk(pointerEvent);
+    const keyboardEvent = data.interactionEvents.find(e => e.interactionId === 435);
+    assert.isOk(keyboardEvent);
+
+    // When we first wrote the UserInteractionsHandler we could assume that
+    // event IDs were unique across the whole trace. That changed with a
+    // Perfetto change in July 2025. The bug was discovered because the wrong
+    // end events were used, which meant the durations of the interaction events
+    // were all wrong. Hence this test and the below assertion that ensures we
+    // correctly end the pointer event before the keyboard event.
+    const pointerEnd = pointerEvent.ts + pointerEvent.dur;
+    assert.isTrue(pointerEnd < keyboardEvent.ts);
+
+    assert.strictEqual(keyboardEvent.inputDelay, 1979);
+    assert.strictEqual(keyboardEvent.mainThreadHandling, 9053);
+    assert.strictEqual(keyboardEvent.presentationDelay, 32448);
+  });
+
   describe('collapsing nested interactions', () => {
-    const {removeNestedInteractions} = Trace.Handlers.ModelHandlers.UserInteractions;
+    const {removeNestedInteractionsAndSetProcessingTime: removeNestedInteractions} =
+        Trace.Handlers.ModelHandlers.UserInteractions;
 
     it('removes interactions that have the same end time but are not the first event in that block', () => {
       /**

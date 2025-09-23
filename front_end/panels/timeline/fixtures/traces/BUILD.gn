@@ -47,6 +47,7 @@ copy_to_gen("traces") {
     "iframe-shift.json.gz",
     "image-delivery.json.gz",
     "instant-animation-events.json.gz",
+    "interaction-events-with-shared-ids.json.gz",
     "interactive-time.json.gz",
     "invalid-animation-events.json.gz",
     "invalidate-style-class-name-change.json.gz",

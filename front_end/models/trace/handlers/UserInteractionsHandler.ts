@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
@@ -56,15 +57,15 @@ let longestInteractionEvent: Types.Events.SyntheticInteractionPair|null = null;
 
 let interactionEvents: Types.Events.SyntheticInteractionPair[] = [];
 let interactionEventsWithNoNesting: Types.Events.SyntheticInteractionPair[] = [];
-let eventTimingEndEventsById = new Map<string, Types.Events.EventTimingEnd>();
 let eventTimingStartEventsForInteractions: Types.Events.EventTimingBegin[] = [];
+let eventTimingEndEventsForInteractions: Types.Events.EventTimingEnd[] = [];
 
 export function reset(): void {
   beginCommitCompositorFrameEvents = [];
   parseMetaViewportEvents = [];
   interactionEvents = [];
   eventTimingStartEventsForInteractions = [];
-  eventTimingEndEventsById = new Map();
+  eventTimingEndEventsForInteractions = [];
   interactionEventsWithNoNesting = [];
   longestInteractionEvent = null;
 }
@@ -86,7 +87,7 @@ export function handleEvent(event: Types.Events.Event): void {
 
   if (Types.Events.isEventTimingEnd(event)) {
     // Store the end event; for each start event that is an interaction, we need the matching end event to calculate the duration correctly.
-    eventTimingEndEventsById.set(event.id, event);
+    eventTimingEndEventsForInteractions.push(event);
   }
 
   // From this point on we want to find events that represent interactions.
@@ -167,9 +168,18 @@ export function categoryOfInteraction(interaction: Types.Events.SyntheticInterac
  *   =======B=[keyup]=====
  *    ====C=[pointerdown]=
  *         =D=[pointerup]=
+ *
+ * Additionally, this method will also maximise the processing duration of the
+ * events that we keep as non-nested. We want to make sure we give an accurate
+ * representation of main thread activity, so if we keep an event + hide its
+ * nested children, we set the top level event's processing start &
+ * processing end to be the earliest processing start & the latest processing
+ * end of its children. This ensures we report a more accurate main thread
+ * activity time which is important as we want developers to focus on fixing
+ * this.
  **/
-export function removeNestedInteractions(interactions: readonly Types.Events.SyntheticInteractionPair[]):
-    readonly Types.Events.SyntheticInteractionPair[] {
+export function removeNestedInteractionsAndSetProcessingTime(
+    interactions: readonly Types.Events.SyntheticInteractionPair[]): readonly Types.Events.SyntheticInteractionPair[] {
   /**
    * Because we nest events only that are in the same category, we store the
    * longest event for a given end time by category.
@@ -257,77 +267,95 @@ function writeSyntheticTimespans(event: Types.Events.SyntheticInteractionPair): 
 export async function finalize(): Promise<void> {
   const {navigationsByFrameId} = metaHandlerData();
 
-  // For each interaction start event, find the async end event by the ID, and then create the Synthetic Interaction event.
-  for (const interactionStartEvent of eventTimingStartEventsForInteractions) {
-    const endEvent = eventTimingEndEventsById.get(interactionStartEvent.id);
-    if (!endEvent) {
-      // If we cannot find an end event, bail and drop this event.
-      continue;
-    }
-    const {type, interactionId, timeStamp, processingStart, processingEnd} = interactionStartEvent.args.data;
-    if (!type || !interactionId || !timeStamp || !processingStart || !processingEnd) {
-      // A valid interaction event that we care about has to have a type (e.g. pointerdown, keyup).
-      // We also need to ensure it has an interactionId and various timings. There are edge cases where these aren't included in the trace event.
-      continue;
-    }
+  const beginAndEndEvents = Platform.ArrayUtilities.mergeOrdered(
+                                eventTimingStartEventsForInteractions, eventTimingEndEventsForInteractions,
+                                Helpers.Trace.eventTimeComparator) as Types.Events.EventTimingBeginOrEnd[];
 
-    // In the future we will add microsecond timestamps to the trace events…
-    // (See https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/timing/window_performance.cc;l=900-901;drc=b503c262e425eae59ced4a80d59d176ed07152c7 )
-    // …but until then we can use the millisecond precision values that are in
-    // the trace event. To adjust them to be relative to the event.ts and the
-    // trace timestamps, for both processingStart and processingEnd we subtract
-    // the event timestamp (NOT event.ts, but the timeStamp millisecond value
-    // emitted in args.data), and then add that value to the event.ts. This
-    // will give us a processingStart and processingEnd time in microseconds
-    // that is relative to event.ts, and can be used when drawing boxes.
-    // There is some inaccuracy here as we are converting milliseconds to microseconds, but it is good enough until the backend emits more accurate numbers.
-    const processingStartRelativeToTraceTime = Types.Timing.Micro(
-        Helpers.Timing.milliToMicro(processingStart) - Helpers.Timing.milliToMicro(timeStamp) +
-            interactionStartEvent.ts,
-    );
+  // Pair up the begin & end events and create synthetic user timing events.
+  const beginEventById = new Map<string, Types.Events.EventTimingBegin[]>();
+  for (const event of beginAndEndEvents) {
+    if (Types.Events.isEventTimingStart(event)) {
+      const forId = beginEventById.get(event.id) ?? [];
+      forId.push(event);
+      beginEventById.set(event.id, forId);
+    } else if (Types.Events.isEventTimingEnd(event)) {
+      const beginEvents = beginEventById.get(event.id) ?? [];
+      const beginEvent = beginEvents.pop();
+      if (!beginEvent) {
+        continue;
+      }
+      const {type, interactionId, timeStamp, processingStart, processingEnd} = beginEvent.args.data;
+      if (!type || !interactionId || !timeStamp || !processingStart || !processingEnd) {
+        // A valid interaction event that we care about has to have a type (e.g. pointerdown, keyup).
+        // We also need to ensure it has an interactionId and various timings. There are edge cases where these aren't included in the trace event.
+        continue;
+      }
+      // In the future we will add microsecond timestamps to the trace events…
+      // (See https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/timing/window_performance.cc;l=900-901;drc=b503c262e425eae59ced4a80d59d176ed07152c7 )
+      // …but until then we can use the millisecond precision values that are in
+      // the trace event. To adjust them to be relative to the event.ts and the
+      // trace timestamps, for both processingStart and processingEnd we subtract
+      // the event timestamp (NOT event.ts, but the timeStamp millisecond value
+      // emitted in args.data), and then add that value to the event.ts. This
+      // will give us a processingStart and processingEnd time in microseconds
+      // that is relative to event.ts, and can be used when drawing boxes.
+      // There is some inaccuracy here as we are converting milliseconds to
+      // microseconds, but it is good enough until the backend emits more
+      // accurate numbers.
+      const processingStartRelativeToTraceTime = Types.Timing.Micro(
+          Helpers.Timing.milliToMicro(processingStart) - Helpers.Timing.milliToMicro(timeStamp) + beginEvent.ts,
+      );
 
-    const processingEndRelativeToTraceTime = Types.Timing.Micro(
-        (Helpers.Timing.milliToMicro(processingEnd) - Helpers.Timing.milliToMicro(timeStamp)) +
-        interactionStartEvent.ts);
+      const processingEndRelativeToTraceTime = Types.Timing.Micro(
+          (Helpers.Timing.milliToMicro(processingEnd) - Helpers.Timing.milliToMicro(timeStamp)) + beginEvent.ts);
 
-    // Ultimate frameId fallback only needed for TSC, see comments in the type.
-    const frameId = interactionStartEvent.args.frame ?? interactionStartEvent.args.data.frame ?? '';
-    const navigation = Helpers.Trace.getNavigationForTraceEvent(interactionStartEvent, frameId, navigationsByFrameId);
-    const navigationId = navigation?.args.data?.navigationId;
-    const interactionEvent =
-        Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent<Types.Events.SyntheticInteractionPair>({
-          // Use the start event to define the common fields.
-          rawSourceEvent: interactionStartEvent,
-          cat: interactionStartEvent.cat,
-          name: interactionStartEvent.name,
-          pid: interactionStartEvent.pid,
-          tid: interactionStartEvent.tid,
-          ph: interactionStartEvent.ph,
-          processingStart: processingStartRelativeToTraceTime,
-          processingEnd: processingEndRelativeToTraceTime,
-          // These will be set in writeSyntheticTimespans()
-          inputDelay: Types.Timing.Micro(-1),
-          mainThreadHandling: Types.Timing.Micro(-1),
-          presentationDelay: Types.Timing.Micro(-1),
-          args: {
-            data: {
-              beginEvent: interactionStartEvent,
-              endEvent,
-              frame: frameId,
-              navigationId,
+      // Ultimate frameId fallback only needed for TSC, see comments in the type.
+      const frameId = beginEvent.args.frame ?? beginEvent.args.data.frame ?? '';
+      const navigation = Helpers.Trace.getNavigationForTraceEvent(beginEvent, frameId, navigationsByFrameId);
+      const navigationId = navigation?.args.data?.navigationId;
+      const interactionEvent =
+          Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent<Types.Events.SyntheticInteractionPair>({
+            // Use the start event to define the common fields.
+            rawSourceEvent: beginEvent,
+            cat: beginEvent.cat,
+            name: beginEvent.name,
+            pid: beginEvent.pid,
+            tid: beginEvent.tid,
+            ph: beginEvent.ph,
+            processingStart: processingStartRelativeToTraceTime,
+            processingEnd: processingEndRelativeToTraceTime,
+            // These will be set in writeSyntheticTimespans()
+            inputDelay: Types.Timing.Micro(-1),
+            mainThreadHandling: Types.Timing.Micro(-1),
+            presentationDelay: Types.Timing.Micro(-1),
+            args: {
+              data: {
+                beginEvent,
+                endEvent: event,
+                frame: frameId,
+                navigationId,
+              },
             },
-          },
-          ts: interactionStartEvent.ts,
-          dur: Types.Timing.Micro(endEvent.ts - interactionStartEvent.ts),
-          type: interactionStartEvent.args.data.type,
-          interactionId: interactionStartEvent.args.data.interactionId,
-        });
-    writeSyntheticTimespans(interactionEvent);
-
-    interactionEvents.push(interactionEvent);
+            ts: beginEvent.ts,
+            dur: Types.Timing.Micro(event.ts - beginEvent.ts),
+            type: beginEvent.args.data.type,
+            interactionId: beginEvent.args.data.interactionId,
+          });
+      writeSyntheticTimespans(interactionEvent);
+      interactionEvents.push(interactionEvent);
+    }
   }
 
-  interactionEventsWithNoNesting.push(...removeNestedInteractions(interactionEvents));
+  // Once we gather up all the interactions, we want to remove nested
+  // interactions. Interactions can be nested because one user action (e.g. a
+  // click) will cause a pointerdown, pointerup and click. But we don't want to
+  // fill the interactions track with lots of noise. To fix this, we go through
+  // all the events and remove any nested ones so on the timeline we focus the
+  // user on the most important events, which we define as the longest one. But
+  // this algorithm assumes the events are in ASC order, so we first sort the
+  // set of interactions.
+  Helpers.Trace.sortTraceEventsInPlace(interactionEvents);
+  interactionEventsWithNoNesting.push(...removeNestedInteractionsAndSetProcessingTime(interactionEvents));
 
   // Pick the longest interactions from the set that were not nested, as we
   // know those are the set of the largest interactions.

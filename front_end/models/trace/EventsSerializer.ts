@@ -39,7 +39,7 @@ export class EventsSerializer {
     if (EventsSerializer.isLegacyTimelineFrameKey(eventValues)) {
       const event = parsedTrace.data.Frames.frames.at(eventValues.rawIndex);
       if (!event) {
-        throw new Error(`Could not find frame with index ${eventValues.rawIndex}`);
+        throw new Error(`Unknown trace event. Could not find frame with index ${eventValues.rawIndex}`);
       }
       return event;
     }
@@ -48,7 +48,8 @@ export class EventsSerializer {
       const syntheticEvents = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getSyntheticTraces();
       const syntheticEvent = syntheticEvents.at(eventValues.rawIndex);
       if (!syntheticEvent) {
-        throw new Error(`Attempted to get a synthetic event from an unknown raw event index: ${eventValues.rawIndex}`);
+        throw new Error(`Unknown trace event. Attempted to get a synthetic event from an unknown raw event index: ${
+            eventValues.rawIndex}`);
       }
       return syntheticEvent;
     }
@@ -57,7 +58,7 @@ export class EventsSerializer {
       const rawEvents = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
       return rawEvents[eventValues.rawIndex];
     }
-    throw new Error(`Unknown trace event serializable key values: ${(eventValues as unknown[]).join('-')}`);
+    throw new Error(`Unknown trace event. Serializable key values: ${(eventValues as unknown[]).join('-')}`);
   }
 
   static isProfileCallKey(key: Types.File.SerializableKeyValues): key is Types.File.ProfileCallKeyValues {

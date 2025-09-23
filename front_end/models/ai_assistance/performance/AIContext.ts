@@ -95,7 +95,7 @@ export class AgentFocus {
     try {
       return this.eventsSerializer.eventForKey(key, this.#data.parsedTrace);
     } catch (err) {
-      if (err.toString().includes('Unknown trace event')) {
+      if (err.toString().includes('Unknown trace event') || err.toString().includes('Unknown profile call')) {
         return null;
       }
 

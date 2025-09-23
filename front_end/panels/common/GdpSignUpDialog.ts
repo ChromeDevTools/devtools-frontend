@@ -114,7 +114,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
   render(
     html`
       <style>${styles}</style>
-      <div class="gdp-sign-up-dialog-header" role="img" tabindex="0" aria-label="Google Developer Program"></div>
+      <div class="gdp-sign-up-dialog-header" role="img" aria-label="Google Developer Program"></div>
       <div class="main-content">
         <div class="section">
           <div class="icon-container">

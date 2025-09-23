@@ -315,7 +315,7 @@ function renderGdpSectionIfNeeded({
     // clang-format off
     return html`
       <div class="gdp-profile-header">
-        <div class="gdp-logo" role="img" tabindex="0" aria-label="Google Developer Program"></div>
+        <div class="gdp-logo" role="img" aria-label="Google Developer Program"></div>
       </div>
     `;
     // clang-format on

@@ -310,8 +310,8 @@ describeWithEnvironment('Timing helpers', () => {
     // Left boundary
     assert.isTrue(eventIsInBounds(makeEvent(101, 1), bounds));
     assert.isTrue(eventIsInBounds(makeEvent(100, 1), bounds));
-    assert.isTrue(eventIsInBounds(makeEvent(99, 1), bounds));
     assert.isTrue(eventIsInBounds(makeEvent(150, 500), bounds));
+    assert.isFalse(eventIsInBounds(makeEvent(99, 1), bounds));
     assert.isFalse(eventIsInBounds(makeEvent(98, 1), bounds));
     assert.isFalse(eventIsInBounds(makeEvent(0, 1), bounds));
     assert.isFalse(eventIsInBounds(makeEvent(0, 0), bounds));

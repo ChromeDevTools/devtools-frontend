@@ -221,7 +221,7 @@ export function boundsIncludeTimeRange(data: BoundsIncludeTimeRange): boolean {
 /** Checks to see if the event is within or overlaps the bounds */
 export function eventIsInBounds(event: Types.Events.Event, bounds: Types.Timing.TraceWindowMicro): boolean {
   const startTime = event.ts;
-  return startTime <= bounds.max && bounds.min <= (startTime + (event.dur ?? 0));
+  return startTime <= bounds.max && bounds.min < (startTime + (event.dur ?? 0));
 }
 
 export function timestampIsInBounds(bounds: Types.Timing.TraceWindowMicro, timestamp: Types.Timing.Micro): boolean {

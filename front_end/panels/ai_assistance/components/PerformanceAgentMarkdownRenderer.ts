@@ -20,21 +20,23 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
   override templateForToken(token: Marked.Marked.MarkedToken): Lit.TemplateResult|null {
     if (token.type === 'link' && token.href.startsWith('#')) {
       const event = this.lookupEvent(token.href.slice(1) as Trace.Types.File.SerializableKey);
-      if (event) {
-        let label = token.text;
-        let title = '';
-        if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
-          title = event.args.data.url;
-        } else {
-          label += ` (${event.name})`;
-        }
-
-        // eslint-disable-next-line rulesdir/no-a-tags-in-lit
-        return html`<a href="#" draggable=false .title=${title} @click=${(e: Event) => {
-          e.stopPropagation();
-          void Common.Revealer.reveal(new SDK.TraceObject.RevealableEvent(event));
-        }}>${label}</a>`;
+      if (!event) {
+        return html`${token.text}`;
       }
+
+      let label = token.text;
+      let title = '';
+      if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+        title = event.args.data.url;
+      } else {
+        label += ` (${event.name})`;
+      }
+
+      // eslint-disable-next-line rulesdir/no-a-tags-in-lit
+      return html`<a href="#" draggable=false .title=${title} @click=${(e: Event) => {
+        e.stopPropagation();
+        void Common.Revealer.reveal(new SDK.TraceObject.RevealableEvent(event));
+      }}>${label}</a>`;
     }
 
     return super.templateForToken(token);

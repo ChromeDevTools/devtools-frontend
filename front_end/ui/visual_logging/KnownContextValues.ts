@@ -1702,6 +1702,7 @@ export const knownContextValues = new Set([
   'garamond',
   'gdp-profile',
   'gdp-sign-up-dialog',
+  'gdp.ai-conversation-count',
   'gen-ai-settings-panel',
   'general',
   'generative-ai-terms-of-service',

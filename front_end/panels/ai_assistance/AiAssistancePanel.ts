@@ -12,6 +12,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as Badges from '../../models/badges/badges.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -1409,7 +1410,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       // invariants do not hold anymore.
       throw new Error('cross-origin context data should not be included');
     }
-
+    if (this.#conversation?.isEmpty) {
+      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.STARTED_AI_CONVERSATION);
+    }
     const image = isAiAssistanceMultimodalInputEnabled() ? imageInput : undefined;
     const imageId = image ? crypto.randomUUID() : undefined;
     const multimodalInput = image && imageId && multimodalInputType ? {

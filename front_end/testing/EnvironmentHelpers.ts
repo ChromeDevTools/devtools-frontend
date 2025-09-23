@@ -245,6 +245,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.NONE, 'custom-network-conditions', [], Common.Settings.SettingType.ARRAY),
     createSettingValue(
         Common.Settings.SettingCategory.NONE, 'calibrated-cpu-throttling', [], Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(Common.Settings.SettingCategory.NONE, 'gdp.ai-conversation-count', 0),
     createSettingValue(
         Common.Settings.SettingCategory.APPEARANCE, 'ui-theme', 'systemPreferred', Common.Settings.SettingType.ENUM),
     createSettingValue(

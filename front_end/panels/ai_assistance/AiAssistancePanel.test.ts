@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as Badges from '../../models/badges/badges.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -394,6 +395,24 @@ describeWithMockConnection('AI Assistance Panel', () => {
       UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
 
       sinon.assert.callCount(view, callCount);
+    });
+  });
+
+  describe('AI explorer badge', () => {
+    it('should trigger started-ai-conversation action', async () => {
+      const recordActionSpy = sinon.spy(Badges.UserBadges.instance(), 'recordAction');
+      const {panel, view} = await createAiAssistancePanel(
+          {aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test'}]])});
+
+      panel.handleAction('freestyler.elements-floating-button');
+      (await view.nextInput).onTextSubmit('test');
+
+      sinon.assert.calledOnceWithExactly(recordActionSpy, Badges.BadgeAction.STARTED_AI_CONVERSATION);
+
+      (await view.nextInput).onTextSubmit('test 2');
+      await view.nextInput;
+
+      sinon.assert.calledOnce(recordActionSpy);
     });
   });
 

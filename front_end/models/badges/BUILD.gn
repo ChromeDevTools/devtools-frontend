@@ -41,6 +41,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "AiExplorerBadge.test.ts",
     "Badge.test.ts",
     "UserBadges.test.ts",
   ]

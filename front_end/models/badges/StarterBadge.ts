@@ -10,6 +10,7 @@ export class StarterBadge extends Badge {
   override readonly name =
       'profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fchrome-devtools-user';
   override readonly title = 'Chrome DevTools User';
+  override readonly jslogContext = 'chrome-devtools-user';
   override readonly imageUri = STARTER_BADGE_IMAGE_URI;
 
   // TODO(ergunsh): Add remaining non-trivial event definitions

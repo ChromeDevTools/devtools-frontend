@@ -211,7 +211,7 @@ export class BadgeNotification extends UI.Widget.Widget {
       this.#show({
         message: i18nFormatString(
             UIStrings.starterBadgeAwardMessageSettingDisabled, {PH1: badge.title, PH2: googleDeveloperProgramLink}),
-        jslogContext: badge.name,
+        jslogContext: badge.jslogContext,
         actions: [
           {
             label: i18nString(UIStrings.remindMeLater),
@@ -240,7 +240,7 @@ export class BadgeNotification extends UI.Widget.Widget {
     this.#show({
       message: i18nFormatString(
           UIStrings.starterBadgeAwardMessageNoGdpProfile, {PH1: badge.title, PH2: googleDeveloperProgramLink}),
-      jslogContext: badge.name,
+      jslogContext: badge.jslogContext,
       actions: [
         {
           label: i18nString(UIStrings.remindMeLater),
@@ -270,7 +270,7 @@ export class BadgeNotification extends UI.Widget.Widget {
   #presentActivityBasedBadge(badge: Badges.Badge): void {
     this.#show({
       message: i18nString(UIStrings.activityBasedBadgeAwardMessage, {PH1: badge.title}),
-      jslogContext: badge.name,
+      jslogContext: badge.jslogContext,
       actions: [
         {
           label: i18nString(UIStrings.manageSettings),

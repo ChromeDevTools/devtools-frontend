@@ -9,6 +9,7 @@ export class SpeedsterBadge extends Badge {
   override readonly name =
       'profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fspeedster';
   override readonly title = 'Speedster';
+  override readonly jslogContext = 'speedster';
   override readonly interestedActions = [
     BadgeAction.PERFORMANCE_INSIGHT_CLICKED,
   ] as const;

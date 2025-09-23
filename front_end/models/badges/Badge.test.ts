@@ -9,6 +9,7 @@ import * as Badges from './badges.js';
 class TestBadge extends Badges.Badge {
   override name = 'badges/test-badge';
   override title = 'test-badge-title';
+  override jslogContext = 'test-badge-jslogcontext';
   override imageUri = 'image-uri';
   override interestedActions: readonly Badges.BadgeAction[] = [
     Badges.BadgeAction.PERFORMANCE_INSIGHT_CLICKED,

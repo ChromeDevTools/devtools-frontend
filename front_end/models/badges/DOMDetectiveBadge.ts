@@ -9,6 +9,7 @@ export class DOMDetectiveBadge extends Badge {
   override readonly name =
       'profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fdom-detective';
   override readonly title = 'DOM Detective';
+  override readonly jslogContext = 'dom-detective';
   override readonly imageUri = DOM_DETECTIVE_BADGE_IMAGE_URI;
 
   override readonly interestedActions = [

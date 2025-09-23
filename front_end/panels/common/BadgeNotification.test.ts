@@ -16,6 +16,7 @@ import * as PanelCommon from './common.js';
 class TestBadge extends Badges.Badge {
   override name = 'testBadge';
   override title = 'title';
+  override jslogContext = 'test-badge-jslogcontext';
   override imageUri = 'image-uri';
   override interestedActions: readonly Badges.BadgeAction[] = [];
   override handleAction(): void {
@@ -26,6 +27,7 @@ class TestBadge extends Badges.Badge {
 class TestStarterBadge extends Badges.Badge {
   override name = 'testStarterBadge';
   override title = 'starterBadgeTitle';
+  override jslogContext = 'starter-badge-jslogcontext';
   override imageUri = 'starter-badge-image-uri';
   override isStarterBadge = true;
   override interestedActions: readonly Badges.BadgeAction[] = [];

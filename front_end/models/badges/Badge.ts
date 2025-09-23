@@ -36,6 +36,7 @@ export abstract class Badge {
   abstract readonly title: string;
   abstract readonly imageUri: string;
   abstract readonly interestedActions: readonly BadgeAction[];
+  abstract readonly jslogContext: string;
   readonly isStarterBadge: boolean = false;
 
   constructor(context: BadgeContext) {

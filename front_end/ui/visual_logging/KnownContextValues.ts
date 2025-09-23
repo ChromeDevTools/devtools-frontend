@@ -348,6 +348,7 @@ export const knownContextValues = new Set([
   'ai-code-completion-citations.citation-link',
   'ai-code-completion-disclaimer',
   'ai-code-completion-enabled',
+  'ai-code-completion-spinner-tooltip',
   'ai-code-completion-teaser-dismissed',
   'ai-code-completion-teaser.dismiss',
   'ai-code-completion-teaser.fre',

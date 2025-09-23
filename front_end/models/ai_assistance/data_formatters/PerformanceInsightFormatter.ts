@@ -106,7 +106,7 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
     if (this.#insight instanceof Error) {
       return false;
     }
-    return this.#description().length > 0;
+    return typeof this.#description() === 'string';
   }
 
   getSuggestions(): ConversationSuggestions {
@@ -983,7 +983,7 @@ ${this.#links()}`;
     }
   }
 
-  #description(): string {
+  #description(): string | undefined {
     switch (this.#insight.insightKey) {
       case 'CLSCulprits':
         return `Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shifts for every unexpected layout shift that occurs during the lifecycle of a page. This is a Core Web Vital and the thresholds for categorizing a score are:

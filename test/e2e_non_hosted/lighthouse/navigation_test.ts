@@ -142,7 +142,6 @@ describe('Navigation', function() {
       const lcpElementLink = await devToolsPage.waitForElementWithTextContent('button');
       await lcpElementLink.click();
 
-      await devToolsPage.captureScreenshot();
       selectedTab = await devToolsPage.waitFor('.tabbed-pane-header-tab.selected[aria-label="Elements"]');
       selectedTabText = await selectedTab.evaluate(selectedTabEl => {
         return selectedTabEl.textContent;

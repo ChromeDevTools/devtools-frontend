@@ -146,9 +146,9 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     // clang-format on
   }
 
-  #renderDeletedSitesOrNoSitesMessage(): Lit.TemplateResult {
+  #renderDeletedSitesOrNoSitesMessage(): Lit.LitTemplate {
     if (!this.#seenButtonClick) {
-      return html``;
+      return Lit.nothing;
     }
 
     if (this.#trackingSites.length === 0) {

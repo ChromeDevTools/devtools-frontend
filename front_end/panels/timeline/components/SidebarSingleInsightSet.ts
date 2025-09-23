@@ -478,7 +478,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
       insightSetKey,
     } = this.#data;
     if (!parsedTrace?.insights || !insightSetKey) {
-      Lit.render(html``, this.#shadow, {host: this});
+      Lit.render(Lit.nothing, this.#shadow, {host: this});
       return;
     }
 

@@ -220,9 +220,9 @@ function renderSettings({
   replayState,
   onReplaySettingsKeydown,
   onToggleReplaySettings
-}: ViewInput): Lit.TemplateResult {
+}: ViewInput): Lit.LitTemplate {
   if (!settings) {
-    return html``;
+    return Lit.nothing;
   }
   const environmentFragments = [];
   if (settings.viewportSettings) {

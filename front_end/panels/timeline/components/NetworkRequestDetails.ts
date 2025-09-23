@@ -197,7 +197,7 @@ export interface ViewInput {
 export const DEFAULT_VIEW: (
     input: ViewInput, output: object, target: HTMLElement) => void = (input, _output, target) => {
   if (!input.request) {
-    render(html``, target);
+    render(Lit.nothing, target);
     return;
   }
   const {request} = input;

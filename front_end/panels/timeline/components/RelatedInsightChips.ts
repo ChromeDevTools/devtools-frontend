@@ -86,7 +86,7 @@ export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElemen
       const {activeEvent, eventToInsightsMap} = input;
       const relatedInsights = activeEvent ? eventToInsightsMap.get(activeEvent) ?? [] : [];
       if (!activeEvent || eventToInsightsMap.size === 0 || relatedInsights.length === 0) {
-        render(html``, target);
+        render(Lit.nothing, target);
         return;
       }
 

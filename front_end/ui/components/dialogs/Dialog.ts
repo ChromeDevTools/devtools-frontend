@@ -704,7 +704,7 @@ export class Dialog extends HTMLElement {
       return;
     }
 
-    let dialogContent = html``;
+    let dialogContent: Lit.LitTemplate = Lit.nothing;
 
     // If state is expanded content should be shown, do not render it otherwise.
     if (this.#props.state === DialogState.EXPANDED) {

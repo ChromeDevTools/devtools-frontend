@@ -15,7 +15,7 @@ import * as Geometry from '../../models/geometry/geometry.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
@@ -519,10 +519,10 @@ function renderContrastIssue(key: string, issues: ContrastIssue[]): TemplateResu
   // clang-format on
 }
 
-function renderColor(section: string, color: string): TemplateResult {
+function renderColor(section: string, color: string): LitTemplate {
   const borderColor = Common.Color.parse(color)?.asLegacyColor();
   if (!borderColor) {
-    return html``;
+    return nothing;
   }
   // clang-format off
   return html`<li>
@@ -1006,9 +1006,9 @@ export class ElementDetailsView extends UI.Widget.Widget {
   }
 }
 
-function renderNode(data: PopulateNodesEventNodeTypes, link?: HTMLElement, showNode?: () => void): TemplateResult {
+function renderNode(data: PopulateNodesEventNodeTypes, link?: HTMLElement, showNode?: () => void): LitTemplate {
   if (!link) {
-    return html``;
+    return nothing;
   }
   return html`
     <td>

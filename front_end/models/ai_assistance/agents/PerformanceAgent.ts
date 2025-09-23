@@ -134,6 +134,8 @@ When referring to a trace event that has a corresponding \`eventKey\`, annotate 
 - When referring to an event that is a long task: [Long task](#r-123)
 - When referring to a URL for which you know the eventKey of: [https://www.example.com](#s-1827)
 - Never show the eventKey (like "eventKey: s-1852"); instead, use a markdown link as described above.
+
+When asking the user to make a choice between multiple options, output a list of choices at the end of your text response. The format is \`SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]\`. This MUST start on a newline, and be a single line.
 `;
 
 const callFrameDataFormatDescription = `Each call frame is presented in the following format:
@@ -418,23 +420,72 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     });
   }
 
-  override parseTextResponse(response: string): ParsedResponse {
-    response = this.#parseForKnownUrls(response);
+  #parseSuggestions(text: string): ParsedResponse {
+    if (!text) {
+      return {answer: ''};
+    }
 
+    const lines = text.split('\n');
+    const answerLines: string[] = [];
+    let suggestions: [string, ...string[]]|undefined;
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('SUGGESTIONS:')) {
+        try {
+          // TODO: Do basic validation this is an array with strings
+          suggestions = JSON.parse(trimmed.substring('SUGGESTIONS:'.length).trim());
+        } catch {
+        }
+      } else {
+        answerLines.push(line);
+      }
+    }
+
+    // Sometimes the model fails to put the SUGGESTIONS text on its own line. Handle
+    // the case where the suggestions are part of the last line of the answer.
+    if (!suggestions && answerLines.at(-1)?.includes('SUGGESTIONS:')) {
+      const [answer, suggestionsText] = answerLines[answerLines.length - 1].split('SUGGESTIONS:', 2);
+      try {
+        // TODO: Do basic validation this is an array with strings
+        suggestions = JSON.parse(suggestionsText.trim().substring('SUGGESTIONS:'.length).trim());
+      } catch {
+      }
+      answerLines[answerLines.length - 1] = answer;
+    }
+
+    const response: ParsedResponse = {
+      // If we could not parse the parts, consider the response to be an
+      // answer.
+      answer: answerLines.join('\n'),
+    };
+
+    if (suggestions) {
+      response.suggestions = suggestions;
+    }
+
+    return response;
+  }
+
+  #parseMarkdown(response: string): string {
     /**
      * Sometimes the LLM responds with code chunks that wrap a text based markdown response.
      * If this happens, we want to remove those before continuing.
      * See b/405054694 for more details.
      */
-    const trimmed = response.trim();
     const FIVE_BACKTICKS = '`````';
-    if (trimmed.startsWith(FIVE_BACKTICKS) && trimmed.endsWith(FIVE_BACKTICKS)) {
-      // Purposefully use the trimmed text here; we might as well remove any
-      // newlines that are at the very start or end.
-      const stripped = trimmed.slice(FIVE_BACKTICKS.length, -FIVE_BACKTICKS.length);
-      return super.parseTextResponse(stripped);
+    if (response.startsWith(FIVE_BACKTICKS) && response.endsWith(FIVE_BACKTICKS)) {
+      return response.slice(FIVE_BACKTICKS.length, -FIVE_BACKTICKS.length);
     }
-    return super.parseTextResponse(response);
+
+    return response;
+  }
+
+  override parseTextResponse(response: string): ParsedResponse {
+    response = response.trim();
+    response = this.#parseForKnownUrls(response);
+    response = this.#parseMarkdown(response);
+    return this.#parseSuggestions(response);
   }
 
   override async enhanceQuery(query: string, context: PerformanceTraceContext|null): Promise<string> {

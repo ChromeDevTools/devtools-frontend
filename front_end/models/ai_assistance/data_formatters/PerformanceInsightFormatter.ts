@@ -100,6 +100,12 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
   }
 
   insightIsSupported(): boolean {
+    // Although our types don't show it, Insights can end up as Errors if there
+    // is an issue in the processing stage. In this case we should gracefully
+    // ignore this error.
+    if (this.#insight instanceof Error) {
+      return false;
+    }
     return this.#description().length > 0;
   }
 

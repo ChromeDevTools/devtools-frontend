@@ -6,6 +6,7 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
+import type * as Trace from '../../trace/trace.js';
 import {AgentFocus, PerformanceInsightFormatter} from '../ai_assistance.js';
 
 describeWithEnvironment('PerformanceInsightFormatter', () => {
@@ -17,6 +18,17 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
   after(async () => {
     await snapshotTester.finish();
+  });
+
+  it('gracefully handles the insight being an error', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    // Although our types don't show it, Insights can end up as Errors if there
+    // is an issue in the processing stage.
+    const errorInsight = new Error() as unknown as Trace.Insights.Types.InsightModel;
+    const focus = AgentFocus.fromParsedTrace(parsedTrace);
+    const formatter = new PerformanceInsightFormatter(focus, errorInsight);
+    assert.isFalse(formatter.insightIsSupported());
+    assert.doesNotThrow(() => formatter.formatInsight());
   });
 
   describe('LCP breakdown', () => {

@@ -363,6 +363,19 @@ describe('TreeViewElement', () => {
     assert.strictEqual(children[1].titleElement.textContent?.trim(), 'second child');
     assert.strictEqual(children[2].titleElement.textContent?.trim(), 'extra node');
   });
+
+  it('marks a node as expandable even if it has empty subtree', async () => {
+    const component = await makeTree(html`<devtools-tree .template=${html`
+      <ul role="tree">
+        <li role="treeitem">node
+          <ul role="group">
+          </ul>
+        </li>
+      </ul>
+    `}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    assert.isTrue(treeOutline.rootElement().childAt(0)!.isExpandable());
+  });
 });
 
 type NodeSpec = {

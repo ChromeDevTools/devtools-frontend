@@ -1777,6 +1777,8 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
       const nextElement = nextSibling ? TreeViewTreeElement.get(nextSibling) : null;
       const index = nextElement ? parent.treeElement.indexOfChild(nextElement) : parent.treeElement.children().length;
       const treeElement = new TreeViewTreeElement(this.#treeOutline, node);
+      const expandable = Boolean(node.querySelector('ul[role="group"]'));
+      treeElement.setExpandable(expandable);
       parent.treeElement.insertChild(treeElement, index);
       if (hasBooleanAttribute(node, 'selected')) {
         treeElement.revealAndSelect(true);

@@ -1,16 +1,13 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {html, render, type TemplateResult} from '../../ui/lit/lit.js';
 
 import searchResultsPaneStyles from './searchResultsPane.css.js';
 import type {SearchResult} from './SearchScope.js';
@@ -41,130 +38,144 @@ interface SearchMatch {
   resultLabel: string|number;
 }
 
+interface ViewInput {
+  results: SearchResult[];
+  matches: WeakMap<SearchResult, SearchMatch[]>;
+  expandedResults: WeakSet<SearchResult>;
+  onSelectMatch: (searchResult: SearchResult, matchIndex: number) => void;
+  onExpandSearchResult: (searchResult: SearchResult) => void;
+  onShowMoreMatches: (searchResult: SearchResult) => void;
+}
+
+export type View = (input: ViewInput, output: unknown, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const {results, matches, expandedResults, onSelectMatch, onExpandSearchResult, onShowMoreMatches} = input;
+
+  const onExpand = ({detail: {expanded, target}}: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+    const searchResultIndex = Number(target.dataset.searchResultIndex);
+    const searchResult = results[searchResultIndex];
+    if (expanded) {
+      expandedResults.add(searchResult);
+      onExpandSearchResult(searchResult);
+    } else {
+      expandedResults.delete(searchResult);
+    }
+  };
+
+  // clang-format off
+  render(html`
+    <devtools-tree hide-overflow @expand=${onExpand} .template=${html`
+      <ul role="tree">
+        ${results.map((searchResult, i) => html`
+          <li role="treeitem" data-search-result-index=${i} class="search-result">
+            <style>${searchResultsPaneStyles}</style>
+            ${renderSearchResult(searchResult)}
+            <ul role="group" ?hidden=${!expandedResults.has(searchResult)}>
+              ${renderSearchMatches(searchResult, matches, onSelectMatch, onShowMoreMatches)}
+            </ul>
+          </li>`)}
+      </ul>
+    `}></devtools-tree>`,
+    target,
+  );
+  // clang-format on
+};
+
+const renderSearchResult = (searchResult: SearchResult): TemplateResult => {
+  // clang-format off
+  return html`
+    <span class="search-result-file-name">${searchResult.label()}
+      <span class="search-result-dash">${'\u2014'}</span>
+      <span class="search-result-qualifier">${searchResult.description()}</span>
+    </span>
+    <span class="search-result-matches-count"
+        aria-label=${i18nString(UIStrings.matchesCountS, {PH1: searchResult.matchesCount()})}>
+        ${searchResult.matchesCount()}
+    </span>`;
+  // clang-format on
+};
+
+const renderSearchMatches =
+    (searchResult: SearchResult, matches: WeakMap<SearchResult, SearchMatch[]>,
+     onSelectMatch: (searchResult: SearchResult, matchIndex: number) => void,
+     onShowMoreMatches: (searchResult: SearchResult) => void): TemplateResult => {
+      const visibleMatches = matches.get(searchResult) ?? [];
+      const matchesLeftCount = searchResult.matchesCount() - visibleMatches.length;
+      // clang-format off
+  return html`
+      ${visibleMatches.map(({lineContent, matchRanges, resultLabel}, i) => html`
+        <li role="treeitem" class="search-match" @click=${() => onSelectMatch(searchResult, i)}
+          ${UI.TreeOutline.TreeSearch.highlight(matchRanges.map(range =>
+            ({offset: range.offset + `${resultLabel}`.length, length: range.length})), undefined)}
+          @keydown=${(event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+              onSelectMatch(searchResult, i);
+            }
+          }}
+        >
+          <button class="devtools-link text-button link-style search-match-link"
+                  jslog="Link; context: search-match; track: click" role="link" tabindex="0"
+                  @click=${() => void Common.Revealer.reveal(searchResult.matchRevealable(i))}>
+            <span class="search-match-line-number"
+                aria-label=${typeof resultLabel === 'number' && !isNaN(resultLabel)
+                                ? i18nString(UIStrings.lineS, {PH1: resultLabel}) : resultLabel}>
+              ${resultLabel}
+            </span>
+            <span class="search-match-content" aria-label="${lineContent} line">
+              ${lineContent}
+            </span>
+          </button>
+        </li>`)}
+      ${
+      matchesLeftCount > 0 ? html`
+        <li role="treeitem" class="show-more-matches" @click=${() => onShowMoreMatches(searchResult)}>
+          ${i18nString(UIStrings.showDMore, { PH1: matchesLeftCount })}
+        </li>` : ''}`;
+      // clang-format on
+    };
+
 export class SearchResultsPane extends UI.Widget.VBox {
   private readonly searchConfig: Workspace.SearchConfig.SearchConfig;
-  private readonly searchResults = new Map<SearchResult, UI.TreeOutline.TreeElement>();
+  private readonly searchResults: SearchResult[] = [];
   private expandedResults = new WeakSet<SearchResult>();
   private readonly searchMatches = new WeakMap<SearchResult, SearchMatch[]>();
-  private treeOutline: UI.TreeOutline.TreeOutlineInShadow;
   private matchesExpandedCount = 0;
+  #view: View;
 
-  private addTreeElement(searchResult: SearchResult): void {
-    const treeElement = new UI.TreeOutline.TreeElement('', true);
-    treeElement.toggleOnClick = true;
-    this.searchResults.set(searchResult, treeElement);
-    this.treeOutline.appendChild(treeElement);
-    if (!this.treeOutline.selectedTreeElement) {
-      treeElement.select(/* omitFocus */ true, /* selectedByUser */ true);
-    }
-    treeElement.listItemElement.classList.add('search-result');
-    // clang-format off
-    render(html`
-      <span class="search-result-file-name">${searchResult.label()}
-        <span class="search-result-dash">${'\u2014'}</span>
-        <span class="search-result-qualifier">${searchResult.description()}</span>
-      </span>
-      <span class="search-result-matches-count"
-          aria-label=${i18nString(UIStrings.matchesCountS, {PH1: searchResult.matchesCount()})}>
-          ${searchResult.matchesCount()}
-      </span>`,
-    treeElement.listItemElement);
-    // clang-format on
-    treeElement.tooltip = searchResult.description();
-  }
-
-  private appendSearchMatchElement(searchResult: SearchResult, match: SearchMatch, i: number): void {
-    const {lineContent, matchRanges, resultLabel} = match;
-    const element = this.searchResults.get(searchResult);
-    if (!element) {
-      return;
-    }
-    const searchMatchElement = new UI.TreeOutline.TreeElement();
-    element.appendChild(searchMatchElement);
-    // clang-format off
-    render(html`
-      <button class="devtools-link text-button link-style search-match-link"
-              jslog="Link; context: search-match; track: click" role="link" tabindex="0"
-              @click=${() => void Common.Revealer.reveal(searchResult.matchRevealable(i))}>
-        <span class="search-match-line-number"
-            aria-label=${typeof resultLabel === 'number' && !isNaN(resultLabel)
-                            ?  i18nString(UIStrings.lineS, {PH1: resultLabel}) : resultLabel}>
-          ${resultLabel}
-        </span>
-        <span class="search-match-content" aria-label="${lineContent} line">
-          ${lineContent}
-        </span>
-      </button>`,
-      searchMatchElement.listItemElement);
-    // clang-format on
-    const contentSpan = searchMatchElement.listItemElement.querySelector('.search-match-content') as HTMLElement;
-    UI.UIUtils.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-search-result');
-    searchMatchElement.listItemElement.className = 'search-match';
-    searchMatchElement.listItemElement.addEventListener('keydown', event => {
-      if (event.key === 'Enter') {
-        event.consume(true);
-        void Common.Revealer.reveal(searchResult.matchRevealable(i));
-      }
-    });
-    searchMatchElement.tooltip = lineContent;
-  }
-
-  constructor(searchConfig: Workspace.SearchConfig.SearchConfig) {
+  constructor(searchConfig: Workspace.SearchConfig.SearchConfig, view: View = DEFAULT_VIEW) {
     super({useShadowDom: true});
+    this.#view = view;
     this.searchConfig = searchConfig;
-    this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this.treeOutline.registerRequiredCSS(searchResultsPaneStyles);
-    this.treeOutline.setHideOverflow(true);
-    this.treeOutline.addEventListener(
-        UI.TreeOutline.Events.ElementExpanded,
-        (event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => {
-          const searchResult = this.searchResults.entries().find(entry => entry[1] === event.data)?.[0];
-          if (!searchResult) {
-            return;
-          }
-          this.expandSearchResult(searchResult);
-        });
-
-    this.contentElement.appendChild(this.treeOutline.element);
-
-    this.matchesExpandedCount = 0;
   }
 
   addSearchResult(searchResult: SearchResult): void {
-    this.addTreeElement(searchResult);
-    // Expand until at least a certain number of matches is expanded.
+    this.searchResults.push(searchResult);
     if (this.matchesExpandedCount < matchesExpandedByDefault) {
-      this.searchResults.get(searchResult)?.expand();
+      this.expandedResults.add(searchResult);
+      this.onExpandSearchResult(searchResult);
     }
-  }
-
-  showAllMatches(): void {
-    for (const searchResult of this.searchResults.keys()) {
-      const startMatchIndex = this.searchMatches.get(searchResult)?.length ?? 0;
-      this.appendSearchMatches(searchResult, startMatchIndex, searchResult.matchesCount());
-    }
-  }
-
-  collapseAllResults(): void {
-    for (const treeElement of this.searchResults.values()) {
-      treeElement.collapse();
-    }
-  }
-
-  private expandSearchResult(searchResult: SearchResult): void {
-    const toIndex = Math.min(searchResult.matchesCount(), matchesShownAtOnce);
-    if (toIndex < searchResult.matchesCount()) {
-      this.appendSearchMatches(searchResult, 0, toIndex - 1);
-      this.appendShowMoreMatchesElement(searchResult, toIndex - 1);
-    } else {
-      this.appendSearchMatches(searchResult, 0, toIndex);
-    }
-    this.matchesExpandedCount += toIndex;
     this.requestUpdate();
   }
 
-  private collapseSearchResult(searchResult: SearchResult): void {
-    this.searchResults.get(searchResult)?.collapse();
+  showAllMatches(): void {
+    for (const searchResult of this.searchResults) {
+      const startMatchIndex = this.searchMatches.get(searchResult)?.length ?? 0;
+      this.appendSearchMatches(searchResult, startMatchIndex, searchResult.matchesCount());
+    }
+    this.requestUpdate();
+  }
+
+  collapseAllResults(): void {
+    this.expandedResults = new WeakSet<SearchResult>();
+    this.requestUpdate();
+  }
+
+  private onExpandSearchResult(searchResult: SearchResult): void {
+    const toIndex = Math.min(searchResult.matchesCount(), matchesShownAtOnce);
+    this.appendSearchMatches(searchResult, 0, toIndex);
+    this.matchesExpandedCount += toIndex;
+    this.requestUpdate();
   }
 
   private appendSearchMatches(searchResult: SearchResult, fromIndex: number, toIndex: number): void {
@@ -177,7 +188,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
 
     const searchMatches = this.searchMatches.get(searchResult) ?? [];
     this.searchMatches.set(searchResult, searchMatches);
-    if (searchMatches.length > toIndex) {
+    if (searchMatches.length >= toIndex) {
       return;
     }
 
@@ -204,22 +215,22 @@ export class SearchResultsPane extends UI.Widget.VBox {
 
       const resultLabel = searchResult.matchLabel(i);
       searchMatches.push({lineContent, matchRanges, resultLabel});
-      this.appendSearchMatchElement(searchResult, searchMatches[i], i);
     }
   }
 
-  private appendShowMoreMatchesElement(searchResult: SearchResult, startMatchIndex: number): void {
-    const element = this.searchResults.get(searchResult);
-    if (!element) {
-      return;
-    }
-    const matchesLeftCount = searchResult.matchesCount() - startMatchIndex;
-    const showMoreMatchesText = i18nString(UIStrings.showDMore, {PH1: matchesLeftCount});
-    const showMoreMatchesTreeElement = new UI.TreeOutline.TreeElement(showMoreMatchesText);
-    element.appendChild(showMoreMatchesTreeElement);
-    showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
-    showMoreMatchesTreeElement.onselect =
-        this.showMoreMatchesElementSelected.bind(this, searchResult, showMoreMatchesTreeElement, startMatchIndex);
+  override performUpdate(): void {
+    this.#view(
+        {
+          results: this.searchResults,
+          matches: this.searchMatches,
+          expandedResults: this.expandedResults,
+          onSelectMatch: (searchResult, matchIndex) => {
+            void Common.Revealer.reveal(searchResult.matchRevealable(matchIndex));
+          },
+          onExpandSearchResult: this.onExpandSearchResult.bind(this),
+          onShowMoreMatches: this.showMoreMatchesElementSelected.bind(this),
+        },
+        {}, this.contentElement);
   }
 
   private regexMatchRanges(lineContent: string, regex: RegExp): TextUtils.TextRange.SourceRange[] {
@@ -233,13 +244,10 @@ export class SearchResultsPane extends UI.Widget.VBox {
     return matchRanges;
   }
 
-  private showMoreMatchesElementSelected(
-      searchResult: SearchResult, showMoreMatchesTreeElement: UI.TreeOutline.TreeElement,
-      startMatchIndex: number): boolean {
-    const parentElement = showMoreMatchesTreeElement.parent;
-    parentElement?.removeChild(showMoreMatchesTreeElement);
+  private showMoreMatchesElementSelected(searchResult: SearchResult): void {
+    const startMatchIndex = this.searchMatches.get(searchResult)?.length ?? 0;
     this.appendSearchMatches(searchResult, startMatchIndex, searchResult.matchesCount());
-    return true;
+    this.requestUpdate();
   }
 }
 

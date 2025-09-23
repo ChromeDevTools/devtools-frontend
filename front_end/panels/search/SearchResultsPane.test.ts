@@ -4,8 +4,8 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {stripLitHtmlCommentNodes} from '../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Search from './search.js';
 
@@ -131,27 +131,29 @@ class FakeSearchResult implements Search.SearchScope.SearchResult {
 }
 
 describeWithLocale('SearchResultsPane', () => {
-  it('shows one entry per line with matches when matchColumn/matchLength is NOT present', () => {
+  it('shows one entry per line with matches when matchColumn/matchLength is NOT present', async () => {
     const searchConfig = new Workspace.SearchConfig.SearchConfig('the', true, false);
-    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig);
-    resultPane.addSearchResult(new FakeSearchResult('file.txt', 'file.txt', [
+    const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);
+    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig, view);
+    const searchResult = new FakeSearchResult('file.txt', 'file.txt', [
       {lineNumber: 10, lineContent: 'This is the line with multiple "the" matches'},
       {lineNumber: 15, lineContent: 'This is a line with only one "the" match'},
-    ]));
-
+    ]);
+    resultPane.addSearchResult(searchResult);
     resultPane.showAllMatches();
 
-    const matchSpans = resultPane['treeOutline'].shadowRoot.querySelectorAll('.search-match-content');
-    assert.lengthOf(matchSpans, 2);
+    const matches = (await view.nextInput).matches.get(searchResult)!;
+    assert.lengthOf(matches, 2);
     assert.deepEqual(
-        [...matchSpans].map(span => span.textContent),
+        [...matches].map(span => span.lineContent),
         ['This is the line with multiple "the" matches', '…with only one "the" match']);
   });
 
-  it('shows one entry per match when matchColumn/matchLength is present', () => {
+  it('shows one entry per match when matchColumn/matchLength is present', async () => {
+    const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);
     const searchConfig = new Workspace.SearchConfig.SearchConfig('the', true, false);
-    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig);
-    resultPane.addSearchResult(new FakeSearchResult('file.txt', 'file.txt', [
+    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig, view);
+    const searchResult = new FakeSearchResult('file.txt', 'file.txt', [
       {
         lineNumber: 10,
         lineContent: 'This is the line with multiple "the" matches',
@@ -167,38 +169,45 @@ describeWithLocale('SearchResultsPane', () => {
         lineContent: 'This is a line with only one "the" match',
         matchRange: r`                              [  )`,
       },
-    ]));
+    ]);
+    resultPane.addSearchResult(searchResult);
 
     resultPane.showAllMatches();
 
-    const matchSpans = resultPane['treeOutline'].shadowRoot.querySelectorAll('.search-match-content');
-    assert.lengthOf(matchSpans, 3);
-    assert.deepEqual([...matchSpans].map(span => span.textContent), [
+    const matches = (await view.nextInput).matches.get(searchResult)!;
+    assert.lengthOf(matches, 3);
+    assert.deepEqual([...matches].map(span => span.lineContent), [
       'This is the line with multiple "the" matches',
       '… the line with multiple "the" matches',
       '…is a line with only one "the" match',
     ]);
   });
 
-  it('highlights all matches of a line when matchColumn/matchLength is NOT present', () => {
+  it('highlights all matches of a line when matchColumn/matchLength is NOT present', async () => {
+    const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);
     const searchConfig = new Workspace.SearchConfig.SearchConfig('the', true, false);
-    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig);
-    resultPane.addSearchResult(new FakeSearchResult('file.txt', 'file.txt', [
+    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig, view);
+    const searchResult = new FakeSearchResult('file.txt', 'file.txt', [
       {lineNumber: 10, lineContent: 'This is the line with multiple "the" matches'},
       {lineNumber: 15, lineContent: 'This is a line with only one "the" match'},
-    ]));
+    ]);
+    resultPane.addSearchResult(searchResult);
 
     resultPane.showAllMatches();
 
-    const matchSpans = resultPane['treeOutline'].shadowRoot.querySelectorAll('.highlighted-search-result');
-    assert.lengthOf(matchSpans, 3);
-    assert.deepEqual([...matchSpans].map(span => span.textContent), ['the', 'the', 'the']);
+    const matches = (await view.nextInput).matches.get(searchResult)!;
+    assert.deepEqual(
+        [...matches].flatMap(
+            span =>
+                span.matchRanges.map(range => span.lineContent.substring(range.offset, range.offset + range.length))),
+        ['the', 'the', 'the']);
   });
 
-  it('highlights only the specified match when matchColumn/matchLength is present', () => {
+  it('highlights only the specified match when matchColumn/matchLength is present', async () => {
+    const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);
     const searchConfig = new Workspace.SearchConfig.SearchConfig('the', true, false);
-    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig);
-    resultPane.addSearchResult(new FakeSearchResult('file.txt', 'file.txt', [
+    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig, view);
+    const searchResult = new FakeSearchResult('file.txt', 'file.txt', [
       {
         lineNumber: 10,
         lineContent: 'This is the line with multiple "the" matches',
@@ -214,16 +223,23 @@ describeWithLocale('SearchResultsPane', () => {
         lineContent: 'This is a line with only one "the" match',
         matchRange: r`                              [  )`,
       },
-    ]));
+    ]);
+    resultPane.addSearchResult(searchResult);
 
     resultPane.showAllMatches();
 
-    const matchSpans = resultPane['treeOutline'].shadowRoot.querySelectorAll('.search-match-content');
-    assert.lengthOf(matchSpans, 3);
-    assert.deepEqual([...matchSpans].map(span => stripLitHtmlCommentNodes(span.innerHTML)), [
-      'This is <span class="highlighted-search-result">the</span> line with multiple "the" matches',
-      '… the line with multiple "<span class="highlighted-search-result">the</span>" matches',
-      '…is a line with only one "<span class="highlighted-search-result">the</span>" match',
-    ]);
+    const matches = (await view.nextInput).matches.get(searchResult)!;
+    assert.lengthOf(matches, 3);
+    assert.deepEqual(
+        [...matches].flatMap(
+            span => span.matchRanges.map(
+                range => span.lineContent.substring(0, range.offset) + '[' +
+                    span.lineContent.substring(range.offset, range.offset + range.length) + ']' +
+                    span.lineContent.substring(range.offset + range.length))),
+        [
+          'This is [the] line with multiple "the" matches',
+          '… the line with multiple "[the]" matches',
+          '…is a line with only one "[the]" match',
+        ]);
   });
 });

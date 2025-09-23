@@ -418,53 +418,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     });
   }
 
-  #parseSuggestions(text: string): ParsedResponse {
-    if (!text) {
-      return {answer: ''};
-    }
-
-    const lines = text.split('\n');
-    const answerLines: string[] = [];
-    let suggestions: [string, ...string[]]|undefined;
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (trimmed.startsWith('SUGGESTIONS:')) {
-        try {
-          // TODO: Do basic validation this is an array with strings
-          suggestions = JSON.parse(trimmed.substring('SUGGESTIONS:'.length).trim());
-        } catch {
-        }
-      } else {
-        answerLines.push(line);
-      }
-    }
-
-    // Sometimes the model fails to put the SUGGESTIONS text on its own line. Handle
-    // the case where the suggestions are part of the last line of the answer.
-    if (!suggestions && answerLines.at(-1)?.includes('SUGGESTIONS:')) {
-      const [answer, suggestionsText] = answerLines[answerLines.length - 1].split('SUGGESTIONS:', 2);
-      try {
-        // TODO: Do basic validation this is an array with strings
-        suggestions = JSON.parse(suggestionsText.trim().substring('SUGGESTIONS:'.length).trim());
-      } catch {
-      }
-      answerLines[answerLines.length - 1] = answer;
-    }
-
-    const response: ParsedResponse = {
-      // If we could not parse the parts, consider the response to be an
-      // answer.
-      answer: answerLines.join('\n'),
-    };
-
-    if (suggestions) {
-      response.suggestions = suggestions;
-    }
-
-    return response;
-  }
-
   #parseMarkdown(response: string): string {
     /**
      * Sometimes the LLM responds with code chunks that wrap a text based markdown response.
@@ -480,10 +433,10 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   }
 
   override parseTextResponse(response: string): ParsedResponse {
-    response = response.trim();
-    response = this.#parseForKnownUrls(response);
-    response = this.#parseMarkdown(response);
-    return this.#parseSuggestions(response);
+    const parsedResponse = super.parseTextResponse(response);
+    parsedResponse.answer = this.#parseForKnownUrls(parsedResponse.answer);
+    parsedResponse.answer = this.#parseMarkdown(parsedResponse.answer);
+    return parsedResponse;
   }
 
   override async enhanceQuery(query: string, context: PerformanceTraceContext|null): Promise<string> {

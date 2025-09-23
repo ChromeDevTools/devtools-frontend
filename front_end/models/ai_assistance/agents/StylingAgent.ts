@@ -21,7 +21,6 @@ import {
   type ConversationSuggestions,
   type FunctionCallHandlerResult,
   MultimodalInputType,
-  type ParsedResponse,
   type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
@@ -264,36 +263,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
 
   override preambleFeatures(): string[] {
     return ['function_calling'];
-  }
-  override parseTextResponse(text: string): ParsedResponse {
-    // We're returning an empty answer to denote the erroneous case.
-    if (!text.trim()) {
-      return {answer: ''};
-    }
-
-    const lines = text.split('\n');
-    const answerLines: string[] = [];
-    let suggestions: [string, ...string[]]|undefined;
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (trimmed.startsWith('SUGGESTIONS:')) {
-        try {
-          // TODO: Do basic validation this is an array with strings
-          suggestions = JSON.parse(trimmed.substring('SUGGESTIONS:'.length).trim());
-        } catch {
-        }
-      } else {
-        answerLines.push(line);
-      }
-    }
-
-    return {
-      // If we could not parse the parts, consider the response to be an
-      // answer.
-      answer: answerLines.join('\n'),
-      suggestions,
-    };
   }
 
   #execJs: typeof executeJsCode;

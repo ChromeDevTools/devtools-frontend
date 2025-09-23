@@ -1455,7 +1455,7 @@ export class TreeSearch < NodeT extends TreeNode<NodeT>,
     return this.#getNodeMatchMap().get(node) ?? [];
   }
 
-  highlight(ranges: TextUtils.TextRange.SourceRange[], selectedRange: TextUtils.TextRange.SourceRange|undefined):
+  static highlight(ranges: TextUtils.TextRange.SourceRange[], selectedRange: TextUtils.TextRange.SourceRange|undefined):
       ReturnType<typeof Lit.Directives.ref> {
     return Lit.Directives.ref(element => {
       if (element instanceof HTMLLIElement) {

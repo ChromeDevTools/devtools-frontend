@@ -129,7 +129,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         }
       }
     }
-    return input.search.highlight(highlights, selected);
+    return UI.TreeOutline.TreeSearch.highlight(highlights, selected);
   }
 
   function layOutNode(node: XMLTreeViewNode, populateSubtrees = false): Lit.LitTemplate {

@@ -720,6 +720,7 @@ export default defineConfig([
       'rulesdir/no-assert-deep-strict-equal': 'error',
       'rulesdir/no-assert-equal': 'error',
       'rulesdir/no-assert-equal-boolean-null-undefined': 'error',
+      'rulesdir/no-capture-screenshot': 'error',
       'rulesdir/no-imperative-dom-api': 'off',
       'rulesdir/no-lit-render-outside-of-view': 'off',
       'rulesdir/prefer-assert-instance-of': 'error',

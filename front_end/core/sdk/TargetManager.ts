@@ -318,6 +318,10 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
    *    (eg., tab URL of `devtools://devtools/bundled/devtools_app.html` uses a MainConnection but has no CDP server behind it).
    */
   hasFakeConnection(): boolean {
+    // Rehydrated DevTools always has a fake connection, so we shortcut and avoid the race.
+    if (Root.Runtime.getPathName().includes('rehydrated_devtools_app')) {
+      return true;
+    }
     // There _may_ be a race condition hiding here on the router/connection creation.
     // So we play it safe and consider "no connection yet" as "not fake".
     const connection = this.primaryPageTarget()?.router()?.connection();

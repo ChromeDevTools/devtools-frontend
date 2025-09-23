@@ -1516,13 +1516,13 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         return;
       }
 
-      const callTree =
-          selectionIsEvent(selection) ? AIAssistance.AICallTree.fromEvent(selection.event, this.#parsedTrace) : null;
+      const event = selectionIsEvent(selection) ? selection.event : null;
+
       let focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
       if (focus) {
-        focus = focus.withCallTree(callTree);
-      } else if (callTree) {
-        focus = AIAssistance.AgentFocus.fromCallTree(callTree);
+        focus = focus.withEvent(event);
+      } else if (event) {
+        focus = AIAssistance.AgentFocus.fromEvent(this.#parsedTrace, event);
       } else {
         focus = null;
       }

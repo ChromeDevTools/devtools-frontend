@@ -217,6 +217,9 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     if (focus.insight) {
       parts.push(focus.insight.title);
     }
+    if (focus.event) {
+      parts.push(Trace.Name.forEntry(focus.event));
+    }
     if (focus.callTree) {
       const node = focus.callTree.selectedNode ?? focus.callTree.rootNode;
       parts.push(Trace.Name.forEntry(node.event));
@@ -287,6 +290,7 @@ const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
  */
 export class PerformanceAgent extends AiAgent<AgentFocus> {
   #formatter: PerformanceTraceFormatter|null = null;
+  #lastEventForEnhancedQuery: Trace.Types.Events.Event|undefined;
   #lastInsightForEnhancedQuery: Trace.Insights.Types.InsightModel|undefined;
   #hasShownAnalyzeTraceContext = false;
 
@@ -463,6 +467,14 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
     const focus = context.getItem();
     const selected: string[] = [];
+
+    if (focus.data.event) {
+      const includeEventInfo = focus.data.event !== this.#lastEventForEnhancedQuery;
+      this.#lastEventForEnhancedQuery = focus.data.event;
+      if (includeEventInfo) {
+        selected.push(`User selected an event ${this.#formatter?.serializeEvent(focus.data.event)}.\n\n`);
+      }
+    }
 
     if (focus.data.callTree) {
       // If this is a followup chat about the same call tree, don't include the call tree serialization again.

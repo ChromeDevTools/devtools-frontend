@@ -4,11 +4,14 @@
 
 import * as Trace from '../../../models/trace/trace.js';
 
-import type {AICallTree} from './AICallTree.js';
+import {AICallTree} from './AICallTree.js';
 
 export interface AgentFocusData {
   parsedTrace: Trace.TraceModel.ParsedTrace;
   insightSet: Trace.Insights.Types.InsightSet|null;
+  /** Note: at most one of event or callTree is non-null. */
+  event: Trace.Types.Events.Event|null;
+  /** Note: at most one of event or callTree is non-null. */
   callTree: AICallTree|null;
   insight: Trace.Insights.Types.InsightModel|null;
 }
@@ -30,6 +33,7 @@ export class AgentFocus {
     return new AgentFocus({
       parsedTrace,
       insightSet,
+      event: null,
       callTree: null,
       insight: null,
     });
@@ -45,9 +49,20 @@ export class AgentFocus {
     return new AgentFocus({
       parsedTrace,
       insightSet,
+      event: null,
       callTree: null,
       insight,
     });
+  }
+
+  static fromEvent(parsedTrace: Trace.TraceModel.ParsedTrace, event: Trace.Types.Events.Event): AgentFocus {
+    if (!parsedTrace.insights) {
+      throw new Error('missing insights');
+    }
+
+    const insightSet = getFirstInsightSet(parsedTrace.insights);
+    const result = AgentFocus.#getCallTreeOrEvent(parsedTrace, event);
+    return new AgentFocus({parsedTrace, insightSet, event: result.event, callTree: result.callTree, insight: null});
   }
 
   static fromCallTree(callTree: AICallTree): AgentFocus {
@@ -65,7 +80,7 @@ export class AgentFocus {
           getFirstInsightSet(insights);
     }
 
-    return new AgentFocus({parsedTrace: callTree.parsedTrace, insightSet, callTree, insight: null});
+    return new AgentFocus({parsedTrace: callTree.parsedTrace, insightSet, event: null, callTree, insight: null});
   }
 
   #data: AgentFocusData;
@@ -85,9 +100,11 @@ export class AgentFocus {
     return focus;
   }
 
-  withCallTree(callTree: AICallTree|null): AgentFocus {
+  withEvent(event: Trace.Types.Events.Event|null): AgentFocus {
     const focus = new AgentFocus(this.#data);
-    focus.#data.callTree = callTree;
+    const result = AgentFocus.#getCallTreeOrEvent(this.#data.parsedTrace, event);
+    focus.#data.callTree = result.callTree;
+    focus.#data.event = result.event;
     return focus;
   }
 
@@ -101,6 +118,26 @@ export class AgentFocus {
 
       throw err;
     }
+  }
+
+  /**
+   * If an event is a call tree, this returns that call tree and a null event.
+   * If not a call tree, this only returns a non-null event if the event is a network
+   * request.
+   * This is an arbitrary limitation – it should be removed, but first we need to
+   * improve the agent's knowledge of events that are not main-thread or network
+   * events.
+   */
+  static #getCallTreeOrEvent(parsedTrace: Trace.TraceModel.ParsedTrace, event: Trace.Types.Events.Event|null):
+      {callTree: AICallTree|null, event: Trace.Types.Events.Event|null} {
+    const callTree = event && AICallTree.fromEvent(event, parsedTrace);
+    if (callTree) {
+      return {callTree, event: null};
+    }
+    if (event && Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+      return {callTree: null, event};
+    }
+    return {callTree: null, event: null};
   }
 }
 

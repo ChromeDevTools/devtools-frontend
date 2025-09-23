@@ -254,14 +254,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (perfAIEntryPointEnabled && this.parsedTrace) {
       const callTree = AIAssistance.AICallTree.fromEvent(entry, this.parsedTrace);
       if (callTree) {
-        let focus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
-        if (focus) {
-          focus = focus.withCallTree(callTree);
-        } else {
-          focus = AIAssistance.AgentFocus.fromCallTree(callTree);
-        }
-        UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus);
-
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(PERF_AI_ACTION_ID);
 
         if (Root.Runtime.hostConfig.devToolsAiSubmenuPrompts?.enabled) {

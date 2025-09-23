@@ -831,7 +831,7 @@ Bounds: {min: 1020034823047, max: 1020036087961}
 CPU throttling: none
 Network throttling: none
 Metrics (lab / observed):
-  - LCP: 118 ms, event: (eventKey: r-1802, ts: 1020034953358)
+  - LCP: 118 ms, event: (eventKey: r-1802, ts: 1020034953358), nodeId: 209
   - LCP breakdown:
     - TTFB: 31 ms, bounds: {min: 1020034834921, max: 1020034866264}
     - Render delay: 87 ms, bounds: {min: 1020034866264, max: 1020034953358}
@@ -864,7 +864,7 @@ Bounds: {min: 157423484442, max: 157427277166}
 CPU throttling: none
 Network throttling: none
 Metrics (lab / observed):
-  - LCP: 464 ms, event: (eventKey: r-33210, ts: 157423953162)
+  - LCP: 464 ms, event: (eventKey: r-33210, ts: 157423953162), nodeId: 8
   - LCP breakdown:
     - TTFB: 216 ms, bounds: {min: 157423488682, max: 157423704371}
     - Load delay: 90 ms, bounds: {min: 157423704371, max: 157423794709}
@@ -926,7 +926,7 @@ Bounds: {min: 59728641874, max: 59734400108}
 CPU throttling: 1x
 Network throttling: No throttling
 Metrics (lab / observed):
-  - LCP: 663 ms, event: (eventKey: r-14753, ts: 59729312744)
+  - LCP: 663 ms, event: (eventKey: r-14753, ts: 59729312744), nodeId: 12
   - LCP breakdown:
     - TTFB: 7 ms, bounds: {min: 59728649746, max: 59728656735}
     - Load delay: 46 ms, bounds: {min: 59728656735, max: 59728702313}
@@ -990,7 +990,7 @@ Bounds: {min: 59728641874, max: 59734400108}
 CPU throttling: 1x
 Network throttling: No throttling
 Metrics (lab / observed):
-  - LCP: 663 ms, event: (eventKey: r-14753, ts: 59729312744)
+  - LCP: 663 ms, event: (eventKey: r-14753, ts: 59729312744), nodeId: 12
   - LCP breakdown:
     - TTFB: 7 ms, bounds: {min: 59728649746, max: 59728656735}
     - Load delay: 46 ms, bounds: {min: 59728656735, max: 59728702313}

@@ -136,6 +136,15 @@ When referring to a trace event that has a corresponding \`eventKey\`, annotate 
 When asking the user to make a choice between multiple options, output a list of choices at the end of your text response. The format is \`SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]\`. This MUST start on a newline, and be a single line.
 `;
 
+const extraPreambleWhenFreshTrace = `Additional notes:
+
+When referring to an element for which you know the nodeId, annotate your output using markdown link syntax:
+- For example, if nodeId is 23: [LCP element](#node-23)
+- This link will reveal the element in the Elements panel
+- Never mention node or nodeId when referring to the element, and especially not in the link text.
+- When referring to the LCP, it's useful to also mention what the LCP element is via its nodeId. Use the markdown link syntax to do so.
+`;
+
 const callFrameDataFormatDescription = `Each call frame is presented in the following format:
 
 'id;name;duration;selfTime;urlIndex;childRange;[S]'
@@ -296,6 +305,10 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
   #notExternalExtraPreambleFact: Host.AidaClient.RequestFact = {
     text: extraPreambleWhenNotExternal,
+    metadata: {source: 'devtools', score: ScorePriority.CRITICAL}
+  };
+  #freshTraceExtraPreambleFact: Host.AidaClient.RequestFact = {
+    text: extraPreambleWhenFreshTrace,
     metadata: {source: 'devtools', score: ScorePriority.CRITICAL}
   };
   #networkDataDescriptionFact: Host.AidaClient.RequestFact = {
@@ -585,6 +598,11 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
     if (!context.external) {
       this.addFact(this.#notExternalExtraPreambleFact);
+    }
+
+    const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.data.parsedTrace);
+    if (isFresh) {
+      this.addFact(this.#freshTraceExtraPreambleFact);
     }
 
     this.addFact(this.#callFrameDataDescriptionFact);

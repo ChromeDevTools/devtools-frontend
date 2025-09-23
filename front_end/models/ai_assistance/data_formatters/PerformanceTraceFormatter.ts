@@ -133,7 +133,10 @@ export class PerformanceTraceFormatter {
     if (lcp || cls || inp) {
       parts.push('Metrics (lab / observed):');
       if (lcp) {
-        parts.push(`  - LCP: ${Math.round(lcp.value / 1000)} ms, event: ${this.serializeEvent(lcp.event)}`);
+        const nodeId = insightSet?.model.LCPBreakdown.lcpEvent?.args.data?.nodeId;
+        const nodeIdText = nodeId !== undefined ? `, nodeId: ${nodeId}` : '';
+        parts.push(
+            `  - LCP: ${Math.round(lcp.value / 1000)} ms, event: ${this.serializeEvent(lcp.event)}${nodeIdText}`);
         const subparts = insightSet?.model.LCPBreakdown.subparts;
         if (subparts) {
           const serializeSubpart = (subpart: Trace.Insights.Models.LCPBreakdown.Subpart): string => {

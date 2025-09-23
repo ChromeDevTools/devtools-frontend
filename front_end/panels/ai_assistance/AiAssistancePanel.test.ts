@@ -275,7 +275,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       {
         flavor: AiAssistanceModel.AgentFocus,
         createContext: () => {
-          const parsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
+          const parsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as Trace.TraceModel.ParsedTrace;
           return AiAssistanceModel.PerformanceTraceContext.fromParsedTrace(parsedTrace);
         },
         action: 'drjones.performance-panel-context'
@@ -348,7 +348,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel, view} = await createAiAssistancePanel({chatView});
 
       // Firstly, start a conversation and set a context
-      const fakeParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
+      const fakeParsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as Trace.TraceModel.ParsedTrace;
       const context = AiAssistanceModel.PerformanceTraceContext.fromParsedTrace(fakeParsedTrace);
       UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, context.getItem());
       panel.handleAction('drjones.performance-panel-context');
@@ -1505,7 +1505,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
            viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'timeline');
            UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, timelinePanel);
 
-           const fakeParsedTrace = {insights: new Map()} as Trace.TraceModel.ParsedTrace;
+           const fakeParsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as
+               Trace.TraceModel.ParsedTrace;
            const focus = AiAssistanceModel.AgentFocus.fromParsedTrace(fakeParsedTrace);
            UI.Context.Context.instance().setFlavor(AiAssistanceModel.AgentFocus, focus);
 

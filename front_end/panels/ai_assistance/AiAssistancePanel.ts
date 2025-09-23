@@ -270,7 +270,8 @@ function getMarkdownRenderer(context: AiAssistanceModel.ConversationContext<unkn
     MarkdownRendererWithCodeBlock {
   if (context instanceof AiAssistanceModel.PerformanceTraceContext && !context.external) {
     const focus = context.getItem();
-    return new PerformanceAgentMarkdownRenderer(focus.lookupEvent.bind(focus));
+    return new PerformanceAgentMarkdownRenderer(
+        focus.data.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
   }
 
   return new MarkdownRendererWithCodeBlock();

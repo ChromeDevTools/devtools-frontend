@@ -136,58 +136,58 @@ const renderSearchMatches =
     };
 
 export class SearchResultsPane extends UI.Widget.VBox {
-  private readonly searchConfig: Workspace.SearchConfig.SearchConfig;
-  private readonly searchResults: SearchResult[] = [];
-  private expandedResults = new WeakSet<SearchResult>();
-  private readonly searchMatches = new WeakMap<SearchResult, SearchMatch[]>();
-  private matchesExpandedCount = 0;
+  readonly #searchConfig: Workspace.SearchConfig.SearchConfig;
+  readonly #searchResults: SearchResult[] = [];
+  #expandedResults = new WeakSet<SearchResult>();
+  readonly #searchMatches = new WeakMap<SearchResult, SearchMatch[]>();
+  #matchesExpandedCount = 0;
   #view: View;
 
   constructor(searchConfig: Workspace.SearchConfig.SearchConfig, view: View = DEFAULT_VIEW) {
     super({useShadowDom: true});
     this.#view = view;
-    this.searchConfig = searchConfig;
+    this.#searchConfig = searchConfig;
   }
 
   addSearchResult(searchResult: SearchResult): void {
-    this.searchResults.push(searchResult);
-    if (this.matchesExpandedCount < matchesExpandedByDefault) {
-      this.expandedResults.add(searchResult);
-      this.onExpandSearchResult(searchResult);
+    this.#searchResults.push(searchResult);
+    if (this.#matchesExpandedCount < matchesExpandedByDefault) {
+      this.#expandedResults.add(searchResult);
+      this.#onExpandSearchResult(searchResult);
     }
     this.requestUpdate();
   }
 
   showAllMatches(): void {
-    for (const searchResult of this.searchResults) {
-      const startMatchIndex = this.searchMatches.get(searchResult)?.length ?? 0;
-      this.appendSearchMatches(searchResult, startMatchIndex, searchResult.matchesCount());
+    for (const searchResult of this.#searchResults) {
+      const startMatchIndex = this.#searchMatches.get(searchResult)?.length ?? 0;
+      this.#appendSearchMatches(searchResult, startMatchIndex, searchResult.matchesCount());
     }
     this.requestUpdate();
   }
 
   collapseAllResults(): void {
-    this.expandedResults = new WeakSet<SearchResult>();
+    this.#expandedResults = new WeakSet<SearchResult>();
     this.requestUpdate();
   }
 
-  private onExpandSearchResult(searchResult: SearchResult): void {
+  #onExpandSearchResult(searchResult: SearchResult): void {
     const toIndex = Math.min(searchResult.matchesCount(), matchesShownAtOnce);
-    this.appendSearchMatches(searchResult, 0, toIndex);
-    this.matchesExpandedCount += toIndex;
+    this.#appendSearchMatches(searchResult, 0, toIndex);
+    this.#matchesExpandedCount += toIndex;
     this.requestUpdate();
   }
 
-  private appendSearchMatches(searchResult: SearchResult, fromIndex: number, toIndex: number): void {
-    const queries = this.searchConfig.queries();
+  #appendSearchMatches(searchResult: SearchResult, fromIndex: number, toIndex: number): void {
+    const queries = this.#searchConfig.queries();
     const regexes = [];
     for (let i = 0; i < queries.length; ++i) {
       regexes.push(Platform.StringUtilities.createSearchRegex(
-          queries[i], !this.searchConfig.ignoreCase(), this.searchConfig.isRegex()));
+          queries[i], !this.#searchConfig.ignoreCase(), this.#searchConfig.isRegex()));
     }
 
-    const searchMatches = this.searchMatches.get(searchResult) ?? [];
-    this.searchMatches.set(searchResult, searchMatches);
+    const searchMatches = this.#searchMatches.get(searchResult) ?? [];
+    this.#searchMatches.set(searchResult, searchMatches);
     if (searchMatches.length >= toIndex) {
       return;
     }
@@ -208,7 +208,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
       } else {
         lineContent = lineContent.trim();
         for (let j = 0; j < regexes.length; ++j) {
-          matchRanges = matchRanges.concat(this.regexMatchRanges(lineContent, regexes[j]));
+          matchRanges = matchRanges.concat(this.#regexMatchRanges(lineContent, regexes[j]));
         }
         ({lineSegment: lineContent, matchRanges} = lineSegmentForMultipleMatches(lineContent, matchRanges));
       }
@@ -221,19 +221,19 @@ export class SearchResultsPane extends UI.Widget.VBox {
   override performUpdate(): void {
     this.#view(
         {
-          results: this.searchResults,
-          matches: this.searchMatches,
-          expandedResults: this.expandedResults,
+          results: this.#searchResults,
+          matches: this.#searchMatches,
+          expandedResults: this.#expandedResults,
           onSelectMatch: (searchResult, matchIndex) => {
             void Common.Revealer.reveal(searchResult.matchRevealable(matchIndex));
           },
-          onExpandSearchResult: this.onExpandSearchResult.bind(this),
-          onShowMoreMatches: this.showMoreMatchesElementSelected.bind(this),
+          onExpandSearchResult: this.#onExpandSearchResult.bind(this),
+          onShowMoreMatches: this.#onShowMoreMatches.bind(this),
         },
         {}, this.contentElement);
   }
 
-  private regexMatchRanges(lineContent: string, regex: RegExp): TextUtils.TextRange.SourceRange[] {
+  #regexMatchRanges(lineContent: string, regex: RegExp): TextUtils.TextRange.SourceRange[] {
     regex.lastIndex = 0;
     let match;
     const matchRanges = [];
@@ -244,9 +244,9 @@ export class SearchResultsPane extends UI.Widget.VBox {
     return matchRanges;
   }
 
-  private showMoreMatchesElementSelected(searchResult: SearchResult): void {
-    const startMatchIndex = this.searchMatches.get(searchResult)?.length ?? 0;
-    this.appendSearchMatches(searchResult, startMatchIndex, searchResult.matchesCount());
+  #onShowMoreMatches(searchResult: SearchResult): void {
+    const startMatchIndex = this.#searchMatches.get(searchResult)?.length ?? 0;
+    this.#appendSearchMatches(searchResult, startMatchIndex, searchResult.matchesCount());
     this.requestUpdate();
   }
 }

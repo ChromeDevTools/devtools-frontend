@@ -275,8 +275,8 @@ module.exports = function(config: any) {
 
     singleRun: !TestConfig.debug,
 
-    pingTimeout: 4000,
-    browserDisconnectTimeout: 4_000,
+    pingTimeout: 15_000,
+    browserDisconnectTimeout: 15_000,
     browserNoActivityTimeout: 60_000,
 
     mochaReporter: {

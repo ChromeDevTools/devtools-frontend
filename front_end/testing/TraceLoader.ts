@@ -59,7 +59,7 @@ export class TraceLoader {
     // The trace that takes the longest on my Mac M1 Pro is ~3s (yahoo-news.json.gz).
     // In CQ, that same trace takes ~10s (linux), ~7.5s (mac), ~11.5s (windows).
     if (context.timeout() > 0) {
-      context.timeout(Math.max(context.timeout(), 30000));
+      context.timeout(Math.max(context.timeout(), 45000));
     }
   }
 
@@ -178,7 +178,7 @@ export class TraceLoader {
 
     const fileContents = await wrapInTimeout(context, async () => {
       return await TraceLoader.fixtureContents(context, name);
-    }, 15_000, `Loading fixtureContents for ${name}`);
+    }, 30_000, `Loading fixtureContents for ${name}`);
 
     const parsedTraceFileAndModel = await wrapInTimeout(context, async () => {
       return await TraceLoader.executeTraceEngineOnFileContents(

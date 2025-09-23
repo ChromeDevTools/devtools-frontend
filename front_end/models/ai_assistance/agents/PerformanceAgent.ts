@@ -254,6 +254,15 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
       if (cls && ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value) !== GOOD) {
         suggestions.push({title: 'How can I improve CLS?', jslogContext: 'performance-default'});
       }
+
+      // Add up to 3 suggestions from the top failing insights.
+      const top3FailingInsightSuggestions =
+          Object.values(data.insightSet.model)
+              .filter(model => model.state !== 'pass')
+              .map(model => new PerformanceInsightFormatter(this.#focus, model).getSuggestions().at(-1))
+              .filter(suggestion => !!suggestion)
+              .slice(0, 3);
+      suggestions.push(...top3FailingInsightSuggestions);
     }
 
     return suggestions;

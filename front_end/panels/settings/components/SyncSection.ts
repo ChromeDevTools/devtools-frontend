@@ -12,6 +12,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as Badges from '../../../models/badges/badges.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -252,16 +253,29 @@ function renderWarningIfNeeded(syncInfo: Host.InspectorFrontendHostAPI.SyncInfor
       'chrome://settings/syncSetup/advanced' as Platform.DevToolsPath.UrlString;
   const warningText =
       !syncInfo.isSyncActive ? i18nString(UIStrings.syncDisabled) : i18nString(UIStrings.preferencesSyncDisabled);
+  const handleClick = (event: Event): void => {
+    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
+    if (rootTarget === null) {
+      return;
+    }
+
+    void rootTarget.targetAgent().invoke_createTarget({url: warningLink}).then(result => {
+      if (result.getError()) {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(warningLink);
+      }
+    });
+    event.consume();
+  };
   // clang-format off
   return html`
-    <devtools-chrome-link .href=${warningLink}>
-      <devtools-button
-        aria-describedby=settings-sync-info
-        .iconName=${'info'}
-        .variant=${Buttons.Button.Variant.ICON}
-        .size=${Buttons.Button.Size.SMALL}>
-      </devtools-button>
-    </devtools-chrome-link>
+    <devtools-button
+      aria-describedby=settings-sync-info
+      aria-label=${warningText}
+      .iconName=${'info'}
+      .variant=${Buttons.Button.Variant.ICON}
+      .size=${Buttons.Button.Size.SMALL}
+      @click=${handleClick}>
+    </devtools-button>
     <devtools-tooltip
         id=settings-sync-info
         variant=simple>

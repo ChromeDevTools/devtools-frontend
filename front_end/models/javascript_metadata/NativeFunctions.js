@@ -7978,7 +7978,7 @@ export const NativeFunctions = [
   },
   {
     name: "constant",
-    signatures: [["tensor"],["desc","buffer"]]
+    signatures: [["tensor"],["desc","buffer"],["type","value"]]
   },
   {
     name: "argMin",

@@ -63,7 +63,7 @@ describe('The Privacy and security panel', function() {
   it('shows reload bar when controls are changed', async ({devToolsPage}) => {
     await addPrivacyUIToHostConfig(devToolsPage);
     await navigateToSecurityTab(/* privacyEnabled=*/ true, devToolsPage);
-    await devToolsPage.click('[aria-label="Temporarily limit third-party cookies, only when DevTools is open"]');
+    await devToolsPage.click('pierce/[data-testid="cookie-control-override"]');
 
     // Infobar should appear after changing control
     const infoBar = await devToolsPage.waitForAria('To apply your updated controls, reload the page');

@@ -186,8 +186,9 @@ export class CookieControlsView extends UI.Widget.VBox {
           <devtools-switch
             .checked=${Boolean(toggleEnabledSetting.get())}
             .disabled=${Boolean(enterpriseEnabledSetting.get())}
+            .label=${'Temporarily limit third-party cookies, only when DevTools is open'}
+            data-testid="cookie-control-override"
             @switchchange=${()=>{input.inputChanged(!toggleEnabledSetting.get(), toggleEnabledSetting);}}
-            aria-label="Temporarily limit third-party cookies, only when DevTools is open"
             jslog=${VisualLogging.toggle(toggleEnabledSetting.name).track({click: true})}
           >
           </devtools-switch>

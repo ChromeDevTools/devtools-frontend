@@ -14,7 +14,6 @@ import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import type * as Switch from '../../ui/components/switch/switch.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import styles from './gdpSignUpDialog.css.js';
 
@@ -136,9 +135,9 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
           <div class="switch-container">
             <devtools-switch
             .checked=${input.keepMeUpdated}
+            .jslogContext=${'keep-me-updated'}
+            .label=${i18nString(UIStrings.keepUpdated)}
             @switchchange=${(e: Switch.Switch.SwitchChangeEvent) => input.onKeepMeUpdatedChange(e.checked)}
-            jslog=${VisualLogging.toggle('keep-me-updated').track({ click: true })}
-            aria-label=${i18nString(UIStrings.keepUpdated)}
           >
             </devtools-switch>
           </div>

@@ -106,7 +106,7 @@ describe('AI Assistance', function() {
     // Click on the settings redirect link.
     await devtoolsPage.click('pierce/.disabled-view button[role=link]');
     // Enable "AI Assistance" toggle in the settings.
-    await devtoolsPage.click('aria/Enable AI assistance');
+    await devtoolsPage.click('pierce/[data-testid="Enable AI assistance"]');
     // Close settings to come back to the AI Assistance panel.
     await devtoolsPage.click('.dialog-close-button');
   }

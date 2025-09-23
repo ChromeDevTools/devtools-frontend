@@ -597,6 +597,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     networkRequest.mixedContentType = request.mixedContentType || Protocol.Security.MixedContentType.None;
     networkRequest.setReferrerPolicy(request.referrerPolicy);
     networkRequest.setIsSameSite(request.isSameSite || false);
+    networkRequest.setIsAdRelated(request.isAdRelated || false);
   }
 
   private updateNetworkRequestWithResponse(networkRequest: NetworkRequest, response: Protocol.Network.Response): void {

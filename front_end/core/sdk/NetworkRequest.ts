@@ -320,6 +320,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   directSocketInfo?: DirectSocketInfo;
   readonly #directSocketChunks: DirectSocketChunk[] = [];
   #isIpProtectionUsed: boolean;
+  #isAdRelated: boolean;
 
   constructor(
       requestId: string,
@@ -342,6 +343,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#initiator = initiator;
     this.#hasUserGesture = hasUserGesture;
     this.#isIpProtectionUsed = false;
+    this.#isAdRelated = false;
   }
 
   static create(
@@ -1848,6 +1850,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   isIpProtectionUsed(): boolean|null {
     return this.#isIpProtectionUsed;
+  }
+
+  setIsAdRelated(isAdRelated: boolean): void {
+    this.#isAdRelated = isAdRelated;
+  }
+
+  isAdRelated(): boolean {
+    return this.#isAdRelated;
   }
 
   getAssociatedData(key: string): object|null {

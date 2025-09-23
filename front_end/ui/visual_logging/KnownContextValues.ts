@@ -1934,6 +1934,7 @@ export const knownContextValues = new Set([
   'invert-filter',
   'ip-protection',
   'is',
+  'is-ad-related',
   'is-landscape',
   'is-mobile',
   'is-resident-credential',

@@ -771,6 +771,24 @@ export class NetworkRequestNode extends NetworkNode {
     return aScore - bScore || aRequest.identityCompare(bRequest);
   }
 
+  static IsAdRelatedComparator(a: NetworkNode, b: NetworkNode): number {
+    // TODO(allada) Handle this properly for group nodes.
+    const aRequest = a.requestOrFirstKnownChildRequest();
+    const bRequest = b.requestOrFirstKnownChildRequest();
+    if (!aRequest || !bRequest) {
+      return !aRequest ? -1 : 1;
+    }
+    const aIsAdRelated = aRequest.isAdRelated();
+    const bIsAdRelated = bRequest.isAdRelated();
+    if (aIsAdRelated > bIsAdRelated) {
+      return 1;
+    }
+    if (bIsAdRelated > aIsAdRelated) {
+      return -1;
+    }
+    return aRequest.identityCompare(bRequest);
+  }
+
   static RequestPropertyComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1036,6 +1054,10 @@ export class NetworkRequestNode extends NetworkNode {
       }
       case 'remote-address-space': {
         this.renderAddressSpaceCell(cell, this.requestInternal.remoteAddressSpace());
+        break;
+      }
+      case 'is-ad-related': {
+        this.setTextAndTitle(cell, this.requestInternal.isAdRelated().toLocaleString());
         break;
       }
       case 'cookies': {

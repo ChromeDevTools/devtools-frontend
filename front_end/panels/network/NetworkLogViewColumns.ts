@@ -148,6 +148,10 @@ const UIStrings = {
    * @description Text in Network Log View Columns of the Network panel
    */
   remoteAddressSpace: 'Remote Address Space',
+  /**
+   * @description Text to show whether a request is ad-related
+   */
+  isAdRelated: 'Is Ad-Related',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogViewColumns.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1182,6 +1186,11 @@ const DEFAULT_COLUMNS = [
     isRequestHeader: true,
     title: i18n.i18n.lockedLazyString('User-Agent'),
     sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'user-agent'),
+  },
+  {
+    id: 'is-ad-related',
+    title: i18nLazyString(UIStrings.isAdRelated),
+    sortingFunction: NetworkRequestNode.IsAdRelatedComparator,
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
   {

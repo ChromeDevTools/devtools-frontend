@@ -24,6 +24,10 @@ export interface FromTimeOnThreadOptions {
 }
 
 export class AICallTree {
+  // Note: ideally this is passed in (or lived on ParsedTrace), but this class is
+  // stateless (mostly, there's a cache for some stuff) so it doesn't match much.
+  #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
+
   constructor(
       public selectedNode: Trace.Extras.TraceTree.Node|null,
       public rootNode: Trace.Extras.TraceTree.TopDownRootNode,
@@ -307,7 +311,10 @@ export class AICallTree {
     // 1. ID
     const idStr = String(nodeId);
 
-    // 2. Name
+    // 2. eventKey
+    const eventKey = this.#eventsSerializer.keyForEvent(node.event);
+
+    // 3. Name
     const name = Trace.Name.forEntry(event, parsedTrace);
 
     // Round milliseconds to one decimal place, return empty string if zero/undefined
@@ -318,13 +325,13 @@ export class AICallTree {
       return String(Math.round(num * 10) / 10);
     };
 
-    // 3. Duration
+    // 4. Duration
     const durationStr = roundToTenths(node.totalTime);
 
-    // 4. Self Time
+    // 5. Self Time
     const selfTimeStr = roundToTenths(node.selfTime);
 
-    // 5. URL Index
+    // 6. URL Index
     const url = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
     let urlIndexStr = '';
     if (url) {
@@ -336,7 +343,7 @@ export class AICallTree {
       }
     }
 
-    // 6. Child Range
+    // 7. Child Range
     const children = Array.from(node.children().values());
     let childRangeStr = '';
     if (childStartingNodeIndex) {
@@ -344,11 +351,12 @@ export class AICallTree {
                                                 `${childStartingNodeIndex}-${childStartingNodeIndex + children.length}`;
     }
 
-    // 7. Selected Marker
+    // 8. Selected Marker
     const selectedMarker = selectedNode?.event === node.event ? 'S' : '';
 
     // Combine fields
     let line = idStr;
+    line += ';' + eventKey;
     line += ';' + name;
     line += ';' + durationStr;
     line += ';' + selfTimeStr;

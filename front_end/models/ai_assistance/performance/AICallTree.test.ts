@@ -5,11 +5,24 @@
 import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import {AICallTree, ExcludeCompileCodeFilter, SelectedEventDurationFilter} from '../ai_assistance.js';
 
+const NODE_NAME_INDEX = 2;
+
 describeWithEnvironment('AICallTree', () => {
+  let snapshotTester: SnapshotTester;
+  before(async () => {
+    snapshotTester = new SnapshotTester(import.meta);
+    await snapshotTester.load();
+  });
+
+  after(async () => {
+    await snapshotTester.finish();
+  });
+
   beforeEach(() => {
     Root.Runtime.experiments.disableForTest('timeline-show-all-events');
   });
@@ -67,29 +80,7 @@ describeWithEnvironment('AICallTree', () => {
     assert.isOk(funcCall);
     const callTree = AICallTree.fromEvent(funcCall, parsedTrace);
     assert.isOk(callTree);
-    const expectedData = '\n' +
-        `
-
-# All URLs:
-
-  * 0: node:internal/main/run_main_module
-  * 1: node:internal/modules/run_main
-  * 2: node:internal/modules/cjs/loader
-  * 3: file:///Users/andoli/Desktop/mocks/fixnodeinspector/app.js
-
-# Call tree:
-
-1;(anonymous);2370;;0;2
-2;executeUserEntryPoint;2370;;1;3
-3;Module._load;2370;;2;4
-4;Module.load;2370;;2;5
-5;Module._extensions..js;2370;;2;6
-6;Module._compile;2370;;2;7
-7;callAndPauseOnStart;2370;;;8;S
-8;(anonymous);2370;2370;3;
-`.trim();
-
-    assert.strictEqual(callTree?.serialize(), expectedData);
+    snapshotTester.assert(this, callTree.serialize());
   });
 
   it('serializes a simple tree', async function() {
@@ -101,23 +92,8 @@ describeWithEnvironment('AICallTree', () => {
       throw new Error('Could not find expected event.');
     }
     const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
-    const expectedData = '\n' +
-        `
-
-# All URLs:
-
-  * 0: https://www.gstatic.com/devrel-devsite/prod/vafe2e13ca17bb026e70df42a2ead1c8192750e86a12923a88eda839025dabf95/js/devsite_app_module.js
-
-# Call tree:
-
-1;Task;0.2;;;2
-2;Timer fired;0.2;;;3
-3;Function call;0.2;;0;4
-4;_ds.q.ns;0.2;;0;5;S
-5;clearTimeout;0.2;0;;6
-6;Recalculate style;0.2;0.2;;
-`.trim();
-    assert.strictEqual(callTree?.serialize(), expectedData);
+    assert.isOk(callTree);
+    snapshotTester.assert(this, callTree.serialize());
   });
 
   it('correctly serializes selected node with multiple children', async function() {
@@ -135,8 +111,8 @@ describeWithEnvironment('AICallTree', () => {
       stringifiedNode = callTree?.stringifyNode(callTree.selectedNode, 2, parsedTrace, callTree.selectedNode, [''], 2);
     }
 
-    // Entry Format: id;name;duration;selfTime;urlIndex;childRange;[S]
-    assert.deepEqual(stringifiedNode, '2;define;3.5;0.5;;2-6;S');
+    // Entry Format: id;eventKey;name;duration;selfTime;urlIndex;childRange;[S]
+    assert.deepEqual(stringifiedNode, '2;p-73704-775-1273-118;define;3.5;0.5;;2-6;S');
   });
 
   // Since the childIds are serialized while the node is visited by BFS,
@@ -158,6 +134,7 @@ describeWithEnvironment('AICallTree', () => {
       throw new Error('Could not find expected event.');
     }
     const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
+    assert.isOk(callTree);
 
     const visited: Array<{name: string, nodeIndex: number, childStartingIndex?: number}> = [];
 
@@ -165,7 +142,7 @@ describeWithEnvironment('AICallTree', () => {
       visited.push({name: Trace.Name.forEntry(node.event, parsedTrace), nodeIndex, childStartingIndex});
     };
 
-    callTree?.breadthFirstWalk(callTree.rootNode.children().values(), callback);
+    callTree.breadthFirstWalk(callTree.rootNode.children().values(), callback);
 
     const expectedVisited = [
       {name: 'Task', nodeIndex: 1, childStartingIndex: 2},
@@ -202,6 +179,7 @@ describeWithEnvironment('AICallTree', () => {
       throw new Error('Could not find expected event.');
     }
     const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
+    assert.isOk(callTree);
 
     const visited: Array<{name: string, nodeIndex: number, childStartingIndex?: number}> = [];
 
@@ -209,7 +187,7 @@ describeWithEnvironment('AICallTree', () => {
       visited.push({name: Trace.Name.forEntry(node.event, parsedTrace), nodeIndex, childStartingIndex});
     };
 
-    callTree?.breadthFirstWalk(callTree.rootNode.children().values(), callback);
+    callTree.breadthFirstWalk(callTree.rootNode.children().values(), callback);
 
     const expectedVisited = [
       {name: 'Task', nodeIndex: 1, childStartingIndex: 2},
@@ -239,23 +217,8 @@ describeWithEnvironment('AICallTree', () => {
       throw new Error('Could not find expected event.');
     }
     const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
-
-    // Entry Format: id;name;duration;selfTime;urlIndex;childRange;[S]
-    const expectedData = `
-# All URLs:
-
-  * 0: https://www.gstatic.com/devrel-devsite/prod/vafe2e13ca17bb026e70df42a2ead1c8192750e86a12923a88eda839025dabf95/js/devsite_app_module.js
-
-# Call tree:
-
-1;Task;0.2;;;2
-2;Timer fired;0.2;;;3
-3;Function call;0.2;;0;4
-4;_ds.q.ns;0.2;;0;5;S
-5;clearTimeout;0.2;0;;6
-6;Recalculate style;0.2;0.2;;`;
-
-    assert.strictEqual(callTree?.serialize(), expectedData);
+    assert.isOk(callTree);
+    snapshotTester.assert(this, callTree.serialize());
   });
 
   it('serializes a tree in a concise format', async function() {
@@ -266,30 +229,8 @@ describeWithEnvironment('AICallTree', () => {
       throw new Error('Could not find expected event.');
     }
     const callTree = AICallTree.fromEvent(selectedEvent, parsedTrace);
-
-    // Entry Format: id;name;duration;selfTime;urlIndex;childRange;[S]
-    const expectedData = `
-# All URLs:
-
-  * 0: https://www.gstatic.com/firebasejs/6.6.1/firebase-performance.js
-
-# Call tree:
-
-1;Task;0.9;0;;2;S
-2;Timer fired;0.9;0;;3
-3;Function call;0.9;0.1;0;4
-4;(anonymous);0.8;;0;5
-5;(anonymous);0.8;;0;6-8
-6;Ot.getEntriesByType;0.1;;0;8
-7;le.createOobTrace;0.6;0.2;0;9-11
-8;getEntriesByType;0.1;0.1;;
-9;le;0.1;0.1;0;
-10;ie;0.2;;0;11-13
-11;Ot.requiredApisAvailable;0.2;0.2;0;
-12;oe;0;;0;13
-13;setTimeout;0;0;;`;
-
-    assert.strictEqual(callTree?.serialize(), expectedData);
+    assert.isOk(callTree);
+    snapshotTester.assert(this, callTree.serialize());
   });
 
   it('can serialize a tree from an event that is not shown unless "show all events" is enabled', async function() {
@@ -332,7 +273,7 @@ describeWithEnvironment('AICallTree', () => {
         return '';
       }
       // We only want to extract the names to check the tree structure.
-      return serializedTree.split('\n').filter(l => /^\d+;/.test(l)).map(l => l.split(';')[1]).join('\n');
+      return serializedTree.split('\n').filter(l => /^\d+;/.test(l)).map(l => l.split(';')[NODE_NAME_INDEX]).join('\n');
     }
 
     // A very small 'get storage' event. It's 6µs long
@@ -393,7 +334,7 @@ describeWithEnvironment('AICallTree', () => {
     // Check there are 3 keydown events. This confirms that the call tree is taking events from the right timespan.
     const keyDownEvents = output.split('\n').filter(line => {
       // Extract the name part (second field) and check if it includes 'Event: keydown'.
-      return /^\d+;/.test(line) && line.split(';')[1].includes('Event: keydown');
+      return /^\d+;/.test(line) && line.split(';')[NODE_NAME_INDEX].includes('Event: keydown');
     });
     assert.lengthOf(keyDownEvents, 3);
   });

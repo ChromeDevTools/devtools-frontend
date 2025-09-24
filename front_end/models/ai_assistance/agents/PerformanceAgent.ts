@@ -147,11 +147,12 @@ When referring to an element for which you know the nodeId, annotate your output
 
 const callFrameDataFormatDescription = `Each call frame is presented in the following format:
 
-'id;name;duration;selfTime;urlIndex;childRange;[S]'
+'id;eventKey;name;duration;selfTime;urlIndex;childRange;[S]'
 
 Key definitions:
 
 * id: A unique numerical identifier for the call frame. Never mention this id in the output to the user.
+* eventKey: String that uniquely identifies this event in the flame chart.
 * name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
 * duration: The total execution time of the call frame, including its children.
 * selfTime: The time spent directly within the call frame, excluding its children's execution.
@@ -161,11 +162,11 @@ Key definitions:
 
 Example Call Tree:
 
-1;main;500;100;;
-2;update;200;50;;3
-3;animate;150;20;0;4-5;S
-4;calculatePosition;80;80;;
-5;applyStyles;50;50;;
+1;r-123;main;500;100;;
+2;r-124;update;200;50;;3
+3;p-49575-15428179-2834-374;animate;150;20;0;4-5;S
+4;p-49575-15428179-3505-1162;calculatePosition;80;80;;
+5;p-49575-15428179-5391-2767;applyStyles;50;50;;
 `;
 
 enum ScorePriority {

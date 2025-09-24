@@ -445,19 +445,7 @@ export class PerformanceTraceFormatter {
   }
 
   formatCallTree(tree: AICallTree, headerLevel = 1): string {
-    const results = [tree.serialize(headerLevel), ''];
-
-    // TODO(b/425270067): add eventKey to tree.serialize, but need to wait for other
-    // performance agent to be consolidated.
-    results.push('#'.repeat(headerLevel) + ' Node id to eventKey\n');
-    results.push('These node ids correspond to the call tree nodes listed in the above section.\n');
-    tree.breadthFirstWalk(tree.rootNode.children().values(), (node, nodeId) => {
-      results.push(`${nodeId}: ${this.eventsSerializer.keyForEvent(node.event)}`);
-    });
-
-    results.push('\nIMPORTANT: Never show eventKey to the user.');
-
-    return results.join('\n');
+    return `${tree.serialize(headerLevel)}\n\nIMPORTANT: Never show eventKey to the user.`;
   }
 
   formatNetworkRequests(

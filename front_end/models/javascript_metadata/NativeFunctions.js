@@ -7278,6 +7278,10 @@ export const NativeFunctions = [
     signatures: [["tool_name"]]
   },
   {
+    name: "provideContext",
+    signatures: [["params"]]
+  },
+  {
     name: "SnapEvent",
     signatures: [["type","?eventInitDict"]]
   },
@@ -7978,7 +7982,7 @@ export const NativeFunctions = [
   },
   {
     name: "constant",
-    signatures: [["tensor"],["desc","buffer"],["type","value"]]
+    signatures: [["tensor"],["desc","buffer"]]
   },
   {
     name: "argMin",

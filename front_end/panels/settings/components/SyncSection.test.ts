@@ -70,8 +70,7 @@ describeWithLocale('SyncSection', () => {
 
     const warning = shadowRoot.querySelector('devtools-tooltip');
     assert.instanceOf(warning, HTMLElement);
-
-    assert.include(warning.innerText, 'To turn this setting on');
+    assert.include(warning.innerText, 'You need to first enable saving Chrome settings in your Google account.');
   });
 
   it('disables the checkbox when sync is not active', async () => {

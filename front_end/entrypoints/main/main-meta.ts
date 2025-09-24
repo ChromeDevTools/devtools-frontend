@@ -188,9 +188,9 @@ const UIStrings = {
   browserLanguage: 'Browser UI language',
   /**
    * @description Label for a checkbox in the settings UI. Allows developers to opt-in/opt-out
-   * of syncing DevTools settings via Chrome Sync.
+   * of saving settings to their Google account.
    */
-  enableSync: 'Enable settings sync',
+  saveSettings: 'Save `DevTools` settings to your `Google` account',
   /**
    * @description Label for a checkbox in the settings UI. Allows developers to opt-in/opt-out
    * of receiving Google Developer Program (GDP) badges based on their activity in Chrome DevTools.
@@ -789,7 +789,7 @@ Common.Settings.registerSettingExtension({
   // This name must be kept in sync with DevToolsSettings::kSyncDevToolsPreferencesFrontendName.
   settingName: 'sync-preferences',
   settingType: Common.Settings.SettingType.BOOLEAN,
-  title: i18nLazyString(UIStrings.enableSync),
+  title: i18nLazyString(UIStrings.saveSettings),
   defaultValue: false,
   reloadRequired: true,
 });

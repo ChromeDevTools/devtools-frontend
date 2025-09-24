@@ -31,10 +31,10 @@ const UIStrings = {
    */
   syncDisabled: 'To turn this setting on, you must enable Chrome sync.',
   /**
-   * @description Text shown to the user in the Settings UI. 'This setting' refers
-   * to a checkbox that is disabled.
+   * @description Text shown to the user in the Settings UI. Explains why the checkbox
+   * for saving DevTools settings to the user's Google account is inactive.
    */
-  preferencesSyncDisabled: 'To turn this setting on, you must first enable settings sync in Chrome.',
+  preferencesSyncDisabled: 'You need to first enable saving `Chrome` settings in your `Google` account.',
   /**
    * @description Label for the account email address. Shown in the DevTools Settings UI in
    * front of the email address currently used for Chrome Sync.

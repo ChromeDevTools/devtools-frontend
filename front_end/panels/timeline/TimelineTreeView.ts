@@ -1005,7 +1005,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case AggregatedTimelineTreeView.GroupBy.Subdomain:
       case AggregatedTimelineTreeView.GroupBy.ThirdParties: {
         // This `undefined` is [unattributed]
-        // TODO(paulirish,aixba): Improve attribution to reduce amount of items in [unattributed].
+        // TODO(paulirish): Improve attribution to reduce amount of items in [unattributed].
         const domainName = id ? this.beautifyDomainName(id, node) : undefined;
         return {name: domainName || unattributed, color, icon: undefined};
       }

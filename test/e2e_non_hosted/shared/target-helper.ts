@@ -44,6 +44,10 @@ export class InspectedPage extends PageWrapper {
   getOopifResourcesPath() {
     return this.getResourcesPath('devtools.oopif.test');
   }
+
+  async overridePermissions(permissions: puppeteer.Permission[]) {
+    await this.page.browserContext().overridePermissions(`https://localhost:${this.serverPort}`, permissions);
+  }
 }
 
 export async function setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number) {

@@ -7,10 +7,6 @@ import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js'
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
-import {
-  reloadDevTools,
-} from './cross-tool-helper.js';
-
 const DEVICE_TOOLBAR_TOGGLER_SELECTOR = '[aria-label="Toggle device toolbar"]';
 const DEVICE_TOOLBAR_SELECTOR = '.device-mode-toolbar';
 const DEVICE_TOOLBAR_OPTIONS_SELECTOR = '.device-mode-toolbar .device-mode-toolbar-options';
@@ -25,10 +21,6 @@ const DUAL_SCREEN_BUTTON_SELECTOR = '[aria-label="Toggle dual-screen mode"]';
 const DEVICE_POSTURE_DROPDOWN_SELECTOR = '[aria-label="Device posture"]';
 const SCREEN_DIM_INPUT_SELECTOR = '[title="Width"]';
 const AUTO_AUTO_ADJUST_ZOOM_SELECTOR = '[aria-label*="Auto-adjust zoom"]';
-
-export const reloadDockableFrontEnd = async () => {
-  await reloadDevTools({canDock: true});
-};
 
 export const deviceModeIsEnabled =
     async (inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) => {

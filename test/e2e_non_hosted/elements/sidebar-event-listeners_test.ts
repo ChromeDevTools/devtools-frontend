@@ -9,7 +9,6 @@ import {
   waitForElementsStyleSection,
   waitForSelectedNodeToBeExpanded,
 } from '../../e2e/helpers/elements-helpers.js';
-import {clickMoreTabsButton} from '../../shared/helper.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
@@ -79,7 +78,7 @@ describe('Event listeners in the elements sidebar', () => {
   const openEventListenersPaneAndWaitForListeners = async (devToolsPage: DevToolsPage) => {
     let eventListenersPanel = await devToolsPage.$('Event Listeners', undefined, 'aria');
     if (!eventListenersPanel) {
-      await clickMoreTabsButton(undefined, devToolsPage);
+      await devToolsPage.clickMoreTabsButton();
       eventListenersPanel = await devToolsPage.waitFor(EVENT_LISTENERS_PANEL_LINK);
     }
     await devToolsPage.clickElement(eventListenersPanel);

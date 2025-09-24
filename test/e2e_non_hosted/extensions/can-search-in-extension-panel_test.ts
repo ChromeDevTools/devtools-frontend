@@ -8,7 +8,6 @@ import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {expectError} from '../../conductor/events.js';
 import {platform} from '../../conductor/platform.js';
 import {loadExtension} from '../../e2e/helpers/extension-helpers.js';
-import {clickMoreTabsButton} from '../../shared/helper.js';
 
 declare global {
   interface Window {
@@ -32,7 +31,7 @@ describe('Extension panels', () => {
       panel.onSearch.addListener((action, queryString) => window.searchEvents.push({action, queryString}));
     }, page);
 
-    await clickMoreTabsButton(undefined, devToolsPage);
+    await devToolsPage.clickMoreTabsButton();
     await devToolsPage.click(`[aria-label=${PAGE_TITLE}]`);
 
     const accelerator = platform === 'mac' ? 'Meta' : 'Control';

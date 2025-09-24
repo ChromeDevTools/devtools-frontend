@@ -14,7 +14,6 @@ import {expectError} from '../../conductor/events.js';
 import {
   loadExtension,
 } from '../../e2e/helpers/extension-helpers.js';
-import {clickMoreTabsButton} from '../../shared/helper.js';
 
 async function createPanel(extension: puppeteer.Frame, resourcePath = '') {
   return await extension.evaluate(
@@ -53,7 +52,7 @@ describe('The Extension API', () => {
     const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
 
     await createPanel(extension, '/blank.html');
-    await clickMoreTabsButton(undefined, devToolsPage);
+    await devToolsPage.clickMoreTabsButton();
     const header = await devToolsPage.waitForAria('extension-tab-title');
     await header.click();
     const panel = await devToolsPage.waitForAria('extension-tab-title panel');
@@ -67,7 +66,7 @@ describe('The Extension API', () => {
     await inspectedPage.goToResource('empty.html');
     const extension = await loadExtension('TestExtension', undefined, undefined, devToolsPage, inspectedPage);
     await createPanel(extension, 'blank.html');
-    await clickMoreTabsButton(undefined, devToolsPage);
+    await devToolsPage.clickMoreTabsButton();
     const header = await devToolsPage.waitForAria('extension-tab-title');
     await header.click();
     const panel = await devToolsPage.waitForAria('extension-tab-title panel');

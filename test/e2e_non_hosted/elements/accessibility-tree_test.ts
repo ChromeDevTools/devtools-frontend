@@ -6,9 +6,6 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import {toggleAccessibilityTree} from '../../e2e/helpers/elements-helpers.js';
-import {
-  raf,
-} from '../../shared/helper.js';
 
 describe('Accessibility Tree in the Elements Tab', function() {
   setup({enabledDevToolsExperiments: ['full-accessibility-tree', 'protocol-monitor']});
@@ -55,7 +52,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
     });
     // For some reason a11y tree takes a while to propagate.
     for (let i = 0; i < 30; i++) {
-      await raf(inspectedPage.page);
+      await inspectedPage.raf();
     }
     await devToolsPage.bringToFront();
     await devToolsPage.waitForElementWithTextContent(
@@ -77,7 +74,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
     await link.evaluate(node => node.setAttribute('aria-label', 'birds'));
     // For some reason a11y tree takes a while to propagate.
     for (let i = 0; i < 30; i++) {
-      await raf(inspectedPage.page);
+      await inspectedPage.raf();
     }
     await devToolsPage.bringToFront();
     await devToolsPage.waitForElementWithTextContent(
@@ -98,7 +95,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
     await link!.evaluate(node => node.remove());
     // For some reason a11y tree takes a while to propagate.
     for (let i = 0; i < 30; i++) {
-      await raf(inspectedPage.page);
+      await inspectedPage.raf();
     }
     await devToolsPage.bringToFront();
     await devToolsPage.waitForNoElementsWithTextContent(

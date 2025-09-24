@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import {closePanelTab} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {openCommandMenu} from './quick_open-helpers.js';
@@ -36,7 +35,7 @@ export async function navigateToSecurityTab(
 }
 
 export async function closeSecurityTab(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  await closePanelTab(SECURITY_TAB_SELECTOR, devToolsPage);
+  await devToolsPage.closePanelTab(SECURITY_TAB_SELECTOR);
   await securityTabDoesNotExist(devToolsPage);
 }
 

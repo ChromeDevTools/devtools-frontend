@@ -21,7 +21,6 @@ import {openPanelViaMoreTools, openSettingsTab} from '../../e2e/helpers/settings
 import {waitForSourcesPanel} from '../../e2e/helpers/sources-helpers.js';
 import {
   platform,
-  scrollElementIntoView,
 } from '../../shared/helper.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
@@ -562,7 +561,7 @@ describe('User Metrics for Issue Panel', () => {
     await devToolsPage.click('.issue');
 
     await devToolsPage.waitFor('.element-reveal-icon');
-    await scrollElementIntoView('.element-reveal-icon', undefined, devToolsPage);
+    await devToolsPage.scrollElementIntoView('.element-reveal-icon');
     await devToolsPage.click('.element-reveal-icon');
 
     await assertHistogramEventsInclude(

@@ -7,9 +7,6 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {
-  setCheckBox,
-} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {veImpression} from './visual-logging-helpers.js';
@@ -119,7 +116,7 @@ export async function setCacheDisabled(
 }
 
 export async function setInvert(invert: boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  await setCheckBox('[title="Invert"]', invert, devToolsPage);
+  await devToolsPage.setCheckBox('[title="Invert"]', invert);
 }
 
 export async function setTimeWindow(devToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<void> {

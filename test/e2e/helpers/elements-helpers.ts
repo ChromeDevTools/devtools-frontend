@@ -8,12 +8,8 @@ import {AsyncScope} from '../../conductor/async-scope.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
-  $$,
-  clickMoreTabsButton,
-  getTextContent,
   step,
-  summonSearchBox,
-  waitForFunction,
+
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -306,7 +302,7 @@ export const focusElementsTree = async (devToolsPage = getBrowserAndPagesWrapper
 
 export const navigateToSidePane = async (paneName: string, devToolsPage?: DevToolsPage) => {
   devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
-  if ((await $$(`[aria-label="${paneName} panel"]`, undefined, undefined, devToolsPage)).length) {
+  if ((await devToolsPage.$$(`[aria-label="${paneName} panel"]`)).length) {
     return;
   }
   await devToolsPage.click(`[aria-label="${paneName}"]`);
@@ -338,7 +334,7 @@ export const waitForElementsDOMBreakpointsSection =
   let domBreakpointsPane = await devToolsPage.$('DOM Breakpoints', undefined, 'aria');
   if (!domBreakpointsPane) {
     const elementsPanel = await devToolsPage.waitForAria('Elements panel');
-    await clickMoreTabsButton(elementsPanel, devToolsPage);
+    await devToolsPage.clickMoreTabsButton(elementsPanel);
     domBreakpointsPane = await devToolsPage.waitForAria('DOM Breakpoints');
   }
   await devToolsPage.click(DOM_BREAKPOINTS_SECTION_SELECTOR);
@@ -1151,7 +1147,7 @@ export const summonAndWaitForSearchBox =
     async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   // Wait for elements to load.
   await devToolsPage.waitFor('devtools-elements-breadcrumbs');
-  await summonSearchBox(devToolsPage);
+  await devToolsPage.summonSearchBox();
   await devToolsPage.waitFor(SEARCH_BOX_SELECTOR);
   await expectVeEvents(
       [
@@ -1168,10 +1164,10 @@ export const summonAndWaitForSearchBox =
       undefined, devToolsPage);
 };
 
-export const assertSearchResultMatchesText = async (text: string, devToolsPage?: DevToolsPage) => {
-  await waitForFunction(async () => {
-    return await getTextContent(SEARCH_RESULTS_MATCHES, undefined, devToolsPage) === text;
-  }, undefined, undefined, devToolsPage);
+export const assertSearchResultMatchesText = async (text: string, devToolsPage: DevToolsPage) => {
+  await devToolsPage.waitForFunction(async () => {
+    return await devToolsPage.getTextContent(SEARCH_RESULTS_MATCHES) === text;
+  });
 };
 
 export const goToResourceAndWaitForStyleSection = async (

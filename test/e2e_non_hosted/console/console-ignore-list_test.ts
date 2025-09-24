@@ -9,7 +9,6 @@ import {
 } from '../../e2e/helpers/console-helpers.js';
 import {setIgnoreListPattern} from '../../e2e/helpers/settings-helpers.js';
 import {
-  getVisibleTextContents,
   replacePuppeteerUrl,
 } from '../../shared/helper.js';
 
@@ -36,7 +35,7 @@ describe('Ignore list', () => {
     ];
 
     assert.deepEqual(
-        (await getVisibleTextContents('.stack-preview-container tbody tr', devToolsPage))
+        (await devToolsPage.getVisibleTextContents('.stack-preview-container tbody tr'))
             .map((value: string|null) => value ? replacePuppeteerUrl(value) : value),
         minimized);
 
@@ -45,7 +44,7 @@ describe('Ignore list', () => {
     await devToolsPage.waitForVisible('.show-less-link');
 
     assert.deepEqual(
-        (await getVisibleTextContents('.stack-preview-container tbody tr', devToolsPage))
+        (await devToolsPage.getVisibleTextContents('.stack-preview-container tbody tr'))
             .map((value: string|null) => value ? replacePuppeteerUrl(value) : value),
         full);
 
@@ -54,7 +53,7 @@ describe('Ignore list', () => {
     await devToolsPage.waitForVisible('.show-all-link');
 
     assert.deepEqual(
-        (await getVisibleTextContents('.stack-preview-container tbody tr', devToolsPage))
+        (await devToolsPage.getVisibleTextContents('.stack-preview-container tbody tr'))
             .map((value: string|null) => value ? replacePuppeteerUrl(value) : value),
         minimized);
   });

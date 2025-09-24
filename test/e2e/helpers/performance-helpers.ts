@@ -6,7 +6,6 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {waitForMany} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {openCommandMenu} from './quick_open-helpers.js';
@@ -293,17 +292,6 @@ export async function getTotalTimeFromPie(devToolsPage: DevToolsPage = getBrowse
   const pieChartTotal = await devToolsPage.waitFor('.pie-chart-total');
   const totalText = await pieChartTotal.evaluate(node => node.textContent as string);
   return parseInt(totalText, 10);
-}
-
-export async function getRenderingTimeFromSummary(): Promise<[number, string]> {
-  const categoryValues = await waitForMany('.category-value', 6);
-  const categoryNames = await waitForMany('.category-name', 6);
-
-  // update the index if the rendering time is showing in a different row
-  const categoryName = await categoryNames[1].evaluate(node => node.textContent as string);
-  const categoryValue = await categoryValues[1].evaluate(node => node.textContent as string);
-
-  return [parseInt(categoryValue, 10), categoryName];
 }
 
 export async function retrieveSelectedAndExpandedActivityItems(frontend: puppeteer.Page) {

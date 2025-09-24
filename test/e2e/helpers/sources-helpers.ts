@@ -8,17 +8,9 @@ import * as path from 'path';
 import type * as puppeteer from 'puppeteer-core';
 
 import {GEN_DIR} from '../../conductor/paths.js';
+import {platform} from '../../conductor/platform.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {
-  click,
-  clickMoreTabsButton,
-  getBrowserAndPages,
-  platform,
-  pressKey,
-  typeText,
-  waitFor,
-} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {openSoftContextMenuAndClickOnItem} from './context-menu-helpers.js';
@@ -104,27 +96,9 @@ export async function openFileInSourcesPanel(
   await openSourcesPanel(devToolsPage);
 }
 
-export async function openRecorderSubPane() {
-  const root = await waitFor('.navigator-tabbed-pane');
-  await clickMoreTabsButton(root);
-  await click('[aria-label="Recordings"]');
-  await waitFor('[aria-label="Add recording"]');
-}
-
-export async function createNewRecording(recordingName: string) {
-  const {frontend} = getBrowserAndPages();
-
-  await click('[aria-label="Add recording"]');
-  await waitFor('[aria-label^="Recording"]');
-
-  await typeText(recordingName);
-
-  await frontend.keyboard.press('Enter');
-}
-
 export async function openSnippetsSubPane(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const root = await devToolsPage.waitFor('.navigator-tabbed-pane');
-  await clickMoreTabsButton(root, devToolsPage);
+  await devToolsPage.clickMoreTabsButton(root);
   await devToolsPage.click('[aria-label="Snippets"]');
   await devToolsPage.waitFor('[aria-label="New snippet"]');
 }
@@ -153,15 +127,9 @@ export async function createNewSnippet(
   }
 }
 
-export async function openWorkspaceSubPane() {
-  const root = await waitFor('.navigator-tabbed-pane');
-  await click('[aria-label="Workspace"]', {root});
-  await waitFor('[aria-label="Workspace panel"]');
-}
-
 export async function openOverridesSubPane(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const root = await devToolsPage.waitFor('.navigator-tabbed-pane');
-  await clickMoreTabsButton(root, devToolsPage);
+  await devToolsPage.clickMoreTabsButton(root);
   await devToolsPage.click('[aria-label="Overrides"]');
   await devToolsPage.waitFor('[aria-label="Overrides panel"]');
 }
@@ -179,12 +147,6 @@ export async function openSourceCodeEditorForFile(
     inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
   await openFileInSourcesPanel(testInput, devToolsPage, inspectedPage);
   await openFileInEditor(sourceFile, devToolsPage);
-}
-
-export async function getSelectedSource(): Promise<string> {
-  const sourceTabPane = await waitFor('#sources-panel-sources-view .tabbed-pane');
-  const sourceTabs = await waitFor('.tabbed-pane-header-tab.selected', sourceTabPane);
-  return await (sourceTabs.evaluate(node => node.getAttribute('aria-label')) as Promise<string>);
 }
 
 export async function getBreakpointHitLocation(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -654,13 +616,6 @@ export async function inspectMemory(
       'Open in Memory inspector panel',
       devToolsPage,
   );
-}
-
-export async function typeIntoSourcesAndSave(text: string) {
-  const pane = await waitFor('.sources');
-  await pane.type(text);
-
-  await pressKey('s', {control: true});
 }
 
 export async function getScopeNames(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

@@ -8,10 +8,9 @@ import {
 } from '../../e2e/helpers/console-helpers.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {goToResource} from '../../shared/helper.js';
 
 async function openConsoleOnTestPage(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-  await goToResource('../resources/console/command-line-api.html', {inspectedPage});
+  await inspectedPage.goToResource('../resources/console/command-line-api.html');
   await navigateToConsoleTab(devToolsPage);
 }
 

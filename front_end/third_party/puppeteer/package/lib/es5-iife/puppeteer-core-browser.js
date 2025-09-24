@@ -2965,7 +2965,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.22.1';
+  const packageVersion = '24.22.2';
 
   /**
    * @license

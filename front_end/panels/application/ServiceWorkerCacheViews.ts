@@ -134,6 +134,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     const bucketInfo = this.model.target()
                            .model(SDK.StorageBucketsModel.StorageBucketsModel)
                            ?.getBucketByName(cache.storageBucket.storageKey, cache.storageBucket.name);
+
+    this.metadataView.setShowOnlyBucket(false);
+
     if (bucketInfo) {
       this.metadataView.setStorageBucket(bucketInfo);
     } else if (cache.storageKey) {

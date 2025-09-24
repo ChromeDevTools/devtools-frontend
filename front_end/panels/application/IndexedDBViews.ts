@@ -146,6 +146,7 @@ export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.S
     super();
 
     this.model = model;
+    this.setShowOnlyBucket(false);
     if (database) {
       this.update(database);
     }

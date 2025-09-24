@@ -63,8 +63,9 @@ describe('The Application Tab', () => {
     await navigateToSharedStorageForTopDomain(devToolsPage, inspectedPage);
 
     const fieldValues = await getTrimmedTextContent('devtools-report-value', devToolsPage);
-    const timeString = fieldValues[1];
-    assert.deepEqual(fieldValues, [inspectedPage.domain(), timeString, '2', '130', '12']);
+    const timeString = fieldValues[0];  // Creation time is the first field for main frame
+    // Origin is no longer displayed for main frame contexts.
+    assert.deepEqual(fieldValues, [timeString, '2', '130', '12']);
   });
 
   it('shows Shared Storage keys and values', async ({devToolsPage, inspectedPage}) => {

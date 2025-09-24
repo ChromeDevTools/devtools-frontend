@@ -318,6 +318,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     CodeMirror.closeCompletion(this.editor.editor);
   }
 
+  clearAiCodeCompletionCache(): void {
+    this.aiCodeCompletion?.clearCachedRequest();
+  }
+
   moveCaretToEndOfPrompt(): void {
     this.editor.dispatch({
       selection: CodeMirror.EditorSelection.cursor(this.editor.state.doc.length),

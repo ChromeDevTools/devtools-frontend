@@ -657,8 +657,9 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.aiCodeCompletionSummaryToolbar?.setLoading(false);
   }
 
-  static clearConsole(): void {
+  clearConsole(): void {
     SDK.ConsoleModel.ConsoleModel.requestClearMessages();
+    this.prompt.clearAiCodeCompletionCache();
   }
 
   #onIssuesCountUpdate(): void {
@@ -704,6 +705,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   clearHistory(): void {
     this.prompt.history().clear();
+    this.prompt.clearAiCodeCompletionCache();
   }
 
   private consoleHistoryAutocompleteChanged(): void {
@@ -1922,7 +1924,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         ConsoleView.instance().focusPrompt();
         return true;
       case 'console.clear':
-        ConsoleView.clearConsole();
+        ConsoleView.instance().clearConsole();
         return true;
       case 'console.clear.history':
         ConsoleView.instance().clearHistory();

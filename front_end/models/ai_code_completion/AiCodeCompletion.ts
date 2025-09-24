@@ -332,7 +332,7 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
             sampleId,
             startTime,
             onImpression: this.#registerUserImpression.bind(this),
-            clearCachedRequest: this.#clearCachedRequest.bind(this),
+            clearCachedRequest: this.clearCachedRequest.bind(this),
           })
         });
 
@@ -415,10 +415,6 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.#aidaRequestCache = {request, response};
   }
 
-  #clearCachedRequest(): void {
-    this.#aidaRequestCache = undefined;
-  }
-
   #registerUserImpression(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId: number, latency: number): void {
     const seconds = Math.floor(latency / 1_000);
     const remainingMs = latency % 1_000;
@@ -459,6 +455,10 @@ export class AiCodeCompletion extends Common.ObjectWrapper.ObjectWrapper<EventTy
     });
     debugLog('Registered user acceptance');
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionSuggestionAccepted);
+  }
+
+  clearCachedRequest(): void {
+    this.#aidaRequestCache = undefined;
   }
 
   onTextChanged(

@@ -266,12 +266,18 @@ async function getEmptyStateSuggestions(
   }
 }
 
-function getMarkdownRenderer(context: AiAssistanceModel.ConversationContext<unknown>|null):
-    MarkdownRendererWithCodeBlock {
-  if (context instanceof AiAssistanceModel.PerformanceTraceContext && !context.external) {
-    const focus = context.getItem();
-    return new PerformanceAgentMarkdownRenderer(
-        focus.data.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
+function getMarkdownRenderer(
+    context: AiAssistanceModel.ConversationContext<unknown>|null,
+    conversation?: AiAssistanceModel.Conversation): MarkdownRendererWithCodeBlock {
+  if (context instanceof AiAssistanceModel.PerformanceTraceContext) {
+    if (!context.external) {
+      const focus = context.getItem();
+      return new PerformanceAgentMarkdownRenderer(
+          focus.data.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
+    }
+  } else if (conversation?.type === AiAssistanceModel.ConversationType.PERFORMANCE) {
+    // Handle historical conversations (can't linkify anything).
+    return new PerformanceAgentMarkdownRenderer();
   }
 
   return new MarkdownRendererWithCodeBlock();
@@ -851,7 +857,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   override async performUpdate(): Promise<void> {
     const emptyStateSuggestions = await getEmptyStateSuggestions(this.#selectedContext, this.#conversation);
-    const markdownRenderer = getMarkdownRenderer(this.#selectedContext);
+    const markdownRenderer = getMarkdownRenderer(this.#selectedContext, this.#conversation);
 
     this.view(
         {

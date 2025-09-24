@@ -16,8 +16,8 @@ const {ref, createRef} = Lit.Directives;
 
 export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
   constructor(
-      private mainFrameId: string,
-      private lookupEvent: (key: Trace.Types.File.SerializableKey) => Trace.Types.Events.Event | null) {
+      private mainFrameId = '',
+      private lookupEvent: (key: Trace.Types.File.SerializableKey) => Trace.Types.Events.Event | null = () => null) {
     super();
   }
 

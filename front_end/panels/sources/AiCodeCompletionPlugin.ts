@@ -103,6 +103,7 @@ export class AiCodeCompletionPlugin extends Plugin {
     if (this.#teaser) {
       if (update.docChanged) {
         update.view.dispatch({effects: this.#teaserCompartment.reconfigure([])});
+        window.clearTimeout(this.#teaserDisplayTimeout);
         this.#addTeaserPluginToCompartment(update.view);
       } else if (update.selectionSet && update.state.doc.length > 0) {
         update.view.dispatch({effects: this.#teaserCompartment.reconfigure([])});
@@ -187,10 +188,6 @@ export class AiCodeCompletionPlugin extends Plugin {
   }
 
   #addTeaserPluginToCompartment = Common.Debouncer.debounce((view: CodeMirror.EditorView) => {
-    if (this.#teaserDisplayTimeout) {
-      window.clearTimeout(this.#teaserDisplayTimeout);
-      this.#teaserDisplayTimeout = undefined;
-    }
     this.#teaserDisplayTimeout = window.setTimeout(() => {
       this.#addTeaserPluginToCompartmentImmediate(view);
     }, AiCodeCompletion.AiCodeCompletion.DELAY_BEFORE_SHOWING_RESPONSE_MS);

@@ -63,6 +63,28 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
     return this.#formatMilli(Trace.Helpers.Timing.microToMilli(x as Trace.Types.Timing.Micro));
   }
 
+  #formatRequestUrl(request: Trace.Types.Events.SyntheticNetworkRequest): string {
+    const eventKey = this.eventsSerializer.keyForEvent(request);
+    return `${request.args.data.url} (eventKey: ${eventKey})`;
+  }
+
+  #formatScriptUrl(script: Trace.Handlers.ModelHandlers.Scripts.Script): string {
+    if (script.request) {
+      return this.#formatRequestUrl(script.request);
+    }
+
+    return script.url ?? script.sourceUrl ?? script.scriptId;
+  }
+
+  #formatUrl(url: string): string {
+    const request = this.#parsedTrace.data.NetworkRequests.byTime.find(request => request.args.data.url === url);
+    if (request) {
+      return this.#formatRequestUrl(request);
+    }
+
+    return url;
+  }
+
   /**
    * Information about LCP which we pass to the LLM for all insights that relate to LCP.
    */
@@ -81,14 +103,15 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
     }
 
     const {metricScore, lcpRequest, lcpEvent} = data;
-    const theLcpElement =
-        lcpEvent.args.data?.nodeName ? `The LCP element (${lcpEvent.args.data.nodeName})` : 'The LCP element';
+    const theLcpElement = lcpEvent.args.data?.nodeName ?
+        `The LCP element (${lcpEvent.args.data.nodeName}, nodeId: ${lcpEvent.args.data.nodeId})` :
+        'The LCP element';
     const parts: string[] = [
       `The Largest Contentful Paint (LCP) time for this navigation was ${this.#formatMicro(metricScore.timing)}.`,
     ];
 
     if (lcpRequest) {
-      parts.push(`${theLcpElement} is an image fetched from \`${lcpRequest.args.data.url}\`.`);
+      parts.push(`${theLcpElement} is an image fetched from ${this.#formatRequestUrl(lcpRequest)}.`);
       const request =
           this.formatNetworkRequests([lcpRequest], {verbose: true, customTitle: 'LCP resource network request'});
       parts.push(request);
@@ -203,13 +226,53 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
     let output = 'The following resources were associated with ineffficient cache policies:\n';
 
     for (const entry of insight.requests) {
-      output += `\n- ${entry.request.args.data.url}`;
+      output += `\n- ${this.#formatRequestUrl(entry.request)}`;
       output += `\n  - Cache Time to Live (TTL): ${entry.ttl} seconds`;
       output += `\n  - Wasted bytes: ${bytes(entry.wastedBytes)}`;
     }
 
     output += '\n\n' + Trace.Insights.Models.Cache.UIStrings.description;
     return output;
+  }
+
+  #formatLayoutShift(
+      shift: Trace.Types.Events.SyntheticLayoutShift, index: number,
+      rootCauses?: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData): string {
+    const baseTime = this.#parsedTrace.data.Meta.traceBounds.min;
+
+    const potentialRootCauses: string[] = [];
+    if (rootCauses) {
+      rootCauses.iframes.forEach(
+          iframe => potentialRootCauses.push(
+              `An iframe (id: ${iframe.frame}, url: ${iframe.url ?? 'unknown'} was injected into the page)`));
+      rootCauses.webFonts.forEach(req => {
+        potentialRootCauses.push(`A font that was loaded over the network: ${this.#formatRequestUrl(req)}.`);
+      });
+      // TODO(b/413285103): use the nice strings for non-composited animations.
+      // The code for this lives in TimelineUIUtils but that cannot be used
+      // within models. We should move it and then expose the animations info
+      // more nicely.
+      rootCauses.nonCompositedAnimations.forEach(_ => {
+        potentialRootCauses.push('A non composited animation.');
+      });
+      rootCauses.unsizedImages.forEach(img => {
+        // TODO(b/413284569): if we store a nice human readable name for this
+        // image in the trace metadata, we can do something much nicer here.
+        const url = img.paintImageEvent.args.data.url;
+        const nodeName = img.paintImageEvent.args.data.nodeName;
+        const extraText = url ? `url: ${this.#formatUrl(url)}` : `id: ${img.backendNodeId}`;
+        potentialRootCauses.push(`An unsized image (${nodeName}) (${extraText}).`);
+      });
+    }
+    const rootCauseText = potentialRootCauses.length ?
+        `- Potential root causes:\n  - ${potentialRootCauses.join('\n  - ')}` :
+        '- No potential root causes identified';
+
+    const startTime = Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.Micro(shift.ts - baseTime));
+    return `### Layout shift ${index + 1}:
+- Start time: ${millis(startTime)}
+- Score: ${shift.args.data?.weighted_score_delta.toFixed(4)}
+${rootCauseText}`;
   }
 
   /**
@@ -231,7 +294,7 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
     } as const;
 
     const shiftsFormatted = worstCluster.events.map((layoutShift, index) => {
-      return TraceEventFormatter.layoutShift(layoutShift, index, this.#parsedTrace, shifts.get(layoutShift));
+      return this.#formatLayoutShift(layoutShift, index, shifts.get(layoutShift));
     });
 
     return `The worst layout shift cluster was the cluster that started at ${
@@ -384,8 +447,9 @@ Duplication grouped by Node modules: ${filesFormatted}`;
         const url = new Common.ParsedURL.ParsedURL(font.request.args.data.url);
         fontName = url.isValid ? url.lastPathComponent : '(not available)';
       }
-      output += `\n - Font name: ${fontName}, URL: ${font.request.args.data.url}, Property 'font-display' set to: '${
-          font.display}', Wasted time: ${this.#formatMilli(font.wastedTime)}.`;
+      output += `\n - Font name: ${fontName}, URL: ${
+          this.#formatRequestUrl(font.request)}, Property 'font-display' set to: '${font.display}', Wasted time: ${
+          this.#formatMilli(font.wastedTime)}.`;
     }
 
     output += '\n\n' + Trace.Insights.Models.FontDisplay.UIStrings.description;
@@ -469,7 +533,7 @@ Duplication grouped by Node modules: ${filesFormatted}`;
                                        })
                                        .join('\n');
 
-                               return `### ${image.request.args.data.url}
+                               return `### ${this.#formatRequestUrl(image.request)}
 - Potential savings: ${bytes(image.byteSavings)}
 - Optimizations:\n${optimizations}`;
                              })
@@ -580,7 +644,9 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
 
     const filesFormatted =
         Array.from(legacyJavaScriptResults)
-            .map(([script, result]) => `\n- Script: ${script.url} - Wasted bytes: ${result.estimatedByteSavings} bytes
+            .map(
+                ([script, result]) =>
+                    `\n- Script: ${this.#formatScriptUrl(script)} - Wasted bytes: ${result.estimatedByteSavings} bytes
 Matches:
 ${result.matches.map(match => `Line: ${match.line}, Column: ${match.column}, Name: ${match.name}`).join('\n')}`)
             .join('\n');
@@ -631,7 +697,7 @@ ${requestSummary}`;
       function formatNode(
           this: PerformanceInsightFormatter, node: Trace.Insights.Models.NetworkDependencyTree.CriticalRequestNode,
           indent: string): string {
-        const url = node.request.args.data.url;
+        const url = this.#formatRequestUrl(node.request);
         const time = this.#formatMicro(node.timeFromInitialRequest);
         const isLongest = node.isLongest ? ' (longest chain)' : '';
         let nodeString = `${indent}- ${url} (${time})${isLongest}\n`;
@@ -1063,47 +1129,5 @@ To pass this insight, ensure your server supports and prioritizes a modern HTTP 
 
 Polyfills and transforms enable older browsers to use new JavaScript features. However, many are not necessary for modern browsers. Consider modifying your JavaScript build process to not transpile Baseline features, unless you know you must support older browsers.`;
     }
-  }
-}
-
-export class TraceEventFormatter {
-  static layoutShift(
-      shift: Trace.Types.Events.SyntheticLayoutShift, index: number, parsedTrace: Trace.TraceModel.ParsedTrace,
-      rootCauses?: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData): string {
-    const baseTime = parsedTrace.data.Meta.traceBounds.min;
-
-    const potentialRootCauses: string[] = [];
-    if (rootCauses) {
-      rootCauses.iframes.forEach(
-          iframe => potentialRootCauses.push(
-              `An iframe (id: ${iframe.frame}, url: ${iframe.url ?? 'unknown'} was injected into the page)`));
-      rootCauses.webFonts.forEach(req => {
-        potentialRootCauses.push(`A font that was loaded over the network (${req.args.data.url}).`);
-      });
-      // TODO(b/413285103): use the nice strings for non-composited animations.
-      // The code for this lives in TimelineUIUtils but that cannot be used
-      // within models. We should move it and then expose the animations info
-      // more nicely.
-      rootCauses.nonCompositedAnimations.forEach(_ => {
-        potentialRootCauses.push('A non composited animation.');
-      });
-      rootCauses.unsizedImages.forEach(img => {
-        // TODO(b/413284569): if we store a nice human readable name for this
-        // image in the trace metadata, we can do something much nicer here.
-        const url = img.paintImageEvent.args.data.url;
-        const nodeName = img.paintImageEvent.args.data.nodeName;
-        const extraText = url ? `url: ${url}` : `id: ${img.backendNodeId}`;
-        potentialRootCauses.push(`An unsized image (${nodeName}) (${extraText}).`);
-      });
-    }
-    const rootCauseText = potentialRootCauses.length ?
-        `- Potential root causes:\n  - ${potentialRootCauses.join('\n  - ')}` :
-        '- No potential root causes identified';
-
-    const startTime = Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.Micro(shift.ts - baseTime));
-    return `### Layout shift ${index + 1}:
-- Start time: ${millis(startTime)}
-- Score: ${shift.args.data?.weighted_score_delta.toFixed(4)}
-${rootCauseText}`;
   }
 }

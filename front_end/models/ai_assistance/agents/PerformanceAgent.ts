@@ -388,10 +388,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
    *   1. go to paulirish.com, record a trace
    *   2. say "What performance issues exist with my page?"
    *   3. then say "images"
-   *
-   * TODO(cjamcl): reduce the reliance on this by making sure all URL references
-   * (such as the insight formatters) add the "eventKey" as a suffix, just like all
-   * other events.
    */
   #parseForKnownUrls(response: string): string {
     const focus = this.context?.getItem();

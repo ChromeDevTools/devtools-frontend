@@ -618,7 +618,7 @@ export class CoverageView extends UI.Widget.VBox {
   }
 
   selectCoverageItemByUrl(url: string): void {
-    this.listView.selectByUrl(url);
+    this.listView.selectByUrl(url as Platform.DevToolsPath.UrlString);
   }
 
   static readonly EXTENSION_BINDINGS_URL_PREFIX = 'extensions::';

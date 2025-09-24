@@ -73,6 +73,7 @@ ts_library("unittests") {
 
   sources = [
     "CoverageDecorationManager.test.ts",
+    "CoverageListView.test.ts",
     "CoverageModel.test.ts",
     "CoverageView.test.ts",
   ]

@@ -68,6 +68,11 @@ export interface Profile {
   };
 }
 
+interface InitializeResult {
+  hasProfile: boolean;
+  isEligible: boolean;
+}
+
 // The `batchGet` awards endpoint returns badge names with an
 // obfuscated user ID (e.g., `profiles/12345/awards/badge-name`).
 // This function normalizes them to use `me` instead of the ID
@@ -114,9 +119,13 @@ export class GdpClient {
     return gdpClientInstance;
   }
 
-  async initialize(): Promise<void> {
-    void this.getProfile();
-    void this.checkEligibility();
+  async initialize(): Promise<InitializeResult> {
+    return await Promise.all([this.getProfile(), this.checkEligibility()]).then(([profile, eligibilityResponse]) => {
+      return {
+        hasProfile: Boolean(profile),
+        isEligible: eligibilityResponse?.createProfile === EligibilityStatus.ELIGIBLE
+      };
+    });
   }
 
   async getProfile(): Promise<Profile|null> {

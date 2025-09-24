@@ -519,7 +519,12 @@ export class MainImpl {
 
     // Initialize `GDPClient` and `UserBadges` for Google Developer Program integration
     if (Host.GdpClient.isGdpProfilesAvailable()) {
-      void Host.GdpClient.GdpClient.instance().initialize();
+      void Host.GdpClient.GdpClient.instance().initialize().then(({hasProfile, isEligible}) => {
+        const contextString = hasProfile ? 'has-profile' :
+            isEligible                   ? 'no-profile-and-eligible' :
+                                           'no-profile-and-not-eligible';
+        void VisualLogging.logFunctionCall('gdp-client-initialize', contextString);
+      });
       void Badges.UserBadges.instance().initialize();
       Badges.UserBadges.instance().addEventListener(Badges.Events.BADGE_TRIGGERED, async ev => {
         loadedPanelCommonModule ??= await import('../../panels/common/common.js') as typeof PanelCommon;

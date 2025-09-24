@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Badges from '../../models/badges/badges.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -202,6 +203,7 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper<
 
     const onSelect = (conditions: SDK.NetworkManager.Conditions): void => {
       this.dispatchEventToListeners(Events.CONDITIONS_CHANGED, conditions);
+      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.NETWORK_SPEED_THROTTLED);
     };
 
     const throttlingGroups = [

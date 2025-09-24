@@ -8,6 +8,7 @@ import '../../../ui/components/icon_button/icon_button.js';
 import './ControlButton.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Badges from '../../../models/badges/badges.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -231,6 +232,7 @@ export class CreateRecordingView extends HTMLElement {
             selectorAttribute,
             ),
     );
+    Badges.UserBadges.instance().recordAction(Badges.BadgeAction.RECORDER_RECORDING_STARTED);
   }
 
   #dispatchRecordingCancelled(): void {

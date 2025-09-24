@@ -13,7 +13,12 @@ export enum BadgeAction {
   STARTED_AI_CONVERSATION = 'started-ai-conversation',
   // TODO(ergunsh): Instrument performance insight clicks.
   PERFORMANCE_INSIGHT_CLICKED = 'performance-insight-clicked',
-  DEBUGGER_PAUSED = 'debugger-paused'
+  DEBUGGER_PAUSED = 'debugger-paused',
+  BREAKPOINT_ADDED = 'breakpoint-added',
+  CONSOLE_PROMPT_EXECUTED = 'console-prompt-executed',
+  PERFORMANCE_RECORDING_STARTED = 'performance-recording-started',
+  NETWORK_SPEED_THROTTLED = 'network-speed-throttled',
+  RECORDER_RECORDING_STARTED = 'recorder-recording-started',
 }
 
 export type BadgeActionEvents = Record<BadgeAction, void>;

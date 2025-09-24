@@ -68,6 +68,7 @@ describeWithEnvironment('RuleSetGrid', () => {
             ruleSet: {
               id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
               loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+              tag: 'tag1',
               sourceText: `
 {
   "tag": "tag1",
@@ -160,6 +161,7 @@ describeWithEnvironment('RuleSetGrid', () => {
               ruleSet: {
                 id: 'ruleSetId:0.2' as Protocol.Preload.RuleSetId,
                 loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                tag: 'マイルール',
                 sourceText: `
 {
   "prefetch": [

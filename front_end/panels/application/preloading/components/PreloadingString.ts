@@ -723,11 +723,8 @@ export function ruleSetLocationShort(
 
 export function ruleSetTagOrLocationShort(
     ruleSet: Protocol.Preload.RuleSet, pageURL: Platform.DevToolsPath.UrlString): string {
-  if (!ruleSet.errorMessage) {
-    const parsedRuleset = JSON.parse(ruleSet['sourceText']);
-    if ('tag' in parsedRuleset) {
-      return '"' + parsedRuleset['tag'] + '"';
-    }
+  if (!ruleSet.errorMessage && ruleSet.tag) {
+    return '"' + ruleSet.tag + '"';
   }
   return ruleSetLocationShort(ruleSet, pageURL);
 }

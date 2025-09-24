@@ -6,7 +6,7 @@ import * as Trace from '../../../models/trace/trace.js';
 
 import {AICallTree} from './AICallTree.js';
 
-export interface AgentFocusData {
+interface AgentFocusData {
   parsedTrace: Trace.TraceModel.ParsedTrace;
   insightSet: Trace.Insights.Types.InsightSet|null;
   /** Note: at most one of event or callTree is non-null. */
@@ -90,8 +90,26 @@ export class AgentFocus {
     this.#data = data;
   }
 
-  get data(): AgentFocusData {
-    return this.#data;
+  get parsedTrace(): Trace.TraceModel.ParsedTrace {
+    return this.#data.parsedTrace;
+  }
+
+  get insightSet(): Trace.Insights.Types.InsightSet|null {
+    return this.#data.insightSet;
+  }
+
+  /** Note: at most one of event or callTree is non-null. */
+  get event(): Trace.Types.Events.Event|null {
+    return this.#data.event;
+  }
+
+  /** Note: at most one of event or callTree is non-null. */
+  get callTree(): AICallTree|null {
+    return this.#data.callTree;
+  }
+
+  get insight(): Trace.Insights.Types.InsightModel|null {
+    return this.#data.insight;
   }
 
   withInsight(insight: Trace.Insights.Types.InsightModel|null): AgentFocus {

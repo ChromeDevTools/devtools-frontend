@@ -25,8 +25,8 @@ export class PerformanceTraceFormatter {
 
   constructor(focus: AgentFocus) {
     this.#focus = focus;
-    this.#parsedTrace = focus.data.parsedTrace;
-    this.#insightSet = focus.data.insightSet;
+    this.#parsedTrace = focus.parsedTrace;
+    this.#insightSet = focus.insightSet;
     this.eventsSerializer = focus.eventsSerializer;
   }
 

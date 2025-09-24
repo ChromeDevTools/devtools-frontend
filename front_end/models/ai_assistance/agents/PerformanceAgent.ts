@@ -197,7 +197,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   }
 
   override getOrigin(): string {
-    const {min, max} = this.#focus.data.parsedTrace.data.Meta.traceBounds;
+    const {min, max} = this.#focus.parsedTrace.data.Meta.traceBounds;
     return `trace-${min}-${max}`;
   }
 
@@ -206,7 +206,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   }
 
   override getTitle(): string {
-    const focus = this.#focus.data;
+    const focus = this.#focus;
 
     let url = focus.insightSet?.url;
     if (!url) {
@@ -232,9 +232,9 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
    * "Ask AI".
    */
   override async getSuggestions(): Promise<ConversationSuggestions|undefined> {
-    const data = this.#focus.data;
+    const focus = this.#focus;
 
-    if (data.callTree) {
+    if (focus.callTree) {
       return [
         {title: 'What\'s the purpose of this work?', jslogContext: 'performance-default'},
         {title: 'Where is time being spent?', jslogContext: 'performance-default'},
@@ -242,17 +242,17 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
       ];
     }
 
-    if (data.insight) {
-      return new PerformanceInsightFormatter(this.#focus, data.insight).getSuggestions();
+    if (focus.insight) {
+      return new PerformanceInsightFormatter(focus, focus.insight).getSuggestions();
     }
 
     const suggestions: ConversationSuggestions =
         [{title: 'What performance issues exist with my page?', jslogContext: 'performance-default'}];
 
-    if (data.insightSet) {
-      const lcp = data.insightSet ? Trace.Insights.Common.getLCP(data.insightSet) : null;
-      const cls = data.insightSet ? Trace.Insights.Common.getCLS(data.insightSet) : null;
-      const inp = data.insightSet ? Trace.Insights.Common.getINP(data.insightSet) : null;
+    if (focus.insightSet) {
+      const lcp = focus.insightSet ? Trace.Insights.Common.getLCP(focus.insightSet) : null;
+      const cls = focus.insightSet ? Trace.Insights.Common.getCLS(focus.insightSet) : null;
+      const inp = focus.insightSet ? Trace.Insights.Common.getINP(focus.insightSet) : null;
 
       const ModelHandlers = Trace.Handlers.ModelHandlers;
       const GOOD = Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD;
@@ -269,9 +269,9 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
 
       // Add up to 3 suggestions from the top failing insights.
       const top3FailingInsightSuggestions =
-          Object.values(data.insightSet.model)
+          Object.values(focus.insightSet.model)
               .filter(model => model.state !== 'pass')
-              .map(model => new PerformanceInsightFormatter(this.#focus, model).getSuggestions().at(-1))
+              .map(model => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1))
               .filter(suggestion => !!suggestion)
               .slice(0, 3);
       suggestions.push(...top3FailingInsightSuggestions);
@@ -416,8 +416,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         return match;
       }
 
-      const request =
-          focus.data.parsedTrace.data.NetworkRequests.byTime.find(request => request.args.data.url === urlText);
+      const request = focus.parsedTrace.data.NetworkRequests.byTime.find(request => request.args.data.url === urlText);
       if (!request) {
         return match;
       }
@@ -464,21 +463,21 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     const focus = context.getItem();
     const selected: string[] = [];
 
-    if (focus.data.event) {
-      const includeEventInfo = focus.data.event !== this.#lastEventForEnhancedQuery;
-      this.#lastEventForEnhancedQuery = focus.data.event;
+    if (focus.event) {
+      const includeEventInfo = focus.event !== this.#lastEventForEnhancedQuery;
+      this.#lastEventForEnhancedQuery = focus.event;
       if (includeEventInfo) {
-        selected.push(`User selected an event ${this.#formatter?.serializeEvent(focus.data.event)}.\n\n`);
+        selected.push(`User selected an event ${this.#formatter?.serializeEvent(focus.event)}.\n\n`);
       }
     }
 
-    if (focus.data.callTree) {
+    if (focus.callTree) {
       // If this is a followup chat about the same call tree, don't include the call tree serialization again.
       // We don't need to repeat it and we'd rather have more the context window space.
       let contextString = '';
-      if (!this.#callTreeContextSet.has(focus.data.callTree)) {
-        contextString = focus.data.callTree.serialize();
-        this.#callTreeContextSet.add(focus.data.callTree);
+      if (!this.#callTreeContextSet.has(focus.callTree)) {
+        contextString = focus.callTree.serialize();
+        this.#callTreeContextSet.add(focus.callTree);
       }
 
       if (contextString) {
@@ -486,17 +485,17 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       }
     }
 
-    if (focus.data.insight) {
+    if (focus.insight) {
       // We only need to add Insight info to a prompt when the context changes. For example:
       // User clicks Insight A. We need to send info on Insight A with the prompt.
       // User asks follow up question. We do not need to resend Insight A with the prompt.
       // User clicks Insight B. We now need to send info on Insight B with the prompt.
       // User clicks Insight A. We should resend the Insight info with the prompt.
-      const includeInsightInfo = focus.data.insight !== this.#lastInsightForEnhancedQuery;
-      this.#lastInsightForEnhancedQuery = focus.data.insight;
+      const includeInsightInfo = focus.insight !== this.#lastInsightForEnhancedQuery;
+      this.#lastInsightForEnhancedQuery = focus.insight;
 
       if (includeInsightInfo) {
-        selected.push(`User selected the ${focus.data.insight.insightKey} insight.\n\n`);
+        selected.push(`User selected the ${focus.insight.insightKey} insight.\n\n`);
       }
     }
 
@@ -608,7 +607,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       this.addFact(this.#notExternalExtraPreambleFact);
     }
 
-    const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.data.parsedTrace);
+    const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
     if (isFresh) {
       this.addFact(this.#freshTraceExtraPreambleFact);
     }
@@ -649,7 +648,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
   #declareFunctions(context: PerformanceTraceContext): void {
     const focus = context.getItem();
-    const {parsedTrace, insightSet} = focus.data;
+    const {parsedTrace, insightSet} = focus;
 
     this.declareFunction<{insightName: string}, {details: string}>('getInsightDetails', {
       description:

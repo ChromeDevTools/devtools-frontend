@@ -116,11 +116,11 @@ export class PerformanceAnnotationsAgent extends AiAgent<AgentFocus> {
     }
 
     const focus = context.getItem();
-    if (!focus.data.callTree) {
+    if (!focus.callTree) {
       throw new Error('unexpected context');
     }
 
-    const callTree = focus.data.callTree;
+    const callTree = focus.callTree;
 
     yield {
       type: ResponseType.CONTEXT,
@@ -140,11 +140,11 @@ export class PerformanceAnnotationsAgent extends AiAgent<AgentFocus> {
     }
 
     const focus = context.getItem();
-    if (!focus.data.callTree) {
+    if (!focus.callTree) {
       throw new Error('unexpected context');
     }
 
-    const callTree = focus.data.callTree;
+    const callTree = focus.callTree;
     const contextString = callTree.serialize();
     return `${contextString}\n\n# User request\n\n${query}`;
   }

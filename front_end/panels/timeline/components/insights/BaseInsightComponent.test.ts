@@ -342,7 +342,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
     });
 
     it('sets the context when the user clicks the button', async () => {
-      const focus = new AIAssistance.AgentFocus({} as unknown as AIAssistance.AgentFocusData);
+      // @ts-expect-error: don't need real data.
+      const focus = new AIAssistance.AgentFocus({});
       updateHostConfig({
         aidaAvailability: {
           enabled: true,
@@ -367,8 +368,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
           .returns(FAKE_ACTION);
 
       dispatchClickEvent(button);
-      const context = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
-      assert.instanceOf(context, AIAssistance.AgentFocus);
+      const newFocus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
+      assert.instanceOf(newFocus, AIAssistance.AgentFocus);
     });
 
     it('clears "insight" from the active context when it gets toggled shut', async () => {
@@ -381,8 +382,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
         state: 'fail',
         frameId: '123',
       } as const;
-      const focus = new AIAssistance.AgentFocus(
-          {parsedTrace: true, insight: mockInsight} as unknown as AIAssistance.AgentFocusData);
+      // @ts-expect-error: don't need real data.
+      const focus = new AIAssistance.AgentFocus({parsedTrace: true, insight: mockInsight});
       UI.Context.Context.instance().setFlavor(AIAssistance.AgentFocus, focus);
       const component = await renderComponent({insightHasAISupport: true});
       component.agentFocus = focus;
@@ -391,9 +392,9 @@ describeWithEnvironment('BaseInsightComponent', () => {
       const header = component.shadowRoot?.querySelector('header');
       assert.isOk(header);
       dispatchClickEvent(header);
-      const context = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
-      assert.isNull(context?.data.insight);
-      assert.isTrue(context?.data.parsedTrace);
+      const newFocus = UI.Context.Context.instance().flavor(AIAssistance.AgentFocus);
+      assert.isNull(newFocus?.insight);
+      assert.isTrue(newFocus?.parsedTrace);
     });
 
     it('does not render the "Ask AI" button when the perf agent is not enabled', async () => {

@@ -46,7 +46,7 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
   constructor(focus: AgentFocus, insight: Trace.Insights.Types.InsightModel) {
     super(focus);
     this.#insight = insight;
-    this.#parsedTrace = focus.data.parsedTrace;
+    this.#parsedTrace = focus.parsedTrace;
   }
 
   #formatMilli(x?: number): string {

@@ -273,7 +273,7 @@ function getMarkdownRenderer(
     if (!context.external) {
       const focus = context.getItem();
       return new PerformanceAgentMarkdownRenderer(
-          focus.data.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
+          focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
     }
   } else if (conversation?.type === AiAssistanceModel.ConversationType.PERFORMANCE) {
     // Handle historical conversations (can't linkify anything).
@@ -1073,7 +1073,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return Common.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
     if (context instanceof AiAssistanceModel.PerformanceTraceContext) {
-      const focus = context.getItem().data;
+      const focus = context.getItem();
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
         const revealable = new SDK.TraceObject.RevealableEvent(event);

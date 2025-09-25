@@ -17,8 +17,15 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CoverageDecorationManager} from './CoverageDecorationManager.js';
-import {CoverageListView} from './CoverageListView.js';
-import {type CoverageInfo, CoverageModel, CoverageType, Events, type URLCoverageInfo} from './CoverageModel.js';
+import {type CoverageListItem, CoverageListView} from './CoverageListView.js';
+import {
+  type CoverageInfo,
+  CoverageModel,
+  CoverageType,
+  Events,
+  SourceURLCoverageInfo,
+  type URLCoverageInfo,
+} from './CoverageModel.js';
 import coverageViewStyles from './coverageView.css.js';
 
 const UIStrings = {
@@ -435,7 +442,22 @@ export class CoverageView extends UI.Widget.VBox {
   }
 
   private updateListView(): void {
-    this.listView.update(this.model?.entries() || []);
+    this.listView.update(this.model?.entries().map(this.toCoverageListItem, this) || []);
+  }
+
+  private toCoverageListItem(info: URLCoverageInfo): CoverageListItem {
+    return {
+      url: info.url(),
+      type: info.type(),
+      size: info.size(),
+      usedSize: info.usedSize(),
+      unusedSize: info.unusedSize(),
+      usedPercentage: info.usedPercentage(),
+      unusedPercentage: info.unusedPercentage(),
+      sources: [...info.sourcesURLCoverageInfo.values()].map(this.toCoverageListItem, this),
+      isContentScript: info.isContentScript(),
+      generatedUrl: info instanceof SourceURLCoverageInfo ? info.generatedURLCoverageInfo.url() : undefined,
+    };
   }
 
   async stopRecording(): Promise<void> {
@@ -514,7 +536,7 @@ export class CoverageView extends UI.Widget.VBox {
 
   private updateViews(updatedEntries: CoverageInfo[]): void {
     this.updateStats();
-    this.listView.update(this.model?.entries() || []);
+    this.listView.update(this.model?.entries().map(this.toCoverageListItem, this) || []);
     this.exportAction.setEnabled(this.model !== null && this.model.entries().length > 0);
     this.decorationManager?.update(updatedEntries);
   }
@@ -527,14 +549,15 @@ export class CoverageView extends UI.Widget.VBox {
       for (const info of this.model.entries()) {
         all.total += info.size();
         all.unused += info.unusedSize();
-        if (this.isVisible(info)) {
+        const listItem = this.toCoverageListItem(info);
+        if (this.isVisible(listItem)) {
           if (this.textFilterRegExp?.test(info.url())) {
             filtered.total += info.size();
             filtered.unused += info.unusedSize();
           } else {
             // If it doesn't match the filter, calculate the stats from visible children if there are any
             for (const childInfo of info.sourcesURLCoverageInfo.values()) {
-              if (this.isVisible(childInfo)) {
+              if (this.isVisible(this.toCoverageListItem(childInfo))) {
                 filtered.total += childInfo.size();
                 filtered.unused += childInfo.unusedSize();
               }
@@ -583,20 +606,20 @@ export class CoverageView extends UI.Widget.VBox {
     this.updateStats();
   }
 
-  private isVisible(coverageInfo: URLCoverageInfo): boolean {
-    const url = coverageInfo.url();
+  private isVisible(coverageInfo: CoverageListItem): boolean {
+    const url = coverageInfo.url;
     if (url.startsWith(CoverageView.EXTENSION_BINDINGS_URL_PREFIX)) {
       return false;
     }
-    if (coverageInfo.isContentScript() && !this.showContentScriptsSetting.get()) {
+    if (coverageInfo.isContentScript && !this.showContentScriptsSetting.get()) {
       return false;
     }
-    if (this.typeFilterValue && !(coverageInfo.type() & this.typeFilterValue)) {
+    if (this.typeFilterValue && !(coverageInfo.type & this.typeFilterValue)) {
       return false;
     }
     // If it's a parent, check if any children are visible
-    if (coverageInfo.sourcesURLCoverageInfo.size > 0) {
-      for (const sourceURLCoverageInfo of coverageInfo.sourcesURLCoverageInfo.values()) {
+    if (coverageInfo.sources.length > 0) {
+      for (const sourceURLCoverageInfo of coverageInfo.sources) {
         if (this.isVisible(sourceURLCoverageInfo)) {
           return true;
         }

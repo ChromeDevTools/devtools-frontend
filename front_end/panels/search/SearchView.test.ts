@@ -5,12 +5,11 @@
 import * as Common from '../../core/common/common.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import {
-  dispatchClickEvent,
-  dispatchInputEvent,
-  dispatchKeyDownEvent,
-  renderElementIntoDOM
+  assertScreenshot,
+  renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Search from './search.js';
@@ -62,20 +61,15 @@ class TestSearchView extends Search.SearchView.SearchView {
    * To provide a fake instance we install a get/set accessor for the original property
    * that behaves normally with no override, but returns the mock if one is provided.
    */
-  #searchResultsPane: Search.SearchResultsPane.SearchResultsPane|null = null;
+  view: ViewFunctionStub<typeof Search.SearchView.SearchView>;
 
-  constructor(
-      scopeCreator: () => Search.SearchScope.SearchScope,
-      searchResultsPane?: Search.SearchResultsPane.SearchResultsPane) {
+  constructor(scopeCreator: () => Search.SearchScope.SearchScope) {
+    const view = createViewFunctionStub(Search.SearchView.SearchView);
     const throttler = new Common.Throttler.Throttler(/* timeoutMs */ 0);
-    super('fake', throttler);
+    super('fake', throttler, view);
     this.throttler = throttler;
+    this.view = view;
     this.#scopeCreator = scopeCreator;
-    this.#searchResultsPane = searchResultsPane ?? null;
-  }
-
-  override createSearchResultsPane(): Search.SearchResultsPane.SearchResultsPane {
-    return this.#searchResultsPane ?? super.createSearchResultsPane();
   }
 
   override createScope(): Search.SearchScope.SearchScope {
@@ -83,44 +77,79 @@ class TestSearchView extends Search.SearchView.SearchView {
   }
 
   /** Fills in the UI elements of the SearchView and hits 'Enter'. */
-  triggerSearch(query: string, matchCase: boolean, isRegex: boolean): void {
-    const search = this.contentElement.querySelector<HTMLInputElement>('.search-toolbar-input')!;
-    search.value = query;
-    dispatchInputEvent(search);
+  async triggerSearch(query: string, matchCase: boolean, isRegex: boolean): Promise<void> {
+    const input = await this.view.nextInput;
+    input.onQueryChange(query);
     if (matchCase) {
-      const matchCaseButton = this.contentElement.querySelector<HTMLElement>('.match-case-button')!;
-      matchCaseButton.click();
+      input.onToggleMatchCase();
     }
     if (isRegex) {
-      const regexButton = this.contentElement.querySelector<HTMLElement>('.regex-button')!;
-      regexButton.click();
+      input.onToggleRegex();
     }
 
-    dispatchKeyDownEvent(search, {keyCode: UI.KeyboardShortcut.Keys.Enter.code});
+    input.onQueryKeyDown(new KeyboardEvent('keydown', {keyCode: UI.KeyboardShortcut.Keys.Enter.code}));
   }
 
   get currentSearchResultMessage(): string {
-    return this.contentElement.querySelector('.search-message:nth-child(3)')!.textContent ?? '';
+    return this.view.input.searchResultsMessage;
   }
 }
 
-describeWithEnvironment('SearchView', () => {
-  it('has a standard placeholder when nothing has been searched yet', async () => {
-    const fakeScope = new FakeSearchScope();
-    const searchView = new TestSearchView(() => fakeScope);
-    renderElementIntoDOM(searchView);
+function makeInput(query: string): Search.SearchView.SearchViewInput {
+  return {
+    query,
+    matchCase: true,
+    isRegex: true,
+    searchConfig: null,
+    searchMessage: '',
+    searchResultsMessage: '',
+    searchResults: [],
+    progress: null,
+    onQueryChange: () => {},
+    onQueryKeyDown: () => {},
+    onPanelKeyDown: () => {},
+    onClearSearchInput: () => {},
+    onToggleRegex: () => {},
+    onToggleMatchCase: () => {},
+    onRefresh: () => {},
+    onClearSearch: () => {},
+  };
+}
 
-    await searchView.updateComplete;
-    assert.deepEqual(searchView.contentElement.querySelector('.empty-state-header')?.textContent, 'No search results');
-    assert.isTrue(
-        searchView.contentElement.querySelector('.empty-state-description')?.textContent?.includes('Type and press '));
+function makeOutput(): Search.SearchView.SearchViewOutput {
+  return {
+    focusSearchInput: () => {},
+    showAllMatches: () => {},
+    collapseAllResults: () => {},
+  };
+}
+
+describeWithEnvironment('SearchView view function', () => {
+  it('has a standard placeholder when nothing has been searched yet', async () => {
+    const input = makeInput('');
+    const output = makeOutput();
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    Search.SearchView.DEFAULT_VIEW(input, output, target);
+    await assertScreenshot('search/no-search.png');
   });
 
+  it('notifies the user when no search results were found', async () => {
+    const input = makeInput('a query');
+    const output = makeOutput();
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    Search.SearchView.DEFAULT_VIEW(input, output, target);
+    await assertScreenshot('search/no-results.png');
+  });
+});
+
+describeWithEnvironment('SearchView', () => {
   it('calls the search scope with the search config provided by the user via the UI', async () => {
     const fakeScope = new FakeSearchScope();
     const searchView = new TestSearchView(() => fakeScope);
 
-    searchView.triggerSearch('a query', true, true);
+    await searchView.triggerSearch('a query', true, true);
 
     const {searchConfig} = await fakeScope.performSearchCalledPromise;
     assert.strictEqual(searchConfig.query(), 'a query');
@@ -128,72 +157,50 @@ describeWithEnvironment('SearchView', () => {
     assert.isTrue(searchConfig.isRegex());
   });
 
-  it('notifies the user when no search results were found', async () => {
-    const fakeScope = new FakeSearchScope();
-    const searchView = new TestSearchView(() => fakeScope);
-    renderElementIntoDOM(searchView);
-
-    searchView.triggerSearch('a query', true, true);
-
-    const {searchFinishedCallback} = await fakeScope.performSearchCalledPromise;
-    searchFinishedCallback(/* finished */ true);
-
-    await searchView.updateComplete;
-    assert.deepEqual(searchView.contentElement.querySelector('.empty-state-header')?.textContent, 'No matches found');
-    assert.deepEqual(
-        searchView.contentElement.querySelector('.empty-state-description')?.textContent,
-        'Nothing matched your search query');
-  });
-
   it('has a standard placeholder when search has been cleared', async () => {
     const fakeScope = new FakeSearchScope();
     const searchView = new TestSearchView(() => fakeScope);
-    renderElementIntoDOM(searchView);
 
-    searchView.triggerSearch('a query', true, true);
+    await searchView.triggerSearch('a query', true, true);
 
     const {searchFinishedCallback} = await fakeScope.performSearchCalledPromise;
     searchFinishedCallback(/* finished */ true);
 
     // After search, shows that no matches were found.
-    await searchView.updateComplete;
-    assert.deepEqual(searchView.contentElement.querySelector('.empty-state-header')?.textContent, 'No matches found');
+    const afterSearch = await searchView.view.nextInput;
+    assert.strictEqual(afterSearch.query, 'a query');
+    assert.lengthOf(afterSearch.searchResults, 0);
 
-    const clearButton = searchView.contentElement.querySelector('.clear-button');
-    assert.exists(clearButton);
-    dispatchClickEvent(clearButton);
+    afterSearch.onClearSearch();
 
     // After clearing, shows standard placeholder.
-    await searchView.updateComplete;
-    assert.deepEqual(searchView.contentElement.querySelector('.empty-state-header')?.textContent, 'No search results');
-    assert.isTrue(
-        searchView.contentElement.querySelector('.empty-state-description')?.textContent?.includes('Type and press '));
+    const afterClear = await searchView.view.nextInput;
+    assert.strictEqual(afterClear.query, '');
+    assert.lengthOf(afterClear.searchResults, 0);
   });
 
   it('updates the search result message with a count when search results are added', async () => {
     const fakeScope = new FakeSearchScope();
-    const fakeResultsPane = {searchResults: []} as unknown as Search.SearchResultsPane.SearchResultsPane;
-    const searchView = new TestSearchView(() => fakeScope, fakeResultsPane);
+    const searchView = new TestSearchView(() => fakeScope);
 
-    searchView.triggerSearch('a query', true, true);
+    await searchView.triggerSearch('a query', true, true);
 
     const {searchResultCallback} = await fakeScope.performSearchCalledPromise;
 
     searchResultCallback({matchesCount: () => 10} as Search.SearchScope.SearchResult);
-    await searchView.throttler.process?.();
+    await searchView.view.nextInput;
     assert.strictEqual(searchView.currentSearchResultMessage, 'Found 10 matching lines in 1 file.');
 
     searchResultCallback({matchesCount: () => 42} as Search.SearchScope.SearchResult);
-    await searchView.throttler.process?.();
+    await searchView.view.nextInput;
     assert.strictEqual(searchView.currentSearchResultMessage, 'Found 52 matching lines in 2 files.');
   });
 
   it('forwards each SearchResult to the results pane', async () => {
     const fakeScope = new FakeSearchScope();
-    const fakeResultsPane = {searchResults: []} as unknown as Search.SearchResultsPane.SearchResultsPane;
-    const searchView = new TestSearchView(() => fakeScope, fakeResultsPane);
+    const searchView = new TestSearchView(() => fakeScope);
 
-    searchView.triggerSearch('a query', true, true);
+    await searchView.triggerSearch('a query', true, true);
 
     const {searchResultCallback} = await fakeScope.performSearchCalledPromise;
 
@@ -202,8 +209,8 @@ describeWithEnvironment('SearchView', () => {
 
     searchResultCallback(searchResult1);
     searchResultCallback(searchResult2);
-    await searchView.throttler.process?.();
+    const afterSearch = await searchView.view.nextInput;
 
-    assert.deepEqual(fakeResultsPane.searchResults, [searchResult1, searchResult2]);
+    assert.deepEqual(afterSearch.searchResults, [searchResult1, searchResult2]);
   });
 });

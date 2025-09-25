@@ -134,7 +134,8 @@ describeWithLocale('SearchResultsPane', () => {
   it('shows one entry per line with matches when matchColumn/matchLength is NOT present', async () => {
     const searchConfig = new Workspace.SearchConfig.SearchConfig('the', true, false);
     const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);
-    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig, view);
+    const resultPane = new Search.SearchResultsPane.SearchResultsPane(undefined, view);
+    resultPane.searchConfig = searchConfig;
     const searchResult = new FakeSearchResult('file.txt', 'file.txt', [
       {lineNumber: 10, lineContent: 'This is the line with multiple "the" matches'},
       {lineNumber: 15, lineContent: 'This is a line with only one "the" match'},
@@ -152,7 +153,8 @@ describeWithLocale('SearchResultsPane', () => {
   it('shows one entry per match when matchColumn/matchLength is present', async () => {
     const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);
     const searchConfig = new Workspace.SearchConfig.SearchConfig('the', true, false);
-    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig, view);
+    const resultPane = new Search.SearchResultsPane.SearchResultsPane(undefined, view);
+    resultPane.searchConfig = searchConfig;
     const searchResult = new FakeSearchResult('file.txt', 'file.txt', [
       {
         lineNumber: 10,
@@ -186,7 +188,8 @@ describeWithLocale('SearchResultsPane', () => {
   it('highlights all matches of a line when matchColumn/matchLength is NOT present', async () => {
     const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);
     const searchConfig = new Workspace.SearchConfig.SearchConfig('the', true, false);
-    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig, view);
+    const resultPane = new Search.SearchResultsPane.SearchResultsPane(undefined, view);
+    resultPane.searchConfig = searchConfig;
     const searchResult = new FakeSearchResult('file.txt', 'file.txt', [
       {lineNumber: 10, lineContent: 'This is the line with multiple "the" matches'},
       {lineNumber: 15, lineContent: 'This is a line with only one "the" match'},
@@ -206,7 +209,8 @@ describeWithLocale('SearchResultsPane', () => {
   it('highlights only the specified match when matchColumn/matchLength is present', async () => {
     const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);
     const searchConfig = new Workspace.SearchConfig.SearchConfig('the', true, false);
-    const resultPane = new Search.SearchResultsPane.SearchResultsPane(searchConfig, view);
+    const resultPane = new Search.SearchResultsPane.SearchResultsPane(undefined, view);
+    resultPane.searchConfig = searchConfig;
     const searchResult = new FakeSearchResult('file.txt', 'file.txt', [
       {
         lineNumber: 10,

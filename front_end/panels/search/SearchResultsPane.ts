@@ -136,16 +136,16 @@ const renderSearchMatches =
     };
 
 export class SearchResultsPane extends UI.Widget.VBox {
-  readonly #searchConfig: Workspace.SearchConfig.SearchConfig;
+  #searchConfig: Workspace.SearchConfig.SearchConfig|null = null;
   #searchResults: SearchResult[] = [];
+  #resultsUpdated = false;
   #expandedResults = new WeakSet<SearchResult>();
   readonly #searchMatches = new WeakMap<SearchResult, SearchMatch[]>();
   #view: View;
 
-  constructor(searchConfig: Workspace.SearchConfig.SearchConfig, view: View = DEFAULT_VIEW) {
-    super({useShadowDom: true});
+  constructor(element: HTMLElement|undefined, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
     this.#view = view;
-    this.#searchConfig = searchConfig;
   }
 
   get searchResults(): SearchResult[] {
@@ -153,20 +153,33 @@ export class SearchResultsPane extends UI.Widget.VBox {
   }
 
   set searchResults(searchResults: SearchResult[]) {
+    if (this.#searchResults === searchResults) {
+      return;
+    }
+    if (this.#searchResults.length !== searchResults.length) {
+      this.#resultsUpdated = true;
+    } else if (this.#searchResults.length === searchResults.length) {
+      for (let i = 0; i < this.#searchResults.length; ++i) {
+        if (this.#searchResults[i] === searchResults[i]) {
+          continue;
+        }
+        this.#resultsUpdated = true;
+        break;
+      }
+    }
+    if (!this.#resultsUpdated) {
+      return;
+    }
     this.#searchResults = searchResults;
-    let matchesExpandedCount = 0;
-    for (const searchResult of searchResults) {
-      if (this.#expandedResults.has(searchResult)) {
-        matchesExpandedCount += this.#searchMatches.get(searchResult)?.length ?? 0;
-      }
-    }
-    for (const searchResult of searchResults) {
-      if (matchesExpandedCount < matchesExpandedByDefault && !this.#expandedResults.has(searchResult)) {
-        this.#expandedResults.add(searchResult);
-        this.#onExpandSearchResult(searchResult);
-        matchesExpandedCount += this.#searchMatches.get(searchResult)?.length ?? 0;
-      }
-    }
+    this.requestUpdate();
+  }
+
+  get searchConfig(): Workspace.SearchConfig.SearchConfig|null {
+    return this.#searchConfig;
+  }
+
+  set searchConfig(searchConfig: Workspace.SearchConfig.SearchConfig|null) {
+    this.#searchConfig = searchConfig;
     this.requestUpdate();
   }
 
@@ -174,6 +187,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
     for (const searchResult of this.#searchResults) {
       const startMatchIndex = this.#searchMatches.get(searchResult)?.length ?? 0;
       this.#appendSearchMatches(searchResult, startMatchIndex, searchResult.matchesCount());
+      this.#expandedResults.add(searchResult);
     }
     this.requestUpdate();
   }
@@ -190,6 +204,9 @@ export class SearchResultsPane extends UI.Widget.VBox {
   }
 
   #appendSearchMatches(searchResult: SearchResult, fromIndex: number, toIndex: number): void {
+    if (!this.#searchConfig) {
+      return;
+    }
     const queries = this.#searchConfig.queries();
     const regexes = [];
     for (let i = 0; i < queries.length; ++i) {
@@ -230,6 +247,22 @@ export class SearchResultsPane extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
+    if (this.#resultsUpdated) {
+      let matchesExpandedCount = 0;
+      for (const searchResult of this.#searchResults) {
+        if (this.#expandedResults.has(searchResult)) {
+          matchesExpandedCount += this.#searchMatches.get(searchResult)?.length ?? 0;
+        }
+      }
+      for (const searchResult of this.#searchResults) {
+        if (matchesExpandedCount < matchesExpandedByDefault && !this.#expandedResults.has(searchResult)) {
+          this.#expandedResults.add(searchResult);
+          this.#onExpandSearchResult(searchResult);
+          matchesExpandedCount += this.#searchMatches.get(searchResult)?.length ?? 0;
+        }
+      }
+      this.#resultsUpdated = false;
+    }
     this.#view(
         {
           results: this.#searchResults,

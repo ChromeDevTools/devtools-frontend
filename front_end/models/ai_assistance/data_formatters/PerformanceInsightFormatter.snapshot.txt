@@ -334,7 +334,7 @@ Layout shifts in this cluster:
 ## Estimated savings: none
 
 ## External resources:
-- https://wdeb.dev/articles/cls
+- https://web.dev/articles/cls
 - https://web.dev/articles/optimize-cls
 === end content
 
@@ -354,7 +354,7 @@ No layout shifts were found.
 ## Estimated savings: none
 
 ## External resources:
-- https://wdeb.dev/articles/cls
+- https://web.dev/articles/cls
 - https://web.dev/articles/optimize-cls
 === end content
 
@@ -432,7 +432,7 @@ Layout shifts in this cluster:
 ## Estimated savings: none
 
 ## External resources:
-- https://wdeb.dev/articles/cls
+- https://web.dev/articles/cls
 - https://web.dev/articles/optimize-cls
 === end content
 

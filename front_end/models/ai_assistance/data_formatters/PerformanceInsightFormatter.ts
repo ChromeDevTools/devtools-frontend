@@ -1021,7 +1021,7 @@ ${this.#links()}`;
   #links(): string {
     switch (this.#insight.insightKey) {
       case 'CLSCulprits':
-        return `- https://wdeb.dev/articles/cls
+        return `- https://web.dev/articles/cls
 - https://web.dev/articles/optimize-cls`;
       case 'DocumentLatency':
         return '- https://web.dev/articles/optimize-ttfb';

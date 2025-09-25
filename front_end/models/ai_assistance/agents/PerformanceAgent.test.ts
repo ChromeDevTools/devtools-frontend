@@ -20,7 +20,6 @@ import {
   type ActionResponse,
   AICallTree,
   PerformanceAgent,
-  PerformanceInsightFormatter,
   PerformanceTraceContext,
   PerformanceTraceFormatter,
   ResponseType,
@@ -131,8 +130,7 @@ describeWithEnvironment('PerformanceAgent – call tree focus', () => {
 
       const context = PerformanceTraceContext.fromCallTree(aiCallTree);
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
-      const expectedData =
-          new PerformanceTraceFormatter(context.getItem(), PerformanceInsightFormatter.create).formatTraceSummary();
+      const expectedData = new PerformanceTraceFormatter(context.getItem()).formatTraceSummary();
 
       assert.deepEqual(responses, [
         {
@@ -325,8 +323,7 @@ code
         }]])
       });
 
-      const expectedDetailText =
-          new PerformanceTraceFormatter(context.getItem(), PerformanceInsightFormatter.create).formatTraceSummary();
+      const expectedDetailText = new PerformanceTraceFormatter(context.getItem()).formatTraceSummary();
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       assert.deepEqual(responses, [
@@ -434,7 +431,7 @@ code
         assert.isOk(match, `no request found for ${url}`);
       });
 
-      const formatter = new PerformanceTraceFormatter(context.getItem(), PerformanceInsightFormatter.create);
+      const formatter = new PerformanceTraceFormatter(context.getItem());
       const expectedRequestsOutput = formatter.formatNetworkTrackSummary(bounds);
 
       const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestsOutput);
@@ -481,7 +478,7 @@ code
       const action = responses.find(response => response.type === ResponseType.ACTION);
       assert.exists(action);
 
-      const formatter = new PerformanceTraceFormatter(context.getItem(), PerformanceInsightFormatter.create);
+      const formatter = new PerformanceTraceFormatter(context.getItem());
       const summary = formatter.formatMainThreadTrackSummary(bounds);
       assert.isOk(summary);
 

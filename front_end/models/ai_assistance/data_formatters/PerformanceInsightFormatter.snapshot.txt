@@ -7,7 +7,7 @@ This insight is used to analyze the time spent that contributed to the final LCP
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 240 ms.
-The LCP element (IMG, nodeId: 23) is an image fetched from https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp (eventKey: s-1418).
+The LCP element (IMG, nodeId: 23) is an image fetched from https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp (eventKey: s-1418, ts: 397824185142).
 ## LCP resource network request: https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp
 eventKey: s-1418
 Timings:
@@ -68,7 +68,7 @@ This insight is used to analyze the time spent that contributed to the final LCP
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 129 ms.
-The LCP element is an image fetched from https://web-dev.imgix.net/image/kheDArv5csY6rvQUJDbWRscckLr1/4i7JstVZvgTFk9dxCe4a.svg (eventKey: s-1314).
+The LCP element is an image fetched from https://web-dev.imgix.net/image/kheDArv5csY6rvQUJDbWRscckLr1/4i7JstVZvgTFk9dxCe4a.svg (eventKey: s-1314, ts: 122411037986).
 ## LCP resource network request: https://web-dev.imgix.net/image/kheDArv5csY6rvQUJDbWRscckLr1/4i7JstVZvgTFk9dxCe4a.svg
 eventKey: s-1314
 Timings:
@@ -186,7 +186,7 @@ It is important that all of these checks pass to minimize the delay between the 
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 1,077 ms.
-The LCP element is an image fetched from http://localhost:8787/lcp-discovery-delay/lcp-image.jpg (eventKey: s-25281).
+The LCP element is an image fetched from http://localhost:8787/lcp-discovery-delay/lcp-image.jpg (eventKey: s-25281, ts: 197696859337).
 ## LCP resource network request: http://localhost:8787/lcp-discovery-delay/lcp-image.jpg
 eventKey: s-25281
 Timings:
@@ -310,7 +310,7 @@ Layout shifts in this cluster:
 - Start time: 472 ms
 - Score: 0.0003
 - Potential root causes:
-  - A font that was loaded over the network: https://fonts.gstatic.com/s/specialgothicexpandedone/v2/IurO6Zxk74-YaYk1r3HOet4g75ENmBxUmOK61tA0Iu5QmJF_.woff2 (eventKey: s-1158).
+  - A font that was loaded over the network: https://fonts.gstatic.com/s/specialgothicexpandedone/v2/IurO6Zxk74-YaYk1r3HOet4g75ENmBxUmOK61tA0Iu5QmJF_.woff2 (eventKey: s-1158, ts: 1355335690947).
 ### Layout shift 2:
 - Start time: 857 ms
 - Score: 0.0844
@@ -320,12 +320,12 @@ Layout shifts in this cluster:
 - Start time: 1,352 ms
 - Score: 0.0068
 - Potential root causes:
-  - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png (eventKey: s-4487)).
+  - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png (eventKey: s-4487, ts: 1355336697136)).
 ### Layout shift 4:
 - Start time: 1,537 ms
 - Score: 0.3344
 - Potential root causes:
-  - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png (eventKey: s-4487)).
+  - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png (eventKey: s-4487, ts: 1355336697136)).
 ### Layout shift 5:
 - Start time: 2,343 ms
 - Score: 0.3396
@@ -687,16 +687,16 @@ Total legacy JavaScript: 8 files.
 
 Legacy JavaScript by file:
 
-- Script: https://s.yimg.com/aaq/benji/benji-2.2.99.js (eventKey: s-3387) - Wasted bytes: 37204 bytes
+- Script: https://s.yimg.com/aaq/benji/benji-2.2.99.js (eventKey: s-3387, ts: 157423742567) - Wasted bytes: 37204 bytes
 Matches:
 Line: 0, Column: 133, Name: Promise.allSettled
 
-- Script: https://s.yimg.com/aaq/c/25fa214.caas-news_web.min.js (eventKey: s-3412) - Wasted bytes: 36084 bytes
+- Script: https://s.yimg.com/aaq/c/25fa214.caas-news_web.min.js (eventKey: s-3412, ts: 157423743431) - Wasted bytes: 36084 bytes
 Matches:
 Line: 0, Column: 13310, Name: Array.from
 Line: 0, Column: 14623, Name: Object.assign
 
-- Script: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js (eventKey: s-6273) - Wasted bytes: 12850 bytes
+- Script: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js (eventKey: s-6273, ts: 157423760794) - Wasted bytes: 12850 bytes
 Matches:
 Line: 111, Column: 7829, Name: @babel/plugin-transform-spread
 Line: 111, Column: 1794, Name: Array.prototype.find
@@ -705,21 +705,21 @@ Line: 111, Column: 2748, Name: Object.values
 Line: 111, Column: 2473, Name: String.prototype.includes
 Line: 111, Column: 2627, Name: String.prototype.startsWith
 
-- Script: https://static.criteo.net/js/ld/publishertag.prebid.144.js (eventKey: s-257378) - Wasted bytes: 10751 bytes
+- Script: https://static.criteo.net/js/ld/publishertag.prebid.144.js (eventKey: s-257378, ts: 157426026656) - Wasted bytes: 10751 bytes
 Matches:
 Line: 1, Column: 74871, Name: Array.isArray
 Line: 1, Column: 75344, Name: Array.prototype.filter
 Line: 1, Column: 75013, Name: Array.prototype.indexOf
 
-- Script: https://s.yimg.com/oa/consent.js (eventKey: s-3384) - Wasted bytes: 8157 bytes
+- Script: https://s.yimg.com/oa/consent.js (eventKey: s-3384, ts: 157423742450) - Wasted bytes: 8157 bytes
 Matches:
 Line: 1, Column: 132267, Name: Array.prototype.includes
 
-- Script: https://pm-widget.taboola.com/yahooweb-network/pmk-20220605.1.js (eventKey: s-52229) - Wasted bytes: 7625 bytes
+- Script: https://pm-widget.taboola.com/yahooweb-network/pmk-20220605.1.js (eventKey: s-52229, ts: 157424128231) - Wasted bytes: 7625 bytes
 Matches:
 Line: 181, Column: 26, Name: Object.keys
 
-- Script: https://news.yahoo.com/ (eventKey: s-2116) - Wasted bytes: 7141 bytes
+- Script: https://news.yahoo.com/ (eventKey: s-2116, ts: 157423489126) - Wasted bytes: 7141 bytes
 Matches:
 Line: 0, Column: 8382, Name: @babel/plugin-transform-classes
 Line: 0, Column: 107712, Name: Array.prototype.filter
@@ -727,7 +727,7 @@ Line: 0, Column: 107393, Name: Array.prototype.forEach
 Line: 0, Column: 108005, Name: Array.prototype.map
 Line: 0, Column: 108358, Name: String.prototype.includes
 
-- Script: https://cdn.taboola.com/libtrc/yahooweb-network/loader.js (eventKey: s-6352) - Wasted bytes: 7061 bytes
+- Script: https://cdn.taboola.com/libtrc/yahooweb-network/loader.js (eventKey: s-6352, ts: 157423761978) - Wasted bytes: 7061 bytes
 Matches:
 Line: 0, Column: 390544, Name: Object.entries
 Line: 0, Column: 390688, Name: Object.values
@@ -767,12 +767,12 @@ This insight identifies font issues when a webpage uses custom fonts, for exampl
 ## Detailed analysis:
 The following font display issues were found:
 
- - Font name: jizaRExUiTo99u79D0KExcOPIDU.woff2, URL: https://fonts.gstatic.com/s/ptsans/v17/jizaRExUiTo99u79D0KExcOPIDU.woff2 (eventKey: s-5246), Property 'font-display' set to: 'auto', Wasted time: 20 ms.
- - Font name: SlGVmQWMvZQIdix7AFxXkHNSbRYXags.woff2, URL: https://fonts.gstatic.com/s/droidsans/v18/SlGVmQWMvZQIdix7AFxXkHNSbRYXags.woff2 (eventKey: s-5232), Property 'font-display' set to: 'auto', Wasted time: 15 ms.
- - Font name: jizfRExUiTo99u79B_mh0O6tLR8a8zI.woff2, URL: https://fonts.gstatic.com/s/ptsans/v17/jizfRExUiTo99u79B_mh0O6tLR8a8zI.woff2 (eventKey: s-5259), Property 'font-display' set to: 'auto', Wasted time: 15 ms.
- - Font name: SlGWmQWMvZQIdix7AFxXmMh3eDs1ZyHKpWg.woff2, URL: https://fonts.gstatic.com/s/droidsans/v18/SlGWmQWMvZQIdix7AFxXmMh3eDs1ZyHKpWg.woff2 (eventKey: s-5269), Property 'font-display' set to: 'auto', Wasted time: 15 ms.
- - Font name: EJRVQgYoZZY2vCFuvAFWzr-_dSb_.woff2, URL: https://fonts.gstatic.com/s/ptserif/v18/EJRVQgYoZZY2vCFuvAFWzr-_dSb_.woff2 (eventKey: s-5325), Property 'font-display' set to: 'auto', Wasted time: 15 ms.
- - Font name: S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2, URL: https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2 (eventKey: s-5238), Property 'font-display' set to: 'auto', Wasted time: 10 ms.
+ - Font name: jizaRExUiTo99u79D0KExcOPIDU.woff2, URL: https://fonts.gstatic.com/s/ptsans/v17/jizaRExUiTo99u79D0KExcOPIDU.woff2 (eventKey: s-5246, ts: 409057956748), Property 'font-display' set to: 'auto', Wasted time: 20 ms.
+ - Font name: SlGVmQWMvZQIdix7AFxXkHNSbRYXags.woff2, URL: https://fonts.gstatic.com/s/droidsans/v18/SlGVmQWMvZQIdix7AFxXkHNSbRYXags.woff2 (eventKey: s-5232, ts: 409057956250), Property 'font-display' set to: 'auto', Wasted time: 15 ms.
+ - Font name: jizfRExUiTo99u79B_mh0O6tLR8a8zI.woff2, URL: https://fonts.gstatic.com/s/ptsans/v17/jizfRExUiTo99u79B_mh0O6tLR8a8zI.woff2 (eventKey: s-5259, ts: 409057957711), Property 'font-display' set to: 'auto', Wasted time: 15 ms.
+ - Font name: SlGWmQWMvZQIdix7AFxXmMh3eDs1ZyHKpWg.woff2, URL: https://fonts.gstatic.com/s/droidsans/v18/SlGWmQWMvZQIdix7AFxXmMh3eDs1ZyHKpWg.woff2 (eventKey: s-5269, ts: 409057958585), Property 'font-display' set to: 'auto', Wasted time: 15 ms.
+ - Font name: EJRVQgYoZZY2vCFuvAFWzr-_dSb_.woff2, URL: https://fonts.gstatic.com/s/ptserif/v18/EJRVQgYoZZY2vCFuvAFWzr-_dSb_.woff2 (eventKey: s-5325, ts: 409057959655), Property 'font-display' set to: 'auto', Wasted time: 15 ms.
+ - Font name: S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2, URL: https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2 (eventKey: s-5238, ts: 409057956530), Property 'font-display' set to: 'auto', Wasted time: 10 ms.
 
 Consider setting [`font-display`](https://developer.chrome.com/blog/font-display) to `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).
 
@@ -812,28 +812,28 @@ Total potential savings: 2 MB
 
 The following images could be optimized:
 
-### https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg (eventKey: s-1212)
+### https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg (eventKey: s-1212, ts: 59728701403)
 - Potential savings: 1.1 MB
 - Optimizations:
 Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size. (Est 1.1 MB)
 
-### https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/dobetterweb/lighthouse-rotating.gif (eventKey: s-1216)
+### https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/dobetterweb/lighthouse-rotating.gif (eventKey: s-1216, ts: 59728702014)
 - Potential savings: 682 kB
 - Optimizations:
 Using video formats instead of GIFs can improve the download size of animated content. (Est 682 kB)
 
-### https://onlinepngtools.com/images/examples-onlinepngtools/elephant-hd-quality.png (eventKey: s-1228)
+### https://onlinepngtools.com/images/examples-onlinepngtools/elephant-hd-quality.png (eventKey: s-1228, ts: 59728702737)
 - Potential savings: 176 kB
 - Optimizations:
 Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size. (Est 134.1 kB)
 This image file is larger than it needs to be (640x436) for its displayed dimensions (200x136). Use responsive images to reduce the image download size. (Est 162.9 kB)
 
-### https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg?fm=webp (eventKey: s-1224)
+### https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg?fm=webp (eventKey: s-1224, ts: 59728702313)
 - Potential savings: 49.8 kB
 - Optimizations:
 Increasing the image compression factor could improve this image's download size. (Est 49.8 kB)
 
-### https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/byte-efficiency/lighthouse-2048x1356.webp (eventKey: s-1226)
+### https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/byte-efficiency/lighthouse-2048x1356.webp (eventKey: s-1226, ts: 59728702539)
 - Potential savings: 41.4 kB
 - Optimizations:
 This image file is larger than it needs to be (2048x1356) for its displayed dimensions (200x132). Use responsive images to reduce the image download size. (Est 41.4 kB)
@@ -950,9 +950,9 @@ The network dependency tree checks found one or more problems.
 Max critical path latency is 5,015 ms
 
 The following is the critical request chain:
-- http://localhost:8787/lcp-iframes/index.html (eventKey: s-7103) (5,006 ms) (longest chain)
-  - http://localhost:8787/lcp-iframes/app.js (eventKey: s-7225) (5,015 ms) (longest chain)
-  - http://localhost:8787/lcp-iframes/app.css (eventKey: s-7213) (5,010 ms)
+- http://localhost:8787/lcp-iframes/index.html (eventKey: s-7103, ts: 566777570990) (5,006 ms) (longest chain)
+  - http://localhost:8787/lcp-iframes/app.js (eventKey: s-7225, ts: 566782574106) (5,015 ms) (longest chain)
+  - http://localhost:8787/lcp-iframes/app.css (eventKey: s-7213, ts: 566782573909) (5,010 ms)
 
 no origins were preconnected.
 
@@ -1077,7 +1077,7 @@ This insight identifies static resources that are not cached effectively by the 
 ## Detailed analysis:
 The following resources were associated with ineffficient cache policies:
 
-- https://chromedevtools.github.io/performance-stories/lcp-large-image/app.css (eventKey: s-1106)
+- https://chromedevtools.github.io/performance-stories/lcp-large-image/app.css (eventKey: s-1106, ts: 658799777502)
   - Cache Time to Live (TTL): 600 seconds
   - Wasted bytes: 0 B
 

@@ -39,22 +39,13 @@ function getLCPData(parsedTrace: Trace.TraceModel.ParsedTrace, frameId: string, 
   };
 }
 
-export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
+export class PerformanceInsightFormatter {
+  #traceFormatter: PerformanceTraceFormatter;
   #insight: Trace.Insights.Types.InsightModel;
   #parsedTrace: Trace.TraceModel.ParsedTrace;
 
-  /**
-   * A utility method because we dependency inject this formatter into
-   * PerformanceTraceFormatter; this allows you to pass
-   * PerformanceInsightFormatter.create rather than an anonymous
-   * function that wraps the constructor.
-   */
-  static create(focus: AgentFocus, insight: Trace.Insights.Types.InsightModel): PerformanceInsightFormatter {
-    return new PerformanceInsightFormatter(focus, insight);
-  }
-
   constructor(focus: AgentFocus, insight: Trace.Insights.Types.InsightModel) {
-    super(focus, null);
+    this.#traceFormatter = new PerformanceTraceFormatter(focus);
     this.#insight = insight;
     this.#parsedTrace = focus.parsedTrace;
   }
@@ -74,8 +65,7 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
   }
 
   #formatRequestUrl(request: Trace.Types.Events.SyntheticNetworkRequest): string {
-    const eventKey = this.eventsSerializer.keyForEvent(request);
-    return `${request.args.data.url} (eventKey: ${eventKey})`;
+    return `${request.args.data.url} ${this.#traceFormatter.serializeEvent(request)}`;
   }
 
   #formatScriptUrl(script: Trace.Handlers.ModelHandlers.Scripts.Script): string {
@@ -122,8 +112,8 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
 
     if (lcpRequest) {
       parts.push(`${theLcpElement} is an image fetched from ${this.#formatRequestUrl(lcpRequest)}.`);
-      const request =
-          this.formatNetworkRequests([lcpRequest], {verbose: true, customTitle: 'LCP resource network request'});
+      const request = this.#traceFormatter.formatNetworkRequests(
+          [lcpRequest], {verbose: true, customTitle: 'LCP resource network request'});
       parts.push(request);
     } else {
       parts.push(`${theLcpElement} is text and was not fetched from the network.`);
@@ -356,7 +346,7 @@ ${shiftsFormatted.join('\n')}`;
 
     return `${this.#lcpMetricSharedContext()}
 
-${this.formatNetworkRequests([documentRequest], {
+${this.#traceFormatter.formatNetworkRequests([documentRequest], {
       verbose: true,
       customTitle: 'Document network request'
     })}
@@ -685,8 +675,8 @@ ${filesFormatted}`;
    */
   formatModernHttpInsight(insight: Trace.Insights.Models.ModernHTTP.ModernHTTPInsightModel): string {
     const requestSummary = (insight.http1Requests.length === 1) ?
-        this.formatNetworkRequests(insight.http1Requests, {verbose: true}) :
-        this.formatNetworkRequests(insight.http1Requests);
+        this.#traceFormatter.formatNetworkRequests(insight.http1Requests, {verbose: true}) :
+        this.#traceFormatter.formatNetworkRequests(insight.http1Requests);
 
     if (requestSummary.length === 0) {
       return 'There are no requests that were served over a legacy HTTP protocol.';
@@ -783,7 +773,7 @@ ${requestSummary}`;
    * @returns a string formatted for sending to Ask AI.
    */
   formatRenderBlockingInsight(insight: Trace.Insights.Models.RenderBlocking.RenderBlockingInsightModel): string {
-    const requestSummary = this.formatNetworkRequests(insight.renderBlockingRequests);
+    const requestSummary = this.#traceFormatter.formatNetworkRequests(insight.renderBlockingRequests);
 
     if (requestSummary.length === 0) {
       return 'There are no network requests that are render blocking.';

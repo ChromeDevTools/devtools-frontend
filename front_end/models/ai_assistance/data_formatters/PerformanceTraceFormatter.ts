@@ -9,7 +9,7 @@ import type {AgentFocus} from '../performance/AIContext.js';
 import {AIQueries} from '../performance/AIQueries.js';
 
 import {NetworkRequestFormatter} from './NetworkRequestFormatter.js';
-import type {PerformanceInsightFormatter} from './PerformanceInsightFormatter.js';
+import {PerformanceInsightFormatter} from './PerformanceInsightFormatter.js';
 import {bytes, micros, millis} from './UnitFormatters.js';
 
 export interface NetworkRequestFormatOptions {
@@ -17,31 +17,21 @@ export interface NetworkRequestFormatOptions {
   customTitle?: string;
 }
 
-type GetInsightFormatter = (focus: AgentFocus, model: Trace.Insights.Types.InsightModel) => PerformanceInsightFormatter;
-
 export class PerformanceTraceFormatter {
   #focus: AgentFocus;
   #parsedTrace: Trace.TraceModel.ParsedTrace;
   #insightSet: Trace.Insights.Types.InsightSet|null;
-  #getInsightFormatter: GetInsightFormatter|null = null;
-  protected eventsSerializer: Trace.EventsSerializer.EventsSerializer;
+  #eventsSerializer: Trace.EventsSerializer.EventsSerializer;
 
-  /**
-   * We inject the insight formatter because otherwise we get a circular
-   * dependency between PerformanceInsightFormatter and
-   * PerformanceTraceFormatter. This is OK in the browser build, but breaks when
-   * we reuse this code in NodeJS for DevTools MCP.
-   */
-  constructor(focus: AgentFocus, getInsightFormatter: GetInsightFormatter|null) {
+  constructor(focus: AgentFocus) {
     this.#focus = focus;
     this.#parsedTrace = focus.parsedTrace;
     this.#insightSet = focus.insightSet;
-    this.eventsSerializer = focus.eventsSerializer;
-    this.#getInsightFormatter = getInsightFormatter;
+    this.#eventsSerializer = focus.eventsSerializer;
   }
 
   serializeEvent(event: Trace.Types.Events.Event): string {
-    const key = this.eventsSerializer.keyForEvent(event);
+    const key = this.#eventsSerializer.keyForEvent(event);
     return `(eventKey: ${key}, ts: ${event.ts})`;
   }
 
@@ -188,10 +178,7 @@ export class PerformanceTraceFormatter {
           continue;
         }
 
-        const formatter = this.#getInsightFormatter?.(this.#focus, model);
-        if (!formatter) {
-          continue;
-        }
+        const formatter = new PerformanceInsightFormatter(this.#focus, model);
         if (!formatter.insightIsSupported()) {
           continue;
         }
@@ -584,7 +571,7 @@ export class PerformanceTraceFormatter {
     const initiators = this.#getInitiatorChain(parsedTrace, request);
     const initiatorUrls = initiators.map(initiator => initiator.args.data.url);
 
-    const eventKey = this.eventsSerializer.keyForEvent(request);
+    const eventKey = this.#eventsSerializer.keyForEvent(request);
     const eventKeyLine = eventKey ? `eventKey: ${eventKey}\n` : '';
 
     return `${titlePrefix}: ${url}
@@ -755,7 +742,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
 
     const parts = [
       urlIndex,
-      this.eventsSerializer.keyForEvent(request) ?? '',
+      this.#eventsSerializer.keyForEvent(request) ?? '',
       queuedTime,
       requestSentTime,
       downloadCompleteTime,

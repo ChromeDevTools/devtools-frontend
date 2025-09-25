@@ -639,6 +639,30 @@ Network requests data:
     return networkDataString + '\n\n' + urlsMapString + '\n\n' + allRequestsText;
   }
 
+  static callFrameDataFormatDescription = `Each call frame is presented in the following format:
+
+'id;eventKey;name;duration;selfTime;urlIndex;childRange;[S]'
+
+Key definitions:
+
+* id: A unique numerical identifier for the call frame. Never mention this id in the output to the user.
+* eventKey: String that uniquely identifies this event in the flame chart.
+* name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
+* duration: The total execution time of the call frame, including its children.
+* selfTime: The time spent directly within the call frame, excluding its children's execution.
+* urlIndex: Index referencing the "All URLs" list. Empty if no specific script URL is associated.
+* childRange: Specifies the direct children of this node using their IDs. If empty ('' or 'S' at the end), the node has no children. If a single number (e.g., '4'), the node has one child with that ID. If in the format 'firstId-lastId' (e.g., '4-5'), it indicates a consecutive range of child IDs from 'firstId' to 'lastId', inclusive.
+* S: _Optional_. The letter 'S' terminates the line if that call frame was selected by the user.
+
+Example Call Tree:
+
+1;r-123;main;500;100;;
+2;r-124;update;200;50;;3
+3;p-49575-15428179-2834-374;animate;150;20;0;4-5;S
+4;p-49575-15428179-3505-1162;calculatePosition;80;80;;
+5;p-49575-15428179-5391-2767;applyStyles;50;50;;
+`;
+
   /**
    * Network requests format description that is sent to the model as a fact.
    */

@@ -464,6 +464,19 @@ describeWithEnvironment('UserBadges', () => {
           shouldStarterBadgeBeActive: true,
         });
       });
+
+      it('should not check for eligibility if the user has a GDP profile', async () => {
+        setReceiveBadgesSetting(true);
+        const isEligibleToCreateProfileStub =
+            sinon.stub(Host.GdpClient.GdpClient.instance(), 'isEligibleToCreateProfile');
+        mockGdpClientGetProfile({name: 'profiles/test'});
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGetAwardedBadgeNames([]);
+
+        await Badges.UserBadges.instance().initialize();
+
+        sinon.assert.notCalled(isEligibleToCreateProfileStub);
+      });
     });
 
     it('should deactivate activity based badges when receive badges setting turns to false', async () => {

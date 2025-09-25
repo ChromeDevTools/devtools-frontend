@@ -163,10 +163,11 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       return;
     }
 
-    const [gdpProfile, isEligibleToCreateProfile] = await Promise.all([
-      Host.GdpClient.GdpClient.instance().getProfile(),
-      Host.GdpClient.GdpClient.instance().isEligibleToCreateProfile(),
-    ]);
+    const gdpProfile = await Host.GdpClient.GdpClient.instance().getProfile();
+    let isEligibleToCreateProfile = Boolean(gdpProfile);
+    if (!gdpProfile) {
+      isEligibleToCreateProfile = await Host.GdpClient.GdpClient.instance().isEligibleToCreateProfile();
+    }
 
     // User does not have a GDP profile & not eligible to create one.
     // So, we don't activate any badges for them.

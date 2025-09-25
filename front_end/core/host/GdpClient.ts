@@ -23,7 +23,7 @@ export enum SubscriptionTier {
   PRO_MONTHLY = 'SUBSCRIPTION_TIER_PRO_MONTHLY',
 }
 
-enum EligibilityStatus {
+export enum EligibilityStatus {
   ELIGIBLE = 'ELIGIBLE',
   NOT_ELIGIBLE = 'NOT_ELIGIBLE',
 }
@@ -120,12 +120,19 @@ export class GdpClient {
   }
 
   async initialize(): Promise<InitializeResult> {
-    return await Promise.all([this.getProfile(), this.checkEligibility()]).then(([profile, eligibilityResponse]) => {
+    const profile = await this.getProfile();
+    if (profile) {
       return {
-        hasProfile: Boolean(profile),
-        isEligible: eligibilityResponse?.createProfile === EligibilityStatus.ELIGIBLE
+        hasProfile: true,
+        isEligible: true,
       };
-    });
+    }
+
+    const isEligible = await this.isEligibleToCreateProfile();
+    return {
+      hasProfile: false,
+      isEligible,
+    };
   }
 
   async getProfile(): Promise<Profile|null> {
@@ -138,7 +145,12 @@ export class GdpClient {
       path: '/v1beta1/profile:get',
       method: 'GET',
     });
-    return await this.#cachedProfilePromise;
+
+    const profile = await this.#cachedProfilePromise;
+    if (profile) {
+      this.#cachedEligibilityPromise = Promise.resolve({createProfile: EligibilityStatus.ELIGIBLE});
+    }
+    return profile;
   }
 
   async checkEligibility(): Promise<CheckElibigilityResponse|null> {

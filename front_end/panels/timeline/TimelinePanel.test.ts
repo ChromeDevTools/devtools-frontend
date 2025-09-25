@@ -15,6 +15,7 @@ import {
   describeWithEnvironment,
   registerNoopActions,
 } from '../../testing/EnvironmentHelpers.js';
+import {type StubbedFileManager, stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -203,12 +204,8 @@ describeWithEnvironment('TimelinePanel', function() {
   it('includes the trace metadata when saving to a file', async function() {
     const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz') as Trace.Types.Events.Event[];
     const metadata = await TraceLoader.metadata(this, 'web-dev-with-commit.json.gz');
+    const fileManager = stubFileManager();
     await timeline.loadingComplete(events, null, metadata);
-    const fileManager = Workspace.FileManager.FileManager.instance();
-    const saveSpy = sinon.stub(fileManager, 'save').callsFake((): Promise<Workspace.FileManager.SaveCallbackParam> => {
-      return Promise.resolve({});
-    });
-    sinon.stub(fileManager, 'close');
 
     await timeline.saveToFile({
       includeScriptContent: false,
@@ -217,9 +214,9 @@ describeWithEnvironment('TimelinePanel', function() {
       shouldCompress: false,
     });
 
-    sinon.assert.calledOnce(saveSpy);
+    sinon.assert.calledOnce(fileManager.save);
 
-    const [, contentData] = saveSpy.getCall(0).args;
+    const [, contentData] = fileManager.save.getCall(0).args;
 
     // Assert that each value in the metadata of the JSON matches the metadata in memory.
     // We can't do a simple deepEqual() on the two objects as the in-memory
@@ -298,16 +295,14 @@ describeWithEnvironment('TimelinePanel', function() {
   });
 
   describe('saveToFile', function() {
-    let fileManager: Workspace.FileManager.FileManager;
+    let fileManager: StubbedFileManager;
     let saveSpy: sinon.SinonStub;
     let closeSpy: sinon.SinonStub;
 
     beforeEach(() => {
-      fileManager = Workspace.FileManager.FileManager.instance();
-      saveSpy = sinon.stub(fileManager, 'save').callsFake((): Promise<Workspace.FileManager.SaveCallbackParam> => {
-        return Promise.resolve({});
-      });
-      closeSpy = sinon.stub(fileManager, 'close');
+      fileManager = stubFileManager();
+      saveSpy = fileManager.save;
+      closeSpy = fileManager.close;
     });
 
     describe('with gz', function() {

@@ -26,6 +26,7 @@ import {
   updateHostConfig
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
+import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockStore} from '../../testing/MockSettingStorage.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
@@ -1881,9 +1882,7 @@ describeWithEnvironment('AiAssistancePanel.ActionDelegate', () => {
     });
 
     it('should call the save function when export conversation button is clicked', async () => {
-      const fileManager = Workspace.FileManager.FileManager.instance();
-      const saveSpy = sinon.stub(fileManager, 'save');
-      const closeSpy = sinon.stub(fileManager, 'close');
+      const fileManager = stubFileManager();
       const {panel, view} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation: 'test'}]]),
       });
@@ -1892,16 +1891,15 @@ describeWithEnvironment('AiAssistancePanel.ActionDelegate', () => {
       await view.nextInput;
       await view.input.onExportConversationClick();
 
-      sinon.assert.calledOnce(saveSpy);
-      sinon.assert.calledOnce(closeSpy);
+      sinon.assert.calledOnce(fileManager.save);
+      sinon.assert.calledOnce(fileManager.close);
 
-      const [fileName] = saveSpy.getCall(0).args;
+      const [fileName] = fileManager.save.getCall(0).args;
       assert.strictEqual(fileName, 'devtools_test_question.md');
     });
 
     it('should truncate a long file name when exporting', async () => {
-      const fileManager = Workspace.FileManager.FileManager.instance();
-      const saveSpy = sinon.stub(fileManager, 'save');
+      const fileManager = stubFileManager();
       const {panel, view} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation: 'test'}]]),
       });
@@ -1911,9 +1909,10 @@ describeWithEnvironment('AiAssistancePanel.ActionDelegate', () => {
       await view.nextInput;
       await view.input.onExportConversationClick();
 
-      sinon.assert.calledOnce(saveSpy);
+      sinon.assert.calledOnce(fileManager.save);
+      sinon.assert.calledOnce(fileManager.close);
 
-      const [fileName] = saveSpy.getCall(0).args;
+      const [fileName] = fileManager.save.getCall(0).args;
       const expectedSnakeCase =
           'this_is_a_very_long_title_that_should_be_truncated_when_exporting_the_conversation_to_a_file';
       const prefix = 'devtools_';

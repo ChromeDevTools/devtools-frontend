@@ -1903,6 +1903,7 @@ export const knownContextValues = new Set([
   'inspector-main.reload',
   'inspector-stylesheet',
   'inspector.drawer-orientation',
+  'inspector.drawer-orientation-by-dock-mode',
   'installability',
   'installing-entry-inspect',
   'instance-id',

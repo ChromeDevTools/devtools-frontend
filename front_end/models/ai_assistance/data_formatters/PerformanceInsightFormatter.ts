@@ -43,8 +43,18 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
   #insight: Trace.Insights.Types.InsightModel;
   #parsedTrace: Trace.TraceModel.ParsedTrace;
 
+  /**
+   * A utility method because we dependency inject this formatter into
+   * PerformanceTraceFormatter; this allows you to pass
+   * PerformanceInsightFormatter.create rather than an anonymous
+   * function that wraps the constructor.
+   */
+  static create(focus: AgentFocus, insight: Trace.Insights.Types.InsightModel): PerformanceInsightFormatter {
+    return new PerformanceInsightFormatter(focus, insight);
+  }
+
   constructor(focus: AgentFocus, insight: Trace.Insights.Types.InsightModel) {
-    super(focus);
+    super(focus, null);
     this.#insight = insight;
     this.#parsedTrace = focus.parsedTrace;
   }
@@ -244,29 +254,40 @@ export class PerformanceInsightFormatter extends PerformanceTraceFormatter {
     if (rootCauses) {
       rootCauses.iframes.forEach(
           iframe => potentialRootCauses.push(
-              `An iframe (id: ${iframe.frame}, url: ${iframe.url ?? 'unknown'} was injected into the page)`));
+              `- An iframe (id: ${iframe.frame}, url: ${iframe.url ?? 'unknown'} was injected into the page)`));
       rootCauses.webFonts.forEach(req => {
-        potentialRootCauses.push(`A font that was loaded over the network: ${this.#formatRequestUrl(req)}.`);
+        potentialRootCauses.push(`- A font that was loaded over the network: ${this.#formatRequestUrl(req)}.`);
       });
-      // TODO(b/413285103): use the nice strings for non-composited animations.
-      // The code for this lives in TimelineUIUtils but that cannot be used
-      // within models. We should move it and then expose the animations info
-      // more nicely.
-      rootCauses.nonCompositedAnimations.forEach(_ => {
-        potentialRootCauses.push('A non composited animation.');
+      rootCauses.nonCompositedAnimations.forEach(nonCompositedFailure => {
+        potentialRootCauses.push('- A non-composited animation:');
+
+        const animationInfoOutput = [];
+        potentialRootCauses.push(`- non-composited animation: \`${nonCompositedFailure.name || '(unnamed)'}\``);
+        if (nonCompositedFailure.name) {
+          animationInfoOutput.push(`Animation name: ${nonCompositedFailure.name}`);
+        }
+        if (nonCompositedFailure.unsupportedProperties) {
+          animationInfoOutput.push('Unsupported CSS properties:');
+          animationInfoOutput.push('- ' + nonCompositedFailure.unsupportedProperties.join(', '));
+        }
+        animationInfoOutput.push('Failure reasons:');
+        animationInfoOutput.push('  - ' + nonCompositedFailure.failureReasons.join(', '));
+
+        // Extra padding to the detail to not mess up the indentation.
+        potentialRootCauses.push(animationInfoOutput.map(l => ' '.repeat(4) + l).join('\n'));
       });
+
       rootCauses.unsizedImages.forEach(img => {
         // TODO(b/413284569): if we store a nice human readable name for this
         // image in the trace metadata, we can do something much nicer here.
         const url = img.paintImageEvent.args.data.url;
         const nodeName = img.paintImageEvent.args.data.nodeName;
         const extraText = url ? `url: ${this.#formatUrl(url)}` : `id: ${img.backendNodeId}`;
-        potentialRootCauses.push(`An unsized image (${nodeName}) (${extraText}).`);
+        potentialRootCauses.push(`- An unsized image (${nodeName}) (${extraText}).`);
       });
     }
-    const rootCauseText = potentialRootCauses.length ?
-        `- Potential root causes:\n  - ${potentialRootCauses.join('\n  - ')}` :
-        '- No potential root causes identified';
+    const rootCauseText = potentialRootCauses.length ? `- Potential root causes:\n  ${potentialRootCauses.join('\n')}` :
+                                                       '- No potential root causes identified';
 
     const startTime = Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.Micro(shift.ts - baseTime));
     return `### Layout shift ${index + 1}:

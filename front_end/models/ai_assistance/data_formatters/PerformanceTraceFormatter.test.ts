@@ -7,14 +7,14 @@ import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import {AgentFocus, AICallTree, PerformanceTraceFormatter} from '../ai_assistance.js';
+import {AgentFocus, AICallTree, PerformanceInsightFormatter, PerformanceTraceFormatter} from '../ai_assistance.js';
 
 async function createFormatter(context: Mocha.Context|Mocha.Suite|null, name: string):
     Promise<{formatter: PerformanceTraceFormatter, parsedTrace: Trace.TraceModel.ParsedTrace}> {
   const parsedTrace = await TraceLoader.traceEngine(context, name);
   assert.isOk(parsedTrace.insights);
   const focus = AgentFocus.fromParsedTrace(parsedTrace);
-  const formatter = new PerformanceTraceFormatter(focus);
+  const formatter = new PerformanceTraceFormatter(focus, PerformanceInsightFormatter.create);
   return {formatter, parsedTrace};
 }
 

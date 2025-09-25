@@ -9,7 +9,7 @@ import type {AgentFocus} from '../performance/AIContext.js';
 import {AIQueries} from '../performance/AIQueries.js';
 
 import {NetworkRequestFormatter} from './NetworkRequestFormatter.js';
-import {PerformanceInsightFormatter} from './PerformanceInsightFormatter.js';
+import type {PerformanceInsightFormatter} from './PerformanceInsightFormatter.js';
 import {bytes, micros, millis} from './UnitFormatters.js';
 
 export interface NetworkRequestFormatOptions {
@@ -17,17 +17,27 @@ export interface NetworkRequestFormatOptions {
   customTitle?: string;
 }
 
+type GetInsightFormatter = (focus: AgentFocus, model: Trace.Insights.Types.InsightModel) => PerformanceInsightFormatter;
+
 export class PerformanceTraceFormatter {
   #focus: AgentFocus;
   #parsedTrace: Trace.TraceModel.ParsedTrace;
   #insightSet: Trace.Insights.Types.InsightSet|null;
+  #getInsightFormatter: GetInsightFormatter|null = null;
   protected eventsSerializer: Trace.EventsSerializer.EventsSerializer;
 
-  constructor(focus: AgentFocus) {
+  /**
+   * We inject the insight formatter because otherwise we get a circular
+   * dependency between PerformanceInsightFormatter and
+   * PerformanceTraceFormatter. This is OK in the browser build, but breaks when
+   * we reuse this code in NodeJS for DevTools MCP.
+   */
+  constructor(focus: AgentFocus, getInsightFormatter: GetInsightFormatter|null) {
     this.#focus = focus;
     this.#parsedTrace = focus.parsedTrace;
     this.#insightSet = focus.insightSet;
     this.eventsSerializer = focus.eventsSerializer;
+    this.#getInsightFormatter = getInsightFormatter;
   }
 
   serializeEvent(event: Trace.Types.Events.Event): string {
@@ -178,7 +188,10 @@ export class PerformanceTraceFormatter {
           continue;
         }
 
-        const formatter = new PerformanceInsightFormatter(this.#focus, model);
+        const formatter = this.#getInsightFormatter?.(this.#focus, model);
+        if (!formatter) {
+          continue;
+        }
         if (!formatter.insightIsSupported()) {
           continue;
         }

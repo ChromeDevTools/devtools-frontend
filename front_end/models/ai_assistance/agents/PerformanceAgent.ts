@@ -617,7 +617,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     this.addFact(this.#networkDataDescriptionFact);
 
     if (!this.#traceFacts.length) {
-      this.#formatter = new PerformanceTraceFormatter(focus);
+      this.#formatter = new PerformanceTraceFormatter(focus, PerformanceInsightFormatter.create);
       this.#createFactForTraceSummary();
       this.#createFactForCriticalRequests();
       this.#createFactForMainThreadBottomUpSummary();

@@ -261,7 +261,7 @@ export class CoverageView extends UI.Widget.VBox {
     this.bfcacheReloadPromptPage = this.buildReloadPromptPage(i18nString(UIStrings.bfcacheNoCapture), 'bfcache-page');
     this.activationReloadPromptPage =
         this.buildReloadPromptPage(i18nString(UIStrings.activationNoCapture), 'prerender-page');
-    this.listView = new CoverageListView(this.isVisible.bind(this));
+    this.listView = new CoverageListView();
 
     this.statusToolbarElement = this.contentElement.createChild('div', 'coverage-toolbar-summary');
     this.statusMessageElement = this.statusToolbarElement.createChild('div', 'coverage-message');
@@ -442,7 +442,14 @@ export class CoverageView extends UI.Widget.VBox {
   }
 
   private updateListView(): void {
-    this.listView.update(this.model?.entries().map(this.toCoverageListItem, this) || []);
+    const entries =
+        (this.model?.entries() || [])
+            .map(entry => this.toCoverageListItem(entry))
+            .filter(info => this.isVisible(info))
+            .map(
+                (entry: CoverageListItem) =>
+                    ({...entry, sources: entry.sources.filter((entry: CoverageListItem) => this.isVisible(entry))}));
+    this.listView.update(entries, this.textFilterRegExp);
   }
 
   private toCoverageListItem(info: URLCoverageInfo): CoverageListItem {
@@ -536,7 +543,7 @@ export class CoverageView extends UI.Widget.VBox {
 
   private updateViews(updatedEntries: CoverageInfo[]): void {
     this.updateStats();
-    this.listView.update(this.model?.entries().map(this.toCoverageListItem, this) || []);
+    this.updateListView();
     this.exportAction.setEnabled(this.model !== null && this.model.entries().length > 0);
     this.decorationManager?.update(updatedEntries);
   }
@@ -588,7 +595,7 @@ export class CoverageView extends UI.Widget.VBox {
     }
     const text = this.filterInput.value();
     this.textFilterRegExp = text ? Platform.StringUtilities.createPlainTextSearchRegex(text, 'i') : null;
-    this.listView.updateFilterAndHighlight(this.textFilterRegExp);
+    this.updateListView();
     this.updateStats();
   }
 
@@ -602,7 +609,7 @@ export class CoverageView extends UI.Widget.VBox {
     const option = this.filterByTypeComboBox.selectedOption();
     const type = option?.value;
     this.typeFilterValue = parseInt(type || '', 10) || null;
-    this.listView.updateFilterAndHighlight(this.textFilterRegExp);
+    this.updateListView();
     this.updateStats();
   }
 

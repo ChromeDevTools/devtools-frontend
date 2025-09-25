@@ -141,15 +141,13 @@ export function coverageTypeToString(type: CoverageType): string {
 
 export class CoverageListView extends UI.Widget.VBox {
   private readonly nodeForUrl: Map<Platform.DevToolsPath.UrlString, GridNode>;
-  private readonly isVisibleFilter: (arg0: CoverageListItem) => boolean;
   private highlightRegExp: RegExp|null;
   private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<GridNode>;
 
-  constructor(isVisibleFilter: (arg0: CoverageListItem) => boolean) {
+  constructor() {
     super({useShadowDom: true});
     this.registerRequiredCSS(coverageListViewStyles);
     this.nodeForUrl = new Map();
-    this.isVisibleFilter = isVisibleFilter;
     this.highlightRegExp = null;
 
     const columns = [
@@ -209,30 +207,37 @@ export class CoverageListView extends UI.Widget.VBox {
     this.setDefaultFocusedChild(dataGridWidget);
   }
 
-  update(coverageInfo: CoverageListItem[] = []): void {
-    let hadUpdates = false;
+  update(coverageInfo: CoverageListItem[], highlightRegExp: RegExp|null): void {
+    this.highlightRegExp = highlightRegExp;
     const maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size), 0);
-    const rootNode = this.dataGrid.rootNode();
+
+    const coverageUrls = new Set(coverageInfo.map(info => info.url));
+    for (const [url, node] of this.nodeForUrl.entries()) {
+      if (!coverageUrls.has(url)) {
+        node.remove();
+        this.nodeForUrl.delete(url);
+      }
+    }
+
+    let hadUpdates = false;
     for (const entry of coverageInfo) {
       let node = this.nodeForUrl.get(entry.url);
       if (node) {
-        if (this.isVisibleFilter(node.coverageInfo)) {
-          hadUpdates = node.refreshIfNeeded(maxSize, entry) || hadUpdates;
-          if (entry.sources.length > 0) {
-            this.updateSourceNodes(entry.sources, maxSize, node);
-          }
+        hadUpdates = node.refreshIfNeeded(maxSize, entry) || hadUpdates;
+        if (entry.sources.length > 0) {
+          this.updateSourceNodes(entry.sources, maxSize, node);
         }
+        node.setHighlight(this.highlightRegExp);
         continue;
       }
       node = new GridNode(entry, maxSize);
       this.nodeForUrl.set(entry.url, node);
-      if (this.isVisibleFilter(node.coverageInfo)) {
-        rootNode.appendChild(node);
-        if (entry.sources.length > 0) {
-          void this.createSourceNodes(entry.sources, maxSize, node);
-        }
-        hadUpdates = true;
+      this.appendNodeByType(node);
+      if (entry.sources.length > 0) {
+        this.updateSourceNodes(entry.sources, maxSize, node);
       }
+      node.setHighlight(this.highlightRegExp);
+      hadUpdates = true;
     }
     if (hadUpdates) {
       this.dataGrid.dispatchEventToListeners(DataGrid.DataGrid.Events.SORTING_CHANGED);
@@ -240,56 +245,21 @@ export class CoverageListView extends UI.Widget.VBox {
   }
 
   updateSourceNodes(sources: CoverageListItem[], maxSize: number, node: GridNode): void {
-    let shouldCreateSourceNodes = false;
     for (const coverageInfo of sources) {
       const sourceNode = this.nodeForUrl.get(coverageInfo.url);
       if (sourceNode) {
         sourceNode.refreshIfNeeded(maxSize, coverageInfo);
       } else {
-        shouldCreateSourceNodes = true;
-        break;
+        const sourceNode = new GridNode(coverageInfo, maxSize);
+        node.appendChild(sourceNode);
+        this.nodeForUrl.set(coverageInfo.url, sourceNode);
       }
-    }
-    if (shouldCreateSourceNodes) {
-      void this.createSourceNodes(sources, maxSize, node);
-    }
-  }
-
-  async createSourceNodes(sources: CoverageListItem[], maxSize: number, node: GridNode): Promise<void> {
-    for (const coverageInfo of sources) {
-      const sourceNode = new GridNode(coverageInfo, maxSize);
-      node.appendChild(sourceNode);
-      this.nodeForUrl.set(coverageInfo.url, sourceNode);
     }
   }
 
   reset(): void {
     this.nodeForUrl.clear();
     this.dataGrid.rootNode().removeChildren();
-  }
-
-  updateFilterAndHighlight(highlightRegExp: RegExp|null): void {
-    this.highlightRegExp = highlightRegExp;
-    let hadTreeUpdates = false;
-    for (const node of this.nodeForUrl.values()) {
-      const shouldBeVisible = this.isVisibleFilter(node.coverageInfo);
-      const isVisible = Boolean(node.parent);
-      if (shouldBeVisible) {
-        node.setHighlight(this.highlightRegExp);
-      }
-      if (shouldBeVisible === isVisible) {
-        continue;
-      }
-      hadTreeUpdates = true;
-      if (!shouldBeVisible) {
-        node.remove();
-      } else {
-        this.appendNodeByType(node);
-      }
-    }
-    if (hadTreeUpdates) {
-      this.dataGrid.dispatchEventToListeners(DataGrid.DataGrid.Events.SORTING_CHANGED);
-    }
   }
 
   private appendNodeByType(node: GridNode): void {
@@ -381,6 +351,9 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       return;
     }
     this.highlightRegExp = highlightRegExp;
+    for (const child of this.children) {
+      (child as GridNode).setHighlight(this.highlightRegExp);
+    }
     this.refresh();
   }
 

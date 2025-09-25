@@ -32,18 +32,21 @@ function makeItem(
 
 describeWithEnvironment('CoverageListView', () => {
   it('basic rendering', async () => {
-    const view = new Coverage.CoverageListView.CoverageListView(_ => true);
+    const view = new Coverage.CoverageListView.CoverageListView();
     renderWidgetInVbox(view);
-    await view.update([
-      makeItem(urlString`https://example.com/index.html`, Coverage.CoverageModel.CoverageType.JAVA_SCRIPT, 100, 10),
-      makeItem(
-          urlString`https://example.com/index.html?query=foo`,
-          Coverage.CoverageModel.CoverageType.JAVA_SCRIPT_PER_FUNCTION, 100, 0),
-      makeItem(urlString`https://example.com/index.html?query=baz`, Coverage.CoverageModel.CoverageType.CSS, 100, 50),
-      makeItem(
-          urlString`https://example.com/index.html?query=bar`, Coverage.CoverageModel.CoverageType.JAVA_SCRIPT, 100,
-          50),
-    ]);
+    await view.update(
+        [
+          makeItem(urlString`https://example.com/index.html`, Coverage.CoverageModel.CoverageType.JAVA_SCRIPT, 100, 10),
+          makeItem(
+              urlString`https://example.com/index.html?query=foo`,
+              Coverage.CoverageModel.CoverageType.JAVA_SCRIPT_PER_FUNCTION, 100, 0),
+          makeItem(
+              urlString`https://example.com/index.html?query=baz`, Coverage.CoverageModel.CoverageType.CSS, 100, 50),
+          makeItem(
+              urlString`https://example.com/index.html?query=bar`, Coverage.CoverageModel.CoverageType.JAVA_SCRIPT, 100,
+              50),
+        ],
+        null);
 
     await assertScreenshot('coverage/basic.png');
   });

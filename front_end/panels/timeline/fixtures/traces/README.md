@@ -355,3 +355,7 @@ https://chromium.googlesource.com/external/github.com/google/perfetto.git/+/aef6
 ### interaction-events-with-shared-ids
 
 A trace with lots of interactions generated from https://chromedevtools.github.io/performance-stories/long-interaction/index.html?x=30.
+
+### layout-shift-with-animation-culprit
+
+A trace that has a layout shift with a root cause that is a non-composited animation. Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/layout-shift-animations.

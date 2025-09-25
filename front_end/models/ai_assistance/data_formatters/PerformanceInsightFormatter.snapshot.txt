@@ -338,6 +338,104 @@ Layout shifts in this cluster:
 - https://web.dev/articles/optimize-cls
 === end content
 
+Title: PerformanceInsightFormatter CLS serializes correctly when there are no layout shifts
+Content:
+## Insight Title: Layout shift culprits
+
+## Insight Summary:
+Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shifts for every unexpected layout shift that occurs during the lifecycle of a page. This is a Core Web Vital and the thresholds for categorizing a score are:
+- Good: 0.1 or less
+- Needs improvement: more than 0.1 and less than or equal to 0.25
+- Bad: over 0.25
+
+## Detailed analysis:
+No layout shifts were found.
+
+## Estimated savings: none
+
+## External resources:
+- https://wdeb.dev/articles/cls
+- https://web.dev/articles/optimize-cls
+=== end content
+
+Title: PerformanceInsightFormatter CLS outputs information on non-composited animations
+Content:
+## Insight Title: Layout shift culprits
+
+## Insight Summary:
+Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shifts for every unexpected layout shift that occurs during the lifecycle of a page. This is a Core Web Vital and the thresholds for categorizing a score are:
+- Good: 0.1 or less
+- Needs improvement: more than 0.1 and less than or equal to 0.25
+- Bad: over 0.25
+
+## Detailed analysis:
+The worst layout shift cluster was the cluster that started at 60 ms and ended at 1,243 ms, with a duration of 1,183 ms.
+The score for this cluster is 0.0140.
+
+Layout shifts in this cluster:
+### Layout shift 1:
+- Start time: 60 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 2:
+- Start time: 76 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 3:
+- Start time: 93 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 4:
+- Start time: 110 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 5:
+- Start time: 126 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 6:
+- Start time: 143 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 7:
+- Start time: 160 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 8:
+- Start time: 176 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 9:
+- Start time: 193 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 10:
+- Start time: 210 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 11:
+- Start time: 226 ms
+- Score: 0.0012
+- No potential root causes identified
+### Layout shift 12:
+- Start time: 243 ms
+- Score: 0.0012
+- Potential root causes:
+  - A non-composited animation:
+- non-composited animation: `change-height`
+    Animation name: change-height
+    Unsupported CSS properties:
+    - height
+    Failure reasons:
+      - TARGET_HAS_INVALID_COMPOSITING_STATE, UNSUPPORTED_CSS_PROPERTY
+
+## Estimated savings: none
+
+## External resources:
+- https://wdeb.dev/articles/cls
+- https://web.dev/articles/optimize-cls
+=== end content
+
 Title: PerformanceInsightFormatter INP breakdown serializes the correct details
 Content:
 ## Insight Title: INP breakdown

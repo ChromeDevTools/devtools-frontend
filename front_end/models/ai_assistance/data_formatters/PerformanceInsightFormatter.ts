@@ -304,7 +304,7 @@ ${rootCauseText}`;
   formatClsCulpritsInsight(insight: Trace.Insights.Models.CLSCulprits.CLSCulpritsInsightModel): string {
     const {worstCluster, shifts} = insight;
     if (!worstCluster) {
-      return '';
+      return 'No layout shifts were found.';
     }
 
     const baseTime = this.#parsedTrace.data.Meta.traceBounds.min;

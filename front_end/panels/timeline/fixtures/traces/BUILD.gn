@@ -61,6 +61,7 @@ copy_to_gen("traces") {
     "large-profile.cpuprofile.gz",
     "large-recalc-style.json.gz",
     "layout-shifts-root-causes.json.gz",
+    "layout-shifts-with-animation-culprit.json.gz",
     "lcp-discovery-delay.json.gz",
     "lcp-fetchpriority-high.json.gz",
     "lcp-images-rasterizer.json.gz",

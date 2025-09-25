@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {
   navigateToConsoleTab,
   waitForLastConsoleMessageToHaveContent,
@@ -43,7 +41,10 @@ describe('Sources Tab', () => {
       await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
       await executionLineHighlighted(devToolsPage);
 
-      assert.deepEqual(await getOpenSources(devToolsPage), ['infinity-loop.html']);
+      await devToolsPage.waitForFunction(async () => {
+        const sources = await getOpenSources(devToolsPage);
+        return sources.length === 1 && sources[0] === 'infinity-loop.html';
+      });
     });
   });
 });

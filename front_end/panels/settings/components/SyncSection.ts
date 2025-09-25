@@ -270,7 +270,7 @@ function renderWarningIfNeeded(syncInfo: Host.InspectorFrontendHostAPI.SyncInfor
   return html`
     <devtools-button
       aria-describedby=settings-sync-info
-      aria-label=${warningText}
+      .title=${warningText}
       .iconName=${'info'}
       .variant=${Buttons.Button.Variant.ICON}
       .size=${Buttons.Button.Size.SMALL}

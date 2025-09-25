@@ -219,7 +219,7 @@ describeWithEnvironment('Export Trace Options ', () => {
     const dialogContent = await waitFor('.export-trace-options-content', component.shadowRoot) as HTMLElement;
     assert.isNotNull(dialogContent);
 
-    const saveButton = dialogContent.querySelector('devtools-button');
+    const saveButton = dialogContent.querySelector<HTMLElement>('devtools-button[data-export-button]');
     let regexRows = dialogContent.querySelectorAll('devtools-checkbox') || [];
     assert.lengthOf(regexRows, 4);
     // Initial checkbox states: annotations=true, script=false, sourcemaps=false
@@ -236,7 +236,7 @@ describeWithEnvironment('Export Trace Options ', () => {
     assert.isFalse(regexRows[2].disabled);
     assert.isFalse(callbackExecuted);
     saveButton?.click();  // Trigger export callback
-    assert.isTrue(callbackExecuted);
+    assert.isTrue(callbackExecuted, 'The export callback was not called.');
 
     assert.isNotNull(passedArgs);
     // Verify callback receives correct checkbox states

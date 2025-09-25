@@ -24,3 +24,8 @@
     min-width: var(--sys-size-25)
   }
 }
+
+.info-tooltip-container {
+  max-width: var(--sys-size-28);
+  white-space: normal;
+}

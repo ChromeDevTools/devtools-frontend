@@ -254,7 +254,7 @@ export class CoverageView extends UI.Widget.VBox {
     this.bfcacheReloadPromptPage = this.buildReloadPromptPage(i18nString(UIStrings.bfcacheNoCapture), 'bfcache-page');
     this.activationReloadPromptPage =
         this.buildReloadPromptPage(i18nString(UIStrings.activationNoCapture), 'prerender-page');
-    this.listView = new CoverageListView(this.isVisible.bind(this, false));
+    this.listView = new CoverageListView(this.isVisible.bind(this));
 
     this.statusToolbarElement = this.contentElement.createChild('div', 'coverage-toolbar-summary');
     this.statusMessageElement = this.statusToolbarElement.createChild('div', 'coverage-message');
@@ -527,14 +527,14 @@ export class CoverageView extends UI.Widget.VBox {
       for (const info of this.model.entries()) {
         all.total += info.size();
         all.unused += info.unusedSize();
-        if (this.isVisible(false, info)) {
+        if (this.isVisible(info)) {
           if (this.textFilterRegExp?.test(info.url())) {
             filtered.total += info.size();
             filtered.unused += info.unusedSize();
           } else {
             // If it doesn't match the filter, calculate the stats from visible children if there are any
             for (const childInfo of info.sourcesURLCoverageInfo.values()) {
-              if (this.isVisible(false, childInfo)) {
+              if (this.isVisible(childInfo)) {
                 filtered.total += childInfo.size();
                 filtered.unused += childInfo.unusedSize();
               }
@@ -583,7 +583,7 @@ export class CoverageView extends UI.Widget.VBox {
     this.updateStats();
   }
 
-  private isVisible(ignoreTextFilter: boolean, coverageInfo: URLCoverageInfo): boolean {
+  private isVisible(coverageInfo: URLCoverageInfo): boolean {
     const url = coverageInfo.url();
     if (url.startsWith(CoverageView.EXTENSION_BINDINGS_URL_PREFIX)) {
       return false;
@@ -597,13 +597,13 @@ export class CoverageView extends UI.Widget.VBox {
     // If it's a parent, check if any children are visible
     if (coverageInfo.sourcesURLCoverageInfo.size > 0) {
       for (const sourceURLCoverageInfo of coverageInfo.sourcesURLCoverageInfo.values()) {
-        if (this.isVisible(ignoreTextFilter, sourceURLCoverageInfo)) {
+        if (this.isVisible(sourceURLCoverageInfo)) {
           return true;
         }
       }
     }
 
-    return ignoreTextFilter || !this.textFilterRegExp || this.textFilterRegExp.test(url);
+    return !this.textFilterRegExp || this.textFilterRegExp.test(url);
   }
 
   async exportReport(): Promise<void> {

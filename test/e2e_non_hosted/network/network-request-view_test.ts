@@ -173,9 +173,11 @@ describe('The Network Request view', () => {
 
     await waitForSomeRequestsToAppear(2, devToolsPage);
 
-    const names = await getAllRequestNames(devToolsPage);
-    const name = names.find(v => v?.startsWith('data:'));
-    assert.isOk(name);
+    const name = await devToolsPage.waitForFunction(async () => {
+      const names = await getAllRequestNames(devToolsPage);
+      const name = names.find(v => v?.startsWith('data:'));
+      return name;
+    });
     await selectRequestByName(name, {devToolsPage});
 
     const networkView = await devToolsPage.waitFor('.network-item-view');

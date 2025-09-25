@@ -1530,7 +1530,7 @@ function renderAidaUnavailableContents(
 }
 
 function renderConsentViewContents(): Lit.TemplateResult {
-  const settingsLink = document.createElement('button');
+  const settingsLink = document.createElement('span');
   settingsLink.textContent = i18nString(UIStrings.settingsLink);
   settingsLink.classList.add('link');
   UI.ARIAUtils.markAsLink(settingsLink);

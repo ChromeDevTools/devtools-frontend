@@ -104,7 +104,7 @@ describe('AI Assistance', function() {
 
   async function turnOnAiAssistance(devtoolsPage: DevToolsPage) {
     // Click on the settings redirect link.
-    await devtoolsPage.click('pierce/.disabled-view button[role=link]');
+    await devtoolsPage.click('pierce/.disabled-view span[role=link]');
     // Enable "AI Assistance" toggle in the settings.
     await devtoolsPage.click('pierce/[data-testid="Enable AI assistance"]');
     // Close settings to come back to the AI Assistance panel.

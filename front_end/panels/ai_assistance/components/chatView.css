@@ -674,7 +674,7 @@ main {
   justify-content: center;
   font: var(--sys-typescale-headline4);
   gap: var(--sys-size-8);
-  padding: var(--sys-size-3);
+  padding: var(--sys-size-4);
   max-width: var(--sys-size-33);
 
   /* Prevents the container from jumping when the scrollbar is shown */

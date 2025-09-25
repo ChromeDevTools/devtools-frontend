@@ -747,7 +747,7 @@ export const getColorSwatch = async (
 export const getColorSwatchColor = async (
     parent: puppeteer.ElementHandle<Element>, index: number,
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
-  const swatch = await getColorSwatch(parent, index, devToolsPage);
+  const swatch = await devToolsPage.waitForFunction(() => getColorSwatch(parent, index, devToolsPage));
   return await swatch.evaluate(node => (node as HTMLElement).style.backgroundColor);
 };
 

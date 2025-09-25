@@ -32,12 +32,20 @@ async function goToTestPageAndSelectTestElement(
 }
 
 async function assertColorSwatch(
-    container: puppeteer.ElementHandle|undefined, expectedColor: string, devToolsPage: DevToolsPage) {
-  assert.isOk(container, 'Container not found');
-  const swatch = await getColorSwatch(container, 0, devToolsPage);
-  assert.isTrue(Boolean(swatch), 'Color swatch found');
+    containerFactory: () => Promise<puppeteer.ElementHandle|undefined>, expectedColor: string,
+    devToolsPage: DevToolsPage) {
+  const color = await devToolsPage.waitForFunction(async () => {
+    const container = await containerFactory();
+    if (!container) {
+      return container;
+    }
+    const swatch = await getColorSwatch(container, 0, devToolsPage);
+    if (!swatch) {
+      return swatch;
+    }
 
-  const color = await getColorSwatchColor(container, 0, devToolsPage);
+    return await getColorSwatchColor(container, 0, devToolsPage);
+  });
   assert.strictEqual(color, expectedColor, 'Color swatch has the right color');
 }
 
@@ -52,7 +60,7 @@ describe('The color swatch', () => {
     await goToTestPageAndSelectTestElement(inspectedPage, devToolsPage);
 
     await waitForCSSPropertyValue('#inspected', 'color', 'red', undefined, devToolsPage);
-    const property = await getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
+    const property = () => getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
 
     await assertColorSwatch(property, 'red', devToolsPage);
   });
@@ -62,7 +70,7 @@ describe('The color swatch', () => {
     await navigateToSidePane('Computed', devToolsPage);
     await waitForElementsComputedSection(devToolsPage);
 
-    const property = await getPropertyFromComputedPane('color', devToolsPage);
+    const property = () => getPropertyFromComputedPane('color', devToolsPage);
     await assertColorSwatch(property, 'rgb(255, 0, 0)', devToolsPage);
   });
 
@@ -100,7 +108,7 @@ describe('The color swatch', () => {
        await goToTestPageAndSelectTestElement(inspectedPage, devToolsPage);
 
        await waitForCSSPropertyValue('#inspected', 'background-color', 'var(--variable)', undefined, devToolsPage);
-       const property = await getCSSPropertyInRule('#inspected', 'background-color', undefined, devToolsPage);
+       const property = () => getCSSPropertyInRule('#inspected', 'background-color', undefined, devToolsPage);
        await assertColorSwatch(property, 'blue', devToolsPage);
      });
 
@@ -117,7 +125,7 @@ describe('The color swatch', () => {
     await goToTestPageAndSelectTestElement(inspectedPage, devToolsPage);
 
     await waitForCSSPropertyValue('#inspected', '--variable', 'blue', undefined, devToolsPage);
-    const property = await getCSSPropertyInRule('#inspected', '--variable', undefined, devToolsPage);
+    const property = () => getCSSPropertyInRule('#inspected', '--variable', undefined, devToolsPage);
     await assertColorSwatch(property, 'blue', devToolsPage);
   });
 
@@ -156,13 +164,13 @@ describe('The color swatch', () => {
     await goToTestPageAndSelectTestElement(inspectedPage, devToolsPage);
 
     await waitForCSSPropertyValue('#inspected', 'color', 'red', undefined, devToolsPage);
-    let property = await getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
+    let property = () => getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
     await assertColorSwatch(property, 'red', devToolsPage);
 
     await editCSSProperty('#inspected', 'color', 'blue', devToolsPage);
 
     await waitForCSSPropertyValue('#inspected', 'color', 'blue', undefined, devToolsPage);
-    property = await getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
+    property = () => getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
     await assertColorSwatch(property, 'blue', devToolsPage);
   });
 
@@ -173,16 +181,16 @@ describe('The color swatch', () => {
        await waitForCSSPropertyValue('#inspected', '--bar', 'var(--baz)', undefined, devToolsPage);
        await waitForCSSPropertyValue('#inspected', 'color', 'var(--bar)', undefined, devToolsPage);
 
-       let barProperty = await getCSSPropertyInRule('#inspected', '--bar', undefined, devToolsPage);
-       let colorProperty = await getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
+       let barProperty = () => getCSSPropertyInRule('#inspected', '--bar', undefined, devToolsPage);
+       let colorProperty = () => getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
        await assertColorSwatch(barProperty, 'red', devToolsPage);
        await assertColorSwatch(colorProperty, 'red', devToolsPage);
 
        await editCSSProperty('#inspected', '--baz', 'blue', devToolsPage);
        await waitForCSSPropertyValue('#inspected', '--baz', 'blue', undefined, devToolsPage);
 
-       barProperty = await getCSSPropertyInRule('#inspected', '--bar', undefined, devToolsPage);
-       colorProperty = await getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
+       barProperty = () => getCSSPropertyInRule('#inspected', '--bar', undefined, devToolsPage);
+       colorProperty = () => getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
        await assertColorSwatch(barProperty, 'blue', devToolsPage);
        await assertColorSwatch(colorProperty, 'blue', devToolsPage);
      });

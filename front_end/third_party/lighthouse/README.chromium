@@ -9,4 +9,11 @@ License File: LICENSE
 Security Critical: no
 Shipped: yes
 
-This directory contains Chromium's version of the lighthouse report assets, including renderer.
+This directory contains Chromium's version of Lighthouse. It includes:
+
+- locale strings
+- report assets
+- report renderer
+- worker bundle for running Lighthouse core
+
+Build documentation: https://github.com/GoogleChrome/lighthouse/blob/main/build/readme.md#building-for-devtools

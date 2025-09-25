@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import {
   assertScreenshot,
@@ -49,12 +49,6 @@ class FakeSearchScope implements Search.SearchScope.SearchScope {
 }
 
 class TestSearchView extends Search.SearchView.SearchView {
-  /**
-   * The throttler with which the base 'SearchView' throttles UI updates.
-   * Exposed here so tests can wait for the updates to finish.
-   */
-  readonly throttler: Common.Throttler.Throttler;
-
   readonly #scopeCreator: () => Search.SearchScope.SearchScope;
   /**
    * `SearchView` resets and lazily re-creates the search results pane for each search.
@@ -65,9 +59,7 @@ class TestSearchView extends Search.SearchView.SearchView {
 
   constructor(scopeCreator: () => Search.SearchScope.SearchScope) {
     const view = createViewFunctionStub(Search.SearchView.SearchView);
-    const throttler = new Common.Throttler.Throttler(/* timeoutMs */ 0);
-    super('fake', throttler, view);
-    this.throttler = throttler;
+    super('fake', view);
     this.view = view;
     this.#scopeCreator = scopeCreator;
   }

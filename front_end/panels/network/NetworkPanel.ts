@@ -1050,7 +1050,7 @@ let searchNetworkViewInstance: SearchNetworkView;
 
 export class SearchNetworkView extends Search.SearchView.SearchView {
   private constructor() {
-    super('network', new Common.Throttler.Throttler(/* timeoutMs */ 200));
+    super('network');
   }
 
   static instance(opts: {

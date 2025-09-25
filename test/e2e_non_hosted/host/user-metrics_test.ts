@@ -79,21 +79,38 @@ async function setupInspectorFrontendHostStub(devToolsPage: DevToolsPage) {
   await devToolsPage.reload();
 }
 
-function retrieveRecordedHistogramEvents(page: puppeteer.Page): Promise<EnumHistogramEvent[]> {
+async function retrieveRecordedHistogramEvents(devToolsPage: DevToolsPage): Promise<EnumHistogramEvent[]> {
   // @ts-expect-error
-  return page.evaluate(() => window.InspectorFrontendHost.recordedEnumeratedHistograms);
+  return await devToolsPage.page.evaluate(() => window.InspectorFrontendHost.recordedEnumeratedHistograms);
 }
 
-function retrieveRecordedPerformanceHistogramEvents(page: puppeteer.Page): Promise<PerformanceHistogramEvent[]> {
+async function retrieveRecordedPerformanceHistogramEvents(devToolsPage: DevToolsPage):
+    Promise<PerformanceHistogramEvent[]> {
+  // The reporting happens in a raf
+  await devToolsPage.drainTaskQueue();
   // @ts-expect-error
-  return page.evaluate(() => window.InspectorFrontendHost.recordedPerformanceHistograms);
+  return await devToolsPage.page.evaluate(() => window.InspectorFrontendHost.recordedPerformanceHistograms);
 }
 
 async function assertHistogramEventsInclude(expected: EnumHistogramEvent[], devToolsPage: DevToolsPage) {
   await devToolsPage.waitForFunction(async () => {
-    const events = await retrieveRecordedHistogramEvents(devToolsPage.page);
+    const events = await retrieveRecordedHistogramEvents(devToolsPage);
     try {
       assert.includeDeepMembers(events, expected);
+      return true;
+    } catch {
+      return false;
+    }
+  });
+}
+
+async function assertHistogramPerformanceEventsInclude(expected: string[], devToolsPage: DevToolsPage) {
+  await devToolsPage.waitForFunction(async () => {
+    const events = await retrieveRecordedPerformanceHistogramEvents(devToolsPage);
+    try {
+      for (const expect of expected) {
+        assert.include(events.map(e => e.histogramName), expect);
+      }
       return true;
     } catch {
       return false;
@@ -104,7 +121,7 @@ async function assertHistogramEventsInclude(expected: EnumHistogramEvent[], devT
 async function waitForHistogramEvent(
     expected: EnumHistogramEventWithOptionalCode, expectedCount = 1, devToolsPage: DevToolsPage) {
   await devToolsPage.waitForFunction(async () => {
-    const events = await retrieveRecordedHistogramEvents(devToolsPage.page);
+    const events = await retrieveRecordedHistogramEvents(devToolsPage);
     const matchedEvents = events.filter(
         e => e.actionName === expected.actionName &&
             (!('actionCode' in expected) || e.actionCode === expected.actionCode));
@@ -400,11 +417,7 @@ describe('User Metrics', () => {
 });
 
 describe('User Metric with deferent initial panel', () => {
-  setup({
-    devToolsSettings: {
-      'panel-selected-tab': 'network',
-    },
-  });
+  setup({panel: 'network'});
 
   it('dispatches events for view shown at launch', async ({devToolsPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
@@ -424,11 +437,9 @@ describe('User Metric with deferent initial panel', () => {
     // request that the resetPages helper sets the network as the target panel, and
     // we wait for the network in the test. This means, in turn, we get the PanelLoaded
     // event.
-    await devToolsPage.waitFor('.network');
+    await devToolsPage.waitFor('.network .network-toolbar-container');
 
-    const events = await retrieveRecordedPerformanceHistogramEvents(devToolsPage.page);
-
-    assert.include(events.map(e => e.histogramName), 'DevTools.Launch.Network');
+    await assertHistogramPerformanceEventsInclude(['DevTools.Launch.Network'], devToolsPage);
   });
 });
 

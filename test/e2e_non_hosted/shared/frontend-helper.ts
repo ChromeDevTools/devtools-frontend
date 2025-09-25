@@ -123,8 +123,15 @@ export class DevToolsPage extends PageWrapper {
    * @param panel Mocks DevTools URL search params to make it open a specific panel on load.
    * @param canDock Mocks DevTools URL search params to make it think whether it can dock or not.
    * This does not control whether or not the panel can actually dock or not.
+   * @param persistReloads If this is true running {@link DevToolsPage.reload} will reloading with
+   * the provided options
    */
-  async reloadWithParams({panel, canDock}: DevToolsReloadParams) {
+  async reloadWithParams({panel, canDock}: DevToolsReloadParams, persistReloads = false) {
+    if (!panel && !canDock) {
+      await this.reload();
+      return;
+    }
+
     // evaluateOnNewDocument is ran before all other JS is loaded
     // ES Modules are only resolved once and always resolved asynchronously
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_classic_scripts
@@ -141,7 +148,9 @@ export class DevToolsPage extends PageWrapper {
     }, panel, canDock);
 
     await this.reload();
-    await this.page.removeScriptToEvaluateOnNewDocument(token.identifier);
+    if (!persistReloads) {
+      await this.page.removeScriptToEvaluateOnNewDocument(token.identifier);
+    }
     if (panel) {
       await this.waitFor(`.panel.${panel}`);
     }
@@ -758,8 +767,18 @@ export interface DevtoolsSettings {
   enabledDevToolsExperiments: string[];
   disabledDevToolsExperiments: string[];
   devToolsSettings: Record<string, unknown>;
-  // front_end/ui/legacy/DockController.ts DockState
+  /**
+   * Defined in front_end/ui/legacy/DockController.ts DockState
+   */
   dockingMode: 'bottom'|'right'|'left'|'undocked';
+  // DevTools panel to open on load
+  /**
+   * The name of the panel to be loaded initially
+   * This persist after {@link DevToolsPage.reload}
+   *
+   * To reload into a panel use {@link DevToolsPage.reloadWithParams}
+   */
+  panel: string|undefined;
 }
 
 export const DEFAULT_DEVTOOLS_SETTINGS: DevtoolsSettings = {
@@ -769,6 +788,7 @@ export const DEFAULT_DEVTOOLS_SETTINGS: DevtoolsSettings = {
     veLogsTestMode: true,
   },
   dockingMode: 'right',
+  panel: undefined
 };
 
 /**
@@ -871,7 +891,8 @@ export async function setupDevToolsPage(
     setDevToolsExperiments(devToolsPage, settings.enabledDevToolsExperiments),
     setDisabledDevToolsExperiments(devToolsPage, settings.disabledDevToolsExperiments),
   ]);
-  await devToolsPage.reload();
+
+  await devToolsPage.reloadWithParams({panel: settings.panel}, true);
 
   await Promise.all([
     devToolsPage.throttleCPUIfRequired(),

@@ -1142,3 +1142,84 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     target, {host: input});
 };
 ```
+
+## Migrating `TextPrompt`
+
+Replace imperative `TextPrompt` creation with the declarative `<devtools-prompt>` component, providing completions via `<datalist>`.
+
+**Before:**
+```typescript
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const prompt = new UI.TextPrompt.TextPrompt();
+    prompt.initialize(async (expression, prefix) => {
+      const options = ['completion1', 'completion2'];
+      return options.filter(opt => opt.startsWith(prefix)).map(text => ({text}));
+    });
+    const promptElement = this.contentElement.createChild('span');
+    prompt.attach(promptElement);
+  }
+}
+```
+
+**After:**
+```typescript
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html`
+    <div>
+      <datalist id="my-completions">
+        <option>completion1</option>
+        <option>completion2</option>
+      </datalist>
+      <devtools-prompt completions="my-completions" editing></devtools-prompt>
+    </div>`,
+    target, {host: input});
+};
+```
+
+## Migrating `TreeOutline`
+
+Replace imperative `TreeOutline` and `TreeElement` creation with the declarative `<devtools-tree>` component.
+
+**Before:**
+```typescript
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const tree = new UI.TreeOutline.TreeOutlineInShadow();
+    this.contentElement.appendChild(tree.element);
+
+    const root = tree.rootElement();
+    const node1 = new UI.TreeOutline.TreeElement('Node 1');
+    root.appendChild(node1);
+
+    const node2 = new UI.TreeOutline.TreeElement('Node 2', true);
+    root.appendChild(node2);
+
+    const child1 = new UI.TreeOutline.TreeElement('Child 1');
+    node2.appendChild(child1);
+  }
+}
+```
+
+**After:**
+```typescript
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html`
+    <div>
+      <devtools-tree .template=${html`
+        <ul role="tree">
+          <li role="treeitem">Node 1</li>
+          <li role="treeitem">
+            Node 2
+            <ul role="group" hidden>
+              <li role="treeitem">Child 1</li>
+            </ul>
+          </li>
+        </ul>
+      `}></devtools-tree>
+    </div>`,
+    target, {host: input});
+};
+```

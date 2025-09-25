@@ -2965,7 +2965,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.22.2';
+  const packageVersion = '24.22.3';
 
   /**
    * @license
@@ -4507,7 +4507,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   function stringifyFunction(fn) {
     let value = fn.toString();
-    if (value.match(/^(async )*function /) || value.match(/^(async )*function\s*\*\s*/)) {
+    if (value.match(/^(async )*function(\(|\s)/) || value.match(/^(async )*function\s*\*\s*/)) {
       return value;
     }
     const isArrow = value.startsWith('(') || value.match(/^async\s*\(/) || value.match(/^(async)*\s*(?:[$_\p{ID_Start}])(?:[$\u200C\u200D\p{ID_Continue}])*\s*=>/u);
@@ -24772,8 +24772,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '140.0.7339.185',
-    'chrome-headless-shell': '140.0.7339.185',
+    chrome: '140.0.7339.207',
+    'chrome-headless-shell': '140.0.7339.207',
     firefox: 'stable_143.0.1'
   });
 

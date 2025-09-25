@@ -28,7 +28,7 @@ exports.createFunction = createFunction;
  */
 function stringifyFunction(fn) {
     let value = fn.toString();
-    if (value.match(/^(async )*function /) ||
+    if (value.match(/^(async )*function(\(|\s)/) ||
         value.match(/^(async )*function\s*\*\s*/)) {
         return value;
     }

@@ -121,7 +121,7 @@ class BrowserLauncher {
             await this.closeBrowser(browserProcess, cdpConnection);
         };
         try {
-            if (this.#browser === 'firefox' && protocol === 'webDriverBiDi') {
+            if (this.#browser === 'firefox') {
                 browser = await this.createBiDiBrowser(browserProcess, browserCloseCallback, {
                     timeout,
                     protocolTimeout,

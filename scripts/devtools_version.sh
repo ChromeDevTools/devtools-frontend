@@ -16,7 +16,7 @@ chrome_version="$(cat DEPS | grep "'chrome'" | head -n1 | sed "s/[^0-9.]//g")"
 
 # Find most recent roll of chromium INTO devtools-frontend standalone.
 #   NOTE: this isn't exactly the same as when frontend was rolled into chromium. But.. it shouldn't make a huge difference for these purposes.. :)
-chromium_commit_position=$(curl "https://chromiumdash.appspot.com/fetch_releases?platform=Linux,Mac" --silent | jq --arg chrome_version "$chrome_version" '.[] | select(.version == $chrome_version).chromium_main_branch_position')
+chromium_commit_position=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions.json" | jq --arg chrome_version "$chrome_version" '.versions[] | select(.version == $chrome_version).revision | tonumber')
 
 # verify we have a real number
 re='^[0-9]+$'

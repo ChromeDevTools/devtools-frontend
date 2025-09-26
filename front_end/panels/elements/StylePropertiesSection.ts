@@ -796,6 +796,11 @@ export class StylePropertiesSection {
         case Protocol.CSS.CSSRuleType.StyleRule:
           ancestorRuleElement = this.createNestingElement(rule.nestingSelectors?.[nestingIndex++]);
           break;
+        case Protocol.CSS.CSSRuleType.StartingStyleRule:
+          if (Root.Runtime.hostConfig.devToolsStartingStyleDebugging?.enabled) {
+            ancestorRuleElement = this.createStartingStyleElement();
+          }
+          break;
       }
       if (ancestorRuleElement) {
         this.#ancestorRuleListElement.prepend(ancestorRuleElement);
@@ -915,6 +920,17 @@ export class StylePropertiesSection {
       jslogContext: 'scope',
     };
     return scopeElement;
+  }
+
+  protected createStartingStyleElement(/* startingStyle: SDK.CSSStartingStyle.CSSStartingStyle*/):
+      ElementsComponents.CSSQuery.CSSQuery|undefined {
+    const startingStyleElement = new ElementsComponents.CSSQuery.CSSQuery();
+    startingStyleElement.data = {
+      queryPrefix: '@starting-style',
+      queryText: '',
+      jslogContext: 'starting-style',
+    };
+    return startingStyleElement;
   }
 
   protected createSupportsElement(supports: SDK.CSSSupports.CSSSupports): ElementsComponents.CSSQuery.CSSQuery

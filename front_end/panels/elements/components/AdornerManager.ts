@@ -28,6 +28,7 @@ export enum RegisteredAdorners {
   FLEX = 'flex',
   AD = 'ad',
   SCROLL_SNAP = 'scroll-snap',
+  STARTING_STYLE = 'starting-style',
   CONTAINER = 'container',
   SLOT = 'slot',
   TOP_LAYER = 'top-layer',
@@ -74,6 +75,12 @@ export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorn
     case RegisteredAdorners.SCROLL_SNAP:
       return {
         name: 'scroll-snap',
+        category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+    case RegisteredAdorners.STARTING_STYLE:
+      return {
+        name: 'starting-style',
         category: AdornerCategories.LAYOUT,
         enabledByDefault: true,
       };

@@ -11,6 +11,7 @@ import {CSSLayer} from './CSSLayer.js';
 import {CSSMedia} from './CSSMedia.js';
 import type {CSSModel, Edit} from './CSSModel.js';
 import {CSSScope} from './CSSScope.js';
+import {CSSStartingStyle} from './CSSStartingStyle.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 import {CSSSupports} from './CSSSupports.js';
@@ -108,6 +109,7 @@ export class CSSStyleRule extends CSSRule {
   scopes: CSSScope[];
   layers: CSSLayer[];
   ruleTypes: Protocol.CSS.CSSRuleType[];
+  startingStyles: CSSStartingStyle[];
   wasUsed: boolean;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSRule, wasUsed?: boolean) {
     super(cssModel, {origin: payload.origin, style: payload.style, header: styleSheetHeaderForRule(cssModel, payload)});
@@ -120,6 +122,8 @@ export class CSSStyleRule extends CSSRule {
     this.scopes = payload.scopes ? CSSScope.parseScopesPayload(cssModel, payload.scopes) : [];
     this.supports = payload.supports ? CSSSupports.parseSupportsPayload(cssModel, payload.supports) : [];
     this.layers = payload.layers ? CSSLayer.parseLayerPayload(cssModel, payload.layers) : [];
+    this.startingStyles =
+        payload.startingStyles ? CSSStartingStyle.parseStartingStylePayload(cssModel, payload.startingStyles) : [];
     this.ruleTypes = payload.ruleTypes || [];
     this.wasUsed = wasUsed || false;
   }

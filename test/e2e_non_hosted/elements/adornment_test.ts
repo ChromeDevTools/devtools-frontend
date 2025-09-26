@@ -2,11 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
+  ACTIVE_STARTING_STYLE_ADORNER_SELECTOR,
   editCSSProperty,
   expandSelectedNodeRecursively,
   focusElementsTree,
+  getComputedStylesForDomNode,
   INACTIVE_GRID_ADORNER_SELECTOR,
+  INACTIVE_STARTING_STYLE_ADORNER_SELECTOR,
   toggleAdornerSetting,
   waitForAdornerOnSelectedNode,
   waitForAdorners,
@@ -23,10 +28,57 @@ const prepareElementsTab = async (devToolsPage: DevToolsPage) => {
 };
 
 describe('Adornment in the Elements Tab', function() {
+  setup({enabledFeatures: ['DevToolsStartingStyleDebugging']});
+
   // This test relies on the context menu which takes a while to appear, so we bump the timeout a bit.
   if (this.timeout() > 0) {
     this.timeout(20000);
   }
+
+  it('displays a starting-style adorner for elements with starting styles', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('elements/adornment-starting-style.html');
+    await prepareElementsTab(devToolsPage);
+
+    await waitForAdorners(
+        [
+          {textContent: 'starting-style', isActive: false},
+          {textContent: 'starting-style', isActive: false},
+        ],
+        devToolsPage);
+  });
+
+  it('displays a starting-style adorner for selected elements with starting styles',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToResource('elements/adornment-starting-style.html');
+       await prepareElementsTab(devToolsPage);
+
+       await waitForAndClickTreeElementWithPartialText('no-starting-style', devToolsPage);
+       await waitForNoAdornersOnSelectedNode(devToolsPage);
+
+       await waitForAndClickTreeElementWithPartialText('with-inner-starting-style', devToolsPage);
+       await waitForAdornerOnSelectedNode('starting-style', devToolsPage);
+
+       await waitForAndClickTreeElementWithPartialText('with-outer-starting-style', devToolsPage);
+       await waitForAdornerOnSelectedNode('starting-style', devToolsPage);
+     });
+
+  it('enforces starting styles when clicking the adorner', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('elements/adornment-starting-style.html');
+    await prepareElementsTab(devToolsPage);
+
+    await devToolsPage.click(INACTIVE_STARTING_STYLE_ADORNER_SELECTOR);
+
+    await waitForAdorners(
+        [
+          {textContent: 'starting-style', isActive: true},
+          {textContent: 'starting-style', isActive: false},
+        ],
+        devToolsPage, ACTIVE_STARTING_STYLE_ADORNER_SELECTOR);
+
+    const backgroundColorComputedStyle =
+        await getComputedStylesForDomNode('.with-inner-starting-style', 'backgroundColor', inspectedPage);
+    assert.strictEqual(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
+  });
 
   it('displays grid and flex adorners', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/adornment.html');

@@ -1,0 +1,26 @@
+<!--
+  Copyright 2025 The Chromium Authors
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<style>
+  div {
+    background-color: rgb(0, 0, 128);
+    height: 100px;
+    transition: background-color 0.001s linear;
+  }
+  .with-inner-starting-style {
+    @starting-style {
+      background-color: rgb(0, 128, 0);
+    }
+  }
+  @starting-style {
+    .with-outer-starting-style {
+      background-color: rgb(0, 128, 0);
+    }
+  }
+</style>
+<div class="no-starting-style"></div>
+<div class="with-inner-starting-style"></div>
+<div class="with-outer-starting-style"></div>

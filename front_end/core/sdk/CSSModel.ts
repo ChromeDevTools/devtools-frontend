@@ -462,6 +462,12 @@ export class CSSModel extends SDKModel<EventTypes> {
     return new InlineStyleResult(inlineStyle, attributesStyle);
   }
 
+  forceStartingStyle(node: DOMNode, forced: boolean): boolean {
+    void this.agent.invoke_forceStartingStyle({nodeId: node.id, forced});
+    this.dispatchEventToListeners(Events.StartingStylesStateForced, node);
+    return true;
+  }
+
   forcePseudoState(node: DOMNode, pseudoClass: string, enable: boolean): boolean {
     const forcedPseudoClasses = node.marker<string[]>(PseudoStateMarker) || [];
     const hasPseudoClass = forcedPseudoClasses.includes(pseudoClass);
@@ -938,6 +944,7 @@ export enum Events {
   ModelWasEnabled = 'ModelWasEnabled',
   ModelDisposed = 'ModelDisposed',
   PseudoStateForced = 'PseudoStateForced',
+  StartingStylesStateForced = 'StartingStylesStateForced',
   StyleSheetAdded = 'StyleSheetAdded',
   StyleSheetChanged = 'StyleSheetChanged',
   StyleSheetRemoved = 'StyleSheetRemoved',
@@ -966,6 +973,7 @@ export interface EventTypes {
   [Events.ModelWasEnabled]: void;
   [Events.ModelDisposed]: CSSModel;
   [Events.PseudoStateForced]: PseudoStateForcedEvent;
+  [Events.StartingStylesStateForced]: DOMNode;
   [Events.StyleSheetAdded]: CSSStyleSheetHeader;
   [Events.StyleSheetChanged]: StyleSheetChangedEvent;
   [Events.StyleSheetRemoved]: CSSStyleSheetHeader;

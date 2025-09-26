@@ -126,6 +126,7 @@ export class DOMNode {
   #xmlVersion!: string|undefined;
   #isSVGNode!: boolean;
   #isScrollable!: boolean;
+  #affectedByStartingStyles!: boolean;
   #creationStackTrace: Promise<Protocol.Runtime.StackTrace|null>|null = null;
   #pseudoElements = new Map<string, DOMNode[]>();
   #distributedNodes: DOMNodeShortcut[] = [];
@@ -194,6 +195,7 @@ export class DOMNode {
     this.#xmlVersion = payload.xmlVersion;
     this.#isSVGNode = Boolean(payload.isSVG);
     this.#isScrollable = Boolean(payload.isScrollable);
+    this.#affectedByStartingStyles = Boolean(payload.affectedByStartingStyles);
     this.#retainedNodes = retainedNodes;
 
     if (this.#retainedNodes?.has(this.backendNodeId())) {
@@ -296,6 +298,10 @@ export class DOMNode {
     return this.#isScrollable;
   }
 
+  affectedByStartingStyles(): boolean {
+    return this.#affectedByStartingStyles;
+  }
+
   isMediaNode(): boolean {
     return this.#nodeName === 'AUDIO' || this.#nodeName === 'VIDEO';
   }
@@ -347,6 +353,10 @@ export class DOMNode {
 
   setIsScrollable(isScrollable: boolean): void {
     this.#isScrollable = isScrollable;
+  }
+
+  setAffectedByStartingStyles(affectedByStartingStyles: boolean): void {
+    this.#affectedByStartingStyles = affectedByStartingStyles;
   }
 
   hasAttributes(): boolean {
@@ -1565,6 +1575,15 @@ export class DOMModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.ScrollableFlagUpdated, {node});
   }
 
+  affectedByStartingStylesFlagUpdated(nodeId: Protocol.DOM.NodeId, affectedByStartingStyles: boolean): void {
+    const node = this.nodeForId(nodeId);
+    if (!node || node.affectedByStartingStyles() === affectedByStartingStyles) {
+      return;
+    }
+    node.setAffectedByStartingStyles(affectedByStartingStyles);
+    this.dispatchEventToListeners(Events.AffectedByStartingStylesFlagUpdated, {node});
+  }
+
   topLayerElementsUpdated(): void {
     this.dispatchEventToListeners(Events.TopLayerElementsChanged);
   }
@@ -1751,6 +1770,7 @@ export enum Events {
   MarkersChanged = 'MarkersChanged',
   TopLayerElementsChanged = 'TopLayerElementsChanged',
   ScrollableFlagUpdated = 'ScrollableFlagUpdated',
+  AffectedByStartingStylesFlagUpdated = 'AffectedByStartingStylesFlagUpdated',
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -1767,6 +1787,7 @@ export interface EventTypes {
   [Events.MarkersChanged]: DOMNode;
   [Events.TopLayerElementsChanged]: void;
   [Events.ScrollableFlagUpdated]: {node: DOMNode};
+  [Events.AffectedByStartingStylesFlagUpdated]: {node: DOMNode};
 }
 
 class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
@@ -1839,7 +1860,9 @@ class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
     this.#domModel.scrollableFlagUpdated(nodeId, isScrollable);
   }
 
-  affectedByStartingStylesFlagUpdated(_: Protocol.DOM.AffectedByStartingStylesFlagUpdatedEvent): void {
+  affectedByStartingStylesFlagUpdated({nodeId, affectedByStartingStyles}:
+                                          Protocol.DOM.AffectedByStartingStylesFlagUpdatedEvent): void {
+    this.#domModel.affectedByStartingStylesFlagUpdated(nodeId, affectedByStartingStyles);
   }
 }
 

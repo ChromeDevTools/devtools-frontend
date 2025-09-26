@@ -401,6 +401,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
       devToolsFlexibleLayout: {
         verticalDrawerEnabled: true,
       },
+      devToolsStartingStyleDebugging: {
+        enabled: false,
+      },
     };
     if ('hostConfigForTesting' in globalThis) {
       const {hostConfigForTesting} = (globalThis as unknown as {hostConfigForTesting: Root.Runtime.HostConfig});

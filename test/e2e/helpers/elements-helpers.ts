@@ -46,6 +46,8 @@ const LAYOUT_PANE_TABPANEL_SELECTOR = '[aria-label="Layout panel"]';
 const ADORNER_SELECTOR = 'devtools-adorner';
 export const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
 export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
+export const INACTIVE_STARTING_STYLE_ADORNER_SELECTOR = '[aria-label="Enable @starting-style mode"]';
+export const ACTIVE_STARTING_STYLE_ADORNER_SELECTOR = '[aria-label="Disable @starting-style mode"]';
 const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = `${LAYOUT_PANE_TABPANEL_SELECTOR} .elements devtools-checkbox`;
 const ELEMENT_STYLE_SECTION_SELECTOR = '[aria-label="element.style, css selector"]';
 const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-text';
@@ -90,15 +92,14 @@ export const openLayoutPane = async (devToolsPage: DevToolsPage = getBrowserAndP
 
 export const waitForAdorners = async (
     expectedAdorners: Array<{textContent: string, isActive: boolean}>,
-    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    activeSelector: string = ACTIVE_GRID_ADORNER_SELECTOR) => {
   await devToolsPage.waitForFunction(async () => {
     const actualAdorners = await devToolsPage.$$(ADORNER_SELECTOR);
     const actualAdornersStates = await Promise.all(actualAdorners.map(n => {
       return n.evaluate((node, activeSelector: string) => {
-        // TODO for now only the grid adorner that can be active. When the flex (or other) adorner can be activated
-        // too we should change the selector passed here crbug.com/1144090.
         return {textContent: node.textContent, isActive: node.matches(activeSelector)};
-      }, ACTIVE_GRID_ADORNER_SELECTOR);
+      }, activeSelector);
     }));
 
     if (actualAdornersStates.length !== expectedAdorners.length) {

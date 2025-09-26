@@ -3573,6 +3573,7 @@ export const knownContextValues = new Set([
   'starter-badge-dismissed',
   'starter-badge-last-snoozed-timestamp',
   'starter-badge-snooze-count',
+  'starting-style',
   'static-global-setting',
   'static-synced-setting',
   'status',

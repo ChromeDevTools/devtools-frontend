@@ -4,11 +4,9 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import {getTestServerPort} from 'test/conductor/server_port.js';
 import {openSourcesPanel} from 'test/e2e/helpers/sources-helpers.js';
-import {
-  getTestServerPort,
-  goTo,
-} from 'test/shared/helper.js';
+import {getBrowserAndPagesWrappers} from 'test/shared/non_hosted_wrappers';
 
 export interface Action {
   action: string;
@@ -47,7 +45,8 @@ export interface TestSpec {
 }
 
 export async function openTestSuiteResourceInSourcesPanel(testInput: string) {
-  await goTo(`${getTestsuiteResourcesPath()}/extension_test_suite/${testInput}`);
+  const {inspectedPage} = getBrowserAndPagesWrappers();
+  await inspectedPage.goTo(`${getTestsuiteResourcesPath()}/extension_test_suite/${testInput}`);
 
   await openSourcesPanel();
 }

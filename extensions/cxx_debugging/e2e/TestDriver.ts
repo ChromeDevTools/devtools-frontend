@@ -21,17 +21,7 @@ import {
   retrieveTopCallFrameWithoutResuming,
   SELECTED_THREAD_SELECTOR,
 } from 'test/e2e/helpers/sources-helpers.js';
-import {
-  $$,
-  click,
-  clickElement,
-  getBrowserAndPages,
-  getPendingEvents,
-  installEventListener,
-  timeout,
-  waitFor,
-  waitForFunction,
-} from 'test/shared/helper.js';
+import {getBrowserAndPagesWrappers} from 'test/shared/non_hosted_wrappers.js';
 
 import {
   type Action,
@@ -59,10 +49,10 @@ describe('CXX Debugging Extension Test Suite', function() {
       continue;
     }
     it(name, async () => {
-      const {frontend} = getBrowserAndPages();
+      const {devToolsPage} = getBrowserAndPagesWrappers();
       try {
         await openTestSuiteResourceInSourcesPanel(test);
-        await installEventListener(frontend, 'DevTools.DebuggerPaused');
+        await devToolsPage.installEventListener('DevTools.DebuggerPaused');
 
         if (script === null || script.length === 0) {
           return;
@@ -84,11 +74,12 @@ describe('CXX Debugging Extension Test Suite', function() {
             continue;
           }
 
-          await waitForFunction(
-              async () => ((await getPendingEvents(frontend, 'DevTools.DebuggerPaused')) || []).length > 0);
+          await devToolsPage.waitForFunction(
+              async () => ((await devToolsPage.getPendingEvents('DevTools.DebuggerPaused')) || []).length > 0);
 
-          const stopped = await waitFor(PAUSE_INDICATOR_SELECTOR);
-          const stoppedText = await waitForFunction(async () => await stopped.evaluate(node => node.textContent));
+          const stopped = await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
+          const stoppedText =
+              await devToolsPage.waitForFunction(async () => await stopped.evaluate(node => node.textContent));
 
           assert.strictEqual(stoppedText, pausedReasonText(reason));
 
@@ -129,13 +120,13 @@ describe('CXX Debugging Extension Test Suite', function() {
 
           if (evaluations) {
             // TODO(jarin) Without waiting here, the FE often misses the click on the console tab.
-            await timeout(500);
-            await click(CONSOLE_TAB_SELECTOR);
+            await devToolsPage.timeout(500);
+            await devToolsPage.click(CONSOLE_TAB_SELECTOR);
             await focusConsolePrompt();
 
             for (const {expression, value} of evaluations) {
               await typeIntoConsoleAndWaitForResult(expression);
-              const evaluateResults = await frontend.evaluate(() => {
+              const evaluateResults = await devToolsPage.evaluate(() => {
                 return Array.from(document.querySelectorAll('.console-user-command-result'))
                     .map(node => node.textContent);
               });
@@ -147,9 +138,9 @@ describe('CXX Debugging Extension Test Suite', function() {
           }
 
           if (thread) {
-            const threadElement = await waitFor(SELECTED_THREAD_SELECTOR);
+            const threadElement = await devToolsPage.waitFor(SELECTED_THREAD_SELECTOR);
             const threadText =
-                await waitForFunction(async () => await threadElement.evaluate(node => node.textContent));
+                await devToolsPage.waitForFunction(async () => await threadElement.evaluate(node => node.textContent));
             assert.include(threadText, thread, 'selected thread is not as expected');
           }
 
@@ -159,7 +150,7 @@ describe('CXX Debugging Extension Test Suite', function() {
       } catch (e) {
         console.error(e.toString());
         if (TestConfig.debug) {
-          await timeout(100000);
+          await devToolsPage.timeout(100000);
         }
         throw e;
       }
@@ -168,7 +159,8 @@ describe('CXX Debugging Extension Test Suite', function() {
 });
 
 async function readScopeView(scope: string, variable: string[]) {
-  const scopeElement = await waitFor(`[aria-label="${scope}"]`);
+  const {devToolsPage} = getBrowserAndPagesWrappers();
+  const scopeElement = await devToolsPage.waitFor(`[aria-label="${scope}"]`);
   if (scopeElement === null) {
     throw new Error(`Scope entry for ${scope} not found`);
   }
@@ -191,9 +183,9 @@ async function readScopeView(scope: string, variable: string[]) {
       // not propagate the click event, so the element does not expand.
       // Selecting a child element instead eliminates this issue.
       if (name) {
-        await clickElement(name);
+        await devToolsPage.clickElement(name);
       } else {
-        await clickElement(elementHandle);
+        await devToolsPage.clickElement(elementHandle);
       }
     }
 
@@ -210,8 +202,8 @@ async function readScopeView(scope: string, variable: string[]) {
     if (name.startsWith('$')) {
       const index = parseInt(name.slice(1), 10);
       if (!isNaN(index)) {
-        const members = await waitForFunction(async () => {
-          const elements = await $$('li', parentNode);
+        const members = await devToolsPage.waitForFunction(async () => {
+          const elements = await devToolsPage.$$('li', parentNode);
           if (elements.length > index) {
             return elements;
           }
@@ -221,14 +213,15 @@ async function readScopeView(scope: string, variable: string[]) {
       }
     }
     const elementHandle: ElementHandle<Element> =
-        await waitFor(`[data-object-property-name-for-test="${name}"]`, parentNode);
+        await devToolsPage.waitFor(`[data-object-property-name-for-test="${name}"]`, parentNode);
     return elementHandle;
   }
 }
 
 async function scrollToLine(lineNumber: number): Promise<void> {
-  await waitForFunction(async () => {
-    const visibleLines = await $$(CODE_LINE_SELECTOR);
+  const {devToolsPage} = getBrowserAndPagesWrappers();
+  await devToolsPage.waitForFunction(async () => {
+    const visibleLines = await devToolsPage.$$(CODE_LINE_SELECTOR);
     assert.exists(visibleLines[0]);
     const lineNumbers = await Promise.all(visibleLines.map(v => v.evaluate(e => Number(e.textContent ?? ''))));
     if (lineNumbers.includes(lineNumber)) {
@@ -242,7 +235,7 @@ async function scrollToLine(lineNumber: number): Promise<void> {
 }
 
 async function doActions({actions, reason}: {actions?: Action[], reason: string}) {
-  const {target} = getBrowserAndPages();
+  const {inspectedPage, devToolsPage} = getBrowserAndPagesWrappers();
   let continuation;
   if (actions) {
     for (const step of actions) {
@@ -292,20 +285,20 @@ async function doActions({actions, reason}: {actions?: Action[], reason: string}
 
   switch (continuation) {
     case 'step_over':
-      await click(STEP_OVER_BUTTON);
+      await devToolsPage.click(STEP_OVER_BUTTON);
       break;
     case 'step_out':
-      await click(STEP_OUT_BUTTON);
+      await devToolsPage.click(STEP_OUT_BUTTON);
       break;
     case 'step_into':
-      await click(STEP_INTO_BUTTON);
+      await devToolsPage.click(STEP_INTO_BUTTON);
       break;
     case 'reload':
-      await target.reload();
+      await inspectedPage.reload();
       break;
     default:
-      await waitFor(RESUME_BUTTON);
-      await click(RESUME_BUTTON);
+      await devToolsPage.waitFor(RESUME_BUTTON);
+      await devToolsPage.click(RESUME_BUTTON);
       break;
   }
 }

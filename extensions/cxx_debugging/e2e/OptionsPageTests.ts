@@ -3,21 +3,21 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {getBrowserAndPages, goTo, waitForFunction} from 'test/shared/helper.js';
 
 import {getTestsuiteResourcesPath} from './cxx-debugging-extension-helpers.js';
+import { getBrowserAndPagesWrappers } from 'test/shared/non_hosted_wrappers.js';
 
 // These tests abuse the test suite rigging a little, because we will interact with the options page directly instead of
 // through the frontend.
 describe('The options page', () => {
   it('shows third-party licenses', async () => {
-    await goTo(`${getTestsuiteResourcesPath()}/cxx_debugging/gen/ExtensionOptions.html`);
+    const {inspectedPage, devToolsPage} = await getBrowserAndPagesWrappers();
+    await inspectedPage.goTo(`${getTestsuiteResourcesPath()}/cxx_debugging/gen/ExtensionOptions.html`);
 
-    const {target} = await getBrowserAndPages();
 
     const expectedCredits = ['Emscripten', 'LLVM', 'lit-html', 'lldb-eval'];
-    const credits = await waitForFunction(async () => {
-      const elements = await target.$$('pierce/devtools-cxx-debugging-credits-item');
+    const credits = await devToolsPage.waitForFunction(async () => {
+      const elements = await inspectedPage.page.$$('pierce/devtools-cxx-debugging-credits-item');
       if (elements.length < expectedCredits.length) {
         return undefined;
       }

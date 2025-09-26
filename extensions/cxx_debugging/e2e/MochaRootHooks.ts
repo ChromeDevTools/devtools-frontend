@@ -14,7 +14,7 @@ import {
 } from 'test/conductor/puppeteer-state.js';
 import {setTestServerPort} from 'test/conductor/server_port.js';
 import {TestConfig} from 'test/conductor/test_config.js';
-import {click} from 'test/shared/helper.js';
+import { getBrowserAndPagesWrappers } from 'test/shared/non_hosted_wrappers';
 
 const EXTENSION_DIR = path.join(__dirname, '..', '..', '..', 'DevTools_CXX_Debugging.stage2', 'gen');
 const DEVTOOLS_DIR = path.join(__dirname, '..', '..', '..', 'devtools-frontend', 'gen');
@@ -78,16 +78,16 @@ async function afterAll() {
 }
 
 async function beforeEach() {
-  const {frontend} = getBrowserAndPages();
-  await frontend.evaluate(() => {
+  const {devToolsPage} = getBrowserAndPagesWrappers();
+  await devToolsPage.evaluate(() => {
     localStorage.clear();
     const experiments = JSON.parse(localStorage.getItem('experiments') ?? '{}');
     experiments['instrumentationBreakpoints'] = true;
     localStorage.setItem('experiments', JSON.stringify(experiments));
   });
-  await frontend.reload();
-  await click('[aria-label="Customize and control DevTools"]');
-  await click('[aria-label="Undock into separate window"]');
+  await devToolsPage.reload();
+  await devToolsPage.click('[aria-label="Customize and control DevTools"]');
+  await devToolsPage.click('[aria-label="Undock into separate window"]');
 }
 
 async function afterEach() {

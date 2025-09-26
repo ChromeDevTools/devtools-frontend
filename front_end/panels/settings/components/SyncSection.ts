@@ -54,22 +54,12 @@ const UIStrings = {
    * @description Label for the Google Developer Program subscription status that corresponds to
    * `PREMIUM_ANNUAL` plan.
    */
-  gdpPremiumAnnualSubscription: 'Premium (Annual)',
-  /**
-   * @description Label for the Google Developer Program subscription status that corresponds to
-   * `PREMIUM_MONTHLY` plan.
-   */
-  gdpPremiumMonthlySubscription: 'Premium (Monthly)',
+  gdpPremiumSubscription: 'Premium',
   /**
    * @description Label for the Google Developer Program subscription status that corresponds to
    * `PRO_ANNUAL` plan.
    */
-  gdpProAnnualSubscription: 'Pro (Annual)',
-  /**
-   * @description Label for the Google Developer Program subscription status that corresponds to
-   * `PRO_MONTHLY` plan.
-   */
-  gdpProMonthlySubscription: 'Pro (Monthly)',
+  gdpProSubscription: 'Pro',
   /**
    * @description Label for the Google Developer Program subscription status that corresponds
    * to a plan not known by the client.
@@ -137,13 +127,11 @@ function getGdpSubscriptionText(profile: Host.GdpClient.Profile): Platform.UIStr
 
   switch (profile.activeSubscription.subscriptionTier) {
     case Host.GdpClient.SubscriptionTier.PREMIUM_ANNUAL:
-      return i18nString(UIStrings.gdpPremiumAnnualSubscription);
     case Host.GdpClient.SubscriptionTier.PREMIUM_MONTHLY:
-      return i18nString(UIStrings.gdpPremiumMonthlySubscription);
+      return i18nString(UIStrings.gdpPremiumSubscription);
     case Host.GdpClient.SubscriptionTier.PRO_ANNUAL:
-      return i18nString(UIStrings.gdpProAnnualSubscription);
     case Host.GdpClient.SubscriptionTier.PRO_MONTHLY:
-      return i18nString(UIStrings.gdpProMonthlySubscription);
+      return i18nString(UIStrings.gdpProSubscription);
     default:
       return i18nString(UIStrings.gdpUnknownSubscription);
   }

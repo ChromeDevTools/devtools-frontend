@@ -344,26 +344,25 @@ describeWithLocale('SyncSection', () => {
     const subscriptionTiers = [
       {
         tier: Host.GdpClient.SubscriptionTier.PREMIUM_ANNUAL,
-        expectedText: 'Premium (Annual)',
+        expectedText: 'Premium',
       },
       {
         tier: Host.GdpClient.SubscriptionTier.PREMIUM_MONTHLY,
-        expectedText: 'Premium (Monthly)',
+        expectedText: 'Premium',
       },
       {
         tier: Host.GdpClient.SubscriptionTier.PRO_ANNUAL,
-        expectedText: 'Pro (Annual)',
+        expectedText: 'Pro',
       },
       {
         tier: Host.GdpClient.SubscriptionTier.PRO_MONTHLY,
-        expectedText: 'Pro (Monthly)',
+        expectedText: 'Pro',
       },
       {
         tier: 'unknown-tier',
         expectedText: 'Unknown plan',
       },
     ];
-
     for (const {tier, expectedText} of subscriptionTiers) {
       it(`renders the profile details with ${expectedText} plan`, async () => {
         const gdpClient = Host.GdpClient.GdpClient.instance();

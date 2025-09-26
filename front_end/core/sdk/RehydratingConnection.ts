@@ -160,7 +160,6 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
 
     this.rehydratingConnectionState = RehydratingConnectionState.REHYDRATED;
     // Use revealer to load trace into performance panel
-
     await Common.Revealer.reveal(this.trace);
   }
 
@@ -220,7 +219,11 @@ class RehydratingSessionBase {
   }
 
   sendMessageToFrontend(payload: ServerMessage): void {
-    this.connection?.postToFrontend(payload);
+    // The frontend doesn't expect CDP responses within the same synchronous event loop, so it breaks unexpectedly.
+    //  Any async boundary will do, so we use setTimeout.
+    setTimeout(() => {
+      this.connection?.postToFrontend(payload);
+    });
   }
 
   handleFrontendMessageAsFakeCDPAgent(data: ProtocolMessage): void {

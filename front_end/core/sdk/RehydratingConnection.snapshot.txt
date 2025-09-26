@@ -39,6 +39,13 @@ Content:
   "method": "Runtime.enable"
 }
 
+/* fakeDevToolsFrontend says: */
+{
+  "id": 2,
+  "sessionId": 1,
+  "method": "Debugger.enable"
+}
+
 /* RehydratingConnection says: */
 {
   "method": "Runtime.executionContextCreated",
@@ -130,13 +137,6 @@ Content:
   "sessionId": 1
 }
 
-/* fakeDevToolsFrontend says: */
-{
-  "id": 2,
-  "sessionId": 1,
-  "method": "Debugger.enable"
-}
-
 /* RehydratingConnection says: */
 {
   "method": "Debugger.scriptParsed",
@@ -169,15 +169,6 @@ Content:
   "params": {
     "scriptId": "5"
   }
-}
-
-/* RehydratingConnection says: */
-{
-  "id": 3,
-  "result": {
-    "scriptSource": "(function () {\n  'us…"
-  },
-  "sessionId": 1
 }
 
 /* RehydratingConnection says: */
@@ -215,15 +206,6 @@ Content:
   "params": {
     "scriptId": "7"
   }
-}
-
-/* RehydratingConnection says: */
-{
-  "id": 4,
-  "result": {
-    "scriptSource": "No source text avail…"
-  },
-  "sessionId": 1
 }
 
 /* RehydratingConnection says: */
@@ -267,15 +249,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 5,
-  "result": {
-    "scriptSource": "\nvar firebaseConfig …"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "9",
@@ -311,15 +284,6 @@ Content:
   "params": {
     "scriptId": "9"
   }
-}
-
-/* RehydratingConnection says: */
-{
-  "id": 6,
-  "result": {
-    "scriptSource": "\\n  window.dataLayer…"
-  },
-  "sessionId": 1
 }
 
 /* RehydratingConnection says: */
@@ -363,15 +327,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 7,
-  "result": {
-    "scriptSource": " …"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "11",
@@ -411,15 +366,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 8,
-  "result": {
-    "scriptSource": "\\n\\tperformance.mark…"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "12",
@@ -455,15 +401,6 @@ Content:
   "params": {
     "scriptId": "12"
   }
-}
-
-/* RehydratingConnection says: */
-{
-  "id": 9,
-  "result": {
-    "scriptSource": "/* Modernizr 2.0.4 (…"
-  },
-  "sessionId": 1
 }
 
 /* RehydratingConnection says: */
@@ -508,15 +445,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 10,
-  "result": {
-    "scriptSource": "!function(e,t){\"obje…"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "13",
@@ -552,15 +480,6 @@ Content:
   "params": {
     "scriptId": "13"
   }
-}
-
-/* RehydratingConnection says: */
-{
-  "id": 11,
-  "result": {
-    "scriptSource": "/*!\n  * ============…"
-  },
-  "sessionId": 1
 }
 
 /* RehydratingConnection says: */
@@ -604,15 +523,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 12,
-  "result": {
-    "scriptSource": "function getNav() {\n…"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "16",
@@ -648,15 +558,6 @@ Content:
   "params": {
     "scriptId": "16"
   }
-}
-
-/* RehydratingConnection says: */
-{
-  "id": 13,
-  "result": {
-    "scriptSource": "\nperformance.mark('e…"
-  },
-  "sessionId": 1
 }
 
 /* RehydratingConnection says: */
@@ -700,15 +601,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 14,
-  "result": {
-    "scriptSource": "\\n  (function(i,s,o,…"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "18",
@@ -744,15 +636,6 @@ Content:
   "params": {
     "scriptId": "18"
   }
-}
-
-/* RehydratingConnection says: */
-{
-  "id": 15,
-  "result": {
-    "scriptSource": "\\n      var disqus_s…"
-  },
-  "sessionId": 1
 }
 
 /* RehydratingConnection says: */
@@ -796,15 +679,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 16,
-  "result": {
-    "scriptSource": "var DISQUSWIDGETS,di…"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "21",
@@ -843,15 +717,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 17,
-  "result": {
-    "scriptSource": "No source text avail…"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "22",
@@ -885,15 +750,6 @@ Content:
   "params": {
     "scriptId": "22"
   }
-}
-
-/* RehydratingConnection says: */
-{
-  "id": 18,
-  "result": {
-    "scriptSource": "No source text avail…"
-  },
-  "sessionId": 1
 }
 
 /* RehydratingConnection says: */
@@ -937,15 +793,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 19,
-  "result": {
-    "scriptSource": "\n// Copyright 2012 G…"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "23",
@@ -985,15 +832,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 20,
-  "result": {
-    "scriptSource": "(function(){var aa=f…"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "6",
@@ -1028,15 +866,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 21,
-  "result": {
-    "scriptSource": "(async function(){ a…"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "1",
@@ -1065,15 +894,6 @@ Content:
   "params": {
     "scriptId": "1"
   }
-}
-
-/* RehydratingConnection says: */
-{
-  "id": 22,
-  "result": {
-    "scriptSource": "No source text avail…"
-  },
-  "sessionId": 1
 }
 
 /* RehydratingConnection says: */
@@ -1112,15 +932,6 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 23,
-  "result": {
-    "scriptSource": "() {}…"
-  },
-  "sessionId": 1
-}
-
-/* RehydratingConnection says: */
-{
   "method": "Debugger.scriptParsed",
   "params": {
     "scriptId": "3",
@@ -1149,15 +960,6 @@ Content:
   "params": {
     "scriptId": "3"
   }
-}
-
-/* RehydratingConnection says: */
-{
-  "id": 24,
-  "result": {
-    "scriptSource": "No source text avail…"
-  },
-  "sessionId": 1
 }
 
 /* RehydratingConnection says: */
@@ -1196,18 +998,216 @@ Content:
 
 /* RehydratingConnection says: */
 {
-  "id": 25,
+  "id": 2,
   "result": {
-    "scriptSource": "var chrome;if (!chro…"
+    "debuggerId": "7777777777777777777.8888888888888888888"
   },
   "sessionId": 1
 }
 
 /* RehydratingConnection says: */
 {
-  "id": 2,
+  "id": 3,
   "result": {
-    "debuggerId": "7777777777777777777.8888888888888888888"
+    "scriptSource": "(function () {\n  'us…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 4,
+  "result": {
+    "scriptSource": "No source text avail…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 5,
+  "result": {
+    "scriptSource": "\nvar firebaseConfig …"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 6,
+  "result": {
+    "scriptSource": "\\n  window.dataLayer…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 7,
+  "result": {
+    "scriptSource": " …"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 8,
+  "result": {
+    "scriptSource": "\\n\\tperformance.mark…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 9,
+  "result": {
+    "scriptSource": "/* Modernizr 2.0.4 (…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 10,
+  "result": {
+    "scriptSource": "!function(e,t){\"obje…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 11,
+  "result": {
+    "scriptSource": "/*!\n  * ============…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 12,
+  "result": {
+    "scriptSource": "function getNav() {\n…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 13,
+  "result": {
+    "scriptSource": "\nperformance.mark('e…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 14,
+  "result": {
+    "scriptSource": "\\n  (function(i,s,o,…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 15,
+  "result": {
+    "scriptSource": "\\n      var disqus_s…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 16,
+  "result": {
+    "scriptSource": "var DISQUSWIDGETS,di…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 17,
+  "result": {
+    "scriptSource": "No source text avail…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 18,
+  "result": {
+    "scriptSource": "No source text avail…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 19,
+  "result": {
+    "scriptSource": "\n// Copyright 2012 G…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 20,
+  "result": {
+    "scriptSource": "(function(){var aa=f…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 21,
+  "result": {
+    "scriptSource": "(async function(){ a…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 22,
+  "result": {
+    "scriptSource": "No source text avail…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 23,
+  "result": {
+    "scriptSource": "() {}…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 24,
+  "result": {
+    "scriptSource": "No source text avail…"
+  },
+  "sessionId": 1
+}
+
+/* RehydratingConnection says: */
+{
+  "id": 25,
+  "result": {
+    "scriptSource": "var chrome;if (!chro…"
   },
   "sessionId": 1
 }

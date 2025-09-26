@@ -5,9 +5,9 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
-import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 
 import * as Network from './network.js';
 
@@ -15,14 +15,17 @@ const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('BlockedURLsPane', () => {
   beforeEach(() => {
+    setMockConnectionResponseHandler('Debugger.enable', () => ({}));
+    setMockConnectionResponseHandler('Storage.getStorageKeyForFrame', () => ({}));
     registerNoopActions([
       'network.add-network-request-blocking-pattern',
       'network.remove-all-network-request-blocking-patterns',
     ]);
   });
 
-  it('shows a placeholder', () => {
+  it('shows a placeholder', async () => {
     const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+    renderElementIntoDOM(blockedURLsPane);
     const blockedElement = blockedURLsPane.contentElement.querySelector('.blocked-urls');
     const placeholder = blockedElement?.shadowRoot?.querySelector('.empty-state');
     assert.exists(placeholder);
@@ -30,10 +33,13 @@ describeWithMockConnection('BlockedURLsPane', () => {
     assert.deepEqual(
         placeholder.querySelector('.empty-state-description > span')?.textContent,
         'Add a pattern to block network requests by clicking on the \"Add pattern\" button.');
+
+    await assertScreenshot('request_conditions/placeholder.png');
   });
 
-  it('Add pattern button triggers showing the editor view', () => {
+  it('Add pattern button triggers showing the editor view', async () => {
     const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+    renderElementIntoDOM(blockedURLsPane);
     const blockedElement = blockedURLsPane.contentElement.querySelector('.blocked-urls');
     const list = blockedElement?.shadowRoot?.querySelector('.list');
     const placeholder = list?.querySelector('.empty-state');
@@ -44,16 +50,22 @@ describeWithMockConnection('BlockedURLsPane', () => {
     assert.isNull(list?.querySelector('.editor-content'));
     dispatchClickEvent(button);
     assert.exists(list?.querySelector('.editor-content'));
+
+    await assertScreenshot('request_conditions/editor.png');
   });
 
   describe('update', () => {
-    const updatesOnRequestFinishedEvent = (inScope: boolean) => () => {
+    const updatesOnRequestFinishedEvent = (inScope: boolean) => async () => {
       const target = createTarget();
-      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+      sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'blockedPatterns').returns([
+        {url: '*', enabled: true}
+      ]);
+      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      renderElementIntoDOM(blockedURLsPane);
       assert.exists(networkManager);
-      const updateStub = sinon.stub(blockedURLsPane, 'update');
+      const updateStub = sinon.spy(blockedURLsPane, 'update');
 
       const request = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest, {
         wasBlocked: true,
@@ -62,6 +74,11 @@ describeWithMockConnection('BlockedURLsPane', () => {
       networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
 
       assert.strictEqual(updateStub.calledOnce, inScope);
+      if (inScope) {
+        await assertScreenshot(`request_conditions/blocked-matched.png`);
+      } else {
+        await assertScreenshot(`request_conditions/blocked-not-matched.png`);
+      }
     };
 
     it('is called upon RequestFinished event (when target is in scope)', updatesOnRequestFinishedEvent(true));

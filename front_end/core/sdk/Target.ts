@@ -67,12 +67,15 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.#capabilitiesMask = Capability.JS | Capability.LOG | Capability.NETWORK | Capability.TARGET |
             Capability.INSPECTOR | Capability.IO | Capability.EVENT_BREAKPOINTS;
         if (parentTarget?.type() !== Type.FRAME) {
-          this.#capabilitiesMask |= Capability.BROWSER;
+          this.#capabilitiesMask |= Capability.BROWSER | Capability.STORAGE;
         }
         break;
       case Type.SHARED_WORKER:
         this.#capabilitiesMask = Capability.JS | Capability.LOG | Capability.NETWORK | Capability.TARGET |
             Capability.IO | Capability.MEDIA | Capability.INSPECTOR | Capability.EVENT_BREAKPOINTS;
+        if (parentTarget?.type() !== Type.FRAME) {
+          this.#capabilitiesMask |= Capability.STORAGE;
+        }
         break;
       case Type.SHARED_STORAGE_WORKLET:
         this.#capabilitiesMask = Capability.JS | Capability.LOG | Capability.INSPECTOR | Capability.EVENT_BREAKPOINTS;
@@ -80,6 +83,9 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
       case Type.Worker:
         this.#capabilitiesMask = Capability.JS | Capability.LOG | Capability.NETWORK | Capability.TARGET |
             Capability.IO | Capability.MEDIA | Capability.EMULATION | Capability.EVENT_BREAKPOINTS;
+        if (parentTarget?.type() !== Type.FRAME) {
+          this.#capabilitiesMask |= Capability.STORAGE;
+        }
         break;
       case Type.WORKLET:
         this.#capabilitiesMask = Capability.JS | Capability.LOG | Capability.EVENT_BREAKPOINTS | Capability.NETWORK;

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
@@ -255,5 +256,70 @@ describeWithMockConnection('ChildTargetManager', () => {
     assert.isTrue(target.hasCrashed());
     childTargetManager.targetInfoChanged({targetInfo: createTargetInfo(target.id())});
     assert.isFalse(target.hasCrashed());
+  });
+
+  describe('Storage initialization', () => {
+    it('should initialize storage for a top-level worker with STORAGE capability', async () => {
+      const parentTarget = createTarget({type: SDK.Target.Type.BROWSER});
+
+      const getStorageKeyStub = sinon.stub().resolves({
+        storageKey: 'https://example.com/' as Protocol.Storage.SerializedStorageKey,
+        getError: () => undefined,
+      });
+
+      sinon.stub(SDK.Target.Target.prototype, 'storageAgent').returns({
+        invoke_getStorageKey: getStorageKeyStub,
+      } as sinon.SinonStubbedInstance<ProtocolProxyApi.StorageApi>);
+
+      const setMainStorageKeySpy = sinon.spy(SDK.StorageKeyManager.StorageKeyManager.prototype, 'setMainStorageKey');
+      const updateStorageKeysSpy = sinon.spy(SDK.StorageKeyManager.StorageKeyManager.prototype, 'updateStorageKeys');
+      const setMainSecurityOriginSpy =
+          sinon.spy(SDK.SecurityOriginManager.SecurityOriginManager.prototype, 'setMainSecurityOrigin');
+      const updateSecurityOriginsSpy =
+          sinon.spy(SDK.SecurityOriginManager.SecurityOriginManager.prototype, 'updateSecurityOrigins');
+
+      const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(parentTarget);
+      await childTargetManager.attachedToTarget({
+        sessionId: createSessionId(),
+        targetInfo: createTargetInfo(undefined, 'service_worker'),
+        waitingForDebugger: false,
+      });
+
+      assert.isTrue(getStorageKeyStub.calledOnceWith({}));
+      assert.isTrue(setMainStorageKeySpy.calledOnceWith('https://example.com/'));
+      assert.isTrue(updateStorageKeysSpy.calledOnceWith(new Set(['https://example.com/'])));
+      assert.isTrue(setMainSecurityOriginSpy.calledOnceWith('https://example.com', ''));
+      assert.isTrue(updateSecurityOriginsSpy.calledOnceWith(new Set(['https://example.com'])));
+    });
+
+    it('should NOT initialize storage for a frame target', async () => {
+      const parentTarget = createTarget();
+      const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(parentTarget);
+      const initializeStorageSpy =
+          sinon.spy(childTargetManager, 'initializeStorage' as keyof typeof childTargetManager);
+
+      await childTargetManager.attachedToTarget({
+        sessionId: createSessionId(),
+        targetInfo: createTargetInfo(undefined, 'iframe'),
+        waitingForDebugger: false,
+      });
+
+      sinon.assert.notCalled(initializeStorageSpy);
+    });
+
+    it('should NOT initialize storage for a worker without STORAGE capability', async () => {
+      const parentTarget = createTarget();
+      const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(parentTarget);
+      const initializeStorageSpy =
+          sinon.spy(childTargetManager, 'initializeStorage' as keyof typeof childTargetManager);
+
+      await childTargetManager.attachedToTarget({
+        sessionId: createSessionId(),
+        targetInfo: createTargetInfo(undefined, 'service_worker'),
+        waitingForDebugger: false,
+      });
+
+      sinon.assert.notCalled(initializeStorageSpy);
+    });
   });
 });

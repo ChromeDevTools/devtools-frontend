@@ -197,8 +197,8 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.#toggleOrientationButton = new ToolbarButton(
         i18nString(UIStrings.toggleDrawerOrientation),
         this.drawerSplitWidget.isVertical() ? 'dock-bottom' : 'dock-right');
-    this.#toggleOrientationButton.element.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
-    this.#toggleOrientationButton.element.setAttribute('jslogcontext', 'toggle-drawer-orientation');
+    this.#toggleOrientationButton.element.setAttribute(
+        'jslog', `${VisualLogging.toggle('toggle-drawer-orientation').track({click: true})}`);
     this.#toggleOrientationButton.addEventListener(
         ToolbarButton.Events.CLICK, () => this.toggleDrawerOrientation(), this);
     this.drawerTabbedPane.addEventListener(

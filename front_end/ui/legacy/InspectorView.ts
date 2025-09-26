@@ -302,17 +302,17 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     inspectorViewInstance = null;
   }
 
-  onDockSideChangedHandledForTest(): void {
+  applyDrawerOrientationForDockSideForTest(): void {
   }
 
-  #onDockSideChanged(): void {
+  #applyDrawerOrientationForDockSide(): void {
     if (!this.drawerVisible()) {
-      this.onDockSideChangedHandledForTest();
+      this.applyDrawerOrientationForDockSideForTest();
       return;
     }
     const newOrientation = this.#getOrientationForDockMode();
-    this.#applyOrientation(newOrientation);
-    this.onDockSideChangedHandledForTest();
+    this.#applyDrawerOrientation(newOrientation);
+    this.applyDrawerOrientationForDockSideForTest();
   }
 
   #getDockMode(): DockMode {
@@ -339,10 +339,15 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     return orientation;
   }
 
-  #applyOrientation(orientation: Omit<DrawerOrientation, DrawerOrientation.UNSET>): void {
-    const isVertical = orientation === DrawerOrientation.VERTICAL;
-    this.#toggleOrientationButton.setGlyph(isVertical ? 'dock-bottom' : 'dock-right');
-    this.drawerSplitWidget.setVertical(isVertical);
+  #applyDrawerOrientation(orientation: Omit<DrawerOrientation, DrawerOrientation.UNSET>): void {
+    const shouldBeVertical = orientation === DrawerOrientation.VERTICAL;
+    const isVertical = this.drawerSplitWidget.isVertical();
+    if (shouldBeVertical === isVertical) {
+      return;
+    }
+
+    this.#toggleOrientationButton.setGlyph(shouldBeVertical ? 'dock-bottom' : 'dock-right');
+    this.drawerSplitWidget.setVertical(shouldBeVertical);
     this.setDrawerRelatedMinimumSizes();
   }
 
@@ -360,15 +365,16 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.#resizeObserver.observe(this.element);
     this.#observedResize();
     this.element.ownerDocument.addEventListener('keydown', this.keyDownBound, false);
-    DockController.instance().addEventListener(DockControllerEvents.DOCK_SIDE_CHANGED, this.#onDockSideChanged, this);
-    this.#onDockSideChanged();
+    DockController.instance().addEventListener(
+        DockControllerEvents.DOCK_SIDE_CHANGED, this.#applyDrawerOrientationForDockSide, this);
+    this.#applyDrawerOrientationForDockSide();
   }
 
   override willHide(): void {
     this.#resizeObserver.unobserve(this.element);
     this.element.ownerDocument.removeEventListener('keydown', this.keyDownBound, false);
     DockController.instance().removeEventListener(
-        DockControllerEvents.DOCK_SIDE_CHANGED, this.#onDockSideChanged, this);
+        DockControllerEvents.DOCK_SIDE_CHANGED, this.#applyDrawerOrientationForDockSide, this);
   }
 
   resolveLocation(locationName: string): ViewLocation|null {
@@ -463,6 +469,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     } else {
       this.focusRestorer = null;
     }
+    this.#applyDrawerOrientationForDockSide();
     ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerShown));
   }
 
@@ -502,7 +509,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     currentSettings[dockMode] = newOrientation as DrawerOrientation;
     this.drawerOrientationByDockSetting.set(currentSettings);
 
-    this.#applyOrientation(newOrientation);
+    this.#applyDrawerOrientation(newOrientation);
   }
 
   isUserExplicitlyUpdatedDrawerOrientation(): boolean {

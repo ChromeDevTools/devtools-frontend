@@ -158,7 +158,7 @@ describeWithEnvironment('InspectorView', () => {
     it('returns true only for current dock mode', async () => {
       const {inspectorView, dockController} = createInspectorViewWithDockState(DockState.BOTTOM);
       const onDockSideChangeHandledForTestStub =
-          sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'onDockSideChangedHandledForTest');
+          sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'applyDrawerOrientationForDockSideForTest');
       inspectorView.showDrawer({focus: true, hasTargetDrawer: false});
 
       // Set bottom preference
@@ -213,8 +213,8 @@ describeWithEnvironment('InspectorView', () => {
     describe('automatic dock state change handling', () => {
       it('automatically updates drawer orientation when switching from bottom to side dock', async () => {
         const {inspectorView, dockController} = createInspectorViewWithDockState(DockState.BOTTOM);
-        const waitForDockSideChangeHandled =
-            expectCall(sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'onDockSideChangedHandledForTest'));
+        const waitForDockSideChangeHandled = expectCall(
+            sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'applyDrawerOrientationForDockSideForTest'));
         inspectorView.showDrawer({focus: true, hasTargetDrawer: false});
 
         assert.isTrue(inspectorView.isDrawerOrientationVertical());
@@ -226,8 +226,8 @@ describeWithEnvironment('InspectorView', () => {
 
       it('automatically updates drawer orientation when switching from side to bottom dock', async () => {
         const {inspectorView, dockController} = createInspectorViewWithDockState(DockState.RIGHT);
-        const waitForDockSideChangeHandled =
-            expectCall(sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'onDockSideChangedHandledForTest'));
+        const waitForDockSideChangeHandled = expectCall(
+            sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'applyDrawerOrientationForDockSideForTest'));
         inspectorView.showDrawer({focus: true, hasTargetDrawer: false});
 
         assert.isFalse(inspectorView.isDrawerOrientationVertical());
@@ -240,7 +240,7 @@ describeWithEnvironment('InspectorView', () => {
       it('respects saved preferences when switching dock positions', async () => {
         const {inspectorView, dockController} = createInspectorViewWithDockState(DockState.BOTTOM);
         const onDockSideChangeHandledForTestStub =
-            sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'onDockSideChangedHandledForTest');
+            sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'applyDrawerOrientationForDockSideForTest');
         const waitForFirstDockSideChangeHandled = expectCall(onDockSideChangeHandledForTestStub);
         inspectorView.showDrawer({focus: true, hasTargetDrawer: false});
 
@@ -282,8 +282,8 @@ describeWithEnvironment('InspectorView', () => {
 
       it('does not change orientation when drawer is closed during dock switch', async () => {
         const {inspectorView, dockController} = createInspectorViewWithDockState(DockState.BOTTOM);
-        const waitForDockSideChangeHandled =
-            expectCall(sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'onDockSideChangedHandledForTest'));
+        const waitForDockSideChangeHandled = expectCall(
+            sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'applyDrawerOrientationForDockSideForTest'));
 
         // Drawer is closed by default
         assert.isFalse(inspectorView.drawerVisible());
@@ -293,6 +293,28 @@ describeWithEnvironment('InspectorView', () => {
         await waitForDockSideChangeHandled;
 
         assert.strictEqual(inspectorView.isDrawerOrientationVertical(), initialOrientation);
+      });
+
+      it('updates orientation correctly when showing the drawer for the first time after a dock switch', async () => {
+        const {inspectorView, dockController} = createInspectorViewWithDockState(DockState.BOTTOM);
+        const waitForDockSideChangeHandled = expectCall(
+            sinon.stub(LegacyUI.InspectorView.InspectorView.instance(), 'applyDrawerOrientationForDockSideForTest'));
+
+        // Start with drawer closed and docked to the bottom.
+        assert.isFalse(inspectorView.drawerVisible());
+        assert.isTrue(
+            inspectorView.isDrawerOrientationVertical(), 'Drawer should be vertical when docked at the bottom');
+
+        // Switch dock to the right side while the drawer is closed.
+        dockController.setDockSide(DockState.RIGHT);
+        await waitForDockSideChangeHandled;
+
+        // Show the drawer.
+        inspectorView.showDrawer({focus: true, hasTargetDrawer: false});
+
+        // The orientation should now be horizontal, reflecting the new dock position.
+        assert.isFalse(
+            inspectorView.isDrawerOrientationVertical(), 'Drawer should become horizontal when docked to the right');
       });
     });
   });

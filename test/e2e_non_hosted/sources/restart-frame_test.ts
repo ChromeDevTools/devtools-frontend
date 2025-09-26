@@ -9,14 +9,9 @@ import {
   getCallFrameNames,
   PAUSE_INDICATOR_SELECTOR,
 } from '../../e2e/helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('Sources Tab', () => {
-  it('can restart a call stack frame', async ({devToolsPage, inspectedPage}: {
-                                         devToolsPage: DevToolsPage,
-                                         inspectedPage: InspectedPage,
-                                       }) => {
+  it('can restart a call stack frame', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('sources/restart-frame.html');
 
     void inspectedPage.evaluate('foo();');

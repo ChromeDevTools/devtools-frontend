@@ -5,7 +5,6 @@
 import {assert, expect} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
-import {reloadDevTools} from '../../e2e/helpers/cross-tool-helper.js';
 import {
   clearTextFilter,
   getAllRequestNames,
@@ -16,7 +15,6 @@ import {
 } from '../../e2e/helpers/network-helpers.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
@@ -64,10 +62,7 @@ describe('The Network Tab', function() {
   // One of these tests reloads panels repeatedly, which can take a longer time.
   this.timeout(20_000);
 
-  it('can filter by text in the log view', async ({devToolsPage, inspectedPage}: {
-                                             devToolsPage: DevToolsPage,
-                                             inspectedPage: InspectedPage,
-                                           }) => {
+  it('can filter by text in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('9');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
@@ -75,20 +70,14 @@ describe('The Network Tab', function() {
     expect(await elementTextContent(nodes[0])).to.equal(RESULTS[10]);
   });
 
-  it('can match multiple requests by text in the log view', async ({devToolsPage, inspectedPage}: {
-                                                              devToolsPage: DevToolsPage,
-                                                              inspectedPage: InspectedPage,
-                                                            }) => {
+  it('can match multiple requests by text in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('svg');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
     expect(nodes.length).to.equal(10);
   });
 
-  it('can filter by regex in the log view', async ({devToolsPage, inspectedPage}: {
-                                              devToolsPage: DevToolsPage,
-                                              inspectedPage: InspectedPage,
-                                            }) => {
+  it('can filter by regex in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('/8/');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
@@ -96,10 +85,7 @@ describe('The Network Tab', function() {
     expect(await elementTextContent(nodes[0])).to.equal(RESULTS[9]);
   });
 
-  it('can match multiple requests by regex in the log view', async ({devToolsPage, inspectedPage}: {
-                                                               devToolsPage: DevToolsPage,
-                                                               inspectedPage: InspectedPage,
-                                                             }) => {
+  it('can match multiple requests by regex in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('/.*/');
     let nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
@@ -116,10 +102,7 @@ describe('The Network Tab', function() {
     expect(nodes.length).to.equal(10);
   });
 
-  it('can match no requests by regex in the log view', async ({devToolsPage, inspectedPage}: {
-                                                         devToolsPage: DevToolsPage,
-                                                         inspectedPage: InspectedPage,
-                                                       }) => {
+  it('can match no requests by regex in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('/NOTHINGTOMATCH/');
     await devToolsPage.waitForNone('.data-grid-data-grid-node > .name-column');
@@ -149,10 +132,7 @@ describe('The Network Tab', function() {
     await setPersistLog(false, devToolsPage);
   });
 
-  it('require operator to filter by scheme', async ({devToolsPage, inspectedPage}: {
-                                               devToolsPage: DevToolsPage,
-                                               inspectedPage: InspectedPage,
-                                             }) => {
+  it('require operator to filter by scheme', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('http');
     await devToolsPage.waitForNone('.data-grid-data-grid-node > .name-column');
@@ -169,10 +149,7 @@ describe('The Network Tab', function() {
     expect(nodes.length).to.be.greaterThanOrEqual(11);
   });
 
-  it('require operator to filter by domain', async ({devToolsPage, inspectedPage}: {
-                                               devToolsPage: DevToolsPage,
-                                               inspectedPage: InspectedPage,
-                                             }) => {
+  it('require operator to filter by domain', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('localhost');
     await devToolsPage.waitForNone('.data-grid-data-grid-node > .name-column');
@@ -183,10 +160,7 @@ describe('The Network Tab', function() {
     expect(nodes.length).to.be.greaterThanOrEqual(11);
   });
 
-  it('can filter by partial URL in the log view', async ({devToolsPage, inspectedPage}: {
-                                                    devToolsPage: DevToolsPage,
-                                                    inspectedPage: InspectedPage,
-                                                  }) => {
+  it('can filter by partial URL in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await clearTextFilter(devToolsPage);
     await devToolsPage.typeText(`https://localhost:${inspectedPage.serverPort}`);
@@ -194,10 +168,7 @@ describe('The Network Tab', function() {
     expect(nodes.length).to.be.greaterThanOrEqual(11);
   });
 
-  it('can reverse filter text in the log view', async ({devToolsPage, inspectedPage}: {
-                                                  devToolsPage: DevToolsPage,
-                                                  inspectedPage: InspectedPage,
-                                                }) => {
+  it('can reverse filter text in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('-7');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 10);
@@ -206,10 +177,7 @@ describe('The Network Tab', function() {
     expect(nodes.length).to.be.greaterThanOrEqual(output.length);
   });
 
-  it('can reverse filter regex in the log view', async ({devToolsPage, inspectedPage}: {
-                                                   devToolsPage: DevToolsPage,
-                                                   inspectedPage: InspectedPage,
-                                                 }) => {
+  it('can reverse filter regex in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('-/6/');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 10);
@@ -218,10 +186,7 @@ describe('The Network Tab', function() {
     expect(nodes.length).to.be.greaterThanOrEqual(output.length);
   });
 
-  it('can invert text filters', async ({devToolsPage, inspectedPage}: {
-                                  devToolsPage: DevToolsPage,
-                                  inspectedPage: InspectedPage,
-                                }) => {
+  it('can invert text filters', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
@@ -237,10 +202,7 @@ describe('The Network Tab', function() {
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
   });
 
-  it('can invert regex filters', async ({devToolsPage, inspectedPage}: {
-                                   devToolsPage: DevToolsPage,
-                                   inspectedPage: InspectedPage,
-                                 }) => {
+  it('can invert regex filters', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
@@ -256,10 +218,7 @@ describe('The Network Tab', function() {
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
   });
 
-  it('can invert negated text filters', async ({devToolsPage, inspectedPage}: {
-                                          devToolsPage: DevToolsPage,
-                                          inspectedPage: InspectedPage,
-                                        }) => {
+  it('can invert negated text filters', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
@@ -274,10 +233,7 @@ describe('The Network Tab', function() {
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
   });
 
-  it('can invert negated regex filters', async ({devToolsPage, inspectedPage}: {
-                                           devToolsPage: DevToolsPage,
-                                           inspectedPage: InspectedPage,
-                                         }) => {
+  it('can invert negated regex filters', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
@@ -292,11 +248,7 @@ describe('The Network Tab', function() {
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
   });
 
-  // TODO(crbug.com/1412665): This test is flaky.
-  it.skip('[crbug.com/1412665] can persist the invert checkbox', async ({devToolsPage, inspectedPage}: {
-                                                                   devToolsPage: DevToolsPage,
-                                                                   inspectedPage: InspectedPage,
-                                                                 }) => {
+  it('can persist the invert checkbox', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     // Start with invert disabled, then enable it.
     {
@@ -306,18 +258,16 @@ describe('The Network Tab', function() {
       expect(await checkboxIsChecked(invertCheckbox)).to.equal(true);
     }
     // Verify persistence when enabled.
-    await reloadDevTools({queryParams: {panel: 'network'}});
+    await devToolsPage.reloadWithParams({panel: 'network'});
     {
-      const {devToolsPage} = getBrowserAndPagesWrappers();
       const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
       expect(await checkboxIsChecked(invertCheckbox)).to.equal(true);
       await invertCheckbox.click();
       expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
     }
     // Verify persistence when disabled.
-    await reloadDevTools({queryParams: {panel: 'network'}});
+    await devToolsPage.reloadWithParams({panel: 'network'});
     {
-      const {devToolsPage} = getBrowserAndPagesWrappers();
       const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
       expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
     }
@@ -325,10 +275,7 @@ describe('The Network Tab', function() {
 });
 
 describe('The Network Tab', function() {
-  it('can show only third-party requests', async ({devToolsPage, inspectedPage}: {
-                                             devToolsPage: DevToolsPage,
-                                             inspectedPage: InspectedPage,
-                                           }) => {
+  it('can show only third-party requests', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab('empty.html', devToolsPage, inspectedPage);
     await setCacheDisabled(true, devToolsPage);
     await setPersistLog(false, devToolsPage);

@@ -87,7 +87,8 @@ export function generateInsight(
       return false;
     }
 
-    return Helpers.Timing.timestampIsInBounds(context.bounds, script.ts);
+    return Helpers.Timing.timestampIsInBounds(context.bounds, script.ts) ||
+        (script.request && Helpers.Timing.eventIsInBounds(script.request, context.bounds));
   });
 
   const legacyJavaScriptResults: LegacyJavaScriptResults = new Map();

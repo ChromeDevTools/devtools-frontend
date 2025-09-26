@@ -58,7 +58,7 @@ export function handleEvent(event: Types.Events.Event): void {
     const scriptId = String(scriptIdAsNumber) as Protocol.Runtime.ScriptId;
     const key = `${isolate}.${scriptId}`;
     return Platform.MapUtilities.getWithDefault(
-        scriptById, key, () => ({isolate, scriptId, frame: '', ts: 0} as Script));
+        scriptById, key, () => ({isolate, scriptId, frame: '', ts: event.ts} as Script));
   };
 
   if (Types.Events.isRundownScriptCompiled(event) && event.args.data) {
@@ -74,6 +74,7 @@ export function handleEvent(event: Types.Events.Event): void {
     const {isolate, scriptId, url, sourceUrl, sourceMapUrl, sourceMapUrlElided} = event.args.data;
     const script = getOrMakeScript(isolate, scriptId);
     script.url = url;
+    script.ts = event.ts;
     if (sourceUrl) {
       script.sourceUrl = sourceUrl;
     }

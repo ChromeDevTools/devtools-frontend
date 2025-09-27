@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
@@ -273,7 +272,7 @@ export const DEFAULT_VIEW = (input: UserActionRowViewInput, output: ViewOutput, 
       </div>
     </form>
     ` : Lit.nothing}
-  `, target, {host: target});
+  `, target);
   // clang-format on
 };
 

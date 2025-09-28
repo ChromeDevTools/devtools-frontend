@@ -2849,6 +2849,10 @@ export namespace CSS {
      */
     style: CSSStyle;
     /**
+     * The BackendNodeId of the DOM node that constitutes the origin tree scope of this rule.
+     */
+    originTreeScopeNodeId?: DOM.BackendNodeId;
+    /**
      * Media list array (for rules involving media queries). The array enumerates media queries
      * starting with the innermost one, going outwards.
      */
@@ -17399,6 +17403,14 @@ export namespace Storage {
   }
 
   export interface GetStorageKeyForFrameResponse extends ProtocolResponseWithError {
+    storageKey: SerializedStorageKey;
+  }
+
+  export interface GetStorageKeyRequest {
+    frameId?: Page.FrameId;
+  }
+
+  export interface GetStorageKeyResponse extends ProtocolResponseWithError {
     storageKey: SerializedStorageKey;
   }
 

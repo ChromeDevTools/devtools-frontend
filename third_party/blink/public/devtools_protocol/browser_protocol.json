@@ -4342,6 +4342,13 @@
                             "$ref": "CSSStyle"
                         },
                         {
+                            "name": "originTreeScopeNodeId",
+                            "description": "The BackendNodeId of the DOM node that constitutes the origin tree scope of this rule.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
+                        },
+                        {
                             "name": "media",
                             "description": "Media list array (for rules involving media queries). The array enumerates media queries\nstarting with the innermost one, going outwards.",
                             "optional": true,
@@ -26382,10 +26389,29 @@
             "commands": [
                 {
                     "name": "getStorageKeyForFrame",
-                    "description": "Returns a storage key given a frame id.",
+                    "description": "Returns a storage key given a frame id.\nDeprecated. Please use Storage.getStorageKey instead.",
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "frameId",
+                            "$ref": "Page.FrameId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "storageKey",
+                            "$ref": "SerializedStorageKey"
+                        }
+                    ]
+                },
+                {
+                    "name": "getStorageKey",
+                    "description": "Returns storage key for the given frame. If no frame ID is provided,\nthe storage key of the target executing this command is returned.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "optional": true,
                             "$ref": "Page.FrameId"
                         }
                     ],

@@ -4412,10 +4412,19 @@ export namespace ProtocolMapping {
     };
     /**
      * Returns a storage key given a frame id.
+     * Deprecated. Please use Storage.getStorageKey instead.
      */
     'Storage.getStorageKeyForFrame': {
       paramsType: [Protocol.Storage.GetStorageKeyForFrameRequest];
       returnType: Protocol.Storage.GetStorageKeyForFrameResponse;
+    };
+    /**
+     * Returns storage key for the given frame. If no frame ID is provided,
+     * the storage key of the target executing this command is returned.
+     */
+    'Storage.getStorageKey': {
+      paramsType: [Protocol.Storage.GetStorageKeyRequest?];
+      returnType: Protocol.Storage.GetStorageKeyResponse;
     };
     /**
      * Clears storage for origin.

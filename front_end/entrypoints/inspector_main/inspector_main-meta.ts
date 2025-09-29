@@ -257,7 +257,7 @@ Common.Settings.registerSettingExtension({
 UI.Toolbar.registerToolbarItem({
   async loadItem() {
     const InspectorMain = await loadInspectorMainModule();
-    return InspectorMain.InspectorMain.NodeIndicator.instance();
+    return InspectorMain.InspectorMain.NodeIndicatorProvider.instance();
   },
   order: 2,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,

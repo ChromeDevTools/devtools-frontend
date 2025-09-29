@@ -232,7 +232,8 @@ describe('with changed settings', function() {
     consoleLog.push(e.text());
   };
 
-  it('successfully returns a Lighthouse report', async ({devToolsPage, inspectedPage}) => {
+  // Flaky Lighthouse report
+  it.skip('[crbug.com/445332283] successfully returns a Lighthouse report', async ({devToolsPage, inspectedPage}) => {
     devToolsPage.page.on('console', consoleListener);
     try {
       expectErrors();

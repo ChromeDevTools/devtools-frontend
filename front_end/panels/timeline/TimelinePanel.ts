@@ -660,6 +660,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     );
   }
 
+  zoomEvent(event: Trace.Types.Events.Event): void {
+    this.flameChart.zoomEvent(event);
+  }
+
   /**
    * Activates an insight and ensures the sidebar is open too.
    * Pass `highlightInsight: true` to flash the insight with the background highlight colour.
@@ -3156,6 +3160,7 @@ export const rowHeight = 18;
 export const headerHeight = 20;
 export interface TimelineModeViewDelegate {
   select(selection: TimelineSelection|null): void;
+  zoomEvent(event: Trace.Types.Events.Event): void;
   element: Element;
   set3PCheckboxDisabled(disabled: boolean): void;
   selectEntryAtTime(events: Trace.Types.Events.Event[]|null, time: number): void;

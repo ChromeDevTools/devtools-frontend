@@ -1321,6 +1321,36 @@ describeWithMockConnection('TimelineUIUtils', function() {
           timelinePanel.select, Timeline.TimelineSelection.selectionFromEvent(postTaskEvent));
     });
 
+    it('lets the user click the title of an event to zoom into it', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+
+      // Make a stubbed TimelinePanel, and then ensure all instance() calls return it.
+      const timelinePanel = sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel);
+      sinon.stub(Timeline.TimelinePanel.TimelinePanel, 'instance').callsFake(() => timelinePanel);
+
+      const event = allThreadEntriesInTrace(parsedTrace).find(event => {
+        return event.name === 'RunTask';
+      });
+      assert.isOk(event);
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          parsedTrace,
+          event,
+          new Components.Linkifier.Linkifier(),
+          false,
+          null,
+      );
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      container.append(details);
+      await raf();
+      const title = container.querySelector<HTMLElement>('.timeline-details-chip-title-reveal-entry');
+      assert.isOk(title);
+      dispatchClickEvent(title);
+
+      sinon.assert.calledOnceWithExactly(timelinePanel.zoomEvent, event);
+    });
+
     it('renders details for RunPostTaskCallback events', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'scheduler-post-task.json.gz');
 

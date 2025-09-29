@@ -33,6 +33,8 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
   }
   selectEntryAtTime(_events: Trace.Types.Events.Event[]|null, _time: number): void {
   }
+  zoomEvent(_event: Trace.Types.Events.Event): void {
+  }
   highlightEvent(_event: Trace.Types.Events.Event|null): void {
   }
   element = document.createElement('div');

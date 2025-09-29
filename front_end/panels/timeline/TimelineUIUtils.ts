@@ -967,7 +967,7 @@ export class TimelineUIUtils {
     const isMarker = parsedTrace && isMarkerEvent(parsedTrace, event);
     const color = isMarker ? TimelineUIUtils.markerStyleForEvent(event).color : defaultColorForEvent;
 
-    contentHelper.addSection(TimelineUIUtils.eventTitle(event), color);
+    contentHelper.addSection(TimelineUIUtils.eventTitle(event), color, event);
 
     // TODO: as part of the removal of the old engine, produce a typesafe way
     // to look up args and data for events.
@@ -2374,7 +2374,7 @@ export class TimelineDetailsContentHelper {
     this.fragment.appendChild(this.element);
   }
 
-  addSection(title: string, swatchColor?: string): void {
+  addSection(title: string, swatchColor?: string, event?: Trace.Types.Events.Event): void {
     if (!this.tableElement.hasChildNodes()) {
       this.element.removeChildren();
     } else {
@@ -2388,7 +2388,16 @@ export class TimelineDetailsContentHelper {
       if (swatchColor) {
         titleElement.createChild('div').style.backgroundColor = swatchColor;
       }
-      UI.UIUtils.createTextChild(titleElement, title);
+
+      const textChild = titleElement.createChild('span');
+      textChild.textContent = title;
+
+      if (event) {
+        textChild.classList.add('timeline-details-chip-title-reveal-entry');
+        textChild.addEventListener('click', function() {
+          TimelinePanel.instance().zoomEvent(event);
+        });
+      }
     }
 
     this.tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');

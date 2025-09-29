@@ -12,6 +12,8 @@ import * as RenderCoordinator from '../../ui/components/render_coordinator/rende
 import * as Timeline from './timeline.js';
 
 class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
+  zoomEvent(_event: Trace.Types.Events.Event): void {
+  }
   select(_selection: Timeline.TimelineSelection.TimelineSelection|null): void {
   }
   set3PCheckboxDisabled(_disabled: boolean): void {

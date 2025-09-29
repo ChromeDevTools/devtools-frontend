@@ -205,8 +205,13 @@ export class SyncSection extends HTMLElement {
       return;
     }
 
-    this.#gdpProfile = await Host.GdpClient.GdpClient.instance().getProfile() ?? undefined;
-    this.#isEligibleToCreateGdpProfile = await Host.GdpClient.GdpClient.instance().isEligibleToCreateProfile();
+    const getProfileResponse = await Host.GdpClient.GdpClient.instance().getProfile();
+    if (!getProfileResponse) {
+      return;
+    }
+
+    this.#gdpProfile = getProfileResponse.profile ?? undefined;
+    this.#isEligibleToCreateGdpProfile = getProfileResponse.isEligible;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 }

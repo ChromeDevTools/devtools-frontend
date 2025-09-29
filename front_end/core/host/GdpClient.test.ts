@@ -32,30 +32,45 @@ describe('GdpClient', () => {
     Host.GdpClient.GdpClient.instance({forceNew: true});
   });
 
-  it('should cache requests to getProfile', async () => {
+  it('should cache requests to getProfile when profile exists', async () => {
+    dispatchHttpRequestStub.callsFake((_, cb) => {
+      cb({
+        response: JSON.stringify({name: 'profiles/id'}),
+        statusCode: 200,
+      });
+    });
     await Host.GdpClient.GdpClient.instance().getProfile();
     await Host.GdpClient.GdpClient.instance().getProfile();
 
     sinon.assert.calledOnce(dispatchHttpRequestStub);
   });
 
-  it('should cache requests to checkEligibility', async () => {
-    await Host.GdpClient.GdpClient.instance().checkEligibility();
-    await Host.GdpClient.GdpClient.instance().checkEligibility();
+  it('should cache requests in getProfile when profile doesn\'t exist', async () => {
+    dispatchHttpRequestStub.callsFake((request, cb) => {
+      if (request.path === '/v1beta1/profile:get') {
+        cb({statusCode: 404, error: ''});
+        return;
+      }
+      cb({
+        response: JSON.stringify({
+          createProfile: Host.GdpClient.EligibilityStatus.ELIGIBLE,
+        }),
+        statusCode: 200,
+      });
+    });
+    await Host.GdpClient.GdpClient.instance().getProfile();
+    await Host.GdpClient.GdpClient.instance().getProfile();
 
-    sinon.assert.calledOnce(dispatchHttpRequestStub);
+    sinon.assert.calledTwice(dispatchHttpRequestStub);
   });
-
-  it('should cache requests to checkEligibility as eligible for `createProfile` when the user has a GDP profile',
-     async () => {
-       await Host.GdpClient.GdpClient.instance().getProfile();
-       const result = await Host.GdpClient.GdpClient.instance().checkEligibility();
-
-       assert.strictEqual(result?.createProfile, Host.GdpClient.EligibilityStatus.ELIGIBLE);
-       sinon.assert.calledOnce(dispatchHttpRequestStub);
-     });
 
   it('should clear cache after creating a profile', async () => {
+    dispatchHttpRequestStub.callsFake((_, cb) => {
+      cb({
+        error: '',
+        statusCode: 404,
+      });
+    });
     await Host.GdpClient.GdpClient.instance().getProfile();
     await Host.GdpClient.GdpClient.instance().createProfile(
         {user: 'test', emailPreference: Host.GdpClient.EmailPreference.ENABLED});
@@ -88,19 +103,64 @@ describe('GdpClient', () => {
         },
       });
 
-      const profile = await Host.GdpClient.GdpClient.instance({forceNew: true}).getProfile();
+      const profileResult = await Host.GdpClient.GdpClient.instance({forceNew: true}).getProfile();
 
-      assert.isNull(profile);
+      assert.isNull(profileResult);
       sinon.assert.notCalled(dispatchHttpRequestStub);
     });
   });
 
-  describe('initialize', () => {
-    it('should return hasProfile and isEligible if a profile exists without calling checkEligibility', async () => {
-      const result = await Host.GdpClient.GdpClient.instance().initialize();
+  describe('getProfile', () => {
+    it('should return null when there is an HTTP_RESPONSE_UNAVAILABLE error in the getProfile request', async () => {
+      dispatchHttpRequestStub.callsFake((request, cb) => {
+        if (request.path === '/v1beta1/profile:get') {
+          cb({statusCode: 503, error: ''});
+          return;
+        }
+      });
+      const result = await Host.GdpClient.GdpClient.instance().getProfile();
+
+      assert.isNull(result);
+      sinon.assert.calledOnce(dispatchHttpRequestStub);
+    });
+
+    it('should return null when the endpoint returns non-parseable response', async () => {
+      dispatchHttpRequestStub.callsFake((_, cb) => {
+        cb({
+          statusCode: 200,
+          response: 'this is not a json',
+        });
+      });
+      const result = await Host.GdpClient.GdpClient.instance().getProfile();
+      assert.isNull(result);
+    });
+
+    it('should return null when there isn\'t a profile and checkEligibility call returned an error', async () => {
+      dispatchHttpRequestStub.callsFake((request, cb) => {
+        if (request.path === '/v1beta1/profile:get') {
+          cb({statusCode: 404, error: ''});
+          return;
+        }
+
+        cb({statusCode: 503, error: ''});
+      });
+      const result = await Host.GdpClient.GdpClient.instance().getProfile();
+
+      assert.isNull(result);
+      sinon.assert.calledTwice(dispatchHttpRequestStub);
+    });
+
+    it('should return profile and isEligible if a profile exists without calling checkEligibility', async () => {
+      dispatchHttpRequestStub.callsFake((request, cb) => {
+        if (request.path === '/v1beta1/profile:get') {
+          cb({statusCode: 200, response: JSON.stringify({name: 'test/profile-id'})});
+          return;
+        }
+      });
+      const result = await Host.GdpClient.GdpClient.instance().getProfile();
 
       assert.deepEqual(result, {
-        hasProfile: true,
+        profile: {name: 'test/profile-id'},
         isEligible: true,
       });
       sinon.assert.calledOnce(dispatchHttpRequestStub);
@@ -120,10 +180,10 @@ describe('GdpClient', () => {
         });
       });
 
-      const result = await Host.GdpClient.GdpClient.instance({forceNew: true}).initialize();
+      const result = await Host.GdpClient.GdpClient.instance({forceNew: true}).getProfile();
 
       assert.deepEqual(result, {
-        hasProfile: false,
+        profile: null,
         isEligible: true,
       });
       sinon.assert.calledTwice(dispatchHttpRequestStub);

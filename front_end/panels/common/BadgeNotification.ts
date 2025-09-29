@@ -192,7 +192,14 @@ export class BadgeNotification extends UI.Widget.Widget {
   }
 
   async #presentStarterBadge(badge: Badges.Badge): Promise<void> {
-    const gdpProfile = await Host.GdpClient.GdpClient.instance().getProfile();
+    const getProfileResponse = await Host.GdpClient.GdpClient.instance().getProfile();
+    // The `getProfile` call failed and returned a `null`.
+    // For that case, we don't show anything.
+    if (!getProfileResponse) {
+      return;
+    }
+
+    const hasGdpProfile = Boolean(getProfileResponse.profile);
     const receiveBadgesSettingEnabled = Badges.UserBadges.instance().isReceiveBadgesSettingEnabled();
     const googleDeveloperProgramLink = UI.XLink.XLink.create(
         'https://developers.google.com/program', lockedString('Google Developer Program'), 'badge-link', undefined,
@@ -200,14 +207,14 @@ export class BadgeNotification extends UI.Widget.Widget {
 
     // If the user already has a GDP profile and the receive badges setting enabled,
     // starter badge behaves as if it's an activity based badge.
-    if (gdpProfile && receiveBadgesSettingEnabled) {
+    if (hasGdpProfile && receiveBadgesSettingEnabled) {
       this.#presentActivityBasedBadge(badge);
       return;
     }
 
     // If the user already has a GDP profile and the receive badges setting disabled,
     // starter badge behaves as a nudge for opting into receiving badges.
-    if (gdpProfile && !receiveBadgesSettingEnabled) {
+    if (hasGdpProfile && !receiveBadgesSettingEnabled) {
       this.#show({
         message: i18nFormatString(
             UIStrings.starterBadgeAwardMessageSettingDisabled, {PH1: badge.title, PH2: googleDeveloperProgramLink}),

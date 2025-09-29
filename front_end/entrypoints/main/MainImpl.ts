@@ -519,7 +519,13 @@ export class MainImpl {
 
     // Initialize `GDPClient` and `UserBadges` for Google Developer Program integration
     if (Host.GdpClient.isGdpProfilesAvailable()) {
-      void Host.GdpClient.GdpClient.instance().initialize().then(({hasProfile, isEligible}) => {
+      void Host.GdpClient.GdpClient.instance().getProfile().then(getProfileResponse => {
+        if (!getProfileResponse) {
+          return;
+        }
+
+        const {profile, isEligible} = getProfileResponse;
+        const hasProfile = Boolean(profile);
         const contextString = hasProfile ? 'has-profile' :
             isEligible                   ? 'no-profile-and-eligible' :
                                            'no-profile-and-not-eligible';

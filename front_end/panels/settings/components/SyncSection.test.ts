@@ -225,8 +225,7 @@ describeWithLocale('SyncSection', () => {
     it('renders the sign-up state when the user does not have a GDP profile but is eligible to create one',
        async () => {
          const gdpClient = Host.GdpClient.GdpClient.instance();
-         sinon.stub(gdpClient, 'getProfile').resolves(null);
-         sinon.stub(gdpClient, 'isEligibleToCreateProfile').resolves(true);
+         sinon.stub(gdpClient, 'getProfile').resolves({profile: null, isEligible: true});
 
          const syncSetting = createFakeSetting<boolean>('setting', true);
          const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
@@ -250,8 +249,7 @@ describeWithLocale('SyncSection', () => {
     it('does not render the GDP section when the user does not have a GDP profile and is not eligible to create one',
        async () => {
          const gdpClient = Host.GdpClient.GdpClient.instance();
-         sinon.stub(gdpClient, 'getProfile').resolves(null);
-         sinon.stub(gdpClient, 'isEligibleToCreateProfile').resolves(false);
+         sinon.stub(gdpClient, 'getProfile').resolves({profile: null, isEligible: false});
 
          const syncSetting = createFakeSetting<boolean>('setting', true);
          const receiveBadgesSetting = createFakeSetting<boolean>('receive-badges', true);
@@ -271,8 +269,11 @@ describeWithLocale('SyncSection', () => {
     it('renders the profile details with standard plan', async () => {
       const gdpClient = Host.GdpClient.GdpClient.instance();
       sinon.stub(gdpClient, 'getProfile').resolves({
-        name: 'test-profile',
-        activeSubscription: undefined,
+        profile: {
+          name: 'test-profile',
+          activeSubscription: undefined,
+        },
+        isEligible: true
       });
 
       const syncSetting = createFakeSetting<boolean>('setting', true);
@@ -314,8 +315,11 @@ describeWithLocale('SyncSection', () => {
       });
       const gdpClient = Host.GdpClient.GdpClient.instance();
       sinon.stub(gdpClient, 'getProfile').resolves({
-        name: 'test-profile',
-        activeSubscription: undefined,
+        profile: {
+          name: 'test-profile',
+          activeSubscription: undefined,
+        },
+        isEligible: true
       });
 
       const syncSetting = createFakeSetting<boolean>('setting', true);
@@ -358,8 +362,11 @@ describeWithLocale('SyncSection', () => {
       });
       const gdpClient = Host.GdpClient.GdpClient.instance();
       sinon.stub(gdpClient, 'getProfile').resolves({
-        name: 'test-profile',
-        activeSubscription: undefined,
+        profile: {
+          name: 'test-profile',
+          activeSubscription: undefined,
+        },
+        isEligible: true,
       });
 
       const syncSetting = createFakeSetting<boolean>('setting', true);
@@ -415,11 +422,14 @@ describeWithLocale('SyncSection', () => {
       it(`renders the profile details with ${expectedText} plan`, async () => {
         const gdpClient = Host.GdpClient.GdpClient.instance();
         sinon.stub(gdpClient, 'getProfile').resolves({
-          name: 'test-profile',
-          activeSubscription: {
-            subscriptionTier: tier as Host.GdpClient.SubscriptionTier,
-            subscriptionStatus: Host.GdpClient.SubscriptionStatus.ENABLED,
+          profile: {
+            name: 'test-profile',
+            activeSubscription: {
+              subscriptionTier: tier as Host.GdpClient.SubscriptionTier,
+              subscriptionStatus: Host.GdpClient.SubscriptionStatus.ENABLED,
+            },
           },
+          isEligible: true
         });
 
         const syncSetting = createFakeSetting<boolean>('setting', true);
@@ -445,8 +455,7 @@ describeWithLocale('SyncSection', () => {
 
     it('refetches the GDP profile details after a successful sign-up', async () => {
       const gdpClient = Host.GdpClient.GdpClient.instance();
-      const getProfileStub = sinon.stub(gdpClient, 'getProfile').resolves(null);
-      sinon.stub(gdpClient, 'isEligibleToCreateProfile').resolves(true);
+      const getProfileStub = sinon.stub(gdpClient, 'getProfile').resolves({profile: null, isEligible: true});
       const showStub = sinon.stub(PanelCommon.GdpSignUpDialog, 'show').callsFake(options => {
         options?.onSuccess?.();
       });

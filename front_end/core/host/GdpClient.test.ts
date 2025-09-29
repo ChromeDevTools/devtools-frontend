@@ -129,4 +129,54 @@ describe('GdpClient', () => {
       sinon.assert.calledTwice(dispatchHttpRequestStub);
     });
   });
+
+  describe('isBadgesEnabled', () => {
+    it('should return true when the flag is enabled and the enterprise policy is enabled', () => {
+      updateHostConfig({
+        devToolsGdpProfiles: {
+          badgesEnabled: true,
+        },
+        devToolsGdpProfilesAvailability: {
+          enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
+        },
+      });
+      assert.isTrue(Host.GdpClient.isBadgesEnabled());
+    });
+
+    it('should return false when the badgesEnabled feature param is false', () => {
+      updateHostConfig({
+        devToolsGdpProfiles: {
+          badgesEnabled: false,
+        },
+        devToolsGdpProfilesAvailability: {
+          enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED,
+        },
+      });
+      assert.isFalse(Host.GdpClient.isBadgesEnabled());
+    });
+
+    it('should return false when the enterprise setting is ENABLED_WITHOUT_BADGES', () => {
+      updateHostConfig({
+        devToolsGdpProfiles: {
+          badgesEnabled: true,
+        },
+        devToolsGdpProfilesAvailability: {
+          enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED_WITHOUT_BADGES,
+        },
+      });
+      assert.isFalse(Host.GdpClient.isBadgesEnabled());
+    });
+
+    it('should return false when the enterprise setting is DISABLED', () => {
+      updateHostConfig({
+        devToolsGdpProfiles: {
+          badgesEnabled: true,
+        },
+        devToolsGdpProfilesAvailability: {
+          enterprisePolicyValue: Root.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED,
+        },
+      });
+      assert.isFalse(Host.GdpClient.isBadgesEnabled());
+    });
+  });
 });

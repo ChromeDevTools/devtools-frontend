@@ -260,5 +260,16 @@ export function getGdpProfilesEnterprisePolicy(): Root.Runtime.GdpProfilesEnterp
       Root.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED);
 }
 
+export function isBadgesEnabled(): boolean {
+  const isBadgesEnabledByEnterprisePolicy =
+      getGdpProfilesEnterprisePolicy() === Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED;
+  const isBadgesEnabledByFeatureFlag = Boolean(Root.Runtime.hostConfig.devToolsGdpProfiles?.badgesEnabled);
+  return isBadgesEnabledByEnterprisePolicy && isBadgesEnabledByFeatureFlag;
+}
+
+export function isStarterBadgeEnabled(): boolean {
+  return Boolean(Root.Runtime.hostConfig.devToolsGdpProfiles?.starterBadgeEnabled);
+}
+
 // @ts-expect-error
 globalThis.setDebugGdpIntegrationEnabled = setDebugGdpIntegrationEnabled;

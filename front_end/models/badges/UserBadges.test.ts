@@ -138,6 +138,8 @@ describeWithEnvironment('UserBadges', () => {
     updateHostConfig({
       devToolsGdpProfiles: {
         enabled: true,
+        starterBadgeEnabled: true,
+        badgesEnabled: true,
       },
       devToolsGdpProfilesAvailability: {
         enabled: true,
@@ -342,6 +344,29 @@ describeWithEnvironment('UserBadges', () => {
         });
       });
 
+      it('should not activate any badges if the badges kill-switch is on', async () => {
+        setReceiveBadgesSetting(true);
+        mockIsEligibleToCreateProfile(true);
+        mockGdpClientGetProfile({name: 'profiles/test'});
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGetAwardedBadgeNames([]);
+        updateHostConfig({
+          devToolsGdpProfiles: {
+            enabled: true,
+            starterBadgeEnabled: true,
+            badgesEnabled: false,
+          },
+        });
+
+        await Badges.UserBadges.instance().initialize();
+
+        await assertActiveBadges({
+          clock,
+          shouldActivityBadgeBeActive: false,
+          shouldStarterBadgeBeActive: false,
+        });
+      });
+
       it('should not activate any badges if not allowed by enterprise policy', async () => {
         setReceiveBadgesSetting(true);
         mockIsEligibleToCreateProfile(true);
@@ -426,6 +451,29 @@ describeWithEnvironment('UserBadges', () => {
         await assertActiveBadges({
           clock,
           shouldActivityBadgeBeActive: false,
+          shouldStarterBadgeBeActive: false,
+        });
+      });
+
+      it('should not activate the starter badge if the starter badge kill-switch is on', async () => {
+        setReceiveBadgesSetting(true);
+        mockIsEligibleToCreateProfile(true);
+        mockGdpClientGetProfile({name: 'profiles/test'});
+        mockGetSyncInformation({accountEmail: 'test@test.com', isSyncActive: false});
+        mockGetAwardedBadgeNames([]);
+        updateHostConfig({
+          devToolsGdpProfiles: {
+            enabled: true,
+            badgesEnabled: true,
+            starterBadgeEnabled: false,
+          },
+        });
+
+        await Badges.UserBadges.instance().initialize();
+
+        await assertActiveBadges({
+          clock,
+          shouldActivityBadgeBeActive: true,
           shouldStarterBadgeBeActive: false,
         });
       });

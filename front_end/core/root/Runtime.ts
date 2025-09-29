@@ -476,6 +476,7 @@ interface GlobalAiButton {
 
 interface GdpProfiles {
   enabled: boolean;
+  badgesEnabled: boolean;
   starterBadgeEnabled: boolean;
 }
 

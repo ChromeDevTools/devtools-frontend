@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import * as Root from '../../core/root/root.js';
 
 import {AiExplorerBadge} from './AiExplorerBadge.js';
 import type {Badge, BadgeAction, BadgeActionEvents, BadgeContext, TriggerOptions} from './Badge.js';
@@ -50,8 +49,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     super();
 
     this.#receiveBadgesSetting = Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges');
-    if (Host.GdpClient.getGdpProfilesEnterprisePolicy() ===
-        Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED_WITHOUT_BADGES) {
+    if (!Host.GdpClient.isBadgesEnabled()) {
       this.#receiveBadgesSetting.set(false);
     }
     this.#receiveBadgesSetting.addChangeListener(this.#reconcileBadges, this);
@@ -157,8 +155,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       return;
     }
 
-    if (!Host.GdpClient.isGdpProfilesAvailable() ||
-        Host.GdpClient.getGdpProfilesEnterprisePolicy() !== Root.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED) {
+    if (!Host.GdpClient.isGdpProfilesAvailable() || !Host.GdpClient.isBadgesEnabled()) {
       this.#deactivateAllBadges();
       return;
     }
@@ -202,7 +199,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       }
 
       const shouldActivateStarterBadge = badge.isStarterBadge && isEligibleToCreateProfile &&
-          !this.#isStarterBadgeDismissed() && !this.#isStarterBadgeSnoozed();
+          Host.GdpClient.isStarterBadgeEnabled() && !this.#isStarterBadgeDismissed() && !this.#isStarterBadgeSnoozed();
       const shouldActivateActivityBasedBadge =
           !badge.isStarterBadge && Boolean(gdpProfile) && receiveBadgesSettingEnabled;
       if (shouldActivateStarterBadge || shouldActivateActivityBasedBadge) {

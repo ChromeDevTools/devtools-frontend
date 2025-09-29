@@ -54,6 +54,7 @@ ts_library("unittests") {
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
+    "../../../core/root:bundle",
     "../../../testing",
     "../../../ui/components/chrome_link:bundle",
     "../../../ui/components/helpers:bundle",

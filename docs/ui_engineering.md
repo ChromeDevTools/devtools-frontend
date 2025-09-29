@@ -1223,3 +1223,79 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     target, {host: input});
 };
 ```
+
+## Refactoring UI.Toolbar.Provider
+
+As part of the migration, sometimes classes need to be broken up into smaller pieces. Classes implementing
+`UI.Toolbar.Provider` logic are good examples of this, if they implement `View` logic in addition to their
+`UI.Toolbar.Provider` responsibilities. The View logic needs to be moved to a separate class.
+
+
+**Before:**
+```typescript
+export class NodeIndicator implements UI.Toolbar.Provider {
+  readonly #element: Element;
+  readonly #item: UI.Toolbar.ToolbarItem;
+
+  private constructor() {
+    // Creates `this.#element` and `this.#item` imperatively (e.g. using document.createElement/createChild).
+  }
+  static instance(opts: { forceNew: boolean|null, } = {forceNew: null}): NodeIndicator {
+    // Creates an instance of this class and returns it.
+  }
+  #update(input): void { /* Handles updates to `this.#element` and `this.#item`. */}
+  item(): UI.Toolbar.ToolbarItem|null {
+    return this.#item;
+  }
+}
+```
+
+**After:**
+```typescript
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  // Implementation of the View using Lit.render() (omitted for brevity).
+};
+
+export class NodeIndicator extends UI.Widget.Widget {
+  readonly #view: View;
+
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
+  }
+
+  override performUpdate(): void {
+    const input = {
+      // Whatever input the View needs.
+    };
+    this.#view(input, {}, this.contentElement);
+  }
+}
+
+let nodeIndicatorProviderInstance: NodeIndicatorProvider;
+export class NodeIndicatorProvider implements UI.Toolbar.Provider {
+  #toolbarItem: UI.Toolbar.ToolbarItem;
+  #widgetElement: UI.Widget.WidgetElement<NodeIndicator>;
+
+  private constructor() {
+    this.#widgetElement = document.createElement('devtools-widget') as UI.Widget.WidgetElement<NodeIndicator>;
+    this.#widgetElement.widgetConfig = UI.Widget.widgetConfig(NodeIndicator);
+
+    this.#toolbarItem = new UI.Toolbar.ToolbarItem(this.#widgetElement);
+    this.#toolbarItem.setVisible(false);
+  }
+
+  item(): UI.Toolbar.ToolbarItem|null {
+    return this.#toolbarItem;
+  }
+
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): NodeIndicatorProvider {
+    const {forceNew} = opts;
+    if (!nodeIndicatorProviderInstance || forceNew) {
+      nodeIndicatorProviderInstance = new NodeIndicatorProvider();
+    }
+
+    return nodeIndicatorProviderInstance;
+  }
+}
+```

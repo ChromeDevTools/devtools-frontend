@@ -45,9 +45,9 @@ describe('The Reporting API Page', () => {
     await devToolsPage.waitFor('.storage-group-list-item');  // Make sure the application navigation list is shown
     await devToolsPage.click(REPORTING_API_SELECTOR);
 
-    const endpointsGrid = await devToolsPage.waitFor('devtools-resources-endpoints-grid');
-
-    const innerText = await getInnerTextOfDataGridCells(endpointsGrid, 2, true, devToolsPage);
+    const container = await devToolsPage.waitFor('.endpoints-container');
+    const dataGrid = await getDataGrid(container, devToolsPage);
+    const innerText = await getInnerTextOfDataGridCells(dataGrid, 2, true, devToolsPage);
     assert.strictEqual(innerText[0][0], inspectedPage.domain());
     assert.strictEqual(innerText[0][1], 'default');
     assert.strictEqual(innerText[0][2], 'https://reports.example/default');

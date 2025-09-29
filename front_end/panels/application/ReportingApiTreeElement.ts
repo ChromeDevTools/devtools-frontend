@@ -8,7 +8,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
-import * as ApplicationComponents from './components/components.js';
 import {ReportingApiView} from './ReportingApiView.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
 
@@ -37,7 +36,7 @@ export class ReportingApiTreeElement extends ApplicationPanelTreeElement {
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = new ReportingApiView(new ApplicationComponents.EndpointsGrid.EndpointsGrid());
+      this.view = new ReportingApiView();
     }
     this.showView(this.view);
     Host.userMetrics.panelShown('reporting-api');

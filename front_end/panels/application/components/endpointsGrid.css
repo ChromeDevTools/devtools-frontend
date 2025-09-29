@@ -1,0 +1,30 @@
+/*
+ * Copyright 2025 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope {
+    overflow: auto;
+    height: 100%;
+  }
+
+  .endpoints-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .endpoints-header {
+    font-size: 15px;
+    background-color: var(--sys-color-surface2);
+    padding: 1px 4px;
+    flex-shrink: 0;
+  }
+
+  devtools-data-grid {
+    flex: auto;
+  }
+}

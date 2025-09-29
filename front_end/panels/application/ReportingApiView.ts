@@ -50,8 +50,7 @@ const REPORTING_API_EXPLANATION_URL =
 interface ViewInput {
   hasReports: boolean;
   hasEndpoints: boolean;
-  // TODO (crbug.com/407940329): port EndpointsGrid to a UI Widget and instantiate it in the view
-  endpointsGrid: ApplicationComponents.EndpointsGrid.EndpointsGrid;
+  endpoints: Map<string, Protocol.Network.ReportingApiEndpoint[]>;
   // TODO (crbug.com/407940381): port ReportsGrid to a UI Widget and instantiate it in the view
   reportsGrid: ApplicationComponents.ReportsGrid.ReportsGrid;
   focusedReport?: Protocol.Network.ReportingApiReport;
@@ -89,7 +88,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           </div>
         `}
         <div slot="sidebar">
-          ${input.endpointsGrid}
+          <devtools-widget .widgetConfig=${widgetConfig(ApplicationComponents.EndpointsGrid.EndpointsGrid, {
+            endpoints: input.endpoints,
+          })}></devtools-widget>
         </div>
       </devtools-split-view>
     `, target);
@@ -109,7 +110,6 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 
 export class ReportingApiView extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
-  readonly #endpointsGrid: ApplicationComponents.EndpointsGrid.EndpointsGrid;
   #endpoints: Map<string, Protocol.Network.ReportingApiEndpoint[]>;
   #view: View;
   #networkManager?: SDK.NetworkManager.NetworkManager;
@@ -117,10 +117,9 @@ export class ReportingApiView extends UI.Widget.VBox implements
   #reports: Protocol.Network.ReportingApiReport[] = [];
   #focusedReport?: Protocol.Network.ReportingApiReport;
 
-  constructor(endpointsGrid: ApplicationComponents.EndpointsGrid.EndpointsGrid, view = DEFAULT_VIEW) {
+  constructor(view = DEFAULT_VIEW) {
     super();
     this.#view = view;
-    this.#endpointsGrid = endpointsGrid;
     this.#endpoints = new Map();
     this.#reportsGrid.addEventListener('select', this.#onFocus.bind(this));
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
@@ -158,7 +157,7 @@ export class ReportingApiView extends UI.Widget.VBox implements
     const viewInput = {
       hasReports: this.#reports.length > 0,
       hasEndpoints: this.#endpoints.size > 0,
-      endpointsGrid: this.#endpointsGrid,
+      endpoints: this.#endpoints,
       reportsGrid: this.#reportsGrid,
       focusedReport: this.#focusedReport,
     };
@@ -167,7 +166,6 @@ export class ReportingApiView extends UI.Widget.VBox implements
 
   #onEndpointsChangedForOrigin({data}: {data: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent}): void {
     this.#endpoints.set(data.origin, data.endpoints);
-    this.#endpointsGrid.data = {endpoints: this.#endpoints};
     this.requestUpdate();
   }
 

@@ -95,7 +95,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
 
     this.#resizeObserver.observe(this);
     this.#updateColumns();
-    this.addNodes(this.querySelectorAll('tr'));
+    this.addNodes(this.templateRoot.querySelectorAll('tr'));
   }
 
   attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void {
@@ -155,7 +155,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
     this.#hideableColumns.clear();
     this.#columns = [];
     let hasEditableColumn = false;
-    for (const column of this.querySelectorAll('th[id]') || []) {
+    for (const column of this.templateRoot.querySelectorAll('th[id]') || []) {
       const id = column.id as Lowercase<string>;
       let title = column.textContent?.trim() || '';
       const titleDOMFragment = column.firstElementChild ? document.createDocumentFragment() : undefined;
@@ -308,7 +308,7 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
       this.#usedCreationNode = null;
       this.#dataGrid.creationNode = undefined;
     }
-    const placeholder = this.querySelector('tr[placeholder]');
+    const placeholder = this.templateRoot.querySelector('tr[placeholder]');
     if (!placeholder) {
       this.#dataGrid.creationNode?.remove();
       this.#dataGrid.creationNode = undefined;

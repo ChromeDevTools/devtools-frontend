@@ -2282,6 +2282,10 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     }
   }
 
+  get templateRoot(): DocumentFragment|HTMLElement {
+    return this.#contentTemplate?.content ?? this;
+  }
+
   set template(template: Lit.LitTemplate) {
     if (!this.#contentTemplate) {
       this.removeChildren();

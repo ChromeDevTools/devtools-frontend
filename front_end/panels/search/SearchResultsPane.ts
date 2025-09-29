@@ -52,23 +52,24 @@ export type View = (input: ViewInput, output: unknown, target: HTMLElement) => v
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   const {results, matches, expandedResults, onSelectMatch, onExpandSearchResult, onShowMoreMatches} = input;
 
-  const onExpand = ({detail: {expanded, target}}: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-    const searchResultIndex = Number(target.dataset.searchResultIndex);
-    const searchResult = results[searchResultIndex];
-    if (expanded) {
-      expandedResults.add(searchResult);
-      onExpandSearchResult(searchResult);
-    } else {
-      expandedResults.delete(searchResult);
-    }
-  };
+  const onExpand =
+      (searchResult: SearchResult, {detail: {expanded}}: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+        if (expanded) {
+          expandedResults.add(searchResult);
+          onExpandSearchResult(searchResult);
+        } else {
+          expandedResults.delete(searchResult);
+        }
+      };
 
   // clang-format off
   render(html`
-    <devtools-tree hide-overflow @expand=${onExpand} .template=${html`
+    <devtools-tree hide-overflow .template=${html`
       <ul role="tree">
-        ${results.map((searchResult, i) => html`
-          <li role="treeitem" data-search-result-index=${i} class="search-result">
+        ${results.map(searchResult => html`
+          <li @expand=${(e: UI.TreeOutline.TreeViewElement.ExpandEvent) => onExpand(searchResult, e)}
+              role="treeitem"
+              class="search-result">
             <style>${searchResultsPaneStyles}</style>
             ${renderSearchResult(searchResult)}
             <ul role="group" ?hidden=${!expandedResults.has(searchResult)}>

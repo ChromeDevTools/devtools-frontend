@@ -4137,6 +4137,7 @@ export const knownContextValues = new Set([
   'x-offset',
   'x-small',
   'xhr',
+  'xml-view',
   'xr',
   'xx-large',
   'xx-small',

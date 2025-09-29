@@ -1637,7 +1637,7 @@ function getTreeNodes(nodeList: NodeList|Node[]): HTMLLIElement[] {
  * <devtools-tree
  *   .template=${html`
  *     <ul role="tree">
- *        <li role="treeitem">
+ *        <li role="treeitem" @expand=${onExpand}>
  *          Tree Node Text
  *          <ul role="group">
  *            Node with subtree
@@ -1659,7 +1659,7 @@ function getTreeNodes(nodeList: NodeList|Node[]): HTMLLIElement[] {
  * tree node). If a tree node contains a <ul role="group">, that defines a subtree under that tree node. The `hidden`
  * attribute on the <ul> defines whether that subtree should render as collapsed. Note that node expanding/collapsing do
  * not reflect this state back to the attribute on the config element, those state changes are rather sent out as
- * `expand` events.
+ * `expand` events on the config element.
  *
  * Under the hood this uses TreeOutline.
  *
@@ -1687,7 +1687,6 @@ function getTreeNodes(nodeList: NodeList|Node[]): HTMLLIElement[] {
  *
  * @property template Define the tree contents
  * @event selected A node was selected
- * @event expand A subtree was expanded or collapsed
  * @attribute navigation-variant Turn this tree into the navigation variant
  * @attribute hide-overflow
  */
@@ -1704,14 +1703,12 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     });
     this.#treeOutline.addEventListener(Events.ElementExpanded, event => {
       if (event.data instanceof TreeViewTreeElement) {
-        this.dispatchEvent(new TreeViewElement.ExpandEvent(
-            {expanded: true, target: (event.data as TreeViewTreeElement).configElement}));
+        event.data.listItemElement.dispatchEvent(new TreeViewElement.ExpandEvent({expanded: true}));
       }
     });
     this.#treeOutline.addEventListener(Events.ElementCollapsed, event => {
       if (event.data instanceof TreeViewTreeElement) {
-        this.dispatchEvent(new TreeViewElement.ExpandEvent(
-            {expanded: false, target: (event.data as TreeViewTreeElement).configElement}));
+        event.data.listItemElement.dispatchEvent(new TreeViewElement.ExpandEvent({expanded: false}));
       }
     });
     this.addNodes(getTreeNodes([this]));
@@ -1832,8 +1829,8 @@ export namespace TreeViewElement {
     }
   }
 
-  export class ExpandEvent extends CustomEvent<{expanded: boolean, target: HTMLLIElement}> {
-    constructor(detail: {expanded: boolean, target: HTMLLIElement}) {
+  export class ExpandEvent extends CustomEvent<{expanded: boolean}> {
+    constructor(detail: {expanded: boolean}) {
       super('expand', {detail});
     }
   }

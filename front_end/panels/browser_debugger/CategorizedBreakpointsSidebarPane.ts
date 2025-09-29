@@ -183,29 +183,23 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
             'source-code': true,
             'breakpoint-hit': input.highlightedItem === breakpoint,
           });
-  const categoryConfigElements = new WeakMap<HTMLLIElement, SDK.CategorizedBreakpoint.Category>();
-  const trackCategoryConfigElement = (category: SDK.CategorizedBreakpoint.Category): ReturnType<typeof ref> =>
-      ref((e: Element|undefined) => {
-        if (e instanceof HTMLLIElement) {
-          categoryConfigElements.set(e, category);
-        }
-      });
-  const onExpand = ({detail: {expanded, target}}: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-    const category = categoryConfigElements.get(target);
-    const breakpoints = category && input.categories.get(category);
-    if (!breakpoints) {
-      return;
-    }
-    if (shouldExpandCategory(breakpoints)) {
-      // Basically ignore expand/collapse when the category is expanded by default.
-      return;
-    }
-    if (expanded) {
-      output.userExpandedCategories.add(category);
-    } else {
-      output.userExpandedCategories.delete(category);
-    }
-  };
+  const onExpand =
+      (category: SDK.CategorizedBreakpoint.Category, {detail: {expanded}}: UI.TreeOutline.TreeViewElement.ExpandEvent):
+          void => {
+            const breakpoints = category && input.categories.get(category);
+            if (!breakpoints) {
+              return;
+            }
+            if (shouldExpandCategory(breakpoints)) {
+              // Basically ignore expand/collapse when the category is expanded by default.
+              return;
+            }
+            if (expanded) {
+              output.userExpandedCategories.add(category);
+            } else {
+              output.userExpandedCategories.delete(category);
+            }
+          };
 
   render(
       // clang-format off
@@ -219,17 +213,15 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     </devtools-toolbar>
     <devtools-tree
       ${ref(e => { output.defaultFocus = e; })}
-      @expand=${onExpand}
       .template=${html`
         <ul role="tree">
           ${filteredCategories.map(([category, breakpoints]) => html`
-            <li
+            <li @expand=${(e: UI.TreeOutline.TreeViewElement.ExpandEvent) => onExpand(category, e)}
                 role="treeitem"
                 jslog-context=${category}
                 aria-checked=${breakpoints.some(breakpoint => breakpoint.enabled())
                   ? breakpoints.some(breakpoint => !breakpoint.enabled()) ? 'mixed' : true
-                  : false}
-                ${trackCategoryConfigElement(category)}>
+                  : false}>
               <style>${categorizedBreakpointsSidebarPaneStyles}</style>
               <devtools-checkbox
                 class="small"

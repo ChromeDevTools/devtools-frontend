@@ -5,6 +5,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Lit from '../../../lit/lit.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import xmlTreeStyles from './xmlTree.css.js';
@@ -29,7 +30,7 @@ function* attributes(element: Element): Generator<Attr> {
 }
 
 function hasNonTextChildren(node: Node): boolean {
-  return node.childNodes.length !== node.childTextNodes.length;
+  return Boolean(node.childNodes.values().find(node => node.nodeType !== Node.TEXT_NODE));
 }
 
 function textView(treeNode: XMLTreeViewNode, closeTag: boolean): string {
@@ -249,7 +250,7 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
   #nextJump: SearchResult|undefined;
 
   constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(target, {jslog: 'xml-view', classes: ['shadow-xml-view', 'source-code']});
+    super(target, {jslog: `${VisualLogging.pane('xml-view')}`, classes: ['shadow-xml-view', 'source-code']});
     this.#view = view;
   }
 

@@ -36,7 +36,6 @@ import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
 
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
-import {XWidget} from './XWidget.js';
 
 // Remember the original DOM mutation methods here, since we
 // will override them below to sanity check the Widget system.
@@ -757,10 +756,6 @@ export class Widget {
       }
       let child = this.contentElement.traverseNextNode(this.contentElement);
       while (child) {
-        if (child instanceof XWidget) {
-          child.focus();
-          return;
-        }
         child = child.traverseNextNode(this.contentElement);
       }
     }

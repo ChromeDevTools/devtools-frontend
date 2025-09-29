@@ -62,7 +62,6 @@ import smallBubbleStyles from './smallBubble.css.js';
 import type {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {Widget} from './Widget.js';
-import type {XWidget} from './XWidget.js';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -1935,27 +1934,11 @@ function updateWidgetfocusWidgetForNode(node: Node|null): void {
   }
 }
 
-function updateXWidgetfocusWidgetForNode(node: Node|null): void {
-  node = node?.parentNodeOrShadowHost() ?? null;
-  const XWidgetConstructor = customElements.get('x-widget') as Platform.Constructor.Constructor<XWidget>| undefined;
-  let widget = null;
-  while (node) {
-    if (XWidgetConstructor && node instanceof XWidgetConstructor) {
-      if (widget) {
-        node.defaultFocusedElement = widget;
-      }
-      widget = node;
-    }
-    node = node.parentNodeOrShadowHost();
-  }
-}
-
 function focusChanged(event: Event): void {
   const target = event.target as HTMLElement;
   const document = target ? target.ownerDocument : null;
   const element = document ? Platform.DOMUtilities.deepActiveElement(document) : null;
   updateWidgetfocusWidgetForNode(element);
-  updateXWidgetfocusWidgetForNode(element);
 }
 
 /**

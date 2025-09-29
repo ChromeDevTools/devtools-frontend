@@ -98,7 +98,6 @@ devtools_module("ui") {
     "Widget.ts",
     "XElement.ts",
     "XLink.ts",
-    "XWidget.ts",
     "ZoomManager.ts",
   ]
 

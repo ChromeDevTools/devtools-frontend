@@ -2517,7 +2517,6 @@ grd_files_unbundled_sources = [
   "front_end/ui/legacy/Widget.js",
   "front_end/ui/legacy/XElement.js",
   "front_end/ui/legacy/XLink.js",
-  "front_end/ui/legacy/XWidget.js",
   "front_end/ui/legacy/ZoomManager.js",
   "front_end/ui/legacy/checkboxTextLabel.css.js",
   "front_end/ui/legacy/components/color_picker/ColorFormatSpec.js",

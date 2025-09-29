@@ -52,7 +52,6 @@ import * as ViewManager from './ViewManager.js';
 import * as Widget from './Widget.js';
 import * as XElement from './XElement.js';
 import * as XLink from './XLink.js';
-import * as XWidget from './XWidget.js';
 import * as ZoomManager from './ZoomManager.js';
 
 export {
@@ -106,6 +105,5 @@ export {
   Widget,
   XElement,
   XLink,
-  XWidget,
   ZoomManager,
 };

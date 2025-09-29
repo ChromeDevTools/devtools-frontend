@@ -59,3 +59,32 @@
 .film-strip-view .frame:focus .thumbnail img {
   box-shadow: none;
 }
+
+.film-strip-image-dialog {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .image-box {
+    overflow: auto;
+    margin: var(--sys-size-7) var(--sys-size-8) var(--sys-size-8)
+      var(--sys-size-8);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+  }
+
+  img {
+    max-height: 80vh;
+    max-width: 80vw;
+  }
+
+  .time-box {
+    margin: 0 var(--sys-size-3);
+  }
+
+  .button-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: var(--sys-size-6) 0 var(--sys-size-5);
+  }
+}

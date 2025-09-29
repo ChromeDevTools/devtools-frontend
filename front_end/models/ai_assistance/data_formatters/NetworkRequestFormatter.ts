@@ -5,10 +5,12 @@
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
 
 import {seconds} from './UnitFormatters.js';
 
 const MAX_HEADERS_SIZE = 1000;
+const MAX_BODY_SIZE = 10000;
 
 /**
  * Sanitizes the set of headers, removing values that are not on the allow-list and replacing them with '<redacted>'.
@@ -24,6 +26,8 @@ function sanitizeHeaders(headers: Array<{name: string, value: string}>): Array<{
 
 export class NetworkRequestFormatter {
   #calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
+  #request: SDK.NetworkRequest.NetworkRequest;
+
   static allowHeader(headerName: string): boolean {
     return allowedHeaders.has(headerName.toLowerCase().trim());
   }
@@ -37,6 +41,31 @@ export class NetworkRequestFormatter {
         MAX_HEADERS_SIZE);
   }
 
+  static async formatBody(title: string, request: SDK.NetworkRequest.NetworkRequest, maxBodySize: number):
+      Promise<string> {
+    const data = await request.requestContentData();
+
+    if (TextUtils.ContentData.ContentData.isError(data)) {
+      return '';
+    }
+
+    if (data.isEmpty) {
+      return `${title}\n<empty response>`;
+    }
+
+    if (data.isTextContent) {
+      const dataAsText = data.text;
+
+      if (dataAsText.length > maxBodySize) {
+        return `${title}\n${dataAsText.substring(0, maxBodySize) + '... <truncated>'}`;
+      }
+
+      return `${title}\n${dataAsText}`;
+    }
+
+    return `${title}\n<binary data>`;
+  }
+
   static formatInitiatorUrl(initiatorUrl: string, allowedOrigin: string): string {
     const initiatorOrigin = new URL(initiatorUrl).origin;
     if (initiatorOrigin === allowedOrigin) {
@@ -44,8 +73,6 @@ export class NetworkRequestFormatter {
     }
     return '<redacted cross-origin initiator URL>';
   }
-
-  #request: SDK.NetworkRequest.NetworkRequest;
 
   constructor(
       request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator) {
@@ -61,16 +88,27 @@ export class NetworkRequestFormatter {
     return NetworkRequestFormatter.formatHeaders('Response headers:', this.#request.responseHeaders);
   }
 
+  async formatResponseBody(): Promise<string> {
+    return await NetworkRequestFormatter.formatBody('Response body:', this.#request, MAX_BODY_SIZE);
+  }
+
   /**
    * Note: nothing here should include information from origins other than
    * the request's origin.
    */
-  formatNetworkRequest(): string {
+  async formatNetworkRequest(): Promise<string> {
+    let responseBody = await this.formatResponseBody();
+
+    if (responseBody) {
+      // if we have a response then we add 2 new line to follow same structure of the context
+      responseBody = `\n\n${responseBody}`;
+    }
+
     return `Request: ${this.#request.url()}
 
 ${this.formatRequestHeaders()}
 
-${this.formatResponseHeaders()}
+${this.formatResponseHeaders()}${responseBody}
 
 Response status: ${this.#request.statusCode} ${this.#request.statusText}
 

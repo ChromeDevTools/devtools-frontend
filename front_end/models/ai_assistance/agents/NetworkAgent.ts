@@ -149,23 +149,23 @@ export class NetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
     yield {
       type: ResponseType.CONTEXT,
       title: lockedString(UIStringsNotTranslate.analyzingNetworkData),
-      details: createContextDetailsForNetworkAgent(selectedNetworkRequest),
+      details: await createContextDetailsForNetworkAgent(selectedNetworkRequest),
     };
   }
 
   override async enhanceQuery(query: string, selectedNetworkRequest: RequestContext|null): Promise<string> {
     const networkEnchantmentQuery = selectedNetworkRequest ?
         `# Selected network request \n${
-            new NetworkRequestFormatter(selectedNetworkRequest.getItem(), selectedNetworkRequest.calculator)
-                .formatNetworkRequest()}\n\n# User request\n\n` :
+            await (new NetworkRequestFormatter(selectedNetworkRequest.getItem(), selectedNetworkRequest.calculator)
+                       .formatNetworkRequest())}\n\n# User request\n\n` :
         '';
     return `${networkEnchantmentQuery}${query}`;
   }
 }
 
-function createContextDetailsForNetworkAgent(
+async function createContextDetailsForNetworkAgent(
     selectedNetworkRequest: RequestContext,
-    ): [ContextDetail, ...ContextDetail[]] {
+    ): Promise<[ContextDetail, ...ContextDetail[]]> {
   const request = selectedNetworkRequest.getItem();
   const formatter = new NetworkRequestFormatter(request, selectedNetworkRequest.calculator);
   const requestContextDetail: ContextDetail = {
@@ -173,10 +173,13 @@ function createContextDetailsForNetworkAgent(
     text: lockedString(UIStringsNotTranslate.requestUrl) + ': ' + request.url() + '\n\n' +
         formatter.formatRequestHeaders(),
   };
+  const responseBody = await formatter.formatResponseBody();
+  const responseBodyString = responseBody ? `\n\n${responseBody}` : '';
+
   const responseContextDetail: ContextDetail = {
     title: lockedString(UIStringsNotTranslate.response),
     text: lockedString(UIStringsNotTranslate.responseStatus) + ': ' + request.statusCode + ' ' + request.statusText +
-        '\n\n' + formatter.formatResponseHeaders(),
+        `\n\n${formatter.formatResponseHeaders()}` + responseBodyString,
   };
   const timingContextDetail: ContextDetail = {
     title: lockedString(UIStringsNotTranslate.timing),
@@ -186,6 +189,7 @@ function createContextDetailsForNetworkAgent(
     title: lockedString(UIStringsNotTranslate.requestInitiatorChain),
     text: formatter.formatRequestInitiatorChain(),
   };
+
   return [
     requestContextDetail,
     responseContextDetail,

@@ -50,6 +50,7 @@ devtools_module("ai_assistance") {
     "../bindings:bundle",
     "../logs:bundle",
     "../network_time_calculator:bundle",
+    "../text_utils:bundle",
     "../trace:bundle",
     "../trace_source_maps_resolver:bundle",
     "../workspace:bundle",
@@ -108,6 +109,7 @@ ts_library("unittests") {
     "../../generated:protocol",
     "../../testing",
     "../bindings:bundle",
+    "../text_utils:bundle",
     "../trace:bundle",
   ]
 }

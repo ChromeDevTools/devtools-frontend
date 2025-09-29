@@ -1372,7 +1372,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/application/components/originTrialTreeView.css.js",
   "front_end/panels/application/components/permissionsPolicySection.css.js",
   "front_end/panels/application/components/protocolHandlersView.css.js",
-  "front_end/panels/application/components/reportingApiGrid.css.js",
+  "front_end/panels/application/components/reportsGrid.css.js",
   "front_end/panels/application/components/serviceWorkerRouterView.css.js",
   "front_end/panels/application/components/sharedStorageAccessGrid.css.js",
   "front_end/panels/application/components/sharedStorageMetadataView.css.js",

@@ -1,23 +1,17 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import '../../../ui/legacy/components/data_grid/data_grid.js';
-import '../../../ui/components/icon_button/icon_button.js';
-import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import type * as Protocol from '../../../generated/protocol.js';
-// inspectorCommonStyles is imported for the empty state styling that is used for the start view
-// eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import reportingApiGridStyles from './reportingApiGrid.css.js';
+import reportsGridStyles from './reportsGrid.css.js';
 
 const UIStrings = {
   /**
@@ -48,7 +42,7 @@ const UIStrings = {
    * @description Column header for a table displaying Reporting API reports.
    *The column contains the timestamp of when a report was generated.
    */
-  generatedAt: 'Generated at'
+  generatedAt: 'Generated at',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/ReportsGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -57,115 +51,100 @@ const {render, html} = Lit;
 
 const REPORTING_API_EXPLANATION_URL = 'https://developer.chrome.com/docs/capabilities/web-apis/reporting-api';
 
-export class ReportsGridStatusHeader extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-
-  connectedCallback(): void {
-    this.#render();
-  }
-
-  #render(): void {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    render(html`
-      <style>${reportingApiGridStyles}</style>
-      <span class="status-header">${i18nString(UIStrings.status)}</span>
-      <x-link href="https://web.dev/reporting-api/#report-status"
-      jslog=${VisualLogging.link('report-status').track({click: true})}>
-        <devtools-icon class="inline-icon medium" name="help" style="color: var(--icon-link);"></devtools-icon>
-      </x-link>
-    `, this.#shadow, {host: this});
-    // clang-format on
-  }
-}
-
 export interface ReportsGridData {
   reports: Protocol.Network.ReportingApiReport[];
 }
 
-export class ReportsGrid extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #reports: Protocol.Network.ReportingApiReport[] = [];
-  #protocolMonitorExperimentEnabled = false;
-
-  connectedCallback(): void {
-    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocol-monitor');
-    this.#render();
-  }
-
-  set data(data: ReportsGridData) {
-    this.#reports = data.reports;
-    this.#render();
-  }
-
-  get data(): ReportsGridData {
-    return {reports: this.#reports};
-  }
-
-  #render(): void {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    render(html`
-      <style>${reportingApiGridStyles}</style>
-      <style>${inspectorCommonStyles}</style>
-      <div class="reporting-container" jslog=${VisualLogging.section('reports')}>
-        <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
-        ${this.#reports.length > 0 ? html`
-          <devtools-data-grid striped @select=${this.#onSelect}>
-            <table>
-              <tr>
-                ${this.#protocolMonitorExperimentEnabled ? html`
-                  <th id="id" weight="30">${i18n.i18n.lockedString('ID')}</th>
-                ` : ''}
-                <th id="url" weight="30">${i18n.i18n.lockedString('URL')}</th>
-                <th id="type" weight="20">${i18n.i18n.lockedString('Type')}</th>
-                <th id="status" weight="20">
-                    <devtools-resources-reports-grid-status-header></devtools-resources-reports-grid-status-header>
-                </th>
-                <th id="destination" weight="20">${i18nString(UIStrings.destination)}</th>
-                <th id="timestamp" weight="20">${i18nString(UIStrings.generatedAt)}</th>
-                <th id="body" weight="20">${i18n.i18n.lockedString('Body')}</th>
-              </tr>
-              ${this.#reports.map(report => html`
-                <tr data-id=${report.id}>
-                  ${this.#protocolMonitorExperimentEnabled ? html`<td>${report.id}</td>` : ''}
-                  <td>${report.initiatorUrl}</td>
-                  <td>${report.type}</td>
-                  <td>${report.status}</td>
-                  <td>${report.destination}</td>
-                  <td>${new Date(report.timestamp * 1000).toLocaleString()}</td>
-                  <td>${JSON.stringify(report.body)}</td>
-                </tr>
-              `)}
-            </table>
-          </devtools-data-grid>
-        ` : html`
-          <div class="empty-state">
-            <span class="empty-state-header">${i18nString(UIStrings.noReportsToDisplay)}</span>
-            <div class="empty-state-description">
-              <span>${i18nString(UIStrings.reportingApiDescription)}</span>
-              ${UI.XLink.XLink.create(REPORTING_API_EXPLANATION_URL, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')}
-            </div>
-          </div>
-        `}
-      </div>
-    `, this.#shadow, {host: this});
-    // clang-format on
-  }
-
-  #onSelect(e: CustomEvent<HTMLElement|null>): void {
-    if (e.detail) {
-      this.dispatchEvent(new CustomEvent('select', {detail: e.detail.dataset.id}));
-    }
-  }
+export interface ViewInput {
+  reports: Protocol.Network.ReportingApiReport[];
+  protocolMonitorExperimentEnabled: boolean;
+  onSelect: (e: CustomEvent<HTMLElement|null>) => void;
 }
 
-customElements.define('devtools-resources-reports-grid-status-header', ReportsGridStatusHeader);
-customElements.define('devtools-resources-reports-grid', ReportsGrid);
+export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLElement): void => {
+  // clang-format off
+  render(html`
+    <style>${reportsGridStyles}</style>
+    <style>${UI.inspectorCommonStyles}</style>
+    <div class="reporting-container" jslog=${VisualLogging.section('reports')}>
+      <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
+      ${input.reports.length > 0 ? html`
+        <devtools-data-grid striped @select=${input.onSelect}>
+          <table>
+            <tr>
+              ${input.protocolMonitorExperimentEnabled ? html`
+                <th id="id" weight="30">${i18n.i18n.lockedString('ID')}</th>
+              ` : ''}
+              <th id="url" weight="30">${i18n.i18n.lockedString('URL')}</th>
+              <th id="type" weight="20">${i18n.i18n.lockedString('Type')}</th>
+              <th id="status" weight="20">
+                <style>${reportsGridStyles}</style>
+                <span class="status-header">${i18nString(UIStrings.status)}</span>
+                <x-link href="https://web.dev/reporting-api/#report-status"
+                jslog=${VisualLogging.link('report-status').track({click: true})}>
+                  <devtools-icon class="inline-icon medium" name="help" style="color: var(--icon-link);"
+                  ></devtools-icon>
+                </x-link>
+              </th>
+              <th id="destination" weight="20">${i18nString(UIStrings.destination)}</th>
+              <th id="timestamp" weight="20">${i18nString(UIStrings.generatedAt)}</th>
+              <th id="body" weight="20">${i18n.i18n.lockedString('Body')}</th>
+            </tr>
+            ${input.reports.map(report => html`
+              <tr data-id=${report.id}>
+                ${input.protocolMonitorExperimentEnabled ? html`<td>${report.id}</td>` : ''}
+                <td>${report.initiatorUrl}</td>
+                <td>${report.type}</td>
+                <td>${report.status}</td>
+                <td>${report.destination}</td>
+                <td>${new Date(report.timestamp * 1000).toLocaleString()}</td>
+                <td>${JSON.stringify(report.body)}</td>
+              </tr>
+            `)}
+          </table>
+        </devtools-data-grid>
+      ` : html`
+        <div class="empty-state">
+          <span class="empty-state-header">${i18nString(UIStrings.noReportsToDisplay)}</span>
+          <div class="empty-state-description">
+            <span>${i18nString(UIStrings.reportingApiDescription)}</span>
+            ${UI.XLink.XLink.create(REPORTING_API_EXPLANATION_URL, i18nString(UIStrings.learnMore), undefined,
+              undefined, 'learn-more')}
+          </div>
+        </div>
+      `}
+    </div>
+  `, target);
+  // clang-format on
+};
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-resources-reports-grid-status-header': ReportsGridStatusHeader;
-    'devtools-resources-reports-grid': ReportsGrid;
+type View = typeof DEFAULT_VIEW;
+
+export class ReportsGrid extends UI.Widget.Widget {
+  reports: Protocol.Network.ReportingApiReport[] = [];
+  #protocolMonitorExperimentEnabled = false;
+  #view: View;
+  onReportSelected: (id: string) => void = () => {};
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocol-monitor');
+    this.requestUpdate();
+  }
+
+  #onSelect = (e: CustomEvent<HTMLElement|null>): void => {
+    if (e.detail?.dataset.id) {
+      this.onReportSelected(e.detail.dataset.id);
+    }
+  };
+
+  override performUpdate(): void {
+    const viewInput = {
+      reports: this.reports,
+      protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
+      onSelect: this.#onSelect,
+    };
+    this.#view(viewInput, undefined, this.contentElement);
   }
 }

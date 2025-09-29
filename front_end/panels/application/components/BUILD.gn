@@ -20,7 +20,7 @@ generate_css("css_files") {
     "originTrialTreeView.css",
     "permissionsPolicySection.css",
     "protocolHandlersView.css",
-    "reportingApiGrid.css",
+    "reportsGrid.css",
     "serviceWorkerRouterView.css",
     "sharedStorageAccessGrid.css",
     "sharedStorageMetadataView.css",

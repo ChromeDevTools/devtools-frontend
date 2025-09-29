@@ -91,7 +91,7 @@ describeWithMockConnection('ReportingApiView', () => {
     const viewEndpoints = view.input.endpoints;
     assert.strictEqual(viewEndpoints.size, 0);
 
-    const viewReports = view.input.reportsGrid.data.reports;
+    const viewReports = view.input.reports;
     assert.lengthOf(viewReports, 0);
   });
 
@@ -114,7 +114,7 @@ describeWithMockConnection('ReportingApiView', () => {
     const dummyEndpoints = viewEndpoints.get('dummy');
     assert.deepEqual(dummyEndpoints, endpoints);
 
-    const reports = view.input.reportsGrid.data.reports;
+    const reports = view.input.reports;
     assert.lengthOf(reports, 0);
   });
 
@@ -135,7 +135,7 @@ describeWithMockConnection('ReportingApiView', () => {
     const viewEndpoints = view.input.endpoints;
     assert.strictEqual(viewEndpoints.size, 0);
 
-    const viewReports = view.input.reportsGrid.data.reports;
+    const viewReports = view.input.reports;
     assert.deepEqual(viewReports, reports);
   });
 
@@ -159,7 +159,7 @@ describeWithMockConnection('ReportingApiView', () => {
     const dummyEndpoints = viewEndpoints.get('dummy');
     assert.deepEqual(dummyEndpoints, endpoints);
 
-    const viewReports = view.input.reportsGrid.data.reports;
+    const viewReports = view.input.reports;
     assert.deepEqual(viewReports, [reports[0]]);
   });
 
@@ -198,7 +198,7 @@ describeWithMockConnection('ReportingApiView', () => {
     const viewEndpoints = view.input.endpoints;
     assert.strictEqual(viewEndpoints.size, 0);
 
-    const viewReports = view.input.reportsGrid.data.reports;
+    const viewReports = view.input.reports;
     assert.deepEqual(viewReports, [successReport]);
   });
 
@@ -212,9 +212,8 @@ describeWithMockConnection('ReportingApiView', () => {
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.ReportingApiReportAdded, reports[1]);
     await view.nextInput;
 
-    const grid = view.input.reportsGrid;
     assert.isUndefined(view.input.focusedReport);
-    grid.dispatchEvent(new CustomEvent('select', {detail: 'some_id'}));
+    view.input.onReportSelected('some_id');
     await view.nextInput;
     assert.strictEqual(view.input.focusedReport, reports[0]);
   });

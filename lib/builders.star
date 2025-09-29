@@ -65,7 +65,9 @@ def recipe(
         cipd_version = defaults.cipd_version):
     """Create recipe declaration with dtf defaults"""
     return luci.recipe(
-        name = name,
+        # Append cipd version to the recipe name if not using default version.
+        name = name + ("" if cipd_version == defaults.cipd_version else "-" + cipd_version),
+        recipe = name,
         cipd_package = cipd_package,
         cipd_version = cipd_version,
         use_bbagent = True,
@@ -75,6 +77,7 @@ def recipe(
 def builder(
         recipe_name,
         swarming_tags = defaults.swarming_tags,
+        recipe_cipd_version = defaults.cipd_version,
         **kwargs):
     """Create builder with dtf defaults"""
     builder_group = kwargs.pop("builder_group", None)
@@ -87,7 +90,7 @@ def builder(
     }
     kwargs["properties"] = properties
 
-    kwargs["executable"] = recipe(recipe_name)
+    kwargs["executable"] = recipe(recipe_name, cipd_version = recipe_cipd_version)
     kwargs["resultdb_settings"] = resultdb.settings(enable = True)
     experiments = None
     if recipe_name in ["chromium_integration", "chromium_trybot"]:
@@ -132,7 +135,8 @@ def config_section(
         builder_group = "client.devtools-frontend.integration",
         repo = defaults.repo,
         notifiers = [],
-        priority = None):
+        priority = None,
+        recipe_cipd_version = defaults.cipd_version):
     view = view or name.capitalize()
     if name_suffix == None:
         name_suffix = " %s" % name
@@ -146,6 +150,7 @@ def config_section(
         builder_group = builder_group,
         notifiers = notifiers,
         priority = priority,
+        recipe_cipd_version = recipe_cipd_version,
     )
 
 def builder_descriptor(
@@ -250,6 +255,7 @@ def generate_ci_configs(configurations, builders):
                 service_account = CI_ACCOUNT,
                 schedule = "triggered",
                 properties = properties,
+                recipe_cipd_version = c.recipe_cipd_version,
                 **kwargs
             )
             builders_refs.append((kwargs["name"], category))

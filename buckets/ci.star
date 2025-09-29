@@ -12,7 +12,7 @@ load(
     "generate_ci_configs",
 )
 load("//lib/siso.star", "SISO")
-load("//definitions.star", "versions")
+load("//definitions.star", "legacy_recipe", "versions")
 
 DEFAULT_PRIORITY = 30
 
@@ -25,6 +25,9 @@ def branch_section(name):
         branch_number = versions[name],
         notifiers = ["devtools notifier"],
         priority = 50,
+        recipe_cipd_version = (
+            defaults.cipd_version if int(versions[name]) > int(legacy_recipe.branch) else legacy_recipe.old_cipd_version
+        ),  # Use old cipd version for branches that need a legacy recipe
     )
 
 generate_ci_configs(

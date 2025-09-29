@@ -17,6 +17,7 @@ load(
     "recipe",
     "try_builder_base",
 )
+load("//definitions.star", "legacy_recipe", "versions")
 load("//lib/siso.star", "SISO")
 
 BUCKET_NAME = "try"
@@ -40,9 +41,15 @@ bucket(
 
 try_builders = []
 
-def try_builder(properties = None, **kwargs):
+def try_builder(properties = None, legacy_variant = False, **kwargs):
     try_builder_base(properties = properties, **kwargs)
     try_builders.append(kwargs["name"])
+
+    if legacy_variant:
+        kwargs["name"] = "%s_legacy_%s" % (kwargs["name"], legacy_recipe.branch)
+        kwargs["recipe_cipd_version"] = legacy_recipe.old_cipd_version
+        try_builder_base(properties = properties, **kwargs)
+        try_builders.append(kwargs["name"])
 
 def presubmit_builder(name, dimensions, **kvargs):
     try_builder(
@@ -91,6 +98,7 @@ try_builder(
     properties = {
         "devtools_bundle": False,
     },
+    legacy_variant = True,
 )
 
 builder_coverage(
@@ -107,7 +115,8 @@ def try_pair(
         compiler_dimensions,
         swarming_target_os,
         swarming_target_cpu,
-        properties = None):
+        properties = None,
+        legacy_variant = False):
     compilator_name = "%s_compile_%s" % (name, suffix)
     tester_properties = properties or {}
     tester_properties.update({
@@ -121,6 +130,7 @@ def try_pair(
         dimensions = dimensions.multibot,
         build_numbers = True,
         properties = tester_properties,
+        legacy_variant = legacy_variant,
     )
     try_builder(
         name = compilator_name,
@@ -129,11 +139,12 @@ def try_pair(
         build_numbers = True,
         use_siso = SISO.CHROMIUM_UNTRUSTED,
         properties = properties,
+        legacy_variant = legacy_variant,
     )
 
-try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86-64")
-try_pair("dtf_win64", "rel", dimensions.win10, "Windows-10-19045", "x86-64")
-try_pair("dtf_mac_arm64", "rel", dimensions.mac_arm64, "Mac-15", "arm64")
+try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86-64", legacy_variant = True)
+try_pair("dtf_win64", "rel", dimensions.win10, "Windows-10-19045", "x86-64", legacy_variant = True)
+try_pair("dtf_mac_arm64", "rel", dimensions.mac_arm64, "Mac-15", "arm64", legacy_variant = True)
 try_pair("dtf_mac_cross", "rel", dimensions.mac, "Mac-15", "arm64", properties = {"force_host_cpu": "arm64"})
 try_pair(
     "dtf_linux",
@@ -142,6 +153,7 @@ try_pair(
     "Ubuntu-22.04",
     "x86-64",
     properties = {"builder_config": "Debug"},
+    legacy_variant = True,
 )
 try_pair(
     "dtf_linux",
@@ -153,6 +165,7 @@ try_pair(
         "builder_config": "Debug",
         "devtools_skip_typecheck": True,
     },
+    legacy_variant = True,
 )
 
 def cpp_debug_extension_try(suffix, extra_properties):
@@ -208,6 +221,15 @@ cq_builders = struct(
         "devtools_frontend_shuffled_mac_rel",
         "devtools_frontend_shuffled_win64_rel",
     ],
+    # Builders that potentially need a legacy recipe
+    has_legacy_variant = [
+        "dtf_check_no_bundle",
+        "dtf_linux_dbg",
+        "dtf_linux_dbg_fastbuild",
+        "dtf_linux_rel",
+        "dtf_mac_arm64_rel",
+        "dtf_win64_rel",
+    ],
 )
 
 def experiment_builder(builder):
@@ -216,10 +238,15 @@ def experiment_builder(builder):
 def includable_only_builder(builder):
     return builder in cq_builders.includable_only_builders
 
-def branch_verifiers(with_chromium = True):
+def branch_verifiers(with_chromium = True, branch = None):
+    def use_variant(builder):
+        return (branch and
+                (int(versions[branch]) <= int(legacy_recipe.branch)) and
+                (builder in cq_builders.has_legacy_variant))
+
     return [
         luci.cq_tryjob_verifier(
-            builder = builder,
+            builder = builder if not use_variant(builder) else "%s_legacy_%s" % (builder, legacy_recipe.branch),
             disable_reuse = ("presubmit" in builder),
             experiment_percentage = experiment_builder(builder),
             includable_only = includable_only_builder(builder),
@@ -278,13 +305,32 @@ luci.cq_group(
     ],
 )
 
-luci.cq_group(
-    name = "branch-cq",
-    watch = cq.refset(
-        repo = "https://chromium.googlesource.com/devtools/devtools-frontend",
-        refs = ["refs/heads/chromium/.+"],
-    ),
-    retry_config = cq_retry_config,
-    acls = cq_acls,
-    verifiers = branch_verifiers(with_chromium = False),
-)
+def branch_cq():
+    # Create separate CQ groups if any branch needs a legacy recipe.
+
+    def cq_group(branch = "", ref_suffix = ".+"):
+        luci.cq_group(
+            name = "branch-cq%s" % ("-%s" % branch if branch else ""),
+            watch = cq.refset(
+                repo = "https://chromium.googlesource.com/devtools/devtools-frontend",
+                refs = ["refs/heads/chromium/%s" % ref_suffix],
+            ),
+            retry_config = cq_retry_config,
+            acls = cq_acls,
+            verifiers = branch_verifiers(with_chromium = False, branch = branch),
+        )
+
+    def any_branch_needs_legacy():
+        for branch in versions.keys():
+            if int(versions[branch]) <= int(legacy_recipe.branch):
+                return True
+        return False
+
+    # If none of the branches need a legacy recipe, create a single CQ group.
+    if any_branch_needs_legacy():
+        for branch in versions.keys():
+            cq_group(branch, versions[branch])
+    else:
+        cq_group()
+
+branch_cq()

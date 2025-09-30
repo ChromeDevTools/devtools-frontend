@@ -4,7 +4,7 @@
 
 import './data_grid.js';
 
-import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -267,7 +267,52 @@ describeWithEnvironment('DataGrid', () => {
     sendKeydown(element, 'Tab');
     sinon.assert.notCalled(editCallback);
     sinon.assert.calledOnce(createCallback);
-    assert.deepEqual(createCallback.firstCall.args[0].detail,
-                           {'column-1': 'New Value 1', 'column-2': 'New Value 2'});
+    assert.deepEqual(
+        createCallback.firstCall.args[0].detail, {'column-1': 'New Value 1', 'column-2': 'New Value 2'});
+  });
+
+  it('can display nested nodes', async () => {
+    const element = await renderDataGrid(html`
+        <devtools-data-grid striped name=${'Display Name'}>
+          <table>
+            <tr>
+              <th id="column-1">Column 1</th>
+              <th id="column-2">Column 2</th>
+            </tr>
+            <tr>
+              <td>Parent Value 1</td>
+              <td>Parent Value 2</td>
+              <td>
+                <table>
+                  <tr>
+                    <td>Child Value 1</td>
+                    <td>Child Value 2</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </devtools-data-grid>`);
+
+    // Navigate to parent row.
+    sendKeydown(element, 'ArrowDown');
+    // It should identify it as a parent and collapsed.
+    assert.strictEqual(
+        getAlertAnnouncement(element),
+        'Display Name Row collapsed level 1, Column 1: Parent Value 1, Column 2: Parent Value 2');
+
+    // Expand parent row.
+    sendKeydown(element, 'ArrowRight');
+    assert.strictEqual(
+        getAlertAnnouncement(element),
+        'Display Name Row expanded level 1, Column 1: Parent Value 1, Column 2: Parent Value 2');
+
+    await raf();
+
+    // Navigate to child row.
+    sendKeydown(element, 'ArrowDown');
+    assert.strictEqual(
+        getAlertAnnouncement(element),
+        'Display Name Row  level 2, Column 1: Child Value 1, Column 2: Child Value 2');
   });
 });

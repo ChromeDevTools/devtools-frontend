@@ -226,10 +226,10 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
     return [...nodes]
         .flatMap(node => {
           if (node instanceof HTMLTableRowElement) {
-            return [node];
+            return [node, ...node.querySelectorAll<HTMLTableRowElement>('table tr')];
           }
           if (node instanceof HTMLElement) {
-            return [...node.querySelectorAll('tr')];
+            return [...node.querySelectorAll<HTMLTableRowElement>('tr')];
           }
           return [] as HTMLElement[];
         })
@@ -248,10 +248,15 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
 
   override addNodes(nodes: NodeList): void {
     for (const element of this.#getDataRows(nodes)) {
-      const parentNode = this.#dataGrid.rootNode();  // TODO(dsv): support nested nodes
+      const parentRow = element.parentElement?.closest('td')?.closest('tr');
+      const parentDataGridNode = parentRow ? DataGridElementNode.get(parentRow) : undefined;
+      const parentNode = parentDataGridNode || this.#dataGrid.rootNode();
       const nextNode = this.#findNextExistingNode(element);
       const index = nextNode ? parentNode.children.indexOf(nextNode) : parentNode.children.length;
       const node = new DataGridElementNode(element, this);
+      if ((parentRow || node.hasChildren()) && !this.#dataGrid.disclosureColumnId) {
+        this.#dataGrid.disclosureColumnId = this.#columns[0].id;
+      }
       parentNode.insertChild(node, index);
       if (hasBooleanAttribute(element, 'selected')) {
         node.select();
@@ -394,9 +399,12 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
   }
 
   #updateData(): void {
-    const cells = this.#configElement.querySelectorAll('td');
-    for (let i = 0; i < cells.length; ++i) {
-      const cell = cells[i];
+    const cells = [...this.#configElement.children].filter(c => c.tagName === 'TD');
+    for (let i = 0; i < this.#dataGridElement.columns.length; ++i) {
+      const cell = cells[i] as HTMLElement;
+      if (!cell) {
+        continue;
+      }
       const column = this.#dataGridElement.columns[i];
       if (column.dataType === DataType.BOOLEAN) {
         this.data[column.id] = hasBooleanAttribute(cell, 'data-value') || cell.textContent === 'true';
@@ -481,7 +489,8 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     if (this.isCreationNode) {
       return cell;
     }
-    const configCell = this.#configElement.querySelectorAll('td')[index];
+    const configCells = [...this.#configElement.children].filter(c => c.tagName === 'TD') as HTMLTableCellElement[];
+    const configCell = configCells[index];
     if (!configCell) {
       throw new Error(`Column ${columnId} not found in the data grid`);
     }

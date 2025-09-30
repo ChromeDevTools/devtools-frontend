@@ -108,5 +108,26 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
         type: 'number',
         default: 1,
         desc: 'Throttle the CPU during tests. The number provided is the multiplier used.',
+      })
+      .option('shard-count', {
+        type: 'number',
+        desc: 'Total number of shards to split the tests into.',
+        implies: 'shard-number',
+        default: 1,
+      })
+      .option('shard-number', {
+        type: 'number',
+        desc: 'The shard number to run (1-based).',
+        implies: 'shard-count',
+        default: 1,
+      })
+      .option('shard-bias', {
+        type: 'number',
+        desc: 'The bias to be used when calculating the sharding ' +
+            'hash. Biases the distribution of tests between different ' +
+            'shards for a given shard count. This is useful for ' +
+            're-sharding without changing the shard count.',
+        implies: ['shard-count', 'shard-number'],  // shard-bias only makes sense if sharding is enabled
+        default: 0,
       });
 }

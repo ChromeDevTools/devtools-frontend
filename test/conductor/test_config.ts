@@ -11,6 +11,7 @@ import {hideBin} from 'yargs/helpers';
 
 import {asArray, commandLineArgs, DiffBehaviors} from './commandline.js';
 import {defaultChromePath, SOURCE_ROOT} from './paths.js';
+import {shardFilter} from './sharding.js';
 
 const argv = yargs(hideBin(process.argv)).parseSync()['_'] as string[];
 
@@ -37,6 +38,9 @@ interface Config {
   retries: number;
   configureChrome: (executablePath: string) => void;
   cpuThrottle: number;
+  shardCount: number;
+  shardNumber: number;
+  shardBias: number;
 }
 
 function sliceArrayFromElement(array: string[], element: string) {
@@ -122,6 +126,9 @@ export const TestConfig: Config = {
   retries: options['retries'],
   configureChrome,
   cpuThrottle: options['cpu-throttle'],
+  shardCount: options['shard-count'],
+  shardNumber: options['shard-number'],
+  shardBias: options['shard-bias'],
 };
 
 export function loadTests(testDirectory: string) {
@@ -131,7 +138,9 @@ export function loadTests(testDirectory: string) {
                     .map(t => t.trim())
                     .filter(t => t.length > 0)
                     .map(t => path.normalize(path.join(testDirectory, t)))
-                    .filter(t => TestConfig.tests.some((spec: string) => t.startsWith(spec)));
+                    .filter(t => TestConfig.tests.some((spec: string) => t.startsWith(spec)))
+                    .filter(t => shardFilter(TestConfig, t));
+
   if (TestConfig.shuffle) {
     for (let i = tests.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));

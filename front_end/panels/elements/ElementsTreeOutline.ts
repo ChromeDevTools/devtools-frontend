@@ -1230,11 +1230,6 @@ export class ElementsTreeOutline extends
   }
 
   private contextMenuEventFired(event: MouseEvent): void {
-    // The context menu construction may be async. In order to
-    // make sure that no other (default) context menu shows up, we need
-    // to stop propagating and prevent the default action.
-    event.stopPropagation();
-    event.preventDefault();
     const treeElement = this.treeElementFromEventInternal(event);
     if (treeElement instanceof ElementsTreeElement) {
       void this.showContextMenu(treeElement, event);
@@ -1246,13 +1241,21 @@ export class ElementsTreeOutline extends
       return;
     }
 
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const isPseudoElement = Boolean(treeElement.node().pseudoType());
-    const isTag = treeElement.node().nodeType() === Node.ELEMENT_NODE && !isPseudoElement;
     const node = (event.target as Node | null);
     if (!node) {
       return;
     }
+
+    // The context menu construction may be async. In order to
+    // make sure that no other (default) context menu shows up, we need
+    // to stop propagating and prevent the default action.
+    event.stopPropagation();
+    event.preventDefault();
+
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const isPseudoElement = Boolean(treeElement.node().pseudoType());
+    const isTag = treeElement.node().nodeType() === Node.ELEMENT_NODE && !isPseudoElement;
+
     let textNode: Element|null = node.enclosingNodeOrSelfWithClass('webkit-html-text-node');
     if (textNode?.classList.contains('bogus')) {
       textNode = null;

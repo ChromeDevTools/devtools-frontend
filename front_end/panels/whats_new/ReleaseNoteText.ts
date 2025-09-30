@@ -44,6 +44,10 @@ let releaseNote: ReleaseNote = {
   header: 'What\'s new in DevTools 141',
   markdownLinks: [
     {
+      key: 'mcp',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-141/#mcp',
+    },
+    {
       key: 'ai-insight',
       link: 'https://developer.chrome.com/blog/new-in-devtools-141/#ai-insight',
     },

@@ -1,3 +1,6 @@
+### [Chrome DevTools (MCP) for your AI agent](mcp)
+With the newly launched Chrome DevTools MCP server, AI coding assistants can now debug web pages directly in Chrome, and benefit from DevTools debugging capabilities and performance insights.
+
 ### [Debug the network dependency tree with Gemini](ai-insight)
 In Performance > Insights > Network dependency tree, click the corresponding AI button to discuss and debug said tree with Gemini in the 'AI assistance' panel.
 

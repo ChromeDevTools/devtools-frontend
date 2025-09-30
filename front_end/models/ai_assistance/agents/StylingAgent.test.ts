@@ -12,6 +12,7 @@ import {
   setUserAgentForTesting,
   updateHostConfig,
 } from '../../../testing/EnvironmentHelpers.js';
+import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 const {StylingAgent, ErrorType} = AiAssistance;
@@ -56,19 +57,30 @@ describeWithEnvironment('StylingAgent', () => {
 
     element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     element.domModel.returns(domModel);
+    element.backendNodeId.returns(99 as unknown as ReturnType<SDK.DOMModel.DOMNode['backendNodeId']>);
+  });
+
+  let snapshotTester: SnapshotTester;
+  before(async () => {
+    snapshotTester = new SnapshotTester(import.meta);
+    await snapshotTester.load();
+  });
+
+  after(async () => {
+    await snapshotTester.finish();
   });
 
   describe('describeElement', () => {
-    it('should describe an element with no children, siblings, or parent', async () => {
+    it('should describe an element with no children, siblings, or parent', async function() {
       element.simpleSelector.returns('div#myElement');
       element.getChildNodesPromise.resolves(null);
 
       const result = await StylingAgent.describeElement(element);
 
-      assert.strictEqual(result, '* Its selector is `div#myElement`');
+      snapshotTester.assert(this, result);
     });
 
-    it('should describe an element with child element and text nodes', async () => {
+    it('should describe an element with child element and text nodes', async function() {
       const childNodes: Array<sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>> = [
         sinon.createStubInstance(SDK.DOMModel.DOMNode),
         sinon.createStubInstance(SDK.DOMModel.DOMNode),
@@ -87,14 +99,10 @@ describeWithEnvironment('StylingAgent', () => {
       element.parentNode = null;
 
       const result = await StylingAgent.describeElement(element);
-      const expectedOutput = `* Its selector is \`div#parentElement\`
-* It has 2 child element nodes: \`span.child1\`, \`span.child2\`
-* It only has 1 child text node`;
-
-      assert.strictEqual(result, expectedOutput);
+      snapshotTester.assert(this, result);
     });
 
-    it('should describe an element with siblings and a parent', async () => {
+    it('should describe an element with siblings and a parent', async function() {
       const nextSibling = sinon.createStubInstance(SDK.DOMModel.DOMNode);
       nextSibling.nodeType.returns(Node.ELEMENT_NODE);
       const previousSibling = sinon.createStubInstance(SDK.DOMModel.DOMNode);
@@ -118,15 +126,7 @@ describeWithEnvironment('StylingAgent', () => {
       element.parentNode = parentNode;
 
       const result = await StylingAgent.describeElement(element);
-      const expectedOutput = `* Its selector is \`div#parentElement\`
-* It has a next sibling and it is an element node
-* It has a previous sibling and it is a non element node
-* Its parent's selector is \`div#grandparentElement\`
-* Its parent is a non element node
-* Its parent has only 1 child element node
-* Its parent has only 1 child text node`;
-
-      assert.strictEqual(result, expectedOutput);
+      snapshotTester.assert(this, result);
     });
   });
 
@@ -168,7 +168,7 @@ describeWithEnvironment('StylingAgent', () => {
       );
     });
 
-    it('structure matches the snapshot', async () => {
+    it('structure matches the snapshot', async function() {
       mockHostConfig('test model');
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([[{
@@ -179,56 +179,22 @@ describeWithEnvironment('StylingAgent', () => {
       await Array.fromAsync(agent.run('question', {selected: null}));
 
       setUserAgentForTesting();
-      assert.deepEqual(
-          agent.buildRequest(
-              {
-                text: 'test input',
-              },
-              Host.AidaClient.Role.USER),
-
-          {
-            client: 'CHROME_DEVTOOLS',
-            current_message: {parts: [{text: 'test input'}], role: 1},
-            historical_contexts: [{parts: [{text: 'QUERY: question'}], role: 1}, {parts: [{text: 'answer'}], role: 2}],
-            function_declarations: [{
-              name: 'executeJavaScript',
-              description:
-                  'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.',
-              parameters: {
-                type: 6,
-                description: '',
-                nullable: false,
-                properties: {
-                  code: {
-                    type: 1,
-                    description:
-                        'JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.\n\n# Instructions\n\n* To return data, define a top-level `data` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to `data`.\n* If you modify styles on an element, ALWAYS call the pre-defined global `async setElementStyles(el: Element, styles: object)` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.\n* Use `window.getComputedStyle` to gather **computed** styles and make sure that you take the distinction between authored styles and computed styles into account.\n* **CRITICAL** Only get styles that might be relevant to the user request.\n* **CRITICAL** Call `window.getComputedStyle` only once per element and store results into a local variable. Never try to return all the styles of the element in `data`.\n* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.\n* **CRITICAL** Consider that `data` variable from the previous function calls are not available in a new function call.\n\nFor example, the code to return basic styles:\n\n```\nconst styles = window.getComputedStyle($0);\nconst data = {\n    display: styles[\'display\'],\n    visibility: styles[\'visibility\'],\n    position: styles[\'position\'],\n    left: styles[\'right\'],\n    top: styles[\'top\'],\n    width: styles[\'width\'],\n    height: styles[\'height\'],\n    zIndex: styles[\'z-index\']\n};\n```\n\nFor example, the code to change element styles:\n\n```\nawait setElementStyles($0, {\n  color: \'blue\',\n});\n```\n\nFor example, the code to get current and parent styles at once:\n\n```\nconst styles = window.getComputedStyle($0);\nconst parentStyles = window.getComputedStyle($0.parentElement);\nconst data = {\n    currentElementStyles: {\n      display: styles[\'display\'],\n      visibility: styles[\'visibility\'],\n      position: styles[\'position\'],\n      left: styles[\'right\'],\n      top: styles[\'top\'],\n      width: styles[\'width\'],\n      height: styles[\'height\'],\n      zIndex: styles[\'z-index\'],\n    },\n    parentElementStyles: {\n      display: parentStyles[\'display\'],\n      visibility: parentStyles[\'visibility\'],\n      position: parentStyles[\'position\'],\n      left: parentStyles[\'right\'],\n      top: parentStyles[\'top\'],\n      width: parentStyles[\'width\'],\n      height: parentStyles[\'height\'],\n      zIndex: parentStyles[\'z-index\'],\n    },\n};\n```\n\nFor example, the code to get check siblings and overlapping elements:\n\n```\nconst computedStyles = window.getComputedStyle($0);\nconst parentComputedStyles = window.getComputedStyle($0.parentElement);\nconst data = {\n  numberOfChildren: $0.children.length,\n  numberOfSiblings: $0.parentElement.children.length,\n  hasPreviousSibling: !!$0.previousElementSibling,\n  hasNextSibling: !!$0.nextElementSibling,\n  elementStyles: {\n    display: computedStyles[\'display\'],\n    visibility: computedStyles[\'visibility\'],\n    position: computedStyles[\'position\'],\n    clipPath: computedStyles[\'clip-path\'],\n    zIndex: computedStyles[\'z-index\']\n  },\n  parentStyles: {\n    display: parentComputedStyles[\'display\'],\n    visibility: parentComputedStyles[\'visibility\'],\n    position: parentComputedStyles[\'position\'],\n    clipPath: parentComputedStyles[\'clip-path\'],\n    zIndex: parentComputedStyles[\'z-index\']\n  },\n  overlappingElements: Array.from(document.querySelectorAll(\'*\'))\n    .filter(el => {\n      const rect = el.getBoundingClientRect();\n      const popupRect = $0.getBoundingClientRect();\n      return (\n        el !== $0 &&\n        rect.left < popupRect.right &&\n        rect.right > popupRect.left &&\n        rect.top < popupRect.bottom &&\n        rect.bottom > popupRect.top\n      );\n    })\n    .map(el => ({\n      tagName: el.tagName,\n      id: el.id,\n      className: el.className,\n      zIndex: window.getComputedStyle(el)[\'z-index\']\n    }))\n};\n```\n'
-                  },
-                  thought: {type: 1, description: 'Explain why you want to run this code'},
-                  title: {
-                    type: 1,
-                    description:
-                        'Provide a summary of what the code does. For example, "Checking related element styles".'
-                  }
-                }
-              }
-            }],
-            options: {model_id: 'test model', temperature: undefined},
-            metadata: {
-              disable_user_content_logging: false,
-              string_session_id: 'sessionId',
-              user_tier: 2,
-              client_version: 'unit_test+function_calling'
-            },
-            functionality_type: 5,
-            client_feature: 2,
-            facts: undefined,
-            preamble: undefined,
-          });
-      restoreUserAgentForTesting();
+      try {
+        snapshotTester.assert(
+            this,
+            JSON.stringify(
+                agent.buildRequest(
+                    {
+                      text: 'test input',
+                    },
+                    Host.AidaClient.Role.USER),
+                null, 2));
+      } finally {
+        restoreUserAgentForTesting();
+      }
     });
 
-    it('builds a request with aborted query in history before a real request', async () => {
+    it('builds a request with aborted query in history before a real request', async function() {
       const execJs = sinon.mock().once();
       execJs.onCall(0).returns('result2');
       const agent = new StylingAgent({
@@ -255,16 +221,7 @@ describeWithEnvironment('StylingAgent', () => {
 
       const request = agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER);
       assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
-      assert.deepEqual(request.historical_contexts, [
-        {parts: [{text: '# Inspected element\n\nelement-description\n\n# User request\n\nQUERY: test2'}], role: 1}, {
-          parts: [
-            {functionCall: {name: 'executeJavaScript', args: {title: 'title2', thought: 'thought2', code: 'action2'}}}
-          ],
-          role: 2
-        },
-        {parts: [{functionResponse: {name: 'executeJavaScript', response: {result: 'result2'}}}], role: 0},
-        {parts: [{text: 'answer2'}], role: 2}
-      ]);
+      snapshotTester.assert(this, JSON.stringify(request.historical_contexts, null, 2));
     });
   });
 
@@ -418,7 +375,7 @@ describeWithEnvironment('StylingAgent', () => {
       });
     });
 
-    it('generates an answer immediately', async () => {
+    it('generates an answer immediately', async function() {
       const execJs = sinon.spy();
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([[{explanation: 'this is the answer'}]]),
@@ -426,48 +383,23 @@ describeWithEnvironment('StylingAgent', () => {
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
-      assert.deepEqual(responses, [
-        {
-          type: AiAssistance.ResponseType.USER_QUERY,
-          query: 'test',
-          imageInput: undefined,
-          imageId: undefined,
-        },
-        {
-          type: AiAssistance.ResponseType.CONTEXT,
-          title: 'Analyzing the prompt',
-          details: [
-            {
-              text: '* Its selector is `undefined`',
-              title: 'Data used',
-            },
-          ],
-        },
-        {
-          type: AiAssistance.ResponseType.QUERYING,
-        },
-        {
-          type: AiAssistance.ResponseType.ANSWER,
-          text: 'this is the answer',
-          complete: true,
-          suggestions: undefined,
-          rpcId: undefined,
-        },
-      ]);
+      snapshotTester.assert(this, JSON.stringify(responses, null, 2));
       sinon.assert.notCalled(execJs);
-      assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
-        {
-          role: 1,
-          parts: [{text: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test'}],
-        },
-        {
-          role: 2,
-          parts: [{text: 'this is the answer'}],
-        },
-      ]);
     });
 
-    it('correctly handles historical_contexts in AIDA requests', async () => {
+    it('generates an answer immediately with correct historical contexts in the new request', async function() {
+      const execJs = sinon.spy();
+      const agent = new StylingAgent({
+        aidaClient: mockAidaClient([[{explanation: 'this is the answer'}]]),
+        execJs,
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
+      snapshotTester.assert(
+          this, JSON.stringify(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, null, 2));
+    });
+
+    it('correctly handles historical_contexts in AIDA requests', async function() {
       const execJs = sinon.mock().once();
       execJs.onCall(0).returns('test data');
       const aidaClient = mockAidaClient([
@@ -493,38 +425,16 @@ describeWithEnvironment('StylingAgent', () => {
       const requests: Host.AidaClient.DoConversationRequest[] =
           (aidaClient.doConversation as sinon.SinonStub).args.map(arg => arg[0]);
 
+      const snapshot = [];
+
       assert.lengthOf(requests, 2, 'Unexpected number of AIDA requests');
       assert.isUndefined(requests[0].historical_contexts, 'Unexpected historical contexts in the initial request');
       assert.exists(requests[0].current_message);
       assert.lengthOf(requests[0].current_message.parts, 1);
-      assert.deepEqual(
-          requests[0].current_message.parts[0], {
-            text: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test',
-          },
-          'Unexpected input text in the initial request');
+      snapshot.push(requests[0].current_message.parts[0]);
       assert.strictEqual(requests[0].current_message.role, Host.AidaClient.Role.USER);
-      assert.deepEqual(
-          requests[1].historical_contexts,
-          [
-            {
-              role: 1,
-              parts: [{text: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test'}],
-            },
-            {
-              role: 2,
-              parts: [{
-                functionCall: {
-                  args: {
-                    code: 'const data = {"test": "observation"}',
-                    thought: 'I am thinking.',
-                    title: 'thinking',
-                  },
-                  name: 'executeJavaScript',
-                },
-              }],
-            },
-          ],
-          'Unexpected historical contexts in the follow-up request');
+      snapshot.push(requests[1].historical_contexts);
+      snapshotTester.assert(this, JSON.stringify(snapshot, null, 2));
       assert.exists(requests[1].current_message);
       assert.lengthOf(requests[1].current_message.parts, 1);
       assert.deepEqual(
@@ -539,7 +449,7 @@ describeWithEnvironment('StylingAgent', () => {
           'Unexpected input in the follow-up request');
     });
 
-    it('generates an rpcId for the answer', async () => {
+    it('generates an rpcId for the answer', async function() {
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([[{
           explanation: 'this is the answer',
@@ -548,41 +458,13 @@ describeWithEnvironment('StylingAgent', () => {
           },
         }]]),
         execJs: sinon.spy(),
-
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
-      assert.deepEqual(responses, [
-        {
-          type: AiAssistance.ResponseType.USER_QUERY,
-          query: 'test',
-          imageInput: undefined,
-          imageId: undefined,
-        },
-        {
-          type: AiAssistance.ResponseType.CONTEXT,
-          title: 'Analyzing the prompt',
-          details: [
-            {
-              text: '* Its selector is `undefined`',
-              title: 'Data used',
-            },
-          ],
-        },
-        {
-          type: AiAssistance.ResponseType.QUERYING,
-        },
-        {
-          type: AiAssistance.ResponseType.ANSWER,
-          text: 'this is the answer',
-          complete: true,
-          suggestions: undefined,
-          rpcId: 123,
-        },
-      ]);
+      snapshotTester.assert(this, JSON.stringify(responses, null, 2));
     });
 
-    it('throws an error based on the attribution metadata including RecitationAction.BLOCK', async () => {
+    it('throws an error based on the attribution metadata including RecitationAction.BLOCK', async function() {
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([[
           {
@@ -602,39 +484,10 @@ describeWithEnvironment('StylingAgent', () => {
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
-      assert.deepEqual(responses, [
-        {
-          type: AiAssistance.ResponseType.USER_QUERY,
-          query: 'test',
-          imageInput: undefined,
-          imageId: undefined,
-        },
-        {
-          type: AiAssistance.ResponseType.CONTEXT,
-          title: 'Analyzing the prompt',
-          details: [
-            {
-              text: '* Its selector is `undefined`',
-              title: 'Data used',
-            },
-          ],
-        },
-        {
-          type: AiAssistance.ResponseType.QUERYING,
-        },
-        {
-          text: 'this is the partial answer',
-          type: AiAssistance.ResponseType.ANSWER,
-          complete: false,
-        },
-        {
-          type: AiAssistance.ResponseType.ERROR,
-          error: AiAssistance.ErrorType.BLOCK,
-        },
-      ]);
+      snapshotTester.assert(this, JSON.stringify(responses, null, 2));
     });
 
-    it('does not throw an error based on attribution metadata not including RecitationAction.BLOCK', async () => {
+    it('does not throw an error based on attribution metadata not including RecitationAction.BLOCK', async function() {
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([[{
           explanation: 'this is the answer',
@@ -651,73 +504,22 @@ describeWithEnvironment('StylingAgent', () => {
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
-      assert.deepEqual(responses, [
-        {
-          type: AiAssistance.ResponseType.USER_QUERY,
-          query: 'test',
-          imageInput: undefined,
-          imageId: undefined,
-        },
-        {
-          type: AiAssistance.ResponseType.CONTEXT,
-          title: 'Analyzing the prompt',
-          details: [
-            {
-              text: '* Its selector is `undefined`',
-              title: 'Data used',
-            },
-          ],
-        },
-        {
-          type: AiAssistance.ResponseType.QUERYING,
-        },
-        {
-          type: AiAssistance.ResponseType.ANSWER,
-          text: 'this is the answer',
-          complete: true,
-          suggestions: undefined,
-          rpcId: 123,
-        },
-      ]);
+      snapshotTester.assert(this, JSON.stringify(responses, null, 2));
     });
 
-    it('generates a response if nothing is returned', async () => {
+    it('generates a response if nothing is returned', async function() {
       const execJs = sinon.spy();
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([[{explanation: ''}]]),
         execJs,
       });
       const responses = await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
-      assert.deepEqual(responses, [
-        {
-          type: AiAssistance.ResponseType.USER_QUERY,
-          query: 'test',
-          imageInput: undefined,
-          imageId: undefined,
-        },
-        {
-          type: AiAssistance.ResponseType.CONTEXT,
-          title: 'Analyzing the prompt',
-          details: [
-            {
-              text: '* Its selector is `undefined`',
-              title: 'Data used',
-            },
-          ],
-        },
-        {
-          type: AiAssistance.ResponseType.QUERYING,
-        },
-        {
-          type: AiAssistance.ResponseType.ERROR,
-          error: AiAssistance.ErrorType.UNKNOWN,
-        },
-      ]);
+      snapshotTester.assert(this, JSON.stringify(responses, null, 2));
       sinon.assert.notCalled(execJs);
       assert.isUndefined(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts);
     });
 
-    it('generates an action response if action and answer both present', async () => {
+    it('generates an action response if action and answer both present', async function() {
       const execJs = sinon.mock().once();
       execJs.onCall(0).returns('hello');
       const agent = new StylingAgent({
@@ -739,51 +541,11 @@ describeWithEnvironment('StylingAgent', () => {
 
       });
       const responses = await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
-      assert.deepEqual(responses, [
-        {
-          type: AiAssistance.ResponseType.USER_QUERY,
-          query: 'test',
-          imageInput: undefined,
-          imageId: undefined,
-        },
-        {
-          type: AiAssistance.ResponseType.CONTEXT,
-          title: 'Analyzing the prompt',
-          details: [
-            {
-              text: '* Its selector is `undefined`',
-              title: 'Data used',
-            },
-          ],
-        },
-        {
-          type: AiAssistance.ResponseType.QUERYING,
-        },
-        {
-          type: AiAssistance.ResponseType.THOUGHT,
-          thought: 'I am thinking.',
-        },
-        {
-          type: AiAssistance.ResponseType.ACTION,
-          code: 'console.log(\'hello\');',
-          output: 'hello',
-          canceled: false,
-        },
-        {
-          type: AiAssistance.ResponseType.QUERYING,
-        },
-        {
-          type: AiAssistance.ResponseType.ANSWER,
-          text: 'this is the actual answer',
-          complete: true,
-          suggestions: undefined,
-          rpcId: undefined,
-        },
-      ]);
+      snapshotTester.assert(this, JSON.stringify(responses, null, 2));
       sinon.assert.calledOnce(execJs);
     });
 
-    it('generates history for multiple actions', async () => {
+    it('generates history for multiple actions', async function() {
       const execJs = sinon.spy(async () => 'undefined');
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([
@@ -817,67 +579,8 @@ describeWithEnvironment('StylingAgent', () => {
 
       await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
 
-      assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
-        {
-          role: 1,
-          parts: [{text: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test'}],
-        },
-        {
-          role: 2,
-          parts: [{
-            functionCall: {
-              args: {
-                code: 'console.log(\'test\')',
-                thought: 'thought 1',
-                title: 'test',
-              },
-              name: 'executeJavaScript',
-            },
-          }],
-        },
-        {
-          role: 0,
-          parts: [{functionResponse: {name: 'executeJavaScript', response: {result: 'undefined'}}}],
-        },
-        {
-          role: 2,
-          parts: [{
-            functionCall: {
-              args: {
-                code: 'console.log(\'test\')',
-                thought: 'thought 2',
-                title: 'test',
-              },
-              name: 'executeJavaScript',
-            },
-          }],
-        },
-        {
-          role: 0,
-          parts: [{functionResponse: {name: 'executeJavaScript', response: {result: 'undefined'}}}],
-        },
-        {
-          role: 2,
-          parts: [{
-            functionCall: {
-              args: {
-                code: 'console.log(\'test\')',
-                thought: 'thought 3',
-                title: 'test',
-              },
-              name: 'executeJavaScript',
-            },
-          }],
-        },
-        {
-          role: 0,
-          parts: [{functionResponse: {name: 'executeJavaScript', response: {result: 'undefined'}}}],
-        },
-        {
-          role: 2,
-          parts: [{text: 'this is the answer'}],
-        },
-      ]);
+      snapshotTester.assert(
+          this, JSON.stringify(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, null, 2));
     });
 
     it('stops when aborted', async () => {
@@ -930,88 +633,38 @@ describeWithEnvironment('StylingAgent', () => {
       element.getChildNodesPromise.resolves(null);
     });
 
-    it('does not add multimodal input evaluation prompt when multimodal is disabled', async () => {
+    it('does not add multimodal input evaluation prompt when multimodal is disabled', async function() {
       mockHostConfig('test model');
       const enhancedQuery = await agent.enhanceQuery(
           'test query', new AiAssistance.NodeContext(element), AiAssistance.MultimodalInputType.SCREENSHOT);
 
-      assert.strictEqual(
-          enhancedQuery,
-          '# Inspected element\n\n* Its selector is `div#myElement`\n\n# User request\n\nQUERY: test query',
-      );
+      snapshotTester.assert(this, enhancedQuery);
     });
 
     it('does not add multimodal input evaluation prompt when multimodal is enabled but multimodalInputType is missing',
-       async () => {
+       async function() {
          mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
          const enhancedQuery = await agent.enhanceQuery('test query', new AiAssistance.NodeContext(element));
 
-         assert.strictEqual(
-             enhancedQuery,
-             '# Inspected element\n\n* Its selector is `div#myElement`\n\n# User request\n\nQUERY: test query',
-         );
+         snapshotTester.assert(this, enhancedQuery);
        });
 
     it('adds multimodal input evaluation prompt when multimodal is enabled and multimodalInputType is screenshot',
-       async () => {
+       async function() {
          mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
          const enhancedQuery = await agent.enhanceQuery(
              'test query', new AiAssistance.NodeContext(element), AiAssistance.MultimodalInputType.SCREENSHOT);
 
-         assert.strictEqual(
-             enhancedQuery,
-             `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
-
-* Try to connect the screenshot to actual DOM elements in the page.
-# Considerations for evaluating image:
-* Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
-* Analyze the image to identify the layout structure surrounding the element, including the positioning of neighboring elements.
-* Extract visual information from the image, such as colors, fonts, spacing, and sizes, that might be relevant to the user's query.
-* If the image suggests responsiveness issues (e.g., cropped content, overlapping elements), consider those in your response.
-* Consider the surrounding elements and overall layout in the image, but prioritize the selected element's styling and positioning.
-* **CRITICAL** When the user provides image input, interpret and use content and information from the image STRICTLY for web site debugging purposes.
-
-* As part of THOUGHT, evaluate the image to gather data that might be needed to answer the question.
-In case query is related to the image, ALWAYS first use image evaluation to get all details from the image. ONLY after you have all data needed from image, you should move to other steps.
-
-# Inspected element
-
-* Its selector is \`div#myElement\`
-
-# User request
-
-QUERY: test query`,
-         );
+         snapshotTester.assert(this, enhancedQuery);
        });
 
     it('adds multimodal input evaluation prompt when multimodal is enabled and multimodalInputType is uploaded image',
-       async () => {
+       async function() {
          mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
          const enhancedQuery = await agent.enhanceQuery(
              'test query', new AiAssistance.NodeContext(element), AiAssistance.MultimodalInputType.UPLOADED_IMAGE);
 
-         assert.strictEqual(
-             enhancedQuery,
-             `The user has uploaded an image in base64-encoded format. You SHOULD use it while answering user's queries.
-# Considerations for evaluating image:
-* Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
-* Analyze the image to identify the layout structure surrounding the element, including the positioning of neighboring elements.
-* Extract visual information from the image, such as colors, fonts, spacing, and sizes, that might be relevant to the user's query.
-* If the image suggests responsiveness issues (e.g., cropped content, overlapping elements), consider those in your response.
-* Consider the surrounding elements and overall layout in the image, but prioritize the selected element's styling and positioning.
-* **CRITICAL** When the user provides image input, interpret and use content and information from the image STRICTLY for web site debugging purposes.
-
-* As part of THOUGHT, evaluate the image to gather data that might be needed to answer the question.
-In case query is related to the image, ALWAYS first use image evaluation to get all details from the image. ONLY after you have all data needed from image, you should move to other steps.
-
-# Inspected element
-
-* Its selector is \`div#myElement\`
-
-# User request
-
-QUERY: test query`,
-         );
+         snapshotTester.assert(this, enhancedQuery);
        });
   });
 

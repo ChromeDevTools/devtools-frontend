@@ -35,11 +35,10 @@ export interface RundownScriptCompiled extends EventBase {
       frameType: 'page'|'iframe',
       url: string,
       /**
-       * isolate is a `uint64_t`, which is too much for JS number to represent exactly.
-       * TODO: consider adjusting the trace event impl to either string or reduced precision. see https://crrev.com/c/6300647
-       * This applies for all `isolate` in trace events we consume.
+       * Older traces were a number, but this is an unsigned 64 bit value, so that was a bug.
+       * New traces use string instead. See https://crbug.com/447654178.
        */
-      isolate: number,
+      isolate: string|number,
       /** AKA V8ContextToken. https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/inspector/inspector_trace_events.cc;l=1229;drc=3c88f61e18b043e70c225d8d57c77832a85e7f58 */
       v8context: string,
       origin: string,
@@ -60,7 +59,11 @@ export interface RundownScript extends EventBase {
   name: 'ScriptCatchup';
   args: {
     data: {
-      isolate: number,
+      /**
+       * Older traces were a number, but this is an unsigned 64 bit value, so that was a bug.
+       * New traces use string instead. See https://crbug.com/447654178.
+       */
+      isolate: string|number,
       executionContextId: Protocol.Runtime.ExecutionContextId,
       scriptId: number,
       isModule: boolean,
@@ -119,7 +122,11 @@ interface FunctionCall extends EventBase {
     data: {
       frame: Protocol.Page.FrameId,
       scriptId: Protocol.Runtime.ScriptId,
-      isolate?: number,
+      /**
+       * Older traces were a number, but this is an unsigned 64 bit value, so that was a bug.
+       * New traces use string instead. See https://crbug.com/447654178.
+       */
+      isolate?: string|number,
     },
   };
 }

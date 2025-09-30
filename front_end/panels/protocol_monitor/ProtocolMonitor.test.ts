@@ -44,8 +44,7 @@ describeWithEnvironment('ProtocolMonitor', () => {
   });
 
   it('sends commands', async () => {
-    view.input.onCommandSubmitted(
-        new CustomEvent('submit', {detail: '{"command":"Test.test","parameters":{"test":"test"}}'}));
+    view.input.onCommandSubmitted('{"command":"Test.test","parameters":{"test":"test"}}');
     sinon.assert.calledOnce(sendRawMessageStub);
     sinon.assert.calledOnce(sendRawMessageStub);
     assert.strictEqual(sendRawMessageStub.getCall(0).args[0], 'Test.test');
@@ -54,8 +53,8 @@ describeWithEnvironment('ProtocolMonitor', () => {
   });
 
   it('includes previous commands into autocomplete', async () => {
-    view.input.onCommandSubmitted(new CustomEvent('submit', {detail: 'Test.test1'}));
-    view.input.onCommandSubmitted(new CustomEvent('submit', {detail: 'Test.test2'}));
+    view.input.onCommandSubmitted('Test.test1');
+    view.input.onCommandSubmitted('Test.test2');
     protocolMonitor.requestUpdate();
     assert.includeOrderedMembers(
         (await view.nextInput).commandSuggestions, ['Test.test2', 'Test.test1', 'Accessibility.disable']);
@@ -105,9 +104,9 @@ describeWithEnvironment('ProtocolMonitor', () => {
       },
     ]);
 
-    view.input.onRecord({target: {toggled: false}} as unknown as Event);
+    view.input.onRecord(false);
     InspectorBackend.test.onMessageSent?.({domain: 'Test', method: 'Test.test', params: {test: 'test'}, id: 3}, null);
-    view.input.onRecord({target: {toggled: true}} as unknown as Event);
+    view.input.onRecord(true);
     InspectorBackend.test.onMessageSent?.({domain: 'Test', method: 'Test.test', params: {test: 'test'}, id: 4}, null);
     assert.deepEqual((await view.nextInput).messages.map(m => ({method: m.method, params: m.params, id: m.id})), [
       {
@@ -229,7 +228,7 @@ describeWithEnvironment('ProtocolMonitor', () => {
           value: 'test',
         },
       ];
-      view.input.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
+      view.input.onSplitChange(true);
       assert.deepEqual((await view.nextInput).command, '{"command":"Test.test","parameters":{"test":"test"}}');
     });
 
@@ -239,13 +238,13 @@ describeWithEnvironment('ProtocolMonitor', () => {
         {id: () => 'value1'} as SDK.Target.Target,
         {id: () => 'value2'} as SDK.Target.Target,
       ]);
-      view.input.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
+      view.input.onSplitChange(true);
       assert.deepEqual((await view.nextInput).selectedTargetId, 'value2');
     });
 
     it('should not display the command into the input bar if the command is empty string', async () => {
       jsonEditor.command = '';
-      view.input.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
+      view.input.onSplitChange(true);
 
       assert.deepEqual((await view.nextInput).command, '');
     });
@@ -468,17 +467,17 @@ describeWithEnvironment('ProtocolMonitor', () => {
         filterKeys: ['method', 'request', 'response', 'target', 'session'],
         filter: '',
         parseFilter: (_: string) => [],
-        onSplitChange: (_: CustomEvent<string>) => {},
-        onRecord: (_: Event) => {},
+        onSplitChange: (_: boolean) => {},
+        onRecord: (_: boolean) => {},
         onClear: () => {},
         onSave: () => {},
         onSelect: (_: CustomEvent<HTMLElement|null>) => {},
         onContextMenu: (_: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {},
-        onCommandChange: (_: CustomEvent<string>) => {},
-        onCommandSubmitted: (_: CustomEvent<string>) => {},
-        onFilterChanged: (_: CustomEvent<string>) => {},
-        onTargetChange: (_: Event) => {},
-        onToggleSidebar: (_: Event) => {},
+        onCommandChange: (_: string) => {},
+        onCommandSubmitted: (_: string) => {},
+        onFilterChanged: (_: string) => {},
+        onTargetChange: (_: string) => {},
+        onToggleSidebar: () => {},
         targets: [],
         selectedTargetId: 'main',
       };
@@ -522,17 +521,17 @@ describeWithEnvironment('ProtocolMonitor', () => {
         filterKeys: ['method', 'request', 'response', 'target', 'session'],
         filter: 'method:Test.test3',
         parseFilter: (_: string) => [{key: 'method', text: 'test3', negative: false}],
-        onSplitChange: (_: CustomEvent<string>) => {},
-        onRecord: (_: Event) => {},
+        onSplitChange: (_: boolean) => {},
+        onRecord: (_: boolean) => {},
         onClear: () => {},
         onSave: () => {},
         onSelect: (_: CustomEvent<HTMLElement|null>) => {},
         onContextMenu: (_: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {},
-        onCommandChange: (_: CustomEvent<string>) => {},
-        onCommandSubmitted: (_: CustomEvent<string>) => {},
-        onFilterChanged: (_: CustomEvent<string>) => {},
-        onTargetChange: (_: Event) => {},
-        onToggleSidebar: (_: Event) => {},
+        onCommandChange: (_: string) => {},
+        onCommandSubmitted: (_: string) => {},
+        onFilterChanged: (_: string) => {},
+        onTargetChange: (_: string) => {},
+        onToggleSidebar: () => {},
         targets: [
           {id: () => 'main', name: () => 'Main', inspectedURL: () => 'www.example.com'},
           {id: () => 'prerender', name: () => 'Prerender', inspectedURL: () => 'www.example.com/prerender'}

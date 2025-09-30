@@ -124,10 +124,10 @@ export interface TraceFrame {
   processId: ProcessID;
   url: string;
   parent?: string;
-  // Added to Chromium in April 2024:
+  // Added to Chrome in April 2024:
   // crrev.com/c/5424783
   isOutermostMainFrame?: boolean;
-  // Added to Chromium in June 2024:
+  // Added to Chrome in June 2024:
   // crrev.com/c/5595033
   isInPrimaryMainFrame?: boolean;
 }
@@ -549,7 +549,6 @@ export function isAuctionWorkletDoneWithProcess(event: Event): event is AuctionW
  *    consuming screenshot events from the ScreenshotHandler, you must make sure
  *    to have your code deal with the two different formats.
  */
-// These are nullable because in January 2025 a CL in Chromium
 export interface LegacyScreenshot extends Event {
   /**
    * @deprecated This value is incorrect. Use ScreenshotHandler.getPresentationTimestamp()
@@ -745,7 +744,7 @@ export interface LargestContentfulPaintCandidate extends Mark {
       nodeId: Protocol.DOM.BackendNodeId,
       loadingAttr: string,
       type?: string,
-      // Landed in Chromium M140: crrev.com/c/6702010
+      // Landed in Chrome M140: crrev.com/c/6702010
       nodeName?: string,
     },
   };
@@ -990,7 +989,7 @@ export interface SyntheticLayoutShift extends Omit<LayoutShift, 'name'>, Synthet
 export const NO_NAVIGATION = 'NO_NAVIGATION';
 
 /**
- * This maybe be a navigation id string from Chromium, or `NO_NAVIGATION`, which represents the
+ * This maybe be a navigation id string from Chrome, or `NO_NAVIGATION`, which represents the
  * portion of the trace for which we don't have any navigation event for (as it happeneded prior
  * to the trace start).
  */

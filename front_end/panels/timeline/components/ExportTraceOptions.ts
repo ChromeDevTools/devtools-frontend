@@ -289,6 +289,7 @@ export class ExportTraceOptions extends HTMLElement {
           closeOnESC: true,
         } as Dialogs.ButtonDialog.ButtonDialogData}>
         <div class='export-trace-options-content'>
+
           ${this.#state.displayAnnotationsCheckbox ? this.#renderCheckbox('annotations', this.#includeAnnotationsCheckbox,
             i18nString(UIStrings.includeAnnotations),
             this.#state.includeAnnotations): ''}
@@ -308,11 +309,10 @@ export class ExportTraceOptions extends HTMLElement {
                   } as Buttons.Button.ButtonData}
                 >${i18nString(UIStrings.saveButtonTitle)}</devtools-button>
                 </div>
+          ${this.#state.displayScriptContentCheckbox ? this.#renderInfoTooltip('script-content') : Lit.nothing}
+          ${this.#state.displayScriptContentCheckbox && this.#state.displaySourceMapsCheckbox ? this.#renderInfoTooltip('script-source-maps') : Lit.nothing}
         </div>
       </devtools-button-dialog>
-
-      ${this.#state.displayScriptContentCheckbox ? this.#renderInfoTooltip('script-content') : Lit.nothing}
-      ${this.#state.displayScriptContentCheckbox && this.#state.displaySourceMapsCheckbox ? this.#renderInfoTooltip('script-source-maps') : Lit.nothing}
     `;
     // clang-format on
     Lit.render(output, this.#shadow, {host: this});

@@ -50,17 +50,17 @@ const UIStrings = {
    */
   saveButtonTitle: 'Save',
   /**
-   * @description Title for the information icon showing more information about an option
-   */
-  moreInfoTitle: 'More information',
-  /**
    * @description Text shown in the information pop-up next to the "Include script content" option.
    */
   scriptContentPrivacyInfo: 'Includes the full content of all loaded scripts (except extensions).',
   /**
    * @description Text shown in the information pop-up next to the "Include script sourcemaps" option.
    */
-  sourceMapsContentPrivacyInfo: 'Includes available source maps, which may expose authored code.'
+  sourceMapsContentPrivacyInfo: 'Includes available source maps, which may expose authored code.',
+  /**
+   * @description Text used as the start of the accessible label for the information button which shows additional context when the user focuses / hovers.
+   */
+  moreInfoLabel: 'Additional information:',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/ExportTraceOptions.ts', UIStrings);
@@ -204,6 +204,17 @@ export class ExportTraceOptions extends HTMLElement {
     this.state = newState;
   }
 
+  #accessibleLabelForInfoCheckbox(checkboxId: CheckboxId): string {
+    if (checkboxId === 'script-source-maps') {
+      return i18nString(UIStrings.moreInfoLabel) + ' ' + i18nString(UIStrings.sourceMapsContentPrivacyInfo);
+    }
+
+    if (checkboxId === 'script-content') {
+      return i18nString(UIStrings.moreInfoLabel) + ' ' + i18nString(UIStrings.scriptContentPrivacyInfo);
+    }
+
+    return '';
+  }
   #renderCheckbox(
       checkboxId: CheckboxId, checkboxWithLabel: UI.UIUtils.CheckboxLabel, title: Common.UIString.LocalizedString,
       checked: boolean): Lit.TemplateResult {
@@ -224,8 +235,8 @@ export class ExportTraceOptions extends HTMLElement {
           ${checkboxesWithInfoDialog.has(checkboxId) ? html`
             <devtools-button
               aria-details=${`export-trace-tooltip-${checkboxId}`}
+              aria-label=${this.#accessibleLabelForInfoCheckbox(checkboxId)}
               class="pen-icon"
-              .title=${UIStrings.moreInfoTitle}
               .iconName=${'info'}
               .variant=${Buttons.Button.Variant.ICON}
               ></devtools-button>

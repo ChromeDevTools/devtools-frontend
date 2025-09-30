@@ -11,6 +11,7 @@ ts_e2e_library("network") {
     "network-datagrid_test.ts",
     "network-filter_test.ts",
     "network-request-view_test.ts",
+    "network-search_test.ts",
     "network-throttle-persist_test.ts",
     "network_test.ts",
     "request-blocking_test.ts",

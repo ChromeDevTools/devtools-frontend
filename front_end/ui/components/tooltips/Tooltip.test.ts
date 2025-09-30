@@ -101,6 +101,24 @@ describe('Tooltip', () => {
     assert.isTrue(tooltip.open);
   });
 
+  it('should close if the user presses escape when it is open', async () => {
+    const container = renderTooltip();
+    const tooltip = container.querySelector('devtools-tooltip');
+    assert.exists(tooltip);
+
+    const button = container.querySelector('button');
+    const opened = waitForToggle(tooltip, 'open');
+    button?.dispatchEvent(new MouseEvent('mouseenter'));
+
+    await opened;
+    assert.isTrue(tooltip.open);
+
+    const closed = waitForToggle(tooltip, 'closed');
+    button?.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
+    await closed;
+    assert.isFalse(tooltip.open);
+  });
+
   it('should be activated if focused', async () => {
     const container = renderTooltip();
     const tooltip = container.querySelector('devtools-tooltip');

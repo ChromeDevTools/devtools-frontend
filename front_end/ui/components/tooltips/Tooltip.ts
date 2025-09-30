@@ -480,7 +480,13 @@ export class Tooltip extends HTMLElement {
   };
 
   #keyDown = (event: KeyboardEvent): void => {
-    if ((event.altKey && event.key === 'ArrowDown') || (event.key === 'Escape' && this.open)) {
+    // There are two scenarios when we care about keydown:
+    // 1. The tooltip is open, and the user presses ESC
+    // 2. "use-hotkey" is set, and the user presses Alt+ArrowDown.
+    const shouldToggleVisibility =
+        (event.key === 'Escape' && this.open) || (this.useHotkey && event.altKey && event.key === 'ArrowDown');
+
+    if (shouldToggleVisibility) {
       this.#openedViaHotkey = !this.open;
       this.toggle();
       event.consume(true);
@@ -489,15 +495,18 @@ export class Tooltip extends HTMLElement {
 
   #registerEventListeners(): void {
     if (this.#anchor) {
+      // We bind the keydown listener regardless of if use-hotkey is enabled
+      // as we always want to support ESC to close.
+      this.#anchor.addEventListener('keydown', this.#keyDown);
+
       if (this.useClick) {
         this.#anchor.addEventListener('click', this.toggle);
       } else {
         this.#anchor.addEventListener('mouseenter', this.showTooltip);
-        if (this.useHotkey) {
-          this.#anchor.addEventListener('keydown', this.#keyDown);
-        } else {
+        if (!this.useHotkey) {
           this.#anchor.addEventListener('focus', this.showTooltip);
         }
+
         this.#anchor.addEventListener('blur', this.hideTooltip);
         this.#anchor.addEventListener('mouseleave', this.hideTooltip);
         this.addEventListener('mouseleave', this.hideTooltip);

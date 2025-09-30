@@ -275,6 +275,7 @@ export class ExportTraceOptions extends HTMLElement {
           closeButton: false,
           dialogTitle: i18nString(UIStrings.exportTraceOptionsDialogTitle),
           state: this.#state.dialogState,
+          closeOnESC: true,
         } as Dialogs.ButtonDialog.ButtonDialogData}>
         <div class='export-trace-options-content'>
           ${this.#state.displayAnnotationsCheckbox ? this.#renderCheckbox('annotations', this.#includeAnnotationsCheckbox,

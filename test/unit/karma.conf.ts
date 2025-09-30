@@ -97,12 +97,7 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       disableAnimations(page),
     ]);
 
-    page.on('framenavigated', frame => {
-      console.error(`\nframe navigated ${frame.url()}\n`);
-    });
-
     browser.on('targetcreated', async (target: Target) => {
-      console.error(`\ntarget created url=${target.url()} type=${target.type()}\n`);
       if (target.type() === 'page') {
         const page = await target.page();
         if (!page) {

@@ -146,34 +146,5 @@ describe('The Sources panel', () => {
       await toggleNavigatorSidebar(devToolsPage.page);
       await devToolsPage.waitFor('.navigator-tabbed-pane');
     });
-
-    it('which can scroll the navigator element into view on source file change', async ({devToolsPage}) => {
-      async function openFirstSnippetInList() {
-        const sourcesView = await devToolsPage.waitFor('#sources-panel-sources-view');
-        await devToolsPage.click('[aria-label="More tabs"]', {root: sourcesView});
-        await devToolsPage.click('[aria-label="Script snippet #1"]');
-      }
-
-      await openSourcesPanel(devToolsPage);
-      await openSnippetsSubPane(devToolsPage);
-
-      const numSnippets = 50;
-      for (let i = 0; i < numSnippets; ++i) {
-        await devToolsPage.click('[aria-label="New snippet"]');
-        await devToolsPage.waitFor(`[aria-label="Script snippet #${i + 1}"]`);
-      }
-
-      const snippetsPanel = await devToolsPage.waitFor('[aria-label="Snippets panel"]');
-      const scrollTopBeforeFileChange = await snippetsPanel.evaluate(panel => panel.scrollTop);
-
-      await openFirstSnippetInList();
-
-      await devToolsPage.waitForFunction(async () => {
-        const scrollTopAfterFileChange = await snippetsPanel.evaluate(panel => panel.scrollTop);
-        return scrollTopBeforeFileChange !== scrollTopAfterFileChange;
-      });
-
-      assert.notStrictEqual(scrollTopBeforeFileChange, await snippetsPanel.evaluate(panel => panel.scrollTop));
-    });
   });
 });

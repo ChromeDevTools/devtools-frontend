@@ -144,7 +144,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           @expand=${onExpand}>
         ${htmlView(node)}
         ${node.children().length ? html`
-          <ul role="group" ?hidden=${!node.expanded}>
+          <ul role="group" ?hidden=${!node.expanded && input.jumpToNextSearchResult?.node !== node}>
             ${populateSubtrees || input.search ? subtree(node) : Lit.nothing}
           </ul>` : Lit.nothing}
       </li>`;

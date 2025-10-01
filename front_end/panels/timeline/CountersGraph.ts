@@ -71,9 +71,14 @@ export class CountersGraph extends UI.Widget.VBox {
 
   #noEventsFoundMessage = document.createElement('div');
   #showNoEventsMessage = false;
+  #defaultNumberFormatter: Intl.NumberFormat;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
+    this.#defaultNumberFormatter = new Intl.NumberFormat(
+        i18n.DevToolsLocale.DevToolsLocale.instance().locale,
+    );
+
     this.element.id = 'memory-graphs-container';
 
     this.delegate = delegate;
@@ -180,6 +185,7 @@ export class CountersGraph extends UI.Widget.VBox {
       }
     }
     this.#showNoEventsMessage = counterEventsFound === 0;
+    this.requestUpdate();
   }
 
   private createCurrentValuesBar(): void {
@@ -192,7 +198,8 @@ export class CountersGraph extends UI.Widget.VBox {
       formatter?: ((arg0: number) => string)): Counter {
     const counter = new Counter();
     this.counters.push(counter);
-    this.counterUI.push(new CounterUI(this, uiName, settingsKey, color, counter, formatter));
+    this.counterUI.push(
+        new CounterUI(this, uiName, settingsKey, color, counter, formatter ?? this.#defaultNumberFormatter.format));
     return counter;
   }
 
@@ -388,7 +395,7 @@ export class Counter {
 export class CounterUI {
   private readonly countersPane: CountersGraph;
   counter: Counter;
-  private readonly formatter: (arg0: number) => string;
+  readonly formatter: (arg0: number) => string;
   private readonly setting: Common.Settings.Setting<boolean>;
   private readonly filter: UI.Toolbar.ToolbarSettingCheckbox;
   private readonly value: HTMLElement;
@@ -401,10 +408,10 @@ export class CounterUI {
 
   constructor(
       countersPane: CountersGraph, title: Common.UIString.LocalizedString, settingsKey: string, graphColor: string,
-      counter: Counter, formatter?: (arg0: number) => string) {
+      counter: Counter, formatter: (arg0: number) => string) {
     this.countersPane = countersPane;
     this.counter = counter;
-    this.formatter = formatter || Platform.NumberUtilities.withThousandsSeparator;
+    this.formatter = formatter;
 
     this.setting = Common.Settings.Settings.instance().createSetting('timeline-counters-graph-' + settingsKey, true);
     this.setting.setTitle(title);
@@ -474,7 +481,7 @@ export class CounterUI {
       return;
     }
     const index = this.recordIndexAt(x);
-    const value = Platform.NumberUtilities.withThousandsSeparator(this.counter.values[index]);
+    const value = this.formatter(this.counter.values[index]);
     this.value.textContent = `${this.counterName}: ${value}`;
     const y = this.graphYValues[index] / window.devicePixelRatio;
     this.marker.style.left = x + 'px';

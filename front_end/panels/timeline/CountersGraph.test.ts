@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {getMainThread} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Timeline from './timeline.js';
@@ -31,11 +31,19 @@ async function renderCountersGraphForMainThread(context: Mocha.Context): Promise
   const timelineModeViewDelegate = new FakeTimelineModeViewDelegate();
   const parsedTrace = await TraceLoader.traceEngine(context, 'web-dev-with-commit.json.gz');
   const countersGraph = new Timeline.CountersGraph.CountersGraph(timelineModeViewDelegate);
+  // Dispatch the bounds change event so the counters graph knows the min/max
+  // time for the current trace
+  TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(parsedTrace.data.Meta.traceBounds);
   renderElementIntoDOM(countersGraph);
 
-  const mainThread = getMainThread(parsedTrace.data.Renderer);
+  // This is the PID + TID for the main thread for web-dev-with-commit.
+  const pid = Trace.Types.Events.ProcessID(90829);
+  const tid = Trace.Types.Events.ThreadID(259);
+  const mainThread = parsedTrace.data.Renderer.processes.get(pid)?.threads.get(tid);
+  assert.isOk(mainThread, 'could not find main thread');
+
   countersGraph.setModel(parsedTrace, mainThread.entries);
-  await raf();
+  await countersGraph.updateComplete;
   return {countersGraph, parsedTrace};
 }
 
@@ -45,19 +53,19 @@ describeWithEnvironment('CountersGraph', () => {
     const checkboxes = countersGraph.element.querySelectorAll('devtools-checkbox');
     const userVisibleLabels = Array.from(checkboxes, checkbox => checkbox.getLabelText());
     assert.deepEqual(userVisibleLabels, [
-      'JS heap [1.5 MB – 1.5 MB]',
-      'Documents [4 – 4]',
-      'Nodes [54 – 54]',
-      'Listeners [8 – 8]',
+      'JS heap [704 kB – 5.5 MB]',
+      'Documents [3 – 14]',
+      'Nodes [12 – 2,723]',
+      'Listeners [0 – 77]',
       'GPU memory',
     ]);
 
     const ariaLabels = Array.from(checkboxes, checkbox => checkbox.getAttribute('aria-label'));
     assert.deepEqual(ariaLabels, [
-      'JS heap [1.5 MB – 1.5 MB]',
-      'Documents [4 – 4]',
-      'Nodes [54 – 54]',
-      'Listeners [8 – 8]',
+      'JS heap [704 kB – 5.5 MB]',
+      'Documents [3 – 14]',
+      'Nodes [12 – 2,723]',
+      'Listeners [0 – 77]',
       'GPU memory',
     ]);
   });

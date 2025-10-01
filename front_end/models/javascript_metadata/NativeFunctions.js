@@ -7086,6 +7086,10 @@ export const NativeFunctions = [
     signatures: [["message"]]
   },
   {
+    name: "IntersectionObserver",
+    signatures: [["callback","?options"]]
+  },
+  {
     name: "layoutNextFragment",
     signatures: [["?options"]]
   },

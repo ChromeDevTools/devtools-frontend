@@ -95,15 +95,14 @@ export type DocumentLatencyInsightModel = InsightModel<typeof UIStrings, {
   },
 }>;
 
-function getServerResponseTime(
-    request: Types.Events.SyntheticNetworkRequest, context: InsightSetContext): Types.Timing.Milli|null {
-  // Prefer the value as given by the Lantern provider.
-  // For PSI, Lighthouse uses this to set a better value for the server response
-  // time. For technical reasons, in Lightrider we do not have `sendEnd` timing
-  // values. See Lighthouse's `asLanternNetworkRequest` function for more.
-  const lanternRequest = context.navigation && context.lantern?.requests.find(r => r.rawRequest === request);
-  if (lanternRequest?.serverResponseTime !== undefined) {
-    return lanternRequest.serverResponseTime as Types.Timing.Milli;
+function getServerResponseTime(request: Types.Events.SyntheticNetworkRequest): Types.Timing.Milli|null {
+  // For technical reasons, Lightrider does not have `sendEnd` timing values. The
+  // closest we can get to the server response time is from a header that Lightrider
+  // sets.
+  // @ts-expect-error
+  const isLightrider = globalThis.isLightrider;
+  if (isLightrider) {
+    return request.args.data.lrServerResponseTime ?? null;
   }
 
   const timing = request.args.data.timing;
@@ -202,7 +201,7 @@ export function generateInsight(
     return finalize({warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
   }
 
-  const serverResponseTime = getServerResponseTime(documentRequest, context);
+  const serverResponseTime = getServerResponseTime(documentRequest);
   if (serverResponseTime === null) {
     throw new Error('missing document request timing');
   }

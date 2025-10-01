@@ -64,6 +64,51 @@ describeWithEnvironment('DocumentLatency', function() {
     assert.deepEqual(insight.metricSavings, {FCP: 943, LCP: 943} as Trace.Insights.Types.MetricSavings);
   });
 
+  describe('Lightrider', () => {
+    before(() => {
+      // @ts-expect-error
+      globalThis.isLightrider = true;
+    });
+
+    after(() => {
+      // @ts-expect-error
+      delete globalThis.isLightrider;
+    });
+
+    it('reports savings for server with slow server response time (Lightrider)', async function() {
+      const traceEvents = [...await TraceLoader.rawEvents(this, 'lantern/paul/trace.json.gz')];
+      const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+
+      const mainRequestEventIndex = traceEvents.findIndex(e => e.name === 'ResourceReceiveResponse');
+      const mainRequestEvent = structuredClone(traceEvents[mainRequestEventIndex]);
+      assert(Types.Events.isResourceReceiveResponse(mainRequestEvent));
+      assert.strictEqual(mainRequestEvent.args.data.requestId, '1000C0FDC0A75327167272FC7438E999');
+      if (!mainRequestEvent.args.data.timing) {
+        throw new Error('missing timing field');
+      }
+
+      delete mainRequestEvent.args.data.timing;
+      mainRequestEvent.args.data.headers = [
+        {name: 'X-ResponseMs', value: '1234'},
+      ];
+
+      traceEvents[mainRequestEventIndex] = mainRequestEvent;
+
+      await processor.parse(traceEvents, {isCPUProfile: false, isFreshRecording: true});
+      const data = processor.data;
+      if (!data) {
+        throw new Error('missing data');
+      }
+
+      const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+      const context = createContextForNavigation(data, navigation, data.Meta.mainFrameId);
+      const insight = Trace.Insights.Models.DocumentLatency.generateInsight(data, context);
+      assert.strictEqual(insight.data?.serverResponseTime, 1234);
+      assert.isFalse(insight.data?.checklist.serverResponseIsFast.value);
+      assert.deepEqual(insight.metricSavings, {FCP: 1134, LCP: 1134} as Trace.Insights.Types.MetricSavings);
+    });
+  });
+
   it('reports no compression savings for compressed text', async function() {
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
     const insight =

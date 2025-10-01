@@ -415,6 +415,8 @@ export interface SyntheticNetworkRequest extends Complete, SyntheticBased<Phase.
       initiator?: Initiator,
       requestMethod?: string,
       timing?: ResourceReceiveResponseTimingData,
+      /** Server response time according to Lightrider. */
+      lrServerResponseTime?: Milli,
     },
   };
   cat: 'loading';

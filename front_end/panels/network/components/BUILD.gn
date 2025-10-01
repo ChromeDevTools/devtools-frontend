@@ -16,7 +16,6 @@ generate_css("css_files") {
     "RequestHeadersView.css",
     "RequestTrustTokensView.css",
     "ResponseHeaderSection.css",
-    "WebBundleInfoView.css",
   ]
 }
 
@@ -29,7 +28,6 @@ devtools_module("components") {
     "RequestHeadersView.ts",
     "RequestTrustTokensView.ts",
     "ResponseHeaderSection.ts",
-    "WebBundleInfoView.ts",
   ]
 
   deps = [
@@ -52,7 +50,6 @@ devtools_module("components") {
     "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/components/report_view:bundle",
     "../../../ui/legacy:bundle",
-    "../../../ui/legacy/components/data_grid:bundle",
     "../../../ui/lit:bundle",
     "../forward:bundle",
   ]

@@ -56,9 +56,6 @@ export class PanelUtils {
     if (signedExchangeInfo !== null && Boolean(signedExchangeInfo.errors)) {
       return true;
     }
-    if (request.webBundleInfo()?.errorMessage || request.webBundleInnerRequestInfo()?.errorMessage) {
-      return true;
-    }
     if (request.corsErrorStatus()) {
       return true;
     }
@@ -185,9 +182,6 @@ export class PanelUtils {
     }
     if (resourceType.name() === Common.ResourceType.resourceTypes.Media.name()) {
       return {iconName: 'file-media'};
-    }
-    if (resourceType.isWebbundle()) {
-      return {iconName: 'bundle'};
     }
 
     if (resourceType.name() === Common.ResourceType.resourceTypes.Fetch.name() ||

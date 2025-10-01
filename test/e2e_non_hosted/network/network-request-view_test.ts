@@ -97,29 +97,6 @@ describe('The Network Request view', () => {
        assert.strictEqual(selectedTabText, 'Timing');
      });
 
-  it('shows webbundle content on preview tab', async ({
-                                                 devToolsPage,
-                                                 inspectedPage,
-                                               }) => {
-    await navigateToNetworkTab('resources-from-webbundle.html', devToolsPage, inspectedPage);
-
-    await waitForSomeRequestsToAppear(3, devToolsPage);
-
-    await selectRequestByName('webbundle.wbn', {devToolsPage});
-
-    const networkView = await devToolsPage.waitFor('.network-item-view');
-    await devToolsPage.click('[aria-label=Preview][role=tab]', {
-      root: networkView,
-    });
-    await devToolsPage.waitFor('[aria-label=Preview][role=tab][aria-selected=true]', networkView);
-
-    await devToolsPage.waitForElementWithTextContent('webbundle.wbn', networkView);
-    await devToolsPage.waitForElementWithTextContent(
-        'uuid-in-package:429fcc4e-0696-4bad-b099-ee9175f023ae', networkView);
-    await devToolsPage.waitForElementWithTextContent(
-        'uuid-in-package:020111b3-437a-4c5c-ae07-adb6bbffb720', networkView);
-  });
-
   it('prevents requests on the preview tab.', async ({
                                                 devToolsPage,
                                                 inspectedPage,

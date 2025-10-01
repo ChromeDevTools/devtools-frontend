@@ -77,7 +77,6 @@ devtools_svg_sources = [
   "brush.svg",
   "bucket.svg",
   "bug.svg",
-  "bundle.svg",
   "button-magic.svg",
   "calendar-today.svg",
   "center-focus-weak.svg",

@@ -146,10 +146,6 @@ const UIStrings = {
    */
   preflight: 'Preflight',
   /**
-   * @description Name of a network initiator type
-   */
-  webbundle: 'WebBundle',
-  /**
    * @description Name of a network initiator type for FedCM requests
    */
   fedcm: 'FedCM',
@@ -211,9 +207,6 @@ export class ResourceType {
     }
     if (mimeType === 'application/wasm') {
       return resourceTypes.Wasm;
-    }
-    if (mimeType === 'application/webbundle') {
-      return resourceTypes.WebBundle;
     }
 
     return null;
@@ -337,10 +330,6 @@ export class ResourceType {
     return this.#name.startsWith('sm-');
   }
 
-  isWebbundle(): boolean {
-    return this.#name === 'webbundle';
-  }
-
   toString(): string {
     return this.#name;
   }
@@ -427,7 +416,6 @@ export const resourceTypes = {
   SourceMapScript: new ResourceType('sm-script', i18nLazyString(UIStrings.script), resourceCategories.Script, true),
   SourceMapStyleSheet:
       new ResourceType('sm-stylesheet', i18nLazyString(UIStrings.stylesheet), resourceCategories.Stylesheet, true),
-  WebBundle: new ResourceType('webbundle', i18nLazyString(UIStrings.webbundle), resourceCategories.Other, false),
   FedCM: new ResourceType('fedcm', i18nLazyString(UIStrings.fedcm), resourceCategories.Other, false),
 } as const;
 

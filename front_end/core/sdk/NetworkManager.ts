@@ -23,8 +23,6 @@ import {
   type IncludedCookieWithReason,
   type NameValue,
   NetworkRequest,
-  type WebBundleInfo,
-  type WebBundleInnerRequestInfo
 } from './NetworkRequest.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
@@ -1502,44 +1500,20 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     request.setTrustTokenOperationDoneEvent(event);
   }
 
-  subresourceWebBundleMetadataReceived({requestId, urls}: Protocol.Network.SubresourceWebBundleMetadataReceivedEvent):
-      void {
-    const extraInfoBuilder = this.getExtraInfoBuilder(requestId);
-    extraInfoBuilder.setWebBundleInfo({resourceUrls: urls as Platform.DevToolsPath.UrlString[]});
-    const finalRequest = extraInfoBuilder.finalRequest();
-    if (finalRequest) {
-      this.updateNetworkRequest(finalRequest);
-    }
+  subresourceWebBundleMetadataReceived(): void {
+    // TODO: remove implementation after deleting this methods from definition in Network.pdl
   }
 
-  subresourceWebBundleMetadataError({requestId, errorMessage}: Protocol.Network.SubresourceWebBundleMetadataErrorEvent):
-      void {
-    const extraInfoBuilder = this.getExtraInfoBuilder(requestId);
-    extraInfoBuilder.setWebBundleInfo({errorMessage});
-    const finalRequest = extraInfoBuilder.finalRequest();
-    if (finalRequest) {
-      this.updateNetworkRequest(finalRequest);
-    }
+  subresourceWebBundleMetadataError(): void {
+    // TODO: remove implementation after deleting this methods from definition in Network.pdl
   }
 
-  subresourceWebBundleInnerResponseParsed({innerRequestId, bundleRequestId}:
-                                              Protocol.Network.SubresourceWebBundleInnerResponseParsedEvent): void {
-    const extraInfoBuilder = this.getExtraInfoBuilder(innerRequestId);
-    extraInfoBuilder.setWebBundleInnerRequestInfo({bundleRequestId});
-    const finalRequest = extraInfoBuilder.finalRequest();
-    if (finalRequest) {
-      this.updateNetworkRequest(finalRequest);
-    }
+  subresourceWebBundleInnerResponseParsed(): void {
+    // TODO: remove implementation after deleting this methods from definition in Network.pdl
   }
 
-  subresourceWebBundleInnerResponseError({innerRequestId, errorMessage}:
-                                             Protocol.Network.SubresourceWebBundleInnerResponseErrorEvent): void {
-    const extraInfoBuilder = this.getExtraInfoBuilder(innerRequestId);
-    extraInfoBuilder.setWebBundleInnerRequestInfo({errorMessage});
-    const finalRequest = extraInfoBuilder.finalRequest();
-    if (finalRequest) {
-      this.updateNetworkRequest(finalRequest);
-    }
+  subresourceWebBundleInnerResponseError(): void {
+    // TODO: remove implementation after deleting this methods from definition in Network.pdl
   }
 
   reportingApiReportAdded(data: Protocol.Network.ReportingApiReportAddedEvent): void {
@@ -2151,8 +2125,6 @@ class ExtraInfoBuilder {
   #responseExtraInfos: Array<ExtraResponseInfo|null> = [];
   #responseEarlyHintsHeaders: NameValue[] = [];
   #finished = false;
-  #webBundleInfo: WebBundleInfo|null = null;
-  #webBundleInnerRequestInfo: WebBundleInnerRequestInfo|null = null;
 
   addRequest(req: NetworkRequest): void {
     this.#requests.push(req);
@@ -2186,16 +2158,6 @@ class ExtraInfoBuilder {
 
   setEarlyHintsHeaders(earlyHintsHeaders: NameValue[]): void {
     this.#responseEarlyHintsHeaders = earlyHintsHeaders;
-    this.updateFinalRequest();
-  }
-
-  setWebBundleInfo(info: WebBundleInfo): void {
-    this.#webBundleInfo = info;
-    this.updateFinalRequest();
-  }
-
-  setWebBundleInnerRequestInfo(info: WebBundleInnerRequestInfo): void {
-    this.#webBundleInnerRequestInfo = info;
     this.updateFinalRequest();
   }
 
@@ -2260,8 +2222,6 @@ class ExtraInfoBuilder {
       return;
     }
     const finalRequest = this.finalRequest();
-    finalRequest?.setWebBundleInfo(this.#webBundleInfo);
-    finalRequest?.setWebBundleInnerRequestInfo(this.#webBundleInnerRequestInfo);
     finalRequest?.setEarlyHintsHeaders(this.#responseEarlyHintsHeaders);
   }
 }

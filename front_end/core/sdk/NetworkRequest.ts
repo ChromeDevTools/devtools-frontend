@@ -236,8 +236,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #initialPriority: Protocol.Network.ResourcePriority|null = null;
   #currentPriority: Protocol.Network.ResourcePriority|null = null;
   #signedExchangeInfo: Protocol.Network.SignedExchangeInfo|null = null;
-  #webBundleInfo: WebBundleInfo|null = null;
-  #webBundleInnerRequestInfo: WebBundleInnerRequestInfo|null = null;
   #resourceType: Common.ResourceType.ResourceType = Common.ResourceType.resourceTypes.Other;
   #contentData: Promise<TextUtils.ContentData.ContentDataOrError>|null = null;
   #streamingContentData: Promise<TextUtils.StreamingContentData.StreamingContentDataOrError>|null = null;
@@ -1500,22 +1498,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#signedExchangeInfo;
   }
 
-  setWebBundleInfo(info: WebBundleInfo|null): void {
-    this.#webBundleInfo = info;
-  }
-
-  webBundleInfo(): WebBundleInfo|null {
-    return this.#webBundleInfo;
-  }
-
-  setWebBundleInnerRequestInfo(info: WebBundleInnerRequestInfo|null): void {
-    this.#webBundleInnerRequestInfo = info;
-  }
-
-  webBundleInnerRequestInfo(): WebBundleInnerRequestInfo|null {
-    return this.#webBundleInnerRequestInfo;
-  }
-
   async populateImageSource(image: HTMLImageElement): Promise<void> {
     const contentData = await this.requestContentData();
     if (TextUtils.ContentData.ContentData.isError(contentData)) {
@@ -2205,16 +2187,6 @@ export interface ExtraResponseInfo {
 
 export interface EarlyHintsInfo {
   responseHeaders: NameValue[];
-}
-
-export interface WebBundleInfo {
-  resourceUrls?: Platform.DevToolsPath.UrlString[];
-  errorMessage?: string;
-}
-
-export interface WebBundleInnerRequestInfo {
-  bundleRequestId?: string;
-  errorMessage?: string;
 }
 
 export type OverrideType = 'content'|'headers';

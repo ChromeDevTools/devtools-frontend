@@ -233,11 +233,6 @@ const UIStrings = {
    */
   servedFromSignedHttpExchange: 'Served from Signed HTTP Exchange, resource size: {PH1}',
   /**
-   * @description Cell title in Network Data Grid Node of the Network panel. Indicates that the response came from preloaded web bundle. See https://web.dev/web-bundles/
-   * @example {4 B} PH1
-   */
-  servedFromWebBundle: 'Served from Web Bundle, resource size: {PH1}',
-  /**
    * @description Text of a DOM element in Network Data Grid Node of the Network panel
    */
   prefetchCache: '(prefetch cache)',
@@ -278,19 +273,6 @@ const UIStrings = {
    * @description Text describing the depth of a top level node in the network datagrid
    */
   level: 'level 1',
-  /**
-   * @description Text in Network Data Grid Node of the Network panel
-   */
-  webBundleError: 'Web Bundle error',
-  /**
-   * @description Alternative text for the web bundle inner request icon in Network Data Grid Node of the Network panel
-   * Indicates that the response came from preloaded web bundle. See https://web.dev/web-bundles/
-   */
-  webBundleInnerRequest: 'Served from Web Bundle',
-  /**
-   * @description Text in Network Data Grid Node of the Network panel
-   */
-  webBundle: '(Web Bundle)',
   /**
    * @description Tooltip text for subtitles of Time cells in Network request rows. Latency is the time difference
    * between the time a response to a network request is received and the time the request is started.
@@ -1202,22 +1184,6 @@ export class NetworkRequestNode extends NetworkNode {
     }
 
     if (columnId === 'name') {
-      const webBundleInnerRequestInfo = this.requestInternal.webBundleInnerRequestInfo();
-      if (webBundleInnerRequestInfo) {
-        const secondIconElement = IconButton.Icon.create('bundle', 'icon');
-        secondIconElement.style.color = 'var(--icon-info)';
-        secondIconElement.title = i18nString(UIStrings.webBundleInnerRequest);
-
-        const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.requestInternal);
-        if (webBundleInnerRequestInfo.bundleRequestId && networkManager) {
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
-              new NetworkForward.NetworkRequestId.NetworkRequestId(
-                  webBundleInnerRequestInfo.bundleRequestId, networkManager),
-              secondIconElement, undefined, undefined, undefined, 'webbundle-request'));
-        } else {
-          cell.appendChild(secondIconElement);
-        }
-      }
       const name = Platform.StringUtilities.trimMiddle(this.requestInternal.name(), 100);
       const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.requestInternal);
       UI.UIUtils.createTextChild(cell, networkManager ? networkManager.target().decorateLabel(name) : name);
@@ -1236,12 +1202,8 @@ export class NetworkRequestNode extends NetworkNode {
         'network-dim-cell', !this.isFailed() && (this.requestInternal.cached() || !this.requestInternal.statusCode));
 
     const corsErrorStatus = this.requestInternal.corsErrorStatus();
-    const webBundleErrorMessage = this.requestInternal.webBundleInfo()?.errorMessage ||
-        this.requestInternal.webBundleInnerRequestInfo()?.errorMessage;
-    if (webBundleErrorMessage) {
-      this.setTextAndTitle(cell, i18nString(UIStrings.webBundleError), webBundleErrorMessage);
-    } else if (
-        this.requestInternal.failed && !this.requestInternal.canceled && !this.requestInternal.wasBlocked() &&
+
+    if (this.requestInternal.failed && !this.requestInternal.canceled && !this.requestInternal.wasBlocked() &&
         !corsErrorStatus) {
       const failText = i18nString(UIStrings.failed);
       if (this.requestInternal.localizedFailDescription) {
@@ -1525,10 +1487,6 @@ export class NetworkRequestNode extends NetworkNode {
     } else if (this.requestInternal.redirectSourceSignedExchangeInfoHasNoErrors()) {
       UI.UIUtils.createTextChild(cell, i18n.i18n.lockedString('(signed-exchange)'));
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromSignedHttpExchange, {PH1: resourceSize}));
-      cell.classList.add('network-dim-cell');
-    } else if (this.requestInternal.webBundleInnerRequestInfo()) {
-      UI.UIUtils.createTextChild(cell, i18nString(UIStrings.webBundle));
-      UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromWebBundle, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
     } else if (this.requestInternal.fromPrefetchCache()) {
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.prefetchCache));

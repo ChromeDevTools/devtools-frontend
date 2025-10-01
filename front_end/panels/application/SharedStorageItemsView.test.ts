@@ -360,10 +360,6 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.instanceOf(viewFunction.input.preview, UI.EmptyWidget.EmptyWidget);
   });
 
-  function createMockElement(key: string, value?: string): HTMLElement {
-    return {dataset: {key, value}} as unknown as HTMLElement;
-  }
-
   it('updates sidebarWidget upon receiving SelectedNode Event', async () => {
     assert.exists(sharedStorageModel);
     sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageMetadata')
@@ -382,7 +378,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     const {viewFunction} = await createView();
 
     // Select the second row.
-    viewFunction.input.onSelect(new CustomEvent('select', {detail: createMockElement('key2', 'b')}));
+    viewFunction.input.onSelect({key: 'key2', value: 'b'});
     await raf();
 
     assert.instanceOf(viewFunction.input.preview, UI.SearchableView.SearchableView);
@@ -594,7 +590,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.deepEqual(viewFunction.input.items, ENTRIES);
 
     // Select the second row.
-    viewFunction.input.onSelect(new CustomEvent('select', {detail: createMockElement('key2', 'b')}));
+    viewFunction.input.onSelect({key: 'key2', value: 'b'});
 
     // Clicking "Delete Selected" will cause `deleteEntry()`, `getMetadata()`, and `getEntries()` to be called.
     const deletedPromise = itemsListener.waitForItemsDeletedTotal(1);
@@ -652,14 +648,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     assert.deepEqual(viewFunction.input.items, ENTRIES);
 
-    viewFunction.input.onEdit(new CustomEvent('edit', {
-      detail: {
-        node: createMockElement('key2', 'b'),
-        columnId: 'key',
-        valueBeforeEditing: 'key2',
-        newText: 'key0',
-      },
-    }));
+    viewFunction.input.onEdit('key2', 'b', 'key', 'key2', 'key0');
 
     //  Editing a key will cause `deleteEntry()`, `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
     await itemsListener.waitForItemsEditedTotal(1);
@@ -716,14 +705,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     assert.deepEqual(viewFunction.input.items, ENTRIES);
 
-    viewFunction.input.onEdit(new CustomEvent('edit', {
-      detail: {
-        node: createMockElement('key2', 'b'),
-        columnId: 'key',
-        valueBeforeEditing: 'key2',
-        newText: 'key1',
-      },
-    }));
+    viewFunction.input.onEdit('key2', 'b', 'key', 'key2', 'key1');
     await itemsListener.waitForItemsEditedTotal(1);
 
     sinon.assert.calledOnceWithExactly(deleteEntrySpy, {ownerOrigin: TEST_ORIGIN, key: 'key2'});
@@ -777,14 +759,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     assert.deepEqual(viewFunction.input.items, ENTRIES);
 
-    viewFunction.input.onEdit(new CustomEvent('edit', {
-      detail: {
-        node: createMockElement('key2', 'b'),
-        columnId: 'value',
-        valueBeforeEditing: 'b',
-        newText: 'd',
-      },
-    }));
+    viewFunction.input.onEdit('key2', 'b', 'value', 'b', 'd');
     await itemsListener.waitForItemsEditedTotal(1);
 
     sinon.assert.notCalled(deleteEntrySpy);
@@ -838,12 +813,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     assert.deepEqual(viewFunction.input.items, ENTRIES);
 
-    viewFunction.input.onCreate(new CustomEvent('edit', {
-      detail: {
-        key: 'key4',
-        value: 'e',
-      },
-    }));
+    viewFunction.input.onCreate('key4', 'e');
     await itemsListener.waitForItemsEditedTotal(1);
 
     sinon.assert.notCalled(deleteEntrySpy);
@@ -883,15 +853,8 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     assert.deepEqual(viewFunction.input.items, ENTRIES);
 
-    viewFunction.input.onSelect(new CustomEvent('select', {detail: createMockElement('key2', 'b')}));
-    viewFunction.input.onEdit(new CustomEvent('edit', {
-      detail: {
-        node: createMockElement('key2', 'b'),
-        columnId: 'key',
-        valueBeforeEditing: 'key2',
-        newText: '',
-      },
-    }));
+    viewFunction.input.onSelect({key: 'key2', value: 'b'});
+    viewFunction.input.onEdit('key2', 'b', 'key', 'key2', '');
     await itemsListener.waitForItemsRefreshed();
 
     sinon.assert.notCalled(deleteEntrySpy);

@@ -177,8 +177,8 @@ export interface ViewInput {
   onClear: () => void;
   onSave: () => void;
   onSplitChange: (onlyMain: boolean) => void;
-  onSelect: (e: CustomEvent<HTMLElement|null>) => void;
-  onContextMenu: (e: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
+  onSelect: (e: Message|undefined) => void;
+  onContextMenu: (message: Message, menu: UI.ContextMenu.ContextMenu) => void;
   onFilterChanged: (filter: string) => void;
   onCommandChange: (command: string) => void;
   onCommandSubmitted: (input: string) => void;
@@ -243,8 +243,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               <devtools-data-grid
                   striped
                   slot="main"
-                  @select=${input.onSelect}
-                  @contextmenu=${input.onContextMenu}
                   .filters=${input.parseFilter(input.filter)}>
                 <table>
                     <tr>
@@ -275,8 +273,9 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                     </tr>
                     ${
             input.messages.map(
-                (message, index) => html`
-                      <tr data-index=${index}
+                message => html`
+                      <tr @select=${() => input.onSelect(message)}
+                          @contextmenu=${(e: CustomEvent<UI.ContextMenu.ContextMenu>) => input.onContextMenu(message, e.detail)}
                           style="--override-data-grid-row-background-color: var(--sys-color-surface3)">
                         ${'id' in message ? html`
                           <td title="sent">
@@ -439,17 +438,11 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
       onSave: () => {
         void this.saveAsFile();
       },
-      onSelect: (e: CustomEvent<HTMLElement|null>) => {
-        const index = parseInt(e.detail?.dataset?.index ?? '', 10);
-        this.#selectedMessage = !isNaN(index) ? this.#messages[index] : undefined;
+      onSelect: (message: Message|undefined) => {
+        this.#selectedMessage = message;
         this.requestUpdate();
       },
-      onContextMenu: (e: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {
-        const message = this.#messages[parseInt(e.detail?.element?.dataset?.index || '', 10)];
-        if (message) {
-          this.#populateContextMenu(e.detail.menu, message);
-        }
-      },
+      onContextMenu: this.#populateContextMenu.bind(this),
       onCommandChange: (command: string) => {
         this.#command = command;
       },
@@ -481,7 +474,7 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
     this.#view(viewInput, viewOutput, this.contentElement);
   }
 
-  #populateContextMenu(menu: UI.ContextMenu.ContextMenu, message: Message): void {
+  #populateContextMenu(message: Message, menu: UI.ContextMenu.ContextMenu): void {
     /**
      * You can click the "Edit and resend" item in the context menu to be
      * taken to the CDP editor with the filled with the selected command.

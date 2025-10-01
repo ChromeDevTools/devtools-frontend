@@ -58,7 +58,7 @@ export interface ReportsGridData {
 export interface ViewInput {
   reports: Protocol.Network.ReportingApiReport[];
   protocolMonitorExperimentEnabled: boolean;
-  onSelect: (e: CustomEvent<HTMLElement|null>) => void;
+  onSelect: (id: string) => void;
 }
 
 export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLElement): void => {
@@ -69,7 +69,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
     <div class="reporting-container" jslog=${VisualLogging.section('reports')}>
       <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
       ${input.reports.length > 0 ? html`
-        <devtools-data-grid striped @select=${input.onSelect}>
+        <devtools-data-grid striped>
           <table>
             <tr>
               ${input.protocolMonitorExperimentEnabled ? html`
@@ -91,7 +91,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
               <th id="body" weight="20">${i18n.i18n.lockedString('Body')}</th>
             </tr>
             ${input.reports.map(report => html`
-              <tr data-id=${report.id}>
+              <tr @select=${() =>input.onSelect(report.id)}>
                 ${input.protocolMonitorExperimentEnabled ? html`<td>${report.id}</td>` : ''}
                 <td>${report.initiatorUrl}</td>
                 <td>${report.type}</td>
@@ -133,17 +133,11 @@ export class ReportsGrid extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #onSelect = (e: CustomEvent<HTMLElement|null>): void => {
-    if (e.detail?.dataset.id) {
-      this.onReportSelected(e.detail.dataset.id);
-    }
-  };
-
   override performUpdate(): void {
     const viewInput = {
       reports: this.reports,
       protocolMonitorExperimentEnabled: this.#protocolMonitorExperimentEnabled,
-      onSelect: this.#onSelect,
+      onSelect: this.onReportSelected,
     };
     this.#view(viewInput, undefined, this.contentElement);
   }

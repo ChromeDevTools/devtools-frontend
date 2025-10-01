@@ -55,13 +55,12 @@ interface ViewInput {
   renderInline?: boolean;
   portBindingEnabled?: boolean;
   schemeBindingEnabled?: boolean;
-  onEdit:
-      (event: CustomEvent<{node: HTMLElement, columnId: string, valueBeforeEditing: string, newText: string}>) => void;
-  onCreate: (event: CustomEvent<CookieData>) => void;
+  onEdit: (data: CookieData, columnId: string, valueBeforeEditing: string, newText: string) => void;
+  onCreate: (data: CookieData) => void;
   onRefresh: () => void;
-  onDelete: (event: CustomEvent<HTMLElement>) => void;
-  onContextMenu: (event: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
-  onSelect: (event: CustomEvent<HTMLElement|null>) => void;
+  onDelete: (data: CookieData) => void;
+  onContextMenu: (data: CookieData, menu: UI.ContextMenu.ContextMenu) => void;
+  onSelect: (key: string|undefined) => void;
 }
 type ViewFunction = (input: ViewInput, output: object, target: HTMLElement) => void;
 type AttributeWithIcon = SDK.Cookie.Attribute.NAME|SDK.Cookie.Attribute.VALUE|SDK.Cookie.Attribute.DOMAIN|
@@ -183,12 +182,9 @@ export class CookiesTable extends UI.Widget.VBox {
                id="cookies-table"
                striped
                ?inline=${input.renderInline}
-               @edit=${input.onEdit}
                @create=${input.onCreate}
                @refresh=${input.onRefresh}
-               @delete=${input.onDelete}
-               @contextmenu=${input.onContextMenu}
-               @select=${input.onSelect}
+               @deselect=${() => input.onSelect(undefined)}
           >
             <table>
                <tr>
@@ -237,12 +233,16 @@ export class CookiesTable extends UI.Widget.VBox {
                    SourcePort
                 </th>` : ''}
               </tr>
-              ${repeat(this.data,
-                        cookie => cookie.key, cookie => html`<tr data-key=${ifDefined(cookie.key)}
-                    ?selected=${cookie.key === input.selectedKey}
+              ${repeat(this.data, cookie => cookie.key, cookie => html`
+                <tr ?selected=${cookie.key === input.selectedKey}
                     ?inactive=${cookie.inactive}
                     ?dirty=${cookie.dirty}
-                    ?highlighted=${cookie.flagged}>
+                    ?highlighted=${cookie.flagged}
+                    @edit=${(e: CustomEvent<{columnId: string, valueBeforeEditing: string, newText: string}>) =>
+                       input.onEdit(cookie, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
+                    @delete=${()=> input.onDelete(cookie)}
+                    @contextmenu=${(e: CustomEvent<UI.ContextMenu.ContextMenu>) => input.onContextMenu(cookie, e.detail)}
+                    @select=${() => input.onSelect(cookie.key)}>
                   <td>${cookie.icons?.name}${cookie.name}</td>
                   <td>${cookie.value}</td>
                   <td>${cookie.icons?.domain}${cookie.domain}</td>
@@ -336,37 +336,35 @@ export class CookiesTable extends UI.Widget.VBox {
       renderInline: this.renderInline,
       schemeBindingEnabled: this.schemeBindingEnabled,
       portBindingEnabled: this.portBindingEnabled,
-      onEdit: event => this.onUpdateCookie(
-          event.detail.node, event.detail.columnId, event.detail.valueBeforeEditing, event.detail.newText),
-      onCreate: event => this.onCreateCookie(event.detail),
-      onRefresh: () => this.refresh(),
-      onDelete: event => this.onDeleteCookie(event.detail),
-      onSelect: event => this.onSelect(event.detail),
-      onContextMenu: event => this.populateContextMenu(event.detail.menu, event.detail.element),
+      onEdit: this.onUpdateCookie.bind(this),
+      onCreate: this.onCreateCookie.bind(this),
+      onRefresh: this.refresh.bind(this),
+      onDelete: this.onDeleteCookie.bind(this),
+      onSelect: this.onSelect.bind(this),
+      onContextMenu: this.populateContextMenu.bind(this),
     };
     const output = {};
     this.view(input, output, this.element);
   }
 
-  private onSelect(node: HTMLElement|null): void {
-    this.selectedKey = node?.dataset?.key;
+  private onSelect(key: string|undefined): void {
+    this.selectedKey = key;
     this.selectedCallback?.();
   }
 
-  private onDeleteCookie(node: HTMLElement): void {
-    const cookie = this.cookies.find(cookie => cookie.key() === node.dataset.key);
+  private onDeleteCookie(data: CookieData): void {
+    const cookie = this.cookies.find(cookie => cookie.key() === data.key);
     if (cookie && this.deleteCallback) {
       this.deleteCallback(cookie, () => this.refresh());
     }
   }
 
-  private onUpdateCookie(editingNode: HTMLElement, columnIdentifier: string, _oldText: string, newText: string): void {
-    const oldCookie = this.cookies.find(cookie => cookie.key() === editingNode.dataset.key);
-    const oldData = this.data.find(data => data.key === editingNode.dataset.key);
-    if (!oldData || !oldCookie) {
+  private onUpdateCookie(oldData: CookieData, columnIdentifier: string, _oldText: string, newText: string): void {
+    const oldCookie = this.cookies.find(cookie => cookie.key() === oldData.key);
+    if (!oldCookie) {
       return;
     }
-    const newCookieData = {...oldData, [columnIdentifier]: newText};  // as CookieData;
+    const newCookieData = {...oldData, [columnIdentifier]: newText};
     if (!this.isValidCookieData(newCookieData)) {
       newCookieData.dirty = true;
       this.requestUpdate();
@@ -556,8 +554,8 @@ export class CookiesTable extends UI.Widget.VBox {
     }
   }
 
-  private populateContextMenu(contextMenu: UI.ContextMenu.ContextMenu, gridNode: HTMLElement): void {
-    const maybeCookie = this.cookies.find(cookie => cookie.key() === gridNode.dataset.key);
+  private populateContextMenu(data: CookieData, contextMenu: UI.ContextMenu.ContextMenu): void {
+    const maybeCookie = this.cookies.find(cookie => cookie.key() === data.key);
     if (!maybeCookie) {
       return;
     }

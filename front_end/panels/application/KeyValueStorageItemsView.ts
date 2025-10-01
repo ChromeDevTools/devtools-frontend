@@ -77,13 +77,12 @@ export interface ViewInput {
   selectedKey: string|null;
   editable: boolean;
   preview: Widget;
-  onSelect: (event: CustomEvent<HTMLElement|null>) => void;
-  onSort: (event: CustomEvent<{columnId: string, ascending: boolean}>) => void;
-  onCreate: (event: CustomEvent<{key: string, value: string}>) => void;
+  onSelect: (item: {key: string, value: string}|null) => void;
+  onSort: (ascending: boolean) => void;
+  onCreate: (key: string, value: string) => void;
   onReferesh: () => void;
-  onEdit:
-      (event: CustomEvent<{node: HTMLElement, columnId: string, valueBeforeEditing: string, newText: string}>) => void;
-  onDelete: (event: CustomEvent<HTMLElement>) => void;
+  onEdit: (key: string, value: string, columnId: string, valueBeforeEditing: string, newText: string) => void;
+  onDelete: (key: string) => void;
 }
 
 interface ViewOutput {
@@ -130,12 +129,10 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
                   .name=${`${id}-datagrid-with-preview`}
                   striped
                   style="flex: auto"
-                  @select=${input.onSelect}
-                  @sort=${input.onSort}
+                  @sort=${(e: CustomEvent<{columnId: string, ascending: boolean}>) => input.onSort(e.detail.ascending)}
                   @refresh=${input.onReferesh}
-                  @create=${input.onCreate}
-                  @edit=${input.onEdit}
-                  @delete=${input.onDelete}
+                  @create=${(e: CustomEvent<{key: string, value: string}>) => input.onCreate(e.detail.key, e.detail.value)}
+                  @deselect=${() => input.onSelect(null)}
                 >
                   <table>
                     <tr>
@@ -148,6 +145,10 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
                     </tr>
                     ${repeat(input.items, item => item.key, item => html`
                       <tr data-key=${item.key} data-value=${item.value}
+                          @select=${() => input.onSelect(item)}
+                          @edit=${(e: CustomEvent<{columnId: string, valueBeforeEditing: string, newText: string}>) =>
+                            input.onEdit(item.key, item.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
+                          @delete=${() => input.onDelete(item.key)}
                           selected=${(input.selectedKey === item.key) || nothing}>
                         <td>${item.key}</td>
                         <td>${item.value.substr(0, MAX_VALUE_LENGTH)}</td>
@@ -202,27 +203,25 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
       selectedKey: this.#selectedKey,
       editable: this.#editable,
       preview: this.#preview,
-      onSelect: (event: CustomEvent<HTMLElement|null>) => {
-        this.#toolbar?.setCanDeleteSelected(Boolean(event.detail));
-        if (!event.detail) {
+      onSelect: (item: {key: string, value: string}|null) => {
+        this.#toolbar?.setCanDeleteSelected(Boolean(item));
+        if (!item) {
           void this.#previewEntry(null);
         } else {
-          void this.#previewEntry({key: event.detail.dataset.key || '', value: event.detail.dataset.value || ''});
+          void this.#previewEntry(item);
         }
       },
-      onSort: (event: CustomEvent<{columnId: string, ascending: boolean}>) => {
-        this.#isSortOrderAscending = event.detail.ascending;
+      onSort: (ascending: boolean) => {
+        this.#isSortOrderAscending = ascending;
       },
-      onCreate: (event: CustomEvent<{key: string, value: string}>) => {
-        this.#createCallback(event.detail.key, event.detail.value || '');
+      onCreate: (key: string, value: string) => {
+        this.#createCallback(key, value);
       },
-      onEdit:
-          (event: CustomEvent<{node: HTMLElement, columnId: string, valueBeforeEditing: string, newText: string}>) => {
-            this.#editingCallback(
-                event.detail.node, event.detail.columnId, event.detail.valueBeforeEditing, event.detail.newText);
-          },
-      onDelete: (event: CustomEvent<HTMLElement>) => {
-        this.#deleteCallback(event.detail.dataset.key || '');
+      onEdit: (key: string, value: string, columnId: string, valueBeforeEditing: string, newText: string) => {
+        this.#editingCallback(key, value, columnId, valueBeforeEditing, newText);
+      },
+      onDelete: (key: string) => {
+        this.#deleteCallback(key);
       },
       onReferesh: () => {
         this.refreshItems();
@@ -316,7 +315,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
     return true;
   }
 
-  #editingCallback(editingNode: HTMLElement, columnIdentifier: string, oldText: string, newText: string): void {
+  #editingCallback(key: string, value: string, columnIdentifier: string, oldText: string, newText: string): void {
     if (!this.isEditAllowed(columnIdentifier, oldText, newText)) {
       return;
     }
@@ -324,13 +323,12 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
       if (typeof oldText === 'string') {
         this.removeItem(oldText);
       }
-      this.setItem(newText, editingNode.dataset.value || '');
-      this.#removeDupes(newText, editingNode.dataset.value || '');
-      editingNode.dataset.key = newText;
-      void this.#previewEntry({key: newText, value: editingNode.dataset.value || ''});
+      this.setItem(newText, value);
+      this.#removeDupes(newText, value);
+      void this.#previewEntry({key: newText, value});
     } else {
-      this.setItem(editingNode.dataset.key || '', newText);
-      void this.#previewEntry({key: editingNode.dataset.key || '', value: newText});
+      this.setItem(key, newText);
+      void this.#previewEntry({key, value: newText});
     }
   }
 

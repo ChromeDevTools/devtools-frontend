@@ -157,23 +157,35 @@ describeWithEnvironment('ProtocolMonitor', () => {
 
   describe('context menu', () => {
     let menu!: UI.ContextMenu.ContextMenu;
-    let element!: HTMLElement;
 
-    function triggerContextMenu(index: number) {
+    function triggerContextMenu(message: ProtocolMonitor.ProtocolMonitor.Message): void {
       menu = new UI.ContextMenu.ContextMenu(new Event('contextmenu'));
-      element = {dataset: {index: `${index}`}} as unknown as HTMLElement;
-      view.input.onSelect(new CustomEvent('select', {detail: element}));
-      view.input.onContextMenu(new CustomEvent('contextmenu', {detail: {menu, element}}));
+      view.input.onSelect(message);
+      view.input.onContextMenu(message, menu);
     }
+    const MESSAGES = [
+      {
+        domain: 'Test',
+        method: 'Test.test1',
+        params: {test: 'test'},
+        id: 1,
+        requestTime: 0,
+      },
+      {
+        domain: 'Test',
+        method: 'Test.test2',
+        params: {test: 'test'},
+        id: 2,
+        requestTime: 1,
+      },
+    ];
 
     beforeEach(() => {
       menu = new UI.ContextMenu.ContextMenu(new Event('contextmenu'));
       protocolMonitor.wasShown();
-      InspectorBackend.test.onMessageSent?.(
-          {domain: 'Test', method: 'Test.test1', params: {test: 'test'}, id: 2}, null);
-      InspectorBackend.test.onMessageSent?.(
-          {domain: 'Test', method: 'Test.test2', params: {test: 'test'}, id: 2}, null);
-      triggerContextMenu(1);
+      InspectorBackend.test.onMessageSent?.(MESSAGES[0], null);
+      InspectorBackend.test.onMessageSent?.(MESSAGES[1], null);
+      triggerContextMenu(MESSAGES[1]);
     });
 
     it('priovides edit and resend context menu item', async () => {
@@ -188,7 +200,7 @@ describeWithEnvironment('ProtocolMonitor', () => {
 
       const displayCommandStub = sinon.stub(jsonEditor, 'displayCommand');
 
-      triggerContextMenu(0);
+      triggerContextMenu(MESSAGES[0]);
       editAndResend = findMenuItemWithLabel(menu.editSection(), 'Edit and resend');
       assert.exists(editAndResend);
       menu.invokeHandler(editAndResend.id());
@@ -471,8 +483,8 @@ describeWithEnvironment('ProtocolMonitor', () => {
         onRecord: (_: boolean) => {},
         onClear: () => {},
         onSave: () => {},
-        onSelect: (_: CustomEvent<HTMLElement|null>) => {},
-        onContextMenu: (_: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {},
+        onSelect: (_: ProtocolMonitor.ProtocolMonitor.Message|undefined) => {},
+        onContextMenu: (_1: ProtocolMonitor.ProtocolMonitor.Message, _2: UI.ContextMenu.ContextMenu) => {},
         onCommandChange: (_: string) => {},
         onCommandSubmitted: (_: string) => {},
         onFilterChanged: (_: string) => {},
@@ -525,8 +537,8 @@ describeWithEnvironment('ProtocolMonitor', () => {
         onRecord: (_: boolean) => {},
         onClear: () => {},
         onSave: () => {},
-        onSelect: (_: CustomEvent<HTMLElement|null>) => {},
-        onContextMenu: (_: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {},
+        onSelect: (_: ProtocolMonitor.ProtocolMonitor.Message|undefined) => {},
+        onContextMenu: (_1: ProtocolMonitor.ProtocolMonitor.Message, _2: UI.ContextMenu.ContextMenu) => {},
         onCommandChange: (_: string) => {},
         onCommandSubmitted: (_: string) => {},
         onFilterChanged: (_: string) => {},

@@ -128,7 +128,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
       Lit.render(html`
         <style>${ruleSetGridStyles}</style>
         <div class="ruleset-container" jslog=${VisualLogging.pane('preloading-rules')}>
-          <devtools-data-grid striped @select=${this.#onRowSelected}>
+          <devtools-data-grid striped>
             <table>
               <tr>
                 <th id="rule-set" weight="20" sortable>
@@ -143,7 +143,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
                 const revealInElements = ruleSet.backendNodeId !== undefined;
                 const revealInNetwork = ruleSet.url !== undefined && ruleSet.requestId;
                 return html`
-                  <tr data-id=${ruleSet.id}>
+                  <tr @select=${() => this.dispatchEvent(new CustomEvent('select', {detail: ruleSet.id}))}>
                     <td>
                       ${revealInElements || revealInNetwork ? html`
                         <button class="link" role="link"
@@ -203,13 +203,6 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
         </div>
       `, this.#shadow, {host: this});
     // clang-format on
-  }
-
-  #onRowSelected(event: CustomEvent<HTMLElement>): void {
-    const ruleSetId = event.detail.dataset.id;
-    if (ruleSetId !== undefined) {
-      this.dispatchEvent(new CustomEvent('select', {detail: ruleSetId}));
-    }
   }
 }
 

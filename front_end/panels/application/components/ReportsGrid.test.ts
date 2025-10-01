@@ -70,7 +70,7 @@ describeWithEnvironment('ReportsGrid', () => {
     widget.requestUpdate();
     const viewInput = await view.nextInput;
 
-    viewInput.onSelect({detail: {dataset: {id: 'some_id'}} as unknown as HTMLElement} as unknown as CustomEvent);
+    viewInput.onSelect('some_id');
     sinon.assert.calledWith(selectedSpy, 'some_id');
   });
 });

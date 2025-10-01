@@ -102,8 +102,9 @@ export class InterestGroupAccessGrid extends HTMLElement {
   }
 
   #renderGrid(): Lit.TemplateResult {
+    // clang-format off
     return html`
-      <devtools-data-grid @select=${this.#onSelect} striped inline>
+      <devtools-data-grid striped inline>
         <table>
           <tr>
             <th id="event-time" sortable weight="10">${i18nString(UIStrings.eventTime)}</td>
@@ -111,8 +112,8 @@ export class InterestGroupAccessGrid extends HTMLElement {
             <th id="event-group-owner" sortable weight="10">${i18nString(UIStrings.groupOwner)}</td>
             <th id="event-group-name" sortable weight="10">${i18nString(UIStrings.groupName)}</td>
           </tr>
-          ${this.#datastores.map((event, index) => html`
-          <tr data-index=${index}>
+          ${this.#datastores.map(event => html`
+          <tr @select=${() => this.dispatchEvent(new CustomEvent('select', {detail: event}))}>
             <td>${new Date(1e3 * event.accessTime).toLocaleString()}</td>
             <td>${event.type}</td>
             <td>${event.ownerOrigin}</td>
@@ -120,14 +121,8 @@ export class InterestGroupAccessGrid extends HTMLElement {
           </tr>
         `)}
         </table>
-      </devtools-data-grid>
-    `;
-  }
-
-  #onSelect(event: CustomEvent<HTMLElement|null>): void {
-    if (event.detail) {
-      this.dispatchEvent(new CustomEvent('select', {detail: this.#datastores[Number(event.detail.dataset.index)]}));
-    }
+      </devtools-data-grid>`;
+    // clang-format on
   }
 }
 

@@ -212,13 +212,13 @@ describeWithEnvironment('DataGrid', () => {
   it('supports editable columns', async () => {
     const editCallback = sinon.stub();
     const element = await renderDataGrid(html`
-        <devtools-data-grid striped name=${'Display Name'} @edit=${editCallback as () => void}>
+        <devtools-data-grid striped name=${'Display Name'}>
           <table>
             <tr>
               <th id="column-1" editable>Column 1</th>
               <th id="column-2">Column 2</th>
             </tr>
-            <tr>
+            <tr @edit=${editCallback as () => void}>
               <td>Value 1</td>
               <td>Value 2</td>
             </tr>
@@ -229,8 +229,8 @@ describeWithEnvironment('DataGrid', () => {
     getFocusedElement().textContent = 'New Value';
     sendKeydown(element, 'Enter');
     sinon.assert.calledOnce(editCallback);
-    assert.isTrue(editCallback.firstCall.args[0].detail.node.textContent.includes('Value 1'));
-    assert.isTrue(editCallback.firstCall.args[0].detail.node.textContent.includes('Value 2'));
+    assert.isTrue(editCallback.firstCall.args[0].target.textContent.includes('Value 1'));
+    assert.isTrue(editCallback.firstCall.args[0].target.textContent.includes('Value 2'));
     assert.strictEqual(editCallback.firstCall.args[0].detail.columnId, 'column-1');
     assert.strictEqual(editCallback.firstCall.args[0].detail.valueBeforeEditing, 'Value 1');
     assert.strictEqual(editCallback.firstCall.args[0].detail.newText, 'New Value');
@@ -241,18 +241,17 @@ describeWithEnvironment('DataGrid', () => {
     const editCallback = sinon.stub();
     const element = await renderDataGrid(html`
         <devtools-data-grid striped name=${'Display Name'}
-                            @create=${createCallback as () => void}
-                            @edit=${editCallback as () => void}>
+                            @create=${createCallback as () => void}>
           <table>
             <tr>
               <th id="column-1" editable>Column 1</th>
               <th id="column-2" editable>Column 2</th>
             </tr>
-            <tr>
+            <tr @edit=${editCallback as () => void}>
               <td>Value 1</td>
               <td>Value 2</td>
             </tr>
-            <tr placeholder>
+            <tr placeholder @edit=${editCallback as () => void}>
             </tr>
           </table>
         </devtools-data-grid>`);

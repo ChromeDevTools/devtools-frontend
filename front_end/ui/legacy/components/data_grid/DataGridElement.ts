@@ -66,15 +66,14 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
 
     this.#dataGrid.addEventListener(
         DataGridEvents.SELECTED_NODE,
-        e => this.dispatchEvent(new CustomEvent('select', {detail: (e.data as DataGridElementNode).configElement})));
+        e => (e.data as DataGridElementNode).configElement.dispatchEvent(new CustomEvent('select')));
     this.#dataGrid.addEventListener(
-        DataGridEvents.DESELECTED_NODE, () => this.dispatchEvent(new CustomEvent('select', {detail: null})));
+        DataGridEvents.DESELECTED_NODE, () => this.dispatchEvent(new CustomEvent('deselect')));
     this.#dataGrid.addEventListener(DataGridEvents.SORTING_CHANGED, () => this.dispatchEvent(new CustomEvent('sort', {
       detail: {columnId: this.#dataGrid.sortColumnId(), ascending: this.#dataGrid.isSortOrderAscending()}
     })));
     this.#dataGrid.setRowContextMenuCallback((menu, node) => {
-      this.dispatchEvent(
-          new CustomEvent('contextmenu', {detail: {menu, element: (node as DataGridElementNode).configElement}}));
+      (node as DataGridElementNode).configElement.dispatchEvent(new CustomEvent('contextmenu', {detail: menu}));
     });
     this.#dataGrid.setHeaderContextMenuCallback(menu => {
       for (const column of this.#columns) {
@@ -350,12 +349,11 @@ class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
       return;
     }
 
-    this.dispatchEvent(
-        new CustomEvent('edit', {detail: {node: node.configElement, columnId, valueBeforeEditing, newText}}));
+    node.configElement.dispatchEvent(new CustomEvent('edit', {detail: {columnId, valueBeforeEditing, newText}}));
   }
 
   #deleteCallback(node: DataGridElementNode): void {
-    this.dispatchEvent(new CustomEvent('delete', {detail: node.configElement}));
+    node.configElement.dispatchEvent(new CustomEvent('delete'));
   }
 
   override addEventListener<K extends keyof HTMLElementEventMap>(

@@ -1,21 +1,24 @@
 Title: StylingAgent describeElement should describe an element with no children, siblings, or parent
 Content:
+* Element's uid is 99.
 * Its selector is `div#myElement`
 === end content
 
 Title: StylingAgent describeElement should describe an element with child element and text nodes
 Content:
+* Element's uid is 99.
 * Its selector is `div#parentElement`
-* It has 2 child element nodes: `span.child1`, `span.child2`
+* It has 2 child element nodes: `span.child1` (uid=undefined), `span.child2` (uid=undefined)
 * It only has 1 child text node
 === end content
 
 Title: StylingAgent describeElement should describe an element with siblings and a parent
 Content:
+* Element's uid is 99.
 * Its selector is `div#parentElement`
-* It has a next sibling and it is an element node
+* It has a next sibling and it is an element (uid=undefined) node
 * It has a previous sibling and it is a non element node
-* Its parent's selector is `div#grandparentElement`
+* Its parent's selector is `div#grandparentElement` (uid=undefined)
 * Its parent is a non element node
 * Its parent has only 1 child element node
 * Its parent has only 1 child text node
@@ -53,6 +56,40 @@ Content:
   ],
   "function_declarations": [
     {
+      "name": "getStyles",
+      "description": "Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.\n\n**CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.\n**CRITICAL** Always provide the explanation argument to explain what and why you query.",
+      "parameters": {
+        "type": 6,
+        "description": "",
+        "nullable": false,
+        "properties": {
+          "explanation": {
+            "type": 1,
+            "description": "Explain why you want to get styles",
+            "nullable": false
+          },
+          "elements": {
+            "type": 5,
+            "description": "A list of element uids to get data for",
+            "items": {
+              "type": 1,
+              "description": "An element uid."
+            },
+            "nullable": false
+          },
+          "styleProperties": {
+            "type": 5,
+            "description": "One or more CSS style property names to fetch.",
+            "nullable": false,
+            "items": {
+              "type": 1,
+              "description": "A CSS style property name to retrieve. For example, 'background-color'."
+            }
+          }
+        }
+      }
+    },
+    {
       "name": "executeJavaScript",
       "description": "This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.",
       "parameters": {
@@ -62,7 +99,7 @@ Content:
         "properties": {
           "code": {
             "type": 1,
-            "description": "JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.\n\n# Instructions\n\n* To return data, define a top-level `data` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to `data`.\n* If you modify styles on an element, ALWAYS call the pre-defined global `async setElementStyles(el: Element, styles: object)` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.\n* Use `window.getComputedStyle` to gather **computed** styles and make sure that you take the distinction between authored styles and computed styles into account.\n* **CRITICAL** Only get styles that might be relevant to the user request.\n* **CRITICAL** Call `window.getComputedStyle` only once per element and store results into a local variable. Never try to return all the styles of the element in `data`.\n* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.\n* **CRITICAL** Consider that `data` variable from the previous function calls are not available in a new function call.\n\nFor example, the code to return basic styles:\n\n```\nconst styles = window.getComputedStyle($0);\nconst data = {\n    display: styles['display'],\n    visibility: styles['visibility'],\n    position: styles['position'],\n    left: styles['right'],\n    top: styles['top'],\n    width: styles['width'],\n    height: styles['height'],\n    zIndex: styles['z-index']\n};\n```\n\nFor example, the code to change element styles:\n\n```\nawait setElementStyles($0, {\n  color: 'blue',\n});\n```\n\nFor example, the code to get current and parent styles at once:\n\n```\nconst styles = window.getComputedStyle($0);\nconst parentStyles = window.getComputedStyle($0.parentElement);\nconst data = {\n    currentElementStyles: {\n      display: styles['display'],\n      visibility: styles['visibility'],\n      position: styles['position'],\n      left: styles['right'],\n      top: styles['top'],\n      width: styles['width'],\n      height: styles['height'],\n      zIndex: styles['z-index'],\n    },\n    parentElementStyles: {\n      display: parentStyles['display'],\n      visibility: parentStyles['visibility'],\n      position: parentStyles['position'],\n      left: parentStyles['right'],\n      top: parentStyles['top'],\n      width: parentStyles['width'],\n      height: parentStyles['height'],\n      zIndex: parentStyles['z-index'],\n    },\n};\n```\n\nFor example, the code to get check siblings and overlapping elements:\n\n```\nconst computedStyles = window.getComputedStyle($0);\nconst parentComputedStyles = window.getComputedStyle($0.parentElement);\nconst data = {\n  numberOfChildren: $0.children.length,\n  numberOfSiblings: $0.parentElement.children.length,\n  hasPreviousSibling: !!$0.previousElementSibling,\n  hasNextSibling: !!$0.nextElementSibling,\n  elementStyles: {\n    display: computedStyles['display'],\n    visibility: computedStyles['visibility'],\n    position: computedStyles['position'],\n    clipPath: computedStyles['clip-path'],\n    zIndex: computedStyles['z-index']\n  },\n  parentStyles: {\n    display: parentComputedStyles['display'],\n    visibility: parentComputedStyles['visibility'],\n    position: parentComputedStyles['position'],\n    clipPath: parentComputedStyles['clip-path'],\n    zIndex: parentComputedStyles['z-index']\n  },\n  overlappingElements: Array.from(document.querySelectorAll('*'))\n    .filter(el => {\n      const rect = el.getBoundingClientRect();\n      const popupRect = $0.getBoundingClientRect();\n      return (\n        el !== $0 &&\n        rect.left < popupRect.right &&\n        rect.right > popupRect.left &&\n        rect.top < popupRect.bottom &&\n        rect.bottom > popupRect.top\n      );\n    })\n    .map(el => ({\n      tagName: el.tagName,\n      id: el.id,\n      className: el.className,\n      zIndex: window.getComputedStyle(el)['z-index']\n    }))\n};\n```\n"
+            "description": "JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.\n\n# Instructions\n\n* To return data, define a top-level `data` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to `data`.\n* If you modify styles on an element, ALWAYS call the pre-defined global `async setElementStyles(el: Element, styles: object)` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.\n* **CRITICAL** Only get styles that might be relevant to the user request.\n* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.\n* **CRITICAL** Consider that `data` variable from the previous function calls are not available in a new function call.\n\nFor example, the code to change element styles:\n\n```\nawait setElementStyles($0, {\n  color: 'blue',\n});\n```\n\nFor example, the code to get overlapping elements:\n\n```\nconst data = {\n  overlappingElements: Array.from(document.querySelectorAll('*'))\n    .filter(el => {\n      const rect = el.getBoundingClientRect();\n      const popupRect = $0.getBoundingClientRect();\n      return (\n        el !== $0 &&\n        rect.left < popupRect.right &&\n        rect.right > popupRect.left &&\n        rect.top < popupRect.bottom &&\n        rect.bottom > popupRect.top\n      );\n    })\n    .map(el => ({\n      tagName: el.tagName,\n      id: el.id,\n      className: el.className,\n      zIndex: window.getComputedStyle(el)['z-index']\n    }))\n};\n```\n"
           },
           "thought": {
             "type": 1,
@@ -153,7 +190,7 @@ Content:
     "details": [
       {
         "title": "Data used",
-        "text": "* Its selector is `undefined`"
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
       }
     ]
   },
@@ -174,7 +211,7 @@ Content:
   {
     "parts": [
       {
-        "text": "# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
+        "text": "# Inspected element\n\n* Element's uid is 99.\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
       }
     ],
     "role": 1
@@ -194,13 +231,13 @@ Title: StylingAgent run correctly handles historical_contexts in AIDA requests
 Content:
 [
   {
-    "text": "# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
+    "text": "# Inspected element\n\n* Element's uid is 99.\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
   },
   [
     {
       "parts": [
         {
-          "text": "# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
+          "text": "# Inspected element\n\n* Element's uid is 99.\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
         }
       ],
       "role": 1
@@ -237,7 +274,7 @@ Content:
     "details": [
       {
         "title": "Data used",
-        "text": "* Its selector is `undefined`"
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
       }
     ]
   },
@@ -266,7 +303,7 @@ Content:
     "details": [
       {
         "title": "Data used",
-        "text": "* Its selector is `undefined`"
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
       }
     ]
   },
@@ -298,7 +335,7 @@ Content:
     "details": [
       {
         "title": "Data used",
-        "text": "* Its selector is `undefined`"
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
       }
     ]
   },
@@ -327,7 +364,7 @@ Content:
     "details": [
       {
         "title": "Data used",
-        "text": "* Its selector is `undefined`"
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
       }
     ]
   },
@@ -354,7 +391,7 @@ Content:
     "details": [
       {
         "title": "Data used",
-        "text": "* Its selector is `undefined`"
+        "text": "* Element's uid is 99.\n* Its selector is `undefined`"
       }
     ]
   },
@@ -388,7 +425,7 @@ Content:
   {
     "parts": [
       {
-        "text": "# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
+        "text": "# Inspected element\n\n* Element's uid is 99.\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test"
       }
     ],
     "role": 1
@@ -492,6 +529,7 @@ Title: StylingAgent enhanceQuery does not add multimodal input evaluation prompt
 Content:
 # Inspected element
 
+* Element's uid is 99.
 * Its selector is `div#myElement`
 
 # User request
@@ -503,6 +541,7 @@ Title: StylingAgent enhanceQuery does not add multimodal input evaluation prompt
 Content:
 # Inspected element
 
+* Element's uid is 99.
 * Its selector is `div#myElement`
 
 # User request
@@ -528,6 +567,7 @@ In case query is related to the image, ALWAYS first use image evaluation to get 
 
 # Inspected element
 
+* Element's uid is 99.
 * Its selector is `div#myElement`
 
 # User request
@@ -551,6 +591,7 @@ In case query is related to the image, ALWAYS first use image evaluation to get 
 
 # Inspected element
 
+* Element's uid is 99.
 * Its selector is `div#myElement`
 
 # User request

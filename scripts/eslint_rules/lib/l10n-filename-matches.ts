@@ -9,7 +9,7 @@ import {isModuleScope} from './utils/l10n-helper.ts';
 import {createRule} from './utils/ruleCreator.ts';
 
 type CallExpression = TSESTree.CallExpression;
-// True iff the callExpression is `i18n.i18n.registerUIStrings`.
+/** True iff the callExpression is `i18n.i18n.registerUIStrings`. **/
 function isRegisterUIStringsCall(callExpression: CallExpression): boolean {
   if (callExpression.callee?.type !== 'MemberExpression') {
     return false;

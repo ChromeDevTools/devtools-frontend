@@ -483,7 +483,7 @@ export class PendingFrame {
   }
 }
 
-// The parameters of an impl-side BeginFrame.
+/** The parameters of an impl-side BeginFrame. **/
 class BeginFrameInfo {
   seqId: number;
   startTime: Types.Timing.Micro;
@@ -497,10 +497,12 @@ class BeginFrameInfo {
   }
 }
 
-// A queue of BeginFrames pending visualization.
-// BeginFrames are added into this queue as they occur; later when their
-// corresponding DrawFrames occur (or lack thereof), the BeginFrames are removed
-// from the queue and their timestamps are used for visualization.
+/**
+ * A queue of BeginFrames pending visualization.
+ * BeginFrames are added into this queue as they occur; later when their
+ * corresponding DrawFrames occur (or lack thereof), the BeginFrames are removed
+ * from the queue and their timestamps are used for visualization.
+ **/
 export class TimelineFrameBeginFrameQueue {
   private queueFrames: number[] = [];
 

@@ -6,7 +6,7 @@ import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
-// Corresponds to the type in front_end/ui/visual_logging/Debugging.ts
+/** Corresponds to the type in front_end/ui/visual_logging/Debugging.ts **/
 interface TestImpressionLogEntry {
   impressions: string[];
 }
@@ -140,8 +140,10 @@ export function veImpressionForDrawerToolbar(options?: {
   ]);
 }
 
-// Prints all VE events that haven't been matched by expectVeEvents calls
-// Useful for writing new assertions.
+/**
+ * Prints all VE events that haven't been matched by expectVeEvents calls
+ * Useful for writing new assertions.
+ **/
 export async function dumpVeEvents(label: string) {
   const {frontend} = getBrowserAndPages();
   const events =
@@ -151,8 +153,10 @@ export async function dumpVeEvents(label: string) {
   console.log(label + '\n', events);
 }
 
-// Verifies that VE events contains all the expected events in given order.
-// Unexpected VE events are ignored.
+/**
+ * Verifies that VE events contains all the expected events in given order.
+ * Unexpected VE events are ignored.
+ **/
 export async function expectVeEvents(
     expectedEvents: TestLogEntry[], root?: string,
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

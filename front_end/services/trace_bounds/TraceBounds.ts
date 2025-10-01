@@ -19,8 +19,10 @@ export class StateChangedEvent extends Event {
   }
 }
 
-// Exposed as a shortcut to BoundsManager.instance().addEventListener, which
-// also takes care of type-casting the event to StateChangedEvent.
+/**
+ * Exposed as a shortcut to BoundsManager.instance().addEventListener, which
+ * also takes care of type-casting the event to StateChangedEvent.
+ **/
 export function onChange(cb: (event: StateChangedEvent) => void): void {
   BoundsManager.instance().addEventListener(
       StateChangedEvent.eventName,

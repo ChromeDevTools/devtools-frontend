@@ -7,9 +7,11 @@ import * as http from 'http';
 
 import type {ArtifactGroup} from './screenshot-error.js';
 
-// This type mirrors test_result.proto but it might fall behind.
-// TODO(liviurau): Update at convenient times.
-// https://source.chromium.org/chromium/infra/infra/+/main:go/src/go.chromium.org/luci/resultdb/sink/proto/v1/test_result.proto
+/**
+ * This type mirrors test_result.proto but it might fall behind.
+ * TODO(liviurau): Update at convenient times.
+ * https://source.chromium.org/chromium/infra/infra/+/main:go/src/go.chromium.org/luci/resultdb/sink/proto/v1/test_result.proto
+ **/
 export interface TestResult {
   testId: SanitizedTestId;
   expected?: boolean;
@@ -24,11 +26,13 @@ export type SanitizedTestId = string&{
   _sanitizedTag?: string,
 };
 
-// ResultSink checks the testId against the regex /^[[print]]{1,512}$/:
-// https://source.chromium.org/chromium/infra/infra/+/main:go/src/go.chromium.org/luci/resultdb/pbutil/test_result.go;l=43;drc=7ba090da753a71be5a0f37785558e9102e57fa10
-//
-// This function removes non-printable characters and truncates the string
-// to the max allowed length.
+/**
+ * ResultSink checks the testId against the regex /^[[print]]{1,512}$/:
+ * https://source.chromium.org/chromium/infra/infra/+/main:go/src/go.chromium.org/luci/resultdb/pbutil/test_result.go;l=43;drc=7ba090da753a71be5a0f37785558e9102e57fa10
+ *
+ * This function removes non-printable characters and truncates the string
+ * to the max allowed length.
+ **/
 export function sanitizedTestId(rawTestId: string): SanitizedTestId {
   return rawTestId.replace(/[^\x20-\x7E]/g, '').substring(0, 512) as SanitizedTestId;
 }
@@ -67,8 +71,10 @@ export function available(): boolean {
   return sinkData.url !== undefined;
 }
 
-// Call at the end of a test suite. Will send all `TestResult`s collected via
-// `recordTestResult` to the ResultSink endpoint (only if available).
+/**
+ * Call at the end of a test suite. Will send all `TestResult`s collected via
+ * `recordTestResult` to the ResultSink endpoint (only if available).
+ **/
 export function sendTestResult(results: TestResult): void {
   const sinkData = getSinkData();
   if (sinkData.url === undefined) {

@@ -53,10 +53,12 @@ export type DeferredContent = {
   isEncoded: boolean,
 };
 
-// Some ContentProvider like NetworkRequests might never actually be able to return
-// a fully completed "requestContentData" as the request keeps on going indefinitely.
-// Such proivders can implement the "StreamingContentProvider" addition, which allows
-// for partial/streaming content.
+/**
+ * Some ContentProvider like NetworkRequests might never actually be able to return
+ * a fully completed "requestContentData" as the request keeps on going indefinitely.
+ * Such proivders can implement the "StreamingContentProvider" addition, which allows
+ * for partial/streaming content.
+ **/
 export interface StreamingContentProvider extends ContentProvider {
   requestStreamingContent(): Promise<StreamingContentDataOrError>;
 }

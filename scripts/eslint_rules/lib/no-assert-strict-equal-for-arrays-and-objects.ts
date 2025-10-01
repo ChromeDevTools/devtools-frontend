@@ -20,7 +20,7 @@ type AssertCallExpression = TSESTree.CallExpression&{
   },
 };
 
-// Type guard for assert.strictEqual/notStrictEqual member expressions
+/** Type guard for assert.strictEqual/notStrictEqual member expressions **/
 function isAssertStrictMemberExpression(
     node: TSESTree.CallExpression, methodName: 'strictEqual'|'notStrictEqual'): node is AssertCallExpression {
   const callee = node.callee;
@@ -28,7 +28,7 @@ function isAssertStrictMemberExpression(
       callee.property.type === 'Identifier' && callee.property.name === methodName;
 }
 
-// Type guard for ArrayExpression or ObjectExpression
+/** Type guard for ArrayExpression or ObjectExpression **/
 function isArrayOrObjectExpression(node: TSESTree.Node): node is TSESTree.ArrayExpression|TSESTree.ObjectExpression {
   return node.type === 'ArrayExpression' || node.type === 'ObjectExpression';
 }

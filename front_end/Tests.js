@@ -1065,7 +1065,7 @@
         this.fail(text);
       }  // This will throw.
     }
-    // Neither PASS nor FAIL, so wait for more messages.
+    /** Neither PASS nor FAIL, so wait for more messages. **/
     function onConsoleMessage(event) {
       const text = event.data.messageText;
       if (text === 'PASS') {

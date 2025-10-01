@@ -1022,7 +1022,7 @@ export class PauseListener {
   }
 }
 
-// Unused but mentioned at https://chromedevtools.github.io/devtools-protocol/#:~:text=use%20Main.MainImpl.-,sendOverProtocol,-()%20in%20the
+/** Unused but mentioned at https://chromedevtools.github.io/devtools-protocol/#:~:text=use%20Main.MainImpl.-,sendOverProtocol,-()%20in%20the **/
 export function sendOverProtocol(
     method: ProtocolClient.InspectorBackend.QualifiedName, params: Object|null): Promise<unknown[]|null> {
   return new Promise((resolve, reject) => {
@@ -1064,9 +1064,11 @@ type ExternalRequestInput = {
   args: {requestUrl: string, prompt: string},
 };
 
-// For backwards-compatibility we iterate over the generator and drop the
-// intermediate results. The final response is transformed to its legacy type.
-// Instead of sending responses of type error, errors are throws.
+/**
+ * For backwards-compatibility we iterate over the generator and drop the
+ * intermediate results. The final response is transformed to its legacy type.
+ * Instead of sending responses of type error, errors are throws.
+ **/
 export async function handleExternalRequest(input: ExternalRequestInput):
     Promise<{response: string, devToolsLogs: object[]}> {
   const generator = await handleExternalRequestGenerator(input);

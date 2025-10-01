@@ -1548,7 +1548,7 @@ describeWithMockConnection('BreakpointsView', () => {
   });
 
   describe('navigating with keyboard', () => {
-    // One expanded group with 2 breakpoints, and one collapsed with 2 breakpoints.
+    /** One expanded group with 2 breakpoints, and one collapsed with 2 breakpoints. **/
     async function renderBreakpointsForKeyboardNavigation(): Promise<{
       component: Sources.BreakpointsView.BreakpointsView,
       data: Sources.BreakpointsView.BreakpointsViewData,

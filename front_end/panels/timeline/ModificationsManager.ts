@@ -16,9 +16,11 @@ let activeManager: ModificationsManager|null;
 export type UpdateAction =
     'Remove'|'Add'|'UpdateLabel'|'UpdateTimeRange'|'UpdateLinkToEntry'|'EnterLabelEditState'|'LabelBringForward';
 
-// Event dispatched after an annotation was added, removed or updated.
-// The event argument is the Overlay that needs to be created,removed
-// or updated by `Overlays.ts` and the action that needs to be applied to it.
+/**
+ * Event dispatched after an annotation was added, removed or updated.
+ * The event argument is the Overlay that needs to be created,removed
+ * or updated by `Overlays.ts` and the action that needs to be applied to it.
+ **/
 export class AnnotationModifiedEvent extends Event {
   static readonly eventName = 'annotationmodifiedevent';
 

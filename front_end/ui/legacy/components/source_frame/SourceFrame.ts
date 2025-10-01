@@ -1153,7 +1153,7 @@ const nonBreakableLineMark = new (class extends CodeMirror.GutterMarker {
   override elementClass = 'cm-nonBreakableLine';
 })();
 
-// Effect to add lines (by position) to the set of non-breakable lines.
+/** Effect to add lines (by position) to the set of non-breakable lines. **/
 export const addNonBreakableLines = CodeMirror.StateEffect.define<readonly number[]>();
 
 const nonBreakableLines = CodeMirror.StateField.define<CodeMirror.RangeSet<CodeMirror.GutterMarker>>({
@@ -1227,13 +1227,13 @@ const sourceFrameTheme = CodeMirror.EditorView.theme({
 export type RevealPosition = number|{lineNumber: number, columnNumber?: number}|
     {from: {lineNumber: number, columnNumber: number}, to: {lineNumber: number, columnNumber: number}};
 
-// This is usually an Infobar but is also used for AiCodeCompletionSummaryToolbar
+/** This is usually an Infobar but is also used for AiCodeCompletionSummaryToolbar **/
 export interface SourceFrameInfobar {
   element: HTMLElement;
   order?: number;
 }
 
-// Infobar panel state, used to show additional panels below the editor.
+/** Infobar panel state, used to show additional panels below the editor. **/
 export const addSourceFrameInfobar = CodeMirror.StateEffect.define<SourceFrameInfobar>();
 export const removeSourceFrameInfobar = CodeMirror.StateEffect.define<SourceFrameInfobar>();
 

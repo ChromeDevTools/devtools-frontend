@@ -289,8 +289,10 @@ describeWithEnvironment('SamplesHandler', function() {
   });
 
   describe('getProfileCallFunctionName', () => {
-    // Find an event from the trace that represents some work. The use of
-    // this specific call frame event is not for any real reason.
+    /**
+     * Find an event from the trace that represents some work. The use of
+     * this specific call frame event is not for any real reason.
+     **/
     function getProfileEventAndNode(data: Trace.Handlers.Types.HandlerData): {
       entry: Trace.Types.Events.SyntheticProfileCall,
       profileNode: CPUProfile.ProfileTreeModel.ProfileNode,

@@ -59,7 +59,7 @@ describe('ConsoleViewport', () => {
     renderElementIntoDOM(viewport.element);
   });
 
-  // Helper to set items and refresh the viewport
+  /** Helper to set items and refresh the viewport **/
   function setItemsAndRefresh(heights: number[]): void {
     mockProvider.setItems(heights);
     viewport.invalidate();  // This calls rebuildCumulativeHeights and refresh
@@ -76,13 +76,13 @@ describe('ConsoleViewport', () => {
     viewport.invalidate();
   }
 
-  // Helper to simulate scrolling and refresh
+  /** Helper to simulate scrolling and refresh **/
   function scrollTo(scrollTop: number): void {
     viewport.element.scrollTop = scrollTop;
     viewport.refresh();
   }
 
-  // Helper to calculate expected cumulative heights
+  /** Helper to calculate expected cumulative heights **/
   function calculateCumulativeHeights(itemHeights: number[]): number[] {
     const cumulative = new Array(itemHeights.length);
     let currentHeight = 0;
@@ -93,7 +93,7 @@ describe('ConsoleViewport', () => {
     return cumulative;
   }
 
-  // Helper to calculate expected visible indices based on scroll and heights
+  /** Helper to calculate expected visible indices based on scroll and heights **/
   function getExpectedVisibleIndices(
       scrollTop: number, viewportHeight: number, cumulativeHeights: number[]): {first: number, last: number} {
     if (cumulativeHeights.length === 0) {

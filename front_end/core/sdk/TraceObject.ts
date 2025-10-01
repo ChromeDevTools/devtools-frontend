@@ -10,7 +10,7 @@ import type {NetworkRequest} from './NetworkRequest.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 import type {SourceMapV3} from './SourceMap.js';
 
-// A thin wrapper class, mostly to enable instanceof-based revealing of traces to open in Timeline.
+/** A thin wrapper class, mostly to enable instanceof-based revealing of traces to open in Timeline. **/
 export class TraceObject {
   readonly traceEvents: Protocol.Tracing.DataCollectedEvent['value'];
   readonly metadata: {sourceMaps?: Array<{sourceMapUrl: string, sourceMap: SourceMapV3, url: string}>};
@@ -24,7 +24,7 @@ export class TraceObject {
   }
 }
 
-// Another thin wrapper class to enable revealing individual trace events (aka entries) in Timeline panel.
+/** Another thin wrapper class to enable revealing individual trace events (aka entries) in Timeline panel. **/
 export class RevealableEvent {
   // Only Trace.Types.Events.Event are passed in, but we can't depend on that type from SDK
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

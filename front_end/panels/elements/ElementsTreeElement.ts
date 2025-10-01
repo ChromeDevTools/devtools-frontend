@@ -2950,14 +2950,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
 export const InitialChildrenLimit = 500;
 
-// A union of HTML4 and HTML5-Draft elements that explicitly
-// or implicitly (for HTML5) forbid the closing tag.
+/**
+ * A union of HTML4 and HTML5-Draft elements that explicitly
+ * or implicitly (for HTML5) forbid the closing tag.
+ **/
 export const ForbiddenClosingTagElements = new Set<string>([
   'area', 'base',  'basefont', 'br',   'canvas',   'col',  'command', 'embed',  'frame', 'hr',
   'img',  'input', 'keygen',   'link', 'menuitem', 'meta', 'param',   'source', 'track', 'wbr',
 ]);
 
-// These tags we do not allow editing their tag name.
+/** These tags we do not allow editing their tag name. **/
 export const EditTagBlocklist = new Set<string>(['html', 'head', 'body']);
 
 export function adornerComparator(adornerA: Adorners.Adorner.Adorner, adornerB: Adorners.Adorner.Adorner): number {
@@ -3000,8 +3002,10 @@ export interface EditorHandles {
   resize: () => void;
 }
 
-// As a privacy measure we are logging elements tree outline as a flat list where every tree item is a
-// child of a tree outline.
+/**
+ * As a privacy measure we are logging elements tree outline as a flat list where every tree item is a
+ * child of a tree outline.
+ **/
 function loggingParentProvider(e: Element): Element|undefined {
   const treeElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(e);
   return treeElement?.treeOutline?.contentElement;

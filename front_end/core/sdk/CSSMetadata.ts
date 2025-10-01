@@ -362,7 +362,7 @@ export const CubicBezierKeywordValues = new Map([
   ['ease-out', 'cubic-bezier(0, 0, 0.58, 1)'],
 ]);
 
-// CSS-wide keywords.
+/** CSS-wide keywords. **/
 export const enum CSSWideKeyword {
   INHERIT = 'inherit',
   INITIAL = 'initial',
@@ -370,8 +370,10 @@ export const enum CSSWideKeyword {
   REVERT_LAYER = 'revert-layer',
   UNSET = 'unset',
 }
-// Spec: https://drafts.csswg.org/css-cascade/#defaulting-keywords
-// https://drafts.csswg.org/css-cascade-5/#revert-layer
+/**
+ * Spec: https://drafts.csswg.org/css-cascade/#defaulting-keywords
+ * https://drafts.csswg.org/css-cascade-5/#revert-layer
+ **/
 export const CSSWideKeywords: CSSWideKeyword[] = [
   CSSWideKeyword.INHERIT,
   CSSWideKeyword.INITIAL,
@@ -380,7 +382,7 @@ export const CSSWideKeywords: CSSWideKeyword[] = [
   CSSWideKeyword.UNSET,
 ];
 
-// https://www.w3.org/TR/css-anchor-position-1/#typedef-try-size
+/** https://www.w3.org/TR/css-anchor-position-1/#typedef-try-size **/
 export const enum PositionTryOrderKeyword {
   NORMAL = 'normal',
   MOST_HEIGHT = 'most-height',

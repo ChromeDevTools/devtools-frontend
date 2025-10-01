@@ -143,7 +143,7 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 type TabData = Record<string, string|object>;
 
-// Keep this enum in sync with panels/media/base/media_log_properties.h
+/** Keep this enum in sync with panels/media/base/media_log_properties.h **/
 export const enum PlayerPropertyKeys {
   RESOLUTION = 'kResolution',
   TOTAL_BYTES = 'kTotalBytes',

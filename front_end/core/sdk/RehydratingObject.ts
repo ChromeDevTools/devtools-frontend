@@ -4,7 +4,7 @@
 
 import type * as Protocol from '../../generated/protocol.js';
 
-// This object is emitted to ScriptParsed and also used in the RehydratingConnection
+/** This object is emitted to ScriptParsed and also used in the RehydratingConnection **/
 export interface RehydratingScript extends Protocol.Debugger.ScriptParsedEvent {
   sourceText?: string;
   executionContextAuxData?: RehydratingExecutionContextAuxData;

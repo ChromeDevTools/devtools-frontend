@@ -39,8 +39,10 @@ export function timeStampForEventAdjustedByClosestNavigation(
   return Types.Timing.Micro(eventTimeStamp);
 }
 
-// Expands the trace window by a provided percentage or, if it the expanded window is smaller than 1 millisecond, expands it to 1 millisecond.
-// If the expanded window is outside of the max trace window, cut the overflowing bound to the max trace window bound.
+/**
+ * Expands the trace window by a provided percentage or, if it the expanded window is smaller than 1 millisecond, expands it to 1 millisecond.
+ * If the expanded window is outside of the max trace window, cut the overflowing bound to the max trace window bound.
+ **/
 export function expandWindowByPercentOrToOneMillisecond(
     annotationWindow: Types.Timing.TraceWindowMicro, maxTraceWindow: Types.Timing.TraceWindowMicro,
     percentage: number): Types.Timing.TraceWindowMicro {

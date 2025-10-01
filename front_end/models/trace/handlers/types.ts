@@ -20,22 +20,24 @@ export interface Handler {
 
 export type HandlerName = keyof typeof ModelHandlers;
 
-// This type maps Handler names to the return type of their data
-// function. So, for example, if we are given an object with a key of 'foo'
-// and a value which is a TraceHandler containing a data() function that
-// returns a string, this type will be { foo: string }.
-//
-// This allows us to model the behavior of the TraceProcessor in the model,
-// which takes an object with Handlers as part of its config, and
-// which ultimately returns an object keyed off the names of the
-// Handlers, and with values that are derived from each
-// Handler's data function.
-//
-// So, concretely, we provide a Handler for calculating the #time
-// bounds of a trace called TraceBounds, whose data() function returns a
-// TraceWindow. The HandlerData, therefore, would determine that the
-// TraceProcessor would contain a key called 'TraceBounds' whose value is
-// a TraceWindow.
+/**
+ * This type maps Handler names to the return type of their data
+ * function. So, for example, if we are given an object with a key of 'foo'
+ * and a value which is a TraceHandler containing a data() function that
+ * returns a string, this type will be { foo: string }.
+ *
+ * This allows us to model the behavior of the TraceProcessor in the model,
+ * which takes an object with Handlers as part of its config, and
+ * which ultimately returns an object keyed off the names of the
+ * Handlers, and with values that are derived from each
+ * Handler's data function.
+ *
+ * So, concretely, we provide a Handler for calculating the #time
+ * bounds of a trace called TraceBounds, whose data() function returns a
+ * TraceWindow. The HandlerData, therefore, would determine that the
+ * TraceProcessor would contain a key called 'TraceBounds' whose value is
+ * a TraceWindow.
+ **/
 export type EnabledHandlerDataWithMeta<T extends Record<string, Handler>> = {
   // We allow the user to configure which handlers are created by passing them
   // in when constructing a model instance. However, we then ensure that the
@@ -58,9 +60,11 @@ export type HandlersWithMeta<T extends Record<string, Handler>> = {
   [K in keyof T]: T[K];
 };
 
-// Represents the final data from all of the handlers. If you instantiate a
-// TraceProcessor with a subset of handlers, you should instead use
-// `EnabledHandlerDataWithMeta<>`.
+/**
+ * Represents the final data from all of the handlers. If you instantiate a
+ * TraceProcessor with a subset of handlers, you should instead use
+ * `EnabledHandlerDataWithMeta<>`.
+ **/
 export type HandlerData = Readonly<EnabledHandlerDataWithMeta<typeof ModelHandlers>>;
 
 type DeepWriteable<T> = {

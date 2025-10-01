@@ -20,10 +20,12 @@ interface Replacement {
   isShorthandAssignmentProperty: boolean;
 }
 
-// Given an |expression| and a mapping from names to new names, the |computeSubstitution|
-// function returns a list of replacements sorted by the offset. The function throws if
-// it cannot parse the expression or the substitution is impossible to perform (for example
-// if the substitution target is 'this' within a function, it would become bound there).
+/**
+ * Given an |expression| and a mapping from names to new names, the |computeSubstitution|
+ * function returns a list of replacements sorted by the offset. The function throws if
+ * it cannot parse the expression or the substitution is impossible to perform (for example
+ * if the substitution target is 'this' within a function, it would become bound there).
+ **/
 function computeSubstitution(expression: string, nameMap: Map<string, string|null>): Replacement[] {
   // Parse the expression and find variables and scopes.
   const root = Acorn.parse(expression, {

@@ -55,7 +55,7 @@ export default createRule<[], MessageIds>({
   },
   defaultOptions: [],  // Add defaultOptions
   create: function(context) {
-    // Type the node parameter
+    /** Type the node parameter **/
     function isCustomElementsDefine(calleeNode: Node): calleeNode is MemberExpression {
       if (calleeNode.type !== 'MemberExpression' || calleeNode.property.type !== 'Identifier' ||
           calleeNode.property.name !== 'define') {
@@ -72,7 +72,7 @@ export default createRule<[], MessageIds>({
           GLOBAL_THIS_NAMES.has(calleeNode.object.object.name));
     }
 
-    // Type the node parameter
+    /** Type the node parameter **/
     function isObjectLiteralWithProperty(node: Node, propertyName: string): node is ObjectExpression {
       if (node.type !== 'ObjectExpression') {
         return false;
@@ -91,7 +91,7 @@ export default createRule<[], MessageIds>({
       return false;
     }
 
-    // Type the node parameter
+    /** Type the node parameter **/
     function isBuiltinElementClass(superNode: Node): superNode is Identifier|MemberExpression {
       // Test for the common case `HTMLFooElement`.
       if (superNode.type === 'Identifier' && BUILTIN_ELEMENT_REGEXP.test(superNode.name)) {

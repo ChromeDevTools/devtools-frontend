@@ -213,14 +213,14 @@ export async function reloadDevTools(options?: DevToolsFrontendReloadOptions) {
   await frontendTab.reload(options);
 }
 
-// Can be run multiple times in the same process.
+/** Can be run multiple times in the same process. **/
 export async function preFileSetup(serverPort: number) {
   setTestServerPort(serverPort);
   registerHandlers();
   await loadTargetPageAndFrontend(serverPort);
 }
 
-// Can be run multiple times in the same process.
+/** Can be run multiple times in the same process. **/
 export async function postFileTeardown() {
   // We need to kill the browser before we stop the hosted mode server.
   // That's because the browser could continue to make network requests,

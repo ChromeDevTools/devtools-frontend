@@ -23,7 +23,7 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __commentElements?: Array<{comment: string, commentElement: Comment, targetElement: Element|null}>;
   }
-  // Define the custom event if needed
+  /** Define the custom event if needed **/
   interface WindowEventMap {
     aiassistancedone: CustomEvent;
   }

@@ -1810,11 +1810,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         return;
       }
 
-      // To clear out the page and any state from prior test runs, we
-      // navigate to about:blank before initiating the trace recording.
-      // Once we have navigated to about:blank, we start recording and
-      // then navigate to the original page URL, to ensure we profile the
-      // page load.
+      /**
+       * To clear out the page and any state from prior test runs, we
+       * navigate to about:blank before initiating the trace recording.
+       * Once we have navigated to about:blank, we start recording and
+       * then navigate to the original page URL, to ensure we profile the
+       * page load.
+       **/
       function waitForAboutBlank(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
           void {
         if (event.data.url === 'about:blank') {
@@ -3154,7 +3156,7 @@ export const enum State {
   RECORDING_FAILED = 'RecordingFailed',
 }
 
-// Define row and header height, should be in sync with styles for timeline graphs.
+/** Define row and header height, should be in sync with styles for timeline graphs. **/
 export const rowHeight = 18;
 
 export const headerHeight = 20;

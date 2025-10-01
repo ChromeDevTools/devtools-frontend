@@ -472,20 +472,22 @@ export interface MetaHandlerData {
   devicePixelRatio?: number;
 }
 
-// Each frame has a single render process at a given time but it can have
-// multiple render processes  during a trace, for example if a navigation
-// occurred in the frame. This map tracks the process that was active for
-// each frame at each point in time. Also, because a process can be
-// assigned to multiple URLs, there is a window for each URL a process
-// was assigned.
-//
-// Note that different sites always end up in different render
-// processes, however two different URLs can point to the same site.
-// For example: https://google.com and https://maps.google.com point to
-// the same site.
-// Read more about this in
-// https://developer.chrome.com/articles/renderingng-architecture/#threads
-// and https://web.dev/same-site-same-origin/
+/**
+ * Each frame has a single render process at a given time but it can have
+ * multiple render processes  during a trace, for example if a navigation
+ * occurred in the frame. This map tracks the process that was active for
+ * each frame at each point in time. Also, because a process can be
+ * assigned to multiple URLs, there is a window for each URL a process
+ * was assigned.
+ *
+ * Note that different sites always end up in different render
+ * processes, however two different URLs can point to the same site.
+ * For example: https://google.com and https://maps.google.com point to
+ * the same site.
+ * Read more about this in
+ * https://developer.chrome.com/articles/renderingng-architecture/#threads
+ * and https://web.dev/same-site-same-origin/
+ **/
 export type FrameProcessData =
     Map<string,
         Map<Types.Events.ProcessID, Array<{frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}>>>;

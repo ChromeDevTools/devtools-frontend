@@ -49,7 +49,7 @@ import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
-// Keep this list in sync with https://w3c.github.io/aria/#state_prop_def
+/** Keep this list in sync with https://w3c.github.io/aria/#state_prop_def **/
 export const ARIA_ATTRIBUTES = new Set<string>([
   'role',
   'aria-activedescendant',

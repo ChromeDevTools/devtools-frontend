@@ -135,9 +135,9 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const FILTER_IDLE_PERIOD = 500;
 // Minimum number of @property rules for the @property section block to be folded initially
 const MIN_FOLDED_SECTIONS_COUNT = 5;
-// Title of the registered properties section
+/** Title of the registered properties section **/
 export const REGISTERED_PROPERTY_SECTION_NAME = '@property';
-// Title of the function section
+/** Title of the function section **/
 export const FUNCTION_SECTION_NAME = '@function';
 
 // Highlightable properties are those that can be hovered in the sidebar to trigger a specific

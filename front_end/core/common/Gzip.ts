@@ -48,7 +48,7 @@ export async function compress(str: string): Promise<ArrayBuffer> {
   return buffer;
 }
 
-// Private coder/decoder
+/** Private coder/decoder **/
 function gzipCodec(buffer: Uint8Array<ArrayBufferLike>|ArrayBuffer, codecStream: CompressionStream|DecompressionStream):
     Promise<ArrayBuffer> {
   const {readable, writable} = new TransformStream();

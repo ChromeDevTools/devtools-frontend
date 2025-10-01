@@ -1669,7 +1669,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 }
 
-// Keep in sync with .data-grid col.corner style rule.
+/** Keep in sync with .data-grid col.corner style rule. **/
 export const CornerWidth = 14;
 
 export const enum Events {

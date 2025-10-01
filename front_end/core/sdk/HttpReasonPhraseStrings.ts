@@ -4,8 +4,10 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-// Reason phrase sources
-// See https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes
+/**
+ * Reason phrase sources
+ * See https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes
+ **/
 export function getStatusText(statusCode: number): string {
   const statusTextLookup: Record<number, string> = {
     100: 'Continue',

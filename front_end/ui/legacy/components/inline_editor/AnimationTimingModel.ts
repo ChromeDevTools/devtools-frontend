@@ -6,8 +6,10 @@ import * as Geometry from '../../../../models/geometry/geometry.js';
 
 import {CSSLinearEasingModel} from './CSSLinearEasingModel.js';
 
-// Provides a unified interface for both linear easing and cubic bezier
-// models and handles the parsing for animation-timing texts.
+/**
+ * Provides a unified interface for both linear easing and cubic bezier
+ * models and handles the parsing for animation-timing texts.
+ **/
 export abstract class AnimationTimingModel {
   abstract asCSSText(): string;
 

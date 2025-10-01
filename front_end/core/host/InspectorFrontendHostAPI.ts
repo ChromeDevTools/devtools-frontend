@@ -217,11 +217,13 @@ export interface FunctionCallEvent {
   context?: number;
 }
 
-// While `EventDescriptors` are used to dynamically dispatch host binding events,
-// the `EventTypes` "type map" is used for type-checking said events by TypeScript.
-// `EventTypes` is not used at runtime.
-// Please note that the "dispatch" side can't be type-checked as the dispatch is
-// done dynamically.
+/**
+ * While `EventDescriptors` are used to dynamically dispatch host binding events,
+ * the `EventTypes` "type map" is used for type-checking said events by TypeScript.
+ * `EventTypes` is not used at runtime.
+ * Please note that the "dispatch" side can't be type-checked as the dispatch is
+ * done dynamically.
+ **/
 export interface EventTypes {
   [Events.AppendedToURL]: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString;
   [Events.CanceledSaveURL]: Platform.DevToolsPath.UrlString;

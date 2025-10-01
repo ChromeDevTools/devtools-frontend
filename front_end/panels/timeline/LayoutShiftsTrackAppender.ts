@@ -40,12 +40,14 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/LayoutShiftsTrackAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// Bit of a hack: LayoutShifts are instant events, so have no duration. But
-// OPP doesn't do well at making tiny events easy to spot and click. So we
-// set it to a small duration so that the user is able to see and click
-// them more easily. Long term we will explore a better UI solution to
-// allow us to do this properly and not hack around it.
-// TODO: Delete this once the new Layout Shift UI ships out of the TIMELINE_LAYOUT_SHIFT_DETAILS experiment
+/**
+ * Bit of a hack: LayoutShifts are instant events, so have no duration. But
+ * OPP doesn't do well at making tiny events easy to spot and click. So we
+ * set it to a small duration so that the user is able to see and click
+ * them more easily. Long term we will explore a better UI solution to
+ * allow us to do this properly and not hack around it.
+ * TODO: Delete this once the new Layout Shift UI ships out of the TIMELINE_LAYOUT_SHIFT_DETAILS experiment
+ **/
 export const LAYOUT_SHIFT_SYNTHETIC_DURATION = Trace.Types.Timing.Micro(5_000);
 
 export class LayoutShiftsTrackAppender implements TrackAppender {

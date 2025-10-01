@@ -138,8 +138,10 @@ export const enum UsedKind {
   NO_PRELOADS = 'NoPreloads',
 }
 
-// TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
-// This also shows summary of speculations initiated by this page.
+/**
+ * TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
+ * This also shows summary of speculations initiated by this page.
+ **/
 export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: UsedPreloadingViewData = {

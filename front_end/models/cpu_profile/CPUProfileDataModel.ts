@@ -552,7 +552,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   }
 }
 
-// Format used by profiles coming from traces.
+/** Format used by profiles coming from traces. **/
 export type ExtendedProfileNode = Protocol.Profiler.ProfileNode&{parent?: number};
 export type ExtendedProfile = Protocol.Profiler.Profile&{
   nodes: Protocol.Profiler.ProfileNode[] | ExtendedProfileNode[],

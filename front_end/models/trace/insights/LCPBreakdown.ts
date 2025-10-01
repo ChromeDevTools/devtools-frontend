@@ -65,7 +65,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPBreakdown.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// A TraceWindow plus its UIString.
+/** A TraceWindow plus its UIString. **/
 export type Subpart = Types.Timing.TraceWindowMicro&{label: Common.UIString.LocalizedString};
 interface LCPSubparts {
   /**

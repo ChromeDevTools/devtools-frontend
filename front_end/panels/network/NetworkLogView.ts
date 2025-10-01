@@ -2512,10 +2512,12 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           str.replace(/[`\$"]/g, '`$&').replace(/[^\x20-\x7E]/g, char => '$([char]' + char.charCodeAt(0) + ')') + '"';
     }
 
-    // Generate a WebRequestSession object with the UserAgent and Cookie header values.
-    // This is used to pass the user-agent and cookie headers to Invoke-WebRequest because the Invoke-WebRequest
-    // command does not allow setting these headers through the -Headers parameter. See docs at:
-    // https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.1#parameters
+    /**
+     * Generate a WebRequestSession object with the UserAgent and Cookie header values.
+     * This is used to pass the user-agent and cookie headers to Invoke-WebRequest because the Invoke-WebRequest
+     * command does not allow setting these headers through the -Headers parameter. See docs at:
+     * https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.1#parameters
+     **/
     function generatePowerShellSession(request: SDK.NetworkRequest.NetworkRequest): string|null {
       const requestHeaders = request.requestHeaders();
       const props = [];

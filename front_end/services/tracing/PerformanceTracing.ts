@@ -82,7 +82,7 @@ interface Delegate {
   tracingComplete(events: Object[]): void;
 }
 
-// Used by an implementation of Common.Revealer to transfer data from the recorder to the performance panel.
+/** Used by an implementation of Common.Revealer to transfer data from the recorder to the performance panel. **/
 export class RawTraceEvents {
   constructor(private events: Object[]) {
   }

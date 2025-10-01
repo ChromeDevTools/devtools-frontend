@@ -1111,7 +1111,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     context.fillRect(barX, barY - 0.5, desiredBoxStartX - barX, barHeight);
     context.fillRect(desiredBoxEndX, barY - 0.5, entireBarEndXPixel - desiredBoxEndX, barHeight);
 
-    // Draws left and right whiskers
+    /** Draws left and right whiskers **/
     function drawTick(begin: number, end: number, y: number): void {
       const tickHeightPx = 6;
       context.moveTo(begin, y - tickHeightPx / 2);
@@ -1398,13 +1398,15 @@ export interface EventTypes {
   };
 }
 
-// an entry is a trace event, they are classified into "entry types"
-// because some events are rendered differently. For example, screenshot
-// events are rendered as images. Checks for entry types allow to have
-// different styles, names, etc. for events that look differently.
-// In the future we won't have this checks: instead we will forward
-// the event to the corresponding "track appender" and it will determine
-// how the event shall be rendered.
+/**
+ * an entry is a trace event, they are classified into "entry types"
+ * because some events are rendered differently. For example, screenshot
+ * events are rendered as images. Checks for entry types allow to have
+ * different styles, names, etc. for events that look differently.
+ * In the future we won't have this checks: instead we will forward
+ * the event to the corresponding "track appender" and it will determine
+ * how the event shall be rendered.
+ **/
 export const enum EntryType {
   FRAME = 'Frame',
   TRACK_APPENDER = 'TrackAppender',

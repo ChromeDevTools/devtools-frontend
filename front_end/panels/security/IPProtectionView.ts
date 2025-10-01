@@ -122,7 +122,7 @@ const allStatusStrings = [
 const INCOGNITO_EXPLANATION_URL = 'https://support.google.com/chrome/answer/95464?hl=en&co=GENIE.Platform%3DDesktop' as
     Platform.DevToolsPath.UrlString;
 
-// A simplified representation of a network request for mock data.
+/** A simplified representation of a network request for mock data. **/
 interface MockNetworkRequest {
   requestId: string;
   url: string;

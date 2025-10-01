@@ -44,14 +44,14 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-// The enum string values need to match the IssueExpanded enum values in UserMetrics.ts.
+/** The enum string values need to match the IssueExpanded enum values in UserMetrics.ts. **/
 export const enum CookieIssueSubCategory {
   GENERIC_COOKIE = 'GenericCookie',
   SAME_SITE_COOKIE = 'SameSiteCookie',
   THIRD_PARTY_PHASEOUT_COOKIE = 'ThirdPartyPhaseoutCookie',
 }
 
-// Enum to show cookie status from the security panel's third-party cookie report tool
+/** Enum to show cookie status from the security panel's third-party cookie report tool **/
 export const enum CookieStatus {
   BLOCKED = 0,
   ALLOWED = 1,

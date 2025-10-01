@@ -10,7 +10,7 @@
  * ourselves.
  */
 
-// Define interfaces for better type safety
+/** Define interfaces for better type safety **/
 interface Part {
   text: string;
 }

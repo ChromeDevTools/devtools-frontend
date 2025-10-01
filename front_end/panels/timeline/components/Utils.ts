@@ -119,7 +119,7 @@ export function colorForNetworkRequest(request: Trace.Types.Events.SyntheticNetw
 export type MetricRating = 'good'|'needs-improvement'|'poor';
 export type MetricThresholds = [number, number];
 
-// TODO: Consolidate our metric rating logic with the trace engine.
+/** TODO: Consolidate our metric rating logic with the trace engine. **/
 export const LCP_THRESHOLDS = [2500, 4000] as MetricThresholds;
 export const CLS_THRESHOLDS = [0.1, 0.25] as MetricThresholds;
 export const INP_THRESHOLDS = [200, 500] as MetricThresholds;

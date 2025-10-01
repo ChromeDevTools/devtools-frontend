@@ -268,8 +268,10 @@ const maxCacheAge = 30_000;
 
 let cacheInstance: PropertyCache|null = null;
 
-// Store recent collections of property completions. The empty string
-// is used to store the set of global bindings.
+/**
+ * Store recent collections of property completions. The empty string
+ * is used to store the set of global bindings.
+ **/
 class PropertyCache {
   readonly #cache = new Map<string, Promise<CompletionSet>>();
 
@@ -713,8 +715,10 @@ async function prototypesFromObject(object: SDK.RemoteObject.RemoteObject): Prom
   }, []) ?? [];
 }
 
-// Given a function object that is probably a bound function, try to
-// retrieve the argument list from its target function.
+/**
+ * Given a function object that is probably a bound function, try to
+ * retrieve the argument list from its target function.
+ **/
 async function getArgumentsForBoundFunction(object: SDK.RemoteObject.RemoteObject): Promise<string[][]|null> {
   const {internalProperties} = await object.getOwnProperties(false);
   if (!internalProperties) {

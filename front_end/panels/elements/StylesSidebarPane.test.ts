@@ -592,7 +592,7 @@ describe('StylesSidebarPane', () => {
     // IdleCallbackManager delegates work using requestIdleCallback, which does not generally execute requested callbacks
     // in order. This test verifies that callbacks do happen in order even if timeouts are run out.
     it('schedules callbacks in order', async () => {
-      // Override the default timeout with a very short one
+      /** Override the default timeout with a very short one **/
       class QuickIdleCallbackManager extends Elements.StylesSidebarPane.IdleCallbackManager {
         protected override scheduleIdleCallback(_: number): void {
           super.scheduleIdleCallback(1);

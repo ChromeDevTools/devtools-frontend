@@ -32,9 +32,11 @@ export interface ImageData {
  *
  */
 
-// NOTE: This is only exported for tests, and it should not be
-// imported in any component, instead add image data in map and
-// use getMarkdownImage to get the appropriate image data.
+/**
+ * NOTE: This is only exported for tests, and it should not be
+ * imported in any component, instead add image data in map and
+ * use getMarkdownImage to get the appropriate image data.
+ **/
 export const markdownImages = new Map<string, ImageData>([]);
 
 export const getMarkdownImage = (key: string): ImageData => {

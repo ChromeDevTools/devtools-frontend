@@ -210,7 +210,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
   }
 }
 
-// Default rehydrating session with default responses.
+/** Default rehydrating session with default responses. **/
 class RehydratingSessionBase {
   connection: RehydratingConnectionInterface|null = null;
 

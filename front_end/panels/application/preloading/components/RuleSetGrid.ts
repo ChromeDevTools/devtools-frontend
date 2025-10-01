@@ -63,7 +63,7 @@ export interface RuleSetGridRow {
   preloadsStatusSummary: string;
 }
 
-// Grid component to show SpeculationRules rule sets.
+/** Grid component to show SpeculationRules rule sets. **/
 export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: RuleSetGridData|null = null;

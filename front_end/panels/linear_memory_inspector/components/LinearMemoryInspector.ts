@@ -44,10 +44,12 @@ const UIStrings = {
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-// If the LinearMemoryInspector only receives a portion
-// of the original Uint8Array to show, it requires information
-// on the 1. memoryOffset (at which index this portion starts),
-// and on the 2. outerMemoryLength (length of the original Uint8Array).
+/**
+ * If the LinearMemoryInspector only receives a portion
+ * of the original Uint8Array to show, it requires information
+ * on the 1. memoryOffset (at which index this portion starts),
+ * and on the 2. outerMemoryLength (length of the original Uint8Array).
+ **/
 export interface LinearMemoryInspectorData {
   memory: Uint8Array<ArrayBuffer>;
   address: number;

@@ -12,8 +12,10 @@ import {debugLog} from './debug.js';
 export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
 
-// TODO(b/404796739): Remove these definitions of AgentOptions and RequestOptions and
-// use the existing ones which are used for AI assistance panel agents.
+/**
+ * TODO(b/404796739): Remove these definitions of AgentOptions and RequestOptions and
+ * use the existing ones which are used for AI assistance panel agents.
+ **/
 interface AgentOptions {
   aidaClient: Host.AidaClient.AidaClient;
   serverSideLoggingEnabled?: boolean;

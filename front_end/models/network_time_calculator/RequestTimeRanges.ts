@@ -72,10 +72,12 @@ export function calculateRequestTimeRanges(
     }
   }
 
-  // In some situations, argument `start` may come before `startTime` (`timing.requestStart`). This is especially true
-  // in cases such as SW static routing API where fields like `workerRouterEvaluationStart` or `workerCacheLookupStart`
-  // is set before setting `timing.requestStart`. If the `start` and `end` is known to be a valid value (i.e. not default
-  // invalid value -1 or undefined), we allow adding the range.
+  /**
+   * In some situations, argument `start` may come before `startTime` (`timing.requestStart`). This is especially true
+   * in cases such as SW static routing API where fields like `workerRouterEvaluationStart` or `workerCacheLookupStart`
+   * is set before setting `timing.requestStart`. If the `start` and `end` is known to be a valid value (i.e. not default
+   * invalid value -1 or undefined), we allow adding the range.
+   **/
   function addMaybeNegativeOffsetRange(name: RequestTimeRangeNames, start: number, end: number): void {
     addRange(name, startTime + (start / 1000), startTime + (end / 1000));
   }

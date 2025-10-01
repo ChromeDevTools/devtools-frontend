@@ -27,7 +27,7 @@ interface RemoveQuotesParams {
   secondPart: TemplateElement;
 }
 
-// Return type is an array of fixes or potentially null/empty if ranges are invalid
+/** Return type is an array of fixes or potentially null/empty if ranges are invalid **/
 function removeQuotesFromAttribute({fixer, firstPart, secondPart}: RemoveQuotesParams): RuleFix[]|null {
   const [, rangeOfOpeningTemplatePartEnd] = firstPart.range;
   // From the first part, we need to remove the last character, which is the double quote.

@@ -129,7 +129,7 @@ export function substitutePlaceholders(markdown: string, substitutions?: Map<str
   return result;
 }
 
-// Ensure that all provided placeholders match the naming pattern.
+/** Ensure that all provided placeholders match the naming pattern. **/
 function validatePlaceholders(placeholders: Set<string>): void {
   const invalidPlaceholders = [...placeholders].filter(placeholder => !validPlaceholderNamePattern.test(placeholder));
   if (invalidPlaceholders.length > 0) {

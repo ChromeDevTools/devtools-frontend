@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {getBrowserAndPagesWrappers} from 'test/shared/non_hosted_wrappers.js';
 
 import {getTestsuiteResourcesPath} from './cxx-debugging-extension-helpers.js';
-import { getBrowserAndPagesWrappers } from 'test/shared/non_hosted_wrappers.js';
 
 // These tests abuse the test suite rigging a little, because we will interact with the options page directly instead of
 // through the frontend.
@@ -13,7 +13,6 @@ describe('The options page', () => {
   it('shows third-party licenses', async () => {
     const {inspectedPage, devToolsPage} = await getBrowserAndPagesWrappers();
     await inspectedPage.goTo(`${getTestsuiteResourcesPath()}/cxx_debugging/gen/ExtensionOptions.html`);
-
 
     const expectedCredits = ['Emscripten', 'LLVM', 'lit-html', 'lldb-eval'];
     const credits = await devToolsPage.waitForFunction(async () => {

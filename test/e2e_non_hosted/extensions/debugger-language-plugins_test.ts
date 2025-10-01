@@ -62,8 +62,10 @@ function goToWasmResource(
   return inspectedPage.goToResource(`extensions/wasm_module.html?${queryParams.join('&')}`);
 }
 
-// We need a dummy external DWARF file such that DevTools uses the mock extensions
-// for debugging the WebAssembly.
+/**
+ * We need a dummy external DWARF file such that DevTools uses the mock extensions
+ * for debugging the WebAssembly.
+ **/
 async function addDummyExternalDWARFInfo(wasmFile: string, devToolsPage: DevToolsPage) {
   await openFileInEditor(wasmFile, devToolsPage);
   await devToolsPage.click('aria/Code editor', {clickOptions: {button: 'right'}});
@@ -85,7 +87,7 @@ describe('The Debugger Language Plugins', () => {
         'TestExtension', `${inspectedPage.getResourcesPath('extensions.test')}/extensions/language_extensions.html`,
         /* allowFileAccess*/ true, devToolsPage, inspectedPage);
     await extension.evaluate(() => {
-      // A simple plugin that resolves to a single source file
+      /** A simple plugin that resolves to a single source file **/
       class SingleFilePlugin {
         async addRawModule(_rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const fileUrl = new URL('/source_file.c', rawModule.url || symbols);
@@ -179,8 +181,10 @@ describe('The Debugger Language Plugins', () => {
         'TestExtension', `${inspectedPage.getResourcesPath('extensions.test')}/extensions/language_extensions.html`,
         /* allowFileAccess */ true, devToolsPage, inspectedPage);
     await extension.evaluate((mappings: LabelMapping[]) => {
-      // This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
-      // code offset pair.
+      /**
+       * This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
+       * code offset pair.
+       **/
       class LocationMappingPlugin {
         private module: undefined|{rawModuleId: string, sourceFileURL: string} = undefined;
 
@@ -1054,7 +1058,7 @@ describe('The Debugger Language Plugins', () => {
         'TestExtension', `${inspectedPage.getResourcesPath('extensions.test')}/extensions/language_extensions.html`,
         /* allowFileAccess */ true, devToolsPage, inspectedPage);
     await extension.evaluate(() => {
-      // A simple plugin that resolves to a single source file
+      /** A simple plugin that resolves to a single source file **/
       class DWARFSymbolsWithSingleFilePlugin {
         async addRawModule(_rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           if (symbols !== 'foobar81') {
@@ -1141,8 +1145,10 @@ describe('The Debugger Language Plugins', () => {
     // Do this after setting the breakpoint, otherwise the helper gets confused
     await locationLabels.setBreakpointInWasmAndRun('FIRST_PAUSE', 'window.Module.instance.exports.Main(16)');
     await extension.evaluate((mappings: LabelMapping[]) => {
-      // This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
-      // code offset pair.
+      /**
+       * This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
+       * code offset pair.
+       **/
       class LocationMappingPlugin {
         private module: undefined|{rawModuleId: string, sourceFileURL: string} = undefined;
 

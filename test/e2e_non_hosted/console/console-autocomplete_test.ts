@@ -10,7 +10,7 @@ import {
 import {openSourcesPanel} from '../../e2e/helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
-// See the comments in console-repl-mode_test to see why this is necessary.
+/** See the comments in console-repl-mode_test to see why this is necessary. **/
 async function autocompleteTest(prefix: string, suffix: string, devToolsPage: DevToolsPage) {
   await devToolsPage.typeText(
       'let object = {aaa:1, bbb:2}; let map = new Map([["somekey", 5], ["some other key", 42]])');

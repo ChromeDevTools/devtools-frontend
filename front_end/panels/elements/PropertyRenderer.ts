@@ -57,8 +57,10 @@ export function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>(
   return RendererBase;
 }
 
-// This class implements highlighting for rendered nodes in value traces. On hover, all nodes belonging to the same
-// Match (using object identity) are highlighted.
+/**
+ * This class implements highlighting for rendered nodes in value traces. On hover, all nodes belonging to the same
+ * Match (using object identity) are highlighted.
+ **/
 export class Highlighting {
   static readonly REGISTRY_NAME = 'css-value-tracing';
   // This holds a stack of active ranges, the top-stack is the currently highlighted set. mouseenter and mouseleave
@@ -145,19 +147,21 @@ export class Highlighting {
   }
 }
 
-// This class is used to guide value tracing when passed to the Renderer. Tracing has two phases. First, substitutions
-// such as var() are applied step by step. In each step, all vars in the value are replaced by their definition until no
-// vars remain. In the second phase, we evaluate other functions such as calc() or min() or color-mix(). Which CSS
-// function types are actually substituted or evaluated is not relevant here, rather it is decided by an individual
-// MatchRenderer.
-//
-// Callers don't need to keep track of the tracing depth (i.e., the number of substitution/evaluation steps).
-// TracingContext is stateful and keeps track of the depth, so callers can progressively produce steps by calling
-// TracingContext#nextSubstitution or TracingContext#nextEvaluation. Calling Renderer with the tracing context will then
-// produce the next step of tracing. The tracing depth is passed to the individual MatchRenderers by way of
-// TracingContext#substitution or TracingContext#applyEvaluation/TracingContext#evaluation (see function-level comments
-// about how these two play together), which MatchRenderers call to request a fresh TracingContext for the next level of
-// substitution/evaluation.
+/**
+ * This class is used to guide value tracing when passed to the Renderer. Tracing has two phases. First, substitutions
+ * such as var() are applied step by step. In each step, all vars in the value are replaced by their definition until no
+ * vars remain. In the second phase, we evaluate other functions such as calc() or min() or color-mix(). Which CSS
+ * function types are actually substituted or evaluated is not relevant here, rather it is decided by an individual
+ * MatchRenderer.
+ *
+ * Callers don't need to keep track of the tracing depth (i.e., the number of substitution/evaluation steps).
+ * TracingContext is stateful and keeps track of the depth, so callers can progressively produce steps by calling
+ * TracingContext#nextSubstitution or TracingContext#nextEvaluation. Calling Renderer with the tracing context will then
+ * produce the next step of tracing. The tracing depth is passed to the individual MatchRenderers by way of
+ * TracingContext#substitution or TracingContext#applyEvaluation/TracingContext#evaluation (see function-level comments
+ * about how these two play together), which MatchRenderers call to request a fresh TracingContext for the next level of
+ * substitution/evaluation.
+ **/
 export class TracingContext {
   #substitutionDepth = 0;
   #hasMoreSubstitutions: boolean;

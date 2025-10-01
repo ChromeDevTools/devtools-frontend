@@ -864,7 +864,7 @@ export async function editCSSProperty(
       undefined, devToolsPage);
 }
 
-// Edit a media or container query rule text for the given styles section
+/** Edit a media or container query rule text for the given styles section **/
 export async function editQueryRuleText(
     queryStylesSections: puppeteer.ElementHandle<Element>, newQueryText: string,
     devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

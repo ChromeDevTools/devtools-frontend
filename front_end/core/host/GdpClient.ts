@@ -84,11 +84,13 @@ class GdpError extends Error {
   }
 }
 
-// The `batchGet` awards endpoint returns badge names with an
-// obfuscated user ID (e.g., `profiles/12345/awards/badge-name`).
-// This function normalizes them to use `me` instead of the ID
-// (e.g., `profiles/me/awards/badge-path`) to match the format
-// used for client-side requests.
+/**
+ * The `batchGet` awards endpoint returns badge names with an
+ * obfuscated user ID (e.g., `profiles/12345/awards/badge-name`).
+ * This function normalizes them to use `me` instead of the ID
+ * (e.g., `profiles/me/awards/badge-path`) to match the format
+ * used for client-side requests.
+ **/
 function normalizeBadgeName(name: string): string {
   return name.replace(/profiles\/[^/]+\/awards\//, 'profiles/me/awards/');
 }

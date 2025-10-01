@@ -38,8 +38,10 @@ export enum RegisteredAdorners {
   POPOVER = 'popover',
 }
 
-// This enum-like const object serves as the authoritative registry for all the
-// adorners available.
+/**
+ * This enum-like const object serves as the authoritative registry for all the
+ * adorners available.
+ **/
 export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorner {
   switch (which) {
     case RegisteredAdorners.GRID:
@@ -215,7 +217,7 @@ const OrderedAdornerCategories = [
   AdornerCategories.DEFAULT,
 ];
 
-// Use idx + 1 for the order to avoid JavaScript's 0 == false issue
+/** Use idx + 1 for the order to avoid JavaScript's 0 == false issue **/
 export const AdornerCategoryOrder = new Map(OrderedAdornerCategories.map((category, idx) => [category, idx + 1]));
 
 export function compareAdornerNamesByCategory(nameA: string, nameB: string): number {

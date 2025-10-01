@@ -32,10 +32,12 @@ export interface PieChartData {
   total: number;
   slices: Slice[];
 }
-// If the slices are not available when constructing the pie chart, set .data
-// immediately, with total=0 and slices=[], so that the chart is rendered with
-// the correct initial size. This avoids a layout shift when the slices are
-// later populated.
+/**
+ * If the slices are not available when constructing the pie chart, set .data
+ * immediately, with total=0 and slices=[], so that the chart is rendered with
+ * the correct initial size. This avoids a layout shift when the slices are
+ * later populated.
+ **/
 export class PieChart extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private chartName = '';

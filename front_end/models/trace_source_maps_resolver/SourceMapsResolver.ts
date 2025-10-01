@@ -22,7 +22,7 @@ export class SourceMappingsUpdated extends Event {
   }
 }
 
-// The code location key is created as a concatenation of its fields.
+/** The code location key is created as a concatenation of its fields. **/
 export const resolvedCodeLocationDataNames = new Map<string, ResolvedCodeLocationData|null>();
 
 export class SourceMapsResolver extends EventTarget {

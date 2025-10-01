@@ -93,7 +93,7 @@ export interface FunctionDeclaration<T extends string|number|symbol = string> {
   parameters: FunctionObjectParam<T>;
 }
 
-// Raw media bytes.
+/** Raw media bytes. **/
 export interface MediaBlob {
   // The IANA standard MIME type of the source data.
   // Currently supported types are: image/png, image/jpeg.
@@ -113,7 +113,7 @@ export enum FunctionalityType {
   AGENTIC_CHAT = 5,
 }
 
-// See: cs/aida.proto (google3).
+/** See: cs/aida.proto (google3). **/
 export enum ClientFeature {
   // Unspecified client feature.
   CLIENT_FEATURE_UNSPECIFIED = 0,
@@ -150,7 +150,7 @@ export enum UserTier {
   PUBLIC = 3,
 }
 
-// Googlers: see the Aida `retrieval` proto; this type is based on that.
+/** Googlers: see the Aida `retrieval` proto; this type is based on that. **/
 export interface RequestFactMetadata {
   /**
    * A description of where the fact comes from.

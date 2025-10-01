@@ -101,11 +101,13 @@ function maybeRetrieveContextTypes<T = unknown>(
 
 let loadedSourcesModule: (typeof Sources|undefined);
 
-//  The sources module is imported here because the view with id `navigator-network`
-//  is implemented by `NetworkNavigatorView` in sources. It cannot be registered
-//  in the sources module as it belongs to the shell app and thus all apps
-//  that extend from shell will have such view registered. This would cause a
-//  collision with node_app as a separate view with the same id is registered in it.
+/**
+ * The sources module is imported here because the view with id `navigator-network`
+ * is implemented by `NetworkNavigatorView` in sources. It cannot be registered
+ * in the sources module as it belongs to the shell app and thus all apps
+ * that extend from shell will have such view registered. This would cause a
+ * collision with node_app as a separate view with the same id is registered in it.
+ **/
 async function loadSourcesModule(): Promise<typeof Sources> {
   if (!loadedSourcesModule) {
     loadedSourcesModule = await import('../sources/sources.js');

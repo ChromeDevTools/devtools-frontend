@@ -191,7 +191,7 @@ const createTraceElement =
       return trace;
     };
 
-// clang-format off
+/** clang-format off **/
 class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatch) {
   // clang-format on
   override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[] {

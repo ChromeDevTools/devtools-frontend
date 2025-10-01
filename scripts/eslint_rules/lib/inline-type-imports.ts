@@ -36,8 +36,10 @@ export default createRule({
     // The key is the literal import path ("../foo.js");
     const valueImports = new Map<string, ImportDeclaration>();
 
-    // Takes the node that represents an import ("Foo", "Foo as Bar") and
-    // return the literal text.
+    /**
+     * Takes the node that represents an import ("Foo", "Foo as Bar") and
+     * return the literal text.
+     **/
     function getTextForImportSpecifier(specifier: ImportSpecifier): string {
       // => import {Foo as Bar} from 'foo';
       // Foo = imported name

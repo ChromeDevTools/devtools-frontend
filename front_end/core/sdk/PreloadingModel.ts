@@ -23,11 +23,13 @@ export interface WithId<I, V> {
   value: V;
 }
 
-// Holds preloading related information.
-//
-// - SpeculationRule rule sets
-// - Preloading attempts
-// - Relationship between rule sets and preloading attempts
+/**
+ * Holds preloading related information.
+ *
+ * - SpeculationRule rule sets
+ * - Preloading attempts
+ * - Relationship between rule sets and preloading attempts
+ **/
 export class PreloadingModel extends SDKModel<EventTypes> {
   private agent: ProtocolProxyApi.PreloadApi;
   private loaderIds: Protocol.Network.LoaderId[] = [];
@@ -410,19 +412,21 @@ class RuleSetRegistry {
   }
 }
 
-// Protocol.Preload.PreloadingStatus|'NotTriggered'
-//
-// A renderer sends SpeculationCandidate to the browser process and the
-// browser process checks eligibilities, and starts PreloadingAttempt.
-//
-// In the frontend, "NotTriggered" is used to denote that a
-// PreloadingAttempt is waiting for at trigger event (eg:
-// mousedown/mouseover). All PreloadingAttempts will start off as
-// "NotTriggered", but "eager" preloading attempts (attempts not
-// actually waiting for any trigger) will be processed by the browser
-// immediately, and will not stay in this state for long.
-//
-// TODO(https://crbug.com/1384419): Add NotEligible.
+/**
+ * Protocol.Preload.PreloadingStatus|'NotTriggered'
+ *
+ * A renderer sends SpeculationCandidate to the browser process and the
+ * browser process checks eligibilities, and starts PreloadingAttempt.
+ *
+ * In the frontend, "NotTriggered" is used to denote that a
+ * PreloadingAttempt is waiting for at trigger event (eg:
+ * mousedown/mouseover). All PreloadingAttempts will start off as
+ * "NotTriggered", but "eager" preloading attempts (attempts not
+ * actually waiting for any trigger) will be processed by the browser
+ * immediately, and will not stay in this state for long.
+ *
+ * TODO(https://crbug.com/1384419): Add NotEligible.
+ **/
 export const enum PreloadingStatus {
   NOT_TRIGGERED = 'NotTriggered',
   PENDING = 'Pending',

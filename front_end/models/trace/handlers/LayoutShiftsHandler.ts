@@ -64,12 +64,16 @@ interface RemoteFont {
   beginRemoteFontLoadEvent: Types.Events.BeginRemoteFontLoad;
 }
 
-// This represents the maximum #time we will allow a cluster to go before we
-// reset it.
+/**
+ * This represents the maximum #time we will allow a cluster to go before we
+ * reset it.
+ **/
 export const MAX_CLUSTER_DURATION = Helpers.Timing.milliToMicro(Types.Timing.Milli(5000));
 
-// This represents the maximum #time we will allow between layout shift events
-// before considering it to be the start of a new cluster.
+/**
+ * This represents the maximum #time we will allow between layout shift events
+ * before considering it to be the start of a new cluster.
+ **/
 export const MAX_SHIFT_TIME_DELTA = Helpers.Timing.milliToMicro(Types.Timing.Milli(1000));
 
 // Layout shifts are reported globally to the developer, irrespective of which
@@ -108,8 +112,10 @@ let clsWindowID = -1;
 let clusters: Types.Events.SyntheticLayoutShiftCluster[] = [];
 let clustersByNavigationId = new Map<Types.Events.NavigationId, Types.Events.SyntheticLayoutShiftCluster[]>();
 
-// Represents a point in time in which a  LS score change
-// was recorded.
+/**
+ * Represents a point in time in which a  LS score change
+ * was recorded.
+ **/
 interface ScoreRecord {
   ts: number;
   score: number;
@@ -559,7 +565,7 @@ export function scoreClassificationForLayoutShift(score: number): ScoreClassific
   return state;
 }
 
-// Based on https://web.dev/cls/
+/** Based on https://web.dev/cls/ **/
 export const enum LayoutShiftsThreshold {
   GOOD = 0,
   NEEDS_IMPROVEMENT = 0.1,

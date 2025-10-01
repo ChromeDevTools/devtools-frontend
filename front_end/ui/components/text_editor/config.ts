@@ -86,9 +86,11 @@ export const tabMovesFocus = DynamicSetting.bool('text-editor-tab-moves-focus', 
 
 const disableConservativeCompletion = CM.StateEffect.define();
 
-// When enabled, this suppresses the behavior of showCompletionHint
-// and accepting of completions with Enter until the user selects a
-// completion beyond the initially selected one. Used in the console.
+/**
+ * When enabled, this suppresses the behavior of showCompletionHint
+ * and accepting of completions with Enter until the user selects a
+ * completion beyond the initially selected one. Used in the console.
+ **/
 export const conservativeCompletion = CM.StateField.define<boolean>({
   create() {
     return true;
@@ -123,9 +125,11 @@ function acceptCompletionIfAtEndOfLine(view: CM.EditorView): boolean {
   return false;
 }
 
-// This is a wrapper around CodeMirror's own moveCompletionSelection command, which
-// selects the first selection if the state of the selection is conservative, and
-// otherwise behaves as normal.
+/**
+ * This is a wrapper around CodeMirror's own moveCompletionSelection command, which
+ * selects the first selection if the state of the selection is conservative, and
+ * otherwise behaves as normal.
+ **/
 function moveCompletionSelectionIfNotConservative(
     forward: boolean, by: 'option'|'page' = 'option'): ((view: CM.EditorView) => boolean) {
   return view => {

@@ -10,8 +10,10 @@ const COMPONENT_DOCS_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', '
 const cwd = path.join(__dirname, '..', '..');
 let runningServer: ChildProcess|undefined;
 
-// Starts a hosted mode server on any available port and returns the port number
-// once the server is ready to receive requests.
+/**
+ * Starts a hosted mode server on any available port and returns the port number
+ * once the server is ready to receive requests.
+ **/
 export function startServer(server: 'hosted-mode'|'component-docs', commandLineArgs: string[]): Promise<number> {
   if (runningServer) {
     throw new Error('Server was already started.');

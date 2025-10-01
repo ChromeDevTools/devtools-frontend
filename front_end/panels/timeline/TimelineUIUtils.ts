@@ -480,7 +480,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// Look for scheme:// plus text and exclude any punctuation at the end.
+/** Look for scheme:// plus text and exclude any punctuation at the end. **/
 export const URL_REGEX = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
 
 let eventDispatchDesciptors: EventDispatchTypeDescriptor[];
@@ -1684,8 +1684,10 @@ export class TimelineUIUtils {
     elem.textContent = eventStr;
     // Highlighting is done async (shrug), but we'll return the container immediately.
     void CodeHighlighter.CodeHighlighter.highlightNode(elem, 'text/javascript').then(() => {
-      // Linkify any URLs within the text nodes.
-      // Use a TreeWalker to find all our text nodes
+      /**
+       * Linkify any URLs within the text nodes.
+       * Use a TreeWalker to find all our text nodes
+       **/
       function* iterateTreeWalker(walker: TreeWalker): IterableIterator<Node> {
         while (walker.nextNode()) {
           yield walker.currentNode;

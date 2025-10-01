@@ -47,11 +47,13 @@ import {
   rgbToHwb,
 } from './ColorUtils.js';
 
-// <hue> is defined as a <number> or <angle>
-// and we hold this in degrees. However, after
-// the conversions, these degrees can result in
-// negative values. That's why we normalize the hue to be
-// between [0 - 360].
+/**
+ * <hue> is defined as a <number> or <angle>
+ * and we hold this in degrees. However, after
+ * the conversions, these degrees can result in
+ * negative values. That's why we normalize the hue to be
+ * between [0 - 360].
+ **/
 function normalizeHue(hue: number): number {
   // Even though it is highly unlikely, hue can be
   // very negative like -400. The initial modulo
@@ -60,9 +62,11 @@ function normalizeHue(hue: number): number {
   return ((hue % 360) + 360) % 360;
 }
 
-// Parses angle in the form of
-// `<angle>deg`, `<angle>turn`, `<angle>grad and `<angle>rad`
-// and returns the canonicalized `degree`.
+/**
+ * Parses angle in the form of
+ * `<angle>deg`, `<angle>turn`, `<angle>grad and `<angle>rad`
+ * and returns the canonicalized `degree`.
+ **/
 function parseAngle(angleText: string): number|null {
   const angle = angleText.replace(/(deg|g?rad|turn)$/, '');
   // @ts-expect-error: isNaN can accept strings
@@ -90,7 +94,7 @@ function parseAngle(angleText: string): number|null {
   return number;
 }
 
-// Returns the `Format` equivalent from the format text
+/** Returns the `Format` equivalent from the format text **/
 export function getFormat(formatText: string): Format|null {
   switch (formatText) {
     case Format.HEX:

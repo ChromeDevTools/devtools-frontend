@@ -321,9 +321,11 @@ export class UserMetrics {
  * 2. Do not update any 'MAX_VALUE' or any other value.
  */
 
-// Codes below are used to collect UMA histograms in the Chromium port.
-// Do not change the values below, additional actions are needed on the Chromium side
-// in order to add more codes.
+/**
+ * Codes below are used to collect UMA histograms in the Chromium port.
+ * Do not change the values below, additional actions are needed on the Chromium side
+ * in order to add more codes.
+ **/
 export enum Action {
   /* eslint-disable @typescript-eslint/naming-convention */
   WindowDocked = 1,
@@ -807,7 +809,7 @@ export enum DevtoolsExperiments {
   MAX_VALUE = 110,
 }
 
-// Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added.
+/** Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added. **/
 export enum IssueExpanded {
   /* eslint-disable @typescript-eslint/naming-convention */
   CrossOriginEmbedderPolicy = 0,

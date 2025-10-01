@@ -219,7 +219,9 @@ export function dumpCollectedErrors(): void {
 const pendingErrorExpectations = new Set<ErrorExpectation>();
 export let fatalErrors: string[] = [];
 export let expectedErrors: string[] = [];
-// Gathered separately so we can surface them during screenshot tests to help
-// give an idea of failures, rather than having to guess purely based on the
-// screenshot.
+/**
+ * Gathered separately so we can surface them during screenshot tests to help
+ * give an idea of failures, rather than having to guess purely based on the
+ * screenshot.
+ **/
 export const uiComponentDocErrors: Error[] = [];

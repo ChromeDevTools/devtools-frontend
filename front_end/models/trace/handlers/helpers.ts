@@ -184,7 +184,7 @@ export function addEventToEntityMapping(event: Types.Events.Event, entityMapping
   entityMappings.entityByEvent.set(event, entity);
 }
 
-// A slight upgrade of addEventToEntityMapping to handle the sub-events of a network request.
+/** A slight upgrade of addEventToEntityMapping to handle the sub-events of a network request. **/
 export function addNetworkRequestToEntityMapping(
     networkRequest: Types.Events.SyntheticNetworkRequest, entityMappings: EntityMappings,
     requestTraceEvents: TraceEventsForNetworkRequest): void {

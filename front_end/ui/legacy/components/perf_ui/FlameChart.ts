@@ -103,7 +103,7 @@ const HEADER_LABEL_X_PADDING = 3;
 const HEADER_LABEL_Y_PADDING = 2;
 const PADDING_BETWEEN_TITLE_AND_SUBTITLE = 6;
 
-// The width of each of the edit mode icons.
+/** The width of each of the edit mode icons. **/
 export const EDIT_ICON_WIDTH = 16;
 // This gap might seem quite small - but the icons themselves have some
 // whitespace either side, so we don't need a huge gap.
@@ -136,7 +136,7 @@ const hideIconPath =
 const showIconPath =
     'M10 13.5C10.972 13.5 11.7983 13.1597 12.479 12.479C13.1597 11.7983 13.5 10.972 13.5 10C13.5 9.028 13.1597 8.20167 12.479 7.521C11.7983 6.84033 10.972 6.5 10 6.5C9.028 6.5 8.20167 6.84033 7.521 7.521C6.84033 8.20167 6.5 9.028 6.5 10C6.5 10.972 6.84033 11.7983 7.521 12.479C8.20167 13.1597 9.028 13.5 10 13.5ZM10 12C9.44467 12 8.97233 11.8057 8.583 11.417C8.19433 11.0277 8 10.5553 8 10C8 9.44467 8.19433 8.97233 8.583 8.583C8.97233 8.19433 9.44467 8 10 8C10.5553 8 11.0277 8.19433 11.417 8.583C11.8057 8.97233 12 9.44467 12 10C12 10.5553 11.8057 11.0277 11.417 11.417C11.0277 11.8057 10.5553 12 10 12ZM10 16C8.014 16 6.20833 15.455 4.583 14.365C2.95833 13.2743 1.764 11.8193 1 10C1.764 8.18067 2.95833 6.72567 4.583 5.635C6.20833 4.545 8.014 4 10 4C11.986 4 13.7917 4.545 15.417 5.635C17.0417 6.72567 18.236 8.18067 19 10C18.236 11.8193 17.0417 13.2743 15.417 14.365C13.7917 15.455 11.986 16 10 16ZM10 14.5C11.5553 14.5 12.9927 14.0973 14.312 13.292C15.632 12.486 16.646 11.3887 17.354 10C16.646 8.61133 15.632 7.514 14.312 6.708C12.9927 5.90267 11.5553 5.5 10 5.5C8.44467 5.5 7.00733 5.90267 5.688 6.708C4.368 7.514 3.354 8.61133 2.646 10C3.354 11.3887 4.368 12.486 5.688 13.292C7.00733 14.0973 8.44467 14.5 10 14.5Z';
 
-// export for test.
+/** export for test. **/
 export const enum HoverType {
   TRACK_CONFIG_UP_BUTTON = 'TRACK_CONFIG_UP_BUTTON',
   TRACK_CONFIG_DOWN_BUTTON = 'TRACK_CONFIG_DOWN_BUTTON',
@@ -216,7 +216,7 @@ export interface UserFilterAction {
   entry: Trace.Types.Events.Event;
 }
 
-// Object used to indicate to the Context Menu if an action is possible on the selected entry.
+/** Object used to indicate to the Context Menu if an action is possible on the selected entry. **/
 export interface PossibleFilterActions {
   [FilterAction.MERGE_FUNCTION]: boolean;
   [FilterAction.COLLAPSE_FUNCTION]: boolean;
@@ -2569,9 +2569,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const minTextWidth = 2 * textPadding + UI.UIUtils.measureTextWidth(context, '…');
     const minTextWidthDuration = this.chartViewport.pixelToTimeOffset(minTextWidth);
 
-    // As we parse each event, we bucket them into batches based on the color and
-    // whether they should be outlined. The key of this map is an object, so the
-    // following helps for dedupings keys to use within a Map.
+    /**
+     * As we parse each event, we bucket them into batches based on the color and
+     * whether they should be outlined. The key of this map is an object, so the
+     * following helps for dedupings keys to use within a Map.
+     **/
     interface BatchKey {
       color: string;
       outline: boolean;

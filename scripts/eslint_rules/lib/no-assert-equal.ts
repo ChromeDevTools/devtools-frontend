@@ -11,7 +11,7 @@ import type {TSESTree} from '@typescript-eslint/utils';
 
 import {createRule} from './utils/ruleCreator.ts';
 
-// Helper type guard to check for assert.equal calls
+/** Helper type guard to check for assert.equal calls **/
 function isAssertEqualCall(node: TSESTree.Node): node is TSESTree.CallExpression&{
   callee: TSESTree.MemberExpression&{
     object: TSESTree.Identifier & {name: 'assert'},

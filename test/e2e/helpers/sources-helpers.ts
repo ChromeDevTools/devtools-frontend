@@ -495,7 +495,7 @@ export function isEqualOrAbbreviation(abbreviated: string, full: string): boolea
   return full.startsWith(split[0]) && full.endsWith(split[1]);
 }
 
-// Helpers for navigating the file tree.
+/** Helpers for navigating the file tree. **/
 export interface NestedFileSelector {
   rootSelector: string;
   domainSelector: string;

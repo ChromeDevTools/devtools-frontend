@@ -458,7 +458,7 @@ export function handleLinkResponseHeader(linkHeaderValue: string): Array<{url: s
   return preconnectedOrigins;
 }
 
-// Export the function for test purpose.
+/** Export the function for test purpose. **/
 export function generatePreconnectedOrigins(
     data: Handlers.Types.HandlerData, context: InsightSetContextWithNavigation,
     contextRequests: Types.Events.SyntheticNetworkRequest[],
@@ -584,7 +584,7 @@ function candidateRequestsByOrigin(
   return origins;
 }
 
-// Export the function for test purpose.
+/** Export the function for test purpose. **/
 export function generatePreconnectCandidates(
     data: Handlers.Types.HandlerData, context: InsightSetContextWithNavigation,
     contextRequests: Types.Events.SyntheticNetworkRequest[]): PreconnectCandidate[] {

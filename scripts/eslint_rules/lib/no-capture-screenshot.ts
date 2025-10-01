@@ -6,7 +6,7 @@ import type {TSESTree} from '@typescript-eslint/utils';
 
 import {createRule} from './utils/ruleCreator.ts';
 
-// Helper type guard to check for devToolsPage.equal calls
+/** Helper type guard to check for devToolsPage.equal calls **/
 function isCaptureScreenshot(node: TSESTree.Node): node is TSESTree.CallExpression&{
   callee: TSESTree.MemberExpression&{
     object: TSESTree.Identifier & {name: 'devToolsPage'},

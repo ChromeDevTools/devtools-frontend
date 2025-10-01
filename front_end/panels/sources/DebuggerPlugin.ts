@@ -1765,8 +1765,10 @@ export class BreakpointLocationRevealer implements
   }
 }
 
-// Enumerate non-breakable lines (lines without a known corresponding
-// position in the UISource).
+/**
+ * Enumerate non-breakable lines (lines without a known corresponding
+ * position in the UISource).
+ **/
 async function computeNonBreakableLines(
     state: CodeMirror.EditorState, transformer: SourceFrame.SourceFrame.Transformer,
     sourceCode: Workspace.UISourceCode.UISourceCode): Promise<readonly number[]> {
@@ -2043,8 +2045,10 @@ export function getVariableNamesByLine(
   toPos = editorState.doc.lineAt(toPos).from;
   const tree = CodeMirror.syntaxTree(editorState);
 
-  // Sibling scope is a scope that does not contain the current position.
-  // We will exclude variables that are defined (and used in those scopes (since we are currently outside of their lifetime).
+  /**
+   * Sibling scope is a scope that does not contain the current position.
+   * We will exclude variables that are defined (and used in those scopes (since we are currently outside of their lifetime).
+   **/
   function isSiblingScopeNode(node: {name: string, from: number, to: number}): boolean {
     return isScopeNode(node.name) && (node.to < currentPos || currentPos < node.from);
   }

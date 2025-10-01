@@ -260,8 +260,10 @@ class KarmaTests extends Tests {
   }
 }
 
-// TODO(333423685)
-// - watch
+/**
+ * TODO(333423685)
+ * - watch
+ **/
 function main() {
   const tests: string[] = typeof options['tests'] === 'string' ? [options['tests']] : options['tests'];
   const testKinds = [

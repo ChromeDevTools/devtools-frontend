@@ -47,9 +47,11 @@ export interface ResetData {
   scrollY: number;
 }
 
-// Overlay class should be used to implement various tools and provide
-// access to globals via the window object it receives in the constructor.
-// Old logic is kept temporarily while the tools are being migrated.
+/**
+ * Overlay class should be used to implement various tools and provide
+ * access to globals via the window object it receives in the constructor.
+ * Old logic is kept temporarily while the tools are being migrated.
+ **/
 export class Overlay {
   protected viewportSize = {width: 800, height: 600};
   protected viewportSizeForMediaQueries?: ViewportSize;

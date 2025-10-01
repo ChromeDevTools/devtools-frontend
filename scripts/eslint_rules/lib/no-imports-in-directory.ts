@@ -6,7 +6,7 @@ import path from 'path';
 
 import {createRule} from './utils/ruleCreator.ts';
 
-// Define the structure of the options object
+/** Define the structure of the options object **/
 interface Options {
   bannedImportPaths?: Array<{
     bannedPath: string,

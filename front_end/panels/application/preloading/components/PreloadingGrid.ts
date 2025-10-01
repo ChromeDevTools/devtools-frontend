@@ -54,7 +54,7 @@ export interface PreloadingGridRow {
   ruleSets: Protocol.Preload.RuleSet[];
 }
 
-// Grid component to show prerendering attempts.
+/** Grid component to show prerendering attempts. **/
 export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
 
   readonly #shadow = this.attachShadow({mode: 'open'});

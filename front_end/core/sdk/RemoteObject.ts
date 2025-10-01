@@ -9,7 +9,7 @@ import type {DOMPinnedWebIDLProp, DOMPinnedWebIDLType} from '../common/JavaScrip
 import type {DebuggerModel, FunctionDetails} from './DebuggerModel.js';
 import type {RuntimeModel} from './RuntimeModel.js';
 
-// This cannot be an interface due to "instanceof RemoteObject" checks in the code.
+/** This cannot be an interface due to "instanceof RemoteObject" checks in the code. **/
 export abstract class RemoteObject {
   static fromLocalObject(value: unknown): RemoteObject {
     return new LocalJSONObject(value);

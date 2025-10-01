@@ -82,7 +82,7 @@ function parseHostAndPort(pattern: string, scheme: string): {host: string, port:
     return undefined;
   }
 
-  // The URL constructor strips off the default port for the scheme, even if it was given explicitely
+  // The URL constructor strips off the default port for the scheme, even if it was given explicitly
   const httpPort = defaultPort('http');
   if (!httpPort) {
     return undefined;
@@ -100,8 +100,15 @@ function parseHostAndPort(pattern: string, scheme: string): {host: string, port:
   };
 }
 
-// HostUrlPatterns define permissions in for extensions in the form of `*://*.example.com:*/`. Since these aren't valid
-// URLs Common.ParsedURL can't handle them and we need a separate implementation.
+/**
+ * HostUrlPatterns define permissions in for extensions in the form of "<protocol>://<sub-domain>.example.com:<port>/".
+ * Where the respected parts can be patters like "*".
+ * Since these aren't valid {@link Common.ParsedURL.ParsedURL}
+ * can't handle them and we need a separate implementation.
+ *
+ * More information in the Chromium code base -
+ * {@link https://crsrc.org/c/chrome/browser/extensions/extension_management_internal.h;l=137 | here}.
+ */
 export class HostUrlPattern {
   static parse(pattern: string): HostUrlPattern|undefined {
     if (pattern === '<all_urls>') {
@@ -122,8 +129,9 @@ export class HostUrlPattern {
     return new HostUrlPattern({scheme, host, port, matchesAll: false});
   }
 
-  private constructor(readonly pattern: {matchesAll: true}|
-                      {readonly scheme: string, readonly host: string, readonly port: string, matchesAll: false}) {
+  private constructor(readonly pattern: {
+    matchesAll: true,
+  }|{readonly scheme: string, readonly host: string, readonly port: string, matchesAll: false}) {
   }
 
   get scheme(): string {

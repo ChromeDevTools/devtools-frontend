@@ -117,7 +117,7 @@ export const selectTestDevice = async (devToolsPage: DevToolsPage = getBrowserAn
   await waitForNotExpanded(DEVICE_LIST_DROPDOWN_SELECTOR, devToolsPage);
 };
 
-// Test if span button works when emulating a dual screen device.
+/** Test if span button works when emulating a dual screen device. **/
 export const selectDualScreen = async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   await clickDevicesDropDown(devToolsPage);
   await devToolsPage.click(SURFACE_DUO_MENU_ITEM_SELECTOR);

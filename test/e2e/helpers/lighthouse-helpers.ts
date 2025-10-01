@@ -27,8 +27,10 @@ export async function navigateToLighthouseTab(
   return await devToolsPage.waitFor('.lighthouse-start-view');
 }
 
-// Instead of watching the worker or controller/panel internals, we wait for the Lighthouse renderer
-// to create the new report DOM. And we pull the LHR and artifacts off the lh-root node.
+/**
+ * Instead of watching the worker or controller/panel internals, we wait for the Lighthouse renderer
+ * to create the new report DOM. And we pull the LHR and artifacts off the lh-root node.
+ **/
 export async function waitForResult(
     devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
     inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {

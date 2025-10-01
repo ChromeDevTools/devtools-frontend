@@ -42,7 +42,7 @@ export default createRule<[], MessageIds>({
     // we would add `boundOnClick` to this set.
     const addEventListenerCallPropertyNames = new Set<string>();
 
-    // Type parameters for the helper function
+    /** Type parameters for the helper function **/
     function checkPropertyDeclarationForBinding(className: string, node: PropertyDefinition): void {
       if (!node.value || node.value.type !== 'CallExpression') {
         return;

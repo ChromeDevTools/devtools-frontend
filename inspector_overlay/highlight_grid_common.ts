@@ -6,7 +6,7 @@ import type {AreaBounds, Bounds} from './common.js';
 import {drawGridLabels, type GridLabelState, isHorizontalWritingMode} from './css_grid_label_helpers.js';
 import {applyMatrixToPoint, buildPath, emptyBounds, hatchFillPath} from './highlight_common.js';
 
-// TODO(alexrudenko): Grid label unit tests depend on this style so it cannot be extracted yet.
+/** TODO(alexrudenko): Grid label unit tests depend on this style so it cannot be extracted yet. **/
 export const gridStyle = `
 /* Grid row and column labels */
 .grid-label-content {

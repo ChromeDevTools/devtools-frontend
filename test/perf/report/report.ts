@@ -9,9 +9,11 @@ import * as ts from '../../conductor/test_config.js';
 
 const results: Benchmark[] = [];
 
-// Based on skia-perf format:
-// https://skia.googlesource.com/buildbot/+/refs/heads/main/perf/FORMAT.md
-// https://pkg.go.dev/go.skia.org/infra/perf/go/ingest/format#Result
+/**
+ * Based on skia-perf format:
+ * https://skia.googlesource.com/buildbot/+/refs/heads/main/perf/FORMAT.md
+ * https://pkg.go.dev/go.skia.org/infra/perf/go/ingest/format#Result
+ **/
 interface BenchmarkBase {
   key: {
     // For example "trace load"
@@ -20,13 +22,15 @@ interface BenchmarkBase {
   };
 }
 
-// Only one of `measurement` or `measurements` should be populated.
+/** Only one of `measurement` or `measurements` should be populated. **/
 export type Benchmark = BenchmarkMultiMeasure|BenchmarkSingleMeasure;
 
-// The idea behind Measurements is that you may have more than one
-// metric you want to report at the end of running a test, for example
-// you may track the fastest time it took to run a test, and also the
-// median and max time.
+/**
+ * The idea behind Measurements is that you may have more than one
+ * metric you want to report at the end of running a test, for example
+ * you may track the fastest time it took to run a test, and also the
+ * median and max time.
+ **/
 interface BenchmarkMultiMeasure extends BenchmarkBase {
   measurements: Record<string, SingleMeasurement[]>;
 }

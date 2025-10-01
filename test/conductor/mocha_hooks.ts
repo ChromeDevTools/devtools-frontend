@@ -32,9 +32,11 @@ process.on('SIGINT', postFileTeardown);
 // also means that the setup and teardown code needs to be aware that it may be
 // run multiple times within the same node process.
 
-// The two functions below are 'global setup fixtures':
-// https://mochajs.org/#global-setup-fixtures. These let us start one hosted
-// mode server and share it between all the parallel test runners.
+/**
+ * The two functions below are 'global setup fixtures':
+ * https://mochajs.org/#global-setup-fixtures. These let us start one hosted
+ * mode server and share it between all the parallel test runners.
+ **/
 export async function mochaGlobalSetup(this: Mocha.Suite) {
   process.env.testServerPort = String(await startServer(TestConfig.serverType, []));
   console.log(`Started ${TestConfig.serverType} server on port ${process.env.testServerPort}`);
@@ -47,8 +49,10 @@ export function mochaGlobalTeardown() {
 
 let didPauseAtBeginning = false;
 
-// These are the 'root hook plugins': https://mochajs.org/#root-hook-plugins
-// These open and configure the browser before tests are run.
+/**
+ * These are the 'root hook plugins': https://mochajs.org/#root-hook-plugins
+ * These open and configure the browser before tests are run.
+ **/
 export const mochaHooks = {
   // In serial mode (Mocha’s default), before all tests begin, once only.
   // In parallel mode, run before all tests begin, for each file.

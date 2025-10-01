@@ -150,8 +150,10 @@ export const TrackNames = [
   'Extension',
   'ServerTimings',
 ] as const;
-// Network track will use TrackAppender interface, but it won't be shown in Main flamechart.
-// So manually add it to TrackAppenderName.
+/**
+ * Network track will use TrackAppender interface, but it won't be shown in Main flamechart.
+ * So manually add it to TrackAppenderName.
+ **/
 export type TrackAppenderName = typeof TrackNames[number]|'Network';
 
 export type DrawOverride = PerfUI.FlameChart.DrawOverride;

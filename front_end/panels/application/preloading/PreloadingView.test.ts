@@ -26,7 +26,7 @@ const zip2 = <T, S>(xs: T[], ys: S[]) => {
   return Array.from(xs.map((_, i) => [xs[i], ys[i]]));
 };
 
-// Holds targets and ids, and emits events.
+/** Holds targets and ids, and emits events. **/
 class NavigationEmulator {
   private seq = 0;
   private tabTarget: SDK.Target.Target;

@@ -59,7 +59,7 @@ export interface PageResource {
   duration: number|null;
 }
 
-// Used for revealing a resource.
+/** Used for revealing a resource. **/
 export class ResourceKey {
   readonly key: string;
 

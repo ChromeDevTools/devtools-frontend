@@ -209,9 +209,11 @@ export interface OverlayEntryQueries {
   firstVisibleParentForEntry: (entry: Trace.Types.Events.Event) => Trace.Types.Events.Event | null;
 }
 
-// An event dispatched when one of the Annotation Overlays (overlay created by the user,
-// ex. Trace.Types.Overlays.EntryLabel) is removed or updated. When one of the Annotation Overlays is removed or updated,
-// ModificationsManager listens to this event and updates the current annotations.
+/**
+ * An event dispatched when one of the Annotation Overlays (overlay created by the user,
+ * ex. Trace.Types.Overlays.EntryLabel) is removed or updated. When one of the Annotation Overlays is removed or updated,
+ * ModificationsManager listens to this event and updates the current annotations.
+ **/
 export type UpdateAction = 'Remove'|'Update';
 export class AnnotationOverlayActionEvent extends Event {
   static readonly eventName = 'annotationoverlayactionsevent';

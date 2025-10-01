@@ -40,7 +40,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/utils/utils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// These utilities are packaged in a class to allow unittests to stub or spy the implementation.
+/** These utilities are packaged in a class to allow unittests to stub or spy the implementation. **/
 export class PanelUtils {
   static isFailedNetworkRequest(request: SDK.NetworkRequest.NetworkRequest|null): boolean {
     if (!request) {

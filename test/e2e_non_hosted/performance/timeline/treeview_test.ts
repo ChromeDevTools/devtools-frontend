@@ -39,7 +39,7 @@ describe('The Performance tool, Bottom-up panel', function() {
   increaseTimeoutForPerfPanel(this);
 
   setup({dockingMode: 'undocked'});
-  // navigate to the Performance tab and upload performance profile
+  /** navigate to the Performance tab and upload performance profile **/
   async function setupPerformancePanel(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await navigateToPerformanceTab('empty', devToolsPage, inspectedPage);
 

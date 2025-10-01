@@ -47,7 +47,7 @@ function isAssertInequality(node: TSESTree.CallExpression): node is TSESTree.Cal
   return isAssertMemberExpression(calleeNode) && INEQUALITY_ASSERTIONS.has(calleeNode.property.name);
 }
 
-// Type guard for Literal nodes with specific values
+/** Type guard for Literal nodes with specific values **/
 function isLiteral<T extends string|boolean|null|number|RegExp>(
     argumentNode: TSESTree.Node, value: T): argumentNode is TSESTree.Literal&{
   value: T,
@@ -56,7 +56,7 @@ function isLiteral<T extends string|boolean|null|number|RegExp>(
   return argumentNode.type === 'Literal' && argumentNode.value === value;
 }
 
-// Type guard for the `undefined` identifier
+/** Type guard for the `undefined` identifier **/
 function isUndefinedIdentifier(argumentNode: TSESTree.Node): argumentNode is TSESTree.Identifier&{
   name: 'undefined',
 }

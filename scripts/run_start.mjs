@@ -159,7 +159,7 @@ if (status !== 0) {
   process.exit(1);
 }
 
-// Launch Chrome with our custom DevTools front-end.
+/** Launch Chrome with our custom DevTools front-end. **/
 function start() {
   const binary = findBrowserBinary();
   /**

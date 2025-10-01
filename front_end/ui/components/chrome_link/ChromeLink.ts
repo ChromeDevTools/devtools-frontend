@@ -19,8 +19,10 @@ declare global {
   }
 }
 
-// Use this component to render links to 'chrome://...'-URLs
-// (for which regular <x-link>s do not work).
+/**
+ * Use this component to render links to 'chrome://...'-URLs
+ * (for which regular <x-link>s do not work).
+ **/
 export class ChromeLink extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #href = '';

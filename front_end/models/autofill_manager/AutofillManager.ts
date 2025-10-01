@@ -102,8 +102,10 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 }
 
-// A Match describes how the value of a filled field corresponds to a substring
-// of address from startIndex to endIndex.
+/**
+ * A Match describes how the value of a filled field corresponds to a substring
+ * of address from startIndex to endIndex.
+ **/
 export interface Match {
   startIndex: number;
   endIndex: number;

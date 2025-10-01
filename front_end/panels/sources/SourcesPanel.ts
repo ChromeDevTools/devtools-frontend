@@ -632,7 +632,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   private addExperimentMenuItem(
       menuSection: UI.ContextMenu.Section, experiment: string, menuItem: Common.UIString.LocalizedString): void {
-    // menu handler
+    /** menu handler **/
     function toggleExperiment(): void {
       const checked = Root.Runtime.experiments.isEnabled(experiment);
       Root.Runtime.experiments.setEnabled(experiment, !checked);

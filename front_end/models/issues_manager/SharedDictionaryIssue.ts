@@ -34,8 +34,10 @@ export const enum IssueCode {
   WRITE_ERROR_INSUFFICIENT_RESOURCES = 'SharedDictionaryIssue::WriteErrorInsufficientResources',
   WRITE_ERROR_INVALID_MATCH_FIELD = 'SharedDictionaryIssue::WriteErrorInvalidMatchField',
   WRITE_ERROR_INVALID_STRUCTURED_HEADER = 'SharedDictionaryIssue::WriteErrorInvalidStructuredHeader',
+  WRITE_ERROR_INVALID_TTL_FIELD = 'SharedDictionaryIssue::WriteErrorInvalidTTLField',
   WRITE_ERROR_NAVIGATION_REQUEST = 'SharedDictionaryIssue::WriteErrorNavigationRequest',
   WRITE_ERROR_NO_MATCH_FIELD = 'SharedDictionaryIssue::WriteErrorNoMatchField',
+  WRITE_ERROR_NON_INTEGER_TTL_FIELD = 'SharedDictionaryIssue::WriteErrorNonIntegerTTLField',
   WRITE_ERROR_NON_LIST_MATCH_DEST_FIELD = 'SharedDictionaryIssue::WriteErrorNonListMatchDestField',
   WRITE_ERROR_NON_SECURE_CONTEXT = 'SharedDictionaryIssue::WriteErrorNonSecureContext',
   WRITE_ERROR_NON_STRING_ID_FIELD = 'SharedDictionaryIssue::WriteErrorNonStringIdField',
@@ -73,10 +75,14 @@ function getIssueCode(details: Protocol.Audits.SharedDictionaryIssueDetails): Is
       return IssueCode.WRITE_ERROR_INVALID_MATCH_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorInvalidStructuredHeader:
       return IssueCode.WRITE_ERROR_INVALID_STRUCTURED_HEADER;
+    case Protocol.Audits.SharedDictionaryError.WriteErrorInvalidTTLField:
+      return IssueCode.WRITE_ERROR_INVALID_TTL_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNavigationRequest:
       return IssueCode.WRITE_ERROR_NAVIGATION_REQUEST;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNoMatchField:
       return IssueCode.WRITE_ERROR_NO_MATCH_FIELD;
+    case Protocol.Audits.SharedDictionaryError.WriteErrorNonIntegerTTLField:
+      return IssueCode.WRITE_ERROR_NON_INTEGER_TTL_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNonListMatchDestField:
       return IssueCode.WRITE_ERROR_NON_LIST_MATCH_DEST_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNonSecureContext:
@@ -244,6 +250,13 @@ const issueDescriptions = new Map<Protocol.Audits.SharedDictionaryError, LazyMar
     },
   ],
   [
+    Protocol.Audits.SharedDictionaryError.WriteErrorInvalidTTLField,
+    {
+      file: 'sharedDictionaryWriteErrorInvalidTTLField.md',
+      links: specLinks,
+    },
+  ],
+  [
     Protocol.Audits.SharedDictionaryError.WriteErrorNavigationRequest,
     {
       file: 'sharedDictionaryWriteErrorNavigationRequest.md',
@@ -254,6 +267,13 @@ const issueDescriptions = new Map<Protocol.Audits.SharedDictionaryError, LazyMar
     Protocol.Audits.SharedDictionaryError.WriteErrorNoMatchField,
     {
       file: 'sharedDictionaryWriteErrorNoMatchField.md',
+      links: specLinks,
+    },
+  ],
+  [
+    Protocol.Audits.SharedDictionaryError.WriteErrorNonIntegerTTLField,
+    {
+      file: 'sharedDictionaryWriteErrorNonIntegerTTLField.md',
       links: specLinks,
     },
   ],

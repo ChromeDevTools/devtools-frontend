@@ -563,6 +563,73 @@ class SomeWidget extends UI.Widget.Widget {
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
+    const toolbar = this.contentElement.createChild('devtools-toolbar');
+    this.action = UI.ActionRegistry.ActionRegistry.instance().getAction('some-action');
+    this.actionButton = UI.Toolbar.Toolbar.createActionButton(this.action);
+    toolbar.appendToolbarItem(this.actionButton);
+    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('other-action'));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-toolbar>
+        <devtools-button \${bindToAction('some-action')}></devtools-button>
+        <devtools-button \${bindToAction('other-action')}></devtools-button>
+      </devtools-toolbar>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.action = UI.ActionRegistry.ActionRegistry.instance().getAction('some-action');
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const toolbar = this.contentElement.createChild('devtools-toolbar');
+    toolbar.appendToolbarItem(new UI.Toolbar.ToolbarComboBox(
+       this.someToolbarComboBoxClicked.bind(this), 'Combox',
+       'the-toolbar-combox', 'some-toolbar-combox'));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-toolbar>
+        <select class="the-toolbar-combox" title="Combox" aria-label="Combox"
+            jslog=\${VisualLogging.dropDown('some-toolbar-combox').track({change: true})}
+            @change=\${this.someToolbarComboBoxClicked.bind(this)}></select>
+      </devtools-toolbar>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
     const select = document.createElement('select');
     select.add(UI.UIUtils.createOption('Option 1', '1', 'option-1'));
     this.contentElement.appendChild(UI.UIUtils.createLabel('Some label:', 'some-label', select));

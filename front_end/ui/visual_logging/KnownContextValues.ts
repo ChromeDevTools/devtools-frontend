@@ -3648,6 +3648,7 @@ export const knownContextValues = new Set([
   'take-screenshot',
   'target',
   'target-crashed',
+  'target-current',
   'target-selector',
   'targets',
   'task-duration',

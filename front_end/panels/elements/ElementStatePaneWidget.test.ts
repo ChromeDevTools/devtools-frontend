@@ -19,7 +19,7 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
     'enabled',       'disabled',          'valid',    'invalid',   'user-valid',
     'user-invalid',  'required',          'optional', 'read-only', 'read-write',
     'in-range',      'out-of-range',      'visited',  'link',      'checked',
-    'indeterminate', 'placeholder-shown', 'autofill', 'open',
+    'indeterminate', 'placeholder-shown', 'autofill', 'open',      'target-current',
   ];
 
   beforeEach(() => {
@@ -42,6 +42,9 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
     sinon.stub(node, 'callFunction').resolves({value: formAssociated});
     if (attribute) {
       sinon.stub(node, 'getAttribute').withArgs(attribute[0]).returns(attribute[1]);
+    }
+    if (nodeName.startsWith('::')) {
+      sinon.stub(node, 'pseudoType').returns(nodeName.slice(2));
     }
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
@@ -267,7 +270,7 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
   it('Shows the specific pseudo-classes for a and area with href', async () => {
     await assertExpectedPseudoClasses(
         'a',
-        ['visited', 'link', 'read-write'],
+        ['visited', 'link', 'read-write', 'target-current'],
         false,
         ['href', 'www.google.com'],
     );
@@ -358,6 +361,13 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
     await assertExpectedPseudoClasses(
         'meter',
         ['read-write'],
+    );
+  });
+
+  it('Shows the specific pseudo-classes for ::scroll-marker', async () => {
+    await assertExpectedPseudoClasses(
+        '::scroll-marker',
+        ['read-write', 'target-current'],
     );
   });
 });

@@ -2302,4 +2302,22 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
 
   protected removeNodes(_nodes: NodeList): void {
   }
+
+  static findCorrespondingElement(
+      sourceElement: HTMLElement, sourceRootElement: HTMLElement, targetRootElement: Element): Element|null {
+    let currentElement = sourceElement;
+    const childIndexesOnPathToRoot: number[] = [];
+    while (currentElement?.parentElement && currentElement !== sourceRootElement) {
+      childIndexesOnPathToRoot.push([...currentElement.parentElement.children].indexOf(currentElement));
+      currentElement = currentElement.parentElement;
+    }
+    if (!currentElement) {
+      return null;
+    }
+    let targetElement = targetRootElement;
+    for (const index of childIndexesOnPathToRoot.reverse()) {
+      targetElement = targetElement.children[index];
+    }
+    return targetElement;
+  }
 }

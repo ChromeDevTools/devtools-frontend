@@ -1458,8 +1458,17 @@ export class TreeSearch < NodeT extends TreeNode<NodeT>,
   static highlight(ranges: TextUtils.TextRange.SourceRange[], selectedRange: TextUtils.TextRange.SourceRange|undefined):
       ReturnType<typeof Lit.Directives.ref> {
     return Lit.Directives.ref(element => {
-      if (element instanceof HTMLLIElement) {
-        TreeViewTreeElement.get(element)?.highlight(ranges, selectedRange);
+      if (!(element instanceof HTMLElement)) {
+        return;
+      }
+      const configListItem = element.closest<HTMLLIElement>('li[role="treeitem"]');
+      const titleElement = configListItem ? TreeViewTreeElement.get(configListItem)?.titleElement : undefined;
+      if (configListItem && titleElement) {
+        const targetElement = HTMLElementWithLightDOMTemplate.findCorrespondingElement(
+            element, configListItem, titleElement as HTMLElement);
+        if (targetElement) {
+          Highlighting.HighlightManager.HighlightManager.instance().set(targetElement, ranges, selectedRange);
+        }
       }
     });
   }
@@ -1524,31 +1533,7 @@ export class TreeSearch < NodeT extends TreeNode<NodeT>,
   }
 }
 
-class ActiveHighlights {
-  #activeRanges: Range[] = [];
-  #highlights: TextUtils.TextRange.SourceRange[] = [];
-  #selectedSearchResult: TextUtils.TextRange.SourceRange|undefined = undefined;
-
-  apply(node: Node): void {
-    Highlighting.HighlightManager.HighlightManager.instance().removeHighlights(this.#activeRanges);
-    this.#activeRanges =
-        Highlighting.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(node, this.#highlights);
-    if (this.#selectedSearchResult) {
-      this.#activeRanges.push(...Highlighting.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(
-          node, [this.#selectedSearchResult], /* isSelected=*/ true));
-    }
-  }
-
-  set(element: Node, highlights: TextUtils.TextRange.SourceRange[],
-      selectedSearchResult: TextUtils.TextRange.SourceRange|undefined): void {
-    this.#highlights = highlights;
-    this.#selectedSearchResult = selectedSearchResult;
-    this.apply(element);
-  }
-}
-
 class TreeViewTreeElement extends TreeElement {
-  #activeHighlights = new ActiveHighlights();
   #clonedAttributes = new Set<string>();
   #clonedClasses = new Set<string>();
 
@@ -1560,12 +1545,6 @@ class TreeViewTreeElement extends TreeElement {
     this.configElement = configElement;
     TreeViewTreeElement.#elementToTreeElement.set(configElement, this);
     this.refresh();
-  }
-
-  highlight(
-      highlights: TextUtils.TextRange.SourceRange[],
-      selectedSearchResult: TextUtils.TextRange.SourceRange|undefined): void {
-    this.#activeHighlights.set(this.titleElement, highlights, selectedSearchResult);
   }
 
   refresh(): void {
@@ -1594,7 +1573,7 @@ class TreeViewTreeElement extends TreeElement {
       this.titleElement.appendChild(HTMLElementWithLightDOMTemplate.cloneNode(child));
     }
 
-    this.#activeHighlights.apply(this.titleElement);
+    Highlighting.HighlightManager.HighlightManager.instance().apply(this.titleElement);
   }
 
   static get(configElement: Node|undefined): TreeViewTreeElement|undefined {

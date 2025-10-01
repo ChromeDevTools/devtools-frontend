@@ -447,19 +447,12 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
   }
 
   #onRowMouseEvent(event: MouseEvent): void {
-    let currentElement = event.target as HTMLElement;
-    const childIndexesOnPathToRoot: number[] = [];
-    while (currentElement?.parentElement && currentElement !== event.currentTarget) {
-      childIndexesOnPathToRoot.push([...currentElement.parentElement.children].indexOf(currentElement));
-      currentElement = currentElement.parentElement;
-    }
-    if (!currentElement) {
+    const targetInConfigRow = UI.UIUtils.HTMLElementWithLightDOMTemplate.findCorrespondingElement(
+        event.target as HTMLElement, event.currentTarget as HTMLElement, this.#configElement);
+    if (!targetInConfigRow) {
       throw new Error('Cell click event target not found in the data grid');
     }
-    let targetInConfigRow = this.#configElement;
-    for (const index of childIndexesOnPathToRoot.reverse()) {
-      targetInConfigRow = targetInConfigRow.children[index];
-    }
+
     if (targetInConfigRow instanceof HTMLElement) {
       targetInConfigRow?.dispatchEvent(new MouseEvent(event.type, {bubbles: true, composed: true}));
     }

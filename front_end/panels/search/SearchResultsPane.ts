@@ -107,8 +107,6 @@ const renderSearchMatches =
   return html`
       ${visibleMatches.map(({lineContent, matchRanges, resultLabel}, i) => html`
         <li role="treeitem" class="search-match" @click=${() => onSelectMatch(searchResult, i)}
-          ${UI.TreeOutline.TreeSearch.highlight(matchRanges.map(range =>
-            ({offset: range.offset + `${resultLabel}`.length, length: range.length})), undefined)}
           @keydown=${(event: KeyboardEvent) => {
             if (event.key === 'Enter') {
               onSelectMatch(searchResult, i);
@@ -123,7 +121,8 @@ const renderSearchMatches =
                                 ? i18nString(UIStrings.lineS, {PH1: resultLabel}) : resultLabel}>
               ${resultLabel}
             </span>
-            <span class="search-match-content" aria-label="${lineContent} line">
+            <span class="search-match-content" aria-label="${lineContent} line"
+                  ${UI.TreeOutline.TreeSearch.highlight(matchRanges, undefined)}>
               ${lineContent}
             </span>
           </button>

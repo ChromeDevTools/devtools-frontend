@@ -43,11 +43,11 @@ describeWithEnvironment('DocumentLatency', function() {
     const mainRequestEvent = structuredClone(traceEvents[mainRequestEventIndex]);
     assert(Types.Events.isResourceReceiveResponse(mainRequestEvent));
     assert.strictEqual(mainRequestEvent.args.data.requestId, '1000C0FDC0A75327167272FC7438E999');
-    if (!mainRequestEvent.args.data.timing) {
+    if (!mainRequestEvent.args.data.timing?.receiveHeadersStart) {
       throw new Error('missing timing field');
     }
-    mainRequestEvent.args.data.timing.receiveHeadersEnd =
-        Types.Timing.Milli(mainRequestEvent.args.data.timing.receiveHeadersEnd + 1000);
+    mainRequestEvent.args.data.timing.receiveHeadersStart =
+        Types.Timing.Milli(mainRequestEvent.args.data.timing.receiveHeadersStart + 1000);
     traceEvents[mainRequestEventIndex] = mainRequestEvent;
 
     await processor.parse(traceEvents, {isCPUProfile: false, isFreshRecording: true});
@@ -148,8 +148,8 @@ describeWithEnvironment('DocumentLatency', function() {
         getInsightOrError('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
     assert.strictEqual(insight.data?.redirectDuration, 6059);
     assert.strictEqual(insight.data?.uncompressedResponseBytes, 111506);
-    assert.strictEqual(insight.data?.serverResponseTime, 2008);
-    assert.isFalse(insight.data?.checklist.serverResponseIsFast.value);
-    assert.deepEqual(insight.metricSavings, {FCP: 7967, LCP: 7967} as Trace.Insights.Types.MetricSavings);
+    assert.strictEqual(insight.data?.serverResponseTime, 1);
+    assert.isTrue(insight.data?.checklist.serverResponseIsFast.value);
+    assert.deepEqual(insight.metricSavings, {FCP: 6059, LCP: 6059} as Trace.Insights.Types.MetricSavings);
   });
 });

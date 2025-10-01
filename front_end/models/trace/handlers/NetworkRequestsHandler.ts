@@ -448,6 +448,15 @@ export async function finalize(): Promise<void> {
         Types.Timing.Micro((timing.receiveHeadersEnd - timing.sendEnd) * MILLISECONDS_TO_MICROSECONDS) :
         Types.Timing.Micro(0);
 
+    // Server Response Time
+    // =======================
+    // Time from when the send finished going to when the first byte of headers were received.
+    const serverResponseTime = timing ?
+        Types.Timing.Micro(
+            ((timing.receiveHeadersStart ?? timing.receiveHeadersEnd) - timing.sendEnd) *
+            MILLISECONDS_TO_MICROSECONDS) :
+        Types.Timing.Micro(0);
+
     // Download
     // =======================
     // Time from receipt of headers to the finish time.
@@ -513,6 +522,7 @@ export async function finalize(): Promise<void> {
                 stalled,
                 totalTime,
                 waiting,
+                serverResponseTime,
               },
               // All fields below are from TraceEventsForNetworkRequest.
               decodedBodyLength,

@@ -110,7 +110,7 @@ function getServerResponseTime(request: Types.Events.SyntheticNetworkRequest): T
     return null;
   }
 
-  const ms = Helpers.Timing.microToMilli(request.args.data.syntheticData.waiting);
+  const ms = Helpers.Timing.microToMilli(request.args.data.syntheticData.serverResponseTime);
   return Math.round(ms) as Types.Timing.Milli;
 }
 

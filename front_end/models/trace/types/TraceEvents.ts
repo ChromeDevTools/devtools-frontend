@@ -363,8 +363,10 @@ interface SyntheticArgsData {
   ssl: Micro;
   stalled: Micro;
   totalTime: Micro;
-  /** Server response time (receiveHeadersEnd - sendEnd) */
+  /** receiveHeadersEnd - sendEnd */
   waiting: Micro;
+  /** receiveHeadersStart - sendEnd */
+  serverResponseTime: Micro;
 }
 
 export interface SyntheticNetworkRequest extends Complete, SyntheticBased<Phase.COMPLETE> {

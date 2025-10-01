@@ -86,6 +86,10 @@ hr.section-separator {
   height: 18px;
 }
 
+.input-field::placeholder {
+    color: var(--sys-color-on-surface-subtle);
+}
+
 .input-field:focus {
   border: 1px solid var(--sys-color-state-focus-ring);
   outline-width: 0;

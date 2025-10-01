@@ -79,6 +79,7 @@ export function renderIconLink(
   <devtools-button
     .iconName=${iconName}
     title=${title}
+    aria-label=${title}
     .variant=${Buttons.Button.Variant.ICON}
     .size=${Buttons.Button.Size.SMALL}
     @click=${clickHandler}

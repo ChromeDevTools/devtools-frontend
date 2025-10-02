@@ -48,6 +48,8 @@ def try_builder(properties = None, legacy_variant = False, **kwargs):
     if legacy_variant:
         kwargs["name"] = "%s_legacy_%s" % (kwargs["name"], legacy_recipe.branch)
         kwargs["recipe_cipd_version"] = legacy_recipe.old_cipd_version
+        if properties and "compilator_name" in properties:
+            properties["compilator_name"] = "%s_legacy_%s" % (properties["compilator_name"], legacy_recipe.branch)
         try_builder_base(properties = properties, **kwargs)
         try_builders.append(kwargs["name"])
 

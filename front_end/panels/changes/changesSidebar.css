@@ -4,12 +4,14 @@
  * found in the LICENSE file.
  */
 
+@scope to (devtools-widget > *) {
 .tree-outline li {
   min-height: 20px;
 }
 
 devtools-icon {
   color: var(--icon-file-default);
+  margin-right: var(--sys-size-4);
 }
 
 .navigator-sm-script-tree-item devtools-icon,
@@ -45,4 +47,5 @@ devtools-icon {
     forced-color-adjust: none;
     color: ButtonText !important; /* stylelint-disable-line declaration-no-important */
   }
+}
 }

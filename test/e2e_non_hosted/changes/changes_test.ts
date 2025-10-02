@@ -31,10 +31,10 @@ describe('The Changes Panel', () => {
 
   async function getChangesList(devToolsPage: DevToolsPage) {
     const root = await devToolsPage.waitFor(PANEL_ROOT_SELECTOR);
-    const items = await devToolsPage.$$('.tree-element-title', root);
+    const items = await devToolsPage.$$<HTMLElement>('.tree-element-title', root);
 
     return await Promise.all(items.map(node => {
-      return node.evaluate(node => node.textContent as string);
+      return node.evaluate(node => node.innerText);
     }));
   }
 

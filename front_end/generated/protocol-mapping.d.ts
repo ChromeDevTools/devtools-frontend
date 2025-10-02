@@ -3443,7 +3443,7 @@ export namespace ProtocolMapping {
      * Blocks URLs from loading.
      */
     'Network.setBlockedURLs': {
-      paramsType: [Protocol.Network.SetBlockedURLsRequest];
+      paramsType: [Protocol.Network.SetBlockedURLsRequest?];
       returnType: void;
     };
     /**

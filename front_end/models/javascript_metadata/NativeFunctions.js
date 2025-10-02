@@ -8835,6 +8835,10 @@ export const NativeFunctions = [
     signatures: [["init"]]
   },
   {
+    name: "VideoFrame",
+    signatures: [["source","?init"],["data","init"]]
+  },
+  {
     name: "clipControlEXT",
     signatures: [["origin","depth"]]
   },

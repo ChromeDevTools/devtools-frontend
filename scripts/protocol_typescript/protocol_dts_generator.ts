@@ -118,7 +118,7 @@ const emitTsComment =
 
 const emitDescription = (lines: string[]) => {
   emitLine('/**');
-  lines.map(l => l ? emitLine(` * ${l}`) : emitLine(' *'));
+  lines.map(l => l ? emitLine(` * ${l.replaceAll('*/', '*\\/')}`) : emitLine(' *'));
   emitLine(' */');
 };
 

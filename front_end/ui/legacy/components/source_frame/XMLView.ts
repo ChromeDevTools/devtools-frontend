@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../components/highlighting/highlighting.js';
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Lit from '../../../lit/lit.js';
@@ -113,36 +115,39 @@ interface ViewInput {
 }
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
-  function highlight(node: XMLTreeViewNode, closeTag: boolean): ReturnType<typeof Lit.Directives.ref> {
+  function highlight(node: XMLTreeViewNode, closeTag: boolean): {highlights: string, selected: string} {
+    let highlights = '';
+    let selected = '';
     if (!input.search) {
-      return Lit.nothing;
+      return {highlights, selected};
     }
     const entries = input.search.getResults(node);
-    const highlights = [];
-    let selected = undefined;
     for (const entry of entries ?? []) {
       if (entry.isPostOrderMatch === closeTag) {
         const range = new TextUtils.TextRange.SourceRange(entry.match.index, entry.match[0].length);
         if (entry === input.jumpToNextSearchResult) {
-          selected = range;
+          selected = `${range.offset},${range.length}`;
         } else {
-          highlights.push(range);
+          highlights += `${range.offset},${range.length} `;
         }
       }
     }
-    return UI.TreeOutline.TreeSearch.highlight(highlights, selected);
+    return {highlights, selected};
   }
 
   function layOutNode(node: XMLTreeViewNode, populateSubtrees = false): Lit.LitTemplate {
     const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void =>
         input.onExpand(node, event.detail.expanded);
+    const {highlights, selected} = highlight(node, /* closeTag=*/ false);
 
     // clang-format off
     return html`
-      <li ${highlight(node, /* closeTag=*/ false)} role="treeitem"
+      <li role="treeitem"
           ?selected=${input.jumpToNextSearchResult?.node === node}
           @expand=${onExpand}>
-        ${htmlView(node)}
+        <devtools-highlight ranges=${highlights} current-range=${selected}>
+          ${htmlView(node)}
+        </devtools-highlight>
         ${node.children().length ? html`
           <ul role="group" ?hidden=${!node.expanded && input.jumpToNextSearchResult?.node !== node}>
             ${populateSubtrees || input.search ? subtree(node) : Lit.nothing}
@@ -156,15 +161,16 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     if (children.length === 0) {
       return Lit.nothing;
     }
+    const {highlights, selected} = highlight(treeNode, /* closeTag=*/ true);
     // clang-format off
     return html`
       ${children.map(child => layOutNode(child, treeNode.expanded))}
-      ${treeNode.node instanceof Element
-          ? html`<li
-                  ${highlight(treeNode, /* closeTag=*/ true)}
-                  role="treeitem"><span part='shadow-xml-view-close-tag'>${'</' + treeNode.node.tagName + '>'}</span
-                 ></li>`
-          : Lit.nothing}`;
+      ${treeNode.node instanceof Element ? html`
+        <li role="treeitem">
+          <devtools-highlight ranges=${highlights} current-range=${selected}>
+            <span part='shadow-xml-view-close-tag'>${'</' + treeNode.node.tagName + '>'}</span>
+          </devtools-highlight>
+        </li>` : Lit.nothing}`;
     // clang-format on
   }
 

@@ -1299,3 +1299,25 @@ export class NodeIndicatorProvider implements UI.Toolbar.Provider {
   }
 }
 ```
+
+## Highlighting text
+
+### (UI.UIUtils.highlightRangesWithStyleClass or Highlighting.HighlightManager)
+
+Use the `<devtools-highlight>` component to highlight text ranges within its
+container. The component takes two attributes: `ranges`, which is a
+space-separated list of `offset,length` pairs, and `current-range`, which is a
+single `offset,length` pair to highlight with a different color.
+
+The component will automatically sort and merge the ranges provided.
+
+```html
+<div style="position:relative">
+  <devtools-highlight ranges="10,2 1,3 2,3" current-range="5,3">
+    This is some text to highlight.
+  </devtools-highlight>
+</div>
+```
+
+In this example, the ranges `1,3` and `2,3` will be merged into `1,4`. The
+ranges `10,2` and the current range `5,3` will also be highlighted.

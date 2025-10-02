@@ -2026,14 +2026,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.toggleRecordAction.setToggled(this.state === State.RECORDING);
     this.toggleRecordAction.setEnabled(this.state === State.RECORDING || this.state === State.IDLE);
     this.askAiButton?.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
+    this.panelToolbar.setEnabled(this.state !== State.LOADING);
+    this.panelRightToolbar.setEnabled(this.state !== State.LOADING);
 
     if (!this.canRecord()) {
       return;
     }
 
     this.recordReloadAction.setEnabled(isNode ? false : this.state === State.IDLE);
-    this.panelToolbar.setEnabled(this.state !== State.LOADING);
-    this.panelRightToolbar.setEnabled(this.state !== State.LOADING);
     this.homeButton?.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
   }
 

@@ -9,6 +9,7 @@ import type * as Bidi from 'webdriver-bidi-protocol';
 import type {CDPSession} from '../api/CDPSession.js';
 import type {
   ContinueRequestOverrides,
+  InterceptResolutionState,
   ResponseForRequest,
 } from '../api/HTTPRequest.js';
 import {
@@ -16,6 +17,7 @@ import {
   STATUS_TEXTS,
   type ResourceType,
   handleError,
+  InterceptResolutionAction,
 } from '../api/HTTPRequest.js';
 import {PageEvent} from '../api/Page.js';
 import {UnsupportedOperation} from '../common/Errors.js';
@@ -34,9 +36,15 @@ export class BidiHTTPRequest extends HTTPRequest {
   static from(
     bidiRequest: Request,
     frame: BidiFrame,
+    isNetworkInterceptionEnabled: boolean,
     redirect?: BidiHTTPRequest,
   ): BidiHTTPRequest {
-    const request = new BidiHTTPRequest(bidiRequest, frame, redirect);
+    const request = new BidiHTTPRequest(
+      bidiRequest,
+      frame,
+      isNetworkInterceptionEnabled,
+      redirect,
+    );
     request.#initialize();
     return request;
   }
@@ -50,12 +58,13 @@ export class BidiHTTPRequest extends HTTPRequest {
   private constructor(
     request: Request,
     frame: BidiFrame,
+    isNetworkInterceptionEnabled: boolean,
     redirect?: BidiHTTPRequest,
   ) {
     super();
     requests.set(request, this);
 
-    this.interception.enabled = request.isBlocked;
+    this.interception.enabled = isNetworkInterceptionEnabled;
 
     this.#request = request;
     this.#frame = frame;
@@ -69,7 +78,12 @@ export class BidiHTTPRequest extends HTTPRequest {
 
   #initialize() {
     this.#request.on('redirect', request => {
-      const httpRequest = BidiHTTPRequest.from(request, this.#frame, this);
+      const httpRequest = BidiHTTPRequest.from(
+        request,
+        this.#frame,
+        this.interception.enabled,
+        this,
+      );
       this.#redirectChain.push(this);
 
       request.once('success', () => {
@@ -106,6 +120,17 @@ export class BidiHTTPRequest extends HTTPRequest {
         );
       });
     }
+  }
+
+  protected canBeIntercepted(): boolean {
+    return this.#request.isBlocked;
+  }
+
+  override interceptResolutionState(): InterceptResolutionState {
+    if (!this.#request.isBlocked) {
+      return {action: InterceptResolutionAction.Disabled};
+    }
+    return super.interceptResolutionState();
   }
 
   override url(): string {

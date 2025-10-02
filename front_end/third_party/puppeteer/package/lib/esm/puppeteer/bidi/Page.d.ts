@@ -104,6 +104,7 @@ export declare class BidiPage extends Page {
     target(): never;
     waitForFileChooser(options?: WaitTimeoutOptions): Promise<FileChooser>;
     workers(): BidiWebWorker[];
+    get isNetworkInterceptionEnabled(): boolean;
     setRequestInterception(enable: boolean): Promise<void>;
     /**
      * @internal

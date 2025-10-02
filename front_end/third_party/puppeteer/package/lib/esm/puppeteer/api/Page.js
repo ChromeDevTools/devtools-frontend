@@ -128,13 +128,11 @@ export function setDefaultScreenshotOptions(options) {
  * ```ts
  * import puppeteer from 'puppeteer';
  *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.goto('https://example.com');
- *   await page.screenshot({path: 'screenshot.png'});
- *   await browser.close();
- * })();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * await page.goto('https://example.com');
+ * await page.screenshot({path: 'screenshot.png'});
+ * await browser.close();
  * ```
  *
  * The Page class extends from Puppeteer's {@link EventEmitter} class and will
@@ -750,14 +748,12 @@ let Page = (() => {
          * import {KnownDevices} from 'puppeteer';
          * const iPhone = KnownDevices['iPhone 15 Pro'];
          *
-         * (async () => {
-         *   const browser = await puppeteer.launch();
-         *   const page = await browser.newPage();
-         *   await page.emulate(iPhone);
-         *   await page.goto('https://www.google.com');
-         *   // other actions...
-         *   await browser.close();
-         * })();
+         * const browser = await puppeteer.launch();
+         * const page = await browser.newPage();
+         * await page.emulate(iPhone);
+         * await page.goto('https://www.google.com');
+         * // other actions...
+         * await browser.close();
          * ```
          */
         async emulate(device) {
@@ -1321,22 +1317,21 @@ let Page = (() => {
          *
          * ```ts
          * import puppeteer from 'puppeteer';
-         * (async () => {
-         *   const browser = await puppeteer.launch();
-         *   const page = await browser.newPage();
-         *   let currentURL;
-         *   page
-         *     .waitForSelector('img')
-         *     .then(() => console.log('First URL with image: ' + currentURL));
-         *   for (currentURL of [
-         *     'https://example.com',
-         *     'https://google.com',
-         *     'https://bbc.com',
-         *   ]) {
-         *     await page.goto(currentURL);
-         *   }
-         *   await browser.close();
-         * })();
+         *
+         * const browser = await puppeteer.launch();
+         * const page = await browser.newPage();
+         * let currentURL;
+         * page
+         *   .waitForSelector('img')
+         *   .then(() => console.log('First URL with image: ' + currentURL));
+         * for (currentURL of [
+         *   'https://example.com',
+         *   'https://google.com',
+         *   'https://bbc.com',
+         * ]) {
+         *   await page.goto(currentURL);
+         * }
+         * await browser.close();
          * ```
          *
          * @param selector -
@@ -1386,14 +1381,13 @@ let Page = (() => {
          *
          * ```ts
          * import puppeteer from 'puppeteer';
-         * (async () => {
-         *   const browser = await puppeteer.launch();
-         *   const page = await browser.newPage();
-         *   const watchDog = page.waitForFunction('window.innerWidth < 100');
-         *   await page.setViewport({width: 50, height: 50});
-         *   await watchDog;
-         *   await browser.close();
-         * })();
+         *
+         * const browser = await puppeteer.launch();
+         * const page = await browser.newPage();
+         * const watchDog = page.waitForFunction('window.innerWidth < 100');
+         * await page.setViewport({width: 50, height: 50});
+         * await watchDog;
+         * await browser.close();
          * ```
          *
          * @example

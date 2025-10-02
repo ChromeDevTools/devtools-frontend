@@ -91,7 +91,6 @@ export declare const DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
  * @public
  */
 export declare abstract class HTTPRequest {
-    #private;
     /**
      * @internal
      */
@@ -296,6 +295,14 @@ export declare abstract class HTTPRequest {
     abstract failure(): {
         errorText: string;
     } | null;
+    /**
+     * @internal
+     */
+    protected verifyInterception(): void;
+    /**
+     * @internal
+     */
+    protected abstract canBeIntercepted(): boolean;
     /**
      * Continues request with optional request overrides.
      *

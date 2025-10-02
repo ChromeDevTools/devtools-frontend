@@ -1,5 +1,5 @@
 var _a;
-import { HTTPRequest, STATUS_TEXTS, handleError, } from '../api/HTTPRequest.js';
+import { HTTPRequest, STATUS_TEXTS, handleError, InterceptResolutionAction, } from '../api/HTTPRequest.js';
 import { UnsupportedOperation } from '../common/Errors.js';
 import { stringToBase64 } from '../util/encoding.js';
 import { BidiHTTPResponse } from './HTTPResponse.js';
@@ -8,8 +8,8 @@ export const requests = new WeakMap();
  * @internal
  */
 export class BidiHTTPRequest extends HTTPRequest {
-    static from(bidiRequest, frame, redirect) {
-        const request = new _a(bidiRequest, frame, redirect);
+    static from(bidiRequest, frame, isNetworkInterceptionEnabled, redirect) {
+        const request = new _a(bidiRequest, frame, isNetworkInterceptionEnabled, redirect);
         request.#initialize();
         return request;
     }
@@ -18,10 +18,10 @@ export class BidiHTTPRequest extends HTTPRequest {
     id;
     #frame;
     #request;
-    constructor(request, frame, redirect) {
+    constructor(request, frame, isNetworkInterceptionEnabled, redirect) {
         super();
         requests.set(request, this);
-        this.interception.enabled = request.isBlocked;
+        this.interception.enabled = isNetworkInterceptionEnabled;
         this.#request = request;
         this.#frame = frame;
         this.#redirectChain = redirect ? redirect.#redirectChain : [];
@@ -32,7 +32,7 @@ export class BidiHTTPRequest extends HTTPRequest {
     }
     #initialize() {
         this.#request.on('redirect', request => {
-            const httpRequest = _a.from(request, this.#frame, this);
+            const httpRequest = _a.from(request, this.#frame, this.interception.enabled, this);
             this.#redirectChain.push(this);
             request.once('success', () => {
                 this.#frame
@@ -58,6 +58,15 @@ export class BidiHTTPRequest extends HTTPRequest {
                 }, 0);
             });
         }
+    }
+    canBeIntercepted() {
+        return this.#request.isBlocked;
+    }
+    interceptResolutionState() {
+        if (!this.#request.isBlocked) {
+            return { action: InterceptResolutionAction.Disabled };
+        }
+        return super.interceptResolutionState();
     }
     url() {
         return this.#request.url;

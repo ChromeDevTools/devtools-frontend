@@ -70,7 +70,7 @@ export declare abstract class BrowserLauncher {
     /**
      * @internal
      */
-    protected createBiDiOverCdpBrowser(browserProcess: ReturnType<typeof launch>, connection: Connection, closeCallback: BrowserCloseCallback, opts: {
+    protected createBiDiOverCdpBrowser(browserProcess: ReturnType<typeof launch>, cdpConnection: Connection, closeCallback: BrowserCloseCallback, opts: {
         defaultViewport: Viewport | null;
         acceptInsecureCerts?: boolean;
         networkEnabled: boolean;

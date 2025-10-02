@@ -31,13 +31,11 @@ const FirefoxLauncher_js_1 = require("./FirefoxLauncher.js");
  * ```ts
  * import puppeteer from 'puppeteer';
  *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.goto('https://www.google.com');
- *   // other actions...
- *   await browser.close();
- * })();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * await page.goto('https://www.google.com');
+ * // other actions...
+ * await browser.close();
  * ```
  *
  * Once you have created a `page` you have access to a large API to interact

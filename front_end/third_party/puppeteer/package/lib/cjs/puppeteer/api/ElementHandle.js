@@ -167,19 +167,18 @@ function bindIsolatedHandle(target, _) {
  * ```ts
  * import puppeteer from 'puppeteer';
  *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.goto('https://example.com');
- *   const hrefElement = await page.$('a');
- *   await hrefElement.click();
- *   // ...
- * })();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * await page.goto('https://example.com');
+ * const hrefElement = await page.$('a');
+ * await hrefElement.click();
+ * // ...
  * ```
  *
  * ElementHandle prevents the DOM element from being garbage-collected unless the
  * handle is {@link JSHandle.dispose | disposed}. ElementHandles are auto-disposed
- * when their origin frame gets navigated.
+ * when their associated frame is navigated away or the parent
+ * context gets destroyed.
  *
  * ElementHandle instances can be used as arguments in {@link Page.$eval} and
  * {@link Page.evaluate} methods.
@@ -530,9 +529,10 @@ let ElementHandle = (() => {
          *
          * ```ts
          * const feedHandle = await page.$('.feed');
-         * expect(
-         *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText)),
-         * ).toEqual(['Hello!', 'Hi!']);
+         *
+         * const listOfTweets = await feedHandle.$$eval('.tweet', nodes =>
+         *   nodes.map(n => n.innerText),
+         * );
          * ```
          *
          * @param selector -
@@ -592,24 +592,22 @@ let ElementHandle = (() => {
          * ```ts
          * import puppeteer from 'puppeteer';
          *
-         * (async () => {
-         *   const browser = await puppeteer.launch();
-         *   const page = await browser.newPage();
-         *   let currentURL;
-         *   page
-         *     .mainFrame()
-         *     .waitForSelector('img')
-         *     .then(() => console.log('First URL with image: ' + currentURL));
+         * const browser = await puppeteer.launch();
+         * const page = await browser.newPage();
+         * let currentURL;
+         * page
+         *   .mainFrame()
+         *   .waitForSelector('img')
+         *   .then(() => console.log('First URL with image: ' + currentURL));
          *
-         *   for (currentURL of [
-         *     'https://example.com',
-         *     'https://google.com',
-         *     'https://bbc.com',
-         *   ]) {
-         *     await page.goto(currentURL);
-         *   }
-         *   await browser.close();
-         * })();
+         * for (currentURL of [
+         *   'https://example.com',
+         *   'https://google.com',
+         *   'https://bbc.com',
+         * ]) {
+         *   await page.goto(currentURL);
+         * }
+         * await browser.close();
          * ```
          *
          * @param selector - The selector to query and wait for.

@@ -206,12 +206,15 @@ export class BrowserLauncher {
     /**
      * @internal
      */
-    async createBiDiOverCdpBrowser(browserProcess, connection, closeCallback, opts) {
+    async createBiDiOverCdpBrowser(browserProcess, cdpConnection, closeCallback, opts) {
+        const bidiOnly = process.env['PUPPETEER_WEBDRIVER_BIDI_ONLY'] === 'true';
         const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
-        const bidiConnection = await BiDi.connectBidiOverCdp(connection);
+        const bidiConnection = await BiDi.connectBidiOverCdp(cdpConnection);
         return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
-            cdpConnection: connection,
+            // Do not provide CDP connection to Browser, if BiDi-only mode is enabled. This
+            // would restrict Browser to use only BiDi endpoint.
+            cdpConnection: bidiOnly ? undefined : cdpConnection,
             closeCallback,
             process: browserProcess.nodeProcess,
             defaultViewport: opts.defaultViewport,

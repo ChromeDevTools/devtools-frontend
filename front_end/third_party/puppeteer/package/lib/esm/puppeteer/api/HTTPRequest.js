@@ -84,7 +84,6 @@ export class HTTPRequest {
      * `respond()` aren't called).
      */
     continueRequestOverrides() {
-        assert(this.interception.enabled, 'Request Interception is not enabled!');
         return this.interception.requestOverrides;
     }
     /**
@@ -92,14 +91,12 @@ export class HTTPRequest {
      * interception is allowed to respond (ie, `abort()` is not called).
      */
     responseForRequest() {
-        assert(this.interception.enabled, 'Request Interception is not enabled!');
         return this.interception.response;
     }
     /**
      * The most recent reason for aborting the request
      */
     abortErrorReason() {
-        assert(this.interception.enabled, 'Request Interception is not enabled!');
         return this.interception.abortReason;
     }
     /**
@@ -160,8 +157,12 @@ export class HTTPRequest {
                 return await this._continue(this.interception.requestOverrides);
         }
     }
-    #canBeIntercepted() {
-        return !this.url().startsWith('data:') && !this._fromMemoryCache;
+    /**
+     * @internal
+     */
+    verifyInterception() {
+        assert(this.interception.enabled, 'Request Interception is not enabled!');
+        assert(!this.interception.handled, 'Request is already handled!');
     }
     /**
      * Continues request with optional request overrides.
@@ -192,11 +193,10 @@ export class HTTPRequest {
      * Exception is immediately thrown if the request interception is not enabled.
      */
     async continue(overrides = {}, priority) {
-        if (!this.#canBeIntercepted()) {
+        this.verifyInterception();
+        if (!this.canBeIntercepted()) {
             return;
         }
-        assert(this.interception.enabled, 'Request Interception is not enabled!');
-        assert(!this.interception.handled, 'Request is already handled!');
         if (priority === undefined) {
             return await this._continue(overrides);
         }
@@ -252,11 +252,10 @@ export class HTTPRequest {
      * Exception is immediately thrown if the request interception is not enabled.
      */
     async respond(response, priority) {
-        if (!this.#canBeIntercepted()) {
+        this.verifyInterception();
+        if (!this.canBeIntercepted()) {
             return;
         }
-        assert(this.interception.enabled, 'Request Interception is not enabled!');
-        assert(!this.interception.handled, 'Request is already handled!');
         if (priority === undefined) {
             return await this._respond(response);
         }
@@ -292,13 +291,12 @@ export class HTTPRequest {
      * throw an exception immediately.
      */
     async abort(errorCode = 'failed', priority) {
-        if (!this.#canBeIntercepted()) {
+        this.verifyInterception();
+        if (!this.canBeIntercepted()) {
             return;
         }
         const errorReason = errorReasons[errorCode];
         assert(errorReason, 'Unknown error code: ' + errorCode);
-        assert(this.interception.enabled, 'Request Interception is not enabled!');
-        assert(!this.interception.handled, 'Request is already handled!');
         if (priority === undefined) {
             return await this._abort(errorReason);
         }

@@ -2965,7 +2965,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.22.3';
+  const packageVersion = '24.23.0';
 
   /**
    * @license
@@ -4326,16 +4326,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * ```ts
    * import puppeteer from 'puppeteer';
    *
-   * (async () => {
-   *   const browser = await puppeteer.launch();
-   *   const page = await browser.newPage();
-   *   page.on('dialog', async dialog => {
-   *     console.log(dialog.message());
-   *     await dialog.dismiss();
-   *     await browser.close();
-   *   });
-   *   page.evaluate(() => alert('1'));
-   * })();
+   * const browser = await puppeteer.launch();
+   * const page = await browser.newPage();
+   * page.on('dialog', async dialog => {
+   *   console.log(dialog.message());
+   *   await dialog.dismiss();
+   *   await browser.close();
+   * });
+   * await page.evaluate(() => alert('1'));
    * ```
    *
    * @public
@@ -7043,19 +7041,18 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * ```ts
    * import puppeteer from 'puppeteer';
    *
-   * (async () => {
-   *   const browser = await puppeteer.launch();
-   *   const page = await browser.newPage();
-   *   await page.goto('https://example.com');
-   *   const hrefElement = await page.$('a');
-   *   await hrefElement.click();
-   *   // ...
-   * })();
+   * const browser = await puppeteer.launch();
+   * const page = await browser.newPage();
+   * await page.goto('https://example.com');
+   * const hrefElement = await page.$('a');
+   * await hrefElement.click();
+   * // ...
    * ```
    *
    * ElementHandle prevents the DOM element from being garbage-collected unless the
    * handle is {@link JSHandle.dispose | disposed}. ElementHandles are auto-disposed
-   * when their origin frame gets navigated.
+   * when their associated frame is navigated away or the parent
+   * context gets destroyed.
    *
    * ElementHandle instances can be used as arguments in {@link Page.$eval} and
    * {@link Page.evaluate} methods.
@@ -7332,9 +7329,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * ```ts
        * const feedHandle = await page.$('.feed');
-       * expect(
-       *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText)),
-       * ).toEqual(['Hello!', 'Hi!']);
+       *
+       * const listOfTweets = await feedHandle.$$eval('.tweet', nodes =>
+       *   nodes.map(n => n.innerText),
+       * );
        * ```
        *
        * @param selector -
@@ -7393,24 +7391,22 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * ```ts
        * import puppeteer from 'puppeteer';
        *
-       * (async () => {
-       *   const browser = await puppeteer.launch();
-       *   const page = await browser.newPage();
-       *   let currentURL;
-       *   page
-       *     .mainFrame()
-       *     .waitForSelector('img')
-       *     .then(() => console.log('First URL with image: ' + currentURL));
+       * const browser = await puppeteer.launch();
+       * const page = await browser.newPage();
+       * let currentURL;
+       * page
+       *   .mainFrame()
+       *   .waitForSelector('img')
+       *   .then(() => console.log('First URL with image: ' + currentURL));
        *
-       *   for (currentURL of [
-       *     'https://example.com',
-       *     'https://google.com',
-       *     'https://bbc.com',
-       *   ]) {
-       *     await page.goto(currentURL);
-       *   }
-       *   await browser.close();
-       * })();
+       * for (currentURL of [
+       *   'https://example.com',
+       *   'https://google.com',
+       *   'https://bbc.com',
+       * ]) {
+       *   await page.goto(currentURL);
+       * }
+       * await browser.close();
        * ```
        *
        * @param selector - The selector to query and wait for.
@@ -8803,20 +8799,18 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * ```ts
    * import puppeteer from 'puppeteer';
    *
-   * (async () => {
-   *   const browser = await puppeteer.launch();
-   *   const page = await browser.newPage();
-   *   await page.goto('https://www.google.com/chrome/browser/canary.html');
-   *   dumpFrameTree(page.mainFrame(), '');
-   *   await browser.close();
+   * const browser = await puppeteer.launch();
+   * const page = await browser.newPage();
+   * await page.goto('https://www.google.com/chrome/browser/canary.html');
+   * dumpFrameTree(page.mainFrame(), '');
+   * await browser.close();
    *
-   *   function dumpFrameTree(frame, indent) {
-   *     console.log(indent + frame.url());
-   *     for (const child of frame.childFrames()) {
-   *       dumpFrameTree(child, indent + '  ');
-   *     }
+   * function dumpFrameTree(frame, indent) {
+   *   console.log(indent + frame.url());
+   *   for (const child of frame.childFrames()) {
+   *     dumpFrameTree(child, indent + '  ');
    *   }
-   * })();
+   * }
    * ```
    *
    * @example
@@ -9131,24 +9125,22 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * ```ts
        * import puppeteer from 'puppeteer';
        *
-       * (async () => {
-       *   const browser = await puppeteer.launch();
-       *   const page = await browser.newPage();
-       *   let currentURL;
-       *   page
-       *     .mainFrame()
-       *     .waitForSelector('img')
-       *     .then(() => console.log('First URL with image: ' + currentURL));
+       * const browser = await puppeteer.launch();
+       * const page = await browser.newPage();
+       * let currentURL;
+       * page
+       *   .mainFrame()
+       *   .waitForSelector('img')
+       *   .then(() => console.log('First URL with image: ' + currentURL));
        *
-       *   for (currentURL of [
-       *     'https://example.com',
-       *     'https://google.com',
-       *     'https://bbc.com',
-       *   ]) {
-       *     await page.goto(currentURL);
-       *   }
-       *   await browser.close();
-       * })();
+       * for (currentURL of [
+       *   'https://example.com',
+       *   'https://google.com',
+       *   'https://bbc.com',
+       * ]) {
+       *   await page.goto(currentURL);
+       * }
+       * await browser.close();
        * ```
        *
        * @param selector - The selector to query and wait for.
@@ -9174,14 +9166,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * ```ts
        * import puppeteer from 'puppeteer';
        *
-       * (async () => {
-       * .  const browser = await puppeteer.launch();
-       * .  const page = await browser.newPage();
-       * .  const watchDog = page.mainFrame().waitForFunction('window.innerWidth < 100');
-       * .  page.setViewport({width: 50, height: 50});
-       * .  await watchDog;
-       * .  await browser.close();
-       * })();
+       * const browser = await puppeteer.launch();
+       * const page = await browser.newPage();
+       * const watchDog = page
+       *   .mainFrame()
+       *   .waitForFunction('window.innerWidth < 100');
+       * page.setViewport({width: 50, height: 50});
+       * await watchDog;
+       * await browser.close();
        * ```
        *
        * To pass arguments from Node.js to the predicate of `page.waitForFunction` function:
@@ -9854,13 +9846,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *
    * @public
    */
-  var _HTTPRequest_brand = /*#__PURE__*/new WeakSet();
   class HTTPRequest {
     /**
      * @internal
      */
     constructor() {
-      _classPrivateMethodInitSpec(this, _HTTPRequest_brand);
       /**
        * @internal
        */
@@ -9902,7 +9892,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * `respond()` aren't called).
      */
     continueRequestOverrides() {
-      assert(this.interception.enabled, 'Request Interception is not enabled!');
       return this.interception.requestOverrides;
     }
     /**
@@ -9910,14 +9899,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * interception is allowed to respond (ie, `abort()` is not called).
      */
     responseForRequest() {
-      assert(this.interception.enabled, 'Request Interception is not enabled!');
       return this.interception.response;
     }
     /**
      * The most recent reason for aborting the request
      */
     abortErrorReason() {
-      assert(this.interception.enabled, 'Request Interception is not enabled!');
       return this.interception.abortReason;
     }
     /**
@@ -9987,6 +9974,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
     }
     /**
+     * @internal
+     */
+    verifyInterception() {
+      assert(this.interception.enabled, 'Request Interception is not enabled!');
+      assert(!this.interception.handled, 'Request is already handled!');
+    }
+    /**
      * Continues request with optional request overrides.
      *
      * @example
@@ -10015,11 +10009,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * Exception is immediately thrown if the request interception is not enabled.
      */
     async continue(overrides = {}, priority) {
-      if (!_assertClassBrand(_HTTPRequest_brand, this, _canBeIntercepted).call(this)) {
+      this.verifyInterception();
+      if (!this.canBeIntercepted()) {
         return;
       }
-      assert(this.interception.enabled, 'Request Interception is not enabled!');
-      assert(!this.interception.handled, 'Request is already handled!');
       if (priority === undefined) {
         return await this._continue(overrides);
       }
@@ -10072,11 +10065,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * Exception is immediately thrown if the request interception is not enabled.
      */
     async respond(response, priority) {
-      if (!_assertClassBrand(_HTTPRequest_brand, this, _canBeIntercepted).call(this)) {
+      this.verifyInterception();
+      if (!this.canBeIntercepted()) {
         return;
       }
-      assert(this.interception.enabled, 'Request Interception is not enabled!');
-      assert(!this.interception.handled, 'Request is already handled!');
       if (priority === undefined) {
         return await this._respond(response);
       }
@@ -10110,13 +10102,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * throw an exception immediately.
      */
     async abort(errorCode = 'failed', priority) {
-      if (!_assertClassBrand(_HTTPRequest_brand, this, _canBeIntercepted).call(this)) {
+      this.verifyInterception();
+      if (!this.canBeIntercepted()) {
         return;
       }
       const errorReason = errorReasons[errorCode];
       assert(errorReason, 'Unknown error code: ' + errorCode);
-      assert(this.interception.enabled, 'Request Interception is not enabled!');
-      assert(!this.interception.handled, 'Request is already handled!');
       if (priority === undefined) {
         return await this._abort(errorReason);
       }
@@ -10144,9 +10135,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @public
    */
-  function _canBeIntercepted() {
-    return !this.url().startsWith('data:') && !this._fromMemoryCache;
-  }
   exports.InterceptResolutionAction = void 0;
   (function (InterceptResolutionAction) {
     InterceptResolutionAction["Abort"] = "abort";
@@ -10743,13 +10731,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * ```ts
    * import puppeteer from 'puppeteer';
    *
-   * (async () => {
-   *   const browser = await puppeteer.launch();
-   *   const page = await browser.newPage();
-   *   await page.goto('https://example.com');
-   *   await page.screenshot({path: 'screenshot.png'});
-   *   await browser.close();
-   * })();
+   * const browser = await puppeteer.launch();
+   * const page = await browser.newPage();
+   * await page.goto('https://example.com');
+   * await page.screenshot({path: 'screenshot.png'});
+   * await browser.close();
    * ```
    *
    * The Page class extends from Puppeteer's {@link EventEmitter} class and will
@@ -11376,14 +11362,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * import {KnownDevices} from 'puppeteer';
        * const iPhone = KnownDevices['iPhone 15 Pro'];
        *
-       * (async () => {
-       *   const browser = await puppeteer.launch();
-       *   const page = await browser.newPage();
-       *   await page.emulate(iPhone);
-       *   await page.goto('https://www.google.com');
-       *   // other actions...
-       *   await browser.close();
-       * })();
+       * const browser = await puppeteer.launch();
+       * const page = await browser.newPage();
+       * await page.emulate(iPhone);
+       * await page.goto('https://www.google.com');
+       * // other actions...
+       * await browser.close();
        * ```
        */
       async emulate(device) {
@@ -11912,22 +11896,21 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * ```ts
        * import puppeteer from 'puppeteer';
-       * (async () => {
-       *   const browser = await puppeteer.launch();
-       *   const page = await browser.newPage();
-       *   let currentURL;
-       *   page
-       *     .waitForSelector('img')
-       *     .then(() => console.log('First URL with image: ' + currentURL));
-       *   for (currentURL of [
-       *     'https://example.com',
-       *     'https://google.com',
-       *     'https://bbc.com',
-       *   ]) {
-       *     await page.goto(currentURL);
-       *   }
-       *   await browser.close();
-       * })();
+       *
+       * const browser = await puppeteer.launch();
+       * const page = await browser.newPage();
+       * let currentURL;
+       * page
+       *   .waitForSelector('img')
+       *   .then(() => console.log('First URL with image: ' + currentURL));
+       * for (currentURL of [
+       *   'https://example.com',
+       *   'https://google.com',
+       *   'https://bbc.com',
+       * ]) {
+       *   await page.goto(currentURL);
+       * }
+       * await browser.close();
        * ```
        *
        * @param selector -
@@ -11977,14 +11960,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * ```ts
        * import puppeteer from 'puppeteer';
-       * (async () => {
-       *   const browser = await puppeteer.launch();
-       *   const page = await browser.newPage();
-       *   const watchDog = page.waitForFunction('window.innerWidth < 100');
-       *   await page.setViewport({width: 50, height: 50});
-       *   await watchDog;
-       *   await browser.close();
-       * })();
+       *
+       * const browser = await puppeteer.launch();
+       * const page = await browser.newPage();
+       * const watchDog = page.waitForFunction('window.innerWidth < 100');
+       * await page.setViewport({width: 50, height: 50});
+       * await watchDog;
+       * await browser.close();
        * ```
        *
        * @example
@@ -17155,6 +17137,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return {
         errorText: this._failureText
       };
+    }
+    canBeIntercepted() {
+      return !this.url().startsWith('data:') && !this._fromMemoryCache;
     }
     /**
      * @internal
@@ -22884,28 +22869,19 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *
    * ```ts
    * import {PredefinedNetworkConditions} from 'puppeteer';
-   * (async () => {
-   *   const browser = await puppeteer.launch();
-   *   const page = await browser.newPage();
-   *   await page.emulateNetworkConditions(
-   *     PredefinedNetworkConditions['Slow 3G'],
-   *   );
-   *   await page.goto('https://www.google.com');
-   *   await page.emulateNetworkConditions(
-   *     PredefinedNetworkConditions['Fast 3G'],
-   *   );
-   *   await page.goto('https://www.google.com');
-   *   await page.emulateNetworkConditions(
-   *     PredefinedNetworkConditions['Slow 4G'],
-   *   ); // alias to Fast 3G.
-   *   await page.goto('https://www.google.com');
-   *   await page.emulateNetworkConditions(
-   *     PredefinedNetworkConditions['Fast 4G'],
-   *   );
-   *   await page.goto('https://www.google.com');
-   *   // other actions...
-   *   await browser.close();
-   * })();
+   * const browser = await puppeteer.launch();
+   * const page = await browser.newPage();
+   * await page.emulateNetworkConditions(PredefinedNetworkConditions['Slow 3G']);
+   * await page.goto('https://www.google.com');
+   * await page.emulateNetworkConditions(PredefinedNetworkConditions['Fast 3G']);
+   * await page.goto('https://www.google.com');
+   * // alias to Fast 3G.
+   * await page.emulateNetworkConditions(PredefinedNetworkConditions['Slow 4G']);
+   * await page.goto('https://www.google.com');
+   * await page.emulateNetworkConditions(PredefinedNetworkConditions['Fast 4G']);
+   * await page.goto('https://www.google.com');
+   * // other actions...
+   * await browser.close();
    * ```
    *
    * @public
@@ -24456,14 +24432,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * import {KnownDevices} from 'puppeteer';
    * const iPhone = KnownDevices['iPhone 15 Pro'];
    *
-   * (async () => {
-   *   const browser = await puppeteer.launch();
-   *   const page = await browser.newPage();
-   *   await page.emulate(iPhone);
-   *   await page.goto('https://www.google.com');
-   *   // other actions...
-   *   await browser.close();
-   * })();
+   * const browser = await puppeteer.launch();
+   * const page = await browser.newPage();
+   * await page.emulate(iPhone);
+   * await page.goto('https://www.google.com');
+   * // other actions...
+   * await browser.close();
    * ```
    *
    * @public
@@ -24772,9 +24746,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '140.0.7339.207',
-    'chrome-headless-shell': '140.0.7339.207',
-    firefox: 'stable_143.0.1'
+    chrome: '141.0.7390.54',
+    'chrome-headless-shell': '141.0.7390.54',
+    firefox: 'stable_143.0.3'
   });
 
   /**

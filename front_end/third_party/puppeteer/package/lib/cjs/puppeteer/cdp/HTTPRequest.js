@@ -98,6 +98,9 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
             errorText: this._failureText,
         };
     }
+    canBeIntercepted() {
+        return !this.url().startsWith('data:') && !this._fromMemoryCache;
+    }
     /**
      * @internal
      */

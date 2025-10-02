@@ -11,8 +11,8 @@ exports.requests = new WeakMap();
  * @internal
  */
 class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
-    static from(bidiRequest, frame, redirect) {
-        const request = new _a(bidiRequest, frame, redirect);
+    static from(bidiRequest, frame, isNetworkInterceptionEnabled, redirect) {
+        const request = new _a(bidiRequest, frame, isNetworkInterceptionEnabled, redirect);
         request.#initialize();
         return request;
     }
@@ -21,10 +21,10 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     id;
     #frame;
     #request;
-    constructor(request, frame, redirect) {
+    constructor(request, frame, isNetworkInterceptionEnabled, redirect) {
         super();
         exports.requests.set(request, this);
-        this.interception.enabled = request.isBlocked;
+        this.interception.enabled = isNetworkInterceptionEnabled;
         this.#request = request;
         this.#frame = frame;
         this.#redirectChain = redirect ? redirect.#redirectChain : [];
@@ -35,7 +35,7 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     }
     #initialize() {
         this.#request.on('redirect', request => {
-            const httpRequest = _a.from(request, this.#frame, this);
+            const httpRequest = _a.from(request, this.#frame, this.interception.enabled, this);
             this.#redirectChain.push(this);
             request.once('success', () => {
                 this.#frame
@@ -61,6 +61,15 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
                 }, 0);
             });
         }
+    }
+    canBeIntercepted() {
+        return this.#request.isBlocked;
+    }
+    interceptResolutionState() {
+        if (!this.#request.isBlocked) {
+            return { action: HTTPRequest_js_1.InterceptResolutionAction.Disabled };
+        }
+        return super.interceptResolutionState();
     }
     url() {
         return this.#request.url;

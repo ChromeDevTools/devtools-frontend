@@ -1697,16 +1697,14 @@ export declare class DeviceRequestPromptDevice {
  * ```ts
  * import puppeteer from 'puppeteer';
  *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   page.on('dialog', async dialog => {
- *     console.log(dialog.message());
- *     await dialog.dismiss();
- *     await browser.close();
- *   });
- *   page.evaluate(() => alert('1'));
- * })();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * page.on('dialog', async dialog => {
+ *   console.log(dialog.message());
+ *   await dialog.dismiss();
+ *   await browser.close();
+ * });
+ * await page.evaluate(() => alert('1'));
  * ```
  *
  * @public
@@ -1788,19 +1786,18 @@ export declare type ElementFor<TagName extends keyof HTMLElementTagNameMap | key
  * ```ts
  * import puppeteer from 'puppeteer';
  *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.goto('https://example.com');
- *   const hrefElement = await page.$('a');
- *   await hrefElement.click();
- *   // ...
- * })();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * await page.goto('https://example.com');
+ * const hrefElement = await page.$('a');
+ * await hrefElement.click();
+ * // ...
  * ```
  *
  * ElementHandle prevents the DOM element from being garbage-collected unless the
  * handle is {@link JSHandle.dispose | disposed}. ElementHandles are auto-disposed
- * when their origin frame gets navigated.
+ * when their associated frame is navigated away or the parent
+ * context gets destroyed.
  *
  * ElementHandle instances can be used as arguments in {@link Page.$eval} and
  * {@link Page.evaluate} methods.
@@ -1939,9 +1936,10 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      *
      * ```ts
      * const feedHandle = await page.$('.feed');
-     * expect(
-     *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText)),
-     * ).toEqual(['Hello!', 'Hi!']);
+     *
+     * const listOfTweets = await feedHandle.$$eval('.tweet', nodes =>
+     *   nodes.map(n => n.innerText),
+     * );
      * ```
      *
      * @param selector -
@@ -1978,24 +1976,22 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * ```ts
      * import puppeteer from 'puppeteer';
      *
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   let currentURL;
-     *   page
-     *     .mainFrame()
-     *     .waitForSelector('img')
-     *     .then(() => console.log('First URL with image: ' + currentURL));
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * let currentURL;
+     * page
+     *   .mainFrame()
+     *   .waitForSelector('img')
+     *   .then(() => console.log('First URL with image: ' + currentURL));
      *
-     *   for (currentURL of [
-     *     'https://example.com',
-     *     'https://google.com',
-     *     'https://bbc.com',
-     *   ]) {
-     *     await page.goto(currentURL);
-     *   }
-     *   await browser.close();
-     * })();
+     * for (currentURL of [
+     *   'https://example.com',
+     *   'https://google.com',
+     *   'https://bbc.com',
+     * ]) {
+     *   await page.goto(currentURL);
+     * }
+     * await browser.close();
      * ```
      *
      * @param selector - The selector to query and wait for.
@@ -2531,20 +2527,18 @@ export declare type FlattenHandle<T> = T extends HandleOr<infer U> ? U : never;
  * ```ts
  * import puppeteer from 'puppeteer';
  *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.goto('https://www.google.com/chrome/browser/canary.html');
- *   dumpFrameTree(page.mainFrame(), '');
- *   await browser.close();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * await page.goto('https://www.google.com/chrome/browser/canary.html');
+ * dumpFrameTree(page.mainFrame(), '');
+ * await browser.close();
  *
- *   function dumpFrameTree(frame, indent) {
- *     console.log(indent + frame.url());
- *     for (const child of frame.childFrames()) {
- *       dumpFrameTree(child, indent + '  ');
- *     }
+ * function dumpFrameTree(frame, indent) {
+ *   console.log(indent + frame.url());
+ *   for (const child of frame.childFrames()) {
+ *     dumpFrameTree(child, indent + '  ');
  *   }
- * })();
+ * }
  * ```
  *
  * @example
@@ -2829,24 +2823,22 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * ```ts
      * import puppeteer from 'puppeteer';
      *
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   let currentURL;
-     *   page
-     *     .mainFrame()
-     *     .waitForSelector('img')
-     *     .then(() => console.log('First URL with image: ' + currentURL));
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * let currentURL;
+     * page
+     *   .mainFrame()
+     *   .waitForSelector('img')
+     *   .then(() => console.log('First URL with image: ' + currentURL));
      *
-     *   for (currentURL of [
-     *     'https://example.com',
-     *     'https://google.com',
-     *     'https://bbc.com',
-     *   ]) {
-     *     await page.goto(currentURL);
-     *   }
-     *   await browser.close();
-     * })();
+     * for (currentURL of [
+     *   'https://example.com',
+     *   'https://google.com',
+     *   'https://bbc.com',
+     * ]) {
+     *   await page.goto(currentURL);
+     * }
+     * await browser.close();
      * ```
      *
      * @param selector - The selector to query and wait for.
@@ -2862,14 +2854,14 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * ```ts
      * import puppeteer from 'puppeteer';
      *
-     * (async () => {
-     * .  const browser = await puppeteer.launch();
-     * .  const page = await browser.newPage();
-     * .  const watchDog = page.mainFrame().waitForFunction('window.innerWidth < 100');
-     * .  page.setViewport({width: 50, height: 50});
-     * .  await watchDog;
-     * .  await browser.close();
-     * })();
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * const watchDog = page
+     *   .mainFrame()
+     *   .waitForFunction('window.innerWidth < 100');
+     * page.setViewport({width: 50, height: 50});
+     * await watchDog;
+     * await browser.close();
      * ```
      *
      * To pass arguments from Node.js to the predicate of `page.waitForFunction` function:
@@ -3228,7 +3220,6 @@ export declare type Handler<T = unknown> = (event: T) => void;
  * @public
  */
 export declare abstract class HTTPRequest {
-    #private;
 
 
 
@@ -3392,6 +3383,8 @@ export declare abstract class HTTPRequest {
     abstract failure(): {
         errorText: string;
     } | null;
+
+
     /**
      * Continues request with optional request overrides.
      *
@@ -3942,14 +3935,12 @@ export declare type KeyPressOptions = KeyDownOptions & KeyboardTypeOptions;
  * import {KnownDevices} from 'puppeteer';
  * const iPhone = KnownDevices['iPhone 15 Pro'];
  *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.emulate(iPhone);
- *   await page.goto('https://www.google.com');
- *   // other actions...
- *   await browser.close();
- * })();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * await page.emulate(iPhone);
+ * await page.goto('https://www.google.com');
+ * // other actions...
+ * await browser.close();
  * ```
  *
  * @public
@@ -4614,13 +4605,11 @@ export declare interface Offset {
  * ```ts
  * import puppeteer from 'puppeteer';
  *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.goto('https://example.com');
- *   await page.screenshot({path: 'screenshot.png'});
- *   await browser.close();
- * })();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * await page.goto('https://example.com');
+ * await page.screenshot({path: 'screenshot.png'});
+ * await browser.close();
  * ```
  *
  * The Page class extends from Puppeteer's {@link EventEmitter} class and will
@@ -4791,21 +4780,19 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * import puppeteer from 'puppeteer';
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   await page.setRequestInterception(true);
-     *   page.on('request', interceptedRequest => {
-     *     if (
-     *       interceptedRequest.url().endsWith('.png') ||
-     *       interceptedRequest.url().endsWith('.jpg')
-     *     )
-     *       interceptedRequest.abort();
-     *     else interceptedRequest.continue();
-     *   });
-     *   await page.goto('https://example.com');
-     *   await browser.close();
-     * })();
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * await page.setRequestInterception(true);
+     * page.on('request', interceptedRequest => {
+     *   if (
+     *     interceptedRequest.url().endsWith('.png') ||
+     *     interceptedRequest.url().endsWith('.jpg')
+     *   )
+     *     interceptedRequest.abort();
+     *   else interceptedRequest.continue();
+     * });
+     * await page.goto('https://example.com');
+     * await browser.close();
      * ```
      *
      * @param value - Whether to enable request interception.
@@ -4848,14 +4835,12 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * import {PredefinedNetworkConditions} from 'puppeteer';
      * const slow3G = PredefinedNetworkConditions['Slow 3G'];
      *
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   await page.emulateNetworkConditions(slow3G);
-     *   await page.goto('https://www.google.com');
-     *   // other actions...
-     *   await browser.close();
-     * })();
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * await page.emulateNetworkConditions(slow3G);
+     * await page.goto('https://www.google.com');
+     * // other actions...
+     * await browser.close();
      * ```
      *
      * @param networkConditions - Passing `null` disables network condition
@@ -5284,21 +5269,19 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * import puppeteer from 'puppeteer';
      * import crypto from 'crypto';
      *
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   page.on('console', msg => console.log(msg.text()));
-     *   await page.exposeFunction('md5', text =>
-     *     crypto.createHash('md5').update(text).digest('hex'),
-     *   );
-     *   await page.evaluate(async () => {
-     *     // use window.md5 to compute hashes
-     *     const myString = 'PUPPETEER';
-     *     const myHash = await window.md5(myString);
-     *     console.log(`md5 of ${myString} is ${myHash}`);
-     *   });
-     *   await browser.close();
-     * })();
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * page.on('console', msg => console.log(msg.text()));
+     * await page.exposeFunction('md5', text =>
+     *   crypto.createHash('md5').update(text).digest('hex'),
+     * );
+     * await page.evaluate(async () => {
+     *   // use window.md5 to compute hashes
+     *   const myString = 'PUPPETEER';
+     *   const myHash = await window.md5(myString);
+     *   console.log(`md5 of ${myString} is ${myHash}`);
+     * });
+     * await browser.close();
      * ```
      *
      * @example
@@ -5308,25 +5291,23 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * import puppeteer from 'puppeteer';
      * import fs from 'node:fs';
      *
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   page.on('console', msg => console.log(msg.text()));
-     *   await page.exposeFunction('readfile', async filePath => {
-     *     return new Promise((resolve, reject) => {
-     *       fs.readFile(filePath, 'utf8', (err, text) => {
-     *         if (err) reject(err);
-     *         else resolve(text);
-     *       });
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * page.on('console', msg => console.log(msg.text()));
+     * await page.exposeFunction('readfile', async filePath => {
+     *   return new Promise((resolve, reject) => {
+     *     fs.readFile(filePath, 'utf8', (err, text) => {
+     *       if (err) reject(err);
+     *       else resolve(text);
      *     });
      *   });
-     *   await page.evaluate(async () => {
-     *     // use window.readfile to read contents of a file
-     *     const content = await window.readfile('/etc/hosts');
-     *     console.log(content);
-     *   });
-     *   await browser.close();
-     * })();
+     * });
+     * await page.evaluate(async () => {
+     *   // use window.readfile to read contents of a file
+     *   const content = await window.readfile('/etc/hosts');
+     *   console.log(content);
+     * });
+     * await browser.close();
      * ```
      *
      * @param name - Name of the function on the window object
@@ -5614,14 +5595,12 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * import {KnownDevices} from 'puppeteer';
      * const iPhone = KnownDevices['iPhone 15 Pro'];
      *
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   await page.emulate(iPhone);
-     *   await page.goto('https://www.google.com');
-     *   // other actions...
-     *   await browser.close();
-     * })();
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * await page.emulate(iPhone);
+     * await page.goto('https://www.google.com');
+     * // other actions...
+     * await browser.close();
      * ```
      */
     emulate(device: Device): Promise<void>;
@@ -5772,25 +5751,23 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```ts
      * import puppeteer from 'puppeteer';
      *
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   await page.goto('https://v8.dev/blog/10-years');
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * await page.goto('https://v8.dev/blog/10-years');
      *
-     *   await page.emulateVisionDeficiency('achromatopsia');
-     *   await page.screenshot({path: 'achromatopsia.png'});
+     * await page.emulateVisionDeficiency('achromatopsia');
+     * await page.screenshot({path: 'achromatopsia.png'});
      *
-     *   await page.emulateVisionDeficiency('deuteranopia');
-     *   await page.screenshot({path: 'deuteranopia.png'});
+     * await page.emulateVisionDeficiency('deuteranopia');
+     * await page.screenshot({path: 'deuteranopia.png'});
      *
-     *   await page.emulateVisionDeficiency('blurredVision');
-     *   await page.screenshot({path: 'blurred-vision.png'});
+     * await page.emulateVisionDeficiency('blurredVision');
+     * await page.screenshot({path: 'blurred-vision.png'});
      *
-     *   await page.emulateVisionDeficiency('reducedContrast');
-     *   await page.screenshot({path: 'reduced-contrast.png'});
+     * await page.emulateVisionDeficiency('reducedContrast');
+     * await page.screenshot({path: 'reduced-contrast.png'});
      *
-     *   await browser.close();
-     * })();
+     * await browser.close();
      * ```
      *
      * @param type - the type of deficiency to simulate, or `'none'` to reset.
@@ -6247,22 +6224,21 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * import puppeteer from 'puppeteer';
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   let currentURL;
-     *   page
-     *     .waitForSelector('img')
-     *     .then(() => console.log('First URL with image: ' + currentURL));
-     *   for (currentURL of [
-     *     'https://example.com',
-     *     'https://google.com',
-     *     'https://bbc.com',
-     *   ]) {
-     *     await page.goto(currentURL);
-     *   }
-     *   await browser.close();
-     * })();
+     *
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * let currentURL;
+     * page
+     *   .waitForSelector('img')
+     *   .then(() => console.log('First URL with image: ' + currentURL));
+     * for (currentURL of [
+     *   'https://example.com',
+     *   'https://google.com',
+     *   'https://bbc.com',
+     * ]) {
+     *   await page.goto(currentURL);
+     * }
+     * await browser.close();
      * ```
      *
      * @param selector -
@@ -6310,14 +6286,13 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * import puppeteer from 'puppeteer';
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   const watchDog = page.waitForFunction('window.innerWidth < 100');
-     *   await page.setViewport({width: 50, height: 50});
-     *   await watchDog;
-     *   await browser.close();
-     * })();
+     *
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * const watchDog = page.waitForFunction('window.innerWidth < 100');
+     * await page.setViewport({width: 50, height: 50});
+     * await watchDog;
+     * await browser.close();
      * ```
      *
      * @example
@@ -6771,28 +6746,19 @@ declare namespace PQuerySelector {
  *
  * ```ts
  * import {PredefinedNetworkConditions} from 'puppeteer';
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Slow 3G'],
- *   );
- *   await page.goto('https://www.google.com');
- *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Fast 3G'],
- *   );
- *   await page.goto('https://www.google.com');
- *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Slow 4G'],
- *   ); // alias to Fast 3G.
- *   await page.goto('https://www.google.com');
- *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Fast 4G'],
- *   );
- *   await page.goto('https://www.google.com');
- *   // other actions...
- *   await browser.close();
- * })();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * await page.emulateNetworkConditions(PredefinedNetworkConditions['Slow 3G']);
+ * await page.goto('https://www.google.com');
+ * await page.emulateNetworkConditions(PredefinedNetworkConditions['Fast 3G']);
+ * await page.goto('https://www.google.com');
+ * // alias to Fast 3G.
+ * await page.emulateNetworkConditions(PredefinedNetworkConditions['Slow 4G']);
+ * await page.goto('https://www.google.com');
+ * await page.emulateNetworkConditions(PredefinedNetworkConditions['Fast 4G']);
+ * await page.goto('https://www.google.com');
+ * // other actions...
+ * await browser.close();
  * ```
  *
  * @public
@@ -7148,13 +7114,11 @@ export declare type PuppeteerLifeCycleEvent =
  * ```ts
  * import puppeteer from 'puppeteer';
  *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.goto('https://www.google.com');
- *   // other actions...
- *   await browser.close();
- * })();
+ * const browser = await puppeteer.launch();
+ * const page = await browser.newPage();
+ * await page.goto('https://www.google.com');
+ * // other actions...
+ * await browser.close();
  * ```
  *
  * Once you have created a `page` you have access to a large API to interact

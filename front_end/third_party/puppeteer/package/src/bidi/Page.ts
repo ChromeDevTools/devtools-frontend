@@ -245,7 +245,7 @@ export class BidiPage extends Page {
   }
 
   override async setBypassCSP(enabled: boolean): Promise<void> {
-    // TODO: handle CDP-specific cases such as mprach.
+    // TODO: handle CDP-specific cases such as MPArch.
     await this._client().send('Page.setBypassCSP', {enabled});
   }
 
@@ -626,7 +626,7 @@ export class BidiPage extends Page {
       );
       return;
     }
-    // TODO: handle CDP-specific cases such as mprach.
+    // TODO: handle CDP-specific cases such as MPArch.
     await this._client().send('Network.setCacheDisabled', {
       cacheDisabled: !enabled,
     });
@@ -711,11 +711,20 @@ export class BidiPage extends Page {
     return [...this.#workers];
   }
 
-  #userInterception?: string;
+  get isNetworkInterceptionEnabled(): boolean {
+    return (
+      Boolean(this.#requestInterception) ||
+      Boolean(this.#extraHeadersInterception) ||
+      Boolean(this.#authInterception) ||
+      Boolean(this.#userAgentInterception)
+    );
+  }
+
+  #requestInterception?: string;
   override async setRequestInterception(enable: boolean): Promise<void> {
-    this.#userInterception = await this.#toggleInterception(
+    this.#requestInterception = await this.#toggleInterception(
       [Bidi.Network.InterceptPhase.BeforeRequestSent],
-      this.#userInterception,
+      this.#requestInterception,
       enable,
     );
   }
@@ -1054,7 +1063,7 @@ export function bidiToPuppeteerCookie(
 ): Cookie {
   const partitionKey = bidiCookie[CDP_SPECIFIC_PREFIX + 'partitionKey'];
 
-  function getParitionKey(): {partitionKey?: Cookie['partitionKey']} {
+  function getPartitionKey(): {partitionKey?: Cookie['partitionKey']} {
     if (typeof partitionKey === 'string') {
       return {partitionKey};
     }
@@ -1096,7 +1105,7 @@ export function bidiToPuppeteerCookie(
       'partitionKeyOpaque',
       'priority',
     ),
-    ...getParitionKey(),
+    ...getPartitionKey(),
   };
 }
 

@@ -250,7 +250,7 @@ let BidiPage = (() => {
             this.#userAgentPreloadScript = evaluateToken?.identifier;
         }
         async setBypassCSP(enabled) {
-            // TODO: handle CDP-specific cases such as mprach.
+            // TODO: handle CDP-specific cases such as MPArch.
             await this._client().send('Page.setBypassCSP', { enabled });
         }
         async queryObjects(prototypeHandle) {
@@ -532,7 +532,7 @@ let BidiPage = (() => {
                 await this.#frame.browsingContext.setCacheBehavior(enabled ? 'default' : 'bypass');
                 return;
             }
-            // TODO: handle CDP-specific cases such as mprach.
+            // TODO: handle CDP-specific cases such as MPArch.
             await this._client().send('Network.setCacheDisabled', {
                 cacheDisabled: !enabled,
             });
@@ -595,9 +595,15 @@ let BidiPage = (() => {
         workers() {
             return [...this.#workers];
         }
-        #userInterception;
+        get isNetworkInterceptionEnabled() {
+            return (Boolean(this.#requestInterception) ||
+                Boolean(this.#extraHeadersInterception) ||
+                Boolean(this.#authInterception) ||
+                Boolean(this.#userAgentInterception));
+        }
+        #requestInterception;
         async setRequestInterception(enable) {
-            this.#userInterception = await this.#toggleInterception(["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */], this.#userInterception, enable);
+            this.#requestInterception = await this.#toggleInterception(["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */], this.#requestInterception, enable);
         }
         /**
          * @internal
@@ -844,7 +850,7 @@ function testUrlMatchCookie(cookie, url) {
 }
 function bidiToPuppeteerCookie(bidiCookie, returnCompositePartitionKey = false) {
     const partitionKey = bidiCookie[CDP_SPECIFIC_PREFIX + 'partitionKey'];
-    function getParitionKey() {
+    function getPartitionKey() {
         if (typeof partitionKey === 'string') {
             return { partitionKey };
         }
@@ -879,7 +885,7 @@ function bidiToPuppeteerCookie(bidiCookie, returnCompositePartitionKey = false) 
         session: bidiCookie.expiry === undefined || bidiCookie.expiry <= 0,
         // Extending with CDP-specific properties with `goog:` prefix.
         ...cdpSpecificCookiePropertiesFromBidiToPuppeteer(bidiCookie, 'sameParty', 'sourceScheme', 'partitionKeyOpaque', 'priority'),
-        ...getParitionKey(),
+        ...getPartitionKey(),
     };
 }
 const CDP_SPECIFIC_PREFIX = 'goog:';

@@ -59,6 +59,7 @@ export declare class CdpHTTPRequest extends HTTPRequest {
     failure(): {
         errorText: string;
     } | null;
+    protected canBeIntercepted(): boolean;
     /**
      * @internal
      */

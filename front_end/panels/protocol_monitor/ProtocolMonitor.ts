@@ -230,7 +230,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                                       list="filter-suggestions"
                                       style="flex-grow: 1"
                                       value=${input.filter}
-                                      @change=${(e: Event) => input.onFilterChanged((e.target as HTMLInputElement).value)}>
+                                      @change=${(e: CustomEvent<string>) => input.onFilterChanged(e.detail)}>
                 <datalist id="filter-suggestions">
                   ${input.filterKeys.map(key => html`
                         <option value=${key + ':'}></option>
@@ -330,8 +330,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                                       list="command-input-suggestions"
                                       placeholder=${i18nString(UIStrings.sendRawCDPCommand)}
                                       title=${i18nString(UIStrings.sendRawCDPCommandExplanation)}
-                                      @change=${(e: Event) => input.onCommandChange((e.target as HTMLInputElement).value)}
-                                      @submit=${(e: Event) => input.onCommandSubmitted((e.target as HTMLInputElement).value)}>
+                                      @change=${(e: CustomEvent<string>) => input.onCommandChange(e.detail)}
+                                      @submit=${(e: CustomEvent<string>) => input.onCommandSubmitted(e.detail)}>
                 <datalist id="command-input-suggestions">
                   ${input.commandSuggestions.map(c => html`<option value=${c}></option>`)}
                 </datalist>

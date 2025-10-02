@@ -149,7 +149,7 @@ export class CombinedDiffView extends UI.Widget.Widget {
     void this.#initializeModifiedUISourceCodes();
   }
 
-  set selectedFileUrl(fileUrl: string) {
+  set selectedFileUrl(fileUrl: string|undefined) {
     this.#selectedFileUrl = fileUrl;
     this.requestUpdate();
     void this.updateComplete.then(() => {

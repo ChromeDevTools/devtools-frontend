@@ -67,14 +67,21 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
 export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
     UI.Widget.Widget) {
-  readonly #workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
+  #workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl|null = null;
   readonly #view: View;
   readonly #sourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
   #selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null = null;
-  constructor(workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl, target?: HTMLElement, view = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.pane('sidebar').track({resize: true})}`});
+  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+    super(target, {jslog: `${VisualLogging.pane('sidebar').track({resize: true})}`});
     this.#view = view;
+  }
 
+  set workspaceDiff(workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl) {
+    if (this.#workspaceDiff) {
+      this.#workspaceDiff.modifiedUISourceCodes().forEach(this.#removeUISourceCode.bind(this));
+      this.#workspaceDiff.removeEventListener(
+          WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.uiSourceCodeModifiedStatusChanged, this);
+    }
     this.#workspaceDiff = workspaceDiff;
     this.#workspaceDiff.modifiedUISourceCodes().forEach(this.#addUISourceCode.bind(this));
     this.#workspaceDiff.addEventListener(

@@ -36,3 +36,7 @@
   background-color: var(--sys-color-cdt-base-container);
   border-top: 1px solid var(--sys-color-divider);
 }
+
+[hidden] {
+  display: none !important; /* stylelint-disable-line declaration-no-important */
+}

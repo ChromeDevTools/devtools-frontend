@@ -69,8 +69,9 @@ describeWithEnvironment('ChangesSidebar', () => {
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     const workspaceDiff = new WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl(workspace);
     const viewFunction = createViewFunctionStub(Changes.ChangesSidebar.ChangesSidebar);
-    const sidebar = new Changes.ChangesSidebar.ChangesSidebar(workspaceDiff, undefined, viewFunction);
+    const sidebar = new Changes.ChangesSidebar.ChangesSidebar(undefined, viewFunction);
 
+    sidebar.workspaceDiff = workspaceDiff;
     const {onSelect} = await viewFunction.nextInput;
 
     assert.notExists(sidebar.selectedUISourceCode());

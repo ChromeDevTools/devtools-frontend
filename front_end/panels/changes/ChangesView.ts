@@ -1,7 +1,6 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import '../../ui/legacy/legacy.js';
 
@@ -10,6 +9,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
@@ -30,93 +30,93 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {render, html} = Lit;
+interface ViewInput {
+  selectedSourceCode: Workspace.UISourceCode.UISourceCode|null;
+  onSelect(sourceCode: Workspace.UISourceCode.UISourceCode|null): void;
+  workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
+}
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const onSidebar = (sidebar: ChangesSidebar): void => {
+    sidebar.addEventListener(
+        Events.SELECTED_UI_SOURCE_CODE_CHANGED, () => input.onSelect(sidebar.selectedUISourceCode()));
+  };
+  render(
+      // clang-format off
+      html`
+      <style>${changesViewStyles}</style>
+      <devtools-split-view direction=column>
+        <div class=vbox slot="main">
+          <devtools-widget
+            ?hidden=${input.workspaceDiff.modifiedUISourceCodes().length > 0}
+            .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+                              header: i18nString(UIStrings.noChanges),
+                              text: i18nString(UIStrings.changesViewDescription),
+                              link: CHANGES_VIEW_URL,
+                            })}>
+          </devtools-widget>
+          <div class=diff-container role=tabpanel ?hidden=${input.workspaceDiff.modifiedUISourceCodes().length === 0}>
+            <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(CombinedDiffView.CombinedDiffView, {
+                                              selectedFileUrl: input.selectedSourceCode?.url(),
+                                              workspaceDiff: input.workspaceDiff
+                                            })}></devtools-widget>
+          </div>
+        </div>
+        <devtools-widget
+          slot="sidebar"
+          .widgetConfig=${UI.Widget.widgetConfig(ChangesSidebar, {
+                           workspaceDiff: input.workspaceDiff
+                         })}
+          ${UI.Widget.widgetRef(ChangesSidebar, onSidebar)}>
+        </devtools-widget>
+      </devtools-split-view>`,
+      // clang-format on
+      target);
+};
 
 export class ChangesView extends UI.Widget.VBox {
-  private emptyWidget: UI.EmptyWidget.EmptyWidget;
-  private readonly workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
-  readonly changesSidebar: ChangesSidebar;
-  private selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null;
-  private readonly diffContainer: HTMLElement;
-  private readonly combinedDiffView: CombinedDiffView.CombinedDiffView;
+  readonly #workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
+  #selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null = null;
+  readonly #view: View;
 
-  constructor() {
-    super({
+  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+    super(target, {
       jslog: `${VisualLogging.panel('changes').track({resize: true})}`,
       useShadowDom: true,
     });
-    this.registerRequiredCSS(changesViewStyles);
 
-    const splitWidget = new UI.SplitWidget.SplitWidget(true /* vertical */, false /* sidebar on left */);
-    const mainWidget = new UI.Widget.VBox();
-    splitWidget.setMainWidget(mainWidget);
-    splitWidget.show(this.contentElement);
+    this.#workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
+    this.#view = view;
 
-    this.emptyWidget = new UI.EmptyWidget.EmptyWidget('', '');
-    this.emptyWidget.show(mainWidget.element);
-
-    this.workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
-    this.changesSidebar = new ChangesSidebar(this.workspaceDiff);
-    this.changesSidebar.addEventListener(
-        Events.SELECTED_UI_SOURCE_CODE_CHANGED, this.selectedUISourceCodeChanged, this);
-    splitWidget.setSidebarWidget(this.changesSidebar);
-
-    this.selectedUISourceCode = null;
-
-    this.diffContainer = mainWidget.element.createChild('div', 'diff-container');
-    UI.ARIAUtils.markAsTabpanel(this.diffContainer);
-    this.combinedDiffView = new CombinedDiffView.CombinedDiffView();
-    this.combinedDiffView.workspaceDiff = this.workspaceDiff;
-    this.combinedDiffView.show(this.diffContainer);
-
-    this.hideDiff();
-    this.selectedUISourceCodeChanged();
+    this.requestUpdate();
   }
 
-  private renderDiffOrEmptyState(): void {
-    // There are modified UI source codes, we should render the combined diff view.
-    if (this.workspaceDiff.modifiedUISourceCodes().length > 0) {
-      this.showDiff();
-    } else {
-      this.hideDiff();
-    }
-  }
-
-  private selectedUISourceCodeChanged(): void {
-    const selectedUISourceCode = this.changesSidebar.selectedUISourceCode();
-    if (!selectedUISourceCode || this.selectedUISourceCode === selectedUISourceCode) {
-      return;
-    }
-
-    this.selectedUISourceCode = selectedUISourceCode;
-    this.combinedDiffView.selectedFileUrl = selectedUISourceCode.url();
+  override performUpdate(): void {
+    this.#view(
+        {
+          workspaceDiff: this.#workspaceDiff,
+          selectedSourceCode: this.#selectedUISourceCode,
+          onSelect: sourceCode => {
+            this.#selectedUISourceCode = sourceCode;
+            this.requestUpdate();
+          },
+        },
+        {}, this.contentElement);
   }
 
   override wasShown(): void {
     UI.Context.Context.instance().setFlavor(ChangesView, this);
     super.wasShown();
-    this.renderDiffOrEmptyState();
-    this.workspaceDiff.addEventListener(
-        WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.renderDiffOrEmptyState, this);
+    this.requestUpdate();
+    this.#workspaceDiff.addEventListener(
+        WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.requestUpdate, this);
   }
 
   override willHide(): void {
     super.willHide();
     UI.Context.Context.instance().setFlavor(ChangesView, null);
-    this.workspaceDiff.removeEventListener(
-        WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.renderDiffOrEmptyState, this);
-  }
-
-  private hideDiff(): void {
-    this.diffContainer.style.display = 'none';
-    this.emptyWidget.header = i18nString(UIStrings.noChanges);
-    this.emptyWidget.text = i18nString(UIStrings.changesViewDescription);
-
-    this.emptyWidget.link = CHANGES_VIEW_URL;
-    this.emptyWidget.showWidget();
-  }
-
-  private showDiff(): void {
-    this.emptyWidget.hideWidget();
-    this.diffContainer.style.display = 'block';
+    this.#workspaceDiff.removeEventListener(
+        WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.requestUpdate, this);
   }
 }

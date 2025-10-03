@@ -401,8 +401,13 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   getCategoryIDs(): string[] {
+    const {mode} = this.getFlags();
     const categoryIDs = [];
     for (const preset of Presets) {
+      if (mode && !preset.supportedModes.includes(mode)) {
+        continue;
+      }
+
       if (preset.setting.get()) {
         categoryIDs.push(preset.configID);
       }

@@ -16,11 +16,26 @@ interface AgentFocusData {
   insight: Trace.Insights.Types.InsightModel|null;
 }
 
+/**
+ * Gets the first, most relevant InsightSet to use, following the logic of:
+ * 1. If there is only one InsightSet, use that.
+ * 2. If there are more, prefer the first we find that has a navigation associated with it.
+ * 3. If none with a navigation are found, fallback to the first one.
+ * 4. Otherwise, return null.
+ *
+ * TODO(cjamcl): we should just give the agent the entire insight set, and give
+ * summary detail about all of them + the ability to query each.
+ */
 function getFirstInsightSet(insights: Trace.Insights.Types.TraceInsightSets): Trace.Insights.Types.InsightSet|null {
-  // Currently only support a single insight set. Pick the first one with a navigation.
-  // TODO(cjamcl): we should just give the agent the entire insight set, and give
-  // summary detail about all of them + the ability to query each.
-  return [...insights.values()].filter(insightSet => insightSet.navigation).at(0) ?? null;
+  const insightSets = Array.from(insights.values());
+  if (insightSets.length === 0) {
+    return null;
+  }
+  if (insightSets.length === 1) {
+    return insightSets[0];
+  }
+
+  return insightSets.filter(set => set.navigation).at(0) ?? insightSets.at(0) ?? null;
 }
 
 export class AgentFocus {

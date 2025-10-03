@@ -57,6 +57,14 @@ describeWithEnvironment('PerformanceTraceFormatter', () => {
       const output = formatter.formatTraceSummary();
       snapshotTester.assert(this, output);
     });
+
+    it('includes INP insight when there is no navigation', async function() {
+      const {formatter} = await createFormatter(this, 'slow-interaction-button-click.json.gz');
+      const output = formatter.formatTraceSummary();
+      assert.include(output, 'INP: 139 ms');
+      assert.include(output, 'insight name: INPBreakdown');
+      snapshotTester.assert(this, output);
+    });
   });
 
   it('formatCriticalRequests', async function() {

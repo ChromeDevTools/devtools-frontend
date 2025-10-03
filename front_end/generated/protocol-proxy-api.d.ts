@@ -596,7 +596,9 @@ declare namespace ProtocolProxyApi {
     invoke_setPermission(params: Protocol.Browser.SetPermissionRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Grant specific permissions to the given origin and reject all others.
+     * Grant specific permissions to the given origin and reject all others. Deprecated. Use
+     * setPermission instead.
+     * @deprecated
      */
     invoke_grantPermissions(params: Protocol.Browser.GrantPermissionsRequest): Promise<Protocol.ProtocolResponseWithError>;
 

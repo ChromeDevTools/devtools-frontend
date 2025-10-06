@@ -13,9 +13,7 @@ describeWithEnvironment('StreamingContentHexView', () => {
   function getMemoryViewer(view: SourceFrame.StreamingContentHexView.StreamingContentHexView):
       LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer {
     const inspector = view.contentElement.firstChild as HTMLElement;
-    assert.isNotNull(inspector.shadowRoot);
-
-    const viewer = inspector.shadowRoot.querySelector('devtools-linear-memory-inspector-viewer');
+    const viewer = inspector.querySelector('devtools-linear-memory-inspector-viewer');
     assert.instanceOf(viewer, LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer);
     return viewer;
   }

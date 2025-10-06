@@ -4,29 +4,36 @@
  * found in the LICENSE file.
  */
 
-:host {
-  flex: auto;
-  display: flex;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    flex: auto;
+    display: flex;
+  }
 
-.view {
-  width: 100%;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
-  padding: 9px 12px 9px 7px;
-}
+  * {
+      min-width: unset;
+      box-sizing: content-box;
+  }
 
-devtools-linear-memory-inspector-viewer {
-  justify-content: center;
-}
+  .view {
+    width: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
+    padding: 9px 12px 9px 7px;
+  }
 
-devtools-linear-memory-inspector-navigator + devtools-linear-memory-inspector-viewer {
-  margin-top: 12px;
-}
+  devtools-linear-memory-inspector-viewer {
+    justify-content: center;
+  }
 
-.value-interpreter {
-  display: flex;
+  devtools-linear-memory-inspector-navigator + devtools-linear-memory-inspector-viewer {
+    margin-top: 12px;
+  }
+
+  .value-interpreter {
+    display: flex;
+}
 }

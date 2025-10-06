@@ -16,20 +16,22 @@ const MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1000;
  * known upfront.
  */
 class LinearMemoryInspectorView extends UI.Widget.VBox {
-  #memory = new Uint8Array([0]);
+  #memory: Uint8Array = new Uint8Array([0]);
   #address = 0;
   #inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
 
   constructor() {
     super();
-    this.#inspector.addEventListener(
+    this.#inspector.contentElement.addEventListener(
         LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent.eventName,
-        this.#memoryRequested.bind(this));
-    this.#inspector.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent.eventName, event => {
+        (event: LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent) =>
+            this.#memoryRequested(event));
+    this.#inspector.contentElement.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent.eventName,
+        (event: LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent) => {
           this.#address = event.data;
         });
-    this.contentElement.appendChild(this.#inspector);
+    this.#inspector.show(this.contentElement);
   }
 
   override wasShown(): void {
@@ -51,13 +53,11 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     const memoryChunkStart = Math.max(0, this.#address - MEMORY_TRANSFER_MIN_CHUNK_SIZE / 2);
     const memoryChunkEnd = memoryChunkStart + MEMORY_TRANSFER_MIN_CHUNK_SIZE;
     const memory = this.#memory.slice(memoryChunkStart, memoryChunkEnd);
-    this.#inspector.data = {
-      memory,
-      address: this.#address,
-      memoryOffset: memoryChunkStart,
-      outerMemoryLength: this.#memory.length,
-      hideValueInspector: true,
-    };
+    this.#inspector.memory = memory;
+    this.#inspector.address = this.#address;
+    this.#inspector.memoryOffset = memoryChunkStart;
+    this.#inspector.outerMemoryLength = this.#memory.length;
+    this.#inspector.hideValueInspector = true;
   }
 
   #memoryRequested(event: LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent): void {
@@ -80,13 +80,11 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     const chunkEnd = Math.max(end, start + MEMORY_TRANSFER_MIN_CHUNK_SIZE);
     const memory = this.#memory.slice(start, chunkEnd);
 
-    this.#inspector.data = {
-      memory,
-      address,
-      memoryOffset: start,
-      outerMemoryLength: this.#memory.length,
-      hideValueInspector: true,
-    };
+    this.#inspector.memory = memory;
+    this.#inspector.address = address;
+    this.#inspector.memoryOffset = start;
+    this.#inspector.outerMemoryLength = this.#memory.length;
+    this.#inspector.hideValueInspector = true;
   }
 }
 

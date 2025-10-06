@@ -16,17 +16,21 @@ import {
   describeWithMockConnection,
   dispatchEvent,
 } from '../../testing/MockConnection.js';
-import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Console from './console.js';
 
+function compileScriptResponse(exception?: string): Protocol.Runtime.CompileScriptResponse {
+  const exceptionDetails = exception ? {exception: {description: exception}} : undefined;
+  return {exceptionDetails, getError: () => {}} as unknown as Protocol.Runtime.CompileScriptResponse;
+}
+
 describeWithMockConnection('ConsoleContextSelector', () => {
   let target: SDK.Target.Target;
   let consolePrompt: Console.ConsolePrompt.ConsolePrompt;
-  let keyBinding: CodeMirror.KeyBinding[];
   let evaluateOnTarget: sinon.SinonStub;
+  let compileScript: sinon.SinonStub;
   let checkAccessPreconditionsStub: sinon.SinonStub;
   let editor: TextEditor.TextEditor.TextEditor;
 
@@ -42,19 +46,15 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     });
     registerNoopActions(['console.clear', 'console.clear.history', 'console.create-pin']);
 
-    const keymapOf = sinon.spy(CodeMirror.keymap, 'of');
     consolePrompt = new Console.ConsolePrompt.ConsolePrompt();
-    sinon.assert.called(keymapOf);
-    keyBinding = keymapOf.firstCall.firstArg;
-    const editorContainer = consolePrompt.element.querySelector('.console-prompt-editor-container');
-    editor = editorContainer!.firstElementChild as TextEditor.TextEditor.TextEditor;
-    editor.state = {doc: 'foo', selection: {main: {head: 42}}} as unknown as CodeMirror.EditorState;
-    editor.dispatch = () => {};
+    editor = consolePrompt.element.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
+    setCodeMirrorContent('foo');
 
     target = createTarget();
     const targetContext = createExecutionContext(target);
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, targetContext);
     evaluateOnTarget = sinon.stub(target.runtimeAgent(), 'invoke_evaluate');
+    compileScript = sinon.stub(target.runtimeAgent(), 'invoke_compileScript').resolves(compileScriptResponse());
 
     Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
   });
@@ -81,16 +81,20 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     return executionContext;
   }
 
-  function compileScriptResponse(exception?: string): Protocol.Runtime.CompileScriptResponse {
-    const exceptionDetails = exception ? {exception: {description: exception}} : undefined;
-    return {exceptionDetails, getError: () => {}} as unknown as Protocol.Runtime.CompileScriptResponse;
+  function dispatchKeydown(key: string): void {
+    editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key, bubbles: true}));
+  }
+
+  function setCodeMirrorContent(
+      content: string, {selectionHead}: {selectionHead: number} = {selectionHead: content.length}) {
+    editor.dispatch({
+      changes: {from: 0, to: editor.state.doc.length, insert: content},
+      selection: {anchor: selectionHead},
+    });
   }
 
   it('evaluates on enter', async () => {
-    const enterBinding = keyBinding.find(b => b.key === 'Enter');
-    sinon.stub(target.runtimeAgent(), 'invoke_compileScript').resolves(compileScriptResponse());
-
-    enterBinding!.run!({} as CodeMirror.EditorView);
+    dispatchKeydown('Enter');
     await new Promise(resolve => setTimeout(resolve, 0));
 
     sinon.assert.called(evaluateOnTarget);
@@ -100,38 +104,32 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     const setting = Common.Settings.Settings.instance().createSetting(
         'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
     assert.isFalse(setting.get());
-    const enterBinding = keyBinding.find(b => b.key === 'Enter');
-    sinon.stub(target.runtimeAgent(), 'invoke_compileScript').resolves(compileScriptResponse());
 
     consolePrompt.showSelfXssWarning();
-    enterBinding!.run!({} as CodeMirror.EditorView);
+    dispatchKeydown('Enter');
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isFalse(setting.get());
 
     consolePrompt.showSelfXssWarning();
-    editor.state = {doc: 'allow pasting', selection: {main: {head: 42}}} as unknown as CodeMirror.EditorState;
-    enterBinding!.run!({} as CodeMirror.EditorView);
+    setCodeMirrorContent('allow pasting');
+    dispatchKeydown('Enter');
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isTrue(setting.get());
   });
 
   it('does not evaluate incomplete expression', async () => {
-    const enterBinding = keyBinding.find(b => b.key === 'Enter');
-    sinon.stub(target.runtimeAgent(), 'invoke_compileScript')
-        .resolves(compileScriptResponse('SyntaxError: Unexpected end of input'));
+    compileScript.resolves(compileScriptResponse('SyntaxError: Unexpected end of input'));
 
-    enterBinding!.run!({} as CodeMirror.EditorView);
+    dispatchKeydown('Enter');
     await new Promise(resolve => setTimeout(resolve, 0));
 
     sinon.assert.notCalled(evaluateOnTarget);
   });
 
   it('evaluate incomplete expression if forced', async () => {
-    const ctrlEnterBinding = keyBinding.find(b => b.key === 'Ctrl-Enter');
-    sinon.stub(target.runtimeAgent(), 'invoke_compileScript')
-        .resolves(compileScriptResponse('SyntaxError: Unexpected end of input'));
+    compileScript.resolves(compileScriptResponse('SyntaxError: Unexpected end of input'));
 
-    ctrlEnterBinding!.run!({} as CodeMirror.EditorView);
+    dispatchKeydown('Ctrl-Enter');
     await new Promise(resolve => setTimeout(resolve, 0));
 
     sinon.assert.called(evaluateOnTarget);
@@ -142,11 +140,9 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     const anotherTargetContext = createExecutionContext(target);
     const evaluateOnAnotherTarget = sinon.stub(anotherTarget.runtimeAgent(), 'invoke_evaluate');
 
-    const enterBinding = keyBinding.find(b => b.key === 'Enter');
-    sinon.stub(target.runtimeAgent(), 'invoke_compileScript').resolves(compileScriptResponse());
     sinon.stub(anotherTarget.runtimeAgent(), 'invoke_compileScript').resolves(compileScriptResponse());
 
-    enterBinding!.run!({} as CodeMirror.EditorView);
+    dispatchKeydown('Enter');
 
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, anotherTargetContext);
     await new Promise(resolve => setTimeout(resolve, 0));
@@ -219,7 +215,8 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     );
     consoleModel.addMessage(message);
 
-    editor.state = {doc: 'console.log();', selection: {main: {head: 12}}} as unknown as CodeMirror.EditorState;
+    setCodeMirrorContent('console.log();', {selectionHead: 12});
+    onTextChangedSpy.resetHistory();
     consolePrompt.triggerAiCodeCompletion();
 
     sinon.assert.calledOnce(onTextChangedSpy);

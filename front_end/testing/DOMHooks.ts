@@ -57,7 +57,7 @@ function removeCSSEvaluationElement() {
  * Completely cleans out the test DOM to ensure it's empty for the next test run.
  * This is run automatically between tests - you should not be manually calling this yourself.
  **/
-export const cleanTestDOM = async (testName = '') => {
+export const cleanTestDOM = (testName = '') => {
   const previousContainer = document.getElementById(TEST_CONTAINER_ID);
   if (previousContainer) {
     removeChildren(previousContainer);
@@ -67,8 +67,6 @@ export const cleanTestDOM = async (testName = '') => {
   removeTextEditorTooltip();
   removeAnnouncer();
   removeCSSEvaluationElement();
-  // Make sure all DOM clean up happens before the raf
-  await raf();
   // Verify that nothing was left behind
   for (const child of document.body.children) {
     if (!documentBodyElements.has(child)) {
@@ -92,7 +90,8 @@ export const setupTestDOM = async () => {
     // AfterEach hook fails before cleaning the DOM.
     // Clean it here and report
     console.error('Non clean test state found!');
-    await cleanTestDOM();
+    cleanTestDOM();
+    await raf();
   }
   // Tests are run in light mode by default.
   setColorScheme('light');

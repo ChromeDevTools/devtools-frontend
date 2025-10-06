@@ -7,6 +7,7 @@ import type * as SDK from '../core/sdk/sdk.js';
 import type {ProtocolMapping} from '../generated/protocol-mapping.js';
 import type * as ProtocolProxyApi from '../generated/protocol-proxy-api.js';
 
+import {raf} from './DOMHelpers.js';
 import {cleanTestDOM} from './DOMHooks.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers.js';
 import {setMockResourceTree} from './ResourceTreeHelpers.js';
@@ -136,7 +137,8 @@ async function disable() {
   }
   // Some Widgets rely on Global vars to be there so they
   // can properly remove state once they detach.
-  await cleanTestDOM();
+  cleanTestDOM();
+  await raf();
   await deinitializeGlobalVars();
   // @ts-expect-error Setting back to undefined as a hard reset.
   ProtocolClient.InspectorBackend.Connection.setFactory(undefined);

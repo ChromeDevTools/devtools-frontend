@@ -9,8 +9,6 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
-import {scopeTreeForScript} from './ScopeTreeCache.js';
-
 interface CachedScopeMap {
   sourceMap: SDK.SourceMap.SourceMap|undefined;
   mappingPromise: Promise<{variableMapping: Map<string, string>, thisMapping: string|null}>;
@@ -55,7 +53,7 @@ scopeTree:
     return null;
   }
 
-  const scopeTree = await scopeTreeForScript(script);
+  const scopeTree = await SDK.ScopeTreeCache.scopeTreeForScript(script);
   if (!scopeTree) {
     return null;
   }

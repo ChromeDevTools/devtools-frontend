@@ -68,6 +68,7 @@ import * as RemoteObject from './RemoteObject.js';
 import * as Resource from './Resource.js';
 import * as ResourceTreeModel from './ResourceTreeModel.js';
 import * as RuntimeModel from './RuntimeModel.js';
+import * as ScopeTreeCache from './ScopeTreeCache.js';
 import * as ScreenCaptureModel from './ScreenCaptureModel.js';
 import * as Script from './Script.js';
 import * as SDKModel from './SDKModel.js';
@@ -149,6 +150,7 @@ export {
   Resource,
   ResourceTreeModel,
   RuntimeModel,
+  ScopeTreeCache,
   ScreenCaptureModel,
   Script,
   SDKModel,

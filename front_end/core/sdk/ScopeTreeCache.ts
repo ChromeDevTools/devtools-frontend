@@ -2,24 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDK from '../../core/sdk/sdk.js';
-import * as Formatter from '../formatter/formatter.js';
-import * as TextUtils from '../text_utils/text_utils.js';
+import * as Formatter from '../../models/formatter/formatter.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+
+import type {Script} from './Script.js';
 
 type ScopeTreeNode = Formatter.FormatterWorkerPool.ScopeTreeNode;
 
 /** If a script failed to parse, we stash null in order to prevent unnecessary re-parsing */
-const scopeTrees = new WeakMap<SDK.Script.Script, Promise<ScopeTreeNode|null>>();
+const scopeTrees = new WeakMap<Script, Promise<ScopeTreeNode|null>>();
 
 /**
  * Computes and caches the scope tree for `script`.
  *
- * We use {@link SDK.Script.Script} as a key to uniquely identify scripts.
- * {@link SDK.Script.Script} boils down to "target" + "script ID". This
+ * We use {@link Script} as a key to uniquely identify scripts.
+ * {@link Script} boils down to "target" + "script ID". This
  * duplicates work in case of identitical script running on multiple targets
  * (e.g. workers).
  */
-export function scopeTreeForScript(script: SDK.Script.Script): Promise<ScopeTreeNode|null> {
+export function scopeTreeForScript(script: Script): Promise<ScopeTreeNode|null> {
   let promise = scopeTrees.get(script);
   if (promise === undefined) {
     promise = script.requestContentData().then(content => {

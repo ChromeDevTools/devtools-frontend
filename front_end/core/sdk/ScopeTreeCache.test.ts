@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../core/sdk/sdk.js';
-import * as Formatter from '../formatter/formatter.js';
-import * as SourceMapScopes from '../source_map_scopes/source_map_scopes.js';
-import * as TextUtils from '../text_utils/text_utils.js';
+import * as Formatter from '../../models/formatter/formatter.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+
+import * as SDK from './sdk.js';
 
 describe('ScopeTreeCache', () => {
   describe('scopeTreeForScript', () => {
-    const {scopeTreeForScript} = SourceMapScopes.ScopeTreeCache;
+    const {scopeTreeForScript} = SDK.ScopeTreeCache;
     let javaScriptScopeTreeStub: sinon.SinonStub;
     let script: SDK.Script.Script;
 

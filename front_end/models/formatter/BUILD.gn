@@ -15,12 +15,8 @@ devtools_module("formatter") {
 
   deps = [
     "../../core/common:bundle",
-    "../../core/platform:bundle",
-    "../../core/sdk:bundle",
     "../../entrypoints/formatter_worker:formatter_actions",
-    "../../models/bindings:bundle",
     "../../models/text_utils:bundle",
-    "../../models/workspace:bundle",
   ]
 }
 
@@ -34,6 +30,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../core/sdk/*",
     "../../entrypoints/formatter_worker/*",
     "../../models/breakpoints/*",
     "../../models/source_map_scopes/*",
@@ -57,9 +54,6 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
-    "../../core/sdk:bundle",
-    "../../models/bindings:bundle",
-    "../../models/workspace:bundle",
     "../../testing",
   ]
 }

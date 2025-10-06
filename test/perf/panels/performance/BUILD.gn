@@ -4,13 +4,15 @@
 
 import("../../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("performance") {
+node_ts_library("performance") {
   sources = [ "trace-load_test.ts" ]
 
   deps = [
     "../../../../front_end/panels/timeline:bundle",
+    "../../../conductor:implementation",
     "../../../e2e/helpers",
-    "../../../e2e_non_hosted/conductor:implementation",
+    "../../../shared",
+    "../../helpers",
     "../../report",
   ]
 }

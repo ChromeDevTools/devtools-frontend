@@ -164,12 +164,29 @@ class Tests {
 
 class MochaTests extends Tests {
   override run(tests: PathPair[]) {
+    return super.run(
+        tests,
+        [
+          MOCHA_BIN_PATH,
+          '--config',
+          path.join(this.suite.buildPath, 'mocharc.js'),
+          '-u',
+          path.join(this.suite.buildPath, '..', 'conductor', 'mocha-interface.js'),
+        ],
+        /* positionalTestArgs= */ false,  // Mocha interprets positional arguments as test files itself. Work around
+                                          // that by passing the tests as dashed args instead.
+    );
+  }
+}
+
+class NonHostedMochaTests extends Tests {
+  override run(tests: PathPair[]) {
     const args = [
       MOCHA_BIN_PATH,
       '--config',
       path.join(this.suite.buildPath, 'mocharc.js'),
       '-u',
-      path.join(this.suite.buildPath, '..', 'e2e_non_hosted', 'conductor', 'mocha-interface.js'),
+      path.join(this.suite.buildPath, 'conductor', 'mocha-interface.js'),
     ];
 
     if (options['debug']) {
@@ -251,7 +268,8 @@ function main() {
   const tests: string[] = typeof options['tests'] === 'string' ? [options['tests']] : options['tests'];
   const testKinds = [
     new KarmaTests(path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay')),
-    new MochaTests(path.join(GEN_DIR, 'test/e2e_non_hosted')),
+    new MochaTests(path.join(GEN_DIR, 'test/e2e')),
+    new NonHostedMochaTests(path.join(GEN_DIR, 'test/e2e_non_hosted')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),
     new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/eslint_rules/tests')),
     new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/stylelint_rules/tests')),

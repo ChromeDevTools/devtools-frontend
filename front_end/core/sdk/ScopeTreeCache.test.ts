@@ -21,7 +21,8 @@ describe('ScopeTreeCache', () => {
     });
 
     it('requests the scope tree once for a script', async () => {
-      const scopeTree = {start: 0, end: 20, variables: [], children: []};
+      const scopeTree =
+          {start: 0, end: 20, kind: Formatter.FormatterWorkerPool.ScopeKind.GLOBAL, variables: [], children: []};
       javaScriptScopeTreeStub.returns(Promise.resolve(scopeTree));
 
       const actualScopeTree1 = await scopeTreeForScript(script);
@@ -44,7 +45,8 @@ describe('ScopeTreeCache', () => {
     });
 
     it('requests the scope tree once for a script, even if the first request is not done yet', async () => {
-      const scopeTree = {start: 0, end: 20, variables: [], children: []};
+      const scopeTree =
+          {start: 0, end: 20, kind: Formatter.FormatterWorkerPool.ScopeKind.GLOBAL, variables: [], children: []};
       const {promise: scopeTreePromise, resolve: scopeTreeResolve} =
           Promise.withResolvers<Formatter.FormatterWorkerPool.ScopeTreeNode|null>();
       javaScriptScopeTreeStub.returns(scopeTreePromise);

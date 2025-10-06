@@ -44,9 +44,16 @@ export const enum DefinitionKind {
   FIXED = 3,
 }
 
+export const enum ScopeKind {
+  BLOCK = 1,
+  FUNCTION = 2,
+  GLOBAL = 3,
+}
+
 export interface ScopeTreeNode {
   variables: Array<{name: string, kind: DefinitionKind, offsets: number[]}>;
   start: number;
   end: number;
+  kind: ScopeKind;
   children: ScopeTreeNode[];
 }

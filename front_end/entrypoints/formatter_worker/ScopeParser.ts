@@ -5,7 +5,7 @@
 import * as Acorn from '../../third_party/acorn/acorn.js';
 
 import {ECMA_VERSION} from './AcornTokenizer.js';
-import {DefinitionKind, type ScopeTreeNode} from './FormatterActions.js';
+import {DefinitionKind, ScopeKind, type ScopeTreeNode} from './FormatterActions.js';
 
 export function parseScopes(expression: string, sourceType: 'module'|'script' = 'script'): Scope|null {
   // Parse the expression and find variables and scopes.
@@ -36,12 +36,14 @@ export class Scope {
   readonly parent: Scope|null;
   readonly start: number;
   readonly end: number;
+  readonly kind: ScopeKind;
   readonly children: Scope[] = [];
 
-  constructor(start: number, end: number, parent: Scope|null) {
+  constructor(start: number, end: number, parent: Scope|null, kind: ScopeKind) {
     this.start = start;
     this.end = end;
     this.parent = parent;
+    this.kind = kind;
     if (parent) {
       parent.children.push(this);
     }
@@ -61,6 +63,7 @@ export class Scope {
       start: this.start,
       end: this.end,
       variables,
+      kind: this.kind,
       children,
     };
   }
@@ -137,7 +140,7 @@ export class ScopeVariableAnalysis {
 
   constructor(node: Acorn.ESTree.Node) {
     this.#rootNode = node;
-    this.#rootScope = new Scope(node.start, node.end, null);
+    this.#rootScope = new Scope(node.start, node.end, null, ScopeKind.GLOBAL);
     this.#currentScope = this.#rootScope;
   }
 
@@ -169,7 +172,7 @@ export class ScopeVariableAnalysis {
         node.elements.forEach(item => this.#processNode(item));
         break;
       case 'ArrowFunctionExpression': {
-        this.#pushScope(node.start, node.end);
+        this.#pushScope(node.start, node.end, ScopeKind.FUNCTION);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.VAR, false));
         if (node.body.type === 'BlockStatement') {
           // Include the body of the arrow function in the same scope as the arguments.
@@ -188,7 +191,7 @@ export class ScopeVariableAnalysis {
         this.#processNode(node.right);
         break;
       case 'BlockStatement':
-        this.#pushScope(node.start, node.end);
+        this.#pushScope(node.start, node.end, ScopeKind.BLOCK);
         node.body.forEach(this.#processNode.bind(this));
         this.#popScope(false);
         break;
@@ -202,7 +205,7 @@ export class ScopeVariableAnalysis {
         break;
       }
       case 'CatchClause':
-        this.#pushScope(node.start, node.end);
+        this.#pushScope(node.start, node.end, ScopeKind.BLOCK);
         this.#processNodeAsDefinition(DefinitionKind.LET, false, node.param);
         this.#processNode(node.body);
         this.#popScope(false);
@@ -234,14 +237,14 @@ export class ScopeVariableAnalysis {
         break;
       case 'ForInStatement':
       case 'ForOfStatement':
-        this.#pushScope(node.start, node.end);
+        this.#pushScope(node.start, node.end, ScopeKind.BLOCK);
         this.#processNode(node.left);
         this.#processNode(node.right);
         this.#processNode(node.body);
         this.#popScope(false);
         break;
       case 'ForStatement':
-        this.#pushScope(node.start, node.end);
+        this.#pushScope(node.start, node.end, ScopeKind.BLOCK);
         this.#processNode(node.init ?? null);
         this.#processNode(node.test ?? null);
         this.#processNode(node.update ?? null);
@@ -250,7 +253,7 @@ export class ScopeVariableAnalysis {
         break;
       case 'FunctionDeclaration':
         this.#processNodeAsDefinition(DefinitionKind.VAR, false, node.id);
-        this.#pushScope(node.id?.end ?? node.start, node.end);
+        this.#pushScope(node.id?.end ?? node.start, node.end, ScopeKind.FUNCTION);
         this.#addVariable('this', node.start, DefinitionKind.FIXED);
         this.#addVariable('arguments', node.start, DefinitionKind.FIXED);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.LET, false));
@@ -259,7 +262,7 @@ export class ScopeVariableAnalysis {
         this.#popScope(true);
         break;
       case 'FunctionExpression':
-        this.#pushScope(node.id?.end ?? node.start, node.end);
+        this.#pushScope(node.id?.end ?? node.start, node.end, ScopeKind.FUNCTION);
         this.#addVariable('this', node.start, DefinitionKind.FIXED);
         this.#addVariable('arguments', node.start, DefinitionKind.FIXED);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.LET, false));
@@ -421,8 +424,8 @@ export class ScopeVariableAnalysis {
     return this.#allNames;
   }
 
-  #pushScope(start: number, end: number): void {
-    this.#currentScope = new Scope(start, end, this.#currentScope);
+  #pushScope(start: number, end: number, kind: ScopeKind): void {
+    this.#currentScope = new Scope(start, end, this.#currentScope, kind);
   }
 
   #popScope(isFunctionContext: boolean): void {

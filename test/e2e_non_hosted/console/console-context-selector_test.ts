@@ -28,11 +28,27 @@ describe('The Console Tab', () => {
       return result;
     }
 
+    async function clickMenuAndWaitForItemWithText(menuSelector: string, itemText: string, devToolsPage: DevToolsPage) {
+      const result = await devToolsPage.waitForFunction(async () => {
+        await devToolsPage.click(menuSelector);
+        for (const menuItem of await devToolsPage.waitForManyWithTries(
+                 '[role=menuitem]', 1, 3, undefined, undefined, undefined) ??
+             []) {
+          if (await devToolsPage.$textContent(itemText, menuItem)) {
+            return menuItem;
+          }
+        }
+        return null;
+      });
+      assert.exists(result);
+      return result;
+    }
+
     const FRAME_CONTEXT_LABEL = 'myframe (context-selector-inner.html)';
 
     // switch to the iframe context
-    await devToolsPage.click('[aria-label="JavaScript context: top"]');
-    const frameMenuItem = await waitForMenuItemWithText(FRAME_CONTEXT_LABEL, devToolsPage);
+    const frameMenuItem = await clickMenuAndWaitForItemWithText(
+        '[aria-label="JavaScript context: top"]', FRAME_CONTEXT_LABEL, devToolsPage);
     await frameMenuItem.click();
     await devToolsPage.pressKey('Enter');
     await devToolsPage.waitFor(`[aria-label="JavaScript context: ${FRAME_CONTEXT_LABEL}"]`);
@@ -41,9 +57,8 @@ describe('The Console Tab', () => {
     void inspectedPage.evaluate('pauseInMain()');
     await devToolsPage.waitFor('#tab-sources[aria-selected="true"]');
     await navigateToConsoleTab(devToolsPage);
-    await devToolsPage.waitFor('[aria-label="JavaScript context: top"]');
-    await devToolsPage.click('[aria-label="JavaScript context: top"]');
-    const disabledFrameMenuItem = await waitForMenuItemWithText(FRAME_CONTEXT_LABEL, devToolsPage);
+    const disabledFrameMenuItem = await clickMenuAndWaitForItemWithText(
+        '[aria-label="JavaScript context: top"]', FRAME_CONTEXT_LABEL, devToolsPage);
     assert.isTrue(await disabledFrameMenuItem.evaluate(node => node.classList.contains('disabled')));
     await devToolsPage.pressKey('Escape');
 
@@ -52,9 +67,8 @@ describe('The Console Tab', () => {
     await devToolsPage.click(RESUME_BUTTON);
     await navigateToConsoleTab(devToolsPage);
 
-    await devToolsPage.waitFor('[aria-label="JavaScript context: top"]');
-    await devToolsPage.click('[aria-label="JavaScript context: top"]');
-    const enabledFrameMenuItem = await waitForMenuItemWithText(FRAME_CONTEXT_LABEL, devToolsPage);
+    const enabledFrameMenuItem = await clickMenuAndWaitForItemWithText(
+        '[aria-label="JavaScript context: top"]', FRAME_CONTEXT_LABEL, devToolsPage);
     assert.isFalse(await enabledFrameMenuItem.evaluate(node => node.classList.contains('disabled')));
     await devToolsPage.pressKey('Escape');
 
@@ -64,9 +78,8 @@ describe('The Console Tab', () => {
     await devToolsPage.waitFor('#tab-sources[aria-selected="true"]');
     await navigateToConsoleTab(devToolsPage);
 
-    await devToolsPage.waitFor(`[aria-label="JavaScript context: ${WORKER_CONTEXT_LABEL}"]`);
-    await devToolsPage.click(`[aria-label="JavaScript context: ${WORKER_CONTEXT_LABEL}"]`);
-    const topMenuItem = await waitForMenuItemWithText('top', devToolsPage);
+    const topMenuItem = await clickMenuAndWaitForItemWithText(
+        `[aria-label="JavaScript context: ${WORKER_CONTEXT_LABEL}"]`, 'top', devToolsPage);
     assert.isFalse(await topMenuItem.evaluate(node => node.classList.contains('disabled')));
     const workerFrameMenuItem = await waitForMenuItemWithText(FRAME_CONTEXT_LABEL, devToolsPage);
     assert.isFalse(await workerFrameMenuItem.evaluate(node => node.classList.contains('disabled')));
@@ -84,9 +97,8 @@ describe('The Console Tab', () => {
     await devToolsPage.waitFor('#tab-sources[aria-selected="true"]');
     await navigateToConsoleTab(devToolsPage);
 
-    await devToolsPage.waitFor(`[aria-label="JavaScript context: ${FRAME_CONTEXT_LABEL}"]`);
-    await devToolsPage.click(`[aria-label="JavaScript context: ${FRAME_CONTEXT_LABEL}"]`);
-    const disabledTopMenuItem = await waitForMenuItemWithText('top', devToolsPage);
+    const disabledTopMenuItem = await clickMenuAndWaitForItemWithText(
+        `[aria-label="JavaScript context: ${FRAME_CONTEXT_LABEL}"]`, 'top', devToolsPage);
     assert.isTrue(await disabledTopMenuItem.evaluate(node => node.classList.contains('disabled')));
     await devToolsPage.pressKey('Escape');
 
@@ -95,9 +107,8 @@ describe('The Console Tab', () => {
     await devToolsPage.click(RESUME_BUTTON);
     await navigateToConsoleTab(devToolsPage);
 
-    await devToolsPage.waitFor(`[aria-label="JavaScript context: ${FRAME_CONTEXT_LABEL}"]`);
-    await devToolsPage.click(`[aria-label="JavaScript context: ${FRAME_CONTEXT_LABEL}"]`);
-    const enabledTopMenuItem = await waitForMenuItemWithText('top', devToolsPage);
+    const enabledTopMenuItem = await clickMenuAndWaitForItemWithText(
+        `[aria-label="JavaScript context: ${FRAME_CONTEXT_LABEL}"]`, 'top', devToolsPage);
     assert.isFalse(await enabledTopMenuItem.evaluate(node => node.classList.contains('disabled')));
     await devToolsPage.pressKey('Escape');
   });

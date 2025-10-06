@@ -455,10 +455,27 @@ export class DevToolsPage extends PageWrapper {
   async waitForMany<ElementType extends Element|null = null, Selector extends string = string>(
       selector: Selector, count: number, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(),
       handler?: string) {
-    return await asyncScope.exec(() => this.waitForFunction(async () => {
-      const elements = await this.$$<ElementType, typeof selector>(selector, root, handler);
-      return elements.length >= count ? elements : undefined;
-    }, asyncScope), `Waiting for ${count} elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
+    return await asyncScope.exec(
+        () => this.waitForFunction(
+            async () => {
+              const elements = await this.$$<ElementType, typeof selector>(selector, root, handler);
+              return elements.length >= count ? elements : undefined;
+            },
+            asyncScope, undefined),
+        `Waiting for ${count} elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
+  }
+
+  async waitForManyWithTries<ElementType extends Element|null = null, Selector extends string = string>(
+      selector: Selector, count: number, tries: number, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(),
+      handler?: string) {
+    return await asyncScope.exec(
+        () => this.waitForFunctionWithTries(
+            async () => {
+              const elements = await this.$$<ElementType, typeof selector>(selector, root, handler);
+              return elements.length >= count ? elements : undefined;
+            },
+            {tries}, asyncScope),
+        `Waiting for ${count} elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
   }
 
   waitForAriaNone = (selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {

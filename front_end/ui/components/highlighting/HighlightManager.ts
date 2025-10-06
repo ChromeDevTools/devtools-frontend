@@ -10,7 +10,15 @@ export class RangeWalker {
   #eof: boolean;
 
   constructor(readonly root: Node) {
-    this.#treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodeFilter = {
+      acceptNode(node: Node): number {
+        if (['STYLE', 'SCRIPT'].includes(node.parentNode?.nodeName ?? '')) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    };
+    this.#treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, nodeFilter);
     this.#eof = !this.#treeWalker.firstChild();
   }
 
@@ -56,6 +64,18 @@ export class RangeWalker {
     range.setStart(startNode, offsetInStartNode);
     range.setEnd(endNode, offsetInEndNode);
     return range;
+  }
+
+  goToTextNode(node: Text): void {
+    while (this.#treeWalker.currentNode !== node) {
+      if (!this.#next()) {
+        return;
+      }
+    }
+  }
+
+  get offset(): number {
+    return this.#offset;
   }
 }
 

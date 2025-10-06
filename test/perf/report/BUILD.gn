@@ -5,6 +5,9 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("report") {
-  deps = [ "../../shared" ]
+  deps = [
+    "../../shared",
+    "../helpers",
+  ]
   sources = [ "report.ts" ]
 }

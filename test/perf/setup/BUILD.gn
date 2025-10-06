@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("setup") {
-  sources = [ "test_setup.ts" ]
+ts_e2e_library("setup") {
+  sources = [ "mocha_hooks.ts" ]
   deps = [ "../report" ]
 }

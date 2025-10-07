@@ -2,9 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Formatter from '../../entrypoints/formatter_worker/formatter_worker.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Platform from '../platform/platform.js';
 
@@ -742,6 +745,36 @@ describe('SourceMapScopesInfo', () => {
           assert.strictEqual(scopeInfo.findOriginalFunctionName({line: 0, column: 110}), '');
         });
       });
+    });
+  });
+
+  describeWithMockConnection('createFromAst', () => {
+    it('creates scope info from a JavaScript AST with named mappings', () => {
+      const generatedCode = `function f(n) { console.log(n); } function b() { f(42); }`;
+
+      const ast = Formatter.ScopeParser.parseScopes(generatedCode)?.export();
+      assert.isDefined(ast);
+
+      const sourceMapJSON = encodeSourceMap([
+        '0:10 => original.js:0:10@foo',  // function f() => function foo()
+        '0:44 => original.js:5:9@bar',   // function b() => function bar()
+      ]);
+      const sourceMap = new SDK.SourceMap.SourceMap(urlString`compiled.js`, urlString`compiled.js.map`, sourceMapJSON);
+
+      const info = SourceMapScopesInfo.createFromAst(sourceMap, ast, new TextUtils.Text.Text(generatedCode));
+
+      // Check function name for a position at the beginning of the function name mapping.
+      assert.strictEqual(info.findOriginalFunctionName({line: 0, column: 10}), 'foo');
+
+      // Check function name for a position inside the function body.
+      assert.strictEqual(info.findOriginalFunctionName({line: 0, column: 25}), 'foo');
+
+      // Check function name for the second function.
+      assert.strictEqual(info.findOriginalFunctionName({line: 0, column: 44}), 'bar');
+      assert.strictEqual(info.findOriginalFunctionName({line: 0, column: 52}), 'bar');
+
+      // Check a position in the global scope.
+      assert.isNull(info.findOriginalFunctionName({line: 0, column: 38}));  // Between the two functions
     });
   });
 });

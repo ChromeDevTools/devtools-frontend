@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as Protocol from '../../generated/protocol.js';
+import * as Formatter from '../../models/formatter/formatter.js';
+import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
@@ -20,6 +22,61 @@ export class SourceMapScopesInfo {
     this.#sourceMap = sourceMap;
     this.#originalScopes = scopeInfo.scopes;
     this.#generatedRanges = scopeInfo.ranges;
+  }
+
+  /**
+   * If the source map does not contain any scopes information, this factory function attempts to create bare bones scope information
+   * via the script's AST combined with the mappings.
+   *
+   * We create the generated ranges from the scope tree and for each range we create an original scope that matches the bounds 1:1.
+   * We don't map the bounds via mappings as mappings are often iffy and it's not strictly required to translate stack traces where we
+   * map call-sites separately.
+   */
+  static createFromAst(
+      sourceMap: SourceMap, scopeTree: Formatter.FormatterWorkerPool.ScopeTreeNode,
+      text: TextUtils.Text.Text): SourceMapScopesInfo {
+    const {scope, range} = convertScope(scopeTree, undefined, undefined);
+    return new SourceMapScopesInfo(sourceMap, {scopes: [scope], ranges: [range]});
+
+    function convertScope(
+        node: Formatter.FormatterWorkerPool.ScopeTreeNode, parentScope: ScopesCodec.OriginalScope|undefined,
+        parentRange: ScopesCodec.GeneratedRange|
+        undefined): {scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange} {
+      const start = positionFromOffset(node.start);
+      const end = positionFromOffset(node.end);
+      const isStackFrame = node.kind === Formatter.FormatterWorkerPool.ScopeKind.FUNCTION;
+
+      const scope: ScopesCodec.OriginalScope = {
+        start,
+        end,
+        name: sourceMap.findEntry(start.line, start.column, 0)?.name,
+        isStackFrame,
+        variables: [],
+        children: [],
+      };
+
+      const range: ScopesCodec.GeneratedRange = {
+        start,
+        end,
+        originalScope: scope,
+        isStackFrame,
+        isHidden: false,
+        values: [],
+        children: [],
+      };
+
+      parentRange?.children.push(range);
+      parentScope?.children.push(scope);
+
+      node.children.forEach(child => convertScope(child, scope, range));
+
+      return {scope, range};
+    }
+
+    function positionFromOffset(offset: number): ScopesCodec.Position {
+      const location = text.positionFromOffset(offset);
+      return {line: location.lineNumber, column: location.columnNumber};
+    }
   }
 
   addOriginalScopes(scopes: Array<ScopesCodec.OriginalScope|null>): void {

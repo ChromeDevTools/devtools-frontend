@@ -12,7 +12,7 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '4d06a1da7d3dd500370f0cd5536f0cbfcccfbebb',
+  'build_revision': 'b7a355a6a8b221fe864de9be764df71ed0bf2c1b',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'fb3a6ce2c0af9306433e76d4776af1d8419899f5',
@@ -21,7 +21,7 @@ vars = {
   'depot_tools_revision': 'eda3b48f2e32304d4ea20fee7ac1d37c9b060b3b',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '1b1bcbbe060e8c8cd8704f00f78978c50991b307',
+  'inspector_protocol_revision': '679b33a98ae546ff521eee2ea28d8d5bf28872ba',
 
   # Keeping track of the last time we rolled the browser protocol files.
   'chromium_browser_protocol_revision' : '21c0e9d79181fd991f782bb74b0eb1c8bce10209',
